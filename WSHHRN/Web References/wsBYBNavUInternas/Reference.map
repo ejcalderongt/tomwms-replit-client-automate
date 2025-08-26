@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DiscoveryClientResultsFile xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Results>
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="http://srvnavp001ori1.byb.gt:7047/DynamicsNAV110/WS/PRALCASA/Page/U_Internas" filename="U_Internas.wsdl" />
+  </Results>
+</DiscoveryClientResultsFile>
