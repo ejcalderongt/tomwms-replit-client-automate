@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<menu>  
+  <group Text="Reportes">
+    <item Text="Ingresos" />
+    <item Text="Salidas" />
+    <item Text="Movimientos" />
+    <item Text="Existencias" />
+    <item Text="Ajustes" />
+  </group>  
+</menu>

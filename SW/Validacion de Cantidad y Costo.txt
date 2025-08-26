@@ -1,0 +1,15 @@
+
+Si Regla Recepcion 1 entonces
+
+CantidadRecibida =0
+CostoRecepcion=0
+CantidadSolicitada = Cantidad ingresada en la orden de compra (detalle)
+CostoOrdenCompra = costo ingresado en la orden de compra (detalle)
+
+
+Si Regla Recepcion 2 entonces
+
+CantidadSolicitada=0
+CostoOrdenCompra=0
+CantidadRecibida= cantidad ingresada de recepcion (detalle)
+CostoRecepcion = costo ingresado en recepcion (detalle)

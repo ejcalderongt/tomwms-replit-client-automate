@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="ArrayOfclsBeTrans_re_det_infraccion">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeTrans_re_det_infraccion" nillable="true" type="tns:clsBeTrans_re_det_infraccion" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeTrans_re_det_infraccion" nillable="true" type="tns:ArrayOfclsBeTrans_re_det_infraccion" />
+  <xs:complexType name="clsBeTrans_re_det_infraccion">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Bodega" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CantidadRecibida" type="xs:double" />
+      <xs:element minOccurs="0" name="CantidadSolicitada" type="xs:double" />
+      <xs:element minOccurs="0" name="CodigoProductoInfraccionado" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CostoOrdenCompra" type="xs:double" />
+      <xs:element minOccurs="0" name="CostoRecepcion" type="xs:double" />
+      <xs:element minOccurs="0" name="Empresa" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="EsDevolucion" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaOrdenCompra" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaRecepcion" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdBodega" type="xs:int" />
+      <xs:element minOccurs="0" name="IdOrdenCompraEnc" type="xs:int" />
+      <xs:element minOccurs="0" name="IdPresentacion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdProductoBodega" type="xs:int" />
+      <xs:element minOccurs="0" name="IdPropietario" type="xs:int" />
+      <xs:element minOccurs="0" name="IdProveedor" type="xs:int" />
+      <xs:element minOccurs="0" name="IdRecepcion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdRecepcionDetInfraccion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdRecepcionEnc" type="xs:int" />
+      <xs:element minOccurs="0" name="IdReglaPropietarioEnc" type="xs:int" />
+      <xs:element minOccurs="0" name="ImagenEmpresa" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="IsNew" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ListaFactura" nillable="true" type="tns:ArrayOfclsBeTrans_re_fact" />
+      <xs:element minOccurs="0" name="NombreProveedor" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NombreUsuario" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProductoInfraccionado" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Propietario" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ReglaInfraccionada" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TipoIngreso" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TipoTransaccion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeTrans_re_det_infraccion" nillable="true" type="tns:clsBeTrans_re_det_infraccion" />
+  <xs:complexType name="ArrayOfclsBeTrans_re_fact">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeTrans_re_fact" nillable="true" type="tns:clsBeTrans_re_fact" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeTrans_re_fact" nillable="true" type="tns:ArrayOfclsBeTrans_re_fact" />
+  <xs:complexType name="clsBeTrans_re_fact">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Completa" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdFacturaRecepcion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdRecepcionEnc" type="xs:int" />
+      <xs:element minOccurs="0" name="IsNew" type="xs:boolean" />
+      <xs:element minOccurs="0" name="NoFactura" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Observacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Orden" type="xs:int" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeTrans_re_fact" nillable="true" type="tns:clsBeTrans_re_fact" />
+</xs:schema>

@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Reporte de existencias";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="page-rpt-existencias">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light border mb-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-boxes"></i> Existencias
+
+            </a>
+            <button class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <form class="d-flex" v-on:submit.prevent="buscar">
+                    <select class="form-select ms-sm-2" v-model="bform.bodega" required v-bind:disabled="buscandoBodegas">
+                        <option value="">{{ buscandoBodegas ? 'Cargando bodegas...' : 'Bodega' }}</option>
+                        <option v-bind:value="b.codigo" v-bind:key="b.codigo" v-for="b in cat.bodegas">{{ b.nombre }}</option>
+                    </select>
+                    <button class="btn btn-info my-2 my-sm-0 ms-sm-2" type="submit" v-bind:disabled="buscando" title="Buscar">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle"
+                           href="#"
+                           id="navbarDropdown"
+                           role="button"
+                           data-toggle="dropdown"
+                           aria-haspopup="true"
+                           aria-expanded="false"
+                           v-bind:class="{disabled: buscando}"
+                           title="Descargar">
+                            <i class="fas fa-download"></i> Descargar
+
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#" v-on:click.prevent="exportarExcel">
+                                <i class="fas fa-file-excel"></i> Excel
+                            </a>
+                            <a class="dropdown-item" href="#" v-on:click.prevent="exportarPDF">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="text-center" v-show="buscando">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Buscando...</span>
+        </div>
+        <br />
+        Buscando existencias...
+    </div>
+    <div id="grid-existencias" v-show="!buscando"></div>
+</div>
+
+@section Scripts {
+    <script src="~/Js/Mixins/ReporteDev.js" asp-append-version="true"></script>
+    <script src="~/Js/Pages/Reportes/Existencias.js" asp-append-version="true"></script>
+}

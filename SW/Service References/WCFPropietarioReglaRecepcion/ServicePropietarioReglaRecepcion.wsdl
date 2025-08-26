@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="ServicePropietarioReglaRecepcion" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:4180/Propietario_Regla_Recepcion/ServicePropietarioReglaRecepcion.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:4180/Propietario_Regla_Recepcion/ServicePropietarioReglaRecepcion.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:4180/Propietario_Regla_Recepcion/ServicePropietarioReglaRecepcion.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IServicePropietarioReglaRecepcion_Guarda_InputMessage">
+    <wsdl:part name="parameters" element="tns:Guarda" />
+  </wsdl:message>
+  <wsdl:message name="IServicePropietarioReglaRecepcion_Guarda_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GuardaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePropietarioReglaRecepcion_GetSingle_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSingle" />
+  </wsdl:message>
+  <wsdl:message name="IServicePropietarioReglaRecepcion_GetSingle_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSingleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePropietarioReglaRecepcion_GetAllByEncabezado_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllByEncabezado" />
+  </wsdl:message>
+  <wsdl:message name="IServicePropietarioReglaRecepcion_GetAllByEncabezado_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllByEncabezadoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePropietarioReglaRecepcion_GetAllDet_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllDet" />
+  </wsdl:message>
+  <wsdl:message name="IServicePropietarioReglaRecepcion_GetAllDet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllDetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePropietarioReglaRecepcion_GetAllByPropietario_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllByPropietario" />
+  </wsdl:message>
+  <wsdl:message name="IServicePropietarioReglaRecepcion_GetAllByPropietario_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllByPropietarioResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePropietarioReglaRecepcion_DesactivarRegla_InputMessage">
+    <wsdl:part name="parameters" element="tns:DesactivarRegla" />
+  </wsdl:message>
+  <wsdl:message name="IServicePropietarioReglaRecepcion_DesactivarRegla_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DesactivarReglaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePropietarioReglaRecepcion_Desactivar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Desactivar" />
+  </wsdl:message>
+  <wsdl:message name="IServicePropietarioReglaRecepcion_Desactivar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DesactivarResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServicePropietarioReglaRecepcion_ExisteRegla_InputMessage">
+    <wsdl:part name="parameters" element="tns:ExisteRegla" />
+  </wsdl:message>
+  <wsdl:message name="IServicePropietarioReglaRecepcion_ExisteRegla_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExisteReglaResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IServicePropietarioReglaRecepcion">
+    <wsdl:operation name="Guarda">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePropietarioReglaRecepcion/Guarda" message="tns:IServicePropietarioReglaRecepcion_Guarda_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePropietarioReglaRecepcion/GuardaResponse" message="tns:IServicePropietarioReglaRecepcion_Guarda_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSingle">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePropietarioReglaRecepcion/GetSingle" message="tns:IServicePropietarioReglaRecepcion_GetSingle_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePropietarioReglaRecepcion/GetSingleResponse" message="tns:IServicePropietarioReglaRecepcion_GetSingle_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllByEncabezado">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePropietarioReglaRecepcion/GetAllByEncabezado" message="tns:IServicePropietarioReglaRecepcion_GetAllByEncabezado_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePropietarioReglaRecepcion/GetAllByEncabezadoResponse" message="tns:IServicePropietarioReglaRecepcion_GetAllByEncabezado_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllDet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePropietarioReglaRecepcion/GetAllDet" message="tns:IServicePropietarioReglaRecepcion_GetAllDet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePropietarioReglaRecepcion/GetAllDetResponse" message="tns:IServicePropietarioReglaRecepcion_GetAllDet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllByPropietario">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePropietarioReglaRecepcion/GetAllByPropietario" message="tns:IServicePropietarioReglaRecepcion_GetAllByPropietario_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePropietarioReglaRecepcion/GetAllByPropietarioResponse" message="tns:IServicePropietarioReglaRecepcion_GetAllByPropietario_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DesactivarRegla">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePropietarioReglaRecepcion/DesactivarRegla" message="tns:IServicePropietarioReglaRecepcion_DesactivarRegla_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePropietarioReglaRecepcion/DesactivarReglaResponse" message="tns:IServicePropietarioReglaRecepcion_DesactivarRegla_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Desactivar">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePropietarioReglaRecepcion/Desactivar" message="tns:IServicePropietarioReglaRecepcion_Desactivar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePropietarioReglaRecepcion/DesactivarResponse" message="tns:IServicePropietarioReglaRecepcion_Desactivar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ExisteRegla">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServicePropietarioReglaRecepcion/ExisteRegla" message="tns:IServicePropietarioReglaRecepcion_ExisteRegla_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServicePropietarioReglaRecepcion/ExisteReglaResponse" message="tns:IServicePropietarioReglaRecepcion_ExisteRegla_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IServicePropietarioReglaRecepcion" type="tns:IServicePropietarioReglaRecepcion">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Guarda">
+      <soap:operation soapAction="http://tempuri.org/IServicePropietarioReglaRecepcion/Guarda" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSingle">
+      <soap:operation soapAction="http://tempuri.org/IServicePropietarioReglaRecepcion/GetSingle" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllByEncabezado">
+      <soap:operation soapAction="http://tempuri.org/IServicePropietarioReglaRecepcion/GetAllByEncabezado" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllDet">
+      <soap:operation soapAction="http://tempuri.org/IServicePropietarioReglaRecepcion/GetAllDet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllByPropietario">
+      <soap:operation soapAction="http://tempuri.org/IServicePropietarioReglaRecepcion/GetAllByPropietario" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DesactivarRegla">
+      <soap:operation soapAction="http://tempuri.org/IServicePropietarioReglaRecepcion/DesactivarRegla" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Desactivar">
+      <soap:operation soapAction="http://tempuri.org/IServicePropietarioReglaRecepcion/Desactivar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExisteRegla">
+      <soap:operation soapAction="http://tempuri.org/IServicePropietarioReglaRecepcion/ExisteRegla" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ServicePropietarioReglaRecepcion">
+    <wsdl:port name="BasicHttpBinding_IServicePropietarioReglaRecepcion" binding="tns:BasicHttpBinding_IServicePropietarioReglaRecepcion">
+      <soap:address location="http://localhost:4180/Propietario_Regla_Recepcion/ServicePropietarioReglaRecepcion.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

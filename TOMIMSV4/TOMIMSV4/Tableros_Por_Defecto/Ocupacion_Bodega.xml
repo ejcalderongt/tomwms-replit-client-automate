@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-GT">
+  <Title Text="Dashboard" />
+  <DataSources>
+    <SqlDataSource Name="SQL Data Source 1" ComponentName="dashboardSqlDataSource1">
+      <Connection Name="localhost_Connection" ProviderKey="MSSqlServer">
+        <Parameters>
+          <Parameter Name="server" Value="LAPTOP-5GDJFUCN\PROGRAX" />
+          <Parameter Name="database" Value="TOMWMS_LA_CUMBRE_QA" />
+          <Parameter Name="useIntegratedSecurity" Value="False" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+          <Parameter Name="SqlServerTrustServerCertificate" Value="true" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="dh_ocupacion_bodega">
+        <Tables>
+          <Table Name="dh_ocupacion_bodega" X="30" Y="30" Width="125" Height="164" />
+          <Table Name="bodega" X="185" Y="30" Width="125" Height="1964" />
+          <Relation Type="Inner" Parent="dh_ocupacion_bodega" Nested="bodega">
+            <KeyColumn Parent="IdBodega" Nested="IdBodega" />
+          </Relation>
+        </Tables>
+        <Columns>
+          <Column Table="dh_ocupacion_bodega" Name="IdOcupacionBodega" />
+          <Column Table="dh_ocupacion_bodega" Name="IdBodega" />
+          <Column Table="dh_ocupacion_bodega" Name="cant_ubicaciones_vacias" Alias="Ubicaciones_Vacias" />
+          <Column Table="dh_ocupacion_bodega" Name="cant_ubicaciones_ocupadas" Alias="Ubicaciones_Ocupadas" />
+          <Column Table="dh_ocupacion_bodega" Name="fecha" Alias="Fecha" />
+          <Column Table="bodega" Name="codigo" Alias="Codigo_Bodega" />
+          <Column Table="bodega" Name="nombre" Alias="Nombre_Bodega" />
+        </Columns>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="SQL Data Source 1">
+          <View Name="dh_ocupacion_bodega">
+            <Field Name="IdOcupacionBodega" Type="Int32" />
+            <Field Name="IdBodega" Type="Int32" />
+            <Field Name="Ubicaciones_Vacias" Type="Double" />
+            <Field Name="Ubicaciones_Ocupadas" Type="Double" />
+            <Field Name="Fecha" Type="DateTime" />
+            <Field Name="Codigo_Bodega" Type="String" />
+            <Field Name="Nombre_Bodega" Type="String" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <TreeView ComponentName="treeViewDashboardItem1" Name="Filtros" DataSource="dashboardSqlDataSource1" DataMember="dh_ocupacion_bodega">
+      <DataItems>
+        <Dimension DataMember="Nombre_Bodega" DefaultId="DataItem1" />
+        <Dimension DataMember="Fecha" DefaultId="DataItem2" />
+        <Dimension DataMember="Fecha" DateTimeGroupInterval="Month" DefaultId="DataItem3" />
+      </DataItems>
+      <FilterDimensions>
+        <Dimension DefaultId="DataItem1" />
+        <Dimension DefaultId="DataItem2" />
+        <Dimension DefaultId="DataItem3" />
+      </FilterDimensions>
+    </TreeView>
+    <Chart ComponentName="chartDashboardItem1" Name="Ocupación por bodega" DataSource="dashboardSqlDataSource1" DataMember="dh_ocupacion_bodega">
+      <DataItems>
+        <Dimension DataMember="Fecha" SortOrder="Descending" DateTimeGroupInterval="MonthYear" DefaultId="DataItem0" />
+        <Dimension DataMember="Codigo_Bodega" DefaultId="DataItem1" />
+        <Dimension DataMember="Nombre_Bodega" DefaultId="DataItem2" />
+        <Measure DataMember="Ubicaciones_Ocupadas" DefaultId="DataItem3" />
+        <Measure DataMember="Ubicaciones_Vacias" DefaultId="DataItem4" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem1" />
+        <SeriesDimension DefaultId="DataItem2" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Pane 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem3" />
+            </Simple>
+            <Simple>
+              <Value DefaultId="DataItem4" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup>
+      <LayoutItem DashboardItem="treeViewDashboardItem1" Weight="0.5" />
+      <LayoutItem DashboardItem="chartDashboardItem1" Weight="0.5" />
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

@@ -1,0 +1,3 @@
+﻿Public Class rptInventarioConteoOperador
+
+End Class

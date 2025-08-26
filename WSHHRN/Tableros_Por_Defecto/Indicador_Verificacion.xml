@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="en-US">
+  <Title Text="Tablero de verificación" />
+  <DataSources>
+    <SqlDataSource Name="SQL Data Source 1" ComponentName="dashboardSqlDataSource1">
+      <Connection Name="localhost_IMS4MB_BYB_PRD_Connection" ProviderKey="MSSqlServer">
+        <Parameters>
+          <Parameter Name="server" Value="PROGRA14\SQL2019" />
+          <Parameter Name="database" Value="IMS4MB_BYB_PRD" />
+          <Parameter Name="useIntegratedSecurity" Value="False" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+          <Parameter Name="userid" Value="" />
+          <Parameter Name="password" Value="" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="vw_Indicador_Verificaciones">
+        <Parameter Name="Fecha_Desde" Type="DevExpress.DataAccess.Expression">(System.DateTime)(?Fecha_Inicial)</Parameter>
+        <Parameter Name="Fecha_Hasta" Type="DevExpress.DataAccess.Expression">(System.DateTime)(?Fecha_Final)</Parameter>
+        <Parameter Name="IdBodega" Type="DevExpress.DataAccess.Expression">(System.String)(?IdBodega)</Parameter>
+        <Parameter Name="Fecha_Inicial" Type="DevExpress.DataAccess.Expression">(System.DateTime)(?Fecha_Inicial)</Parameter>
+        <Parameter Name="Fecha_Final" Type="DevExpress.DataAccess.Expression">(System.DateTime)(?Fecha_Final)</Parameter>
+        <Parameter Name="Parameter1" Type="DevExpress.DataAccess.Expression">(System.Int16)(?IdBodega)</Parameter>
+        <Parameter Name="Parameter2" Type="DevExpress.DataAccess.Expression">(System.Int16)(?IdBodega)</Parameter>
+        <Parameter Name="Parameter3" Type="DevExpress.DataAccess.Expression">(System.Int16)(?IdBodega)</Parameter>
+        <Parameter Name="Parameter4" Type="DevExpress.DataAccess.Expression">(System.Int16)(?IdBodega)</Parameter>
+        <Tables>
+          <Table Name="vw_Indicador_Verificaciones" X="30" Y="30" Width="125" Height="464" />
+        </Tables>
+        <Columns>
+          <Column Table="vw_Indicador_Verificaciones" Name="IdProductoBodega" />
+          <Column Table="vw_Indicador_Verificaciones" Name="IdPropietarioBodega" />
+          <Column Table="vw_Indicador_Verificaciones" Name="IdBodega" />
+          <Column Table="vw_Indicador_Verificaciones" Name="bodega" />
+          <Column Table="vw_Indicador_Verificaciones" Name="lic_plate" />
+          <Column Table="vw_Indicador_Verificaciones" Name="idpresentacion" />
+          <Column Table="vw_Indicador_Verificaciones" Name="presentacion" />
+          <Column Table="vw_Indicador_Verificaciones" Name="factor" />
+          <Column Table="vw_Indicador_Verificaciones" Name="cajas/bultos" />
+          <Column Table="vw_Indicador_Verificaciones" Name="unidades" />
+          <Column Table="vw_Indicador_Verificaciones" Name="fecha" />
+          <Column Table="vw_Indicador_Verificaciones" Name="IdUnidadMedida" />
+          <Column Table="vw_Indicador_Verificaciones" Name="unidad" />
+          <Column Table="vw_Indicador_Verificaciones" Name="fecha_picking" />
+          <Column Table="vw_Indicador_Verificaciones" Name="IdPedidoEnc" />
+          <Column Table="vw_Indicador_Verificaciones" Name="IdPickingEnc" />
+          <Column Table="vw_Indicador_Verificaciones" Name="IdTipoPedido" />
+          <Column Table="vw_Indicador_Verificaciones" Name="pedido" />
+          <Column Table="vw_Indicador_Verificaciones" Name="IdOperadorBodega_Verifico" />
+          <Column Table="vw_Indicador_Verificaciones" Name="operador_Verifico" />
+        </Columns>
+        <Filter>[vw_Indicador_Verificaciones.fecha] Between(?Fecha_Inicial, ?Fecha_Final) And [vw_Indicador_Verificaciones.IdBodega] = ?IdBodega</Filter>
+        <GroupFilter></GroupFilter>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="SQL Data Source 1">
+          <View Name="vw_Indicador_Verificaciones">
+            <Field Name="IdProductoBodega" Type="Int32" />
+            <Field Name="IdPropietarioBodega" Type="Int32" />
+            <Field Name="IdBodega" Type="Int32" />
+            <Field Name="bodega" Type="String" />
+            <Field Name="lic_plate" Type="String" />
+            <Field Name="idpresentacion" Type="Int32" />
+            <Field Name="presentacion" Type="String" />
+            <Field Name="factor" Type="Double" />
+            <Field Name="cajas/bultos" Type="Double" />
+            <Field Name="unidades" Type="Double" />
+            <Field Name="fecha" Type="DateTime" />
+            <Field Name="IdUnidadMedida" Type="Int32" />
+            <Field Name="unidad" Type="String" />
+            <Field Name="fecha_picking" Type="DateTime" />
+            <Field Name="IdPedidoEnc" Type="Int32" />
+            <Field Name="IdPickingEnc" Type="Int32" />
+            <Field Name="IdTipoPedido" Type="Int32" />
+            <Field Name="pedido" Type="String" />
+            <Field Name="IdOperadorBodega_Verifico" Type="Int32" />
+            <Field Name="operador_Verifico" Type="String" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+  <Parameters>
+    <Parameter Name="Fecha_Inicial" Type="System.DateTime" Value="2000-01-01T00:00:00" />
+    <Parameter Name="Fecha_Final" Type="System.DateTime" Value="2000-01-01T00:00:00" />
+    <Parameter Name="IdBodega" Type="System.Int16" Value="0" />
+  </Parameters>
+  <Items>
+    <Card ComponentName="cardDashboardItem1" Name="Cantidad de Documentos de Salida" DataSource="dashboardSqlDataSource1" DataMember="vw_Indicador_Verificaciones">
+      <DataItems>
+        <Dimension DataMember="pedido" DefaultId="DataItem0" />
+        <Measure DataMember="IdPedidoEnc" SummaryType="CountDistinct" DefaultId="DataItem1">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" IncludeGroupSeparator="true" CustomFormatString="" />
+        </Measure>
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem0" />
+      </SeriesDimensions>
+      <Card>
+        <ActualValue DefaultId="DataItem1" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+        <LayoutTemplate Type="Stretched">
+          <TopValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <MainValue Visible="true" ValueType="Title" DimensionIndex="0" />
+          <SubValue Visible="true" ValueType="Subtitle" DimensionIndex="0" />
+          <BottomValue1 Visible="true" ValueType="PercentVariation" DimensionIndex="0" />
+          <BottomValue2 Visible="true" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="true" />
+          <Sparkline Visible="true" />
+        </LayoutTemplate>
+      </Card>
+    </Card>
+    <Pie ComponentName="pieDashboardItem1" Name="Unidades verificadas por operador" DataSource="dashboardSqlDataSource1" DataMember="vw_Indicador_Verificaciones">
+      <DataItems>
+        <Measure DataMember="unidades" Name="UmBas (Sum)" DefaultId="DataItem0">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" IncludeGroupSeparator="true" CustomFormatString="" />
+        </Measure>
+        <Dimension DataMember="operador_Verifico" DefaultId="DataItem1" />
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem1" />
+      </Arguments>
+      <Values>
+        <Value DefaultId="DataItem0" />
+      </Values>
+    </Pie>
+    <Treemap ComponentName="treemapDashboardItem1" Name="Presentación verificada por operador" DataSource="dashboardSqlDataSource1" DataMember="vw_Indicador_Verificaciones">
+      <DataItems>
+        <Measure DataMember="cajas/bultos" Name="Presentación (Sum)" DefaultId="DataItem0">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" IncludeGroupSeparator="true" CustomFormatString="" />
+        </Measure>
+        <Dimension DataMember="operador_Verifico" DefaultId="DataItem1" />
+      </DataItems>
+      <Values>
+        <Value DefaultId="DataItem0" />
+      </Values>
+      <Arguments>
+        <Argument DefaultId="DataItem1" />
+      </Arguments>
+    </Treemap>
+    <ListBox ComponentName="listBoxDashboardItem1" Name="Filtro por operador" DataSource="dashboardSqlDataSource1" DataMember="vw_Indicador_Verificaciones">
+      <InteractivityOptions IgnoreMasterFilters="false" />
+      <DataItems>
+        <Dimension DataMember="operador_Verifico" DefaultId="DataItem0" />
+      </DataItems>
+      <FilterDimensions>
+        <Dimension DefaultId="DataItem0" />
+      </FilterDimensions>
+    </ListBox>
+    <TreeView ComponentName="treeViewDashboardItem1" Name="Filtro por bodega" DataSource="dashboardSqlDataSource1" DataMember="vw_Indicador_Verificaciones">
+      <InteractivityOptions IgnoreMasterFilters="false" />
+      <DataItems>
+        <Dimension DataMember="bodega" SortOrder="Descending" DefaultId="DataItem0" />
+      </DataItems>
+      <FilterDimensions>
+        <Dimension DefaultId="DataItem0" />
+      </FilterDimensions>
+    </TreeView>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup Weight="100">
+      <LayoutGroup Orientation="Vertical" Weight="25">
+        <LayoutItem DashboardItem="treeViewDashboardItem1" Weight="15.358931552587647" />
+        <LayoutItem DashboardItem="listBoxDashboardItem1" Weight="84.641068447412351" />
+      </LayoutGroup>
+      <LayoutGroup Weight="75">
+        <LayoutItem DashboardItem="cardDashboardItem1" Weight="33.333333333333336" />
+        <LayoutGroup Orientation="Vertical" Weight="66.666666666666671">
+          <LayoutItem DashboardItem="pieDashboardItem1" Weight="50.083472454090149" />
+          <LayoutItem DashboardItem="treemapDashboardItem1" Weight="49.916527545909851" />
+        </LayoutGroup>
+      </LayoutGroup>
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

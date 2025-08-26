@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://192.168.0.13/MI3/Proveedor/ServiceProveedor.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/TOMIMS" />
+  <xs:element name="Insert">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/TOMIMS" minOccurs="0" name="ObjP" nillable="true" type="q1:clsBeProveedor" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="InsertResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="InsertResult" type="xs:int" />
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/TOMIMS" minOccurs="0" name="ObjP" nillable="true" type="q2:clsBeProveedor" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Update">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/TOMIMS" minOccurs="0" name="ObjP" nillable="true" type="q3:clsBeProveedor" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="UpdateResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Disable">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/TOMIMS" minOccurs="0" name="ObjP" nillable="true" type="q4:clsBeProveedor" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DisableResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="DisableResult" type="xs:int" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/TOMIMS" minOccurs="0" name="ObjP" nillable="true" type="q5:clsBeProveedor" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_Filtro">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pActivo" type="xs:boolean" />
+        <xs:element minOccurs="0" name="IdBodega" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_FiltroResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/TOMIMS" minOccurs="0" name="Get_All_FiltroResult" nillable="true" type="q6:ArrayOfclsBeProveedor" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_By_IdPropietario">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pActivo" type="xs:boolean" />
+        <xs:element minOccurs="0" name="pIdPropietario" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_By_IdPropietarioResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/TOMIMS" minOccurs="0" name="Get_All_By_IdPropietarioResult" nillable="true" type="q7:ArrayOfclsBeProveedor" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Single_By_IdProveedor">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdProveedor" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Single_By_IdProveedorResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/TOMIMS" minOccurs="0" name="Get_Single_By_IdProveedorResult" nillable="true" type="q8:clsBeProveedor" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_By_IdProveedor_And_IdPropietarioBodega">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdProveedor" type="xs:int" />
+        <xs:element minOccurs="0" name="pIdPropietario" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_By_IdProveedor_And_IdPropietarioBodegaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/TOMIMS" minOccurs="0" name="Get_By_IdProveedor_And_IdPropietarioBodegaResult" nillable="true" type="q9:clsBeProveedor" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MaxIdProveedor">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MaxIdProveedorResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="MaxIdProveedorResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_By_IdBodega">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdBodega" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_By_IdBodegaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/TOMIMS" minOccurs="0" name="Get_All_By_IdBodegaResult" nillable="true" type="q10:ArrayOfclsBeProveedor_bodega" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

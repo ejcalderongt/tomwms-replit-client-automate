@@ -1,0 +1,3 @@
+﻿Public Class rptControlCalidadCambioEstado
+
+End Class

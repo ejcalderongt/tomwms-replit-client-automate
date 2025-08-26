@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="VB" Debug="true" Service="TOMIMS.ServiceClienteTipo" CodeBehind="ServiceClienteTipo.svc.vb" %>

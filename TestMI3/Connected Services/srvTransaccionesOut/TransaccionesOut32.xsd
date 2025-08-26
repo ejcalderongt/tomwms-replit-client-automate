@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://192.168.142.173/MI3/Transacciones/TransaccionesOut.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/TOMWMS" />
+  <xs:element name="Get_Ingresos_Pendientes_De_Procesar">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Ingresos_Pendientes_De_ProcesarResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Ingresos_Pendientes_De_ProcesarResult" nillable="true" type="q1:ArrayOfclsBeI_nav_transacciones_out" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Despachos_Pendientes_De_Procesar">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Despachos_Pendientes_De_ProcesarResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Despachos_Pendientes_De_ProcesarResult" nillable="true" type="q2:ArrayOfclsBeI_nav_transacciones_out" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pNoPedido" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Ingresos_Pendientes_De_Procesar_By_No_PedidoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Ingresos_Pendientes_De_Procesar_By_No_PedidoResult" nillable="true" type="q3:ArrayOfclsBeI_nav_transacciones_out" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Despachos_Pendientes_De_Procesar_By_No_Pedido">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pNoPedido" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Despachos_Pendientes_De_Procesar_By_No_PedidoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Despachos_Pendientes_De_Procesar_By_No_PedidoResult" nillable="true" type="q4:ArrayOfclsBeI_nav_transacciones_out" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdTipoDocumento" type="xs:int" />
+        <xs:element minOccurs="0" name="pNoPedido" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumentoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumentoResult" nillable="true" type="q5:ArrayOfclsBeI_nav_transacciones_out" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Actualizar_Registro_Procesado">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="BeINavTransaccionesOut" nillable="true" type="q6:clsBeI_nav_transacciones_out" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Actualizar_Registro_ProcesadoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Actualizar_Registro_ProcesadoResult" type="xs:int" />
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="BeINavTransaccionesOut" nillable="true" type="q7:clsBeI_nav_transacciones_out" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Ajustes_Pendientes_Envio">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Resultado" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Ajustes_Pendientes_EnvioResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Ajustes_Pendientes_EnvioResult" nillable="true" type="q8:ArrayOfclsBeAjustesMI3" />
+        <xs:element minOccurs="0" name="Resultado" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Insertar_Mensaje_Error_ERP">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="pMensajeInterface" nillable="true" type="q9:clsBeI_nav_transacciones_out_error" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Insertar_Mensaje_Error_ERPResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Insertar_Mensaje_Error_ERPResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Mensajes_Error_ERP">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IdDirectorio" type="xs:int" />
+        <xs:element minOccurs="0" name="FechaDesde" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="FechaHasta" type="xs:dateTime" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Mensajes_Error_ERPResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Mensajes_Error_ERPResult" nillable="true" type="q10:ArrayOfclsBeI_nav_transacciones_out_error" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Actualizar_Ajuste_Procesado">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdAjusteEnc" type="xs:int" />
+        <xs:element minOccurs="0" name="pEnviado_A_ERP" type="xs:boolean" />
+        <xs:element minOccurs="0" name="pReferencia" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Actualizar_Ajuste_ProcesadoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Actualizar_Ajuste_ProcesadoResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Ingresos_Pendientes_De_Procesar_By_IdTipoDocumento">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdTipoDocumento" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Ingresos_Pendientes_De_Procesar_By_IdTipoDocumentoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Ingresos_Pendientes_De_Procesar_By_IdTipoDocumentoResult" nillable="true" type="q11:ArrayOfclsBeI_nav_transacciones_out" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pNoPedido" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="pIdTipoDocumento" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumentoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumentoResult" nillable="true" type="q12:ArrayOfclsBeI_nav_transacciones_out" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Stock_Jornada_By_IdPropietario_And_Rango_Fechas">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdPropietario" type="xs:int" />
+        <xs:element minOccurs="0" name="FechaDesde" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="FechaHasta" type="xs:dateTime" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Stock_Jornada_By_IdPropietario_And_Rango_FechasResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Stock_Jornada_By_IdPropietario_And_Rango_FechasResult" nillable="true" type="q13:ArrayOfclsBeStock_jornada" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Almacenaje_Historico_By_IdPropietario_And_Rango_Fechas">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdCliente" type="xs:int" />
+        <xs:element minOccurs="0" name="pIdConsolidador" type="xs:int" />
+        <xs:element minOccurs="0" name="pNoOrden" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="FechaDesde" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="FechaHasta" type="xs:dateTime" />
+        <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Almacen" type="q14:IdTipoAlmacen" />
+        <xs:element minOccurs="0" name="Clasificacion" nillable="true" type="xs:string" />
+        <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="pTipoRubro" type="q15:IdTipoRubroERP" />
+        <xs:element minOccurs="0" name="pProducto" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Almacenaje_Historico_By_IdPropietario_And_Rango_FechasResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Almacenaje_Historico_By_IdPropietario_And_Rango_FechasResult" nillable="true" type="q16:ArrayOfclsBeStock_jornada_logistico" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Almacenaje_Historico_By_No_Orden_And_Rango_Fechas">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pNoOrden" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="FechaDesde" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="FechaHasta" type="xs:dateTime" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Almacenaje_Historico_By_No_Orden_And_Rango_FechasResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Almacenaje_Historico_By_No_Orden_And_Rango_FechasResult" nillable="true" type="q17:ArrayOfclsBeStock_jornada_logistico" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Servicios_By_IdPropietario_And_Rango_Fechas">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdCliente" type="xs:int" />
+        <xs:element minOccurs="0" name="pIdConsolidador" type="xs:int" />
+        <xs:element minOccurs="0" name="pNoOrden" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="FechaDesde" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="FechaHasta" type="xs:dateTime" />
+        <xs:element xmlns:q18="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Almacen" type="q18:IdTipoAlmacen" />
+        <xs:element minOccurs="0" name="pCodigoProducto" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Servicios_By_IdPropietario_And_Rango_FechasResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q19="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Servicios_By_IdPropietario_And_Rango_FechasResult" nillable="true" type="q19:ArrayOfclsBe_Servicio_Logistico" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Servicios_By_No_Orden_And_Rango_Fechas">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pNoOrden" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="FechaDesde" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="FechaHasta" type="xs:dateTime" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Servicios_By_No_Orden_And_Rango_FechasResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Servicios_By_No_Orden_And_Rango_FechasResult" nillable="true" type="q20:ArrayOfclsBeStock_jornada_logistico" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Devolucion_De_Ruta_By_Filtros">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="pIdTipoDocumento" type="q21:IdTipoDocumentoIngreso" />
+        <xs:element minOccurs="0" name="pCodigoBodega" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="pNoDocumentoDevolucionRef" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Devolucion_De_Ruta_By_FiltrosResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Devolucion_De_Ruta_By_FiltrosResult" nillable="true" type="q22:ArrayOfclsBeI_nav_transacciones_out" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Insertar_Referencia_Documento_Salida">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="pDocumentoRef" nillable="true" type="q23:clsBeTrans_pe_docu_ref" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Insertar_Referencia_Documento_SalidaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Insertar_Referencia_Documento_SalidaResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Actualizar_Registro_Procesado_By_No_Pedido">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pNoPedido" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Actualizar_Registro_Procesado_By_No_PedidoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Actualizar_Registro_Procesado_By_No_PedidoResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Actualizar_Registro_Procesado_By_No_Pedido_And_IdTipoDocumento">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pNoPedido" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="pIdTipoDocumento" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Actualizar_Registro_Procesado_By_No_Pedido_And_IdTipoDocumentoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Actualizar_Registro_Procesado_By_No_Pedido_And_IdTipoDocumentoResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Set_Flag_Activo_Documento_Referencia_Salida">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IdDocumentoRef" type="xs:int" />
+        <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Set_Flag_Activo_Documento_Referencia_SalidaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Set_Flag_Activo_Documento_Referencia_SalidaResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Documento_Referencia_By_Filtros">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Serie" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="NoFactura" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="Empresa" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="Bodega" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Documento_Referencia_By_FiltrosResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Documento_Referencia_By_FiltrosResult" nillable="true" type="q24:clsBeTrans_pe_docu_ref" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Actualizar_Registro_Procesado_By_IdDespacho_And_Codigo_Producto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pNoPedido" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="IdDespachoWMS" type="xs:int" />
+        <xs:element minOccurs="0" name="pCodigoProducto" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Actualizar_Registro_Procesado_By_IdDespacho_And_Codigo_ProductoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Actualizar_Registro_Procesado_By_IdDespacho_And_Codigo_ProductoResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Single_By_IdTransaccion">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IdTransaccion" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Single_By_IdTransaccionResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q25="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Single_By_IdTransaccionResult" nillable="true" type="q25:clsBeI_nav_transacciones_out" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Actualizar_Registro_Procesado_By_IdRecepcionEnc_And_Codigo_Producto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pNoPedido" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="IdDespachoWMS" type="xs:int" />
+        <xs:element minOccurs="0" name="pCodigoProducto" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Actualizar_Registro_Procesado_By_IdRecepcionEnc_And_Codigo_ProductoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Actualizar_Registro_Procesado_By_IdRecepcionEnc_And_Codigo_ProductoResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Desactivar_Referencia_Documento_Salida">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pReferencia" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Desactivar_Referencia_Documento_SalidaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Desactivar_Referencia_Documento_SalidaResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Insertar_Referencia_Documento_Salida_Con_Detalle">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="pDocumentoRef" nillable="true" type="q26:clsBeTrans_pe_docu_ref" />
+        <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="lDetalle" nillable="true" type="q27:ArrayOfclsBeTrans_pe_docu_ref_det" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Insertar_Referencia_Documento_Salida_Con_DetalleResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Insertar_Referencia_Documento_Salida_Con_DetalleResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

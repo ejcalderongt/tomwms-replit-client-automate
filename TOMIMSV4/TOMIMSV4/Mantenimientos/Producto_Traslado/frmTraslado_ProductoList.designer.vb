@@ -1,0 +1,233 @@
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class frmTraslado_ProductoList
+    Inherits DevExpress.XtraBars.Ribbon.RibbonForm
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        If disposing AndAlso components IsNot Nothing Then
+            components.Dispose()
+        End If
+        MyBase.Dispose(disposing)
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmTraslado_ProductoList))
+        Me.Dgrid = New DevExpress.XtraGrid.GridControl()
+        Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
+        Me.lblRegs = New DevExpress.XtraBars.BarStaticItem()
+        Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
+        Me.mnuNuevo = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuActualizar = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuSalir = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuImprimir = New DevExpress.XtraBars.BarButtonItem()
+        Me.cmdImportarExcel = New DevExpress.XtraBars.BarButtonItem()
+        Me.BarToggleSwitchItem1 = New DevExpress.XtraBars.BarToggleSwitchItem()
+        Me.chkActivos = New DevExpress.XtraBars.BarCheckItem()
+        Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
+        Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
+        Me.RibbonPageGroup2 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
+        Me.txtFiltro = New DevExpress.XtraEditors.TextEdit()
+        Me.LabelControl1 = New DevExpress.XtraEditors.LabelControl()
+        CType(Me.Dgrid, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtFiltro.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SuspendLayout()
+        '
+        'Dgrid
+        '
+        Me.Dgrid.Cursor = System.Windows.Forms.Cursors.Default
+        Me.Dgrid.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.Dgrid.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.Dgrid.Location = New System.Drawing.Point(0, 231)
+        Me.Dgrid.MainView = Me.GridView1
+        Me.Dgrid.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.Dgrid.Name = "Dgrid"
+        Me.Dgrid.Size = New System.Drawing.Size(939, 327)
+        Me.Dgrid.TabIndex = 2
+        Me.Dgrid.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
+        '
+        'GridView1
+        '
+        Me.GridView1.DetailHeight = 431
+        Me.GridView1.GridControl = Me.Dgrid
+        Me.GridView1.Name = "GridView1"
+        Me.GridView1.OptionsBehavior.Editable = False
+        '
+        'RibbonStatusBar
+        '
+        Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegs)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 558)
+        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.RibbonStatusBar.Name = "RibbonStatusBar"
+        Me.RibbonStatusBar.Ribbon = Me.RibbonControl
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(939, 30)
+        '
+        'lblRegs
+        '
+        Me.lblRegs.Caption = "Registros: 0"
+        Me.lblRegs.Id = 7
+        Me.lblRegs.Name = "lblRegs"
+        '
+        'RibbonControl
+        '
+        Me.RibbonControl.ExpandCollapseItem.Id = 0
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuNuevo, Me.mnuActualizar, Me.mnuSalir, Me.mnuImprimir, Me.lblRegs, Me.cmdImportarExcel, Me.BarToggleSwitchItem1, Me.chkActivos, Me.RibbonControl.SearchEditItem})
+        Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
+        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.RibbonControl.MaxItemId = 19
+        Me.RibbonControl.Name = "RibbonControl"
+        Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
+        Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
+        Me.RibbonControl.Size = New System.Drawing.Size(939, 193)
+        Me.RibbonControl.StatusBar = Me.RibbonStatusBar
+        '
+        'mnuNuevo
+        '
+        Me.mnuNuevo.Caption = "Nuevo"
+        Me.mnuNuevo.Id = 1
+        Me.mnuNuevo.ImageOptions.SvgImage = CType(resources.GetObject("mnuNuevo.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuNuevo.Name = "mnuNuevo"
+        '
+        'mnuActualizar
+        '
+        Me.mnuActualizar.Caption = "Actualizar"
+        Me.mnuActualizar.Id = 2
+        Me.mnuActualizar.ImageOptions.SvgImage = CType(resources.GetObject("mnuActualizar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuActualizar.Name = "mnuActualizar"
+        '
+        'mnuSalir
+        '
+        Me.mnuSalir.Caption = "Salir"
+        Me.mnuSalir.Id = 3
+        Me.mnuSalir.ImageOptions.SvgImage = CType(resources.GetObject("mnuSalir.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuSalir.Name = "mnuSalir"
+        '
+        'mnuImprimir
+        '
+        Me.mnuImprimir.Caption = "Imprimir"
+        Me.mnuImprimir.Id = 6
+        Me.mnuImprimir.ImageOptions.SvgImage = CType(resources.GetObject("mnuImprimir.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuImprimir.Name = "mnuImprimir"
+        '
+        'cmdImportarExcel
+        '
+        Me.cmdImportarExcel.Caption = "Importar Excel"
+        Me.cmdImportarExcel.Id = 8
+        Me.cmdImportarExcel.ImageOptions.Image = Global.TOMWMS.My.Resources.Resources.excel_icon
+        Me.cmdImportarExcel.ImageOptions.LargeImage = Global.TOMWMS.My.Resources.Resources.excel_icon
+        Me.cmdImportarExcel.Name = "cmdImportarExcel"
+        Me.cmdImportarExcel.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
+        '
+        'BarToggleSwitchItem1
+        '
+        Me.BarToggleSwitchItem1.Caption = "BarToggleSwitchItem1"
+        Me.BarToggleSwitchItem1.Id = 9
+        Me.BarToggleSwitchItem1.Name = "BarToggleSwitchItem1"
+        '
+        'chkActivos
+        '
+        Me.chkActivos.BindableChecked = True
+        Me.chkActivos.Caption = "Activo"
+        Me.chkActivos.CheckBoxVisibility = DevExpress.XtraBars.CheckBoxVisibility.BeforeText
+        Me.chkActivos.Checked = True
+        Me.chkActivos.Id = 18
+        Me.chkActivos.Name = "chkActivos"
+        '
+        'RibbonPage1
+        '
+        Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1, Me.RibbonPageGroup2})
+        Me.RibbonPage1.Name = "RibbonPage1"
+        Me.RibbonPage1.Text = "Opcion de lista"
+        '
+        'RibbonPageGroup1
+        '
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuNuevo)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuActualizar)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuSalir)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuImprimir)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdImportarExcel)
+        Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
+        '
+        'RibbonPageGroup2
+        '
+        Me.RibbonPageGroup2.ItemLinks.Add(Me.chkActivos)
+        Me.RibbonPageGroup2.Name = "RibbonPageGroup2"
+        '
+        'txtFiltro
+        '
+        Me.txtFiltro.Dock = System.Windows.Forms.DockStyle.Top
+        Me.txtFiltro.Location = New System.Drawing.Point(0, 209)
+        Me.txtFiltro.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtFiltro.Name = "txtFiltro"
+        Me.txtFiltro.Size = New System.Drawing.Size(939, 22)
+        Me.txtFiltro.TabIndex = 1
+        Me.txtFiltro.Tag = "Buscar..."
+        '
+        'LabelControl1
+        '
+        Me.LabelControl1.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None
+        Me.LabelControl1.Dock = System.Windows.Forms.DockStyle.Top
+        Me.LabelControl1.LineStyle = System.Drawing.Drawing2D.DashStyle.Dot
+        Me.LabelControl1.LineVisible = True
+        Me.LabelControl1.Location = New System.Drawing.Point(0, 193)
+        Me.LabelControl1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.LabelControl1.Name = "LabelControl1"
+        Me.LabelControl1.Size = New System.Drawing.Size(939, 16)
+        Me.LabelControl1.TabIndex = 0
+        Me.LabelControl1.Text = "Filtro"
+        '
+        'frmTraslado_ProductoList
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(939, 588)
+        Me.Controls.Add(Me.Dgrid)
+        Me.Controls.Add(Me.RibbonStatusBar)
+        Me.Controls.Add(Me.txtFiltro)
+        Me.Controls.Add(Me.LabelControl1)
+        Me.Controls.Add(Me.RibbonControl)
+        Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.Name = "frmTraslado_ProductoList"
+        Me.Ribbon = Me.RibbonControl
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.StatusBar = Me.RibbonStatusBar
+        Me.Text = "Lista de Roles de Sistema"
+        CType(Me.Dgrid, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtFiltro.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+    Friend WithEvents Dgrid As DevExpress.XtraGrid.GridControl
+    Friend WithEvents GridView1 As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents RibbonStatusBar As DevExpress.XtraBars.Ribbon.RibbonStatusBar
+    Friend WithEvents lblRegs As DevExpress.XtraBars.BarStaticItem
+    Friend WithEvents RibbonControl As DevExpress.XtraBars.Ribbon.RibbonControl
+    Friend WithEvents mnuNuevo As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents mnuActualizar As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents mnuSalir As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents mnuImprimir As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents RibbonPage1 As DevExpress.XtraBars.Ribbon.RibbonPage
+    Friend WithEvents RibbonPageGroup1 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
+    Friend WithEvents txtFiltro As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents LabelControl1 As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents cmdImportarExcel As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents BarToggleSwitchItem1 As DevExpress.XtraBars.BarToggleSwitchItem
+    Friend WithEvents chkActivos As DevExpress.XtraBars.BarCheckItem
+    Friend WithEvents RibbonPageGroup2 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
+
+
+
+End Class

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://192.168.0.13/MI3/Reportes/srvReportes.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/TOMWMS" />
+  <xs:element name="Get_Movimientos_Kardex_By_IdEmpresa">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdEmpresa" type="xs:int" />
+        <xs:element minOccurs="0" name="pFechaDel" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="pFechaAl" type="xs:dateTime" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Movimientos_Kardex_By_IdEmpresaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Movimientos_Kardex_By_IdEmpresaResult" nillable="true" type="q1:ArrayOfclsBeVW_Movimientos" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Stock_By_IdEmpresa">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdEmpresa" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Stock_By_IdEmpresaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Stock_By_IdEmpresaResult" nillable="true" type="q2:ArrayOfclsBeVW_stock_res" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

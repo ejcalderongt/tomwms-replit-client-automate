@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/TOMWMS" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/TOMWMS" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://192.168.0.98/MI3/Transacciones/PedidoCompra.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="clsBeI_nav_ped_compra_enc">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Buy_From_Vendor_Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Buy_From_Vendor_No" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Document_Date" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Document_Type" type="tns:IdTipoDocumentoIngreso" />
+      <xs:element minOccurs="0" name="Expected_Receipt_Date" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Internal_Transfer_Document_No" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Is_Internal_Transfer" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Lineas_Detalle" nillable="true" type="tns:ArrayOfclsBeI_nav_ped_compra_det" />
+      <xs:element minOccurs="0" name="Lineas_Detalle_Lotes" nillable="true" type="tns:ArrayOfclsBeI_nav_ped_compra_det_lote" />
+      <xs:element minOccurs="0" name="Location_Code" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="No" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Order_Date" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Payment_Terms_Code" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Posting_Date" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Posting_Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Product_Owner_Code" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Ship_To_Contact" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Ship_To_Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Status" nillable="true" type="xs:anyType" />
+      <xs:element minOccurs="0" name="Vendor_Invoice_No" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeI_nav_ped_compra_enc" nillable="true" type="tns:clsBeI_nav_ped_compra_enc" />
+  <xs:simpleType name="IdTipoDocumentoIngreso">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NoDefinido" />
+      <xs:enumeration value="Ingreso" />
+      <xs:enumeration value="Devolucion" />
+      <xs:enumeration value="Transferencia" />
+      <xs:enumeration value="Transferencia_WMS" />
+      <xs:enumeration value="Poliza_DUCA" />
+      <xs:enumeration value="Orden_De_Produccion" />
+      <xs:enumeration value="Ingreso_Consolidado" />
+      <xs:enumeration value="Transferencia_de_Ingreso" />
+      <xs:enumeration value="Orden_De_Compra_Interna" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="IdTipoDocumentoIngreso" nillable="true" type="tns:IdTipoDocumentoIngreso" />
+  <xs:complexType name="ArrayOfclsBeI_nav_ped_compra_det">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeI_nav_ped_compra_det" nillable="true" type="tns:clsBeI_nav_ped_compra_det" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeI_nav_ped_compra_det" nillable="true" type="tns:ArrayOfclsBeI_nav_ped_compra_det" />
+  <xs:complexType name="clsBeI_nav_ped_compra_det">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Description2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Direct_Unit_Cost" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Line_Amount" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Line_No" type="xs:int" />
+      <xs:element minOccurs="0" name="Location_Code" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="No" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NoEnc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Planed_Receipt_Date" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Quantity" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Quantity_Received" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Type" nillable="true" type="xs:anyType" />
+      <xs:element minOccurs="0" name="Unit_of_Measure_Code" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Variant_Code" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeI_nav_ped_compra_det" nillable="true" type="tns:clsBeI_nav_ped_compra_det" />
+  <xs:complexType name="ArrayOfclsBeI_nav_ped_compra_det_lote">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeI_nav_ped_compra_det_lote" nillable="true" type="tns:clsBeI_nav_ped_compra_det_lote" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeI_nav_ped_compra_det_lote" nillable="true" type="tns:ArrayOfclsBeI_nav_ped_compra_det_lote" />
+  <xs:complexType name="clsBeI_nav_ped_compra_det_lote">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Entry_No" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Expiration_Date" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Item_No" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Lot_No" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NoEnc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Quantity_Base" type="xs:double" />
+      <xs:element minOccurs="0" name="Source_Prod_Order_Line" type="xs:int" />
+      <xs:element minOccurs="0" name="Source_Type" type="xs:int" />
+      <xs:element minOccurs="0" name="Variant_Code" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="source_ID" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeI_nav_ped_compra_det_lote" nillable="true" type="tns:clsBeI_nav_ped_compra_det_lote" />
+  <xs:complexType name="ArrayOfclsBeI_nav_ped_compra_enc">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeI_nav_ped_compra_enc" nillable="true" type="tns:clsBeI_nav_ped_compra_enc" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeI_nav_ped_compra_enc" nillable="true" type="tns:ArrayOfclsBeI_nav_ped_compra_enc" />
+  <xs:simpleType name="EstadoOC">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NUEVA">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="ASIGNADA">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="EN_PROCESO">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">3</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="CERRADA">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">4</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="ANULADA">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">5</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="BACK_ORDER">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">6</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="EstadoOC" nillable="true" type="tns:EstadoOC" />
+</xs:schema>

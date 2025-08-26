@@ -1,0 +1,886 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/TOMWMS" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/TOMWMS" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="clsBeProducto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Alto" type="xs:double" />
+      <xs:element minOccurs="0" name="Ancho" type="xs:double" />
+      <xs:element minOccurs="0" name="Arancel" nillable="true" type="tns:clsBeArancel" />
+      <xs:element minOccurs="0" name="Cantidad" type="xs:double" />
+      <xs:element minOccurs="0" name="Captura_arancel" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Capturar_aniada" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Ciclo_vida" type="xs:int" />
+      <xs:element minOccurs="0" name="Clasificacion" nillable="true" type="tns:clsBeProducto_clasificacion" />
+      <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Codigo_barra" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Codigos_Barra" nillable="true" type="tns:ArrayOfclsBeProducto_codigos_barra" />
+      <xs:element minOccurs="0" name="Control_lote" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Control_peso" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Control_vencimiento" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Costo" type="xs:double" />
+      <xs:element minOccurs="0" name="Dias_Inventario_Promedio" type="xs:int" />
+      <xs:element minOccurs="0" name="Es_hardware" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ExistenciaUMBas" type="xs:double" />
+      <xs:element minOccurs="0" name="Existencia_max" type="xs:double" />
+      <xs:element minOccurs="0" name="Existencia_min" type="xs:double" />
+      <xs:element minOccurs="0" name="Factor" type="xs:double" />
+      <xs:element minOccurs="0" name="Familia" nillable="true" type="tns:clsBeProducto_familia" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaVence" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fechamanufactura" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Genera_lote" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Genera_lp" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IdArancel" type="xs:int" />
+      <xs:element minOccurs="0" name="IdCamara" type="xs:int" />
+      <xs:element minOccurs="0" name="IdClasificacion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdFamilia" type="xs:int" />
+      <xs:element minOccurs="0" name="IdIndiceRotacion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdMarca" type="xs:int" />
+      <xs:element minOccurs="0" name="IdPerfilSerializado" type="xs:int" />
+      <xs:element minOccurs="0" name="IdPresentacionDestino" type="xs:int" />
+      <xs:element minOccurs="0" name="IdPresentacionOrigen" type="xs:int" />
+      <xs:element minOccurs="0" name="IdProducto" type="xs:int" />
+      <xs:element minOccurs="0" name="IdProductoBodega" type="xs:int" />
+      <xs:element minOccurs="0" name="IdProductoParametroA" type="xs:int" />
+      <xs:element minOccurs="0" name="IdProductoParametroB" type="xs:int" />
+      <xs:element minOccurs="0" name="IdPropietario" type="xs:int" />
+      <xs:element minOccurs="0" name="IdSimbologia" type="xs:int" />
+      <xs:element minOccurs="0" name="IdTipoEtiqueta" type="xs:int" />
+      <xs:element minOccurs="0" name="IdTipoProducto" type="xs:int" />
+      <xs:element minOccurs="0" name="IdTipoRotacion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdUnidadMedidaBasica" type="xs:int" />
+      <xs:element minOccurs="0" name="IdUnidadMedidaCobro" type="xs:int" />
+      <xs:element minOccurs="0" name="Imagen" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="IsNew" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Kit" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Largo" type="xs:double" />
+      <xs:element minOccurs="0" name="Lote" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Marca" nillable="true" type="tns:clsBeProducto_marca" />
+      <xs:element minOccurs="0" name="Materia_prima" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Noparte" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Noserie" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ParametroA" nillable="true" type="tns:clsBeProducto_parametro_a" />
+      <xs:element minOccurs="0" name="ParametroB" nillable="true" type="tns:clsBeProducto_parametro_b" />
+      <xs:element minOccurs="0" name="Parametros" nillable="true" type="tns:ArrayOfclsBeProducto_parametros" />
+      <xs:element minOccurs="0" name="Peso_despacho" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Peso_recepcion" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Peso_referencia" type="xs:double" />
+      <xs:element minOccurs="0" name="Peso_tolerancia" type="xs:double" />
+      <xs:element minOccurs="0" name="Precio" type="xs:double" />
+      <xs:element minOccurs="0" name="Presentacion" nillable="true" type="tns:clsBeProducto_Presentacion" />
+      <xs:element minOccurs="0" name="Presentaciones" nillable="true" type="tns:ArrayOfclsBeProducto_Presentacion" />
+      <xs:element minOccurs="0" name="Propietario" nillable="true" type="tns:clsBePropietarios" />
+      <xs:element minOccurs="0" name="Serializado" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Stock" nillable="true" type="tns:clsBeVW_stock_res" />
+      <xs:element minOccurs="0" name="Tag" nillable="true" type="xs:anyType" />
+      <xs:element minOccurs="0" name="Temperatura_despacho" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Temperatura_recepcion" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Temperatura_referencia" type="xs:double" />
+      <xs:element minOccurs="0" name="Temperatura_tolerancia" type="xs:double" />
+      <xs:element minOccurs="0" name="TipoProducto" nillable="true" type="tns:clsBeProducto_tipo" />
+      <xs:element minOccurs="0" name="Tolerancia" type="xs:int" />
+      <xs:element minOccurs="0" name="UnidadMedida" nillable="true" type="tns:clsBeUnidad_medida" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto" nillable="true" type="tns:clsBeProducto" />
+  <xs:complexType name="clsBeArancel">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdArancel" type="xs:int" />
+      <xs:element name="_Nombre" nillable="true" type="xs:string" />
+      <xs:element name="_Porcentaje" type="xs:double" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeArancel" nillable="true" type="tns:clsBeArancel" />
+  <xs:complexType name="clsBeProducto_clasificacion">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Codigo" nillable="true" type="xs:string" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdClasificacion" type="xs:int" />
+      <xs:element name="_IsNew" type="xs:boolean" />
+      <xs:element name="_Nombre" nillable="true" type="xs:string" />
+      <xs:element name="_Propietario" nillable="true" type="tns:clsBePropietarios" />
+      <xs:element name="_Sistema" type="xs:boolean" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_clasificacion" nillable="true" type="tns:clsBeProducto_clasificacion" />
+  <xs:complexType name="clsBePropietarios">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Actualiza_costo_oc" type="xs:boolean" />
+      <xs:element name="_Codigo" nillable="true" type="xs:string" />
+      <xs:element name="_Color" type="xs:int" />
+      <xs:element name="_Contacto" nillable="true" type="xs:string" />
+      <xs:element name="_Direccion" nillable="true" type="xs:string" />
+      <xs:element name="_Email" nillable="true" type="xs:string" />
+      <xs:element name="_Empresa" nillable="true" type="tns:clsBeEmpresa" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdEmpresa" type="xs:int" />
+      <xs:element name="_IdPropietario" type="xs:int" />
+      <xs:element name="_IdTipoActualizacionCosto" type="xs:int" />
+      <xs:element name="_Imagen" nillable="true" type="xs:base64Binary" />
+      <xs:element name="_NIT" nillable="true" type="xs:string" />
+      <xs:element name="_Nombre_comercial" nillable="true" type="xs:string" />
+      <xs:element name="_Sistema" type="xs:boolean" />
+      <xs:element name="_Telefono" nillable="true" type="xs:string" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBePropietarios" nillable="true" type="tns:clsBePropietarios" />
+  <xs:complexType name="clsBeEmpresa">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:clsBeEmpresaBase">
+        <xs:sequence>
+          <xs:element name="_AWS_Token" nillable="true" type="xs:string" />
+          <xs:element name="_Activo" type="xs:boolean" />
+          <xs:element name="_Anulaciones_por_supervisor" type="xs:boolean" />
+          <xs:element name="_Clave" nillable="true" type="xs:string" />
+          <xs:element name="_ClienteRapido" type="xs:boolean" />
+          <xs:element name="_Codigo" nillable="true" type="xs:string" />
+          <xs:element name="_Control_presentaciones" type="xs:boolean" />
+          <xs:element name="_Corr_cod_barra" type="xs:int" />
+          <xs:element name="_Direccion" nillable="true" type="xs:string" />
+          <xs:element name="_Duracionclave" type="xs:int" />
+          <xs:element name="_Duracionclavetemporal" type="xs:int" />
+          <xs:element name="_Email" nillable="true" type="xs:string" />
+          <xs:element name="_Fec_agr" type="xs:dateTime" />
+          <xs:element name="_Fec_mod" type="xs:dateTime" />
+          <xs:element name="_Generar_Stock_Jornada" type="xs:boolean" />
+          <xs:element name="_Hora_Corte_Jornada_Sistema" type="xs:dateTime" />
+          <xs:element name="_IdMotivoAjusteInventario" type="xs:int" />
+          <xs:element name="_Intento" type="xs:int" />
+          <xs:element name="_Operador_logistico" type="xs:boolean" />
+          <xs:element name="_Path_printer" nillable="true" type="xs:string" />
+          <xs:element name="_Puerto_escaner" type="xs:int" />
+          <xs:element name="_Razon_social" nillable="true" type="xs:string" />
+          <xs:element name="_Representante" nillable="true" type="xs:string" />
+          <xs:element name="_Telefono" nillable="true" type="xs:string" />
+          <xs:element name="_User_agr" nillable="true" type="xs:string" />
+          <xs:element name="_User_mod" nillable="true" type="xs:string" />
+          <xs:element name="_Version_BD" nillable="true" type="xs:string" />
+          <xs:element name="_codigo_automatico" type="xs:boolean" />
+          <xs:element name="_politica_contraseñas" type="xs:boolean" />
+          <xs:element name="disposedValue" type="xs:boolean" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="clsBeEmpresa" nillable="true" type="tns:clsBeEmpresa" />
+  <xs:complexType name="clsBeEmpresaBase">
+    <xs:sequence>
+      <xs:element name="_IdEmpresa" type="xs:int" />
+      <xs:element name="_Imagen" nillable="true" type="xs:base64Binary" />
+      <xs:element name="_Nombre" nillable="true" type="xs:string" />
+      <xs:element name="_buscar_actualizacion_hh" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeEmpresaBase" nillable="true" type="tns:clsBeEmpresaBase" />
+  <xs:complexType name="ArrayOfclsBeProducto_codigos_barra">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeProducto_codigos_barra" nillable="true" type="tns:clsBeProducto_codigos_barra" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeProducto_codigos_barra" nillable="true" type="tns:ArrayOfclsBeProducto_codigos_barra" />
+  <xs:complexType name="clsBeProducto_codigos_barra">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Codigo_barra" nillable="true" type="xs:string" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdProducto" type="xs:int" />
+      <xs:element name="_IdProductoCodigoBarra" type="xs:int" />
+      <xs:element name="_IdProveedor" type="xs:int" />
+      <xs:element name="_IsNew" type="xs:boolean" />
+      <xs:element name="_Proveedor" nillable="true" type="tns:clsBeProveedor" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_codigos_barra" nillable="true" type="tns:clsBeProducto_codigos_barra" />
+  <xs:complexType name="clsBeProveedor">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Actualiza_costo_oc" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Contacto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Direccion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Email" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Empresa" nillable="true" type="tns:clsBeEmpresa" />
+      <xs:element minOccurs="0" name="Es_Bodega_Recepcion" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Es_Bodega_Traslado" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Es_Proveedor_Servicio" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdConfiguracionBarraPallet" type="xs:int" />
+      <xs:element minOccurs="0" name="IdEmpresa" type="xs:int" />
+      <xs:element minOccurs="0" name="IdPropietario" type="xs:int" />
+      <xs:element minOccurs="0" name="IdProveedor" type="xs:int" />
+      <xs:element minOccurs="0" name="IdUbicacionVirtual" type="xs:int" />
+      <xs:element minOccurs="0" name="Muestra_precio" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Nit" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Propietario" nillable="true" type="tns:clsBePropietarios" />
+      <xs:element minOccurs="0" name="Referencia" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Sistema" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Telefono" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TiemposProveedor" nillable="true" type="tns:ArrayOfclsBeProveedor_tiempos" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProveedor" nillable="true" type="tns:clsBeProveedor" />
+  <xs:complexType name="ArrayOfclsBeProveedor_tiempos">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeProveedor_tiempos" nillable="true" type="tns:clsBeProveedor_tiempos" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeProveedor_tiempos" nillable="true" type="tns:ArrayOfclsBeProveedor_tiempos" />
+  <xs:complexType name="clsBeProveedor_tiempos">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Clasificacion" nillable="true" type="tns:clsBeProducto_clasificacion" />
+      <xs:element minOccurs="0" name="Dias_Exterior" type="xs:int" />
+      <xs:element minOccurs="0" name="Dias_Local" type="xs:int" />
+      <xs:element minOccurs="0" name="Familia" nillable="true" type="tns:clsBeProducto_familia" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdClasificacion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdFamilia" type="xs:int" />
+      <xs:element minOccurs="0" name="IdProveedor" type="xs:int" />
+      <xs:element minOccurs="0" name="IdTiempoProveedor" type="xs:int" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProveedor_tiempos" nillable="true" type="tns:clsBeProveedor_tiempos" />
+  <xs:complexType name="clsBeProducto_familia">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Codigo" nillable="true" type="xs:string" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdFamilia" type="xs:int" />
+      <xs:element name="_IsNew" type="xs:boolean" />
+      <xs:element name="_Nombre" nillable="true" type="xs:string" />
+      <xs:element name="_Propietario" nillable="true" type="tns:clsBePropietarios" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_familia" nillable="true" type="tns:clsBeProducto_familia" />
+  <xs:complexType name="clsBeProducto_marca">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdMarca" type="xs:int" />
+      <xs:element name="_IdPropietario" type="xs:int" />
+      <xs:element name="_IsNew" type="xs:boolean" />
+      <xs:element name="_Nombre" nillable="true" type="xs:string" />
+      <xs:element name="_Propietario" nillable="true" type="tns:clsBePropietarios" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_marca" nillable="true" type="tns:clsBeProducto_marca" />
+  <xs:complexType name="clsBeProducto_parametro_a">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Codigo" nillable="true" type="xs:string" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdProductoParametroA" type="xs:int" />
+      <xs:element name="_Nombre" nillable="true" type="xs:string" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_parametro_a" nillable="true" type="tns:clsBeProducto_parametro_a" />
+  <xs:complexType name="clsBeProducto_parametro_b">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Codigo" nillable="true" type="xs:string" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdProductoParametroB" type="xs:int" />
+      <xs:element name="_Nombre" nillable="true" type="xs:string" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_parametro_b" nillable="true" type="tns:clsBeProducto_parametro_b" />
+  <xs:complexType name="ArrayOfclsBeProducto_parametros">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeProducto_parametros" nillable="true" type="tns:clsBeProducto_parametros" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeProducto_parametros" nillable="true" type="tns:ArrayOfclsBeProducto_parametros" />
+  <xs:complexType name="clsBeProducto_parametros">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Capturar_siempre" type="xs:boolean" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdParametro" type="xs:int" />
+      <xs:element name="_IdProducto" type="xs:int" />
+      <xs:element name="_IdProductoParametro" type="xs:int" />
+      <xs:element name="_IsNew" type="xs:boolean" />
+      <xs:element name="_TipoParametro" nillable="true" type="tns:clsBeP_parametro" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="_Valor_Unico" nillable="true" type="xs:string" />
+      <xs:element name="_Valor_fecha" type="xs:dateTime" />
+      <xs:element name="_Valor_logico" type="xs:boolean" />
+      <xs:element name="_Valor_numerico" type="xs:double" />
+      <xs:element name="_Valor_texto" nillable="true" type="xs:string" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_parametros" nillable="true" type="tns:clsBeProducto_parametros" />
+  <xs:complexType name="clsBeP_parametro">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Descripcion" nillable="true" type="xs:string" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdParametro" type="xs:int" />
+      <xs:element name="_Tipo" nillable="true" type="xs:string" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="_Valor_fecha" type="xs:dateTime" />
+      <xs:element name="_Valor_logico" type="xs:boolean" />
+      <xs:element name="_Valor_numerico" type="xs:double" />
+      <xs:element name="_Valor_texto" nillable="true" type="xs:string" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeP_parametro" nillable="true" type="tns:clsBeP_parametro" />
+  <xs:complexType name="clsBeProducto_Presentacion">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Alto" type="xs:double" />
+      <xs:element name="_Ancho" type="xs:double" />
+      <xs:element name="_CajasPorCama" type="xs:double" />
+      <xs:element name="_CamasPorTarima" type="xs:double" />
+      <xs:element name="_Codigo" nillable="true" type="xs:string" />
+      <xs:element name="_Codigo_barra" nillable="true" type="xs:string" />
+      <xs:element name="_Costo" type="xs:double" />
+      <xs:element name="_EsPallet" type="xs:boolean" />
+      <xs:element name="_ExisteStock" type="xs:boolean" />
+      <xs:element name="_Factor" type="xs:double" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_Genera_lp_auto" type="xs:boolean" />
+      <xs:element name="_IdPresentacion" type="xs:int" />
+      <xs:element name="_IdPresentacionPallet" type="xs:int" />
+      <xs:element name="_IdProducto" type="xs:int" />
+      <xs:element name="_Imprime_barra" type="xs:boolean" />
+      <xs:element name="_IsNew" type="xs:boolean" />
+      <xs:element name="_Largo" type="xs:double" />
+      <xs:element name="_MaximoExistencia" type="xs:double" />
+      <xs:element name="_MaximoPeso" type="xs:double" />
+      <xs:element name="_MedidasPorTarima" nillable="true" type="tns:ArrayOfclsBeProducto_presentacion_tarima" />
+      <xs:element name="_MinimoExistencia" type="xs:double" />
+      <xs:element name="_MinimoPeso" type="xs:double" />
+      <xs:element name="_Nombre" nillable="true" type="xs:string" />
+      <xs:element name="_Permitir_paletizar" type="xs:boolean" />
+      <xs:element name="_Peso" type="xs:double" />
+      <xs:element name="_Precio" type="xs:double" />
+      <xs:element name="_RellenadoPorUbicacionDePicking" nillable="true" type="tns:ArrayOfclsBeProducto_rellenado" />
+      <xs:element name="_Sistema" type="xs:boolean" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_Presentacion" nillable="true" type="tns:clsBeProducto_Presentacion" />
+  <xs:complexType name="ArrayOfclsBeProducto_presentacion_tarima">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeProducto_presentacion_tarima" nillable="true" type="tns:clsBeProducto_presentacion_tarima" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeProducto_presentacion_tarima" nillable="true" type="tns:ArrayOfclsBeProducto_presentacion_tarima" />
+  <xs:complexType name="clsBeProducto_presentacion_tarima">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Cantidad" type="xs:double" />
+      <xs:element name="_CantidadPorCama" type="xs:double" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdPresentacion" type="xs:int" />
+      <xs:element name="_IdPresentacionTarima" type="xs:int" />
+      <xs:element name="_IdTipoTarima" type="xs:int" />
+      <xs:element name="_IsNew" type="xs:boolean" />
+      <xs:element name="_Presentacion" nillable="true" type="xs:string" />
+      <xs:element name="_TipoTarima" nillable="true" type="xs:string" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_presentacion_tarima" nillable="true" type="tns:clsBeProducto_presentacion_tarima" />
+  <xs:complexType name="ArrayOfclsBeProducto_rellenado">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeProducto_rellenado" nillable="true" type="tns:clsBeProducto_rellenado" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeProducto_rellenado" nillable="true" type="tns:ArrayOfclsBeProducto_rellenado" />
+  <xs:complexType name="clsBeProducto_rellenado">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Estado" nillable="true" type="xs:string" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdBodega" type="xs:int" />
+      <xs:element name="_IdOperadorDefecto" type="xs:int" />
+      <xs:element name="_IdPresentacion" type="xs:int" />
+      <xs:element name="_IdPresentacionAbastercerCon" type="xs:int" />
+      <xs:element name="_IdProductoBodega" type="xs:int" />
+      <xs:element name="_IdProductoEstado" type="xs:int" />
+      <xs:element name="_IdPropietario" type="xs:int" />
+      <xs:element name="_IdRellenado" type="xs:int" />
+      <xs:element name="_IdTipoAccion" type="xs:int" />
+      <xs:element name="_IdUbicacion" type="xs:int" />
+      <xs:element name="_IdUmBasAbastercerCon" type="xs:int" />
+      <xs:element name="_IdUnidadMedidaBasica" type="xs:int" />
+      <xs:element name="_IsNew" type="xs:boolean" />
+      <xs:element name="_Maximo" type="xs:double" />
+      <xs:element name="_Minimo" type="xs:double" />
+      <xs:element name="_NomOperador" nillable="true" type="xs:string" />
+      <xs:element name="_NomPresentacionRellenarCon" nillable="true" type="xs:string" />
+      <xs:element name="_NomUmBasAbastecerCon" nillable="true" type="xs:string" />
+      <xs:element name="_Presentacion" nillable="true" type="xs:string" />
+      <xs:element name="_Ubicacion" nillable="true" type="xs:string" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_rellenado" nillable="true" type="tns:clsBeProducto_rellenado" />
+  <xs:complexType name="ArrayOfclsBeProducto_Presentacion">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeProducto_Presentacion" nillable="true" type="tns:clsBeProducto_Presentacion" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeProducto_Presentacion" nillable="true" type="tns:ArrayOfclsBeProducto_Presentacion" />
+  <xs:complexType name="clsBeVW_stock_res">
+    <xs:sequence>
+      <xs:element name="_AltoUMBas" type="xs:double" />
+      <xs:element name="_AltoUbicacion" type="xs:double" />
+      <xs:element name="_Alto_ubicacion" type="xs:double" />
+      <xs:element name="_AnchoUbicacion" type="xs:double" />
+      <xs:element name="_AnchoUmBas" type="xs:double" />
+      <xs:element name="_Ancho_ubicacion" type="xs:double" />
+      <xs:element name="_Area" nillable="true" type="xs:string" />
+      <xs:element name="_Atributo_variante_1" nillable="true" type="xs:string" />
+      <xs:element name="_Añada" type="xs:int" />
+      <xs:element name="_BePresentacionProductoEnStock" nillable="true" type="tns:clsBeProducto_Presentacion" />
+      <xs:element name="_CajasPorCama" type="xs:double" />
+      <xs:element name="_CamasPorTarima" type="xs:double" />
+      <xs:element name="_CantidadPresentacion" type="xs:double" />
+      <xs:element name="_CantidadReservada" type="xs:double" />
+      <xs:element name="_CantidadReservadaUMBas" type="xs:double" />
+      <xs:element name="_CantidadUmBas" type="xs:double" />
+      <xs:element name="_Cantidad_Despachada" type="xs:double" />
+      <xs:element name="_Cantidad_Pickeada" type="xs:double" />
+      <xs:element name="_Cantidad_Res" type="xs:double" />
+      <xs:element name="_Cantidad_Verificada" type="xs:double" />
+      <xs:element name="_Codigo_Barra" nillable="true" type="xs:string" />
+      <xs:element name="_Codigo_Producto" nillable="true" type="xs:string" />
+      <xs:element name="_Costo" type="xs:double" />
+      <xs:element name="_Dañado" type="xs:boolean" />
+      <xs:element name="_Documento_Ingreso" nillable="true" type="xs:string" />
+      <xs:element name="_EstadoUtilizable" type="xs:boolean" />
+      <xs:element name="_Existencia_max_pres" type="xs:double" />
+      <xs:element name="_Existencia_max_umbas" type="xs:double" />
+      <xs:element name="_Existencia_min_pres" type="xs:double" />
+      <xs:element name="_Existencia_min_umbas" type="xs:double" />
+      <xs:element name="_Factor" type="xs:double" />
+      <xs:element name="_Fecha_Pedido" type="xs:dateTime" />
+      <xs:element name="_Fecha_Preparacion" type="xs:dateTime" />
+      <xs:element name="_Fecha_Vence" type="xs:dateTime" />
+      <xs:element name="_Fecha_ingreso" type="xs:dateTime" />
+      <xs:element name="_Host" nillable="true" type="xs:string" />
+      <xs:element name="_IdBodega" type="xs:int" />
+      <xs:element name="_IdClasificacion" type="xs:int" />
+      <xs:element name="_IdFamilia" type="xs:int" />
+      <xs:element name="_IdIndiceRotacion" type="xs:int" />
+      <xs:element name="_IdOperadorBodega_Asignado" type="xs:int" />
+      <xs:element name="_IdPedido" type="xs:int" />
+      <xs:element name="_IdPedidoDet" type="xs:int" />
+      <xs:element name="_IdPicking" type="xs:int" />
+      <xs:element name="_IdPresentacion" type="xs:int" />
+      <xs:element name="_IdPresentacion_Anterior" type="xs:int" />
+      <xs:element name="_IdProducto" type="xs:int" />
+      <xs:element name="_IdProductoBodega" type="xs:int" />
+      <xs:element name="_IdProductoEstado" type="xs:int" />
+      <xs:element name="_IdPropietario" type="xs:int" />
+      <xs:element name="_IdPropietarioBodega" type="xs:int" />
+      <xs:element name="_IdRecepcionDet" type="xs:int" />
+      <xs:element name="_IdRecepcionEnc" type="xs:int" />
+      <xs:element name="_IdStock" type="xs:int" />
+      <xs:element name="_IdStockRes" type="xs:int" />
+      <xs:element name="_IdTipoProducto" type="xs:int" />
+      <xs:element name="_IdTramo" type="xs:int" />
+      <xs:element name="_IdUbicacion" type="xs:int" />
+      <xs:element name="_IdUbicacionVirtual" type="xs:int" />
+      <xs:element name="_IdUbicacion_Anterior" type="xs:int" />
+      <xs:element name="_IdUnidadMedida" type="xs:int" />
+      <xs:element name="_IndiceRotacion" nillable="true" type="xs:string" />
+      <xs:element name="_LargoUbicacion" type="xs:double" />
+      <xs:element name="_LargoUmBas" type="xs:double" />
+      <xs:element name="_Largo_ubicacion" type="xs:double" />
+      <xs:element name="_Lic_plate" nillable="true" type="xs:string" />
+      <xs:element name="_Lic_plate_Anterior" nillable="true" type="xs:string" />
+      <xs:element name="_Lote" nillable="true" type="xs:string" />
+      <xs:element name="_No_Serie" nillable="true" type="xs:string" />
+      <xs:element name="_No_Serie_Final" nillable="true" type="xs:string" />
+      <xs:element name="_No_Serie_Inicial" nillable="true" type="xs:string" />
+      <xs:element name="_NomEstado" nillable="true" type="xs:string" />
+      <xs:element name="_NombreTipoProducto" nillable="true" type="xs:string" />
+      <xs:element name="_Nombre_Clasificacion" nillable="true" type="xs:string" />
+      <xs:element name="_Nombre_Completo" nillable="true" type="xs:string" />
+      <xs:element name="_Nombre_Presentacion" nillable="true" type="xs:string" />
+      <xs:element name="_Nombre_Producto" nillable="true" type="xs:string" />
+      <xs:element name="_Numero_poliza" nillable="true" type="xs:string" />
+      <xs:element name="_Pallet_No_Estandar" type="xs:boolean" />
+      <xs:element name="_Peso" type="xs:double" />
+      <xs:element name="_Posiciones" type="xs:int" />
+      <xs:element name="_Propietario" nillable="true" type="xs:string" />
+      <xs:element name="_Serial" nillable="true" type="xs:string" />
+      <xs:element name="_Tolerancia" type="xs:double" />
+      <xs:element name="_TotalLinea" type="xs:double" />
+      <xs:element name="_UMBas" nillable="true" type="xs:string" />
+      <xs:element name="_UbicacionActual" nillable="true" type="tns:clsBeBodega_ubicacion" />
+      <xs:element name="_Ubicacion_Indice_x" type="xs:int" />
+      <xs:element name="_Ubicacion_Nivel" type="xs:int" />
+      <xs:element name="_Ubicacion_Nombre" nillable="true" type="xs:string" />
+      <xs:element name="_Ubicacion_Tramo" nillable="true" type="xs:string" />
+      <xs:element name="_ValorFecha" type="xs:dateTime" />
+      <xs:element name="_ValorLogico" type="xs:boolean" />
+      <xs:element name="_ValorNumerico" type="xs:double" />
+      <xs:element name="_ValorTexto" nillable="true" type="xs:string" />
+      <xs:element name="_acepto" type="xs:boolean" />
+      <xs:element name="_codigo_poliza" nillable="true" type="xs:string" />
+      <xs:element name="_encontrado" type="xs:boolean" />
+      <xs:element name="_es_rack" type="xs:boolean" />
+      <xs:element name="_no_linea" type="xs:int" />
+      <xs:element name="_peso_pickeado" type="xs:double" />
+      <xs:element name="_peso_verificado" type="xs:double" />
+      <xs:element name="_ubicacion_picking" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeVW_stock_res" nillable="true" type="tns:clsBeVW_stock_res" />
+  <xs:complexType name="clsBeBodega_ubicacion">
+    <xs:sequence>
+      <xs:element name="NombreCompleto_" nillable="true" type="xs:string" />
+      <xs:element name="_Acepta_pallet" type="xs:boolean" />
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Alto" type="xs:double" />
+      <xs:element name="_Ancho" type="xs:double" />
+      <xs:element name="_Bloqueada" type="xs:boolean" />
+      <xs:element name="_Codigo_barra" nillable="true" type="xs:string" />
+      <xs:element name="_Codigo_barra2" nillable="true" type="xs:string" />
+      <xs:element name="_Dañado" type="xs:boolean" />
+      <xs:element name="_Descripcion" nillable="true" type="xs:string" />
+      <xs:element name="_Disponibilidad_Ubicacion" type="xs:double" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdArea" type="xs:int" />
+      <xs:element name="_IdBodega" type="xs:int" />
+      <xs:element name="_IdIndiceRotacion" type="xs:int" />
+      <xs:element name="_IdSector" type="xs:int" />
+      <xs:element name="_IdTipoRotacion" type="xs:int" />
+      <xs:element name="_IdTramo" type="xs:int" />
+      <xs:element name="_IdUbicacion" type="xs:int" />
+      <xs:element name="_Indice_x" type="xs:int" />
+      <xs:element name="_Largo" type="xs:double" />
+      <xs:element name="_Margen_derecho" type="xs:double" />
+      <xs:element name="_Margen_inferior" type="xs:double" />
+      <xs:element name="_Margen_izquierdo" type="xs:double" />
+      <xs:element name="_Margen_superior" type="xs:double" />
+      <xs:element name="_Nivel" type="xs:int" />
+      <xs:element name="_Orientacion_pos" nillable="true" type="xs:string" />
+      <xs:element name="_Posicion_X" type="xs:double" />
+      <xs:element name="_Posicion_Y" type="xs:double" />
+      <xs:element name="_Sector" nillable="true" type="tns:clsBeBodega_sector" />
+      <xs:element name="_Sistema" type="xs:boolean" />
+      <xs:element name="_Tramo" nillable="true" type="tns:clsBeBodega_tramo" />
+      <xs:element name="_Ubicacion_Virtual" type="xs:boolean" />
+      <xs:element name="_Ubicacion_despacho" type="xs:boolean" />
+      <xs:element name="_Ubicacion_merma" type="xs:boolean" />
+      <xs:element name="_Ubicacion_picking" type="xs:boolean" />
+      <xs:element name="_Ubicacion_recepcion" type="xs:boolean" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="_ubicacion_ne" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeBodega_ubicacion" nillable="true" type="tns:clsBeBodega_ubicacion" />
+  <xs:complexType name="clsBeBodega_sector">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Alto" type="xs:double" />
+      <xs:element name="_Ancho" type="xs:double" />
+      <xs:element name="_Codigo" nillable="true" type="xs:string" />
+      <xs:element name="_Descripcion" nillable="true" type="xs:string" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_Horizontal" type="xs:boolean" />
+      <xs:element name="_IdArea" type="xs:int" />
+      <xs:element name="_IdBodega" type="xs:int" />
+      <xs:element name="_IdSector" type="xs:int" />
+      <xs:element name="_IdSectorDerecha" type="xs:int" />
+      <xs:element name="_IdSectorIzquierda" type="xs:int" />
+      <xs:element name="_Largo" type="xs:double" />
+      <xs:element name="_Margen_derecho" type="xs:double" />
+      <xs:element name="_Margen_inferior" type="xs:double" />
+      <xs:element name="_Margen_izquierdo" type="xs:double" />
+      <xs:element name="_Margen_superior" type="xs:double" />
+      <xs:element name="_Pos_x" type="xs:double" />
+      <xs:element name="_Pos_y" type="xs:double" />
+      <xs:element name="_Sistema" type="xs:boolean" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeBodega_sector" nillable="true" type="tns:clsBeBodega_sector" />
+  <xs:complexType name="clsBeBodega_tramo">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Alto" type="xs:double" />
+      <xs:element name="_Ancho" type="xs:double" />
+      <xs:element name="_CantidadUtilizada" type="xs:double" />
+      <xs:element name="_Codigo" nillable="true" type="xs:string" />
+      <xs:element name="_Descripcion" nillable="true" type="xs:string" />
+      <xs:element name="_Es_Rack" type="xs:boolean" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_Horizontal" type="xs:boolean" />
+      <xs:element name="_IdArea" type="xs:int" />
+      <xs:element name="_IdBodega" type="xs:int" />
+      <xs:element name="_IdFontEnc" type="xs:int" />
+      <xs:element name="_IdSector" type="xs:int" />
+      <xs:element name="_IdTipoProductoDefault" type="xs:int" />
+      <xs:element name="_IdTipoRack" type="xs:int" />
+      <xs:element name="_IdTramo" type="xs:int" />
+      <xs:element name="_Indice_x" type="xs:int" />
+      <xs:element name="_Largo" type="xs:double" />
+      <xs:element name="_Margen_derecho" type="xs:double" />
+      <xs:element name="_Margen_inferior" type="xs:double" />
+      <xs:element name="_Margen_izquierdo" type="xs:double" />
+      <xs:element name="_Margen_superior" type="xs:double" />
+      <xs:element name="_Nivel" type="xs:int" />
+      <xs:element name="_Orden_Descendente" type="xs:boolean" />
+      <xs:element name="_Orientacion" type="xs:int" />
+      <xs:element name="_Sistema" type="xs:boolean" />
+      <xs:element name="_Tag" nillable="true" type="xs:anyType" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="_VolumenUtilizado" type="xs:double" />
+      <xs:element name="_pFont" nillable="true" type="tns:clsBeFont_enc" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeBodega_tramo" nillable="true" type="tns:clsBeBodega_tramo" />
+  <xs:complexType name="clsBeFont_enc">
+    <xs:sequence>
+      <xs:element name="_IdFontEnc" type="xs:int" />
+      <xs:element name="_IsNew" type="xs:boolean" />
+      <xs:element name="_Nombre" nillable="true" type="xs:string" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+      <xs:element name="lDet" nillable="true" type="tns:ArrayOfclsBeFont_det" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeFont_enc" nillable="true" type="tns:clsBeFont_enc" />
+  <xs:complexType name="ArrayOfclsBeFont_det">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeFont_det" nillable="true" type="tns:clsBeFont_det" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeFont_det" nillable="true" type="tns:ArrayOfclsBeFont_det" />
+  <xs:complexType name="clsBeFont_det">
+    <xs:sequence>
+      <xs:element name="_ColorFondo" nillable="true" type="xs:string" />
+      <xs:element name="_ColorFont" nillable="true" type="xs:string" />
+      <xs:element name="_Cursiva" type="xs:boolean" />
+      <xs:element name="_IdFontDet" type="xs:int" />
+      <xs:element name="_IdFontEnc" type="xs:int" />
+      <xs:element name="_IsNew" type="xs:boolean" />
+      <xs:element name="_Letra" nillable="true" type="xs:string" />
+      <xs:element name="_Negrita" type="xs:boolean" />
+      <xs:element name="_Subrayado" type="xs:boolean" />
+      <xs:element name="_Tamaño" type="xs:double" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeFont_det" nillable="true" type="tns:clsBeFont_det" />
+  <xs:complexType name="clsBeProducto_tipo">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Codigo" nillable="true" type="xs:string" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdPropietario" type="xs:int" />
+      <xs:element name="_IdTipoProducto" type="xs:int" />
+      <xs:element name="_NombreTipoProducto" nillable="true" type="xs:string" />
+      <xs:element name="_Propietario" nillable="true" type="tns:clsBePropietarios" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_tipo" nillable="true" type="tns:clsBeProducto_tipo" />
+  <xs:complexType name="clsBeUnidad_medida">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Codigo" nillable="true" type="xs:string" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdPropietario" type="xs:int" />
+      <xs:element name="_IdUnidadMedida" type="xs:int" />
+      <xs:element name="_IsNew" type="xs:boolean" />
+      <xs:element name="_Nombre" nillable="true" type="xs:string" />
+      <xs:element name="_Propietario" nillable="true" type="tns:clsBePropietarios" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="_es_um_cobro" type="xs:boolean" />
+      <xs:element name="_factor" type="xs:double" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeUnidad_medida" nillable="true" type="tns:clsBeUnidad_medida" />
+  <xs:complexType name="ArrayOfclsBeProducto_sustituto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeProducto_sustituto" nillable="true" type="tns:clsBeProducto_sustituto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeProducto_sustituto" nillable="true" type="tns:ArrayOfclsBeProducto_sustituto" />
+  <xs:complexType name="clsBeProducto_sustituto">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdProductoOriginal" type="xs:int" />
+      <xs:element name="_IdProductoPresentacionOriginal" type="xs:int" />
+      <xs:element name="_IdProductoPresentacionReemplazo" type="xs:int" />
+      <xs:element name="_IdProductoReemplazo" type="xs:int" />
+      <xs:element name="_IdProductoSustituto" type="xs:int" />
+      <xs:element name="_IsNew" type="xs:boolean" />
+      <xs:element name="_ProductoPresentacionOriginal" nillable="true" type="tns:clsBeProducto_Presentacion" />
+      <xs:element name="_ProductoPresentacionReemplazo" nillable="true" type="tns:clsBeProducto_Presentacion" />
+      <xs:element name="_ProductoReemplazo" nillable="true" type="tns:clsBeProducto" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_sustituto" nillable="true" type="tns:clsBeProducto_sustituto" />
+  <xs:complexType name="ArrayOfclsBeProducto_bodega">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeProducto_bodega" nillable="true" type="tns:clsBeProducto_bodega" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeProducto_bodega" nillable="true" type="tns:ArrayOfclsBeProducto_bodega" />
+  <xs:complexType name="clsBeProducto_bodega">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_IdBodega" type="xs:int" />
+      <xs:element name="_IdProducto" type="xs:int" />
+      <xs:element name="_IdProductoBodega" type="xs:int" />
+      <xs:element name="_Producto" nillable="true" type="tns:clsBeProducto" />
+      <xs:element name="_Sistema" type="xs:boolean" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="disposedValue" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_bodega" nillable="true" type="tns:clsBeProducto_bodega" />
+  <xs:complexType name="ArrayOfclsBeProducto_presentaciones_conversiones">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeProducto_presentaciones_conversiones" nillable="true" type="tns:clsBeProducto_presentaciones_conversiones" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeProducto_presentaciones_conversiones" nillable="true" type="tns:ArrayOfclsBeProducto_presentaciones_conversiones" />
+  <xs:complexType name="clsBeProducto_presentaciones_conversiones">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Factor" type="xs:double" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdConversion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdPresentacionDestino" type="xs:int" />
+      <xs:element minOccurs="0" name="IdPresentacionOrigen" type="xs:int" />
+      <xs:element minOccurs="0" name="Inverso" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsNew" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ProductoPresentacionDestino" nillable="true" type="tns:clsBeProducto_Presentacion" />
+      <xs:element minOccurs="0" name="ProductoPresentacionOrigen" nillable="true" type="tns:clsBeProducto_Presentacion" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_presentaciones_conversiones" nillable="true" type="tns:clsBeProducto_presentaciones_conversiones" />
+  <xs:complexType name="ArrayOfclsBeProducto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeProducto" nillable="true" type="tns:clsBeProducto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeProducto" nillable="true" type="tns:ArrayOfclsBeProducto" />
+  <xs:complexType name="ArrayOfclsBeReabasto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeReabasto" nillable="true" type="tns:clsBeReabasto" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeReabasto" nillable="true" type="tns:ArrayOfclsBeReabasto" />
+  <xs:complexType name="clsBeReabasto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CantUbicar" type="xs:double" />
+      <xs:element minOccurs="0" name="CodigoProducto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DispUbic" type="xs:double" />
+      <xs:element minOccurs="0" name="Disponible" type="xs:double" />
+      <xs:element minOccurs="0" name="Estado" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Factor" type="xs:double" />
+      <xs:element minOccurs="0" name="IdBodega" type="xs:int" />
+      <xs:element minOccurs="0" name="IdPresentacion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdPresentacionAbastercerCon" type="xs:int" />
+      <xs:element minOccurs="0" name="IdProductoBodega" type="xs:int" />
+      <xs:element minOccurs="0" name="IdProductoEstado" type="xs:int" />
+      <xs:element minOccurs="0" name="IdPropietario" type="xs:int" />
+      <xs:element minOccurs="0" name="IdPropietarioBodega" type="xs:int" />
+      <xs:element minOccurs="0" name="IdReabasto" type="xs:int" />
+      <xs:element minOccurs="0" name="IdUbicacion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdUnidadMedida" type="xs:int" />
+      <xs:element minOccurs="0" name="IdUnidadMedidaBasAbastercerCon" type="xs:int" />
+      <xs:element minOccurs="0" name="Maximo" type="xs:double" />
+      <xs:element minOccurs="0" name="Minimo" type="xs:double" />
+      <xs:element minOccurs="0" name="NomUnidMedBas" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NombreProducto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Presentacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Seleccionado" type="xs:boolean" />
+      <xs:element minOccurs="0" name="StockInferior" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Ubicacion" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeReabasto" nillable="true" type="tns:clsBeReabasto" />
+</xs:schema>

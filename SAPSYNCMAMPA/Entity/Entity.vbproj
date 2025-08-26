@@ -1,0 +1,512 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DF210A4E-56DD-4604-8558-FF6C51469A05}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <StartupObject>
+    </StartupObject>
+    <RootNamespace>TOMIMS</RootNamespace>
+    <AssemblyName>Entity</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>Windows</MyType>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionCompare>Text</OptionCompare>
+    <OptionStrict>Off</OptionStrict>
+    <OptionInfer>On</OptionInfer>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>Entity.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisRuleSet />
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>Entity.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisRuleSet />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Diferencias_Movimientos\clsBeDiferencias_movimientos.vb" />
+    <Compile Include="DataHist\clsBeDh_ocupacion_bodega.vb" />
+    <Compile Include="Interface\Barras_Pallet\clsBeI_nav_barras_pallet.vb" />
+    <Compile Include="Interface\Transacciones_Out\clsBeI_nav_transacciones_out_error.vb" />
+    <Compile Include="Inventario\Ciclico\clsBeTempComparacionInventario.vb" />
+    <Compile Include="Inventario\Inicial\Stock\clsBeTrans_inv_stock_partial.vb" />
+    <Compile Include="Inventario\InvNE\clsBeTrans_inv_ne.vb" />
+    <Compile Include="Mantenimientos\Ajustes\clsBeTrans_ajuste_det_doc.vb" />
+    <Compile Include="Mantenimientos\Configuracion_Barra_Pallet\clsBeConfiguracion_barra_pallet.vb" />
+    <Compile Include="Mantenimientos\Cuadrilla\clsBeCuadrilla_det_montacarga_partial.vb" />
+    <Compile Include="Mantenimientos\Cuadrilla\clsBeCuadrilla_det_montacarga.vb" />
+    <Compile Include="Mantenimientos\Cuadrilla\clsBeCuadrilla_det_operador_partial.vb" />
+    <Compile Include="Mantenimientos\Cuadrilla\clsBeCuadrilla_det_operador.vb" />
+    <Compile Include="Mantenimientos\Cuadrilla\clsBeCuadrilla_enc_partial.vb" />
+    <Compile Include="Mantenimientos\Cuadrilla\clsBeCuadrilla_enc.vb" />
+    <Compile Include="Mantenimientos\Cuadrilla\clsBeCuadrilla_tipo.vb" />
+    <Compile Include="Mantenimientos\Empresa\clsBeEmpresaAnd.vb" />
+    <Compile Include="Mantenimientos\Impresion_productos_barras\clsBeImpresion_productos_barras.vb" />
+    <Compile Include="Road\Despacho\clsBeDS_PEDIDO.vb" />
+    <Compile Include="Road\Despacho\clsBeDS_PEDIDOD.vb" />
+    <Compile Include="Road\Despacho\clsBeD_PEDIDO.vb" />
+    <Compile Include="Road\Despacho\clsBeD_PEDIDOD.vb" />
+    <Compile Include="Transacciones\Marcaje\clsBeMarcaje.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoKit\clsBeProducto_kit_composicion.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoKit\clsBeProducto_kit_composicion_partial.vb" />
+    <Compile Include="Mantenimientos\Producto\Producto_Seleccion\clsBeProducto_Barras_Seleccion.vb" />
+    <Compile Include="Mantenimientos\Tipo_Rotacion\clsBeTipo_rotacion_Partial.vb" />
+    <Compile Include="Mantenimientos\Tipo_Tarea_Tiempos\clsBeTipo_tarea_tiempos.vb" />
+    <Compile Include="Mantenimientos\Trans_Series_Doc\clsBeTrans_series_doc.vb" />
+    <Compile Include="Transacciones\Ajuste\clsBeAjustesMI3.vb" />
+    <Compile Include="Transacciones\Ajuste\clsBe_vw_ajustes.vb" />
+    <Compile Include="Interface\Configuracion\ConfiguracionDetalle\clsBeI_nav_config_det.vb" />
+    <Compile Include="Interface\Configuracion\ConfiguracionEncabezado\clsBeI_nav_config_enc.vb" />
+    <Compile Include="Interface\Configuracion\ConfiguracionEntidad\clsBeI_nav_config_ent.vb" />
+    <Compile Include="Interface\Configuracion\Entidad\clsBeI_nav_ent.vb" />
+    <Compile Include="Interface\Filtros\clsBeI_nav_ent_filtros.vb" />
+    <Compile Include="Interface\Transacciones_Out\clsBeI_nav_transacciones_out.vb" />
+    <Compile Include="Inventario\Ciclico\clsBeTrans_inv_ciclico.vb" />
+    <Compile Include="Inventario\Ciclico\clsBeTrans_inv_ciclico_partial.vb" />
+    <Compile Include="Inventario\Ciclico\clsBeTrans_inv_ciclico_ubic.vb" />
+    <Compile Include="Inventario\Ciclico\clsBeTrans_inv_ciclico_ubic_partial.vb" />
+    <Compile Include="Inventario\Ciclico\clsBeTrans_inv_ciclico_vw.vb" />
+    <Compile Include="Inventario\Ciclico\clsBeTrans_inv_enc_reconteo.vb" />
+    <Compile Include="Inventario\Ciclico\clsBeTrans_inv_enc_reconteo_partial.vb" />
+    <Compile Include="Inventario\Ciclico\clsBeTrans_inv_operador.vb" />
+    <Compile Include="Inventario\Ciclico\clsBeTrans_inv_operador_partial.vb" />
+    <Compile Include="Inventario\Ciclico\clsBeTrans_inv_reconteo.vb" />
+    <Compile Include="Inventario\clsBeTrans_inv_enc_partial.vb" />
+    <Compile Include="Inventario\Inicial\clsBeTipoConteo.vb" />
+    <Compile Include="Inventario\Inicial\clsBeTipoInventario.vb" />
+    <Compile Include="Inventario\Inicial\Detalle\clsBeTrans_inv_detalle.vb" />
+    <Compile Include="Inventario\clsBeTrans_inv_enc.vb" />
+    <Compile Include="Inventario\Inicial\Detalle\clsBeTrans_inv_detalle_grid.vb" />
+    <Compile Include="Inventario\Inicial\Resumen\clsBeTrans_inv_resumen.vb" />
+    <Compile Include="Inventario\Inicial\Resumen\clsBeTrans_inv_resumen_grid.vb" />
+    <Compile Include="Inventario\Inicial\Stock\clsBeTrans_inv_stock.vb" />
+    <Compile Include="Inventario\Inicial\Stock_Prod\clsBeTrans_inv_stock_prod.vb" />
+    <Compile Include="Inventario\Inicial\Tramo\clsBeTrans_inv_tramo.vb" />
+    <Compile Include="Inventario\Inicial\Tramo\clsBeTrans_inv_tramo_Partial.vb" />
+    <Compile Include="Interface\Bitacora\Detalle\clsBeI_nav_ejecucion_det_error.vb" />
+    <Compile Include="Interface\Bitacora\Encabezado\clsBeI_nav_ejecucion_enc.vb" />
+    <Compile Include="Interface\Bitacora\Encabezado\clsBeI_nav_ejecucion_enc_Partial.vb" />
+    <Compile Include="Interface\Bitacora\Resultado\clsBeI_nav_ejecucion_res.vb" />
+    <Compile Include="Interface\Bodega\BE_I_Nav_Bodega\clsBeI_nav_bodega.vb" />
+    <Compile Include="Interface\Pedido_Compra\Pedido_Compra_Det\clsBeI_nav_ped_compra_det.vb" />
+    <Compile Include="Interface\Pedido_Compra\Pedido_Compra_Enc\clsBeI_nav_ped_compra_enc.vb" />
+    <Compile Include="Interface\Pedido_Compra\Pedido_Compra_Enc\clsBeI_nav_ped_compra_enc_Partial.vb" />
+    <Compile Include="Interface\Pedido_Traslado\Pedido_Tralsado_Det\clsBeI_nav_ped_traslado_det.vb" />
+    <Compile Include="Interface\Pedido_Traslado\Pedido_Tralsado_Det\clsBeI_nav_ped_traslado_det_Partial.vb" />
+    <Compile Include="Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsBeI_nav_ped_traslado_enc.vb" />
+    <Compile Include="Interface\Pedido_Traslado\Pedido_Traslado_Enc\clsBeI_nav_ped_traslado_enc_Partial.vb" />
+    <Compile Include="Interface\Producto\clsBeI_nav_producto.vb" />
+    <Compile Include="Interface\Proveedor\clsBeI_nav_proveedor.vb" />
+    <Compile Include="Licencia\licencia_item\clsBeLicencia_item_partial.vb" />
+    <Compile Include="Licencia\licencia_item\clsBeLicencia_item.vb" />
+    <Compile Include="Licencia\licencia_llave\clsBeLicencia_llave_partial.vb" />
+    <Compile Include="Licencia\licencia_llave\clsBeLicencia_llave.vb" />
+    <Compile Include="Licencia\licencia_login\clsBeLicencia_login.vb" />
+    <Compile Include="Licencia\licencia_solic\clsBeLicencia_solic.vb" />
+    <Compile Include="Mantenimientos\Ajustes\clsBeTrans_ajuste_det.vb" />
+    <Compile Include="Mantenimientos\Ajustes\clsBeTrans_ajuste_det_Partial.vb" />
+    <Compile Include="Mantenimientos\Ajustes\clsBeTrans_ajuste_det_rep.vb" />
+    <Compile Include="Mantenimientos\Ajustes\clsBeTrans_ajuste_enc.vb" />
+    <Compile Include="Mantenimientos\Bodega\Bodega_Area\clsBeBodega_area.vb" />
+    <Compile Include="Mantenimientos\Bodega\Bodega_Area\clsBeBodega_area_Partial.vb" />
+    <Compile Include="Mantenimientos\Bodega\Bodega_orientacion_pos\clsBeBodega_orientacion_pos.vb" />
+    <Compile Include="Mantenimientos\Bodega\Bodega_Tramo\clsBeBodega_Tramo_Seleccion.vb" />
+    <Compile Include="Mantenimientos\Bodega\Bodega_Ubicacion\clsBeBodega_ubicacion_Partial.vb" />
+    <Compile Include="Mantenimientos\Bodega\Estructura_Grupo\clsBeEstructura_grupo.vb" />
+    <Compile Include="Mantenimientos\Bodega\Estructura_Tramo\clsBeEstructura_tramo.vb" />
+    <Compile Include="Mantenimientos\Bodega\Estructura_Ubicacion\clsBeEstructura_ubicacion.vb" />
+    <Compile Include="Mantenimientos\Camara\clsBeCamara.vb" />
+    <Compile Include="Mantenimientos\Cliente\clsBeCliente.vb" />
+    <Compile Include="Mantenimientos\Cliente\clsBeCliente_tipo.vb" />
+    <Compile Include="Mantenimientos\Horario_Laboral_Det\clsBeHorario_laboral_det.vb" />
+    <Compile Include="Mantenimientos\Horario_Laboral_Det\clsBeHorario_laboral_det_partial.vb" />
+    <Compile Include="Mantenimientos\Empresa_Transporte_Piloto\clsBeEmpresa_transporte_pilotos.vb" />
+    <Compile Include="Mantenimientos\Empresa_Transporte_Vehiculo\clsBeEmpresa_transporte_vehiculos.vb" />
+    <Compile Include="Mantenimientos\Horario_Laboral_Enc\clsBeHorario_laboral_enc.vb" />
+    <Compile Include="Mantenimientos\Menu_Rol\clsBeMenu_rol.vb" />
+    <Compile Include="Mantenimientos\Menu_sistema\clsBeMenu_sistema_partial.vb" />
+    <Compile Include="Mantenimientos\Menu_sistema\clsBeMenu_sistema.vb" />
+    <Compile Include="Mantenimientos\Montacarga\clsBeMontacarga_bodega_Partial.vb" />
+    <Compile Include="Mantenimientos\MotivoAnulacion\clsBeMotivo_anulacion_bodega_partial.vb" />
+    <Compile Include="Mantenimientos\Perfil_Serializado\clsBePerfil_serializado.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoPresentacion\clsBeProducto_presentacion.vb" />
+    <Compile Include="Mantenimientos\Producto\Producto\clsBeProductoCombo.vb" />
+    <Compile Include="Mantenimientos\Producto\Producto_Pallet\clsBeProducto_pallet_Partial.vb" />
+    <Compile Include="Mantenimientos\Producto\Producto_Pallet\clsBeProducto_pallet.vb" />
+    <Compile Include="Mantenimientos\Producto\VW_Producto_Pallet\clsBeVW_Impresion_Pallet.vb" />
+    <Compile Include="Mantenimientos\Simbologías_Códigos_Barra\clsBeSimbologias_codigo_barra.vb" />
+    <Compile Include="Mantenimientos\Mensaje_Regla\clsBeMensaje_regla.vb" />
+    <Compile Include="Mantenimientos\Mensaje_Regla\clsBeMensaje_regla_Partial.vb" />
+    <Compile Include="Mantenimientos\Montacarga\clsBeMontacarga.vb" />
+    <Compile Include="Mantenimientos\Montacarga\clsBeMontacarga_bodega.vb" />
+    <Compile Include="Mantenimientos\Bodega\Bodega_Tramo\clsBeBodega_tramo_Partial.vb" />
+    <Compile Include="Mantenimientos\Bodega\Bodega_Ubicacion\clsBeBodega_Ubicacion_Seleccion.vb" />
+    <Compile Include="Mantenimientos\Empresa_Transporte\clsBeEmpresa_transporte.vb" />
+    <Compile Include="Mantenimientos\Empresa_Transporte_Bodega\clsBeEmpresa_transporte_bodega.vb" />
+    <Compile Include="Mantenimientos\Font_Tramo\Font_Det\clsBeFont_det.vb" />
+    <Compile Include="Mantenimientos\Font_Tramo\Font_Det\clsBeFont_Det_Partial.vb" />
+    <Compile Include="Mantenimientos\Font_Tramo\Font_Enc\clsBeFont_enc.vb" />
+    <Compile Include="Mantenimientos\Font_Tramo\Font_Enc\clsBeFont_Enc_Partial.vb" />
+    <Compile Include="Mantenimientos\Jornada_Laboral\clsBeJornada_laboral.vb" />
+    <Compile Include="Mantenimientos\Montacarga_TipoFalla\clsBeMontacarga_tipoFalla.vb" />
+    <Compile Include="Mantenimientos\Pais\clsBePaises.vb" />
+    <Compile Include="Mantenimientos\Pais_Departamento\clsBePais_departamento.vb" />
+    <Compile Include="Mantenimientos\Pais_Municipio\clsBePais_municipio.vb" />
+    <Compile Include="Mantenimientos\Pais_Region\clsBePais_region.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoPresentacionesConversiones\clsBeProducto_presentaciones_conversiones.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoPresentacionesConversiones\clsBeProducto_presentaciones_conversiones_Partial.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoEstado\clsBeProducto_estado_selection.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoPresentacion\clsBeProducto_presentacion_sel.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoTipo\clsBeProducto_tipo_seleccion.vb" />
+    <Compile Include="Mantenimientos\Producto\Producto\clsBeProducto_SelectionList.vb" />
+    <Compile Include="Mantenimientos\Propietario\PropietarioBodegaSeleccion\clsBePropietarioBodegaSeleccion.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicAsignacion\clsBeRegla_ubicacion.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicIndiceRotacion\clsBeRegla_ubic_det_ir.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicPresentation\clsBeRegla_ubic_det_pp_Partial.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicPrioridad\ReglaUbicPrioDet\clsBeRegla_ubic_prio_det.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicPrioridad\ReglaUbicPrioDet\clsBeRegla_ubic_prio_det_Partial.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicPrioridad\ReglaUbicPrioEnc\clsBeRegla_ubic_prio_enc.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicPrioridad\ReglaUbicPrioEnc\clsBeRegla_ubic_prio_enc_Partial.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicPrioridad\ReglaUbicPrioParam\clsBeRegla_ubic_prio_param_SelectionList.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicPrioridad\ReglaUbicPrioParam\clsBeRegla_ubic_prio_param.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicPrioridad\ReglaUbicPrioProducto\clsBeRegla_ubic_prio_producto.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicPrioridad\ReglaUbicPrioProducto\clsBeRegla_ubic_prio_producto_Partial.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicProdEstado\clsBeRegla_ubic_det_pe.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicPresentation\clsBeRegla_ubic_det_pp.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicProdEstado\clsBeRegla_ubic_det_pe_Partial.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicPropietario\clsBeRegla_ubic_det_prop.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicTipoProd\clsBeRegla_ubic_det_tp.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicIndiceRotacion\clsBeRegla_ubic_det_ir_Partial.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicPropietario\clsBeRegla_ubic_det_prop_Partial.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicTipoProd\clsBeRegla_ubic_det_tp_Partial.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicTiporotacion\clsBeRegla_ubic_det_tr.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicEnc\clsBeRegla_ubic_enc.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicEnc\clsBeRegla_ubic_enc_Partial.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\ReglaUbicTiporotacion\clsBeRegla_ubic_det_tr_Partial.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\Ubicaciones_por_regla\clsBeUbicaciones_por_regla.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\Ubicaciones_por_regla\clsBeUbicaciones_por_regla_partial.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\UbicacionSugerida\clsBeUbicacionExcluida.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\UbicacionSugerida\clsBeUbicacionSugerida.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\UbicacionSugerida\clsBeUbicacionSugeridaFinal.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\UbicacionSugerida\clsBeUbicacionSugeridaList.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\UbicacionSugerida\clsBeUbicacionSugeridaRequest.vb" />
+    <Compile Include="Mantenimientos\Reglas_Ubicacion\UbicacionSugerida\clsBeUbicacionSugeridaStock.vb" />
+    <Compile Include="Mantenimientos\Rol\clsBeRol.vb" />
+    <Compile Include="Mantenimientos\Tipo_Contenedor\clsBeTipo_contenedor.vb" />
+    <Compile Include="Mantenimientos\Tipo_Etiqueta\clsBeTipo_etiqueta.vb" />
+    <Compile Include="Mantenimientos\Turno\clsBeTurno.vb" />
+    <Compile Include="Mantenimientos\Unidad_Medida_Conversion\clsBeUnidad_medida_conversion.vb" />
+    <Compile Include="Mantenimientos\Usuario\clsBeUsuario.vb" />
+    <Compile Include="Mantenimientos\Usuario\clsBeUsuario_Partial.vb" />
+    <Compile Include="Mantenimientos\Usuario_Bodega\clsBeUsuario_bodega.vb" />
+    <Compile Include="Mantenimientos\Ajustes\clsBeAjuste_motivo.vb" />
+    <Compile Include="Mantenimientos\Ajustes\clsBeAjuste_tipo.vb" />
+    <Compile Include="Transacciones\Despacho\clsBeVW_Despacho_Rep.vb" />
+    <Compile Include="Transacciones\Marcaje\clsBeVW_operador_horario.vb" />
+    <Compile Include="Transacciones\Movimiento\clsBeProductoUbicacionSugerida.vb" />
+    <Compile Include="Transacciones\Movimiento\clsBeStockEnUnaFecha.vb" />
+    <Compile Include="Transacciones\Movimiento\clsBeStockFecha.vb" />
+    <Compile Include="Transacciones\EstadoEnviosNav\clsBeVW_EstadoEnviosNAV.vb" />
+    <Compile Include="Transacciones\Movimiento\clsBeTrans_movimiento_pallet.vb" />
+    <Compile Include="Transacciones\Movimiento\clsBeVW_MovimientosPartial.vb" />
+    <Compile Include="Transacciones\Movimiento\clsBeVW_Movimientos.vb" />
+    <Compile Include="Interface\Pedido_Compra\Pedido_Compra_Det_Lotes\clsBeI_nav_ped_compra_det_lote.vb" />
+    <Compile Include="Transacciones\OrdenCompra\OC_Detalle_Lote\clsBeTrans_oc_det_lote.vb" />
+    <Compile Include="Transacciones\Pedido\clsBeDetallePedidoAVerificar.vb" />
+    <Compile Include="Transacciones\Pedido\clsBePedidoDetalleGrid.vb" />
+    <Compile Include="Interface\Configuracion\Configuracion.vb" />
+    <Compile Include="Mantenimientos\Arancel\clsBeArancel.vb" />
+    <Compile Include="Mantenimientos\Bodega\Bodega\clsBeBodega_Partial.vb" />
+    <Compile Include="Mantenimientos\Bodega\Bodega\clsBeBodega.vb" />
+    <Compile Include="Mantenimientos\Bodega\Bodega_Monitor_Parametro\clsBeBodega_monitor_parametro.vb" />
+    <Compile Include="Mantenimientos\Bodega\Bodega_Muelles\clsBeBodega_muelles.vb" />
+    <Compile Include="Mantenimientos\Bodega\Bodega_Parametros\clsBeBodega_parametros.vb" />
+    <Compile Include="Mantenimientos\Bodega\Bodega_Sector\clsBeBodega_sector.vb" />
+    <Compile Include="Mantenimientos\Bodega\Bodega_Tramo\clsBeBodega_tramo.vb" />
+    <Compile Include="Mantenimientos\Bodega\Bodega_Ubicacion\clsBeBodega_ubicacion.vb" />
+    <Compile Include="Mantenimientos\Cliente\clsBeCliente_bodega_Partial.vb" />
+    <Compile Include="Mantenimientos\Cliente\clsBeCliente_direccion_Partial.vb" />
+    <Compile Include="Mantenimientos\Cliente\clsBeCliente_bodega.vb" />
+    <Compile Include="Mantenimientos\Cliente\clsBeCliente_direccion.vb" />
+    <Compile Include="Mantenimientos\Cliente\clsBeCliente_Partial.vb" />
+    <Compile Include="Mantenimientos\Cliente\clsBeCliente_tiempos.vb" />
+    <Compile Include="Mantenimientos\Impresora\clsBeImpresora.vb" />
+    <Compile Include="Mantenimientos\Indice_Rotacion\clsBeIndice_rotacion.vb" />
+    <Compile Include="Mantenimientos\Menu_rol_op\clsBeMenu_rol_op.vb" />
+    <Compile Include="Mantenimientos\Menu_rol_op\clsBeMenu_rol_op_Partial.vb" />
+    <Compile Include="Mantenimientos\Menu_rol_op\Menu_sistema_op\clsBeMenu_sistema_op.vb" />
+    <Compile Include="Mantenimientos\MotivoAnulacion\clsBeMotivo_anulacion.vb" />
+    <Compile Include="Mantenimientos\MotivoAnulacion\clsBeMotivo_anulacion_bodega.vb" />
+    <Compile Include="Mantenimientos\MotivoDevolucion\clsBeMotivo_devolucion.vb" />
+    <Compile Include="Mantenimientos\MotivoDevolucion\clsBeMotivo_devolucion_bodega.vb" />
+    <Compile Include="Mantenimientos\MotivoDevolucion\clsBeMotivo_devolucion_Partial.vb" />
+    <Compile Include="Mantenimientos\MotivoUbicacion\clsBeMotivo_ubicacion.vb" />
+    <Compile Include="Mantenimientos\Operador\clsBeOperador_Partial.vb" />
+    <Compile Include="Mantenimientos\Producto\P_Parametro\clsBeP_parametro.vb" />
+    <Compile Include="Mantenimientos\Propietario\Propietario\clsBePropietarios_partial.vb" />
+    <Compile Include="Mantenimientos\rol_operador\clsBeRol_operador.vb" />
+    <Compile Include="Mantenimientos\Operador\clsBeOperador.vb" />
+    <Compile Include="Mantenimientos\Operador_Bodega\clsBeOperador_bodega.vb" />
+    <Compile Include="Mantenimientos\Operador_Bodega\clsBeOperador_bodega_Partial.vb" />
+    <Compile Include="Mantenimientos\Producto\Producto\clsBeProducto.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoBodega\clsBeProducto_bodega.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoBodega\clsBeProducto_Bodega_Partial.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoClasificacion\clsBeProducto_clasificacion.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoCodigoBarra\clsBeProducto_codigos_barra.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoCodigoBarra\clsBeProducto_codigos_barra_Partial.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoEstado\clsBeProducto_estado.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoEstado\clsBeProducto_estado_Partial.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoFamilia\clsBeProducto_familia.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoMarca\clsBeProducto_marca.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoParametros\clsBeProducto_parametros.vb" />
+    <Compile Include="Mantenimientos\Producto\Producto\clsBeProducto_Partial.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoPresentacion\clsBeProducto_presentacion_Partial.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoPresentacionTarima\clsBeProducto_presentacion_tarima.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoPresentacionTarima\clsBeProducto_presentacion_tarima_Partial.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoRellenado\clsBeProducto_rellenado.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoRellenado\clsBeProducto_rellenado_Partial.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoSustituo\clsBeProducto_sustituto.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoTipo\clsBeProducto_tipo.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoParametros\clsBeProducto_Parametros_Partial.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoEsadoUbic\clsBeProducto_estado_ubic.vb" />
+    <Compile Include="Mantenimientos\Producto\ProductoEsadoUbic\clsBeProducto_estado_ubic_Partial.vb" />
+    <Compile Include="Mantenimientos\Producto\Traslado\clsBeTrans_tras_enc.vb" />
+    <Compile Include="Mantenimientos\Propietario\Propietario\clsBePropietarios.vb" />
+    <Compile Include="Mantenimientos\Propietario\PropietarioBodega\clsBePropietario_bodega.vb" />
+    <Compile Include="Mantenimientos\Propietario\PropietarioBodega\clsBePropietario_Bodega_Partial.vb" />
+    <Compile Include="Mantenimientos\Propietario\Destinatario\clsBePropietario_destinatario.vb" />
+    <Compile Include="Mantenimientos\Propietario\Destinatario\clsBePropietario_destinatario_Partial.vb" />
+    <Compile Include="Mantenimientos\Propietario\Reglas\clsBePropietario_reglas_det.vb" />
+    <Compile Include="Mantenimientos\Propietario\Reglas\clsBePropietario_reglas_det_Partial.vb" />
+    <Compile Include="Mantenimientos\Propietario\Reglas\clsBePropietario_reglas_enc.vb" />
+    <Compile Include="Mantenimientos\Propietario\Reglas\clsBePropietario_reglas_enc_Partial.vb" />
+    <Compile Include="Mantenimientos\Proveedor\clsBeProveedor.vb" />
+    <Compile Include="Mantenimientos\Proveedor\clsBeProveedor_bodega.vb" />
+    <Compile Include="Mantenimientos\Proveedor\clsBeProveedor_Bodega_Partial.vb" />
+    <Compile Include="Mantenimientos\RoadVendedor\clsBeRoad_p_vendedor.vb" />
+    <Compile Include="Mantenimientos\RoadRuta\clsBeRoad_ruta.vb" />
+    <Compile Include="Mantenimientos\Producto\TipoActualizacionCosto\clsBeTipo_actualizacion_costo.vb" />
+    <Compile Include="Mantenimientos\Producto\TipoActualizacionCosto\clsBeTipo_actualizacion_costo_Partial.vb" />
+    <Compile Include="Mantenimientos\Sis_estado_tarea_hh\clsBeSis_estado_tarea_hh.vb" />
+    <Compile Include="Mantenimientos\Sis_Tipo_Tarea\clsBeSis_tipo_tarea.vb" />
+    <Compile Include="Mantenimientos\Tarima\clsBeTarimas.vb" />
+    <Compile Include="Mantenimientos\Tarima\clsBeTarima_Partial.vb" />
+    <Compile Include="Mantenimientos\Tipo_Tarima\clsBeTipo_tarima.vb" />
+    <Compile Include="Mantenimientos\Tipo_Rotacion\clsBeTipo_rotacion.vb" />
+    <Compile Include="Transacciones\Despacho\clsBeTrans_despacho_det.vb" />
+    <Compile Include="Transacciones\Despacho\clsBeTrans_despacho_det_Partial.vb" />
+    <Compile Include="Transacciones\Despacho\clsBeTrans_despacho_enc.vb" />
+    <Compile Include="Transacciones\Despacho\clsBeTrans_despacho_enc_Partial.vb" />
+    <Compile Include="Transacciones\Log\clsBeTransacciones_log.vb" />
+    <Compile Include="Transacciones\Log\clsBeTransacciones_log_Partial.vb" />
+    <Compile Include="Transacciones\Movimiento\clsBeTrans_movimientos.vb" />
+    <Compile Include="Transacciones\Movimiento\clsBeTrans_movimientos_Partial.vb" />
+    <Compile Include="Transacciones\OrdenCompra\OC_Detalle\clsBeTrans_oc_det.vb" />
+    <Compile Include="Transacciones\OrdenCompra\OC_Encabezado\clsBeTrans_oc_enc.vb" />
+    <Compile Include="Transacciones\OrdenCompra\OC_Encabezado\clsBeTrans_oc_enc_Partial.vb" />
+    <Compile Include="Transacciones\OrdenCompra\OC_Estado\clsBeTrans_oc_estado.vb" />
+    <Compile Include="Transacciones\OrdenCompra\OC_Imagen\clsBeTrans_oc_imagen.vb" />
+    <Compile Include="Transacciones\OrdenCompra\OC_Imagen\clsBeTrans_oc_imagen_Partial.vb" />
+    <Compile Include="Transacciones\OrdenCompra\OC_Pol\clsBeTrans_oc_pol.vb" />
+    <Compile Include="Transacciones\OrdenCompra\OC_TipoIngreso\clsBeTrans_oc_ti.vb" />
+    <Compile Include="Transacciones\Pedido\clsBeTrans_pe_det.vb" />
+    <Compile Include="Transacciones\Pedido\clsBeTrans_pe_det_Partial.vb" />
+    <Compile Include="Transacciones\Pedido\clsBeTrans_pe_enc.vb" />
+    <Compile Include="Transacciones\Pedido\clsBeTrans_pe_enc_Partial.vb" />
+    <Compile Include="Transacciones\Picking\clsBeTrans_picking_det.vb" />
+    <Compile Include="Transacciones\Picking\clsBeTrans_picking_det_parametros.vb" />
+    <Compile Include="Transacciones\Picking\clsBeTrans_picking_det_parametros_Partial.vb" />
+    <Compile Include="Transacciones\Picking\clsBeTrans_picking_det_Partial.vb" />
+    <Compile Include="Transacciones\Picking\clsBeTrans_picking_enc.vb" />
+    <Compile Include="Transacciones\Picking\clsBeTrans_picking_enc_Partial.vb" />
+    <Compile Include="Transacciones\Picking\clsBeTrans_picking_op.vb" />
+    <Compile Include="Transacciones\Picking\clsBeTrans_picking_op_Partial.vb" />
+    <Compile Include="Transacciones\Picking\clsBeTrans_picking_ubic.vb" />
+    <Compile Include="Transacciones\Picking\clsBeTrans_picking_ubic_Partial.vb" />
+    <Compile Include="Transacciones\Recepcion\LicensePlates\clsBeLicensePlates.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Detalle_Lote_Num\clsBeTrans_re_det_lote_num.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Reglas\clsBeReglas_recepcion.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Reglas\clsBeReglas_RecepcionRes.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Detalle\clsBeTrans_re_det.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Reglas\clsBeTrans_re_det_infraccion.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Reglas\clsBeTrans_re_det_infraccion_Partial.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Parametros\clsBeTrans_re_det_parametros.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Detalle\clsBeTrans_re_det_Partial.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Encabezado\clsBeTrans_re_enc.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Encabezado\clsBeTrans_re_enc_Partial.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Facturas\clsBeTrans_re_fact.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Facturas\clsBeTrans_re_fact_Partial.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Imagenes\clsBeTrans_re_img.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Imagenes\clsBeTrans_re_img_Partial.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_OC\clsBeTrans_re_oc.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_OC\clsBeTrans_re_oc_Partial.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Ope\clsBeTrans_re_op.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Ope\clsBeTrans_re_op_Partial.vb" />
+    <Compile Include="Mantenimientos\UnidadMedida\clsBeUnidad_medida.vb" />
+    <Compile Include="Mantenimientos\Empresa\clsBeEmpresa.vb" />
+    <Compile Include="Transacciones\OrdenCompra\OC_Detalle\clsBeTrans_oc_det_Partial.vb" />
+    <Compile Include="Transacciones\OrdenCompra\OC_Pol\clsBeTrans_oc_pol_Partial.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_Parametros\clsBeTrans_re_det_parametros_Partial.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Transacciones\Recepcion\Recepcion_TipoRec\clsBeTrans_re_tr.vb" />
+    <Compile Include="Transacciones\Recepcion\Recepcion_TipoRec\clsBeTrans_re_tr_partial.vb" />
+    <Compile Include="Transacciones\Stock\clsBeStock.vb" />
+    <Compile Include="Transacciones\Stock\clsBeStock_Partial.vb" />
+    <Compile Include="Transacciones\Stock\clsBeStock_se.vb" />
+    <Compile Include="Transacciones\Stock\clsBeStock_se_Partial.vb" />
+    <Compile Include="Transacciones\Stock_Historico\clsBeStock_hist.vb" />
+    <Compile Include="Transacciones\Stock_Recepcion\clsBeStock_se_rec.vb" />
+    <Compile Include="Transacciones\Stock_Recepcion\clsBeStock_se_rec_Partial.vb" />
+    <Compile Include="Transacciones\Stock_Reservado\clsBeStock_res.vb" />
+    <Compile Include="Transacciones\Stock_Parametro\clsBeStock_parametro.vb" />
+    <Compile Include="Transacciones\Stock_Parametro\clsBeStock_parametro_Partial.vb" />
+    <Compile Include="Transacciones\Stock_Recepcion\clsBeStock_rec.vb" />
+    <Compile Include="Transacciones\Stock_Recepcion\clsBeStock_rec_Partial.vb" />
+    <Compile Include="Transacciones\Stock_Reservado\clsBeVW_Stock_Res_Pedido.vb" />
+    <Compile Include="Transacciones\Stock_res\clsBeVW_stock_res_CI.vb" />
+    <Compile Include="Transacciones\Stock_res\clsBeVW_stock_res.vb" />
+    <Compile Include="Transacciones\Stock_res\clsBeVW_stock_res_Partial.vb" />
+    <Compile Include="Transacciones\Stock_Transito\clsBeStock_transito.vb" />
+    <Compile Include="Transacciones\Tarea_HandHeld\clsBeTareasIngresoHH.vb" />
+    <Compile Include="Transacciones\Tarea_HandHeld\clsBeTarea_hh.vb" />
+    <Compile Include="Transacciones\Tarea_HandHeld\clsBeTarea_hh_Partial.vb" />
+    <Compile Include="Transacciones\TipoPedido\clsBeTrans_pe_tipo.vb" />
+    <Compile Include="Transacciones\Transaccion_Ubicacion_HH\clsBeTrans_ubic_hh_encPartial.vb" />
+    <Compile Include="Transacciones\Transaccion_Ubicacion_HH\clsBeTrans_ubic_hh_enc.vb" />
+    <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsBeTrans_ubic_hh_det.vb" />
+    <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Det\clsBeTrans_ubic_hh_det_Partial.vb" />
+    <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Hh_Op\clsBeTrans_ubic_hh_op.vb" />
+    <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_HH_Stock\clsBeTrans_ubic_hh_stock.vb" />
+    <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_HH_Stock\clsBeTrans_ubic_hh_stock_Partial.vb" />
+    <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Tarima\clsBeTrans_ubic_tarima.vb" />
+    <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Tarima\clsBeTrans_ubic_tarima_partial.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="obj\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

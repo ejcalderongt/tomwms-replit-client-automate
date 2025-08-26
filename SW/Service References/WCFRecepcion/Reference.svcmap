@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="72c43a1d-a589-4031-b4e5-dfedfd0c789b" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:4180/Recepcion/ServiceRecepcion.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="ServiceRecepcion.disco" MetadataType="Disco" ID="7274e7b3-b9a7-4f04-b744-f09cf08296b7" SourceId="1" SourceUrl="http://localhost:4180/Recepcion/ServiceRecepcion.svc?disco" />
+    <MetadataFile FileName="ServiceRecepcion.xsd" MetadataType="Schema" ID="875683fb-56ee-4e56-b81b-aa1a5eeefa98" SourceId="1" SourceUrl="http://localhost:4180/Recepcion/ServiceRecepcion.svc?xsd=xsd0" />
+    <MetadataFile FileName="ServiceRecepcion1.xsd" MetadataType="Schema" ID="2d462a78-a4c8-42b0-ad79-96555a5ae6d9" SourceId="1" SourceUrl="http://localhost:4180/Recepcion/ServiceRecepcion.svc?xsd=xsd3" />
+    <MetadataFile FileName="ServiceRecepcion2.xsd" MetadataType="Schema" ID="693dff16-1bef-4ecb-94a6-e49c86eefba7" SourceId="1" SourceUrl="http://localhost:4180/Recepcion/ServiceRecepcion.svc?xsd=xsd2" />
+    <MetadataFile FileName="ServiceRecepcion.wsdl" MetadataType="Wsdl" ID="77d5395d-3e0e-43e3-8dc7-b098398dd9b1" SourceId="1" SourceUrl="http://localhost:4180/Recepcion/ServiceRecepcion.svc?wsdl" />
+    <MetadataFile FileName="ServiceRecepcion3.xsd" MetadataType="Schema" ID="a3cb88cc-37be-4ac7-ba73-26161495a257" SourceId="1" SourceUrl="http://localhost:4180/Recepcion/ServiceRecepcion.svc?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

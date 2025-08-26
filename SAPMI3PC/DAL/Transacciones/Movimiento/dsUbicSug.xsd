@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="dsUbicSug" targetNamespace="http://tempuri.org/dsUbicSug.xsd" xmlns:mstns="http://tempuri.org/dsUbicSug.xsd" xmlns="http://tempuri.org/dsUbicSug.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="dsUbicSug" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="dsUbicSug" msprop:Generator_UserDSName="dsUbicSug">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="UbicOrd" msprop:Generator_TableClassName="UbicOrdDataTable" msprop:Generator_TableVarName="tableUbicOrd" msprop:Generator_RowChangedName="UbicOrdRowChanged" msprop:Generator_TablePropName="UbicOrd" msprop:Generator_RowDeletingName="UbicOrdRowDeleting" msprop:Generator_RowChangingName="UbicOrdRowChanging" msprop:Generator_RowEvHandlerName="UbicOrdRowChangeEventHandler" msprop:Generator_RowDeletedName="UbicOrdRowDeleted" msprop:Generator_RowClassName="UbicOrdRow" msprop:Generator_UserTableName="UbicOrd" msprop:Generator_RowEvArgName="UbicOrdRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ID" msdata:AutoIncrement="true" msprop:Generator_ColumnVarNameInTable="columnID" msprop:Generator_ColumnPropNameInRow="ID" msprop:Generator_ColumnPropNameInTable="IDColumn" msprop:Generator_UserColumnName="ID" type="xs:short" minOccurs="0" />
+              <xs:element name="Nivel" msprop:Generator_ColumnVarNameInTable="columnNivel" msprop:Generator_ColumnPropNameInRow="Nivel" msprop:Generator_ColumnPropNameInTable="NivelColumn" msprop:Generator_UserColumnName="Nivel" type="xs:short" default="0" minOccurs="0" />
+              <xs:element name="UbicID" msprop:Generator_ColumnVarNameInTable="columnUbicID" msprop:Generator_ColumnPropNameInRow="UbicID" msprop:Generator_ColumnPropNameInTable="UbicIDColumn" msprop:Generator_UserColumnName="UbicID" type="xs:short" minOccurs="0" />
+              <xs:element name="Ubic" msprop:Generator_ColumnVarNameInTable="columnUbic" msprop:Generator_ColumnPropNameInRow="Ubic" msprop:Generator_ColumnPropNameInTable="UbicColumn" msprop:Generator_UserColumnName="Ubic" type="xs:string" minOccurs="0" />
+              <xs:element name="Vol" msprop:Generator_ColumnVarNameInTable="columnVol" msprop:Generator_ColumnPropNameInRow="Vol" msprop:Generator_ColumnPropNameInTable="VolColumn" msprop:Generator_UserColumnName="Vol" type="xs:double" default="0" minOccurs="0" />
+              <xs:element name="DVol" msprop:Generator_ColumnVarNameInTable="columnDVol" msprop:Generator_ColumnPropNameInRow="DVol" msprop:Generator_ColumnPropNameInTable="DVolColumn" msprop:Generator_UserColumnName="DVol" type="xs:double" default="0" minOccurs="0" />
+              <xs:element name="DCant" msprop:Generator_ColumnVarNameInTable="columnDCant" msprop:Generator_ColumnPropNameInRow="DCant" msprop:Generator_ColumnPropNameInTable="DCantColumn" msprop:Generator_UserColumnName="DCant" type="xs:double" default="0" minOccurs="0" />
+              <xs:element name="Cant" msprop:Generator_ColumnVarNameInTable="columnCant" msprop:Generator_ColumnPropNameInRow="Cant" msprop:Generator_ColumnPropNameInTable="CantColumn" msprop:Generator_UserColumnName="Cant" type="xs:double" default="0" minOccurs="0" />
+              <xs:element name="Tramoid" msprop:Generator_ColumnVarNameInTable="columnTramoid" msprop:Generator_ColumnPropNameInRow="Tramoid" msprop:Generator_ColumnPropNameInTable="TramoidColumn" msprop:Generator_UserColumnName="Tramoid" type="xs:string" minOccurs="0" />
+              <xs:element name="Idx" msprop:Generator_ColumnVarNameInTable="columnIdx" msprop:Generator_ColumnPropNameInRow="Idx" msprop:Generator_ColumnPropNameInTable="IdxColumn" msprop:Generator_UserColumnName="Idx" type="xs:short" default="0" minOccurs="0" />
+              <xs:element name="Level" msprop:Generator_ColumnVarNameInTable="columnLevel" msprop:Generator_ColumnPropNameInRow="Level" msprop:Generator_ColumnPropNameInTable="LevelColumn" msprop:Generator_UserColumnName="Level" type="xs:short" default="0" minOccurs="0" />
+              <xs:element name="IdxRot" msprop:Generator_ColumnVarNameInTable="columnIdxRot" msprop:Generator_ColumnPropNameInRow="IdxRot" msprop:Generator_ColumnPropNameInTable="IdxRotColumn" msprop:Generator_UserColumnName="IdxRot" type="xs:string" minOccurs="0" />
+              <xs:element name="Bal" msprop:Generator_ColumnVarNameInTable="columnBal" msprop:Generator_ColumnPropNameInRow="Bal" msprop:Generator_ColumnPropNameInTable="BalColumn" msprop:Generator_UserColumnName="Bal" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="UbicSort" msprop:Generator_TableClassName="UbicSortDataTable" msprop:Generator_TableVarName="tableUbicSort" msprop:Generator_RowChangedName="UbicSortRowChanged" msprop:Generator_TablePropName="UbicSort" msprop:Generator_RowDeletingName="UbicSortRowDeleting" msprop:Generator_RowChangingName="UbicSortRowChanging" msprop:Generator_RowEvHandlerName="UbicSortRowChangeEventHandler" msprop:Generator_RowDeletedName="UbicSortRowDeleted" msprop:Generator_RowClassName="UbicSortRow" msprop:Generator_UserTableName="UbicSort" msprop:Generator_RowEvArgName="UbicSortRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ID" msdata:AutoIncrement="true" msprop:Generator_ColumnVarNameInTable="columnID" msprop:Generator_ColumnPropNameInRow="ID" msprop:Generator_ColumnPropNameInTable="IDColumn" msprop:Generator_UserColumnName="ID" type="xs:short" minOccurs="0" />
+              <xs:element name="Nivel" msprop:Generator_ColumnVarNameInTable="columnNivel" msprop:Generator_ColumnPropNameInRow="Nivel" msprop:Generator_ColumnPropNameInTable="NivelColumn" msprop:Generator_UserColumnName="Nivel" type="xs:short" minOccurs="0" />
+              <xs:element name="UbicID" msprop:Generator_ColumnVarNameInTable="columnUbicID" msprop:Generator_ColumnPropNameInRow="UbicID" msprop:Generator_ColumnPropNameInTable="UbicIDColumn" msprop:Generator_UserColumnName="UbicID" type="xs:short" minOccurs="0" />
+              <xs:element name="Ubic" msprop:Generator_ColumnVarNameInTable="columnUbic" msprop:Generator_ColumnPropNameInRow="Ubic" msprop:Generator_ColumnPropNameInTable="UbicColumn" msprop:Generator_UserColumnName="Ubic" type="xs:string" minOccurs="0" />
+              <xs:element name="Vol" msprop:Generator_ColumnVarNameInTable="columnVol" msprop:Generator_ColumnPropNameInRow="Vol" msprop:Generator_ColumnPropNameInTable="VolColumn" msprop:Generator_UserColumnName="Vol" type="xs:double" minOccurs="0" />
+              <xs:element name="DVol" msprop:Generator_ColumnVarNameInTable="columnDVol" msprop:Generator_ColumnPropNameInRow="DVol" msprop:Generator_ColumnPropNameInTable="DVolColumn" msprop:Generator_UserColumnName="DVol" type="xs:double" minOccurs="0" />
+              <xs:element name="DCant" msprop:Generator_ColumnVarNameInTable="columnDCant" msprop:Generator_ColumnPropNameInRow="DCant" msprop:Generator_ColumnPropNameInTable="DCantColumn" msprop:Generator_UserColumnName="DCant" type="xs:double" minOccurs="0" />
+              <xs:element name="Cant" msprop:Generator_ColumnVarNameInTable="columnCant" msprop:Generator_ColumnPropNameInRow="Cant" msprop:Generator_ColumnPropNameInTable="CantColumn" msprop:Generator_UserColumnName="Cant" type="xs:double" minOccurs="0" />
+              <xs:element name="Tramoid" msprop:Generator_ColumnVarNameInTable="columnTramoid" msprop:Generator_ColumnPropNameInRow="Tramoid" msprop:Generator_ColumnPropNameInTable="TramoidColumn" msprop:Generator_UserColumnName="Tramoid" type="xs:string" minOccurs="0" />
+              <xs:element name="Idx" msprop:Generator_ColumnVarNameInTable="columnIdx" msprop:Generator_ColumnPropNameInRow="Idx" msprop:Generator_ColumnPropNameInTable="IdxColumn" msprop:Generator_UserColumnName="Idx" type="xs:short" default="0" minOccurs="0" />
+              <xs:element name="Level" msprop:Generator_ColumnVarNameInTable="columnLevel" msprop:Generator_ColumnPropNameInRow="Level" msprop:Generator_ColumnPropNameInTable="LevelColumn" msprop:Generator_UserColumnName="Level" type="xs:short" default="0" minOccurs="0" />
+              <xs:element name="IdxRot" msprop:Generator_ColumnVarNameInTable="columnIdxRot" msprop:Generator_ColumnPropNameInRow="IdxRot" msprop:Generator_ColumnPropNameInTable="IdxRotColumn" msprop:Generator_UserColumnName="IdxRot" type="xs:string" minOccurs="0" />
+              <xs:element name="Bal" msprop:Generator_ColumnVarNameInTable="columnBal" msprop:Generator_ColumnPropNameInRow="Bal" msprop:Generator_ColumnPropNameInTable="BalColumn" msprop:Generator_UserColumnName="Bal" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="UbicTemp" msprop:Generator_TableClassName="UbicTempDataTable" msprop:Generator_TableVarName="tableUbicTemp" msprop:Generator_TablePropName="UbicTemp" msprop:Generator_RowDeletingName="UbicTempRowDeleting" msprop:Generator_RowChangingName="UbicTempRowChanging" msprop:Generator_RowEvHandlerName="UbicTempRowChangeEventHandler" msprop:Generator_RowDeletedName="UbicTempRowDeleted" msprop:Generator_UserTableName="UbicTemp" msprop:Generator_RowChangedName="UbicTempRowChanged" msprop:Generator_RowEvArgName="UbicTempRowChangeEvent" msprop:Generator_RowClassName="UbicTempRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ID" msdata:AutoIncrement="true" msprop:Generator_ColumnVarNameInTable="columnID" msprop:Generator_ColumnPropNameInRow="ID" msprop:Generator_ColumnPropNameInTable="IDColumn" msprop:Generator_UserColumnName="ID" type="xs:short" minOccurs="0" />
+              <xs:element name="Nivel" msprop:Generator_ColumnVarNameInTable="columnNivel" msprop:Generator_ColumnPropNameInRow="Nivel" msprop:Generator_ColumnPropNameInTable="NivelColumn" msprop:Generator_UserColumnName="Nivel" type="xs:short" minOccurs="0" />
+              <xs:element name="UbicID" msprop:Generator_ColumnVarNameInTable="columnUbicID" msprop:Generator_ColumnPropNameInRow="UbicID" msprop:Generator_ColumnPropNameInTable="UbicIDColumn" msprop:Generator_UserColumnName="UbicID" type="xs:short" minOccurs="0" />
+              <xs:element name="Ubic" msprop:Generator_ColumnVarNameInTable="columnUbic" msprop:Generator_ColumnPropNameInRow="Ubic" msprop:Generator_ColumnPropNameInTable="UbicColumn" msprop:Generator_UserColumnName="Ubic" type="xs:string" minOccurs="0" />
+              <xs:element name="Vol" msprop:Generator_ColumnVarNameInTable="columnVol" msprop:Generator_ColumnPropNameInRow="Vol" msprop:Generator_ColumnPropNameInTable="VolColumn" msprop:Generator_UserColumnName="Vol" type="xs:double" minOccurs="0" />
+              <xs:element name="DVol" msprop:Generator_ColumnVarNameInTable="columnDVol" msprop:Generator_ColumnPropNameInRow="DVol" msprop:Generator_ColumnPropNameInTable="DVolColumn" msprop:Generator_UserColumnName="DVol" type="xs:double" minOccurs="0" />
+              <xs:element name="DCant" msprop:Generator_ColumnVarNameInTable="columnDCant" msprop:Generator_ColumnPropNameInRow="DCant" msprop:Generator_ColumnPropNameInTable="DCantColumn" msprop:Generator_UserColumnName="DCant" type="xs:double" minOccurs="0" />
+              <xs:element name="Cant" msprop:Generator_ColumnVarNameInTable="columnCant" msprop:Generator_ColumnPropNameInRow="Cant" msprop:Generator_ColumnPropNameInTable="CantColumn" msprop:Generator_UserColumnName="Cant" type="xs:double" minOccurs="0" />
+              <xs:element name="Tramoid" msprop:Generator_ColumnVarNameInTable="columnTramoid" msprop:Generator_ColumnPropNameInRow="Tramoid" msprop:Generator_ColumnPropNameInTable="TramoidColumn" msprop:Generator_UserColumnName="Tramoid" type="xs:string" minOccurs="0" />
+              <xs:element name="Idx" msprop:Generator_ColumnVarNameInTable="columnIdx" msprop:Generator_ColumnPropNameInRow="Idx" msprop:Generator_ColumnPropNameInTable="IdxColumn" msprop:Generator_UserColumnName="Idx" type="xs:short" default="0" minOccurs="0" />
+              <xs:element name="Level" msprop:Generator_ColumnVarNameInTable="columnLevel" msprop:Generator_ColumnPropNameInRow="Level" msprop:Generator_ColumnPropNameInTable="LevelColumn" msprop:Generator_UserColumnName="Level" type="xs:short" default="0" minOccurs="0" />
+              <xs:element name="IdxRot" msprop:Generator_ColumnVarNameInTable="columnIdxRot" msprop:Generator_ColumnPropNameInRow="IdxRot" msprop:Generator_ColumnPropNameInTable="IdxRotColumn" msprop:Generator_UserColumnName="IdxRot" type="xs:string" minOccurs="0" />
+              <xs:element name="Bal" msprop:Generator_ColumnVarNameInTable="columnBal" msprop:Generator_ColumnPropNameInRow="Bal" msprop:Generator_ColumnPropNameInTable="BalColumn" msprop:Generator_UserColumnName="Bal" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="TramoVol" msprop:Generator_TableClassName="TramoVolDataTable" msprop:Generator_TableVarName="tableTramoVol" msprop:Generator_TablePropName="TramoVol" msprop:Generator_RowDeletingName="TramoVolRowDeleting" msprop:Generator_RowChangingName="TramoVolRowChanging" msprop:Generator_RowEvHandlerName="TramoVolRowChangeEventHandler" msprop:Generator_RowDeletedName="TramoVolRowDeleted" msprop:Generator_UserTableName="TramoVol" msprop:Generator_RowChangedName="TramoVolRowChanged" msprop:Generator_RowEvArgName="TramoVolRowChangeEvent" msprop:Generator_RowClassName="TramoVolRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="TramoID" msprop:Generator_ColumnVarNameInTable="columnTramoID" msprop:Generator_ColumnPropNameInRow="TramoID" msprop:Generator_ColumnPropNameInTable="TramoIDColumn" msprop:Generator_UserColumnName="TramoID" type="xs:short" default="0" minOccurs="0" />
+              <xs:element name="Vol" msprop:Generator_ColumnVarNameInTable="columnVol" msprop:Generator_ColumnPropNameInRow="Vol" msprop:Generator_ColumnPropNameInTable="VolColumn" msprop:Generator_UserColumnName="Vol" type="xs:double" default="0" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1">
+      <xs:selector xpath=".//mstns:UbicOrd" />
+      <xs:field xpath="mstns:ID" />
+    </xs:unique>
+    <xs:unique name="Constraint2">
+      <xs:selector xpath=".//mstns:UbicOrd" />
+      <xs:field xpath="mstns:UbicID" />
+    </xs:unique>
+    <xs:unique name="UbicSort_Constraint1" msdata:ConstraintName="Constraint1">
+      <xs:selector xpath=".//mstns:UbicSort" />
+      <xs:field xpath="mstns:ID" />
+    </xs:unique>
+    <xs:unique name="UbicSort_Constraint2" msdata:ConstraintName="Constraint2">
+      <xs:selector xpath=".//mstns:UbicSort" />
+      <xs:field xpath="mstns:UbicID" />
+    </xs:unique>
+    <xs:unique name="UbicTemp_Constraint1" msdata:ConstraintName="Constraint1">
+      <xs:selector xpath=".//mstns:UbicTemp" />
+      <xs:field xpath="mstns:ID" />
+    </xs:unique>
+    <xs:unique name="UbicTemp_Constraint2" msdata:ConstraintName="Constraint2">
+      <xs:selector xpath=".//mstns:UbicTemp" />
+      <xs:field xpath="mstns:UbicID" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

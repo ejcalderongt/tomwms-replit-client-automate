@@ -1,0 +1,1493 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{60D41D3D-8ED6-4EC1-B6E1-870DAB8AD448}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>TOMWMS</RootNamespace>
+    <AssemblyName>TestMI3</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Drawing.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Printing.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Xpo.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Connected Services\srvCliente\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\srvPedidoCliente\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\srvPedidoCompra\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\srvProductoBodega\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\srvPropietario\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\srvProveedorBodega\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\srvBarrasPallet\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\srvProducto\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\srvProveedor\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\srvReportes\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\srvTransaccionesOut\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\srvUnidadMedida\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\srvUsuario\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\svBodega\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Connected Services\WSHH\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="Connected Services\srvBarrasPallet\Barras_Pallet.wsdl" />
+    <None Include="Connected Services\srvBarrasPallet\Barras_Pallet.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvBarrasPallet\Barras_Pallet1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvBarrasPallet\Barras_Pallet2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvCliente\ServiceCliente.wsdl" />
+    <None Include="Connected Services\srvCliente\ServiceCliente.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvCliente\ServiceCliente1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvCliente\ServiceCliente2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvPedidoCliente\PedidoCliente1.wsdl" />
+    <None Include="Connected Services\srvPedidoCliente\PedidoCliente3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvPedidoCliente\PedidoCliente31.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvPedidoCliente\PedidoCliente32.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvPedidoCompra\PedidoCompra1.wsdl" />
+    <None Include="Connected Services\srvPedidoCompra\PedidoCompra3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvPedidoCompra\PedidoCompra31.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvPedidoCompra\PedidoCompra32.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvProductoBodega\ServiceProductoBodega.wsdl" />
+    <None Include="Connected Services\srvProductoBodega\ServiceProductoBodega.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvProductoBodega\ServiceProductoBodega1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvProductoBodega\ServiceProductoBodega2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvProducto\ServiceProducto.wsdl" />
+    <None Include="Connected Services\srvProducto\ServiceProducto.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvProducto\ServiceProducto1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvProducto\ServiceProducto2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvProducto\ServiceProducto3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvPropietario\ServicePropietario.wsdl" />
+    <None Include="Connected Services\srvPropietario\ServicePropietario.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvPropietario\ServicePropietario1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvPropietario\ServicePropietario2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvPropietario\TOMWMS.srvPropietario.clsBePropietarios.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\srvPropietario\TOMWMS.srvPropietario.DisableResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\srvPropietario\TOMWMS.srvPropietario.InsertResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\srvProveedorBodega\ServiceProveedorBodega1.wsdl" />
+    <None Include="Connected Services\srvProveedorBodega\ServiceProveedorBodega3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvProveedorBodega\ServiceProveedorBodega31.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvProveedorBodega\ServiceProveedorBodega32.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvProveedorBodega\TOMWMS.srvProveedorBodega.clsBeProveedor_bodega.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\srvProveedor\ServiceProveedor1.wsdl" />
+    <None Include="Connected Services\srvProveedor\ServiceProveedor3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvProveedor\ServiceProveedor31.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvProveedor\ServiceProveedor32.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvProveedor\TOMWMS.srvProveedor.clsBeProveedor.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\srvReportes\srvReportes1.wsdl" />
+    <None Include="Connected Services\srvReportes\srvReportes4.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvReportes\srvReportes41.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvReportes\srvReportes42.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvTransaccionesOut\TransaccionesOut1.wsdl" />
+    <None Include="Connected Services\srvTransaccionesOut\TransaccionesOut3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvTransaccionesOut\TransaccionesOut31.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvTransaccionesOut\TransaccionesOut32.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvUnidadMedida\ServiceUnidadMedida.wsdl" />
+    <None Include="Connected Services\srvUnidadMedida\ServiceUnidadMedida.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvUnidadMedida\ServiceUnidadMedida1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvUnidadMedida\ServiceUnidadMedida2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvUnidadMedida\TOMWMS.srvUnidadMedida.clsBeUnidad_medida.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\srvUsuario\srvUsuario.wsdl" />
+    <None Include="Connected Services\srvUsuario\srvUsuario.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvUsuario\srvUsuario1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvUsuario\srvUsuario2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\srvUsuario\TOMWMS.srvUsuario.clsBeUsuario.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\svBodega\ServiceBodega.wsdl" />
+    <None Include="Connected Services\svBodega\ServiceBodega.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\svBodega\ServiceBodega1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\svBodega\ServiceBodega2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\svBodega\TOMWMS.svBodega.clsBeBodega.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMHHWS.wsdl" />
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Actualizar_Estado_CambioResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Actualizar_Estado_PedidoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Actualizar_Estado_PickingResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Actualizar_Estado_RecepcionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Actualizar_Inventario_Inicial_By_BeTransInvTramoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Actualizar_PickingEnc_ProcesadoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Actualizar_PickingEnc_VerificadoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Actualizar_PickingResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Actualizar_PickingUbic_Por_VerificacionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Actualizar_Picking_Con_Reemplazo_De_PalletResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Actualizar_Trans_Ubic_HH_DetResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Actualiza_Cant_Peso_VerificacionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Actualiza_Picking_ConsolidadoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Agregar_Inventario_InicialResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Agregar_MarcajeResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Android_Get_All_EmpresasResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Android_Get_All_VersionesResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Android_Get_Bodegas_By_IdEmpresaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Aplicar_Cambio_Estado_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Aplica_Cambio_Estado_Ubic_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.cancelaConexionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeBodega.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeBodegaBase.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeBodega_muelles.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeBodega_ubicacion.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeCliente_bodega.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeConfiguracion_barra_pallet.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeDetallePedidoAVerificar.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeEmpresa.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeEmpresaBase.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeImpresion_productos_barras.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeImpresora.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeI_nav_barras_pallet.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeLicensePlates.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeMenu_rol_op.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeMotivo_anulacion.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeMotivo_anulacion_bodega.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeMotivo_devolucion.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeMotivo_devolucion_bodega.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeMotivo_ubicacion.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeOperador_bodega.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBePaises.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeProducto.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeProducto_bodega.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeProducto_codigos_barra.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeProducto_estado.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeProducto_pallet.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeProducto_parametros.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeProducto_Presentacion.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeProducto_presentacion_tarima.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBePropietario_bodega.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeProveedor_bodega.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeReglas_recepcion.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeResolucion_lp_operador.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeRol_operador.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeSis_estado_tarea_hh.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeStock_rec.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeStock_res.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTareasIngresoHH.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTarea_hh.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_inv_ciclico_vw.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_inv_detalle.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_inv_detalle_grid.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_inv_enc.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_inv_enc_reconteo.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_inv_resumen.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_inv_resumen_grid.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_inv_stock_prod.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_inv_tramo.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_oc_det.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_oc_enc.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_oc_estado.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_oc_ti.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_pe_enc.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_picking_det.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_picking_enc.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_picking_ubic.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_re_det.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_re_det_parametros.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_re_enc.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_re_tr.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_ubic_hh_det.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeTrans_ubic_hh_enc.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeVersion_wms_hh_and.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeVW_stock_res.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.clsBeVW_stock_res_CI.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDetResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Es_Pallet_No_EstandarResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Es_ValidaUbicacion_By_IdUbicacionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Es_ValidoMuelle_By_CodigoBarraResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Existe_Barra_Pallet_I_NavResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Existe_LpResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Existe_LP_By_IdRecepcionEnc_And_IdRecepcionDetResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Existe_Lp_In_StockResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Existe_ProductoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Finalizar_RecepcionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Finalizar_Recepcion_ParcialResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Finalizar_Recepcion_Parcial_Pallet_ProveedorResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Genera_Tarea_Cambio_Estado_Por_Producto_DañadoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.GetSingleProductoTarimaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.GetSingleRecResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.GetSingleTareaHHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.GetSis_estado_tarea_hhResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.GetTarea_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.GetTimeStampServerResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Barras_Pallet_By_IdRecepcionEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_BeTrasReDet_By_IdOrdenCompraEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_By_Barra_Proveedor_ClienteResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_By_IdBodega_HH_FiltroResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_By_IDPickingEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_By_IdTransUbicEnc_And_IdOperadorResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Cambio_Ubic_By_IdBodega_And_IdOperadorResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Clasificacion_By_IdPropietarioResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Codigos_Barra_By_IdProductoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Detalle_Rec_By_IdRecepcionEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Empresas_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Filtro_TransOCTipo_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Impresora_By_IdEmpresa_And_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Impresora_By_IdEmpresa_And_IdBodega_DtResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Inventario_By_IdBodega_And_IdOperadorResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Inventario_Inicial_By_IdInventario_Enc_And_Idtramo_And_IdProductoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Inventario_Tramos_By_IdTareaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Pallet_Ingreso_By_BarraResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Params_By_IdRecepcionEnc_And_IdRecepcion_Det_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Pedidos_A_Verificar_By_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_PickingUbic_By_IdPickingEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_PickingUbic_By_IdPickingEnc_And_IdPedidoEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_PickingUbic_By_IdPickingEnc_For_VerificacionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_PickingUbic_By_IdPickingEnc_TipoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Picking_For_HH_By_IdBodega_And_IdOperadorBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Presentaciones_By_IdProductoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_ProductoParametros_By_IdProducto_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Productos_By_ImpresionBarrasResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Propietarios_By_IdEmpresaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Recepciones_For_HH_By_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Recepciones_For_HH_By_IdBodega_By_OperadorResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Rec_Ciegas_For_HH_By_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Reemplazo_By_IdPedidoDetResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Reglas_Recepcion_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Stock_Especifico_By_IdPedidoDetResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Stock_Especifico_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Stock_Res_By_IdPedidoDetResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_All_Trans_Re_Tr_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Banderas_RecepcionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_BeImpresora_By_IdImpresoraResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_BeProducto_By_Codigo_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_BeProducto_By_IdProductoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_BeProducto_By_LP_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_BeRolOPerador_By_IdRolOperadorResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_BeTransOcEnc_By_IdOrdenCompraEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_BeTransReEnc_By_IdREcepcionEnc_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Bodegas_By_IdEmpresa_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_cantidad_decimales_calculoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Cantidad_decimales_despliegueResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Cantidad_Recibida_Actual_By_IdRecepcionEnc_And_IdRecepcionDetResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Clasificacion_InvResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Clientes_By_IdBodega_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Codigo_Bodega_By_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Configuracion_Barra_Pallet_By_IdConfiguracionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Control_Lote_And_Vencimiento_By_IdProductoBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Count_Cambio_Est_Ubic_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Count_Picking_For_HH_By_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Count_Recepciones_For_HH_By_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Count_Tareas_ServicioResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Count_Verificaciones_For_HH_By_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Datos_Maestros_InvResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Datos_Maestros_Inv_ClasResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Datos_Maestros_Inv_FamResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Datos_Maestros_Inv_MarcResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Datos_Maestros_Inv_TipResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Datos_Maestros_Inv_UmBasResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Detalle_By_IdPedidoEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Detalle_By_IdRecepcionDet_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Detalle_By_IdRecepcionEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Detalle_OC_By_IdOrdeCompraDetResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Empresa_By_Codigo_And_ClaveResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Estados_By_IdPropietarioResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Estados_By_IdPropietario_And_IdBodegaHHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Estados_By_IdPropietario_And_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Estados_Producto_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Familia_InvResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_IdEstadoProductoNE_By_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_IdProductoBodega_By_IdProducto_And_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_IdProductoBuenEstado_Por_Defecto_By_IdBodega_And_IdEmpresaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_IdUbicacion_Picking_By_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_IdUbicMerma_By_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_IdUbic_Ciega_Recepcion_By_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Inventario_Inicial_By_IdInventarioEnc_And_IdTramoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Inventario_Teorico_By_CodigoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Licenses_Plates_By_IdRecepcionEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Lista_Conteo_Inventario_Inicial_By_IdInventarioEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_List_Empresas_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Marca_InvResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Menu_By_IdRolOperador_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Menu_Rol_Op_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Motivos_Anulacion_By_IdBodega_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Motivos_Devolucion_Bodega_By_IdBodega_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Motivos_Devolucion_By_IdBodega_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Motivos_Ubicacion_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Motivo_Anulacion_By_IdBodega_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Nombre_Rol_Operador_For_HH_By_IdRolOperadorResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Nuevo_Correlativo_LicensePlateResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Nuevo_Correlativo_LicensePlate_SResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Operadores_By_IdBodega_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_PaisesResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Pallet_Ingreso_By_BarraResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Permite_ImprimirResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Picking_By_IdPickingEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Productos_By_IdBodega_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Productos_By_IdUbicacionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Productos_By_IdUbicacion_And_LicPlateResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Producto_By_IdProductoBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Propietarios_By_IdBodega_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Proveedores_By_Bodega_For_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Recepciones_By_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Reemplazo_Producto_By_IdPedidoEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Resoluciones_Lp_By_IdOperador_And_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Single_BeTrans_OC_EstadoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Single_BodegaMuelleResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Single_By_IdEstadoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Single_By_IdPedidoEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Single_StockResResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Single_Trans_Picking_UbicResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Stock_By_IdRecepcionEnc_And_IdRecpecionDetResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Stock_By_Lic_PlateResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Stock_By_Lic_Plate_And_CodigoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Stock_Por_PalletResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Stock_Por_Pallet_CIResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Stock_Por_Producto_UbicacionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Stock_Por_Producto_Ubicacion_CIResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Stock_Rec_By_IdRecepcionEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Tipo_InvResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Tipo_RecepcionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_Ubicacion_By_Codigo_Barra_And_IdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_UMbas_InvResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Get_UMB_Pres_Stock_ByIdProducto_And_IdUMBas_AndIdBodegaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.GuardarRecepcionModifResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Guardar_Fotos_RecepcionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Guardar_Producto_Nuevo_InventarioResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Guardar_RecepcionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Guarda_Firma_RecepcionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Iniciar_Recepcion_OCResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Insertar_ImpresionProductosBarraResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.InventarioCiclicoListaConteoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.InventarioCiclicoPaletConteoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.InventarioInicialAgregaMultiResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.InventarioInicialDetActualizarResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.InventarioInicialDetEliminarResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.InventarioInicialDetGetResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.InventarioInicialVerActualizarResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.InventarioInicialVerAgregaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.InventarioInicialVerEliminarResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.InventarioInicialVerGetResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Inventario_Agregar_ConteoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Inventario_Ciclico_Actualiza_ConteoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Inventario_Ciclico_Actualiza_ReconteoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Inventario_Ciclico_Listar_ConteoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Inventario_Ciclico_ReConteosResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Inventario_Inicial_Acepta_Mal_Estado_By_IdUbicacionResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.loginHandHeldResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Marcar_DanadoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Marcar_No_EncontradoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.MaxIDInventarioCiclicoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.MaxIdRecEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.MaxIDStockRecResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.MaxIDStockSeRecResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Max_IdRecepcion_Det_By_IdRecepcionEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.ml_get_ubicacion_sugeridaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.nombreServidorLicenciasResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.ObtenerPickingDetResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Operador_Valido_HHResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Reemplaza_Producto_Dannado_Mayor_IgualResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Reemplaza_Producto_Dannado_MenorResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.ReemplazoProductoPickingTestResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Reemplazo_Producto_En_PickingResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Reservar_Stock_By_IdStockResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Reservar_Y_Reemplazar_Stock_By_IdStockResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.ServiceIsAliveResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Set_Estado_Pedido_VerificadoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Set_LP_StockResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Set_Nuevo_Pallet_IdResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.SustituirProductoNEPicking_TestResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Sustituir_Producto_NE_PickingResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.testWSResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Tiene_Pedidos_Sin_Verificar_By_IdPickingEncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Tiene_PosicionesResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.UbicacionVecinaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Ubicacion_Es_ValidaResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Ubicacion_Valida_By_IdUbicacion_And_IdEstadoResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.Ubicar_Almacen.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.USUbicStrucStage5.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.validaUbicacionPaletOldResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\WSHH\TOMWMS.WSHH.validaUbicacionPaletResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Properties\DataSources\clsBeAjustesMI3.datasource" />
+    <None Include="Properties\DataSources\clsBeI_nav_barras_pallet.datasource" />
+    <None Include="Properties\DataSources\clsBeI_nav_ped_compra_enc.datasource" />
+    <None Include="Properties\DataSources\clsBeI_nav_ped_traslado_enc.datasource" />
+    <None Include="Properties\DataSources\clsBeI_nav_transacciones_out.datasource" />
+    <None Include="Properties\DataSources\clsBeI_nav_transacciones_out_error.datasource" />
+    <None Include="Properties\DataSources\clsBeProducto.datasource" />
+    <None Include="Properties\DataSources\clsBeProducto_bodega.datasource" />
+    <None Include="Properties\DataSources\clsBeProducto_codigos_barra.datasource" />
+    <None Include="Properties\DataSources\clsBeProducto_parametros.datasource" />
+    <None Include="Properties\DataSources\clsBeProducto_Presentacion.datasource" />
+    <None Include="Properties\DataSources\clsBeProducto_presentacion_tarima.datasource" />
+    <None Include="Properties\DataSources\clsBeProducto_rellenado.datasource" />
+    <None Include="Properties\DataSources\clsBeProducto_sustituto.datasource" />
+    <None Include="Properties\DataSources\clsBeStock.datasource" />
+    <None Include="Properties\DataSources\clsBeStock_jornada.datasource" />
+    <None Include="Properties\DataSources\clsBeStock_jornada_cealsa.datasource" />
+    <None Include="Properties\DataSources\clsBeStock_jornada_logistico.datasource" />
+    <None Include="Properties\DataSources\clsBeTrans_pe_docu_ref.datasource" />
+    <None Include="Properties\DataSources\clsBe_Servicio_CEALSA.datasource" />
+    <None Include="Properties\DataSources\clsBe_Servicio_Logistico.datasource" />
+    <None Include="Properties\DataSources\System.Data.DataTable.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Connected Services\srvCliente\" />
+    <WCFMetadataStorage Include="Connected Services\srvPedidoCliente\" />
+    <WCFMetadataStorage Include="Connected Services\srvPedidoCompra\" />
+    <WCFMetadataStorage Include="Connected Services\srvProductoBodega\" />
+    <WCFMetadataStorage Include="Connected Services\srvPropietario\" />
+    <WCFMetadataStorage Include="Connected Services\srvProveedorBodega\" />
+    <WCFMetadataStorage Include="Connected Services\srvBarrasPallet\" />
+    <WCFMetadataStorage Include="Connected Services\srvProducto\" />
+    <WCFMetadataStorage Include="Connected Services\srvProveedor\" />
+    <WCFMetadataStorage Include="Connected Services\srvReportes\" />
+    <WCFMetadataStorage Include="Connected Services\srvTransaccionesOut\" />
+    <WCFMetadataStorage Include="Connected Services\srvUnidadMedida\" />
+    <WCFMetadataStorage Include="Connected Services\srvUsuario\" />
+    <WCFMetadataStorage Include="Connected Services\svBodega\" />
+    <WCFMetadataStorage Include="Connected Services\WSHH\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\svBodega\ServiceBodega.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\svBodega\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\svBodega\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\svBodega\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvBarrasPallet\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvBarrasPallet\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvBarrasPallet\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvProducto\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvProducto\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvProducto\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvProveedor\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvProveedor\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvProveedor\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvUnidadMedida\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvUnidadMedida\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvUnidadMedida\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvProveedorBodega\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvProveedorBodega\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvProveedorBodega\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvTransaccionesOut\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvTransaccionesOut\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvTransaccionesOut\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvUsuario\srvUsuario.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvUsuario\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvUsuario\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvUsuario\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvReportes\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvReportes\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvReportes\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvProveedor\ServiceProveedor1.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvProveedorBodega\ServiceProveedorBodega1.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvReportes\srvReportes1.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvPropietario\ServicePropietario.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvPropietario\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvPropietario\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvPropietario\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvPedidoCompra\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvPedidoCompra\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvPedidoCompra\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\WSHH\TOMHHWS.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\WSHH\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\WSHH\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\WSHH\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\srvBarrasPallet\Barras_Pallet.disco" />
+    <None Include="Connected Services\srvProducto\ServiceProducto.disco" />
+    <None Include="Connected Services\srvTransaccionesOut\TransaccionesOut1.disco" />
+    <None Include="Connected Services\srvPedidoCliente\configuration91.svcinfo" />
+    <None Include="Connected Services\srvPedidoCliente\configuration.svcinfo" />
+    <None Include="Connected Services\srvPedidoCliente\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Connected Services\srvPedidoCliente\PedidoCliente.disco" />
+    <None Include="Connected Services\srvCliente\ServiceCliente.disco" />
+    <None Include="Connected Services\srvCliente\configuration91.svcinfo" />
+    <None Include="Connected Services\srvCliente\configuration.svcinfo" />
+    <None Include="Connected Services\srvCliente\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Connected Services\srvProductoBodega\configuration91.svcinfo" />
+    <None Include="Connected Services\srvProductoBodega\configuration.svcinfo" />
+    <None Include="Connected Services\srvProductoBodega\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="pRec.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TOMIMSV4\DAL\DAL.vbproj">
+      <Project>{b7df5657-9a16-45a4-bf2f-ffda6138e06b}</Project>
+      <Name>DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TOMIMSV4\Entity\Entity.vbproj">
+      <Project>{df210a4e-56dd-4604-8558-ff6c51469a05}</Project>
+      <Name>Entity</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

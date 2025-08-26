@@ -1,0 +1,182 @@
+﻿@{
+    ViewData["Title"] = "Mantenimiento de roles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div id="page-mante-rol-portal">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light border rounded mb-3">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="fas fa-users"></i> Roles</a>
+            <button class="navbar-toggler"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#navbar-menu"
+                    aria-controls="navbar-menu"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbar-menu">
+                <form class="d-flex" v-on:submit.prevent="buscar">
+                    <input class="form-control me-sm-2" type="search" placeholder="Nombre" aria-label="Nombre" v-model="listaTermino">
+                    <button class="btn btn-info my-2 my-sm-0 me-sm-2" type="submit" v-bind:disabled="inicio">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <div class="row">
+        <div class="col-sm-4 mb-3">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-primary" aria-current="true">
+                    <h4>
+                        Roles
+                        <a class="btn btn-sm btn-danger float-end" href="#" v-on:click.prevent="limpiar">
+                            <span class="fas fa-plus"></span>
+                        </a>
+                    </h4>
+                </li>
+                <li class="list-group-item text-center" v-if="inicio">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Buscando...</span>
+                    </div>
+                </li>
+                <template v-else>
+                    <li class="list-group-item" v-for="(r, idx) in filtrada" v-bind:key="r.id">
+                        <span>{{ r.nombre }}</span>
+                        <div class="btn-group float-end">
+                            <button type="button" class="btn btn-light border dropdown-toggle btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" v-on:click.prevent="editar(idx)"> <span class="fas fa-edit"></span> Editar</a></li>
+                                <li><a class="dropdown-item" href="#" v-on:click.prevent="accesoMenu(r)"> <span class="fas fa-list"></span> Accesos del menú</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+        </div>
+
+        <div class="col-sm-8 mb-3">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="my-1">Rol {{ reg != '' ? form.nombre : '' }}</h4>
+                </div>
+                <div class="card-body">
+                    <form v-on:submit.prevent="guardar">
+                        <div class="form-group mb-3">
+                            <label for="nombre" class="fw-bold">Nombre: <span class="text-danger">*</span></label>
+                            <input type="text" v-model="form.nombre" class="form-control" id="nombre" required />
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="descripcion" class="fw-bold">Descripción: </label>
+                            <textarea v-model="form.descripcion" class="form-control" id="descripcion" rows="5"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary float-end" type="submit">
+                                <span class="fas fa-save"></span> Guardar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-acceso" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modal-acceso" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-fullscreen-sm-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-acceso-lbl">Accesos del menú para rol {{ rol.nombre }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="card">
+
+                                <div class="card-header">
+                                    <h5 class="my-1">Opciones agregadas</h5>
+                                </div>
+                                <div class="card-body">
+                                    <rama-opciones-agregadas 
+                                        v-bind:datos="listaAgregadas"
+                                        v-on:eliminar-opcion="eliminarOpcion"
+                                        id="opciones-agregadas" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="my-1">Opciones disponibles</h5>
+                                </div>
+                                <div class="card-body">
+                                    <rama-opciones-disponibles
+                                        v-bind:datos="listaDisponibles"
+                                        v-on:agregar-opcion="agregarOpcion"
+                                        v-bind:permitidos="listaPermitidos"
+                                        id="opciones-disponibles" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <span class="fas fa-times-circle"></span> Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<template id="rama-opciones-agregadas">
+    <ul class="list-group ms-2">
+        <li v-for="row in datos" class="list-group-item pe-0">
+            <span class="fa-fw" v-bind:class="row.icono" v-if="row.icono"></span> {{ row.nombre }}
+            <a href="#"
+               class="float-end text-danger pe-2"
+               :title="`Eliminar la opción ${row.nombre}`"
+               v-on:click.prevent="$emit('eliminar-opcion', row)">
+                <span class="fas fa-times"></span>
+            </a>
+            <rama-opciones-agregadas :datos="row.opciones"
+                           v-if="row.opciones && row.opciones.length"
+                           v-on:eliminar-opcion="eliminarOpcion"/>
+        </li>
+    </ul>
+</template>
+
+<template id="rama-opciones-disponibles">
+    <ul class="list-group ms-2">
+        <li v-for="row in datos" class="list-group-item pe-0">
+            <span class="fa-fw" v-bind:class="row.icono" v-if="row.icono"></span> {{ row.nombre }}
+
+            <a href="#"
+               v-if="permitidos.indexOf(row.idPortalMenu) === -1"
+               class="float-end text-success pe-2"
+               :title="`Agregar opción ${row.nombre}`"
+               v-on:click.prevent="$emit('agregar-opcion', row)">
+                <span class="fas fa-check"></span> {{ row.idPortallMenu }}
+            </a>
+            <rama-opciones-disponibles :datos="row.inversePadreNavigation"
+                           v-if="row.inversePadreNavigation && row.inversePadreNavigation.length"
+                           v-on:agregar-opcion="agregarOpcion"
+                           v-bind:permitidos="permitidos"/>
+        </li>
+    </ul>
+</template>
+
+@section Scripts {
+    <script src="~/js/Mixins/Accion.js" asp-append-version="true"></script>
+    <script src="~/js/Pages/Mante/RolPortal.js" asp-append-version="true"></script>
+}

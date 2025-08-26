@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="ServiceOrdenCompra" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:4180/Orden_Compra/ServiceOrdenCompra.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:4180/Orden_Compra/ServiceOrdenCompra.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:4180/Orden_Compra/ServiceOrdenCompra.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/" />
+      <xsd:import schemaLocation="http://localhost:4180/Orden_Compra/ServiceOrdenCompra.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Data" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IServiceOrdenCompra_ActualizaDatos_InputMessage">
+    <wsdl:part name="parameters" element="tns:ActualizaDatos" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_ActualizaDatos_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ActualizaDatosResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_MaxID_InputMessage">
+    <wsdl:part name="parameters" element="tns:MaxID" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_MaxID_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MaxIDResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetSingle_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSingle" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetSingle_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSingleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetByImpresion_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetByImpresion" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetByImpresion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetByImpresionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetOrdenCompraByPropietario_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOrdenCompraByPropietario" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetOrdenCompraByPropietario_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOrdenCompraByPropietarioResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetOrdenCompra_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOrdenCompra" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetOrdenCompra_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOrdenCompraResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetAll_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAll" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetAll_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetDetalle_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDetalle" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetDetalle_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDetalleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetImpresionByOC_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetImpresionByOC" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetImpresionByOC_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetImpresionByOCResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetCodigos_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCodigos" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetCodigos_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCodigosResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetPoliza_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPoliza" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetPoliza_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPolizaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetImagenes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetImagenes" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_GetImagenes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetImagenesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_DeleteImageByIndex_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteImageByIndex" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_DeleteImageByIndex_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteImageByIndexResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_Delete_InputMessage">
+    <wsdl:part name="parameters" element="tns:Delete" />
+  </wsdl:message>
+  <wsdl:message name="IServiceOrdenCompra_Delete_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IServiceOrdenCompra">
+    <wsdl:operation name="ActualizaDatos">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceOrdenCompra/ActualizaDatos" message="tns:IServiceOrdenCompra_ActualizaDatos_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceOrdenCompra/ActualizaDatosResponse" message="tns:IServiceOrdenCompra_ActualizaDatos_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MaxID">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceOrdenCompra/MaxID" message="tns:IServiceOrdenCompra_MaxID_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceOrdenCompra/MaxIDResponse" message="tns:IServiceOrdenCompra_MaxID_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSingle">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetSingle" message="tns:IServiceOrdenCompra_GetSingle_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetSingleResponse" message="tns:IServiceOrdenCompra_GetSingle_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetByImpresion">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetByImpresion" message="tns:IServiceOrdenCompra_GetByImpresion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetByImpresionResponse" message="tns:IServiceOrdenCompra_GetByImpresion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOrdenCompraByPropietario">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetOrdenCompraByPropietario" message="tns:IServiceOrdenCompra_GetOrdenCompraByPropietario_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetOrdenCompraByPropietarioResponse" message="tns:IServiceOrdenCompra_GetOrdenCompraByPropietario_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOrdenCompra">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetOrdenCompra" message="tns:IServiceOrdenCompra_GetOrdenCompra_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetOrdenCompraResponse" message="tns:IServiceOrdenCompra_GetOrdenCompra_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAll">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetAll" message="tns:IServiceOrdenCompra_GetAll_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetAllResponse" message="tns:IServiceOrdenCompra_GetAll_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDetalle">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetDetalle" message="tns:IServiceOrdenCompra_GetDetalle_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetDetalleResponse" message="tns:IServiceOrdenCompra_GetDetalle_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetImpresionByOC">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetImpresionByOC" message="tns:IServiceOrdenCompra_GetImpresionByOC_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetImpresionByOCResponse" message="tns:IServiceOrdenCompra_GetImpresionByOC_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCodigos">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetCodigos" message="tns:IServiceOrdenCompra_GetCodigos_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetCodigosResponse" message="tns:IServiceOrdenCompra_GetCodigos_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPoliza">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetPoliza" message="tns:IServiceOrdenCompra_GetPoliza_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetPolizaResponse" message="tns:IServiceOrdenCompra_GetPoliza_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetImagenes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetImagenes" message="tns:IServiceOrdenCompra_GetImagenes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceOrdenCompra/GetImagenesResponse" message="tns:IServiceOrdenCompra_GetImagenes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteImageByIndex">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceOrdenCompra/DeleteImageByIndex" message="tns:IServiceOrdenCompra_DeleteImageByIndex_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceOrdenCompra/DeleteImageByIndexResponse" message="tns:IServiceOrdenCompra_DeleteImageByIndex_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceOrdenCompra/Delete" message="tns:IServiceOrdenCompra_Delete_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceOrdenCompra/DeleteResponse" message="tns:IServiceOrdenCompra_Delete_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IServiceOrdenCompra" type="tns:IServiceOrdenCompra">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="ActualizaDatos">
+      <soap:operation soapAction="http://tempuri.org/IServiceOrdenCompra/ActualizaDatos" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MaxID">
+      <soap:operation soapAction="http://tempuri.org/IServiceOrdenCompra/MaxID" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSingle">
+      <soap:operation soapAction="http://tempuri.org/IServiceOrdenCompra/GetSingle" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetByImpresion">
+      <soap:operation soapAction="http://tempuri.org/IServiceOrdenCompra/GetByImpresion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetOrdenCompraByPropietario">
+      <soap:operation soapAction="http://tempuri.org/IServiceOrdenCompra/GetOrdenCompraByPropietario" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetOrdenCompra">
+      <soap:operation soapAction="http://tempuri.org/IServiceOrdenCompra/GetOrdenCompra" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAll">
+      <soap:operation soapAction="http://tempuri.org/IServiceOrdenCompra/GetAll" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDetalle">
+      <soap:operation soapAction="http://tempuri.org/IServiceOrdenCompra/GetDetalle" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetImpresionByOC">
+      <soap:operation soapAction="http://tempuri.org/IServiceOrdenCompra/GetImpresionByOC" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCodigos">
+      <soap:operation soapAction="http://tempuri.org/IServiceOrdenCompra/GetCodigos" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPoliza">
+      <soap:operation soapAction="http://tempuri.org/IServiceOrdenCompra/GetPoliza" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetImagenes">
+      <soap:operation soapAction="http://tempuri.org/IServiceOrdenCompra/GetImagenes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteImageByIndex">
+      <soap:operation soapAction="http://tempuri.org/IServiceOrdenCompra/DeleteImageByIndex" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <soap:operation soapAction="http://tempuri.org/IServiceOrdenCompra/Delete" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ServiceOrdenCompra">
+    <wsdl:port name="BasicHttpBinding_IServiceOrdenCompra" binding="tns:BasicHttpBinding_IServiceOrdenCompra">
+      <soap:address location="http://localhost:4180/Orden_Compra/ServiceOrdenCompra.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

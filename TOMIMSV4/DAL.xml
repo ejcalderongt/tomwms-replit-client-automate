@@ -1,0 +1,872 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+DAL
+</name>
+</assembly>
+<members>
+<member name="T:TOMIMS.My.Resources.Resources">
+<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+<member name="P:TOMIMS.My.Resources.Resources.ResourceManager">
+<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member>
+<member name="P:TOMIMS.My.Resources.Resources.Culture">
+<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member>
+<member name="P:TOMIMS.clsLnTransUbicSugerida2.clsBeTramosUSStage1.Ubicaciones_Vacias">
+ <summary>
+ Cantidad de posiciones vacías.
+ </summary>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnTransUbicSugerida2.Get_All_Tramos_With_The_Product(System.Int32,System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Devuelve el listado de tramos que contienen stock del producto solicitado.
+ </summary>
+ <param name="pIdProductoBodega"></param>
+ <param name="pIdBodega"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnTransUbicSugerida2.Get_Niveles_Y_Columnas_Ocupadas_By_IdBodega_And_IdTramo(System.Int32,System.Int32,TOMIMS.clsLnTransUbicSugerida2.clsBeTramosUSStage1,System.String,System.DateTime,System.Int32,System.Int32,System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20200422: Busco obtener las columnas y niveles ocupadasd por el producto
+ Tomando en cuenta que deben de cumplir algunas de las características 
+ que hicieron coincidir el tramo, pej. Lote, Vence, UmBas, Pres, Estado
+ El objetivo es identificar las posiciones vacías mas cercanas al "mismo" producto.
+ </summary>
+ <param name="pIdBodega"></param>
+ <param name="pIdTramo"></param>
+ <param name="pFitParams"></param>
+ <param name="Lote"></param>
+ <param name="FechaVence"></param>
+ <param name="IdUmBas"></param>
+ <param name="IdPres"></param>
+ <param name="IdProductoEstado"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(TOMIMS.clsBeI_nav_ped_compra_enc@,TOMIMS.clsBeTrans_oc_enc@,System.Windows.Forms.RichTextBox@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Procesar_Pedido_Compra_MI3 (Con transacción)
+ </summary>
+ <param name="navPedidoCompraEnc"></param>
+ <param name="OutBeOrdenCompra"></param>
+ <param name="lblprg"></param>
+ <param name="lConnection"></param>
+ <param name="lTransInterface"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnCliente.Insertar(TOMIMS.clsBeCliente@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Insertars the specified o be cliente.
+ </summary>
+ <param name="oBeCliente">The o be cliente.</param>
+ <param name="pConection">The p conection.</param>
+ <param name="pTransaction">The p transaction.</param>
+ <returns></returns>
+ <exception cref="T:System.Exception"></exception>
+</member>
+<member name="M:TOMIMS.clsLnCliente.Actualizar(TOMIMS.clsBeCliente@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Actualizars the specified o be cliente.
+ </summary>
+ <param name="oBeCliente">The o be cliente.</param>
+ <param name="pConection">The p conection.</param>
+ <param name="pTransaction">The p transaction.</param>
+ <returns></returns>
+ <exception cref="T:System.Exception"></exception>
+</member>
+<member name="M:TOMIMS.clsLnCliente.Eliminar(TOMIMS.clsBeCliente@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Eliminars the specified o be cliente.
+ </summary>
+ <param name="oBeCliente">The o be cliente.</param>
+ <param name="pConection">The p conection.</param>
+ <param name="pTransaction">The p transaction.</param>
+ <returns></returns>
+ <exception cref="T:System.Exception"></exception>
+</member>
+<member name="M:TOMIMS.clsLnCliente.EliminarTodos(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Eliminars the todos.
+ </summary>
+ <param name="pConection">The p conection.</param>
+ <param name="pTransaction">The p transaction.</param>
+ <returns></returns>
+ <exception cref="T:System.Exception"></exception>
+</member>
+<member name="M:TOMIMS.clsLnCliente.Listar">
+ <summary>
+ Listars this instance as Datatable
+ </summary>
+ <returns></returns>
+ <exception cref="T:System.Exception"></exception>
+</member>
+<member name="M:TOMIMS.clsLnCliente.Obtener(TOMIMS.clsBeCliente@)">
+ <summary>
+ Obteners the specified o be cliente.
+ </summary>
+ <param name="oBeCliente">The o be cliente.</param>
+ <returns></returns>
+ <exception cref="T:System.Exception">
+ No se pudo obtener el registro
+ or
+ </exception>
+</member>
+<member name="M:TOMIMS.clsLnCliente.GetAll">
+ <summary>
+ Gets all BeClients as List.
+ </summary>
+ <returns></returns>
+ <exception cref="T:System.Exception"></exception>
+</member>
+<member name="M:TOMIMS.clsLnCliente.GetSingle(TOMIMS.clsBeCliente@)">
+ <summary>
+ Gets the single Client instance.
+ </summary>
+ <param name="pBeCliente">The p be cliente.</param>
+ <returns></returns>
+ <exception cref="T:System.Exception"></exception>
+</member>
+<member name="M:TOMIMS.clsLnCliente.MaxID">
+ <summary>
+ Maximums the identifier for a new costumer.
+ </summary>
+ <returns></returns>
+ <exception cref="T:System.Exception"></exception>
+</member>
+<member name="M:TOMIMS.clsLnHorario_laboral_enc.Listar(System.Boolean)">
+ <summary>
+ 'FUncion que devuelve todos los horarios
+ </summary>
+ <param name="pActivo"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnProducto_presentacion.Get_All_Stock_Con_Presentacion_By_IdProducto(System.Int32)">
+ <summary>
+ Obtiene las presentaciones disponibles en stock
+ </summary>
+ <param name="pIdProductoBodega">IdProducto</param>
+ <returns>Lista de presentaciones clsBeProducto_presentacion</returns>
+ <remarks>ejcalderon_20160516</remarks>
+</member>
+<member name="M:TOMIMS.clsLnProducto_presentacion.UpdateMM(TOMIMS.clsBeProducto_Presentacion)">
+ <summary>
+ Creado por Erik Calderón
+ Actualiza Minimos y Maximos cuando la presentacion del producto aun tiene stock
+ </summary>
+ <param name="pObjP"></param>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnRol.ExistePermiso(System.String,System.Int32)">
+ <summary>
+ Verifica si una opcion de menu de sistema ya existe en el menu de Rol
+ </summary>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsServidor.HoraServivdor">
+ <summary>
+ Creada por Ricardo Garcìa
+ </summary>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsServidor.ExisteBaseDatos(System.String)">
+ <summary>
+ Creada por Ricardo Garcìa
+ </summary>
+ <param name="pNombreBaseDatos"></param>
+ <returns></returns>
+</member>
+<member name="T:TOMIMS.clsLnArancel">
+ <summary>
+ Class clsLnArancel. Logic of Arancel
+ </summary>
+</member>
+<member name="M:TOMIMS.clsLnArancel.Eliminar(TOMIMS.clsBeArancel@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Eliminars the specified o be arancel.
+ </summary>
+ <param name="oBeArancel">The o be arancel.</param>
+ <param name="pConection">The p conection.</param>
+ <param name="pTransaction">The p transaction.</param>
+ <returns>Number of rows afected</returns>
+ <exception cref="T:System.Exception"></exception>
+</member>
+<member name="M:TOMIMS.clsLnBodega_area.GetAllByAreaBodega(System.Boolean,System.Int32)">
+ <summary>
+ Funcion para obtener una lista de Areas filtradas por un ID BODEGA
+ </summary>
+ <param name="pActivo"></param>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+ <remarks>Bcuscul</remarks>
+</member>
+<member name="M:TOMIMS.clsLnBodega_area.Get_All_Areas_By_IdBodega(System.Int32)">
+ <summary>
+ Funcion que me devuelve en un Datatable las areas filtradas por un IDBODEGA 
+ </summary>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+ <remarks>Bcuscul</remarks>
+</member>
+<member name="M:TOMIMS.clsLnBodega_sector.GetSingle(System.Int32,System.Int32)">
+ <summary>
+ Funcion que me devuelte un Sector y recibe como parametro un IDSECTOR
+ </summary>
+ <param name="pIdSector"></param>
+ <returns></returns>
+ <remarks>Bcuscul</remarks>
+</member>
+<member name="M:TOMIMS.clsLnBodega_sector.GetAllBySectorBodega(System.Boolean,System.Int32,System.Int32)">
+ <summary>
+ Funcion que me devuelve todos los sectores recibe como parametros si son Activos o No, y un IDAREA
+ </summary>
+ <param name="pActivo"></param>
+ <param name="pIdArea"></param>
+ <returns></returns>
+ <remarks>Bcuscul</remarks>
+</member>
+<member name="M:TOMIMS.clsLnBodega_sector.Get_All_Sector_By_Area_And_IdBodega(System.Int32,System.Int32)">
+ <summary>
+ Funcion que me devuelve en una tabla todos los sectores recibe como parametro un id Area
+ </summary>
+ <param name="pIdArea"></param>
+ <returns></returns>
+ <remarks>Bcuscul</remarks>
+</member>
+<member name="M:TOMIMS.clsLnBodega_ubicacion.Get_All_Ubicaciones_By_IdTramo_And_IdBodega(System.Boolean,System.Int32,System.Int32)">
+ <summary>
+ 'Funcion que me devuelve una lista de objetos de tipo clsBeBodega_ubicacion
+ </summary>
+ <param name="pActivo">filtra las ubicaciones que sean activas y que pertenezcan a un PidTramo</param>
+ <param name="pIdTramo"></param>
+ <returns>retorna una lista de objetos de tipo clsBeBodega_ubicacion</returns>
+ <remarks>Bcuscul 13052016</remarks>
+</member>
+<member name="M:TOMIMS.clsLnBodega_ubicacion.Get_All_By_IdBodega(System.Boolean,System.Int32,System.String)">
+ <summary>
+ Función que regresa una lista de ubicaciones para la seleccion, inicialmente se hizo para seleccionar en producto estado
+ CREADA POR Erik Calderón
+ Fue modificada por Bcuscul se agrego el parametro tipo de Ubicacion para saber de que tipo de ubicacion 
+ se quiere filtrar 
+ </summary>
+ <param name="pActivo"></param>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnBodega_ubicacion.Get_All_Ubicaciones_By_IdTramo(System.Int32,System.Int32,System.String,System.Int32,System.Boolean,System.Int32)">
+ <summary>
+ 'Funcion creada para filtrar las ubicacines dependiendo del tipo que sean 
+ </summary>
+ <param name="pIdTramo">Id Tramo, nombreCampo(para seleccionar las ubicaciones de tipo recepcion, despacho,picking,merma, Activo</param>
+ <param name="NombreCampo"></param>
+ <param name="Activo"></param>
+ <returns></returns>
+ <remarks>Bcuscul/Ejcalderon</remarks>
+</member>
+<member name="M:TOMIMS.clsLnBodega_ubicacion.GetSingle(System.Int32,System.Int32,System.String,System.Boolean,System.Int32)">
+ <summary>
+ 'Funcion que me trae una sola ubicacion
+ </summary>
+ <param name="pIdUbicacion">el parametro que espera la funcion es pIdUbicacion</param>
+ <returns>retorna un objeto de tipo clsBeBodega_ubicacion</returns>
+ <remarks>Bcuscul13052016</remarks>
+</member>
+<member name="M:TOMIMS.clsLnCliente_direccion.GetSingle(System.Int32,System.Int32)">
+ <summary>
+ 
+ </summary>
+ <param name="IdCliente"></param>
+ <param name="IdDireccion"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnProducto_presentacion_tarima.MaxID">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnProducto_presentacion_tarima.MaxID(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnProducto_presentacion_tarima.GetSingle(System.Int32)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pIdPresentacionTarima"></param>
+ <returns>Devuelve solamente un registro</returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnProducto_presentacion_tarima.GetAllByPresentacion(System.Boolean)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pActivo"></param>
+ <returns>Devuelve una lista de rellenados segun la presentacion</returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnProducto_rellenado.MaxID">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnProducto_rellenado.MaxID(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnProducto_rellenado.GetSingle(System.Int32)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pIdRellenado"></param>
+ <returns>Devuelve solamente un registro</returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnProducto_rellenado.GetAllByPresentacion(System.Int32,System.Boolean)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pIdPresentacion"></param>
+ <param name="pActivo"></param>
+ <returns>Devuelve una lista de rellenados segun la presentacion</returns>
+ <remarks></remarks>
+ '#CM20172310_0522PM: Corrección de String.Format en Producto_rellanado
+</member>
+<member name="M:TOMIMS.clsLnTrans_tras_enc.MaxID">
+ <summary>
+ Funcion obtiene el nuevo indice de transaccion.
+ </summary>
+ <returns>Nuevo ID A utilizar para la transaccion</returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnTrans_tras_enc.ListarTraslados(System.Boolean,System.String)">
+ <summary>
+ Funcion que muestra todos los translado
+ Filtrado por si esta activo o desactivado 
+ y por nombre en especifico
+ </summary>
+ <param name="pActivo">Parametro para definir si dsea mostrar las transacciones activas o eliminadas</param>
+ <param name="pFiltro">Buscar en la lista por este nombre  y los filtra</param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnVW_Despacho_Rep.Get_Ultimo_Lote_By_IdCliente(System.Int32,System.Int32)">
+ <summary>
+ #EJC20190313: Devuelve el último lote despachado para un cliente  y producto.
+ </summary>
+ <param name="pIdCliente">Id de cliente</param>
+ <param name="pIdProductoBodega">Id de producto</param>
+ <returns>El número de lote</returns>
+</member>
+<member name="M:TOMIMS.clsLnTrans_despacho_det.MaxID(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnTrans_despacho_det.Get_All_By_Despacho(System.Int32)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pIdDespachoEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnTrans_despacho_enc.MaxID(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnTrans_despacho_enc.GetAll(System.Boolean,System.DateTime,System.DateTime)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pActivo"></param>
+ <param name="pFechaDel"></param>
+ <param name="pFechaAl"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnTrans_despacho_enc.GetAllByIdBodega(System.Boolean,System.DateTime,System.DateTime,System.Int32)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pActivo"></param>
+ <param name="pFechaDel"></param>
+ <param name="pFechaAl"></param>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnTrans_despacho_enc.Anular_Despacho(System.Int32)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pIdDespachoEnc"></param>
+</member>
+<member name="M:TOMIMS.clsLnTrans_despacho_enc.Guardar_Despacho_Stock(TOMIMS.clsBeTrans_despacho_enc,TOMIMS.clsBeI_nav_config_enc,TOMIMS.clsBeTrans_oc_enc@,System.Boolean,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC20190312: EAT
+ Generar pedido de compa a partir de un despacho para una bodega interna del WMS configurada en el sistema.
+ </summary>
+ <param name="BeDespachoEnc"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+</member>
+<member name="M:TOMIMS.clsLnTransacciones_log.DeleteByProducto(TOMIMS.clsBeTransacciones_log,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="oBeTransacciones_log"></param>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <remarks></remarks>
+ 
+</member>
+<member name="M:TOMIMS.clsLnTransacciones_log.Posponer(System.Collections.Generic.List{TOMIMS.clsBeTransacciones_log})">
+ <summary>
+ Creado por Ricardo García
+ </summary>
+ <param name="pObjListT"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnTransacciones_log.EnviarTarea(System.Collections.Generic.List{TOMIMS.clsBeTransacciones_log},System.String)">
+ <summary>
+ Creado por Ricardo García
+ </summary>
+ <param name="pObjListT"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnTrans_ubicsug.Get_Ubicaciones_Sugeridas(System.Int32,TOMIMS.clsBeProducto,TOMIMS.clsBeProducto_Presentacion,TOMIMS.clsBeProducto_estado,System.String,System.Collections.Generic.List{TOMIMS.clsBeUbicacionExcluida},System.Double,System.Int32)">
+ <summary>
+ #EJC20191231_1708: Utilizar para HH ?
+ Es casi año nuevo, pero en estos momentos de hocio, encuentro inspiración. Ya se que ocio va sin "H", pero la escribo así porque me recuerda a Hocico.
+ </summary>
+ <param name="pIdBodega"></param>
+ <param name="pBeProducto"></param>
+ <param name="pBePresentacion"></param>
+ <param name="pBeEstadoProducto"></param>
+ <param name="pLote"></param>
+ <param name="pUbicacionesExcluidas"></param>
+ <param name="pCantidadAUbicar"></param>
+ <param name="pIdUbicacionActualStock"></param>
+ <returns></returns>
+</member>
+<member name="T:TOMIMS.dsUbicSug">
+<summary>
+Represents a strongly typed in-memory cache of data.
+</summary>
+</member>
+<member name="T:TOMIMS.dsUbicSug.UbicOrdDataTable">
+<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member>
+<member name="T:TOMIMS.dsUbicSug.UbicSortDataTable">
+<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member>
+<member name="T:TOMIMS.dsUbicSug.UbicTempDataTable">
+<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member>
+<member name="T:TOMIMS.dsUbicSug.TramoVolDataTable">
+<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member>
+<member name="T:TOMIMS.dsUbicSug.UbicOrdRow">
+<summary>
+Represents strongly named DataRow class.
+</summary>
+</member>
+<member name="T:TOMIMS.dsUbicSug.UbicSortRow">
+<summary>
+Represents strongly named DataRow class.
+</summary>
+</member>
+<member name="T:TOMIMS.dsUbicSug.UbicTempRow">
+<summary>
+Represents strongly named DataRow class.
+</summary>
+</member>
+<member name="T:TOMIMS.dsUbicSug.TramoVolRow">
+<summary>
+Represents strongly named DataRow class.
+</summary>
+</member>
+<member name="T:TOMIMS.dsUbicSug.UbicOrdRowChangeEvent">
+<summary>
+Row event argument class
+</summary>
+</member>
+<member name="T:TOMIMS.dsUbicSug.UbicSortRowChangeEvent">
+<summary>
+Row event argument class
+</summary>
+</member>
+<member name="T:TOMIMS.dsUbicSug.UbicTempRowChangeEvent">
+<summary>
+Row event argument class
+</summary>
+</member>
+<member name="T:TOMIMS.dsUbicSug.TramoVolRowChangeEvent">
+<summary>
+Row event argument class
+</summary>
+</member>
+<member name="M:TOMIMS.clsLnTrans_pe_enc.GetSingle(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20200125: Se utiliza en I_Nav_Transacciones_Out para interface MI3.
+ </summary>
+ <param name="pIdPedidoEnc"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnTrans_pe_enc.Get_Single_By_IdPedidoEnc(System.Int32)">
+ <summary>
+ #EJC20200125: Utilizado en la HH, se cambió a vista para mejorar el rendimiento.
+ </summary>
+ <param name="pIdPedidoEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnTrans_pe_enc.DespacharPedido(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pIdPedidoEnc"></param>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+</member>
+<member name="M:TOMIMS.clsLnTrans_pe_enc.Actualizar_Referencia_By_IdPedidoEnc(System.String,System.Int32)">
+ <summary>
+ Actualiza el número de documento del ERP en un pedido despachado desde WMS 
+ Se utiliza cuando el pedido fue creado en WMS y procesado posteriormente en el ERP.
+ Actualiza también los registros en la tabla I_NAV_TRANSACCIONES_OUT
+ </summary>
+ <param name="pReferencia"></param>
+ <param name="pIdPedidoEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnMotivo_devolucion.GetSingle(System.Int32)">
+ <summary>
+ Funcion utizada para regresar un registro de la tabla segun parámetro
+ </summary>
+ <param name="pIdMotivoDevolucion"></param>
+ <returns name = "Regresa un objeto de tipo de la tabla motivo_devolucion"></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnMotivo_devolucion.GetAllFiltro(System.Boolean)">
+ <summary>
+ Función utilizada para regresar una lista de Motivos Devolución
+ </summary>
+ <param name="pActivo"></param>
+ <returns name ="Reresa una lista de registros de la tabla motivo_devolucion"></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnMotivo_devolucion.Delete(System.Int32,System.Int32)">
+ <summary>
+ Procedimiento para eliminar definitivamente un motivo devolucion segun el Propietario
+ </summary>
+ <param name="pIdEmpresa"></param>
+ <param name="pIdPropietario"></param>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnMotivo_devolucion.Exists(System.Int32)">
+ <summary>
+ Función utilizada para validar si existe el motivo devolución
+ </summary>
+ <param name="pIdMotivoDevolucion"></param>
+ <returns name = "Regresa verdadero si existe de lo contrario falso"></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnMotivo_devolucion.MAXID">
+ <summary>
+ Función utilizada para saber cual es el valor máximo de la tabla motivo_devolucion
+ </summary>
+ <returns name = "Regresa el valor máximo + 1 de la tabla motivo_devolucion"></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnProducto.Get_Minimos_y_Maximos_By_IdProducto(System.Int32)">
+ <summary>
+ Funcion que me trae el minimo y el maximo de los productos Recibe como parametro un id de producto DataTable para Reporte
+ </summary>
+ <param name="pIdProducto"></param>
+ <returns></returns>
+ <remarks>Bcuscul Jun2016</remarks>
+</member>
+<member name="M:TOMIMS.clsLnProducto.Get_All_Producto(System.Boolean)">
+ <summary>
+ Se utiliza para desplegar el listado de productos en la pantalla de "Lista de productos"
+ </summary>
+ <param name="pActivo">"</param>
+ <returns>List(Of clsBeProducto)</returns>
+</member>
+<member name="M:TOMIMS.clsLnProducto.Get_IdProductoBodega_By_Codigo(System.String)">
+ <summary>
+ Obtiene el IdProductoBodega a partir de cualquiera de sus códigos asociados.
+ </summary>
+ <param name="pCodigo">Código de producto, Código de Barra en Producto, Código de barra en producto_codigos_barra </param>
+ <returns>IdProductoBodega de la tabla producto_bodega donde Activo = 1</returns>
+ <remarks>ejcalderon_201605166</remarks>
+</member>
+<member name="M:TOMIMS.clsLnProducto.Get_BeProducto_By_Codigo(System.String,System.Int32)">
+ <summary>
+ Busca un producto por su código, pero ademas el IdProductoBodega por bodega.
+ Se utiliza para buscar un producto en el proceso de digitación del detalle del pedido.
+ </summary>
+ <param name="pCodigo">Código a traves del cuál se busca el producto</param>
+ <param name="IdBodega">IdBodega por el cual se busca el producto</param>
+ <returns>devuelve un objeto del tipo clsBeProducto</returns>
+ <remarks>ejcalderon_20160519</remarks>
+</member>
+<member name="M:TOMIMS.clsLnProducto.GuardarTransaccion(System.Collections.Generic.List{TOMIMS.clsBeProducto},System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ Creado por Ricardo García
+ </summary>
+ <param name="pListObjP"></param>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnProducto.Desactivar(TOMIMS.clsBeProducto)">
+ <summary>
+ Creado por Ricardo García
+ </summary>
+ <param name="pObjP"></param>
+ <remarks></remarks>
+</member>
+<member name="M:TOMIMS.clsLnProducto.Guardar(TOMIMS.clsBeProducto,System.Collections.Generic.List{TOMIMS.clsBeProducto_parametros},System.Collections.Generic.List{TOMIMS.clsBeProducto_codigos_barra},System.Collections.Generic.List{TOMIMS.clsBeProducto_Presentacion},System.Collections.Generic.List{TOMIMS.clsBeProducto_sustituto},System.Collections.Generic.List{TOMIMS.clsBeProducto_rellenado},System.Collections.Generic.List{TOMIMS.clsBeProducto_presentacion_tarima},System.Collections.Generic.List{TOMIMS.clsBeProducto_bodega},System.Collections.Generic.List{TOMIMS.clsBeProducto_presentaciones_conversiones},System.Collections.Generic.List{TOMIMS.clsBeProducto_kit_composicion})">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pObjP"></param>
+ <param name="pListObjPR"></param>
+ <param name="pListObjCB"></param>
+ <param name="pListObjP"></param>
+ <param name="pListObjPS"></param>
+ <param name="pListObjPRE"></param>
+ <param name="pListObjPPT"></param>
+ <param name="pListObjCN"></param>
+ <remarks></remarks>
+ 
+</member>
+<member name="M:TOMIMS.clsLnProducto_codigos_barra.Desactivar(System.Int32,System.Int32,System.String)">
+ <summary>
+ Desactivar el codigo de barra
+ </summary>
+ <param name="pIdProducto"></param>
+ <param name="pIdProveedor"></param>
+ <param name="pCodigoBarra"></param>
+ <remarks>Erik Calderón</remarks>
+</member>
+<member name="M:TOMIMS.clsLnProducto_estado.BismarckFunction">
+<summary>
+ Función creada por Bismarck
+ </summary>
+</member>
+<member name="M:TOMIMS.clsLnTrans_oc_det.Get_All_By_IdOrdenCompraEnc(System.Int32)">
+ <summary>
+ Creada por Erik Calderón
+ </summary>
+ <param name="pIdOrdenCompraEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnTrans_oc_enc.Set_Estado_Anulado_OC(System.Int32,System.Int32,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ Creada por Erik Calderón
+ </summary>
+ <param name="pIdOrdenCompraEnc"></param>
+</member>
+<member name="M:TOMIMS.clsLnTrans_oc_enc.Actualizar_Estado_Cerrada(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ El Estado 4 es CERRADA para las Ordenes de Compra (Ver tabla trans_oc_estado)
+ </summary>
+ <param name="pIdOrdenCompraEnc"></param>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>    
+</member>
+<member name="M:TOMIMS.clsLnTrans_picking_det_parametros.Guardar(System.Collections.Generic.List{TOMIMS.clsBeTrans_picking_det_parametros})">
+ <summary>
+  Creada por Carlos Manuel - Guarda y actualiza el proceso de Parametros    
+ </summary>
+ <param name="lParametros"></param>
+</member>
+<member name="M:TOMIMS.clsLnTrans_picking_ubic.MaxID(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnTrans_re_det.Get_Detalle_By_IdRecepcionDet_HH(System.Int32,System.Int32,System.Int32)">
+ <summary>
+ Creada por Carolina Fuentes para obtener todos los registros de detalle de la recepción de un producto en una recepción
+ </summary>
+ <param name="pIdRecepcionEnc"></param>
+ <param name="pIdProductoBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnTrans_re_det.Get_All_By_IdRecepcionEnc_Sin_OC(System.Int32)">
+ <summary>
+ Creada por Carolina Fuentes
+ </summary>
+ <param name="pIdRecepcionEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnTrans_re_det.GetAllByOrdenCompraRec(System.Int32)">
+ <summary>
+ Creada por Carlos Manuel
+ </summary>
+ <param name="pIdOrdenCompraEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnTrans_re_enc.Get_All_By_IdOrdenRecEnc(System.Int32)">
+ <summary>
+ Creada por Carlos Manuel
+ </summary>
+ <param name="pIdOrdenCompraEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnTrans_re_oc.Get_IdRecepcionEnc_By_IdOrdenCompraEnc(System.Int32)">
+ <summary>
+ Creada por Erik Calderón, se usa para obtener todas las Recepciones para posteriormente buscar su estado y anularlas
+ </summary>
+ <param name="pIdOrdenCompraEnc"></param>
+ <returns>Lista de Recepciones solamente Ids</returns>
+</member>
+<member name="M:TOMIMS.clsLnStock.Get_All_By_IdPropietarioBodega(System.Int32)">
+ <summary>
+ Busca las existencias para un IdPropietarioBodega
+ </summary>
+ <param name="pIdPropietarioBodega">El IdPropietario asociado a una bodega</param>
+ <returns>Devuelve lista de ojbetos de tipo: clsBeVW_stock_res (vista VW_Stock_SP en la BD)</returns>
+ <remarks>ejcalderon_20160512</remarks>
+</member>
+<member name="M:TOMIMS.clsLnStock.Get_Lista_Existencias_By_IdProductoBodega(System.Int32)">
+ <summary>
+ Función para consultar las existencias de un producto a partir de la tabla stock
+ </summary>
+ <param name="pIdProductoBodega">Se deben llenar los valores IdProductoBodega, IdProductoEstado, IdUnidadMedida, IdPresentacion(Opcional)</param>
+ <returns>Devuelve una lista de clsBESTock a partir de los parámetros enviados en un objeto de tipo clsBEStock</returns>
+ <remarks>ejcalderon_20160512</remarks>
+ 
+</member>
+<member name="M:TOMIMS.clsLnStock.GetRptProductsMinMax(System.Int32)">
+ <summary>
+ Reporte de mínimos y máximos
+ </summary>
+ <param name="pIdProducto"></param>
+ <returns></returns>
+ <remarks>ejcalderon</remarks>
+</member>
+<member name="M:TOMIMS.clsLnStock.Get_Single_By_IdStock(System.Int32)">
+ <summary>
+ Buscar un registro en la tabla stock a partir de un IdStock pero se usa solo para traer los campos de referencia
+ </summary>
+ <param name="IdStock">Identificador único de fila para obtener el registro</param>
+ <returns>Devuelve un objeto de tipo clsBeVW_stock_res (Entidad de la vista VW_Stock_SP en la BD) </returns>
+ <remarks>ejcalderon</remarks>
+</member>
+<member name="M:TOMIMS.clsLnStock.getRptProductosProximosVencimiento(System.Int32)">
+ <summary>
+ Reporte de productos proximos a vencer
+ </summary>
+ <param name="pIdProducto"></param>
+ <returns></returns>
+ <remarks>Bcuscul</remarks>
+</member>
+<member name="M:TOMIMS.clsLnStock.Get_All_By_IdProductoBodega(System.Int32)">
+ <summary>
+ Metodo para traer el stock por producto Bodega
+ </summary>
+ <param name="pIdProductoBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnStock.RestarCantidadVerificada(TOMIMS.clsBeStock,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pObj"></param>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+</member>
+<member name="M:TOMIMS.clsLnStock_res.Set_IdPicking_By_IdPedidoDet(System.Int32,System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creada por Erik Calderón, se utiliza para indicar a que IdPicking pertenecen ciertas líneas del stock reservado
+ </summary>
+ <param name="pIdPicking"></param>
+ <param name="pIdPedidoDet"></param>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+</member>
+<member name="M:TOMIMS.clsLnStock_res.Get_Cantidad_Reservada_By_IdStock(System.Int32,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ Devuelve la cantidad reservada para un IdStock.
+ </summary>
+ <param name="pIdStock"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMIMS.clsLnStock_parametro.Get_All_By_IdStock(System.Int32)">
+ <summary>
+ Devuelve una lista de clsBeStock_parametro para un IdStock
+ </summary>
+ <param name="pIdStock">Recibe como parámetro el IdStock (Int) de tabla Stock</param>
+ <returns></returns>
+ <remarks>ejcalderon_20160512</remarks>
+</member>
+<member name="M:TOMIMS.clsLnTrans_ubic_hh_enc.Get_Dimensiones_Productos(System.Int32@)">
+ <summary>
+ Trae las dimensiones de cada producto, los productos se filtran por la ubicacion
+ </summary>
+ <param name="pIdUbicacion">IdUbicacion</param>
+ <returns></returns>
+ <remarks>Bcuscul06072016</remarks>
+</member>
+<member name="M:TOMIMS.clsLnTrans_ubic_hh_op.Get_All_By_IdTareaUbicacion(System.Int32)">
+ <summary>
+ Busca el detalle para un cambio de Ubicacion trans_ubic_hh_enc
+ </summary>
+ <param name="pIdTransUbicHhEnc">Filtra el detalle asociado a un IdTransUbicHhEnc</param>
+ <returns>Devuelve lista de objetos de tipo: clsBeTrans_ubic_hh_det</returns>
+ <remarks>Bcuscul_13052016</remarks>
+</member>
+</members>
+</doc>

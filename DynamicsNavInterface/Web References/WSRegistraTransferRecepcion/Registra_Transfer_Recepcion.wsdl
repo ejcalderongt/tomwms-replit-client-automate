@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:tns="urn:microsoft-dynamics-schemas/codeunit/Registra_Transfer_Recepcion" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/Registra_Transfer_Recepcion" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <schema elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/Registra_Transfer_Recepcion" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element name="RegistrarRecepTransfer">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="numero_Documento" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="RegistrarRecepTransfer_Result">
+        <complexType>
+          <sequence />
+        </complexType>
+      </element>
+    </schema>
+  </types>
+  <message name="RegistrarRecepTransfer">
+    <part name="parameters" element="tns:RegistrarRecepTransfer" />
+  </message>
+  <message name="RegistrarRecepTransfer_Result">
+    <part name="parameters" element="tns:RegistrarRecepTransfer_Result" />
+  </message>
+  <portType name="Registra_Transfer_Recepcion_Port">
+    <operation name="RegistrarRecepTransfer">
+      <input name="RegistrarRecepTransfer" message="tns:RegistrarRecepTransfer" />
+      <output name="RegistrarRecepTransfer_Result" message="tns:RegistrarRecepTransfer_Result" />
+    </operation>
+  </portType>
+  <binding name="Registra_Transfer_Recepcion_Binding" type="tns:Registra_Transfer_Recepcion_Port">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="RegistrarRecepTransfer">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Registra_Transfer_Recepcion:RegistrarRecepTransfer" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="RegistrarRecepTransfer">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="RegistrarRecepTransfer_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="Registra_Transfer_Recepcion">
+    <port name="Registra_Transfer_Recepcion_Port" binding="tns:Registra_Transfer_Recepcion_Binding">
+      <address location="http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/Registra_Transfer_Recepcion" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </port>
+  </service>
+</definitions>

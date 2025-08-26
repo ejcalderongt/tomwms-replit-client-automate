@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="VB" Debug="true" Service="TOMWMS.srvDocumentoIngresoRef" CodeBehind="srvDocumentoIngresoRef.svc.vb" %>

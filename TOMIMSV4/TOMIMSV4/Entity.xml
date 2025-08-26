@@ -1,0 +1,4833 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+Entity
+</name>
+</assembly>
+<members>
+<member name="T:TOMWMS.My.Resources.Resources">
+<summary>
+  Clase de recurso fuertemente tipado, para buscar cadenas traducidas, etc.
+</summary>
+</member>
+<member name="P:TOMWMS.My.Resources.Resources.ResourceManager">
+<summary>
+  Devuelve la instancia de ResourceManager almacenada en caché utilizada por esta clase.
+</summary>
+</member>
+<member name="P:TOMWMS.My.Resources.Resources.Culture">
+<summary>
+  Reemplaza la propiedad CurrentUICulture del subproceso actual para todas las
+  búsquedas de recursos mediante esta clase de recurso fuertemente tipado.
+</summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_barras_pallet.Cantidad_UMP">
+ <summary>
+ Cantidad de fardos o cajas por pallet, se emplea especialmente para tarimas parciales que no cumplen la norma estándar de estiba.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out_error.IdMensaje">
+ <summary>
+ Este es un Identity controlado internamente por el WMS, puede llenarse en 0.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out_error.IdTransaccionWMS">
+ <summary>
+ Identificador del Idtransacción enviada por el WMS hacia el ERP
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out_error.IdTipoTransaccionWMS">
+ <summary>
+ Indica el número asociado con el tipo de transacción
+ 1. recepción|Ingreso.
+ 2. Despacho|Pedido de Cliente| Orden de Venta.
+ 3. Ajuste Positivo.
+ 4. Ajuste Negativo.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out_error.ReferenciaERP">
+ <summary>
+ código de transacción asociada a ERP si aplica.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out_error.TransaccionERP">
+ <summary>
+ transacción que se está generado del lado del ERP.
+ Ej: Tralsado|recepción|Ingreso|Despacho
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out_error.Mensaje">
+ <summary>
+ Mensaje a adicionar, referente a la transacción.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out_error.EsError">
+ <summary>
+ Marcar true si el mensaje representa une error en la transacción.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out_error.NumeroError">
+ <summary>
+ número asociado al error, capturado o devuelto por la excepcion.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out_error.Observacion">
+ <summary>
+ Observación que el programador desee agregar.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out_error.IdDirectorio">
+ <summary>
+ Asocia el directorio de la interfaz web al mensaje de error.
+ </summary>
+ <returns></returns>
+</member>
+<member name="F:TOMWMS.clsDataContractDI.tTipoDocumentoSalida.Traslado_Por_Estados_SAP">
+ <summary>
+#EJC20240527: 13	TRAS_SAP	Traslado_Por_Estados_SAp - Becofarma.
+ </summary>
+</member>
+<member name="F:TOMWMS.clsDataContractDI.tTipo_Rec.HCOC00">
+ <summary>
+ HCOC00: Ingreso con Orden de Compra, Permite realizar el ingreso con HH de un D.I.
+ </summary>
+</member>
+<member name="F:TOMWMS.clsDataContractDI.tTipo_Rec.HCOD00">
+ <summary>
+ HCOD00: Devolución de Pedido, Permite realizar el ingreso de una devolución con HH a partir de un pedido.
+ </summary>
+</member>
+<member name="F:TOMWMS.clsDataContractDI.tTipo_Rec.HHSR00">
+ <summary>
+ HHSR00: Ingreso sin referencia HH. Permite realizar un ingreso en la HH, sin detalle de lo que se va a recibir.
+ </summary>
+</member>
+<member name="F:TOMWMS.clsDataContractDI.tTipo_Rec.HSOC00">
+ <summary>
+ HSOC00. Ingreso sin Orden de Compra. Permite realizar un ingreso con HH "Ciego" sin O.C.
+ </summary>
+</member>
+<member name="F:TOMWMS.clsDataContractDI.tTipo_Rec.HSOD00">
+ <summary>
+ HSOD00. Ingreso de Devolución sin referencia. Permite realizar el ingreso con HH de una devolución sin referencia
+ </summary>
+</member>
+<member name="F:TOMWMS.clsDataContractDI.tTipo_Rec.MCOC00">
+ <summary>
+ MCOC00. Ingreso con Orden de Compra. Permite realizar el ingreso en PC de una O.C.
+ </summary>
+</member>
+<member name="F:TOMWMS.clsDataContractDI.tTipo_Rec.MCOD00">
+ <summary>
+ MCOD00. Devolución de Pedido (PC). Permite realizar el ingreso de una devolución en PC a partir de un pedido
+ </summary>
+</member>
+<member name="F:TOMWMS.clsDataContractDI.tTipo_Rec.MSOC00">
+ <summary>
+ MSOC00. Ingreso sin Orden de Compra  (PC). Permite realizar un ingreso en PC "Ciego" sin O.C.
+ </summary>
+</member>
+<member name="F:TOMWMS.clsDataContractDI.tTipo_Rec.MSOD00">
+ <summary>
+ MSOD00. Devolución sin referencia (PC). Permite realizar el ingreso en PC de una devolución sin referencia
+ </summary>
+</member>
+<member name="F:TOMWMS.clsDataContractDI.tTipo_Rec.PICH000">
+ <summary>
+ PICH000. Ingreso sin referencia verificado con HH. Permite realizar la impresión de etiquetas para pre-ingreso
+ </summary>
+</member>
+<member name="T:TOMWMS.clsBeProveedor_tiempos">
+ <summary>
+ Class clsBeProveedor_tiempos.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+ <seealso cref="T:System.IDisposable" />
+</member>
+<member name="P:TOMWMS.clsBeProveedor_tiempos.IdTiempoProveedor">
+ <summary>
+ Gets or sets the identifier tiempo proveedor.
+ </summary>
+ <value>The identifier tiempo proveedor.</value>
+</member>
+<member name="P:TOMWMS.clsBeProveedor_tiempos.IdProveedor">
+ <summary>
+ Gets or sets the identifier proveedor.
+ </summary>
+ <value>The identifier proveedor.</value>
+</member>
+<member name="P:TOMWMS.clsBeProveedor_tiempos.IdFamilia">
+ <summary>
+ Gets or sets the identifier familia.
+ </summary>
+ <value>The identifier familia.</value>
+</member>
+<member name="P:TOMWMS.clsBeProveedor_tiempos.IdClasificacion">
+ <summary>
+ Gets or sets the identifier clasificacion.
+ </summary>
+ <value>The identifier clasificacion.</value>
+</member>
+<member name="P:TOMWMS.clsBeProveedor_tiempos.Familia">
+ <summary>
+ Gets or sets the familia.
+ </summary>
+ <value>The familia.</value>
+</member>
+<member name="P:TOMWMS.clsBeProveedor_tiempos.Clasificacion">
+ <summary>
+ Gets or sets the clasificacion.
+ </summary>
+ <value>The clasificacion.</value>
+</member>
+<member name="P:TOMWMS.clsBeProveedor_tiempos.Dias_Local">
+ <summary>
+ Gets or sets the dias_ local.
+ </summary>
+ <value>The dias_ local.</value>
+</member>
+<member name="P:TOMWMS.clsBeProveedor_tiempos.Dias_Exterior">
+ <summary>
+ Gets or sets the dias_ exterior.
+ </summary>
+ <value>The dias_ exterior.</value>
+</member>
+<member name="P:TOMWMS.clsBeProveedor_tiempos.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProveedor_tiempos.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProveedor_tiempos.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProveedor_tiempos.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProveedor_tiempos.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProveedor_tiempos"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeProveedor_tiempos.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProveedor_tiempos"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProveedor_tiempos.#ctor(System.Int32@,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.DateTime,System.String,System.DateTime,System.Boolean)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProveedor_tiempos"/> class.
+ </summary>
+ <param name="IdTiempoProveedor">The identifier tiempo proveedor.</param>
+ <param name="IdProveedor">The identifier proveedor.</param>
+ <param name="IdFamilia">The identifier familia.</param>
+ <param name="IdClasificacion">The identifier clasificacion.</param>
+ <param name="Dias_Local">The dias_ local.</param>
+ <param name="Dias_Exterior">The dias_ exterior.</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+</member>
+<member name="M:TOMWMS.clsBeProveedor_tiempos.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="F:TOMWMS.clsBeProveedor_tiempos.disposedValue">
+ <summary>
+ The disposed value
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProveedor_tiempos.Dispose(System.Boolean)">
+ <summary>
+ Releases unmanaged and - optionally - managed resources.
+ </summary>
+ <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+</member>
+<member name="M:TOMWMS.clsBeProveedor_tiempos.Dispose">
+ <summary>
+ Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeStock_jornada.Cantidad_Ingreso_Afecta_A_salida">
+ <summary>
+ #EJC20210519: Esta singularidad, indica que el stock se recibió y se despachó, total o parcialmente y se necesita reflejar que estuvo un período X almacenado.
+ Realizado para CEALSA, En el año 2021, un 19 de Mayo. (tengo privado el sábado, que nervios no he podido estudiar jaja)
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeStock_jornada.Stock_Jornada_Hash">
+ <summary>
+ #EJC20210519: Se utiliza como blockchain para evitar determinar en algún momento de auditoría si existió edición de registro en el retroactivo de CEALSA.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeStock_jornada.IdTicketTMS">
+ <summary>
+ #EJC20210520: De momento no se guarda en la tabla stock_jornada, pero me sirve para hacer la actualización y procesamiento del ticket.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeStock_jornada.TipoRubro">
+ <summary>
+ #CKFK 20120924: De momento no se guarda en la tabla stock_jornada, pero me sirve para un reporte de CEALSA
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeStock_jornada.Bultos_Por_Tarima">
+ <summary>
+ #CKFK 20120924: De momento no se guarda en la tabla stock_jornada, pero me sirve para un reporte de CEALSA
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTms_ticket.Procesado_Stock_Jornada">
+ <summary>
+ Determina si stock jornada, ya analizó este ticket.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeAjustesMI3.Codigo_Bodega">
+ <summary>
+ Código de bodega de WMS.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeAjustesMI3.Codigo_Bodega_ERP">
+ <summary>
+ Código de bodega de ERP (Proviene de cliente)
+ </summary>
+ <returns></returns>
+</member>
+<member name="T:TOMWMS.clsBeI_nav_config_det">
+ <summary>
+ Class clsBeI_nav_config_det.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_det.Idnavconfigdet">
+ <summary>
+ Gets or sets the idnavconfigdet.
+ </summary>
+ <value>The idnavconfigdet.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_det.IdNavEnt">
+ <summary>
+ Gets or sets the identifier nav ent.
+ </summary>
+ <value>The identifier nav ent.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_det.IdNavConfigEnc">
+ <summary>
+ Gets or sets the identifier nav configuration enc.
+ </summary>
+ <value>The identifier nav configuration enc.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_det.Dia">
+ <summary>
+ Gets or sets the dia.
+ </summary>
+ <value>The dia.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_det.HoraInicio">
+ <summary>
+ Gets or sets the hora inicio.
+ </summary>
+ <value>The hora inicio.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_det.HoraFin">
+ <summary>
+ Gets or sets the hora fin.
+ </summary>
+ <value>The hora fin.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_det.Frecuencia">
+ <summary>
+ Gets or sets the frecuencia.
+ </summary>
+ <value>The frecuencia.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_det.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeI_nav_config_det"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_det.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_det.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_det.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_det.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_config_det.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_config_det"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_config_det.#ctor(System.Int32@,System.Int32,System.Int32,System.Int32,System.DateTime,System.DateTime,System.Int32,System.Boolean,System.DateTime,System.String,System.DateTime,System.String)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_config_det"/> class.
+ </summary>
+ <param name="idnavconfigdet">The idnavconfigdet.</param>
+ <param name="idnavent">The idnavent.</param>
+ <param name="idnavconfigenc">The idnavconfigenc.</param>
+ <param name="dia">The dia.</param>
+ <param name="horainicio">The horainicio.</param>
+ <param name="horafin">The horafin.</param>
+ <param name="frecuencia">The frecuencia.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="user_mod">The user_mod.</param>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_config_det.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.Reservar_UMBas_Primero">
+ <summary>
+ #EJC20211216: Agregado para reservar de posiciones de picking primero en MERCOPAN.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.Implosion_Automatica">
+ <summary>
+ #EJC20211216_1221: Un triste día de vacaciones para Carolina ocurrió que:
+ Determina si cuando el producto se solicita en presentación y solo hay umbas y se corresponde con el factor 
+ Es decir: Si la cantidad disponible en umbas dividida por el factor, devuelve unidades manipulables enteras (no fraccionarias)
+ Entonces al IdStock se le colocará el Idpresentación correspondiente con la unidad solicitada
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.Explosion_Automatica">
+ <summary>
+ #EJC20211216_1221: Un triste día de vacaciones para Carolina ocurrió que:
+ Determina si cuando el producto se solicita en umbas y solo hay disponible en presentación 
+ Si la cantidad disponible en presentación dividida por el factor, devuelve unidades manipulables enteras (no fraccionarias)
+ Entonces al IdStock se le quitará el Idpresentación para que quede en UMBAS.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.Explosion_Automatica_Desde_Ubicacion_Picking">
+ <summary>
+ #EJC20220523:Explosionar únicamente producto que está en zonas de picking
+ Requerimiento de Marcelo en Mercosal, día frío con lluvia, Lunes.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.Explosion_Automatica_Nivel_Max">
+ <summary>
+ #EJC20220523:Explosionar ónicamente desde los niveles 1 de rack producto (BYB, intuición de Erik).
+ </summary>
+ <returns></returns>
+</member>
+<member name="T:TOMWMS.clsBeI_nav_config_enc.tRechazarPedidoIncompleto">
+ <summary>
+ #EJC20190702: Condición de procesamiento de pedido en interface.
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeI_nav_config_enc.tRechazarPedidoIncompleto.No">
+ <summary>
+ Si alguna línea del pedido no puede ser abastecida por existencia se rechaza el pedido completo
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeI_nav_config_enc.tRechazarPedidoIncompleto.Si">
+ <summary>
+ Si alguna línea del pedido no puede ser abastecida por existencia se procesarón las demás lineas y se dará por válido el pedido
+ </summary>
+</member>
+<member name="T:TOMWMS.clsBeI_nav_config_enc.tDespacharExistenciaParcial">
+ <summary>
+ ''' #EJC20190702: Condición de procesamiento de línea de pedido en interface.
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeI_nav_config_enc.tDespacharExistenciaParcial.No">
+ <summary>
+ Se rechazará la línea completa del pedido
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeI_nav_config_enc.tDespacharExistenciaParcial.Si">
+ <summary>
+ Se despacha la cantidad existente para la línea del pedido
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.IdTipoRotacion">
+ <summary>
+ #EJC20220330: Tipo de rotación de producto por defecto para interface.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.Conservar_Zona_Picking_Clavaud">
+ <summary>
+ #EJC202211071651: 
+ Paso 1: en la lista de LPs de almacenamiento, ubicar los LPs que al 100% cumplen para ser despachados al cliente (sin stock reservado)
+ Paso 2: Una vez revisado el punto 1, revisar en el área de picking las cantidades que hagan falta para completar el pedido
+ Paso 3: De ser necesario, volver a revisar en el almacenamiento si se puede completar el pedido (sílo la cantidad requerida)
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.Excluir_Ubicaciones_Reabasto">
+ <summary>
+ #CKFK20230208: 
+ Al obtener el inventario disponible si la bandera está en true se excluirón las ubicaciones de reabasto
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.considerar_paletizado_en_reabasto">
+ <summary>
+ #CKFK20230209: 
+ Permitir reabastecer una ubicación con una sola tarima completa
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.Dias_Vida_Defecto_Perecederos">
+ <summary>
+ #EJC202303031607: Para interface BYB.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.Codigo_Bodega_ERP_NC">
+<summary>
+#EJC20231017: Codigo_Bodega_ERP_NC - Indica el código (numérico) de la bodega en SAP.
+ </summary>
+<returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.Lote_Defecto_Entrada_NC">
+ <summary>
+ #EJC20231023: Lote_Defecto_Entrada_NC - Se utiliza para generar la entrada de mercancía por producto faltante en ingresos por importación o con backorder.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.Vence_Defecto_NC">
+ <summary>
+ #EJC20231023: Se utiliza para generar la entrada de mercancía por producto faltante en ingresos por importación o con backorder.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.IdProductoEstado_NC">
+ <summary>
+ #EJC20231024: Este valor define el estado con el que el producto ingresa a stock cuando se generan NC'S en SAP por producto faltante teórico....
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.SAP_Control_Draft_Ajustes">
+ <summary>
+ #EJC202403271406: Determinar si los documentos de SAP, están sujetos al modelo de aprobación, en este caso hay que considera que al autorizar el documento en SAP
+ Ya se ha movido de bodega el producto, en consecuencia WMS, debe ejecutar o replicar el movimiento.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.Inferir_Bonificacion_Pedido_SAP">
+ <summary>
+ #EJC202409041701: Si en un pedido de cliente, se repite el No. de línea con el mismo artículo, se infiere, que la segunda línea es la bonificación.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.Rechazar_Bonificacion_Incompleta">
+ <summary>
+ #EJC202409041701: Determina si la bonificación incompleta se debe rechazar o no.
+ </summary>
+ <returns></returns>
+</member>
+<member name="T:TOMWMS.clsBeI_nav_config_ent">
+ <summary>
+ Class clsBeI_nav_config_ent.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="F:TOMWMS.clsBeI_nav_config_ent.mIdnavconfigent">
+ <summary>
+ The m idnavconfigent
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeI_nav_config_ent.mIdnavent">
+ <summary>
+ The m idnavent
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeI_nav_config_ent.mEndpoint">
+ <summary>
+ The m endpoint
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeI_nav_config_ent.mActivo">
+ <summary>
+ The m activo
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeI_nav_config_ent.mFec_agr">
+ <summary>
+ The m fec_agr
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeI_nav_config_ent.mUser_agr">
+ <summary>
+ The m user_agr
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeI_nav_config_ent.mFec_mod">
+ <summary>
+ The m fec_mod
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeI_nav_config_ent.mUser_mod">
+ <summary>
+ The m user_mod
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_ent.IdNavConfigEnt">
+ <summary>
+ Gets or sets the identifier nav configuration ent.
+ </summary>
+ <value>The identifier nav configuration ent.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_ent.IdNavEnt">
+ <summary>
+ Gets or sets the identifier nav ent.
+ </summary>
+ <value>The identifier nav ent.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_ent.Endpoint">
+ <summary>
+ Gets or sets the endpoint.
+ </summary>
+ <value>The endpoint.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_ent.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeI_nav_config_ent"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_ent.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_ent.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_ent.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_ent.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_config_ent.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_config_ent"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_config_ent.#ctor(System.Int32@,System.Int32,System.String,System.Boolean,System.DateTime,System.String,System.DateTime,System.Int32)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_config_ent"/> class.
+ </summary>
+ <param name="idnavconfigent">The idnavconfigent.</param>
+ <param name="idnavent">The idnavent.</param>
+ <param name="endpoint">The endpoint.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="user_mod">The user_mod.</param>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_config_ent.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="T:TOMWMS.clsBeI_nav_ent">
+ <summary>
+ Class clsBeI_nav_ent.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="T:TOMWMS.clsBeI_nav_ent_filtros">
+ <summary>
+ Class clsBeI_nav_ent_filtros.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ent_filtros.Idnaventfiltro">
+ <summary>
+ Gets or sets the idnaventfiltro.
+ </summary>
+ <value>The idnaventfiltro.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ent_filtros.Idnavent">
+ <summary>
+ Gets or sets the idnavent.
+ </summary>
+ <value>The idnavent.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ent_filtros.Valor">
+ <summary>
+ Gets or sets the valor.
+ </summary>
+ <value>The valor.</value>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ent_filtros.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_ent_filtros"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ent_filtros.#ctor(System.Int32@,System.Int32,System.String)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_ent_filtros"/> class.
+ </summary>
+ <param name="idnaventfiltro">The idnaventfiltro.</param>
+ <param name="idnavent">The idnavent.</param>
+ <param name="valor">The valor.</param>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ent_filtros.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out.Auditar">
+ <summary>
+ #EJC20240917: Determinar que transacciones se enviaron o no correctamente a SAP (por lote)
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out.IdTipoDocumento">
+ <summary>
+ Indica el tipo de documento de salida o ingreso efectuado. Pej. Transferencia, Despacho, Devolución.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out.Placa_Transporte">
+ <summary>
+ Placa de transporte.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out.TCN_Transporte">
+ <summary>
+ Tank Container Number.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out.Marchamo_No">
+ <summary>
+ número de marchamo.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out.no_documento_salida_ref_devol">
+ <summary>
+ '#EJC20210617:Devolución Idealsa con referencia.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out.Cantidad_Enviada">
+ <summary>
+ #EJC20240913:Cantidad que se envió a ERP.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_transacciones_out.Cantidad_Pendiente">
+ <summary>
+ #EJC20240913:Cantidad pendiente de envío o ajuste en ERP.
+ </summary>
+ <returns></returns>
+</member>
+<member name="T:TOMWMS.clsBeI_nav_ejecucion_det_error">
+ <summary>
+ Class clsBeI_nav_ejecucion_det_error.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="F:TOMWMS.clsBeI_nav_ejecucion_det_error.mFecha">
+ <summary>
+ The m fecha
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_det_error.Idejecuciondet">
+ <summary>
+ Gets or sets the idejecuciondet.
+ </summary>
+ <value>The idejecuciondet.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_det_error.Idejecucionenc">
+ <summary>
+ Gets or sets the idejecucionenc.
+ </summary>
+ <value>The idejecucionenc.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_det_error.Idnavconfigdet">
+ <summary>
+ Gets or sets the idnavconfigdet.
+ </summary>
+ <value>The idnavconfigdet.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_det_error.vError">
+ <summary>
+ Gets or sets the errorr.
+ </summary>
+ <value>The errorr.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_det_error.Referencia">
+ <summary>
+ Gets or sets the referencia.
+ </summary>
+ <value>The referencia.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_det_error.Fecha">
+ <summary>
+ Gets or sets the fecha.
+ </summary>
+ <value>The fecha.</value>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ejecucion_det_error.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_ejecucion_det_error"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ejecucion_det_error.#ctor(System.Int32@,System.Int32,System.Int32,System.String,System.String,System.DateTime)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_ejecucion_det_error"/> class.
+ </summary>
+ <param name="idejecuciondet">The idejecuciondet.</param>
+ <param name="idejecucionenc">The idejecucionenc.</param>
+ <param name="idnavconfigdet">The idnavconfigdet.</param>
+ <param name="errorr">The errorr.</param>
+ <param name="referencia">The referencia.</param>
+ <param name="fecha">The fecha.</param>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ejecucion_det_error.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="T:TOMWMS.clsBeI_nav_ejecucion_enc">
+ <summary>
+ Class clsBeI_nav_ejecucion_enc.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="F:TOMWMS.clsBeI_nav_ejecucion_enc.mIdejecucionenc">
+ <summary>
+ The m idejecucionenc
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeI_nav_ejecucion_enc.mIdnavconfigenc">
+ <summary>
+ The m idnavconfigenc
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeI_nav_ejecucion_enc.mFecha">
+ <summary>
+ The m fecha
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeI_nav_ejecucion_enc.mExitosa">
+ <summary>
+ The m exitosa
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.IdEjecucionEnc">
+ <summary>
+ Gets or sets the idejecucionenc.
+ </summary>
+ <value>The idejecucionenc.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.IdNavConfigEnc">
+ <summary>
+ Gets or sets the idnavconfigenc.
+ </summary>
+ <value>The idnavconfigenc.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.Fecha">
+ <summary>
+ Gets or sets the fecha.
+ </summary>
+ <value>The fecha.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.Exitosa">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeI_nav_ejecucion_enc"/> is exitosa.
+ </summary>
+ <value><c>true</c> if exitosa; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ejecucion_enc.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_ejecucion_enc"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ejecucion_enc.#ctor(System.Int32@,System.Int32,System.DateTime,System.Boolean)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_ejecucion_enc"/> class.
+ </summary>
+ <param name="idejecucionenc">The idejecucionenc.</param>
+ <param name="idnavconfigenc">The idnavconfigenc.</param>
+ <param name="fecha">The fecha.</param>
+ <param name="exitosa">if set to <c>true</c> [exitosa].</param>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ejecucion_enc.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.IdEmpresa">
+ <summary>
+ Gets or sets the identifier empresa.
+ </summary>
+ <value>The identifier empresa.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.IdBodega">
+ <summary>
+ Gets or sets the identifier bodega.
+ </summary>
+ <value>The identifier bodega.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.IdPropietario">
+ <summary>
+ Gets or sets the identifier propietario.
+ </summary>
+ <value>The identifier propietario.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.Empresa">
+ <summary>
+ Gets or sets the empresa.
+ </summary>
+ <value>The empresa.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.Bodega">
+ <summary>
+ Gets or sets the bodega.
+ </summary>
+ <value>The bodega.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.Propietario">
+ <summary>
+ Gets or sets the propietario.
+ </summary>
+ <value>The propietario.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.Configuracion">
+ <summary>
+ Gets or sets the configuracion.
+ </summary>
+ <value>The configuracion.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.Interfaces">
+ <summary>
+ Gets or sets the interfaces.
+ </summary>
+ <value>The interfaces.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.registros_ws">
+ <summary>
+ Gets or sets the registros_ws.
+ </summary>
+ <value>The registros_ws.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.registros_ti">
+ <summary>
+ Gets or sets the registros_ti.
+ </summary>
+ <value>The registros_ti.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.registros_wms">
+ <summary>
+ Gets or sets the registros_wms.
+ </summary>
+ <value>The registros_wms.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.Exitosa_res">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeI_nav_ejecucion_enc"/> is exitosa_res.
+ </summary>
+ <value><c>true</c> if exitosa_res; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.Errores">
+ <summary>
+ Gets or sets the errores.
+ </summary>
+ <value>The errores.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.Fecha_error">
+ <summary>
+ Gets or sets the fecha_error.
+ </summary>
+ <value>The fecha_error.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_enc.Referencia">
+ <summary>
+ Gets or sets the referencia.
+ </summary>
+ <value>The referencia.</value>
+</member>
+<member name="T:TOMWMS.clsBeI_nav_ejecucion_res">
+ <summary>
+ Class clsBeI_nav_ejecucion_res.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_res.IdEjecucionRes">
+ <summary>
+ Gets or sets the idejecucionres.
+ </summary>
+ <value>The idejecucionres.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_res.IdEjecucionEnc">
+ <summary>
+ Gets or sets the idejecucionenc.
+ </summary>
+ <value>The idejecucionenc.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_res.IdNavConfigDet">
+ <summary>
+ Gets or sets the idnavconfigdet.
+ </summary>
+ <value>The idnavconfigdet.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_res.Registros_ws">
+ <summary>
+ Gets or sets the registros_ws.
+ </summary>
+ <value>The registros_ws.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_res.Registros_ti">
+ <summary>
+ Gets or sets the registros_ti.
+ </summary>
+ <value>The registros_ti.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_res.Registros_WMS">
+ <summary>
+ Gets or sets the registros_wms.
+ </summary>
+ <value>The registros_wms.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ejecucion_res.Exitosa">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeI_nav_ejecucion_res"/> is exitosa.
+ </summary>
+ <value><c>true</c> if exitosa; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ejecucion_res.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_ejecucion_res"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ejecucion_res.#ctor(System.Int32@,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_ejecucion_res"/> class.
+ </summary>
+ <param name="idejecucionres">The idejecucionres.</param>
+ <param name="idejecucionenc">The idejecucionenc.</param>
+ <param name="idnavconfigdet">The idnavconfigdet.</param>
+ <param name="registros_ws">The registros_ws.</param>
+ <param name="registros_ti">The registros_ti.</param>
+ <param name="registros_wms">The registros_wms.</param>
+ <param name="exitosa">if set to <c>true</c> [exitosa].</param>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ejecucion_res.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="T:TOMWMS.clsBeI_nav_ped_traslado_det">
+ <summary>
+ Class clsBeI_nav_ped_traslado_det.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.NoEnc">
+ <summary>
+ Gets or sets the no enc.
+ </summary>
+ <value>The no enc.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.Line_No">
+ <summary>
+ Gets or sets the line_ no.
+ </summary>
+ <value>The line_ no.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.Variant_Code">
+ <summary>
+ Gets or sets the variant_ code.
+ </summary>
+ <value>The variant_ code.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.No">
+ <summary>
+ Gets or sets the no.
+ </summary>
+ <value>The no.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.Description">
+ <summary>
+ Gets or sets the description.
+ </summary>
+ <value>The description.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.Item_No">
+ <summary>
+ Gets or sets the item_ no.
+ </summary>
+ <value>The item_ no.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.Qty_to_Receive">
+ <summary>
+ Gets or sets the qty_to_ receive.
+ </summary>
+ <value>The qty_to_ receive.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.Qty_to_Ship">
+ <summary>
+ Indica la cantidad disponible a despachar por el WMS.
+ </summary>
+ <value>The qty_to_ ship.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.Quantity">
+ <summary>
+ Gets or sets the quantity.
+ </summary>
+ <value>The quantity.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.Transfer_to_CodeField">
+ <summary>
+ Gets or sets the transfer_to_ code field.
+ </summary>
+ <value>The transfer_to_ code field.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.Transfer_From_CodeField">
+ <summary>
+ Gets or sets the transfer_to_ code field.
+ </summary>
+ <value>The transfer_to_ code field.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.Shipment_Date">
+ <summary>
+ Gets or sets the shipment_ date.
+ </summary>
+ <value>The shipment_ date.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.Unit_of_Measure_Code">
+ <summary>
+ Gets or sets the unit_of_ measure_ code.
+ </summary>
+ <value>The unit_of_ measure_ code.</value>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.Status">
+ <summary>
+ Indica si el registro de detalle fue procesado en el pedido o no.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.Process_Result">
+ <summary>
+ Muestra el resultado del procesamiento por la interface MI3 del WMS.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.Source_ID">
+ <summary>
+ #EJC20210614: En el caso de los envíos de NAV indica el número de pedido de venta contenido en el envío.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.IdPedidoDet">
+ <summary>
+ #EJC20220128: Actualizar con que IdPedidoDet fue procesada la línea de solicitud en la interface.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.Quantity_In_UMBas">
+ <summary>
+ #EJC20220315: Wrap de campo para manejar la explosión (unidades) de una línea con presentación.
+ </summary>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ped_traslado_det.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_ped_traslado_det"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ped_traslado_det.#ctor(System.String@,System.String,System.String,System.String,System.Decimal,System.Decimal,System.Decimal,System.String,System.DateTime,System.String)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_ped_traslado_det"/> class.
+ </summary>
+ <param name="NoEnc">The no enc.</param>
+ <param name="No">The no.</param>
+ <param name="Description">The description.</param>
+ <param name="Item_No">The item_ no.</param>
+ <param name="Qty_to_Receive">The qty_to_ receive.</param>
+ <param name="Qty_to_Ship">The qty_to_ ship.</param>
+ <param name="Quantity">The quantity.</param>
+ <param name="transfer_to_CodeField">The transfer_to_ code field.</param>
+ <param name="Shipment_Date">The shipment_ date.</param>
+ <param name="Unit_of_Measure_Code">The unit_of_ measure_ code.</param>
+</member>
+<member name="M:TOMWMS.clsBeI_nav_ped_traslado_det.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="T:TOMWMS.clsBeTrans_ajuste_det">
+ <summary>
+ Class clsBeTrans_ajuste_det.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.IdAjusteDet">
+ <summary>
+ Gets or sets the idajustedet.
+ </summary>
+ <value>The idajustedet.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.IdAjusteEnc">
+ <summary>
+ Gets or sets the idajusteenc.
+ </summary>
+ <value>The idajusteenc.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.IdStock">
+ <summary>
+ Gets or sets the identifier stock.
+ </summary>
+ <value>The identifier stock.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.IdPropietarioBodega">
+ <summary>
+ Gets or sets the identifier propietario bodega.
+ </summary>
+ <value>The identifier propietario bodega.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.IdProductoBodega">
+ <summary>
+ Gets or sets the identifier producto bodega.
+ </summary>
+ <value>The identifier producto bodega.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.IdProductoEstado">
+ <summary>
+ Gets or sets the identifier producto estado.
+ </summary>
+ <value>The identifier producto estado.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.IdPresentacion">
+ <summary>
+ Gets or sets the identifier presentacion.
+ </summary>
+ <value>The identifier presentacion.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.IdUnidadMedida">
+ <summary>
+ Gets or sets the identifier unidad medida.
+ </summary>
+ <value>The identifier unidad medida.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.IdUbicacion">
+ <summary>
+ Gets or sets the identifier ubicacion.
+ </summary>
+ <value>The identifier ubicacion.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.Lote_original">
+ <summary>
+ Gets or sets the lote_original.
+ </summary>
+ <value>The lote_original.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.Lote_nuevo">
+ <summary>
+ Gets or sets the lote_nuevo.
+ </summary>
+ <value>The lote_nuevo.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.Fecha_vence_original">
+ <summary>
+ Gets or sets the fecha_vence_original.
+ </summary>
+ <value>The fecha_vence_original.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.Fecha_vence_nueva">
+ <summary>
+ Gets or sets the fecha_vence_nueva.
+ </summary>
+ <value>The fecha_vence_nueva.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.Peso_original">
+ <summary>
+ Gets or sets the peso_original.
+ </summary>
+ <value>The peso_original.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.Peso_nuevo">
+ <summary>
+ Gets or sets the peso_nuevo.
+ </summary>
+ <value>The peso_nuevo.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.Cantidad_original">
+ <summary>
+ Gets or sets the cantidad_original.
+ </summary>
+ <value>The cantidad_original.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.Cantidad_nueva">
+ <summary>
+ Gets or sets the cantidad_nueva.
+ </summary>
+ <value>The cantidad_nueva.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.Codigo_producto">
+ <summary>
+ Gets or sets the codigo_producto.
+ </summary>
+ <value>The codigo_producto.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.Nombre_producto">
+ <summary>
+ Gets or sets the nombre_producto.
+ </summary>
+ <value>The nombre_producto.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.Idtipoajuste">
+ <summary>
+ Gets or sets the idtipoajuste.
+ </summary>
+ <value>The idtipoajuste.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.IdMotivoAjuste">
+ <summary>
+ Gets or sets the idmotivoajuste.
+ </summary>
+ <value>The idmotivoajuste.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.Observacion">
+ <summary>
+ Gets or sets the observacion.
+ </summary>
+ <value>The observacion.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.Codigo_ajuste">
+ <summary>
+ Gets or sets the codigo_ajuste.
+ </summary>
+ <value>The codigo_ajuste.</value>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_det.Enviado">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeTrans_ajuste_det"/> is enviado.
+ </summary>
+ <value><c>true</c> if enviado; otherwise, <c>false</c>.</value>
+</member>
+<member name="F:TOMWMS.clsBeTrans_ajuste_det.Presentacion">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeTrans_ajuste_det"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeTrans_ajuste_det.#ctor(System.Int32@,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.String,System.DateTime,System.DateTime,System.Double,System.Double,System.Double,System.Double,System.String,System.String,System.Int32,System.Int32,System.String,System.String,System.Boolean)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeTrans_ajuste_det"/> class.
+ </summary>
+ <param name="idajustedet">The idajustedet.</param>
+ <param name="idajusteenc">The idajusteenc.</param>
+ <param name="IdStock">The identifier stock.</param>
+ <param name="IdPropietarioBodega">The identifier propietario bodega.</param>
+ <param name="IdProductoBodega">The identifier producto bodega.</param>
+ <param name="IdProductoEstado">The identifier producto estado.</param>
+ <param name="IdPresentacion">The identifier presentacion.</param>
+ <param name="IdUnidadMedida">The identifier unidad medida.</param>
+ <param name="IdUbicacion">The identifier ubicacion.</param>
+ <param name="lote_original">The lote_original.</param>
+ <param name="lote_nuevo">The lote_nuevo.</param>
+ <param name="fecha_vence_original">The fecha_vence_original.</param>
+ <param name="fecha_vence_nueva">The fecha_vence_nueva.</param>
+ <param name="peso_original">The peso_original.</param>
+ <param name="peso_nuevo">The peso_nuevo.</param>
+ <param name="cantidad_original">The cantidad_original.</param>
+ <param name="cantidad_nueva">The cantidad_nueva.</param>
+ <param name="codigo_producto">The codigo_producto.</param>
+ <param name="nombre_producto">The nombre_producto.</param>
+ <param name="idtipoajuste">The idtipoajuste.</param>
+ <param name="idmotivoajuste">The idmotivoajuste.</param>
+ <param name="observacion">The observacion.</param>
+ <param name="codigo_ajuste">The codigo_ajuste.</param>
+ <param name="enviado">if set to <c>true</c> [enviado].</param>
+</member>
+<member name="M:TOMWMS.clsBeTrans_ajuste_det.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_enc.Auditado">
+#EJC20240719: Auditado, determina si el ajuste ya se validó previo a ser enviado a ERP.<summary>
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodega_ubicacion.Disponibilidad_Ubicacion">
+ <summary>
+ Se calcula en demanda, se utiliza en el procso de ubicación para determinar cuanto espacio (porcentualmente) tiene disponible la ubicación.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodega_ubicacion.Ubicacion_muelle">
+ <summary>
+#EJC20240609: Ubicación tipo muelle.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeCliente.Tipo">
+ <summary>
+ Gets or sets the tipo.
+ </summary>
+ <value>The tipo.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente.Drecciones">
+ <summary>
+ Gets or sets the drecciones.
+ </summary>
+ <value>The drecciones.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente.Tiempos">
+ <summary>
+ Gets or sets the tiempos.
+ </summary>
+ <value>The tiempos.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente.Empresa">
+ <summary>
+ Gets or sets the empresa.
+ </summary>
+ <value>The empresa.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente.Propietario">
+ <summary>
+ Gets or sets the propietario.
+ </summary>
+ <value>The propietario.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente.ClienteTipo">
+ <summary>
+ Gets or sets the cliente tipo.
+ </summary>
+ <value>The cliente tipo.</value>
+</member>
+<member name="F:TOMWMS.clsBeCliente.disposedValue">
+ <summary>
+ The disposed value
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeCliente.Dispose(System.Boolean)">
+ <summary>
+ Releases unmanaged and - optionally - managed resources.
+ </summary>
+ <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+</member>
+<member name="M:TOMWMS.clsBeCliente.Dispose">
+ <summary>
+ Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+ </summary>
+</member>
+<member name="T:TOMWMS.clsBeCliente_tipo">
+ <summary>
+ Class clsBeCliente_tipo.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+ <seealso cref="T:System.IDisposable" />
+</member>
+<member name="P:TOMWMS.clsBeCliente_tipo.IdTipoCliente">
+ <summary>
+ Gets or sets the identifier tipo cliente.
+ </summary>
+ <value>The identifier tipo cliente.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_tipo.IdPropietario">
+ <summary>
+ Gets or sets the identifier propietario.
+ </summary>
+ <value>The identifier propietario.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_tipo.Propietario">
+ <summary>
+ Gets or sets the propietario.
+ </summary>
+ <value>The propietario.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_tipo.NombreTipoCliente">
+ <summary>
+ Gets or sets the nombre tipo cliente.
+ </summary>
+ <value>The nombre tipo cliente.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_tipo.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeCliente_tipo"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_tipo.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_tipo.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_tipo.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_tipo.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="M:TOMWMS.clsBeCliente_tipo.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeCliente_tipo"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeCliente_tipo.#ctor(System.Int32@,System.Int32,System.String,System.Boolean,System.String,System.DateTime,System.String,System.DateTime)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeCliente_tipo"/> class.
+ </summary>
+ <param name="IdTipoCliente">The identifier tipo cliente.</param>
+ <param name="IdPropietario">The identifier propietario.</param>
+ <param name="NombreTipoCliente">The nombre tipo cliente.</param>
+ <param name="Activo">if set to <c>true</c> [activo].</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="fec_mod">The fec_mod.</param>
+</member>
+<member name="M:TOMWMS.clsBeCliente_tipo.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="F:TOMWMS.clsBeCliente_tipo.disposedValue">
+ <summary>
+ The disposed value
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeCliente_tipo.Dispose(System.Boolean)">
+ <summary>
+ Releases unmanaged and - optionally - managed resources.
+ </summary>
+ <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+</member>
+<member name="M:TOMWMS.clsBeCliente_tipo.Dispose">
+ <summary>
+ Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_Presentacion.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="T:TOMWMS.clsBeProducto_pallet">
+ <summary>
+ Class clsBeProducto_pallet.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.IdPallet">
+ <summary>
+ Gets or sets the identifier pallet.
+ </summary>
+ <value>The identifier pallet.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.IdPropietarioBodega">
+ <summary>
+ Gets or sets the identifier propietario bodega.
+ </summary>
+ <value>The identifier propietario bodega.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.IdProductoBodega">
+ <summary>
+ Gets or sets the identifier producto bodega.
+ </summary>
+ <value>The identifier producto bodega.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.IdPresentacion">
+ <summary>
+ Gets or sets the identifier presentacion.
+ </summary>
+ <value>The identifier presentacion.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.IdOperadorBodega">
+ <summary>
+ Gets or sets the identifier operador bodega.
+ </summary>
+ <value>The identifier operador bodega.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.IdImpresora">
+ <summary>
+ Gets or sets the identifier impresora.
+ </summary>
+ <value>The identifier impresora.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.IdRecepcionEnc">
+ <summary>
+ Gets or sets the identifier recepcion enc.
+ </summary>
+ <value>The identifier recepcion enc.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.IdRecepcionDet">
+ <summary>
+ Gets or sets the identifier recepcion det.
+ </summary>
+ <value>The identifier recepcion det.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.Codigo_Barra">
+ <summary>
+ Gets or sets the codigo_barra.
+ </summary>
+ <value>The codigo_barra.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.Cantidad">
+ <summary>
+ Gets or sets the cantidad.
+ </summary>
+ <value>The cantidad.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.Lote">
+ <summary>
+ Gets or sets the lote.
+ </summary>
+ <value>The lote.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.Impreso">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_pallet"/> is impreso.
+ </summary>
+ <value><c>true</c> if impreso; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.Reimpresiones">
+ <summary>
+ Gets or sets the reimpresiones.
+ </summary>
+ <value>The reimpresiones.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.Fecha_vence">
+ <summary>
+ Gets or sets the fecha_vence.
+ </summary>
+ <value>The fecha_vence.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.Fecha_ingreso">
+ <summary>
+ Gets or sets the fecha_ingreso.
+ </summary>
+ <value>The fecha_ingreso.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_pallet.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_pallet"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeProducto_pallet.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_pallet"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_pallet.#ctor(System.Int32@,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.Double,System.String,System.Boolean,System.Int32,System.DateTime,System.DateTime,System.String,System.DateTime,System.String,System.DateTime,System.Boolean,System.Int32)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_pallet"/> class.
+ </summary>
+ <param name="IdPallet">The identifier pallet.</param>
+ <param name="IdPropietarioBodega">The identifier propietario bodega.</param>
+ <param name="IdProductoBodega">The identifier producto bodega.</param>
+ <param name="IdPresentacion">The identifier presentacion.</param>
+ <param name="IdOperadorBodega">The identifier operador bodega.</param>
+ <param name="IdImpresora">The identifier impresora.</param>
+ <param name="IdRecepcionEnc">The identifier recepcion enc.</param>
+ <param name="codigo_barra">The codigo_barra.</param>
+ <param name="cantidad">The cantidad.</param>
+ <param name="lote">The lote.</param>
+ <param name="Impreso">if set to <c>true</c> [impreso].</param>
+ <param name="Reimpresiones">The reimpresiones.</param>
+ <param name="fecha_vence">The fecha_vence.</param>
+ <param name="fecha_ingreso">The fecha_ingreso.</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+ <param name="IdRecepcionDet">The identifier recepcion det.</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto_pallet.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="T:TOMWMS.clsBeProducto_presentaciones_conversiones">
+ <summary>
+ Class clsBeProducto_presentaciones_conversiones.
+ </summary>
+ <seealso cref="T:System.IDisposable" />
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentaciones_conversiones.IdConversion">
+ <summary>
+ Gets or sets the identifier conversion.
+ </summary>
+ <value>The identifier conversion.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentaciones_conversiones.IdPresentacionOrigen">
+ <summary>
+ Gets or sets the identifier presentacion origen.
+ </summary>
+ <value>The identifier presentacion origen.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentaciones_conversiones.IdPresentacionDestino">
+ <summary>
+ Gets or sets the identifier presentacion destino.
+ </summary>
+ <value>The identifier presentacion destino.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentaciones_conversiones.Factor">
+ <summary>
+ Gets or sets the factor.
+ </summary>
+ <value>The factor.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentaciones_conversiones.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_presentaciones_conversiones"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentaciones_conversiones.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentaciones_conversiones.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentaciones_conversiones.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentaciones_conversiones.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentaciones_conversiones.Inverso">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_presentaciones_conversiones"/> is inverso.
+ </summary>
+ <value><c>true</c> if inverso; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeProducto_presentaciones_conversiones.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_presentaciones_conversiones"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_presentaciones_conversiones.#ctor(System.Int32@,System.Int32,System.Int32,System.Double,System.Boolean,System.DateTime,System.String,System.DateTime,System.String,System.Boolean)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_presentaciones_conversiones"/> class.
+ </summary>
+ <param name="IdConversion">The identifier conversion.</param>
+ <param name="IdPresentacionOrigen">The identifier presentacion origen.</param>
+ <param name="IdPresentacionDestino">The identifier presentacion destino.</param>
+ <param name="Factor">The factor.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="inverso">if set to <c>true</c> [inverso].</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto_presentaciones_conversiones.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="T:TOMWMS.clsBeAjuste_motivo">
+ <summary>
+ Class clsBeAjuste_motivo.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="P:TOMWMS.clsBeAjuste_motivo.Idmotivoajuste">
+ <summary>
+ Gets or sets the idmotivoajuste.
+ </summary>
+ <value>The idmotivoajuste.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_motivo.Nombre">
+ <summary>
+ Gets or sets the nombre.
+ </summary>
+ <value>The nombre.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_motivo.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_motivo.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_motivo.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_motivo.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_motivo.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeAjuste_motivo"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_motivo.Sistema">
+ <summary>
+ Gets or sets the Sistema.
+ </summary>
+ <value>The Sistema.</value>
+</member>
+<member name="M:TOMWMS.clsBeAjuste_motivo.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeAjuste_motivo"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeAjuste_motivo.#ctor(System.Int32@,System.String,System.DateTime,System.String,System.DateTime,System.String,System.Boolean)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeAjuste_motivo"/> class.
+ </summary>
+ <param name="idmotivoajuste">The idmotivoajuste.</param>
+ <param name="nombre">The nombre.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+</member>
+<member name="M:TOMWMS.clsBeAjuste_motivo.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="T:TOMWMS.clsBeAjuste_tipo">
+ <summary>
+ Class clsBeAjuste_tipo.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="P:TOMWMS.clsBeAjuste_tipo.Idtipoajuste">
+ <summary>
+ Gets or sets the idtipoajuste.
+ </summary>
+ <value>The idtipoajuste.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_tipo.Nombre">
+ <summary>
+ Gets or sets the nombre.
+ </summary>
+ <value>The nombre.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_tipo.Modifica_lote">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeAjuste_tipo"/> is modifica_lote.
+ </summary>
+ <value><c>true</c> if modifica_lote; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_tipo.Momdifica_vencimiento">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeAjuste_tipo"/> is momdifica_vencimiento.
+ </summary>
+ <value><c>true</c> if momdifica_vencimiento; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_tipo.Modifica_cantidad">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeAjuste_tipo"/> is modifica_cantidad.
+ </summary>
+ <value><c>true</c> if modifica_cantidad; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_tipo.Modifica_peso">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeAjuste_tipo"/> is modifica_peso.
+ </summary>
+ <value><c>true</c> if modifica_peso; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_tipo.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_tipo.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_tipo.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_tipo.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeAjuste_tipo.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeAjuste_tipo"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeAjuste_tipo.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeAjuste_tipo"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeAjuste_tipo.#ctor(System.Int32@,System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.DateTime,System.String,System.DateTime,System.String,System.Boolean)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeAjuste_tipo"/> class.
+ </summary>
+ <param name="idtipoajuste">The idtipoajuste.</param>
+ <param name="nombre">The nombre.</param>
+ <param name="modifica_lote">if set to <c>true</c> [modifica_lote].</param>
+ <param name="momdifica_vencimiento">if set to <c>true</c> [momdifica_vencimiento].</param>
+ <param name="modifica_cantidad">if set to <c>true</c> [modifica_cantidad].</param>
+ <param name="modifica_peso">if set to <c>true</c> [modifica_peso].</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+</member>
+<member name="M:TOMWMS.clsBeAjuste_tipo.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="P:TOMWMS.clsBeVW_Movimientos.EnMovimiento">
+ <summary>
+ #EJC20250415: Variable para regularización de inventario cíclico.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeArancel.IdArancel">
+ <summary>
+ Gets or sets the identifier arancel.
+ </summary>
+ <value>The identifier arancel.</value>
+</member>
+<member name="P:TOMWMS.clsBeArancel.Nombre">
+ <summary>
+ Gets or sets the nombre.
+ </summary>
+ <value>The nombre.</value>
+</member>
+<member name="P:TOMWMS.clsBeArancel.Porcentaje">
+ <summary>
+ Gets or sets the porcentaje.
+ </summary>
+ <value>The porcentaje.</value>
+</member>
+<member name="P:TOMWMS.clsBeArancel.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeArancel.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeArancel.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeArancel.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeArancel.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeArancel"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeArancel.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeArancel"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeArancel.#ctor(System.Int32@,System.String,System.Double,System.DateTime,System.String,System.DateTime,System.String,System.Boolean)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeArancel"/> class.
+ </summary>
+ <param name="IdArancel">The identifier arancel.</param>
+ <param name="nombre">The nombre.</param>
+ <param name="porcentaje">The porcentaje.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+</member>
+<member name="M:TOMWMS.clsBeArancel.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="F:TOMWMS.clsBeArancel.disposedValue">
+ <summary>
+ The disposed value
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeArancel.Dispose(System.Boolean)">
+ <summary>
+ Releases unmanaged and - optionally - managed resources.
+ </summary>
+ <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+</member>
+<member name="M:TOMWMS.clsBeArancel.Dispose">
+ <summary>
+ Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeBodega.Permitir_Verificacion_Consolidada">
+ <summary>
+ #EJC20210728:
+ Si este parámetro está activo, se permite la verificación por LP o por código de producto desde la lista de
+ pedidos en la pantalla de la HH, sin necesidad de ingresar al pedido.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodega.Operador_Picking_Realiza_Verificacion">
+ <summary>
+ '#EJC20220330_CEALSA: Si true, se envía en la HH el IdOperadorBodega para filtrar las tareas de verificación
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodega.Permitir_Cambio_Ubic_Producto_Picking">
+ <summary>
+ #EJC20220330_CEALSA: Si true, se permite realizar el cambio de ubicación de producto 
+ que está reservado en picking pero se actualiza el IdUbicacionTemporal.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodega.Permitir_Buen_Estado_En_Reemplazo">
+ <summary>
+ #EJC20220701: Cuando se listan los estados en la HH, si true, se muestran tambión los estados "buen estado", segón el check de la tabla.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodega.Restringir_Lote_En_Reemplazo">
+ <summary>
+ #EJC20220707: En el proceso de reemplazo en la HH, si el parámetro está en false, no considerar el lote para filtrar stock para reemplazar.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodega.Restringir_Vencimiento_En_Reemplazo">
+ <summary>
+ #EJC20220707: En el proceso de reemplazo en la HH, si el parámetro está en false, no considerar la fecha de vencimiento para filtrar stock para reemplazar.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodega.Top_Reabastecimiento_Manual">
+ <summary>
+ #CKFK20220717: En el proceso de reabastecimiento manual en la HH se listarón la cantidad de registros parametrizados aquí, si es cero se van a listar todos
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodega.Permitir_Decimales">
+ <summary>
+ #CKFK20220721: Permitir o no decimales en las transacciones de ingreso, cambios de ubicación, de estados
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodega.Ordenar_Por_Nombre_Completo">
+ <summary>
+ #CKFK20220209: Ordenar el picking por nombre completo
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodega.Ordenar_Picking_Descendente">
+ <summary>
+ #CKFK20220209: Ordenar Picking Descendente
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodega.Dias_Limite_Retroactivo">
+ <summary>
+ #GT02032023: Indica cuantos dias de antigüedad puede tener un ticket para validar historico
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodega.Homologar_Lote_Vencimiento">
+ <summary>
+ #EJC202310310846: Indica si la fecha de vencimiento debe ser siempre la misma para un lote (aplica en SAP y NAV)
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodega.Escanear_Licencia_Picking">
+ <summary>
+ #CKCK20240202 Parámetro que va a permitir escanear la licencia en Picking
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodega.Despacho_Automatico_HH">
+ <summary>
+ #EJC20240904:Se agrega el campo despacho_automático para poder saber si en la verificación, al finalizar, 
+ se debe ejecutar el proceso de despacho de forma automática y con valores predeterminados.
+ </summary>
+ <returns></returns>
+</member>
+<member name="F:TOMWMS.clsBeBodega.disposedValue">
+ <summary>
+ The disposed value
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeBodega.Dispose(System.Boolean)">
+ <summary>
+ Releases unmanaged and - optionally - managed resources.
+ </summary>
+ <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+</member>
+<member name="M:TOMWMS.clsBeBodega.Dispose">
+ <summary>
+ Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeBodegaBase.validar_disponibilidad_ubicaicon_destino">
+ <summary>
+ --#EJC20220129: Si true, entonces en el proceso de ubicación se valida que la ubicación destino 
+ no tenga el equivalente a un pallet, en base a las tarimas y cajas por cama de la presentación.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodegaBase.Mostrar_Area_En_HH">
+ <summary>
+ #EJC20220224: CEALSA, indica si se muestra la columna zona en picking y consulta de existencias al inicio.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodegaBase.despachar_producto_vencido">
+ <summary>
+ #EJC20220510: BYB, si true, no reservar producto vencido.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodegaBase.tipo_pantalla_picking">
+ <summary>
+ #EJC20220524: MERCOSAL, nuestra primera parametrización del tipo de pantalla para picking (espero que prevalezca el 3 y no cambie mucho en el tiempo)
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodegaBase.tipo_pantalla_recepcion">
+ <summary>
+ #EJC20220524: MERCOSAL, nuestra primera parametrización del tipo de pantalla para picking (espero que prevalezca el 3 y no cambie mucho en el tiempo)
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodegaBase.tipo_pantalla_verificacion">
+ <summary>
+ #EJC20220524: MERCOSAL, nuestra primera parametrización del tipo de pantalla para picking (espero que prevalezca el 3 y no cambie mucho en el tiempo)
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodegaBase.Verificacion_Consolidada">
+ <summary>
+ #CKFK20220610 Parametrización para mostrar la verificacion consolidada o no
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodegaBase.industria_motriz">
+ <summary>
+ #GT07072022 Parametrización para indicar giro de empresa como Motriz
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodegaBase.Dias_Maximo_Vencimiento_Reemplazo">
+ <summary>
+ #EJC20220912_1735: Solicitado por Marcelo MERCOPAN para controlar en los procesos de Reemplazo, 
+ con cuantos días máximo puedo reemplazar el producto a partir de su fecha de vencimiento.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodegaBase.Permitir_Repeticiones_En_Ingreso">
+ <summary>
+ #EJC202209121941: Permitir en la pantalla de recepcion, recibir múltiples copias de un producto con los mismos parámetros.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodegaBase.Validar_Existencias_Inv_Ini">
+ <summary>
+ #EJC20221005: En el proceso de carga de inventario inicial, validar si la bodega tiene existencias antes de cargar archivo.
+ Carolina...
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodegaBase.Calcular_Ubicacion_Sugerida_ML">
+ <summary>
+ #EJC202211211022: Determina en la HH si se calcula o no la ubicación sugerida.
+ </summary>
+ <returns></returns>
+</member>
+<member name="T:TOMWMS.clsBeCliente_bodega">
+ <summary>
+ Class clsBeCliente_bodega.
+ </summary>
+ <seealso cref="T:System.IDisposable" />
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="P:TOMWMS.clsBeCliente_bodega.Cliente">
+ <summary>
+ Gets or sets the cliente.
+ </summary>
+ <value>The cliente.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_bodega.IdClienteBodega">
+ <summary>
+ Gets or sets the identifier cliente bodega.
+ </summary>
+ <value>The identifier cliente bodega.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_bodega.IdBodega">
+ <summary>
+ Gets or sets the identifier bodega.
+ </summary>
+ <value>The identifier bodega.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_bodega.IdCliente">
+ <summary>
+ Gets or sets the identifier cliente.
+ </summary>
+ <value>The identifier cliente.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_bodega.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_bodega.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_bodega.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_bodega.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_bodega.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeCliente_bodega"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_bodega.IdAreaDestino">
+ <summary>
+ #EJC20312021419: Para mapear bodega de SAP que se corresponde con una bodega_area
+ </summary>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsBeCliente_bodega.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeCliente_bodega"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeCliente_bodega.#ctor(System.Int32@,System.Int32,System.Int32,System.String,System.DateTime,System.String,System.DateTime,System.Boolean)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeCliente_bodega"/> class.
+ </summary>
+ <param name="IdAsignacion">The identifier asignacion.</param>
+ <param name="IdBodega">The identifier bodega.</param>
+ <param name="IdCliente">The identifier cliente.</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+</member>
+<member name="M:TOMWMS.clsBeCliente_bodega.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="F:TOMWMS.clsBeCliente_bodega.disposedValue">
+ <summary>
+ The disposed value
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeCliente_bodega.Dispose(System.Boolean)">
+ <summary>
+ Releases unmanaged and - optionally - managed resources.
+ </summary>
+ <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+</member>
+<member name="M:TOMWMS.clsBeCliente_bodega.Dispose">
+ <summary>
+ Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+ </summary>
+</member>
+<member name="T:TOMWMS.clsBeCliente_direccion">
+ <summary>
+ Class clsBeCliente_direccion.
+ </summary>
+ <seealso cref="T:System.IDisposable" />
+ <seealso cref="T:System.ICloneable" />
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.IdPais">
+ <summary>
+ Gets or sets the identifier pais.
+ </summary>
+ <value>The identifier pais.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.IdDepartamento">
+ <summary>
+ Gets or sets the identifier departamento.
+ </summary>
+ <value>The identifier departamento.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.IdDireccion">
+ <summary>
+ Gets or sets the identifier direccion.
+ </summary>
+ <value>The identifier direccion.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.IdCliente">
+ <summary>
+ Gets or sets the identifier cliente.
+ </summary>
+ <value>The identifier cliente.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.IdMunicipio">
+ <summary>
+ Gets or sets the identifier municipio.
+ </summary>
+ <value>The identifier municipio.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.Avenida">
+ <summary>
+ Gets or sets the avenida.
+ </summary>
+ <value>The avenida.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.Calle">
+ <summary>
+ Gets or sets the calle.
+ </summary>
+ <value>The calle.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.No_Casa">
+ <summary>
+ Gets or sets the no_ casa.
+ </summary>
+ <value>The no_ casa.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.Zona">
+ <summary>
+ Gets or sets the zona.
+ </summary>
+ <value>The zona.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.Direccion">
+ <summary>
+ Gets or sets the direccion.
+ </summary>
+ <value>The direccion.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.IdRegion">
+ <summary>
+ Gets or sets the identifier region.
+ </summary>
+ <value>The identifier region.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.Referencia">
+ <summary>
+ Gets or sets the referencia.
+ </summary>
+ <value>The referencia.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.Coordenada_x">
+ <summary>
+ Gets or sets the coordenada_x.
+ </summary>
+ <value>The coordenada_x.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.Coordenada_y">
+ <summary>
+ Gets or sets the coordenada_y.
+ </summary>
+ <value>The coordenada_y.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.Local">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeCliente_direccion"/> is local.
+ </summary>
+ <value><c>true</c> if local; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeCliente_direccion.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeCliente_direccion"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeCliente_direccion.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeCliente_direccion"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeCliente_direccion.#ctor(System.Int32@,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.Int32,System.String,System.String,System.String,System.Boolean,System.String,System.DateTime,System.String,System.DateTime,System.Boolean)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeCliente_direccion"/> class.
+ </summary>
+ <param name="IdDireccion">The identifier direccion.</param>
+ <param name="IdCliente">The identifier cliente.</param>
+ <param name="IdMunicipio">The identifier municipio.</param>
+ <param name="Avenida">The avenida.</param>
+ <param name="Calle">The calle.</param>
+ <param name="No_Casa">The no_ casa.</param>
+ <param name="Zona">The zona.</param>
+ <param name="Direccion">The direccion.</param>
+ <param name="IdRegion">The identifier region.</param>
+ <param name="Referencia">The referencia.</param>
+ <param name="coordenada_x">The coordenada_x.</param>
+ <param name="coordenada_y">The coordenada_y.</param>
+ <param name="Local">if set to <c>true</c> [local].</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+</member>
+<member name="M:TOMWMS.clsBeCliente_direccion.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="F:TOMWMS.clsBeCliente_direccion.disposedValue">
+ <summary>
+ The disposed value
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeCliente_direccion.Dispose(System.Boolean)">
+ <summary>
+ Releases unmanaged and - optionally - managed resources.
+ </summary>
+ <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+</member>
+<member name="M:TOMWMS.clsBeCliente_direccion.Dispose">
+ <summary>
+ Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeCliente_tiempos.disposedValue">
+ <summary>
+ The disposed value
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeCliente_tiempos.Dispose(System.Boolean)">
+ <summary>
+ Releases unmanaged and - optionally - managed resources.
+ </summary>
+ <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+</member>
+<member name="M:TOMWMS.clsBeCliente_tiempos.Dispose">
+ <summary>
+ Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeOperador.Montacarga">
+ <summary>
+ #EJC20220613:Determinar si maneja o no  montacarga, importante para la asignación automática de líneas de picking.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeOperador.Sistema">
+ <summary>
+ #GT26012024: campo para determinar que el operador trabaja para WMS y no es de uso operativo
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdProducto">
+ <summary>
+ Gets or sets the identifier producto.
+ </summary>
+ <value>The identifier producto.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdPropietario">
+ <summary>
+ Gets or sets the identifier propietario.
+ </summary>
+ <value>The identifier propietario.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdClasificacion">
+ <summary>
+ Gets or sets the identifier clasificacion.
+ </summary>
+ <value>The identifier clasificacion.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdFamilia">
+ <summary>
+ Gets or sets the identifier familia.
+ </summary>
+ <value>The identifier familia.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdMarca">
+ <summary>
+ Gets or sets the identifier marca.
+ </summary>
+ <value>The identifier marca.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdTipoProducto">
+ <summary>
+ Gets or sets the identifier tipo producto.
+ </summary>
+ <value>The identifier tipo producto.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdUnidadMedidaBasica">
+ <summary>
+ Gets or sets the identifier unidad medida basica.
+ </summary>
+ <value>The identifier unidad medida basica.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdCamara">
+ <summary>
+ Gets or sets the identifier camara.
+ </summary>
+ <value>The identifier camara.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdTipoRotacion">
+ <summary>
+ Gets or sets the identifier tipo rotacion.
+ </summary>
+ <value>The identifier tipo rotacion.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdPerfilSerializado">
+ <summary>
+ Gets or sets the identifier perfil serializado.
+ </summary>
+ <value>The identifier perfil serializado.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdIndiceRotacion">
+ <summary>
+ Gets or sets the identifier indice rotacion.
+ </summary>
+ <value>The identifier indice rotacion.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdSimbologia">
+ <summary>
+ Gets or sets the identifier simbologia.
+ </summary>
+ <value>The identifier simbologia.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdArancel">
+ <summary>
+ Gets or sets the identifier arancel.
+ </summary>
+ <value>The identifier arancel.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Codigo">
+ <summary>
+ Gets or sets the codigo.
+ </summary>
+ <value>The codigo.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Nombre">
+ <summary>
+ Gets or sets the nombre.
+ </summary>
+ <value>The nombre.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Codigo_barra">
+ <summary>
+ Gets or sets the codigo_barra.
+ </summary>
+ <value>The codigo_barra.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Precio">
+ <summary>
+ Gets or sets the precio.
+ </summary>
+ <value>The precio.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Existencia_min">
+ <summary>
+ Gets or sets the existencia_min.
+ </summary>
+ <value>The existencia_min.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Existencia_max">
+ <summary>
+ Gets or sets the existencia_max.
+ </summary>
+ <value>The existencia_max.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Costo">
+ <summary>
+ Gets or sets the costo.
+ </summary>
+ <value>The costo.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Peso_referencia">
+ <summary>
+ Gets or sets the peso_referencia.
+ </summary>
+ <value>The peso_referencia.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Peso_tolerancia">
+ <summary>
+ Gets or sets the peso_tolerancia.
+ </summary>
+ <value>The peso_tolerancia.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Temperatura_referencia">
+ <summary>
+ Gets or sets the temperatura_referencia.
+ </summary>
+ <value>The temperatura_referencia.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Temperatura_tolerancia">
+ <summary>
+ Gets or sets the temperatura_tolerancia.
+ </summary>
+ <value>The temperatura_tolerancia.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Serializado">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is serializado.
+ </summary>
+ <value><c>true</c> if serializado; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Genera_lote">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is genera_lote.
+ </summary>
+ <value><c>true</c> if genera_lote; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Genera_lp">
+ <summary>
+ #EJC20210426: Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is genera_lp for umbas
+ Reactivado para CEALSA
+ </summary>
+ <value><c>true</c> if genera_lp; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Control_vencimiento">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is control_vencimiento.
+ </summary>
+ <value><c>true</c> if control_vencimiento; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Control_lote">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is control_lote.
+ </summary>
+ <value><c>true</c> if control_lote; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Peso_recepcion">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is peso_recepcion.
+ </summary>
+ <value><c>true</c> if peso_recepcion; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Peso_despacho">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is peso_despacho.
+ </summary>
+ <value><c>true</c> if peso_despacho; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Temperatura_recepcion">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is temperatura_recepcion.
+ </summary>
+ <value><c>true</c> if temperatura_recepcion; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Temperatura_despacho">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is temperatura_despacho.
+ </summary>
+ <value><c>true</c> if temperatura_despacho; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Materia_prima">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is materia_prima.
+ </summary>
+ <value><c>true</c> if materia_prima; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Kit">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is kit.
+ </summary>
+ <value><c>true</c> if kit; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Tolerancia">
+ <summary>
+ Gets or sets the tolerancia.
+ </summary>
+ <value>The tolerancia.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Ciclo_vida">
+ <summary>
+ Gets or sets the ciclo_vida.
+ </summary>
+ <value>The ciclo_vida.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Imagen">
+ <summary>
+ Gets or sets the imagen.
+ </summary>
+ <value>The imagen.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Noserie">
+ <summary>
+ Gets or sets the noserie.
+ </summary>
+ <value>The noserie.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Noparte">
+ <summary>
+ Gets or sets the noparte.
+ </summary>
+ <value>The noparte.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Fechamanufactura">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is fechamanufactura.
+ </summary>
+ <value><c>true</c> if fechamanufactura; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Capturar_aniada">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is capturar_aniada.
+ </summary>
+ <value><c>true</c> if capturar_aniada; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Control_peso">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is control_peso.
+ </summary>
+ <value><c>true</c> if control_peso; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Captura_arancel">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is captura_arancel.
+ </summary>
+ <value><c>true</c> if captura_arancel; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Es_hardware">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto"/> is es_hardware.
+ </summary>
+ <value><c>true</c> if es_hardware; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Largo">
+ <summary>
+ Gets or sets the largo.
+ </summary>
+ <value>The largo.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Alto">
+ <summary>
+ Gets or sets the alto.
+ </summary>
+ <value>The alto.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Ancho">
+ <summary>
+ Gets or sets the ancho.
+ </summary>
+ <value>The ancho.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdUnidadMedidaCobro">
+ <summary>
+ Utilizada en CEALSA para la gestión de las tarifas/servicios y unidade de cobranza.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Dias_Inventario_Promedio">
+ <summary>
+ --#EJC20211206: Para cálculo de índice de rotación.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdProductoParametroA">
+ <summary>
+ #EJC20220630: Agregado para DYD Se utilizará para Lado.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdProductoParametroB">
+ <summary>
+ #EJC20220630: Agregado para DYD Se utilizará para Es_Nuevo.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto.IdTipoManufactura">
+ <summary>
+ #GT26032024: agregado para identificar si aplica a manufactura ligera
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto.Margen_Impresion">
+ <summary>
+ #AT20250313: se agrego para tener el margen de impresion en sojet
+ </summary>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsBeProducto.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="M:TOMWMS.clsBeProducto.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto.#ctor(System.Int32@,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.String,System.String,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Int32,System.Int32,System.String,System.DateTime,System.String,System.DateTime,System.Byte[],System.String,System.String,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Double,System.Double,System.Double,System.Int32,System.Int32,System.Double)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto"/> class.
+ </summary>
+ <param name="IdProducto">The identifier producto.</param>
+ <param name="IdPropietario">The identifier propietario.</param>
+ <param name="IdClasificacion">The identifier clasificacion.</param>
+ <param name="IdFamilia">The identifier familia.</param>
+ <param name="IdMarca">The identifier marca.</param>
+ <param name="IdTipoProducto">The identifier tipo producto.</param>
+ <param name="IdUnidadMedidaBasica">The identifier unidad medida basica.</param>
+ <param name="IdCamara">The identifier camara.</param>
+ <param name="IdTipoRotacion">The identifier tipo rotacion.</param>
+ <param name="IdPerfilSerializado">The identifier perfil serializado.</param>
+ <param name="IdIndiceRotacion">The identifier indice rotacion.</param>
+ <param name="IdSimbologia">The identifier simbologia.</param>
+ <param name="IdArancel">The identifier arancel.</param>
+ <param name="codigo">The codigo.</param>
+ <param name="nombre">The nombre.</param>
+ <param name="codigo_barra">The codigo_barra.</param>
+ <param name="precio">The precio.</param>
+ <param name="existencia_min">The existencia_min.</param>
+ <param name="existencia_max">The existencia_max.</param>
+ <param name="costo">The costo.</param>
+ <param name="peso_referencia">The peso_referencia.</param>
+ <param name="peso_tolerancia">The peso_tolerancia.</param>
+ <param name="temperatura_referencia">The temperatura_referencia.</param>
+ <param name="temperatura_tolerancia">The temperatura_tolerancia.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+ <param name="serializado">if set to <c>true</c> [serializado].</param>
+ <param name="genera_lote">if set to <c>true</c> [genera_lote].</param>
+ <param name="genera_lp">if set to <c>true</c> [genera_lp].</param>
+ <param name="control_vencimiento">if set to <c>true</c> [control_vencimiento].</param>
+ <param name="control_lote">if set to <c>true</c> [control_lote].</param>
+ <param name="peso_recepcion">if set to <c>true</c> [peso_recepcion].</param>
+ <param name="peso_despacho">if set to <c>true</c> [peso_despacho].</param>
+ <param name="temperatura_recepcion">if set to <c>true</c> [temperatura_recepcion].</param>
+ <param name="temperatura_despacho">if set to <c>true</c> [temperatura_despacho].</param>
+ <param name="materia_prima">if set to <c>true</c> [materia_prima].</param>
+ <param name="kit">if set to <c>true</c> [kit].</param>
+ <param name="tolerancia">The tolerancia.</param>
+ <param name="ciclo_vida">The ciclo_vida.</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="imagen">The imagen.</param>
+ <param name="noserie">The noserie.</param>
+ <param name="noparte">The noparte.</param>
+ <param name="fechamanufactura">if set to <c>true</c> [fechamanufactura].</param>
+ <param name="capturar_aniada">if set to <c>true</c> [capturar_aniada].</param>
+ <param name="control_peso">if set to <c>true</c> [control_peso].</param>
+ <param name="captura_arancel">if set to <c>true</c> [captura_arancel].</param>
+ <param name="es_hardware">if set to <c>true</c> [es_hardware].</param>
+ <param name="largo">The largo.</param>
+ <param name="alto">The alto.</param>
+ <param name="ancho">The ancho.</param>
+ <param name="mIdPresentacionOrigen">The m identifier presentacion origen.</param>
+ <param name="mIdPresentacionDestino">The m identifier presentacion destino.</param>
+ <param name="mFactor">The m factor.</param>
+</member>
+<member name="F:TOMWMS.clsBeProducto.disposedValue">
+ <summary>
+ The disposed value
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto.Dispose(System.Boolean)">
+ <summary>
+ Releases unmanaged and - optionally - managed resources.
+ </summary>
+ <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto.Dispose">
+ <summary>
+ Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeProducto.ParametroA">
+ <summary>
+ Gets or sets the parámetro A.
+ </summary>
+ <value>ParametroA.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto.ParametroB">
+ <summary>
+ Gets or sets the parámetro B.
+ </summary>
+ <value>ParametroB.</value>
+</member>
+<member name="T:TOMWMS.clsBeProducto.ProdPropiedades">
+ <summary>
+ Enum Temperatura_tolerancia
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.IdProducto">
+ <summary>
+ The identifier producto
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.IdCamara">
+ <summary>
+ The identifier camara
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.IdTipoRotacion">
+ <summary>
+ The identifier tipo rotacion
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.IdPerfilSerializado">
+ <summary>
+ The identifier perfil serializado
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.IdIndiceRotacion">
+ <summary>
+ The identifier indice rotacion
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.IdSimbologia">
+ <summary>
+ The identifier simbologia
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.IdArancel">
+ <summary>
+ The identifier arancel
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Codigo">
+ <summary>
+ The codigo
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Nombre">
+ <summary>
+ The nombre
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Codigo_barra">
+ <summary>
+ The codigo_barra
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Precio">
+ <summary>
+ The precio
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Existencia_min">
+ <summary>
+ The existencia_min
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Existencia_max">
+ <summary>
+ The existencia_max
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Costo">
+ <summary>
+ The costo
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Peso_referencia">
+ <summary>
+ The peso_referencia
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Peso_tolerancia">
+ <summary>
+ The peso_tolerancia
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Temperatura_referencia">
+ <summary>
+ The temperatura_referencia
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Temperatura_tolerancia">
+ <summary>
+ The temperatura_tolerancia
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Activo">
+ <summary>
+ The activo
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Serializado">
+ <summary>
+ The serializado
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Genera_lote">
+ <summary>
+ The genera_lote
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Genera_LP">
+ <summary>
+ The genera_ lp
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Control_vencimiento">
+ <summary>
+ The control_vencimiento
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Control_lote">
+ <summary>
+ The control_lote
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Peso_recepcion">
+ <summary>
+ The peso_recepcion
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Peso_despacho">
+ <summary>
+ The peso_despacho
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Temperatura_recepcion">
+ <summary>
+ The temperatura_recepcion
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Temperatura_despacho">
+ <summary>
+ The temperatura_despacho
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Materia_prima">
+ <summary>
+ The materia_prima
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Kit">
+ <summary>
+ The kit
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Tolerancia">
+ <summary>
+ The tolerancia
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Ciclo_vida">
+ <summary>
+ The ciclo_vida
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.User_agr">
+ <summary>
+ The user_agr
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Fec_agr">
+ <summary>
+ The fec_agr
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.User_mod">
+ <summary>
+ The user_mod
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Fec_mod">
+ <summary>
+ The fec_mod
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Imagen">
+ <summary>
+ The imagen
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.NoSerie">
+ <summary>
+ The no serie
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.NoParte">
+ <summary>
+ The no parte
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.FechaManufactura">
+ <summary>
+ The fecha manufactura
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Capturar_Aniada">
+ <summary>
+ The capturar_ aniada
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Control_Peso">
+ <summary>
+ The control_ peso
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Captura_Arancel">
+ <summary>
+ The captura_ arancel
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Es_Hardware">
+ <summary>
+ The es_ hardware
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.IdPresentacionOrigen">
+ <summary>
+ The identifier presentacion origen
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.IdPresentacionDestino">
+ <summary>
+ The identifier presentacion destino
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Factor">
+ <summary>
+ The factor
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.IdProductoBodega">
+ <summary>
+ The identifier producto bodega
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Propietario">
+ <summary>
+ The propietario
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Clasificacion">
+ <summary>
+ The clasificacion
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Familia">
+ <summary>
+ The familia
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Marca">
+ <summary>
+ The marca
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.TipoProducto">
+ <summary>
+ The tipo producto
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.UnidadMedida">
+ <summary>
+ The unidad medida
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Arancel">
+ <summary>
+ The arancel
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Presentaciones">
+ <summary>
+ The presentaciones
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Codigos_Barra">
+ <summary>
+ The codigos_ barra
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Parametros">
+ <summary>
+ The parametros
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.IsNew">
+ <summary>
+ The is new
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Alto">
+ <summary>
+ The alto
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Largo">
+ <summary>
+ The largo
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.Ancho">
+ <summary>
+ The ancho
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.ParametroA">
+ <summary>
+ The parámetro A
+ </summary>
+</member>
+<member name="F:TOMWMS.clsBeProducto.ProdPropiedades.ParametroB">
+ <summary>
+ The parámetro B
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeProducto_bodega.IdProductoBodega">
+ <summary>
+ Gets or sets the identifier producto bodega.
+ </summary>
+ <value>The identifier producto bodega.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_bodega.IdProducto">
+ <summary>
+ Gets or sets the identifier producto.
+ </summary>
+ <value>The identifier producto.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_bodega.IdBodega">
+ <summary>
+ Gets or sets the identifier bodega.
+ </summary>
+ <value>The identifier bodega.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_bodega.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_bodega"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_bodega.Sistema">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_bodega"/> is sistema.
+ </summary>
+ <value><c>true</c> if sistema; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_bodega.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_bodega.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_bodega.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_bodega.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="M:TOMWMS.clsBeProducto_bodega.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_bodega"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_bodega.#ctor(System.Int32@,System.Int32,System.Int32,System.Boolean,System.Boolean,System.String,System.DateTime,System.String,System.DateTime)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_bodega"/> class.
+ </summary>
+ <param name="IdProductoBodega">The identifier producto bodega.</param>
+ <param name="IdProducto">The identifier producto.</param>
+ <param name="IdBodega">The identifier bodega.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+ <param name="sistema">if set to <c>true</c> [sistema].</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="fec_mod">The fec_mod.</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto_bodega.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="F:TOMWMS.clsBeProducto_bodega.disposedValue">
+ <summary>
+ The disposed value
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_bodega.Dispose(System.Boolean)">
+ <summary>
+ Releases unmanaged and - optionally - managed resources.
+ </summary>
+ <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto_bodega.Dispose">
+ <summary>
+ Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeProducto_clasificacion.IdClasificacion">
+ <summary>
+ Gets or sets the identifier clasificacion.
+ </summary>
+ <value>The identifier clasificacion.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_clasificacion.Propietario">
+ <summary>
+ Gets or sets the propietario.
+ </summary>
+ <value>The propietario.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_clasificacion.Nombre">
+ <summary>
+ Gets or sets the nombre.
+ </summary>
+ <value>The nombre.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_clasificacion.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_clasificacion"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_clasificacion.Sistema">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_clasificacion"/> is sistema.
+ </summary>
+ <value><c>true</c> if sistema; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_clasificacion.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_clasificacion.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_clasificacion.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_clasificacion.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_clasificacion.IsNew">
+ <summary>
+ Gets or sets a value indicating whether this instance is new.
+ </summary>
+ <value><c>true</c> if this instance is new; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeProducto_clasificacion.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto_codigos_barra.IdProductoCodigoBarra">
+ <summary>
+ Gets or sets the identifier producto codigo barra.
+ </summary>
+ <value>The identifier producto codigo barra.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_codigos_barra.IdProducto">
+ <summary>
+ Gets or sets the identifier producto.
+ </summary>
+ <value>The identifier producto.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_codigos_barra.IdProveedor">
+ <summary>
+ Gets or sets the identifier proveedor.
+ </summary>
+ <value>The identifier proveedor.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_codigos_barra.Codigo_barra">
+ <summary>
+ Gets or sets the codigo_barra.
+ </summary>
+ <value>The codigo_barra.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_codigos_barra.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_codigos_barra.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_codigos_barra.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_codigos_barra.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_codigos_barra.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_codigos_barra"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeProducto_codigos_barra.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_codigos_barra"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_codigos_barra.#ctor(System.Int32@,System.Int32,System.Int32,System.String,System.DateTime,System.String,System.DateTime,System.String,System.Boolean)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_codigos_barra"/> class.
+ </summary>
+ <param name="IdProductoCodigoBarra">The identifier producto codigo barra.</param>
+ <param name="IdProducto">The identifier producto.</param>
+ <param name="IdProveedor">The identifier proveedor.</param>
+ <param name="codigo_barra">The codigo_barra.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto_codigos_barra.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado.IdEstado">
+ <summary>
+ Gets or sets the identifier estado.
+ </summary>
+ <value>The identifier estado.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado.IdPropietario">
+ <summary>
+ Gets or sets the identifier propietario.
+ </summary>
+ <value>The identifier propietario.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado.Propietario">
+ <summary>
+ Gets or sets the propietario.
+ </summary>
+ <value>The propietario.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado.Nombre">
+ <summary>
+ Gets or sets the nombre.
+ </summary>
+ <value>The nombre.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado.IdUbicacionDefecto">
+ <summary>
+ Gets or sets the identifier ubicacion defecto.
+ </summary>
+ <value>The identifier ubicacion defecto.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado.Utilizable">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_estado"/> is utilizable.
+ </summary>
+ <value><c>true</c> if utilizable; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_estado"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado.Dañado">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_estado"/> is dañado.
+ </summary>
+ <value><c>true</c> if dañado; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado.Codigo_Bodega_ERP">
+ <summary>
+ #EJC202311150009: Codigo_Bodega_ERP Entity
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado.Dias_Vencimiento_Clasificacion">
+ <summary>
+ #EJC20231118: Dias_Vencimiento_Clasificacion para definir estado del producto en base a la fecha
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado.Tolerancia_Dias_Vencimiento">
+ <summary>
+ #EJC20231118: Tolerancia_DiasVencimiento para definir estado del producto en base a la fecha
+ </summary>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsBeProducto_estado.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_estado"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_estado.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto_familia.IdFamilia">
+ <summary>
+ Gets or sets the identifier familia.
+ </summary>
+ <value>The identifier familia.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_familia.Propietario">
+ <summary>
+ Gets or sets the propietario.
+ </summary>
+ <value>The propietario.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_familia.Codigo">
+ <summary>
+ Gets or sets the Codigo.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto_familia.Nombre">
+ <summary>
+ Gets or sets the nombre.
+ </summary>
+ <value>The nombre.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_familia.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_familia"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_familia.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_familia.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_familia.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_familia.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_familia.IsNew">
+ <summary>
+ Gets or sets a value indicating whether this instance is new.
+ </summary>
+ <value><c>true</c> if this instance is new; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeProducto_familia.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_familia"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_familia.#ctor(System.Int32@,System.String,System.Boolean,System.String,System.DateTime,System.String,System.DateTime)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_familia"/> class.
+ </summary>
+ <param name="IdFamilia">The identifier familia.</param>
+ <param name="nombre">The nombre.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="fec_mod">The fec_mod.</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto_familia.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="F:TOMWMS.clsBeProducto_familia.disposedValue">
+ <summary>
+ The disposed value
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_familia.Dispose(System.Boolean)">
+ <summary>
+ Releases unmanaged and - optionally - managed resources.
+ </summary>
+ <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto_familia.Dispose">
+ <summary>
+ Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeProducto_marca.IdMarca">
+ <summary>
+ Gets or sets the identifier marca.
+ </summary>
+ <value>The identifier marca.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_marca.IdPropietario">
+ <summary>
+ Gets or sets the identifier propietario.
+ </summary>
+ <value>The identifier propietario.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_marca.Propietario">
+ <summary>
+ Gets or sets the propietario.
+ </summary>
+ <value>The propietario.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_marca.Nombre">
+ <summary>
+ Gets or sets the nombre.
+ </summary>
+ <value>The nombre.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_marca.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_marca"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_marca.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_marca.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_marca.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_marca.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_marca.IsNew">
+ <summary>
+ Gets or sets a value indicating whether this instance is new.
+ </summary>
+ <value><c>true</c> if this instance is new; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeProducto_marca.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_marca"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_marca.#ctor(System.Int32@,System.Int32,System.String,System.Boolean,System.String,System.DateTime,System.String,System.DateTime)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_marca"/> class.
+ </summary>
+ <param name="IdMarca">The identifier marca.</param>
+ <param name="IdPropietario">The identifier propietario.</param>
+ <param name="nombre">The nombre.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="fec_mod">The fec_mod.</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto_marca.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="F:TOMWMS.clsBeProducto_marca.disposedValue">
+ <summary>
+ The disposed value
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_marca.Dispose(System.Boolean)">
+ <summary>
+ Releases unmanaged and - optionally - managed resources.
+ </summary>
+ <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto_marca.Dispose">
+ <summary>
+ Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeProducto_parametros.IdProductoParametro">
+ <summary>
+ Gets or sets the identifier producto parametro.
+ </summary>
+ <value>The identifier producto parametro.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_parametros.IdParametro">
+ <summary>
+ Gets or sets the identifier parametro.
+ </summary>
+ <value>The identifier parametro.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_parametros.IdProducto">
+ <summary>
+ Gets or sets the identifier producto.
+ </summary>
+ <value>The identifier producto.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_parametros.Valor_texto">
+ <summary>
+ Gets or sets the valor_texto.
+ </summary>
+ <value>The valor_texto.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_parametros.Valor_numerico">
+ <summary>
+ Gets or sets the valor_numerico.
+ </summary>
+ <value>The valor_numerico.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_parametros.Valor_fecha">
+ <summary>
+ Gets or sets the valor_fecha.
+ </summary>
+ <value>The valor_fecha.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_parametros.Valor_logico">
+ <summary>
+ Gets or sets the valor_logico.
+ </summary>
+ <value>The valor_logico.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_parametros.Capturar_siempre">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_parametros"/> is capturar_siempre.
+ </summary>
+ <value><c>true</c> if capturar_siempre; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_parametros.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_parametros.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_parametros.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_parametros.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_parametros.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_parametros"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeProducto_parametros.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_parametros"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_parametros.#ctor(System.Int32@,System.Int32,System.Int32,System.String,System.Double,System.DateTime,System.Boolean,System.Boolean,System.String,System.DateTime,System.String,System.DateTime,System.Boolean)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_parametros"/> class.
+ </summary>
+ <param name="IdProductoParametro">The identifier producto parametro.</param>
+ <param name="IdParametro">The identifier parametro.</param>
+ <param name="IdProducto">The identifier producto.</param>
+ <param name="valor_texto">The valor_texto.</param>
+ <param name="valor_numerico">The valor_numerico.</param>
+ <param name="valor_fecha">The valor_fecha.</param>
+ <param name="valor_logico">if set to <c>true</c> [valor_logico].</param>
+ <param name="capturar_siempre">if set to <c>true</c> [capturar_siempre].</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto_parametros.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentacion_tarima.IdPresentacionTarima">
+ <summary>
+ Gets or sets the identifier presentacion tarima.
+ </summary>
+ <value>The identifier presentacion tarima.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentacion_tarima.IdPresentacion">
+ <summary>
+ Gets or sets the identifier presentacion.
+ </summary>
+ <value>The identifier presentacion.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentacion_tarima.IdTipoTarima">
+ <summary>
+ Gets or sets the identifier tipo tarima.
+ </summary>
+ <value>The identifier tipo tarima.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentacion_tarima.CantidadPorCama">
+ <summary>
+ Gets or sets the cantidad por cama.
+ </summary>
+ <value>The cantidad por cama.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentacion_tarima.Cantidad">
+ <summary>
+ Gets or sets the cantidad.
+ </summary>
+ <value>The cantidad.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentacion_tarima.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentacion_tarima.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentacion_tarima.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentacion_tarima.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_presentacion_tarima.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_presentacion_tarima"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeProducto_presentacion_tarima.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_presentacion_tarima"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_presentacion_tarima.#ctor(System.Int32@,System.Int32,System.Int32,System.Double,System.String,System.DateTime,System.String,System.DateTime,System.Boolean)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_presentacion_tarima"/> class.
+ </summary>
+ <param name="IdPresentacionTarima">The identifier presentacion tarima.</param>
+ <param name="IdPresentacion">The identifier presentacion.</param>
+ <param name="IdTipoTarima">The identifier tipo tarima.</param>
+ <param name="Cantidad">The cantidad.</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto_presentacion_tarima.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto_rellenado.IdRellenado">
+ <summary>
+ Gets or sets the identifier rellenado.
+ </summary>
+ <value>The identifier rellenado.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_rellenado.IdPresentacion">
+ <summary>
+ Gets or sets the identifier presentacion.
+ </summary>
+ <value>The identifier presentacion.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_rellenado.IdProductoEstado">
+ <summary>
+ Gets or sets the identifier producto estado.
+ </summary>
+ <value>The identifier producto estado.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_rellenado.IdUbicacion">
+ <summary>
+ Gets or sets the identifier ubicacion.
+ </summary>
+ <value>The identifier ubicacion.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_rellenado.IdTipoAccion">
+ <summary>
+ Gets or sets the identifier tipo accion.
+ </summary>
+ <value>The identifier tipo accion.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_rellenado.Minimo">
+ <summary>
+ Gets or sets the minimo.
+ </summary>
+ <value>The minimo.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_rellenado.Maximo">
+ <summary>
+ Gets or sets the maximo.
+ </summary>
+ <value>The maximo.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_rellenado.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_rellenado.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_rellenado.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_rellenado.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_rellenado.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_rellenado"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeProducto_rellenado.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_rellenado"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_rellenado.#ctor(System.Int32@,System.Int32,System.Int32,System.Int32,System.Int32,System.Double,System.Double,System.String,System.DateTime,System.String,System.DateTime,System.Boolean)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_rellenado"/> class.
+ </summary>
+ <param name="IdRellenado">The identifier rellenado.</param>
+ <param name="IdPresentacion">The identifier presentacion.</param>
+ <param name="IdProductoEstado">The identifier producto estado.</param>
+ <param name="IdUbicacion">The identifier ubicacion.</param>
+ <param name="IdTipoAccion">The identifier tipo accion.</param>
+ <param name="Minimo">The minimo.</param>
+ <param name="Maximo">The maximo.</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="Activo">if set to <c>true</c> [activo].</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto_rellenado.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto_sustituto.IdProductoSustituto">
+ <summary>
+ Gets or sets the identifier producto sustituto.
+ </summary>
+ <value>The identifier producto sustituto.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_sustituto.IdProductoOriginal">
+ <summary>
+ Gets or sets the identifier producto original.
+ </summary>
+ <value>The identifier producto original.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_sustituto.IdProductoPresentacionOriginal">
+ <summary>
+ Gets or sets the identifier producto presentacion original.
+ </summary>
+ <value>The identifier producto presentacion original.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_sustituto.IdProductoReemplazo">
+ <summary>
+ Gets or sets the identifier producto reemplazo.
+ </summary>
+ <value>The identifier producto reemplazo.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_sustituto.IdProductoPresentacionReemplazo">
+ <summary>
+ Gets or sets the identifier producto presentacion reemplazo.
+ </summary>
+ <value>The identifier producto presentacion reemplazo.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_sustituto.ProductoReemplazo">
+ <summary>
+ Gets or sets the producto reemplazo.
+ </summary>
+ <value>The producto reemplazo.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_sustituto.ProductoPresentacionOriginal">
+ <summary>
+ Gets or sets the producto presentacion original.
+ </summary>
+ <value>The producto presentacion original.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_sustituto.ProductoPresentacionReemplazo">
+ <summary>
+ Gets or sets the producto presentacion reemplazo.
+ </summary>
+ <value>The producto presentacion reemplazo.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_sustituto.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_sustituto.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_sustituto.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_sustituto.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_sustituto.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_sustituto"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_sustituto.IsNew">
+ <summary>
+ Gets or sets a value indicating whether this instance is new.
+ </summary>
+ <value><c>true</c> if this instance is new; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeProducto_sustituto.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_sustituto"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_sustituto.#ctor(System.Int32@,System.Int32,System.Int32,System.Int32,System.Int32,System.String,System.DateTime,System.String,System.DateTime,System.Boolean)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_sustituto"/> class.
+ </summary>
+ <param name="IdProductoSustituto">The identifier producto sustituto.</param>
+ <param name="IdProductoOriginal">The identifier producto original.</param>
+ <param name="IdProductoPresentacionOriginal">The identifier producto presentacion original.</param>
+ <param name="IdProductoReemplazo">The identifier producto reemplazo.</param>
+ <param name="IdProductoPresentacionReemplazo">The identifier producto presentacion reemplazo.</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto_sustituto.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="F:TOMWMS.clsBeProducto_sustituto.disposedValue">
+ <summary>
+ The disposed value
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_sustituto.Dispose(System.Boolean)">
+ <summary>
+ Releases unmanaged and - optionally - managed resources.
+ </summary>
+ <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto_sustituto.Dispose">
+ <summary>
+ Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeProducto_tipo.IdTipoProducto">
+ <summary>
+ Gets or sets the identifier tipo producto.
+ </summary>
+ <value>The identifier tipo producto.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_tipo.IdPropietario">
+ <summary>
+ Gets or sets the identifier propietario.
+ </summary>
+ <value>The identifier propietario.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_tipo.Propietario">
+ <summary>
+ Gets or sets the propietario.
+ </summary>
+ <value>The propietario.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_tipo.Codigo">
+ <summary>
+ Gets or sets the Codigo.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeProducto_tipo.NombreTipoProducto">
+ <summary>
+ Gets or sets the nombre tipo producto.
+ </summary>
+ <value>The nombre tipo producto.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_tipo.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_tipo"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_tipo.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_tipo.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_tipo.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_tipo.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="M:TOMWMS.clsBeProducto_tipo.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_tipo"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_tipo.#ctor(System.Int32@,System.Int32,System.String,System.Boolean,System.String,System.DateTime,System.String,System.DateTime)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_tipo"/> class.
+ </summary>
+ <param name="IdTipoProducto">The identifier tipo producto.</param>
+ <param name="IdPropietario">The identifier propietario.</param>
+ <param name="NombreTipoProducto">The nombre tipo producto.</param>
+ <param name="Activo">if set to <c>true</c> [activo].</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="fec_mod">The fec_mod.</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto_tipo.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="F:TOMWMS.clsBeProducto_tipo.disposedValue">
+ <summary>
+ The disposed value
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_tipo.Dispose(System.Boolean)">
+ <summary>
+ Releases unmanaged and - optionally - managed resources.
+ </summary>
+ <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+</member>
+<member name="M:TOMWMS.clsBeProducto_tipo.Dispose">
+ <summary>
+ Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado_ubic.IdProductoEstadUbic">
+ <summary>
+ Gets or sets the identifier producto estad ubic.
+ </summary>
+ <value>The identifier producto estad ubic.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado_ubic.IdEstado">
+ <summary>
+ Gets or sets the identifier estado.
+ </summary>
+ <value>The identifier estado.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado_ubic.IdUbicacionDefecto">
+ <summary>
+ Gets or sets the identifier ubicacion defecto.
+ </summary>
+ <value>The identifier ubicacion defecto.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado_ubic.Fec_agr">
+ <summary>
+ Gets or sets the fec_agr.
+ </summary>
+ <value>The fec_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado_ubic.User_agr">
+ <summary>
+ Gets or sets the user_agr.
+ </summary>
+ <value>The user_agr.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado_ubic.Fec_mod">
+ <summary>
+ Gets or sets the fec_mod.
+ </summary>
+ <value>The fec_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado_ubic.User_mod">
+ <summary>
+ Gets or sets the user_mod.
+ </summary>
+ <value>The user_mod.</value>
+</member>
+<member name="P:TOMWMS.clsBeProducto_estado_ubic.Activo">
+ <summary>
+ Gets or sets a value indicating whether this <see cref="T:TOMWMS.clsBeProducto_estado_ubic"/> is activo.
+ </summary>
+ <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
+</member>
+<member name="M:TOMWMS.clsBeProducto_estado_ubic.#ctor">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_estado_ubic"/> class.
+ </summary>
+</member>
+<member name="M:TOMWMS.clsBeProducto_estado_ubic.#ctor(System.Int32@,System.Int32,System.Int32,System.DateTime,System.String,System.DateTime,System.String,System.Boolean)">
+ <summary>
+ Initializes a new instance of the <see cref="T:TOMWMS.clsBeProducto_estado_ubic"/> class.
+ </summary>
+ <param name="idProductoEstadUbic">The identifier producto estad ubic.</param>
+ <param name="IdEstado">The identifier estado.</param>
+ <param name="IdUbicacionDefecto">The identifier ubicacion defecto.</param>
+ <param name="fec_agr">The fec_agr.</param>
+ <param name="user_agr">The user_agr.</param>
+ <param name="fec_mod">The fec_mod.</param>
+ <param name="user_mod">The user_mod.</param>
+ <param name="activo">if set to <c>true</c> [activo].</param>    
+</member>
+<member name="M:TOMWMS.clsBeProducto_estado_ubic.Clone">
+ <summary>
+ Creates a new object that is a copy of the current instance.
+ </summary>
+ <returns>A new object that is a copy of this instance.</returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_movimientos.IdRecepcionDet">
+ <summary>
+ #EJC202302211347: Asociar detalle de recepci�n
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_movimientos.IdPedidoEnc">
+ <summary>
+ #EJC202302211347: Asociar IdPedidoEnc en despacho.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_movimientos.IdPedidoDet">
+ <summary>
+ #EJC202302211347: Asociar IdPedidoDet en despacho.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_movimientos.IdDespachoEnc">
+ <summary>
+ #EJC202302211347: Asociar IdDespachoEnc en despacho.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_movimientos.IdDespachoDet">
+ <summary>
+ #EJC202302211347: Asociar IdDespachoDet en despacho.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_oc_det.Costo">
+ <summary>
+ Costo unitario
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_oc_enc.No_Documento">
+ <summary>
+ #EJC20240606: DocNum SAP.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_oc_enc.IdAcuerdoComercial">
+ <summary>
+ Se utiliza para la gestión del acuerdo comercial relacionado a un proveedor en CEALSA.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_oc_enc.IdDespachoEnc">
+ <summary>
+ Si es una transferencia de otra bodega de WMS aquí estará contenido el IdDespachoEnc de la bodega origen.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_oc_enc.No_Documento_Recepcion_ERP">
+ <summary>
+ #EJC20210427: Se utiliza para almacenar el número de documento de recepción del mdulo de bodega de NAV para la bodega de PT.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_oc_ti.Requerir_Ubic_Rec_Ingreso">
+ <summary>
+ #EJC20220330_CEALSA: Si true, se traslada el parámetro a la tarea de recepción en el BOF
+ Para marcar el check, Escanear ubicación en recepción.
+ Si Escanear ubicación en recepción True en Rec.
+ HH exige una ubicación de recepción válida antes de continuar con el proceso.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_oc_ti.Exigir_Campo_Referencia">
+ <summary>
+ #EJC20220504_CEALSA: Si true, en la pantalla de documento de ingreso, se exige se ingrese el campo referencia.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_oc_ti.Marcar_Registros_Enviados_MI3">
+ <summary>
+ #EJC20220504: A petición de Carolina, si true, en I_NAV_TRANSACICONES_OUT se marcan los registros como enviados
+ utilizado en BYB para marcar los registros de bodega 2 (PT) como enviados.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_oc_ti.Preguntar_En_BackOrder">
+ <summary>
+ #EJC20220601: En tarea de recepción, si no se ha completado el documento, preguntar si se quiere dejar en backorder. Marcelo, Mercosal.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_oc_ti.Bloquear_Lotes">
+ <summary>
+ #EJC202303161024: Bloquear el lote para que no se modifique en la HH si están previamente definidos.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_oc_ti.Permitir_Excedente_Lotes">
+ <summary>
+ #EJC20230508: Parámetro agregado para validar si se va a permitir o no agregar de un 
+ lote una cantidad mayor de lo ingresado en la tabla trans_oc_det_lote
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_oc_ti.Es_Importacion">
+ <summary>
+ #EJC202310171614: Determina si un documento de ingreso es una importación
+ Se utiliza para la interface de SAP en BECO para enviar a bodega PNC el producto faltante.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_oc_ti.Permitir_Vencido_Ingreso">
+ <summary>
+ #GT23102023: Determina si un documento recibe producto vencido o no
+ Se utiliza para la interface de SAP en BECO para recibir vencidos
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_oc_ti.IdProductoEstado">
+ <summary>
+ #GT23102023: Determina si una recepción maneja un estado general para el documento
+ Se utiliza para la interface
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_oc_ti.IdPropietario">
+ <summary>
+ #GT23102023: Determina si una recepción tiene un propietario asociado a un estado
+ Se utiliza para la interface
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_pe_det.IdCliente">
+ <summary>
+ #EJC20220307: Cliente en detalle para BYB.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_picking_enc.verifica_auto">
+ <summary>
+ #EJC20200123
+ Indica si en el proceso de picking en la HH se debe marcar autom�ticamente como verificada la cantidad.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_picking_enc.procesado_bof">
+ <summary>
+ #EJC20200123
+ True: Indica que la tarea de picking fue procesada autom�ticamente desde el BOF.
+ False: Si la tarea de picking fue procesada por la HH
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_picking_enc.Requiere_Preparacion">
+ <summary>
+ #EJC20210805A: Indica si un picking debe ser preparado, antes de despachar.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_picking_enc.Tipo_Preparacion">
+ <summary>
+ #EJC20210805B: Indica si la preparación es Granel o Tarima.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_picking_enc.Fotografia_Verificacion">
+ <summary>
+ #CKFK20231027
+ Indica si en el proceso de verificación en la HH se debe permitir tomar fotografias.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_picking_enc.IdBodegaMuelle">
+ <summary>
+ #EJC20240609: Muelle.
+ </summary>
+ <returns></returns>   
+</member>
+<member name="P:TOMWMS.clsBeTrans_picking_ubic.IdOperadorBodega_Asignado">
+ <summary>
+ #EJC20220303: Almacenar el operador el que le fue asignada la línea de forma auotmática.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_picking_ubic.IdUbicacionTemporal">
+ <summary>
+ #EJC20220330_CEALSA: Se utiliza para cambio de ubicación de producto que está reservado en picking.
+ </summary>
+ <returns></returns>
+</member>
+<member name="T:TOMWMS.clsBeProductosRecepcion">
+ <summary>
+ #EJC20240213: Esta clase, debe responder a esta pregunta, ¿El código de producto para la línea dada, fue recibido en su totalidad?.
+ </summary>
+</member>
+<member name="P:TOMWMS.clsBeEmpresa.Hora_Corte_Jornada_Sistema">
+ <summary>
+ '#CKFK 20211006 Corregí el Año porque estaba como 1999
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeEmpresa.Version_BD">
+ <summary>
+ #EJC20220802: Para control de versión de la base de datos.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeEmpresa.AWS_Token">
+ <summary>
+ #EJC20220802: Para identificarse en la base de datos de amazon (del futuro)
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeStock_res.Control_Ultimo_Lote">
+ <summary>
+ Se utiliza ónicamente en el proceso de reserva de stock como bandera para determinar si se debe excluir el último lote despachado al cliente..
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeStock_res.Codigo_Producto">
+ <summary>
+ Codigo_Producto: Agregado por interface BYB
+ #EJC20211210_0041AM_ Carol está bostezando.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeStock_res.No_Pedido">
+ <summary>
+ No_Pedido: Agregado por interface BYB
+ #EJC20211210_0041AM_ Carol está bostezando.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeStock_res.IdUbicacionAbastecerCon">
+ <summary>
+ #EJC20220329_BYB:En la solicitud de reserva de stock, se puede indicar la Ubicación con la que se quiere
+ abastecer el pedido, este IdUbicación proviene del Cliente
+ Se debe considerar si el PT, tiene definido que se debe aplicar la regla o no.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeVW_stock_res.CantidadUmBas">
+ <summary>
+ Cantidad en unidad de medida básica.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeVW_stock_res.CantidadPresentacion">
+ <summary>
+ Cantidad con presentación
+ </summary>
+ <returns></returns>
+ 
+</member>
+<member name="P:TOMWMS.clsBeVW_stock_res.Movimiento">
+ <summary>
+ #AT20240621: Se utiliza en la HH para enviar el movimiento generado
+ en el cambio de ubicacion para licencias completas 
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_pe_tipo.Generar_Recepcion_Auto_Bodega_Destino">
+ <summary>
+ #EJC20220428: Determina si se genera la tarea de recepci�n en la bodega destino.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_pe_tipo.Recibir_Producto_Auto_Bodega_Destino">
+ <summary>
+ #EJC20220428: Determina si se debe recibir (push to stock) autom�ticamente el producto en bodega de destino (si es de WMS).
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_pe_tipo.Control_Cliente_En_Detalle">
+ <summary>
+ #EJC20220512: BYB: Indica si el detalle del documento de salida tiene asociaci�n con cliente.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_pe_tipo.Permitir_Despacho_Parcial">
+ <summary>
+ #EJC20220525: Define si permite el despacho parcial de un pedido.
+ MARCELO, Mercosal.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_pe_tipo.Permitir_Despacho_Multiple">
+ <summary>
+ #EJC20220627: 
+ Se busca a trav�s de este par�metro que ciertos pedidos de cliente, 
+ no puedan tener despachos m�ltiples o parciales, 
+ porque en el ERP ya fueron cerrados y no pueden ser procesados nuevamente
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_pe_tipo.Fotografia_Verificacion">
+ <summary>
+ #CKFK20231027
+ Indica si en el proceso de verificaci�n en la HH se debe permitir tomar fotografias.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_pe_tipo.Es_Devolucion">
+ <summary>
+ #CKFK20240620
+ Indica si el documento es de tipo devolución.
+ </summary>
+ <returns></returns>
+</member>
+</members>
+</doc>

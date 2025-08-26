@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:tns="urn:microsoft-dynamics-schemas/codeunit/Lote_PedidoTransferencia" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/Lote_PedidoTransferencia" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <schema elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/Lote_PedidoTransferencia" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element name="LoteLinPedidoTransfer">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="noPedidoTransfer" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="noLineaTransfer" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="codProducto" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codVariante" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codUnidadMedida" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="cantidad" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="noLote" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="LoteLinPedidoTransfer_Result">
+        <complexType>
+          <sequence />
+        </complexType>
+      </element>
+    </schema>
+  </types>
+  <message name="LoteLinPedidoTransfer">
+    <part name="parameters" element="tns:LoteLinPedidoTransfer" />
+  </message>
+  <message name="LoteLinPedidoTransfer_Result">
+    <part name="parameters" element="tns:LoteLinPedidoTransfer_Result" />
+  </message>
+  <portType name="Lote_PedidoTransferencia_Port">
+    <operation name="LoteLinPedidoTransfer">
+      <input name="LoteLinPedidoTransfer" message="tns:LoteLinPedidoTransfer" />
+      <output name="LoteLinPedidoTransfer_Result" message="tns:LoteLinPedidoTransfer_Result" />
+    </operation>
+  </portType>
+  <binding name="Lote_PedidoTransferencia_Binding" type="tns:Lote_PedidoTransferencia_Port">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="LoteLinPedidoTransfer">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Lote_PedidoTransferencia:LoteLinPedidoTransfer" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="LoteLinPedidoTransfer">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="LoteLinPedidoTransfer_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="Lote_PedidoTransferencia">
+    <port name="Lote_PedidoTransferencia_Port" binding="tns:Lote_PedidoTransferencia_Binding">
+      <address location="http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/Lote_PedidoTransferencia" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </port>
+  </service>
+</definitions>

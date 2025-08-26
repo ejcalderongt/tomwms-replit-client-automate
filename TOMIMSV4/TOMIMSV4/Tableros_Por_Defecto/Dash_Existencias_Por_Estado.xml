@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-GT">
+  <Title Text="Dashboard" />
+  <DataSources>
+    <SqlDataSource Name="SQL Data Source 1" ComponentName="dashboardSqlDataSource1">
+      <Connection Name="localhost_IMS4MB_MERCOPAN_PRD_Connection" ProviderKey="MSSqlServer">
+        <Parameters>
+          <Parameter Name="server" Value="LAPTOP-5GDJFUCN\PROGRAX" />
+          <Parameter Name="database" Value="TOMWMS_LA_CUMBRE_QA" />
+          <Parameter Name="useIntegratedSecurity" Value="False" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+          <Parameter Name="SqlServerTrustServerCertificate" Value="true" />
+          <Parameter Name="userid" Value="" />
+          <Parameter Name="password" Value="" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="VW_Stock_Res">
+        <Tables>
+          <Table Name="VW_Stock_Res" X="30" Y="30" Width="125" Height="2284" />
+        </Tables>
+        <Columns>
+          <Column Table="VW_Stock_Res" Name="IdBodega" />
+          <Column Table="VW_Stock_Res" Name="Bodega" />
+          <Column Table="VW_Stock_Res" Name="IdPropietario" />
+          <Column Table="VW_Stock_Res" Name="IdPropietarioBodega" />
+          <Column Table="VW_Stock_Res" Name="Propietario" />
+          <Column Table="VW_Stock_Res" Name="IdProducto" />
+          <Column Table="VW_Stock_Res" Name="IdProductoBodega" />
+          <Column Table="VW_Stock_Res" Name="IdStock" />
+          <Column Table="VW_Stock_Res" Name="IdUbicacion_anterior" />
+          <Column Table="VW_Stock_Res" Name="IdUnidadMedida" />
+          <Column Table="VW_Stock_Res" Name="IdProductoEstado" />
+          <Column Table="VW_Stock_Res" Name="IdPresentacion" />
+          <Column Table="VW_Stock_Res" Name="IdRecepcionEnc" />
+          <Column Table="VW_Stock_Res" Name="codigo" />
+          <Column Table="VW_Stock_Res" Name="codigo_barra" />
+          <Column Table="VW_Stock_Res" Name="nombre" />
+          <Column Table="VW_Stock_Res" Name="UnidadMedida" />
+          <Column Table="VW_Stock_Res" Name="Presentacion" />
+          <Column Table="VW_Stock_Res" Name="lote" />
+          <Column Table="VW_Stock_Res" Name="fecha_ingreso" />
+          <Column Table="VW_Stock_Res" Name="fecha_vence" />
+          <Column Table="VW_Stock_Res" Name="Cantidad_UMBas" />
+          <Column Table="VW_Stock_Res" Name="CantidadSF" />
+          <Column Table="VW_Stock_Res" Name="Cantidad_Presentacion" />
+          <Column Table="VW_Stock_Res" Name="factor" />
+          <Column Table="VW_Stock_Res" Name="CantidadReservadaUmBas" />
+          <Column Table="VW_Stock_Res" Name="Cantidad_Reservada_Pres" />
+          <Column Table="VW_Stock_Res" Name="Disponible_UMBas" />
+          <Column Table="VW_Stock_Res" Name="Disponible_Presentacion" />
+          <Column Table="VW_Stock_Res" Name="peso" />
+          <Column Table="VW_Stock_Res" Name="NomEstado" />
+          <Column Table="VW_Stock_Res" Name="dañado" />
+          <Column Table="VW_Stock_Res" Name="EstadoUtilizable" />
+          <Column Table="VW_Stock_Res" Name="IdUbicacion" />
+          <Column Table="VW_Stock_Res" Name="lic_plate" />
+          <Column Table="VW_Stock_Res" Name="serial" />
+          <Column Table="VW_Stock_Res" Name="añada" />
+          <Column Table="VW_Stock_Res" Name="IdIndiceRotacion" />
+          <Column Table="VW_Stock_Res" Name="alto" />
+          <Column Table="VW_Stock_Res" Name="largo" />
+          <Column Table="VW_Stock_Res" Name="ancho" />
+          <Column Table="VW_Stock_Res" Name="IdTramo" />
+          <Column Table="VW_Stock_Res" Name="Ancho_ubicacion" />
+          <Column Table="VW_Stock_Res" Name="Largo_ubicacion" />
+          <Column Table="VW_Stock_Res" Name="Alto_ubicacion" />
+          <Column Table="VW_Stock_Res" Name="IndiceRotacion" />
+          <Column Table="VW_Stock_Res" Name="Existencia_min_umbas" />
+          <Column Table="VW_Stock_Res" Name="Existencia_max_umbas" />
+          <Column Table="VW_Stock_Res" Name="costo" />
+          <Column Table="VW_Stock_Res" Name="Existencia_min_pres" />
+          <Column Table="VW_Stock_Res" Name="Existencia_max_pres" />
+          <Column Table="VW_Stock_Res" Name="IdUbicacionActual" />
+          <Column Table="VW_Stock_Res" Name="Ubicacion_Nivel" />
+          <Column Table="VW_Stock_Res" Name="Ubicacion_Indice_X" />
+          <Column Table="VW_Stock_Res" Name="Ubicacion_Nombre" />
+          <Column Table="VW_Stock_Res" Name="Ubicacion_Tramo" />
+          <Column Table="VW_Stock_Res" Name="activo" />
+          <Column Table="VW_Stock_Res" Name="bloqueada" />
+          <Column Table="VW_Stock_Res" Name="ubicacion_merma" />
+          <Column Table="VW_Stock_Res" Name="MotivoDevolucion" />
+          <Column Table="VW_Stock_Res" Name="Codigo_Poliza" />
+          <Column Table="VW_Stock_Res" Name="Numero_poliza" />
+          <Column Table="VW_Stock_Res" Name="numero_orden" />
+          <Column Table="VW_Stock_Res" Name="Familia" />
+          <Column Table="VW_Stock_Res" Name="NoTO" />
+          <Column Table="VW_Stock_Res" Name="Area" />
+          <Column Table="VW_Stock_Res" Name="Clasificacion" />
+          <Column Table="VW_Stock_Res" Name="IdProductoParametroA" />
+          <Column Table="VW_Stock_Res" Name="IdProductoParametroB" />
+          <Column Table="VW_Stock_Res" Name="atributo_variante_1" />
+          <Column Table="VW_Stock_Res" Name="parametro_a" />
+          <Column Table="VW_Stock_Res" Name="parametro_b" />
+          <Column Table="VW_Stock_Res" Name="parametro_personalizado" />
+          <Column Table="VW_Stock_Res" Name="parametro_valor" />
+          <Column Table="VW_Stock_Res" Name="IdTipoProducto" />
+          <Column Table="VW_Stock_Res" Name="tipo" />
+          <Column Table="VW_Stock_Res" Name="IdMarca" />
+          <Column Table="VW_Stock_Res" Name="marca" />
+          <Column Table="VW_Stock_Res" Name="cantidad" />
+          <Column Table="VW_Stock_Res" Name="doc_ingreso" />
+          <Column Table="VW_Stock_Res" Name="posiciones" />
+          <Column Table="VW_Stock_Res" Name="valor_unitario" />
+          <Column Table="VW_Stock_Res" Name="valor_total" />
+          <Column Table="VW_Stock_Res" Name="IdEmbarcador" />
+          <Column Table="VW_Stock_Res" Name="Shipper" />
+          <Column Table="VW_Stock_Res" Name="Regimen" />
+          <Column Table="VW_Stock_Res" Name="ingreso_ticket" />
+          <Column Table="VW_Stock_Res" Name="IdEmpresa" />
+          <Column Table="VW_Stock_Res" Name="IdTipoEtiqueta" />
+          <Column Table="VW_Stock_Res" Name="ubicacion_picking" />
+          <Column Table="VW_Stock_Res" Name="CamasPorTarima" />
+          <Column Table="VW_Stock_Res" Name="CajasPorCama" />
+          <Column Table="VW_Stock_Res" Name="IdPedido" />
+          <Column Table="VW_Stock_Res" Name="pallet_no_estandar" />
+          <Column Table="VW_Stock_Res" Name="Embarcador" />
+          <Column Table="VW_Stock_Res" Name="Documento_Ingreso" />
+          <Column Table="VW_Stock_Res" Name="CantidadReservada" />
+          <Column Table="VW_Stock_Res" Name="Nombre_Completo" />
+          <Column Table="VW_Stock_Res" Name="es_rack" />
+          <Column Table="VW_Stock_Res" Name="ReferenciaOCEnc" />
+          <Column Table="VW_Stock_Res" Name="precio_producto" />
+          <Column Table="VW_Stock_Res" Name="costo_producto" />
+          <Column Table="VW_Stock_Res" Name="costo_ingreso" />
+          <Column Table="VW_Stock_Res" Name="IdRecepcionDet" />
+          <Column Table="VW_Stock_Res" Name="Ingreso" />
+          <Column Table="VW_Stock_Res" Name="es_devolucion" />
+          <Column Table="VW_Stock_Res" Name="No_Linea" />
+          <Column Table="VW_Stock_Res" Name="IdArea" />
+          <Column Table="VW_Stock_Res" Name="Referencia" />
+          <Column Table="VW_Stock_Res" Name="No_Docto" />
+          <Column Table="VW_Stock_Res" Name="No_Contenedor" />
+        </Columns>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="SQL Data Source 1">
+          <View Name="VW_Stock_Res">
+            <Field Name="IdBodega" Type="Int32" />
+            <Field Name="Bodega" Type="String" />
+            <Field Name="IdPropietario" Type="Int32" />
+            <Field Name="IdPropietarioBodega" Type="Int32" />
+            <Field Name="Propietario" Type="String" />
+            <Field Name="IdProducto" Type="Int32" />
+            <Field Name="IdProductoBodega" Type="Int32" />
+            <Field Name="IdStock" Type="Int32" />
+            <Field Name="IdUbicacion_anterior" Type="Int32" />
+            <Field Name="IdUnidadMedida" Type="Int32" />
+            <Field Name="IdProductoEstado" Type="Int32" />
+            <Field Name="IdPresentacion" Type="Int32" />
+            <Field Name="IdRecepcionEnc" Type="Int32" />
+            <Field Name="codigo" Type="String" />
+            <Field Name="codigo_barra" Type="String" />
+            <Field Name="nombre" Type="String" />
+            <Field Name="UnidadMedida" Type="String" />
+            <Field Name="Presentacion" Type="String" />
+            <Field Name="lote" Type="String" />
+            <Field Name="fecha_ingreso" Type="DateTime" />
+            <Field Name="fecha_vence" Type="DateTime" />
+            <Field Name="Cantidad_UMBas" Type="Double" />
+            <Field Name="CantidadSF" Type="Double" />
+            <Field Name="Cantidad_Presentacion" Type="Double" />
+            <Field Name="factor" Type="Double" />
+            <Field Name="CantidadReservadaUmBas" Type="Double" />
+            <Field Name="Cantidad_Reservada_Pres" Type="Double" />
+            <Field Name="Disponible_UMBas" Type="Double" />
+            <Field Name="Disponible_Presentacion" Type="Double" />
+            <Field Name="peso" Type="Double" />
+            <Field Name="NomEstado" Type="String" />
+            <Field Name="dañado" Type="Boolean" />
+            <Field Name="EstadoUtilizable" Type="Boolean" />
+            <Field Name="IdUbicacion" Type="Int32" />
+            <Field Name="lic_plate" Type="String" />
+            <Field Name="serial" Type="String" />
+            <Field Name="añada" Type="Int32" />
+            <Field Name="IdIndiceRotacion" Type="Int32" />
+            <Field Name="alto" Type="Double" />
+            <Field Name="largo" Type="Double" />
+            <Field Name="ancho" Type="Double" />
+            <Field Name="IdTramo" Type="Int32" />
+            <Field Name="Ancho_ubicacion" Type="Double" />
+            <Field Name="Largo_ubicacion" Type="Double" />
+            <Field Name="Alto_ubicacion" Type="Double" />
+            <Field Name="IndiceRotacion" Type="String" />
+            <Field Name="Existencia_min_umbas" Type="Double" />
+            <Field Name="Existencia_max_umbas" Type="Double" />
+            <Field Name="costo" Type="Double" />
+            <Field Name="Existencia_min_pres" Type="Double" />
+            <Field Name="Existencia_max_pres" Type="Double" />
+            <Field Name="IdUbicacionActual" Type="Int32" />
+            <Field Name="Ubicacion_Nivel" Type="Int32" />
+            <Field Name="Ubicacion_Indice_X" Type="Int32" />
+            <Field Name="Ubicacion_Nombre" Type="String" />
+            <Field Name="Ubicacion_Tramo" Type="String" />
+            <Field Name="activo" Type="Boolean" />
+            <Field Name="bloqueada" Type="Boolean" />
+            <Field Name="ubicacion_merma" Type="Boolean" />
+            <Field Name="MotivoDevolucion" Type="String" />
+            <Field Name="Codigo_Poliza" Type="String" />
+            <Field Name="Numero_poliza" Type="String" />
+            <Field Name="numero_orden" Type="String" />
+            <Field Name="Familia" Type="String" />
+            <Field Name="NoTO" Type="String" />
+            <Field Name="Area" Type="String" />
+            <Field Name="Clasificacion" Type="String" />
+            <Field Name="IdProductoParametroA" Type="Int32" />
+            <Field Name="IdProductoParametroB" Type="Int32" />
+            <Field Name="atributo_variante_1" Type="String" />
+            <Field Name="parametro_a" Type="String" />
+            <Field Name="parametro_b" Type="String" />
+            <Field Name="parametro_personalizado" Type="String" />
+            <Field Name="parametro_valor" Type="String" />
+            <Field Name="IdTipoProducto" Type="Int32" />
+            <Field Name="tipo" Type="String" />
+            <Field Name="IdMarca" Type="Int32" />
+            <Field Name="marca" Type="String" />
+            <Field Name="cantidad" Type="Double" />
+            <Field Name="doc_ingreso" Type="Int32" />
+            <Field Name="posiciones" Type="Int32" />
+            <Field Name="valor_unitario" Type="Double" />
+            <Field Name="valor_total" Type="Double" />
+            <Field Name="IdEmbarcador" Type="Int32" />
+            <Field Name="Shipper" Type="String" />
+            <Field Name="Regimen" Type="String" />
+            <Field Name="ingreso_ticket" Type="String" />
+            <Field Name="IdEmpresa" Type="Int32" />
+            <Field Name="IdTipoEtiqueta" Type="Int32" />
+            <Field Name="ubicacion_picking" Type="Boolean" />
+            <Field Name="CamasPorTarima" Type="Double" />
+            <Field Name="CajasPorCama" Type="Double" />
+            <Field Name="IdPedido" Type="Int64" />
+            <Field Name="pallet_no_estandar" Type="Boolean" />
+            <Field Name="Embarcador" Type="String" />
+            <Field Name="Documento_Ingreso" Type="Int32" />
+            <Field Name="CantidadReservada" Type="Double" />
+            <Field Name="Nombre_Completo" Type="String" />
+            <Field Name="es_rack" Type="Boolean" />
+            <Field Name="ReferenciaOCEnc" Type="String" />
+            <Field Name="precio_producto" Type="Double" />
+            <Field Name="costo_producto" Type="Double" />
+            <Field Name="costo_ingreso" Type="Double" />
+            <Field Name="IdRecepcionDet" Type="Int32" />
+            <Field Name="Ingreso" Type="String" />
+            <Field Name="es_devolucion" Type="Boolean" />
+            <Field Name="No_Linea" Type="Int32" />
+            <Field Name="IdArea" Type="Int32" />
+            <Field Name="Referencia" Type="String" />
+            <Field Name="No_Docto" Type="String" />
+            <Field Name="No_Contenedor" Type="String" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <TreeView ComponentName="treeViewDashboardItem1" Name="Estados" DataSource="dashboardSqlDataSource1" DataMember="VW_Stock_Res">
+      <DataItems>
+        <Dimension DataMember="NomEstado" DefaultId="DataItem0" />
+        <Dimension DataMember="codigo" DefaultId="DataItem1" />
+      </DataItems>
+      <FilterDimensions>
+        <Dimension DefaultId="DataItem0" />
+        <Dimension DefaultId="DataItem1" />
+      </FilterDimensions>
+    </TreeView>
+    <Grid ComponentName="gridDashboardItem1" Name="Existencias por Estado" DataSource="dashboardSqlDataSource1" DataMember="VW_Stock_Res">
+      <DataItems>
+        <Dimension DataMember="codigo" Name="Codigo" DefaultId="DataItem0" />
+        <Dimension DataMember="nombre" Name="Nombre" DefaultId="DataItem1" />
+        <Dimension DataMember="NomEstado" Name="Estado" DefaultId="DataItem2" />
+        <Dimension DataMember="Nombre_Completo" Name="Ubicación" DefaultId="DataItem3" />
+        <Measure DataMember="Disponible_UMBas" DefaultId="DataItem4" />
+      </DataItems>
+      <GridColumns>
+        <GridDimensionColumn Weight="54.270946681175189">
+          <Dimension DefaultId="DataItem0" />
+        </GridDimensionColumn>
+        <GridDimensionColumn Weight="146.49075081610445">
+          <Dimension DefaultId="DataItem1" />
+        </GridDimensionColumn>
+        <GridDimensionColumn Weight="34.684439608269855">
+          <Dimension DefaultId="DataItem2" />
+        </GridDimensionColumn>
+        <GridMeasureColumn Weight="73.857453754080524">
+          <Measure DefaultId="DataItem4" />
+        </GridMeasureColumn>
+        <GridDimensionColumn Weight="65.696409140369965">
+          <Dimension DefaultId="DataItem3" />
+        </GridDimensionColumn>
+      </GridColumns>
+      <GridOptions ColumnWidthMode="Manual" />
+      <ColumnFilterOptions />
+    </Grid>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup Weight="100">
+      <LayoutItem DashboardItem="treeViewDashboardItem1" Weight="17.429577464788732" />
+      <LayoutItem DashboardItem="gridDashboardItem1" Weight="82.570422535211264" />
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

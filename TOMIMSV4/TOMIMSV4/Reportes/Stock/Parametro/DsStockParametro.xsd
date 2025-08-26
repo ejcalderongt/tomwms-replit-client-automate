@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DsStockParametro" targetNamespace="http://tempuri.org/DsStockParametro.xsd" xmlns:mstns="http://tempuri.org/DsStockParametro.xsd" xmlns="http://tempuri.org/DsStockParametro.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="MySettings" AppSettingsPropertyName="IMS4MB_QAConnectionStringPrograN" IsAppSettingsProperty="true" Modifier="Assembly" Name="IMS4MB_QAConnectionStringPrograN (MySettings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.TOMIMSV4.My.MySettings.GlobalReference.Default.IMS4MB_QAConnectionStringPrograN" Provider="System.Data.SqlClient" />          
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="stockTableAdapter" GeneratorDataComponentClassName="stockTableAdapter" Name="stock" UserDataComponentName="stockTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="IMS4MB_QAConnectionStringPrograN (MySettings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT s.IdStock AS StockId, pr.codigo AS Código, p.nombre_comercial AS Propietario,pr.Nombre AS Producto, pr.codigo_barra AS 'Código Barra', pe.nombre AS Estado, 
+pp.nombre AS Presentación,u.Nombre AS 'U.M Bas',s.Serial,(s.Cantidad / pp.Factor) AS 'Cant Presentación',s.Cantidad AS 'Cant U.M Bas',s.fecha_ingreso AS 'Fecha Ingreso',
+s.Fecha_Vence AS 'Fecha Vence',s.Lote, s.IdRecepcionEnc AS Recepción
+FROM stock AS s
+INNER JOIN propietario_bodega AS pb ON s.IdPropietarioBodega = pb.IdPropietarioBodega
+INNER JOIN propietarios AS p ON pb.IdPropietario = p.IdPropietario
+INNER JOIN producto_bodega AS prb ON s.IdProductoBodega = prb.IdProductoBodega
+INNER JOIN producto AS pr ON prb.IdProducto = pr.IdProducto
+LEFT JOIN producto_estado AS pe ON s.IdProductoEstado = pe.IdEstado AND p.IdPropietario = pe.IdPropietario
+LEFT JOIN producto_presentacion AS pp ON s.IdPresentacion = pp.IdPresentacion AND pr.IdProducto = pp.IdProducto
+LEFT JOIN unidad_medida AS u ON s.IdUnidadMedida = u.IdUnidadMedida AND p.IdPropietario = u.IdPropietario
+LEFT JOIN bodega_ubicacion AS u1 ON s.IdUbicacion = u1.IdUbicacion
+LEFT JOIN bodega_ubicacion AS u2 ON s.IdUbicacion_anterior = u2.IdUbicacion</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="Propietario" DataSetColumn="Propietario" />
+              <Mapping SourceColumn="Producto" DataSetColumn="Producto" />
+              <Mapping SourceColumn="Estado" DataSetColumn="Estado" />
+              <Mapping SourceColumn="Lote" DataSetColumn="Lote" />
+              <Mapping SourceColumn="Serial" DataSetColumn="Serial" />
+              <Mapping SourceColumn="Código Barra" DataSetColumn="Código Barra" />
+              <Mapping SourceColumn="U.M Bas" DataSetColumn="U_M Bas" />
+              <Mapping SourceColumn="Fecha Ingreso" DataSetColumn="Fecha Ingreso" />
+              <Mapping SourceColumn="Fecha Vence" DataSetColumn="Fecha Vence" />
+              <Mapping SourceColumn="Recepción" DataSetColumn="Recepción" />
+              <Mapping SourceColumn="StockId" DataSetColumn="StockId" />
+              <Mapping SourceColumn="Código" DataSetColumn="Código" />
+              <Mapping SourceColumn="Presentación" DataSetColumn="Presentación" />
+              <Mapping SourceColumn="Cant Presentación" DataSetColumn="Cant Presentación" />
+              <Mapping SourceColumn="Cant U.M Bas" DataSetColumn="Cant U_M Bas" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="stock_parametroTableAdapter" GeneratorDataComponentClassName="stock_parametroTableAdapter" Name="stock_parametro" UserDataComponentName="stock_parametroTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="IMS4MB_QAConnectionStringPrograN (MySettings)" DbObjectName="IMS4MB_QA.dbo.stock_parametro" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>
+                      SELECT sp.IdStock AS StockId, sp.valor_texto AS 'Valor Texto', sp.valor_numerico AS 'Valor Numérico', sp.valor_fecha AS 'Valor Fecha',
+                      sp.valor_logico AS 'Valor Lógico'
+                      FROM stock_parametro AS sp
+                      INNER JOIN stock AS s ON sp.IdStock = s.IdStock
+                    </CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="Valor Texto" DataSetColumn="Valor Texto" />
+              <Mapping SourceColumn="Valor Numérico" DataSetColumn="Valor Numérico" />
+              <Mapping SourceColumn="Valor Fecha" DataSetColumn="Valor Fecha" />
+              <Mapping SourceColumn="Valor Lógico" DataSetColumn="Valor Lógico" />
+              <Mapping SourceColumn="StockId" DataSetColumn="StockId" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DsStockParametro" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DsStockParametro" msprop:Generator_UserDSName="DsStockParametro">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="stock_parametro" msprop:Generator_TableClassName="stock_parametroDataTable" msprop:Generator_TableVarName="tablestock_parametro" msprop:Generator_TablePropName="stock_parametro" msprop:Generator_RowDeletingName="stock_parametroRowDeleting" msprop:Generator_RowChangingName="stock_parametroRowChanging" msprop:Generator_RowEvHandlerName="stock_parametroRowChangeEventHandler" msprop:Generator_RowDeletedName="stock_parametroRowDeleted" msprop:Generator_UserTableName="stock_parametro" msprop:Generator_RowChangedName="stock_parametroRowChanged" msprop:Generator_RowEvArgName="stock_parametroRowChangeEvent" msprop:Generator_RowClassName="stock_parametroRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Valor_x0020_Texto" msprop:Generator_ColumnVarNameInTable="columnValor_Texto" msprop:Generator_ColumnPropNameInRow="Valor_Texto" msprop:Generator_ColumnPropNameInTable="Valor_TextoColumn" msprop:Generator_UserColumnName="Valor Texto" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Valor_x0020_Numérico" msprop:Generator_ColumnVarNameInTable="columnValor_Numérico" msprop:Generator_ColumnPropNameInRow="Valor_Numérico" msprop:Generator_ColumnPropNameInTable="Valor_NuméricoColumn" msprop:Generator_UserColumnName="Valor Numérico" type="xs:double" minOccurs="0" />
+              <xs:element name="Valor_x0020_Fecha" msprop:Generator_ColumnVarNameInTable="columnValor_Fecha" msprop:Generator_ColumnPropNameInRow="Valor_Fecha" msprop:Generator_ColumnPropNameInTable="Valor_FechaColumn" msprop:Generator_UserColumnName="Valor Fecha" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Valor_x0020_Lógico" msprop:Generator_ColumnVarNameInTable="columnValor_Lógico" msprop:Generator_ColumnPropNameInRow="Valor_Lógico" msprop:Generator_ColumnPropNameInTable="Valor_LógicoColumn" msprop:Generator_UserColumnName="Valor Lógico" type="xs:boolean" minOccurs="0" />
+              <xs:element name="StockId" msprop:Generator_ColumnVarNameInTable="columnStockId" msprop:Generator_ColumnPropNameInRow="StockId" msprop:Generator_ColumnPropNameInTable="StockIdColumn" msprop:Generator_UserColumnName="StockId" type="xs:int" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="stock" msprop:Generator_TableClassName="stockDataTable" msprop:Generator_TableVarName="tablestock" msprop:Generator_TablePropName="stock" msprop:Generator_RowDeletingName="stockRowDeleting" msprop:Generator_RowChangingName="stockRowChanging" msprop:Generator_RowEvHandlerName="stockRowChangeEventHandler" msprop:Generator_RowDeletedName="stockRowDeleted" msprop:Generator_UserTableName="stock" msprop:Generator_RowChangedName="stockRowChanged" msprop:Generator_RowEvArgName="stockRowChangeEvent" msprop:Generator_RowClassName="stockRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Propietario" msprop:Generator_ColumnVarNameInTable="columnPropietario" msprop:Generator_ColumnPropNameInRow="Propietario" msprop:Generator_ColumnPropNameInTable="PropietarioColumn" msprop:Generator_UserColumnName="Propietario">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Producto" msprop:Generator_ColumnVarNameInTable="columnProducto" msprop:Generator_ColumnPropNameInRow="Producto" msprop:Generator_ColumnPropNameInTable="ProductoColumn" msprop:Generator_UserColumnName="Producto" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Estado" msprop:Generator_ColumnVarNameInTable="columnEstado" msprop:Generator_ColumnPropNameInRow="Estado" msprop:Generator_ColumnPropNameInTable="EstadoColumn" msprop:Generator_UserColumnName="Estado" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Lote" msprop:Generator_ColumnVarNameInTable="columnLote" msprop:Generator_ColumnPropNameInRow="Lote" msprop:Generator_ColumnPropNameInTable="LoteColumn" msprop:Generator_UserColumnName="Lote" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Serial" msprop:Generator_ColumnVarNameInTable="columnSerial" msprop:Generator_ColumnPropNameInRow="Serial" msprop:Generator_ColumnPropNameInTable="SerialColumn" msprop:Generator_UserColumnName="Serial" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Código_x0020_Barra" msprop:Generator_ColumnVarNameInTable="columnCódigo_Barra" msprop:Generator_ColumnPropNameInRow="Código_Barra" msprop:Generator_ColumnPropNameInTable="Código_BarraColumn" msprop:Generator_UserColumnName="Código Barra" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="35" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="U_M_x0020_Bas" msdata:Caption="U.M Bas" msprop:Generator_ColumnVarNameInTable="columnU_M_Bas" msprop:Generator_ColumnPropNameInRow="U_M_Bas" msprop:Generator_ColumnPropNameInTable="U_M_BasColumn" msprop:Generator_UserColumnName="U_M Bas" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Fecha_x0020_Ingreso" msprop:Generator_ColumnVarNameInTable="columnFecha_Ingreso" msprop:Generator_ColumnPropNameInRow="Fecha_Ingreso" msprop:Generator_ColumnPropNameInTable="Fecha_IngresoColumn" msprop:Generator_UserColumnName="Fecha Ingreso" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Fecha_x0020_Vence" msprop:Generator_ColumnVarNameInTable="columnFecha_Vence" msprop:Generator_ColumnPropNameInRow="Fecha_Vence" msprop:Generator_ColumnPropNameInTable="Fecha_VenceColumn" msprop:Generator_UserColumnName="Fecha Vence" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Recepción" msprop:Generator_ColumnVarNameInTable="columnRecepción" msprop:Generator_ColumnPropNameInRow="Recepción" msprop:Generator_ColumnPropNameInTable="RecepciónColumn" msprop:Generator_UserColumnName="Recepción" type="xs:int" minOccurs="0" />
+              <xs:element name="StockId" msprop:Generator_ColumnVarNameInTable="columnStockId" msprop:Generator_ColumnPropNameInRow="StockId" msprop:Generator_ColumnPropNameInTable="StockIdColumn" msprop:Generator_UserColumnName="StockId" type="xs:int" />
+              <xs:element name="Código" msprop:Generator_ColumnVarNameInTable="columnCódigo" msprop:Generator_ColumnPropNameInRow="Código" msprop:Generator_ColumnPropNameInTable="CódigoColumn" msprop:Generator_UserColumnName="Código" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Presentación" msprop:Generator_ColumnVarNameInTable="columnPresentación" msprop:Generator_ColumnPropNameInRow="Presentación" msprop:Generator_ColumnPropNameInTable="PresentaciónColumn" msprop:Generator_UserColumnName="Presentación" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Cant_x0020_Presentación" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnCant_Presentación" msprop:Generator_ColumnPropNameInRow="Cant_Presentación" msprop:Generator_ColumnPropNameInTable="Cant_PresentaciónColumn" msprop:Generator_UserColumnName="Cant Presentación" type="xs:double" minOccurs="0" />
+              <xs:element name="Cant_x0020_U_M_x0020_Bas" msdata:Caption="Cant U.M Bas" msprop:Generator_ColumnVarNameInTable="columnCant_U_M_Bas" msprop:Generator_ColumnPropNameInRow="Cant_U_M_Bas" msprop:Generator_ColumnPropNameInTable="Cant_U_M_BasColumn" msprop:Generator_UserColumnName="Cant U_M Bas" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:stock" />
+      <xs:field xpath="mstns:StockId" />
+    </xs:unique>
+  </xs:element>
+  <xs:annotation>
+    <xs:appinfo>
+      <msdata:Relationship name="stock_stock_parametro" msdata:parent="stock" msdata:child="stock_parametro" msdata:parentkey="StockId" msdata:childkey="StockId" msprop:Generator_UserChildTable="stock_parametro" msprop:Generator_ChildPropName="Getstock_parametroRows" msprop:Generator_UserRelationName="stock_stock_parametro" msprop:Generator_ParentPropName="stockRow" msprop:Generator_RelationVarName="relationstock_stock_parametro" msprop:Generator_UserParentTable="stock" />
+    </xs:appinfo>
+  </xs:annotation>
+</xs:schema>

@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-GT">
+  <Title Text="Tablero de control" />
+  <DataSources>
+    <SqlDataSource ComponentName="dashboardSqlDataSource1">
+      <Name>Origen de datos SQL 1</Name>
+      <Connection Name="localhost_IMS4MB_IDEALSA_PRD_Connection" ProviderKey="MSSqlServer">
+        <Parameters>
+          <Parameter Name="server" Value="PROGRA12\SQLEXPRESS01" />
+          <Parameter Name="database" Value="IMS4MB_NUEVOS_ETICOS" />
+          <Parameter Name="useIntegratedSecurity" Value="False" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+          <Parameter Name="userid" Value="sa" />
+          <Parameter Name="password" Value="sysadm" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="VW_Movimientos_N">
+        <Tables>
+          <Table Name="VW_Movimientos_N" X="30" Y="30" Width="125" Height="628" />
+        </Tables>
+        <Columns>
+          <AllColumns Table="VW_Movimientos_N" />
+        </Columns>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="Origen de datos SQL 1">
+          <View Name="VW_Movimientos_N">
+            <Field Name="Propietario" Type="String" />
+            <Field Name="Producto" Type="String" />
+            <Field Name="Presentación" Type="String" />
+            <Field Name="EstadoOrigen" Type="String" />
+            <Field Name="EstadoDestino" Type="String" />
+            <Field Name="UMBas" Type="String" />
+            <Field Name="cantidad" Type="Double" />
+            <Field Name="peso" Type="Double" />
+            <Field Name="lote" Type="String" />
+            <Field Name="UbicOrigen" Type="String" />
+            <Field Name="UbicDestino" Type="String" />
+            <Field Name="TipoTarea" Type="String" />
+            <Field Name="IdBodegaOrigen" Type="Int32" />
+            <Field Name="fecha" Type="DateTime" />
+            <Field Name="IdProducto" Type="Int32" />
+            <Field Name="codigo" Type="String" />
+            <Field Name="CodigoBarra" Type="String" />
+            <Field Name="IdTipoTarea" Type="Int32" />
+            <Field Name="Contabilizar" Type="Boolean" />
+            <Field Name="fecha_vence" Type="DateTime" />
+            <Field Name="IdTipoActualizacionCosto" Type="Int32" />
+            <Field Name="IdPresentacion" Type="Int32" />
+            <Field Name="IdUnidadMedida" Type="Int32" />
+            <Field Name="IdEstadoOrigen" Type="Int32" />
+            <Field Name="IdProductoBodega" Type="Int32" />
+            <Field Name="IdPropietarioBodega" Type="Int32" />
+            <Field Name="IdBodega" Type="Int32" />
+            <Field Name="barra_pallet" Type="String" />
+            <Field Name="Clasificacion" Type="String" />
+            <Field Name="Familia" Type="String" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" CommandTimeout="0" />
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <Pie ComponentName="pieDashboardItem1" Name="Transacciones por Familia" DataSource="dashboardSqlDataSource1" DataMember="VW_Movimientos_N">
+      <DataItems>
+        <Dimension DataMember="fecha" DefaultId="DataItem1" />
+        <Measure DataMember="cantidad" DefaultId="DataItem2" />
+        <Dimension DataMember="Familia" DefaultId="DataItem0" />
+        <Dimension DataMember="TipoTarea" DefaultId="DataItem3" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem1" />
+        <SeriesDimension DefaultId="DataItem3" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Values>
+        <Value DefaultId="DataItem2" />
+      </Values>
+    </Pie>
+    <Pie ComponentName="pieDashboardItem2" Name="Transacciones por Clasificación" DataSource="dashboardSqlDataSource1" DataMember="VW_Movimientos_N">
+      <DataItems>
+        <Dimension DataMember="Clasificacion" DefaultId="DataItem0" />
+        <Dimension DataMember="TipoTarea" DefaultId="DataItem1" />
+        <Dimension DataMember="fecha" DefaultId="DataItem2" />
+        <Measure DataMember="cantidad" Name="Cantidad en unidades" DefaultId="DataItem3" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem1" />
+        <SeriesDimension DefaultId="DataItem2" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Values>
+        <Value DefaultId="DataItem3" />
+      </Values>
+    </Pie>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup>
+      <LayoutItem DashboardItem="pieDashboardItem1" Weight="0.5" />
+      <LayoutItem DashboardItem="pieDashboardItem2" Weight="0.5" />
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

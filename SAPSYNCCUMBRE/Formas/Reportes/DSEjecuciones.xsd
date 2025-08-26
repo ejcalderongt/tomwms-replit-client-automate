@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DSEjecuciones" targetNamespace="http://tempuri.org/DSEjecuciones.xsd" xmlns:mstns="http://tempuri.org/DSEjecuciones.xsd" xmlns="http://tempuri.org/DSEjecuciones.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection ConnectionStringObject="Data Source=PROGRA11\SQL2014;Initial Catalog=IMS4MB_QA;User ID=sa;Password=sysadm" IsAppSettingsProperty="false" Modifier="Assembly" Name="progra11\sql2014.IMS4MB_QA.dbo" ParameterPrefix="@" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DSEjecuciones" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DSEjecuciones" msprop:Generator_UserDSName="DSEjecuciones">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Encabezado" msprop:Generator_TableClassName="EncabezadoDataTable" msprop:Generator_TableVarName="tableEncabezado" msprop:Generator_TablePropName="Encabezado" msprop:Generator_RowDeletingName="EncabezadoRowDeleting" msprop:Generator_RowChangingName="EncabezadoRowChanging" msprop:Generator_RowEvHandlerName="EncabezadoRowChangeEventHandler" msprop:Generator_RowDeletedName="EncabezadoRowDeleted" msprop:Generator_UserTableName="Encabezado" msprop:Generator_RowChangedName="EncabezadoRowChanged" msprop:Generator_RowEvArgName="EncabezadoRowChangeEvent" msprop:Generator_RowClassName="EncabezadoRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IdEjecución" msprop:Generator_ColumnVarNameInTable="columnIdEjecución" msprop:Generator_ColumnPropNameInRow="IdEjecución" msprop:Generator_ColumnPropNameInTable="IdEjecuciónColumn" msprop:Generator_UserColumnName="IdEjecución" type="xs:int" />
+              <xs:element name="Empresa" msprop:Generator_ColumnVarNameInTable="columnEmpresa" msprop:Generator_ColumnPropNameInRow="Empresa" msprop:Generator_ColumnPropNameInTable="EmpresaColumn" msprop:Generator_UserColumnName="Empresa" type="xs:string" minOccurs="0" />
+              <xs:element name="Bodega" msprop:Generator_ColumnVarNameInTable="columnBodega" msprop:Generator_ColumnPropNameInRow="Bodega" msprop:Generator_ColumnPropNameInTable="BodegaColumn" msprop:Generator_UserColumnName="Bodega" type="xs:string" minOccurs="0" />
+              <xs:element name="Propietario" msprop:Generator_ColumnVarNameInTable="columnPropietario" msprop:Generator_ColumnPropNameInRow="Propietario" msprop:Generator_ColumnPropNameInTable="PropietarioColumn" msprop:Generator_UserColumnName="Propietario" type="xs:string" minOccurs="0" />
+              <xs:element name="Configuración" msprop:Generator_ColumnVarNameInTable="columnConfiguración" msprop:Generator_ColumnPropNameInRow="Configuración" msprop:Generator_ColumnPropNameInTable="ConfiguraciónColumn" msprop:Generator_UserColumnName="Configuración" type="xs:string" minOccurs="0" />
+              <xs:element name="Interface" msprop:Generator_ColumnVarNameInTable="columnInterface" msprop:Generator_ColumnPropNameInRow="_Interface" msprop:Generator_ColumnPropNameInTable="InterfaceColumn" msprop:Generator_UserColumnName="Interface" type="xs:string" minOccurs="0" />
+              <xs:element name="Fecha" msprop:Generator_ColumnVarNameInTable="columnFecha" msprop:Generator_ColumnPropNameInRow="Fecha" msprop:Generator_ColumnPropNameInTable="FechaColumn" msprop:Generator_UserColumnName="Fecha" type="xs:dateTime" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Detalle" msprop:Generator_TableClassName="DetalleDataTable" msprop:Generator_TableVarName="tableDetalle" msprop:Generator_TablePropName="Detalle" msprop:Generator_RowDeletingName="DetalleRowDeleting" msprop:Generator_RowChangingName="DetalleRowChanging" msprop:Generator_RowEvHandlerName="DetalleRowChangeEventHandler" msprop:Generator_RowDeletedName="DetalleRowDeleted" msprop:Generator_UserTableName="Detalle" msprop:Generator_RowChangedName="DetalleRowChanged" msprop:Generator_RowEvArgName="DetalleRowChangeEvent" msprop:Generator_RowClassName="DetalleRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="idejecucionenc" msprop:Generator_ColumnVarNameInTable="columnidejecucionenc" msprop:Generator_ColumnPropNameInRow="idejecucionenc" msprop:Generator_ColumnPropNameInTable="idejecucionencColumn" msprop:Generator_UserColumnName="idejecucionenc" type="xs:int" />
+              <xs:element name="Configuracion" msprop:Generator_ColumnVarNameInTable="columnConfiguracion" msprop:Generator_ColumnPropNameInRow="Configuracion" msprop:Generator_ColumnPropNameInTable="ConfiguracionColumn" msprop:Generator_UserColumnName="Configuracion" type="xs:string" minOccurs="0" />
+              <xs:element name="Interface" msprop:Generator_ColumnVarNameInTable="columnInterface" msprop:Generator_ColumnPropNameInRow="_Interface" msprop:Generator_ColumnPropNameInTable="InterfaceColumn" msprop:Generator_UserColumnName="Interface" type="xs:string" minOccurs="0" />
+              <xs:element name="registros_ws" msprop:Generator_ColumnVarNameInTable="columnregistros_ws" msprop:Generator_ColumnPropNameInRow="registros_ws" msprop:Generator_ColumnPropNameInTable="registros_wsColumn" msprop:Generator_UserColumnName="registros_ws" type="xs:string" minOccurs="0" />
+              <xs:element name="registros_ti" msprop:Generator_ColumnVarNameInTable="columnregistros_ti" msprop:Generator_ColumnPropNameInRow="registros_ti" msprop:Generator_ColumnPropNameInTable="registros_tiColumn" msprop:Generator_UserColumnName="registros_ti" type="xs:string" minOccurs="0" />
+              <xs:element name="registros_wms" msprop:Generator_ColumnVarNameInTable="columnregistros_wms" msprop:Generator_ColumnPropNameInRow="registros_wms" msprop:Generator_ColumnPropNameInTable="registros_wmsColumn" msprop:Generator_UserColumnName="registros_wms" type="xs:string" minOccurs="0" />
+              <xs:element name="exitosa" msprop:Generator_ColumnVarNameInTable="columnexitosa" msprop:Generator_ColumnPropNameInRow="exitosa" msprop:Generator_ColumnPropNameInTable="exitosaColumn" msprop:Generator_UserColumnName="exitosa" type="xs:string" minOccurs="0" />
+              <xs:element name="error" msprop:Generator_ColumnVarNameInTable="columnerror" msprop:Generator_ColumnPropNameInRow="_error" msprop:Generator_ColumnPropNameInTable="errorColumn" msprop:Generator_UserColumnName="error" type="xs:string" minOccurs="0" />
+              <xs:element name="fecha_error" msprop:Generator_ColumnVarNameInTable="columnfecha_error" msprop:Generator_ColumnPropNameInRow="fecha_error" msprop:Generator_ColumnPropNameInTable="fecha_errorColumn" msprop:Generator_UserColumnName="fecha_error" type="xs:string" minOccurs="0" />
+              <xs:element name="referencia" msprop:Generator_ColumnVarNameInTable="columnreferencia" msprop:Generator_ColumnPropNameInRow="referencia" msprop:Generator_ColumnPropNameInTable="referenciaColumn" msprop:Generator_UserColumnName="referencia" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:annotation>
+    <xs:appinfo>
+      <msdata:Relationship name="Encabezado_Detalle" msdata:parent="Encabezado" msdata:child="Detalle" msdata:parentkey="IdEjecución" msdata:childkey="idejecucionenc" msprop:Generator_UserChildTable="Detalle" msprop:Generator_ChildPropName="GetDetalleRows" msprop:Generator_UserRelationName="Encabezado_Detalle" msprop:Generator_ParentPropName="EncabezadoRow" msprop:Generator_RelationVarName="relationEncabezado_Detalle" msprop:Generator_UserParentTable="Encabezado" />
+    </xs:appinfo>
+  </xs:annotation>
+</xs:schema>

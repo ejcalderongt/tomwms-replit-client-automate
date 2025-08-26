@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-GT">
+  <Title Text="Tablero de control" />
+  <DataSources>
+    <SqlDataSource Name="Origen de datos SQL 1" ComponentName="dashboardSqlDataSource1">
+      <Connection Name="localhost_IMS4MB_MERCOPAN_PRD_Connection" ProviderKey="MSSqlServer">
+        <Parameters>
+          <Parameter Name="server" Value="PROGRAX\SQLEXPRESS" />
+          <Parameter Name="database" Value="IMS4MB_BYB_PRD" />
+          <Parameter Name="useIntegratedSecurity" Value="False" />
+          <Parameter Name="read only" Value="0" />
+          <Parameter Name="generateConnectionHelper" Value="true" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="VW_Progreso_Picking_By_Operador">
+        <Tables>
+          <Table Name="VW_Progreso_Picking_By_Operador" X="30" Y="30" Width="125" Height="402" />
+        </Tables>
+        <Columns>
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="IdPedidoEnc" />
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="IdPickingEnc" />
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="Referencia_Pedido" />
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="Tipo_Documento" />
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="CodigoProducto" />
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="NombreProducto" />
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="Operador_Picking" />
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="Operador_Verifico" />
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="cantidad_solicitada" />
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="cantidad_recibida" />
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="cantidad_verificada" />
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="cantidad_despachada" />
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="UMBas" />
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="Presentacion" />
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="Fecha_Agregado" />
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="Fecha_Picking" />
+          <Column Table="VW_Progreso_Picking_By_Operador" Name="Fecha_Verificacion" />
+        </Columns>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="Origen de datos SQL 1">
+          <View Name="VW_Progreso_Picking_By_Operador">
+            <Field Name="IdPedidoEnc" Type="Int32" />
+            <Field Name="IdPickingEnc" Type="Int32" />
+            <Field Name="Referencia_Pedido" Type="String" />
+            <Field Name="Tipo_Documento" Type="String" />
+            <Field Name="CodigoProducto" Type="String" />
+            <Field Name="NombreProducto" Type="String" />
+            <Field Name="Operador_Picking" Type="String" />
+            <Field Name="Operador_Verifico" Type="String" />
+            <Field Name="cantidad_solicitada" Type="Double" />
+            <Field Name="cantidad_recibida" Type="Double" />
+            <Field Name="cantidad_verificada" Type="Double" />
+            <Field Name="cantidad_despachada" Type="Double" />
+            <Field Name="UMBas" Type="String" />
+            <Field Name="Presentacion" Type="String" />
+            <Field Name="Fecha_Agregado" Type="DateTime" />
+            <Field Name="Fecha_Picking" Type="DateTime" />
+            <Field Name="Fecha_Verificacion" Type="DateTime" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <Card ComponentName="cardDashboardItem1" Name="Solicitado Vrs. Pickeado" DataSource="dashboardSqlDataSource1" DataMember="VW_Progreso_Picking_By_Operador">
+      <DataItems>
+        <Measure DataMember="cantidad_recibida" DefaultId="DataItem0" />
+        <Measure DataMember="cantidad_solicitada" DefaultId="DataItem1" />
+        <Dimension DataMember="Operador_Picking" DefaultId="DataItem2" />
+        <Dimension DataMember="Fecha_Agregado" DateTimeGroupInterval="QuarterYear" DefaultId="DataItem4" />
+        <Dimension DataMember="Fecha_Agregado" DateTimeGroupInterval="QuarterYear" DefaultId="DataItem3" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem4" />
+        <SeriesDimension DefaultId="DataItem2" />
+      </SeriesDimensions>
+      <Card>
+        <ActualValue DefaultId="DataItem0" />
+        <TargetValue DefaultId="DataItem1" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+        <LayoutTemplate Type="Stretched">
+          <TopValue Visible="true" ValueType="ActualValue" DimensionIndex="0" />
+          <MainValue Visible="true" ValueType="Title" DimensionIndex="0" />
+          <SubValue Visible="true" ValueType="Subtitle" DimensionIndex="0" />
+          <BottomValue1 Visible="true" ValueType="PercentVariation" DimensionIndex="0" />
+          <BottomValue2 Visible="true" ValueType="AbsoluteVariation" DimensionIndex="0" />
+          <DeltaIndicator Visible="true" />
+          <Sparkline Visible="true" />
+        </LayoutTemplate>
+      </Card>
+      <SparklineArgument DefaultId="DataItem3" />
+    </Card>
+    <RangeFilter ComponentName="rangeFilterDashboardItem1" Name="Filtro de Rango 1" DataSource="dashboardSqlDataSource1" DataMember="VW_Progreso_Picking_By_Operador">
+      <DataItems>
+        <Dimension DataMember="Fecha_Agregado" DateTimeGroupInterval="DayMonthYear" DefaultId="DataItem0" />
+        <Measure DataMember="Fecha_Agregado" SummaryType="Count" DefaultId="DataItem1" />
+      </DataItems>
+      <Argument DefaultId="DataItem0" />
+      <Series>
+        <Simple SeriesType="Line">
+          <Value DefaultId="DataItem1" />
+        </Simple>
+      </Series>
+    </RangeFilter>
+    <Gauge ComponentName="gaugeDashboardItem1" Name="Verificado Vrs. Despachado" DataSource="dashboardSqlDataSource1" DataMember="VW_Progreso_Picking_By_Operador">
+      <DataItems>
+        <Measure DataMember="cantidad_solicitada" DefaultId="DataItem0" />
+        <Measure DataMember="cantidad_despachada" DefaultId="DataItem1" />
+      </DataItems>
+      <GaugeElement>
+        <TargetValue DefaultId="DataItem0" />
+        <ActualValue DefaultId="DataItem1" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+      </GaugeElement>
+    </Gauge>
+    <Chart ComponentName="chartDashboardItem1" Name="Desviación de despacho" DataSource="dashboardSqlDataSource1" DataMember="VW_Progreso_Picking_By_Operador">
+      <DataItems>
+        <Measure DataMember="cantidad_despachada" DefaultId="DataItem0" />
+        <Dimension DataMember="Fecha_Agregado" DateTimeGroupInterval="Month" DefaultId="DataItem1" />
+        <Measure DataMember="cantidad_solicitada" DefaultId="DataItem2" />
+        <Measure DataMember="cantidad_recibida" DefaultId="DataItem3" />
+        <Measure DataMember="cantidad_verificada" DefaultId="DataItem4" />
+      </DataItems>
+      <HiddenMeasures>
+        <Measure DefaultId="DataItem0" />
+      </HiddenMeasures>
+      <Arguments>
+        <Argument DefaultId="DataItem1" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem2" />
+            </Simple>
+            <Simple>
+              <Value DefaultId="DataItem3" />
+            </Simple>
+            <Simple>
+              <Value DefaultId="DataItem4" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup Orientation="Vertical" Weight="100">
+      <LayoutItem DashboardItem="rangeFilterDashboardItem1" Weight="12.521150592216582" />
+      <LayoutItem DashboardItem="cardDashboardItem1" Weight="48.223350253807105" />
+      <LayoutGroup Weight="39.255499153976309">
+        <LayoutItem DashboardItem="gaugeDashboardItem1" Weight="50" />
+        <LayoutItem DashboardItem="chartDashboardItem1" Weight="50" />
+      </LayoutGroup>
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

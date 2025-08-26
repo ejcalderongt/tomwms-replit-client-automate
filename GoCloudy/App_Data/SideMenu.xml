@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<menu>
+  <group Text="Catálogos">
+    <item Text="Productos" />
+    <item Text="Clientes" />
+    <item Text="Proveedores" />
+  </group>
+  <group Text="Transacciones">
+    <item Text="Pedidos de Ingreso" />
+    <item Text="Pedidos de Salida" />
+    <!--<item Text="SQL Server 2008 R2" />-->
+  </group>
+  <group Text="Reportes">
+    <item Text="Ingresos" />
+    <item Text="Salidas" />
+    <item Text="Movimientos" />
+    <item Text="Existencias" />
+    <item Text="Ajustes" />
+  </group>  
+</menu>
