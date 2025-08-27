@@ -6,5 +6,4 @@ Partial Public Class clsBeBodega
     Public Property Tramos As New List(Of clsBeBodega_tramo)
     Public Property Ubicaciones As New List(Of clsBeBodega_ubicacion)
     Public Property Muelles As New List(Of clsBeBodega_muelles)
-
 End Class

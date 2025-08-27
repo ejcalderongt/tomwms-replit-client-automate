@@ -4340,13 +4340,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
-    <None Include="app.config" />
-    <None Include="CEALSASync.exe.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <Content Include="CEALSASync.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Conn_Becofarma.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -4367,13 +4360,11 @@
     <None Include="Conn_GT.ini" />
     <None Include="Conn_Inelac.ini" />
     <None Include="Conn_Killios.ini" />
-    <None Include="ConnDev.ini" />
     <None Include="Conn_CLC_Fiscal.ini" />
     <None Include="Conn_MAMPA.ini" />
     <None Include="Conn_Mercosal.ini" />
     <None Include="Conn_DYD.ini" />
     <None Include="Conn_Merhonsa.ini" />
-    <Content Include="es\Microsoft.Data.SqlClient.resources.dll" />
     <Content Include="Mantenimientos\plantillas\WMS_plantilla_Importacion_Productos.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -5455,7 +5446,7 @@
       <Version>1.5.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Data.SqlClient">
-      <Version>5.2.2</Version>
+      <Version>6.1.1</Version>
     </PackageReference>
     <PackageReference Include="System.IO.Packaging">
       <Version>8.0.1</Version>
