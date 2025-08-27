@@ -3896,8 +3896,6 @@ Public Class frmPedido
                 DgComboColor.Value = listaColores.Rows(0).Item("IdColor")
             End If
 
-
-
         Catch ex As Exception
             Debug.WriteLine(ex.Message)
         End Try
@@ -6433,6 +6431,7 @@ Public Class frmPedido
             frmSelStock.pListObjDet = pListBeTrans_ubic_hh_det
             frmSelStock.WindowState = FormWindowState.Maximized
             frmSelStock.chkFiltroPolizaActivo.Checked = chkControlPoliza.Checked
+            frmSelStock.Mostrar_Talla_Color = BeBodega.Control_Talla_Color
 
             '#GT08042025: enviar el estado del documento si tuviera uno por default que coincida con el mismo propietario
             If lcmbPropietario.EditValue = BeTipoDoc.IdPropietario Then

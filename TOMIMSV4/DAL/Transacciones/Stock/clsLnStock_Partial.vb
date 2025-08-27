@@ -1066,7 +1066,8 @@ Partial Public Class clsLnStock
                                                        ByRef TieneTiempos As Boolean,
                                                        ByVal NoPoliza As String,
                                                        ByVal IdPropietarioBodega As Integer,
-                                                       ByVal IdProductoEstadoDefault As Integer) As DataTable
+                                                       ByVal IdProductoEstadoDefault As Integer,
+                                                       ByVal Mostrar_Talla_Color As Boolean) As DataTable
 
         '#EJC20171112_0605PM:Agregué transacción
         Dim vSQL As String = ""
@@ -1160,6 +1161,10 @@ Partial Public Class clsLnStock
                     vSQL += " AND propietario_bodega.IdPropietarioBodega = @IdPropietarioBodega  "
                 End If
 
+                If Mostrar_Talla_Color Then
+                    vSQL += " AND propietario_bodega.IdPropietarioBodega = @IdPropietarioBodega  "
+                End If
+
                 '#ejc20210923: agregar join con poliza antes de...
                 'If NoPoliza <> "" Then
                 '    vSQL += " AND (codigo_poliza= @NoPoliza OR numero_poliza = @NoPoliza) "
@@ -1250,12 +1255,19 @@ Partial Public Class clsLnStock
                                familia,
                                marca,
                                st_resumen.no_linea,
-                               st_resumen.No_Contenedor
-                        FROM VW_Stock_Res st_resumen
-						inner join producto pr on st_resumen.codigo = pr.codigo  and pr.IdPropietario = st_resumen.IdPropietario
-						left join producto_clasificacion pr_clas on pr.IdClasificacion = pr_clas.IdClasificacion
+                               st_resumen.No_Contenedor "
 
-                        WHERE IdBodega=@IdBodega"
+                If Mostrar_Talla_Color Then
+                    vSQL += " ,st_resumen.Codigo_Talla,
+							  st_resumen.Nombre_Talla,
+							  st_resumen.Codigo_Color,
+							  st_resumen.Nombre_Color "
+                End If
+
+                vSQL += " FROM VW_Stock_Res st_resumen
+						 inner join producto pr on st_resumen.codigo = pr.codigo  and pr.IdPropietario = st_resumen.IdPropietario
+						 left join producto_clasificacion pr_clas on pr.IdClasificacion = pr_clas.IdClasificacion
+                         WHERE IdBodega=@IdBodega"
 
                 If IdPropietarioBodega <> 0 Then
                     vSQL += " AND IdPropietarioBodega = @IdPropietarioBodega and disponible_umbas > 0 "
