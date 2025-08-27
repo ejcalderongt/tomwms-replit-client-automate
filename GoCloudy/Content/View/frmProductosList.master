@@ -1,3 +1,0 @@
-﻿<%@ Master Language="VB" MasterPageFile="~/Main.master" AutoEventWireup="false" CodeBehind="frmProductosList.master.vb" Inherits="GoCloudy.frmProductosList" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-</asp:Content>
