@@ -4502,10 +4502,6 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
-    <Content Include="SAPBOSyncMampa.exe" />
-    <Content Include="Update_BD_WMS.sql">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -4652,9 +4648,6 @@
     <None Include="Resources\Single_Pallet_Box.png" />
     <None Include="Resources\Single_Pallet_Box_Fit.png" />
     <None Include="Resources\logonuevodts1.png" />
-    <Content Include="PrintsService.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\5b91750ebd518_thumb900.jpg" />
     <None Include="Resources\LogoDTS1.png" />
     <None Include="Resources\LogoDTS_small.png" />
@@ -4667,7 +4660,6 @@
     <None Include="Resources\exporttoxls_32x32.png" />
     <None Include="Resources\exporttoxls_16x16.png" />
     <None Include="Resources\tom_wms.png" />
-    <Content Include="scriptBD.sql" />
     <None Include="Reportes\Resumen_Stock\DsDetalleExistencias.xsc">
       <DependentUpon>DsDetalleExistencias.xsd</DependentUpon>
     </None>

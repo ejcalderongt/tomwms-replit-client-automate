@@ -1661,6 +1661,7 @@ Partial Public Class clsLnStock
 
                     If ConsolidaFechas Then
 
+                        '#MECR27082025: Se agregaron campos de Talla y Color
                         vSQL = "SELECT codigo as Código,nombre as Producto,
 							SUM(Disponible_UMBas) AS Disponible_UMBas,
 							UnidadMedida,
@@ -1670,7 +1671,10 @@ Partial Public Class clsLnStock
 							Ubicacion_Tramo as Rack,
 							Nombre_Completo as UbicacionCompleta,IdRecepcionEnc,
 							MotivoDevolucion,codigo_poliza,numero_poliza,
-							Referencia,No_Docto AS No_Docto_Rec 
+							Referencia,No_Docto AS No_Docto_Rec,
+                            lote as Lote,
+                            Codigo_Talla as Talla,
+                            Codigo_Color as Color   
 							from VW_Stock_Res 
 							WHERE IdBodega=@IdBodega and IdPropietarioBodega=@IdPropietarioBodega 
 							and Disponible_UMBas > 0 "
@@ -1681,7 +1685,7 @@ Partial Public Class clsLnStock
 
                         vSQL += " group By Fecha_Vence,codigo,nombre,UnidadMedida,Presentacion,
 							NomEstado,Fecha_Ingreso,IdUbicacion,Ubicacion_Tramo,Nombre_Completo,IdRecepcionEnc,
-							MotivoDevolucion,codigo_poliza,numero_poliza, Referencia,No_Docto "
+							MotivoDevolucion,codigo_poliza,numero_poliza, Referencia,No_Docto, lote, Codigo_Talla, Codigo_Color "
 
 
                     Else
@@ -12754,6 +12758,7 @@ Partial Public Class clsLnStock
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
                     'GT26092022_1530: se agregan campos para uso DyD (fam,marca, clasificacion, parametros)
+                    '#MECR27092025: Se agrego columna de talla y color
                     Dim vSQL As String = "SELECT Codigo,nombre as Producto,Presentacion,
                                                 IdPresentacion, 
                                                 sum(isnull(CantidadSF,0)) as CantidadUMBas,
@@ -12763,14 +12768,16 @@ Partial Public Class clsLnStock
                                                 Fecha_Vence, NombreTipoProducto As Tipo, 
                                                 IdProducto,
                                                 Familia,Marca,Clasificacion,
-                                                parametro_a,parametro_b
+                                                parametro_a,parametro_b,
+                                                Codigo_Talla as Talla,
+                                                Codigo_Color as Color
 						                  from VW_Stock_Res_Tipo_Producto 
 						                  Group by IdProducto,Codigo,nombre,
                                                    Presentacion,IdPresentacion,
                                                    UnidadMedida,peso, lote,fecha_vence, 
                                                    NombreTipoProducto,fecha_ingreso,
                                                    Familia,Marca,Clasificacion,
-                                                   parametro_a,parametro_b"
+                                                   parametro_a,parametro_b, Codigo_Talla, Codigo_Color"
 
                     Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
 
@@ -12812,6 +12819,7 @@ Partial Public Class clsLnStock
 
             If FechaVence Then
 
+                '#MECR27092025: Se agrego columna de talla y color
                 vSQL = "SELECT vw.IdProducto,vw.Codigo,nombre as Producto,vw.IdPresentacion, sum(isnull(vw.CantidadSF,0)) as CantidadUMBas,vw.UnidadMedida,sum(isnull(vw.Cantidad,0)) as CantidadPresentacion,vw.Presentacion,
                         sum(isnull(vw.CantidadReservada,0)) as Cantidad_Reservada, sum(isnull(vw.CantidadSF,0)) - sum(isnull(vw.CantidadReservada,0)) as Disponible, 
                         vw.Peso,vw.Lote,vw.lic_plate as Licencia,vw.Fecha_Ingreso,vw.Fecha_Vence,
@@ -12828,7 +12836,9 @@ Partial Public Class clsLnStock
                                 ROUND(isnull(Cantidad,0) - isnull(CantidadReservada/Factor,0),6)
 							ELSE
 								0
-							END AS Disponible_Presentacion
+							END AS Disponible_Presentacion,
+                        vw.Codigo_Talla as Talla,
+                        vw.Codigo_Color as Color
                         FROM VW_Stock_Res vw INNER JOIN
                         bodega_tramo bt ON vw.idtramo = bt.IdTramo and vw.idbodega=bt.idbodega INNER JOIN
                         bodega_ubicacion ON vw.IdUbicacion = bodega_ubicacion.IdUbicacion and vw.idbodega=bodega_ubicacion.IdBodega
@@ -12836,7 +12846,7 @@ Partial Public Class clsLnStock
                         Group by vw.lic_plate,vw.IdProducto,vw.Codigo,vw.nombre,vw.Presentacion,vw.IdPresentacion,vw.UnidadMedida,vw.peso, vw.lote,vw.fecha_vence,
                         bt.es_rack, bt.descripcion, bodega_ubicacion.indice_x, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos, 
                         bodega_ubicacion.idubicacion,vw.IdBodega,vw.IdPropietarioBodega,vw.Fecha_Ingreso,vw.codigo_poliza,vw.Numero_poliza,vw.Nombre_Completo,
-                        vw.Factor,vw.Cantidad,vw.CantidadReservada "
+                        vw.Factor,vw.Cantidad,vw.CantidadReservada, Codigo_Talla, Codigo_Color "
 
             Else
 

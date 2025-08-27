@@ -399,8 +399,6 @@
       <Project>{b7df5657-9a16-45a4-bf2f-ffda6138e06b}</Project>
       <Name>DAL</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\TOMIMSV4\DAL\DAL.vbproj">
       <Project>{b7df5657-9a16-45a4-bf2f-ffda6138e06b}</Project>
       <Name>DAL</Name>
