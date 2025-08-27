@@ -1112,17 +1112,7 @@ Public Class SapServiceLayerClient
         Dim BeTransOcDet As clsBeTrans_oc_det = Nothing
         Dim vCantidadEsperada As Double = 0
         Dim vRecibioParcial As Boolean = False
-
-        Dim BeTransReOc As New clsBeTrans_re_oc
-
         Try
-
-            Dim vIdRecepcionEnc As Integer = lINavTransaccionesOut.FirstOrDefault.Idrecepcionenc
-            BeTransReOc = clsLnTrans_re_oc.Get_Single_By_IdOrdenCompraEnc_And_IdRecepcionEnc(BeTransOCEnc.IdOrdenCompraEnc, vIdRecepcionEnc, lConnection, lTransaction)
-
-            If BeTransReOc Is Nothing Then
-                Throw New Exception("❌ ERROR: No se encontró la recepción de orden de compra para el IdRecepcionEnc: " & vIdRecepcionEnc)
-            End If
 
             BeTransOCTi = clsLnTrans_oc_ti.GetSingle(BeTransOCEnc.IdTipoIngresoOC, lConnection, lTransaction)
 
@@ -1369,9 +1359,8 @@ Public Class SapServiceLayerClient
                             clsPublic.Actualizar_Progreso(lblprg, "✅ Respuesta:")
                             clsPublic.Actualizar_Progreso(lblprg, postContent)
 
-                            BeTransReOc.No_Erp_Docnum_Entrega = docNum
-                            BeTransReOc.No_Erp_Docentry_Entrega = docEntry
-                            clsLnTrans_re_oc.Actualizar_No_Entrega_ERP(BeTransReOc, lConnection, lTransaction)
+                            clsLnTrans_oc_enc.Actualizar_No_Documento_Recepcion_ERP(docNum, BeTransOCEnc.IdOrdenCompraEnc, lConnection, lTransaction)
+                            clsLnTrans_oc_enc.Actualizar_NoMarchamo(docEntry, BeTransOCEnc.IdOrdenCompraEnc, lConnection, lTransaction)
 
                             clsLnLog_error_wms.Agregar_Error("Se envió la entrega a sap para el IdOrdenCompraEnc: " & BeTransOCEnc.IdOrdenCompraEnc & " NoDocumento: " & docNum & " DocEntry: " & docEntry)
 
@@ -1427,9 +1416,8 @@ Public Class SapServiceLayerClient
                                 clsPublic.Actualizar_Progreso(lblprg, "✅ Respuesta:")
                                 clsPublic.Actualizar_Progreso(lblprg, "Se creó la entrega: " & docNum)
 
-                                BeTransReOc.No_Erp_Docnum_Faltante = docNum
-                                BeTransReOc.No_Erp_Docentry_Faltante = docEntry
-                                clsLnTrans_re_oc.Actualizar_No_Entrega_ERP(BeTransReOc, lConnection, lTransaction)
+                                clsLnTrans_oc_enc.Actualizar_No_Documento_Recepcion_ERP(docNum, BeTransOCEnc.IdOrdenCompraEnc, lConnection, lTransaction)
+                                clsLnTrans_oc_enc.Actualizar_NoMarchamo(docEntry, BeTransOCEnc.IdOrdenCompraEnc, lConnection, lTransaction)
 
                                 clsLnLog_error_wms.Agregar_Error("Se envió la entrega a sap para el IdOrdenCompraEnc: " & BeTransOCEnc.IdOrdenCompraEnc & " NoDocumento: " & docNum & " DocEntry: " & docEntry)
 

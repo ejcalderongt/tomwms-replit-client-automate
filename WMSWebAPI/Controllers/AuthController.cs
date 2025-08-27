@@ -4,7 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using WMSWebAPI.Be;
+using WMS.EntityCore.Log;
+using WMS.EntityCore.Propietario;
 using WMSWebAPI.Dtos.Login;
 using WMSWebAPI.Entity.Propietario;
 
@@ -33,7 +34,7 @@ namespace WMSWebAPI.Controllers
             if (!esValido)
             {
                 string MsgError = "controlUx: Credenciales incorrectas o propietario inactivo. " + dto.Username;
-                clsLnLog_error_wms.Agregar_Error(_config, MsgError);
+                //clsLnLog_error_wms.Agregar_Error(_config, MsgError); #EJC20250825: si hay error de base de datos no se puede grabar el log y el mensaje de Unauthorized nunca llega.
                 return Unauthorized(new { mensaje = "Credenciales incorrectas o propietario inactivo." });
             }
 

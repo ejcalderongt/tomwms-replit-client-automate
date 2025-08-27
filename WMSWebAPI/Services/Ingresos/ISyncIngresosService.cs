@@ -1,5 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-using WMSWebAPI.Be;
+using WMS.EntityCore.Trans_oc;
 using WMSWebAPI.Dtos.Ingresos;
 using WMSWebAPI.Dtos.WebResponseDto;
 using WMSWebAPI.Entity.Trans_oc;

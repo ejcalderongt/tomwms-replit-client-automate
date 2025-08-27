@@ -1,5 +1,15 @@
 ﻿using AutoMapper;
-using WMSWebAPI.Be;
+using WMS.EntityCore.Cliente;
+using WMS.EntityCore.Datos_Maestros;
+using WMS.EntityCore.Operador;
+using WMS.EntityCore.Pedido;
+using WMS.EntityCore.Picking;
+using WMS.EntityCore.Producto;
+using WMS.EntityCore.Propietario;
+using WMS.EntityCore.Proveedor;
+using WMS.EntityCore.Stock;
+using WMS.EntityCore.Trans_oc;
+using WMS.EntityCore.Trans_re;
 using WMSWebAPI.Dtos.Catalogos;
 using WMSWebAPI.Dtos.Datos_Maestros;
 using WMSWebAPI.Dtos.Ingresos;

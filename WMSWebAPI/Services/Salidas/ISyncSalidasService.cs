@@ -1,8 +1,8 @@
 ﻿using Microsoft.Data.SqlClient;
-using WMSWebAPI.Be;
+using WMS.EntityCore.Despacho;
+using WMS.EntityCore.Pedido;
 using WMSWebAPI.Dtos.Pedido;
 using WMSWebAPI.Dtos.Salidas;
-using WMSWebAPI.Entity.Despacho;
 
 namespace WMSWebAPI.Services.Salidas
 {

@@ -1,5 +1,6 @@
 ﻿Imports System.Reflection
 Imports System.ServiceModel
+Imports System.Windows.Forms
 
 Public Class PedidoCliente
     Implements IPedidoCliente
@@ -29,7 +30,7 @@ Public Class PedidoCliente
                 Dim BePedidoEnc As New clsBeTrans_pe_enc
                 Dim cantLineas As Integer = 0
 
-                BePedidoEnc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(BeINavPedCompraEnc, Resultado)
+                BePedidoEnc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(BeINavPedCompraEnc, Resultado)
                 cantLineas = clsLnTrans_pe_det.Get_Count_Lines_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc)
 
                 Insert = cantLineas

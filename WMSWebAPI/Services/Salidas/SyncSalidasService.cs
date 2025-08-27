@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
-using WMSWebAPI.Be;
+using WMS.EntityCore.Cliente;
+using WMS.EntityCore.Datos_Maestros;
+using WMS.EntityCore.Despacho;
+using WMS.EntityCore.Operador;
+using WMS.EntityCore.Pedido;
+using WMS.EntityCore.Picking;
 using WMSWebAPI.Dtos.Pedido;
 using WMSWebAPI.Dtos.Salidas;
-using WMSWebAPI.Entity.Despacho;
 
 
 namespace WMSWebAPI.Services.Salidas

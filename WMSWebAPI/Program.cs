@@ -3,48 +3,43 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Text;
 using WMSWebAPI.Services;
-using Serilog;
 using WMSWebAPI.Services.Ingresos;
 using WMSWebAPI.Services.Salidas;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuración desde appsettings.{env}.json automáticamente según entorno
+// Connection string
 var connectionString = builder.Configuration.GetConnectionString("CST");
 
-// Configurar Serilog
+// Serilog
 var logPath = Path.Combine(AppContext.BaseDirectory, "Logs", "log-.txt");
 Log.Logger = new LoggerConfiguration()
     .WriteTo.File(logPath, rollingInterval: RollingInterval.Day)
     .CreateLogger();
 builder.Host.UseSerilog();
 
-// Configuración de tamaño de carga
-builder.WebHost.ConfigureKestrel(options =>
+// Kestrel
+builder.WebHost.ConfigureKestrel(o =>
 {
-    options.Limits.MaxRequestBodySize = 104857600; // 100MB
+    o.Limits.MaxRequestBodySize = 104_857_600; // 100MB
 });
 
 // DB
 builder.Services.AddDbContext<ApplicationDbContext>(x => x.UseSqlServer(connectionString));
 
-// AutoMapper + Servicios
-builder.Services.AddAutoMapper(typeof(MappingProfile));
-var mapperConfig = new MapperConfiguration(cfg =>
-{
-    cfg.AddProfile<MappingProfile>();
-});
-mapperConfig.AssertConfigurationIsValid();
+// AutoMapper 15.0.1 (firma nueva)
+builder.Services.AddAutoMapper(cfg => { }, typeof(MappingProfile).Assembly);
 
+// Servicios
 builder.Services.AddScoped<ISyncIngresosService, SyncIngresosService>();
 builder.Services.AddScoped<IProductoSyncService, ProductoSyncService>();
 builder.Services.AddScoped<ISyncSalidasService, SyncSalidasService>();
 
 // JWT
 var key = "OPaVvHGoW1WqtwoFdS0er9cC1RMrSCxd5ovsEYw22uzKlsyaO-7uOQB16jL3YnKsLB4U_BX5gWNUk0ELXMsEtg";
-
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -67,12 +62,13 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
-// Swagger
+// Controllers + Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "WMSWebAPI", Version = "V1" });
+    // OJO: el nombre del doc es "v1"
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "WMSWebAPI", Version = "v1" });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -82,17 +78,12 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
-
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                },
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" },
                 Scheme = "oauth2",
                 Name = "Bearer",
                 In = ParameterLocation.Header,
@@ -102,47 +93,71 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// CORS seguro: solo permitir orígenes específicos
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy.WithOrigins(
-            "http://localhost:5000", // Dev local
-            "https://rocket.new", // Producción u otro host frontend
-            "https://1da7a6d0-45be-4c44-bd76-6384ef21d0f0-00-1zyv481h72tzi.riker.replit.dev" // Replit            
+            "http://localhost:5000",
+            "https://rocket.new",
+            "https://1da7a6d0-45be-4c44-bd76-6384ef21d0f0-00-1zyv481h72tzi.riker.replit.dev"
         )
-        .AllowAnyHeader()         // Permitir headers como Content-Type, Authorization
-        .AllowAnyMethod()         // GET, POST, PUT, DELETE, etc.
-        .AllowCredentials();      // Solo si usas cookies o sesiones con credenciales
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
     });
 });
 
-
-// App
+// ===== App =====
 var app = builder.Build();
 
-//if (app.Environment.IsDevelopment())
-//{
-//   app.UsePathBase("/WMSWebAPI"); 
-//}
+// Validación de mapeos al arrancar (opcional recomendado)
+using (var scope = app.Services.CreateScope())
+{
+    var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+    mapper.ConfigurationProvider.AssertConfigurationIsValid();
+}
 
-var pathBase = !app.Environment.IsDevelopment() ? "/WMSWEB" : "/WMSWebAPI";
-app.UsePathBase(pathBase);
+// Base path: SOLO en producción
+string? pathBase = null;
+if (!app.Environment.IsDevelopment())
+{
+    pathBase = "/WMSWEB";
+    app.UsePathBase(pathBase);
+}
 
-app.UseDeveloperExceptionPage();
+// Dev exception page sólo en dev
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+
+app.UseHttpsRedirection();
+
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("swagger/v1/swagger.json", "WMS API v1");
-    //c.SwaggerEndpoint("v1/swagger.json", "WMS API v1");
-    c.RoutePrefix = "swagger";
+    // Si hay base path, úsalo en el endpoint; si no, usa la ruta absoluta estándar.
+    if (string.IsNullOrEmpty(pathBase))
+    {
+        // Development -> UI en /swagger, JSON en /swagger/v1/swagger.json
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "WMS API v1");
+    }
+    else
+    {
+        // Producción -> UI en /WMSWEB/swagger, JSON en /WMSWEB/swagger/v1/swagger.json
+        c.SwaggerEndpoint($"{pathBase}/swagger/v1/swagger.json", "WMS API v1");
+    }
+
+    c.RoutePrefix = "swagger"; // UI en {base}/swagger
 });
 
-
-app.UseHttpsRedirection();
 app.UseRouting();
+app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();
