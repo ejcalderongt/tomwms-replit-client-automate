@@ -59,6 +59,8 @@ Public Class frmPedido
     Private txtCodigoProductoGrid As TextBox
     Private LastEventHandlerPres As EventHandler = AddressOf cmbPresentacion_SelectedIndexChanged
     Private LastEventHandlerEstado As EventHandler = AddressOf cmbEstado_SelectedIndexChanged
+    Private LastEventHandlerTalla As EventHandler = AddressOf cmbTalla_SelectedIndexChanged
+    Private LastEventHandlerColor As EventHandler = AddressOf cmbColor_SelectedIndexChanged
 
     Dim DgComboPresentacion As New DataGridViewComboBoxCell()
     Dim DgComboEstado As New DataGridViewComboBoxCell()
@@ -118,18 +120,18 @@ Public Class frmPedido
     Private lBeTransPickImagen As New List(Of clsBeTrans_picking_img)
 
     '#GT20082025: variables para talla color
-    Private TallaGridLookUpEdit As New RepositoryItemLookUpEdit
-    Private ColorGridLookUpEdit As New RepositoryItemLookUpEdit
-
     Dim vTallaCell As DataGridViewCell
     Dim vColorCell As DataGridViewCell
     Dim vSKUCell As DataGridViewCell
     Dim vIdProductoTallaColorCell As DataGridViewCell
 
     Dim vTalla As Integer = 0
-    Dim vColor As Integer = 0
+    Dim vColor As String = ""
     Dim vSKU_ As String = ""
     Dim vIdProductoTallaColor_ As Integer = 0
+
+    Dim DgComboTalla As New DataGridViewComboBoxCell()
+    Dim DgComboColor As New DataGridViewComboBoxCell()
 
     Public Property Modo As TipoTrans
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
@@ -893,8 +895,8 @@ Public Class frmPedido
 
                         If BeBodega.Control_Talla_Color Then
                             dgrid.Rows(i).Cells("colTalla").Value = CInt(pDet.Talla)
-                            dgrid.Rows(i).Cells("colColor").Value = CInt(pDet.Color)
-                            dgrid.Rows(i).Cells("colIdProductoTallaColor").Value = Math.Round((pDet.IdProductoTallaColor), 0)
+                            dgrid.Rows(i).Cells("colColor").Value = pDet.Color
+                            'dgrid.Rows(i).Cells("colIdProductoTallaColor").Value = Math.Round((pDet.IdProductoTallaColor), 0)
 
                             'Dim pProductoTallaColor = clsLnProducto_talla_color.GetSingle(pDet.IdProductoTallaColor)
                             'If pProductoTallaColor IsNot Nothing Then
@@ -3157,6 +3159,24 @@ Public Class frmPedido
 
     End Sub
 
+    Private Sub RemoveValueChangedHandlerTalla(ByVal sender As Object, ByVal e As EventArgs)
+
+        If TypeOf (sender) Is DataGridViewComboBoxEditingControl Then
+            Dim cboThisCombobox = DirectCast(sender, DataGridViewComboBoxEditingControl)
+
+            RemoveHandler cboThisCombobox.SelectedValueChanged, LastEventHandlerTalla
+        End If
+
+    End Sub
+    Private Sub RemoveValueChangedHandlerColor(ByVal sender As Object, ByVal e As EventArgs)
+
+        If TypeOf (sender) Is DataGridViewComboBoxEditingControl Then
+            Dim cboThisCombobox = DirectCast(sender, DataGridViewComboBoxEditingControl)
+
+            RemoveHandler cboThisCombobox.SelectedValueChanged, LastEventHandlerColor
+        End If
+
+    End Sub
     Private Sub dgrid_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles dgrid.CellValueChanged
 
         Try
@@ -3292,7 +3312,27 @@ Public Class frmPedido
 
                 Case "colTalla"
 
+                    If TypeOf (e.Control) Is DataGridViewComboBoxEditingControl Then
+
+                        Dim cboThisComboBox = DirectCast(e.Control, DataGridViewComboBoxEditingControl)
+
+                        AddHandler cboThisComboBox.SelectedValueChanged, LastEventHandlerTalla
+
+                        AddHandler cboThisComboBox.Leave, AddressOf RemoveValueChangedHandlerTalla
+
+                    End If
+
                 Case "colColor"
+
+                    If TypeOf (e.Control) Is DataGridViewComboBoxEditingControl Then
+
+                        Dim cboThisComboBox = DirectCast(e.Control, DataGridViewComboBoxEditingControl)
+
+                        AddHandler cboThisComboBox.SelectedValueChanged, LastEventHandlerColor
+
+                        AddHandler cboThisComboBox.Leave, AddressOf RemoveValueChangedHandlerColor
+
+                    End If
 
                 Case Else
 
@@ -3542,6 +3582,11 @@ Public Class frmPedido
                                     'podria darse el caso que no exista dicho estado pero si los demas valores (del stock consultado)
                                     Llena_Estados_Grid(e.RowIndex, pEstadoProductoDefault)
 
+                                    '#GT26082025:   validar si el producto esta asociado a varias tallas/colores y mostar valores en los combos
+                                    If BeBodega.Control_Talla_Color Then
+                                        Asignar_Talla_Color(e.RowIndex, pBeProducto, pBeStock)
+                                    End If
+
                                     If vNoLinea Is Nothing Then vNoLinea = ""
 
                                     If vNoLinea.ToString = "" OrElse Val(vNoLinea) = 0 Then
@@ -3589,10 +3634,10 @@ Public Class frmPedido
                                         pBeStock.IdUbicacion = Val(txtIdUbicacionAbastecimiento.Text)
 
                                         clsLnStock.Get_Existencia_Disp_By_IdProducto(pBeStock,
-                                                                                 cmbBodega.EditValue,
-                                                                                 True,
-                                                                                 False,
-                                                                                 vDiasVencimientoCliente)
+                                                                                     cmbBodega.EditValue,
+                                                                                     True,
+                                                                                     False,
+                                                                                     vDiasVencimientoCliente)
 
                                         If Not pBeStock.Presentacion Is Nothing Then
 
@@ -3618,6 +3663,7 @@ Public Class frmPedido
                                         dgrid.Rows(e.RowIndex).Cells("colCantidadExistencia").Value = 0
                                         dgrid.Rows(e.RowIndex).Cells("colPesoExistencia").Value = 0
                                     End If
+
                                 Else
 
                                     Set_Producto_Padre_Kit(pBeProducto, e.RowIndex)
@@ -3693,6 +3739,110 @@ Public Class frmPedido
                             dgrid.Rows(e.RowIndex).Cells("colCantidadExistencia").Value = pBeStock.Cantidad
                         End If
 
+                    Case "colTalla"
+
+                        '#GT26082025: si hay cambio de talla y un color seleccionado recargar lo disponible
+                        If vTalla > 0 OrElse vColor > 0 Then
+
+                            Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla, vColor)
+
+                            If pProductoTallaColor IsNot Nothing Then
+                                pBeStock.IdProductoTallaColor = pProductoTallaColor.IdProductoTallaColor
+                            End If
+
+                            If pBeProducto.IdProductoBodega <> 0 AndAlso pBeStock.ProductoEstado.IdEstado <> 0 And pBeStock.IdProductoTallaColor > 0 Then
+
+                                pBeStock.IdProductoBodega = pBeProducto.IdProductoBodega
+
+                                '#EJC20220720_1357:Abastecer desde ubicación específica de cliente.
+                                pBeStock.IdUbicacion = Val(txtIdUbicacionAbastecimiento.Text)
+
+                                clsLnStock.Get_Existencia_Disp_By_IdProducto(pBeStock,
+                                                                             cmbBodega.EditValue,
+                                                                             True,
+                                                                             False,
+                                                                             vDiasVencimientoCliente)
+
+                                If Not pBeStock.Presentacion Is Nothing Then
+
+                                    dgrid.Rows(e.RowIndex).Cells("colCantidadExistencia").Value = pBeStock.Cantidad
+                                    dgrid.Rows(e.RowIndex).Cells("colCantidadExistencia").Tag = pBeStock.Cantidad
+                                    dgrid.Rows(e.RowIndex).Cells("colPesoExistencia").Value = pBeStock.Peso
+                                    dgrid.Rows(e.RowIndex).Cells("colPesoUnitario").Value = IIf(pBeStock.Cantidad > 0, pBeStock.Peso / pBeStock.Cantidad, 0)
+
+                                Else
+
+                                    dgrid.Rows(e.RowIndex).Cells("colCantidadExistencia").Value = pBeStock.Cantidad
+                                    dgrid.Rows(e.RowIndex).Cells("colPesoExistencia").Value = pBeStock.Peso
+
+                                    If pBeStock.Cantidad > 0 Then
+                                        dgrid.Rows(e.RowIndex).Cells("colPesoUnitario").Value = pBeStock.Peso / pBeStock.Cantidad
+                                    Else
+                                        dgrid.Rows(e.RowIndex).Cells("colPesoUnitario").Value = 0
+                                    End If
+
+                                End If
+
+                            Else
+                                dgrid.Rows(e.RowIndex).Cells("colCantidadExistencia").Value = 0
+                                dgrid.Rows(e.RowIndex).Cells("colPesoExistencia").Value = 0
+                            End If
+
+                        End If
+
+
+                    Case "colColor"
+
+                        '#GT26082025: si hay cambio de color y una talla selecccionada recargar lo disponible.
+                        If vTalla > 0 OrElse vColor > 0 Then
+
+                            Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla, vColor)
+
+                            If pProductoTallaColor IsNot Nothing Then
+                                pBeStock.IdProductoTallaColor = pProductoTallaColor.IdProductoTallaColor
+                            End If
+
+                            If pBeProducto.IdProductoBodega <> 0 AndAlso pBeStock.ProductoEstado.IdEstado <> 0 AndAlso pBeStock.IdProductoTallaColor > 0 Then
+
+                                pBeStock.IdProductoBodega = pBeProducto.IdProductoBodega
+
+                                '#EJC20220720_1357:Abastecer desde ubicación específica de cliente.
+                                pBeStock.IdUbicacion = Val(txtIdUbicacionAbastecimiento.Text)
+
+                                '#GT26082025: se envia filtro talla/color en el objeto pBeStock
+                                clsLnStock.Get_Existencia_Disp_By_IdProducto(pBeStock,
+                                                                             cmbBodega.EditValue,
+                                                                             True,
+                                                                             False,
+                                                                             vDiasVencimientoCliente)
+
+                                If Not pBeStock.Presentacion Is Nothing Then
+
+                                    dgrid.Rows(e.RowIndex).Cells("colCantidadExistencia").Value = pBeStock.Cantidad
+                                    dgrid.Rows(e.RowIndex).Cells("colCantidadExistencia").Tag = pBeStock.Cantidad
+                                    dgrid.Rows(e.RowIndex).Cells("colPesoExistencia").Value = pBeStock.Peso
+                                    dgrid.Rows(e.RowIndex).Cells("colPesoUnitario").Value = IIf(pBeStock.Cantidad > 0, pBeStock.Peso / pBeStock.Cantidad, 0)
+
+                                Else
+
+                                    dgrid.Rows(e.RowIndex).Cells("colCantidadExistencia").Value = pBeStock.Cantidad
+                                    dgrid.Rows(e.RowIndex).Cells("colPesoExistencia").Value = pBeStock.Peso
+
+                                    If pBeStock.Cantidad > 0 Then
+                                        dgrid.Rows(e.RowIndex).Cells("colPesoUnitario").Value = pBeStock.Peso / pBeStock.Cantidad
+                                    Else
+                                        dgrid.Rows(e.RowIndex).Cells("colPesoUnitario").Value = 0
+                                    End If
+
+                                End If
+
+                            Else
+                                dgrid.Rows(e.RowIndex).Cells("colCantidadExistencia").Value = 0
+                                dgrid.Rows(e.RowIndex).Cells("colPesoExistencia").Value = 0
+                            End If
+
+                        End If
+
                     Case 4 'Precio de producto en factura manual
 
                     Case 5 'Total de línea
@@ -3707,6 +3857,48 @@ Public Class frmPedido
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
+    End Sub
+
+    Private Sub Asignar_Talla_Color(ByVal pIndex As Integer, pBeProducto As clsBeProducto, pStockRes As clsBeStock)
+
+        Dim listaTallas As New List(Of clsBeTalla)
+        Dim listaColores As New DataTable
+
+        Try
+
+            DgComboTalla = TryCast(dgrid.Rows(pIndex).Cells("colTalla"), DataGridViewComboBoxCell)
+            DgComboColor = TryCast(dgrid.Rows(pIndex).Cells("colColor"), DataGridViewComboBoxCell)
+
+            '#GT25082025: un producto podria tener varias combinaciones con tallas y colores
+            Dim listProductoTallaColor As New List(Of clsBeProducto_talla_color)()
+            listProductoTallaColor = clsLnProducto_talla_color.Get_All_By_IdProducto_FromStock(pBeProducto.IdProducto)
+
+            '#GT25082025: listar tallas y colores asociados al producto
+            Dim listTallas As List(Of Integer) = listProductoTallaColor.Select(Function(p) p.IdTalla).Distinct().ToList()
+            Dim listColores As List(Of Integer) = listProductoTallaColor.Select(Function(p) p.IdColor).Distinct().ToList()
+            listaTallas = clsLnTalla.Get_Tallas_By_IdTallas(listTallas)
+            listaColores = clsLnColor.Get_Colores_By_IdColoresDT(listColores)
+
+            DgComboTalla.DataSource = listaTallas
+            DgComboTalla.ValueMember = "IdTalla"
+            DgComboTalla.DisplayMember = "Codigo"
+
+            If DgComboTalla.Items.Count = 1 Then
+                Dim unicaTalla = DirectCast(listaTallas.First(), clsBeTalla)
+                DgComboTalla.Value = unicaTalla.IdTalla
+            End If
+
+            DgComboColor.DataSource = listaColores
+            DgComboColor.ValueMember = "IdColor"
+            DgComboColor.DisplayMember = "Codigo"
+
+            If DgComboColor.Items.Count > 0 Then
+                DgComboColor.Value = listaColores.Rows(0).Item("IdColor")
+            End If
+
+        Catch ex As Exception
+            Debug.WriteLine(ex.Message)
+        End Try
     End Sub
 
     Private Sub Llena_Presentacion_Grid(ByVal pIndex As Integer,
@@ -4316,6 +4508,14 @@ Public Class frmPedido
             '#CK_CM_20191709_1:03PM: Agregamos validación a pBeStock para cuando sea nothing
             If pBeStock IsNot Nothing Then
                 pBeStock.IdProductoBodega = vIdProductoBodega
+            End If
+
+            '#GT26082025: si hay un valor en talla color, asignar el idproductotallacolor
+            If vTalla > 0 AndAlso vColor > 0 Then
+                Dim pProductoTallaColor = clsLnProducto_talla_color.Get_ProductoTallaColor_By_Talla_and_Color(vTalla, vColor)
+                If pProductoTallaColor IsNot Nothing Then
+                    pBeStock.IdProductoTallaColor = pProductoTallaColor.IdProductoTallaColor
+                End If
             End If
 
             If Not pBeProducto Is Nothing AndAlso vIdProductoBodega <> 0 Then
@@ -5651,7 +5851,7 @@ Public Class frmPedido
 
         Try
 
-            If e.ColumnIndex >= 7 AndAlso e.ColumnIndex <= 9 Then
+            If (e.ColumnIndex >= 8 AndAlso e.ColumnIndex <= 9) Then
                 If e.Value IsNot Nothing AndAlso IsNumeric(e.Value.ToString()) Then
                     Dim Valor As Double = Double.Parse(e.Value.ToString())
                     e.Value = Valor.ToString("N6")
@@ -5813,17 +6013,21 @@ Public Class frmPedido
 
                         '#GT21082025: en el pedido estan los id´s para talla y color, no consultar again la bd
                         Dim Pedido_Det = pBePedidoEnc.Detalle.Find(Function(x) x.IdPedidoEnc = Objs.IdPedidoEnc AndAlso x.IdPedidoDet = Objs.IdPedidoDet)
-                        Dim rowsTalla() As DataRow = Lista_tallas.Select("IdTalla = " & Pedido_Det.Talla)
-                        If rowsTalla.Length > 0 Then
-                            Dim tallaBuscada As DataRow = rowsTalla(0)
-                            lRow.Item("Talla") = tallaBuscada(1)
-                        End If
 
-                        Dim rowsColor() As DataRow = Lista_colores.Select("IdColor = " & Pedido_Det.Color)
-                        If rowsColor.Length > 0 Then
-                            Dim colorBuscada As DataRow = rowsColor(0)
-                            lRow.Item("Color") = colorBuscada(1)
-                        End If
+                        lRow.Item("Talla") = Lista_tallas.Find(Function(x) x.IdTalla = Pedido_Det.Talla)
+
+                        'Dim rowsTalla() As DataRow = Lista_tallas.Select("IdTalla = " & Pedido_Det.Talla)
+                        'If rowsTalla.Length > 0 Then
+                        '    Dim tallaBuscada As DataRow = rowsTalla(0)
+                        '    lRow.Item("Talla") = tallaBuscada(1)
+                        'End If
+
+                        lRow.Item("Color") = Lista_colores.Find(Function(x) x.IdColor = Pedido_Det.Color)
+                        'Dim rowsColor() As DataRow = Lista_colores.Select("IdColor = " & Pedido_Det.Color)
+                        'If rowsColor.Length > 0 Then
+                        '    Dim colorBuscada As DataRow = rowsColor(0)
+                        '    lRow.Item("Color") = colorBuscada(1)
+                        'End If
 
                     End If
 
@@ -6227,6 +6431,7 @@ Public Class frmPedido
             frmSelStock.pListObjDet = pListBeTrans_ubic_hh_det
             frmSelStock.WindowState = FormWindowState.Maximized
             frmSelStock.chkFiltroPolizaActivo.Checked = chkControlPoliza.Checked
+            frmSelStock.Mostrar_Talla_Color = BeBodega.Control_Talla_Color
 
             '#GT08042025: enviar el estado del documento si tuviera uno por default que coincida con el mismo propietario
             If lcmbPropietario.EditValue = BeTipoDoc.IdPropietario Then
@@ -7468,6 +7673,9 @@ Public Class frmPedido
 
     End Sub
 
+    Dim Lista_tallas As New List(Of clsBeTalla)
+    Dim Lista_colores As New List(Of clsBeColor)
+
     Private Sub frmPedido_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
         Dim clsTransaccion As New clsTransaccion()
@@ -7507,7 +7715,12 @@ Public Class frmPedido
 
                 '#GT20082025: si bodega maneja talla color asignar los campos
                 If AP.Bodega.Control_Talla_Color Then
-                    Llenar_Combos_Talla_Color()
+
+                    'Lista_tallas = clsLnTalla.Listar_For_Combo()
+                    'Lista_colores = clsLnColor.Listar_For_Combo()
+
+                    'Llenar_Combos_Talla_Color()
+
                 End If
 
                 IMS.Listar_Propietarios_By_IdBodega(lcmbPropietario,
@@ -7898,9 +8111,6 @@ Public Class frmPedido
 
     End Sub
 
-    '#GT21082025: expuestos asi, porque se valida en pedido/picking/stock_res y se consulta el objeto, no la tabla
-    Dim Lista_tallas = clsLnTalla.Listar_For_Combo()
-    Dim Lista_colores = clsLnColor.Listar_For_Combo()
     Private Sub Llenar_Combos_Talla_Color()
         Try
             ' Asignar directamente a las columnas tipo ComboBox
@@ -11533,6 +11743,62 @@ Public Class frmPedido
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+
+    End Sub
+
+    Private Sub cmbTalla_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
+
+        Try
+
+            Dim combo As DataGridViewComboBoxEditingControl = TryCast(sender, DataGridViewComboBoxEditingControl)
+
+            Dim vIdTalla As Integer = 0
+
+            If (combo.SelectedItem IsNot Nothing) Then
+
+                If Integer.TryParse(combo.SelectedValue, vIdTalla) Then
+                    vTalla = vIdTalla
+                End If
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
+    Private Sub cmbColor_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
+
+        Try
+
+            Dim combo As DataGridViewComboBoxEditingControl = TryCast(sender, DataGridViewComboBoxEditingControl)
+
+            If (combo.SelectedItem IsNot Nothing) Then
+
+                vColor = combo.SelectedValue
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
         End Try
 
     End Sub

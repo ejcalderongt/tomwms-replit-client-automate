@@ -3079,4 +3079,45 @@ Partial Public Class clsLnTrans_picking_enc
 
     End Function
 
+    Public Shared Function Get_CantidadPedidos_By_IdPickingEnc(ByVal IdPickingEnc As Integer) As Integer
+        Get_CantidadPedidos_By_IdPickingEnc = 0
+
+        Try
+            Dim sSQL As String = "SELECT COUNT(DISTINCT IdPedidoEnc) AS pedidos_diferentes
+                                 FROM trans_picking_ubic
+                                 WHERE IdPickingEnc = @IdPickingEnc "
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(sSQL, lConnection)
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdPickingEnc", IdPickingEnc)
+
+                        Dim lDT As New DataTable()
+                        lDTA.Fill(lDT)
+
+                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+                            Dim lRow As DataRow = lDT.Rows(0)
+
+                            If lRow("pedidos_diferentes") IsNot DBNull.Value Then
+                                Get_CantidadPedidos_By_IdPickingEnc = lRow("pedidos_diferentes")
+                            End If
+                        End If
+                    End Using
+
+                    lTransaction.Commit()
+                End Using
+
+                lConnection.Close()
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+    End Function
+
 End Class

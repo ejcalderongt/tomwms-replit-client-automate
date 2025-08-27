@@ -23,9 +23,7 @@ Public Class frmStock_Especifico_List
     Private TieneTiempos As Boolean = False
 
     Public threadListar_Stock As New Thread(AddressOf Listar_Stock_With_DT) With {.IsBackground = True}
-
     ReadOnly CallBindProductos_To_Grid As New MethodInvoker(AddressOf BindProductos_To_Grid)
-
     Public Property ForceUpdateList As Boolean = True
 
     Public Property Termino_Carga_De_Datos As Boolean = False
@@ -33,12 +31,12 @@ Public Class frmStock_Especifico_List
     Dim DTStock As New DataTable
     Dim DTStockForMemory As New DataTable
     Public Property ProductoEspecifico As New clsBeProducto
-
     Private lPresentacion As New List(Of clsBeProducto_Presentacion)
-
     Public BuscarPoliza As Boolean = False
-
     Public IdProductoEstadoDefault As Integer = 0
+
+    '#GT27082025: bandera para mostrar talla-color
+    Public Mostrar_Talla_Color As Boolean = False
 
     Public Sub New()
         InitializeComponent()
@@ -117,6 +115,11 @@ Public Class frmStock_Especifico_List
                             GridView1.Columns("IndiceRotacion").Visible = False
                             GridView1.Columns("IdUbicacion").Visible = False
                             GridView1.Columns("IdUbicacion").Visible = False
+
+                            If Mostrar_Talla_Color Then
+
+                            End If
+
 
                             If Not GridView1.Columns.ColumnByFieldName("IdClasificacion") Is Nothing Then
                                 GridView1.Columns("IdClasificacion").Visible = False
@@ -361,17 +364,17 @@ Public Class frmStock_Especifico_List
             If chkFiltroPolizaActivo.Checked AndAlso txtNoPoliza.Text.Trim <> "" Then
 
                 If IdBodega = 0 Then
-                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(AP.IdBodega, IdCliente, TieneTiempos, txtNoPoliza.Text, 0, IdProductoEstadoDefault)
+                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(AP.IdBodega, IdCliente, TieneTiempos, txtNoPoliza.Text, 0, IdProductoEstadoDefault, Mostrar_Talla_Color)
                 Else
-                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(IdBodega, IdCliente, TieneTiempos, txtNoPoliza.Text, 0, IdProductoEstadoDefault)
+                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(IdBodega, IdCliente, TieneTiempos, txtNoPoliza.Text, 0, IdProductoEstadoDefault, Mostrar_Talla_Color)
                 End If
 
             Else
 
                 If IdBodega = 0 Then
-                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(AP.IdBodega, IdCliente, TieneTiempos, "", pIdPropietarioBodega, IdProductoEstadoDefault)
+                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(AP.IdBodega, IdCliente, TieneTiempos, "", pIdPropietarioBodega, IdProductoEstadoDefault, Mostrar_Talla_Color)
                 Else
-                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(IdBodega, IdCliente, TieneTiempos, "", pIdPropietarioBodega, IdProductoEstadoDefault)
+                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(IdBodega, IdCliente, TieneTiempos, "", pIdPropietarioBodega, IdProductoEstadoDefault, Mostrar_Talla_Color)
                 End If
 
             End If

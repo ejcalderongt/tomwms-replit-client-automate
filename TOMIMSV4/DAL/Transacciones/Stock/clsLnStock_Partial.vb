@@ -1066,7 +1066,8 @@ Partial Public Class clsLnStock
                                                        ByRef TieneTiempos As Boolean,
                                                        ByVal NoPoliza As String,
                                                        ByVal IdPropietarioBodega As Integer,
-                                                       ByVal IdProductoEstadoDefault As Integer) As DataTable
+                                                       ByVal IdProductoEstadoDefault As Integer,
+                                                       ByVal Mostrar_Talla_Color As Boolean) As DataTable
 
         '#EJC20171112_0605PM:Agregué transacción
         Dim vSQL As String = ""
@@ -1160,6 +1161,10 @@ Partial Public Class clsLnStock
                     vSQL += " AND propietario_bodega.IdPropietarioBodega = @IdPropietarioBodega  "
                 End If
 
+                If Mostrar_Talla_Color Then
+                    vSQL += " AND propietario_bodega.IdPropietarioBodega = @IdPropietarioBodega  "
+                End If
+
                 '#ejc20210923: agregar join con poliza antes de...
                 'If NoPoliza <> "" Then
                 '    vSQL += " AND (codigo_poliza= @NoPoliza OR numero_poliza = @NoPoliza) "
@@ -1250,12 +1255,19 @@ Partial Public Class clsLnStock
                                familia,
                                marca,
                                st_resumen.no_linea,
-                               st_resumen.No_Contenedor
-                        FROM VW_Stock_Res st_resumen
-						inner join producto pr on st_resumen.codigo = pr.codigo  and pr.IdPropietario = st_resumen.IdPropietario
-						left join producto_clasificacion pr_clas on pr.IdClasificacion = pr_clas.IdClasificacion
+                               st_resumen.No_Contenedor "
 
-                        WHERE IdBodega=@IdBodega"
+                If Mostrar_Talla_Color Then
+                    vSQL += " ,st_resumen.Codigo_Talla,
+							  st_resumen.Nombre_Talla,
+							  st_resumen.Codigo_Color,
+							  st_resumen.Nombre_Color "
+                End If
+
+                vSQL += " FROM VW_Stock_Res st_resumen
+						 inner join producto pr on st_resumen.codigo = pr.codigo  and pr.IdPropietario = st_resumen.IdPropietario
+						 left join producto_clasificacion pr_clas on pr.IdClasificacion = pr_clas.IdClasificacion
+                         WHERE IdBodega=@IdBodega"
 
                 If IdPropietarioBodega <> 0 Then
                     vSQL += " AND IdPropietarioBodega = @IdPropietarioBodega and disponible_umbas > 0 "
@@ -16565,4 +16577,47 @@ Partial Public Class clsLnStock
 
     End Function
 
+    Public Shared Function Get_All_By_IdUbicacion_And_LicPlate(ByVal pIdUbicacion As Integer, pLicencia As String) As List(Of clsBeStock)
+
+        Dim lReturnList As List(Of clsBeStock) = Nothing
+
+        Try
+            Dim vSQL As String = "SELECT * FROM Stock WHERE IdUbicacion = @IdUbicacion AND lic_plate = @lic_plate"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@lic_plate", pLicencia)
+
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+
+                        Dim Obj As clsBeStock
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                            lReturnList = New List(Of clsBeStock)
+                            For Each lRow As DataRow In lDataTable.Rows
+                                Obj = New clsBeStock
+                                Cargar(Obj, lRow)
+                                lReturnList.Add(Obj)
+                            Next
+                        End If
+                    End Using
+
+                    lTransaction.Commit()
+                End Using
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Throw
+        End Try
+
+    End Function
 End Class

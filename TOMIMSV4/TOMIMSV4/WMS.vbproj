@@ -4340,13 +4340,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
-    <None Include="app.config" />
-    <None Include="CEALSASync.exe.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <Content Include="CEALSASync.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Conn_Becofarma.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -4367,13 +4360,11 @@
     <None Include="Conn_GT.ini" />
     <None Include="Conn_Inelac.ini" />
     <None Include="Conn_Killios.ini" />
-    <None Include="ConnDev.ini" />
     <None Include="Conn_CLC_Fiscal.ini" />
     <None Include="Conn_MAMPA.ini" />
     <None Include="Conn_Mercosal.ini" />
     <None Include="Conn_DYD.ini" />
     <None Include="Conn_Merhonsa.ini" />
-    <Content Include="es\Microsoft.Data.SqlClient.resources.dll" />
     <Content Include="Mantenimientos\plantillas\WMS_plantilla_Importacion_Productos.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -4450,9 +4441,6 @@
     <Content Include="Conn.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="NavSync.exe.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Conn_CKFK.ini" />
     <None Include="Conn_Mercopan.ini" />
     <None Include="Conn_Prograx.ini" />
@@ -4468,9 +4456,6 @@
       <DependentUpon>DetTramoByBodega.xsd</DependentUpon>
     </None>
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho1.disco" />
-    <Content Include="NavSync.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="PerceptronUbicacion.exe" />
     <None Include="Resources\tomimsazteccode.jpeg" />
     <None Include="Resources\tomimslogoclasic.jpeg" />
@@ -5460,20 +5445,23 @@
     <PackageReference Include="Irony">
       <Version>1.5.3</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Data.SqlClient">
+      <Version>6.1.1</Version>
+    </PackageReference>
     <PackageReference Include="System.IO.Packaging">
-      <Version>8.0.1</Version>
+      <Version>9.0.8</Version>
     </PackageReference>
     <PackageReference Include="System.Management">
-      <Version>8.0.0</Version>
+      <Version>9.0.8</Version>
     </PackageReference>
     <PackageReference Include="System.Memory">
-      <Version>4.5.5</Version>
+      <Version>4.6.3</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
-      <Version>6.0.0</Version>
+      <Version>6.1.2</Version>
     </PackageReference>
     <PackageReference Include="System.ValueTuple">
-      <Version>4.5.0</Version>
+      <Version>4.6.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
