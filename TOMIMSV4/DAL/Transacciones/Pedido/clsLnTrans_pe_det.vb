@@ -804,7 +804,7 @@ Public Class clsLnTrans_pe_det
 
             Return lMax
 
-        Catch ex1 As SQLException
+        Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
