@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DsetAnalitica" targetNamespace="http://tempuri.org/DsetAnalitica.xsd" xmlns:mstns="http://tempuri.org/DsetAnalitica.xsd" xmlns="http://tempuri.org/DsetAnalitica.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="MySettings" AppSettingsPropertyName="IMS4MB_PRDConnectionString" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="IMS4MB_PRDConnectionString (MySettings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.TOMWMS.My.MySettings.GlobalReference.Default.IMS4MB_PRDConnectionString" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="VW_Stock_Rep_20200112TableAdapter" GeneratorDataComponentClassName="VW_Stock_Rep_20200112TableAdapter" Name="VW_Stock_Rep_20200112" UserDataComponentName="VW_Stock_Rep_20200112TableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="IMS4MB_PRDConnectionString (MySettings)" DbObjectName="IMS4MB_IDEALSA_PRD_20200420.dbo.VW_Stock_Rep_20200112" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT *
+FROM     VW_Stock_Rep_20200112</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="IdPropietario" DataSetColumn="IdPropietario" />
+              <Mapping SourceColumn="IdPropietarioBodega" DataSetColumn="IdPropietarioBodega" />
+              <Mapping SourceColumn="Propietario" DataSetColumn="Propietario" />
+              <Mapping SourceColumn="CantidadSF" DataSetColumn="CantidadSF" />
+              <Mapping SourceColumn="Cantidad" DataSetColumn="Cantidad" />
+              <Mapping SourceColumn="Ubicacion_Tramo" DataSetColumn="Ubicacion_Tramo" />
+              <Mapping SourceColumn="IdBodega" DataSetColumn="IdBodega" />
+              <Mapping SourceColumn="Tipo" DataSetColumn="Tipo" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DsetAnalitica" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DsetAnalitica" msprop:Generator_UserDSName="DsetAnalitica">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="VW_Stock_Rep_20200112" msprop:Generator_TableClassName="VW_Stock_Rep_20200112DataTable" msprop:Generator_TableVarName="tableVW_Stock_Rep_20200112" msprop:Generator_RowChangedName="VW_Stock_Rep_20200112RowChanged" msprop:Generator_TablePropName="VW_Stock_Rep_20200112" msprop:Generator_RowDeletingName="VW_Stock_Rep_20200112RowDeleting" msprop:Generator_RowChangingName="VW_Stock_Rep_20200112RowChanging" msprop:Generator_RowEvHandlerName="VW_Stock_Rep_20200112RowChangeEventHandler" msprop:Generator_RowDeletedName="VW_Stock_Rep_20200112RowDeleted" msprop:Generator_RowClassName="VW_Stock_Rep_20200112Row" msprop:Generator_UserTableName="VW_Stock_Rep_20200112" msprop:Generator_RowEvArgName="VW_Stock_Rep_20200112RowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IdPropietario" msprop:Generator_ColumnVarNameInTable="columnIdPropietario" msprop:Generator_ColumnPropNameInRow="IdPropietario" msprop:Generator_ColumnPropNameInTable="IdPropietarioColumn" msprop:Generator_UserColumnName="IdPropietario" type="xs:int" default="0" />
+              <xs:element name="IdPropietarioBodega" msprop:Generator_ColumnVarNameInTable="columnIdPropietarioBodega" msprop:Generator_ColumnPropNameInRow="IdPropietarioBodega" msprop:Generator_ColumnPropNameInTable="IdPropietarioBodegaColumn" msprop:Generator_UserColumnName="IdPropietarioBodega" type="xs:int" default="0" />
+              <xs:element name="Propietario" msprop:Generator_ColumnVarNameInTable="columnPropietario" msprop:Generator_ColumnPropNameInRow="Propietario" msprop:Generator_ColumnPropNameInTable="PropietarioColumn" msprop:Generator_UserColumnName="Propietario">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="CantidadSF" msprop:Generator_ColumnVarNameInTable="columnCantidadSF" msprop:Generator_ColumnPropNameInRow="CantidadSF" msprop:Generator_ColumnPropNameInTable="CantidadSFColumn" msprop:Generator_UserColumnName="CantidadSF" type="xs:double" minOccurs="0" />
+              <xs:element name="Cantidad" msprop:Generator_ColumnVarNameInTable="columnCantidad" msprop:Generator_ColumnPropNameInRow="Cantidad" msprop:Generator_ColumnPropNameInTable="CantidadColumn" msprop:Generator_UserColumnName="Cantidad" type="xs:double" minOccurs="0" />
+              <xs:element name="Ubicacion_Tramo" msprop:Generator_ColumnVarNameInTable="columnUbicacion_Tramo" msprop:Generator_ColumnPropNameInRow="Ubicacion_Tramo" msprop:Generator_ColumnPropNameInTable="Ubicacion_TramoColumn" msprop:Generator_UserColumnName="Ubicacion_Tramo" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="IdBodega" msprop:Generator_ColumnVarNameInTable="columnIdBodega" msprop:Generator_ColumnPropNameInRow="IdBodega" msprop:Generator_ColumnPropNameInTable="IdBodegaColumn" msprop:Generator_UserColumnName="IdBodega" type="xs:int" minOccurs="0" />
+              <xs:element name="Tipo" msprop:Generator_ColumnVarNameInTable="columnTipo" msprop:Generator_ColumnPropNameInRow="Tipo" msprop:Generator_ColumnPropNameInTable="TipoColumn" msprop:Generator_UserColumnName="Tipo" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

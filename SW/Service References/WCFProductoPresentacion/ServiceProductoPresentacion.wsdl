@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="ServiceProductoPresentacion" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:4180/Producto_Presentacion/ServiceProductoPresentacion.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:4180/Producto_Presentacion/ServiceProductoPresentacion.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:4180/Producto_Presentacion/ServiceProductoPresentacion.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IServiceProductoPresentacion_Insertar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Insertar" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_Insertar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertarResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GuardarTransaccion_InputMessage">
+    <wsdl:part name="parameters" element="tns:GuardarTransaccion" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GuardarTransaccion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GuardarTransaccionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_Actualizar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_Actualizar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ActualizarResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_Eliminar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Eliminar" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_Eliminar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:EliminarResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_Delete_InputMessage">
+    <wsdl:part name="parameters" element="tns:Delete" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_Delete_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_UpdateMM_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateMM" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_UpdateMM_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateMMResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_ExisteStock_InputMessage">
+    <wsdl:part name="parameters" element="tns:ExisteStock" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_ExisteStock_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExisteStockResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_Exists_InputMessage">
+    <wsdl:part name="parameters" element="tns:Exists" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_Exists_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExistsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_ExisteCodigoBarra_InputMessage">
+    <wsdl:part name="parameters" element="tns:ExisteCodigoBarra" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_ExisteCodigoBarra_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExisteCodigoBarraResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GetAllFiltro_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllFiltro" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GetAllFiltro_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllFiltroResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GetAllByProducto_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllByProducto" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GetAllByProducto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllByProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GetSingle_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSingle" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GetSingle_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSingleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GetFactor_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFactor" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GetFactor_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFactorResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GetByProducto_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetByProducto" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GetByProducto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetByProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GuardaPresentacion_InputMessage">
+    <wsdl:part name="parameters" element="tns:GuardaPresentacion" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GuardaPresentacion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GuardaPresentacionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GetPesoByIdPresentacion_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPesoByIdPresentacion" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GetPesoByIdPresentacion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPesoByIdPresentacionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_MaxID_InputMessage">
+    <wsdl:part name="parameters" element="tns:MaxID" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_MaxID_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MaxIDResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GetAllPresentacionesStockByProducto_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllPresentacionesStockByProducto" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_GetAllPresentacionesStockByProducto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllPresentacionesStockByProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_ExistePeso_InputMessage">
+    <wsdl:part name="parameters" element="tns:ExistePeso" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProductoPresentacion_ExistePeso_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExistePesoResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IServiceProductoPresentacion">
+    <wsdl:operation name="Insertar">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/Insertar" message="tns:IServiceProductoPresentacion_Insertar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/InsertarResponse" message="tns:IServiceProductoPresentacion_Insertar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GuardarTransaccion">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GuardarTransaccion" message="tns:IServiceProductoPresentacion_GuardarTransaccion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GuardarTransaccionResponse" message="tns:IServiceProductoPresentacion_GuardarTransaccion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/Actualizar" message="tns:IServiceProductoPresentacion_Actualizar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/ActualizarResponse" message="tns:IServiceProductoPresentacion_Actualizar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Eliminar">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/Eliminar" message="tns:IServiceProductoPresentacion_Eliminar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/EliminarResponse" message="tns:IServiceProductoPresentacion_Eliminar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/Delete" message="tns:IServiceProductoPresentacion_Delete_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/DeleteResponse" message="tns:IServiceProductoPresentacion_Delete_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateMM">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/UpdateMM" message="tns:IServiceProductoPresentacion_UpdateMM_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/UpdateMMResponse" message="tns:IServiceProductoPresentacion_UpdateMM_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ExisteStock">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/ExisteStock" message="tns:IServiceProductoPresentacion_ExisteStock_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/ExisteStockResponse" message="tns:IServiceProductoPresentacion_ExisteStock_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Exists">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/Exists" message="tns:IServiceProductoPresentacion_Exists_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/ExistsResponse" message="tns:IServiceProductoPresentacion_Exists_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ExisteCodigoBarra">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/ExisteCodigoBarra" message="tns:IServiceProductoPresentacion_ExisteCodigoBarra_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/ExisteCodigoBarraResponse" message="tns:IServiceProductoPresentacion_ExisteCodigoBarra_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllFiltro">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GetAllFiltro" message="tns:IServiceProductoPresentacion_GetAllFiltro_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GetAllFiltroResponse" message="tns:IServiceProductoPresentacion_GetAllFiltro_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllByProducto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GetAllByProducto" message="tns:IServiceProductoPresentacion_GetAllByProducto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GetAllByProductoResponse" message="tns:IServiceProductoPresentacion_GetAllByProducto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSingle">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GetSingle" message="tns:IServiceProductoPresentacion_GetSingle_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GetSingleResponse" message="tns:IServiceProductoPresentacion_GetSingle_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFactor">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GetFactor" message="tns:IServiceProductoPresentacion_GetFactor_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GetFactorResponse" message="tns:IServiceProductoPresentacion_GetFactor_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetByProducto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GetByProducto" message="tns:IServiceProductoPresentacion_GetByProducto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GetByProductoResponse" message="tns:IServiceProductoPresentacion_GetByProducto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GuardaPresentacion">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GuardaPresentacion" message="tns:IServiceProductoPresentacion_GuardaPresentacion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GuardaPresentacionResponse" message="tns:IServiceProductoPresentacion_GuardaPresentacion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPesoByIdPresentacion">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GetPesoByIdPresentacion" message="tns:IServiceProductoPresentacion_GetPesoByIdPresentacion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GetPesoByIdPresentacionResponse" message="tns:IServiceProductoPresentacion_GetPesoByIdPresentacion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MaxID">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/MaxID" message="tns:IServiceProductoPresentacion_MaxID_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/MaxIDResponse" message="tns:IServiceProductoPresentacion_MaxID_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllPresentacionesStockByProducto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GetAllPresentacionesStockByProducto" message="tns:IServiceProductoPresentacion_GetAllPresentacionesStockByProducto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/GetAllPresentacionesStockByProductoResponse" message="tns:IServiceProductoPresentacion_GetAllPresentacionesStockByProducto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ExistePeso">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/ExistePeso" message="tns:IServiceProductoPresentacion_ExistePeso_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProductoPresentacion/ExistePesoResponse" message="tns:IServiceProductoPresentacion_ExistePeso_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IServiceProductoPresentacion" type="tns:IServiceProductoPresentacion">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Insertar">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/Insertar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GuardarTransaccion">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/GuardarTransaccion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/Actualizar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Eliminar">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/Eliminar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/Delete" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateMM">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/UpdateMM" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExisteStock">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/ExisteStock" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Exists">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/Exists" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExisteCodigoBarra">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/ExisteCodigoBarra" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllFiltro">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/GetAllFiltro" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllByProducto">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/GetAllByProducto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSingle">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/GetSingle" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFactor">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/GetFactor" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetByProducto">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/GetByProducto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GuardaPresentacion">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/GuardaPresentacion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPesoByIdPresentacion">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/GetPesoByIdPresentacion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MaxID">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/MaxID" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllPresentacionesStockByProducto">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/GetAllPresentacionesStockByProducto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExistePeso">
+      <soap:operation soapAction="http://tempuri.org/IServiceProductoPresentacion/ExistePeso" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ServiceProductoPresentacion">
+    <wsdl:port name="BasicHttpBinding_IServiceProductoPresentacion" binding="tns:BasicHttpBinding_IServiceProductoPresentacion">
+      <soap:address location="http://localhost:4180/Producto_Presentacion/ServiceProductoPresentacion.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

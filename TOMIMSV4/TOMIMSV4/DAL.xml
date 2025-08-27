@@ -1,0 +1,1730 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+DAL
+</name>
+</assembly>
+<members>
+<member name="T:TOMWMS.My.Resources.Resources">
+<summary>
+  Clase de recurso fuertemente tipado, para buscar cadenas traducidas, etc.
+</summary>
+</member>
+<member name="P:TOMWMS.My.Resources.Resources.ResourceManager">
+<summary>
+  Devuelve la instancia de ResourceManager almacenada en caché utilizada por esta clase.
+</summary>
+</member>
+<member name="P:TOMWMS.My.Resources.Resources.Culture">
+<summary>
+  Reemplaza la propiedad CurrentUICulture del subproceso actual para todas las
+  búsquedas de recursos mediante esta clase de recurso fuertemente tipado.
+</summary>
+</member>
+<member name="M:TOMWMS.clsLnTablas_relacionadas.Get_All_Polizas_Parciales(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC202308211920: Devuelve el listado de polizas que están en la tmp_trans_pe_pol
+ con un número de órden y el número de órden existe en tabla (tablas_relacionadas) en el campo copoliza.
+ </summary>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnLog_error_wms.Get_All_By_Referencia_Documento(System.String)">
+ <summary>
+ #EJC202303011651
+ </summary>
+ <param name="pReferenciaDocumento"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnOperador_zona_picking_tramo.Get_All_By_IdZonaPicking(System.Int32)">
+ <summary>
+ #EJC20220601: Se utiliza para determinar si la zona de picking ya fue previamente asignada al operador.
+ </summary>
+ <param name="pIdZonaPickinng"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnResolucion_lp_usuario.Get_Nuevo_Correlativo_LP_BOF(TOMWMS.clsBeResolucion_lp_usuario@)">
+ <summary>
+ #EJC202404151348: Get nueva licencia por usuario (BOF).
+ </summary>
+ <param name="Resolucion_Usuario"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_jornada.Existe_Hash_Retroactivo_By_Fecha(System.String,System.DateTime,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20210519: Determinar si ya se generó el retroactivo para un día específico. :)
+ </summary>
+ <param name="pHash"></param>
+ <param name="pFecha"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_manufactura_enc.Insertar_Manufactura_Por_Defecto(TOMWMS.clsBeI_nav_ped_traslado_enc,TOMWMS.clsBeTrans_pe_enc,TOMWMS.clsBeI_nav_config_enc)">
+ <summary>
+ #EJC202404020635: Inserta la transacción de manufactura después de que se inserta el pedido de SAP.
+ </summary>
+ <param name="INavPedidoCliente"></param>
+ <param name="BePedidoEncResult"></param>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsLnTransUbicSugerida2.clsBeTramosUSStage1.Ubicaciones_Vacias">
+ <summary>
+ Cantidad de posiciones vacías.
+ </summary>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTransUbicSugerida2.Get_All_Tramos_With_The_Product(System.Int32,System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Devuelve el listado de tramos que contienen stock del producto solicitado.
+ </summary>
+ <param name="pIdProductoBodega"></param>
+ <param name="pIdBodega"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTransUbicSugerida2.Get_Niveles_Y_Columnas_Ocupadas_By_IdBodega_And_IdTramo(System.Int32,System.Int32,TOMWMS.clsLnTransUbicSugerida2.clsBeTramosUSStage1,System.String,System.DateTime,System.Int32,System.Int32,System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20200422: Busco obtener las columnas y niveles ocupadasd por el producto
+ Tomando en cuenta que deben de cumplir algunas de las características 
+ que hicieron coincidir el tramo, pej. Lote, Vence, UmBas, Pres, Estado
+ El objetivo es identificar las posiciones vacías mas cercanas al "mismo" producto.
+ </summary>
+ <param name="pIdBodega"></param>
+ <param name="pIdTramo"></param>
+ <param name="pFitParams"></param>
+ <param name="Lote"></param>
+ <param name="FechaVence"></param>
+ <param name="IdUmBas"></param>
+ <param name="IdPres"></param>
+ <param name="IdProductoEstado"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_oc_det_lote.Get_By_IdOrdenCompraEnc(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20220413: Obtener los lotes activos de la oc_det_lote.
+ </summary>
+ <param name="IdOrdenCompraEnc"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_reabastecimiento_log.Eliminar_By_IdRellenado(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Carolina Fuentes
+ </summary>
+ <param name="pIdRellenado"></param>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <remarks></remarks>
+ 
+</member>
+<member name="M:TOMWMS.clsLnI_nav_transacciones_out.Actualizar_Estado_Enviado(System.Collections.Generic.List{TOMWMS.clsBeI_nav_transacciones_out}@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20240917: Actualizar cantidad_enviada,cantidad_pendiente, además de la bandera enviado By IdTransacción.
+ </summary>
+ <param name="loBeI_nav_transacciones_out"></param>
+ <param name="pConection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnI_nav_transacciones_out.Actualizar_Registro_Procesado_By_No_Referencia_ERP_Almacenaje(System.String,System.Boolean,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20211004: Funcionalidad para actualizar la bandera no_documento_procesado_erp en el registro de stock_jornada 
+ CEALSA
+ #CKFK20220517 Corregido porque los parámetros estaban incorrectos
+ </summary>
+ <param name="No_Documento_Procesado_ERP"></param>
+ <param name="pEnviado"></param>
+ <param name="pConection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnI_nav_transacciones_out.Actualizar_Registro_Procesado_By_No_Referencia_ERP_Servicios(System.String,System.Boolean,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #CKFK20220517 Creada nuevamente por que se habia perdido
+ CEALSA 
+ </summary>
+ <param name="No_Documento_Procesado_ERP"></param>
+ <param name="pEnviado"></param>
+ <param name="pConection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnI_nav_transacciones_out.Get_All_Despachos_Pendientes_De_Envio_By_No_Pedido_And_IdTipoDocumento(TOMWMS.clsDataContractDI.tTipoDocumentoSalida,System.String)">
+ <summary>
+ Requerida por Tzirin en IDEALSA
+ #EJC20211105
+ </summary>
+ <param name="pIdTipoDocumento"></param>
+ <param name="pNoPedido"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnI_nav_transacciones_out.Get_Lotes_Ingreso_Pendientes_Envio(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #CKFK20241021: Se utiliza en la interface SAP Becofarma, para enviar entrega de mercancía a orden de compra.
+ </summary>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnI_nav_transacciones_out.Get_Lotes_Ingreso_Pendientes_Envio_K(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #CKFK20241021: Se utiliza en la interface SAP KILLIOS - GARESA, para enviar entrega de mercancía a orden de compra.
+ </summary>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_inv_ciclico.Get_All_By_Comparacion_Inventario(System.Int32)">
+ <summary>
+ #EJC20241202: Agregué transacción, lote, estado, ubicación.
+ </summary>
+ <param name="pIdInv"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_inv_ciclico.Get_All_By_IdInventarioEnc(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20240827: El día que teco temió
+ </summary>
+ <param name="pIdInvEnc"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_inv_stock_prod.Get_All_By_Codigo_O_Licencia(System.Int32,System.String,System.Int32)">
+ <summary>
+ ·EJC20220502: Obtener el inv. teòrico a partir de una licencia o còdigo.
+ </summary>
+ <param name="pIdInventario"></param>
+ <param name="pCodigo"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnI_nav_ped_traslado_enc.Actualizar_Estado(TOMWMS.clsBeI_nav_ped_traslado_enc@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC202301242213:Actualizar estado a importado.
+ </summary>
+ <param name="oBeI_nav_ped_traslado_enc"></param>
+ <param name="pConection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnCliente.Insertar(TOMWMS.clsBeCliente@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Insertars the specified o be cliente.
+ </summary>
+ <param name="oBeCliente">The o be cliente.</param>
+ <param name="pConection">The p conection.</param>
+ <param name="pTransaction">The p transaction.</param>
+ <returns></returns>
+ <exception cref="T:System.Exception"></exception>
+</member>
+<member name="M:TOMWMS.clsLnCliente.Actualizar(TOMWMS.clsBeCliente@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Actualizars the specified o be cliente.
+ </summary>
+ <param name="oBeCliente">The o be cliente.</param>
+ <param name="pConection">The p conection.</param>
+ <param name="pTransaction">The p transaction.</param>
+ <returns></returns>
+ <exception cref="T:System.Exception"></exception>
+</member>
+<member name="M:TOMWMS.clsLnCliente.MaxID">
+ <summary>
+ Maximums the identifier for a new costumer.
+ </summary>
+ <returns></returns>
+ <exception cref="T:System.Exception"></exception>
+</member>
+<member name="M:TOMWMS.clsLnCliente.Get_IdBodega_By_Codigo(System.String,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC202401311242:Obtener un cliente que se corresponda con la bodega destino de SAP.
+ </summary>
+ <param name="Codigo_Bodega"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnHorario_laboral_enc.Listar(System.Boolean)">
+ <summary>
+ 'FUncion que devuelve todos los horarios
+ </summary>
+ <param name="pActivo"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnProducto_presentacion.Get_All_Stock_Con_Presentacion_By_IdProducto(System.Int32)">
+ <summary>
+ Obtiene las presentaciones disponibles en stock
+ </summary>
+ <param name="pIdProductoBodega">IdProducto</param>
+ <returns>Lista de presentaciones clsBeProducto_presentacion</returns>
+ <remarks>ejcalderon_20160516</remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto_presentacion.Get_All_Presentacion_By_IdProductoBodega(System.Int32)">
+ <summary>
+ Obtiene las presentaciones disponibles en stock
+ </summary>
+ <param name="pIdProductoBodega">IdProducto</param>
+ <returns>Lista de presentaciones clsBeProducto_presentacion</returns>
+ <remarks>ejcalderon_20160516</remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto_presentacion.Existe_Presentacion_By_Codigo(System.Int32,System.String,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC20220630: Se busca la presentación por código de presentación no por código_barra
+ </summary>
+ <param name="pIdProducto"></param>
+ <param name="pCodigo"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnProducto_presentacion.UpdateMM(TOMWMS.clsBeProducto_Presentacion)">
+ <summary>
+ Creado por Erik Calderón
+ Actualiza Minimos y Maximos cuando la presentacion del producto aun tiene stock
+ </summary>
+ <param name="pObjP"></param>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnRol.ExistePermiso(System.String,System.Int32)">
+ <summary>
+ Verifica si una opcion de menu de sistema ya existe en el menu de Rol
+ </summary>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsServidor.HoraServivdor">
+ <summary>
+ Creada por Ricardo Garcìa
+ </summary>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsServidor.ExisteBaseDatos(System.String)">
+ <summary>
+ Creada por Ricardo Garcìa
+ </summary>
+ <param name="pNombreBaseDatos"></param>
+ <returns></returns>
+</member>
+<member name="T:TOMWMS.clsLnArancel">
+ <summary>
+ Class clsLnArancel. Logic of Arancel
+ </summary>
+</member>
+<member name="M:TOMWMS.clsLnArancel.Eliminar(TOMWMS.clsBeArancel@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Eliminars the specified o be arancel.
+ </summary>
+ <param name="oBeArancel">The o be arancel.</param>
+ <param name="pConection">The p conection.</param>
+ <param name="pTransaction">The p transaction.</param>
+ <returns>Number of rows afected</returns>
+ <exception cref="T:System.Exception"></exception>
+</member>
+<member name="M:TOMWMS.clsLnBodega_area.GetAllByAreaBodega(System.Boolean,System.Int32)">
+ <summary>
+ Funcion para obtener una lista de Areas filtradas por un ID BODEGA
+ </summary>
+ <param name="pActivo"></param>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+ <remarks>Bcuscul</remarks>
+</member>
+<member name="M:TOMWMS.clsLnBodega_area.Get_All_Areas_By_IdBodega(System.Int32,System.Int32)">
+ <summary>
+ Funcion que devuelve Datatable las areas filtradas por un IDBODEGA
+ Recibe filtro por area desde algunos metodos, por eso es Optional
+ </summary>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+ <remarks>Bcuscul</remarks>
+</member>
+<member name="M:TOMWMS.clsLnBodega.Get_IdUbicacion_Recepcion_By_IdBodega(System.Int32)">
+ <summary>
+ #EJC20220419: Obtiene el IdUbicacionRecepción por defecto de la bodega.
+ </summary>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnBodega.Get_All_By_IdEmpresa_And_IdUsuario_DT(System.Int32,System.Int32)">
+ <summary>
+ #EJC20231203: Por favor, no tocar esta función, a menos que tengan un indulto presidencial de Fidel.
+ </summary>
+ <param name="IdEmpresa"></param>
+ <param name="IdUsuario"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnBodega.Get_Permitir_Decimales(System.Int32,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC202309111442: Obtiene el parámetro que indica si la bodega permite documentos en decimales o no.
+ </summary>
+ <param name="pIdBodega"></param>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnBodega_sector.GetSingle(System.Int32,System.Int32)">
+ <summary>
+ Funcion que me devuelte un Sector y recibe como parametro un IDSECTOR
+ </summary>
+ <param name="pIdSector"></param>
+ <returns></returns>
+ <remarks>Bcuscul</remarks>
+</member>
+<member name="M:TOMWMS.clsLnBodega_sector.Get_All_By_IdArea_And_IdBodega(System.Boolean,System.Int32,System.Int32)">
+ <summary>
+ Funcion que me devuelve todos los sectores recibe como parametros si son Activos o No, y un IDAREA
+ </summary>
+ <param name="pActivo"></param>
+ <param name="pIdArea"></param>
+ <returns></returns>
+ <remarks>Bcuscul</remarks>
+</member>
+<member name="M:TOMWMS.clsLnBodega_sector.Get_All_Sector_By_Area_And_IdBodega(System.Int32,System.Int32)">
+ <summary>
+ Funcion que me devuelve en una tabla todos los sectores recibe como parametro un id Area
+ </summary>
+ <param name="pIdArea"></param>
+ <returns></returns>
+ <remarks>Bcuscul</remarks>
+</member>
+<member name="M:TOMWMS.clsLnBodega_ubicacion.Get_All_Ubicaciones_By_IdTramo_And_IdBodega(System.Boolean,System.Int32,System.Int32)">
+ <summary>
+ 'Funcion que me devuelve una lista de objetos de tipo clsBeBodega_ubicacion
+ </summary>
+ <param name="pActivo">filtra las ubicaciones que sean activas y que pertenezcan a un PidTramo</param>
+ <param name="pIdTramo"></param>
+ <returns>retorna una lista de objetos de tipo clsBeBodega_ubicacion</returns>
+ <remarks>Bcuscul 13052016</remarks>
+</member>
+<member name="M:TOMWMS.clsLnBodega_ubicacion.Get_All_By_IdBodega(System.Boolean,System.Int32,System.String)">
+ <summary>
+ Función que regresa una lista de ubicaciones para la seleccion, inicialmente se hizo para seleccionar en producto estado
+ CREADA POR Erik Calderón
+ Fue modificada por Bcuscul se agrego el parametro tipo de Ubicacion para saber de que tipo de ubicacion 
+ se quiere filtrar 
+ #CKFK20230427 quité las relaciones con tramo, sector y bodega porque ya no son necesarias y porque el inner join estaba incorrecto
+ y no se aplicaba correctamente el filtro por bodega
+ </summary>
+ <param name="pActivo"></param>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnBodega_ubicacion.Get_All_Ubicaciones_By_IdTramo_And_IdBodega(System.Int32,System.Int32,System.String,System.Int32,System.Int32)">
+ <summary>
+ 'Funcion creada para filtrar las ubicacines dependiendo del tipo que sean 
+ </summary>
+ <param name="pIdTramo">Id Tramo, nombreCampo(para seleccionar las ubicaciones de tipo recepcion, despacho,picking,merma, Activo</param>
+ <param name="NombreCampo"></param>
+ <param name="Activo"></param>
+ <returns></returns>
+ <remarks>Bcuscul/Ejcalderon</remarks>
+</member>
+<member name="M:TOMWMS.clsLnBodega_ubicacion.GetSingle(System.Int32,System.Int32,System.String,System.Boolean,System.Int32)">
+ <summary>
+ 'Funcion que me trae una sola ubicacion
+ </summary>
+ <param name="pIdUbicacion">el parametro que espera la funcion es pIdUbicacion</param>
+ <returns>retorna un objeto de tipo clsBeBodega_ubicacion</returns>
+ <remarks>Bcuscul13052016</remarks>
+</member>
+<member name="M:TOMWMS.clsLnCliente_direccion.GetSingle(System.Int32,System.Int32)">
+ <summary>
+ 
+ </summary>
+ <param name="IdCliente"></param>
+ <param name="IdDireccion"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnOperador_bodega.Get_All_Operador_For_Picking_By_IdBodega(System.Int32)">
+ <summary>
+ #EJC20220611:Obtener los operadores que pueden hacer picking.
+ </summary>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnProducto_presentacion_tarima.MaxID">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto_presentacion_tarima.MaxID(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto_presentacion_tarima.GetSingle(System.Int32)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pIdPresentacionTarima"></param>
+ <returns>Devuelve solamente un registro</returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto_presentacion_tarima.GetAllByPresentacion(System.Boolean)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pActivo"></param>
+ <returns>Devuelve una lista de rellenados segun la presentacion</returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto_rellenado.MaxID">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto_rellenado.MaxID(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto_rellenado.GetSingle(System.Int32)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pIdRellenado"></param>
+ <returns>Devuelve solamente un registro</returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto_rellenado.GetAllByPresentacion(System.Int32,System.Boolean)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pIdPresentacion"></param>
+ <param name="pActivo"></param>
+ <returns>Devuelve una lista de rellenados segun la presentacion</returns>
+ <remarks></remarks>
+ '#CM20172310_0522PM: Corrección de String.Format en Producto_rellenado
+</member>
+<member name="M:TOMWMS.clsLnTrans_tras_enc.MaxID">
+ <summary>
+ Funcion obtiene el nuevo indice de transaccion.
+ </summary>
+ <returns>Nuevo ID A utilizar para la transaccion</returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnTrans_tras_enc.ListarTraslados(System.Boolean,System.String)">
+ <summary>
+ Funcion que muestra todos los translado
+ Filtrado por si esta activo o desactivado 
+ y por nombre en especifico
+ </summary>
+ <param name="pActivo">Parametro para definir si dsea mostrar las transacciones activas o eliminadas</param>
+ <param name="pFiltro">Buscar en la lista por este nombre  y los filtra</param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnVW_Despacho_Rep.Get_Ultimo_Lote_By_IdCliente(System.Int32,System.Int32)">
+ <summary>
+ #EJC20190313: Devuelve el último lote despachado para un cliente  y producto.
+ </summary>
+ <param name="pIdCliente">Id de cliente</param>
+ <param name="pIdProductoBodega">Id de producto</param>
+ <returns>El número de lote</returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_despacho_det.MaxID(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_despacho_det.Get_All_By_Despacho(System.Int32)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pIdDespachoEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_despacho_enc.MaxID(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_despacho_enc.GetAll(System.Boolean,System.DateTime,System.DateTime)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pActivo"></param>
+ <param name="pFechaDel"></param>
+ <param name="pFechaAl"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_despacho_enc.GetAllByIdBodega(System.Boolean,System.DateTime,System.DateTime,System.Int32)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pActivo"></param>
+ <param name="pFechaDel"></param>
+ <param name="pFechaAl"></param>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_despacho_enc.Anular_Despacho(System.Int32)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pIdDespachoEnc"></param>
+</member>
+<member name="M:TOMWMS.clsLnTrans_despacho_enc.Guardar_Despacho_Stock(TOMWMS.clsBeTrans_despacho_enc,TOMWMS.clsBeI_nav_config_enc,TOMWMS.clsBeTrans_oc_enc@,System.Boolean,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC20190312: EAT
+ Generar pedido de compa a partir de un despacho para una bodega interna del WMS configurada en el sistema.
+ </summary>
+ <param name="BeDespachoEnc"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+</member>
+<member name="M:TOMWMS.clsLnTrans_despacho_enc.Guarda_Trans_Despacho_Stock_Restar_Origen(TOMWMS.clsBeTrans_despacho_enc@,TOMWMS.clsBeI_nav_config_enc,System.Int32,System.Int32,System.Int32,System.Boolean,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC20220428: Se elimina del stock porque se transfiere a otra bodega
+ </summary>
+ <param name="BeDespachoEnc"></param>
+ <param name="BeInterfaceConfig"></param>
+ <param name="pIdOrdenCompraEnc"></param>
+ <param name="pIdRecepcionEncDestino"></param>
+ <param name="pIdPedidoEnc"></param>
+ <param name="AllowNegativeExceptionOnStock"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+</member>
+<member name="M:TOMWMS.clsLnTrans_despacho_enc.Guarda_Trans_Despacho_Stock_Transito_Destino(TOMWMS.clsBeTrans_pe_enc@,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Boolean,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC20220428: El stock no se elimina, se mueve a ubicación de tránsito.
+ </summary>
+ <param name="BePedidoEnc"></param>
+ <param name="pIdOrdenCompraEnc"></param>
+ <param name="pIdRecepcionEnc"></param>
+ <param name="pIdDespachoEnc"></param>
+ <param name="pIdEmpresa"></param>
+ <param name="pIdBodega"></param>
+ <param name="AllowNegativeExceptionOnStock"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+</member>
+<member name="M:TOMWMS.clsLnTrans_despacho_enc.Guarda_Trans_Despacho_Stock_AreaWMS_To_SAP(TOMWMS.clsBeTrans_pe_enc@,TOMWMS.clsBeTrans_despacho_enc,TOMWMS.clsBeI_nav_config_enc,System.Int32,System.Int32,System.Boolean,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC20240525: Traslado SAP 2
+ </summary>
+ <param name="BePedidoEnc"></param>
+ <param name="BeDespachoEnc"></param>
+ <param name="BeConfigEnc"></param>
+ <param name="pIdEmpresa"></param>
+ <param name="pIdBodega"></param>
+ <param name="AllowNegativeExceptionOnStock"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+</member>
+<member name="M:TOMWMS.clsLnTransacciones_log.Delete_By_Producto(TOMWMS.clsBeTransacciones_log,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="oBeTransacciones_log"></param>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <remarks></remarks>
+ 
+</member>
+<member name="M:TOMWMS.clsLnTransacciones_log.Posponer(System.Collections.Generic.List{TOMWMS.clsBeTransacciones_log})">
+ <summary>
+ Creado por Ricardo García
+ </summary>
+ <param name="pObjListT"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="T:TOMWMS.dsUbicSug">
+<summary>
+Represents a strongly typed in-memory cache of data.
+</summary>
+</member>
+<member name="T:TOMWMS.dsUbicSug.UbicOrdDataTable">
+<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member>
+<member name="T:TOMWMS.dsUbicSug.UbicSortDataTable">
+<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member>
+<member name="T:TOMWMS.dsUbicSug.UbicTempDataTable">
+<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member>
+<member name="T:TOMWMS.dsUbicSug.TramoVolDataTable">
+<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member>
+<member name="T:TOMWMS.dsUbicSug.UbicOrdRow">
+<summary>
+Represents strongly named DataRow class.
+</summary>
+</member>
+<member name="T:TOMWMS.dsUbicSug.UbicSortRow">
+<summary>
+Represents strongly named DataRow class.
+</summary>
+</member>
+<member name="T:TOMWMS.dsUbicSug.UbicTempRow">
+<summary>
+Represents strongly named DataRow class.
+</summary>
+</member>
+<member name="T:TOMWMS.dsUbicSug.TramoVolRow">
+<summary>
+Represents strongly named DataRow class.
+</summary>
+</member>
+<member name="T:TOMWMS.dsUbicSug.UbicOrdRowChangeEvent">
+<summary>
+Row event argument class
+</summary>
+</member>
+<member name="T:TOMWMS.dsUbicSug.UbicSortRowChangeEvent">
+<summary>
+Row event argument class
+</summary>
+</member>
+<member name="T:TOMWMS.dsUbicSug.UbicTempRowChangeEvent">
+<summary>
+Row event argument class
+</summary>
+</member>
+<member name="T:TOMWMS.dsUbicSug.TramoVolRowChangeEvent">
+<summary>
+Row event argument class
+</summary>
+</member>
+<member name="M:TOMWMS.clsLnTrans_pe_det.Get_All_Stock_Res_By_IdPedidoEnc(System.Int32,System.Boolean,System.Boolean,System.Boolean,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC202508111059: Este query se debe unificar.
+ </summary>
+ <param name="pIdPedidoEnc"></param>
+ <param name="PendientesDeDespacho"></param>
+ <param name="EsPickingNuevo"></param>
+ <param name="EsPicking"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_pe_enc.GetSingle(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20200125: Se utiliza en I_Nav_Transacciones_Out para interface MI3.
+ </summary>
+ <param name="pIdPedidoEnc"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_pe_enc.Get_Single_By_IdPedidoEnc(System.Int32)">
+ <summary>
+ #EJC20200125: Utilizado en la HH, se cambió a vista para mejorar el rendimiento.
+ </summary>
+ <param name="pIdPedidoEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_pe_enc.DespacharPedido(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pIdPedidoEnc"></param>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+</member>
+<member name="M:TOMWMS.clsLnTrans_pe_enc.Actualizar_Referencia_By_IdPedidoEnc(System.String,System.Int32)">
+ <summary>
+ Actualiza el número de documento del ERP en un pedido despachado desde WMS 
+ Se utiliza cuando el pedido fue creado en WMS y procesado posteriormente en el ERP.
+ Actualiza también los registros en la tabla I_NAV_TRANSACCIONES_OUT
+ </summary>
+ <param name="pReferencia"></param>
+ <param name="pIdPedidoEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_pe_enc.Get_No_Contenedor_Ingreso(TOMWMS.clsBeTrans_pe_enc,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20240522: Obtiene el número de contenedor en base al IdRecepcionEnc del primer IdStockRes
+ Realizado para cuando se transfiera producto de la bodega origen de WMS, para la bodega destino también de WMS
+ Y se mapee el No. de contenedor origen en la bodega destino para no perder la trazabilidad.
+ </summary>
+ <param name="BePedidoEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_pe_enc.Get_Single_By_IdPedidoEnc_And_Codigo_Producto(System.Int32,System.String)">
+ <summary>
+ #CKFK20250225: Utilizado en la HH, se cambió para filtrar solo por el pedido y el producto
+ </summary>
+ <param name="pIdPedidoEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnMotivo_devolucion.GetSingle(System.Int32)">
+ <summary>
+ Funcion utizada para regresar un registro de la tabla segun parámetro
+ </summary>
+ <param name="pIdMotivoDevolucion"></param>
+ <returns name = "Regresa un objeto de tipo de la tabla motivo_devolucion"></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnMotivo_devolucion.GetAllFiltro(System.Boolean)">
+ <summary>
+ Función utilizada para regresar una lista de Motivos Devolución
+ </summary>
+ <param name="pActivo"></param>
+ <returns name ="Reresa una lista de registros de la tabla motivo_devolucion"></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnMotivo_devolucion.Delete(System.Int32,System.Int32)">
+ <summary>
+ Procedimiento para eliminar definitivamente un motivo devolucion segun el Propietario
+ </summary>
+ <param name="pIdEmpresa"></param>
+ <param name="pIdPropietario"></param>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnMotivo_devolucion.Exists(System.Int32)">
+ <summary>
+ Función utilizada para validar si existe el motivo devolución
+ </summary>
+ <param name="pIdMotivoDevolucion"></param>
+ <returns name = "Regresa verdadero si existe de lo contrario falso"></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnMotivo_devolucion.MAXID">
+ <summary>
+ Función utilizada para saber cual es el valor máximo de la tabla motivo_devolucion
+ </summary>
+ <returns name = "Regresa el valor máximo + 1 de la tabla motivo_devolucion"></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto.Actualizar_Control_Peso(TOMWMS.clsBeProducto@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC2020502: Actualizar el control peso de un producto.
+ </summary>
+ <param name="oBeProducto"></param>
+ <param name="pConection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnProducto.Actualizar_Control_Vencimiento(TOMWMS.clsBeProducto@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20240512: Actualizar el control lote de un producto.
+ </summary>
+ <param name="oBeProducto"></param>
+ <param name="pConection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnProducto.Get_Minimos_y_Maximos_By_IdProducto(System.Int32)">
+ <summary>
+ Funcion que me trae el minimo y el maximo de los productos Recibe como parametro un id de producto DataTable para Reporte
+ </summary>
+ <param name="pIdProducto"></param>
+ <returns></returns>
+ <remarks>Bcuscul Jun2016</remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto.Get_All_Producto(System.Boolean)">
+ <summary>
+ Se utiliza para desplegar el listado de productos en la pantalla de "Lista de productos"
+ </summary>
+ <param name="pActivo">"</param>
+ <returns>List(Of clsBeProducto)</returns>
+</member>
+<member name="M:TOMWMS.clsLnProducto.Get_IdProductoBodega_By_Codigo(System.String)">
+ <summary>
+ Obtiene el IdProductoBodega a partir de cualquiera de sus códigos asociados.
+ </summary>
+ <param name="pCodigo">Código de producto, Código de Barra en Producto, Código de barra en producto_codigos_barra </param>
+ <returns>IdProductoBodega de la tabla producto_bodega donde Activo = 1</returns>
+ <remarks>ejcalderon_201605166</remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto.Get_BeProducto_By_Codigo(System.String,System.Int32)">
+ <summary>
+ Busca un producto por su código, pero ademas el IdProductoBodega por bodega.
+ Se utiliza para buscar un producto en el proceso de digitación del detalle del pedido.
+ </summary>
+ <param name="pCodigo">Código a traves del cuál se busca el producto</param>
+ <param name="IdBodega">IdBodega por el cual se busca el producto</param>
+ <returns>devuelve un objeto del tipo clsBeProducto</returns>
+ <remarks>ejcalderon_20160519</remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto.Get_BeProducto_By_Codigo(System.String,System.Int32,System.Int32)">
+ <summary>
+ Creé una copia de esta función para agregar filtro por IdPropietario
+ Busca un producto por su código, pero ademas el IdProductoBodega por bodega.
+ Se utiliza para buscar un producto en el proceso de digitación del detalle del pedido.
+ </summary>
+ <param name="pCodigo">Código a traves del cuál se busca el producto</param>
+ <param name="IdBodega">IdBodega por el cual se busca el producto</param>
+ <returns>devuelve un objeto del tipo clsBeProducto</returns>
+ <remarks>ejcalderon_20160519</remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto.Guardar_Transaccion(System.Collections.Generic.List{TOMWMS.clsBeProducto}@,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ Creado por Ricardo García
+ </summary>
+ <param name="pListObjP"></param>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto.Desactivar(TOMWMS.clsBeProducto)">
+ <summary>
+ Creado por Ricardo García
+ </summary>
+ <param name="pObjP"></param>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto.Guardar(TOMWMS.clsBeProducto,System.Collections.Generic.List{TOMWMS.clsBeProducto_parametros},System.Collections.Generic.List{TOMWMS.clsBeProducto_codigos_barra},System.Collections.Generic.List{TOMWMS.clsBeProducto_Presentacion},System.Collections.Generic.List{TOMWMS.clsBeProducto_sustituto},System.Collections.Generic.List{TOMWMS.clsBeProducto_rellenado},System.Collections.Generic.List{TOMWMS.clsBeProducto_presentacion_tarima},System.Collections.Generic.List{TOMWMS.clsBeProducto_bodega},System.Collections.Generic.List{TOMWMS.clsBeProducto_presentaciones_conversiones},System.Collections.Generic.List{TOMWMS.clsBeProducto_kit_composicion},System.Collections.Generic.List{TOMWMS.clsBeProducto_imagen})">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pObjP"></param>
+ <param name="pListObjPR"></param>
+ <param name="pListObjCB"></param>
+ <param name="pListObjP"></param>
+ <param name="pListObjPS"></param>
+ <param name="pListObjPRE"></param>
+ <param name="pListObjPPT"></param>
+ <param name="pListObjCN"></param>
+ <remarks></remarks>
+ 
+</member>
+<member name="M:TOMWMS.clsLnProducto.Get_Single_By_Codigo_And_Codigo_Barra(System.String)">
+ <summary>
+ #EJC20240119: Creada para grid de recepción de becofarma para buscar por código o código de barra.
+ </summary>
+ <param name="pCodigoProducto"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnProducto.Get_IdProductoBodega_By_Codigo(System.String,System.Int32)">
+ <summary>
+ #EJC202470215118: Para recepción por BOF.
+ </summary>
+ <param name="pCodigo"></param>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnProducto.Get_BeProducto_By_Codigo_Or_Licencia(System.String,System.Int32)">
+ <summary>
+ Busca un producto por código o por licencia.
+ </summary>
+ <param name="pCodigo">Código o Licencia a traves del cuál se busca el producto</param>
+ <param name="IdBodega">IdBodega por el cual se busca el producto</param>
+ <returns>devuelve un objeto del tipo clsBeProducto</returns>
+ <remarks>ejcalderon_20160519</remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto.Get_BeProducto_By_Codigo_And_IdPropietario(System.String,System.Int32,System.Int32)">
+ <summary>
+ Creé una copia de esta función para agregar filtro por IdPropietario
+ Busca un producto por su código, pero es una función más liviana
+ </summary>
+ <param name="pCodigo">Código a traves del cuál se busca el producto</param>
+ <param name="IdBodega">IdBodega por el cual se busca el producto</param>
+ <param name="IdPropietario">IdPropietario por el cual se busca el producto</param>
+ <returns>devuelve un objeto del tipo clsBeProducto</returns>
+ <remarks>CKFK20241016</remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto_codigos_barra.Desactivar(System.Int32,System.Int32,System.String)">
+ <summary>
+ Desactivar el codigo de barra
+ </summary>
+ <param name="pIdProducto"></param>
+ <param name="pIdProveedor"></param>
+ <param name="pCodigoBarra"></param>
+ <remarks>Erik Calderón</remarks>
+</member>
+<member name="M:TOMWMS.clsLnProducto_estado.BismarckFunction">
+<summary>
+ Función creada por Bismarck
+ </summary>
+</member>
+<member name="M:TOMWMS.clsLnPropietario_bodega.Get_All_By_Empresa_For_Combo(System.Int32)">
+ <summary>
+ For TMS By Erik C On 20210124
+ </summary>
+ <param name="IdEmpresa"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_oc_det.Actualizar_Cantidad(TOMWMS.clsBeTrans_oc_det@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20220314: Para byb, en la orden de producci�n sumar la cantidad a la l�nea en UMBAS.
+ </summary>
+ <param name="oBeTrans_oc_det"></param>
+ <param name="pConection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_oc_det.Get_All_By_IdOrdenCompraEnc(System.Int32)">
+ <summary>
+ Creada por Erik Calderón
+ </summary>
+ <param name="pIdOrdenCompraEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_oc_det.Get_All_By_IdOrdenCompraEnc(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20210613: Get_Det_OC With transaction
+ </summary>
+ <param name="pIdOrdenCompraEnc"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_oc_det.Get_Single_By_IdOrdenCompraEnc_And_IdProductoBodega(System.Int32,System.Int32,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC20220314: Obtiene el detalle del documento de ingreso (sin presentación), se utiliza en BYB, órden de producción.
+ Para saber si se tiene que insertar una línea adicional en UMBAS o NO.
+ </summary>
+ <param name="IdOrdenCompraEnc"></param>
+ <param name="IdProductoBodega"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_oc_det.Get_Detalle_OC_By_IdOrdenCompraEnc_HH(System.Int32,System.Int32)">
+ <summary>
+ #EJC202209211051: Utilizar en el futuro para recargar una línea del D.I. 
+ en la HH pero se debe modificar la HH para que actualice la lista en el índice de la línea de la ocdet.
+ </summary>
+ <param name="pIdOrdenCompraEnc"></param>
+ <param name="pIdOrdenCompraDet"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_oc_enc.Set_Estado_Anulado_OC(System.Int32,System.Int32,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ Creada por Erik Calderón
+ </summary>
+ <param name="pIdOrdenCompraEnc"></param>
+</member>
+<member name="M:TOMWMS.clsLnTrans_oc_enc.Actualizar_Estado_Cerrada(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ El Estado 4 es CERRADA para las Ordenes de Compra (Ver tabla trans_oc_estado)
+ </summary>
+ <param name="pIdOrdenCompraEnc"></param>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>    
+</member>
+<member name="M:TOMWMS.clsLnTrans_oc_enc.Registros_Pendientes_Push(System.Int32)">
+ <summary>
+ #CKFK20220308: Validar si la OC tiene registros pendientes de push.
+ </summary>
+ <param name="pIdOrdenCompraEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_oc_enc.Get_BeTransOcEnc_By_IdOrdenCompraEnc(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC202309261356: Se utiliza en la interface de SAP para becofarma, obtiene el objeto de la orden de compra con todo su detalle.
+ </summary>
+ <param name="pIdOrdenCompra"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_oc_enc.Duplicar(System.Int32,System.Int32)">
+ <summary>
+ #CKFK+EJC20240217: Duplica un documento de ingreso, retorna el IdOrdenCompraEnc generado.
+ </summary>
+ <param name="pIdOrdenCompraEnc"></param>
+ <param name="pIdUsuario"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_picking_det_parametros.Guardar(System.Collections.Generic.List{TOMWMS.clsBeTrans_picking_det_parametros})">
+ <summary>
+  Creada por Carlos Manuel - Guarda y actualiza el proceso de Parametros    
+ </summary>
+ <param name="lParametros"></param>
+</member>
+<member name="M:TOMWMS.clsLnTrans_picking_enc.Get_All_Detalle_By_Pedido(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20221005_1722: Corrección, optimización y mejora en Query Para obtener los picking activos por pedido.
+ </summary>
+ <param name="pIdPedidoEnc"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_picking_enc.Actualizar_PickingEnc_Procesado_Andr(System.Int32,System.Int32,System.String,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC20220614: Simplificación de método para Android.
+ </summary>
+ <param name="pIdPickingEnc"></param>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_picking_enc.Get_Rpt_Productividad_Picking_By_IdBodega(System.DateTime,System.DateTime,System.Int32)">
+ <summary>
+ #EJC20250313: Productividad picking creado para la cumbre.
+ </summary>
+ <param name="pFechaDel"></param>
+ <param name="pFechaAl"></param>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_picking_ubic.MaxID(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_picking_ubic.Get_Single_By_IdStock(System.Int32,System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20220330: Obtener el registro de picking por IdStock y Bodega asociado para actualizar el IdUbicacionVirtual
+ </summary>
+ <param name="IdStock"></param>
+ <param name="IdBodega"></param>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_re_det.Get_Detalle_By_IdRecepcionDet_HH(System.Int32,System.Int32,System.Int32,System.Int32)">
+ <summary>
+ Creada por Carolina Fuentes para obtener todos los registros de detalle de la recepción de un producto en una recepción
+ Modificada por Carolina Fuentes para obtener todos los registros de detalle de la recepción de un producto, de una línea,
+ de un IdOrdenCompraDet en una recepción
+ </summary>
+ <param name="pIdRecepcionEnc"></param>
+ <param name="pIdProductoBodega"></param>
+ <param name="pNoLinea"></param>
+ <param name="pIdOrdenCompraDet"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_re_det.Get_All_By_IdRecepcionEnc_Sin_OC(System.Int32)">
+ <summary>
+ Creada por Carolina Fuentes
+ </summary>
+ <param name="pIdRecepcionEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_re_det.GetAllByOrdenCompraRec(System.Int32)">
+ <summary>
+ Creada por Carlos Manuel
+ </summary>
+ <param name="pIdOrdenCompraEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_re_det.Guarda_Trans_re_det(System.Collections.Generic.List{TOMWMS.clsBeTrans_re_det},System.Collections.Generic.List{TOMWMS.clsBeStock_rec}@,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC202209211314: Concurrencia y copias de stock.
+ </summary>
+ <param name="pListRecDet"></param>
+ <param name="pListaStockRec"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+</member>
+<member name="M:TOMWMS.clsLnTrans_re_enc.GuardarHH(TOMWMS.clsBeTrans_re_enc,TOMWMS.clsBeTrans_re_oc,System.Collections.Generic.List{TOMWMS.clsBeTrans_re_det},System.Collections.Generic.List{TOMWMS.clsBeTrans_re_det_parametros},System.Collections.Generic.List{TOMWMS.clsBeStock_se_rec},System.Collections.Generic.List{TOMWMS.clsBeStock_rec},System.Collections.Generic.List{TOMWMS.clsBeProducto_pallet},TOMWMS.clsBeTrans_oc_det_lote,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+ <summary>
+ AT20220921 Recibir cantidad de copias.
+ </summary>
+ <param name="pRecEnc"></param>
+ <param name="pRecOrdenCompra"></param>
+ <param name="pListRecDet"></param>
+ <param name="pListRecDetParam"></param>
+ <param name="pListStockRecSer"></param>
+ <param name="pListStockRec"></param>
+ <param name="pListProductoPallet"></param>
+ <param name="pLotesRec"></param>
+ <param name="pIdEmpresa"></param>
+ <param name="pIdBodega"></param>
+ <param name="pIdUsuario"></param>
+ <param name="pIdResolucionLp"></param>
+ <param name="pIdOperadorBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_re_enc.Get_Cantidad_Recibida_Actual_By_IdRecepcionEnc_And_IdRecepcionDet(System.Int32,System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20221011: Get_Cantidad_Recibida_Actual_By_IdRecepcionEnc_And_IdRecepcionDet 
+ #EJC20221011: WMS - Corrección de transacción y conexión en función Get_Cantidad_Recibida_Actual_By_IdRecepcionEnc_And_IdRecepcionDet 
+ </summary>
+ <param name="pIdRecepcionEnc"></param>
+ <param name="pIdRecepcionDet"></param>
+ <param name="pConection"></param>
+ <param name="pTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_re_enc.Get_All_By_IdOrdenRecEnc(System.Int32)">
+ <summary>
+ Creada por Carlos Manuel
+ </summary>
+ <param name="pIdOrdenCompraEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_re_enc.Finalizada(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #EJC20220121: Validar si el estado de la recepción es finalizada.
+ </summary>
+ <param name="pIdRecepcionEnc"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_re_enc.Registros_Pendientes_Push(System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ #CKFK20220308: Validar si la recepción tiene registros pendientes de push.
+ </summary>
+ <param name="pIdRecepcionEnc"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_re_enc.Generar_Tarea_Recepcion_By_OrdenCompraEnc_Transfer(TOMWMS.clsBeTrans_oc_enc@,System.String@,System.Boolean,TOMWMS.clsBeI_nav_config_enc,TOMWMS.clsBeTrans_re_enc@,System.Boolean@,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC20220505: Genera la tarea de recepción en estado cerrada para transferencias directas entre bodegas de WMS.
+ </summary>
+ <param name="BeOrdenCompraEnc"></param>
+ <param name="Resultado"></param>
+ <param name="CrearRecepcionPorDefecto"></param>
+ <param name="BeMI3Config"></param>
+ <param name="OutBeRecepcionEnc"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_re_oc.Get_IdRecepcionEnc_By_IdOrdenCompraEnc(System.Int32)">
+ <summary>
+ Creada por Erik Calderón, se usa para obtener todas las Recepciones para posteriormente buscar su estado y anularlas
+ </summary>
+ <param name="pIdOrdenCompraEnc"></param>
+ <returns>Lista de Recepciones solamente Ids</returns>
+</member>
+<member name="M:TOMWMS.clsLnUnidad_medida.Guardar_Transaccion(System.Collections.Generic.List{TOMWMS.clsBeUnidad_medida}@,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ Creado por Ricardo García
+ </summary>
+ <param name="pListObjUM"></param>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsLnStock.Get_All_By_IdPropietarioBodega(System.Int32)">
+ <summary>
+ Busca las existencias para un IdPropietarioBodega
+ </summary>
+ <param name="pIdPropietarioBodega">El IdPropietario asociado a una bodega</param>
+ <returns>Devuelve lista de ojbetos de tipo: clsBeVW_stock_res (vista VW_Stock_SP en la BD)</returns>
+ <remarks>ejcalderon_20160512</remarks>
+</member>
+<member name="M:TOMWMS.clsLnStock.Get_All_Stock_By_IdBodega_And_IdPropietarioBodega(System.Int32,System.Int32)">
+ <summary>
+ Get_All_Stock_By_IdBodega_And_IdPropietarioBodega
+ #EJC20221011_1153: WMS - Corrección de transacción en método: Get_All_Stock_By_IdBodega_And_IdPropietarioBodega
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdPropietarioBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock.Get_Lista_Existencias_By_IdProductoBodega(System.Int32)">
+ <summary>
+ Función para consultar las existencias de un producto a partir de la tabla stock
+ </summary>
+ <param name="pIdProductoBodega">Se deben llenar los valores IdProductoBodega, IdProductoEstado, IdUnidadMedida, IdPresentacion(Opcional)</param>
+ <returns>Devuelve una lista de clsBESTock a partir de los parámetros enviados en un objeto de tipo clsBEStock</returns>
+ <remarks>ejcalderon_20160512</remarks>
+ 
+</member>
+<member name="M:TOMWMS.clsLnStock.GetRptProductsMinMax(System.Int32)">
+ <summary>
+ Reporte de mínimos y máximos
+ </summary>
+ <param name="pIdProducto"></param>
+ <returns></returns>
+ <remarks>ejcalderon</remarks>
+</member>
+<member name="M:TOMWMS.clsLnStock.Get_Single_By_IdStock(System.Int32)">
+ <summary>
+ Buscar un registro en la tabla stock a partir de un IdStock pero se usa solo para traer los campos de referencia
+ </summary>
+ <param name="IdStock">Identificador único de fila para obtener el registro</param>
+ <returns>Devuelve un objeto de tipo clsBeVW_stock_res (Entidad de la vista VW_Stock_SP en la BD) </returns>
+ <remarks>ejcalderon</remarks>
+</member>
+<member name="M:TOMWMS.clsLnStock.getRptProductosProximosVencimiento(System.Int32)">
+ <summary>
+ Reporte de productos proximos a vencer
+ </summary>
+ <param name="pIdProducto"></param>
+ <returns></returns>
+ <remarks>Bcuscul</remarks>
+</member>
+<member name="M:TOMWMS.clsLnStock.Get_All_By_IdProductoBodega(System.Int32)">
+ <summary>
+ Metodo para traer el stock por producto Bodega
+ </summary>
+ <param name="pIdProductoBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock.RestarCantidadVerificada(TOMWMS.clsBeStock,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creado por Erik Calderón
+ </summary>
+ <param name="pObj"></param>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+</member>
+<member name="M:TOMWMS.clsLnStock.Get_Reporte_Stock(System.Int32,System.Int32,System.Boolean)">
+ <summary>
+ #EJC202405021906: Modificada para no incluir lo pickeado.
+ </summary>
+ <param name="pIdBodega"></param>
+ <param name="pIdPropietarioBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock.Es_Pallet_No_Estandar(TOMWMS.clsBeStock)">
+ <summary>
+ '#CKFK 20201228 Función creada para determinar si un IdStock es un pallet estandar o no
+ #EJC20221011: WMS: Corrección en manejo de transacción en función Es_Pallet_No_Estandar
+ </summary>
+ <param name="pStock"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock.Tiene_Posiciones(TOMWMS.clsBeStock)">
+ <summary>
+ '#CKFK 20201228 Función creada para determinar si un IdStock de tipo pallet estandar tiene definidas la cantidad de posiciones o no
+ #EJC202210111140: WMS: Corrección en manejo de transacción y cierre de conexión en función Tiene_Posiciones.
+ </summary>
+ <param name="pStock"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock.Get_All_Products_For_Reabastecimiento(System.Int32,System.Int32)">
+ <summary>
+ '#CKFK 20220701 Agregué esta función para  listar los productos para reabastecimeinto en la HH
+ </summary>
+ <param name="pIdProducto"></param>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock.Existe_Stock_By_IdBodega_And_IdRecepcionEnc(System.Int32,System.Int32)">
+ <summary>
+ '#EJC20221011_1148: WMS - Agregué función Existe_Stock_By_IdBodega_And_IdRecepcionEnc para validar si existe stock antes de anular una recepción.
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdRecepcionEnc"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock.Get_Single_By_BeRecepcionDet(TOMWMS.clsBeTrans_re_det,System.Int32)">
+ <summary>
+ #EJC2023022223246: Función creada (como parche, feo lo sé) para prevenir que se inserte por alguna razón que desconozco
+ en el finalizar dos veces el stock cuando se salta alguna condición rara, caso de BYB recepción 4904 finalizada en fecha diferente.
+ </summary>
+ <param name="pBeRecepcionDet"></param>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock.Get_Reporte_Stock_For_SAP(System.Int32)">
+ <summary>
+  #EJC20240410: Obtener existencias por lote para interface de SAP (Generar comparativo contra TOMWMS)
+ </summary>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock.Actualizar_Stock_Por_Traslado_AreaWMS_To_SAP(TOMWMS.clsBeTrans_picking_ubic@,System.Int32,System.Int32,TOMWMS.clsBeTrans_despacho_enc,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC20240525: Traslado SAP
+ </summary>
+ <param name="pBePickingUbic"></param>
+ <param name="pIdUbicacionVirtualDestino"></param>
+ <param name="BeDespachoEnc"></param>    
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+</member>
+<member name="M:TOMWMS.clsLnStock.Get_Reporte_Stock_Grafico(System.Int32,System.Int32,System.Boolean)">
+ <summary>
+ #EJC20240820
+ </summary>
+ <param name="pIdBodega"></param>
+ <param name="pIdPropietarioBodega"></param>
+ <param name="ExcluirSinExistencia"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock.Get_Reporte_Stock_For_SAP_Sin_Lote(System.Int32)">
+ <summary>
+  #EJC20240410: Obtener existencias sin lote para interface de SAP (Generar comparativo contra TOMWMS)
+ </summary>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Reserva_Stock_NAV_BYB(TOMWMS.clsBeStock_res@,System.Double,System.String,System.Collections.Generic.List{TOMWMS.clsBeStock_res}@,System.Int32,System.Int32,System.Int32,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC20220523: Reserva_Stock_NAV_BYB
+ </summary>
+ <param name="pStockRes"></param>
+ <param name="DiasVencimiento"></param>
+ <param name="MaquinaQueSolicita"></param>
+ <param name="pListStockResOUT"></param>
+ <param name="pIdEmpresa"></param>
+ <param name="pIdBodega"></param>
+ <param name="pIdPropietario"></param>
+ <param name="lConnection"></param>
+ <param name="ltransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Set_IdPicking_By_IdPedidoDet(System.Int32,System.Int32,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
+ <summary>
+ Creada por Erik Calderón, se utiliza para indicar a que IdPicking pertenecen ciertas líneas del stock reservado
+ Modificada por CKFK 2020-11-24 para que la función devuelva que hizo.
+ </summary>
+ <param name="pIdPicking"></param>
+ <param name="pIdPedidoDet"></param>
+ <param name="pConnection"></param>
+ <param name="pTransaction"></param>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Get_Cantidad_Reservada_By_IdStock(System.Int32,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ Devuelve la cantidad reservada para un IdStock.
+ </summary>
+ <param name="pIdStock"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Get_Cantidad_ReservadaEnUMDocumento_By_IdStock(System.Int32,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ Devuelve la cantidad reservada para un IdStock.
+ </summary>
+ <param name="pIdStock"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Actualizar_Ubicacion_Stock_Reservado_By_IdStock(System.Int32,System.Int32,System.Int32,System.Int32)">
+ <summary>
+ #EJC20220524: Mercosal: Actualizar el IdUbicacion del stock reservado y del picking.
+ </summary>
+ <param name="IdStock"></param>
+ <param name="IdBodega"></param>
+ <param name="IdUbicacion"></param>
+ <returns></returns>
+ 
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_1_IDEAL_20231002011101(System.Int32,System.Int32,System.String@)">
+ <summary>
+ CASO#1 - IDEAL_20231002011101: 
+ Hay cajas en almacenamiento que vencen primero Vrs las que están en zona de picking o ubicación de picking.
+ Modelado de inventario.
+ Insertar una caja en ubicación de almacenaje con fecha corta. 01/01/2026
+ Insertar una caja en ubicación de picking con fecha superior.  02/01/2026   
+ Resultado esperado: Reservar cajas desde almacenamiento, respetando el producto que vence antes.
+ </summary>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_2_IDEAL_20231002011120(System.Int32,System.Int32,System.String@)">
+ <summary>
+ Hay cajas en almacenamiento que vencen primero Vrs las que están en picking, pero no completan el pedido.
+ Modelado de inventario.
+ Insertar 75 CJS en ubicación de almacenaje con fecha corta. 01/01/2026 (75)
+ Insertar 200 CJS en ubicación de picking con fecha superior.  02/01/2026 (200)  
+ Solicitado: 80
+ Disponible en Almacenaje: 75
+ Disponible en Picking: 200
+ Resultado esperado: reservar cajas desde almacenamiento y completar con zona de picking.
+ Observación: Respetar la fecha de vencimiento antes que la posición.
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdUsuario"></param>
+ <param name="Resultado"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_3_IDEAL_20231002011128(System.Int32,System.Int32,System.String@)">
+ <summary>
+ Hay cajas en almacenamiento que vencen primero Vrs las que están en picking, pero no completan el pedido.
+ Modelado de inventario.
+ Insertar una caja en ubicación de almacenaje con fecha corta. 01/01/2026 (75)
+ Insertar una caja en ubicación de picking con fecha superior.  02/01/2026 (200)
+ Solicitado: 80
+ Disponible en Almacenaje: 75
+ Disponible en Picking: 200
+ Resultado esperado: reservar cajas desde almacenamiento y completar con zona de picking.
+ Observación: Respetar la fecha de vencimiento antes que la posición.
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdUsuario"></param>
+ <param name="Resultado"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_4_IDEAL_20231002011132(System.Int32,System.Int32,System.String@)">
+ <summary>
+Hay cajas en almacenamiento que vencen primero Vrs. las que están en zona de picking, pero no completan el pedido, y tampoco las de picking.
+Modelado de inventario.
+Insertar una caja en ubicación de almacenaje con fecha corta. 01/01/2026 (75)
+Insertar una caja en ubicación de picking con fecha superior.  02/01/2026 (25)
+Insertar una caja en ubicación de almacenaje con fecha superior.  03/01/2026 (50)
+Solicitado: 150
+Disponible Total: 150
+Resultado esperado: Reserva Almacenaje, cambia a zona de picking y luego regresa a almacenaje.
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdUsuario"></param>
+ <param name="Resultado"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_5_IDEAL_20231002011134(System.Int32,System.Int32,System.String@)">
+ <summary>
+Hay cajas en picking que vencen primero Vrs. las que están en zona de almacemiento, pero no completan el pedido, y tampoco las de picking.
+Modelado de inventario.
+Insertar 75 caja en ubicación de picking con fecha corta. 01/01/2026
+Insertar 25 caja en ubicación de almacenaje con fecha superior.  02/01/2026
+Insertar 50 caja en ubicación de picking con fecha superior.  03/01/2026
+Solicitado: 150
+Disponible Total: 150
+Resultado esperado: Empezar por picking, subir al almacenamiento y volver a bajar al picking.
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdUsuario"></param>
+ <param name="Resultado"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_6_IDEAL_20231002011136(System.Int32,System.Int32,System.String@)">
+ <summary>
+Hay cajas en almacenamiento que vencen primero Vrs. las que están en zona de picking, pero no completan el pedido, y tampoco las de picking.
+Modelado de inventario.
+Insertar una caja en ubicación de picking con fecha corta. 01/01/2026 (75)
+Insertar una caja en ubicación de almacenaje con fecha superior.  02/01/2026 (25)
+Insertar una caja en ubicación de picking con fecha superior.  03/01/2026 (50)
+Solicitado: 150
+Disponible Total: 150
+Resultado esperado: Reserva Almacenaje, cambia a zona de picking y luego regresa a almacenaje.
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdUsuario"></param>
+ <param name="Resultado"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_7_IDEAL_20231002011140(System.Int32,System.Int32,System.String@)">
+ <summary>
+No hay unidades en picking, y si hay en almacenamiento.
+Modelado de inventario.
+No insertar inventario en ubicación de picking.
+Insertar en almacenamiento la misma cantidad solicitada  02/01/2026.
+Resultado esperado: Reservar de almacenamiento la cantidad solicitada.
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdUsuario"></param>
+ <param name="Resultado"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_8_IDEAL_20231002011140(System.Int32,System.Int32,System.String@)">
+ <summary>
+No hay unidades en picking, y si hay en almacenamiento.
+Modelado de inventario.
+No insertar inventario en ubicación de picking.
+Insertar en almacenamiento menor cantidad (4) que la solicitada  Vence: 02/01/2026.
+Resultado esperado: Si la bandera de rechazo por pedido incompleto está activa, rechazar el pedido.
+Solicitado: 5
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdUsuario"></param>
+ <param name="Resultado"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_9_IDEAL_20231002011144(System.Int32,System.Int32,System.String@)">
+ <summary>
+Las unidades de almacenamiento no alcanzan.
+Modelado de inventario.
+Insertar 9 unidades en almacenamiento.
+Insertar 1 caja en ubicación de picking.
+Resultado esperado: Se deben tomar las 9 unidades de almacenamiento, debe explosionar la caja insertada en ubicación de picking, reservar el restante.
+Solicitado 11
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdUsuario"></param>
+ <param name="Resultado"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_10_IDEAL_20231002011146(System.Int32,System.Int32,System.String@)">
+ <summary>
+Las unidades de almacenamiento no alcanzan.
+Modelado de inventario.
+Insertar 9 unidades en almacenamiento.
+Insertar 1 caja en ubicación de picking.
+Resultado esperado: Se deben tomar las 9 unidades de almacenamiento, debe explosionar la caja insertada en ubicación de picking, reservar el restante 
+y si no hay más inventario debe rechazar el pedido.
+Solicitado: 26
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdUsuario"></param>
+ <param name="Resultado"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_11_IDEAL_20231002011153(System.Int32,System.Int32,System.String@)">
+ <summary>
+Hay unidades en picking y en almacenamiento, pero las de almacenamiento tienen fecha más corta:
+Modelado de inventario.
+Insertar inventario en ubicación de picking por 26 UDS, con Vence. 30/12/2026
+Insertar en almacenamiento una posición por 15 con fecha 01/12/2026.
+Insertar en almacenamiento una posición por 10 con fecha 10/12/2026.
+Resultado esperado: reservar x,y antes que w
+Solicitado: 25 UDS
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdUsuario"></param>
+ <param name="Resultado"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_12_IDEAL_20231002011159(System.Int32,System.Int32,System.String@)">
+ <summary>
+Hay unidades en picking y en almacenamiento, pero las de almacenamiento tienen fecha más corta:
+Modelado de inventario.
+Insertar inventario en ubicación de picking por 26 Uds, con Vence. 30/12/2026
+Insertar en almacenamiento una posición por 15 con fecha 01/12/2026.
+Insertar en almacenamiento una posición por 10 con fecha 10/12/2026.
+Resultado esperado: reservar aa). bb) antes que z.
+Solicitado: 26 UDS
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdUsuario"></param>
+ <param name="Resultado"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_13_IDEAL_20231002011201(System.Int32,System.Int32,System.String@)">
+ <summary>
+Las unidades en almacenamiento + picking, no alcanzan para cubrir el pedido.  Debe explosionar cajas desde picking.
+Modelado de inventario.
+Insertar inventario en ubicación de picking 10 Uds, con fecha vence: 30/12/2026
+Insertar en almacenamiento una posición por 15 con fecha 01/12/2026.
+Insertar en almacenamiento 1 caja de almacenamiento con fecha 10/12/2026.
+Resultado esperado: reservar cc). dd) y luego validar si el producto en presentación, está en una ubicación que se pueda explosionar, 
+si no tengo producto en zona de picking entonces, rechazar el pedido por incompleto.
+Solicitado: 26 UDS
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdUsuario"></param>
+ <param name="Resultado"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_14_IDEAL_20231002011201(System.Int32,System.Int32,System.String@)">
+ <summary>
+Las unidades en almacenamiento + picking, no alcanzan para cubrir el pedido.  Debe explosionar cajas desde picking.
+Modelado de inventario.
+Insertar inventario en ubicación de picking 10 Uds, con fecha vence: 30/12/2026
+Insertar en almacenamiento una posición por 15 con fecha 01/12/2026.
+Insertar en picking 1 caja con fecha 10/12/2026. (Fecha más corta que ALM)
+Resultado esperado: reservar ff). gg) y luego validar si el producto en presentación, está en una ubicación que se pueda explosionar, 
+complementar las unidades faltantes con el inventario de hh).
+Código: 203258L31
+Solicitado: 26 UDS
+Validar que no reserve los 26 de la explosión.
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdUsuario"></param>
+ <param name="Resultado"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_15_IDEAL_20231018130000(System.Int32,System.Int32,System.String@)">
+ <summary>
+Hay unidades en picking y en almacenamiento, las unidades no alcanzan debe explosionar las fechas mas cortas de almacenamiento
+Modelado de inventario.
+A - Insertar inventario en ubicación de picking por 8 UDS, con Vence. 02/07/2026
+B - Insertar inventario en ubicación de picking por 4 UDS, con Vence. 04/07/2026
+C - Insertar inventario en ubicación de picking por 10 CJS, con Vence. 04/07/2026
+D - Insertar inventario en ubicación de picking por 5 CJS, con Vence. 06/07/2026
+E - Insertar inventario en almacenamiento 1 UND con fecha 01/07/2026.
+F - Insertar inventario en almacenamiento 2 UND con fecha 03/07/2026.
+G - Insertar inventario en almacenamiento 25 CJS con fecha 03/07/2026.
+    Resultado esperado: reservar E, A, F, B y luego validar si el producto en presentación, está en una ubicación que se pueda explosionar, 
+    si no tengo producto en zona de picking entonces, rechazar el pedido por incompleto.
+    Solicitado: 16 UDS
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdUsuario"></param>
+ <param name="Resultado"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_16_IDEAL_202310200156(System.Int32,System.Int32,System.String@)">
+ <summary>
+Hay unidades en picking y en almacenamiento, las unidades no alcanzan debe explosionar las fechas mas cortas de almacenamiento
+Modelado de inventario.
+A - Insertar inventario en ubicación de picking por 8 UDS, con Vence. 02/07/2026
+B - Insertar inventario en ubicación de picking por 4 UDS, con Vence. 04/07/2026
+C - Insertar inventario en ubicación de picking por 10 CJS, con Vence. 03/07/2026
+D - Insertar inventario en ubicación de picking por 5 CJS, con Vence. 06/07/2026
+E - Insertar inventario en almacenamiento 1 UND con fecha 01/07/2026.
+F - Insertar inventario en almacenamiento 2 UND con fecha 03/07/2026.
+G - Insertar inventario en almacenamiento 25 CJS con fecha 04/07/2026.
+    Resultado esperado: reservar E, A, F, B, Explosión G
+    Solicitado: 16 UDS
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdUsuario"></param>
+ <param name="Resultado"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Ejecuta_QA_CASO_17_IDEAL_202311040904(System.Int32,System.Int32,System.String@)">
+ <summary>
+Hay 7 unidades en almacenamiento y 1 caja en picking, con la misma fecha de vencimiento debe
+tomar las unidades de almacenamiento
+Modelado de inventario.
+A - Insertar inventario en ubicación de almacenamiento 1 CJ con fecha vence 30/12/2023
+B - Insertar inventario en ubicación de almacenamiento 7 UDS, con fecha vence 30/12/2023
+Resultado esperado: reservar B
+ </summary>
+ <param name="IdBodega"></param>
+ <param name="IdUsuario"></param>
+ <param name="Resultado"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_res.Get_All_By_IdBodega(System.Int32,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC202312201733: La idea de esta función, es obtener una lista de todos los IdStockReservados, de tal forma que el proceso de restar stock reservado sea más eficiente.
+ </summary>
+ <param name="pIdBodega"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnStock_parametro.Get_All_By_IdStock(System.Int32)">
+ <summary>
+ Devuelve una lista de clsBeStock_parametro para un IdStock
+ </summary>
+ <param name="pIdStock">Recibe como parámetro el IdStock (Int) de tabla Stock</param>
+ <returns></returns>
+ <remarks>ejcalderon_20160512</remarks>
+</member>
+<member name="M:TOMWMS.clsLnStock_rec.GetSingleLP(System.String,System.Int32,System.Int32)">
+ <summary>
+ #EJC20220830:Agregado para recibir licencias de producción de IODESA.
+ </summary>
+ <param name="lic_plate"></param>
+ <param name="pIdBodega"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsLnTrans_ubic_hh_enc.Get_Dimensiones_Productos(System.Int32@)">
+ <summary>
+ Trae las dimensiones de cada producto, los productos se filtran por la ubicacion
+ </summary>
+ <param name="pIdUbicacion">IdUbicacion</param>
+ <returns></returns>
+ <remarks>Bcuscul06072016</remarks>
+</member>
+<member name="M:TOMWMS.clsLnTrans_ubic_hh_op.Get_All_By_IdTareaUbicacion(System.Int32)">
+ <summary>
+ Busca el detalle para un cambio de Ubicacion trans_ubic_hh_enc
+ </summary>
+ <param name="pIdTransUbicHhEnc">Filtra el detalle asociado a un IdTransUbicHhEnc</param>
+ <returns>Devuelve lista de objetos de tipo: clsBeTrans_ubic_hh_det</returns>
+ <remarks>Bcuscul_13052016</remarks>
+</member>
+</members>
+</doc>

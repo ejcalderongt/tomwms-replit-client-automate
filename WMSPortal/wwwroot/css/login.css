@@ -1,0 +1,32 @@
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: #D4D4D4;
+}
+
+.nav-login {
+    background-color: #3b5999;
+}
+
+.conte-img {
+    min-height: 85vh;
+    background: url("../img/login/fondolanding.jpg");
+}
+
+.conte-back {
+    background-color: rgba(0,0,0,.2);
+}
+
+@media (min-width: 1200px) {
+
+    /* Pull out the header and footer */
+    .imagenes {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+}

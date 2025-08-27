@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/TOMIMS" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/TOMIMS" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="ArrayOfclsBeBodega">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeBodega" nillable="true" type="tns:clsBeBodega" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeBodega" nillable="true" type="tns:ArrayOfclsBeBodega" />
+  <xs:complexType name="clsBeBodega">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Alto" type="xs:double" />
+      <xs:element minOccurs="0" name="Ancho" type="xs:double" />
+      <xs:element minOccurs="0" name="Areas" nillable="true" type="tns:ArrayOfclsBeBodega_area" />
+      <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Codigo_barra" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Coordenada_x" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Coordenada_y" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Direccion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Email" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Empresa" nillable="true" type="tns:clsBeEmpresa" />
+      <xs:element minOccurs="0" name="Encargado" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdBodega" type="xs:int" />
+      <xs:element minOccurs="0" name="IdEmpresa" type="xs:int" />
+      <xs:element minOccurs="0" name="IdMotivoUbicacionDañadoPicking" type="xs:int" />
+      <xs:element minOccurs="0" name="IdPais" type="xs:int" />
+      <xs:element minOccurs="0" name="IdTipoTransaccion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Largo" type="xs:double" />
+      <xs:element minOccurs="0" name="Muelles" nillable="true" type="tns:ArrayOfclsBeBodega_muelles" />
+      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nombre_comercial" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Rechazar_pedido_por_stock" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Reservar_stocks_por_linea" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Sectores" nillable="true" type="tns:ArrayOfclsBeBodega_sector" />
+      <xs:element minOccurs="0" name="Telefono" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tramos" nillable="true" type="tns:ArrayOfclsBeBodega_tramo" />
+      <xs:element minOccurs="0" name="Ubic_despacho" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Ubic_merma" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Ubic_picking" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Ubic_recepcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Ubicaciones" nillable="true" type="tns:ArrayOfclsBeBodega_ubicacion" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Zoom" type="xs:double" />
+      <xs:element minOccurs="0" name="cambio_ubicacion_auto" type="xs:boolean" />
+      <xs:element minOccurs="0" name="codigo_bodega_erp" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeBodega" nillable="true" type="tns:clsBeBodega" />
+  <xs:complexType name="ArrayOfclsBeBodega_area">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeBodega_area" nillable="true" type="tns:clsBeBodega_area" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeBodega_area" nillable="true" type="tns:ArrayOfclsBeBodega_area" />
+  <xs:complexType name="clsBeBodega_area">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Alto" type="xs:double" />
+      <xs:element minOccurs="0" name="Ancho" type="xs:double" />
+      <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdArea" type="xs:int" />
+      <xs:element minOccurs="0" name="IdBodega" type="xs:int" />
+      <xs:element minOccurs="0" name="IsNew" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Largo" type="xs:double" />
+      <xs:element minOccurs="0" name="Margen_derecho" type="xs:double" />
+      <xs:element minOccurs="0" name="Margen_inferior" type="xs:double" />
+      <xs:element minOccurs="0" name="Margen_izquierdo" type="xs:double" />
+      <xs:element minOccurs="0" name="Margen_superior" type="xs:double" />
+      <xs:element minOccurs="0" name="Sistema" type="xs:boolean" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeBodega_area" nillable="true" type="tns:clsBeBodega_area" />
+  <xs:complexType name="clsBeEmpresa">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Anulaciones_por_supervisor" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Clave" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ClienteRapido" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Control_presentaciones" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Corr_cod_barra" type="xs:int" />
+      <xs:element minOccurs="0" name="Direccion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Duracionclave" type="xs:int" />
+      <xs:element minOccurs="0" name="Duracionclavetemporal" type="xs:int" />
+      <xs:element minOccurs="0" name="Email" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdEmpresa" type="xs:int" />
+      <xs:element minOccurs="0" name="IdMotivoAjusteInventario" type="xs:int" />
+      <xs:element minOccurs="0" name="Imagen" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="Intento" type="xs:int" />
+      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Operador_logistico" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Path_printer" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Puerto_escaner" type="xs:int" />
+      <xs:element minOccurs="0" name="Razon_social" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Representante" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Telefono" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="codigo_automatico" type="xs:boolean" />
+      <xs:element minOccurs="0" name="politica_contraseñas" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeEmpresa" nillable="true" type="tns:clsBeEmpresa" />
+  <xs:complexType name="ArrayOfclsBeBodega_muelles">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeBodega_muelles" nillable="true" type="tns:clsBeBodega_muelles" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeBodega_muelles" nillable="true" type="tns:ArrayOfclsBeBodega_muelles" />
+  <xs:complexType name="clsBeBodega_muelles">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Codigo_barra" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Color" type="xs:int" />
+      <xs:element minOccurs="0" name="Entrada" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdBodega" type="xs:int" />
+      <xs:element minOccurs="0" name="IdMuelle" type="xs:int" />
+      <xs:element minOccurs="0" name="Imagen" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Salida" type="xs:boolean" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeBodega_muelles" nillable="true" type="tns:clsBeBodega_muelles" />
+  <xs:complexType name="ArrayOfclsBeBodega_sector">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeBodega_sector" nillable="true" type="tns:clsBeBodega_sector" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeBodega_sector" nillable="true" type="tns:ArrayOfclsBeBodega_sector" />
+  <xs:complexType name="clsBeBodega_sector">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Alto" type="xs:double" />
+      <xs:element minOccurs="0" name="Ancho" type="xs:double" />
+      <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Horizontal" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IdArea" type="xs:int" />
+      <xs:element minOccurs="0" name="IdSector" type="xs:int" />
+      <xs:element minOccurs="0" name="IdSectorDerecha" type="xs:int" />
+      <xs:element minOccurs="0" name="IdSectorIzquierda" type="xs:int" />
+      <xs:element minOccurs="0" name="Largo" type="xs:double" />
+      <xs:element minOccurs="0" name="Margen_derecho" type="xs:double" />
+      <xs:element minOccurs="0" name="Margen_inferior" type="xs:double" />
+      <xs:element minOccurs="0" name="Margen_izquierdo" type="xs:double" />
+      <xs:element minOccurs="0" name="Margen_superior" type="xs:double" />
+      <xs:element minOccurs="0" name="Pos_x" type="xs:double" />
+      <xs:element minOccurs="0" name="Pos_y" type="xs:double" />
+      <xs:element minOccurs="0" name="Sistema" type="xs:boolean" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeBodega_sector" nillable="true" type="tns:clsBeBodega_sector" />
+  <xs:complexType name="ArrayOfclsBeBodega_tramo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeBodega_tramo" nillable="true" type="tns:clsBeBodega_tramo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeBodega_tramo" nillable="true" type="tns:ArrayOfclsBeBodega_tramo" />
+  <xs:complexType name="clsBeBodega_tramo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Alto" type="xs:double" />
+      <xs:element minOccurs="0" name="Ancho" type="xs:double" />
+      <xs:element minOccurs="0" name="CantidadUtilizada" type="xs:double" />
+      <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Es_Rack" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Horizontal" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IdFontEnc" type="xs:int" />
+      <xs:element minOccurs="0" name="IdSector" type="xs:int" />
+      <xs:element minOccurs="0" name="IdTipoProductoDefault" type="xs:int" />
+      <xs:element minOccurs="0" name="IdTipoRack" type="xs:int" />
+      <xs:element minOccurs="0" name="IdTramo" type="xs:int" />
+      <xs:element minOccurs="0" name="Indice_x" type="xs:int" />
+      <xs:element minOccurs="0" name="Largo" type="xs:double" />
+      <xs:element minOccurs="0" name="Margen_derecho" type="xs:double" />
+      <xs:element minOccurs="0" name="Margen_inferior" type="xs:double" />
+      <xs:element minOccurs="0" name="Margen_izquierdo" type="xs:double" />
+      <xs:element minOccurs="0" name="Margen_superior" type="xs:double" />
+      <xs:element minOccurs="0" name="Nivel" type="xs:int" />
+      <xs:element minOccurs="0" name="Orientacion" type="xs:int" />
+      <xs:element minOccurs="0" name="Sistema" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Tag" nillable="true" type="xs:anyType" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="VolumenUtilizado" type="xs:double" />
+      <xs:element minOccurs="0" name="pFont" nillable="true" type="tns:clsBeFont_enc" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeBodega_tramo" nillable="true" type="tns:clsBeBodega_tramo" />
+  <xs:complexType name="clsBeFont_enc">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="IdFontEnc" type="xs:int" />
+      <xs:element minOccurs="0" name="IsNew" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="lDet" nillable="true" type="tns:ArrayOfclsBeFont_det" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeFont_enc" nillable="true" type="tns:clsBeFont_enc" />
+  <xs:complexType name="ArrayOfclsBeFont_det">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeFont_det" nillable="true" type="tns:clsBeFont_det" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeFont_det" nillable="true" type="tns:ArrayOfclsBeFont_det" />
+  <xs:complexType name="clsBeFont_det">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ColorFondo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ColorFont" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cursiva" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IdFontDet" type="xs:int" />
+      <xs:element minOccurs="0" name="IdFontEnc" type="xs:int" />
+      <xs:element minOccurs="0" name="IsNew" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Letra" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Negrita" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Subrayado" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Tamaño" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeFont_det" nillable="true" type="tns:clsBeFont_det" />
+  <xs:complexType name="ArrayOfclsBeBodega_ubicacion">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeBodega_ubicacion" nillable="true" type="tns:clsBeBodega_ubicacion" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeBodega_ubicacion" nillable="true" type="tns:ArrayOfclsBeBodega_ubicacion" />
+  <xs:complexType name="clsBeBodega_ubicacion">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Acepta_pallet" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Alto" type="xs:double" />
+      <xs:element minOccurs="0" name="Ancho" type="xs:double" />
+      <xs:element minOccurs="0" name="Bloqueada" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Codigo_barra" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Codigo_barra2" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Dañado" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdIndiceRotacion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdTipoRotacion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdTramo" type="xs:int" />
+      <xs:element minOccurs="0" name="IdUbicacion" type="xs:int" />
+      <xs:element minOccurs="0" name="Indice_x" type="xs:int" />
+      <xs:element minOccurs="0" name="Largo" type="xs:double" />
+      <xs:element minOccurs="0" name="Margen_derecho" type="xs:double" />
+      <xs:element minOccurs="0" name="Margen_inferior" type="xs:double" />
+      <xs:element minOccurs="0" name="Margen_izquierdo" type="xs:double" />
+      <xs:element minOccurs="0" name="Margen_superior" type="xs:double" />
+      <xs:element minOccurs="0" name="Nivel" type="xs:int" />
+      <xs:element minOccurs="0" name="NombreCompleto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Orientacion_pos" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Sector" nillable="true" type="tns:clsBeBodega_sector" />
+      <xs:element minOccurs="0" name="Sistema" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Tramo" nillable="true" type="tns:clsBeBodega_tramo" />
+      <xs:element minOccurs="0" name="Ubicacion_Virtual" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Ubicacion_despacho" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Ubicacion_merma" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Ubicacion_picking" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Ubicacion_recepcion" type="xs:boolean" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeBodega_ubicacion" nillable="true" type="tns:clsBeBodega_ubicacion" />
+</xs:schema>

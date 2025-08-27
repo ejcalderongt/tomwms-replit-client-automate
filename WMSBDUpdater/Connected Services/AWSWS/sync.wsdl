@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:tns="http://tempuri.org/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="Registrar_Empresa">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pNombreEmpresa" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="AWSToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="VersionBD" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="WS_HH_QA" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="WS_HH_PRD" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Registrar_EmpresaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Registrar_EmpresaResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="clsArchHeader" type="tns:clsArchHeader" />
+      <s:complexType name="clsArchHeader">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Tipo" type="s:string" />
+        </s:sequence>
+        <s:anyAttribute />
+      </s:complexType>
+      <s:element name="Existe_Empresa">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AWSToken" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Existe_EmpresaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Existe_EmpresaResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="Registrar_EmpresaSoapIn">
+    <wsdl:part name="parameters" element="tns:Registrar_Empresa" />
+  </wsdl:message>
+  <wsdl:message name="Registrar_EmpresaSoapOut">
+    <wsdl:part name="parameters" element="tns:Registrar_EmpresaResponse" />
+  </wsdl:message>
+  <wsdl:message name="Registrar_EmpresaclsArchHeader">
+    <wsdl:part name="clsArchHeader" element="tns:clsArchHeader" />
+  </wsdl:message>
+  <wsdl:message name="Existe_EmpresaSoapIn">
+    <wsdl:part name="parameters" element="tns:Existe_Empresa" />
+  </wsdl:message>
+  <wsdl:message name="Existe_EmpresaSoapOut">
+    <wsdl:part name="parameters" element="tns:Existe_EmpresaResponse" />
+  </wsdl:message>
+  <wsdl:message name="Existe_EmpresaclsArchHeader">
+    <wsdl:part name="clsArchHeader" element="tns:clsArchHeader" />
+  </wsdl:message>
+  <wsdl:portType name="syncSoap">
+    <wsdl:operation name="Registrar_Empresa">
+      <wsdl:input message="tns:Registrar_EmpresaSoapIn" />
+      <wsdl:output message="tns:Registrar_EmpresaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Existe_Empresa">
+      <wsdl:input message="tns:Existe_EmpresaSoapIn" />
+      <wsdl:output message="tns:Existe_EmpresaSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="syncSoap" type="tns:syncSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Registrar_Empresa">
+      <soap:operation soapAction="http://tempuri.org/Registrar_Empresa" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:Registrar_EmpresaclsArchHeader" part="clsArchHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Existe_Empresa">
+      <soap:operation soapAction="http://tempuri.org/Existe_Empresa" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:Existe_EmpresaclsArchHeader" part="clsArchHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="syncSoap12" type="tns:syncSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Registrar_Empresa">
+      <soap12:operation soapAction="http://tempuri.org/Registrar_Empresa" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:Registrar_EmpresaclsArchHeader" part="clsArchHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Existe_Empresa">
+      <soap12:operation soapAction="http://tempuri.org/Existe_Empresa" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:Existe_EmpresaclsArchHeader" part="clsArchHeader" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="sync">
+    <wsdl:port name="syncSoap" binding="tns:syncSoap">
+      <soap:address location="http://ec2-52-41-114-122.us-west-2.compute.amazonaws.com/AWS_WMSBD_UPDATER/sync.asmx" />
+    </wsdl:port>
+    <wsdl:port name="syncSoap12" binding="tns:syncSoap12">
+      <soap12:address location="http://ec2-52-41-114-122.us-west-2.compute.amazonaws.com/AWS_WMSBD_UPDATER/sync.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

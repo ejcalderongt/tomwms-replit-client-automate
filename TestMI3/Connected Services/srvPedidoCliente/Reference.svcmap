@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="c8a04805-ac71-4905-8085-3a9461657671" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.Collections.Generic.List`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://192.168.101.131/MI3/Transacciones/PedidoCliente.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="PedidoCliente1.wsdl" MetadataType="Wsdl" ID="7f042453-ef34-4fb5-9fe3-4bd2d72c8b68" SourceId="1" SourceUrl="http://192.168.101.131/MI3/Transacciones/PedidoCliente.svc?wsdl" />
+    <MetadataFile FileName="PedidoCliente3.xsd" MetadataType="Schema" ID="32ac47a4-3dff-4bf6-9a0e-9a7a1d8a8037" SourceId="1" SourceUrl="http://192.168.101.131/MI3/Transacciones/PedidoCliente.svc?xsd=xsd2" />
+    <MetadataFile FileName="PedidoCliente31.xsd" MetadataType="Schema" ID="9d28ac2a-ad34-4653-bd22-b8e9df9fcc62" SourceId="1" SourceUrl="http://192.168.101.131/MI3/Transacciones/PedidoCliente.svc?xsd=xsd1" />
+    <MetadataFile FileName="PedidoCliente32.xsd" MetadataType="Schema" ID="190c8ad8-3079-4323-bab3-060d8a00e49d" SourceId="1" SourceUrl="http://192.168.101.131/MI3/Transacciones/PedidoCliente.svc?xsd=xsd0" />
+    <MetadataFile FileName="PedidoCliente.disco" MetadataType="Disco" ID="ca648b1f-e719-4994-a077-eb34183063d9" SourceId="1" SourceUrl="http://192.168.101.131/MI3/Transacciones/PedidoCliente.svc?disco" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

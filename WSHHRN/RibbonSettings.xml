@@ -1,0 +1,1800 @@
+﻿<XtraSerializer version="1.0" application="DevExpress.XtraBars.Ribbon.RibbonCustomizationModel">
+  <property name="#LayoutVersion" />
+  <property name="Categories" iskey="true" value="1">
+    <property name="Item1" isnull="true" iskey="true">
+      <property name="Text">(Unassigned Pages)</property>
+      <property name="IsVisible">true</property>
+      <property name="Pages" iskey="true" value="10">
+        <property name="Item1" isnull="true" iskey="true">
+          <property name="Text">Catálogos</property>
+          <property name="IsVisible">true</property>
+          <property name="Groups" iskey="true" value="11">
+            <property name="Item1" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Empresa</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Empresa</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">372</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">3</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgEmpresa</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">371</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">2</property>
+              </property>
+            </property>
+            <property name="Item2" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Bodega</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Bodega</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">382</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">5</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgBodega</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">381</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">4</property>
+              </property>
+            </property>
+            <property name="Item3" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Productos</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Productos</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">407</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">7</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgProductos</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">406</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">6</property>
+              </property>
+            </property>
+            <property name="Item4" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Logística</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Logística</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">419</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">9</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgLogistica</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">418</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">8</property>
+              </property>
+            </property>
+            <property name="Item5" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Clientes</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Clientes</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">432</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">11</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgClientes</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">431</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">10</property>
+              </property>
+            </property>
+            <property name="Item6" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Propietarios</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Propietarios</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">437</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">13</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">PgPropietario2</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">436</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">12</property>
+              </property>
+            </property>
+            <property name="Item7" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Proveedores</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Proveedores</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">442</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">15</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgProveedores</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">441</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">14</property>
+              </property>
+            </property>
+            <property name="Item8" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Seguridad</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Seguridad</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">444</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">17</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgSeguridad</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">443</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">16</property>
+              </property>
+            </property>
+            <property name="Item9" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Calendario</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Calendario</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">450</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">19</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">RpgCalendario</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">449</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">18</property>
+              </property>
+            </property>
+            <property name="Item10" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Monitor</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Monitor</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">452</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">21</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">rbPageMonitor</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">451</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">20</property>
+              </property>
+            </property>
+            <property name="Item11" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">QA</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">QA</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">456</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">23</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">rbPageQA</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">455</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">22</property>
+              </property>
+            </property>
+          </property>
+          <property name="IsCustom">false</property>
+          <property name="Alias">Catálogos</property>
+          <property name="Name">rpCatalogos</property>
+          <property name="IdInfo" isnull="true" iskey="true">
+            <property name="Id">370</property>
+          </property>
+          <property name="SourceIdInfo" isnull="true" iskey="true">
+            <property name="Id">1</property>
+          </property>
+        </property>
+        <property name="Item2" isnull="true" iskey="true">
+          <property name="Text">Ingresos</property>
+          <property name="IsVisible">true</property>
+          <property name="Groups" iskey="true" value="3">
+            <property name="Item1" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Documento de Ingreso</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Documento de Ingreso</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">459</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">26</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">rpgOdenCompra</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">458</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">25</property>
+              </property>
+            </property>
+            <property name="Item2" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Tareas de ingreso</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Tareas de ingreso</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">461</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">28</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgTareaIngreso</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">460</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">27</property>
+              </property>
+            </property>
+            <property name="Item3" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Tareas de pre-ingreso</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Tareas de pre-ingreso</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">463</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">30</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgTareasPreIngreso</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">462</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">29</property>
+              </property>
+            </property>
+          </property>
+          <property name="IsCustom">false</property>
+          <property name="Alias">Ingresos</property>
+          <property name="Name">rpIngresos</property>
+          <property name="IdInfo" isnull="true" iskey="true">
+            <property name="Id">457</property>
+          </property>
+          <property name="SourceIdInfo" isnull="true" iskey="true">
+            <property name="Id">24</property>
+          </property>
+        </property>
+        <property name="Item3" isnull="true" iskey="true">
+          <property name="Text">Salidas</property>
+          <property name="IsVisible">true</property>
+          <property name="Groups" iskey="true" value="6">
+            <property name="Item1" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Documento de Salida</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Documento de Salida</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">466</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">33</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgPedidoVenta</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">465</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">32</property>
+              </property>
+            </property>
+            <property name="Item2" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Picking</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Picking</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">468</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">35</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgPicking</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">467</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">34</property>
+              </property>
+            </property>
+            <property name="Item3" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Despacho</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Despacho</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">470</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">37</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgDespacho</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">469</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">36</property>
+              </property>
+            </property>
+            <property name="Item4" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Stock reservado</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Stock reservado</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">472</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">39</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">grpStockRes</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">471</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">38</property>
+              </property>
+            </property>
+            <property name="Item5" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Cotizar</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Cotizar</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">474</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">41</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgCotizar</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">473</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">40</property>
+              </property>
+            </property>
+            <property name="Item6" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Packing</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Packing</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">476</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">43</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgPacking</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">475</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">42</property>
+              </property>
+            </property>
+          </property>
+          <property name="IsCustom">false</property>
+          <property name="Alias">Salidas</property>
+          <property name="Name">rpSalidas</property>
+          <property name="IdInfo" isnull="true" iskey="true">
+            <property name="Id">464</property>
+          </property>
+          <property name="SourceIdInfo" isnull="true" iskey="true">
+            <property name="Id">31</property>
+          </property>
+        </property>
+        <property name="Item4" isnull="true" iskey="true">
+          <property name="Text">Servicios</property>
+          <property name="IsVisible">true</property>
+          <property name="Groups" iskey="true" value="2">
+            <property name="Item1" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Registro de servicios</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Registro de servicios</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">479</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">46</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgRegistroServicios</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">478</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">45</property>
+              </property>
+            </property>
+            <property name="Item2" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Reportes de Servicios</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Reportes de Servicios</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">483</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">48</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgReporteServicios</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">482</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">47</property>
+              </property>
+            </property>
+          </property>
+          <property name="IsCustom">false</property>
+          <property name="Alias">Servicios</property>
+          <property name="Name">rpServicios</property>
+          <property name="IdInfo" isnull="true" iskey="true">
+            <property name="Id">477</property>
+          </property>
+          <property name="SourceIdInfo" isnull="true" iskey="true">
+            <property name="Id">44</property>
+          </property>
+        </property>
+        <property name="Item5" isnull="true" iskey="true">
+          <property name="Text">Inventarios</property>
+          <property name="IsVisible">true</property>
+          <property name="Groups" iskey="true" value="1">
+            <property name="Item1" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="2">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Inventarios</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Inventarios</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">487</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">53</property>
+                  </property>
+                </property>
+                <property name="Item2" isnull="true" iskey="true">
+                  <property name="Text">Importar inv Inicial</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Importar inv Inicial</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">488</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">54</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgInventarios</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">486</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">52</property>
+              </property>
+            </property>
+          </property>
+          <property name="IsCustom">false</property>
+          <property name="Alias">Inventarios</property>
+          <property name="Name">rpInventarios</property>
+          <property name="IdInfo" isnull="true" iskey="true">
+            <property name="Id">485</property>
+          </property>
+          <property name="SourceIdInfo" isnull="true" iskey="true">
+            <property name="Id">51</property>
+          </property>
+        </property>
+        <property name="Item6" isnull="true" iskey="true">
+          <property name="Text">Movimientos</property>
+          <property name="IsVisible">true</property>
+          <property name="Groups" iskey="true" value="3">
+            <property name="Item1" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Cambio de ubicación</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Cambio de ubicación</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">491</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">57</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgCambioUbicacion</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">490</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">56</property>
+              </property>
+            </property>
+            <property name="Item2" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Cambio de estado</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Cambio de estado</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">493</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">59</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgCambioEstado</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">492</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">58</property>
+              </property>
+            </property>
+            <property name="Item3" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Ajuste de Inventario</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Ajuste de Inventario</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">495</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">63</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgAjusteInventario</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">494</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">62</property>
+              </property>
+            </property>
+          </property>
+          <property name="IsCustom">false</property>
+          <property name="Alias">Movimientos</property>
+          <property name="Name">rpMovimientos</property>
+          <property name="IdInfo" isnull="true" iskey="true">
+            <property name="Id">489</property>
+          </property>
+          <property name="SourceIdInfo" isnull="true" iskey="true">
+            <property name="Id">55</property>
+          </property>
+        </property>
+        <property name="Item7" isnull="true" iskey="true">
+          <property name="Text">Reportes</property>
+          <property name="IsVisible">true</property>
+          <property name="Groups" iskey="true" value="7">
+            <property name="Item1" isnull="true" iskey="true">
+              <property name="Text">Existencias</property>
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="5">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Detalle de Existencias</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Detalle de Existencias</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">501</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">66</property>
+                  </property>
+                </property>
+                <property name="Item2" isnull="true" iskey="true">
+                  <property name="Text">Control</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Control</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">526</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">67</property>
+                  </property>
+                </property>
+                <property name="Item3" isnull="true" iskey="true">
+                  <property name="Text">Movimientos</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Movimientos</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">539</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">68</property>
+                  </property>
+                </property>
+                <property name="Item4" isnull="true" iskey="true">
+                  <property name="Text">Ubicación Picking</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Ubicación Picking</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">551</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">69</property>
+                  </property>
+                </property>
+                <property name="Item5" isnull="true" iskey="true">
+                  <property name="Text">Estado Envíos a ERP</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Estado Envíos a ERP</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">552</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">70</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias">Existencias</property>
+              <property name="Name">pgReportes</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">500</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">65</property>
+              </property>
+            </property>
+            <property name="Item2" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Reportes Fiscales</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Reportes Fiscales</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">554</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">72</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgReporteFiscal</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">553</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">71</property>
+              </property>
+            </property>
+            <property name="Item3" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Reporte de ingresos</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Reporte de ingresos</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">565</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">74</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgReportesIngresoRapido</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">564</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">73</property>
+              </property>
+            </property>
+            <property name="Item4" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Reporte de salidas</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Reporte de salidas</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">570</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">76</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgSalidasRep</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">569</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">75</property>
+              </property>
+            </property>
+            <property name="Item5" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="2">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Análitica</property>
+                  <property name="IsVisible">false</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Análitica</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">575</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">84</property>
+                  </property>
+                </property>
+                <property name="Item2" isnull="true" iskey="true">
+                  <property name="Text">Log WMS</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Log WMS</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">576</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">85</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgLogWMS</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">574</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">83</property>
+              </property>
+            </property>
+            <property name="Item6" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">SAT</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">SAT</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">578</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">87</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">rpgSat</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">577</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">86</property>
+              </property>
+            </property>
+            <property name="Item7" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Diseñador de tableros</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Diseñador de tableros</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">583</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">78</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">grpRepTablero</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">582</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">77</property>
+              </property>
+            </property>
+          </property>
+          <property name="IsCustom">false</property>
+          <property name="Alias">Reportes</property>
+          <property name="Name">rpReportes</property>
+          <property name="IdInfo" isnull="true" iskey="true">
+            <property name="Id">499</property>
+          </property>
+          <property name="SourceIdInfo" isnull="true" iskey="true">
+            <property name="Id">64</property>
+          </property>
+        </property>
+        <property name="Item8" isnull="true" iskey="true">
+          <property name="Text">Administrador</property>
+          <property name="IsVisible">true</property>
+          <property name="Groups" iskey="true" value="9">
+            <property name="Item1" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Parámetros de Conexión</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Parámetros de Conexión</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">586</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">90</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgParametrosCn</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">585</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">89</property>
+              </property>
+            </property>
+            <property name="Item2" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="2">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">MI3 Sync</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">MI3 Sync</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">588</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">92</property>
+                  </property>
+                </property>
+                <property name="Item2" isnull="true" iskey="true">
+                  <property name="Text">Configuración Interface</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Configuración Interface</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">589</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">93</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">rpgInterface</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">587</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">91</property>
+              </property>
+            </property>
+            <property name="Item3" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Licencia</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Licencia</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">591</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">95</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">rpgLicencia</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">590</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">94</property>
+              </property>
+            </property>
+            <property name="Item4" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Reset menú layout</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Reset menú layout</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">593</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">97</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgResetMenu</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">592</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">96</property>
+              </property>
+            </property>
+            <property name="Item5" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Datos MI3</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Datos MI3</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">595</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">99</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgReporteTransacciones</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">594</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">98</property>
+              </property>
+            </property>
+            <property name="Item6" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Backup</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Backup</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">600</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">101</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">pgBackup</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">599</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">100</property>
+              </property>
+            </property>
+            <property name="Item7" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Cambio de Usuario</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Cambio de Usuario</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">602</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">103</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">rpgCambioDeUsuario</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">601</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">102</property>
+              </property>
+            </property>
+            <property name="Item8" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Servicio impresión de barras</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Servicio impresión de barras</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">604</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">105</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">rpgServicioImpresiones</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">603</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">104</property>
+              </property>
+            </property>
+            <property name="Item9" isnull="true" iskey="true">
+              <property name="Text">Mantenimiento base de datos</property>
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="3">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Actualizar versión</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Actualizar versión</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">606</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">107</property>
+                  </property>
+                </property>
+                <property name="Item2" isnull="true" iskey="true">
+                  <property name="Text">Regenerar Índices</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Regenerar Índices</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">607</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">108</property>
+                  </property>
+                </property>
+                <property name="Item3" isnull="true" iskey="true">
+                  <property name="Text">Salud</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Salud</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">608</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">109</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias">Mantenimiento base de datos</property>
+              <property name="Name">rpgActualizacionesBD</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">605</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">106</property>
+              </property>
+            </property>
+          </property>
+          <property name="IsCustom">false</property>
+          <property name="Alias">Administrador</property>
+          <property name="Name">rpAdministrador</property>
+          <property name="IdInfo" isnull="true" iskey="true">
+            <property name="Id">584</property>
+          </property>
+          <property name="SourceIdInfo" isnull="true" iskey="true">
+            <property name="Id">88</property>
+          </property>
+        </property>
+        <property name="Item9" isnull="true" iskey="true">
+          <property name="Text">Control de calidad</property>
+          <property name="IsVisible">true</property>
+          <property name="Groups" iskey="true" value="1">
+            <property name="Item1" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="2">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Gestión de inventario</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Gestión de inventario</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">611</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">112</property>
+                  </property>
+                </property>
+                <property name="Item2" isnull="true" iskey="true">
+                  <property name="Text">Reportes</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Reportes</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">613</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">113</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">rpGestionInventario</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">610</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">111</property>
+              </property>
+            </property>
+          </property>
+          <property name="IsCustom">false</property>
+          <property name="Alias">Control de calidad</property>
+          <property name="Name">rpControlCalidad</property>
+          <property name="IdInfo" isnull="true" iskey="true">
+            <property name="Id">609</property>
+          </property>
+          <property name="SourceIdInfo" isnull="true" iskey="true">
+            <property name="Id">110</property>
+          </property>
+        </property>
+        <property name="Item10" isnull="true" iskey="true">
+          <property name="Text">Manufactura Ligera</property>
+          <property name="IsVisible">true</property>
+          <property name="Groups" iskey="true" value="1">
+            <property name="Item1" isnull="true" iskey="true">
+              <property name="Text" />
+              <property name="ShowCaptionButton">false</property>
+              <property name="IsVisible">true</property>
+              <property name="Items" iskey="true" value="1">
+                <property name="Item1" isnull="true" iskey="true">
+                  <property name="Text">Manufactura</property>
+                  <property name="IsVisible">true</property>
+                  <property name="Items" iskey="true" value="0" />
+                  <property name="ItemSourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">2147483647</property>
+                  </property>
+                  <property name="IsCustom">false</property>
+                  <property name="Alias">Manufactura</property>
+                  <property name="Name" />
+                  <property name="IdInfo" isnull="true" iskey="true">
+                    <property name="Id">617</property>
+                  </property>
+                  <property name="SourceIdInfo" isnull="true" iskey="true">
+                    <property name="Id">116</property>
+                  </property>
+                </property>
+              </property>
+              <property name="IsCustom">false</property>
+              <property name="Alias" />
+              <property name="Name">rpMLTareas</property>
+              <property name="IdInfo" isnull="true" iskey="true">
+                <property name="Id">616</property>
+              </property>
+              <property name="SourceIdInfo" isnull="true" iskey="true">
+                <property name="Id">115</property>
+              </property>
+            </property>
+          </property>
+          <property name="IsCustom">false</property>
+          <property name="Alias">Manufactura Ligera</property>
+          <property name="Name">rpManufacturaLigera</property>
+          <property name="IdInfo" isnull="true" iskey="true">
+            <property name="Id">615</property>
+          </property>
+          <property name="SourceIdInfo" isnull="true" iskey="true">
+            <property name="Id">114</property>
+          </property>
+        </property>
+      </property>
+      <property name="IsCustom">false</property>
+      <property name="Alias">(Unassigned Pages)</property>
+      <property name="Name" />
+      <property name="IdInfo" isnull="true" iskey="true">
+        <property name="Id">369</property>
+      </property>
+      <property name="SourceIdInfo" isnull="true" iskey="true">
+        <property name="Id">0</property>
+      </property>
+    </property>
+  </property>
+  <property name="ToolbarLinks" iskey="true" value="0" />
+  <property name="CommonSettings" isnull="true" iskey="true">
+    <property name="Minimized">false</property>
+    <property name="CommandLayout">Classic</property>
+    <property name="ToolbarLocation">Default</property>
+    <property name="IsReady">true</property>
+    <property name="HashCode">117</property>
+  </property>
+</XtraSerializer>

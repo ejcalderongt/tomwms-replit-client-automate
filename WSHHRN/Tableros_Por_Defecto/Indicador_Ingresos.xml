@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-GT" DesignerAutomaticUpdates="false">
+  <Title Text="Ingresos" IncludeMasterFilterState="false" />
+  <DataSources>
+    <SqlDataSource Name="SQL Data Source 1" ComponentName="dashboardSqlDataSource1">
+      <Connection Name="localhost_IMS4MB_BYB_PRD_Connection" ProviderKey="MSSqlServer">
+        <Parameters>
+          <Parameter Name="server" Value="122.122.122.80" />
+          <Parameter Name="database" Value="IMS4MB_BYB_PRD" />
+          <Parameter Name="useIntegratedSecurity" Value="False" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+          <Parameter Name="userid" Value="" />
+          <Parameter Name="password" Value="" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="VW_Indicador_Ingresos">
+        <Parameter Name="Fecha_Inicial" Type="DevExpress.DataAccess.Expression">(System.DateTime)(?Fecha_Inicial)</Parameter>
+        <Parameter Name="Fecha_Final" Type="DevExpress.DataAccess.Expression">(System.DateTime)(?Fecha_Final)</Parameter>
+        <Parameter Name="IdBodega" Type="DevExpress.DataAccess.Expression">(System.Int16)(?IdBodega)</Parameter>
+        <Tables>
+          <Table Name="VW_Indicador_Ingresos" X="30" Y="30" Width="125" Height="364" />
+        </Tables>
+        <Columns>
+          <Column Table="VW_Indicador_Ingresos" Name="IdOrdenCompraEnc" />
+          <Column Table="VW_Indicador_Ingresos" Name="IdRecepcionEnc" />
+          <Column Table="VW_Indicador_Ingresos" Name="devolucion" />
+          <Column Table="VW_Indicador_Ingresos" Name="documento" />
+          <Column Table="VW_Indicador_Ingresos" Name="fecha" />
+          <Column Table="VW_Indicador_Ingresos" Name="IdBodega" />
+          <Column Table="VW_Indicador_Ingresos" Name="bodega" />
+          <Column Table="VW_Indicador_Ingresos" Name="codigo" />
+          <Column Table="VW_Indicador_Ingresos" Name="presentacion" />
+          <Column Table="VW_Indicador_Ingresos" Name="factor" />
+          <Column Table="VW_Indicador_Ingresos" Name="unidades" />
+          <Column Table="VW_Indicador_Ingresos" Name="cajas/bultos" />
+          <Column Table="VW_Indicador_Ingresos" Name="propietario" />
+          <Column Table="VW_Indicador_Ingresos" Name="producto" />
+          <Column Table="VW_Indicador_Ingresos" Name="estado" />
+        </Columns>
+        <Filter>[VW_Indicador_Ingresos.fecha] Between(?Fecha_Inicial, ?Fecha_Final) And [VW_Indicador_Ingresos.IdBodega] = ?IdBodega</Filter>
+        <GroupFilter></GroupFilter>
+      </Query>
+      <Query Type="SelectQuery" Name="bodega">
+        <Tables>
+          <Table Name="bodega" X="30" Y="30" Width="125" Height="1744" />
+        </Tables>
+        <Columns>
+          <Column Table="bodega" Name="nombre" />
+        </Columns>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="SQL Data Source 1">
+          <View Name="VW_Indicador_Ingresos">
+            <Field Name="IdOrdenCompraEnc" Type="Int32" />
+            <Field Name="IdRecepcionEnc" Type="Int32" />
+            <Field Name="devolucion" Type="Int32" />
+            <Field Name="documento" Type="String" />
+            <Field Name="fecha" Type="DateTime" />
+            <Field Name="IdBodega" Type="Int32" />
+            <Field Name="bodega" Type="String" />
+            <Field Name="codigo" Type="String" />
+            <Field Name="presentacion" Type="String" />
+            <Field Name="factor" Type="Int32" />
+            <Field Name="unidades" Type="Double" />
+            <Field Name="cajas/bultos" Type="Double" />
+            <Field Name="propietario" Type="String" />
+            <Field Name="producto" Type="String" />
+            <Field Name="estado" Type="String" />
+          </View>
+          <View Name="bodega">
+            <Field Name="nombre" Type="String" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+  <Parameters>
+    <Parameter Name="Fecha_Inicial" Type="System.DateTime" Value="2020-01-01T00:00:00" />
+    <Parameter Name="Fecha_Final" Type="System.DateTime" Value="2023-12-31T00:00:00" />
+    <Parameter Name="IdBodega" Type="System.Int16" Value="0" />
+  </Parameters>
+  <Items>
+    <Chart ComponentName="chartDashboardItem1" Name="Ingresos por doc." ParentContainer="dashboardItemGroup1" DataSource="dashboardSqlDataSource1" DataMember="VW_Indicador_Ingresos">
+      <ColoringOptions UseGlobalColors="false" />
+      <InteractivityOptions IsDrillDownEnabled="true" />
+      <DataItems>
+        <Measure DataMember="IdRecepcionEnc" Name="Documentos registrados" SummaryType="CountDistinct" DefaultId="DataItem0" />
+        <Dimension DataMember="fecha" DefaultId="DataItem2" />
+        <Dimension DataMember="fecha" DateTimeGroupInterval="Month" DefaultId="DataItem3" />
+        <Dimension DataMember="fecha" DateTimeGroupInterval="Day" DefaultId="DataItem4" />
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem2" />
+        <Argument DefaultId="DataItem3" />
+        <Argument DefaultId="DataItem4" />
+      </Arguments>
+      <ColorScheme>
+        <Entry DataSource="dashboardSqlDataSource1" DataMember="VW_Indicador_Ingresos" Color="-2208235">
+          <DimensionKeys>
+            <DimensionKey>
+              <Definition DataMember="bodega" />
+              <Value Type="System.String" Value="BODEGA_ILP" />
+            </DimensionKey>
+          </DimensionKeys>
+        </Entry>
+        <Entry DataSource="dashboardSqlDataSource1" DataMember="VW_Indicador_Ingresos" PaletteIndex="10">
+          <DimensionKeys>
+            <DimensionKey>
+              <Definition DataMember="bodega" />
+              <Value Type="System.String" Value="BODEGA_SI" />
+            </DimensionKey>
+          </DimensionKeys>
+        </Entry>
+      </ColorScheme>
+      <Panes>
+        <Pane Name="Pane 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem0" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+      <ChartLegend OutsidePosition="TopCenterHorizontal" />
+    </Chart>
+    <Gauge ComponentName="gaugeDashboardItem1" Name="Devoluciones sobre Ingresos" ParentContainer="dashboardItemGroup2" DataSource="dashboardSqlDataSource1" DataMember="VW_Indicador_Ingresos" ContentLineCount="4" ViewType="CircularHalf">
+      <DataItems>
+        <Measure DataMember="devolucion" DefaultId="DataItem0">
+          <NumericFormat FormatType="Number" />
+        </Measure>
+        <Measure DataMember="IdRecepcionEnc" SummaryType="Count" DefaultId="DataItem1">
+          <NumericFormat FormatType="Percent" />
+        </Measure>
+      </DataItems>
+      <GaugeElement Name="cantidad devoluciones" Minimum="0">
+        <ActualValue DefaultId="DataItem0" />
+        <TargetValue DefaultId="DataItem1" />
+        <DeltaOptions ResultIndicationMode="WarningIfLess" ValueType="ActualValue" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+        <ScaleLabelNumericFormat FormatType="Number" />
+      </GaugeElement>
+    </Gauge>
+    <TreeView ComponentName="treeViewDashboardItem1" Name="Filtro por bodega" ParentContainer="dashboardItemGroup1" DataSource="dashboardSqlDataSource1" DataMember="VW_Indicador_Ingresos" AutoExpand="true">
+      <DataItems>
+        <Dimension DataMember="bodega" DefaultId="DataItem0" />
+      </DataItems>
+      <FilterDimensions>
+        <Dimension DefaultId="DataItem0" />
+      </FilterDimensions>
+    </TreeView>
+    <Chart ComponentName="chartDashboardItem2" Name="Top 10 Proveedores (Uni/Pres)" ParentContainer="dashboardItemGroup3" DataSource="dashboardSqlDataSource1" DataMember="VW_Indicador_Ingresos">
+      <InteractivityOptions IsDrillDownEnabled="true" />
+      <DataItems>
+        <Dimension DataMember="propietario" TopNEnabled="true" TopNCount="10" TopNMeasure="DataItem2" DefaultId="DataItem0" />
+        <Dimension DataMember="producto" TopNEnabled="true" TopNCount="10" TopNMeasure="DataItem2" DefaultId="DataItem1" />
+        <Measure DataMember="unidades" Name="Unidades" DefaultId="DataItem2">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" IncludeGroupSeparator="true" />
+        </Measure>
+        <Measure DataMember="cajas/bultos" Name="Presentaciones" DefaultId="DataItem3">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" IncludeGroupSeparator="true" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+        <Argument DefaultId="DataItem1" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Pane 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem2" />
+            </Simple>
+            <Simple>
+              <Value DefaultId="DataItem3" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <TreeView ComponentName="treeViewDashboardItem2" Name="Filtro por doc. de ingreso" ParentContainer="dashboardItemGroup1" DataSource="dashboardSqlDataSource1" DataMember="VW_Indicador_Ingresos">
+      <InteractivityOptions IgnoreMasterFilters="false" />
+      <DataItems>
+        <Dimension DataMember="documento" DefaultId="DataItem0" />
+      </DataItems>
+      <FilterDimensions>
+        <Dimension DefaultId="DataItem0" />
+      </FilterDimensions>
+    </TreeView>
+    <Chart ComponentName="chartDashboardItem3" Name="Estado del producto" ParentContainer="dashboardItemGroup4" DataSource="dashboardSqlDataSource1" DataMember="VW_Indicador_Ingresos">
+      <DataItems>
+        <Measure DataMember="unidades" Name="unidades recibidas" DefaultId="DataItem0">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" IncludeGroupSeparator="true" />
+        </Measure>
+        <Dimension DataMember="estado" DefaultId="DataItem1" />
+        <Measure DataMember="cajas/bultos" DefaultId="DataItem2">
+          <NumericFormat FormatType="Number" Precision="0" Unit="Ones" IncludeGroupSeparator="true" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem1" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Pane 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem0" />
+            </Simple>
+            <Simple>
+              <Value DefaultId="DataItem2" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+  </Items>
+  <Groups>
+    <Group ComponentName="dashboardItemGroup1" Name="Ingresos totales">
+      <InteractivityOptions IgnoreMasterFilters="false" />
+    </Group>
+    <Group ComponentName="dashboardItemGroup2" Name="Devoluciones">
+      <InteractivityOptions IgnoreMasterFilters="false" />
+    </Group>
+    <Group ComponentName="dashboardItemGroup3" Name="Top 10">
+      <InteractivityOptions IgnoreMasterFilters="false" />
+    </Group>
+    <Group ComponentName="dashboardItemGroup4" Name="Unidades recibidas">
+      <InteractivityOptions IgnoreMasterFilters="false" />
+    </Group>
+  </Groups>
+  <LayoutTree>
+    <LayoutGroup Weight="100">
+      <LayoutGroup DashboardItem="dashboardItemGroup1" Weight="44.102112676056336">
+        <LayoutGroup Orientation="Vertical" Weight="23.819301848049282">
+          <LayoutItem DashboardItem="treeViewDashboardItem1" Weight="44.444444444444443" />
+          <LayoutItem DashboardItem="treeViewDashboardItem2" Weight="55.555555555555557" />
+        </LayoutGroup>
+        <LayoutItem DashboardItem="chartDashboardItem1" Weight="76.180698151950722" />
+      </LayoutGroup>
+      <LayoutGroup Orientation="Vertical" Weight="55.897887323943664">
+        <LayoutGroup Orientation="Vertical" DashboardItem="dashboardItemGroup2" Weight="48.247078464106842">
+          <LayoutItem DashboardItem="gaugeDashboardItem1" Weight="100" />
+        </LayoutGroup>
+        <LayoutGroup Weight="51.752921535893158">
+          <LayoutGroup Orientation="Vertical" DashboardItem="dashboardItemGroup3" Weight="46.771653543307089">
+            <LayoutItem DashboardItem="chartDashboardItem2" Weight="100" />
+          </LayoutGroup>
+          <LayoutGroup Orientation="Vertical" DashboardItem="dashboardItemGroup4" Weight="53.228346456692911">
+            <LayoutItem DashboardItem="chartDashboardItem3" Weight="100" />
+          </LayoutGroup>
+        </LayoutGroup>
+      </LayoutGroup>
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-ES">
+  <Title Text="Marcaje de Operadores" />
+  <DataSources>
+    <SqlDataSource Name="SQL Data Source 1" ComponentName="dashboardSqlDataSource1">
+      <Connection Name="localhost_IMS4MB_CEALSA_QAS_Connection" ProviderKey="MSSqlServer">
+        <Parameters>
+          <Parameter Name="server" Value="localhost" />
+          <Parameter Name="database" Value="IMS4MB_CEALSA_QAS" />
+          <Parameter Name="useIntegratedSecurity" Value="False" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+          <Parameter Name="userid" Value="" />
+          <Parameter Name="password" Value="" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="vw_Indicador_Marcaje">
+        <Tables>
+          <Table Name="vw_Indicador_Marcaje" X="30" Y="30" Width="125" Height="284" />
+        </Tables>
+        <Columns>
+          <Column Table="vw_Indicador_Marcaje" Name="horario_inicia" />
+          <Column Table="vw_Indicador_Marcaje" Name="horario_finaliza" />
+          <Column Table="vw_Indicador_Marcaje" Name="horas_laborales" />
+          <Column Table="vw_Indicador_Marcaje" Name="marcaje_entrada" />
+          <Column Table="vw_Indicador_Marcaje" Name="marcaje_salida" />
+          <Column Table="vw_Indicador_Marcaje" Name="horas_marcaje" />
+          <Column Table="vw_Indicador_Marcaje" Name="fecha_marcaje" />
+          <Column Table="vw_Indicador_Marcaje" Name="IdOperador" />
+          <Column Table="vw_Indicador_Marcaje" Name="IdBodega" />
+          <Column Table="vw_Indicador_Marcaje" Name="bodega" />
+          <Column Table="vw_Indicador_Marcaje" Name="operador" />
+        </Columns>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="SQL Data Source 1">
+          <View Name="vw_Indicador_Marcaje">
+            <Field Name="horario_inicia" Type="Unknown" />
+            <Field Name="horario_finaliza" Type="Unknown" />
+            <Field Name="horas_laborales" Type="Int32" />
+            <Field Name="marcaje_entrada" Type="Unknown" />
+            <Field Name="marcaje_salida" Type="Unknown" />
+            <Field Name="horas_marcaje" Type="Int32" />
+            <Field Name="fecha_marcaje" Type="DateTime" />
+            <Field Name="IdOperador" Type="Int32" />
+            <Field Name="IdBodega" Type="Int32" />
+            <Field Name="bodega" Type="String" />
+            <Field Name="operador" Type="String" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <TreeView ComponentName="treeViewDashboardItem1" Name="Filtro" ParentContainer="dashboardItemGroup1" DataSource="dashboardSqlDataSource1" DataMember="vw_Indicador_Marcaje">
+      <DataItems>
+        <Dimension DataMember="bodega" DefaultId="DataItem0" />
+        <Dimension DataMember="operador" DefaultId="DataItem1" />
+      </DataItems>
+      <FilterDimensions>
+        <Dimension DefaultId="DataItem0" />
+        <Dimension DefaultId="DataItem1" />
+      </FilterDimensions>
+    </TreeView>
+    <Chart ComponentName="chartDashboardItem1" Name="horario vs marcaje" ParentContainer="dashboardItemGroup1" DataSource="dashboardSqlDataSource1" DataMember="vw_Indicador_Marcaje">
+      <InteractivityOptions IsDrillDownEnabled="true" />
+      <DataItems>
+        <Dimension DataMember="fecha_marcaje" DefaultId="DataItem0" />
+        <Dimension DataMember="fecha_marcaje" DateTimeGroupInterval="Month" DefaultId="DataItem1" />
+        <Dimension DataMember="fecha_marcaje" DateTimeGroupInterval="Day" DefaultId="DataItem2" />
+        <Measure DataMember="horas_laborales" Name="horas laborales" DefaultId="DataItem3" />
+        <Measure DataMember="horas_marcaje" Name="horas marcadas HH" DefaultId="DataItem4" />
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+        <Argument DefaultId="DataItem1" />
+        <Argument DefaultId="DataItem2" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Pane 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem3" />
+            </Simple>
+            <Simple>
+              <Value DefaultId="DataItem4" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+  </Items>
+  <Groups>
+    <Group ComponentName="dashboardItemGroup1" Name="Group 1" />
+  </Groups>
+  <LayoutTree>
+    <LayoutGroup Orientation="Vertical" Weight="100">
+      <LayoutGroup DashboardItem="dashboardItemGroup1" Weight="100">
+        <LayoutItem DashboardItem="treeViewDashboardItem1" Weight="19.965724078834619" />
+        <LayoutItem DashboardItem="chartDashboardItem1" Weight="80.034275921165374" />
+      </LayoutGroup>
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

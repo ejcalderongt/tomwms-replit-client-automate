@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-GT">
+  <Title Text="Tablero de control" />
+  <DataSources>
+    <SqlDataSource Name="Origen de datos SQL 1" ComponentName="dashboardSqlDataSource1">
+      <Connection Name="localhost_IMS4MB_IDEALSA_PRD_Connection" ProviderKey="MSSqlServer">
+        <Parameters>
+          <Parameter Name="server" Value="PROGRAX\SQLEXPRESS" />
+          <Parameter Name="database" Value="IMS4MB_IDEALSA_PRD" />
+          <Parameter Name="useIntegratedSecurity" Value="False" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="VW_Movimientos_20211205">
+        <Tables>
+          <Table Name="VW_Movimientos_20211205" X="30" Y="30" Width="125" Height="222" />
+        </Tables>
+        <Columns>
+          <Column Table="VW_Movimientos_20211205" Name="IdBodegaOrigen" />
+          <Column Table="VW_Movimientos_20211205" Name="fecha" />
+          <Column Table="VW_Movimientos_20211205" Name="Codigo_Bodega" />
+          <Column Table="VW_Movimientos_20211205" Name="Tipo_Movimiento" />
+          <Column Table="VW_Movimientos_20211205" Name="Producto" />
+          <Column Table="VW_Movimientos_20211205" Name="Cantidad" />
+          <Column Table="VW_Movimientos_20211205" Name="Unidad_Medida" />
+          <Column Table="VW_Movimientos_20211205" Name="UM" />
+          <Column Table="VW_Movimientos_20211205" Name="Presentacion" />
+        </Columns>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="Origen de datos SQL 1">
+          <View Name="VW_Movimientos_20211205">
+            <Field Name="IdBodegaOrigen" Type="Int32" />
+            <Field Name="fecha" Type="DateTime" />
+            <Field Name="Codigo_Bodega" Type="String" />
+            <Field Name="Tipo_Movimiento" Type="String" />
+            <Field Name="Producto" Type="String" />
+            <Field Name="Cantidad" Type="Double" />
+            <Field Name="Unidad_Medida" Type="String" />
+            <Field Name="UM" Type="String" />
+            <Field Name="Presentacion" Type="String" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <Grid ComponentName="gridDashboardItem1" Name="Rejilla 1" DataSource="dashboardSqlDataSource1" DataMember="VW_Movimientos_20211205">
+      <InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Dimension DataMember="Codigo_Bodega" DefaultId="DataItem0" />
+        <Dimension DataMember="Producto" TopNEnabled="true" TopNCount="15" TopNMeasure="DataItem3" DefaultId="DataItem1" />
+        <Dimension DataMember="UM" DefaultId="DataItem2" />
+        <Measure DataMember="Cantidad" DefaultId="DataItem3" />
+        <Dimension DataMember="Tipo_Movimiento" SortOrder="Descending" DefaultId="DataItem5" />
+        <Dimension DataMember="fecha" DateTimeGroupInterval="MonthYear" DefaultId="DataItem4" />
+      </DataItems>
+      <GridColumns>
+        <GridDimensionColumn Weight="63.170347003154575">
+          <Dimension DefaultId="DataItem0" />
+        </GridDimensionColumn>
+        <GridDimensionColumn Weight="156.15141955835964">
+          <Dimension DefaultId="DataItem1" />
+        </GridDimensionColumn>
+        <GridDimensionColumn Weight="36.198738170347006">
+          <Dimension DefaultId="DataItem2" />
+        </GridDimensionColumn>
+        <GridMeasureColumn Weight="65.299684542586746">
+          <Measure DefaultId="DataItem3" />
+        </GridMeasureColumn>
+        <GridDimensionColumn Weight="47.555205047318609">
+          <Dimension DefaultId="DataItem5" />
+        </GridDimensionColumn>
+        <GridDimensionColumn Weight="81.624605678233436">
+          <Dimension DefaultId="DataItem4" />
+        </GridDimensionColumn>
+      </GridColumns>
+      <GridOptions ColumnWidthMode="Manual" />
+    </Grid>
+    <RangeFilter ComponentName="rangeFilterDashboardItem1" Name="Filtro de Rango 1" DataSource="dashboardSqlDataSource1" DataMember="VW_Movimientos_20211205">
+      <DataItems>
+        <Dimension DataMember="fecha" DateTimeGroupInterval="MonthYear" DefaultId="DataItem0" />
+        <Measure DataMember="fecha" SummaryType="Count" DefaultId="DataItem1" />
+      </DataItems>
+      <Argument DefaultId="DataItem0" />
+      <Series>
+        <Simple SeriesType="Line">
+          <Value DefaultId="DataItem1" />
+        </Simple>
+      </Series>
+    </RangeFilter>
+    <ComboBox ComponentName="comboBoxDashboardItem1" Name="Filtro por tipo de movimiento" DataSource="dashboardSqlDataSource1" DataMember="VW_Movimientos_20211205">
+      <DataItems>
+        <Dimension DataMember="Tipo_Movimiento" DefaultId="DataItem0" />
+        <Dimension DataMember="Tipo_Movimiento" DefaultId="DataItem1" />
+      </DataItems>
+      <HiddenDimensions>
+        <Dimension DefaultId="DataItem0" />
+      </HiddenDimensions>
+      <FilterDimensions>
+        <Dimension DefaultId="DataItem1" />
+      </FilterDimensions>
+    </ComboBox>
+    <ComboBox ComponentName="comboBoxDashboardItem2" Name="Filtro por bodega" DataSource="dashboardSqlDataSource1" DataMember="VW_Movimientos_20211205">
+      <DataItems>
+        <Dimension DataMember="Codigo_Bodega" DefaultId="DataItem0" />
+      </DataItems>
+      <FilterDimensions>
+        <Dimension DefaultId="DataItem0" />
+      </FilterDimensions>
+    </ComboBox>
+    <Chart ComponentName="chartDashboardItem1" Name="Gráfico 1" DataSource="dashboardSqlDataSource1" DataMember="VW_Movimientos_20211205">
+      <DataItems>
+        <Dimension DataMember="Producto" DefaultId="DataItem0" />
+        <Measure DataMember="Cantidad" DefaultId="DataItem1" />
+        <Dimension DataMember="fecha" DateTimeGroupInterval="MonthYear" DefaultId="DataItem2" />
+        <Dimension DataMember="Tipo_Movimiento" DefaultId="DataItem3" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem0" />
+        <SeriesDimension DefaultId="DataItem2" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem3" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup Orientation="Vertical" Weight="100">
+      <LayoutItem DashboardItem="comboBoxDashboardItem2" Weight="10.362694300518134" />
+      <LayoutItem DashboardItem="comboBoxDashboardItem1" Weight="10.362694300518134" />
+      <LayoutItem DashboardItem="rangeFilterDashboardItem1" Weight="15.716753022452505" />
+      <LayoutGroup Weight="63.557858376511227">
+        <LayoutItem DashboardItem="gridDashboardItem1" Weight="56.583629893238431" />
+        <LayoutItem DashboardItem="chartDashboardItem1" Weight="43.416370106761569" />
+      </LayoutGroup>
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

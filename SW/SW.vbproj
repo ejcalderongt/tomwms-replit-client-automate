@@ -1,0 +1,436 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BA6DCD21-5AFD-46AF-BB30-2FC7EDB254FC}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>MailService</StartupObject>
+    <RootNamespace>
+    </RootNamespace>
+    <AssemblyName>SW</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>Console</MyType>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>SW.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <CodeAnalysisRuleSet />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>SW.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <CodeAnalysisRuleSet />
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=10.5.3700.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportSource, Version=10.5.3700.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Shared, Version=10.5.3700.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Threading.Tasks" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bodega\clsBeBodega_monitor_parametro.vb" />
+    <Compile Include="Bodega\clsLnBodega_monitor_parametro_partial.vb" />
+    <Compile Include="Clases_AP\BaseDatos.vb" />
+    <Compile Include="Clases_AP\m_Global.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="MailService.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MailService.Designer.vb">
+      <DependentUpon>MailService.vb</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="ProjectInstaller.Designer.vb">
+      <DependentUpon>ProjectInstaller.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ProjectInstaller.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Recepcion_Detalle_Infraccion\dsRecepcionDetalleInfraccion.Designer.vb">
+      <DependentUpon>dsRecepcionDetalleInfraccion.xsd</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Recepcion_Detalle_Infraccion\dsRecepcionDetalleInfraccion.vb">
+      <DependentUpon>dsRecepcionDetalleInfraccion.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Recepcion_Detalle_Infraccion\rptRecepcionDetalleInfraccion.vb">
+      <DependentUpon>rptRecepcionDetalleInfraccion.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Service References\WCFOrdenCompra\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\WCFProductoPresentacion\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\WCFPropietarioDestinatario\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\WCFPropietarioReglaRecepcion\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\WCFRecepcionInfraccion\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Service References\WCFRecepcion\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProjectInstaller.resx">
+      <DependentUpon>ProjectInstaller.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Recepcion_Detalle_Infraccion\rptRecepcionDetalleInfraccion.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>rptRecepcionDetalleInfraccion.vb</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\app.manifest" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\DataSources\System.Data.DataTable.datasource" />
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="App.config" />
+    <None Include="Recepcion_Detalle_Infraccion\dsRecepcionDetalleInfraccion.xsc">
+      <DependentUpon>dsRecepcionDetalleInfraccion.xsd</DependentUpon>
+    </None>
+    <None Include="Recepcion_Detalle_Infraccion\dsRecepcionDetalleInfraccion.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsRecepcionDetalleInfraccion.Designer.vb</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Recepcion_Detalle_Infraccion\dsRecepcionDetalleInfraccion.xss">
+      <DependentUpon>dsRecepcionDetalleInfraccion.xsd</DependentUpon>
+    </None>
+    <None Include="Service References\WCFOrdenCompra\ServiceOrdenCompra.wsdl" />
+    <None Include="Service References\WCFOrdenCompra\ServiceOrdenCompra.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFOrdenCompra\ServiceOrdenCompra1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFOrdenCompra\ServiceOrdenCompra2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFOrdenCompra\ServiceOrdenCompra3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFOrdenCompra\WCFOrdenCompra.clsBeTrans_oc_det.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFOrdenCompra\WCFOrdenCompra.clsBeTrans_oc_enc.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFOrdenCompra\WCFOrdenCompra.clsBeTrans_oc_imagen.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFOrdenCompra\WCFOrdenCompra.clsBeTrans_oc_pol.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFProductoPresentacion\ServiceProductoPresentacion.wsdl" />
+    <None Include="Service References\WCFProductoPresentacion\ServiceProductoPresentacion.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFProductoPresentacion\ServiceProductoPresentacion1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFProductoPresentacion\ServiceProductoPresentacion2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFProductoPresentacion\WCFProductoPresentacion.clsBeProducto_presentacion.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFProductoPresentacion\WCFProductoPresentacion.EliminarResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFProductoPresentacion\WCFProductoPresentacion.InsertarResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFPropietarioDestinatario\PropietarioDestinatario.wsdl" />
+    <None Include="Service References\WCFPropietarioDestinatario\PropietarioDestinatario.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFPropietarioDestinatario\PropietarioDestinatario1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFPropietarioDestinatario\PropietarioDestinatario2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFPropietarioDestinatario\PropietarioDestinatario3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFPropietarioDestinatario\WCFPropietarioDestinatario.clsBePropietario_destinatario.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFPropietarioDestinatario\WCFPropietarioDestinatario.EliminarResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFPropietarioDestinatario\WCFPropietarioDestinatario.InsertarResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFPropietarioReglaRecepcion\ServicePropietarioReglaRecepcion.wsdl" />
+    <None Include="Service References\WCFPropietarioReglaRecepcion\ServicePropietarioReglaRecepcion.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFPropietarioReglaRecepcion\ServicePropietarioReglaRecepcion1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFPropietarioReglaRecepcion\ServicePropietarioReglaRecepcion2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFPropietarioReglaRecepcion\WCFPropietarioReglaRecepcion.clsBePropietario_reglas_det.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFPropietarioReglaRecepcion\WCFPropietarioReglaRecepcion.clsBePropietario_reglas_enc.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFRecepcionInfraccion\ServiceRecepcionInfraccion.wsdl" />
+    <None Include="Service References\WCFRecepcionInfraccion\ServiceRecepcionInfraccion.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFRecepcionInfraccion\ServiceRecepcionInfraccion1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFRecepcionInfraccion\ServiceRecepcionInfraccion2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFRecepcion\ServiceRecepcion.wsdl" />
+    <None Include="Service References\WCFRecepcion\ServiceRecepcion.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFRecepcion\ServiceRecepcion1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFRecepcion\ServiceRecepcion2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFRecepcion\ServiceRecepcion3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WCFRecepcion\WCFRecepcion.clsBeStock_parametro.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFRecepcion\WCFRecepcion.clsBeStock_rec.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFRecepcion\WCFRecepcion.clsBeStock_se.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFRecepcion\WCFRecepcion.clsBeStock_se_rec.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFRecepcion\WCFRecepcion.clsBeTrans_re_det.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFRecepcion\WCFRecepcion.clsBeTrans_re_enc.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\WCFRecepcion\WCFRecepcion.clsBeTrans_re_op.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\WCFOrdenCompra\" />
+    <WCFMetadataStorage Include="Service References\WCFProductoPresentacion\" />
+    <WCFMetadataStorage Include="Service References\WCFPropietarioDestinatario\" />
+    <WCFMetadataStorage Include="Service References\WCFPropietarioReglaRecepcion\" />
+    <WCFMetadataStorage Include="Service References\WCFRecepcionInfraccion\" />
+    <WCFMetadataStorage Include="Service References\WCFRecepcion\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\WCFProductoPresentacion\ServiceProductoPresentacion.disco" />
+    <None Include="Service References\WCFProductoPresentacion\configuration91.svcinfo" />
+    <None Include="Service References\WCFProductoPresentacion\configuration.svcinfo" />
+    <None Include="Service References\WCFProductoPresentacion\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Service References\WCFPropietarioDestinatario\PropietarioDestinatario.disco" />
+    <None Include="Service References\WCFPropietarioDestinatario\configuration91.svcinfo" />
+    <None Include="Service References\WCFPropietarioDestinatario\configuration.svcinfo" />
+    <None Include="Service References\WCFPropietarioDestinatario\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Service References\WCFOrdenCompra\ServiceOrdenCompra.disco" />
+    <None Include="Service References\WCFOrdenCompra\configuration91.svcinfo" />
+    <None Include="Service References\WCFOrdenCompra\configuration.svcinfo" />
+    <None Include="Service References\WCFOrdenCompra\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Service References\WCFPropietarioReglaRecepcion\ServicePropietarioReglaRecepcion.disco" />
+    <None Include="Service References\WCFPropietarioReglaRecepcion\configuration91.svcinfo" />
+    <None Include="Service References\WCFPropietarioReglaRecepcion\configuration.svcinfo" />
+    <None Include="Service References\WCFPropietarioReglaRecepcion\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Service References\WCFRecepcionInfraccion\ServiceRecepcionInfraccion.disco" />
+    <None Include="Service References\WCFRecepcionInfraccion\configuration91.svcinfo" />
+    <None Include="Service References\WCFRecepcionInfraccion\configuration.svcinfo" />
+    <None Include="Service References\WCFRecepcionInfraccion\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Service References\WCFRecepcion\ServiceRecepcion.disco" />
+    <None Include="Service References\WCFRecepcion\configuration91.svcinfo" />
+    <None Include="Service References\WCFRecepcion\configuration.svcinfo" />
+    <None Include="Service References\WCFRecepcion\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <Content Include="tomar en cuenta para generacion de infracciones.sql" />
+    <Content Include="Validacion de Cantidad y Costo.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://tempuri.org/" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" name="ServiceCliente" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://192.168.0.3/MI3/Cliente/Cliente/ServiceCliente.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://192.168.0.3/MI3/Cliente/Cliente/ServiceCliente.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://192.168.0.3/MI3/Cliente/Cliente/ServiceCliente.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/TOMWMS" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IServiceCliente_Insert_InputMessage">
+    <wsdl:part name="parameters" element="tns:Insert" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Insert_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Insert_Single_InputMessage">
+    <wsdl:part name="parameters" element="tns:Insert_Single" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Insert_Single_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Insert_SingleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Disable_InputMessage">
+    <wsdl:part name="parameters" element="tns:Disable" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Disable_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DisableResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Get_All_Filter_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Filter" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Get_All_Filter_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_FilterResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Get_Single_By_IdCliente_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_IdCliente" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Get_Single_By_IdCliente_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_IdClienteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Get_Single_By_Propietario_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_Propietario" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Get_Single_By_Propietario_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_PropietarioResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Get_All_Tiempos_By_IdCliente_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Tiempos_By_IdCliente" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Get_All_Tiempos_By_IdCliente_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Tiempos_By_IdClienteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Get_All_Direcciones_Entrega_By_IdCliente_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Direcciones_Entrega_By_IdCliente" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Get_All_Direcciones_Entrega_By_IdCliente_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Direcciones_Entrega_By_IdClienteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Get_All_Bodegas_By_Cliente_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Bodegas_By_Cliente" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Get_All_Bodegas_By_Cliente_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Bodegas_By_ClienteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Max_Id_Dir_Entrega_InputMessage">
+    <wsdl:part name="parameters" element="tns:Max_Id_Dir_Entrega" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Max_Id_Dir_Entrega_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Max_Id_Dir_EntregaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Max_IdCliente_InputMessage">
+    <wsdl:part name="parameters" element="tns:Max_IdCliente" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Max_IdCliente_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Max_IdClienteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Update_Single_InputMessage">
+    <wsdl:part name="parameters" element="tns:Update_Single" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Update_Single_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Update_SingleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Existe_InputMessage">
+    <wsdl:part name="parameters" element="tns:Existe" />
+  </wsdl:message>
+  <wsdl:message name="IServiceCliente_Existe_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExisteResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IServiceCliente">
+    <wsdl:operation name="Insert">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceCliente/Insert" message="tns:IServiceCliente_Insert_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceCliente/InsertResponse" message="tns:IServiceCliente_Insert_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Insert_Single">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceCliente/Insert_Single" message="tns:IServiceCliente_Insert_Single_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceCliente/Insert_SingleResponse" message="tns:IServiceCliente_Insert_Single_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Disable">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceCliente/Disable" message="tns:IServiceCliente_Disable_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceCliente/DisableResponse" message="tns:IServiceCliente_Disable_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Filter">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceCliente/Get_All_Filter" message="tns:IServiceCliente_Get_All_Filter_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceCliente/Get_All_FilterResponse" message="tns:IServiceCliente_Get_All_Filter_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_IdCliente">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceCliente/Get_Single_By_IdCliente" message="tns:IServiceCliente_Get_Single_By_IdCliente_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceCliente/Get_Single_By_IdClienteResponse" message="tns:IServiceCliente_Get_Single_By_IdCliente_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_Propietario">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceCliente/Get_Single_By_Propietario" message="tns:IServiceCliente_Get_Single_By_Propietario_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceCliente/Get_Single_By_PropietarioResponse" message="tns:IServiceCliente_Get_Single_By_Propietario_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Tiempos_By_IdCliente">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceCliente/Get_All_Tiempos_By_IdCliente" message="tns:IServiceCliente_Get_All_Tiempos_By_IdCliente_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceCliente/Get_All_Tiempos_By_IdClienteResponse" message="tns:IServiceCliente_Get_All_Tiempos_By_IdCliente_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Direcciones_Entrega_By_IdCliente">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceCliente/Get_All_Direcciones_Entrega_By_IdCliente" message="tns:IServiceCliente_Get_All_Direcciones_Entrega_By_IdCliente_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceCliente/Get_All_Direcciones_Entrega_By_IdClienteResponse" message="tns:IServiceCliente_Get_All_Direcciones_Entrega_By_IdCliente_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Bodegas_By_Cliente">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceCliente/Get_All_Bodegas_By_Cliente" message="tns:IServiceCliente_Get_All_Bodegas_By_Cliente_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceCliente/Get_All_Bodegas_By_ClienteResponse" message="tns:IServiceCliente_Get_All_Bodegas_By_Cliente_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Max_Id_Dir_Entrega">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceCliente/Max_Id_Dir_Entrega" message="tns:IServiceCliente_Max_Id_Dir_Entrega_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceCliente/Max_Id_Dir_EntregaResponse" message="tns:IServiceCliente_Max_Id_Dir_Entrega_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Max_IdCliente">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceCliente/Max_IdCliente" message="tns:IServiceCliente_Max_IdCliente_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceCliente/Max_IdClienteResponse" message="tns:IServiceCliente_Max_IdCliente_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Update_Single">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceCliente/Update_Single" message="tns:IServiceCliente_Update_Single_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceCliente/Update_SingleResponse" message="tns:IServiceCliente_Update_Single_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Existe">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceCliente/Existe" message="tns:IServiceCliente_Existe_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceCliente/ExisteResponse" message="tns:IServiceCliente_Existe_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IServiceCliente" type="tns:IServiceCliente">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Insert">
+      <soap:operation soapAction="http://tempuri.org/IServiceCliente/Insert" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Insert_Single">
+      <soap:operation soapAction="http://tempuri.org/IServiceCliente/Insert_Single" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Disable">
+      <soap:operation soapAction="http://tempuri.org/IServiceCliente/Disable" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Filter">
+      <soap:operation soapAction="http://tempuri.org/IServiceCliente/Get_All_Filter" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_IdCliente">
+      <soap:operation soapAction="http://tempuri.org/IServiceCliente/Get_Single_By_IdCliente" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_Propietario">
+      <soap:operation soapAction="http://tempuri.org/IServiceCliente/Get_Single_By_Propietario" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Tiempos_By_IdCliente">
+      <soap:operation soapAction="http://tempuri.org/IServiceCliente/Get_All_Tiempos_By_IdCliente" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Direcciones_Entrega_By_IdCliente">
+      <soap:operation soapAction="http://tempuri.org/IServiceCliente/Get_All_Direcciones_Entrega_By_IdCliente" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Bodegas_By_Cliente">
+      <soap:operation soapAction="http://tempuri.org/IServiceCliente/Get_All_Bodegas_By_Cliente" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Max_Id_Dir_Entrega">
+      <soap:operation soapAction="http://tempuri.org/IServiceCliente/Max_Id_Dir_Entrega" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Max_IdCliente">
+      <soap:operation soapAction="http://tempuri.org/IServiceCliente/Max_IdCliente" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Update_Single">
+      <soap:operation soapAction="http://tempuri.org/IServiceCliente/Update_Single" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Existe">
+      <soap:operation soapAction="http://tempuri.org/IServiceCliente/Existe" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ServiceCliente">
+    <wsdl:port name="BasicHttpBinding_IServiceCliente" binding="tns:BasicHttpBinding_IServiceCliente">
+      <soap:address location="http://192.168.0.3/MI3/Cliente/Cliente/ServiceCliente.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

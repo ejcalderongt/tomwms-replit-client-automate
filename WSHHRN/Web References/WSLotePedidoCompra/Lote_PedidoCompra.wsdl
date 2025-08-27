@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:tns="urn:microsoft-dynamics-schemas/codeunit/Lote_PedidoCompra" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/Lote_PedidoCompra" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <schema elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/Lote_PedidoCompra" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element name="LoteLineaPedidoCompra">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="noPedidoCompra" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="noLineaCompra" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="codProducto" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codVariante" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codUnidadMedida" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="cantidad" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="noLote" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="fechaCaducidad" type="date" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="LoteLineaPedidoCompra_Result">
+        <complexType>
+          <sequence />
+        </complexType>
+      </element>
+    </schema>
+  </types>
+  <message name="LoteLineaPedidoCompra">
+    <part name="parameters" element="tns:LoteLineaPedidoCompra" />
+  </message>
+  <message name="LoteLineaPedidoCompra_Result">
+    <part name="parameters" element="tns:LoteLineaPedidoCompra_Result" />
+  </message>
+  <portType name="Lote_PedidoCompra_Port">
+    <operation name="LoteLineaPedidoCompra">
+      <input name="LoteLineaPedidoCompra" message="tns:LoteLineaPedidoCompra" />
+      <output name="LoteLineaPedidoCompra_Result" message="tns:LoteLineaPedidoCompra_Result" />
+    </operation>
+  </portType>
+  <binding name="Lote_PedidoCompra_Binding" type="tns:Lote_PedidoCompra_Port">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="LoteLineaPedidoCompra">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Lote_PedidoCompra:LoteLineaPedidoCompra" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="LoteLineaPedidoCompra">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="LoteLineaPedidoCompra_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="Lote_PedidoCompra">
+    <port name="Lote_PedidoCompra_Port" binding="tns:Lote_PedidoCompra_Binding">
+      <address location="http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Codeunit/Lote_PedidoCompra" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </port>
+  </service>
+</definitions>

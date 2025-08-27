@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DSVerificacion" targetNamespace="http://tempuri.org/DSVerificacion.xsd" xmlns:mstns="http://tempuri.org/DSVerificacion.xsd" xmlns="http://tempuri.org/DSVerificacion.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DSVerificacion" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DSVerificacion" msprop:Generator_UserDSName="DSVerificacion">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Encabezado" msprop:Generator_TableClassName="EncabezadoDataTable" msprop:Generator_TableVarName="tableEncabezado" msprop:Generator_TablePropName="Encabezado" msprop:Generator_RowDeletingName="EncabezadoRowDeleting" msprop:Generator_RowChangingName="EncabezadoRowChanging" msprop:Generator_RowEvHandlerName="EncabezadoRowChangeEventHandler" msprop:Generator_RowDeletedName="EncabezadoRowDeleted" msprop:Generator_UserTableName="Encabezado" msprop:Generator_RowChangedName="EncabezadoRowChanged" msprop:Generator_RowEvArgName="EncabezadoRowChangeEvent" msprop:Generator_RowClassName="EncabezadoRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IdInventarioEnc" msprop:Generator_ColumnVarNameInTable="columnIdInventarioEnc" msprop:Generator_ColumnPropNameInRow="IdInventarioEnc" msprop:Generator_ColumnPropNameInTable="IdInventarioEncColumn" msprop:Generator_UserColumnName="IdInventarioEnc" type="xs:string" minOccurs="0" />
+              <xs:element name="IdTramo" msprop:Generator_ColumnVarNameInTable="columnIdTramo" msprop:Generator_ColumnPropNameInRow="IdTramo" msprop:Generator_ColumnPropNameInTable="IdTramoColumn" msprop:Generator_UserColumnName="IdTramo" type="xs:string" minOccurs="0" />
+              <xs:element name="Tramo" msprop:Generator_ColumnVarNameInTable="columnTramo" msprop:Generator_ColumnPropNameInRow="Tramo" msprop:Generator_ColumnPropNameInTable="TramoColumn" msprop:Generator_UserColumnName="Tramo" type="xs:string" minOccurs="0" />
+              <xs:element name="Fecha" msprop:Generator_ColumnVarNameInTable="columnFecha" msprop:Generator_ColumnPropNameInRow="Fecha" msprop:Generator_ColumnPropNameInTable="FechaColumn" msprop:Generator_UserColumnName="Fecha" type="xs:string" minOccurs="0" />
+              <xs:element name="CantidadVerifica" msdata:Caption="CantidadConteo" msprop:Generator_ColumnVarNameInTable="columnCantidadVerifica" msprop:Generator_ColumnPropNameInRow="CantidadVerifica" msprop:Generator_ColumnPropNameInTable="CantidadVerificaColumn" msprop:Generator_UserColumnName="CantidadVerifica" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Detalle" msprop:Generator_TableClassName="DetalleDataTable" msprop:Generator_TableVarName="tableDetalle" msprop:Generator_TablePropName="Detalle" msprop:Generator_RowDeletingName="DetalleRowDeleting" msprop:Generator_RowChangingName="DetalleRowChanging" msprop:Generator_RowEvHandlerName="DetalleRowChangeEventHandler" msprop:Generator_RowDeletedName="DetalleRowDeleted" msprop:Generator_UserTableName="Detalle" msprop:Generator_RowChangedName="DetalleRowChanged" msprop:Generator_RowEvArgName="DetalleRowChangeEvent" msprop:Generator_RowClassName="DetalleRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IdInventarioEnc" msprop:Generator_ColumnVarNameInTable="columnIdInventarioEnc" msprop:Generator_ColumnPropNameInRow="IdInventarioEnc" msprop:Generator_ColumnPropNameInTable="IdInventarioEncColumn" msprop:Generator_UserColumnName="IdInventarioEnc" type="xs:string" minOccurs="0" />
+              <xs:element name="IdTramo" msprop:Generator_ColumnVarNameInTable="columnIdTramo" msprop:Generator_ColumnPropNameInRow="IdTramo" msprop:Generator_ColumnPropNameInTable="IdTramoColumn" msprop:Generator_UserColumnName="IdTramo" type="xs:string" minOccurs="0" />
+              <xs:element name="IdProducto" msprop:Generator_ColumnVarNameInTable="columnIdProducto" msprop:Generator_ColumnPropNameInRow="IdProducto" msprop:Generator_ColumnPropNameInTable="IdProductoColumn" msprop:Generator_UserColumnName="IdProducto" type="xs:string" minOccurs="0" />
+              <xs:element name="Producto" msprop:Generator_ColumnVarNameInTable="columnProducto" msprop:Generator_ColumnPropNameInRow="Producto" msprop:Generator_ColumnPropNameInTable="ProductoColumn" msprop:Generator_UserColumnName="Producto" type="xs:string" minOccurs="0" />
+              <xs:element name="Presentacion" msprop:Generator_ColumnVarNameInTable="columnPresentacion" msprop:Generator_ColumnPropNameInRow="Presentacion" msprop:Generator_ColumnPropNameInTable="PresentacionColumn" msprop:Generator_UserColumnName="Presentacion" type="xs:string" minOccurs="0" />
+              <xs:element name="OperadorVerifica" msdata:Caption="OperadorConteo" msprop:Generator_ColumnVarNameInTable="columnOperadorVerifica" msprop:Generator_ColumnPropNameInRow="OperadorVerifica" msprop:Generator_ColumnPropNameInTable="OperadorVerificaColumn" msprop:Generator_UserColumnName="OperadorVerifica" type="xs:string" minOccurs="0" />
+              <xs:element name="CantidadVerifica" msdata:Caption="CantidadConteo" msprop:Generator_ColumnVarNameInTable="columnCantidadVerifica" msprop:Generator_ColumnPropNameInRow="CantidadVerifica" msprop:Generator_ColumnPropNameInTable="CantidadVerificaColumn" msprop:Generator_UserColumnName="CantidadVerifica" type="xs:string" minOccurs="0" />
+              <xs:element name="EstadoVerifica" msdata:Caption="EstadoConteo" msprop:Generator_ColumnVarNameInTable="columnEstadoVerifica" msprop:Generator_ColumnPropNameInRow="EstadoVerifica" msprop:Generator_ColumnPropNameInTable="EstadoVerificaColumn" msprop:Generator_UserColumnName="EstadoVerifica" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:annotation>
+    <xs:appinfo>
+      <msdata:Relationship name="Encabezado_Detalle" msdata:parent="Encabezado" msdata:child="Detalle" msdata:parentkey="IdTramo" msdata:childkey="IdTramo" msprop:Generator_UserChildTable="Detalle" msprop:Generator_ChildPropName="GetDetalleRows" msprop:Generator_UserRelationName="Encabezado_Detalle" msprop:Generator_ParentPropName="EncabezadoRow" msprop:Generator_RelationVarName="relationEncabezado_Detalle" msprop:Generator_UserParentTable="Encabezado" />
+    </xs:appinfo>
+  </xs:annotation>
+</xs:schema>

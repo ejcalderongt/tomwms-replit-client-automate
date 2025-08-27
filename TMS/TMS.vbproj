@@ -1,0 +1,441 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E24334D7-BE30-432A-9C60-547D5F1A21F5}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>TOMWMS.My.MyApplication</StartupObject>
+    <RootNamespace>TOMWMS</RootNamespace>
+    <AssemblyName>TMS</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <PublishUrl>C:\TMS\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Unc</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>true</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>\\192.168.1.3\TMS\</InstallUrl>
+    <UpdateUrl>\\192.168.1.3\TMS\</UpdateUrl>
+    <MinimumRequiredVersion>1.0.0.24</MinimumRequiredVersion>
+    <ApplicationRevision>42</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>TMS.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <WarningLevel>1</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>TMS.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <WarningLevel>1</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Text</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>tmswms.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>37D8DAA9D33E3AF33E8E96961F2794ADBEF22DA4</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>TMS_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Drawing.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DevExpress.Images.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Office.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Pdf.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Printing.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.RichEdit.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Data.Desktop.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraBars.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGrid.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraLayout.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraPrinting.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraRichEdit.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraScheduler.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraScheduler.v25.1.Core.Desktop, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraScheduler.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="DevExpress.Data" />
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Threading.Tasks" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApplicationEvents.vb" />
+    <Compile Include="Clases_AP\clsBD.vb" />
+    <Compile Include="Clases_AP\clsTabla.vb" />
+    <Compile Include="Clases_AP\IMS.vb" />
+    <Compile Include="Clases_AP\m_Global.vb" />
+    <Compile Include="Clases_AP\RawPrinterHelper.vb" />
+    <Compile Include="Formas\frmLoginEx.Designer.vb">
+      <DependentUpon>frmLoginEx.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\frmLoginEx.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\frmPrintTicket.Designer.vb">
+      <DependentUpon>frmPrintTicket.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\frmPrintTicket.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\frmTicketEdit.Designer.vb">
+      <DependentUpon>frmTicketEdit.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\frmTicketEdit.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\WaitForm.Designer.vb">
+      <DependentUpon>WaitForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\WaitForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Licencia\frmLicencia.Designer.vb">
+      <DependentUpon>frmLicencia.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Licencia\frmLicencia.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Licencia\frmLicenciaSolicitada.Designer.vb">
+      <DependentUpon>frmLicenciaSolicitada.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Licencia\frmLicenciaSolicitada.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Licencia\frmLicSolicitud.Designer.vb">
+      <DependentUpon>frmLicSolicitud.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Licencia\frmLicSolicitud.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Licencia\frmLicVencida.Designer.vb">
+      <DependentUpon>frmLicVencida.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Licencia\frmLicVencida.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Formas\frmPrincipal.Designer.vb">
+      <DependentUpon>frmPrincipal.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\frmPrincipal.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\frmTicketN.Designer.vb">
+      <DependentUpon>frmTicketN.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\frmTicketN.vb">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Formas\frmLoginEx.resx">
+      <DependentUpon>frmLoginEx.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\frmPrintTicket.resx">
+      <DependentUpon>frmPrintTicket.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\frmTicketEdit.resx">
+      <DependentUpon>frmTicketEdit.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\WaitForm.resx">
+      <DependentUpon>WaitForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Licencia\frmLicencia.resx">
+      <DependentUpon>frmLicencia.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Licencia\frmLicenciaSolicitada.resx">
+      <DependentUpon>frmLicenciaSolicitada.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Licencia\frmLicSolicitud.resx">
+      <DependentUpon>frmLicSolicitud.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Licencia\frmLicVencida.resx">
+      <DependentUpon>frmLicVencida.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\licenses.licx" />
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\frmPrincipal.resx">
+      <DependentUpon>frmPrincipal.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\frmTicketN.resx">
+      <DependentUpon>frmTicketN.vb</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Conn.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tmswms.ico" />
+    <None Include="Conn_Cealsa.ini" />
+    <None Include="Conn_Prograx.ini" />
+    <None Include="My Project\app.manifest" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AppGlobal\AppGlobal.vbproj">
+      <Project>{8a6418ce-0668-4ec6-a29c-9d9490701369}</Project>
+      <Name>AppGlobal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TOMIMSV4\DAL\DAL.vbproj">
+      <Project>{b7df5657-9a16-45a4-bf2f-ffda6138e06b}</Project>
+      <Name>DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TOMIMSV4\Entity\Entity.vbproj">
+      <Project>{df210a4e-56dd-4604-8558-ff6c51469a05}</Project>
+      <Name>Entity</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1444187250_check-box-outline-blank.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1444187257_square-check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1444336311_search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1459462442_list-add.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1470085552_tick_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1470085552_tick_161.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\2logodts.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\2logodts1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\3logodts.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\3logodts1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="LOGO.ico" />
+    <Content Include="Resources\5b91750ebd518_thumb900.jpg" />
+    <None Include="Resources\handheld.png" />
+    <None Include="Resources\hh2.png" />
+    <None Include="Resources\trucklogo1.jpg" />
+    <None Include="Resources\trucklogo.jpg" />
+    <None Include="Resources\printcodebar.jpg" />
+    <None Include="Resources\yellow_ball.png" />
+    <None Include="Resources\xmag.ico" />
+    <None Include="Resources\WMS.png" />
+    <None Include="Resources\unchecked.png" />
+    <None Include="Resources\ubic041.png" />
+    <None Include="Resources\ubic04.png" />
+    <None Include="Resources\ubic031.png" />
+    <None Include="Resources\ubic03.png" />
+    <None Include="Resources\ubic021.png" />
+    <None Include="Resources\ubic02.png" />
+    <None Include="Resources\ubic011.png" />
+    <None Include="Resources\ubic01.png" />
+    <None Include="Resources\Template.png" />
+    <None Include="Resources\stock_control.png" />
+    <None Include="Resources\SingleColumn_4Levels_Empty_Fit.png" />
+    <None Include="Resources\SingleColumn_4Levels_Empty.png" />
+    <None Include="Resources\Single_Pallet_Box_Fit.png" />
+    <None Include="Resources\Single_Pallet_Box.png" />
+    <None Include="Resources\sign_in.png" />
+    <None Include="Resources\Search.png" />
+    <None Include="Resources\report_check.png" />
+    <None Include="Resources\red_ball.png" />
+    <None Include="Resources\preferences-contact-list.png" />
+    <None Include="Resources\people.png" />
+    <None Include="Resources\palet03.png" />
+    <None Include="Resources\order.png" />
+    <None Include="Resources\logotomims.png" />
+    <None Include="Resources\logonuevodts1.png" />
+    <None Include="Resources\logonuevodts.png" />
+    <None Include="Resources\LogoDTS1.png" />
+    <None Include="Resources\LogoDTS_small1.png" />
+    <None Include="Resources\LogoDTS_small.png" />
+    <None Include="Resources\logodts.png" />
+    <None Include="Resources\logo tom ims png gris.png" />
+    <None Include="Resources\Logo DTS.png" />
+    <None Include="Resources\lock.png" />
+    <None Include="Resources\knob_blue.png" />
+    <None Include="Resources\inventory-maintenance-icon.png" />
+    <None Include="Resources\incorrect-294245_640.png" />
+    <None Include="Resources\green_ball.png" />
+    <None Include="Resources\Gnome-Application-Exit-64.png" />
+    <None Include="Resources\fondo-abstracto-de-muro-de-ladrillos_1100-165.jpg" />
+    <None Include="Resources\Flurry_Google_Maps.png" />
+    <None Include="Resources\Fingerprint.jpg" />
+    <None Include="Resources\exit.png" />
+    <None Include="Resources\Exit %281%29.png" />
+    <None Include="Resources\Excel.ico" />
+    <None Include="Resources\excel-icon.png" />
+    <None Include="Resources\emblem_money %281%29.png" />
+    <None Include="Resources\dts1.png" />
+    <None Include="Resources\dts.png" />
+    <None Include="Resources\DTS Firma Editable.png" />
+    <None Include="Resources\DTS Azul mediano_opt.png" />
+    <None Include="Resources\download_db.png" />
+    <None Include="Resources\disk_backup.png" />
+    <None Include="Resources\desactivar.png" />
+    <None Include="Resources\Delete-16.png" />
+    <None Include="Resources\Database-icon.png" />
+    <None Include="Resources\Cotizar.jpg" />
+    <None Include="Resources\cheked.png" />
+    <None Include="Resources\camera.png" />
+    <None Include="Resources\cache_32x32-32.ico" />
+    <None Include="Resources\button-power_basic_blue.png" />
+    <None Include="Resources\Biometric_data-04-32.png" />
+    <None Include="Resources\Biometric_data-04-128.png" />
+    <None Include="Resources\barcode_scanner.png" />
+    <None Include="Resources\barcode_scanner %281%29.png" />
+    <None Include="Resources\Back.png" />
+    <None Include="Resources\ark.png" />
+    <None Include="Resources\Apps-Google-Maps-icon.png" />
+    <None Include="Resources\Announcement.png" />
+    <None Include="Resources\Alert.png" />
+    <None Include="Resources\add.ico" />
+    <None Include="Resources\7-128.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 y x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <PublishFile Include="PerceptronUbicacion">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+</Project>

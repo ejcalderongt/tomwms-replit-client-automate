@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="dsEnviosNav1" targetNamespace="http://tempuri.org/dsEnviosNav1.xsd" xmlns:mstns="http://tempuri.org/dsEnviosNav1.xsd" xmlns="http://tempuri.org/dsEnviosNav1.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="MySettings" AppSettingsPropertyName="IMS4MB_PRDConnectionString1" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="IMS4MB_PRDConnectionString1 (MySettings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.TOMWMS.My.MySettings.GlobalReference.Default.IMS4MB_PRDConnectionString1" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="dtEstadoEnvioPCTableAdapter" GeneratorDataComponentClassName="dtEstadoEnvioPCTableAdapter" Name="dtEstadoEnvioPC" UserDataComponentName="dtEstadoEnvioPCTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="IMS4MB_PRDConnectionString1 (MySettings)" DbObjectName="IMS4MB_PRD.dbo.VW_Estado_Envios_Nav" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT        ESTADO AS Estado, SUM(CANTIDAD) AS Cantidad
+FROM            VW_Estado_Envios_Nav
+WHERE        (TIPO = 'PC')
+GROUP BY ESTADO</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="Estado" DataSetColumn="Estado" />
+              <Mapping SourceColumn="Cantidad" DataSetColumn="Cantidad" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="dtEstadoEnviosPTTableAdapter" GeneratorDataComponentClassName="dtEstadoEnviosPTTableAdapter" Name="dtEstadoEnviosPT" UserDataComponentName="dtEstadoEnviosPTTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="IMS4MB_PRDConnectionString1 (MySettings)" DbObjectName="IMS4MB_PRD.dbo.VW_Estado_Envios_Nav" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT        ESTADO AS Estado, SUM(CANTIDAD) AS Cantidad
+FROM            VW_Estado_Envios_Nav
+WHERE        (TIPO = 'PT')
+GROUP BY ESTADO</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="Estado" DataSetColumn="Estado" />
+              <Mapping SourceColumn="Cantidad" DataSetColumn="Cantidad" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="dtEnviosNAVTableAdapter" GeneratorDataComponentClassName="dtEnviosNAVTableAdapter" Name="dtEnviosNAV" UserDataComponentName="dtEnviosNAVTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="IMS4MB_PRDConnectionString1 (MySettings)" DbObjectName="IMS4MB_PRD.dbo.VW_Estado_Envios_Nav" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT        FECHA, TIPO, ESTADO, CANTIDAD
+FROM            VW_Estado_Envios_Nav</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="FECHA" DataSetColumn="FECHA" />
+              <Mapping SourceColumn="TIPO" DataSetColumn="TIPO" />
+              <Mapping SourceColumn="ESTADO" DataSetColumn="ESTADO" />
+              <Mapping SourceColumn="CANTIDAD" DataSetColumn="CANTIDAD" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="dsEnviosNav1" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="dsEnviosNav1" msprop:Generator_UserDSName="dsEnviosNav1">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="dtEstadoEnvioPC" msprop:Generator_TableClassName="dtEstadoEnvioPCDataTable" msprop:Generator_TableVarName="tabledtEstadoEnvioPC" msprop:Generator_TablePropName="dtEstadoEnvioPC" msprop:Generator_RowDeletingName="dtEstadoEnvioPCRowDeleting" msprop:Generator_RowChangingName="dtEstadoEnvioPCRowChanging" msprop:Generator_RowEvHandlerName="dtEstadoEnvioPCRowChangeEventHandler" msprop:Generator_RowDeletedName="dtEstadoEnvioPCRowDeleted" msprop:Generator_UserTableName="dtEstadoEnvioPC" msprop:Generator_RowChangedName="dtEstadoEnvioPCRowChanged" msprop:Generator_RowEvArgName="dtEstadoEnvioPCRowChangeEvent" msprop:Generator_RowClassName="dtEstadoEnvioPCRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Estado" msprop:Generator_ColumnVarNameInTable="columnEstado" msprop:Generator_ColumnPropNameInRow="Estado" msprop:Generator_ColumnPropNameInTable="EstadoColumn" msprop:Generator_UserColumnName="Estado">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="11" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Cantidad" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnCantidad" msprop:Generator_ColumnPropNameInRow="Cantidad" msprop:Generator_ColumnPropNameInTable="CantidadColumn" msprop:Generator_UserColumnName="Cantidad" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="dtEstadoEnviosPT" msprop:Generator_TableClassName="dtEstadoEnviosPTDataTable" msprop:Generator_TableVarName="tabledtEstadoEnviosPT" msprop:Generator_TablePropName="dtEstadoEnviosPT" msprop:Generator_RowDeletingName="dtEstadoEnviosPTRowDeleting" msprop:Generator_RowChangingName="dtEstadoEnviosPTRowChanging" msprop:Generator_RowEvHandlerName="dtEstadoEnviosPTRowChangeEventHandler" msprop:Generator_RowDeletedName="dtEstadoEnviosPTRowDeleted" msprop:Generator_UserTableName="dtEstadoEnviosPT" msprop:Generator_RowChangedName="dtEstadoEnviosPTRowChanged" msprop:Generator_RowEvArgName="dtEstadoEnviosPTRowChangeEvent" msprop:Generator_RowClassName="dtEstadoEnviosPTRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Estado" msprop:Generator_ColumnVarNameInTable="columnEstado" msprop:Generator_ColumnPropNameInRow="Estado" msprop:Generator_ColumnPropNameInTable="EstadoColumn" msprop:Generator_UserColumnName="Estado">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="11" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Cantidad" msdata:ReadOnly="true" msprop:Generator_ColumnVarNameInTable="columnCantidad" msprop:Generator_ColumnPropNameInRow="Cantidad" msprop:Generator_ColumnPropNameInTable="CantidadColumn" msprop:Generator_UserColumnName="Cantidad" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="dtEnviosNAV" msprop:Generator_TableClassName="dtEnviosNAVDataTable" msprop:Generator_TableVarName="tabledtEnviosNAV" msprop:Generator_TablePropName="dtEnviosNAV" msprop:Generator_RowDeletingName="dtEnviosNAVRowDeleting" msprop:Generator_RowChangingName="dtEnviosNAVRowChanging" msprop:Generator_RowEvHandlerName="dtEnviosNAVRowChangeEventHandler" msprop:Generator_RowDeletedName="dtEnviosNAVRowDeleted" msprop:Generator_UserTableName="dtEnviosNAV" msprop:Generator_RowChangedName="dtEnviosNAVRowChanged" msprop:Generator_RowEvArgName="dtEnviosNAVRowChangeEvent" msprop:Generator_RowClassName="dtEnviosNAVRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="FECHA" msprop:Generator_ColumnVarNameInTable="columnFECHA" msprop:Generator_ColumnPropNameInRow="FECHA" msprop:Generator_ColumnPropNameInTable="FECHAColumn" msprop:Generator_UserColumnName="FECHA" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="TIPO" msprop:Generator_ColumnVarNameInTable="columnTIPO" msprop:Generator_ColumnPropNameInRow="TIPO" msprop:Generator_ColumnPropNameInTable="TIPOColumn" msprop:Generator_UserColumnName="TIPO">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="2" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ESTADO" msprop:Generator_ColumnVarNameInTable="columnESTADO" msprop:Generator_ColumnPropNameInRow="ESTADO" msprop:Generator_ColumnPropNameInTable="ESTADOColumn" msprop:Generator_UserColumnName="ESTADO">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="11" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="CANTIDAD" msprop:Generator_ColumnVarNameInTable="columnCANTIDAD" msprop:Generator_ColumnPropNameInRow="CANTIDAD" msprop:Generator_ColumnPropNameInTable="CANTIDADColumn" msprop:Generator_UserColumnName="CANTIDAD" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

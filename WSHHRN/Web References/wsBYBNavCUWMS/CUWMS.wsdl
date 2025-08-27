@@ -1,0 +1,767 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:tns="urn:microsoft-dynamics-schemas/codeunit/CUWMS" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/CUWMS" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <schema elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/CUWMS" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element name="GetBinContent">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="putawayHeaderNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="locationCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="zoneCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="binCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="itemNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lotNo" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetBinContent_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="PutAwayCreate">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="putawayHeaderNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="activityNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="PutAwayCreate_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="activityNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="RegisterPutAway">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="putawayHeaderNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="RegisterPutAway_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="IntPutAwayCreate">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="locationCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="zoneCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="binCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="itemNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="activityNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="iDusuario" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="sorting" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lotNo" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="IntPutAwayCreate_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="activityNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CreateTransferReceipt">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="transferNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CreateTransferReceipt_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CreatePurchaseReceipt">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="purchaseNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CreatePurchaseReceipt_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CreateSalesReturnReceipt">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="salesReturnNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CreateSalesReturnReceipt_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="PostWhseReceipt">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="whseReceiptNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="documentNo" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="PostWhseReceipt_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="SetWarehouseDocuments">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="currentWhseWkshName" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="documentNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="SetWarehouseDocuments_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CreatePick">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="currentWhseWkshName" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CreatePick_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="InsertLotNo">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="currentWhseWkshName" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="itemNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="sourceNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lotNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="expirationDate" type="date" />
+            <element minOccurs="1" maxOccurs="1" name="quantityBase" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="whsLineNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="InsertLotNo_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CantLineaPedidoVenta">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="noPedidoVenta" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="noLineaVenta" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="codProducto" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="cantidad" type="decimal" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CantLineaPedidoVenta_Result">
+        <complexType>
+          <sequence />
+        </complexType>
+      </element>
+      <element name="LoteLineaPedidoVenta">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="noPedidoVenta" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="noLineaVenta" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="codProducto" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codVariante" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codUnidadMedida" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="cantidad" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="noLote" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="fechaCaducidad" type="date" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="LoteLineaPedidoVenta_Result">
+        <complexType>
+          <sequence />
+        </complexType>
+      </element>
+      <element name="RegistraAjustesAlmacen">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="numeroDocumento" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoSeccion" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoDiario" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoAlmacen" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="RegistraAjustesAlmacen_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CalculaAjusteAlmacen">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="codigoDiario" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoSeccion" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoProducto" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="numeroDocumento" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="descripcionRegistro" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="centroCosto" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CalculaAjusteAlmacen_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="AjustesDiarioAlmacen">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="seccionDiario" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="bodega" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="noDocumento" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="noProducto" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codVariante" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="cantidad" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="unidadMedida" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="descripcionRegistro" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lotNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="expirationDate" type="date" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="AjustesDiarioAlmacen_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="textMessage" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="RegistraEnvioAlmace">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="envioNo" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="RegistraEnvioAlmace_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="envioNo" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="BorraPicking">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="noEnvio" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="BorraPicking_Result">
+        <complexType>
+          <sequence />
+        </complexType>
+      </element>
+      <element name="RegistrasAjustesDiarios">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="numeroDocumento" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoSeccion" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoDiario" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="RegistrasAjustesDiarios_Result">
+        <complexType>
+          <sequence />
+        </complexType>
+      </element>
+      <element name="ActualizaUbicacion">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="activityNo" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="ActualizaUbicacion_Result">
+        <complexType>
+          <sequence />
+        </complexType>
+      </element>
+      <element name="InvPorLote">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="noProducto" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="noLote" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="InvPorLote_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="decimal" />
+          </sequence>
+        </complexType>
+      </element>
+    </schema>
+  </types>
+  <message name="GetBinContent">
+    <part name="parameters" element="tns:GetBinContent" />
+  </message>
+  <message name="GetBinContent_Result">
+    <part name="parameters" element="tns:GetBinContent_Result" />
+  </message>
+  <message name="PutAwayCreate">
+    <part name="parameters" element="tns:PutAwayCreate" />
+  </message>
+  <message name="PutAwayCreate_Result">
+    <part name="parameters" element="tns:PutAwayCreate_Result" />
+  </message>
+  <message name="RegisterPutAway">
+    <part name="parameters" element="tns:RegisterPutAway" />
+  </message>
+  <message name="RegisterPutAway_Result">
+    <part name="parameters" element="tns:RegisterPutAway_Result" />
+  </message>
+  <message name="IntPutAwayCreate">
+    <part name="parameters" element="tns:IntPutAwayCreate" />
+  </message>
+  <message name="IntPutAwayCreate_Result">
+    <part name="parameters" element="tns:IntPutAwayCreate_Result" />
+  </message>
+  <message name="CreateTransferReceipt">
+    <part name="parameters" element="tns:CreateTransferReceipt" />
+  </message>
+  <message name="CreateTransferReceipt_Result">
+    <part name="parameters" element="tns:CreateTransferReceipt_Result" />
+  </message>
+  <message name="CreatePurchaseReceipt">
+    <part name="parameters" element="tns:CreatePurchaseReceipt" />
+  </message>
+  <message name="CreatePurchaseReceipt_Result">
+    <part name="parameters" element="tns:CreatePurchaseReceipt_Result" />
+  </message>
+  <message name="CreateSalesReturnReceipt">
+    <part name="parameters" element="tns:CreateSalesReturnReceipt" />
+  </message>
+  <message name="CreateSalesReturnReceipt_Result">
+    <part name="parameters" element="tns:CreateSalesReturnReceipt_Result" />
+  </message>
+  <message name="PostWhseReceipt">
+    <part name="parameters" element="tns:PostWhseReceipt" />
+  </message>
+  <message name="PostWhseReceipt_Result">
+    <part name="parameters" element="tns:PostWhseReceipt_Result" />
+  </message>
+  <message name="SetWarehouseDocuments">
+    <part name="parameters" element="tns:SetWarehouseDocuments" />
+  </message>
+  <message name="SetWarehouseDocuments_Result">
+    <part name="parameters" element="tns:SetWarehouseDocuments_Result" />
+  </message>
+  <message name="CreatePick">
+    <part name="parameters" element="tns:CreatePick" />
+  </message>
+  <message name="CreatePick_Result">
+    <part name="parameters" element="tns:CreatePick_Result" />
+  </message>
+  <message name="InsertLotNo">
+    <part name="parameters" element="tns:InsertLotNo" />
+  </message>
+  <message name="InsertLotNo_Result">
+    <part name="parameters" element="tns:InsertLotNo_Result" />
+  </message>
+  <message name="CantLineaPedidoVenta">
+    <part name="parameters" element="tns:CantLineaPedidoVenta" />
+  </message>
+  <message name="CantLineaPedidoVenta_Result">
+    <part name="parameters" element="tns:CantLineaPedidoVenta_Result" />
+  </message>
+  <message name="LoteLineaPedidoVenta">
+    <part name="parameters" element="tns:LoteLineaPedidoVenta" />
+  </message>
+  <message name="LoteLineaPedidoVenta_Result">
+    <part name="parameters" element="tns:LoteLineaPedidoVenta_Result" />
+  </message>
+  <message name="RegistraAjustesAlmacen">
+    <part name="parameters" element="tns:RegistraAjustesAlmacen" />
+  </message>
+  <message name="RegistraAjustesAlmacen_Result">
+    <part name="parameters" element="tns:RegistraAjustesAlmacen_Result" />
+  </message>
+  <message name="CalculaAjusteAlmacen">
+    <part name="parameters" element="tns:CalculaAjusteAlmacen" />
+  </message>
+  <message name="CalculaAjusteAlmacen_Result">
+    <part name="parameters" element="tns:CalculaAjusteAlmacen_Result" />
+  </message>
+  <message name="AjustesDiarioAlmacen">
+    <part name="parameters" element="tns:AjustesDiarioAlmacen" />
+  </message>
+  <message name="AjustesDiarioAlmacen_Result">
+    <part name="parameters" element="tns:AjustesDiarioAlmacen_Result" />
+  </message>
+  <message name="RegistraEnvioAlmace">
+    <part name="parameters" element="tns:RegistraEnvioAlmace" />
+  </message>
+  <message name="RegistraEnvioAlmace_Result">
+    <part name="parameters" element="tns:RegistraEnvioAlmace_Result" />
+  </message>
+  <message name="BorraPicking">
+    <part name="parameters" element="tns:BorraPicking" />
+  </message>
+  <message name="BorraPicking_Result">
+    <part name="parameters" element="tns:BorraPicking_Result" />
+  </message>
+  <message name="RegistrasAjustesDiarios">
+    <part name="parameters" element="tns:RegistrasAjustesDiarios" />
+  </message>
+  <message name="RegistrasAjustesDiarios_Result">
+    <part name="parameters" element="tns:RegistrasAjustesDiarios_Result" />
+  </message>
+  <message name="ActualizaUbicacion">
+    <part name="parameters" element="tns:ActualizaUbicacion" />
+  </message>
+  <message name="ActualizaUbicacion_Result">
+    <part name="parameters" element="tns:ActualizaUbicacion_Result" />
+  </message>
+  <message name="InvPorLote">
+    <part name="parameters" element="tns:InvPorLote" />
+  </message>
+  <message name="InvPorLote_Result">
+    <part name="parameters" element="tns:InvPorLote_Result" />
+  </message>
+  <portType name="CUWMS_Port">
+    <operation name="GetBinContent">
+      <input name="GetBinContent" message="tns:GetBinContent" />
+      <output name="GetBinContent_Result" message="tns:GetBinContent_Result" />
+    </operation>
+    <operation name="PutAwayCreate">
+      <input name="PutAwayCreate" message="tns:PutAwayCreate" />
+      <output name="PutAwayCreate_Result" message="tns:PutAwayCreate_Result" />
+    </operation>
+    <operation name="RegisterPutAway">
+      <input name="RegisterPutAway" message="tns:RegisterPutAway" />
+      <output name="RegisterPutAway_Result" message="tns:RegisterPutAway_Result" />
+    </operation>
+    <operation name="IntPutAwayCreate">
+      <input name="IntPutAwayCreate" message="tns:IntPutAwayCreate" />
+      <output name="IntPutAwayCreate_Result" message="tns:IntPutAwayCreate_Result" />
+    </operation>
+    <operation name="CreateTransferReceipt">
+      <input name="CreateTransferReceipt" message="tns:CreateTransferReceipt" />
+      <output name="CreateTransferReceipt_Result" message="tns:CreateTransferReceipt_Result" />
+    </operation>
+    <operation name="CreatePurchaseReceipt">
+      <input name="CreatePurchaseReceipt" message="tns:CreatePurchaseReceipt" />
+      <output name="CreatePurchaseReceipt_Result" message="tns:CreatePurchaseReceipt_Result" />
+    </operation>
+    <operation name="CreateSalesReturnReceipt">
+      <input name="CreateSalesReturnReceipt" message="tns:CreateSalesReturnReceipt" />
+      <output name="CreateSalesReturnReceipt_Result" message="tns:CreateSalesReturnReceipt_Result" />
+    </operation>
+    <operation name="PostWhseReceipt">
+      <input name="PostWhseReceipt" message="tns:PostWhseReceipt" />
+      <output name="PostWhseReceipt_Result" message="tns:PostWhseReceipt_Result" />
+    </operation>
+    <operation name="SetWarehouseDocuments">
+      <input name="SetWarehouseDocuments" message="tns:SetWarehouseDocuments" />
+      <output name="SetWarehouseDocuments_Result" message="tns:SetWarehouseDocuments_Result" />
+    </operation>
+    <operation name="CreatePick">
+      <input name="CreatePick" message="tns:CreatePick" />
+      <output name="CreatePick_Result" message="tns:CreatePick_Result" />
+    </operation>
+    <operation name="InsertLotNo">
+      <input name="InsertLotNo" message="tns:InsertLotNo" />
+      <output name="InsertLotNo_Result" message="tns:InsertLotNo_Result" />
+    </operation>
+    <operation name="CantLineaPedidoVenta">
+      <input name="CantLineaPedidoVenta" message="tns:CantLineaPedidoVenta" />
+      <output name="CantLineaPedidoVenta_Result" message="tns:CantLineaPedidoVenta_Result" />
+    </operation>
+    <operation name="LoteLineaPedidoVenta">
+      <input name="LoteLineaPedidoVenta" message="tns:LoteLineaPedidoVenta" />
+      <output name="LoteLineaPedidoVenta_Result" message="tns:LoteLineaPedidoVenta_Result" />
+    </operation>
+    <operation name="RegistraAjustesAlmacen">
+      <input name="RegistraAjustesAlmacen" message="tns:RegistraAjustesAlmacen" />
+      <output name="RegistraAjustesAlmacen_Result" message="tns:RegistraAjustesAlmacen_Result" />
+    </operation>
+    <operation name="CalculaAjusteAlmacen">
+      <input name="CalculaAjusteAlmacen" message="tns:CalculaAjusteAlmacen" />
+      <output name="CalculaAjusteAlmacen_Result" message="tns:CalculaAjusteAlmacen_Result" />
+    </operation>
+    <operation name="AjustesDiarioAlmacen">
+      <input name="AjustesDiarioAlmacen" message="tns:AjustesDiarioAlmacen" />
+      <output name="AjustesDiarioAlmacen_Result" message="tns:AjustesDiarioAlmacen_Result" />
+    </operation>
+    <operation name="RegistraEnvioAlmace">
+      <input name="RegistraEnvioAlmace" message="tns:RegistraEnvioAlmace" />
+      <output name="RegistraEnvioAlmace_Result" message="tns:RegistraEnvioAlmace_Result" />
+    </operation>
+    <operation name="BorraPicking">
+      <input name="BorraPicking" message="tns:BorraPicking" />
+      <output name="BorraPicking_Result" message="tns:BorraPicking_Result" />
+    </operation>
+    <operation name="RegistrasAjustesDiarios">
+      <input name="RegistrasAjustesDiarios" message="tns:RegistrasAjustesDiarios" />
+      <output name="RegistrasAjustesDiarios_Result" message="tns:RegistrasAjustesDiarios_Result" />
+    </operation>
+    <operation name="ActualizaUbicacion">
+      <input name="ActualizaUbicacion" message="tns:ActualizaUbicacion" />
+      <output name="ActualizaUbicacion_Result" message="tns:ActualizaUbicacion_Result" />
+    </operation>
+    <operation name="InvPorLote">
+      <input name="InvPorLote" message="tns:InvPorLote" />
+      <output name="InvPorLote_Result" message="tns:InvPorLote_Result" />
+    </operation>
+  </portType>
+  <binding name="CUWMS_Binding" type="tns:CUWMS_Port">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="GetBinContent">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:GetBinContent" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetBinContent">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetBinContent_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="PutAwayCreate">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:PutAwayCreate" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="PutAwayCreate">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="PutAwayCreate_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="RegisterPutAway">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:RegisterPutAway" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="RegisterPutAway">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="RegisterPutAway_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="IntPutAwayCreate">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:IntPutAwayCreate" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="IntPutAwayCreate">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="IntPutAwayCreate_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="CreateTransferReceipt">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:CreateTransferReceipt" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="CreateTransferReceipt">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="CreateTransferReceipt_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="CreatePurchaseReceipt">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:CreatePurchaseReceipt" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="CreatePurchaseReceipt">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="CreatePurchaseReceipt_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="CreateSalesReturnReceipt">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:CreateSalesReturnReceipt" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="CreateSalesReturnReceipt">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="CreateSalesReturnReceipt_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="PostWhseReceipt">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:PostWhseReceipt" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="PostWhseReceipt">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="PostWhseReceipt_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="SetWarehouseDocuments">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:SetWarehouseDocuments" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="SetWarehouseDocuments">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="SetWarehouseDocuments_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="CreatePick">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:CreatePick" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="CreatePick">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="CreatePick_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="InsertLotNo">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:InsertLotNo" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="InsertLotNo">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="InsertLotNo_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="CantLineaPedidoVenta">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:CantLineaPedidoVenta" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="CantLineaPedidoVenta">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="CantLineaPedidoVenta_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="LoteLineaPedidoVenta">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:LoteLineaPedidoVenta" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="LoteLineaPedidoVenta">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="LoteLineaPedidoVenta_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="RegistraAjustesAlmacen">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:RegistraAjustesAlmacen" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="RegistraAjustesAlmacen">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="RegistraAjustesAlmacen_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="CalculaAjusteAlmacen">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:CalculaAjusteAlmacen" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="CalculaAjusteAlmacen">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="CalculaAjusteAlmacen_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="AjustesDiarioAlmacen">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:AjustesDiarioAlmacen" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="AjustesDiarioAlmacen">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="AjustesDiarioAlmacen_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="RegistraEnvioAlmace">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:RegistraEnvioAlmace" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="RegistraEnvioAlmace">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="RegistraEnvioAlmace_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="BorraPicking">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:BorraPicking" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="BorraPicking">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="BorraPicking_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="RegistrasAjustesDiarios">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:RegistrasAjustesDiarios" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="RegistrasAjustesDiarios">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="RegistrasAjustesDiarios_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="ActualizaUbicacion">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:ActualizaUbicacion" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="ActualizaUbicacion">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="ActualizaUbicacion_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="InvPorLote">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CUWMS:InvPorLote" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="InvPorLote">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="InvPorLote_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="CUWMS">
+    <port name="CUWMS_Port" binding="tns:CUWMS_Binding">
+      <address location="http://srvnavp001ori1.byb.gt:7047/DynamicsNAV110/WS/PRALCASA/Codeunit/CUWMS" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </port>
+  </service>
+</definitions>

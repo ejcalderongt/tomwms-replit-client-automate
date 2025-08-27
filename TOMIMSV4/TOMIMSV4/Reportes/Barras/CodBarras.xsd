@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="CodBarras" targetNamespace="http://tempuri.org/CodBarras.xsd" xmlns:mstns="http://tempuri.org/CodBarras.xsd" xmlns="http://tempuri.org/CodBarras.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="MySettings" AppSettingsPropertyName="IMS4MB_QAConnectionStringPrograN" IsAppSettingsProperty="true" Modifier="Assembly" Name="IMS4MB_QAConnectionStringPrograN (MySettings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.TOMWMS.My.MySettings.GlobalReference.Default.IMS4MB_QAConnectionStringPrograN" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="Codigo_BarraTableAdapter" GeneratorDataComponentClassName="Codigo_BarraTableAdapter" Name="Codigo_Barra" UserDataComponentName="Codigo_BarraTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="IMS4MB_QAConnectionStringPrograN (MySettings)" DbObjectName="IMS4MB_QA.dbo.VW_CodigoBarra_OC" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT Codigo_barra, IdOrdenCompraEnc FROM dbo.VW_CodigoBarra_OC</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="Codigo_barra" DataSetColumn="Codigo_barra" />
+              <Mapping SourceColumn="IdOrdenCompraEnc" DataSetColumn="IdOrdenCompraEnc" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="CodBarras" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="CodBarras" msprop:Generator_UserDSName="CodBarras">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Codigo_Barra" msprop:Generator_TableClassName="Codigo_BarraDataTable" msprop:Generator_TableVarName="tableCodigo_Barra" msprop:Generator_RowChangedName="Codigo_BarraRowChanged" msprop:Generator_TablePropName="Codigo_Barra" msprop:Generator_RowDeletingName="Codigo_BarraRowDeleting" msprop:Generator_RowChangingName="Codigo_BarraRowChanging" msprop:Generator_RowEvHandlerName="Codigo_BarraRowChangeEventHandler" msprop:Generator_RowDeletedName="Codigo_BarraRowDeleted" msprop:Generator_RowClassName="Codigo_BarraRow" msprop:Generator_UserTableName="Codigo_Barra" msprop:Generator_RowEvArgName="Codigo_BarraRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Codigo_barra" msprop:Generator_ColumnVarNameInTable="columnCodigo_barra" msprop:Generator_ColumnPropNameInRow="Codigo_barra" msprop:Generator_ColumnPropNameInTable="Codigo_barraColumn" msprop:Generator_UserColumnName="Codigo_barra" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="35" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="IdOrdenCompraEnc" msprop:Generator_ColumnVarNameInTable="columnIdOrdenCompraEnc" msprop:Generator_ColumnPropNameInRow="IdOrdenCompraEnc" msprop:Generator_ColumnPropNameInTable="IdOrdenCompraEncColumn" msprop:Generator_UserColumnName="IdOrdenCompraEnc" type="xs:int" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:Codigo_Barra" />
+      <xs:field xpath="mstns:IdOrdenCompraEnc" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

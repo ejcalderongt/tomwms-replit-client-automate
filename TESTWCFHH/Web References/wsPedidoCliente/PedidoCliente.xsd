@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/TOMWMS" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/TOMWMS" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://10.10.1.19/MI3/Transacciones/PedidoCliente.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="clsBeI_nav_ped_traslado_enc">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Address" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Comments" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Document_Type" type="tns:IdTipoDocumentoSalida" />
+      <xs:element minOccurs="0" name="External_Document_No" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Is_Internal_Transfer" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Lineas_Detalle" nillable="true" type="tns:ArrayOfclsBeI_nav_ped_traslado_det" />
+      <xs:element minOccurs="0" name="Manufacturing_Process" type="tns:Manufacturing_Process" />
+      <xs:element minOccurs="0" name="No" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Posting_Date" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Product_Owner_Code" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Receipt_Date" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Receipt_Document_Reference" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RoadCodigoRuta" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RoadCodigoVendedor" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Shipment_Date" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Status" type="xs:int" />
+      <xs:element minOccurs="0" name="Transfer_from_Code" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Transfer_from_Contact" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Transfer_from_Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Transfer_to_Code" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Transfer_to_CodeField" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Transfer_to_Contact" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Transfer_to_Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeI_nav_ped_traslado_enc" nillable="true" type="tns:clsBeI_nav_ped_traslado_enc" />
+  <xs:simpleType name="IdTipoDocumentoSalida">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Pedido_De_Bodega">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Pedido_Consolidado">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Pedido_De_Cliente">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">3</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Transferencia_Interna_WMS">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">4</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Pedido_De_Exportacion">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">5</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Transferencia_Directa">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">6</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Envio_Consolidado_Almacen">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">7</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Requisicion">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">8</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Pedido_De_Venta_NAV">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">9</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Transferencia_Directa_WMS">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">10</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Pedido_De_Venta_WM">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">11</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Devolucion_Proveedor">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">12</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Traslado_Por_Estados_SAP">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">13</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="IdTipoDocumentoSalida" nillable="true" type="tns:IdTipoDocumentoSalida" />
+  <xs:complexType name="ArrayOfclsBeI_nav_ped_traslado_det">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeI_nav_ped_traslado_det" nillable="true" type="tns:clsBeI_nav_ped_traslado_det" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeI_nav_ped_traslado_det" nillable="true" type="tns:ArrayOfclsBeI_nav_ped_traslado_det" />
+  <xs:complexType name="clsBeI_nav_ped_traslado_det">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Expiration_Date" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdPedidoDet" type="xs:int" />
+      <xs:element minOccurs="0" name="Is_Partially_Processed" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Item_No" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Line_No" type="xs:int" />
+      <xs:element minOccurs="0" name="Lote_No" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Lotes_Detalle" nillable="true" type="tns:ArrayOfclsBeI_nav_ped_traslado_det_lote" />
+      <xs:element minOccurs="0" name="No" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NoEnc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Price" type="xs:double" />
+      <xs:element minOccurs="0" name="Process_Result" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Qty_to_Receive" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Qty_to_Ship" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Quantity" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Quantity_In_UMBas" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Quantity_Reserved_WMS" type="xs:double" />
+      <xs:element minOccurs="0" name="Quantity_Shipped" type="xs:decimal" />
+      <xs:element minOccurs="0" name="Scan_Type" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Shipment_Date" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Source_ID" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Status" type="xs:int" />
+      <xs:element minOccurs="0" name="Transfer_From_CodeField" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Transfer_to_CodeField" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Unit_of_Measure_Code" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Variant_Code" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeI_nav_ped_traslado_det" nillable="true" type="tns:clsBeI_nav_ped_traslado_det" />
+  <xs:complexType name="ArrayOfclsBeI_nav_ped_traslado_det_lote">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeI_nav_ped_traslado_det_lote" nillable="true" type="tns:clsBeI_nav_ped_traslado_det_lote" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeI_nav_ped_traslado_det_lote" nillable="true" type="tns:ArrayOfclsBeI_nav_ped_traslado_det_lote" />
+  <xs:complexType name="clsBeI_nav_ped_traslado_det_lote">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Batch_No" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Expiration_Date" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_Agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Line_No" type="xs:int" />
+      <xs:element minOccurs="0" name="No" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NoEnc" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Quantity_Base" type="xs:double" />
+      <xs:element minOccurs="0" name="Serial_No" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Variant_Code" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="WhsFrom" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="WhsTo" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeI_nav_ped_traslado_det_lote" nillable="true" type="tns:clsBeI_nav_ped_traslado_det_lote" />
+  <xs:simpleType name="Manufacturing_Process">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Sin_Proceso_Nativo" />
+      <xs:enumeration value="Pegar_Stickers" />
+      <xs:enumeration value="Impresion_Inkjet" />
+      <xs:enumeration value="Atado_Promocional" />
+      <xs:enumeration value="Retirar_Stickers" />
+      <xs:enumeration value="Varios" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Manufacturing_Process" nillable="true" type="tns:Manufacturing_Process" />
+  <xs:complexType name="ArrayOfclsBeI_nav_ped_traslado_enc">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeI_nav_ped_traslado_enc" nillable="true" type="tns:clsBeI_nav_ped_traslado_enc" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeI_nav_ped_traslado_enc" nillable="true" type="tns:ArrayOfclsBeI_nav_ped_traslado_enc" />
+</xs:schema>

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="ServiceUnidadMedida" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://192.168.125.28/MI3/Unidad_Medida/ServiceUnidadMedida.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://192.168.125.28/MI3/Unidad_Medida/ServiceUnidadMedida.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://192.168.125.28/MI3/Unidad_Medida/ServiceUnidadMedida.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/TOMIMS" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IServiceUnidadMedida_Insert_InputMessage">
+    <wsdl:part name="parameters" element="tns:Insert" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Insert_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Insert_Multiple_InputMessage">
+    <wsdl:part name="parameters" element="tns:Insert_Multiple" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Insert_Multiple_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Insert_MultipleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Update_InputMessage">
+    <wsdl:part name="parameters" element="tns:Update" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Update_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Disable_InputMessage">
+    <wsdl:part name="parameters" element="tns:Disable" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Disable_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DisableResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Delete_InputMessage">
+    <wsdl:part name="parameters" element="tns:Delete" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Delete_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Delete_By_IdPropietario_InputMessage">
+    <wsdl:part name="parameters" element="tns:Delete_By_IdPropietario" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Delete_By_IdPropietario_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Delete_By_IdPropietarioResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Get_All_Filtro_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Filtro" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Get_All_Filtro_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_FiltroResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Get_Single_By_Nombre_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_Nombre" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Get_Single_By_Nombre_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_NombreResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Get_Single_By_IdUnidadMedida_And_IdPropietario_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_IdUnidadMedida_And_IdPropietario" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Get_Single_By_IdUnidadMedida_And_IdPropietario_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_IdUnidadMedida_And_IdPropietarioResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Exist_InputMessage">
+    <wsdl:part name="parameters" element="tns:Exist" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Exist_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExistResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Existe_Producto_Asociado_InputMessage">
+    <wsdl:part name="parameters" element="tns:Existe_Producto_Asociado" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Existe_Producto_Asociado_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Existe_Producto_AsociadoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Get_Single_By_IdUnidadMedida_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_IdUnidadMedida" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_Get_Single_By_IdUnidadMedida_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_IdUnidadMedidaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_MAXIdUnidadMedida_InputMessage">
+    <wsdl:part name="parameters" element="tns:MAXIdUnidadMedida" />
+  </wsdl:message>
+  <wsdl:message name="IServiceUnidadMedida_MAXIdUnidadMedida_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MAXIdUnidadMedidaResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IServiceUnidadMedida">
+    <wsdl:operation name="Insert">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Insert" message="tns:IServiceUnidadMedida_Insert_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceUnidadMedida/InsertResponse" message="tns:IServiceUnidadMedida_Insert_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Insert_Multiple">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Insert_Multiple" message="tns:IServiceUnidadMedida_Insert_Multiple_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Insert_MultipleResponse" message="tns:IServiceUnidadMedida_Insert_Multiple_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Update">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Update" message="tns:IServiceUnidadMedida_Update_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceUnidadMedida/UpdateResponse" message="tns:IServiceUnidadMedida_Update_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Disable">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Disable" message="tns:IServiceUnidadMedida_Disable_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceUnidadMedida/DisableResponse" message="tns:IServiceUnidadMedida_Disable_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Delete" message="tns:IServiceUnidadMedida_Delete_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceUnidadMedida/DeleteResponse" message="tns:IServiceUnidadMedida_Delete_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Delete_By_IdPropietario">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Delete_By_IdPropietario" message="tns:IServiceUnidadMedida_Delete_By_IdPropietario_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Delete_By_IdPropietarioResponse" message="tns:IServiceUnidadMedida_Delete_By_IdPropietario_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Filtro">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Get_All_Filtro" message="tns:IServiceUnidadMedida_Get_All_Filtro_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Get_All_FiltroResponse" message="tns:IServiceUnidadMedida_Get_All_Filtro_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_Nombre">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Get_Single_By_Nombre" message="tns:IServiceUnidadMedida_Get_Single_By_Nombre_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Get_Single_By_NombreResponse" message="tns:IServiceUnidadMedida_Get_Single_By_Nombre_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_IdUnidadMedida_And_IdPropietario">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Get_Single_By_IdUnidadMedida_And_IdPropietario" message="tns:IServiceUnidadMedida_Get_Single_By_IdUnidadMedida_And_IdPropietario_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Get_Single_By_IdUnidadMedida_And_IdPropietarioResponse" message="tns:IServiceUnidadMedida_Get_Single_By_IdUnidadMedida_And_IdPropietario_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Exist">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Exist" message="tns:IServiceUnidadMedida_Exist_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceUnidadMedida/ExistResponse" message="tns:IServiceUnidadMedida_Exist_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Existe_Producto_Asociado">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Existe_Producto_Asociado" message="tns:IServiceUnidadMedida_Existe_Producto_Asociado_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Existe_Producto_AsociadoResponse" message="tns:IServiceUnidadMedida_Existe_Producto_Asociado_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_IdUnidadMedida">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Get_Single_By_IdUnidadMedida" message="tns:IServiceUnidadMedida_Get_Single_By_IdUnidadMedida_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceUnidadMedida/Get_Single_By_IdUnidadMedidaResponse" message="tns:IServiceUnidadMedida_Get_Single_By_IdUnidadMedida_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MAXIdUnidadMedida">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceUnidadMedida/MAXIdUnidadMedida" message="tns:IServiceUnidadMedida_MAXIdUnidadMedida_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceUnidadMedida/MAXIdUnidadMedidaResponse" message="tns:IServiceUnidadMedida_MAXIdUnidadMedida_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IServiceUnidadMedida" type="tns:IServiceUnidadMedida">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Insert">
+      <soap:operation soapAction="http://tempuri.org/IServiceUnidadMedida/Insert" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Insert_Multiple">
+      <soap:operation soapAction="http://tempuri.org/IServiceUnidadMedida/Insert_Multiple" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Update">
+      <soap:operation soapAction="http://tempuri.org/IServiceUnidadMedida/Update" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Disable">
+      <soap:operation soapAction="http://tempuri.org/IServiceUnidadMedida/Disable" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <soap:operation soapAction="http://tempuri.org/IServiceUnidadMedida/Delete" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Delete_By_IdPropietario">
+      <soap:operation soapAction="http://tempuri.org/IServiceUnidadMedida/Delete_By_IdPropietario" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Filtro">
+      <soap:operation soapAction="http://tempuri.org/IServiceUnidadMedida/Get_All_Filtro" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_Nombre">
+      <soap:operation soapAction="http://tempuri.org/IServiceUnidadMedida/Get_Single_By_Nombre" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_IdUnidadMedida_And_IdPropietario">
+      <soap:operation soapAction="http://tempuri.org/IServiceUnidadMedida/Get_Single_By_IdUnidadMedida_And_IdPropietario" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Exist">
+      <soap:operation soapAction="http://tempuri.org/IServiceUnidadMedida/Exist" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Existe_Producto_Asociado">
+      <soap:operation soapAction="http://tempuri.org/IServiceUnidadMedida/Existe_Producto_Asociado" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_IdUnidadMedida">
+      <soap:operation soapAction="http://tempuri.org/IServiceUnidadMedida/Get_Single_By_IdUnidadMedida" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MAXIdUnidadMedida">
+      <soap:operation soapAction="http://tempuri.org/IServiceUnidadMedida/MAXIdUnidadMedida" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ServiceUnidadMedida">
+    <wsdl:port name="BasicHttpBinding_IServiceUnidadMedida" binding="tns:BasicHttpBinding_IServiceUnidadMedida">
+      <soap:address location="http://192.168.125.28/MI3/Unidad_Medida/ServiceUnidadMedida.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

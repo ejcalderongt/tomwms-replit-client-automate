@@ -1,0 +1,361 @@
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class FrmStock_Fiscal
+    Inherits DevExpress.XtraBars.Ribbon.RibbonForm
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()> _
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        If disposing AndAlso components IsNot Nothing Then
+            components.Dispose()
+        End If
+        MyBase.Dispose(disposing)
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()> _
+    Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmStock_Fiscal))
+        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
+        Me.cmdActualizar = New DevExpress.XtraBars.BarButtonItem()
+        Me.cmdImprimir = New DevExpress.XtraBars.BarButtonItem()
+        Me.BarButtonItem3 = New DevExpress.XtraBars.BarButtonItem()
+        Me.BarButtonItem4 = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuGuardarLayoutGrid = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuEliminarLayoutGrid = New DevExpress.XtraBars.BarButtonItem()
+        Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
+        Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
+        Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
+        Me.grpFechas = New DevExpress.XtraEditors.GroupControl()
+        Me.cmbBodega = New DevExpress.XtraEditors.LookUpEdit()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.lblPrg = New System.Windows.Forms.Label()
+        Me.cmbPropietario = New DevExpress.XtraEditors.LookUpEdit()
+        Me.lblPropietario = New System.Windows.Forms.Label()
+        Me.txtNombreProducto = New System.Windows.Forms.TextBox()
+        Me.txtIdProducto = New System.Windows.Forms.TextBox()
+        Me.lblProducto = New System.Windows.Forms.LinkLabel()
+        Me.dtpfechaHasta = New System.Windows.Forms.DateTimePicker()
+        Me.lblAl = New System.Windows.Forms.Label()
+        Me.lblDel = New System.Windows.Forms.Label()
+        Me.dtpFechaDesde = New System.Windows.Forms.DateTimePicker()
+        Me.dgrid = New DevExpress.XtraGrid.GridControl()
+        Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.prg = New DevExpress.XtraEditors.ProgressBarControl()
+        CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.grpFechas, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpFechas.SuspendLayout()
+        CType(Me.cmbBodega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbPropietario.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgrid, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.prg.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.SuspendLayout()
+        '
+        'RibbonControl
+        '
+        Me.RibbonControl.ExpandCollapseItem.Id = 0
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.RibbonControl.SearchEditItem, Me.cmdActualizar, Me.cmdImprimir, Me.BarButtonItem3, Me.BarButtonItem4, Me.mnuGuardarLayoutGrid, Me.mnuEliminarLayoutGrid})
+        Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
+        Me.RibbonControl.MaxItemId = 7
+        Me.RibbonControl.Name = "RibbonControl"
+        Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
+        Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
+        Me.RibbonControl.Size = New System.Drawing.Size(1387, 193)
+        Me.RibbonControl.StatusBar = Me.RibbonStatusBar
+        '
+        'cmdActualizar
+        '
+        Me.cmdActualizar.Caption = "Generar"
+        Me.cmdActualizar.Id = 1
+        Me.cmdActualizar.ImageOptions.SvgImage = CType(resources.GetObject("cmdActualizar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdActualizar.Name = "cmdActualizar"
+        '
+        'cmdImprimir
+        '
+        Me.cmdImprimir.Caption = "Imprimir"
+        Me.cmdImprimir.Id = 2
+        Me.cmdImprimir.ImageOptions.SvgImage = CType(resources.GetObject("cmdImprimir.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdImprimir.Name = "cmdImprimir"
+        '
+        'BarButtonItem3
+        '
+        Me.BarButtonItem3.Caption = "Salir"
+        Me.BarButtonItem3.Id = 3
+        Me.BarButtonItem3.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem3.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.BarButtonItem3.Name = "BarButtonItem3"
+        '
+        'BarButtonItem4
+        '
+        Me.BarButtonItem4.Caption = "Exportar Excel"
+        Me.BarButtonItem4.Id = 4
+        Me.BarButtonItem4.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem4.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.BarButtonItem4.Name = "BarButtonItem4"
+        '
+        'mnuGuardarLayoutGrid
+        '
+        Me.mnuGuardarLayoutGrid.Caption = "Guardar diseño de grid"
+        Me.mnuGuardarLayoutGrid.Id = 5
+        Me.mnuGuardarLayoutGrid.ImageOptions.SvgImage = CType(resources.GetObject("mnuGuardarLayoutGrid.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuGuardarLayoutGrid.Name = "mnuGuardarLayoutGrid"
+        '
+        'mnuEliminarLayoutGrid
+        '
+        Me.mnuEliminarLayoutGrid.Caption = "Eliminar diseño de grid"
+        Me.mnuEliminarLayoutGrid.Id = 6
+        Me.mnuEliminarLayoutGrid.ImageOptions.SvgImage = CType(resources.GetObject("mnuEliminarLayoutGrid.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuEliminarLayoutGrid.Name = "mnuEliminarLayoutGrid"
+        '
+        'RibbonPage1
+        '
+        Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1})
+        Me.RibbonPage1.Name = "RibbonPage1"
+        Me.RibbonPage1.Text = "Stock Fiscal"
+        '
+        'RibbonPageGroup1
+        '
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdActualizar)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdImprimir)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.BarButtonItem4)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuGuardarLayoutGrid)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEliminarLayoutGrid)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.BarButtonItem3)
+        Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
+        '
+        'RibbonStatusBar
+        '
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 693)
+        Me.RibbonStatusBar.Name = "RibbonStatusBar"
+        Me.RibbonStatusBar.Ribbon = Me.RibbonControl
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1387, 30)
+        '
+        'grpFechas
+        '
+        Me.grpFechas.Controls.Add(Me.cmbBodega)
+        Me.grpFechas.Controls.Add(Me.Label1)
+        Me.grpFechas.Controls.Add(Me.lblPrg)
+        Me.grpFechas.Controls.Add(Me.cmbPropietario)
+        Me.grpFechas.Controls.Add(Me.lblPropietario)
+        Me.grpFechas.Controls.Add(Me.txtNombreProducto)
+        Me.grpFechas.Controls.Add(Me.txtIdProducto)
+        Me.grpFechas.Controls.Add(Me.lblProducto)
+        Me.grpFechas.Controls.Add(Me.dtpfechaHasta)
+        Me.grpFechas.Controls.Add(Me.lblAl)
+        Me.grpFechas.Controls.Add(Me.lblDel)
+        Me.grpFechas.Controls.Add(Me.dtpFechaDesde)
+        Me.grpFechas.Dock = System.Windows.Forms.DockStyle.Left
+        Me.grpFechas.Location = New System.Drawing.Point(0, 193)
+        Me.grpFechas.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.grpFechas.Name = "grpFechas"
+        Me.grpFechas.Size = New System.Drawing.Size(384, 500)
+        Me.grpFechas.TabIndex = 6
+        Me.grpFechas.Text = "Filtros"
+        '
+        'cmbBodega
+        '
+        Me.cmbBodega.Location = New System.Drawing.Point(14, 63)
+        Me.cmbBodega.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.cmbBodega.MenuManager = Me.RibbonControl
+        Me.cmbBodega.Name = "cmbBodega"
+        Me.cmbBodega.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbBodega.Properties.NullText = ""
+        Me.cmbBodega.Size = New System.Drawing.Size(351, 22)
+        Me.cmbBodega.TabIndex = 9
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(14, 39)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(59, 17)
+        Me.Label1.TabIndex = 9
+        Me.Label1.Text = "Bodega:"
+        '
+        'lblPrg
+        '
+        Me.lblPrg.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.lblPrg.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.lblPrg.Location = New System.Drawing.Point(2, 386)
+        Me.lblPrg.Name = "lblPrg"
+        Me.lblPrg.Size = New System.Drawing.Size(380, 112)
+        Me.lblPrg.TabIndex = 7
+        '
+        'cmbPropietario
+        '
+        Me.cmbPropietario.Location = New System.Drawing.Point(14, 126)
+        Me.cmbPropietario.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.cmbPropietario.MenuManager = Me.RibbonControl
+        Me.cmbPropietario.Name = "cmbPropietario"
+        Me.cmbPropietario.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbPropietario.Properties.NullText = ""
+        Me.cmbPropietario.Size = New System.Drawing.Size(351, 22)
+        Me.cmbPropietario.TabIndex = 6
+        '
+        'lblPropietario
+        '
+        Me.lblPropietario.AutoSize = True
+        Me.lblPropietario.Location = New System.Drawing.Point(14, 102)
+        Me.lblPropietario.Name = "lblPropietario"
+        Me.lblPropietario.Size = New System.Drawing.Size(78, 17)
+        Me.lblPropietario.TabIndex = 6
+        Me.lblPropietario.Text = "Propietario:"
+        '
+        'txtNombreProducto
+        '
+        Me.txtNombreProducto.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtNombreProducto.Location = New System.Drawing.Point(105, 223)
+        Me.txtNombreProducto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtNombreProducto.Name = "txtNombreProducto"
+        Me.txtNombreProducto.Size = New System.Drawing.Size(260, 23)
+        Me.txtNombreProducto.TabIndex = 6
+        '
+        'txtIdProducto
+        '
+        Me.txtIdProducto.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtIdProducto.Location = New System.Drawing.Point(14, 223)
+        Me.txtIdProducto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtIdProducto.Name = "txtIdProducto"
+        Me.txtIdProducto.Size = New System.Drawing.Size(84, 23)
+        Me.txtIdProducto.TabIndex = 6
+        '
+        'lblProducto
+        '
+        Me.lblProducto.AutoSize = True
+        Me.lblProducto.Location = New System.Drawing.Point(14, 192)
+        Me.lblProducto.Name = "lblProducto"
+        Me.lblProducto.Size = New System.Drawing.Size(65, 17)
+        Me.lblProducto.TabIndex = 6
+        Me.lblProducto.TabStop = True
+        Me.lblProducto.Text = "Producto"
+        '
+        'dtpfechaHasta
+        '
+        Me.dtpfechaHasta.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpfechaHasta.Location = New System.Drawing.Point(49, 350)
+        Me.dtpfechaHasta.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.dtpfechaHasta.Name = "dtpfechaHasta"
+        Me.dtpfechaHasta.Size = New System.Drawing.Size(233, 23)
+        Me.dtpfechaHasta.TabIndex = 4
+        '
+        'lblAl
+        '
+        Me.lblAl.AutoSize = True
+        Me.lblAl.Location = New System.Drawing.Point(12, 350)
+        Me.lblAl.Name = "lblAl"
+        Me.lblAl.Size = New System.Drawing.Size(23, 17)
+        Me.lblAl.TabIndex = 3
+        Me.lblAl.Text = "Al:"
+        '
+        'lblDel
+        '
+        Me.lblDel.AutoSize = True
+        Me.lblDel.Location = New System.Drawing.Point(12, 314)
+        Me.lblDel.Name = "lblDel"
+        Me.lblDel.Size = New System.Drawing.Size(32, 17)
+        Me.lblDel.TabIndex = 3
+        Me.lblDel.Text = "Del:"
+        '
+        'dtpFechaDesde
+        '
+        Me.dtpFechaDesde.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpFechaDesde.Location = New System.Drawing.Point(49, 306)
+        Me.dtpFechaDesde.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.dtpFechaDesde.Name = "dtpFechaDesde"
+        Me.dtpFechaDesde.Size = New System.Drawing.Size(233, 23)
+        Me.dtpFechaDesde.TabIndex = 3
+        '
+        'dgrid
+        '
+        Me.dgrid.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgrid.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        GridLevelNode1.RelationName = "Level1"
+        Me.dgrid.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
+        Me.dgrid.Location = New System.Drawing.Point(384, 193)
+        Me.dgrid.MainView = Me.GridView1
+        Me.dgrid.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.dgrid.MenuManager = Me.RibbonControl
+        Me.dgrid.Name = "dgrid"
+        Me.dgrid.Size = New System.Drawing.Size(1003, 500)
+        Me.dgrid.TabIndex = 7
+        Me.dgrid.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
+        '
+        'GridView1
+        '
+        Me.GridView1.GridControl = Me.dgrid
+        Me.GridView1.Name = "GridView1"
+        Me.GridView1.OptionsBehavior.ReadOnly = True
+        Me.GridView1.OptionsFind.AlwaysVisible = True
+        Me.GridView1.OptionsView.ColumnAutoWidth = False
+        Me.GridView1.OptionsView.ShowAutoFilterRow = True
+        Me.GridView1.OptionsView.ShowFooter = True
+        '
+        'prg
+        '
+        Me.prg.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.prg.Location = New System.Drawing.Point(384, 671)
+        Me.prg.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.prg.MenuManager = Me.RibbonControl
+        Me.prg.Name = "prg"
+        Me.prg.Size = New System.Drawing.Size(1003, 22)
+        Me.prg.TabIndex = 10
+        '
+        'FrmStock_Fiscal
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.ClientSize = New System.Drawing.Size(1387, 723)
+        Me.Controls.Add(Me.prg)
+        Me.Controls.Add(Me.dgrid)
+        Me.Controls.Add(Me.grpFechas)
+        Me.Controls.Add(Me.RibbonStatusBar)
+        Me.Controls.Add(Me.RibbonControl)
+        Me.Name = "FrmStock_Fiscal"
+        Me.Ribbon = Me.RibbonControl
+        Me.StatusBar = Me.RibbonStatusBar
+        Me.Text = "FrmStock_Fiscal"
+        CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.grpFechas, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpFechas.ResumeLayout(False)
+        Me.grpFechas.PerformLayout()
+        CType(Me.cmbBodega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbPropietario.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgrid, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.prg.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+
+    Friend WithEvents RibbonControl As DevExpress.XtraBars.Ribbon.RibbonControl
+    Friend WithEvents RibbonPage1 As DevExpress.XtraBars.Ribbon.RibbonPage
+    Friend WithEvents RibbonPageGroup1 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
+    Friend WithEvents RibbonStatusBar As DevExpress.XtraBars.Ribbon.RibbonStatusBar
+    Friend WithEvents grpFechas As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents cmbBodega As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents Label1 As Label
+    Friend WithEvents lblPrg As Label
+    Friend WithEvents cmbPropietario As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents lblPropietario As Label
+    Friend WithEvents txtNombreProducto As TextBox
+    Friend WithEvents txtIdProducto As TextBox
+    Friend WithEvents lblProducto As LinkLabel
+    Friend WithEvents dtpfechaHasta As DateTimePicker
+    Friend WithEvents lblAl As Label
+    Friend WithEvents lblDel As Label
+    Friend WithEvents dtpFechaDesde As DateTimePicker
+    Friend WithEvents dgrid As DevExpress.XtraGrid.GridControl
+    Friend WithEvents GridView1 As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents prg As DevExpress.XtraEditors.ProgressBarControl
+    Friend WithEvents cmdActualizar As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents cmdImprimir As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents BarButtonItem3 As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents BarButtonItem4 As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents mnuGuardarLayoutGrid As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents mnuEliminarLayoutGrid As DevExpress.XtraBars.BarButtonItem
+End Class

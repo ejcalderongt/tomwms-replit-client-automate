@@ -1,0 +1,22 @@
+SELECT     dbo.trans_ubic_hh_det.IdTareaUbicacionEnc, dbo.trans_ubic_hh_det.IdTareaUbicacionDet, dbo.trans_ubic_hh_det.IdStock, dbo.producto.nombre, 
+                      dbo.trans_ubic_hh_det.IdUbicacionDestino, bodega_ubicacion_1.IdUbicacion, bodega_ubicacion_1.descripcion, dbo.trans_ubic_hh_det.IdEstadoDestino, 
+                      dbo.trans_ubic_hh_det.IdOperador, dbo.trans_ubic_hh_det.HoraInicio, dbo.trans_ubic_hh_det.HoraFin, dbo.trans_ubic_hh_det.Realizado, 
+                      dbo.trans_ubic_hh_det.cantidad, dbo.trans_ubic_hh_det.activo, dbo.operador.nombres, dbo.producto.codigo, dbo.stock.Idbicacion_anterior, dbo.producto.serializado, 
+                      dbo.producto_estado.IdEstado, dbo.producto_estado.nombre AS NomEstado, dbo.stock.añada, dbo.stock.lote, dbo.stock.fecha_ingreso, 
+                      dbo.producto_presentacion.nombre AS Presentacion, dbo.unidad_medida.Nombre AS UnidadMedida, dbo.stock.fecha_vence, dbo.stock.serial, 
+                      dbo.stock.IdUbicacion AS IdUbicacionOrigen, dbo.producto.IdPropietario, dbo.propietarios.nombre_comercial, dbo.trans_ubic_hh_det.recibido, 
+                      dbo.producto.IdProducto, dbo.producto_bodega.IdProductoBodega, dbo.producto.IdUnidadMedidaBasica, dbo.trans_ubic_hh_det.estado
+FROM         dbo.producto_estado INNER JOIN
+                      dbo.producto_bodega INNER JOIN
+                      dbo.stock ON dbo.producto_bodega.IdProductoBodega = dbo.stock.IdProductoBodega INNER JOIN
+                      dbo.producto ON dbo.producto_bodega.IdProducto = dbo.producto.IdProducto ON dbo.producto_estado.IdEstado = dbo.stock.IdProductoEstado INNER JOIN
+                      dbo.unidad_medida ON dbo.stock.IdUnidadMedida = dbo.unidad_medida.IdUnidadMedida AND 
+                      dbo.stock.IdUnidadMedida = dbo.unidad_medida.IdUnidadMedida INNER JOIN
+                      dbo.propietarios ON dbo.producto.IdPropietario = dbo.propietarios.IdPropietario AND dbo.producto_estado.IdPropietario = dbo.propietarios.IdPropietario AND 
+                      dbo.producto_estado.IdPropietario = dbo.propietarios.IdPropietario RIGHT OUTER JOIN
+                      dbo.bodega_ubicacion AS bodega_ubicacion_1 INNER JOIN
+                      dbo.trans_ubic_hh_det ON bodega_ubicacion_1.IdUbicacion = dbo.trans_ubic_hh_det.IdUbicacionDestino ON 
+                      dbo.stock.IdStock = dbo.trans_ubic_hh_det.IdStock LEFT OUTER JOIN
+                      dbo.producto_presentacion ON dbo.stock.IdPresentacion = dbo.producto_presentacion.IdPresentacion AND 
+                      dbo.stock.IdPresentacion = dbo.producto_presentacion.IdPresentacion LEFT OUTER JOIN
+                      dbo.operador ON dbo.trans_ubic_hh_det.IdOperador = dbo.operador.IdOperador

@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="dsRepAjustes" targetNamespace="http://tempuri.org/dsRepAjustes.xsd" xmlns:mstns="http://tempuri.org/dsRepAjustes.xsd" xmlns="http://tempuri.org/dsRepAjustes.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="2" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="MySettings" AppSettingsPropertyName="IMS4MB_PRDConnectionString" IsAppSettingsProperty="true" Modifier="Assembly" Name="IMS4MB_PRDConnectionString (MySettings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.TOMIMS.My.MySettings.GlobalReference.Default.IMS4MB_PRDConnectionString" Provider="System.Data.SqlClient" />
+          <Connection AppSettingsObjectName="MySettings" AppSettingsPropertyName="IMS4MB_QA_EJCConnectionString" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="IMS4MB_QA_EJCConnectionString (MySettings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.TOMIMS.My.MySettings.GlobalReference.Default.IMS4MB_QA_EJCConnectionString" Provider="System.Data.SqlClient" />
+          <Connection AppSettingsObjectName="MySettings" AppSettingsPropertyName="TOMWMS_LA_CUMBRE_PRDConnectionString" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="TOMWMS_LA_CUMBRE_PRDConnectionString (MySettings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.TOMWMS.My.MySettings.GlobalReference.Default.TOMWMS_LA_CUMBRE_PRDConnectionString" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="trans_ajuste_detTableAdapter" GeneratorDataComponentClassName="trans_ajuste_detTableAdapter" Name="trans_ajuste_det" UserDataComponentName="trans_ajuste_detTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="TOMWMS_LA_CUMBRE_PRDConnectionString (MySettings)" DbObjectType="Unknown" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT        trans_ajuste_det.codigo_producto AS Codigo, trans_ajuste_det.nombre_producto AS Producto, 'R10 - C02 - TD - N01 - #10057' AS Ubicacion, 
+                         ajuste_motivo.nombre AS Motivo, ajuste_tipo.nombre AS Tipo, trans_ajuste_det.lote_original AS ValorAnterior, trans_ajuste_det.lote_nuevo AS ValorActual, 
+                         trans_ajuste_det.observacion, trans_ajuste_det.lote_original AS Lote, trans_ajuste_det.lic_plate As LicPlate
+FROM            trans_ajuste_det INNER JOIN
+                         ajuste_tipo ON trans_ajuste_det.idtipoajuste = ajuste_tipo.idtipoajuste INNER JOIN
+                         ajuste_motivo ON trans_ajuste_det.idmotivoajuste = ajuste_motivo.idmotivoajuste</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="Codigo" DataSetColumn="Codigo" />
+              <Mapping SourceColumn="Producto" DataSetColumn="Producto" />
+              <Mapping SourceColumn="Ubicacion" DataSetColumn="Ubicacion" />
+              <Mapping SourceColumn="Motivo" DataSetColumn="Motivo" />
+              <Mapping SourceColumn="Tipo" DataSetColumn="Tipo" />
+              <Mapping SourceColumn="observacion" DataSetColumn="observacion" />
+              <Mapping SourceColumn="Lote" DataSetColumn="Lote" />
+              <Mapping SourceColumn="ValorAnterior" DataSetColumn="ValorAnterior" />
+              <Mapping SourceColumn="ValorActual" DataSetColumn="ValorActual" />
+              <Mapping SourceColumn="LicPlate" DataSetColumn="LicPlate" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="dsRepAjustes" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_UserDSName="dsRepAjustes" msprop:Generator_DataSetName="dsRepAjustes">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="trans_ajuste_det" msprop:Generator_RowClassName="trans_ajuste_detRow" msprop:Generator_RowEvHandlerName="trans_ajuste_detRowChangeEventHandler" msprop:Generator_RowDeletedName="trans_ajuste_detRowDeleted" msprop:Generator_RowDeletingName="trans_ajuste_detRowDeleting" msprop:Generator_RowEvArgName="trans_ajuste_detRowChangeEvent" msprop:Generator_TablePropName="trans_ajuste_det" msprop:Generator_RowChangedName="trans_ajuste_detRowChanged" msprop:Generator_RowChangingName="trans_ajuste_detRowChanging" msprop:Generator_TableClassName="trans_ajuste_detDataTable" msprop:Generator_UserTableName="trans_ajuste_det" msprop:Generator_TableVarName="tabletrans_ajuste_det">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Codigo" msprop:Generator_ColumnPropNameInRow="Codigo" msprop:Generator_ColumnPropNameInTable="CodigoColumn" msprop:Generator_ColumnVarNameInTable="columnCodigo" msprop:Generator_UserColumnName="Codigo" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Producto" msprop:Generator_ColumnPropNameInRow="Producto" msprop:Generator_ColumnPropNameInTable="ProductoColumn" msprop:Generator_ColumnVarNameInTable="columnProducto" msprop:Generator_UserColumnName="Producto" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="200" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Ubicacion" msdata:ReadOnly="true" msprop:Generator_ColumnPropNameInRow="Ubicacion" msprop:Generator_ColumnPropNameInTable="UbicacionColumn" msprop:Generator_ColumnVarNameInTable="columnUbicacion" msprop:Generator_UserColumnName="Ubicacion" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Motivo" msprop:Generator_ColumnPropNameInRow="Motivo" msprop:Generator_ColumnPropNameInTable="MotivoColumn" msprop:Generator_ColumnVarNameInTable="columnMotivo" msprop:Generator_UserColumnName="Motivo" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Tipo" msprop:Generator_ColumnPropNameInRow="Tipo" msprop:Generator_ColumnPropNameInTable="TipoColumn" msprop:Generator_ColumnVarNameInTable="columnTipo" msprop:Generator_UserColumnName="Tipo" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="observacion" msprop:Generator_ColumnPropNameInRow="observacion" msprop:Generator_ColumnPropNameInTable="observacionColumn" msprop:Generator_ColumnVarNameInTable="columnobservacion" msprop:Generator_UserColumnName="observacion" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="150" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="Lote" msprop:Generator_ColumnPropNameInRow="Lote" msprop:Generator_ColumnPropNameInTable="LoteColumn" msprop:Generator_ColumnVarNameInTable="columnLote" msprop:Generator_UserColumnName="Lote" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ValorAnterior" msprop:Generator_ColumnPropNameInRow="ValorAnterior" msprop:Generator_ColumnPropNameInTable="ValorAnteriorColumn" msprop:Generator_ColumnVarNameInTable="columnValorAnterior" msprop:Generator_UserColumnName="ValorAnterior" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ValorActual" msprop:Generator_ColumnPropNameInRow="ValorActual" msprop:Generator_ColumnPropNameInTable="ValorActualColumn" msprop:Generator_ColumnVarNameInTable="columnValorActual" msprop:Generator_UserColumnName="ValorActual" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="LicPlate" msprop:Generator_ColumnPropNameInRow="LicPlate" msprop:Generator_ColumnPropNameInTable="LicPlateColumn" msprop:Generator_ColumnVarNameInTable="columnLicPlate" msprop:Generator_UserColumnName="LicPlate" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

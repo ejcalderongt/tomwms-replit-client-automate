@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-GT">
+  <Title Text="Tablero de control" />
+  <DataSources>
+    <SqlDataSource Name="Origen de datos SQL 1" ComponentName="dashboardSqlDataSource1">
+      <Connection Name="localhost_IMS4MB_IDEALSA_PRD_Connection" ProviderKey="MSSqlServer">
+        <Parameters>
+          <Parameter Name="server" Value="PROGRAX\SQLEXPRESS" />
+          <Parameter Name="database" Value="IMS4MB_IDEALSA_PRD" />
+          <Parameter Name="useIntegratedSecurity" Value="False" />
+          <Parameter Name="read only" Value="0" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="VW_Tiempos_Picking_Operador">
+        <Tables>
+          <Table Name="VW_Tiempos_Picking_Operador" X="30" Y="30" Width="290" Height="600" />
+        </Tables>
+        <Columns>
+          <Column Table="VW_Tiempos_Picking_Operador" Name="IdPedidoEnc" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="IdPickingEnc" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="Codigo_Bodega" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="Propietario" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="TipoDocumento" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="Pe_Hora_Creacion" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="Creacion_Picking" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="Fecha_Pedido" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="fecha_picking" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="fecha_verificado" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="fecha_despachado" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="Operador_Pickeo" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="Operador_Verifico" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="Ini_Picking_Ubi" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="Fin_Picking_Ubi" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="Dif_Picking_Ubi" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="Dif_Picking_Ubi_H" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="Ini_Picking_Enc" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="Fin_Picking_Enc" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="Dif_Picking_Enc" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="Dif_Picking_Enc_H" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="Cant_Lineas" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="cant_pedida" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="cant_despachada" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="cantidad_solicitada" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="cantidad_recibida" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="cantidad_verificada" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="cantidad_despachada" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="nom_presentacion" />
+          <Column Table="VW_Tiempos_Picking_Operador" Name="nom_unid_med" />
+        </Columns>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="Origen de datos SQL 1">
+          <View Name="VW_Tiempos_Picking_Operador">
+            <Field Name="IdPedidoEnc" Type="Int32" />
+            <Field Name="IdPickingEnc" Type="Int32" />
+            <Field Name="Codigo_Bodega" Type="String" />
+            <Field Name="Propietario" Type="String" />
+            <Field Name="TipoDocumento" Type="String" />
+            <Field Name="Pe_Hora_Creacion" Type="DateTime" />
+            <Field Name="Creacion_Picking" Type="DateTime" />
+            <Field Name="Fecha_Pedido" Type="DateTime" />
+            <Field Name="fecha_picking" Type="DateTime" />
+            <Field Name="fecha_verificado" Type="DateTime" />
+            <Field Name="fecha_despachado" Type="DateTime" />
+            <Field Name="Operador_Pickeo" Type="String" />
+            <Field Name="Operador_Verifico" Type="String" />
+            <Field Name="Ini_Picking_Ubi" Type="DateTime" />
+            <Field Name="Fin_Picking_Ubi" Type="DateTime" />
+            <Field Name="Dif_Picking_Ubi" Type="String" />
+            <Field Name="Dif_Picking_Ubi_H" Type="Int32" />
+            <Field Name="Ini_Picking_Enc" Type="DateTime" />
+            <Field Name="Fin_Picking_Enc" Type="DateTime" />
+            <Field Name="Dif_Picking_Enc" Type="String" />
+            <Field Name="Dif_Picking_Enc_H" Type="Int32" />
+            <Field Name="Cant_Lineas" Type="Int32" />
+            <Field Name="cant_pedida" Type="Double" />
+            <Field Name="cant_despachada" Type="Double" />
+            <Field Name="cantidad_solicitada" Type="Double" />
+            <Field Name="cantidad_recibida" Type="Double" />
+            <Field Name="cantidad_verificada" Type="Double" />
+            <Field Name="cantidad_despachada" Type="Double" />
+            <Field Name="nom_presentacion" Type="String" />
+            <Field Name="nom_unid_med" Type="String" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <Chart ComponentName="chartDashboardItem1" Name="Horas de picking por Operador" DataSource="dashboardSqlDataSource1" DataMember="VW_Tiempos_Picking_Operador">
+      <DataItems>
+        <Measure DataMember="Dif_Picking_Enc_H" SummaryType="Count" DefaultId="DataItem1" />
+        <Dimension DataMember="Operador_Pickeo" DefaultId="DataItem0" />
+        <Dimension DataMember="fecha_picking" DefaultId="DataItem2" />
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+        <Argument DefaultId="DataItem2" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple Name="Horas">
+              <Value DefaultId="DataItem1" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem2" Name="Cantidad de líneas por operador" DataSource="dashboardSqlDataSource1" DataMember="VW_Tiempos_Picking_Operador">
+      <DataItems>
+        <Measure DataMember="Cant_Lineas" DefaultId="DataItem0" />
+        <Dimension DataMember="Operador_Pickeo" DefaultId="DataItem1" />
+        <Dimension DataMember="fecha_picking" DefaultId="DataItem2" />
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem1" />
+        <Argument DefaultId="DataItem2" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple Name="Líneas de picking">
+              <Value DefaultId="DataItem0" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Chart ComponentName="chartDashboardItem3" Name="Unidades pickeadas por operador" DataSource="dashboardSqlDataSource1" DataMember="VW_Tiempos_Picking_Operador">
+      <DataItems>
+        <Measure DataMember="cantidad_despachada" DefaultId="DataItem0" />
+        <Dimension DataMember="Operador_Pickeo" DefaultId="DataItem1" />
+        <Dimension DataMember="fecha_picking" DefaultId="DataItem2" />
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem1" />
+        <Argument DefaultId="DataItem2" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple Name="Unidades">
+              <Value DefaultId="DataItem0" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Grid ComponentName="gridDashboardItem1" Name="Productividad de picking por operador" DataSource="dashboardSqlDataSource1" DataMember="VW_Tiempos_Picking_Operador">
+      <InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Dimension DataMember="Operador_Pickeo" DefaultId="DataItem0" />
+        <Measure DataMember="Cant_Lineas" DefaultId="DataItem1" />
+        <Measure DataMember="cant_despachada" DefaultId="DataItem2" />
+        <Dimension DataMember="fecha_picking" DateTimeGroupInterval="DayMonthYear" DefaultId="DataItem3" />
+      </DataItems>
+      <GridColumns>
+        <GridDimensionColumn Name="Nombre">
+          <Dimension DefaultId="DataItem0" />
+        </GridDimensionColumn>
+        <GridMeasureColumn Name="Líneas">
+          <Measure DefaultId="DataItem1" />
+        </GridMeasureColumn>
+        <GridMeasureColumn Name="Unidades">
+          <Measure DefaultId="DataItem2" />
+        </GridMeasureColumn>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem3" />
+        </GridDimensionColumn>
+      </GridColumns>
+      <GridOptions />
+    </Grid>
+    <ComboBox ComponentName="comboBoxDashboardItem1" Name="Filtro Por Bodega" DataSource="dashboardSqlDataSource1" DataMember="VW_Tiempos_Picking_Operador">
+      <DataItems>
+        <Dimension DataMember="Codigo_Bodega" SortOrder="Descending" DefaultId="DataItem0" />
+      </DataItems>
+      <FilterDimensions>
+        <Dimension DefaultId="DataItem0" />
+      </FilterDimensions>
+    </ComboBox>
+    <RangeFilter ComponentName="rangeFilterDashboardItem1" Name="Filtro de Rango 1" DataSource="dashboardSqlDataSource1" DataMember="VW_Tiempos_Picking_Operador">
+      <DataItems>
+        <Dimension DataMember="fecha_picking" DateTimeGroupInterval="DayMonthYear" DefaultId="DataItem0" />
+        <Measure DataMember="fecha_picking" SummaryType="Count" DefaultId="DataItem1" />
+      </DataItems>
+      <Argument DefaultId="DataItem0" />
+      <Series>
+        <Simple SeriesType="Line">
+          <Value DefaultId="DataItem1" />
+        </Simple>
+      </Series>
+    </RangeFilter>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup Orientation="Vertical" Weight="100">
+      <LayoutItem DashboardItem="comboBoxDashboardItem1" Weight="10.362694300518134" />
+      <LayoutItem DashboardItem="rangeFilterDashboardItem1" Weight="12.089810017271157" />
+      <LayoutGroup Weight="77.547495682210709">
+        <LayoutGroup Orientation="Vertical" Weight="53.70722433460076">
+          <LayoutItem DashboardItem="gridDashboardItem1" Weight="28.953229398663698" />
+          <LayoutItem DashboardItem="chartDashboardItem3" Weight="71.0467706013363" />
+        </LayoutGroup>
+        <LayoutGroup Orientation="Vertical" Weight="46.29277566539924">
+          <LayoutItem DashboardItem="chartDashboardItem2" Weight="29.175946547884188" />
+          <LayoutItem DashboardItem="chartDashboardItem1" Weight="70.82405345211582" />
+        </LayoutGroup>
+      </LayoutGroup>
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

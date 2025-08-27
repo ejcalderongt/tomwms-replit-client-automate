@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="PedidoCompra" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://192.168.0.98/MI3/Transacciones/PedidoCompra.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://192.168.0.98/MI3/Transacciones/PedidoCompra.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://192.168.0.98/MI3/Transacciones/PedidoCompra.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/TOMWMS" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IPedidoCompra_Insert_InputMessage">
+    <wsdl:part name="parameters" element="tns:Insert" />
+  </wsdl:message>
+  <wsdl:message name="IPedidoCompra_Insert_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPedidoCompra_Update_InputMessage">
+    <wsdl:part name="parameters" element="tns:Update" />
+  </wsdl:message>
+  <wsdl:message name="IPedidoCompra_Update_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPedidoCompra_Delete_InputMessage">
+    <wsdl:part name="parameters" element="tns:Delete" />
+  </wsdl:message>
+  <wsdl:message name="IPedidoCompra_Delete_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPedidoCompra_Get_Single_By_NoEnc_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_NoEnc" />
+  </wsdl:message>
+  <wsdl:message name="IPedidoCompra_Get_Single_By_NoEnc_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_NoEncResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPedidoCompra_Insert_Multiple_InputMessage">
+    <wsdl:part name="parameters" element="tns:Insert_Multiple" />
+  </wsdl:message>
+  <wsdl:message name="IPedidoCompra_Insert_Multiple_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Insert_MultipleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPedidoCompra_Actualizar_Estado_Enviado_A_ERP_By_Referencia_InputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar_Estado_Enviado_A_ERP_By_Referencia" />
+  </wsdl:message>
+  <wsdl:message name="IPedidoCompra_Actualizar_Estado_Enviado_A_ERP_By_Referencia_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar_Estado_Enviado_A_ERP_By_ReferenciaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPedidoCompra_Registrar_Lote_Documento_Ingreso_InputMessage">
+    <wsdl:part name="parameters" element="tns:Registrar_Lote_Documento_Ingreso" />
+  </wsdl:message>
+  <wsdl:message name="IPedidoCompra_Registrar_Lote_Documento_Ingreso_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Registrar_Lote_Documento_IngresoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IPedidoCompra_Actualizar_Estado_Documento_Ingreso_By_Referencia_InputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar_Estado_Documento_Ingreso_By_Referencia" />
+  </wsdl:message>
+  <wsdl:message name="IPedidoCompra_Actualizar_Estado_Documento_Ingreso_By_Referencia_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar_Estado_Documento_Ingreso_By_ReferenciaResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IPedidoCompra">
+    <wsdl:operation name="Insert">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPedidoCompra/Insert" message="tns:IPedidoCompra_Insert_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPedidoCompra/InsertResponse" message="tns:IPedidoCompra_Insert_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Update">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPedidoCompra/Update" message="tns:IPedidoCompra_Update_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPedidoCompra/UpdateResponse" message="tns:IPedidoCompra_Update_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPedidoCompra/Delete" message="tns:IPedidoCompra_Delete_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPedidoCompra/DeleteResponse" message="tns:IPedidoCompra_Delete_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_NoEnc">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPedidoCompra/Get_Single_By_NoEnc" message="tns:IPedidoCompra_Get_Single_By_NoEnc_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPedidoCompra/Get_Single_By_NoEncResponse" message="tns:IPedidoCompra_Get_Single_By_NoEnc_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Insert_Multiple">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPedidoCompra/Insert_Multiple" message="tns:IPedidoCompra_Insert_Multiple_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPedidoCompra/Insert_MultipleResponse" message="tns:IPedidoCompra_Insert_Multiple_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar_Estado_Enviado_A_ERP_By_Referencia">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPedidoCompra/Actualizar_Estado_Enviado_A_ERP_By_Referencia" message="tns:IPedidoCompra_Actualizar_Estado_Enviado_A_ERP_By_Referencia_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPedidoCompra/Actualizar_Estado_Enviado_A_ERP_By_ReferenciaResponse" message="tns:IPedidoCompra_Actualizar_Estado_Enviado_A_ERP_By_Referencia_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Registrar_Lote_Documento_Ingreso">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPedidoCompra/Registrar_Lote_Documento_Ingreso" message="tns:IPedidoCompra_Registrar_Lote_Documento_Ingreso_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPedidoCompra/Registrar_Lote_Documento_IngresoResponse" message="tns:IPedidoCompra_Registrar_Lote_Documento_Ingreso_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar_Estado_Documento_Ingreso_By_Referencia">
+      <wsdl:input wsaw:Action="http://tempuri.org/IPedidoCompra/Actualizar_Estado_Documento_Ingreso_By_Referencia" message="tns:IPedidoCompra_Actualizar_Estado_Documento_Ingreso_By_Referencia_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IPedidoCompra/Actualizar_Estado_Documento_Ingreso_By_ReferenciaResponse" message="tns:IPedidoCompra_Actualizar_Estado_Documento_Ingreso_By_Referencia_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IPedidoCompra" type="tns:IPedidoCompra">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Insert">
+      <soap:operation soapAction="http://tempuri.org/IPedidoCompra/Insert" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Update">
+      <soap:operation soapAction="http://tempuri.org/IPedidoCompra/Update" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <soap:operation soapAction="http://tempuri.org/IPedidoCompra/Delete" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_NoEnc">
+      <soap:operation soapAction="http://tempuri.org/IPedidoCompra/Get_Single_By_NoEnc" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Insert_Multiple">
+      <soap:operation soapAction="http://tempuri.org/IPedidoCompra/Insert_Multiple" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar_Estado_Enviado_A_ERP_By_Referencia">
+      <soap:operation soapAction="http://tempuri.org/IPedidoCompra/Actualizar_Estado_Enviado_A_ERP_By_Referencia" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Registrar_Lote_Documento_Ingreso">
+      <soap:operation soapAction="http://tempuri.org/IPedidoCompra/Registrar_Lote_Documento_Ingreso" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar_Estado_Documento_Ingreso_By_Referencia">
+      <soap:operation soapAction="http://tempuri.org/IPedidoCompra/Actualizar_Estado_Documento_Ingreso_By_Referencia" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PedidoCompra">
+    <wsdl:port name="BasicHttpBinding_IPedidoCompra" binding="tns:BasicHttpBinding_IPedidoCompra">
+      <soap:address location="http://192.168.0.98/MI3/Transacciones/PedidoCompra.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/TOMWMS" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/TOMWMS" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="ArrayOfclsBeI_nav_barras_pallet">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeI_nav_barras_pallet" nillable="true" type="tns:clsBeI_nav_barras_pallet" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeI_nav_barras_pallet" nillable="true" type="tns:ArrayOfclsBeI_nav_barras_pallet" />
+  <xs:complexType name="clsBeI_nav_barras_pallet">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Bodega_Destino" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Bodega_Origen" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Cajas_Por_Cama" type="xs:int" />
+      <xs:element minOccurs="0" name="Camas_Por_Tarima" type="xs:int" />
+      <xs:element minOccurs="0" name="Cantidad_Presentacion" type="xs:double" />
+      <xs:element minOccurs="0" name="Cantidad_UMP" type="xs:double" />
+      <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Codigo_barra" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fecha_Agregado" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fecha_Ingreso" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fecha_Produccion" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fecha_Vence" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdPallet" type="xs:int" />
+      <xs:element minOccurs="0" name="IdRecepcion" type="xs:int" />
+      <xs:element minOccurs="0" name="Lote" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Lote_Numerico" type="xs:long" />
+      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Recibido" type="xs:boolean" />
+      <xs:element minOccurs="0" name="UM_Producto" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeI_nav_barras_pallet" nillable="true" type="tns:clsBeI_nav_barras_pallet" />
+</xs:schema>

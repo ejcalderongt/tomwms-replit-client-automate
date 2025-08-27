@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="TransaccionesOut" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://192.168.142.173/MI3/Transacciones/TransaccionesOut.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://192.168.142.173/MI3/Transacciones/TransaccionesOut.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://192.168.142.173/MI3/Transacciones/TransaccionesOut.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/TOMWMS" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ITransaccionesOut_Get_Ingresos_Pendientes_De_Procesar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Ingresos_Pendientes_De_Procesar" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Ingresos_Pendientes_De_Procesar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Ingresos_Pendientes_De_ProcesarResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Despachos_Pendientes_De_Procesar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Despachos_Pendientes_De_Procesar" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Despachos_Pendientes_De_Procesar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Despachos_Pendientes_De_ProcesarResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Ingresos_Pendientes_De_Procesar_By_No_PedidoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Despachos_Pendientes_De_Procesar_By_No_Pedido" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Despachos_Pendientes_De_Procesar_By_No_PedidoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumentoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Actualizar_Registro_Procesado_InputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar_Registro_Procesado" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Actualizar_Registro_Procesado_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar_Registro_ProcesadoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Ajustes_Pendientes_Envio_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Ajustes_Pendientes_Envio" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Ajustes_Pendientes_Envio_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Ajustes_Pendientes_EnvioResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Insertar_Mensaje_Error_ERP_InputMessage">
+    <wsdl:part name="parameters" element="tns:Insertar_Mensaje_Error_ERP" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Insertar_Mensaje_Error_ERP_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Insertar_Mensaje_Error_ERPResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Mensajes_Error_ERP_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Mensajes_Error_ERP" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Mensajes_Error_ERP_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Mensajes_Error_ERPResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Actualizar_Ajuste_Procesado_InputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar_Ajuste_Procesado" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Actualizar_Ajuste_Procesado_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar_Ajuste_ProcesadoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Ingresos_Pendientes_De_Procesar_By_IdTipoDocumento_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Ingresos_Pendientes_De_Procesar_By_IdTipoDocumento" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Ingresos_Pendientes_De_Procesar_By_IdTipoDocumento_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Ingresos_Pendientes_De_Procesar_By_IdTipoDocumentoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumentoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Stock_Jornada_By_IdPropietario_And_Rango_Fechas_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Stock_Jornada_By_IdPropietario_And_Rango_Fechas" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Stock_Jornada_By_IdPropietario_And_Rango_Fechas_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Stock_Jornada_By_IdPropietario_And_Rango_FechasResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Almacenaje_Historico_By_IdPropietario_And_Rango_Fechas_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Almacenaje_Historico_By_IdPropietario_And_Rango_Fechas" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Almacenaje_Historico_By_IdPropietario_And_Rango_Fechas_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Almacenaje_Historico_By_IdPropietario_And_Rango_FechasResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Almacenaje_Historico_By_No_Orden_And_Rango_Fechas_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Almacenaje_Historico_By_No_Orden_And_Rango_Fechas" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Almacenaje_Historico_By_No_Orden_And_Rango_Fechas_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Almacenaje_Historico_By_No_Orden_And_Rango_FechasResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Servicios_By_IdPropietario_And_Rango_Fechas_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Servicios_By_IdPropietario_And_Rango_Fechas" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Servicios_By_IdPropietario_And_Rango_Fechas_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Servicios_By_IdPropietario_And_Rango_FechasResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Servicios_By_No_Orden_And_Rango_Fechas_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Servicios_By_No_Orden_And_Rango_Fechas" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Servicios_By_No_Orden_And_Rango_Fechas_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Servicios_By_No_Orden_And_Rango_FechasResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Devolucion_De_Ruta_By_Filtros_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Devolucion_De_Ruta_By_Filtros" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Devolucion_De_Ruta_By_Filtros_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Devolucion_De_Ruta_By_FiltrosResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Insertar_Referencia_Documento_Salida_InputMessage">
+    <wsdl:part name="parameters" element="tns:Insertar_Referencia_Documento_Salida" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Insertar_Referencia_Documento_Salida_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Insertar_Referencia_Documento_SalidaResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Actualizar_Registro_Procesado_By_No_Pedido_InputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar_Registro_Procesado_By_No_Pedido" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Actualizar_Registro_Procesado_By_No_Pedido_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar_Registro_Procesado_By_No_PedidoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Actualizar_Registro_Procesado_By_No_Pedido_And_IdTipoDocumento_InputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar_Registro_Procesado_By_No_Pedido_And_IdTipoDocumento" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Actualizar_Registro_Procesado_By_No_Pedido_And_IdTipoDocumento_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar_Registro_Procesado_By_No_Pedido_And_IdTipoDocumentoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Set_Flag_Activo_Documento_Referencia_Salida_InputMessage">
+    <wsdl:part name="parameters" element="tns:Set_Flag_Activo_Documento_Referencia_Salida" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Set_Flag_Activo_Documento_Referencia_Salida_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Set_Flag_Activo_Documento_Referencia_SalidaResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Documento_Referencia_By_Filtros_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Documento_Referencia_By_Filtros" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Documento_Referencia_By_Filtros_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Documento_Referencia_By_FiltrosResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Actualizar_Registro_Procesado_By_IdDespacho_And_Codigo_Producto_InputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar_Registro_Procesado_By_IdDespacho_And_Codigo_Producto" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Actualizar_Registro_Procesado_By_IdDespacho_And_Codigo_Producto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar_Registro_Procesado_By_IdDespacho_And_Codigo_ProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Single_By_IdTransaccion_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_IdTransaccion" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Get_Single_By_IdTransaccion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_IdTransaccionResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Actualizar_Registro_Procesado_By_IdRecepcionEnc_And_Codigo_Producto_InputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar_Registro_Procesado_By_IdRecepcionEnc_And_Codigo_Producto" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Actualizar_Registro_Procesado_By_IdRecepcionEnc_And_Codigo_Producto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Actualizar_Registro_Procesado_By_IdRecepcionEnc_And_Codigo_ProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Desactivar_Referencia_Documento_Salida_InputMessage">
+    <wsdl:part name="parameters" element="tns:Desactivar_Referencia_Documento_Salida" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Desactivar_Referencia_Documento_Salida_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Desactivar_Referencia_Documento_SalidaResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Insertar_Referencia_Documento_Salida_Con_Detalle_InputMessage">
+    <wsdl:part name="parameters" element="tns:Insertar_Referencia_Documento_Salida_Con_Detalle" />
+  </wsdl:message>
+  <wsdl:message name="ITransaccionesOut_Insertar_Referencia_Documento_Salida_Con_Detalle_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Insertar_Referencia_Documento_Salida_Con_DetalleResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ITransaccionesOut">
+    <wsdl:operation name="Get_Ingresos_Pendientes_De_Procesar">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Ingresos_Pendientes_De_Procesar" message="tns:ITransaccionesOut_Get_Ingresos_Pendientes_De_Procesar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Ingresos_Pendientes_De_ProcesarResponse" message="tns:ITransaccionesOut_Get_Ingresos_Pendientes_De_Procesar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Despachos_Pendientes_De_Procesar">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Despachos_Pendientes_De_Procesar" message="tns:ITransaccionesOut_Get_Despachos_Pendientes_De_Procesar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Despachos_Pendientes_De_ProcesarResponse" message="tns:ITransaccionesOut_Get_Despachos_Pendientes_De_Procesar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido" message="tns:ITransaccionesOut_Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Ingresos_Pendientes_De_Procesar_By_No_PedidoResponse" message="tns:ITransaccionesOut_Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Despachos_Pendientes_De_Procesar_By_No_Pedido">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Despachos_Pendientes_De_Procesar_By_No_Pedido" message="tns:ITransaccionesOut_Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Despachos_Pendientes_De_Procesar_By_No_PedidoResponse" message="tns:ITransaccionesOut_Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento" message="tns:ITransaccionesOut_Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumentoResponse" message="tns:ITransaccionesOut_Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar_Registro_Procesado">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Actualizar_Registro_Procesado" message="tns:ITransaccionesOut_Actualizar_Registro_Procesado_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Actualizar_Registro_ProcesadoResponse" message="tns:ITransaccionesOut_Actualizar_Registro_Procesado_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Ajustes_Pendientes_Envio">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Ajustes_Pendientes_Envio" message="tns:ITransaccionesOut_Get_Ajustes_Pendientes_Envio_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Ajustes_Pendientes_EnvioResponse" message="tns:ITransaccionesOut_Get_Ajustes_Pendientes_Envio_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Insertar_Mensaje_Error_ERP">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Insertar_Mensaje_Error_ERP" message="tns:ITransaccionesOut_Insertar_Mensaje_Error_ERP_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Insertar_Mensaje_Error_ERPResponse" message="tns:ITransaccionesOut_Insertar_Mensaje_Error_ERP_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Mensajes_Error_ERP">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Mensajes_Error_ERP" message="tns:ITransaccionesOut_Get_Mensajes_Error_ERP_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Mensajes_Error_ERPResponse" message="tns:ITransaccionesOut_Get_Mensajes_Error_ERP_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar_Ajuste_Procesado">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Actualizar_Ajuste_Procesado" message="tns:ITransaccionesOut_Actualizar_Ajuste_Procesado_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Actualizar_Ajuste_ProcesadoResponse" message="tns:ITransaccionesOut_Actualizar_Ajuste_Procesado_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Ingresos_Pendientes_De_Procesar_By_IdTipoDocumento">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Ingresos_Pendientes_De_Procesar_By_IdTipoDocumento" message="tns:ITransaccionesOut_Get_Ingresos_Pendientes_De_Procesar_By_IdTipoDocumento_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Ingresos_Pendientes_De_Procesar_By_IdTipoDocumentoResponse" message="tns:ITransaccionesOut_Get_Ingresos_Pendientes_De_Procesar_By_IdTipoDocumento_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento" message="tns:ITransaccionesOut_Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumentoResponse" message="tns:ITransaccionesOut_Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Stock_Jornada_By_IdPropietario_And_Rango_Fechas">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Stock_Jornada_By_IdPropietario_And_Rango_Fechas" message="tns:ITransaccionesOut_Get_Stock_Jornada_By_IdPropietario_And_Rango_Fechas_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Stock_Jornada_By_IdPropietario_And_Rango_FechasResponse" message="tns:ITransaccionesOut_Get_Stock_Jornada_By_IdPropietario_And_Rango_Fechas_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Almacenaje_Historico_By_IdPropietario_And_Rango_Fechas">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Almacenaje_Historico_By_IdPropietario_And_Rango_Fechas" message="tns:ITransaccionesOut_Get_Almacenaje_Historico_By_IdPropietario_And_Rango_Fechas_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Almacenaje_Historico_By_IdPropietario_And_Rango_FechasResponse" message="tns:ITransaccionesOut_Get_Almacenaje_Historico_By_IdPropietario_And_Rango_Fechas_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Almacenaje_Historico_By_No_Orden_And_Rango_Fechas">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Almacenaje_Historico_By_No_Orden_And_Rango_Fechas" message="tns:ITransaccionesOut_Get_Almacenaje_Historico_By_No_Orden_And_Rango_Fechas_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Almacenaje_Historico_By_No_Orden_And_Rango_FechasResponse" message="tns:ITransaccionesOut_Get_Almacenaje_Historico_By_No_Orden_And_Rango_Fechas_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Servicios_By_IdPropietario_And_Rango_Fechas">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Servicios_By_IdPropietario_And_Rango_Fechas" message="tns:ITransaccionesOut_Get_Servicios_By_IdPropietario_And_Rango_Fechas_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Servicios_By_IdPropietario_And_Rango_FechasResponse" message="tns:ITransaccionesOut_Get_Servicios_By_IdPropietario_And_Rango_Fechas_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Servicios_By_No_Orden_And_Rango_Fechas">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Servicios_By_No_Orden_And_Rango_Fechas" message="tns:ITransaccionesOut_Get_Servicios_By_No_Orden_And_Rango_Fechas_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Servicios_By_No_Orden_And_Rango_FechasResponse" message="tns:ITransaccionesOut_Get_Servicios_By_No_Orden_And_Rango_Fechas_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Devolucion_De_Ruta_By_Filtros">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Devolucion_De_Ruta_By_Filtros" message="tns:ITransaccionesOut_Get_Devolucion_De_Ruta_By_Filtros_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Devolucion_De_Ruta_By_FiltrosResponse" message="tns:ITransaccionesOut_Get_Devolucion_De_Ruta_By_Filtros_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Insertar_Referencia_Documento_Salida">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Insertar_Referencia_Documento_Salida" message="tns:ITransaccionesOut_Insertar_Referencia_Documento_Salida_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Insertar_Referencia_Documento_SalidaResponse" message="tns:ITransaccionesOut_Insertar_Referencia_Documento_Salida_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar_Registro_Procesado_By_No_Pedido">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Actualizar_Registro_Procesado_By_No_Pedido" message="tns:ITransaccionesOut_Actualizar_Registro_Procesado_By_No_Pedido_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Actualizar_Registro_Procesado_By_No_PedidoResponse" message="tns:ITransaccionesOut_Actualizar_Registro_Procesado_By_No_Pedido_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar_Registro_Procesado_By_No_Pedido_And_IdTipoDocumento">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Actualizar_Registro_Procesado_By_No_Pedido_And_IdTipoDocumento" message="tns:ITransaccionesOut_Actualizar_Registro_Procesado_By_No_Pedido_And_IdTipoDocumento_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Actualizar_Registro_Procesado_By_No_Pedido_And_IdTipoDocumentoResponse" message="tns:ITransaccionesOut_Actualizar_Registro_Procesado_By_No_Pedido_And_IdTipoDocumento_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Set_Flag_Activo_Documento_Referencia_Salida">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Set_Flag_Activo_Documento_Referencia_Salida" message="tns:ITransaccionesOut_Set_Flag_Activo_Documento_Referencia_Salida_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Set_Flag_Activo_Documento_Referencia_SalidaResponse" message="tns:ITransaccionesOut_Set_Flag_Activo_Documento_Referencia_Salida_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Documento_Referencia_By_Filtros">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Documento_Referencia_By_Filtros" message="tns:ITransaccionesOut_Get_Documento_Referencia_By_Filtros_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Documento_Referencia_By_FiltrosResponse" message="tns:ITransaccionesOut_Get_Documento_Referencia_By_Filtros_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar_Registro_Procesado_By_IdDespacho_And_Codigo_Producto">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Actualizar_Registro_Procesado_By_IdDespacho_And_Codigo_Producto" message="tns:ITransaccionesOut_Actualizar_Registro_Procesado_By_IdDespacho_And_Codigo_Producto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Actualizar_Registro_Procesado_By_IdDespacho_And_Codigo_ProductoResponse" message="tns:ITransaccionesOut_Actualizar_Registro_Procesado_By_IdDespacho_And_Codigo_Producto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_IdTransaccion">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Single_By_IdTransaccion" message="tns:ITransaccionesOut_Get_Single_By_IdTransaccion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Get_Single_By_IdTransaccionResponse" message="tns:ITransaccionesOut_Get_Single_By_IdTransaccion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar_Registro_Procesado_By_IdRecepcionEnc_And_Codigo_Producto">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Actualizar_Registro_Procesado_By_IdRecepcionEnc_And_Codigo_Producto" message="tns:ITransaccionesOut_Actualizar_Registro_Procesado_By_IdRecepcionEnc_And_Codigo_Producto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Actualizar_Registro_Procesado_By_IdRecepcionEnc_And_Codigo_ProductoResponse" message="tns:ITransaccionesOut_Actualizar_Registro_Procesado_By_IdRecepcionEnc_And_Codigo_Producto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Desactivar_Referencia_Documento_Salida">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Desactivar_Referencia_Documento_Salida" message="tns:ITransaccionesOut_Desactivar_Referencia_Documento_Salida_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Desactivar_Referencia_Documento_SalidaResponse" message="tns:ITransaccionesOut_Desactivar_Referencia_Documento_Salida_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Insertar_Referencia_Documento_Salida_Con_Detalle">
+      <wsdl:input wsaw:Action="http://tempuri.org/ITransaccionesOut/Insertar_Referencia_Documento_Salida_Con_Detalle" message="tns:ITransaccionesOut_Insertar_Referencia_Documento_Salida_Con_Detalle_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ITransaccionesOut/Insertar_Referencia_Documento_Salida_Con_DetalleResponse" message="tns:ITransaccionesOut_Insertar_Referencia_Documento_Salida_Con_Detalle_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_ITransaccionesOut" type="tns:ITransaccionesOut">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Get_Ingresos_Pendientes_De_Procesar">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Ingresos_Pendientes_De_Procesar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Despachos_Pendientes_De_Procesar">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Despachos_Pendientes_De_Procesar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Despachos_Pendientes_De_Procesar_By_No_Pedido">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Despachos_Pendientes_De_Procesar_By_No_Pedido" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Ingresos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar_Registro_Procesado">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Actualizar_Registro_Procesado" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Ajustes_Pendientes_Envio">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Ajustes_Pendientes_Envio" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Insertar_Mensaje_Error_ERP">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Insertar_Mensaje_Error_ERP" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Mensajes_Error_ERP">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Mensajes_Error_ERP" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar_Ajuste_Procesado">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Actualizar_Ajuste_Procesado" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Ingresos_Pendientes_De_Procesar_By_IdTipoDocumento">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Ingresos_Pendientes_De_Procesar_By_IdTipoDocumento" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Despachos_Pendientes_De_Procesar_By_No_Pedido_And_IdTipoDocumento" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Stock_Jornada_By_IdPropietario_And_Rango_Fechas">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Stock_Jornada_By_IdPropietario_And_Rango_Fechas" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Almacenaje_Historico_By_IdPropietario_And_Rango_Fechas">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Almacenaje_Historico_By_IdPropietario_And_Rango_Fechas" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Almacenaje_Historico_By_No_Orden_And_Rango_Fechas">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Almacenaje_Historico_By_No_Orden_And_Rango_Fechas" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Servicios_By_IdPropietario_And_Rango_Fechas">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Servicios_By_IdPropietario_And_Rango_Fechas" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Servicios_By_No_Orden_And_Rango_Fechas">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Servicios_By_No_Orden_And_Rango_Fechas" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Devolucion_De_Ruta_By_Filtros">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Devolucion_De_Ruta_By_Filtros" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Insertar_Referencia_Documento_Salida">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Insertar_Referencia_Documento_Salida" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar_Registro_Procesado_By_No_Pedido">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Actualizar_Registro_Procesado_By_No_Pedido" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar_Registro_Procesado_By_No_Pedido_And_IdTipoDocumento">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Actualizar_Registro_Procesado_By_No_Pedido_And_IdTipoDocumento" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Set_Flag_Activo_Documento_Referencia_Salida">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Set_Flag_Activo_Documento_Referencia_Salida" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Documento_Referencia_By_Filtros">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Documento_Referencia_By_Filtros" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar_Registro_Procesado_By_IdDespacho_And_Codigo_Producto">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Actualizar_Registro_Procesado_By_IdDespacho_And_Codigo_Producto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_IdTransaccion">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Get_Single_By_IdTransaccion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Actualizar_Registro_Procesado_By_IdRecepcionEnc_And_Codigo_Producto">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Actualizar_Registro_Procesado_By_IdRecepcionEnc_And_Codigo_Producto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Desactivar_Referencia_Documento_Salida">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Desactivar_Referencia_Documento_Salida" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Insertar_Referencia_Documento_Salida_Con_Detalle">
+      <soap:operation soapAction="http://tempuri.org/ITransaccionesOut/Insertar_Referencia_Documento_Salida_Con_Detalle" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="TransaccionesOut">
+    <wsdl:port name="BasicHttpBinding_ITransaccionesOut" binding="tns:BasicHttpBinding_ITransaccionesOut">
+      <soap:address location="http://192.168.142.173/MI3/Transacciones/TransaccionesOut.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

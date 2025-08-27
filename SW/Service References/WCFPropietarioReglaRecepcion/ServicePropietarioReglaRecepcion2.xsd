@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="clsBePropietario_reglas_enc">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdMensajeRegla" type="xs:int" />
+      <xs:element minOccurs="0" name="IdPropietario" type="xs:int" />
+      <xs:element minOccurs="0" name="IdReglaPropietarioEnc" type="xs:int" />
+      <xs:element minOccurs="0" name="IdReglaRecepcion" type="xs:int" />
+      <xs:element minOccurs="0" name="IsNew" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Mensaje" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Propietario" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Regla" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ReglasDet" nillable="true" type="tns:ArrayOfclsBePropietario_reglas_det" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBePropietario_reglas_enc" nillable="true" type="tns:clsBePropietario_reglas_enc" />
+  <xs:complexType name="ArrayOfclsBePropietario_reglas_det">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBePropietario_reglas_det" nillable="true" type="tns:clsBePropietario_reglas_det" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBePropietario_reglas_det" nillable="true" type="tns:ArrayOfclsBePropietario_reglas_det" />
+  <xs:complexType name="clsBePropietario_reglas_det">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdDestinatarioPropietario" type="xs:int" />
+      <xs:element minOccurs="0" name="IdReglaPropietarioDet" type="xs:int" />
+      <xs:element minOccurs="0" name="IdReglaPropietarioEnc" type="xs:int" />
+      <xs:element minOccurs="0" name="IsNew" type="xs:boolean" />
+      <xs:element minOccurs="0" name="NombreDestinatario" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBePropietario_reglas_det" nillable="true" type="tns:clsBePropietario_reglas_det" />
+  <xs:complexType name="ArrayOfclsBePropietario_reglas_enc">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBePropietario_reglas_enc" nillable="true" type="tns:clsBePropietario_reglas_enc" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBePropietario_reglas_enc" nillable="true" type="tns:ArrayOfclsBePropietario_reglas_enc" />
+</xs:schema>

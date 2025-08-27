@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/TOMWMS" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/TOMWMS" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://192.168.142.173/MI3/Transacciones/TransaccionesOut.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="ArrayOfclsBeI_nav_transacciones_out">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeI_nav_transacciones_out" nillable="true" type="tns:clsBeI_nav_transacciones_out" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeI_nav_transacciones_out" nillable="true" type="tns:ArrayOfclsBeI_nav_transacciones_out" />
+  <xs:complexType name="clsBeI_nav_transacciones_out">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Cantidad" type="xs:double" />
+      <xs:element minOccurs="0" name="Cantidad_Esperada" type="xs:double" />
+      <xs:element minOccurs="0" name="Cantidad_Presentacion" type="xs:double" />
+      <xs:element minOccurs="0" name="Codigo_Bodega_Destino" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Codigo_Bodega_Origen" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Codigo_Cliente" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Codigo_producto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Codigo_variante" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Contacto_Entrega" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Contacto_Recibe" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Empresa_Transporte" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Enviado" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fecha_recepcion" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fecha_vence" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdPedidoEncDevol" type="xs:int" />
+      <xs:element minOccurs="0" name="IdTipoDocumento" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Idbodega" type="xs:int" />
+      <xs:element minOccurs="0" name="Iddespachoenc" type="xs:int" />
+      <xs:element minOccurs="0" name="Idempresa" type="xs:int" />
+      <xs:element minOccurs="0" name="Idordencompra" type="xs:int" />
+      <xs:element minOccurs="0" name="Idpedidoenc" type="xs:int" />
+      <xs:element minOccurs="0" name="Idpresentacion" type="xs:int" />
+      <xs:element minOccurs="0" name="Idproducto" type="xs:int" />
+      <xs:element minOccurs="0" name="Idproductobodega" type="xs:int" />
+      <xs:element minOccurs="0" name="Idproductoestado" type="xs:int" />
+      <xs:element minOccurs="0" name="Idpropietario" type="xs:int" />
+      <xs:element minOccurs="0" name="Idpropietariobodega" type="xs:int" />
+      <xs:element minOccurs="0" name="Idrecepcionenc" type="xs:int" />
+      <xs:element minOccurs="0" name="Idtransaccion" type="xs:int" />
+      <xs:element minOccurs="0" name="Idunidadmedida" type="xs:int" />
+      <xs:element minOccurs="0" name="Lic_Plate" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Lote" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Marchamo_No" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="No_linea" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="No_pedido" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Nombre_producto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Observacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Peso" type="xs:double" />
+      <xs:element minOccurs="0" name="Piloto_Transporte" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Placa_Transporte" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TCN_Transporte" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Tipo_transaccion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Uds_Lic_Plate" type="xs:double" />
+      <xs:element minOccurs="0" name="Unidad_medida" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="codigo_barra" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="fecha_despacho" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="no_documento_salida_ref_devol" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="peso_bruto" type="xs:double" />
+      <xs:element minOccurs="0" name="peso_neto" type="xs:double" />
+      <xs:element minOccurs="0" name="valor_aduana" type="xs:double" />
+      <xs:element minOccurs="0" name="valor_dai" type="xs:double" />
+      <xs:element minOccurs="0" name="valor_flete" type="xs:double" />
+      <xs:element minOccurs="0" name="valor_fob" type="xs:double" />
+      <xs:element minOccurs="0" name="valor_iva" type="xs:double" />
+      <xs:element minOccurs="0" name="valor_seguro" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeI_nav_transacciones_out" nillable="true" type="tns:clsBeI_nav_transacciones_out" />
+  <xs:complexType name="ArrayOfclsBeAjustesMI3">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeAjustesMI3" nillable="true" type="tns:clsBeAjustesMI3" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeAjustesMI3" nillable="true" type="tns:ArrayOfclsBeAjustesMI3" />
+  <xs:complexType name="clsBeAjustesMI3">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Cantidad" type="xs:double" />
+      <xs:element minOccurs="0" name="Codigo_Bodega" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Codigo_Bodega_ERP" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Codigo_Producto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IdAjusteDet" type="xs:int" />
+      <xs:element minOccurs="0" name="IdAjusteEnc" type="xs:int" />
+      <xs:element minOccurs="0" name="Lote" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Motivo_Ajuste" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NoDocumento" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Observacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Seccion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TipoAjusteERP" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TipoAjusteWMS" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="UMBas" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeAjustesMI3" nillable="true" type="tns:clsBeAjustesMI3" />
+  <xs:complexType name="clsBeI_nav_transacciones_out_error">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="EsError" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Fecha" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdDirectorio" type="xs:int" />
+      <xs:element minOccurs="0" name="IdMensaje" type="xs:int" />
+      <xs:element minOccurs="0" name="IdTipoTransaccionWMS" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IdTransaccionWMS" type="xs:int" />
+      <xs:element minOccurs="0" name="Mensaje" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="NumeroError" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Observacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ReferenciaERP" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TransaccionERP" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="UsuarioERP" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="UsuarioWMS" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeI_nav_transacciones_out_error" nillable="true" type="tns:clsBeI_nav_transacciones_out_error" />
+  <xs:complexType name="ArrayOfclsBeI_nav_transacciones_out_error">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeI_nav_transacciones_out_error" nillable="true" type="tns:clsBeI_nav_transacciones_out_error" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeI_nav_transacciones_out_error" nillable="true" type="tns:ArrayOfclsBeI_nav_transacciones_out_error" />
+  <xs:complexType name="ArrayOfclsBeStock_jornada">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeStock_jornada" nillable="true" type="tns:clsBeStock_jornada" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeStock_jornada" nillable="true" type="tns:ArrayOfclsBeStock_jornada" />
+  <xs:complexType name="clsBeStock_jornada">
+    <xs:sequence>
+      <xs:element name="_Activo" type="xs:boolean" />
+      <xs:element name="_Atributo_variante_1" nillable="true" type="xs:string" />
+      <xs:element name="_Añada" type="xs:int" />
+      <xs:element name="_Bodega" nillable="true" type="xs:string" />
+      <xs:element name="_CajasPorCama" type="xs:double" />
+      <xs:element name="_CamasPorTarima" type="xs:double" />
+      <xs:element name="_Cantidad" type="xs:double" />
+      <xs:element name="_Cantidad_Ingreso_Afecta_A_salida" type="xs:double" />
+      <xs:element name="_Clasificacion" nillable="true" type="xs:string" />
+      <xs:element name="_Codigo_barra_producto" nillable="true" type="xs:string" />
+      <xs:element name="_Codigo_producto" nillable="true" type="xs:string" />
+      <xs:element name="_Codigo_regimen" nillable="true" type="xs:string" />
+      <xs:element name="_Costo_Unitario" type="xs:double" />
+      <xs:element name="_Dias_vencimiento_regimen" type="xs:int" />
+      <xs:element name="_Es_Retroactivo" type="xs:boolean" />
+      <xs:element name="_Existencia" type="xs:double" />
+      <xs:element name="_Factor" type="xs:double" />
+      <xs:element name="_Fec_agr" type="xs:dateTime" />
+      <xs:element name="_Fec_mod" type="xs:dateTime" />
+      <xs:element name="_Fecha" type="xs:dateTime" />
+      <xs:element name="_Fecha_Agrego" type="xs:dateTime" />
+      <xs:element name="_Fecha_Ingreso_Ticket_TMS" type="xs:dateTime" />
+      <xs:element name="_Fecha_Recepcion" type="xs:dateTime" />
+      <xs:element name="_Fecha_ingreso" type="xs:dateTime" />
+      <xs:element name="_Fecha_manufactura" type="xs:dateTime" />
+      <xs:element name="_Fecha_vence" type="xs:dateTime" />
+      <xs:element name="_IdBodega" type="xs:int" />
+      <xs:element name="_IdClasificacion" type="xs:int" />
+      <xs:element name="_IdDespachoEnc" type="xs:int" />
+      <xs:element name="_IdJornadaSistema" type="xs:int" />
+      <xs:element name="_IdOrdenCompraEnc" type="xs:int" />
+      <xs:element name="_IdPedidoEnc" type="xs:int" />
+      <xs:element name="_IdPickingEnc" type="xs:int" />
+      <xs:element name="_IdPresentacion" type="xs:int" />
+      <xs:element name="_IdProductoBodega" type="xs:int" />
+      <xs:element name="_IdProductoEstado" type="xs:int" />
+      <xs:element name="_IdPropietario" type="xs:int" />
+      <xs:element name="_IdPropietarioBodega" type="xs:int" />
+      <xs:element name="_IdRecepcionDet" type="xs:int" />
+      <xs:element name="_IdRecepcionEnc" type="xs:int" />
+      <xs:element name="_IdStock" type="xs:int" />
+      <xs:element name="_IdStockJornada" type="xs:int" />
+      <xs:element name="_IdTicketTMS" type="xs:int" />
+      <xs:element name="_IdUbicacion" type="xs:int" />
+      <xs:element name="_IdUbicacion_anterior" type="xs:int" />
+      <xs:element name="_IdUnidadMedida" type="xs:int" />
+      <xs:element name="_Lic_plate" nillable="true" type="xs:string" />
+      <xs:element name="_Lote" nillable="true" type="xs:string" />
+      <xs:element name="_No_DocumentoOC" nillable="true" type="xs:string" />
+      <xs:element name="_No_DocumentoRec" nillable="true" type="xs:string" />
+      <xs:element name="_No_Documento_Procesado_ERP" nillable="true" type="xs:string" />
+      <xs:element name="_No_bulto" type="xs:int" />
+      <xs:element name="_No_poliza" nillable="true" type="xs:string" />
+      <xs:element name="_Nom_estado_producto" nillable="true" type="xs:string" />
+      <xs:element name="_Nom_presentacion_producto" nillable="true" type="xs:string" />
+      <xs:element name="_Nom_umBas" nillable="true" type="xs:string" />
+      <xs:element name="_Nombre_producto" nillable="true" type="xs:string" />
+      <xs:element name="_Nombre_regimen" nillable="true" type="xs:string" />
+      <xs:element name="_Numero_orden" nillable="true" type="xs:string" />
+      <xs:element name="_Pallet_no_estandar" type="xs:boolean" />
+      <xs:element name="_Peso" type="xs:double" />
+      <xs:element name="_Peso_neto" type="xs:double" />
+      <xs:element name="_Posiciones" type="xs:int" />
+      <xs:element name="_Procesado_ERP" type="xs:boolean" />
+      <xs:element name="_Propietario" nillable="true" type="xs:string" />
+      <xs:element name="_Proveedor" nillable="true" type="xs:string" />
+      <xs:element name="_ReferenciaOC" nillable="true" type="xs:string" />
+      <xs:element name="_Regimen" nillable="true" type="xs:string" />
+      <xs:element name="_Serial" nillable="true" type="xs:string" />
+      <xs:element name="_Stock_Jornada_Hash" nillable="true" type="xs:string" />
+      <xs:element name="_Temperatura" type="xs:double" />
+      <xs:element name="_TipoRubro" nillable="true" type="xs:string" />
+      <xs:element name="_TipoTrans" nillable="true" type="xs:string" />
+      <xs:element name="_Ubicacion_origen" nillable="true" type="xs:string" />
+      <xs:element name="_Uds_lic_plate" type="xs:double" />
+      <xs:element name="_User_agr" nillable="true" type="xs:string" />
+      <xs:element name="_User_mod" nillable="true" type="xs:string" />
+      <xs:element name="_Valor_aduana" type="xs:double" />
+      <xs:element name="_Valor_dai" type="xs:double" />
+      <xs:element name="_Valor_flete" type="xs:double" />
+      <xs:element name="_Valor_fob" type="xs:double" />
+      <xs:element name="_Valor_iva" type="xs:double" />
+      <xs:element name="_Valor_seguro" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeStock_jornada" nillable="true" type="tns:clsBeStock_jornada" />
+  <xs:simpleType name="IdTipoAlmacen">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="General">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Fiscal">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">3</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="IdTipoAlmacen" nillable="true" type="tns:IdTipoAlmacen" />
+  <xs:simpleType name="IdTipoRubroERP">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CantidadUMBas">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Posicion">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Cantidad">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">3</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Presentacion">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">4</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Tarimas">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">5</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="CIF_DAI_IVA">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">6</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Clasificacion">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">7</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="IdTipoRubroERP" nillable="true" type="tns:IdTipoRubroERP" />
+  <xs:complexType name="ArrayOfclsBeStock_jornada_logistico">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeStock_jornada_logistico" nillable="true" type="tns:clsBeStock_jornada_logistico" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeStock_jornada_logistico" nillable="true" type="tns:ArrayOfclsBeStock_jornada_logistico" />
+  <xs:complexType name="clsBeStock_jornada_logistico">
+    <xs:sequence>
+      <xs:element name="_Almacen" nillable="true" type="xs:string" />
+      <xs:element name="_Cantidad" type="xs:double" />
+      <xs:element name="_Codigo_Producto" nillable="true" type="xs:string" />
+      <xs:element name="_Fecha" type="xs:dateTime" />
+      <xs:element name="_IdCliente" type="xs:int" />
+      <xs:element name="_IdConsolidador" type="xs:int" />
+      <xs:element name="_No_Documento_Procesado_ERP" nillable="true" type="xs:string" />
+      <xs:element name="_Nombre_Producto" nillable="true" type="xs:string" />
+      <xs:element name="_Numero_Orden" nillable="true" type="xs:string" />
+      <xs:element name="_TipoRubro" nillable="true" type="xs:string" />
+      <xs:element name="_UMBas" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeStock_jornada_logistico" nillable="true" type="tns:clsBeStock_jornada_logistico" />
+  <xs:complexType name="ArrayOfclsBe_Servicio_Logistico">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBe_Servicio_Logistico" nillable="true" type="tns:clsBe_Servicio_Logistico" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBe_Servicio_Logistico" nillable="true" type="tns:ArrayOfclsBe_Servicio_Logistico" />
+  <xs:complexType name="clsBe_Servicio_Logistico">
+    <xs:sequence>
+      <xs:element name="_Almacen" nillable="true" type="xs:string" />
+      <xs:element name="_Cantidad" type="xs:int" />
+      <xs:element name="_Codigo_producto" nillable="true" type="xs:string" />
+      <xs:element name="_Fecha_Servicio" nillable="true" type="xs:string" />
+      <xs:element name="_IdCliente" type="xs:int" />
+      <xs:element name="_IdConsolidador" type="xs:int" />
+      <xs:element name="_No_Linea" type="xs:int" />
+      <xs:element name="_No_orden" nillable="true" type="xs:string" />
+      <xs:element name="_Nombre_Producto" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBe_Servicio_Logistico" nillable="true" type="tns:clsBe_Servicio_Logistico" />
+  <xs:simpleType name="IdTipoDocumentoIngreso">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NoDefinido" />
+      <xs:enumeration value="Ingreso" />
+      <xs:enumeration value="Devolucion" />
+      <xs:enumeration value="Transferencia" />
+      <xs:enumeration value="Transferencia_WMS" />
+      <xs:enumeration value="Poliza_DUCA" />
+      <xs:enumeration value="Orden_De_Produccion" />
+      <xs:enumeration value="Ingreso_Consolidado" />
+      <xs:enumeration value="Transferencia_de_Ingreso" />
+      <xs:enumeration value="Orden_De_Compra_Interna" />
+      <xs:enumeration value="Ingreso_Almacén_General_Con_Póliza" />
+      <xs:enumeration value="Liquidacion_De_Ruta_Devolucion" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="IdTipoDocumentoIngreso" nillable="true" type="tns:IdTipoDocumentoIngreso" />
+  <xs:complexType name="clsBeTrans_pe_docu_ref">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Asignado" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Bodega" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Codigo_Cliente" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Descripcion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Empresa" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FechaAgregado" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaAsignacion" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="FechaDocumento" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdDocumentoRef" type="xs:int" />
+      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Referencia" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeTrans_pe_docu_ref" nillable="true" type="tns:clsBeTrans_pe_docu_ref" />
+  <xs:complexType name="ArrayOfclsBeTrans_pe_docu_ref_det">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeTrans_pe_docu_ref_det" nillable="true" type="tns:clsBeTrans_pe_docu_ref_det" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeTrans_pe_docu_ref_det" nillable="true" type="tns:ArrayOfclsBeTrans_pe_docu_ref_det" />
+  <xs:complexType name="clsBeTrans_pe_docu_ref_det">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Cantidad" type="xs:double" />
+      <xs:element minOccurs="0" name="Codigo_producto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IdDocumentoRef" type="xs:int" />
+      <xs:element minOccurs="0" name="IdDocumentoRefDet" type="xs:int" />
+      <xs:element minOccurs="0" name="Nombre_producto" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Peso" type="xs:double" />
+      <xs:element minOccurs="0" name="Presentaacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Umbas" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeTrans_pe_docu_ref_det" nillable="true" type="tns:clsBeTrans_pe_docu_ref_det" />
+</xs:schema>
