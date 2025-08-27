@@ -5462,7 +5462,6 @@ Partial Public Class clsLnTrans_re_enc
         Dim IdTipoDocumento As Integer = 0
         Dim vResultadoOc As Integer = 0
         Dim vResultadoGuardarReDet As Integer = 0
-        'Dim vResultadoEliminar As Integer = 0
         Dim vResultadoEliminar As String = ""
         Dim vResultadoActualizarCantidadRecibidaDI As Integer = 0
         Dim vResultadoStockSeRec As Integer = 0

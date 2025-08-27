@@ -187,6 +187,9 @@ Partial Public Class clsLnTrans_pe_det
                                 .Producto = lProductosInMemory(vIdxProducto).Clone()
                             End If
 
+                            '#EJC20190214_0116PM: Comentariado por rendimiento, obtener solo lo necesario..
+                            'clsLnProducto.Obtener(.Producto, lConnection, lTransaction)
+
                             .IdEstado = IIf(IsDBNull(lRow.Item("IdEstado")), 0, lRow.Item("IdEstado"))
                             .IdPresentacion = IIf(IsDBNull(lRow.Item("IdPresentacion")), 0, lRow.Item("IdPresentacion"))
                             .IdUnidadMedidaBasica = IIf(IsDBNull(lRow.Item("IdUnidadMedidaBasica")), 0, lRow.Item("IdUnidadMedidaBasica"))
@@ -211,8 +214,11 @@ Partial Public Class clsLnTrans_pe_det
                             .RoadVAL1 = IIf(IsDBNull(lRow.Item("RoadVAL1")), 0.0, lRow.Item("RoadVAL1"))
                             .RoadVAL2 = IIf(IsDBNull(lRow.Item("RoadVAL2")), "", lRow.Item("RoadVAL2"))
                             .RoadCantProc = IIf(IsDBNull(lRow.Item("RoadCantProc")), 0.0, lRow.Item("RoadCantProc"))
+
+                            '#EJC20180114: Agruegué No_Linea y Atributo_Variante_1 en GetByPedidoEnc
                             .No_linea = IIf(IsDBNull(lRow.Item("No_linea")), 0.0, lRow.Item("No_linea"))
                             .Atributo_Variante_1 = IIf(IsDBNull(lRow.Item("Atributo_Variante_1")), 0.0, lRow.Item("Atributo_Variante_1"))
+                            '#CM_17092019_453PM: Agruegué IdStockEspecifico en GetByPedidoEnc
                             .IdStockEspecifico = IIf(IsDBNull(lRow.Item("IdStockEspecifico")), 0, lRow.Item("IdStockEspecifico"))
                             .EsPadre = IIf(IsDBNull(lRow.Item("EsPadre")), False, lRow.Item("EsPadre"))
                             .IdPedidoDetPadre = IIf(IsDBNull(lRow.Item("IdPedidoDetPadre")), 0, lRow.Item("IdPedidoDetPadre"))
@@ -248,6 +254,10 @@ Partial Public Class clsLnTrans_pe_det
 
         Try
 
+            'Dim vSQL As String = " SELECT det.*, pb.IdProducto FROM trans_pe_det det
+            '                        INNER JOIN producto_bodega AS pb ON det.IdProductoBodega = pb.IdProductoBodega
+            '                        WHERE det.IdPedidoEnc= @IdPedidoEnc "
+
             Dim vSQL As String = " SELECT * FROM VW_Get_Pedido_Det
                                     WHERE IdPedidoEnc= @IdPedidoEnc "
 
@@ -277,6 +287,30 @@ Partial Public Class clsLnTrans_pe_det
 
                             .Producto = New clsBeProducto()
                             .Producto.IdProducto = IIf(IsDBNull(lRow.Item("IdProducto")), 0, lRow.Item("IdProducto"))
+
+                            'Dim vIdProducto As Integer = .Producto.IdProducto
+
+                            'vIdxProducto = lProductosInMemory.FindIndex(Function(x) x.IdProducto = vIdProducto)
+
+                            'If vIdxProducto = -1 Then
+
+                            '    Dim pCampos(6) As clsBeProducto.ProdPropiedades
+                            '    pCampos(0) = clsBeProducto.ProdPropiedades.Codigo
+                            '    pCampos(1) = clsBeProducto.ProdPropiedades.Nombre
+                            '    pCampos(2) = clsBeProducto.ProdPropiedades.Control_lote
+                            '    pCampos(3) = clsBeProducto.ProdPropiedades.Control_Peso
+                            '    pCampos(4) = clsBeProducto.ProdPropiedades.Control_vencimiento
+                            '    pCampos(5) = clsBeProducto.ProdPropiedades.Codigos_Barra
+                            '    .Producto = clsLnProducto.GetSingle(.Producto.IdProducto, pCampos, lConnection, lTransaction)
+                            '    lProductosInMemory.Add(.Producto.Clone())
+
+                            'Else
+                            '    .Producto = lProductosInMemory(vIdxProducto).Clone()
+                            'End If
+
+                            '#EJC20190214_0116PM: Comentariado por rendimiento, obtener solo lo necesario..
+                            'clsLnProducto.Obtener(.Producto, lConnection, lTransaction)
+
                             .IdEstado = IIf(IsDBNull(lRow.Item("IdEstado")), 0, lRow.Item("IdEstado"))
                             .IdPresentacion = IIf(IsDBNull(lRow.Item("IdPresentacion")), 0, lRow.Item("IdPresentacion"))
                             .IdUnidadMedidaBasica = IIf(IsDBNull(lRow.Item("IdUnidadMedidaBasica")), 0, lRow.Item("IdUnidadMedidaBasica"))
@@ -2710,72 +2744,6 @@ Partial Public Class clsLnTrans_pe_det
 
     End Function
 
-    Public Shared Function Get_Detalle_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer,
-                                                      ByVal pIdBodega As Integer) As List(Of clsBeDetallePedidoAVerificar)
-
-        Get_Detalle_By_IdPedidoEnc = Nothing
-
-        Try
-
-            Dim lReturnList As New List(Of clsBeDetallePedidoAVerificar)
-
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-                lConnection.Open()
-
-                Using ltransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-                    'AT20220607 Quite la condición <> 0 , para que se muestren siempre las lineas de verificación
-                    Dim vSQL As String = "SELECT * FROM VW_VERIFICACION WHERE IdPedidoEnc = @IdPedidoEnc"
-
-                    Dim BeBodega = clsLnBodega.GetSingle_By_Idbodega(pIdBodega, lConnection, ltransaction)
-
-                    If BeBodega IsNot Nothing Then
-                        If BeBodega.Agrupar_Sin_Lic_Veri_No_Cons Then
-                            vSQL = "SELECT * FROM VW_VERIFICACION_DETALLADO_SIN_LICENCIA WHERE IdPedidoEnc = @IdPedidoEnc"
-                        End If
-                    End If
-
-                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
-
-                        lDTA.SelectCommand.CommandType = CommandType.Text
-                        lDTA.SelectCommand.Transaction = ltransaction
-                        lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
-
-                        Dim lDataTable As New DataTable
-                        lDTA.Fill(lDataTable)
-
-                        Dim Obj As clsBeDetallePedidoAVerificar
-
-                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
-
-                            For Each lRow As DataRow In lDataTable.Rows
-
-                                Obj = New clsBeDetallePedidoAVerificar
-                                clsLnDetallePedidoAVerificar.Cargar(Obj, lRow)
-                                lReturnList.Add(Obj)
-
-                            Next
-
-                        End If
-
-                        Return lReturnList
-
-                    End Using
-
-                    ltransaction.Commit()
-
-                End Using
-
-                lConnection.Close()
-
-            End Using
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
     '#CKFK 20180502 04:15 PM Agregué el campo ndias porque me hace falta para poder listar el inventario disponible al realizar reemplazos
     Public Shared Function Get_Detalle_By_IdPedidoEnc_And_IdProducto(ByVal pIdPedidoEnc As Integer) As List(Of clsBeDetallePedidoAVerificar)
 
@@ -4221,6 +4189,11 @@ Partial Public Class clsLnTrans_pe_det
 
                         With Obj
 
+                            'Obj.Bodega = IIf(IsDBNull(lRow.Item("Bodega")), String.Empty, lRow.Item("Bodega"))
+                            'Obj.Cliente = IIf(IsDBNull(lRow.Item("Cliente")), String.Empty, lRow.Item("Cliente"))
+                            'Obj.Propietario = IIf(IsDBNull(lRow.Item("Propietario")), String.Empty, lRow.Item("Propietario"))
+                            'Obj.FechaPedido = IIf(IsDBNull(lRow.Item("Fecha Pedido")), Date.Now, lRow.Item("Fecha Pedido"))
+
                             .IdPedidoDet = IIf(IsDBNull(lRow.Item("IdPedidoDet")), 0, lRow.Item("IdPedidoDet"))
                             .IdPedidoEnc = IIf(IsDBNull(lRow.Item("IdPedidoEnc")), 0, lRow.Item("IdPedidoEnc"))
                             .ProductoBodega.IdProductoBodega = IIf(IsDBNull(lRow.Item("IdProductoBodega")), 0, lRow.Item("IdProductoBodega"))
@@ -4601,10 +4574,26 @@ Partial Public Class clsLnTrans_pe_det
                             .RoadVAL1 = IIf(IsDBNull(lRow.Item("RoadVAL1")), 0.0, lRow.Item("RoadVAL1"))
                             .RoadVAL2 = IIf(IsDBNull(lRow.Item("RoadVAL2")), "", lRow.Item("RoadVAL2"))
                             .RoadCantProc = IIf(IsDBNull(lRow.Item("RoadCantProc")), 0.0, lRow.Item("RoadCantProc"))
+
+                            '#EJC20180114: Agruegué No_Linea y Atributo_Variante_1 en GetByPedidoEnc
                             .No_linea = IIf(IsDBNull(lRow.Item("No_linea")), 0.0, lRow.Item("No_linea"))
                             .Atributo_Variante_1 = IIf(IsDBNull(lRow.Item("Atributo_Variante_1")), 0.0, lRow.Item("Atributo_Variante_1"))
                             .IdStockEspecifico = IIf(IsDBNull(lRow.Item("IdStockEspecifico")), 0, lRow.Item("IdStockEspecifico"))
 
+                            'If pEstadoPedido = "Despachado" Then
+
+                            '    Dim lSubListaPickingUbic As New List(Of clsBeTrans_picking_ubic)
+
+                            '    lSubListaPickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_Despachado_By_IdPedidoEnc(pIdPedidoEnc,
+                            '                                                                                                 lConnection,
+                            '                                                                                                 lTransaction)
+                            '    If Not lSubListaPickingUbic Is Nothing Then
+
+                            '        .ListaPickingUbic = lSubListaPickingUbic.FindAll(Function(x) x.IdPedidoEnc = pIdPedidoEnc AndAlso x.IdPedidoDet = .IdPedidoDet)
+
+                            '    End If
+
+                            'End If
 
                         End With
 
