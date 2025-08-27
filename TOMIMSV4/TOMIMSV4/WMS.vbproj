@@ -5449,19 +5449,19 @@
       <Version>6.1.1</Version>
     </PackageReference>
     <PackageReference Include="System.IO.Packaging">
-      <Version>8.0.1</Version>
+      <Version>9.0.8</Version>
     </PackageReference>
     <PackageReference Include="System.Management">
-      <Version>8.0.0</Version>
+      <Version>9.0.8</Version>
     </PackageReference>
     <PackageReference Include="System.Memory">
-      <Version>4.5.5</Version>
+      <Version>4.6.3</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
-      <Version>6.0.0</Version>
+      <Version>6.1.2</Version>
     </PackageReference>
     <PackageReference Include="System.ValueTuple">
-      <Version>4.5.0</Version>
+      <Version>4.6.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
