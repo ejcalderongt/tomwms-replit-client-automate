@@ -4450,9 +4450,6 @@
     <Content Include="Conn.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="NavSync.exe.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Conn_CKFK.ini" />
     <None Include="Conn_Mercopan.ini" />
     <None Include="Conn_Prograx.ini" />
@@ -4468,9 +4465,6 @@
       <DependentUpon>DetTramoByBodega.xsd</DependentUpon>
     </None>
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho1.disco" />
-    <Content Include="NavSync.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="PerceptronUbicacion.exe" />
     <None Include="Resources\tomimsazteccode.jpeg" />
     <None Include="Resources\tomimslogoclasic.jpeg" />
@@ -5459,6 +5453,9 @@
     </PackageReference>
     <PackageReference Include="Irony">
       <Version>1.5.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Data.SqlClient">
+      <Version>5.2.2</Version>
     </PackageReference>
     <PackageReference Include="System.IO.Packaging">
       <Version>8.0.1</Version>

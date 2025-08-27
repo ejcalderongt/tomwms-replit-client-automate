@@ -2688,7 +2688,7 @@ Partial Public Class clsLnTrans_pe_det
     End Function
 
     '#CKFK 20180502 04:15 PM Agregué el campo ndias porque me hace falta para poder listar el inventario disponible al realizar reemplazos
-    Public Shared Function Get_Detalle_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer) As List(Of clsBeDetallePedidoAVerificar)
+    Public Shared Function Get_Detalle_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer, ByVal pIdBodega As Integer) As List(Of clsBeDetallePedidoAVerificar)
 
         Get_Detalle_By_IdPedidoEnc = Nothing
 

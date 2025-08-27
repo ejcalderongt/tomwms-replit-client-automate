@@ -946,5 +946,162 @@ Public Class clsLnProducto_talla_color
 
 	End Function
 
+	'#GT25082025: devolver una lista de objetos
+	Public Shared Function Get_All_By_IdProducto(IdProducto As Integer, Optional IdCampania As Integer = 0) As List(Of clsBeProducto_talla_color)
+
+		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+		Dim lTransaction As SqlTransaction = Nothing
+		Get_All_By_IdProducto = Nothing
+
+		Try
+
+			Dim sp As String = "select ptc.*
+									from producto_talla_color ptc
+									inner join talla t on ptc.IdTalla = t.IdTalla
+									inner join color c on ptc.IdColor = c.IdColor "
+
+			If IdCampania > 0 Then
+				sp += "inner join campaña ca on ptc.IdCampaña = ca.IdCampaña "
+			End If
+
+			sp += "WHERE ptc.IdProducto = @IdProducto "
+
+			lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+			Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+			Dim dad As New SqlDataAdapter(cmd)
+			dad.SelectCommand.Parameters.AddWithValue("@IdProducto", IdProducto)
+			Dim dt As New DataTable
+			dad.Fill(dt)
+
+
+			If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+				Get_All_By_IdProducto = New List(Of clsBeProducto_talla_color)()
+
+				For Each row In dt.Rows
+					Dim vBeProducto_talla_color = New clsBeProducto_talla_color()
+					Cargar(vBeProducto_talla_color, row)
+					Get_All_By_IdProducto.Add(vBeProducto_talla_color)
+				Next
+
+			End If
+
+			lTransaction.Commit()
+
+		Catch ex As Exception
+			If Not lTransaction Is Nothing Then lTransaction.Rollback()
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		Finally
+			If lConnection.State = ConnectionState.Open Then lConnection.Close()
+			If Not lConnection Is Nothing Then lConnection.Dispose()
+			If Not lTransaction Is Nothing Then lTransaction.Dispose()
+		End Try
+
+	End Function
+
+	'#GT26082025: obtener producto_talla_color segun la talla y el color seleccionado en un pedido manual
+	Public Shared Function Get_ProductoTallaColor_By_Talla_and_Color(ByVal Idtalla As Integer, ByVal IdColor As Integer, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As clsBeProducto_talla_color
+
+		Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+		Dim cmd As New SqlCommand()
+		Dim lTransaction As SqlTransaction = Nothing
+		Get_ProductoTallaColor_By_Talla_and_Color = Nothing
+		Try
+
+			Dim sql As String = "SELECT * FROM producto_talla_color WHERE (IdTalla=@IdTalla and IdColor=@IdColor)"
+
+			Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
+
+			If Es_Transaccion_Remota Then
+				cmd = New SqlCommand(sql, pConection, pTransaction)
+			Else
+				lConnection.Open()
+				lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+				cmd = New SqlCommand(sql, lConnection, lTransaction)
+			End If
+
+			cmd.Parameters.Add(New SqlParameter("@IdTalla", Idtalla))
+			cmd.Parameters.Add(New SqlParameter("@IdColor", IdColor))
+
+			Dim lDataTable As New DataTable
+
+
+			Using da As New SqlDataAdapter(cmd)
+				da.Fill(lDataTable)
+			End Using
+
+			If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+
+			If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+				Dim vBeProducto_talla_color = New clsBeProducto_talla_color()
+				Cargar(vBeProducto_talla_color, lDataTable.Rows(0))
+				Get_ProductoTallaColor_By_Talla_and_Color = vBeProducto_talla_color
+			End If
+
+
+		Catch ex As Exception
+			If Not lTransaction Is Nothing Then lTransaction.Rollback()
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		Finally
+			If lConnection.State = ConnectionState.Open Then lConnection.Close()
+			If Not lConnection Is Nothing Then lConnection.Dispose()
+			If Not lTransaction Is Nothing Then lTransaction.Dispose()
+		End Try
+
+	End Function
+
+	Public Shared Function Get_All_By_IdProducto_FromStock(IdProducto As Integer, Optional IdCampania As Integer = 0) As List(Of clsBeProducto_talla_color)
+
+		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+		Dim lTransaction As SqlTransaction = Nothing
+		Get_All_By_IdProducto_FromStock = Nothing
+
+		Try
+
+			Dim sp As String = "select ptc.*
+									from producto_talla_color ptc
+									inner join talla t on ptc.IdTalla = t.IdTalla
+									inner join color c on ptc.IdColor = c.IdColor "
+
+			If IdCampania > 0 Then
+				sp += "inner join campaña ca on ptc.IdCampaña = ca.IdCampaña "
+			End If
+
+			sp += "WHERE ptc.IdProducto = @IdProducto AND ptc.IdProductoTallaColor IN (Select IdProductoTallaColor from stock Where IdProducto = @IdProducto) "
+
+			lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+			Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+			Dim dad As New SqlDataAdapter(cmd)
+			dad.SelectCommand.Parameters.AddWithValue("@IdProducto", IdProducto)
+			Dim dt As New DataTable
+			dad.Fill(dt)
+
+
+			Dim v As New List(Of clsBeProducto_talla_color)()
+
+			If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+
+				For Each row In dt.Rows
+					Dim vBeProducto_talla_color = New clsBeProducto_talla_color()
+					Cargar(vBeProducto_talla_color, row)
+					v.Add(vBeProducto_talla_color)
+				Next
+
+			End If
+
+			Get_All_By_IdProducto_FromStock = v
+
+			lTransaction.Commit()
+
+		Catch ex As Exception
+			If Not lTransaction Is Nothing Then lTransaction.Rollback()
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		Finally
+			If lConnection.State = ConnectionState.Open Then lConnection.Close()
+			If Not lConnection Is Nothing Then lConnection.Dispose()
+			If Not lTransaction Is Nothing Then lTransaction.Dispose()
+		End Try
+
+	End Function
 
 End Class
