@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
-using WMSWebAPI.Be;
+using WMS.EntityCore.Operador;
+using WMS.EntityCore.Producto;
+using WMS.EntityCore.Proveedor;
+using WMS.EntityCore.Stock;
+using WMS.EntityCore.Trans_oc;
+using WMS.EntityCore.Trans_re;
 using WMSWebAPI.Dtos.Ingresos;
 using WMSWebAPI.Dtos.WebResponseDto;
-using WMSWebAPI.Entity.Producto;
-using WMSWebAPI.Entity.Trans_oc;
+
 
 namespace WMSWebAPI.Services.Ingresos
 {

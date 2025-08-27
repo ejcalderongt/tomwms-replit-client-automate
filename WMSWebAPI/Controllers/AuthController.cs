@@ -7,7 +7,6 @@ using System.Text;
 using WMS.EntityCore.Log;
 using WMS.EntityCore.Propietario;
 using WMSWebAPI.Dtos.Login;
-using WMSWebAPI.Entity.Propietario;
 
 
 namespace WMSWebAPI.Controllers

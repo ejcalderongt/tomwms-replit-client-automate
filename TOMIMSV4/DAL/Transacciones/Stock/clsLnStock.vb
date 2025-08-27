@@ -1007,4 +1007,58 @@ Public Class clsLnStock
 
     End Function
 
+    Public Shared Function Get_All_By_IdUbicacion_And_LicPlate(ByVal pIdUbicacion As Integer, pLicencia As String) As List(Of clsBeStock)
+
+        Dim lReturnList As List(Of clsBeStock) = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT * FROM Stock WHERE IdUbicacion = @IdUbicacion AND lic_plate = @lic_plate"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@lic_plate", pLicencia)
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+
+                        Dim Obj As clsBeStock
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                            lReturnList = New List(Of clsBeStock)
+
+                            For Each lRow As DataRow In lDataTable.Rows
+
+                                Obj = New clsBeStock
+                                Cargar(Obj, lRow)
+                                lReturnList.Add(Obj)
+                            Next
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Throw
+        End Try
+
+    End Function
+
 End Class

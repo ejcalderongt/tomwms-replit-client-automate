@@ -2,7 +2,6 @@
 using WMS.EntityCore.Trans_oc;
 using WMSWebAPI.Dtos.Ingresos;
 using WMSWebAPI.Dtos.WebResponseDto;
-using WMSWebAPI.Entity.Trans_oc;
 
 namespace WMSWebAPI.Services.Ingresos
 {

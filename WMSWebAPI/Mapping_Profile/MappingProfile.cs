@@ -19,8 +19,6 @@ using WMSWebAPI.Dtos.Pedido;
 using WMSWebAPI.Dtos.Picking;
 using WMSWebAPI.Dtos.Productos;
 using WMSWebAPI.Dtos.Stock;
-using WMSWebAPI.Entity.Producto;
-using WMSWebAPI.Entity.Propietario;
 
 public class MappingProfile : Profile
 {
