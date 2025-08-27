@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DsDetalleExistencias" targetNamespace="http://tempuri.org/DsDetalleExistencias.xsd" xmlns:mstns="http://tempuri.org/DsDetalleExistencias.xsd" xmlns="http://tempuri.org/DsDetalleExistencias.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DsDetalleExistencias" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DsDetalleExistencias" msprop:Generator_UserDSName="DsDetalleExistencias">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Encabezado" msprop:Generator_TableClassName="EncabezadoDataTable" msprop:Generator_TableVarName="tableEncabezado" msprop:Generator_RowChangedName="EncabezadoRowChanged" msprop:Generator_TablePropName="Encabezado" msprop:Generator_RowDeletingName="EncabezadoRowDeleting" msprop:Generator_RowChangingName="EncabezadoRowChanging" msprop:Generator_RowEvHandlerName="EncabezadoRowChangeEventHandler" msprop:Generator_RowDeletedName="EncabezadoRowDeleted" msprop:Generator_RowClassName="EncabezadoRow" msprop:Generator_UserTableName="Encabezado" msprop:Generator_RowEvArgName="EncabezadoRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IdProducto" msprop:Generator_ColumnVarNameInTable="columnIdProducto" msprop:Generator_ColumnPropNameInRow="IdProducto" msprop:Generator_ColumnPropNameInTable="IdProductoColumn" msprop:Generator_UserColumnName="IdProducto" type="xs:int" />
+              <xs:element name="Propietario" msprop:Generator_ColumnVarNameInTable="columnPropietario" msprop:Generator_ColumnPropNameInRow="Propietario" msprop:Generator_ColumnPropNameInTable="PropietarioColumn" msprop:Generator_UserColumnName="Propietario" type="xs:string" minOccurs="0" />
+              <xs:element name="Código" msprop:Generator_ColumnVarNameInTable="columnCódigo" msprop:Generator_ColumnPropNameInRow="Código" msprop:Generator_ColumnPropNameInTable="CódigoColumn" msprop:Generator_UserColumnName="Código" type="xs:string" />
+              <xs:element name="Producto" msprop:Generator_ColumnVarNameInTable="columnProducto" msprop:Generator_ColumnPropNameInRow="Producto" msprop:Generator_ColumnPropNameInTable="ProductoColumn" msprop:Generator_UserColumnName="Producto" type="xs:string" />
+              <xs:element name="Código_Barra" msprop:Generator_ColumnVarNameInTable="columnCódigo_Barra" msprop:Generator_ColumnPropNameInRow="Código_Barra" msprop:Generator_ColumnPropNameInTable="Código_BarraColumn" msprop:Generator_UserColumnName="Código_Barra" type="xs:string" />
+              <xs:element name="Presentación" msprop:Generator_ColumnVarNameInTable="columnPresentación" msprop:Generator_ColumnPropNameInRow="Presentación" msprop:Generator_ColumnPropNameInTable="PresentaciónColumn" msprop:Generator_UserColumnName="Presentación" type="xs:string" />
+              <xs:element name="UM_Bas" msprop:Generator_ColumnVarNameInTable="columnUM_Bas" msprop:Generator_ColumnPropNameInRow="UM_Bas" msprop:Generator_ColumnPropNameInTable="UM_BasColumn" msprop:Generator_UserColumnName="UM_Bas" type="xs:string" minOccurs="0" />
+              <xs:element name="CantidadUMBas" msprop:Generator_ColumnVarNameInTable="columnCantidadUMBas" msprop:Generator_ColumnPropNameInRow="CantidadUMBas" msprop:Generator_ColumnPropNameInTable="CantidadUMBasColumn" msprop:Generator_UserColumnName="CantidadUMBas" type="xs:double" minOccurs="0" />
+              <xs:element name="CantidadPresentación" msprop:Generator_ColumnVarNameInTable="columnCantidadPresentación" msprop:Generator_ColumnPropNameInRow="CantidadPresentación" msprop:Generator_ColumnPropNameInTable="CantidadPresentaciónColumn" msprop:Generator_UserColumnName="CantidadPresentación" type="xs:double" minOccurs="0" />
+              <xs:element name="Cantidad_Reservada" msprop:Generator_ColumnVarNameInTable="columnCantidad_Reservada" msprop:Generator_ColumnPropNameInRow="Cantidad_Reservada" msprop:Generator_ColumnPropNameInTable="Cantidad_ReservadaColumn" msprop:Generator_UserColumnName="Cantidad_Reservada" type="xs:double" minOccurs="0" />
+              <xs:element name="Disponible_UMBas" msprop:Generator_ColumnVarNameInTable="columnDisponible_UMBas" msprop:Generator_ColumnPropNameInRow="Disponible_UMBas" msprop:Generator_ColumnPropNameInTable="Disponible_UMBasColumn" msprop:Generator_UserColumnName="Disponible_UMBas" type="xs:double" minOccurs="0" />
+              <xs:element name="Disponible_x0020_Presentación" msprop:Generator_ColumnVarNameInTable="columnDisponible_Presentación" msprop:Generator_ColumnPropNameInRow="Disponible_Presentación" msprop:Generator_ColumnPropNameInTable="Disponible_PresentaciónColumn" msprop:Generator_UserColumnName="Disponible Presentación" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:Encabezado" />
+      <xs:field xpath="mstns:IdProducto" />
+      <xs:field xpath="mstns:Presentación" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

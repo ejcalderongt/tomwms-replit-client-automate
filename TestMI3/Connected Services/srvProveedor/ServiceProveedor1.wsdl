@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="ServiceProveedor" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://192.168.0.13/MI3/Proveedor/ServiceProveedor.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://192.168.0.13/MI3/Proveedor/ServiceProveedor.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://192.168.0.13/MI3/Proveedor/ServiceProveedor.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/TOMIMS" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IServiceProveedor_Insert_InputMessage">
+    <wsdl:part name="parameters" element="tns:Insert" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_Insert_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_Update_InputMessage">
+    <wsdl:part name="parameters" element="tns:Update" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_Update_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_Disable_InputMessage">
+    <wsdl:part name="parameters" element="tns:Disable" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_Disable_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DisableResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_Get_All_Filtro_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Filtro" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_Get_All_Filtro_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_FiltroResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_Get_All_By_IdPropietario_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_By_IdPropietario" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_Get_All_By_IdPropietario_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_By_IdPropietarioResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_Get_Single_By_IdProveedor_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_IdProveedor" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_Get_Single_By_IdProveedor_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_IdProveedorResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_Get_By_IdProveedor_And_IdPropietarioBodega_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_By_IdProveedor_And_IdPropietarioBodega" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_Get_By_IdProveedor_And_IdPropietarioBodega_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_By_IdProveedor_And_IdPropietarioBodegaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_MaxIdProveedor_InputMessage">
+    <wsdl:part name="parameters" element="tns:MaxIdProveedor" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_MaxIdProveedor_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MaxIdProveedorResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_Get_All_By_IdBodega_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_By_IdBodega" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProveedor_Get_All_By_IdBodega_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_By_IdBodegaResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IServiceProveedor">
+    <wsdl:operation name="Insert">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProveedor/Insert" message="tns:IServiceProveedor_Insert_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProveedor/InsertResponse" message="tns:IServiceProveedor_Insert_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Update">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProveedor/Update" message="tns:IServiceProveedor_Update_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProveedor/UpdateResponse" message="tns:IServiceProveedor_Update_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Disable">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProveedor/Disable" message="tns:IServiceProveedor_Disable_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProveedor/DisableResponse" message="tns:IServiceProveedor_Disable_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Filtro">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProveedor/Get_All_Filtro" message="tns:IServiceProveedor_Get_All_Filtro_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProveedor/Get_All_FiltroResponse" message="tns:IServiceProveedor_Get_All_Filtro_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_By_IdPropietario">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProveedor/Get_All_By_IdPropietario" message="tns:IServiceProveedor_Get_All_By_IdPropietario_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProveedor/Get_All_By_IdPropietarioResponse" message="tns:IServiceProveedor_Get_All_By_IdPropietario_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_IdProveedor">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProveedor/Get_Single_By_IdProveedor" message="tns:IServiceProveedor_Get_Single_By_IdProveedor_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProveedor/Get_Single_By_IdProveedorResponse" message="tns:IServiceProveedor_Get_Single_By_IdProveedor_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_By_IdProveedor_And_IdPropietarioBodega">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProveedor/Get_By_IdProveedor_And_IdPropietarioBodega" message="tns:IServiceProveedor_Get_By_IdProveedor_And_IdPropietarioBodega_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProveedor/Get_By_IdProveedor_And_IdPropietarioBodegaResponse" message="tns:IServiceProveedor_Get_By_IdProveedor_And_IdPropietarioBodega_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MaxIdProveedor">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProveedor/MaxIdProveedor" message="tns:IServiceProveedor_MaxIdProveedor_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProveedor/MaxIdProveedorResponse" message="tns:IServiceProveedor_MaxIdProveedor_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_By_IdBodega">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProveedor/Get_All_By_IdBodega" message="tns:IServiceProveedor_Get_All_By_IdBodega_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProveedor/Get_All_By_IdBodegaResponse" message="tns:IServiceProveedor_Get_All_By_IdBodega_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IServiceProveedor" type="tns:IServiceProveedor">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Insert">
+      <soap:operation soapAction="http://tempuri.org/IServiceProveedor/Insert" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Update">
+      <soap:operation soapAction="http://tempuri.org/IServiceProveedor/Update" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Disable">
+      <soap:operation soapAction="http://tempuri.org/IServiceProveedor/Disable" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Filtro">
+      <soap:operation soapAction="http://tempuri.org/IServiceProveedor/Get_All_Filtro" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_By_IdPropietario">
+      <soap:operation soapAction="http://tempuri.org/IServiceProveedor/Get_All_By_IdPropietario" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_IdProveedor">
+      <soap:operation soapAction="http://tempuri.org/IServiceProveedor/Get_Single_By_IdProveedor" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_By_IdProveedor_And_IdPropietarioBodega">
+      <soap:operation soapAction="http://tempuri.org/IServiceProveedor/Get_By_IdProveedor_And_IdPropietarioBodega" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MaxIdProveedor">
+      <soap:operation soapAction="http://tempuri.org/IServiceProveedor/MaxIdProveedor" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_By_IdBodega">
+      <soap:operation soapAction="http://tempuri.org/IServiceProveedor/Get_All_By_IdBodega" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ServiceProveedor">
+    <wsdl:port name="BasicHttpBinding_IServiceProveedor" binding="tns:BasicHttpBinding_IServiceProveedor">
+      <soap:address location="http://192.168.0.13/MI3/Proveedor/ServiceProveedor.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

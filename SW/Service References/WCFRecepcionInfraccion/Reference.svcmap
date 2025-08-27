@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="6f98b055-2bf6-4141-a866-3d0644da8c44" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:4180/Recepcion_Infraccion/ServiceRecepcionInfraccion.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="ServiceRecepcionInfraccion.xsd" MetadataType="Schema" ID="21cb6633-4985-4e46-ae40-321bf324932e" SourceId="1" SourceUrl="http://localhost:4180/Recepcion_Infraccion/ServiceRecepcionInfraccion.svc?xsd=xsd2" />
+    <MetadataFile FileName="ServiceRecepcionInfraccion.disco" MetadataType="Disco" ID="f655c2bd-4655-433e-a237-50fb911083af" SourceId="1" SourceUrl="http://localhost:4180/Recepcion_Infraccion/ServiceRecepcionInfraccion.svc?disco" />
+    <MetadataFile FileName="ServiceRecepcionInfraccion1.xsd" MetadataType="Schema" ID="aa70cbe8-a28b-4473-bf80-49d407243ab5" SourceId="1" SourceUrl="http://localhost:4180/Recepcion_Infraccion/ServiceRecepcionInfraccion.svc?xsd=xsd0" />
+    <MetadataFile FileName="ServiceRecepcionInfraccion2.xsd" MetadataType="Schema" ID="696f6582-3876-4916-b03e-6556a63062b1" SourceId="1" SourceUrl="http://localhost:4180/Recepcion_Infraccion/ServiceRecepcionInfraccion.svc?xsd=xsd1" />
+    <MetadataFile FileName="ServiceRecepcionInfraccion.wsdl" MetadataType="Wsdl" ID="30f9aac9-ec92-4a44-8363-801010a32ae7" SourceId="1" SourceUrl="http://localhost:4180/Recepcion_Infraccion/ServiceRecepcionInfraccion.svc?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

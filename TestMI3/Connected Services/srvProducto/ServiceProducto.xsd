@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://192.168.0.98/MI3/Producto/ServiceProducto.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/TOMWMS" />
+  <xs:element name="Insert">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="BeProducto" nillable="true" type="q1:clsBeProducto" />
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="ListBeProductoParametro" nillable="true" type="q2:ArrayOfclsBeProducto_parametros" />
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="ListBeProductoCodigosBarra" nillable="true" type="q3:ArrayOfclsBeProducto_codigos_barra" />
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="ListBeProductoPresentacion" nillable="true" type="q4:ArrayOfclsBeProducto_Presentacion" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="ListBeProductosSustitutos" nillable="true" type="q5:ArrayOfclsBeProducto_sustituto" />
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="ListBeProductoRellenado" nillable="true" type="q6:ArrayOfclsBeProducto_rellenado" />
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="ListBePresentacionTarima" nillable="true" type="q7:ArrayOfclsBeProducto_presentacion_tarima" />
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="ListBeProductoBodega" nillable="true" type="q8:ArrayOfclsBeProducto_bodega" />
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="ListBeConversionesPresentacion" nillable="true" type="q9:ArrayOfclsBeProducto_presentaciones_conversiones" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="InsertResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Insert_Single">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="BeProducto" nillable="true" type="q10:clsBeProducto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Insert_SingleResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Disable">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="BeProducto" nillable="true" type="q11:clsBeProducto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DisableResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Update">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="BeProducto" nillable="true" type="q12:clsBeProducto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="UpdateResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Delete">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IdProducto" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_Producto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_ProductoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_All_ProductoResult" nillable="true" type="q13:ArrayOfclsBeProducto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_By_IdPropietario">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ActivoDefault" type="xs:boolean" />
+        <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+        <xs:element minOccurs="0" name="IdBodega" type="xs:int" />
+        <xs:element minOccurs="0" name="IdPropietario" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_By_IdPropietarioResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_All_By_IdPropietarioResult" nillable="true" type="q14:ArrayOfclsBeProducto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_By_IdPropietarioBodega">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ActivoDefault" type="xs:boolean" />
+        <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+        <xs:element minOccurs="0" name="IdBodega" type="xs:int" />
+        <xs:element minOccurs="0" name="IdPropietarioBodega" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_By_IdPropietarioBodegaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_All_By_IdPropietarioBodegaResult" nillable="true" type="q15:ArrayOfclsBeProducto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Single_By_IdProducto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IdProducto" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Single_By_IdProductoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Single_By_IdProductoResult" nillable="true" type="q16:clsBeProducto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Single_By_IdProductoBodega">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IdProductoBodega" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Single_By_IdProductoBodegaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Single_By_IdProductoBodegaResult" nillable="true" type="q17:clsBeProducto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Exist_By_Codigo_Barra">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="CodigoBarra" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Exist_By_Codigo_BarraResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Exist_By_Codigo_BarraResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Exist_Producto_By_Bodega">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IdBodega" type="xs:int" />
+        <xs:element minOccurs="0" name="IdPropietarioBodega" type="xs:int" />
+        <xs:element minOccurs="0" name="CodigoProducto" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Exist_Producto_By_BodegaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Exist_Producto_By_BodegaResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Exist_By_IdProducto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdProducto" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Exist_By_IdProductoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Exist_By_IdProductoResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Exist_Stock_By_IdProducto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdProducto" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Exist_Stock_By_IdProductoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Exist_Stock_By_IdProductoResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_IdProducto_By_Codigo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pCodigo" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_IdProducto_By_CodigoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Get_IdProducto_By_CodigoResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Single_By_Codigo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pCodigo" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Single_By_CodigoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q18="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Single_By_CodigoResult" nillable="true" type="q18:clsBeProducto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetByCodigoAndBodega">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pCodigo" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="IdBodega" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetByCodigoAndBodegaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q19="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="GetByCodigoAndBodegaResult" nillable="true" type="q19:clsBeProducto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_IdProductoBodega_By_Codigo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pCodigo" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_IdProductoBodega_By_CodigoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Get_IdProductoBodega_By_CodigoResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MaxID">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MaxIDResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="MaxIDResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Rep_Minimos_Y_Maximos_By_IdProducto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdProducto" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Rep_Minimos_Y_Maximos_By_IdProductoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Get_Rep_Minimos_Y_Maximos_By_IdProductoResult" nillable="true">
+          <xs:complexType>
+            <xs:annotation>
+              <xs:appinfo>
+                <ActualType Name="DataTable" Namespace="http://schemas.datacontract.org/2004/07/System.Data" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
+              </xs:appinfo>
+            </xs:annotation>
+            <xs:sequence>
+              <xs:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+              <xs:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Rep_Stock_Minimo">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_Rep_Stock_MinimoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_Rep_Stock_MinimoResult" nillable="true" type="q20:ArrayOfclsBeStock.Reabasto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_Parametros_By_IdProducto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdProducto" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_Parametros_By_IdProductoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_All_Parametros_By_IdProductoResult" nillable="true" type="q21:ArrayOfclsBeProducto_parametros" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_Codigos_Barra_By_IdProducto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdProducto" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_Codigos_Barra_By_IdProductoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_All_Codigos_Barra_By_IdProductoResult" nillable="true" type="q22:ArrayOfclsBeProducto_codigos_barra" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_Presentaciones_By_IdProducto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdProducto" type="xs:int" />
+        <xs:element minOccurs="0" name="pIdBodega" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_Presentaciones_By_IdProductoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_All_Presentaciones_By_IdProductoResult" nillable="true" type="q23:ArrayOfclsBeProducto_Presentacion" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_Productos_Sustitutos_By_IdProducto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdProductoOriginal" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_Productos_Sustitutos_By_IdProductoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_All_Productos_Sustitutos_By_IdProductoResult" nillable="true" type="q24:ArrayOfclsBeProducto_sustituto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_Bodegas_By_IdProducto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="pIdProducto" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_Bodegas_By_IdProductoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q25="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_All_Bodegas_By_IdProductoResult" nillable="true" type="q25:ArrayOfclsBeProducto_bodega" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_Presentaciones_Tarima_By_IdProducto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IdProducto" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_Presentaciones_Tarima_By_IdProductoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_All_Presentaciones_Tarima_By_IdProductoResult" nillable="true" type="q26:ArrayOfclsBeProducto_presentacion_tarima" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_Rellenado_Producto_By_IdProducto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IdProducto" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Get_All_Rellenado_Producto_By_IdProductoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="Get_All_Rellenado_Producto_By_IdProductoResult" nillable="true" type="q27:ArrayOfclsBeProducto_rellenado" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Existe">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Codigo" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExisteResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q28="http://schemas.datacontract.org/2004/07/TOMWMS" minOccurs="0" name="ExisteResult" nillable="true" type="q28:clsBeProducto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

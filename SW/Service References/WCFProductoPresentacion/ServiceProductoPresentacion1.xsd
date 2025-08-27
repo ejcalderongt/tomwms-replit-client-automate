@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="clsBeProducto_presentacion">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Alto" type="xs:double" />
+      <xs:element minOccurs="0" name="Ancho" type="xs:double" />
+      <xs:element minOccurs="0" name="Codigo_barra" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="EsPallet" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ExisteStock" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Factor" type="xs:double" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdPresentacion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdProducto" type="xs:int" />
+      <xs:element minOccurs="0" name="Imprime_barra" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsNew" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Largo" type="xs:double" />
+      <xs:element minOccurs="0" name="MaximoExistencia" type="xs:double" />
+      <xs:element minOccurs="0" name="MaximoPeso" type="xs:double" />
+      <xs:element minOccurs="0" name="MedidasPorTarima" nillable="true" type="tns:ArrayOfclsBeProducto_presentacion_tarima" />
+      <xs:element minOccurs="0" name="MinimoExistencia" type="xs:double" />
+      <xs:element minOccurs="0" name="MinimoPeso" type="xs:double" />
+      <xs:element minOccurs="0" name="Nombre" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Peso" type="xs:double" />
+      <xs:element minOccurs="0" name="Precio" type="xs:double" />
+      <xs:element minOccurs="0" name="RellenadoPorUbicacionDePicking" nillable="true" type="tns:ArrayOfclsBeProducto_rellenado" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_presentacion" nillable="true" type="tns:clsBeProducto_presentacion" />
+  <xs:complexType name="ArrayOfclsBeProducto_presentacion_tarima">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeProducto_presentacion_tarima" nillable="true" type="tns:clsBeProducto_presentacion_tarima" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeProducto_presentacion_tarima" nillable="true" type="tns:ArrayOfclsBeProducto_presentacion_tarima" />
+  <xs:complexType name="clsBeProducto_presentacion_tarima">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Cantidad" type="xs:double" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdPresentacion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdPresentacionTarima" type="xs:int" />
+      <xs:element minOccurs="0" name="IdTipoTarima" type="xs:int" />
+      <xs:element minOccurs="0" name="IsNew" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Presentacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TipoTarima" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_presentacion_tarima" nillable="true" type="tns:clsBeProducto_presentacion_tarima" />
+  <xs:complexType name="ArrayOfclsBeProducto_rellenado">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeProducto_rellenado" nillable="true" type="tns:clsBeProducto_rellenado" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeProducto_rellenado" nillable="true" type="tns:ArrayOfclsBeProducto_rellenado" />
+  <xs:complexType name="clsBeProducto_rellenado">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Activo" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Estado" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Fec_agr" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Fec_mod" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="IdPresentacion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdProductoEstado" type="xs:int" />
+      <xs:element minOccurs="0" name="IdRellenado" type="xs:int" />
+      <xs:element minOccurs="0" name="IdTipoAccion" type="xs:int" />
+      <xs:element minOccurs="0" name="IdUbicacion" type="xs:int" />
+      <xs:element minOccurs="0" name="IsNew" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Maximo" type="xs:double" />
+      <xs:element minOccurs="0" name="Minimo" type="xs:double" />
+      <xs:element minOccurs="0" name="Presentacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Ubicacion" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_agr" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="User_mod" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="clsBeProducto_rellenado" nillable="true" type="tns:clsBeProducto_rellenado" />
+  <xs:complexType name="ArrayOfclsBeProducto_presentacion">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="clsBeProducto_presentacion" nillable="true" type="tns:clsBeProducto_presentacion" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfclsBeProducto_presentacion" nillable="true" type="tns:ArrayOfclsBeProducto_presentacion" />
+</xs:schema>

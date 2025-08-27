@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="b0e1f4ef-38d3-49ac-bd57-1cdc166059f3" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:4180/Orden_Compra/ServiceOrdenCompra.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="ServiceOrdenCompra.wsdl" MetadataType="Wsdl" ID="3dc7cc7d-25c4-4c03-a4a8-3646a904acd1" SourceId="1" SourceUrl="http://localhost:4180/Orden_Compra/ServiceOrdenCompra.svc?wsdl" />
+    <MetadataFile FileName="ServiceOrdenCompra.disco" MetadataType="Disco" ID="f7367a01-a4b7-4fdb-8584-234f720bec20" SourceId="1" SourceUrl="http://localhost:4180/Orden_Compra/ServiceOrdenCompra.svc?disco" />
+    <MetadataFile FileName="ServiceOrdenCompra.xsd" MetadataType="Schema" ID="5709c8c3-c276-4848-a671-387e2e0c308c" SourceId="1" SourceUrl="http://localhost:4180/Orden_Compra/ServiceOrdenCompra.svc?xsd=xsd0" />
+    <MetadataFile FileName="ServiceOrdenCompra1.xsd" MetadataType="Schema" ID="2f5c10b8-2ede-4566-93f1-37238cc2d0b5" SourceId="1" SourceUrl="http://localhost:4180/Orden_Compra/ServiceOrdenCompra.svc?xsd=xsd1" />
+    <MetadataFile FileName="ServiceOrdenCompra2.xsd" MetadataType="Schema" ID="b10244c2-9376-4b92-9e56-11efef3366fa" SourceId="1" SourceUrl="http://localhost:4180/Orden_Compra/ServiceOrdenCompra.svc?xsd=xsd2" />
+    <MetadataFile FileName="ServiceOrdenCompra3.xsd" MetadataType="Schema" ID="387b8e18-a36e-42b6-9518-a75552fbcdf8" SourceId="1" SourceUrl="http://localhost:4180/Orden_Compra/ServiceOrdenCompra.svc?xsd=xsd3" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

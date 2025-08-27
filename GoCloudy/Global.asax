@@ -1,0 +1,1 @@
+<%@ Application Codebehind="Global.asax.vb" Inherits="GoCloudy.Global_asax" Language="VB" %>

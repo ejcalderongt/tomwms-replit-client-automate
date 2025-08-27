@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="f4962951-e453-49ab-924d-9f2edb351289" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:4180/Propietario_Destinatario/PropietarioDestinatario.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="PropietarioDestinatario.xsd" MetadataType="Schema" ID="6dc8641e-2750-4b8f-8d30-01cf6094cdf5" SourceId="1" SourceUrl="http://localhost:4180/Propietario_Destinatario/PropietarioDestinatario.svc?xsd=xsd3" />
+    <MetadataFile FileName="PropietarioDestinatario.wsdl" MetadataType="Wsdl" ID="9670db85-1572-48fc-9101-73ce0b8480ec" SourceId="1" SourceUrl="http://localhost:4180/Propietario_Destinatario/PropietarioDestinatario.svc?wsdl" />
+    <MetadataFile FileName="PropietarioDestinatario1.xsd" MetadataType="Schema" ID="f61df5ea-8a21-4a80-b3c3-1181a778458d" SourceId="1" SourceUrl="http://localhost:4180/Propietario_Destinatario/PropietarioDestinatario.svc?xsd=xsd0" />
+    <MetadataFile FileName="PropietarioDestinatario2.xsd" MetadataType="Schema" ID="8ffd886c-144a-47ce-b016-df8543388d33" SourceId="1" SourceUrl="http://localhost:4180/Propietario_Destinatario/PropietarioDestinatario.svc?xsd=xsd1" />
+    <MetadataFile FileName="PropietarioDestinatario.disco" MetadataType="Disco" ID="beb0e77e-fdc3-4810-81d3-28cb1116f728" SourceId="1" SourceUrl="http://localhost:4180/Propietario_Destinatario/PropietarioDestinatario.svc?disco" />
+    <MetadataFile FileName="PropietarioDestinatario3.xsd" MetadataType="Schema" ID="fca023c1-c804-447d-b204-4351c9708cc9" SourceId="1" SourceUrl="http://localhost:4180/Propietario_Destinatario/PropietarioDestinatario.svc?xsd=xsd2" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

@@ -1,0 +1,1153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4214A876-61AA-4F35-BE1A-CAC3F9EDAAC5}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>Sub Main</StartupObject>
+    <RootNamespace>TOMWMS</RootNamespace>
+    <AssemblyName>NavSync</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsFormsWithCustomSubMain</MyType>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>..\TOMIMSV4\TOMIMSV4\</OutputPath>
+    <DocumentationFile>NavSync.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>NavSync.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>remote_32x32-32.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>..\TOMIMSV4\TOMIMSV4\</OutputPath>
+    <DocumentationFile>NavSync.xml</DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>..\TOMIMSV4\TOMIMSV4\bin\x86\Release\</OutputPath>
+    <DocumentationFile>NavSync.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>D46D872A59C347A937A237E6B0CFF7E3C528F5E0</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>NavSync_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Drawing.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Data.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Office.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.RichEdit.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.RichEdit.v25.1.Export, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Printing.v25.1.Core, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Data.Desktop.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.Utils.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.XtraBars.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.XtraEditors.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.XtraGrid.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.XtraLayout.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DevExpress.XtraPrinting.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Printing" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="UIAutomationClient" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+    <Import Include="System.Threading.Tasks" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Clases Interface Sync\Ajuste de inventario\clsSyncAjusteInventario.vb" />
+    <Compile Include="Clases Interface Sync\Centros_Costo\clsSyncCentrosCosto.vb" />
+    <Compile Include="Clases Interface Sync\Clientes\clsSyncNavCliente.vb" />
+    <Compile Include="Clases Interface Sync\Devolucion\clsSyncNavDevolucion.vb" />
+    <Compile Include="Clases Interface Sync\Devolucion_Venta\clsSyncNavDevolucionVenta.vb" />
+    <Compile Include="Clases Interface Sync\Envios_Almacen\clsSyncNavEnvioAlm.vb" />
+    <Compile Include="Clases Interface Sync\Lotes\clsSyncLotes.vb" />
+    <Compile Include="Clases Interface Sync\Ordenes_Produccion\clsSyncNavOrdenProduccion.vb" />
+    <Compile Include="Clases Interface Sync\Pedido_Traslado1\clsSyncNavPedidoTraslado.vb" />
+    <Compile Include="Clases Interface Sync\Pedido_Venta\clsSyncNavPedidoVenta.vb" />
+    <Compile Include="Clases\BaseDatos.vb" />
+    <Compile Include="Clases\IMS.vb" />
+    <Compile Include="Clases\ModuleMain.vb" />
+    <Compile Include="Formas\frmEjecucion.Designer.vb">
+      <DependentUpon>frmEjecucion.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\frmEjecucion.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Clases Interface Sync\clsInterfaceBase.vb" />
+    <Compile Include="Clases Interface Sync\Bodega\clsSyncNavBodega.vb" />
+    <Compile Include="Clases Interface Sync\Pedido_Compra\clsSyncNavPedidoCompra.vb" />
+    <Compile Include="Clases Interface Sync\Pedido_Traslado\clsSyncNavPedidoTraslado.vb" />
+    <Compile Include="Clases Interface Sync\Producto\CategoriasProductos\clsSyncNavCategoriasProducto.vb" />
+    <Compile Include="Clases Interface Sync\Producto\clsSyncNavProducto.vb" />
+    <Compile Include="Clases Interface Sync\Producto\GruposProductos\clsSyncNavGruposProducto.vb" />
+    <Compile Include="Clases Interface Sync\Proveedor\clsSyncNavProveedor.vb" />
+    <Compile Include="Clases Interface Sync\Tabla_Conversion\clsSyncNavTablaConversion.vb" />
+    <Compile Include="Formas\Mantenimientos\frmNavEnt.Designer.vb">
+      <DependentUpon>frmNavEnt.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\Mantenimientos\frmNavEnt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\Mantenimientos\frmNavEnt_List.Designer.vb">
+      <DependentUpon>frmNavEnt_List.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\Mantenimientos\frmNavEnt_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\Reportes\frmRegistroInter.Designer.vb">
+      <DependentUpon>frmRegistroInter.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\Reportes\frmRegistroInter.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\Reportes\frmRegistrosInterface.Designer.vb">
+      <DependentUpon>frmRegistrosInterface.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\Reportes\frmRegistrosInterface.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\Reportes\frmRegistrosPendPush.Designer.vb">
+      <DependentUpon>frmRegistrosPendPush.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\Reportes\frmRegistrosPendPush.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Clases\m_Global.vb" />
+    <Compile Include="Formas\Principal\frmMenu.Designer.vb">
+      <DependentUpon>frmMenu.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\Principal\frmMenu.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Formas\Reportes\DSEjecuciones.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DSEjecuciones.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\Reportes\DSEjecuciones.vb">
+      <DependentUpon>DSEjecuciones.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\Reportes\frmEjecuciones.Designer.vb">
+      <DependentUpon>frmEjecuciones.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Formas\Reportes\frmEjecuciones.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Web References\CUWMS\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WebReference\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSAjusteInventario\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSCantidadPedidoTransferencia\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSCategoriasProductos\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSCreaPicking\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\wsDevolucionVenta\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSDevolucion\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSDiarioAlmacen\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSDimensiones\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSEnvioAlm\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSFichaBodegas\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSGruposProductos\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSListaCliente\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSLotePedidoTransferencia\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSMovProductos\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSNavCantidadRecibirPedidoCompra\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSNavLotePedidoCompra\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSOrdenesProduccion\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSPaginaLotes\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSPedidoCompra\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSPedidosCliente\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSPedidoTransferencia\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSPicking\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSProductos\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSProveedores\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSRecepcionesAlm\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSRegistraRecepcionCompra\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSRegistraTransferEnvio\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSRegistraTransferRecepcion\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSSeries\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\wsTablaConversiones\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSUbicarAlmacen\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\WSUInternas\Reference.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Formas\frmEjecucion.resx">
+      <DependentUpon>frmEjecucion.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\Mantenimientos\frmNavEnt.resx">
+      <DependentUpon>frmNavEnt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\Mantenimientos\frmNavEnt_List.resx">
+      <DependentUpon>frmNavEnt_List.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\Reportes\frmRegistroInter.resx">
+      <DependentUpon>frmRegistroInter.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\Reportes\frmRegistrosInterface.resx">
+      <DependentUpon>frmRegistrosInterface.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\Reportes\frmRegistrosPendPush.resx">
+      <DependentUpon>frmRegistrosPendPush.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\licenses.licx" />
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\Principal\frmMenu.resx">
+      <DependentUpon>frmMenu.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Formas\Reportes\frmEjecuciones.resx">
+      <DependentUpon>frmEjecuciones.vb</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Conn.ini" />
+    <Content Include="remote_32x32-32.ico" />
+    <None Include="Web References\WebReference\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WebReference\tomhhws.disco" />
+    <None Include="app.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="Conn_BYB.ini" />
+    <None Include="Conn_Dev.ini" />
+    <None Include="Conn_Prograx.ini" />
+    <None Include="Formas\Reportes\DSEjecuciones.xsc">
+      <DependentUpon>DSEjecuciones.xsd</DependentUpon>
+    </None>
+    <None Include="Formas\Reportes\DSEjecuciones.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DSEjecuciones.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="Formas\Reportes\DSEjecuciones.xss">
+      <DependentUpon>DSEjecuciones.xsd</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Resources\button-power_basic_blue.png" />
+    <None Include="Resources\Template.png" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <Content Include="Resources\App.config" />
+    <None Include="Web References\CUWMS\CUWMS.wsdl" />
+    <None Include="Web References\CUWMS\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WebReference\tomhhws.wsdl" />
+    <None Include="Web References\WSAjusteInventario\Ajustes_Inventario.wsdl" />
+    <None Include="Web References\WSAjusteInventario\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSCantidadPedidoTransferencia\CantidadEnviar_PedidoTransferencia.wsdl" />
+    <None Include="Web References\WSCantidadPedidoTransferencia\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSCategoriasProductos\Categorias_Productos.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\WSCategoriasProductos\Categorias_Productos.wsdl" />
+    <None Include="Web References\WSCategoriasProductos\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSCreaPicking\Crea_picking.wsdl" />
+    <None Include="Web References\WSCreaPicking\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\wsDevolucionVenta\Devolucion_venta.wsdl" />
+    <None Include="Web References\wsDevolucionVenta\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSDevolucion\Devolucion.wsdl" />
+    <None Include="Web References\WSDevolucion\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSDiarioAlmacen\Diario_Almacen.wsdl" />
+    <None Include="Web References\WSDiarioAlmacen\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSDimensiones\Dimensiones.wsdl" />
+    <None Include="Web References\WSDimensiones\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSEnvioAlm\Envio_alm.wsdl" />
+    <None Include="Web References\WSEnvioAlm\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSFichaBodegas\Ficha_Bodegas.wsdl" />
+    <None Include="Web References\WSFichaBodegas\Ficha_Bodegas1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\WSFichaBodegas\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSGruposProductos\Grupos_Productos.wsdl" />
+    <None Include="Web References\WSGruposProductos\Grupos_Productos1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\WSGruposProductos\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSListaCliente\Lista_clientes.wsdl" />
+    <None Include="Web References\WSListaCliente\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSLotePedidoTransferencia\Lote_PedidoTransferencia.wsdl" />
+    <None Include="Web References\WSLotePedidoTransferencia\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSMovProductos\Mov_Productos.wsdl" />
+    <None Include="Web References\WSMovProductos\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSNavCantidadRecibirPedidoCompra\CantidadRecibir_PedidoCompra.wsdl" />
+    <None Include="Web References\WSNavCantidadRecibirPedidoCompra\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSNavLotePedidoCompra\Lote_PedidoCompra.wsdl" />
+    <None Include="Web References\WSNavLotePedidoCompra\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSOrdenesProduccion\OP_Lanzadas.wsdl" />
+    <None Include="Web References\WSOrdenesProduccion\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSPaginaLotes\Pagina_lotes.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\WSPaginaLotes\Pagina_lotes.wsdl" />
+    <None Include="Web References\WSPaginaLotes\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSPedidoCompra\Pedidos_Compra.wsdl" />
+    <None Include="Web References\WSPedidoCompra\Pedidos_Compra1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\WSPedidoCompra\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSPedidosCliente\Pedidos.wsdl" />
+    <None Include="Web References\WSPedidosCliente\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSPedidoTransferencia\Pedidos_Transferencia.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\WSPedidoTransferencia\Pedidos_Transferencia.wsdl" />
+    <None Include="Web References\WSPedidoTransferencia\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSPicking\Picking.wsdl" />
+    <None Include="Web References\WSPicking\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSProductos\Productos.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\WSProductos\Productos.wsdl" />
+    <None Include="Web References\WSProductos\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSProveedores\Proveedores.wsdl" />
+    <None Include="Web References\WSProveedores\Proveedores1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\WSProveedores\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSRecepcionesAlm\Recep_Almacen.wsdl" />
+    <None Include="Web References\WSRecepcionesAlm\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSRegistraRecepcionCompra\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSRegistraRecepcionCompra\Registra_Recepcion_Compra.wsdl" />
+    <None Include="Web References\WSRegistraTransferEnvio\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSRegistraTransferEnvio\Registra_Transfer_Envio.wsdl" />
+    <None Include="Web References\WSRegistraTransferRecepcion\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSRegistraTransferRecepcion\Registra_Transfer_Recepcion.wsdl" />
+    <None Include="Web References\WSSeries\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSSeries\Series.wsdl" />
+    <None Include="Web References\wsTablaConversiones\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\wsTablaConversiones\Tabla_Conversiones.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\wsTablaConversiones\Tabla_Conversiones.wsdl" />
+    <None Include="Web References\WSUbicarAlmacen\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSUbicarAlmacen\Ubicar_Almacen.wsdl" />
+    <None Include="Web References\WSUInternas\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.vb</LastGenOutput>
+    </None>
+    <None Include="Web References\WSUInternas\U_Internas.wsdl" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://10.10.20.181/WCFTOM4/tomhhws.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WebReference\</RelPath>
+      <UpdateFromURL>http://10.10.20.181/WCFTOM4/tomhhws.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_WebReference_TOMHHWS</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Crea_picking">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSCreaPicking\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Crea_picking</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_WSCreaPicking_Crea_picking_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Devolucion">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSDevolucion\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Devolucion</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_WSDevolucion_Devolucion_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Devolucion_venta">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\wsDevolucionVenta\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Devolucion_venta</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_wsDevolucionVenta_Devolucion_venta_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Diario_Almacen">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSDiarioAlmacen\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Diario_Almacen</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_WSDiarioAlmacen_Diario_Almacen_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Dimensiones">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSDimensiones\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Dimensiones</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_WSDimensiones_Dimensiones_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Envio_alm">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSEnvioAlm\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Envio_alm</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_WSEnvioAlm_Envio_alm_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Lista_clientes">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSListaCliente\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Lista_clientes</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_WSListaCliente_Lista_clientes_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Mov_Productos">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSMovProductos\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Mov_Productos</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_WSMovProductos_Mov_Productos_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/OP_Lanzadas">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSOrdenesProduccion\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/OP_Lanzadas</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_WSOrdenesProduccion_OP_Lanzadas_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Pedidos">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSPedidosCliente\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Pedidos</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_WSPedidosCliente_Pedidos_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Picking">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSPicking\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Picking</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_WSPicking_Picking_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Series">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSSeries\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Series</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_WSSeries_Series_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Ubicar_Almacen">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSUbicarAlmacen\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Ubicar_Almacen</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_WSUbicarAlmacen_Ubicar_Almacen_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/U_Internas">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSUInternas\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/U_Internas</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_WSUInternas_U_Internas_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Codeunit/CantidadEnviar_PedidoTransferencia">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSCantidadPedidoTransferencia\</RelPath>
+      <UpdateFromURL>http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Codeunit/CantidadEnviar_PedidoTransferencia</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>DynamicsNavInterface_WSCantidadPedidoTransferencia_CantidadEnviar_PedidoTransferencia</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Codeunit/CantidadRecibir_PedidoCompra">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSNavCantidadRecibirPedidoCompra\</RelPath>
+      <UpdateFromURL>http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Codeunit/CantidadRecibir_PedidoCompra</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>DynamicsNavInterface_WSNavCantidadRecibirPedidoCompra_CantidadRecibir_PedidoCompra</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Codeunit/Lote_PedidoCompra">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSNavLotePedidoCompra\</RelPath>
+      <UpdateFromURL>http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Codeunit/Lote_PedidoCompra</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>DynamicsNavInterface_WSNavLotePedidoCompra_Lote_PedidoCompra</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Codeunit/Lote_PedidoTransferencia">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSLotePedidoTransferencia\</RelPath>
+      <UpdateFromURL>http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Codeunit/Lote_PedidoTransferencia</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>DynamicsNavInterface_WSLotePedidoTransferencia_Lote_PedidoTransferencia</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Codeunit/Registra_Recepcion_Compra">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSRegistraRecepcionCompra\</RelPath>
+      <UpdateFromURL>http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Codeunit/Registra_Recepcion_Compra</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>DynamicsNavInterface_WSRegistraRecepcionCompra_Registra_Recepcion_Compra</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Codeunit/Registra_Transfer_Envio">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSRegistraTransferEnvio\</RelPath>
+      <UpdateFromURL>http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Codeunit/Registra_Transfer_Envio</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>DynamicsNavInterface_WSRegistraTransferEnvio_Registra_Transfer_Envio</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Codeunit/Registra_Transfer_Recepcion">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSRegistraTransferRecepcion\</RelPath>
+      <UpdateFromURL>http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Codeunit/Registra_Transfer_Recepcion</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>DynamicsNavInterface_WSRegistraTransferRecepcion_Registra_Transfer_Recepcion</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Page/Categorias_Productos">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSCategoriasProductos\</RelPath>
+      <UpdateFromURL>http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Page/Categorias_Productos</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>DynamicsNavInterface_wsCategoriasProductos_Categorias_Productos_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Page/Grupos_Productos">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSGruposProductos\</RelPath>
+      <UpdateFromURL>http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Page/Grupos_Productos</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>DynamicsNavInterface_WSGruposProductos_Grupos_Productos_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Pedidos_Transferencia">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSPedidoTransferencia\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Pedidos_Transferencia</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>DynamicsNavInterface_WsPedidoTransferencia_Pedidos_Transferencia_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Page/Ficha_Bodegas">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSFichaBodegas\</RelPath>
+      <UpdateFromURL>http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Page/Ficha_Bodegas</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>DynamicsNavInterface_WSFichaBodegas_Ficha_Bodegas_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Page/Pedidos_Compra">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSPedidoCompra\</RelPath>
+      <UpdateFromURL>http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Page/Pedidos_Compra</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>DynamicsNavInterface_WSPedidoCompra_Pedidos_Compra_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Productos">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSProductos\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Productos</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>DynamicsNavInterface_wsProductos_Productos_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Page/Proveedores">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSProveedores\</RelPath>
+      <UpdateFromURL>http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Page/Proveedores</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>DynamicsNavInterface_WSProveedores_Proveedores_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Page/Tabla_Conversiones">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\wsTablaConversiones\</RelPath>
+      <UpdateFromURL>http://186.151.196.178:50601/DynamicsNAV80/WS/PRALCASA/Page/Tabla_Conversiones</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_wsTablaConversiones_Tabla_Conversiones_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Codeunit/Ajustes_Inventario">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSAjusteInventario\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Codeunit/Ajustes_Inventario</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_wsAjusteInventario_Ajustes_Inventario</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Pagina_lotes">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSPaginaLotes\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Pagina_lotes</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_WSPaginaLotes_Pagina_lotes_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Codeunit/CUWMS">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\CUWMS\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Codeunit/CUWMS</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_CUWMS_CUWMS</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Recep_Almacen">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\WSRecepcionesAlm\</RelPath>
+      <UpdateFromURL>http://168.194.73.242:1050/DynamicsNAV110/WS/PRALCASA/Page/Recep_Almacen</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>MySettings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>NavSync_WSRecepcionesAlm_Recep_Almacen_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AppGlobal\AppGlobal.vbproj">
+      <Project>{8a6418ce-0668-4ec6-a29c-9d9490701369}</Project>
+      <Name>AppGlobal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TOMIMSV4\DAL\DAL.vbproj">
+      <Project>{b7df5657-9a16-45a4-bf2f-ffda6138e06b}</Project>
+      <Name>DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TOMIMSV4\Entity\Entity.vbproj">
+      <Project>{df210a4e-56dd-4604-8558-ff6c51469a05}</Project>
+      <Name>Entity</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="..\packages\EmptyLicensesLicx.3.0.0\build\EmptyLicensesLicx.targets" Condition="Exists('..\packages\EmptyLicensesLicx.3.0.0\build\EmptyLicensesLicx.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EmptyLicensesLicx.3.0.0\build\EmptyLicensesLicx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EmptyLicensesLicx.3.0.0\build\EmptyLicensesLicx.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

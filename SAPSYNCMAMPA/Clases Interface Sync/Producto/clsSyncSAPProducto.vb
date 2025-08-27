@@ -1,0 +1,865 @@
+﻿Imports System.Data.SqlClient
+Imports System.Reflection
+Imports DevExpress.Drawing.Internal.Images
+Imports Sap.Data.Hana
+
+Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
+    Implements IDisposable
+
+    Private Shared VContadorBitacoraTOMWMS As Integer = 0
+    Private Shared VContadorBitacoraIntermedia As Integer = 0
+
+    Public Sub Dispose() Implements IDisposable.Dispose
+    End Sub
+
+    Private Shared Function Importar_Productos_Desde_SAP_A_TablaIntermedia(ByVal lblprg As RichTextBox,
+                                                                     ByRef prg As ProgressBar,
+                                                                     ByRef cnnLog As SqlConnection) As Boolean
+
+        Importar_Productos_Desde_SAP_A_TablaIntermedia = False
+
+        Dim Cnn As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
+        Dim lTrans As SqlTransaction = Nothing
+        Dim RegistrosNoEncontrados As Boolean = False
+        Dim SyncSAP As New clsSyncSAPPresentaciones
+
+        Try
+
+            clsPublic.Actualizar_Progreso(lblprg, "Iniciando procesamiento de productos a tabla intermedia -> " & Now)
+
+            Dim lfichaProductos As New List(Of clsBeI_nav_producto)
+            lfichaProductos = GetProductos_SAP_HANA()
+
+            Application.DoEvents()
+
+            If Not lfichaProductos Is Nothing Then
+
+                prg.Maximum = lfichaProductos.Count
+
+                Dim vContador As Integer = 0
+
+                Cnn.Open() : lTrans = Cnn.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                clsLnI_nav_producto.EliminarTodos(Cnn, lTrans)
+                clsLnI_nav_producto_presentacion.EliminarTodos(Cnn, lTrans)
+
+                BeNavEjecucionRes.Registros_ws = lfichaProductos.Count()
+
+                clsLnI_nav_ejecucion_res.Actualizar(BeNavEjecucionRes, cnnLog)
+
+                If lfichaProductos.Count > 0 Then
+
+                    RegistrosNoEncontrados = True
+
+                    For Each Prod In lfichaProductos
+
+                        Try
+
+                            clsPublic.Actualizar_Progreso(lblprg, String.Format("Procesando Producto: {0} {1} ", Prod.No, vbNewLine))
+
+                            clsLnI_nav_producto.Insertar(Prod, Cnn, lTrans)
+
+                            VContadorBitacoraIntermedia += 1
+
+                            prg.Value = vContador
+
+                            vContador += 1
+
+                            Application.DoEvents()
+
+                        Catch ex As Exception
+
+                            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
+                                                                   Prod.No,
+                                                                   BeNavEjecucionEnc.IdEjecucionEnc,
+                                                                   BeConfigDet.Idnavconfigdet, cnnLog)
+
+                            clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al procesar producto: {0} {1} ", Prod.No, ex.Message))
+
+                            Application.DoEvents()
+
+                        End Try
+
+                    Next
+
+                Else
+                    clsPublic.Actualizar_Progreso(lblprg, "No se encontraron productos pendientes de procesar (Enviado_SAP =No) en SAP.")
+                End If
+
+                lTrans.Commit()
+
+                If RegistrosNoEncontrados Then
+                    Importar_Productos_Desde_SAP_A_TablaIntermedia = True
+                End If
+
+                clsPublic.Actualizar_Progreso(lblprg, "Fin de procesamiento de productos -> " & Now)
+
+            Else
+                clsPublic.Actualizar_Progreso(lblprg, "No se encontraron productos pendientes de procesar (Enviado_SAP =No) en SAP.")
+            End If
+
+        Catch ex As Exception
+
+            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
+                                                       MethodBase.GetCurrentMethod.Name(),
+                                                       BeNavEjecucionEnc.IdEjecucionEnc,
+                                                       BeConfigDet.Idnavconfigdet, cnnLog)
+
+            If Not lTrans Is Nothing Then lTrans.Rollback()
+
+            clsPublic.Actualizar_Progreso(lblprg, "Fin de procesamiento de productos -> " & Now)
+            clsPublic.Actualizar_Progreso(lblprg, String.Format("Error: {0} ", ex.Message))
+
+            Throw ex
+
+        Finally
+            If Cnn.State = ConnectionState.Open Then Cnn.Close()
+        End Try
+
+    End Function
+
+    Public Shared Function Truncate(value As String, length As Integer) As String
+        If length > value.Length Then
+            Return value
+        Else
+            Return value.Substring(0, length)
+        End If
+    End Function
+
+    Public Shared Function Marcar_Producto_Sincronizado_SAP(ByVal code As String) As Boolean
+
+        Dim resultado As Boolean = False
+
+        Try
+
+            Using conn As HanaConnection = HanaHelper.OpenDB()
+
+                Dim query As String = "UPDATE OITM SET U_ENVIADO_WMS = '1' WHERE ""ItemCode"" = '" & code & "'"
+                HanaHelper.Xcute(query)
+                resultado = True
+
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception(String.Format("Error al marcar el centro de costo sincronizado para clave compuesta: {0}", ex.Message))
+        End Try
+
+        Return resultado
+
+    End Function
+
+    Public Shared Function GetProductos_SAP_HANA(Optional codigo As String = "") As List(Of clsBeI_nav_producto)
+        Dim productos As New List(Of clsBeI_nav_producto)
+        Dim filtroCodigo As String = If(String.IsNullOrWhiteSpace(codigo), "", $" AND T0.""ItemCode"" = '" & codigo & "'")
+
+        Dim query As String =
+            "SELECT T0.""ItemCode"", T0.""ItemName"", " &
+            "T0.""U_Fabricante"" AS ""CodigoFabricante"", " &
+            "T2.""Name"" AS ""NombreFabricante"", " &
+            "T0.""CodeBars"", " &
+            "T0.""U_Grupo"" AS ""CodGrupo"", " &
+            "T3.""Name"" AS ""Grupo"", " &
+            "T0.""U_Division"" AS ""CodigoDivision"", " &
+            "T4.""Name"" AS ""NombreDivision"", " &
+            "T0.""InvntryUom"" AS ""UmBas"", " &
+            "T0.""UpdateDate"", " &
+            "T0.""CodeBars"" AS ""CodigoBarra"", " &
+            "T0.""U_Marca"" AS ""CodFamilia"", " &
+            "T5.""Name"" AS ""NomFamilia"" " &
+            "FROM OITM T0 " &
+            "LEFT JOIN OITB T1 ON T0.""ItmsGrpCod"" = T1.""ItmsGrpCod"" " &
+            "LEFT JOIN ""@FABRICANTE"" T2 ON TO_VARCHAR(T2.""Code"") = T0.""U_Fabricante"" " &
+            "LEFT JOIN ""@GRUPO"" T3 ON TO_VARCHAR(T3.""Code"") = T0.""U_Grupo"" " &
+            "LEFT JOIN ""@DIVISION"" T4 ON TO_VARCHAR(T4.""Code"") = T0.""U_Division"" " &
+            "LEFT JOIN ""@MARCAS"" T5 ON TO_VARCHAR(T5.""Code"") = T0.""U_Marca"" " &
+            "WHERE (T0.""UpdateDate"" BETWEEN ADD_DAYS(CURRENT_DATE, -" & BeConfigEnc.Rango_Dias_Importacion & ") AND CURRENT_DATE " &
+            "OR T0.""U_ENVIADO_WMS"" = 2) " &
+            "AND TO_VARCHAR(T3.""Code"") <> '19' " &
+            "AND T0.""InvntryUom"" <> '' AND T0.""InvntryUom"" IS NOT NULL" & filtroCodigo
+
+        Try
+            Using conn As HanaConnection = HanaHelper.OpenDB()
+                Dim dt As DataTable = HanaHelper.OpenDT(query, conn)
+                If dt IsNot Nothing Then
+                    For Each row As DataRow In dt.Rows
+                        productos.Add(MapRowToProducto(row))
+                    Next
+                End If
+            End Using
+        Catch ex As Exception
+            Throw New Exception("Error al obtener productos: " & ex.Message)
+        End Try
+
+        Return productos
+    End Function
+
+    Public Shared Function GetProductoByCodigo(codigo As String) As clsBeI_nav_producto
+        Return GetProductos_SAP_HANA(codigo).FirstOrDefault()
+    End Function
+
+    Private Shared Function MapRowToProducto(row As DataRow) As clsBeI_nav_producto
+        Return New clsBeI_nav_producto With {
+            .No = row("ItemCode").ToString(),
+            .Item_Tracking_Code = row("CodeBars").ToString(),
+            .Description = row("ItemName").ToString(),
+            .Description_2 = row("CodigoBarra").ToString(),
+            .Item_Category_Code = row("CodigoDivision").ToString(),
+            .Item_Category_Name = row("NombreDivision").ToString(),
+            .Inventory = 0,
+            .Base_Unit_Of_Measure = row("UmBas").ToString(),
+            .Unit_Cost = 0,
+            .Product_Group_Code = row("CodigoFabricante").ToString(),
+            .Producto_Group_Name = row("NombreFabricante").ToString(),
+            .Gen_Prod_Posting_Group = row("CodFamilia").ToString(),
+            .Gen_Prod_Posting_Name = row("NomFamilia").ToString(),
+            .Product_Class_Code = row("CodGrupo").ToString(),
+            .Product_Class_Name = row("Grupo").ToString(),
+            .BatchControl = False
+        }
+    End Function
+
+    Public Shared Function Insertar_Producto_From_Sap_Hana(ByVal codigo As String,
+                                                           lConnection As SqlConnection,
+                                                           lTransaction As SqlTransaction) As Integer
+
+        Insertar_Producto_From_Sap_Hana = 0
+
+        Dim RegistrosNoEncontrados As Boolean = False
+        Dim SyncSAP As New clsSyncSAPPresentaciones
+
+        Try
+
+            Dim fichaProducto As New clsBeI_nav_producto
+            fichaProducto = GetProducto_SAP_HANA_By_Codigo(codigo)
+
+            If Not fichaProducto Is Nothing Then
+
+                Dim vContador As Integer = 0
+
+                clsLnI_nav_producto.EliminarTodos(lConnection, lTransaction)
+                clsLnI_nav_producto_presentacion.EliminarTodos(lConnection, lTransaction)
+
+                BeNavEjecucionRes.Registros_ws = 1
+
+                Try
+
+                    RegistrosNoEncontrados = True
+
+                    clsLnI_nav_producto.Insertar(fichaProducto, lConnection, lTransaction)
+
+                Catch ex As Exception
+
+                    clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
+                                                               fichaProducto.No,
+                                                               BeNavEjecucionEnc.IdEjecucionEnc,
+                                                               BeConfigDet.Idnavconfigdet)
+
+                    Application.DoEvents()
+
+                End Try
+
+                If RegistrosNoEncontrados Then
+                    Insertar_Producto_From_Sap_Hana = Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lConnection, lTransaction)
+                End If
+
+            End If
+
+        Catch ex As Exception
+
+            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
+                                                       MethodBase.GetCurrentMethod.Name(),
+                                                       BeNavEjecucionEnc.IdEjecucionEnc,
+                                                       BeConfigDet.Idnavconfigdet)
+
+            Throw ex
+
+        End Try
+
+    End Function
+
+    ''' <summary>
+    ''' Obtiene la lista de productos desde SAP HANA por código
+    ''' </summary>
+    ''' <returns>DataTable con los productos</returns>
+
+    Public Shared Function GetProducto_SAP_HANA_By_Codigo(ByVal codigo As String) As clsBeI_nav_producto
+
+        Dim query As String = ""
+
+        GetProducto_SAP_HANA_By_Codigo = Nothing
+
+        Try
+
+            query = "SELECT T0.""ItemCode"",T0.""ItemName"",
+                                      T0.""U_Fabricante"" AS ""CodigoFabricante"",
+                                      T2.""Name"" AS ""NombreFabricante"",
+                                      T0.""CodeBars"",
+                                      T0.""U_Grupo"" AS ""CodGrupo"", 
+                                      T3.""Name"" AS ""Grupo"", 
+                                      T0.""U_Division"" AS ""CodigoDivision"", 
+                                      T4.""Name"" AS ""NombreDivision"",
+                                      T0.""InvntryUom"" AS ""UmBas"",
+                                      T0.""UpdateDate"",
+                                      T0.""CodeBars"" AS ""CodigoBarra"",
+                                      T0.""U_Marca""  AS ""CodFamilia"", 
+                                      T5.""Name"" AS ""NomFamilia""
+                               FROM  OITM T0 
+                                     LEFT JOIN OITB T1 ON T0.""ItmsGrpCod""= T1.""ItmsGrpCod""
+                                     LEFT JOIN ""@FABRICANTE"" T2 ON TO_VARCHAR(T2.""Code"") = T0.""U_Fabricante""
+                                     LEFT JOIN ""@GRUPO"" T3 ON TO_VARCHAR(T3.""Code"") = T0.""U_Grupo""
+                                     LEFT JOIN ""@DIVISION"" T4 ON TO_VARCHAR(T4.""Code"") = T0.""U_Division""
+                                     LEFT JOIN ""@MARCAS"" T5 ON TO_VARCHAR(T5.""Code"") = T0.""U_Marca""
+                               WHERE (T0.""UpdateDate"" BETWEEN ADD_DAYS(CURRENT_DATE, -" & BeConfigEnc.Rango_Dias_Importacion & ") AND CURRENT_DATE
+                                      OR T0.U_ENVIADO_WMS = 2) AND TO_VARCHAR(T3.""Code"")<>19 
+                                      AND T0.""InvntryUom""<>'' AND T0.""InvntryUom"" IS NOT NULL 
+                                      AND T0.""ItemCode""='" & codigo & "' "
+
+            Using conn As HanaConnection = HanaHelper.OpenDB()
+
+                Dim dt As DataTable = HanaHelper.OpenDT(query, conn)
+
+                If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+                    Dim row = dt.Rows(0)
+                    GetProducto_SAP_HANA_By_Codigo = MapRowToProducto(row)
+                End If
+
+            End Using
+
+        Catch ex As HanaException
+            Throw New Exception("Error al obtener productos: " & ex.Message)
+        End Try
+
+    End Function
+
+    Public Shared Function Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(ByRef lblprg As RichTextBox,
+                                                                                    ByRef prg As ProgressBar,
+                                                                                    Optional ByVal ForzarEjecucion As Boolean = False,
+                                                                                    Optional ByVal Pregunta_Si_LLena_Intermedia As Boolean = False) As Boolean
+        Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS = False
+
+        Dim CnnInterface As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
+        Dim CnnLog As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
+        Dim lTrans As SqlTransaction = Nothing
+
+        Try
+
+            If Not ForzarEjecucion AndAlso Not Ejecutar_Interfaz("Producto") Then
+                clsPublic.Actualizar_Progreso(lblprg, "La configuración de la interface indica que no se debe ejecutar en este momento.")
+                Return False
+            End If
+
+            CnnLog.Open()
+
+            Iniciar_Ejecucion(CnnLog)
+
+            CnnInterface.Open()
+
+            lTrans = CnnInterface.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            If Not Confirmar_Y_Llenar_Intermedia(Pregunta_Si_LLena_Intermedia, lblprg, prg, CnnLog) Then Return False
+
+            Dim productos As List(Of clsBeI_nav_producto) = clsLnI_nav_producto.GetAll(CnnInterface, lTrans)
+            clsPublic.Actualizar_Progreso(lblprg, $"Productos en tabla intermedia: {productos.Count}")
+
+            If productos.Count > 0 Then
+                ProcesarProductosDesdeSAP(productos, lblprg, prg, CnnInterface, lTrans)
+            End If
+
+            lTrans.Commit()
+
+            Finalizar_Ejecucion(lblprg, CnnLog, "Productos procesados correctamente: ")
+
+            Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS = True
+
+        Catch ex As Exception
+            If lTrans IsNot Nothing Then lTrans.Rollback()
+            prg.Value = 0
+            clsPublic.Actualizar_Progreso(lblprg, $"Error al insertar producto a tabla de TOMWMS: {ex.Message}")
+            Throw
+        Finally
+            If CnnInterface.State = ConnectionState.Open Then CnnInterface.Close()
+            If CnnLog.State = ConnectionState.Open Then CnnLog.Close()
+        End Try
+    End Function
+
+    Private Shared Function ProcesarProductosDesdeSAP(productos As List(Of clsBeI_nav_producto),
+                                                     lblprg As RichTextBox,
+                                                     prg As ProgressBar,
+                                                     lConnection As SqlConnection,
+                                                     lTransaction As SqlTransaction) As Boolean
+
+        ProcesarProductosDesdeSAP = False
+
+        BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface, lConnection, lTransaction)
+
+        Dim vMostrarProgreso As Boolean = (lblprg IsNot Nothing AndAlso prg IsNot Nothing)
+
+        If vMostrarProgreso Then prg.Maximum = productos.Count : prg.Value = 0
+
+        For Each productoSAP In productos
+
+            Try
+
+                If vMostrarProgreso Then clsPublic.Actualizar_Progreso(lblprg, $"Procesando producto: {productoSAP.No}")
+
+                Dim productoExistente = clsLnProducto.Existe(productoSAP.No, lConnection, lTransaction)
+                Dim producto = InicializarProductoDesdeSAP(productoSAP, productoExistente)
+
+                EnlazarEntidadRelacionada(productoSAP, producto, lConnection, lTransaction, lblprg)
+
+                If productoExistente IsNot Nothing Then
+                    ActualizarProductoExistente(producto, productoExistente, lConnection, lTransaction, lblprg)
+                Else
+                    InsertarProductoNuevo(producto, lConnection, lTransaction, lblprg)
+                End If
+
+                If vMostrarProgreso Then prg.Value += 1
+
+                ProcesarProductosDesdeSAP = True
+
+            Catch ex As Exception
+                clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, productoSAP.No, BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet)
+                If vMostrarProgreso Then
+                    clsPublic.Actualizar_Progreso(lblprg, $"Error general en producto {productoSAP.No}: {ex.Message}")
+                Else
+                    Throw ex
+                End If
+            End Try
+
+        Next
+
+    End Function
+
+    Private Shared Sub Iniciar_Ejecucion(cnnLog As SqlConnection)
+        BeNavEjecucionEnc = New clsBeI_nav_ejecucion_enc With {
+            .IdEjecucionEnc = clsLnI_nav_ejecucion_enc.MaxID(cnnLog),
+            .IdNavConfigEnc = BD.Instancia.IdConfiguracionInterface,
+            .Fecha = Now
+        }
+        clsLnI_nav_ejecucion_enc.Insertar_From_Interface(BeNavEjecucionEnc, cnnLog)
+
+        BeNavEjecucionRes = New clsBeI_nav_ejecucion_res With {
+            .IdEjecucionRes = clsLnI_nav_ejecucion_res.Max_IdEjecucionRes(cnnLog) + 1,
+            .IdEjecucionEnc = BeNavEjecucionEnc.IdEjecucionEnc,
+            .IdNavConfigDet = BeConfigDet.Idnavconfigdet,
+            .Registros_ws = 0,
+            .Registros_ti = 0,
+            .Registros_WMS = 0,
+            .Exitosa = False
+        }
+        clsLnI_nav_ejecucion_res.Insertar(BeNavEjecucionRes, cnnLog)
+    End Sub
+
+    Private Shared Function Confirmar_Y_Llenar_Intermedia(preguntar As Boolean,
+                                                           lblprg As RichTextBox,
+                                                           prg As ProgressBar,
+                                                           cnnLog As SqlConnection) As Boolean
+        If Not preguntar Then
+            Return Importar_Productos_Desde_SAP_A_TablaIntermedia(lblprg, prg, cnnLog)
+        End If
+
+        Dim respuesta = MessageBox.Show("¿Llenar tabla intermedia desde SAP?", "Parametro", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+        If respuesta = DialogResult.Yes Then
+            Return Importar_Productos_Desde_SAP_A_TablaIntermedia(lblprg, prg, cnnLog)
+        End If
+
+        Return True
+    End Function
+
+    Private Shared Function InicializarProductoDesdeSAP(productoSAP As clsBeI_nav_producto, productoExistente As clsBeProducto) As clsBeProducto
+        Dim producto As New clsBeProducto With {
+            .Codigo = productoSAP.No,
+            .Nombre = Truncate(productoSAP.Description, 150),
+            .Codigo_barra = productoSAP.Description_2,
+            .ExistenciaUMBas = productoSAP.Inventory,
+            .Precio = productoSAP.Unit_Cost,
+            .Costo = productoSAP.Unit_Cost,
+            .Activo = True,
+            .Serializado = False,
+            .Control_vencimiento = productoSAP.BatchControl,
+            .Control_lote = BeConfigEnc.Control_lote,
+            .User_agr = BeConfigEnc.IdUsuario,
+            .Fec_agr = Now,
+            .User_mod = BeConfigEnc.IdUsuario,
+            .Fec_mod = Now,
+            .IdTipoEtiqueta = BeConfigEnc.IdTipoEtiqueta,
+            .Genera_lp = BeConfigEnc.Genera_lp,
+            .IdIndiceRotacion = BeConfigEnc.IdIndiceRotacion,
+            .IdTipoManufactura = Val(productoSAP.Manufacturing_Process),
+            .IdTipoRotacion = If(productoSAP.BatchControl, 3, 1)
+        }
+        Return producto
+    End Function
+
+    Private Shared Sub EnlazarEntidadRelacionada(productoSAP As clsBeI_nav_producto,
+                                                 ByRef producto As clsBeProducto,
+                                                 cnn As SqlConnection,
+                                                 tran As SqlTransaction,
+                                                 lbl As RichTextBox)
+        EnlazarClasificacion(productoSAP, producto, cnn, tran, lbl)
+        EnlazarTipoProducto(productoSAP, producto, cnn, tran, lbl)
+        EnlazarMarca(productoSAP, producto, cnn, tran, lbl)
+        EnlazarFamilia(productoSAP, producto, cnn, tran, lbl)
+        EnlazarUnidadMedida(productoSAP, producto, cnn, tran, lbl)
+    End Sub
+
+    Private Shared Sub EnlazarClasificacion(productoSAP As clsBeI_nav_producto,
+                                            ByRef producto As clsBeProducto,
+                                            cnn As SqlConnection,
+                                            tran As SqlTransaction,
+                                            lbl As RichTextBox)
+
+        Dim codigoClas As String = If(String.IsNullOrWhiteSpace(productoSAP.Item_Category_Code), "0", productoSAP.Item_Category_Code)
+        If Not IsNumeric(codigoClas) OrElse codigoClas = "0" Then
+            producto.IdClasificacion = 0
+            Return
+        End If
+
+        Try
+            Dim clasif = clsLnProducto_clasificacion.Get_Single_By_Codigo(codigoClas, cnn, tran)
+            If clasif IsNot Nothing Then
+                producto.IdClasificacion = clasif.IdClasificacion
+            Else
+                Dim nuevaClasif As New clsBeProducto_clasificacion With {
+                    .IdClasificacion = clsLnProducto_clasificacion.MaxId(cnn, tran),
+                    .Codigo = codigoClas,
+                    .Nombre = productoSAP.Item_Category_Name,
+                    .Activo = True,
+                    .Sistema = False,
+                    .IsNew = True,
+                    .Fec_agr = Now,
+                    .Fec_mod = Now,
+                    .User_agr = BeConfigEnc.IdUsuario,
+                    .User_mod = BeConfigEnc.IdUsuario
+                }
+                nuevaClasif.Propietario.IdPropietario = BeConfigEnc.IdPropietario
+
+                clsLnProducto_clasificacion.Insertar(nuevaClasif, cnn, tran)
+                producto.IdClasificacion = nuevaClasif.IdClasificacion
+                clsPublic.Actualizar_Progreso(lbl, $"Insertada nueva clasificación: {nuevaClasif.IdClasificacion}")
+            End If
+        Catch ex As Exception
+            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, producto.Codigo, BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet)
+            clsPublic.Actualizar_Progreso(lbl, $"Error al insertar clasificación {codigoClas}: {ex.Message}")
+        End Try
+    End Sub
+
+    Private Shared Sub EnlazarTipoProducto(productoSAP As clsBeI_nav_producto,
+                                            ByRef producto As clsBeProducto,
+                                            cnn As SqlConnection,
+                                            tran As SqlTransaction,
+                                            lbl As RichTextBox)
+        Dim codigoTipo As String = If(String.IsNullOrWhiteSpace(productoSAP.Product_Group_Code), "", productoSAP.Product_Group_Code)
+        If Not IsNumeric(codigoTipo) AndAlso codigoTipo = "" Then
+            producto.IdTipoProducto = 0
+            Return
+        End If
+
+        Try
+            Dim tipo = clsLnProducto_tipo.Get_Single_By_Codigo(codigoTipo, cnn, tran)
+            If tipo IsNot Nothing Then
+                producto.IdTipoProducto = tipo.IdTipoProducto
+            Else
+                Dim nuevoTipo As New clsBeProducto_tipo With {
+                    .IdTipoProducto = clsLnProducto_tipo.MaxID(cnn, tran),
+                    .IdPropietario = BeConfigEnc.IdPropietario,
+                    .Codigo = codigoTipo,
+                    .NombreTipoProducto = productoSAP.Producto_Group_Name,
+                    .Activo = True,
+                    .User_agr = BeConfigEnc.IdUsuario,
+                    .Fec_agr = Now,
+                    .User_mod = BeConfigEnc.IdUsuario,
+                    .Fec_mod = Now
+                }
+
+                clsLnProducto_tipo.Insertar(nuevoTipo, cnn, tran)
+                producto.IdTipoProducto = nuevoTipo.IdTipoProducto
+                clsPublic.Actualizar_Progreso(lbl, $"Insertado nuevo tipo producto: {nuevoTipo.IdTipoProducto}")
+            End If
+        Catch ex As Exception
+            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, producto.Codigo, BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet)
+            clsPublic.Actualizar_Progreso(lbl, $"Error al insertar tipo producto {codigoTipo}: {ex.Message}")
+        End Try
+    End Sub
+
+    Private Shared Sub EnlazarMarca(productoSAP As clsBeI_nav_producto,
+                                     ByRef producto As clsBeProducto,
+                                     cnn As SqlConnection,
+                                     tran As SqlTransaction,
+                                     lbl As RichTextBox)
+        Dim codigoMarca As String = If(String.IsNullOrWhiteSpace(productoSAP.Gen_Prod_Posting_Group), "0", productoSAP.Gen_Prod_Posting_Group)
+        If Not IsNumeric(codigoMarca) OrElse codigoMarca = "0" Then
+            producto.IdMarca = 0
+            Return
+        End If
+
+        Try
+            Dim marca = clsLnProducto_marca.Get_Single_By_Codigo(codigoMarca, cnn, tran)
+            If marca IsNot Nothing Then
+                producto.IdMarca = marca.IdMarca
+            Else
+                Dim nuevaMarca As New clsBeProducto_marca With {
+                    .IdMarca = clsLnProducto_marca.MaxID(cnn, tran),
+                    .IdPropietario = BeConfigEnc.IdPropietario,
+                    .Codigo = codigoMarca,
+                    .Nombre = productoSAP.Gen_Prod_Posting_Name,
+                    .Activo = True,
+                    .User_agr = BeConfigEnc.IdUsuario,
+                    .Fec_agr = Now,
+                    .User_mod = BeConfigEnc.IdUsuario,
+                    .Fec_mod = Now
+                }
+
+                clsLnProducto_marca.Insertar(nuevaMarca, cnn, tran)
+                producto.IdMarca = nuevaMarca.IdMarca
+                clsPublic.Actualizar_Progreso(lbl, $"Insertada nueva marca: {nuevaMarca.IdMarca}")
+            End If
+        Catch ex As Exception
+            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, producto.Codigo, BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet)
+            clsPublic.Actualizar_Progreso(lbl, $"Error al insertar marca {codigoMarca}: {ex.Message}")
+        End Try
+    End Sub
+
+    Private Shared Sub EnlazarFamilia(productoSAP As clsBeI_nav_producto,
+                                       ByRef producto As clsBeProducto,
+                                       cnn As SqlConnection,
+                                       tran As SqlTransaction,
+                                       lbl As RichTextBox)
+        Dim codigoFamilia As String = If(String.IsNullOrWhiteSpace(productoSAP.Product_Class_Code), "0", productoSAP.Product_Class_Code)
+        If Not IsNumeric(codigoFamilia) OrElse codigoFamilia = "0" Then
+            producto.IdFamilia = 0
+            Return
+        End If
+
+        Try
+            Dim familia = clsLnProducto_familia.Get_Single_By_Codigo(codigoFamilia, cnn, tran)
+            If familia IsNot Nothing Then
+                producto.IdFamilia = familia.IdFamilia
+            Else
+                Dim nuevaFamilia As New clsBeProducto_familia With {
+                    .IdFamilia = clsLnProducto_familia.MaxId(cnn, tran),
+                    .Codigo = codigoFamilia,
+                    .Nombre = productoSAP.Product_Class_Name,
+                    .Activo = True,
+                    .IsNew = True,
+                    .Fec_agr = Now,
+                    .Fec_mod = Now,
+                    .User_agr = BeConfigEnc.IdUsuario,
+                    .User_mod = BeConfigEnc.IdUsuario
+                }
+                nuevaFamilia.Propietario.IdPropietario = BeConfigEnc.IdPropietario
+
+                clsLnProducto_familia.Insertar(nuevaFamilia, cnn, tran)
+                producto.IdFamilia = nuevaFamilia.IdFamilia
+                clsPublic.Actualizar_Progreso(lbl, $"Insertada nueva familia: {nuevaFamilia.IdFamilia}")
+            End If
+        Catch ex As Exception
+            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, producto.Codigo, BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet)
+            clsPublic.Actualizar_Progreso(lbl, $"Error al insertar familia {codigoFamilia}: {ex.Message}")
+        End Try
+    End Sub
+
+    Private Shared Sub EnlazarUnidadMedida(productoSAP As clsBeI_nav_producto,
+                                           ByRef producto As clsBeProducto,
+                                           cnn As SqlConnection,
+                                           tran As SqlTransaction,
+                                           lbl As RichTextBox)
+        Dim nombreUM As String = productoSAP.Base_Unit_Of_Measure
+
+        If String.IsNullOrWhiteSpace(nombreUM) Then
+            clsPublic.Actualizar_Progreso(lbl, $"ERROR: No definió la UMBas para el producto: {productoSAP.No}. No se importará.")
+            producto.IdUnidadMedidaBasica = 0
+            Return
+        End If
+
+        Try
+            Dim unidad = clsLnUnidad_medida.Existe_By_Nombre(nombreUM, cnn, tran)
+            If unidad IsNot Nothing Then
+                producto.IdUnidadMedidaBasica = unidad.IdUnidadMedida
+            Else
+                Dim nuevaUM As New clsBeUnidad_medida With {
+                    .IdUnidadMedida = clsLnUnidad_medida.MaxID(cnn, tran) + 1,
+                    .Nombre = nombreUM,
+                    .Codigo = nombreUM,
+                    .IdPropietario = BeConfigEnc.IdPropietario,
+                    .Activo = True,
+                    .User_agr = BeConfigEnc.IdUsuario,
+                    .User_mod = BeConfigEnc.IdUsuario,
+                    .Fec_agr = Now,
+                    .Fec_mod = Now
+                }
+
+                clsLnUnidad_medida.InsertarFromInterface(nuevaUM, cnn, tran)
+                producto.IdUnidadMedidaBasica = nuevaUM.IdUnidadMedida
+                clsPublic.Actualizar_Progreso(lbl, $"Insertada nueva unidad de medida: {nombreUM}")
+            End If
+        Catch ex As Exception
+            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, producto.Codigo, BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet)
+            clsPublic.Actualizar_Progreso(lbl, $"Error al insertar unidad de medida {nombreUM}: {ex.Message}")
+        End Try
+    End Sub
+
+    Public Shared Sub Finalizar_Ejecucion(lbl As RichTextBox, cnnLog As SqlConnection, resumen As String)
+        Try
+            clsPublic.Actualizar_Progreso(lbl, "Fin de inserción en TOMWMS.")
+            clsPublic.Actualizar_Progreso(lbl, resumen & $": {VContadorBitacoraTOMWMS}")
+            clsPublic.Actualizar_Progreso(lbl, $"Tiempo transcurrido: {DateDiff(DateInterval.Second, BeNavEjecucionEnc.Fecha, Now)} segundo(s)")
+
+            BeNavEjecucionRes.Registros_ti = VContadorBitacoraIntermedia
+            BeNavEjecucionRes.Registros_WMS = VContadorBitacoraTOMWMS
+            BeNavEjecucionRes.Exitosa = (VContadorBitacoraTOMWMS = VContadorBitacoraIntermedia)
+
+            clsLnI_nav_ejecucion_res.Actualizar(BeNavEjecucionRes, cnnLog)
+        Catch ex As Exception
+            clsPublic.Actualizar_Progreso(lbl, $"Error al finalizar ejecución: {ex.Message}")
+        End Try
+    End Sub
+
+    Private Shared Sub ActualizarProductoExistente(producto As clsBeProducto,
+                                                   productoExistente As clsBeProducto,
+                                                   cnn As SqlConnection,
+                                                   tran As SqlTransaction,
+                                                   lbl As RichTextBox)
+        Try
+            producto.IdProducto = productoExistente.IdProducto
+            producto.Largo = productoExistente.Largo
+            producto.Ancho = productoExistente.Ancho
+            producto.Alto = productoExistente.Alto
+            producto.Control_peso = productoExistente.Control_peso
+            producto.IdTipoRotacion = productoExistente.IdTipoRotacion
+            producto.IdIndiceRotacion = productoExistente.IdIndiceRotacion
+            producto.User_mod = BeConfigEnc.IdUsuario
+            producto.Fec_mod = Now
+
+            If clsLnProducto.Actualizar(producto, cnn, tran) > 0 Then
+                If Not clsLnProducto_bodega.Exist(producto.Codigo, cnn, tran) Then
+                    Dim productoBodega As New clsBeProducto_bodega With {
+                        .IdProductoBodega = clsLnProducto_bodega.MaxID(cnn, tran) + 1,
+                        .IdProducto = producto.IdProducto,
+                        .IdBodega = BeConfigEnc.Idbodega,
+                        .Activo = True,
+                        .User_agr = BeConfigEnc.IdUsuario,
+                        .User_mod = BeConfigEnc.IdUsuario,
+                        .Fec_agr = Now,
+                        .Fec_mod = Now
+                    }
+                    clsLnProducto_bodega.InsertarFromInterface(productoBodega, cnn, tran)
+                    clsPublic.Actualizar_Progreso(lbl, $"Asociado producto {producto.Codigo} a bodega {BeConfigEnc.Idbodega}")
+                End If
+                VContadorBitacoraTOMWMS += 1
+                Marcar_Producto_Sincronizado_SAP(producto.Codigo)
+            End If
+        Catch ex As Exception
+            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, producto.Codigo, BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet)
+            clsPublic.Actualizar_Progreso(lbl, $"Error al actualizar producto {producto.Codigo}: {ex.Message}")
+        End Try
+    End Sub
+
+    Private Shared Function InsertarProductoNuevo(producto As clsBeProducto,
+                                             cnn As SqlConnection,
+                                             tran As SqlTransaction,
+                                             lbl As RichTextBox) As Integer
+        InsertarProductoNuevo = 0
+        Try
+
+            producto.IdProducto = clsLnProducto.MaxID(cnn, tran) + 1
+            producto.IdPropietario = BeConfigEnc.IdPropietario
+            clsLnProducto.Insertar(producto, cnn, tran)
+
+            Dim bodegas = clsLnBodega.GetAll(cnn, tran)
+            For Each bodega In bodegas
+                Dim productoBodega As New clsBeProducto_bodega With {
+                    .IdProductoBodega = clsLnProducto_bodega.MaxID(cnn, tran) + 1,
+                    .IdProducto = producto.IdProducto,
+                    .IdBodega = bodega.IdBodega,
+                    .Activo = True,
+                    .User_agr = BeConfigEnc.IdUsuario,
+                    .User_mod = BeConfigEnc.IdUsuario,
+                    .Fec_agr = Now,
+                    .Fec_mod = Now
+                }
+                clsLnProducto_bodega.InsertarFromInterface(productoBodega, cnn, tran)
+                If Not lbl Is Nothing Then clsPublic.Actualizar_Progreso(lbl, $"Asociado producto {producto.Codigo} a bodega {bodega.Codigo}")
+            Next
+
+            VContadorBitacoraTOMWMS += 1
+
+            Marcar_Producto_Sincronizado_SAP(producto.Codigo)
+
+            InsertarProductoNuevo = producto.IdProducto
+
+        Catch ex As Exception
+            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, producto.Codigo, BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet)
+            If Not lbl Is Nothing Then clsPublic.Actualizar_Progreso(lbl, $"Error al insertar producto nuevo {producto.Codigo}: {ex.Message}")
+        End Try
+
+    End Function
+
+    Public Shared Function Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lConnection As SqlConnection, lTransaction As SqlTransaction) As Integer
+
+        Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS = 0
+
+        Try
+
+            Dim productos As List(Of clsBeI_nav_producto) = clsLnI_nav_producto.GetAll(lConnection, lTransaction)
+
+            If productos.Count > 0 Then
+                If ProcesarProductosDesdeSAP(productos, Nothing, Nothing, lConnection, lTransaction) Then
+                    Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS = True
+                End If
+            End If
+
+        Catch ex As Exception
+            Throw
+        End Try
+
+    End Function
+
+    Private Shared Function ProcesarProductosDesdeSAPSingle(productoSAP As clsBeI_nav_producto,
+                                                            lConnection As SqlConnection,
+                                                            lTransaction As SqlTransaction) As Boolean
+
+        ProcesarProductosDesdeSAPSingle = 0
+
+        BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface, lConnection, lTransaction)
+
+        Try
+
+            Dim productoExistente = clsLnProducto.Existe(productoSAP.No, lConnection, lTransaction)
+            Dim producto = InicializarProductoDesdeSAP(productoSAP, productoExistente)
+
+            EnlazarEntidadRelacionada(productoSAP, producto, lConnection, lTransaction, Nothing)
+
+            If productoExistente IsNot Nothing Then
+                ActualizarProductoExistente(producto, productoExistente, lConnection, lTransaction, Nothing)
+                ProcesarProductosDesdeSAPSingle = producto.IdProducto
+            Else
+                ProcesarProductosDesdeSAPSingle = InsertarProductoNuevo(producto, lConnection, lTransaction, Nothing)
+            End If
+
+        Catch ex As Exception
+            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, productoSAP.No, BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet)
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Insertar_Producto_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lConnection As SqlConnection, lTransaction As SqlTransaction) As Integer
+
+        Insertar_Producto_Desde_Tabla_Intermedia_A_Tabla_TOMWMS = 0
+
+        Try
+
+            Dim productos As List(Of clsBeI_nav_producto) = clsLnI_nav_producto.GetAll(lConnection, lTransaction)
+
+            If productos.Count > 0 Then
+                Insertar_Producto_Desde_Tabla_Intermedia_A_Tabla_TOMWMS = ProcesarProductosDesdeSAPSingle(productos.FirstOrDefault(), lConnection, lTransaction)
+            End If
+
+        Catch ex As Exception
+            Throw
+        End Try
+
+    End Function
+
+End Class

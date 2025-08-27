@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:tns="urn:microsoft-dynamics-schemas/codeunit/Registra_Recepcion_Compra" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/Registra_Recepcion_Compra" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <schema elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/Registra_Recepcion_Compra" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element name="RegistrarRecCompra">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="numero_Documento" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="RegistrarRecCompra_Result">
+        <complexType>
+          <sequence />
+        </complexType>
+      </element>
+    </schema>
+  </types>
+  <message name="RegistrarRecCompra">
+    <part name="parameters" element="tns:RegistrarRecCompra" />
+  </message>
+  <message name="RegistrarRecCompra_Result">
+    <part name="parameters" element="tns:RegistrarRecCompra_Result" />
+  </message>
+  <portType name="Registra_Recepcion_Compra_Port">
+    <operation name="RegistrarRecCompra">
+      <input name="RegistrarRecCompra" message="tns:RegistrarRecCompra" />
+      <output name="RegistrarRecCompra_Result" message="tns:RegistrarRecCompra_Result" />
+    </operation>
+  </portType>
+  <binding name="Registra_Recepcion_Compra_Binding" type="tns:Registra_Recepcion_Compra_Port">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="RegistrarRecCompra">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Registra_Recepcion_Compra:RegistrarRecCompra" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="RegistrarRecCompra">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="RegistrarRecCompra_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="Registra_Recepcion_Compra">
+    <port name="Registra_Recepcion_Compra_Port" binding="tns:Registra_Recepcion_Compra_Binding">
+      <address location="http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/Registra_Recepcion_Compra" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </port>
+  </service>
+</definitions>

@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DsMotivoCorreccion" targetNamespace="http://tempuri.org/DsMotivoCorreccionPoliza.xsd" xmlns:mstns="http://tempuri.org/DsMotivoCorreccionPoliza.xsd" xmlns="http://tempuri.org/DsMotivoCorreccionPoliza.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="MySettings" AppSettingsPropertyName="IMS4MB_PRDConnectionString1" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="IMS4MB_PRDConnectionString1 (MySettings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.TOMWMS.My.MySettings.GlobalReference.Default.IMS4MB_PRDConnectionString1" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DsMotivoCorreccion" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="DsMotivoCorreccion" msprop:EnableTableAdapterManager="True" msprop:Generator_DataSetName="DsMotivoCorreccion">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Data" msprop:Generator_RowEvHandlerName="DataRowChangeEventHandler" msprop:Generator_RowDeletedName="DataRowDeleted" msprop:Generator_RowDeletingName="DataRowDeleting" msprop:Generator_RowEvArgName="DataRowChangeEvent" msprop:Generator_TablePropName="Data" msprop:Generator_RowChangedName="DataRowChanged" msprop:Generator_UserTableName="Data" msprop:Generator_RowChangingName="DataRowChanging" msprop:Generator_RowClassName="DataRow" msprop:Generator_TableClassName="DataDataTable" msprop:Generator_TableVarName="tableData">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Asignar" msprop:Generator_ColumnPropNameInTable="AsignarColumn" msprop:Generator_ColumnPropNameInRow="Asignar" msprop:Generator_UserColumnName="Asignar" msprop:Generator_ColumnVarNameInTable="columnAsignar" type="xs:boolean" minOccurs="0" />
+              <xs:element name="IdBodega" msprop:Generator_ColumnPropNameInTable="IdBodegaColumn" msprop:Generator_ColumnPropNameInRow="IdBodega" msprop:Generator_UserColumnName="IdBodega" msprop:Generator_ColumnVarNameInTable="columnIdBodega" type="xs:int" minOccurs="0" />
+              <xs:element name="IdMotivoCorreccionBodega" msprop:Generator_ColumnPropNameInTable="IdMotivoCorreccionBodegaColumn" msprop:Generator_ColumnPropNameInRow="IdMotivoCorreccionBodega" msprop:Generator_UserColumnName="IdMotivoCorreccionBodega" msprop:Generator_ColumnVarNameInTable="columnIdMotivoCorreccionBodega" type="xs:string" minOccurs="0" />
+              <xs:element name="Bodega" msprop:Generator_ColumnPropNameInTable="BodegaColumn" msprop:Generator_ColumnPropNameInRow="Bodega" msprop:Generator_UserColumnName="Bodega" msprop:Generator_ColumnVarNameInTable="columnBodega" type="xs:string" minOccurs="0" />
+              <xs:element name="IdInterno" msprop:Generator_ColumnPropNameInTable="IdInternoColumn" msprop:Generator_ColumnPropNameInRow="IdInterno" msprop:Generator_UserColumnName="IdInterno" msprop:Generator_ColumnVarNameInTable="columnIdInterno" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

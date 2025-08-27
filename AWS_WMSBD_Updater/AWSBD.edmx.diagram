@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="905261aa30c0417db8d18e74c23cbe3e" Name="Diagram1">
+        <EntityTypeShape EntityType="AWS_WMS_UPDATERModel.sysdiagrams" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="AWS_WMS_UPDATERModel.tbl_empresa_registro" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="AWS_WMS_UPDATERModel.tbl_version_bd_wms_det" Width="1.5" PointX="3" PointY="4.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="AWS_WMS_UPDATERModel.tbl_version_bd_wms" Width="1.5" PointX="5.375" PointY="3.875" />
+        <AssociationConnector Association="AWS_WMS_UPDATERModel.FK_tbl_empresa_registro_tlb_version_bd_wms1" />
+        <AssociationConnector Association="AWS_WMS_UPDATERModel.FK_tbl_version_bd_wms_det_tlb_version_bd_wms1" />
+        <EntityTypeShape EntityType="AWS_WMS_UPDATERModel.aspnet_Applications" Width="1.5" PointX="5.75" PointY="10.625" />
+        <EntityTypeShape EntityType="AWS_WMS_UPDATERModel.aspnet_Membership" Width="1.5" PointX="12.5" PointY="9.125" />
+        <EntityTypeShape EntityType="AWS_WMS_UPDATERModel.aspnet_Roles" Width="1.5" PointX="8" PointY="10.625" />
+        <EntityTypeShape EntityType="AWS_WMS_UPDATERModel.aspnet_SchemaVersions" Width="1.5" PointX="5.75" PointY="6.75" />
+        <EntityTypeShape EntityType="AWS_WMS_UPDATERModel.aspnet_Sessions" Width="1.5" PointX="0.75" PointY="7.75" />
+        <EntityTypeShape EntityType="AWS_WMS_UPDATERModel.aspnet_Users" Width="1.5" PointX="10.25" PointY="10.375" />
+        <EntityTypeShape EntityType="AWS_WMS_UPDATERModel.SiteContent" Width="1.5" PointX="2.75" PointY="7.75" />
+        <AssociationConnector Association="AWS_WMS_UPDATERModel.FK__aspnet_Me__Appli__75A278F5" />
+        <AssociationConnector Association="AWS_WMS_UPDATERModel.FK__aspnet_Ro__Appli__0A9D95DB" />
+        <AssociationConnector Association="AWS_WMS_UPDATERModel.FK__aspnet_Us__Appli__656C112C" />
+        <AssociationConnector Association="AWS_WMS_UPDATERModel.FK__aspnet_Me__UserI__76969D2E" />
+        <AssociationConnector Association="AWS_WMS_UPDATERModel.aspnet_UsersInRoles" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

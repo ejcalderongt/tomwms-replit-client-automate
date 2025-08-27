@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="7fe47628-fe16-4585-812e-97446ae73768" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://192.168.0.98/MI3/Producto/ServiceProducto.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="ServiceProducto.disco" MetadataType="Disco" ID="05ba84ad-a1b4-4f08-bc95-51e897730a9e" SourceId="1" SourceUrl="http://192.168.0.98/MI3/Producto/ServiceProducto.svc?disco" />
+    <MetadataFile FileName="ServiceProducto.wsdl" MetadataType="Wsdl" ID="128a660e-840e-45f8-bcc0-3669fd1f19cf" SourceId="1" SourceUrl="http://192.168.0.98/MI3/Producto/ServiceProducto.svc?wsdl" />
+    <MetadataFile FileName="ServiceProducto.xsd" MetadataType="Schema" ID="52e9ad0e-7e78-4af5-b64e-eb28ec359610" SourceId="1" SourceUrl="http://192.168.0.98/MI3/Producto/ServiceProducto.svc?xsd=xsd0" />
+    <MetadataFile FileName="ServiceProducto1.xsd" MetadataType="Schema" ID="c430470b-cc6f-43f7-90f0-669e6ad5c213" SourceId="1" SourceUrl="http://192.168.0.98/MI3/Producto/ServiceProducto.svc?xsd=xsd1" />
+    <MetadataFile FileName="ServiceProducto2.xsd" MetadataType="Schema" ID="7ab57ebd-fb11-4322-a2e9-18d67e4e0019" SourceId="1" SourceUrl="http://192.168.0.98/MI3/Producto/ServiceProducto.svc?xsd=xsd2" />
+    <MetadataFile FileName="ServiceProducto3.xsd" MetadataType="Schema" ID="f9635db5-9930-44cc-89ce-cef9a2216787" SourceId="1" SourceUrl="http://192.168.0.98/MI3/Producto/ServiceProducto.svc?xsd=xsd3" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

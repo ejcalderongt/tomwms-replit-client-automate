@@ -1,0 +1,557 @@
+﻿Imports System.Data.SqlClient
+Imports System.Reflection
+
+Partial Public Class clsLnTrans_inv_detalle
+
+    Public Shared Function GetAll(pIdinventarioenc As Integer, pIdtramo As Integer, pIdProducto As Integer) As List(Of clsBeTrans_inv_detalle)
+
+        Dim lReturnList As New List(Of clsBeTrans_inv_detalle)
+
+        Try
+            lReturnList = GetAll().FindAll(Function(x) x.Idinventarioenc = pIdinventarioenc).OrderBy(Function(Y) Y.Idtramo).ThenBy(Function(z) z.Nom_producto).ToList()
+
+            If (pIdtramo <> 0) Then lReturnList = lReturnList.FindAll(Function(x) x.Idtramo = pIdtramo).ToList()
+            If (pIdProducto <> 0) Then lReturnList = lReturnList.FindAll(Function(x) x.Idproducto = pIdProducto).ToList()
+
+            Return lReturnList
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function InsertarSinID(ByRef oBeTrans_inv_detalle As clsBeTrans_inv_detalle, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Ins.Init("trans_inv_detalle")
+            'Ins.Add("idinventariodet", "@idinventariodet", DataType.Parametro)
+            Ins.Add("idinventarioenc", "@idinventarioenc", DataType.Parametro)
+            Ins.Add("idtramo", "@idtramo", DataType.Parametro)
+            Ins.Add("idubicacion", "@idubicacion", DataType.Parametro)
+            Ins.Add("idoperador", "@idoperador", DataType.Parametro)
+            Ins.Add("idproducto", "@idproducto", DataType.Parametro)
+            Ins.Add("idpresentacion", "@idpresentacion", DataType.Parametro)
+            Ins.Add("idunidadmedida", "@idunidadmedida", DataType.Parametro)
+            Ins.Add("lote", "@lote", DataType.Parametro)
+            Ins.Add("fecha_vence", "@fecha_vence", DataType.Parametro)
+            Ins.Add("serie", "@serie", DataType.Parametro)
+            Ins.Add("idproductoestado", "@idproductoestado", DataType.Parametro)
+            Ins.Add("cantidad", "@cantidad", DataType.Parametro)
+            Ins.Add("fecha_captura", "@fecha_captura", DataType.Parametro)
+            Ins.Add("host", "@host", DataType.Parametro)
+            Ins.Add("nom_producto", "@nom_producto", DataType.Parametro)
+            Ins.Add("nom_operador", "@nom_operador", DataType.Parametro)
+            Ins.Add("carga", "@carga", DataType.Parametro)
+            Ins.Add("peso", "@peso", DataType.Parametro)
+            Ins.Add("IdPropietarioBodega", "@IdPropietarioBodega", DataType.Parametro)
+            Ins.Add("nombre_propietario", "@nombre_propietario", DataType.Parametro)
+            Ins.Add("lic_plate", "@lic_plate", DataType.Parametro)
+            Ins.Add("cod_variante", "@cod_variante", DataType.Parametro)
+            'AT20220504 Se agregó este campo para poder almancenar IdBodega
+            Ins.Add("idbodega", "@idbodega", DataType.Parametro)
+            '#GT25112022_1400: campos DyD
+            Ins.Add("costo", "@costo", DataType.Parametro)
+            Ins.Add("precio", "@precio", DataType.Parametro)
+            Ins.Add("IdProductoParametroA", "@IdProductoParametroA", DataType.Parametro)
+            Ins.Add("IdProductoParametroB", "@IdProductoParametroB", DataType.Parametro)
+
+            Dim sp As String = Ins.SQL()
+            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection)
+                cmd.Transaction = pTransaction
+                oBeTrans_inv_detalle.Idinventariodet = MaxID(pConection, pTransaction)
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+                oBeTrans_inv_detalle.Idinventariodet = MaxID(lConnection, lTransaction)
+            End If
+
+            'cmd.Parameters.Add(New SqlParameter("@IDINVENTARIODET", oBeTrans_inv_detalle.Idinventariodet))
+            cmd.Parameters.Add(New SqlParameter("@IDINVENTARIOENC", oBeTrans_inv_detalle.Idinventarioenc))
+            cmd.Parameters.Add(New SqlParameter("@IDTRAMO", oBeTrans_inv_detalle.Idtramo))
+            cmd.Parameters.Add(New SqlParameter("@IDUBICACION", oBeTrans_inv_detalle.IdUbicacion))
+            cmd.Parameters.Add(New SqlParameter("@IDOPERADOR", oBeTrans_inv_detalle.Idoperador))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTO", oBeTrans_inv_detalle.Idproducto))
+            cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION", oBeTrans_inv_detalle.IdPresentacion))
+            cmd.Parameters.Add(New SqlParameter("@IDUNIDADMEDIDA", oBeTrans_inv_detalle.Idunidadmedida))
+            cmd.Parameters.Add(New SqlParameter("@LOTE", oBeTrans_inv_detalle.Lote))
+            cmd.Parameters.Add(New SqlParameter("@FECHA_VENCE", oBeTrans_inv_detalle.Fecha_vence))
+            cmd.Parameters.Add(New SqlParameter("@SERIE", oBeTrans_inv_detalle.Serie))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", oBeTrans_inv_detalle.Idproductoestado))
+            cmd.Parameters.Add(New SqlParameter("@CANTIDAD", oBeTrans_inv_detalle.Cantidad))
+            cmd.Parameters.Add(New SqlParameter("@FECHA_CAPTURA", oBeTrans_inv_detalle.Fecha_captura))
+            cmd.Parameters.Add(New SqlParameter("@HOST", oBeTrans_inv_detalle.Host))
+            cmd.Parameters.Add(New SqlParameter("@NOM_PRODUCTO", oBeTrans_inv_detalle.Nom_producto))
+            cmd.Parameters.Add(New SqlParameter("@NOM_OPERADOR", oBeTrans_inv_detalle.Nom_operador))
+            cmd.Parameters.Add(New SqlParameter("@CARGA", oBeTrans_inv_detalle.Carga))
+            cmd.Parameters.Add(New SqlParameter("@PESO", oBeTrans_inv_detalle.Peso))
+            cmd.Parameters.Add(New SqlParameter("@IDPROPIETARIOBODEGA", oBeTrans_inv_detalle.IdPropietarioBodega))
+            cmd.Parameters.Add(New SqlParameter("@NOMBRE_PROPIETARIO", oBeTrans_inv_detalle.nombre_propietario))
+            cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", oBeTrans_inv_detalle.License_plate))
+            cmd.Parameters.Add(New SqlParameter("@COD_VARIANTE", oBeTrans_inv_detalle.Codigo_variante))
+            cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeTrans_inv_detalle.IdBodega))
+            '#GT25112022_1400: campos DyD
+            cmd.Parameters.Add(New SqlParameter("@COSTO", oBeTrans_inv_detalle.costo))
+            cmd.Parameters.Add(New SqlParameter("@PRECIO", oBeTrans_inv_detalle.precio))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOPARAMETROA", oBeTrans_inv_detalle.IdProductoParametroA))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOPARAMETROB", oBeTrans_inv_detalle.IdProductoParametroB))
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            cmd.Dispose()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            lConnection.Dispose()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Sub InsertaMulti(i1 As clsBeTrans_inv_detalle, i2 As clsBeTrans_inv_detalle, i3 As clsBeTrans_inv_detalle, i4 As clsBeTrans_inv_detalle)
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+            If i1.IdUbicacion > 0 Then InsertarSinID(i1, lConnection, lTransaction)
+            If i2.IdUbicacion > 0 Then InsertarSinID(i2, lConnection, lTransaction)
+            If i3.IdUbicacion > 0 Then InsertarSinID(i3, lConnection, lTransaction)
+            If i4.IdUbicacion > 0 Then InsertarSinID(i4, lConnection, lTransaction)
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw New Exception(ex.Message)
+        Finally
+            If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
+            lTransaction.Dispose()
+            lConnection.Dispose()
+        End Try
+
+    End Sub
+
+    Public Shared Function Get_All_By_IdInventarioEnc(pIdInvEnc As Integer) As List(Of clsBeTrans_inv_detalle)
+
+        Try
+
+            Dim lReturnList As New List(Of clsBeTrans_inv_detalle)
+
+            Dim vSQL As String = "SELECT * FROM Trans_inv_detalle WHERE idinventarioenc=@idinventarioenc"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+                    Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDataAdapter.SelectCommand.Transaction = lTransaction
+                        lDataAdapter.SelectCommand.CommandType = CommandType.Text
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInvEnc)
+
+                        Dim lDataTable As New DataTable()
+                        lDataAdapter.Fill(lDataTable)
+
+                        Dim vBeTrans_inv_detalle As New clsBeTrans_inv_detalle
+
+                        For Each dr As DataRow In lDataTable.Rows
+
+                            vBeTrans_inv_detalle = New clsBeTrans_inv_detalle
+                            Cargar(vBeTrans_inv_detalle, dr)
+                            lReturnList.Add(vBeTrans_inv_detalle)
+
+                        Next
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+
+                lConnection.Close()
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Single_By_IdInvDet(ByVal pIdInvDet As Integer) As clsBeTrans_inv_detalle
+
+        Try
+
+            Dim vSQL As String = "SELECT * FROM Trans_inv_detalle Where idinventariodet = @idinventariodet"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Parameters.AddWithValue("@idinventariodet", pIdInvDet)
+
+                        Dim lDT As New DataTable
+                        lDTA.Fill(lDT)
+
+                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                            Dim lRow As DataRow = lDT.Rows(0)
+                            Dim ObjProducto As New clsBeTrans_inv_detalle()
+
+                            Cargar(ObjProducto, lRow)
+
+                            Return ObjProducto
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return Nothing
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Sub Eliminar_Registros_Cantidad_0(Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing)
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Const sp As String = " Delete from Trans_inv_detalle Where (cantidad=0)"
+
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection)
+                cmd.Transaction = pTransaction
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
+
+            cmd.ExecuteNonQuery()
+
+            cmd.Dispose()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            lConnection.Dispose()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+    End Sub
+
+    Public Shared Function Get_All_By_InvEncUbic(pIdInvEnc As Integer, pIdUbicacion As Integer) As List(Of clsBeTrans_inv_detalle)
+
+        Try
+
+            Dim lReturnList As New List(Of clsBeTrans_inv_detalle)
+
+            Dim vSQL As String = "SELECT * FROM Trans_inv_detalle WHERE idinventarioenc=@idinventarioenc AND idubicacion=@idubicacion"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+                    Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDataAdapter.SelectCommand.Transaction = lTransaction
+                        lDataAdapter.SelectCommand.CommandType = CommandType.Text
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInvEnc)
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@idubicacion", pIdUbicacion)
+
+                        Dim lDataTable As New DataTable()
+                        lDataAdapter.Fill(lDataTable)
+
+                        Dim vBeTrans_inv_detalle As New clsBeTrans_inv_detalle
+
+                        For Each dr As DataRow In lDataTable.Rows
+                            vBeTrans_inv_detalle = New clsBeTrans_inv_detalle
+                            Cargar(vBeTrans_inv_detalle, dr)
+                            lReturnList.Add(vBeTrans_inv_detalle)
+                        Next
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_CantidadInvConteo_By_Producto(pIdUbicacion As Integer,
+                                                          pIdProducto As Integer,
+                                                          pIdBodega As Integer,
+                                                          pIdPresentacion As Integer) As clsBeTrans_inv_detalle
+
+        Dim lReturnValue As New clsBeTrans_inv_detalle
+
+        Try
+
+
+            Dim vSQL As String = "select 0 as idinventariodet,
+                                idinventarioenc,
+                                idtramo,
+                                IdUbicacion,
+                                0 as idoperador,
+                                idproducto,
+                                IdPresentacion,
+                                idunidadmedida,
+                                '' as lote,
+                                '1900-01-01' as fecha_vence,
+                                serie,
+                                0 as idproductoestado,
+                                '1900-01-01' as fecha_captura,
+                                host,
+                                nom_producto,
+                                nom_operador,
+                                carga,peso,
+                                IdPropietarioBodega,
+                                nombre_propietario,
+                                lic_plate,
+                                cod_variante,
+                                idbodega, 
+                                SUM(Cantidad) as Cantidad, costo 
+                                from trans_inv_detalle
+                                where idubicacion = @idubicacion
+                                and idproducto =  @idproducto
+                                and idbodega = @idbodega "
+
+            If pIdPresentacion <> 0 Then
+                vSQL += " And idpresentacion = @idpresentacion"
+            Else
+                vSQL += " And idpresentacion = 0"
+            End If
+
+            vSQL += " group by idinventarioenc,idtramo,IdUbicacion,idproducto,IdPresentacion,idunidadmedida,serie,
+                    host,nom_producto,nom_operador,carga,peso,IdPropietarioBodega,nombre_propietario,lic_plate,cod_variante,idbodega,costo"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+                    Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDataAdapter.SelectCommand.Transaction = lTransaction
+                        lDataAdapter.SelectCommand.CommandType = CommandType.Text
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@idubicacion", pIdUbicacion)
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@idproducto", pIdProducto)
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@idbodega", pIdBodega)
+
+
+                        If pIdPresentacion <> 0 Then
+                            lDataAdapter.SelectCommand.Parameters.AddWithValue("@idpresentacion", pIdPresentacion)
+                        End If
+
+                        Dim lDataTable As New DataTable()
+                        lDataAdapter.Fill(lDataTable)
+
+                        Dim vBeTrans_inv_detalle As New clsBeTrans_inv_detalle
+
+                        For Each dr As DataRow In lDataTable.Rows
+                            vBeTrans_inv_detalle = New clsBeTrans_inv_detalle
+                            Cargar(vBeTrans_inv_detalle, dr)
+
+                            lReturnValue = vBeTrans_inv_detalle
+                        Next
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lReturnValue
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+    End Function
+
+    Public Shared Function Get_Conteo_By_IdProducto_And_IdUbicacion(ByVal pIdUbicacion As Integer,
+                                                                    ByVal pIdBodega As Integer,
+                                                                    ByVal pIdProducto As Integer) As List(Of clsBeTrans_inv_detalle)
+
+        Try
+
+            Dim lReturnList As New List(Of clsBeTrans_inv_detalle)
+
+            Dim vSQL As String = "select * from trans_inv_detalle
+                                  where IdUbicacion = @IdUbicacion And 
+                                      IdBodega = @IdBodega And
+                                      IdProducto = @IdProducto"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDataAdapter.SelectCommand.Transaction = lTransaction
+                        lDataAdapter.SelectCommand.CommandType = CommandType.Text
+
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdUbicacion", pIdUbicacion)
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdProducto", pIdProducto)
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                        Dim lDataTable As New DataTable()
+                        lDataAdapter.Fill(lDataTable)
+
+                        Dim vBeTrans_inv_detalle As New clsBeTrans_inv_detalle
+
+                        For Each dr As DataRow In lDataTable.Rows
+                            vBeTrans_inv_detalle = New clsBeTrans_inv_detalle
+                            Cargar(vBeTrans_inv_detalle, dr)
+                            lReturnList.Add(vBeTrans_inv_detalle)
+                        Next
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Valida_Producto_ConteoInventario(pIdBodega As Integer,
+                                                            pIdUbicacion As Integer,
+                                                            pIdProducto As Integer) As List(Of clsBeTrans_inv_detalle)
+        Try
+            Dim lReturnList As New List(Of clsBeTrans_inv_detalle)
+
+            Dim vSQL As String = "select * from trans_inv_detalle 
+                                  where idubicacion = @idubicacion and 
+                                        idproducto=@idproducto and 
+                                        idbodega = @idbodega"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDataAdapter.SelectCommand.Transaction = lTransaction
+                        lDataAdapter.SelectCommand.CommandType = CommandType.Text
+
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@idbodega", pIdBodega)
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@idproducto", pIdProducto)
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@idubicacion", pIdUbicacion)
+
+                        Dim lDataTable As New DataTable()
+                        lDataAdapter.Fill(lDataTable)
+
+                        Dim vBeTrans_inv_detalle As New clsBeTrans_inv_detalle
+
+
+                        For Each dr As DataRow In lDataTable.Rows
+                            vBeTrans_inv_detalle = New clsBeTrans_inv_detalle
+                            Cargar(vBeTrans_inv_detalle, dr)
+                            lReturnList.Add(vBeTrans_inv_detalle)
+                        Next
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+    End Function
+End Class

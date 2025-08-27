@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://tempuri.org/" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" name="ServiceProducto" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://192.168.0.5/MI3/Producto/ServiceProducto.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://192.168.0.5/MI3/Producto/ServiceProducto.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://192.168.0.5/MI3/Producto/ServiceProducto.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/TOMWMS" />
+      <xsd:import schemaLocation="http://192.168.0.5/MI3/Producto/ServiceProducto.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Data" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IServiceProducto_Insert_InputMessage">
+    <wsdl:part name="parameters" element="tns:Insert" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Insert_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Insert_Single_InputMessage">
+    <wsdl:part name="parameters" element="tns:Insert_Single" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Insert_Single_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Insert_SingleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Disable_InputMessage">
+    <wsdl:part name="parameters" element="tns:Disable" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Disable_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DisableResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Update_InputMessage">
+    <wsdl:part name="parameters" element="tns:Update" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Update_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Delete_InputMessage">
+    <wsdl:part name="parameters" element="tns:Delete" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Delete_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_Producto_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Producto" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_Producto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_ProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_By_IdPropietario_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_By_IdPropietario" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_By_IdPropietario_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_By_IdPropietarioResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_By_IdPropietarioBodega_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_By_IdPropietarioBodega" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_By_IdPropietarioBodega_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_By_IdPropietarioBodegaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_Single_By_IdProducto_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_IdProducto" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_Single_By_IdProducto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_IdProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_Single_By_IdProductoBodega_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_IdProductoBodega" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_Single_By_IdProductoBodega_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_IdProductoBodegaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Exist_By_Codigo_Barra_InputMessage">
+    <wsdl:part name="parameters" element="tns:Exist_By_Codigo_Barra" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Exist_By_Codigo_Barra_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Exist_By_Codigo_BarraResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Exist_Producto_By_Bodega_InputMessage">
+    <wsdl:part name="parameters" element="tns:Exist_Producto_By_Bodega" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Exist_Producto_By_Bodega_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Exist_Producto_By_BodegaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Exist_By_IdProducto_InputMessage">
+    <wsdl:part name="parameters" element="tns:Exist_By_IdProducto" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Exist_By_IdProducto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Exist_By_IdProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Exist_Stock_By_IdProducto_InputMessage">
+    <wsdl:part name="parameters" element="tns:Exist_Stock_By_IdProducto" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Exist_Stock_By_IdProducto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Exist_Stock_By_IdProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_IdProducto_By_Codigo_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_IdProducto_By_Codigo" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_IdProducto_By_Codigo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_IdProducto_By_CodigoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_Single_By_Codigo_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_Codigo" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_Single_By_Codigo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Single_By_CodigoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_GetByCodigoAndBodega_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetByCodigoAndBodega" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_GetByCodigoAndBodega_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetByCodigoAndBodegaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_IdProductoBodega_By_Codigo_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_IdProductoBodega_By_Codigo" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_IdProductoBodega_By_Codigo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_IdProductoBodega_By_CodigoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_MaxID_InputMessage">
+    <wsdl:part name="parameters" element="tns:MaxID" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_MaxID_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MaxIDResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_Rep_Minimos_Y_Maximos_By_IdProducto_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Rep_Minimos_Y_Maximos_By_IdProducto" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_Rep_Minimos_Y_Maximos_By_IdProducto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Rep_Minimos_Y_Maximos_By_IdProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_Rep_Stock_Minimo_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Rep_Stock_Minimo" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_Rep_Stock_Minimo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_Rep_Stock_MinimoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_Parametros_By_IdProducto_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Parametros_By_IdProducto" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_Parametros_By_IdProducto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Parametros_By_IdProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_Codigos_Barra_By_IdProducto_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Codigos_Barra_By_IdProducto" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_Codigos_Barra_By_IdProducto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Codigos_Barra_By_IdProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_Presentaciones_By_IdProducto_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Presentaciones_By_IdProducto" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_Presentaciones_By_IdProducto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Presentaciones_By_IdProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_Productos_Sustitutos_By_IdProducto_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Productos_Sustitutos_By_IdProducto" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_Productos_Sustitutos_By_IdProducto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Productos_Sustitutos_By_IdProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_Bodegas_By_IdProducto_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Bodegas_By_IdProducto" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_Bodegas_By_IdProducto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Bodegas_By_IdProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_Presentaciones_Tarima_By_IdProducto_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Presentaciones_Tarima_By_IdProducto" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_Presentaciones_Tarima_By_IdProducto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Presentaciones_Tarima_By_IdProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_Rellenado_Producto_By_IdProducto_InputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Rellenado_Producto_By_IdProducto" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Get_All_Rellenado_Producto_By_IdProducto_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Get_All_Rellenado_Producto_By_IdProductoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Existe_InputMessage">
+    <wsdl:part name="parameters" element="tns:Existe" />
+  </wsdl:message>
+  <wsdl:message name="IServiceProducto_Existe_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExisteResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IServiceProducto">
+    <wsdl:operation name="Insert">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Insert" message="tns:IServiceProducto_Insert_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/InsertResponse" message="tns:IServiceProducto_Insert_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Insert_Single">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Insert_Single" message="tns:IServiceProducto_Insert_Single_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Insert_SingleResponse" message="tns:IServiceProducto_Insert_Single_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Disable">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Disable" message="tns:IServiceProducto_Disable_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/DisableResponse" message="tns:IServiceProducto_Disable_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Update">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Update" message="tns:IServiceProducto_Update_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/UpdateResponse" message="tns:IServiceProducto_Update_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Delete" message="tns:IServiceProducto_Delete_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/DeleteResponse" message="tns:IServiceProducto_Delete_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Producto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_Producto" message="tns:IServiceProducto_Get_All_Producto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_ProductoResponse" message="tns:IServiceProducto_Get_All_Producto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_By_IdPropietario">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_By_IdPropietario" message="tns:IServiceProducto_Get_All_By_IdPropietario_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_By_IdPropietarioResponse" message="tns:IServiceProducto_Get_All_By_IdPropietario_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_By_IdPropietarioBodega">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_By_IdPropietarioBodega" message="tns:IServiceProducto_Get_All_By_IdPropietarioBodega_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_By_IdPropietarioBodegaResponse" message="tns:IServiceProducto_Get_All_By_IdPropietarioBodega_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_IdProducto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_Single_By_IdProducto" message="tns:IServiceProducto_Get_Single_By_IdProducto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_Single_By_IdProductoResponse" message="tns:IServiceProducto_Get_Single_By_IdProducto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_IdProductoBodega">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_Single_By_IdProductoBodega" message="tns:IServiceProducto_Get_Single_By_IdProductoBodega_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_Single_By_IdProductoBodegaResponse" message="tns:IServiceProducto_Get_Single_By_IdProductoBodega_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Exist_By_Codigo_Barra">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Exist_By_Codigo_Barra" message="tns:IServiceProducto_Exist_By_Codigo_Barra_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Exist_By_Codigo_BarraResponse" message="tns:IServiceProducto_Exist_By_Codigo_Barra_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Exist_Producto_By_Bodega">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Exist_Producto_By_Bodega" message="tns:IServiceProducto_Exist_Producto_By_Bodega_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Exist_Producto_By_BodegaResponse" message="tns:IServiceProducto_Exist_Producto_By_Bodega_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Exist_By_IdProducto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Exist_By_IdProducto" message="tns:IServiceProducto_Exist_By_IdProducto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Exist_By_IdProductoResponse" message="tns:IServiceProducto_Exist_By_IdProducto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Exist_Stock_By_IdProducto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Exist_Stock_By_IdProducto" message="tns:IServiceProducto_Exist_Stock_By_IdProducto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Exist_Stock_By_IdProductoResponse" message="tns:IServiceProducto_Exist_Stock_By_IdProducto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_IdProducto_By_Codigo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_IdProducto_By_Codigo" message="tns:IServiceProducto_Get_IdProducto_By_Codigo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_IdProducto_By_CodigoResponse" message="tns:IServiceProducto_Get_IdProducto_By_Codigo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_Codigo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_Single_By_Codigo" message="tns:IServiceProducto_Get_Single_By_Codigo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_Single_By_CodigoResponse" message="tns:IServiceProducto_Get_Single_By_Codigo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetByCodigoAndBodega">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/GetByCodigoAndBodega" message="tns:IServiceProducto_GetByCodigoAndBodega_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/GetByCodigoAndBodegaResponse" message="tns:IServiceProducto_GetByCodigoAndBodega_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_IdProductoBodega_By_Codigo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_IdProductoBodega_By_Codigo" message="tns:IServiceProducto_Get_IdProductoBodega_By_Codigo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_IdProductoBodega_By_CodigoResponse" message="tns:IServiceProducto_Get_IdProductoBodega_By_Codigo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MaxID">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/MaxID" message="tns:IServiceProducto_MaxID_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/MaxIDResponse" message="tns:IServiceProducto_MaxID_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Rep_Minimos_Y_Maximos_By_IdProducto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_Rep_Minimos_Y_Maximos_By_IdProducto" message="tns:IServiceProducto_Get_Rep_Minimos_Y_Maximos_By_IdProducto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_Rep_Minimos_Y_Maximos_By_IdProductoResponse" message="tns:IServiceProducto_Get_Rep_Minimos_Y_Maximos_By_IdProducto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_Rep_Stock_Minimo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_Rep_Stock_Minimo" message="tns:IServiceProducto_Get_Rep_Stock_Minimo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_Rep_Stock_MinimoResponse" message="tns:IServiceProducto_Get_Rep_Stock_Minimo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Parametros_By_IdProducto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_Parametros_By_IdProducto" message="tns:IServiceProducto_Get_All_Parametros_By_IdProducto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_Parametros_By_IdProductoResponse" message="tns:IServiceProducto_Get_All_Parametros_By_IdProducto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Codigos_Barra_By_IdProducto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_Codigos_Barra_By_IdProducto" message="tns:IServiceProducto_Get_All_Codigos_Barra_By_IdProducto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_Codigos_Barra_By_IdProductoResponse" message="tns:IServiceProducto_Get_All_Codigos_Barra_By_IdProducto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Presentaciones_By_IdProducto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_Presentaciones_By_IdProducto" message="tns:IServiceProducto_Get_All_Presentaciones_By_IdProducto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_Presentaciones_By_IdProductoResponse" message="tns:IServiceProducto_Get_All_Presentaciones_By_IdProducto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Productos_Sustitutos_By_IdProducto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_Productos_Sustitutos_By_IdProducto" message="tns:IServiceProducto_Get_All_Productos_Sustitutos_By_IdProducto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_Productos_Sustitutos_By_IdProductoResponse" message="tns:IServiceProducto_Get_All_Productos_Sustitutos_By_IdProducto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Bodegas_By_IdProducto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_Bodegas_By_IdProducto" message="tns:IServiceProducto_Get_All_Bodegas_By_IdProducto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_Bodegas_By_IdProductoResponse" message="tns:IServiceProducto_Get_All_Bodegas_By_IdProducto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Presentaciones_Tarima_By_IdProducto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_Presentaciones_Tarima_By_IdProducto" message="tns:IServiceProducto_Get_All_Presentaciones_Tarima_By_IdProducto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_Presentaciones_Tarima_By_IdProductoResponse" message="tns:IServiceProducto_Get_All_Presentaciones_Tarima_By_IdProducto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Rellenado_Producto_By_IdProducto">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_Rellenado_Producto_By_IdProducto" message="tns:IServiceProducto_Get_All_Rellenado_Producto_By_IdProducto_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/Get_All_Rellenado_Producto_By_IdProductoResponse" message="tns:IServiceProducto_Get_All_Rellenado_Producto_By_IdProducto_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Existe">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceProducto/Existe" message="tns:IServiceProducto_Existe_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceProducto/ExisteResponse" message="tns:IServiceProducto_Existe_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IServiceProducto" type="tns:IServiceProducto">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Insert">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Insert" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Insert_Single">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Insert_Single" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Disable">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Disable" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Update">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Update" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Delete" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Producto">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_All_Producto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_By_IdPropietario">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_All_By_IdPropietario" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_By_IdPropietarioBodega">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_All_By_IdPropietarioBodega" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_IdProducto">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_Single_By_IdProducto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_IdProductoBodega">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_Single_By_IdProductoBodega" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Exist_By_Codigo_Barra">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Exist_By_Codigo_Barra" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Exist_Producto_By_Bodega">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Exist_Producto_By_Bodega" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Exist_By_IdProducto">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Exist_By_IdProducto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Exist_Stock_By_IdProducto">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Exist_Stock_By_IdProducto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_IdProducto_By_Codigo">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_IdProducto_By_Codigo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Single_By_Codigo">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_Single_By_Codigo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetByCodigoAndBodega">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/GetByCodigoAndBodega" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_IdProductoBodega_By_Codigo">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_IdProductoBodega_By_Codigo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MaxID">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/MaxID" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Rep_Minimos_Y_Maximos_By_IdProducto">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_Rep_Minimos_Y_Maximos_By_IdProducto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_Rep_Stock_Minimo">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_Rep_Stock_Minimo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Parametros_By_IdProducto">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_All_Parametros_By_IdProducto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Codigos_Barra_By_IdProducto">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_All_Codigos_Barra_By_IdProducto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Presentaciones_By_IdProducto">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_All_Presentaciones_By_IdProducto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Productos_Sustitutos_By_IdProducto">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_All_Productos_Sustitutos_By_IdProducto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Bodegas_By_IdProducto">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_All_Bodegas_By_IdProducto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Presentaciones_Tarima_By_IdProducto">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_All_Presentaciones_Tarima_By_IdProducto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Get_All_Rellenado_Producto_By_IdProducto">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Get_All_Rellenado_Producto_By_IdProducto" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Existe">
+      <soap:operation soapAction="http://tempuri.org/IServiceProducto/Existe" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ServiceProducto">
+    <wsdl:port name="BasicHttpBinding_IServiceProducto" binding="tns:BasicHttpBinding_IServiceProducto">
+      <soap:address location="http://192.168.0.5/MI3/Producto/ServiceProducto.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:tns="urn:microsoft-dynamics-schemas/codeunit/Registra_Transfer_Envio" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/Registra_Transfer_Envio" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <schema elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/Registra_Transfer_Envio" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element name="RegistrarEnvTransfer">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="numero_Documento" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="RegistrarEnvTransfer_Result">
+        <complexType>
+          <sequence />
+        </complexType>
+      </element>
+    </schema>
+  </types>
+  <message name="RegistrarEnvTransfer">
+    <part name="parameters" element="tns:RegistrarEnvTransfer" />
+  </message>
+  <message name="RegistrarEnvTransfer_Result">
+    <part name="parameters" element="tns:RegistrarEnvTransfer_Result" />
+  </message>
+  <portType name="Registra_Transfer_Envio_Port">
+    <operation name="RegistrarEnvTransfer">
+      <input name="RegistrarEnvTransfer" message="tns:RegistrarEnvTransfer" />
+      <output name="RegistrarEnvTransfer_Result" message="tns:RegistrarEnvTransfer_Result" />
+    </operation>
+  </portType>
+  <binding name="Registra_Transfer_Envio_Binding" type="tns:Registra_Transfer_Envio_Port">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="RegistrarEnvTransfer">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Registra_Transfer_Envio:RegistrarEnvTransfer" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="RegistrarEnvTransfer">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="RegistrarEnvTransfer_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="Registra_Transfer_Envio">
+    <port name="Registra_Transfer_Envio_Port" binding="tns:Registra_Transfer_Envio_Binding">
+      <address location="http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Codeunit/Registra_Transfer_Envio" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </port>
+  </service>
+</definitions>

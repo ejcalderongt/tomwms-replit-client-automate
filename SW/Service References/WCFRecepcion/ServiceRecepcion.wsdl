@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="ServiceRecepcion" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:4180/Recepcion/ServiceRecepcion.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:4180/Recepcion/ServiceRecepcion.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:4180/Recepcion/ServiceRecepcion.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/" />
+      <xsd:import schemaLocation="http://localhost:4180/Recepcion/ServiceRecepcion.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Data" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IServiceRecepcion_Guardar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Guardar" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_Guardar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GuardarResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetImpresionByRecepcion_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetImpresionByRecepcion" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetImpresionByRecepcion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetImpresionByRecepcionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_CerrarRecepcion_InputMessage">
+    <wsdl:part name="parameters" element="tns:CerrarRecepcion" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_CerrarRecepcion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CerrarRecepcionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAllByRecepcion_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllByRecepcion" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAllByRecepcion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllByRecepcionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAllByIdStock_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllByIdStock" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAllByIdStock_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllByIdStockResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAllSeriesByIdStock_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllSeriesByIdStock" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAllSeriesByIdStock_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllSeriesByIdStockResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetSingle_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSingle" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetSingle_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSingleResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAll_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAll" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAll_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAllSerieByIdStockRec_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllSerieByIdStockRec" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAllSerieByIdStockRec_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllSerieByIdStockRecResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAllOperadoresByRecepcion_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllOperadoresByRecepcion" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAllOperadoresByRecepcion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllOperadoresByRecepcionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAllStockRecByRecepcion_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllStockRecByRecepcion" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAllStockRecByRecepcion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllStockRecByRecepcionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_DeleteOp_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteOp" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_DeleteOp_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteOpResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_DeleteDet_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteDet" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_DeleteDet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteDetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_DeleteImageByIndex_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteImageByIndex" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_DeleteImageByIndex_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteImageByIndexResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_MaxIdEnc_InputMessage">
+    <wsdl:part name="parameters" element="tns:MaxIdEnc" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_MaxIdEnc_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MaxIdEncResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_MaxIdDet_InputMessage">
+    <wsdl:part name="parameters" element="tns:MaxIdDet" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_MaxIdDet_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MaxIdDetResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_MaxIdDetP_InputMessage">
+    <wsdl:part name="parameters" element="tns:MaxIdDetP" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_MaxIdDetP_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MaxIdDetPResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_MaxIdImg_InputMessage">
+    <wsdl:part name="parameters" element="tns:MaxIdImg" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_MaxIdImg_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MaxIdImgResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_MaxIdOC_InputMessage">
+    <wsdl:part name="parameters" element="tns:MaxIdOC" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_MaxIdOC_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MaxIdOCResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_Delete_InputMessage">
+    <wsdl:part name="parameters" element="tns:Delete" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_Delete_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAllByBodega_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllByBodega" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAllByBodega_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllByBodegaResponse" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAllByOrdenCompra_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllByOrdenCompra" />
+  </wsdl:message>
+  <wsdl:message name="IServiceRecepcion_GetAllByOrdenCompra_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllByOrdenCompraResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IServiceRecepcion">
+    <wsdl:operation name="Guardar">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/Guardar" message="tns:IServiceRecepcion_Guardar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/GuardarResponse" message="tns:IServiceRecepcion_Guardar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetImpresionByRecepcion">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/GetImpresionByRecepcion" message="tns:IServiceRecepcion_GetImpresionByRecepcion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/GetImpresionByRecepcionResponse" message="tns:IServiceRecepcion_GetImpresionByRecepcion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CerrarRecepcion">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/CerrarRecepcion" message="tns:IServiceRecepcion_CerrarRecepcion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/CerrarRecepcionResponse" message="tns:IServiceRecepcion_CerrarRecepcion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllByRecepcion">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllByRecepcion" message="tns:IServiceRecepcion_GetAllByRecepcion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllByRecepcionResponse" message="tns:IServiceRecepcion_GetAllByRecepcion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllByIdStock">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllByIdStock" message="tns:IServiceRecepcion_GetAllByIdStock_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllByIdStockResponse" message="tns:IServiceRecepcion_GetAllByIdStock_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllSeriesByIdStock">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllSeriesByIdStock" message="tns:IServiceRecepcion_GetAllSeriesByIdStock_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllSeriesByIdStockResponse" message="tns:IServiceRecepcion_GetAllSeriesByIdStock_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSingle">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/GetSingle" message="tns:IServiceRecepcion_GetSingle_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/GetSingleResponse" message="tns:IServiceRecepcion_GetSingle_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAll">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAll" message="tns:IServiceRecepcion_GetAll_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllResponse" message="tns:IServiceRecepcion_GetAll_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllSerieByIdStockRec">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllSerieByIdStockRec" message="tns:IServiceRecepcion_GetAllSerieByIdStockRec_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllSerieByIdStockRecResponse" message="tns:IServiceRecepcion_GetAllSerieByIdStockRec_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllOperadoresByRecepcion">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllOperadoresByRecepcion" message="tns:IServiceRecepcion_GetAllOperadoresByRecepcion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllOperadoresByRecepcionResponse" message="tns:IServiceRecepcion_GetAllOperadoresByRecepcion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllStockRecByRecepcion">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllStockRecByRecepcion" message="tns:IServiceRecepcion_GetAllStockRecByRecepcion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllStockRecByRecepcionResponse" message="tns:IServiceRecepcion_GetAllStockRecByRecepcion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteOp">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/DeleteOp" message="tns:IServiceRecepcion_DeleteOp_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/DeleteOpResponse" message="tns:IServiceRecepcion_DeleteOp_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteDet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/DeleteDet" message="tns:IServiceRecepcion_DeleteDet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/DeleteDetResponse" message="tns:IServiceRecepcion_DeleteDet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteImageByIndex">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/DeleteImageByIndex" message="tns:IServiceRecepcion_DeleteImageByIndex_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/DeleteImageByIndexResponse" message="tns:IServiceRecepcion_DeleteImageByIndex_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MaxIdEnc">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/MaxIdEnc" message="tns:IServiceRecepcion_MaxIdEnc_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/MaxIdEncResponse" message="tns:IServiceRecepcion_MaxIdEnc_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MaxIdDet">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/MaxIdDet" message="tns:IServiceRecepcion_MaxIdDet_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/MaxIdDetResponse" message="tns:IServiceRecepcion_MaxIdDet_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MaxIdDetP">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/MaxIdDetP" message="tns:IServiceRecepcion_MaxIdDetP_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/MaxIdDetPResponse" message="tns:IServiceRecepcion_MaxIdDetP_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MaxIdImg">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/MaxIdImg" message="tns:IServiceRecepcion_MaxIdImg_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/MaxIdImgResponse" message="tns:IServiceRecepcion_MaxIdImg_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MaxIdOC">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/MaxIdOC" message="tns:IServiceRecepcion_MaxIdOC_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/MaxIdOCResponse" message="tns:IServiceRecepcion_MaxIdOC_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/Delete" message="tns:IServiceRecepcion_Delete_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/DeleteResponse" message="tns:IServiceRecepcion_Delete_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllByBodega">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllByBodega" message="tns:IServiceRecepcion_GetAllByBodega_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllByBodegaResponse" message="tns:IServiceRecepcion_GetAllByBodega_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllByOrdenCompra">
+      <wsdl:input wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllByOrdenCompra" message="tns:IServiceRecepcion_GetAllByOrdenCompra_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IServiceRecepcion/GetAllByOrdenCompraResponse" message="tns:IServiceRecepcion_GetAllByOrdenCompra_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IServiceRecepcion" type="tns:IServiceRecepcion">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Guardar">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/Guardar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetImpresionByRecepcion">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/GetImpresionByRecepcion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CerrarRecepcion">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/CerrarRecepcion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllByRecepcion">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/GetAllByRecepcion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllByIdStock">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/GetAllByIdStock" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllSeriesByIdStock">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/GetAllSeriesByIdStock" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSingle">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/GetSingle" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAll">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/GetAll" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllSerieByIdStockRec">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/GetAllSerieByIdStockRec" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllOperadoresByRecepcion">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/GetAllOperadoresByRecepcion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllStockRecByRecepcion">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/GetAllStockRecByRecepcion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteOp">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/DeleteOp" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteDet">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/DeleteDet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteImageByIndex">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/DeleteImageByIndex" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MaxIdEnc">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/MaxIdEnc" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MaxIdDet">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/MaxIdDet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MaxIdDetP">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/MaxIdDetP" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MaxIdImg">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/MaxIdImg" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MaxIdOC">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/MaxIdOC" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/Delete" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllByBodega">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/GetAllByBodega" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllByOrdenCompra">
+      <soap:operation soapAction="http://tempuri.org/IServiceRecepcion/GetAllByOrdenCompra" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ServiceRecepcion">
+    <wsdl:port name="BasicHttpBinding_IServiceRecepcion" binding="tns:BasicHttpBinding_IServiceRecepcion">
+      <soap:address location="http://localhost:4180/Recepcion/ServiceRecepcion.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

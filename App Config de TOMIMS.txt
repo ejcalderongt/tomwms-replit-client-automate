@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <configSections>
+    <sectionGroup name="userSettings" type="System.Configuration.UserSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" >
+      <section name="TOMIMSV4.My.MySettings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" allowExeDefinition="MachineToLocalUser" requirePermission="false" />
+    </sectionGroup>
+  </configSections>
+  <connectionStrings />
+  
+  <startup useLegacyV2RuntimeActivationPolicy="true">
+    <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5" />
+  </startup>
+
+  <system.serviceModel>
+    <bindings>
+      <basicHttpBinding>
+        <binding name="BasicHttpBinding_IServiceArancel" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceCliente" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceClienteTipo" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceMotivoAnulacion" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceMotivoAnulacionBodega"
+          allowCookies="true" maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceMotivoDevolucion" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceMotivoDevolucionBodega"
+          allowCookies="true" maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IMovimiento" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IMotivoUbicacion" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceOrdenCompra" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceOrdenCompraTI" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServicePedido" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceProductoBodega" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceProductoClasificacion"
+          allowCookies="true" maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceProductoCodigoBarra"
+          allowCookies="true" maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceProductoEstado" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceProductoMarca" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceProductoPresentacion"
+          allowCookies="true" maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IProductoRellenado" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceProductoSustituto" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceProductoTipo" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceProductoTraslado" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceProductoFamilia" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServicePropietario" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServicePropietarioBodega" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceProveedorBodega" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IRoadRuta" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IRoadVendedor" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServidor" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IStock" allowCookies="true" maxBufferPoolSize="20000000"
+          maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_ITareaHH" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceTipoActualizacionCosto" />
+        <binding name="BasicHttpBinding_ITransaccionUbicacionHH" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_ITransaccionUbicacionHHOperador"
+          allowCookies="true" maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceUnidadMedida" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_ITransaccion_Log" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IPresentacion_Tarima" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_ITransacion_Ubicacion_Tarima"
+          allowCookies="true" maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_ITransacionUbicacionHhDet" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServicePropietarioReglaRecepcion"
+          allowCookies="true" maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceRecepcionInfraccion"
+          allowCookies="true" maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceRecepcion" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceProveedor" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IPropietarioDestinatario" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IProductoEstadoUbicacion" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceProducto" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServicePicking" allowCookies="true"
+          maxBufferPoolSize="20000000" maxReceivedMessageSize="20000000" />
+        <binding name="BasicHttpBinding_IServiceConfiguracion" />
+      </basicHttpBinding>
+    </bindings>
+
+    <client>
+      <endpoint address="http://localhost:4180/Arancel/ServiceArancel.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceArancel"
+        contract="WCFArancel.IServiceArancel" name="BasicHttpBinding_IServiceArancel" />
+      <endpoint address="http://localhost:4180/Cliente/ServiceCliente.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceCliente"
+        contract="WCFCliente.IServiceCliente" name="BasicHttpBinding_IServiceCliente" />
+      <endpoint address="http://localhost:4180/Cliente_Tipo/ServiceClienteTipo.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceClienteTipo"
+        contract="WCFClienteTipo.IServiceClienteTipo" name="BasicHttpBinding_IServiceClienteTipo" />
+      <endpoint address="http://localhost:4180/Motivo_Anulacion/ServiceMotivoAnulacion.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceMotivoAnulacion"
+        contract="WCFMotivoAnulacion.IServiceMotivoAnulacion" name="BasicHttpBinding_IServiceMotivoAnulacion" />
+      <endpoint address="http://localhost:4180/Motivo_Anulacion_Bodega/ServiceMotivoAnulacionBodega.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceMotivoAnulacionBodega"
+        contract="WCFMotivoAnulacionBodega.IServiceMotivoAnulacionBodega"
+        name="BasicHttpBinding_IServiceMotivoAnulacionBodega" />
+      <endpoint address="http://localhost:4180/Motivo_Devolucion/ServiceMotivoDevolucion.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceMotivoDevolucion"
+        contract="WCFMotivoDevolucion.IServiceMotivoDevolucion" name="BasicHttpBinding_IServiceMotivoDevolucion" />
+      <endpoint address="http://localhost:4180/Motivo_Devolucion_Bodega/ServiceMotivoDevolucionBodega.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceMotivoDevolucionBodega"
+        contract="WCFMotivoDevolucionBodega.IServiceMotivoDevolucionBodega"
+        name="BasicHttpBinding_IServiceMotivoDevolucionBodega" />
+      <endpoint address="http://localhost:4180/Movimiento/Movimiento.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IMovimiento"
+        contract="WCFMovimiento.IMovimiento" name="BasicHttpBinding_IMovimiento" />
+      <endpoint address="http://localhost:4180/Motivo_Ubicacion/MotivoUbicacion.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IMotivoUbicacion"
+        contract="WCFMotivoUbic.IMotivoUbicacion" name="BasicHttpBinding_IMotivoUbicacion" />
+      <endpoint address="http://localhost:4180/Orden_Compra/ServiceOrdenCompra.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceOrdenCompra"
+        contract="WCFOrdenCompra.IServiceOrdenCompra" name="BasicHttpBinding_IServiceOrdenCompra" />
+      <endpoint address="http://localhost:4180/Orden_Compra_Tipo_Ingreso/ServiceOrdenCompraTI.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceOrdenCompraTI"
+        contract="WCFOrdenCompraTI.IServiceOrdenCompraTI" name="BasicHttpBinding_IServiceOrdenCompraTI" />
+      <endpoint address="http://localhost:4180/Pedido_Cliente/ServicePedido.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServicePedido"
+        contract="WCFPedido.IServicePedido" name="BasicHttpBinding_IServicePedido" />
+      <endpoint address="http://localhost:4180/Producto_Bodega/ServiceProductoBodega.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceProductoBodega"
+        contract="WCFProductoBodega.IServiceProductoBodega" name="BasicHttpBinding_IServiceProductoBodega" />
+      <endpoint address="http://localhost:4180/Producto_Clasificacion/ServiceProductoClasificacion.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceProductoClasificacion"
+        contract="WCFProductoClasificacion.IServiceProductoClasificacion"
+        name="BasicHttpBinding_IServiceProductoClasificacion" />
+      <endpoint address="http://localhost:4180/Producto_CodigoBarra/ServiceProductoCodigoBarra.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceProductoCodigoBarra"
+        contract="WCFProductoCodigoBarra.IServiceProductoCodigoBarra"
+        name="BasicHttpBinding_IServiceProductoCodigoBarra" />
+      <endpoint address="http://localhost:4180/Producto_Estado/ServiceProductoEstado.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceProductoEstado"
+        contract="WCFProductoEstado.IServiceProductoEstado" name="BasicHttpBinding_IServiceProductoEstado" />
+      <endpoint address="http://localhost:4180/Producto_Marca/ServiceProductoMarca.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceProductoMarca"
+        contract="WCFProductoMarca.IServiceProductoMarca" name="BasicHttpBinding_IServiceProductoMarca" />
+      <endpoint address="http://localhost:4180/Producto_Presentacion/ServiceProductoPresentacion.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceProductoPresentacion"
+        contract="WCFProductoPresentacion.IServiceProductoPresentacion"
+        name="BasicHttpBinding_IServiceProductoPresentacion" />
+      <endpoint address="http://localhost:4180/Producto_Rellenado/ProductoRellenado.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IProductoRellenado"
+        contract="WCFProductoRellenado.IProductoRellenado" name="BasicHttpBinding_IProductoRellenado" />
+      <endpoint address="http://localhost:4180/Producto_Sustituto/ServiceProductoSustituto.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceProductoSustituto"
+        contract="WCFProductoSustituto.IServiceProductoSustituto" name="BasicHttpBinding_IServiceProductoSustituto" />
+      <endpoint address="http://localhost:4180/Producto_Tipo/ServiceProductoTipo.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceProductoTipo"
+        contract="WCFProductoTipo.IServiceProductoTipo" name="BasicHttpBinding_IServiceProductoTipo" />
+      <endpoint address="http://localhost:4180/Producto_Traslado/ServiceProductoTraslado.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceProductoTraslado"
+        contract="WCFProductoTraslado.IServiceProductoTraslado" name="BasicHttpBinding_IServiceProductoTraslado" />
+      <endpoint address="http://localhost:4180/Produto_Familia/ServiceProductoFamilia.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceProductoFamilia"
+        contract="WCFProductoFamilia.IServiceProductoFamilia" name="BasicHttpBinding_IServiceProductoFamilia" />
+      <endpoint address="http://localhost:4180/Propietario/ServicePropietario.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServicePropietario"
+        contract="WCFPropietario.IServicePropietario" name="BasicHttpBinding_IServicePropietario" />
+      <endpoint address="http://localhost:4180/Propietario_Bodega/ServicePropietarioBodega.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServicePropietarioBodega"
+        contract="WCFPropietarioBodega.IServicePropietarioBodega" name="BasicHttpBinding_IServicePropietarioBodega" />
+      <endpoint address="http://localhost:4180/Proveedor_Bodega/ServiceProveedorBodega.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceProveedorBodega"
+        contract="WCFProveedorBodega.IServiceProveedorBodega" name="BasicHttpBinding_IServiceProveedorBodega" />
+      <endpoint address="http://localhost:4180/RoadRuta/RoadRuta.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IRoadRuta"
+        contract="WCFRoadRuta.IRoadRuta" name="BasicHttpBinding_IRoadRuta" />
+      <endpoint address="http://localhost:4180/RoadVendedor/RoadVendedor.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IRoadVendedor"
+        contract="WCFRoadVendedor.IRoadVendedor" name="BasicHttpBinding_IRoadVendedor" />
+      <endpoint address="http://localhost:4180/Servidor/Servidor.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServidor"
+        contract="WCFServidor.IServidor" name="BasicHttpBinding_IServidor" />
+      <endpoint address="http://localhost:4180/Stock/Stock.svc" binding="basicHttpBinding"
+        bindingConfiguration="BasicHttpBinding_IStock" contract="WCFStock.IStock"
+        name="BasicHttpBinding_IStock" />
+      <endpoint address="http://localhost:4180/Tarea_HH/TareaHH.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_ITareaHH"
+        contract="WCFTareaHH.ITareaHH" name="BasicHttpBinding_ITareaHH" />
+      <endpoint address="http://localhost:4180/Tipo_Actualizacion_Costo/ServiceTipoActualizacionCosto.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceTipoActualizacionCosto"
+        contract="WCFTipoActualizacionCosto.IServiceTipoActualizacionCosto"
+        name="BasicHttpBinding_IServiceTipoActualizacionCosto" />
+      <endpoint address="http://localhost:4180/Transaccion_Ubicacion_HH/TransaccionUbicacionHH.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_ITransaccionUbicacionHH"
+        contract="WCFTransUbicacionHHEnc.ITransaccionUbicacionHH" name="BasicHttpBinding_ITransaccionUbicacionHH" />
+      <endpoint address="http://localhost:4180/Transaccion_Ubicacion_HH/Transaccion_Ubicacion_Hh_Op/TransaccionUbicacionHHOperador.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_ITransaccionUbicacionHHOperador"
+        contract="WCFTransUbicacionHHOperador.ITransaccionUbicacionHHOperador"
+        name="BasicHttpBinding_ITransaccionUbicacionHHOperador" />
+      <endpoint address="http://localhost:4180/Unidad_Medida/ServiceUnidadMedida.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceUnidadMedida"
+        contract="WCFUnidadMedida.IServiceUnidadMedida" name="BasicHttpBinding_IServiceUnidadMedida" />
+      <endpoint address="http://localhost:4180/Transaccion_Log/Transaccion_Log.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_ITransaccion_Log"
+        contract="WCFTransaccionLog.ITransaccion_Log" name="BasicHttpBinding_ITransaccion_Log" />
+      <endpoint address="http://localhost:4180/Presentacion_Tarima/Presentacion_Tarima.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IPresentacion_Tarima"
+        contract="WCFPresentacionTarima.IPresentacion_Tarima" name="BasicHttpBinding_IPresentacion_Tarima" />
+      <endpoint address="http://localhost:4180/Transaccion_Ubicacion_HH/Transaccion_Ubicacion_Tarima/Transacion_Ubicacion_Tarima.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_ITransacion_Ubicacion_Tarima"
+        contract="WCFTransUbicacionTarima.ITransacion_Ubicacion_Tarima"
+        name="BasicHttpBinding_ITransacion_Ubicacion_Tarima" />
+      <endpoint address="http://localhost:4180/Transaccion_Ubicacion_HH/Transaccion_Ubicacion_Hh_Det/TransacionUbicacionHhDet.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_ITransacionUbicacionHhDet"
+        contract="TransUbicHHDet.ITransacionUbicacionHhDet" name="BasicHttpBinding_ITransacionUbicacionHhDet" />
+      <endpoint address="http://localhost:4180/Propietario_Regla_Recepcion/ServicePropietarioReglaRecepcion.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServicePropietarioReglaRecepcion"
+        contract="WCFPropietarioReglaRecepcion.IServicePropietarioReglaRecepcion"
+        name="BasicHttpBinding_IServicePropietarioReglaRecepcion" />
+      <endpoint address="http://localhost:4180/Recepcion_Infraccion/ServiceRecepcionInfraccion.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceRecepcionInfraccion"
+        contract="WCFRecepcionInfraccion.IServiceRecepcionInfraccion"
+        name="BasicHttpBinding_IServiceRecepcionInfraccion" />
+      <endpoint address="http://localhost:4180/Recepcion/ServiceRecepcion.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceRecepcion"
+        contract="WCFRecepcion.IServiceRecepcion" name="BasicHttpBinding_IServiceRecepcion" />
+      <endpoint address="http://localhost:4180/Proveedor/ServiceProveedor.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceProveedor"
+        contract="WCFProveedor.IServiceProveedor" name="BasicHttpBinding_IServiceProveedor" />
+      <endpoint address="http://localhost:4180/Propietario_Destinatario/PropietarioDestinatario.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IPropietarioDestinatario"
+        contract="WCFPropietarioDestinatario.IPropietarioDestinatario"
+        name="BasicHttpBinding_IPropietarioDestinatario" />
+      <endpoint address="http://localhost:4180/Producto_Estado_Ubic/ProductoEstadoUbicacion.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IProductoEstadoUbicacion"
+        contract="WCFProductoEstadoUbicacion.IProductoEstadoUbicacion"
+        name="BasicHttpBinding_IProductoEstadoUbicacion" />
+      <endpoint address="http://localhost:4180/Producto/ServiceProducto.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceProducto"
+        contract="WCFProducto.IServiceProducto" name="BasicHttpBinding_IServiceProducto" />
+      <endpoint address="http://localhost:4180/Picking/ServicePicking.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServicePicking"
+        contract="WCFPicking.IServicePicking" name="BasicHttpBinding_IServicePicking" />
+      <endpoint address="http://localhost:4180/Configuracion/ServiceConfiguracion.svc"
+        binding="basicHttpBinding" bindingConfiguration="BasicHttpBinding_IServiceConfiguracion"
+        contract="WCFConfiguracion.IServiceConfiguracion" name="BasicHttpBinding_IServiceConfiguracion" />
+    </client>
+  </system.serviceModel>
+
+  <userSettings>
+    <TOMIMSV4.My.MySettings>
+      <setting name="IMS4V2ConnectionString" serializeAs="String">
+        <value>Data Source=52.32.154.252;Initial Catalog=IMS4MB_QA;User ID=dts;Password=dts</value>
+      </setting>
+      <setting name="IMS4V2ConnectionString1" serializeAs="String">
+        <value>Data Source=52.32.154.252;Initial Catalog=IMS4MB_QA;User ID=dts;Password=dts</value>
+      </setting>
+      <setting name="IMS4MBCnn" serializeAs="String">
+        <value>Data Source=52.32.154.252;Initial Catalog=IMS4MB_QA;User ID=dts;Password=dts</value>
+      </setting>
+      <setting name="IMS4MBConnectionStringPrograN" serializeAs="String">
+        <value>Data Source=52.32.154.252;Initial Catalog=IMS4MB_QA;User ID=dts;Password=dts</value>
+      </setting>
+      <setting name="IMS4MBConnectionString" serializeAs="String">
+        <value>Data Source=52.32.154.252;Initial Catalog=IMS4MB_QA;User ID=dts;Password=dts</value>
+      </setting>
+      <setting name="Test" serializeAs="String">
+        <value>Hola</value>
+      </setting>
+    </TOMIMSV4.My.MySettings>
+      </userSettings>
+</configuration>

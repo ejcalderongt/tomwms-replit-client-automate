@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-GT">
+  <Title Text="Tablero de control" />
+  <DataSources>
+    <SqlDataSource ComponentName="dashboardSqlDataSource1">
+      <Name>Origen de datos SQL 1</Name>
+      <Connection Name="localhost_IMS4MB_BYB_QA_Connection" ProviderKey="MSSqlServer">
+        <Parameters>
+          <Parameter Name="server" Value="PROGRA12\SQLEXPRESS01" />
+          <Parameter Name="database" Value="IMS4MB_NUEVOS_ETICOS" />
+          <Parameter Name="useIntegratedSecurity" Value="False" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+          <Parameter Name="userid" Value="sa" />
+          <Parameter Name="password" Value="sysadm" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="VW_Movimientos_N">
+        <Tables>
+          <Table Name="VW_Movimientos_N" />
+        </Tables>
+        <Columns>
+          <Column Table="VW_Movimientos_N" Name="Propietario" />
+          <Column Table="VW_Movimientos_N" Name="codigo" Alias="Código" />
+          <Column Table="VW_Movimientos_N" Name="Producto" Alias="Nombre" />
+          <Column Table="VW_Movimientos_N" Name="cantidad" />
+          <Column Table="VW_Movimientos_N" Name="fecha" />
+          <Column Table="VW_Movimientos_N" Name="TipoTarea" />
+          <Column Table="VW_Movimientos_N" Name="Codigo_Bodega_Origen" />
+          <Column Table="VW_Movimientos_N" Name="Nombre_Bodega_Origen" />
+        </Columns>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="Origen de datos SQL 1">
+          <View Name="VW_Movimientos_N">
+            <Field Name="Propietario" Type="String" />
+            <Field Name="Código" Type="String" />
+            <Field Name="Nombre" Type="String" />
+            <Field Name="cantidad" Type="Double" />
+            <Field Name="fecha" Type="DateTime" />
+            <Field Name="TipoTarea" Type="String" />
+            <Field Name="Codigo_Bodega_Origen" Type="String" />
+            <Field Name="Nombre_Bodega_Origen" Type="String" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" CommandTimeout="0" />
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <Chart ComponentName="chartDashboardItem1" Name="Transacciones por tipo en cuartos" DataSource="dashboardSqlDataSource1" DataMember="VW_Movimientos_N">
+      <DataItems>
+        <Measure DataMember="cantidad" DefaultId="DataItem3" />
+        <Dimension DataMember="TipoTarea" DefaultId="DataItem0" />
+        <Dimension DataMember="fecha" DateTimeGroupInterval="Quarter" DefaultId="DataItem1" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem1" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+      </Arguments>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem3" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <Pie ComponentName="pieDashboardItem1" Name="Transacciones por tipo pie" DataSource="dashboardSqlDataSource1" DataMember="VW_Movimientos_N" LabelContentType="ArgumentValueAndPercent">
+      <DataItems>
+        <Dimension DataMember="fecha" DefaultId="DataItem0" />
+        <Dimension DataMember="TipoTarea" SortOrder="Descending" DefaultId="DataItem1" />
+        <Measure DataMember="cantidad" DefaultId="DataItem2" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem0" />
+      </SeriesDimensions>
+      <Arguments>
+        <Argument DefaultId="DataItem1" />
+      </Arguments>
+      <Values>
+        <Value DefaultId="DataItem2" />
+      </Values>
+    </Pie>
+    <Grid ComponentName="gridDashboardItem1" Name="Productos con movimientos" DataSource="dashboardSqlDataSource1" DataMember="VW_Movimientos_N">
+      <InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Dimension DataMember="Código" DefaultId="DataItem0" />
+        <Dimension DataMember="Nombre" DefaultId="DataItem1" />
+        <Measure DataMember="cantidad" DefaultId="DataItem2" />
+      </DataItems>
+      <GridColumns>
+        <GridDimensionColumn Weight="25.901328273244783">
+          <Dimension DefaultId="DataItem0" />
+        </GridDimensionColumn>
+        <GridDimensionColumn Weight="124.09867172675521">
+          <Dimension DefaultId="DataItem1" />
+        </GridDimensionColumn>
+        <GridMeasureColumn>
+          <Measure DefaultId="DataItem2" />
+        </GridMeasureColumn>
+      </GridColumns>
+      <GridOptions ColumnWidthMode="Manual" />
+    </Grid>
+    <ComboBox ComponentName="comboBoxDashboardItem1" Name="Filtro Bodega" DataSource="dashboardSqlDataSource1" DataMember="VW_Movimientos_N">
+      <DataItems>
+        <Dimension DataMember="Codigo_Bodega_Origen" DefaultId="DataItem0" />
+        <Dimension DataMember="Nombre_Bodega_Origen" DefaultId="DataItem1" />
+      </DataItems>
+      <FilterDimensions>
+        <Dimension DefaultId="DataItem0" />
+        <Dimension DefaultId="DataItem1" />
+      </FilterDimensions>
+    </ComboBox>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup>
+      <LayoutGroup Orientation="Vertical" Weight="49.95475113122172">
+        <LayoutItem DashboardItem="comboBoxDashboardItem1" Weight="8.2390953150242332" />
+        <LayoutItem DashboardItem="gridDashboardItem1" Weight="41.841680129240714" />
+        <LayoutItem DashboardItem="chartDashboardItem1" Weight="49.919224555735056" />
+      </LayoutGroup>
+      <LayoutItem DashboardItem="pieDashboardItem1" Weight="50.04524886877828" />
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

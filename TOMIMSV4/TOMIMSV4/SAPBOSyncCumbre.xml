@@ -1,0 +1,148 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+SAPBOSyncCumbre
+</name>
+</assembly>
+<members>
+<member name="T:TOMWMS.My.Resources.Resources">
+<summary>
+  Clase de recurso fuertemente tipado, para buscar cadenas traducidas, etc.
+</summary>
+</member>
+<member name="P:TOMWMS.My.Resources.Resources.ResourceManager">
+<summary>
+  Devuelve la instancia de ResourceManager almacenada en caché utilizada por esta clase.
+</summary>
+</member>
+<member name="P:TOMWMS.My.Resources.Resources.Culture">
+<summary>
+  Reemplaza la propiedad CurrentUICulture del subproceso actual para todas las
+  búsquedas de recursos mediante esta clase de recurso fuertemente tipado.
+</summary>
+</member>
+<member name="P:TOMWMS.My.Resources.Resources.button_power_basic_blue">
+<summary>
+  Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="P:TOMWMS.My.Resources.Resources.Template">
+<summary>
+  Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="M:TOMWMS.clsSAP_Config.CampoDeUsuarioExiste(System.String,System.String)">
+ <summary>
+ Verifica si un campo de usuario existe en una tabla específica.
+ </summary>
+ <param name="tableName">Nombre de la tabla.</param>
+ <param name="fieldName">Nombre del campo de usuario.</param>
+ <returns>True si el campo existe, False en caso contrario.</returns>
+</member>
+<member name="M:TOMWMS.clsSyncSAPDevolucionMercancia.Estado_Linea(System.String)">
+ <summary>
+ Valida que la línea de detalle de la OV en SAP esté abierta para generar la entrega.
+ </summary>
+ <param name="itemcode"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsSyncSAPSPedidoCliente.Estado_Linea(System.String)">
+ <summary>
+ Valida que la línea de detalle de la OV en SAP esté abierta para generar la entrega.
+ </summary>
+ <param name="itemcode"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsSyncSAPPedidoTraslado.Estado_Linea(System.String)">
+ <summary>
+ Valida que la línea de detalle de la OV en SAP esté abierta para generar la entrega.
+ </summary>
+ <param name="itemcode"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsSyncSAPSSolicitudTraslado.Estado_Linea(System.String)">
+ <summary>
+ Valida que la línea de detalle de la OV en SAP esté abierta para generar la entrega.
+ </summary>
+ <param name="itemcode"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.clsSyncSAPTrasladoStock.Estado_Linea(System.String)">
+ <summary>
+ Valida que la línea de detalle de la OV en SAP esté abierta para generar la entrega.
+ </summary>
+ <param name="itemcode"></param>
+ <returns></returns>
+</member>
+<member name="M:TOMWMS.IMS.Listar_PropietariosByEmpresa(System.Windows.Forms.ComboBox@,System.Int32)">
+ <summary>
+ Creada por Bismarck Traña
+ Funcion retorna el listado de los propietarios que se encuentran registrados en una empresa
+ </summary>
+ <param name="Cmb">Combobox donde se cargara la lista de Propietarios</param>
+ ''' <param name="pIdEmpresa">idempresa que sea filtrar los propietarios</param>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.IMS.Listar_BodegasPorPropietario(System.Windows.Forms.ComboBox@,System.Int32)">
+ <summary>
+ Metodo Creado por Bismarck
+ 
+ Carga el listado de Bodega en los cuales es encuntra asignado un propietario
+ 
+ </summary>
+ <param name="cmb">Combobox que sera llenado con las Bodega</param>
+ <param name="pIdPropietario">Filtro para llenar el combobox</param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:TOMWMS.clsSyncSAPPedidoCompra.Enviar_Entrada_Mercancia_Sin_Estado_SAP_B1(TOMWMS.clsBeI_nav_config_enc,System.Int32,System.Collections.Generic.List{TOMWMS.clsBeI_nav_transacciones_out},TOMWMS.clsBeTrans_oc_enc,System.String,System.Windows.Forms.RichTextBox@,System.Windows.Forms.ProgressBar@)">
+ <summary>
+ #EJC20231121_DECIMO_OCTAVA
+ </summary>
+ <param name="beINavConfigEnc"></param>
+ <param name="_Docentry"></param>
+ <param name="lINavTransaccionesOut"></param>
+ <param name="beTransOCEnc"></param>
+ <param name="codigoBodegaDestino"></param>
+ <param name="lblPrg"></param>
+ <param name="prg"></param>
+ <returns></returns>
+</member>
+<member name="T:TOMWMS.DSEjecuciones">
+<summary>
+Represents a strongly typed in-memory cache of data.
+</summary>
+</member>
+<member name="T:TOMWMS.DSEjecuciones.EncabezadoDataTable">
+<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member>
+<member name="T:TOMWMS.DSEjecuciones.DetalleDataTable">
+<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member>
+<member name="T:TOMWMS.DSEjecuciones.EncabezadoRow">
+<summary>
+Represents strongly named DataRow class.
+</summary>
+</member>
+<member name="T:TOMWMS.DSEjecuciones.DetalleRow">
+<summary>
+Represents strongly named DataRow class.
+</summary>
+</member>
+<member name="T:TOMWMS.DSEjecuciones.EncabezadoRowChangeEvent">
+<summary>
+Row event argument class
+</summary>
+</member>
+<member name="T:TOMWMS.DSEjecuciones.DetalleRowChangeEvent">
+<summary>
+Row event argument class
+</summary>
+</member>
+</members>
+</doc>

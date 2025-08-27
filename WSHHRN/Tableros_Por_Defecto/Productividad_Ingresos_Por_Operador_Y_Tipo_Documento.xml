@@ -1,0 +1,217 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Dashboard CurrencyCulture="es-GT">
+  <Title Text="Tablero de control" />
+  <DataSources>
+    <SqlDataSource Name="Origen de datos SQL 1" ComponentName="dashboardSqlDataSource1">
+      <Connection Name="localhost_IMS4MB_IDEALSA_PRD_Connection" ProviderKey="MSSqlServer">
+        <Parameters>
+          <Parameter Name="server" Value="PROGRAX\SQLEXPRESS" />
+          <Parameter Name="database" Value="IMS4MB_IDEALSA_PRD" />
+          <Parameter Name="useIntegratedSecurity" Value="False" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="VW_Tiempos_Ingreso_Operador">
+        <Tables>
+          <Table Name="VW_Tiempos_Ingreso_Operador" X="30" Y="30" Width="125" Height="330" />
+        </Tables>
+        <Columns>
+          <Column Table="VW_Tiempos_Ingreso_Operador" Name="IdRecepcionOc" />
+          <Column Table="VW_Tiempos_Ingreso_Operador" Name="IdRecepcionEnc" />
+          <Column Table="VW_Tiempos_Ingreso_Operador" Name="IdOrdenCompraEnc" />
+          <Column Table="VW_Tiempos_Ingreso_Operador" Name="Codigo_Bodega" />
+          <Column Table="VW_Tiempos_Ingreso_Operador" Name="Propietario" />
+          <Column Table="VW_Tiempos_Ingreso_Operador" Name="TipoDocumento" />
+          <Column Table="VW_Tiempos_Ingreso_Operador" Name="DI_Hora_Creacion" />
+          <Column Table="VW_Tiempos_Ingreso_Operador" Name="RE_Hora_Creacion_Recepcion" />
+          <Column Table="VW_Tiempos_Ingreso_Operador" Name="DI_Fecha_Recepcion" />
+          <Column Table="VW_Tiempos_Ingreso_Operador" Name="RE_DI_HORA_FIN" />
+          <Column Table="VW_Tiempos_Ingreso_Operador" Name="Operador" />
+          <Column Table="VW_Tiempos_Ingreso_Operador" Name="Ini_Ingreso" />
+          <Column Table="VW_Tiempos_Ingreso_Operador" Name="Fin_Ingreso" />
+          <Column Table="VW_Tiempos_Ingreso_Operador" Name="Dif_Ingreso" />
+          <Column Table="VW_Tiempos_Ingreso_Operador" Name="Dif_Ingreso_Minutos" />
+        </Columns>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="Origen de datos SQL 1">
+          <View Name="VW_Tiempos_Ingreso_Operador">
+            <Field Name="IdRecepcionOc" Type="Int32" />
+            <Field Name="IdRecepcionEnc" Type="Int32" />
+            <Field Name="IdOrdenCompraEnc" Type="Int32" />
+            <Field Name="Codigo_Bodega" Type="String" />
+            <Field Name="Propietario" Type="String" />
+            <Field Name="TipoDocumento" Type="String" />
+            <Field Name="DI_Hora_Creacion" Type="DateTime" />
+            <Field Name="RE_Hora_Creacion_Recepcion" Type="DateTime" />
+            <Field Name="DI_Fecha_Recepcion" Type="DateTime" />
+            <Field Name="RE_DI_HORA_FIN" Type="DateTime" />
+            <Field Name="Operador" Type="String" />
+            <Field Name="Ini_Ingreso" Type="DateTime" />
+            <Field Name="Fin_Ingreso" Type="DateTime" />
+            <Field Name="Dif_Ingreso" Type="String" />
+            <Field Name="Dif_Ingreso_Minutos" Type="Int32" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+    <SqlDataSource Name="Origen de datos SQL 2" ComponentName="dashboardSqlDataSource2">
+      <Connection Name="localhost_IMS4MB_IDEALSA_PRD_Connection" ProviderKey="MSSqlServer">
+        <Parameters>
+          <Parameter Name="server" Value="PROGRAX\SQLEXPRESS" />
+          <Parameter Name="database" Value="IMS4MB_IDEALSA_PRD" />
+          <Parameter Name="useIntegratedSecurity" Value="False" />
+          <Parameter Name="read only" Value="1" />
+          <Parameter Name="generateConnectionHelper" Value="false" />
+        </Parameters>
+      </Connection>
+      <Query Type="SelectQuery" Name="VW_Cantidad_Ingresos_Proveedor">
+        <Tables>
+          <Table Name="VW_Cantidad_Ingresos_Proveedor" X="30" Y="30" Width="125" Height="168" />
+        </Tables>
+        <Columns>
+          <Column Table="VW_Cantidad_Ingresos_Proveedor" Name="Fecha_Creacion" />
+          <Column Table="VW_Cantidad_Ingresos_Proveedor" Name="TipoDocumento" />
+          <Column Table="VW_Cantidad_Ingresos_Proveedor" Name="Proveedor" />
+          <Column Table="VW_Cantidad_Ingresos_Proveedor" Name="Ingresos" />
+          <Column Table="VW_Cantidad_Ingresos_Proveedor" Name="IdBodega" />
+          <Column Table="VW_Cantidad_Ingresos_Proveedor" Name="Codigo_Bodega" />
+        </Columns>
+      </Query>
+      <ResultSchema>
+        <DataSet Name="Origen de datos SQL 2">
+          <View Name="VW_Cantidad_Ingresos_Proveedor">
+            <Field Name="Fecha_Creacion" Type="DateTime" />
+            <Field Name="TipoDocumento" Type="String" />
+            <Field Name="Proveedor" Type="String" />
+            <Field Name="Ingresos" Type="Int32" />
+            <Field Name="IdBodega" Type="Int32" />
+            <Field Name="Codigo_Bodega" Type="String" />
+          </View>
+        </DataSet>
+      </ResultSchema>
+      <ConnectionOptions CloseConnection="true" />
+    </SqlDataSource>
+  </DataSources>
+  <Items>
+    <Pie ComponentName="pieDashboardItem1" Name="Cantidad de documentos por tipo" DataSource="dashboardSqlDataSource1" DataMember="VW_Tiempos_Ingreso_Operador" ShowPieCaptions="false">
+      <DataItems>
+        <Dimension DataMember="TipoDocumento" DefaultId="DataItem0" />
+        <Dimension DataMember="DI_Hora_Creacion" DateTimeGroupInterval="QuarterYear" DefaultId="DataItem1" />
+        <Measure DataMember="IdRecepcionOc" SummaryType="Count" DefaultId="DataItem2">
+          <NumericFormat FormatType="Number" Unit="Ones" />
+        </Measure>
+      </DataItems>
+      <Arguments>
+        <Argument DefaultId="DataItem0" />
+        <Argument DefaultId="DataItem1" />
+      </Arguments>
+      <Values>
+        <Value DefaultId="DataItem2" />
+      </Values>
+    </Pie>
+    <Chart ComponentName="chartDashboardItem1" Name="Tiempos de ingreso por operador" DataSource="dashboardSqlDataSource1" DataMember="VW_Tiempos_Ingreso_Operador">
+      <DataItems>
+        <Measure DataMember="Dif_Ingreso_Minutos" Name="Minutos" DefaultId="DataItem2" />
+        <Dimension DataMember="Operador" DefaultId="DataItem0" />
+        <Dimension DataMember="DI_Hora_Creacion" DefaultId="DataItem1" />
+      </DataItems>
+      <HiddenDimensions>
+        <Dimension DefaultId="DataItem1" />
+      </HiddenDimensions>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem0" />
+      </SeriesDimensions>
+      <Panes>
+        <Pane Name="Panel 1">
+          <Series>
+            <Simple>
+              <Value DefaultId="DataItem2" />
+            </Simple>
+          </Series>
+        </Pane>
+      </Panes>
+    </Chart>
+    <RangeFilter ComponentName="rangeFilterDashboardItem1" Name="Filtro de Rango 1" DataSource="dashboardSqlDataSource1" DataMember="VW_Tiempos_Ingreso_Operador">
+      <DataItems>
+        <Dimension DataMember="DI_Hora_Creacion" DateTimeGroupInterval="DayMonthYear" DefaultId="DataItem0" />
+        <Measure DataMember="DI_Fecha_Recepcion" SummaryType="Count" DefaultId="DataItem1" />
+      </DataItems>
+      <Argument DefaultId="DataItem0" />
+      <Series>
+        <Simple SeriesType="Line">
+          <Value DefaultId="DataItem1" />
+        </Simple>
+      </Series>
+    </RangeFilter>
+    <Gauge ComponentName="gaugeDashboardItem1" Name="Cantidad de ingresos por proveedor" DataSource="dashboardSqlDataSource2" DataMember="VW_Cantidad_Ingresos_Proveedor">
+      <DataItems>
+        <Dimension DataMember="TipoDocumento" DefaultId="DataItem0" />
+        <Dimension DataMember="Fecha_Creacion" DefaultId="DataItem1" />
+        <Dimension DataMember="Proveedor" DefaultId="DataItem2" />
+        <Measure DataMember="Ingresos" DefaultId="DataItem3" />
+      </DataItems>
+      <SeriesDimensions>
+        <SeriesDimension DefaultId="DataItem0" />
+        <SeriesDimension DefaultId="DataItem1" />
+        <SeriesDimension DefaultId="DataItem2" />
+      </SeriesDimensions>
+      <GaugeElement>
+        <ActualValue DefaultId="DataItem3" />
+        <AbsoluteVariationNumericFormat />
+        <PercentVariationNumericFormat />
+        <PercentOfTargetNumericFormat />
+      </GaugeElement>
+    </Gauge>
+    <Grid ComponentName="gridDashboardItem1" Name="Rejilla 1" DataSource="dashboardSqlDataSource1" DataMember="VW_Tiempos_Ingreso_Operador">
+      <InteractivityOptions MasterFilterMode="Multiple" />
+      <DataItems>
+        <Dimension DataMember="Operador" DefaultId="DataItem0" />
+        <Dimension DataMember="TipoDocumento" DefaultId="DataItem1" />
+        <Measure DataMember="Dif_Ingreso_Minutos" DefaultId="DataItem2" />
+        <Dimension DataMember="DI_Hora_Creacion" DateTimeGroupInterval="DayMonthYear" DefaultId="DataItem3" />
+      </DataItems>
+      <GridColumns>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem0" />
+        </GridDimensionColumn>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem1" />
+        </GridDimensionColumn>
+        <GridMeasureColumn>
+          <Measure DefaultId="DataItem2" />
+        </GridMeasureColumn>
+        <GridDimensionColumn>
+          <Dimension DefaultId="DataItem3" />
+        </GridDimensionColumn>
+      </GridColumns>
+      <GridOptions />
+    </Grid>
+    <ComboBox ComponentName="comboBoxDashboardItem1" Name="Filtro por bodega" DataSource="dashboardSqlDataSource2" DataMember="VW_Cantidad_Ingresos_Proveedor">
+      <DataItems>
+        <Dimension DataMember="Codigo_Bodega" DefaultId="DataItem0" />
+      </DataItems>
+      <FilterDimensions>
+        <Dimension DefaultId="DataItem0" />
+      </FilterDimensions>
+    </ComboBox>
+  </Items>
+  <LayoutTree>
+    <LayoutGroup Orientation="Vertical" Weight="100">
+      <LayoutItem DashboardItem="comboBoxDashboardItem1" Weight="10.362694300518134" />
+      <LayoutGroup Weight="39.550949913644217">
+        <LayoutGroup Orientation="Vertical" Weight="52.376425855513311">
+          <LayoutItem DashboardItem="rangeFilterDashboardItem1" Weight="37.117903930131007" />
+          <LayoutItem DashboardItem="gridDashboardItem1" Weight="62.882096069868993" />
+        </LayoutGroup>
+        <LayoutItem DashboardItem="chartDashboardItem1" Weight="47.623574144486689" />
+      </LayoutGroup>
+      <LayoutGroup Weight="50.086355785837654">
+        <LayoutItem DashboardItem="pieDashboardItem1" Weight="52.186311787072242" />
+        <LayoutItem DashboardItem="gaugeDashboardItem1" Weight="47.813688212927758" />
+      </LayoutGroup>
+    </LayoutGroup>
+  </LayoutTree>
+</Dashboard>

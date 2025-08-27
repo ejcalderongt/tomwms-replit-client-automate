@@ -1,0 +1,9 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="My" GeneratedClassName="MySettings" UseMySettingsClassName="true">
+  <Profiles />
+  <Settings>
+    <Setting Name="CST" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Data Source=WIN-M582R4O6PPL;Initial Catalog=TOMIMS_WMS_QA_IDEALSA;User ID=mi3_user;Password =dtswms2018!;Persist Security Info=True</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

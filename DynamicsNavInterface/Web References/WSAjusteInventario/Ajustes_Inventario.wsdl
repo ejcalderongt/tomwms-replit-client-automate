@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:tns="urn:microsoft-dynamics-schemas/codeunit/Ajustes_Inventario" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/Ajustes_Inventario" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <schema elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/Ajustes_Inventario" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element name="ProcesaAjustePositivo">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="numeroDocumento" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoProducto" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoVariante" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoAlmacen" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoUnidadMedida" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="cantidad" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="lote" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="fechaCaducidad" type="date" />
+            <element minOccurs="1" maxOccurs="1" name="descripcionItem" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoDepartamento" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoSeccion" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="ProcesaAjustePositivo_Result">
+        <complexType>
+          <sequence />
+        </complexType>
+      </element>
+      <element name="ProcesaAjusteNegativo">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="numeroDocumento" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoProducto" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoVariante" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoAlmacen" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoUnidadMedida" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="cantidad" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="lote" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="descripcionItem" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoDepartamento" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoSeccion" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="ProcesaAjusteNegativo_Result">
+        <complexType>
+          <sequence />
+        </complexType>
+      </element>
+      <element name="RegistrasAjustesDiarios">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="numeroDocumento" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoSeccion" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoDiario" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="RegistrasAjustesDiarios_Result">
+        <complexType>
+          <sequence />
+        </complexType>
+      </element>
+      <element name="IngresaLineasLoteDiario">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="lote" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoSeccion" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="codigoDiario" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="nextLineNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="positive" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="fechaCaducidad" type="date" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="IngresaLineasLoteDiario_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+    </schema>
+  </types>
+  <message name="ProcesaAjustePositivo">
+    <part name="parameters" element="tns:ProcesaAjustePositivo" />
+  </message>
+  <message name="ProcesaAjustePositivo_Result">
+    <part name="parameters" element="tns:ProcesaAjustePositivo_Result" />
+  </message>
+  <message name="ProcesaAjusteNegativo">
+    <part name="parameters" element="tns:ProcesaAjusteNegativo" />
+  </message>
+  <message name="ProcesaAjusteNegativo_Result">
+    <part name="parameters" element="tns:ProcesaAjusteNegativo_Result" />
+  </message>
+  <message name="RegistrasAjustesDiarios">
+    <part name="parameters" element="tns:RegistrasAjustesDiarios" />
+  </message>
+  <message name="RegistrasAjustesDiarios_Result">
+    <part name="parameters" element="tns:RegistrasAjustesDiarios_Result" />
+  </message>
+  <message name="IngresaLineasLoteDiario">
+    <part name="parameters" element="tns:IngresaLineasLoteDiario" />
+  </message>
+  <message name="IngresaLineasLoteDiario_Result">
+    <part name="parameters" element="tns:IngresaLineasLoteDiario_Result" />
+  </message>
+  <portType name="Ajustes_Inventario_Port">
+    <operation name="ProcesaAjustePositivo">
+      <input name="ProcesaAjustePositivo" message="tns:ProcesaAjustePositivo" />
+      <output name="ProcesaAjustePositivo_Result" message="tns:ProcesaAjustePositivo_Result" />
+    </operation>
+    <operation name="ProcesaAjusteNegativo">
+      <input name="ProcesaAjusteNegativo" message="tns:ProcesaAjusteNegativo" />
+      <output name="ProcesaAjusteNegativo_Result" message="tns:ProcesaAjusteNegativo_Result" />
+    </operation>
+    <operation name="RegistrasAjustesDiarios">
+      <input name="RegistrasAjustesDiarios" message="tns:RegistrasAjustesDiarios" />
+      <output name="RegistrasAjustesDiarios_Result" message="tns:RegistrasAjustesDiarios_Result" />
+    </operation>
+    <operation name="IngresaLineasLoteDiario">
+      <input name="IngresaLineasLoteDiario" message="tns:IngresaLineasLoteDiario" />
+      <output name="IngresaLineasLoteDiario_Result" message="tns:IngresaLineasLoteDiario_Result" />
+    </operation>
+  </portType>
+  <binding name="Ajustes_Inventario_Binding" type="tns:Ajustes_Inventario_Port">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="ProcesaAjustePositivo">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Ajustes_Inventario:ProcesaAjustePositivo" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="ProcesaAjustePositivo">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="ProcesaAjustePositivo_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="ProcesaAjusteNegativo">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Ajustes_Inventario:ProcesaAjusteNegativo" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="ProcesaAjusteNegativo">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="ProcesaAjusteNegativo_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="RegistrasAjustesDiarios">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Ajustes_Inventario:RegistrasAjustesDiarios" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="RegistrasAjustesDiarios">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="RegistrasAjustesDiarios_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="IngresaLineasLoteDiario">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Ajustes_Inventario:IngresaLineasLoteDiario" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="IngresaLineasLoteDiario">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="IngresaLineasLoteDiario_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="Ajustes_Inventario">
+    <port name="Ajustes_Inventario_Port" binding="tns:Ajustes_Inventario_Binding">
+      <address location="http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Codeunit/Ajustes_Inventario" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </port>
+  </service>
+</definitions>

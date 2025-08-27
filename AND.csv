@@ -1,0 +1,11 @@
+DisponibilidadUbicacion;ContieneLote;ContieneEstado;ContieneUMBas;ContienePresentacion;ContieneVencimiento;Salida
+0.9;1;1;1;1;1;0.983333333
+0.8;1;1;1;1;0;0.8
+0.7;1;1;1;0;0;0.616666667
+0.6;1;1;0;0;0;0.433333333
+0.5;1;0;0;0;0;0.25
+0.4;0;1;1;1;1;0.733333333
+0.3;0;0;1;1;1;0.55
+0.2;0;0;0;1;1;0.366666667
+0.1;0;0;0;0;1;0.183333333
+0;0;0;0;0;0;0

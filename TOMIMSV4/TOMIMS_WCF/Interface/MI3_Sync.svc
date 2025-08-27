@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="VB" Debug="true" Service=".MI3_Sync" CodeBehind="MI3_Sync.svc.vb" %>

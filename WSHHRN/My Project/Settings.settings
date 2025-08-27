@@ -1,0 +1,51 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="My" GeneratedClassName="MySettings" UseMySettingsClassName="true">
+  <Profiles />
+  <Settings>
+    <Setting Name="CST" Type="System.String" Scope="Application">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="WSHHRN_WSRecepAlm_Recep_Almacen_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Recep_Almacen</Value>
+    </Setting>
+    <Setting Name="WSHHRN_wsTransferenciaEnvio_Pedidos_Transferencia_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://122.122.122.97:7047/DynamicsNAV110/WS/PRALCASA/Page/Pedidos_Transferencia</Value>
+    </Setting>
+    <Setting Name="WSHHRN_wsBYBNavUInternas_U_Internas_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://srvnavp001ori1.byb.gt:7047/DynamicsNAV110/WS/PRALCASA/Page/U_Internas</Value>
+    </Setting>
+    <Setting Name="WSHHRN_wsBYBNavMovProd_Mov_Productos_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://srvnavp001ori1.byb.gt:7047/DynamicsNAV110/WS/PRALCASA/Page/Mov_Productos</Value>
+    </Setting>
+    <Setting Name="WSHHRN_wsBYBNavUbicarAlmacen_Ubicar_Almacen_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://srvnavp001ori1.byb.gt:7047/DynamicsNAV110/WS/PRALCASA/Page/Ubicar_Almacen</Value>
+    </Setting>
+    <Setting Name="WSHHRN_wsBYBNavCUWMS_CUWMS" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://srvnavp001ori1.byb.gt:7047/DynamicsNAV110/WS/PRALCASA/Codeunit/CUWMS</Value>
+    </Setting>
+    <Setting Name="WSHHRN_WSPaginaLotes_Pagina_lotes_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://122.122.122.97:7047/DynamicsNAV110/WS/PRALCASA/Page/Pagina_lotes</Value>
+    </Setting>
+    <Setting Name="WSHHRN_WSLotePedidoCompra_Lote_PedidoCompra" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://122.122.122.97:7047/DynamicsNAV110/WS/PRALCASA/Codeunit/Lote_PedidoCompra</Value>
+    </Setting>
+    <Setting Name="WSHHRN_WSPedidosCompraNAV_Pedidos_Compra_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://122.122.122.97:7047/DynamicsNAV110/WS/PRALCASA/Page/Pedidos_Compra</Value>
+    </Setting>
+    <Setting Name="WSHHRN_WSDevolucionVentaNAV_Devolucion_venta_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://122.122.122.97:7047/DynamicsNAV110/WS/PRALCASA/Page/Devolucion_venta</Value>
+    </Setting>
+    <Setting Name="WSHHRN_wsTransferenciaIngreso_Pedidos_Transferencia_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://122.122.122.97:7047/DynamicsNAV110/WS/PRALCASA/Page/Pedidos_Transferencia</Value>
+    </Setting>
+    <Setting Name="WSHHRN_wWSPicking_Picking_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://122.122.122.97:7047/DynamicsNAV110/WS/PRALCASA/Page/Picking</Value>
+    </Setting>
+    <Setting Name="WSHHRN_WSTransferenciaEnvio_Registra_Transfer_Envio" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://122.122.122.97:7047/DynamicsNAV110/WS/PRALCASA/Codeunit/Registra_Transfer_Envio</Value>
+    </Setting>
+    <Setting Name="WSHHN_WSPedidosCompraNAV_Pedidos_Compra_Service" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://122.122.122.97:7047/DynamicsNAV110/WS/PRALCASA/Page/Pedidos_Compra</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

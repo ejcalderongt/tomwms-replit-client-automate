@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="VB" Debug="true" Service="TOMWMS.Barras_Pallet" CodeBehind="Barras_Pallet.svc.vb" %>

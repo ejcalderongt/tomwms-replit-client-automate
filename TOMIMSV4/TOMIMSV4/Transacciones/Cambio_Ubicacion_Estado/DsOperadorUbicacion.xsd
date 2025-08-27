@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DsOperadorUbicacion" targetNamespace="http://tempuri.org/DsOperadorUbicacion.xsd" xmlns:mstns="http://tempuri.org/DsOperadorUbicacion.xsd" xmlns="http://tempuri.org/DsOperadorUbicacion.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DsOperadorUbicacion" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DsOperadorUbicacion" msprop:Generator_UserDSName="DsOperadorUbicacion">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Data" msprop:Generator_TableClassName="DataDataTable" msprop:Generator_TableVarName="tableData" msprop:Generator_RowChangedName="DataRowChanged" msprop:Generator_TablePropName="Data" msprop:Generator_RowDeletingName="DataRowDeleting" msprop:Generator_RowChangingName="DataRowChanging" msprop:Generator_RowEvHandlerName="DataRowChangeEventHandler" msprop:Generator_RowDeletedName="DataRowDeleted" msprop:Generator_RowClassName="DataRow" msprop:Generator_UserTableName="Data" msprop:Generator_RowEvArgName="DataRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Selección" msprop:Generator_ColumnVarNameInTable="columnSelección" msprop:Generator_ColumnPropNameInRow="Selección" msprop:Generator_ColumnPropNameInTable="SelecciónColumn" msprop:Generator_UserColumnName="Selección" type="xs:boolean" minOccurs="0" />
+              <xs:element name="IdTransUbicHhOp" msdata:Caption="IdBodega" msprop:Generator_ColumnVarNameInTable="columnIdTransUbicHhOp" msprop:Generator_ColumnPropNameInRow="IdTransUbicHhOp" msprop:Generator_ColumnPropNameInTable="IdTransUbicHhOpColumn" msprop:Generator_UserColumnName="IdTransUbicHhOp" type="xs:int" minOccurs="0" />
+              <xs:element name="IdOperadorBodega" msdata:Caption="IdPropietarioBodega" msprop:Generator_ColumnVarNameInTable="columnIdOperadorBodega" msprop:Generator_ColumnPropNameInRow="IdOperadorBodega" msprop:Generator_ColumnPropNameInTable="IdOperadorBodegaColumn" msprop:Generator_UserColumnName="IdOperadorBodega" type="xs:int" minOccurs="0" />
+              <xs:element name="Operador" msprop:Generator_ColumnVarNameInTable="columnOperador" msprop:Generator_ColumnPropNameInRow="Operador" msprop:Generator_ColumnPropNameInTable="OperadorColumn" msprop:Generator_UserColumnName="Operador" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="TarimasDisponibles" msprop:Generator_TableClassName="TarimasDisponiblesDataTable" msprop:Generator_TableVarName="tableTarimasDisponibles" msprop:Generator_TablePropName="TarimasDisponibles" msprop:Generator_RowDeletingName="TarimasDisponiblesRowDeleting" msprop:Generator_RowChangingName="TarimasDisponiblesRowChanging" msprop:Generator_RowEvHandlerName="TarimasDisponiblesRowChangeEventHandler" msprop:Generator_RowDeletedName="TarimasDisponiblesRowDeleted" msprop:Generator_UserTableName="TarimasDisponibles" msprop:Generator_RowChangedName="TarimasDisponiblesRowChanged" msprop:Generator_RowEvArgName="TarimasDisponiblesRowChangeEvent" msprop:Generator_RowClassName="TarimasDisponiblesRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Selección" msprop:Generator_ColumnVarNameInTable="columnSelección" msprop:Generator_ColumnPropNameInRow="Selección" msprop:Generator_ColumnPropNameInTable="SelecciónColumn" msprop:Generator_UserColumnName="Selección" type="xs:boolean" minOccurs="0" />
+              <xs:element name="IdPresentacionTarima" msdata:Caption="IdBodega" msprop:Generator_ColumnVarNameInTable="columnIdPresentacionTarima" msprop:Generator_ColumnPropNameInRow="IdPresentacionTarima" msprop:Generator_ColumnPropNameInTable="IdPresentacionTarimaColumn" msprop:Generator_UserColumnName="IdPresentacionTarima" type="xs:int" minOccurs="0" />
+              <xs:element name="Cantidad" msdata:Caption="IdPropietarioBodega" msprop:Generator_ColumnVarNameInTable="columnCantidad" msprop:Generator_ColumnPropNameInRow="Cantidad" msprop:Generator_ColumnPropNameInTable="CantidadColumn" msprop:Generator_UserColumnName="Cantidad" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

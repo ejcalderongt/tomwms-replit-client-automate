@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="8971124d-8ad2-4dfd-8726-02afa866a383" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://192.168.0.3/mi3/Cliente/Cliente/ServiceCliente.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="ServiceCliente.xsd" MetadataType="Schema" ID="bc52ebcd-e468-4de5-95a9-6287dfdbe8c3" SourceId="1" SourceUrl="http://192.168.0.3/MI3/Cliente/Cliente/ServiceCliente.svc?xsd=xsd1" />
+    <MetadataFile FileName="ServiceCliente.disco" MetadataType="Disco" ID="d15634ee-2666-4b61-8306-522123187f62" SourceId="1" SourceUrl="http://192.168.0.3/MI3/Cliente/Cliente/ServiceCliente.svc?disco" />
+    <MetadataFile FileName="ServiceCliente.wsdl" MetadataType="Wsdl" ID="c299dffa-afd6-48b0-adad-3261cea28e48" SourceId="1" SourceUrl="http://192.168.0.3/MI3/Cliente/Cliente/ServiceCliente.svc?wsdl" />
+    <MetadataFile FileName="ServiceCliente1.xsd" MetadataType="Schema" ID="73478bbc-de5e-4042-9622-31cb672b87d1" SourceId="1" SourceUrl="http://192.168.0.3/MI3/Cliente/Cliente/ServiceCliente.svc?xsd=xsd2" />
+    <MetadataFile FileName="ServiceCliente2.xsd" MetadataType="Schema" ID="edc011a6-2dcf-45da-895d-362a64ddc106" SourceId="1" SourceUrl="http://192.168.0.3/MI3/Cliente/Cliente/ServiceCliente.svc?xsd=xsd0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
