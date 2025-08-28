@@ -4391,8 +4391,7 @@
     <None Include="Conn_MAMPA.ini" />
     <None Include="Conn_Mercosal.ini" />
     <None Include="Conn_DYD.ini" />
-    <None Include="Conn_Merhonsa.ini" />
-    <Content Include="es\Microsoft.Data.SqlClient.resources.dll" />
+    <None Include="Conn_Merhonsa.ini" />    
     <Content Include="Mantenimientos\plantillas\WMS_plantilla_Importacion_Productos.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -4480,9 +4479,6 @@
       <DependentUpon>DetTramoByBodega.xsd</DependentUpon>
     </None>
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho1.disco" />
-    <Content Include="NavSync.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="PerceptronUbicacion.exe" />
     <None Include="Resources\tomimsazteccode.jpeg" />
     <None Include="Resources\tomimslogoclasic.jpeg" />
@@ -4516,9 +4512,6 @@
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
     <Content Include="SAPBOSyncCumbre.exe" />
     <Content Include="SAPBOSyncKillios.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Update_BD_WMS.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
@@ -4667,9 +4660,6 @@
     <None Include="Resources\Single_Pallet_Box.png" />
     <None Include="Resources\Single_Pallet_Box_Fit.png" />
     <None Include="Resources\logonuevodts1.png" />
-    <Content Include="PrintsService.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\5b91750ebd518_thumb900.jpg" />
     <None Include="Resources\LogoDTS1.png" />
     <None Include="Resources\LogoDTS_small.png" />
@@ -4682,7 +4672,6 @@
     <None Include="Resources\exporttoxls_32x32.png" />
     <None Include="Resources\exporttoxls_16x16.png" />
     <None Include="Resources\tom_wms.png" />
-    <Content Include="scriptBD.sql" />
     <None Include="Reportes\Resumen_Stock\DsDetalleExistencias.xsc">
       <DependentUpon>DsDetalleExistencias.xsd</DependentUpon>
     </None>
@@ -5492,6 +5481,9 @@
     </PackageReference>
     <PackageReference Include="Irony">
       <Version>1.5.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Data.SqlClient">
+      <Version>6.1.1</Version>
     </PackageReference>
     <PackageReference Include="System.IO.Packaging">
       <Version>8.0.1</Version>

@@ -42,7 +42,9 @@ SAPBOSyncKillios
 </member>
 <member name="M:TOMWMS.clsSyncSAPProducto.Get_Productos_From_SAP(TOMWMS.m_Global.pEmpresa)">
  <summary>
- '#EJC20241001: Tome la decisión de manejar en UMBas UN la medida base del producto porque SAP maneja en presentación los pedidos pero la unidad base no está relacionada de forma precisa o correcta con la del maestro del producto.
+ '#EJC20241001: Tome la decisión de manejar en UMBas UN la medida base del producto 
+ porque SAP maneja en presentación los pedidos pero la unidad base no está relacionada 
+ de forma precisa o correcta con la del maestro del producto.
  </summary>
  <param name="pTEmpresa"></param>
  <returns></returns>
