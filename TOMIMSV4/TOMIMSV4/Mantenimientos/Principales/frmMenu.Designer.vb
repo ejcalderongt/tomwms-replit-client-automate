@@ -1363,7 +1363,7 @@ Partial Class frmMenu
         '
         'cmdRpExitLP
         '
-        Me.cmdRpExitLP.Caption = "13. Existencias por lic plate"
+        Me.cmdRpExitLP.Caption = "13. Existencias por licencia"
         Me.cmdRpExitLP.Id = 225
         Me.cmdRpExitLP.Name = "cmdRpExitLP"
         '
