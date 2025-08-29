@@ -25,6 +25,7 @@ Public Class frmResumenExistenciaPropietario
 
     Private Sub SetDatataTable()
 
+        '#MECR27082025: Se agregaron columnas de talla y color
         DTs.Columns.Add("IdProducto", GetType(Integer))
         DTs.Columns.Add("Código", GetType(String))
         DTs.Columns.Add("Código_Barra", GetType(String))
@@ -40,6 +41,8 @@ Public Class frmResumenExistenciaPropietario
         DTs.Columns.Add("Lic_Plate", GetType(String))
         DTs.Columns.Add("Lote", GetType(String))
         DTs.Columns.Add("Fecha_Vence", GetType(String))
+        DTs.Columns.Add("Talla", GetType(Integer))
+        DTs.Columns.Add("Color", GetType(Integer))
 
 
     End Sub

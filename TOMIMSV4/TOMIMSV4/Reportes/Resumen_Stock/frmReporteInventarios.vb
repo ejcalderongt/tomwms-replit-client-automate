@@ -21,8 +21,8 @@ Public Class frmReporteInventarios
 
     Private Sub Set_DataTable()
 
+        '#MECR28092025: Se agrego columna de talla y color
         Dt = New DataTable("Stock")
-
         Dt.Columns.Add(("Código"), GetType(String))
         Dt.Columns.Add(("Producto"), GetType(String))
         Dt.Columns.Add(("Existencias UMBas"), GetType(Double))
@@ -39,6 +39,8 @@ Public Class frmReporteInventarios
         Dt.Columns.Add(("Póliza"), GetType(String))
         Dt.Columns.Add(("Referencia"), GetType(String))
         Dt.Columns.Add(("No_Docto_Rec"), GetType(String))
+        Dt.Columns.Add(("Talla"), GetType(Integer))
+        Dt.Columns.Add(("Color"), GetType(Integer))
 
     End Sub
 
@@ -60,6 +62,7 @@ Public Class frmReporteInventarios
             Dt = clsLnStock.Get_All_Stock_DT_By_IdBodega_And_IdPropietarioBodega(cmbBodega.EditValue, cmbPropietarios.EditValue, dtpFechaDel.Value, dtpFechaAl.Value, chkSinFechas.Checked, chkConsolidaFechas.Checked)
 
             grdStock.DataSource = Dt
+            GridView1.PopulateColumns()
 
             If GridView1.RowCount > 0 Then
 
