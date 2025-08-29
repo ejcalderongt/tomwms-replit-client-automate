@@ -895,7 +895,7 @@ Public Class frmPedido
 
                         If BeBodega.Control_Talla_Color Then
                             dgrid.Rows(i).Cells("colTalla").Value = CInt(pDet.Talla)
-                            dgrid.Rows(i).Cells("colColor").Value = pDet.Color
+                            dgrid.Rows(i).Cells("colColor").Value = CInt(pDet.Color)
                             'dgrid.Rows(i).Cells("colIdProductoTallaColor").Value = Math.Round((pDet.IdProductoTallaColor), 0)
 
                             'Dim pProductoTallaColor = clsLnProducto_talla_color.GetSingle(pDet.IdProductoTallaColor)
@@ -909,7 +909,7 @@ Public Class frmPedido
 
                             '#GT21082025: a futuro si cliente lo requiere se muestran
                             dgrid.Columns("colIdProductoTallaColor").Visible = False
-                            dgrid.Columns("colSKU").Visible = False
+                            'dgrid.Columns("colSKU").Visible = False
 
                         End If
 
@@ -2574,12 +2574,12 @@ Public Class frmPedido
 
                                 dgrid.Item("ColTalla", IndiceFila).Value = objTalla.IdTalla
                                 dgrid.Item("colColor", IndiceFila).Value = objColor.IdColor
-                                dgrid.Item("colSKU", IndiceFila).Value = BeProductoTallaColor.CodigoSKU
+                                'dgrid.Item("colSKU", IndiceFila).Value = BeProductoTallaColor.CodigoSKU
                                 dgrid.Item("colIdProductoTallaColor", IndiceFila).Value = pBeStock.IdProductoTallaColor
 
                                 dgrid.Rows(IndiceFila).Cells("ColTalla").ReadOnly = True
                                 dgrid.Rows(IndiceFila).Cells("ColColor").ReadOnly = True
-                                dgrid.Columns("colIdProductoTallaColor").Visible = False
+                                'dgrid.Columns("colIdProductoTallaColor").Visible = False
 
                             End If
 
@@ -7715,12 +7715,12 @@ Public Class frmPedido
 
                 '#GT20082025: si bodega maneja talla color asignar los campos
                 If AP.Bodega.Control_Talla_Color Then
-
-                    'Lista_tallas = clsLnTalla.Listar_For_Combo()
-                    'Lista_colores = clsLnColor.Listar_For_Combo()
-
-                    'Llenar_Combos_Talla_Color()
-
+                    Lista_tallas = clsLnTalla.Listar_For_Combo()
+                    Lista_colores = clsLnColor.Listar_For_Combo()
+                    Llenar_Combos_Talla_Color()
+                Else
+                    dgrid.Columns("colTalla").Visible = False
+                    dgrid.Columns("colColor").Visible = False
                 End If
 
                 IMS.Listar_Propietarios_By_IdBodega(lcmbPropietario,
@@ -8123,7 +8123,7 @@ Public Class frmPedido
             DirectCast(dgrid.Columns("ColColor"), DataGridViewComboBoxColumn).ValueMember = "IdColor"
 
         Catch ex As Exception
-
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 

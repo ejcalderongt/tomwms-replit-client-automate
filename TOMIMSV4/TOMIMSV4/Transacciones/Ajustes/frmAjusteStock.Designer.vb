@@ -92,6 +92,20 @@ Partial Class frmAjusteStock
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.GroupControl4 = New DevExpress.XtraEditors.GroupControl()
         Me.dgrid = New System.Windows.Forms.DataGridView()
+        Me.DockManager1 = New DevExpress.XtraBars.Docking.DockManager(Me.components)
+        Me.AutoHideContainer2 = New DevExpress.XtraBars.Docking.AutoHideContainer()
+        Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
+        Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
+        Me.Fec_modDateEdit = New DevExpress.XtraEditors.DateEdit()
+        Me.Fec_agrDateEdit = New DevExpress.XtraEditors.DateEdit()
+        Me.User_modTextEdit = New DevExpress.XtraEditors.TextEdit()
+        Me.User_agrTextEdit = New DevExpress.XtraEditors.TextEdit()
+        Me.XtraTabControl1 = New DevExpress.XtraTab.XtraTabControl()
+        Me.XtraTabPage1 = New DevExpress.XtraTab.XtraTabPage()
+        Me.XtraTabPage2 = New DevExpress.XtraTab.XtraTabPage()
+        Me.PanelControl1 = New DevExpress.XtraEditors.PanelControl()
+        Me.grdDocsAsociados = New DevExpress.XtraGrid.GridControl()
+        Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.ColCodigoProducto = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colNombreProducto = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.UmBas = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -109,20 +123,9 @@ Partial Class frmAjusteStock
         Me.LoteOrig = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColBodega = New System.Windows.Forms.DataGridViewComboBoxColumn()
         Me.ColLicPlate = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.DockManager1 = New DevExpress.XtraBars.Docking.DockManager(Me.components)
-        Me.AutoHideContainer2 = New DevExpress.XtraBars.Docking.AutoHideContainer()
-        Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
-        Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
-        Me.Fec_modDateEdit = New DevExpress.XtraEditors.DateEdit()
-        Me.Fec_agrDateEdit = New DevExpress.XtraEditors.DateEdit()
-        Me.User_modTextEdit = New DevExpress.XtraEditors.TextEdit()
-        Me.User_agrTextEdit = New DevExpress.XtraEditors.TextEdit()
-        Me.XtraTabControl1 = New DevExpress.XtraTab.XtraTabControl()
-        Me.XtraTabPage1 = New DevExpress.XtraTab.XtraTabPage()
-        Me.XtraTabPage2 = New DevExpress.XtraTab.XtraTabPage()
-        Me.PanelControl1 = New DevExpress.XtraEditors.PanelControl()
-        Me.grdDocsAsociados = New DevExpress.XtraGrid.GridControl()
-        Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.colTalla = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colIdProductoTallaColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Label1 = New System.Windows.Forms.Label()
         Label3 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
@@ -532,7 +535,7 @@ Partial Class frmAjusteStock
         Me.ToolStripP.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAdd, Me.mnuAjustePositivo, Me.mnuDel, Me.mnuDividir})
         Me.ToolStripP.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripP.Name = "ToolStripP"
-        Me.ToolStripP.Size = New System.Drawing.Size(1478, 31)
+        Me.ToolStripP.Size = New System.Drawing.Size(1478, 27)
         Me.ToolStripP.TabIndex = 2
         Me.ToolStripP.Text = "ToolStrip1"
         '
@@ -541,7 +544,7 @@ Partial Class frmAjusteStock
         Me.cmdAdd.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(76, 28)
+        Me.cmdAdd.Size = New System.Drawing.Size(76, 24)
         Me.cmdAdd.Text = "Nuevo"
         '
         'mnuAjustePositivo
@@ -558,7 +561,7 @@ Partial Class frmAjusteStock
         Me.mnuDel.Image = Global.TOMWMS.My.Resources.Resources.desactivar
         Me.mnuDel.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuDel.Name = "mnuDel"
-        Me.mnuDel.Size = New System.Drawing.Size(87, 28)
+        Me.mnuDel.Size = New System.Drawing.Size(87, 24)
         Me.mnuDel.Text = "Eliminar"
         '
         'mnuDividir
@@ -566,7 +569,7 @@ Partial Class frmAjusteStock
         Me.mnuDividir.Image = Global.TOMWMS.My.Resources.Resources.ubic03
         Me.mnuDividir.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuDividir.Name = "mnuDividir"
-        Me.mnuDividir.Size = New System.Drawing.Size(77, 28)
+        Me.mnuDividir.Size = New System.Drawing.Size(77, 24)
         Me.mnuDividir.Text = "Dividir"
         '
         'dtpFecha
@@ -761,12 +764,12 @@ Partial Class frmAjusteStock
         DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.dgrid.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.dgrid.ColumnHeadersHeight = 40
-        Me.dgrid.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColCodigoProducto, Me.colNombreProducto, Me.UmBas, Me.colPresentacion, Me.colUbicacion, Me.motivoajuste, Me.tipoajuste, Me.CantidadP, Me.ColCantidad, Me.ColDiferencia, Me.colLote, Me.ColObservacion, Me.ColEnviadoAErp, Me.ColIdAjusteDEt, Me.LoteOrig, Me.ColBodega, Me.ColLicPlate})
+        Me.dgrid.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColCodigoProducto, Me.colNombreProducto, Me.UmBas, Me.colPresentacion, Me.colUbicacion, Me.motivoajuste, Me.tipoajuste, Me.CantidadP, Me.ColCantidad, Me.ColDiferencia, Me.colLote, Me.ColObservacion, Me.ColEnviadoAErp, Me.ColIdAjusteDEt, Me.LoteOrig, Me.ColBodega, Me.ColLicPlate, Me.colTalla, Me.colColor, Me.colIdProductoTallaColor})
         Me.dgrid.Dock = System.Windows.Forms.DockStyle.Top
         Me.dgrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.dgrid.EnableHeadersVisualStyles = False
         Me.dgrid.GridColor = System.Drawing.Color.Navy
-        Me.dgrid.Location = New System.Drawing.Point(2, 59)
+        Me.dgrid.Location = New System.Drawing.Point(2, 55)
         Me.dgrid.Margin = New System.Windows.Forms.Padding(4)
         Me.dgrid.MultiSelect = False
         Me.dgrid.Name = "dgrid"
@@ -787,157 +790,6 @@ Partial Class frmAjusteStock
         Me.dgrid.ShowRowErrors = False
         Me.dgrid.Size = New System.Drawing.Size(1478, 316)
         Me.dgrid.TabIndex = 3
-        '
-        'ColCodigoProducto
-        '
-        Me.ColCodigoProducto.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
-        Me.ColCodigoProducto.HeaderText = "Codigo"
-        Me.ColCodigoProducto.MinimumWidth = 6
-        Me.ColCodigoProducto.Name = "ColCodigoProducto"
-        Me.ColCodigoProducto.Width = 90
-        '
-        'colNombreProducto
-        '
-        Me.colNombreProducto.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
-        Me.colNombreProducto.HeaderText = "Producto"
-        Me.colNombreProducto.MinimumWidth = 6
-        Me.colNombreProducto.Name = "colNombreProducto"
-        Me.colNombreProducto.ReadOnly = True
-        Me.colNombreProducto.Width = 200
-        '
-        'UmBas
-        '
-        Me.UmBas.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.UmBas.HeaderText = "UmBas"
-        Me.UmBas.MinimumWidth = 6
-        Me.UmBas.Name = "UmBas"
-        Me.UmBas.Width = 75
-        '
-        'colPresentacion
-        '
-        Me.colPresentacion.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.colPresentacion.HeaderText = "Presentación"
-        Me.colPresentacion.MinimumWidth = 6
-        Me.colPresentacion.Name = "colPresentacion"
-        Me.colPresentacion.ReadOnly = True
-        Me.colPresentacion.Width = 109
-        '
-        'colUbicacion
-        '
-        Me.colUbicacion.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
-        Me.colUbicacion.HeaderText = "Ubicacion"
-        Me.colUbicacion.MinimumWidth = 6
-        Me.colUbicacion.Name = "colUbicacion"
-        Me.colUbicacion.ReadOnly = True
-        Me.colUbicacion.Width = 250
-        '
-        'motivoajuste
-        '
-        Me.motivoajuste.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
-        Me.motivoajuste.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
-        Me.motivoajuste.HeaderText = "Motivo"
-        Me.motivoajuste.MinimumWidth = 6
-        Me.motivoajuste.Name = "motivoajuste"
-        Me.motivoajuste.Width = 150
-        '
-        'tipoajuste
-        '
-        Me.tipoajuste.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
-        Me.tipoajuste.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
-        Me.tipoajuste.HeaderText = "Tipo Ajuste"
-        Me.tipoajuste.MinimumWidth = 6
-        Me.tipoajuste.Name = "tipoajuste"
-        Me.tipoajuste.Width = 150
-        '
-        'CantidadP
-        '
-        Me.CantidadP.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle2.Format = "N6"
-        DataGridViewCellStyle2.NullValue = "0"
-        Me.CantidadP.DefaultCellStyle = DataGridViewCellStyle2
-        Me.CantidadP.HeaderText = "Existencia"
-        Me.CantidadP.MinimumWidth = 6
-        Me.CantidadP.Name = "CantidadP"
-        Me.CantidadP.ReadOnly = True
-        Me.CantidadP.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.CantidadP.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
-        Me.CantidadP.Width = 125
-        '
-        'ColCantidad
-        '
-        Me.ColCantidad.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
-        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle3.Format = "N6"
-        DataGridViewCellStyle3.NullValue = "0"
-        Me.ColCantidad.DefaultCellStyle = DataGridViewCellStyle3
-        Me.ColCantidad.HeaderText = "Valor Actual"
-        Me.ColCantidad.MinimumWidth = 6
-        Me.ColCantidad.Name = "ColCantidad"
-        Me.ColCantidad.Width = 150
-        '
-        'ColDiferencia
-        '
-        Me.ColDiferencia.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
-        Me.ColDiferencia.HeaderText = "Diferencia"
-        Me.ColDiferencia.MinimumWidth = 6
-        Me.ColDiferencia.Name = "ColDiferencia"
-        Me.ColDiferencia.Visible = False
-        Me.ColDiferencia.Width = 70
-        '
-        'colLote
-        '
-        Me.colLote.HeaderText = "Lote"
-        Me.colLote.MinimumWidth = 6
-        Me.colLote.Name = "colLote"
-        Me.colLote.Width = 150
-        '
-        'ColObservacion
-        '
-        Me.ColObservacion.HeaderText = "Observacion"
-        Me.ColObservacion.MinimumWidth = 6
-        Me.ColObservacion.Name = "ColObservacion"
-        Me.ColObservacion.Width = 250
-        '
-        'ColEnviadoAErp
-        '
-        Me.ColEnviadoAErp.HeaderText = "Enviado"
-        Me.ColEnviadoAErp.MinimumWidth = 6
-        Me.ColEnviadoAErp.Name = "ColEnviadoAErp"
-        Me.ColEnviadoAErp.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.ColEnviadoAErp.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
-        Me.ColEnviadoAErp.Width = 125
-        '
-        'ColIdAjusteDEt
-        '
-        Me.ColIdAjusteDEt.HeaderText = "IdAjusteDet"
-        Me.ColIdAjusteDEt.MinimumWidth = 6
-        Me.ColIdAjusteDEt.Name = "ColIdAjusteDEt"
-        Me.ColIdAjusteDEt.ReadOnly = True
-        Me.ColIdAjusteDEt.Visible = False
-        Me.ColIdAjusteDEt.Width = 125
-        '
-        'LoteOrig
-        '
-        Me.LoteOrig.HeaderText = "LoteOrig"
-        Me.LoteOrig.MinimumWidth = 6
-        Me.LoteOrig.Name = "LoteOrig"
-        Me.LoteOrig.Visible = False
-        Me.LoteOrig.Width = 125
-        '
-        'ColBodega
-        '
-        Me.ColBodega.HeaderText = "Bodega"
-        Me.ColBodega.MinimumWidth = 6
-        Me.ColBodega.Name = "ColBodega"
-        Me.ColBodega.Width = 200
-        '
-        'ColLicPlate
-        '
-        Me.ColLicPlate.HeaderText = "LP"
-        Me.ColLicPlate.MinimumWidth = 6
-        Me.ColLicPlate.Name = "ColLicPlate"
-        Me.ColLicPlate.Width = 125
         '
         'DockManager1
         '
@@ -1091,6 +943,179 @@ Partial Class frmAjusteStock
         Me.GridView1.OptionsBehavior.ReadOnly = True
         Me.GridView1.OptionsFind.AlwaysVisible = True
         '
+        'ColCodigoProducto
+        '
+        Me.ColCodigoProducto.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
+        Me.ColCodigoProducto.HeaderText = "Codigo"
+        Me.ColCodigoProducto.MinimumWidth = 6
+        Me.ColCodigoProducto.Name = "ColCodigoProducto"
+        Me.ColCodigoProducto.Width = 90
+        '
+        'colNombreProducto
+        '
+        Me.colNombreProducto.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
+        Me.colNombreProducto.HeaderText = "Producto"
+        Me.colNombreProducto.MinimumWidth = 6
+        Me.colNombreProducto.Name = "colNombreProducto"
+        Me.colNombreProducto.ReadOnly = True
+        Me.colNombreProducto.Width = 200
+        '
+        'UmBas
+        '
+        Me.UmBas.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
+        Me.UmBas.HeaderText = "UmBas"
+        Me.UmBas.MinimumWidth = 6
+        Me.UmBas.Name = "UmBas"
+        Me.UmBas.Width = 75
+        '
+        'colPresentacion
+        '
+        Me.colPresentacion.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
+        Me.colPresentacion.HeaderText = "Presentación"
+        Me.colPresentacion.MinimumWidth = 6
+        Me.colPresentacion.Name = "colPresentacion"
+        Me.colPresentacion.ReadOnly = True
+        Me.colPresentacion.Width = 109
+        '
+        'colUbicacion
+        '
+        Me.colUbicacion.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
+        Me.colUbicacion.HeaderText = "Ubicacion"
+        Me.colUbicacion.MinimumWidth = 6
+        Me.colUbicacion.Name = "colUbicacion"
+        Me.colUbicacion.ReadOnly = True
+        Me.colUbicacion.Width = 250
+        '
+        'motivoajuste
+        '
+        Me.motivoajuste.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
+        Me.motivoajuste.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
+        Me.motivoajuste.HeaderText = "Motivo"
+        Me.motivoajuste.MinimumWidth = 6
+        Me.motivoajuste.Name = "motivoajuste"
+        Me.motivoajuste.Width = 150
+        '
+        'tipoajuste
+        '
+        Me.tipoajuste.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
+        Me.tipoajuste.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
+        Me.tipoajuste.HeaderText = "Tipo Ajuste"
+        Me.tipoajuste.MinimumWidth = 6
+        Me.tipoajuste.Name = "tipoajuste"
+        Me.tipoajuste.Width = 150
+        '
+        'CantidadP
+        '
+        Me.CantidadP.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle2.Format = "N6"
+        DataGridViewCellStyle2.NullValue = "0"
+        Me.CantidadP.DefaultCellStyle = DataGridViewCellStyle2
+        Me.CantidadP.HeaderText = "Existencia"
+        Me.CantidadP.MinimumWidth = 6
+        Me.CantidadP.Name = "CantidadP"
+        Me.CantidadP.ReadOnly = True
+        Me.CantidadP.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.CantidadP.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        Me.CantidadP.Width = 125
+        '
+        'ColCantidad
+        '
+        Me.ColCantidad.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle3.Format = "N6"
+        DataGridViewCellStyle3.NullValue = "0"
+        Me.ColCantidad.DefaultCellStyle = DataGridViewCellStyle3
+        Me.ColCantidad.HeaderText = "Valor Actual"
+        Me.ColCantidad.MinimumWidth = 6
+        Me.ColCantidad.Name = "ColCantidad"
+        Me.ColCantidad.Width = 150
+        '
+        'ColDiferencia
+        '
+        Me.ColDiferencia.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells
+        Me.ColDiferencia.HeaderText = "Diferencia"
+        Me.ColDiferencia.MinimumWidth = 6
+        Me.ColDiferencia.Name = "ColDiferencia"
+        Me.ColDiferencia.Visible = False
+        Me.ColDiferencia.Width = 70
+        '
+        'colLote
+        '
+        Me.colLote.HeaderText = "Lote"
+        Me.colLote.MinimumWidth = 6
+        Me.colLote.Name = "colLote"
+        Me.colLote.Width = 150
+        '
+        'ColObservacion
+        '
+        Me.ColObservacion.HeaderText = "Observacion"
+        Me.ColObservacion.MinimumWidth = 6
+        Me.ColObservacion.Name = "ColObservacion"
+        Me.ColObservacion.Width = 250
+        '
+        'ColEnviadoAErp
+        '
+        Me.ColEnviadoAErp.HeaderText = "Enviado"
+        Me.ColEnviadoAErp.MinimumWidth = 6
+        Me.ColEnviadoAErp.Name = "ColEnviadoAErp"
+        Me.ColEnviadoAErp.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.ColEnviadoAErp.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
+        Me.ColEnviadoAErp.Width = 125
+        '
+        'ColIdAjusteDEt
+        '
+        Me.ColIdAjusteDEt.HeaderText = "IdAjusteDet"
+        Me.ColIdAjusteDEt.MinimumWidth = 6
+        Me.ColIdAjusteDEt.Name = "ColIdAjusteDEt"
+        Me.ColIdAjusteDEt.ReadOnly = True
+        Me.ColIdAjusteDEt.Visible = False
+        Me.ColIdAjusteDEt.Width = 125
+        '
+        'LoteOrig
+        '
+        Me.LoteOrig.HeaderText = "LoteOrig"
+        Me.LoteOrig.MinimumWidth = 6
+        Me.LoteOrig.Name = "LoteOrig"
+        Me.LoteOrig.Visible = False
+        Me.LoteOrig.Width = 125
+        '
+        'ColBodega
+        '
+        Me.ColBodega.HeaderText = "Bodega"
+        Me.ColBodega.MinimumWidth = 6
+        Me.ColBodega.Name = "ColBodega"
+        Me.ColBodega.Width = 200
+        '
+        'ColLicPlate
+        '
+        Me.ColLicPlate.HeaderText = "LP"
+        Me.ColLicPlate.MinimumWidth = 6
+        Me.ColLicPlate.Name = "ColLicPlate"
+        Me.ColLicPlate.Width = 125
+        '
+        'colTalla
+        '
+        Me.colTalla.HeaderText = "Talla"
+        Me.colTalla.MinimumWidth = 6
+        Me.colTalla.Name = "colTalla"
+        Me.colTalla.Width = 125
+        '
+        'colColor
+        '
+        Me.colColor.HeaderText = "Color"
+        Me.colColor.MinimumWidth = 6
+        Me.colColor.Name = "colColor"
+        Me.colColor.Width = 125
+        '
+        'colIdProductoTallaColor
+        '
+        Me.colIdProductoTallaColor.HeaderText = "IdProductoTallaColor"
+        Me.colIdProductoTallaColor.MinimumWidth = 6
+        Me.colIdProductoTallaColor.Name = "colIdProductoTallaColor"
+        Me.colIdProductoTallaColor.Visible = False
+        Me.colIdProductoTallaColor.Width = 125
+        '
         'frmAjusteStock
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -1220,6 +1245,10 @@ Partial Class frmAjusteStock
     Friend WithEvents lcmbCentroCosto As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents cmbTipoAjuste As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents dgrid As DataGridView
+    Friend WithEvents mnuReimpresionEtiquetas As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents chkAuditado As DevExpress.XtraBars.BarToggleSwitchItem
+    Friend WithEvents mnuGuardar As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents mnuAjustePositivo As ToolStripButton
     Friend WithEvents ColCodigoProducto As DataGridViewTextBoxColumn
     Friend WithEvents colNombreProducto As DataGridViewTextBoxColumn
     Friend WithEvents UmBas As DataGridViewTextBoxColumn
@@ -1237,8 +1266,7 @@ Partial Class frmAjusteStock
     Friend WithEvents LoteOrig As DataGridViewTextBoxColumn
     Friend WithEvents ColBodega As DataGridViewComboBoxColumn
     Friend WithEvents ColLicPlate As DataGridViewTextBoxColumn
-    Friend WithEvents mnuReimpresionEtiquetas As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents chkAuditado As DevExpress.XtraBars.BarToggleSwitchItem
-    Friend WithEvents mnuGuardar As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents mnuAjustePositivo As ToolStripButton
+    Friend WithEvents colTalla As DataGridViewTextBoxColumn
+    Friend WithEvents colColor As DataGridViewTextBoxColumn
+    Friend WithEvents colIdProductoTallaColor As DataGridViewTextBoxColumn
 End Class

@@ -1085,6 +1085,7 @@ Partial Public Class clsLnStock
 
             If TieneTiempos Then
 
+                '#GT27082025
                 vSQL = "SELECT producto_bodega.IdBodega, 
                         propietarios.IdPropietario, 
                         propietario_bodega.IdPropietarioBodega, 
@@ -1161,9 +1162,7 @@ Partial Public Class clsLnStock
                     vSQL += " AND propietario_bodega.IdPropietarioBodega = @IdPropietarioBodega  "
                 End If
 
-                If Mostrar_Talla_Color Then
-                    vSQL += " AND propietario_bodega.IdPropietarioBodega = @IdPropietarioBodega  "
-                End If
+
 
                 '#ejc20210923: agregar join con poliza antes de...
                 'If NoPoliza <> "" Then
@@ -1258,7 +1257,7 @@ Partial Public Class clsLnStock
                                st_resumen.No_Contenedor "
 
                 If Mostrar_Talla_Color Then
-                    vSQL += " ,st_resumen.Codigo_Talla,
+                    vSQL += ",st_resumen.Codigo_Talla,
 							  st_resumen.Nombre_Talla,
 							  st_resumen.Codigo_Color,
 							  st_resumen.Nombre_Color "
