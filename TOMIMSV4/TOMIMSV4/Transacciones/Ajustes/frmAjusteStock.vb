@@ -5,6 +5,7 @@ Imports DevExpress.XtraEditors
 Imports DevExpress.XtraPrinting
 Imports DevExpress.XtraReports.UI
 Imports DevExpress.XtraSplashScreen
+Imports TOMWMS.clsDataContractDI
 
 Public Class frmAjusteStock
 
@@ -371,9 +372,17 @@ Public Class frmAjusteStock
 
             Try
 
+
+                If tTipoAjusteWMS.Ajuste_Lote = cmbTipoAjuste.EditValue OrElse tTipoAjusteWMS.Ajuste_Peso = cmbTipoAjuste.EditValue OrElse tTipoAjusteWMS.Ajuste_Vencimiento = cmbTipoAjuste.EditValue Then
+                    MsgBox("No se puede aplicar ajuste al stock por peso/lote/vencimiento en combinación con talla/color")
+                    Exit Sub
+                End If
+
                 Stock.IdPropietarioBodega = cmbPropietarioBodega.EditValue
                 '#GT21112022_0900: envio tipo ajuste para validar si producto tiene la propiedad.
                 Stock.varTipoAjuste = cmbTipoAjuste.EditValue
+
+
 
                 If Stock.ShowDialog() <> DialogResult.OK Then
                     Try
