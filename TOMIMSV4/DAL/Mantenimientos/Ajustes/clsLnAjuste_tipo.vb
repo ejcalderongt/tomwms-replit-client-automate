@@ -263,13 +263,12 @@ Public Class clsLnAjuste_tipo
     End Function
 
     'GT22042022: combo para Ajuste Stock, que se llena en el enc y no en el grid por cada linea de stock
-    Public Shared Function Get_All_ForCombo_Activo() As DataTable
+    Public Shared Function Get_All_ForCombo_Activo(ByVal Mostrar_Talla_Color As Boolean) As DataTable
 
         Get_All_ForCombo_Activo = Nothing
 
         Try
 
-            'Dim vSQL As String = "SELECT idtipoajuste as IdTipoAjuste, nombre as Nombre,modifica_cantidad from ajuste_tipo where activo=1"
             Dim vSQL As String = "  SELECT
                                     3 as IdTipoAjuste,
                                     'Ajuste x Cantidad (+/-)' as Nombre
@@ -277,8 +276,14 @@ Public Class clsLnAjuste_tipo
                                     select
                                     idtipoajuste as IdTipoAjuste, 
                                     nombre as Nombre 
-                                    from ajuste_tipo where activo=1 and modifica_cantidad = 0 
-                                    order by IdTipoAjuste asc "
+                                    from ajuste_tipo where activo=1 and modifica_cantidad = 0 "
+
+
+            If Mostrar_Talla_Color Then
+                vSQL += " and IdTipoAjuste in (3,5,6)"
+            End If
+
+            vSQL += "order by IdTipoAjuste asc"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
             Dim cmd As New SqlCommand(vSQL, lConnection) With {.CommandType = CommandType.Text}

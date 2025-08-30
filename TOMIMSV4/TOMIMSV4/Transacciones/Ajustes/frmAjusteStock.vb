@@ -372,17 +372,9 @@ Public Class frmAjusteStock
 
             Try
 
-
-                If tTipoAjusteWMS.Ajuste_Lote = cmbTipoAjuste.EditValue OrElse tTipoAjusteWMS.Ajuste_Peso = cmbTipoAjuste.EditValue OrElse tTipoAjusteWMS.Ajuste_Vencimiento = cmbTipoAjuste.EditValue Then
-                    MsgBox("No se puede aplicar ajuste al stock por peso/lote/vencimiento en combinación con talla/color")
-                    Exit Sub
-                End If
-
                 Stock.IdPropietarioBodega = cmbPropietarioBodega.EditValue
                 '#GT21112022_0900: envio tipo ajuste para validar si producto tiene la propiedad.
                 Stock.varTipoAjuste = cmbTipoAjuste.EditValue
-
-
 
                 If Stock.ShowDialog() <> DialogResult.OK Then
                     Try
@@ -4007,13 +3999,15 @@ Public Class frmAjusteStock
 
             IMS.Listar_Centro_Costo_By_IdEmpresa(lcmbCentroCosto, AP.IdEmpresa)
 
+            '#GT28082025: si bodega controla talla/color mostrar columnas de lo contrario, ocultarlas.
+            BeBodega = AP.Bodega
+
             'GT22042022_1034: Carga los tipos de ajuste activos para el combo del encabezado.
-            IMS.Listar_Tipo_Ajuste_Activo(cmbTipoAjuste)
+            IMS.Listar_Tipo_Ajuste_Activo(cmbTipoAjuste, BeBodega.Control_Talla_Color)
 
             BeConfig = clsLnI_nav_config_enc.GetSingle(AP.IdConfiguracionInterface)
 
-            '#GT28082025: si bodega controla talla/color mostrar columnas de lo contrario, ocultarlas.
-            BeBodega = AP.Bodega
+            '#GT29082025: mostrar u ocultar las columnas de talla/color
             Mostrar_Columnas_Talla_Color(BeBodega.Control_Talla_Color)
 
             Application.DoEvents()

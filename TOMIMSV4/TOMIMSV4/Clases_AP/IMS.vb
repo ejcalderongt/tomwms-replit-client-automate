@@ -1327,7 +1327,7 @@ Public Class IMS
     End Function
 
 
-    Public Shared Function Listar_Tipo_Ajuste_Activo(ByRef Cmb As LookUpEdit) As Boolean
+    Public Shared Function Listar_Tipo_Ajuste_Activo(ByRef Cmb As LookUpEdit, ByVal Mostrar_Talla_Color As Boolean) As Boolean
 
         Listar_Tipo_Ajuste_Activo = False
 
@@ -1335,7 +1335,7 @@ Public Class IMS
 
         Try
 
-            DT = clsLnAjuste_tipo.Get_All_ForCombo_Activo()
+            DT = clsLnAjuste_tipo.Get_All_ForCombo_Activo(Mostrar_Talla_Color)
 
             If DT.Rows.Count > 0 Then
                 Cmb.Properties.DisplayMember = "Nombre"
