@@ -3931,7 +3931,7 @@ Public Class frmOrdenCompra
                 TallaGridLookUpEdit.ValueMember = "IdTalla"
                 TallaGridLookUpEdit.DisplayMember = "Codigo"
                 TallaGridLookUpEdit.NullText = String.Empty
-                TallaGridLookUpEdit.DataSource = clsLnTalla.Listar_For_Combo()
+                TallaGridLookUpEdit.DataSource = clsLnTalla.Listar()
 
                 TallaGridLookUpEdit.TextEditStyle = TextEditStyles.Standard
                 TallaGridLookUpEdit.SearchMode = SearchMode.AutoSuggest
@@ -3973,7 +3973,7 @@ Public Class frmOrdenCompra
                 ColorGridLookUpEdit.ValueMember = "IdColor"
                 ColorGridLookUpEdit.DisplayMember = "Codigo"
                 ColorGridLookUpEdit.NullText = String.Empty
-                ColorGridLookUpEdit.DataSource = clsLnColor.Listar_For_Combo()
+                ColorGridLookUpEdit.DataSource = clsLnColor.Listar()
 
                 ColorGridLookUpEdit.TextEditStyle = TextEditStyles.Standard
                 ColorGridLookUpEdit.SearchMode = SearchMode.AutoSuggest

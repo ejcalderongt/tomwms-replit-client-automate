@@ -856,9 +856,7 @@ Public Class clsLnStock_CI
                             For Each lRow As DataRow In lDataTable.Rows
 
                                 Obj = New clsBeVW_stock_res_CI
-
                                 clsLnVW_stock_res.Cargar_CI(Obj, lRow)
-
                                 lReturnList.Add(Obj)
 
                             Next

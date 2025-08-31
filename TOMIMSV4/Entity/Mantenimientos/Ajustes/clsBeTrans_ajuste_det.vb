@@ -152,6 +152,11 @@ Public Class clsBeTrans_ajuste_det
     Public Property referencia_ajuste_erp As String = ""
     Public Property estado_ajuste_erp As Boolean = False
 
+    '#GT28082025: control de producto por talla/color
+    Public Property IdProductoTallaColor As Integer = 0
+    Public Property Talla As String = ""
+    Public Property Color As String = ""
+
     Sub New()
     End Sub
     ''' <summary>

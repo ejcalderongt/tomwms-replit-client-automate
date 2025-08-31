@@ -2849,7 +2849,6 @@ Partial Public Class clsLnTrans_re_det
         Try
 
             Dim vSQL As String = "SELECT * FROM VW_Get_Detalle_By_IdRecepcionEnc 
-
                                 WHERE IdRecepcionEnc=@IdRecepcionEnc AND IdBodega = @IdBodega AND codigo_producto = @CodigoProducto"
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
@@ -2861,7 +2860,6 @@ Partial Public Class clsLnTrans_re_det
                 lDTA.SelectCommand.Parameters.AddWithValue("@CodigoProducto", CodigoProducto)
 
                 Dim lDataTable As New DataTable
-
                 lDTA.Fill(lDataTable)
 
                 Dim BeTransReDet As clsBeTrans_re_det
@@ -2876,22 +2874,27 @@ Partial Public Class clsLnTrans_re_det
 
                         BeTransReDet.Producto.IdProducto = CType(lRow("IdProducto"), Integer)
                         BeTransReDet.IdPropietarioBodega = CType(lRow("IdPropietarioBodega"), Integer)
+                        'clsLnProducto.Obtener(BeTransReDet.Producto, lConnection, lTransaction)
 
                         If lRow("IdPresentacion") IsNot DBNull.Value AndAlso lRow("IdPresentacion") IsNot Nothing Then
                             BeTransReDet.Presentacion.IdPresentacion = CType(lRow("IdPresentacion"), Integer)
+                            'clsLnProducto_presentacion.Obtener(BeTransReDet.Presentacion, lConnection, lTransaction)
                         End If
 
                         If lRow("IdUnidadMedida") IsNot DBNull.Value AndAlso lRow("IdUnidadMedida") IsNot Nothing Then
                             BeTransReDet.UnidadMedida.IdUnidadMedida = CType(lRow("IdUnidadMedida"), Integer)
+                            'clsLnUnidad_medida.Obtener(BeTransReDet.UnidadMedida, lConnection, lTransaction)
                         End If
 
                         If lRow("IdProductoEstado") IsNot DBNull.Value AndAlso lRow("IdProductoEstado") IsNot Nothing Then
                             BeTransReDet.ProductoEstado.IdEstado = CType(lRow("IdProductoEstado"), Integer)
+                            'clsLnProducto_estado.Obtener(BeTransReDet.ProductoEstado, lConnection, lTransaction)
                         End If
 
                         If lRow("IdMotivoDevolucion") IsNot DBNull.Value AndAlso lRow("IdMotivoDevolucion") IsNot Nothing Then
                             BeTransReDet.MotivoDevolucion.IdMotivoDevolucion = CType(lRow("IdMotivoDevolucion"), Integer)
                             If BeTransReDet.MotivoDevolucion.IdMotivoDevolucion <> 0 Then
+                                'clsLnMotivo_devolucion.Obtener(BeTransReDet.MotivoDevolucion, lConnection, lTransaction)
                             End If
                         End If
 
@@ -2917,6 +2920,5 @@ Partial Public Class clsLnTrans_re_det
         End Try
 
     End Function
-
 
 End Class

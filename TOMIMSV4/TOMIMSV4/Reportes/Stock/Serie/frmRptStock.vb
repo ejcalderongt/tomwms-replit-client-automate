@@ -36,6 +36,7 @@ Public Class frmRptStock
 
                     Dim lRow As DataRow = Series.Stock.NewRow
 
+                    '#MECR27082025: Se agrego columna de talla y color
                     lRow.Item("Stock Id") = Obj.Item("IdStock")
                     lRow.Item("Código") = Obj.Item("Codigo")
                     lRow.Item("Propietario") = Obj.Item("Propietario")
@@ -54,6 +55,8 @@ Public Class frmRptStock
                     lRow.Item("Ubicación") = IIf(IsDBNull(Obj.Item("Nombre_Completo")), "ND?", Obj.Item("Nombre_Completo"))
                     lRow.Item("codigo_poliza") = Obj.Item("codigo_poliza")
                     lRow.Item("Numero_orden") = Obj.Item("Numero_poliza")
+                    lRow.Item("Talla") = Obj.Item("Codigo_Talla")
+                    lRow.Item("Color") = Obj.Item("Codigo_Color")
                     Series.Stock.AddStockRow(lRow)
 
                 Next

@@ -152,6 +152,8 @@ Public Class clsBeBodega : Inherits clsBeBodegaBase
     Public Property Permitir_Cambio_Ubic_Recepcion As Boolean = False
     Public Property Ruta_CDN As String = ""
     Public Property Rango_Dias_Documentos As Integer = 0
+    Public Property Agrupar_Sin_Lic_Veri_No_Cons As Boolean = False
+    Public Property Advertir_Mpq_Umbas As Boolean = False
 
     Sub New()
     End Sub
@@ -346,7 +348,5 @@ Public Class clsBeBodegaBase
     Public Property Permitir_Reemplazo_Picking_Misma_Licencia As Boolean = False
     Public Property Liberar_Stock_Despachos_Parciales As Boolean = False
     Public Property Control_Talla_Color As Boolean = False
-    Public Property Agrupar_Sin_Lic_Veri_No_Cons As Boolean = False
-    Public Property Advertir_Mpq_Umbas As Boolean = False
 
 End Class
