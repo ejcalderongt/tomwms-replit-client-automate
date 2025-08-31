@@ -224,6 +224,7 @@
     <Compile Include="Clases Interface Sync\Devolucion_Proveedor\clsSyncSapDevolProveedor.vb" />
     <Compile Include="Clases Interface Sync\Factura_Reserva\FacturaReservaMapper.vb" />
     <Compile Include="Clases Interface Sync\Traslados_Envio\clsSyncSapTrasladosEnvio.vb" />
+    <Compile Include="Clases Interface Sync\Traslados_Recepcion\clsSyncSapSolTrasladoRec.vb" />
     <Compile Include="Clases\SapServiceBase.vb" />
     <Compile Include="Dtos\BusinessPartnerDto.vb" />
     <Compile Include="Dtos\LoginResponseDto.vb" />

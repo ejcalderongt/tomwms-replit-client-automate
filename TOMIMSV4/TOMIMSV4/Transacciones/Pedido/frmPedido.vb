@@ -5740,8 +5740,8 @@ Public Class frmPedido
             Dim CantidadPres As Double = 0
 
             Lista_Picking_Det = clsLnTrans_picking_enc.Get_All_Detalle_By_Pedido(IdPedido,
-                                                                    lConnection,
-                                                                    lTransaction)
+                                                                                lConnection,
+                                                                                lTransaction)
 
             If Lista_Picking_Det IsNot Nothing AndAlso Lista_Picking_Det.Count > 0 Then
 
@@ -5807,9 +5807,6 @@ Public Class frmPedido
                     lRow.Item("CantidadPresentacion") = CantidadPres
 
                     If BeBodega.Control_Talla_Color Then
-
-                        DsPicking.Detalle.Columns.Add("Talla", GetType(String))
-                        DsPicking.Detalle.Columns.Add("Color", GetType(String))
 
                         '#GT21082025: en el pedido estan los id´s para talla y color, no consultar again la bd
                         Dim Pedido_Det = pBePedidoEnc.Detalle.Find(Function(x) x.IdPedidoEnc = Objs.IdPedidoEnc AndAlso x.IdPedidoDet = Objs.IdPedidoDet)
