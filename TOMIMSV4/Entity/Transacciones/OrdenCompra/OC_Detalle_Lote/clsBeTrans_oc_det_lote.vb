@@ -25,7 +25,10 @@ Public Class clsBeTrans_oc_det_lote
     Public Property IsNew As Boolean = False
     Public Property Activo As Boolean = True
     Public Property No_Documento As String = ""
-
+    Public Property Codigo_Sku As String = ""
+    Public Property IdProductoTallaColor As Integer = 0
+    Public Property Talla As String = ""
+    Public Property Color As String = ""
     Sub New()
     End Sub
 
