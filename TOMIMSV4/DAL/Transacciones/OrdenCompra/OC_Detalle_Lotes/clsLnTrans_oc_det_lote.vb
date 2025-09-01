@@ -28,6 +28,10 @@ Public Class clsLnTrans_oc_det_lote
                 .Reclasificar = IIf(IsDBNull(dr.Item("Reclasificar")), False, dr.Item("Reclasificar"))
                 .Activo = IIf(IsDBNull(dr.Item("Activo")), True, dr.Item("Activo"))
                 .No_Documento = IIf(IsDBNull(dr.Item("No_Documento")), "", dr.Item("No_Documento"))
+                .Codigo_Sku = IIf(IsDBNull(dr.Item("Codigo_Sku")), "", dr.Item("Codigo_Sku"))
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                .Talla = IIf(IsDBNull(dr.Item("Talla")), "", dr.Item("Talla"))
+                .Color = IIf(IsDBNull(dr.Item("Color")), "", dr.Item("Color"))
 
             End With
 
@@ -68,6 +72,10 @@ Public Class clsLnTrans_oc_det_lote
             Ins.Add("Reclasificar", "@Reclasificar", DataType.Parametro)
             Ins.Add("activo", "@activo", DataType.Parametro)
             Ins.Add("no_documento", "@no_documento", DataType.Parametro)
+            Ins.Add("codigo_sku", "@codigo_sku", DataType.Parametro)
+            Ins.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
+            Ins.Add("talla", "@talla", DataType.Parametro)
+            Ins.Add("color", "@color", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -103,6 +111,10 @@ Public Class clsLnTrans_oc_det_lote
             cmd.Parameters.Add(New SqlParameter("@RECLASIFICAR", oBeTrans_oc_det_lote.Reclasificar))
             cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeTrans_oc_det_lote.Activo))
             cmd.Parameters.Add(New SqlParameter("@NO_DOCUMENTO", oBeTrans_oc_det_lote.No_Documento))
+            cmd.Parameters.Add(New SqlParameter("@CODIGO_SKU", oBeTrans_oc_det_lote.Codigo_Sku))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_oc_det_lote.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@TALLA", oBeTrans_oc_det_lote.Talla))
+            cmd.Parameters.Add(New SqlParameter("@COLOR", oBeTrans_oc_det_lote.Color))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -151,6 +163,10 @@ Public Class clsLnTrans_oc_det_lote
             Upd.Add("Reclasificar", "@Reclasificar", DataType.Parametro)
             Upd.Add("activo", "@activo", DataType.Parametro)
             Upd.Add("no_documento", "@no_documento", DataType.Parametro)
+            Upd.Add("codigo_sku", "@codigo_sku", DataType.Parametro)
+            Upd.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
+            Upd.Add("talla", "@talla", DataType.Parametro)
+            Upd.Add("color", "@color", DataType.Parametro)
             Upd.Where("IdOrdenCompraEnc = @IdOrdenCompraEnc" &
                 " AND IdOrdenCompraDet = @IdOrdenCompraDet" &
                 " AND IdOrdenCompraDetLote = @IdOrdenCompraDetLote")
@@ -189,6 +205,10 @@ Public Class clsLnTrans_oc_det_lote
             cmd.Parameters.Add(New SqlParameter("@RECLASIFICAR", oBeTrans_oc_det_lote.Reclasificar))
             cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeTrans_oc_det_lote.Activo))
             cmd.Parameters.Add(New SqlParameter("@NO_DOCUMENTO", oBeTrans_oc_det_lote.No_Documento))
+            cmd.Parameters.Add(New SqlParameter("@CODIGO_SKU", oBeTrans_oc_det_lote.Codigo_Sku))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_oc_det_lote.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@TALLA", oBeTrans_oc_det_lote.Talla))
+            cmd.Parameters.Add(New SqlParameter("@COLOR", oBeTrans_oc_det_lote.Color))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
