@@ -237,7 +237,6 @@ Partial Public Class clsLnTrans_despacho_det
                             Obj.IdProductoTallaColor = CType(lRow("IdProductoTallaColor"), Integer)
                         End If
 
-
                         If lRow("talla") IsNot DBNull.Value AndAlso lRow("talla") IsNot Nothing Then
                             Obj.Talla = CType(lRow("talla"), String)
                         End If
@@ -245,7 +244,6 @@ Partial Public Class clsLnTrans_despacho_det
                         If lRow("color") IsNot DBNull.Value AndAlso lRow("color") IsNot Nothing Then
                             Obj.Color = CType(lRow("color"), String)
                         End If
-
 
                         Obj.IsNew = False
 

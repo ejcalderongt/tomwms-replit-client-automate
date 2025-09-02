@@ -85,7 +85,7 @@ Public Class clsSyncSapFacturaReserva
 
                         BeConfigEnc = BeConfigEnc
 
-                        If Await Inserta_Proveedor_Desde_SAP(BeINavPedCompra.Buy_From_Vendor_No, cnnLog, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
+                        If Await Inserta_Proveedor_Desde_SAP(BeINavPedCompra.Buy_From_Vendor_No, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
                             clsPublic.Actualizar_Progreso(lblprg, vbTab & "El proveedor: " & BeINavPedCompra.Buy_From_Vendor_No & " No existía en WMS y fue insertado.")
                         End If
 
@@ -120,7 +120,6 @@ Public Class clsSyncSapFacturaReserva
 
     End Function
     Public Shared Async Function Inserta_Proveedor_Desde_SAP(ByVal pCodigo As String,
-                                                             ByVal cnnLog As SqlConnection,
                                                              SessionCookie As String,
                                                              BaseUrl As String) As Task(Of Boolean)
 
@@ -304,7 +303,7 @@ Public Class clsSyncSapFacturaReserva
                 Return False
             End If
 
-            Dim ResutlProc = Await vHanaService.Procesar_Detalle_Ingreso_HANA_Entregas_Separads(order,
+            Dim ResutlProc = Await vHanaService.Procesar_Detalle_Ingreso_HANA_Entregas_Separadas(order,
                                                                                                 BeINavConfigEnc,
                                                                                                 BeTransOCEnc,
                                                                                                 IdRecepcionEnc,
@@ -321,9 +320,9 @@ Public Class clsSyncSapFacturaReserva
             Dim BeTransReEnc = clsLnTrans_re_enc.GetSingle(IdRecepcionEnc)
             If BeTransReEnc IsNot Nothing Then
                 Dim vTieneDiferencia As Boolean = Detalle_Tiene_Diferencia_Vrs_OC(BeTransOCEnc,
-                                                                              BeTransOCEnc.DetalleOC,
-                                                                              BeTransReEnc,
-                                                                              BeTransReEnc.Detalle)
+                                                                                  BeTransOCEnc.DetalleOC,
+                                                                                  BeTransReEnc,
+                                                                                  BeTransReEnc.Detalle)
             End If
 
             clsPublic.Actualizar_Progreso(lblprg, "Documento de compra cerrado correctamente.")
@@ -782,24 +781,6 @@ Public Class clsSyncSapFacturaReserva
                                 End If
                             End If
 
-                            '' Diccionario para cachear UserSign -> UserName
-                            'Dim cacheUserNames As New Dictionary(Of Integer, String)
-
-                            '' Enriquecer con nombre de usuario (si existe)
-                            'Dim userSign? As Integer = row.Value(Of Integer?)("UserSign")
-                            'If userSign.HasValue Then
-                            '    Dim nombreUsuario As String = Nothing
-                            '    If Not cacheUserNames.TryGetValue(userSign.Value, nombreUsuario) Then
-                            '        nombreUsuario = Await GetUserCodeAsync(client, sessionCookie, baseUrl, userSign.Value).ConfigureAwait(False)
-                            '        If Not String.IsNullOrWhiteSpace(nombreUsuario) Then
-                            '            cacheUserNames(userSign.Value) = nombreUsuario
-                            '        End If
-                            '    End If
-                            '    If Not String.IsNullOrWhiteSpace(nombreUsuario) Then
-                            '        row("UserName") = nombreUsuario
-                            '    End If
-                            'End If
-
 
                             Dim documentLines As JArray = TryCast(row("DocumentLines"), JArray)
                             If documentLines Is Nothing OrElse documentLines.Count = 0 Then Continue For
@@ -973,28 +954,6 @@ Public Class clsSyncSapFacturaReserva
                     Return dt.Rows(0)
                 End Using
             End Using
-        End Using
-    End Function
-    Private Shared Async Function GetUserCodeAsync(client As HttpClient,
-                                                   sessionCookie As String,
-                                                   baseUrl As String,
-                                                   internalKey As Integer) As Task(Of String)
-
-        Dim requestUrl As String = $"Users({internalKey})?$select=UserCode"
-
-        Using req As New HttpRequestMessage(HttpMethod.Get, baseUrl & requestUrl)
-            req.Headers.ConnectionClose = True
-            req.Headers.Add("Cookie", sessionCookie)
-            req.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
-
-            Dim resp = Await client.SendAsync(req).ConfigureAwait(False)
-            If Not resp.IsSuccessStatusCode Then Return Nothing
-
-            Dim json = Await resp.Content.ReadAsStringAsync().ConfigureAwait(False)
-            If String.IsNullOrWhiteSpace(json) Then Return Nothing
-
-            Dim o As JObject = JObject.Parse(json)
-            Return o.Value(Of String)("UserCode")
         End Using
     End Function
 

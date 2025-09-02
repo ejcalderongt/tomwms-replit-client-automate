@@ -1107,8 +1107,8 @@ Public Class frmEjecucion
             If Ejecutar Then
                 lblprg.Text = ""
                 Await clsSyncSapTrasladosEnvio.Enviar_Traslados_Desde_Solicitud(lblprg,
-                                                                          prg,
-                                                                          tTipoDocumentoSalida.Transferencia_Interna_WMS)
+                                                                                prg,
+                                                                                tTipoDocumentoSalida.Transferencia_Interna_WMS)
             End If
 
         Catch ex As Exception
@@ -1118,6 +1118,82 @@ Public Class frmEjecucion
 
         Finally
             procesoEnEjecucion = False
+        End Try
+
+    End Sub
+
+    Private Sub mnuRecibirTrasladosTienda_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuRecibirTrasladosTienda.ItemClick
+
+        Dim args As New XtraInputBoxArgs()
+        Dim tmpResult As Object
+        Dim pSolDevolProveedor As String = ""
+
+        mnuImportarSolDevolProv.Enabled = False
+
+        Try
+
+            args.Caption = "Ingrese Sol. Traslado"
+            args.Prompt = "Solicitud Traslado No."
+
+            Dim editor As New TextEdit
+            args.Editor = editor
+
+            args.DefaultButtonIndex = 0
+            args.DefaultResponse = ""
+            AddHandler args.Showing, AddressOf Args_Showing
+
+            tmpResult = XtraInputBox.Show(args)
+
+            lblprg.Text = ""
+
+            If Not tmpResult Is Nothing Then
+
+                pSolDevolProveedor = tmpResult.ToString
+
+                Ejecuta_Interface_Sol_Traslado_Tienda_SAP_Hana(True, pSolDevolProveedor)
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                               Text,
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        Finally
+            mnuImportarSolDevolProv.Enabled = True
+            prg.Visible = False
+        End Try
+
+    End Sub
+
+    Private Sub Ejecuta_Interface_Sol_Traslado_Tienda_SAP_Hana(Optional ByVal Preguntar As Boolean = True,
+                                                               Optional ByVal pNoDocumentoSolTraslado As String = "")
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Actualizar Solicitudes de traslado a Tienda?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                Dim unused = clsSyncSapSolTrasladoRec.Procesar_Solicitud_Traslado_Tienda_SAP(lblprg, prg, pNoDocumentoSolTraslado)
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
         End Try
 
     End Sub
