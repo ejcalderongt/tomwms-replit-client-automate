@@ -5878,9 +5878,10 @@ Partial Public Class clsLnStock_res
 
         Try
             '#CKFK20221004 Agregue esto en el INNER JOIN and pu.IdStockRes = sr.IdStockRes 
+            '#MECR29082025: Se agrego campo de talla, color y IdProductoTallaColor
             Dim vSQL As String = "SELECT sr.IdStockRes, sr.IdTransaccion, sr.Indicador, sr.IdPedidoDet, sr.IdStock, sr.IdPropietarioBodega, sr.IdProductoBodega, sr.IdProductoEstado, sr.IdPresentacion, sr.IdUnidadMedida, sr.IdUbicacion, sr.ubicacion_ant, 
                                           sr.IdRecepcion, sr.lote, sr.lic_plate, sr.serial, sr.cantidad, sr.peso, sr.estado, sr.fecha_ingreso, sr.fecha_vence, sr.uds_lic_plate, sr.no_bulto, sr.IdPicking, sr.IdPedido, sr.IdDespacho, sr.user_agr, sr.fec_agr, sr.user_mod, 
-                                          sr.fec_mod, sr.host, sr.añada, sr.fecha_manufactura, sr.IdBodega, sr.pallet_no_estandar
+                                          sr.fec_mod, sr.host, sr.añada, sr.fecha_manufactura, sr.IdBodega, sr.pallet_no_estandar, sr.Talla, sr.Color, sr.idProductoTallaColor
                                           FROM  trans_picking_ubic AS pu INNER JOIN
                                           trans_picking_det AS pkdet ON pkdet.IdPickingDet = pu.IdPickingDet AND pu.IdPickingEnc = pkdet.IdPickingEnc INNER JOIN
                                           stock_res AS sr ON pu.IdPedidoEnc = sr.IdPedido AND pu.IdPedidoDet = sr.IdPedidoDet and pu.IdStockRes = sr.IdStockRes 
