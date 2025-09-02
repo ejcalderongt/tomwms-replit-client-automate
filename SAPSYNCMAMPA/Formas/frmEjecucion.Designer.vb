@@ -49,6 +49,9 @@ Partial Class frmEjecucion
         Me.mnuSolDevolProveedorMenu = New DevExpress.XtraBars.BarSubItem()
         Me.mnuImportarSolDevolProv = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuEnviarSolDevolProv = New DevExpress.XtraBars.BarButtonItem()
+        Me.BarSubItem2 = New DevExpress.XtraBars.BarSubItem()
+        Me.mnuRecibirTrasladosTienda = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuEnviarTrasladosTienda = New DevExpress.XtraBars.BarButtonItem()
         Me.rpInterfaceSAP = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.rpgDatosMaestros = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.rpgIngresosInterface = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -62,9 +65,6 @@ Partial Class frmEjecucion
         Me.timerProducto = New System.Windows.Forms.Timer(Me.components)
         Me.BwProducto = New System.ComponentModel.BackgroundWorker()
         Me.BarButtonItem3 = New DevExpress.XtraBars.BarButtonItem()
-        Me.BarSubItem2 = New DevExpress.XtraBars.BarSubItem()
-        Me.mnuRecibirTrasladosTienda = New DevExpress.XtraBars.BarButtonItem()
-        Me.mnuEnviarTrasladosTienda = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.rbMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -267,6 +267,26 @@ Partial Class frmEjecucion
         Me.mnuEnviarSolDevolProv.Id = 77
         Me.mnuEnviarSolDevolProv.Name = "mnuEnviarSolDevolProv"
         '
+        'BarSubItem2
+        '
+        Me.BarSubItem2.Caption = "Traslados Tienda"
+        Me.BarSubItem2.Id = 78
+        Me.BarSubItem2.ImageOptions.SvgImage = CType(resources.GetObject("BarSubItem2.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.BarSubItem2.LinksPersistInfo.AddRange(New DevExpress.XtraBars.LinkPersistInfo() {New DevExpress.XtraBars.LinkPersistInfo(Me.mnuRecibirTrasladosTienda), New DevExpress.XtraBars.LinkPersistInfo(Me.mnuEnviarTrasladosTienda)})
+        Me.BarSubItem2.Name = "BarSubItem2"
+        '
+        'mnuRecibirTrasladosTienda
+        '
+        Me.mnuRecibirTrasladosTienda.Caption = "Recibir"
+        Me.mnuRecibirTrasladosTienda.Id = 79
+        Me.mnuRecibirTrasladosTienda.Name = "mnuRecibirTrasladosTienda"
+        '
+        'mnuEnviarTrasladosTienda
+        '
+        Me.mnuEnviarTrasladosTienda.Caption = "Enviar"
+        Me.mnuEnviarTrasladosTienda.Id = 80
+        Me.mnuEnviarTrasladosTienda.Name = "mnuEnviarTrasladosTienda"
+        '
         'rpInterfaceSAP
         '
         Me.rpInterfaceSAP.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.rpgDatosMaestros, Me.rpgIngresosInterface, Me.rpgSalidasInterface, Me.rpgResumen})
@@ -370,26 +390,6 @@ Partial Class frmEjecucion
         Me.BarButtonItem3.ImageOptions.Image = CType(resources.GetObject("BarButtonItem3.ImageOptions.Image"), System.Drawing.Image)
         Me.BarButtonItem3.ImageOptions.LargeImage = CType(resources.GetObject("BarButtonItem3.ImageOptions.LargeImage"), System.Drawing.Image)
         Me.BarButtonItem3.Name = "BarButtonItem3"
-        '
-        'BarSubItem2
-        '
-        Me.BarSubItem2.Caption = "Traslados Tienda"
-        Me.BarSubItem2.Id = 78
-        Me.BarSubItem2.ImageOptions.SvgImage = CType(resources.GetObject("BarSubItem2.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.BarSubItem2.LinksPersistInfo.AddRange(New DevExpress.XtraBars.LinkPersistInfo() {New DevExpress.XtraBars.LinkPersistInfo(Me.mnuRecibirTrasladosTienda), New DevExpress.XtraBars.LinkPersistInfo(Me.mnuEnviarTrasladosTienda)})
-        Me.BarSubItem2.Name = "BarSubItem2"
-        '
-        'mnuRecibirTrasladosTienda
-        '
-        Me.mnuRecibirTrasladosTienda.Caption = "Recibir"
-        Me.mnuRecibirTrasladosTienda.Id = 79
-        Me.mnuRecibirTrasladosTienda.Name = "mnuRecibirTrasladosTienda"
-        '
-        'mnuEnviarTrasladosTienda
-        '
-        Me.mnuEnviarTrasladosTienda.Caption = "Enviar"
-        Me.mnuEnviarTrasladosTienda.Id = 80
-        Me.mnuEnviarTrasladosTienda.Name = "mnuEnviarTrasladosTienda"
         '
         'frmEjecucion
         '

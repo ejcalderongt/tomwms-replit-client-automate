@@ -1407,14 +1407,14 @@ Partial Public Class clsLnProveedor
         End Try
     End Function
 
-    Public Shared Function Insert_Proveedor_Interface(INavBeProveedor As clsBeI_nav_bodega, BeConfigEnc As clsBeI_nav_config_enc, ByVal User As String, clsTrans As clsTransaccion) As Boolean
+    Public Shared Function Insert_Proveedor_Interface(INavBeProveedor As clsBeI_nav_bodega, BeConfigEnc As clsBeI_nav_config_enc, ByVal User As String) As Boolean
 
         Insert_Proveedor_Interface = False
 
         Try
 
             Dim BeProveedor As New clsBeProveedor
-            BeProveedor.IdProveedor = MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
+            BeProveedor.IdProveedor = MaxID() + 1
             BeProveedor.IdEmpresa = BeConfigEnc.Idempresa
             BeProveedor.Codigo = INavBeProveedor.Bodega_code
             BeProveedor.Nombre = INavBeProveedor.Bodega_name
@@ -1424,18 +1424,19 @@ Partial Public Class clsLnProveedor
             BeProveedor.User_agr = User
             BeProveedor.User_mod = User
             BeProveedor.IdPropietario = BeConfigEnc.IdPropietario
-            Insertar(BeProveedor, clsTrans.lConnection, clsTrans.lTransaction)
+            Insertar(BeProveedor)
 
-            Dim lBodegas = clsLnBodega.GetAll(clsTrans.lConnection, clsTrans.lTransaction)
+            Dim lBodegas = clsLnBodega.GetAll()
 
             For Each Bod In lBodegas
                 Dim BeProvBod As New clsBeProveedor_bodega
-                BeProvBod.IdAsignacion = clsLnProveedor_bodega.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
-                BeProvBod.IdProveedor = BeProvBod.IdProveedor
+                BeProvBod.IdAsignacion = clsLnProveedor_bodega.MaxID() + 1
+                BeProvBod.IdProveedor = BeProveedor.IdProveedor
+                BeProvBod.IdBodega = Bod.IdBodega
                 BeProvBod.User_agr = Now
                 BeProvBod.User_mod = Now
                 BeProvBod.Activo = True
-                clsLnProveedor_bodega.Insertar(BeProvBod, clsTrans.lConnection, clsTrans.lTransaction)
+                clsLnProveedor_bodega.Insertar(BeProvBod)
             Next
 
             Insert_Proveedor_Interface = True

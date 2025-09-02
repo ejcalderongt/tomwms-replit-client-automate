@@ -1,6 +1,7 @@
 Imports System.Data.SqlClient
 Imports System.Reflection
 Imports DevExpress.DirectX.NativeInterop.Direct2D
+Imports TOMWMS.clsDataContractDI
 
 Partial Public Class clsLnI_nav_transacciones_out
 
@@ -3436,6 +3437,48 @@ Partial Public Class clsLnI_nav_transacciones_out
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             cmd.Parameters.AddWithValue("@idBodega", pIdBodega)
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+
+            dad.Fill(dt)
+
+            Dim vBeI_nav_transacciones_out As New clsBeI_nav_transacciones_out
+
+            For Each dr As DataRow In dt.Rows
+                vBeI_nav_transacciones_out = New clsBeI_nav_transacciones_out
+                Cargar(vBeI_nav_transacciones_out, dr)
+                lReturnList.Add(vBeI_nav_transacciones_out)
+            Next
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Lotes_Ingreso_Pendientes_Envio_By_Tipo(ByVal pTipo As tTipoDocumentoIngreso,
+                                                                      ByVal lConnection As SqlConnection,
+                                                                      ByVal lTransaction As SqlTransaction,
+                                                                      ByVal IdBodegaOrigen As Integer) As List(Of clsBeI_nav_transacciones_out)
+
+        Dim lReturnList As New List(Of clsBeI_nav_transacciones_out)
+
+        Try
+
+            Dim sp As String = "SELECT * FROM I_nav_transacciones_out 
+                                WHERE tipo_transaccion = 'INGRESO' 
+                                AND enviado = 0 
+                                AND IdTipoDocumento = @IdTipoDocumento 
+                                AND IdBodega = @IdBodega 
+                                AND idrecepcionenc in (SELECT IdRecepcionEnc 
+                                                  FROM trans_re_enc  
+                                                  WHERE estado = 'Cerrado') "
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            cmd.Parameters.AddWithValue("@idBodega", IdBodegaOrigen)
+            cmd.Parameters.AddWithValue("@IdTipoDocumento", pTipo)
             Dim dad As New SqlDataAdapter(cmd)
             Dim dt As New DataTable
 

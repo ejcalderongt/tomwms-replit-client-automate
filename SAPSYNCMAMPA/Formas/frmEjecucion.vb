@@ -1,7 +1,6 @@
 ﻿Imports System.Net
 Imports System.Net.Security
 Imports System.Reflection
-Imports System.Security.Cryptography
 Imports System.Security.Cryptography.X509Certificates
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraBars.Ribbon
@@ -1194,6 +1193,55 @@ Public Class frmEjecucion
             Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsPublic.Actualizar_Progreso(lblprg, vMensaje)
 
+        End Try
+
+    End Sub
+
+    Private Sub mnuEnviarTrasladosTienda_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarTrasladosTienda.ItemClick
+        mnuEnviarTrasladosTienda.Visibility = BarItemVisibility.Never
+        Enviar_Traslado_Desde_Solicitud_Tiendas(True)
+        mnuEnviarTrasladosTienda.Visibility = BarItemVisibility.Always
+    End Sub
+
+    Private Async Sub Enviar_Traslado_Desde_Solicitud_Tiendas(Optional ByVal Preguntar As Boolean = True)
+
+        Dim MostrarMensaje As Boolean = False
+        procesoEnEjecucion = True
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Enviar traslados recibidos en tienda a SAP?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                lblprg.Text = ""
+
+                Dim BeConfiEnc = clsLnI_nav_config_enc.GetSingle(IdConfiguracion)
+
+                If BeConfiEnc IsNot Nothing Then
+                    Await clsSyncSapTrasladosEnvio.Enviar_Traslados_Desde_Solicitud_Tiendas(lblprg,
+                                                                                            prg,
+                                                                                            tTipoDocumentoIngreso.Transferencia_de_Ingreso,
+                                                                                            BeConfiEnc)
+                Else
+                    clsPublic.Actualizar_Progreso(lblprg, "No está definida la configuración de interface para el identificador: " & IdConfiguracion)
+                End If
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        Finally
+            procesoEnEjecucion = False
         End Try
 
     End Sub

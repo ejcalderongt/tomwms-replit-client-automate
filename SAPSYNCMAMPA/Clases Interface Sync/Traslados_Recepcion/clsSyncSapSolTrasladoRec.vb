@@ -5,8 +5,6 @@ Imports System.Net.Http
 Imports System.Net.Http.Headers
 Imports System.Reflection
 Imports System.Text
-Imports DevExpress.Drawing.Internal.Images
-Imports DevExpress.Internal.WinApi.Windows.UI.Notifications
 Imports Newtonsoft.Json.Linq
 Imports TOMWMS.clsDataContractDI
 
@@ -206,7 +204,7 @@ Public Class clsSyncSapSolTrasladoRec
                         BeTrasladoRecEnc.Document_Date = BeTrasladoRecEnc.Posting_Date
                         BeTrasladoRecEnc.Expected_Receipt_Date = BeTrasladoRecEnc.Posting_Date
                         BeTrasladoRecEnc.Status = 1
-                        BeTrasladoRecEnc.Buy_From_Vendor_No = enc("CardCode").ToString()
+                        BeTrasladoRecEnc.Buy_From_Vendor_No = enc("FromWarehouse").ToString()
                         BeTrasladoRecEnc.Buy_From_Vendor_Name = enc("CardName").ToString()
                         BeTrasladoRecEnc.Is_Internal_Transfer = False
                         BeTrasladoRecEnc.Location_Code = enc("ToWarehouse").ToString()
@@ -325,11 +323,11 @@ Public Class clsSyncSapSolTrasladoRec
             ' Insertar desde SAP (ignoramos el posible retorno y verificamos)
             Dim BeBodega = Await clsSyncSAPBodega.Get_Bodega_SAP_By_Codigo(codigoSocioNegocio, sessioncookie, baseurl)
 
-            Return clsLnProveedor.Insert_Proveedor_Interface(BeBodega, BeConfigEnc, IdUsuario, clsTrans)
+            Return clsLnProveedor.Insert_Proveedor_Interface(BeBodega, BeConfigEnc, IdUsuario)
 
         Catch ex As Exception
             clsPublic.Actualizar_Progreso(lblprg, $"Validar_Proveedor_WMS: {ex.Message}")
-            Return False
+            Throw ex
         End Try
     End Function
 
