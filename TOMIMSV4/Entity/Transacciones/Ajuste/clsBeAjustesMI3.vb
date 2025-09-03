@@ -24,5 +24,6 @@
     Public Property IdAjusteDet As Integer = 0
     Public Property IdCentroCosto As Integer = 0
     Public Property Codigo_Centro_Costo As String = ""
-
+    Public Property Talla As String = ""
+    Public Property Color As String = ""
 End Class

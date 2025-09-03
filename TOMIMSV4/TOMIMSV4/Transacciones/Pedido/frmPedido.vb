@@ -869,10 +869,6 @@ Public Class frmPedido
                     pBeStock = New clsBeStock
                     pBeProducto = New clsBeProducto
                     pBeProducto.IdProducto = pDet.Producto.IdProducto
-                    'pBeProducto = clsLnProducto.GetSingle(pDet.Producto.IdProducto,
-                    '                                      cmbBodega.EditValue,
-                    '                                      lConnection,
-                    '                                      lTransaction)
 
                     If SplashScreenManager.Default Is Nothing Then
                         SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
@@ -894,15 +890,13 @@ Public Class frmPedido
 
 
                         If BeBodega.Control_Talla_Color Then
-                            dgrid.Rows(i).Cells("colTalla").Value = CInt(pDet.Talla)
-                            dgrid.Rows(i).Cells("colColor").Value = CInt(pDet.Color)
-                            'dgrid.Rows(i).Cells("colIdProductoTallaColor").Value = Math.Round((pDet.IdProductoTallaColor), 0)
 
-                            'Dim pProductoTallaColor = clsLnProducto_talla_color.GetSingle(pDet.IdProductoTallaColor)
-                            'If pProductoTallaColor IsNot Nothing Then
-                            '    dgrid.Rows(i).Cells("colSKU").Value = pProductoTallaColor.CodigoSKU
-                            'End If
+                            Dim BeProductoTc = clsLnProducto_talla_color.GetSingle(pDet.IdProductoTallaColor, lConnection, lTransaction)
 
+                            If BeProductoTc IsNot Nothing Then
+                                dgrid.Rows(i).Cells("colTalla").Value = BeProductoTc.IdTalla
+                                dgrid.Rows(i).Cells("colColor").Value = BeProductoTc.IdColor
+                            End If
 
                             dgrid.Columns("colTalla").ReadOnly = True
                             dgrid.Columns("colColor").ReadOnly = True

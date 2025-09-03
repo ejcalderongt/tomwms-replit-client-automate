@@ -2,6 +2,7 @@
 Imports System.Net.Security
 Imports System.Reflection
 Imports System.Security.Cryptography.X509Certificates
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraBars.Ribbon
 Imports DevExpress.XtraEditors
@@ -1230,6 +1231,59 @@ Public Class frmEjecucion
                                                                                             prg,
                                                                                             tTipoDocumentoIngreso.Transferencia_de_Ingreso,
                                                                                             BeConfiEnc)
+                Else
+                    clsPublic.Actualizar_Progreso(lblprg, "No está definida la configuración de interface para el identificador: " & IdConfiguracion)
+                End If
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        Finally
+            procesoEnEjecucion = False
+        End Try
+
+    End Sub
+
+    Private Sub mnuEnviarAjustes_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarAjustes.ItemClick
+
+        Try
+
+            Enviar_Ajustes(True)
+
+        Catch ex As Exception
+            clsPublic.Actualizar_Progreso(lblprg, ex.Message)
+        End Try
+
+    End Sub
+
+    Private Async Sub Enviar_Ajustes(Optional ByVal Preguntar As Boolean = True)
+
+        Dim MostrarMensaje As Boolean = False
+        procesoEnEjecucion = True
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Enviar ajustes a SAP?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+
+                lblprg.Text = ""
+
+                Dim BeConfiEnc = clsLnI_nav_config_enc.GetSingle(IdConfiguracion)
+
+                If BeConfiEnc IsNot Nothing Then
+                    Await clsSyncSapAjustes.Enviar_Ajustes_WMS_SAP(lblprg)
                 Else
                     clsPublic.Actualizar_Progreso(lblprg, "No está definida la configuración de interface para el identificador: " & IdConfiguracion)
                 End If

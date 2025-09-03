@@ -4,6 +4,7 @@ Imports System.Reflection
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraPrinting
 Imports DevExpress.XtraReports.UI
+Imports DevExpress.XtraRichEdit.Ruler
 Imports DevExpress.XtraSplashScreen
 Imports TOMWMS.clsDataContractDI
 
@@ -343,7 +344,6 @@ Public Class frmAjusteStock
 
     End Sub
 
-    Dim pProductoTallaColor As New clsBeProducto_talla_color
     Private Sub cmdAdd_Click(sender As Object, e As EventArgs) Handles cmdAdd.Click
 
         Dim st As New clsBeVW_stock_res
@@ -413,8 +413,6 @@ Public Class frmAjusteStock
 
             Else
 
-                pProductoTallaColor = New clsBeProducto_talla_color
-
                 Reservar_Stock(Stock.pObjStock.IdStock)
 
                 BeAjusteDet = New clsBeTrans_ajuste_det
@@ -462,20 +460,19 @@ Public Class frmAjusteStock
                 BeAjusteDet.idstocklink = 0
                 BeAjusteDet.esnuevolink = 0
 
-                '#GT29082025: si control talla/color setear el objeto con los id´s
-                Dim tmpTalla As New clsBeTalla()
-                Dim tmpColor As New clsBeColor()
-
                 If BeBodega.Control_Talla_Color Then
-                    If pProductoTallaColor IsNot Nothing Then
-                        tmpTalla = clsLnTalla.GetSingle_By_IdTalla(pProductoTallaColor.IdTalla)
-                        tmpColor = clsLnColor.GetSingle_By_IdColor(pProductoTallaColor.IdColor)
 
-                        BeAjusteDet.IdProductoTallaColor = pProductoTallaColor.IdProductoTallaColor
-                        BeAjusteDet.Talla = tmpTalla.IdTalla
-                        BeAjusteDet.Color = tmpColor.IdColor
+                    Dim pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeAjusteDet.IdProductoTallaColor)
+
+                    If pProductoTallaColor IsNot Nothing Then
+
+                        BeAjusteDet.IdProductoTallaColor = BeAjusteDet.IdProductoTallaColor
+
+                        BeAjusteDet.Talla = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
+                        BeAjusteDet.Color = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
 
                     End If
+
                 End If
 
                 lBeTransAjusteDet.Add(BeAjusteDet)
@@ -540,13 +537,17 @@ Public Class frmAjusteStock
 
                 '#GT29082025: si control talla/color mostrar los codigos en el grid
                 If BeBodega.Control_Talla_Color Then
+
+                    Dim pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeAjusteDet.IdProductoTallaColor)
+
                     If pProductoTallaColor IsNot Nothing Then
-                        dgrid.Rows(rc).Cells("colIdProductoTallaColor").Value = pProductoTallaColor.IdProductoTallaColor
-                        dgrid.Rows(rc).Cells("colTalla").Value = tmpTalla.Codigo
+                        dgrid.Rows(rc).Cells("colIdProductoTallaColor").Value = BeAjusteDet.IdProductoTallaColor
+                        dgrid.Rows(rc).Cells("colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
                         dgrid.Rows(rc).Cells("colTalla").ReadOnly = True
-                        dgrid.Rows(rc).Cells("colColor").Value = tmpColor.Codigo
+                        dgrid.Rows(rc).Cells("colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
                         dgrid.Rows(rc).Cells("colColor").ReadOnly = True
                     End If
+
                 End If
 
             End If
@@ -655,16 +656,17 @@ Public Class frmAjusteStock
 
             '#GT28082025: si hay control talla color, mostrar los codigos porque no se manejan las columnas como combos (no hay que llenar id´s)
             If BeBodega.Control_Talla_Color Then
-                Dim pProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeAjusteDet.IdProductoTallaColor)
+
+                Dim pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeAjusteDet.IdProductoTallaColor)
 
                 If pProductoTallaColor IsNot Nothing Then
-                    Dim tmpTalla = clsLnTalla.GetSingle_By_IdTalla(pProductoTallaColor.IdTalla)
-                    Dim tmpColor = clsLnColor.GetSingle_By_IdColor(pProductoTallaColor.IdColor)
 
                     dgrid.Rows(rc).Cells("ColIdProductoTallaColor").Value = BeAjusteDet.IdProductoTallaColor
-                    dgrid.Rows(rc).Cells("colTalla").Value = tmpTalla.Codigo
-                    dgrid.Rows(rc).Cells("colColor").Value = tmpColor.Codigo
+                    dgrid.Rows(rc).Cells("colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
+                    dgrid.Rows(rc).Cells("colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
+
                 End If
+
             End If
 
             Llenar_Motivo(rc, -1)
@@ -688,8 +690,6 @@ Public Class frmAjusteStock
         Dim pStock_Reservado As New clsBeStock_res
         Dim pStock As New clsBeStock
         Dim clsTransaccion As New clsTransaccion()
-        Dim Talla As New clsBeTalla
-        Dim Color As New clsBeColor
 
         Try
 
@@ -701,25 +701,14 @@ Public Class frmAjusteStock
             clsLnStock.GetSingle(pStock, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
             If BeBodega.Control_Talla_Color Then
-                pProductoTallaColor = clsLnProducto_talla_color.GetSingle(pStock.IdProductoTallaColor,
-                                                                              clsTransaccion.lConnection,
-                                                                              clsTransaccion.lTransaction)
+                Dim pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(pStock.IdProductoTallaColor,
+                                                                                                      clsTransaccion.lConnection,
+                                                                                                      clsTransaccion.lTransaction)
 
                 If pProductoTallaColor IsNot Nothing Then
-                    Talla = clsLnTalla.GetSingle(pProductoTallaColor.IdTalla,
-                                             clsTransaccion.lConnection,
-                                             clsTransaccion.lTransaction)
-
-
-                    Color = clsLnColor.GetSingle(pProductoTallaColor.IdColor,
-                                                 clsTransaccion.lConnection,
-                                                 clsTransaccion.lTransaction)
-
-
-                    pStock_Reservado.IdProductoTallaColor = pProductoTallaColor.IdProductoTallaColor
-                    pStock_Reservado.Talla = Talla.IdTalla
-                    pStock_Reservado.Color = Color.IdColor
-
+                    pStock_Reservado.IdProductoTallaColor = pStock.IdProductoTallaColor
+                    pStock_Reservado.Talla = pProductoTallaColor.Rows(0).Item("Talla")
+                    pStock_Reservado.Color = pProductoTallaColor.Rows(0).Item("Color")
                 End If
 
             End If

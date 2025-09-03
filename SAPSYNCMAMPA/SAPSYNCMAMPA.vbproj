@@ -220,6 +220,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ajuste de inventario\clsSyncAjusteInventario.vb" />
+    <Compile Include="Clases Interface Sync\Ajustes\clsSyncSapAjustes.vb" />
     <Compile Include="Clases Interface Sync\Campaña\clsSyncSAPCampaña.vb" />
     <Compile Include="Clases Interface Sync\Devolucion_Proveedor\clsSyncSapDevolProveedor.vb" />
     <Compile Include="Clases Interface Sync\Factura_Reserva\FacturaReservaMapper.vb" />
