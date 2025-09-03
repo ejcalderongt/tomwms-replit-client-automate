@@ -78,6 +78,7 @@ Public Class clsSyncSapAjustes
             ' Agrupa igual que tu flujo de traslados: por documento y por tipo (entrada/salida)
             Dim grupos = ajustes.GroupBy(Function(a) New With {
                                          Key .Doc = a.NoDocumento,
+                                         Key .IdAjusteWMS = a.IdAjusteEnc,
                                          Key .Tipo = If(EsSalida(a), InvAdjType.Issue, InvAdjType.Receipt)
                                      })
 
@@ -89,7 +90,7 @@ Public Class clsSyncSapAjustes
                 ' ---------- 2) Construcción de payload ----------
                 Dim payload As InventoryPayload = Build_Inventory_Payload(
                 docDate:=Date.Today,
-                comments:=$"WMS Ajuste {g.Key.Doc} ({docTxt})",
+                comments:=$"WMS Ajuste {g.Key.Doc} ({docTxt}) IdAjusteWMS:({g.Key.IdAjusteWMS}) ",
                 journalMemo:=$"WMS {docTxt} – MI3",
                 series:=Nothing,               ' si aplicara una serie, envíala aquí
                 detalles:=g.ToList()           ' los clsBeAjustesMI3 del grupo
