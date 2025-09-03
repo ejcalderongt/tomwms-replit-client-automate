@@ -1,4 +1,6 @@
-﻿Public Class FacturaReservaEntregaDto
+﻿Imports Newtonsoft.Json
+
+Public Class FacturaReservaEntregaDto
     Public Property CardCode As String
     Public Property DocDate As String
     Public Property DocDueDate As String
@@ -18,7 +20,12 @@ Public Class FacturaReservaEntregaLineDto
     Public Property U_Talla As String
     Public Property BatchNumbers As List(Of BatchNumberDto)
 End Class
+
+<JsonObject(MemberSerialization:=MemberSerialization.OptOut)>
 Public Class BatchNumberDto
+    <JsonProperty("BatchNumber", Order:=1)>
     Public Property BatchNumber As String
+
+    <JsonProperty("Quantity", Order:=2)>
     Public Property Quantity As Decimal
 End Class

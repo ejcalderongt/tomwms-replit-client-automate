@@ -1212,6 +1212,16 @@ Row event argument class
  <param name="pIdOrdenCompraEnc"></param>
  <returns>Lista de Recepciones solamente Ids</returns>
 </member>
+<member name="M:TOMWMS.clsLnTrans_re_oc.GetSingle(System.Int32,System.Int32,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
+ <summary>
+ #EJC20250902: Creada para la interface de mampa.
+ </summary>
+ <param name="pIdRecepcionEnc"></param>
+ <param name="pIdOrdenCompraEnc"></param>
+ <param name="lConnection"></param>
+ <param name="lTransaction"></param>
+ <returns></returns>
+</member>
 <member name="M:TOMWMS.clsLnUnidad_medida.Guardar_Transaccion(System.Collections.Generic.List{TOMWMS.clsBeUnidad_medida}@,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
  <summary>
  Creado por Ricardo García

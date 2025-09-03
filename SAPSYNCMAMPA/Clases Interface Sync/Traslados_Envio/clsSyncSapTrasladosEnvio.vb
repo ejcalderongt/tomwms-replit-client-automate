@@ -516,8 +516,9 @@ Public Class clsSyncSapTrasladosEnvio
                 CnnLog.Open()
                 clsTrans.Begin_Transaction()
 
-                Dim lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out) =
-                clsLnI_nav_transacciones_out.Get_Lotes_Salida_Pendientes_Envio(pTipo, clsTrans.lConnection, clsTrans.lTransaction)
+                Dim lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out) = clsLnI_nav_transacciones_out.Get_Lotes_Salida_Pendientes_Envio(pTipo,
+                                                                                                                                                  clsTrans.lConnection,
+                                                                                                                                                  clsTrans.lTransaction)
 
                 If lTransaccionesSalida Is Nothing OrElse lTransaccionesSalida.Count = 0 Then
                     clsPublic.Actualizar_Progreso(lblprg, "MSG_240117: No hay transacciones para enviar.")
@@ -594,6 +595,108 @@ Public Class clsSyncSapTrasladosEnvio
         End Using
     End Function
 
+    Public Shared Async Function Enviar_Traslados_Desde_Solicitud_Tiendas(ByVal lblprg As RichTextBox,
+                                                                          ByVal prg As ProgressBar,
+                                                                          ByVal pTipo As tTipoDocumentoIngreso,
+                                                                          ByVal BeConfigEnc As clsBeI_nav_config_enc) As Task(Of Boolean)
+
+        Dim envioExitosoCount As Integer = 0
+        Dim huboError As Boolean = False
+        Dim totalPedidos As Integer = 0
+
+        Dim clsTrans As New clsTransaccion()
+
+        Using CnnLog As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
+
+            Try
+
+                CnnLog.Open() : clsTrans.Begin_Transaction()
+
+
+                Dim lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out) =
+                    clsLnI_nav_transacciones_out.Get_Lotes_Ingreso_Pendientes_Envio_By_Tipo(pTipo,
+                                                                                            clsTrans.lConnection,
+                                                                                            clsTrans.lTransaction,
+                                                                                            BeConfigEnc.Idbodega)
+
+                If lTransaccionesSalida Is Nothing OrElse lTransaccionesSalida.Count = 0 Then
+                    clsPublic.Actualizar_Progreso(lblprg, "MSG_240117: No hay transacciones para enviar.")
+                    clsTrans.Commit_Transaction()
+                    Return False
+                End If
+
+                Dim ListaPedidosTransf =
+                (From i In lTransaccionesSalida
+                 Group i By Keys = New With {Key i.No_pedido, Key i.Idordencompra} Into Group
+                 Select New With {Key Keys.No_pedido, Key Keys.Idordencompra}).ToList()
+
+                totalPedidos = ListaPedidosTransf.Count
+                clsPublic.Actualizar_Progreso(lblprg, $"Documentos a enviar: {totalPedidos}")
+
+                For Each PT In ListaPedidosTransf
+
+                    Dim BeTransOcEnc As clsBeTrans_oc_enc = clsLnTrans_oc_enc.GetSingle(PT.Idordencompra, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    If BeTransOcEnc Is Nothing Then
+                        clsPublic.Actualizar_Progreso(lblprg, "No se encontró el documento base con IdOrdencompraEnc: " & PT.Idordencompra)
+                        Continue For
+                    End If
+
+                    clsPublic.Actualizar_Progreso(lblprg, $"Procesando Traslado: {PT.Idordencompra}-{BeTransOcEnc.Referencia}")
+
+                    Dim yaEnviado As Boolean = BeTransOcEnc.Enviado_A_ERP
+
+                    If yaEnviado Then
+                        clsPublic.Actualizar_Progreso(lblprg, "El pedido ya está marcado como enviado a ERP; se omite su reenvío.")
+                        Continue For
+                    End If
+
+                    Dim lTransaccionesSalidaSingle As List(Of clsBeI_nav_transacciones_out) =
+                    lTransaccionesSalida.FindAll(Function(x) x.No_pedido = PT.No_pedido AndAlso x.Idordencompra = PT.Idordencompra)
+
+                    Dim enviadoOk As Boolean = Await Enviar_Traslado_Desde_Solicitud_SAP_Tiendas(PT.No_pedido,
+                                                                                                 BeTransOcEnc,
+                                                                                                 lTransaccionesSalidaSingle,
+                                                                                                 clsTrans,
+                                                                                                 lblprg).ConfigureAwait(False)
+
+                    If enviadoOk Then
+                        Try
+                            clsPublic.Actualizar_Progreso(lblprg, "Transacciones de salida enviadas correctamente.")
+                            clsLnTrans_pe_enc.Actualizar_Estado_Enviado_A_ERP(PT.Idordencompra, True, BeConfigEnc.IdUsuario, clsTrans.lConnection, clsTrans.lTransaction)
+                            envioExitosoCount += 1
+                        Catch ex As Exception
+                            huboError = True
+                            clsPublic.Actualizar_Progreso(lblprg, $"Error al registrar el pedido {PT.No_pedido} en el ERP. Error: {ex.Message}")
+                            clsLnLog_error_wms.Agregar_Error(ex.Message)
+                        End Try
+                    Else
+                        huboError = True
+                        Dim vMsgErr As String = $"No se pudo enviar el pedido {PT.No_pedido} al ERP."
+                        clsPublic.Actualizar_Progreso(lblprg, vMsgErr)
+                        Throw New Exception(vMsgErr)
+                    End If
+                Next
+
+                clsTrans.Commit_Transaction()
+
+                ' Resultado final:
+                ' True  → hubo al menos un envío exitoso y no se detectaron errores.
+                ' False → no hubo envíos exitosos o hubo algún error.
+                Dim resultado As Boolean = (envioExitosoCount > 0 AndAlso Not huboError)
+                Return resultado
+
+            Catch ex As Exception
+                clsTrans.RollBack_Transaction()
+                Return False
+            Finally
+                prg.Value = 0
+                prg.Visible = False
+                If CnnLog.State = ConnectionState.Open Then CnnLog.Close()
+                clsTrans.Close_Conection()
+            End Try
+        End Using
+    End Function
     Private Shared Async Function Enviar_Traslado_Desde_Solicitud_SAP(ByVal _DocEntry As Integer,
                                                                       ByVal BePedidoEnc As clsBeTrans_pe_enc,
                                                                       ByVal transaccionesOut As List(Of clsBeI_nav_transacciones_out),
@@ -781,6 +884,116 @@ Public Class clsSyncSapTrasladosEnvio
         End Try
     End Function
 
+    Private Shared Async Function Enviar_Traslado_Desde_Solicitud_SAP_Tiendas(ByVal _DocEntry As Integer,
+                                                                              ByVal BePedidoEnc As clsBeTrans_oc_enc,
+                                                                              ByVal transaccionesOut As List(Of clsBeI_nav_transacciones_out),
+                                                                              ByVal clsTrans As clsTransaccion,
+                                                                              ByVal lblprg As RichTextBox) As Task(Of Boolean)
+
+
+        ' Progreso básico
+        If transaccionesOut Is Nothing OrElse transaccionesOut.Count = 0 Then
+            clsPublic.Actualizar_Progreso(lblprg, "No hay transacciones para procesar.")
+            Return False
+        End If
+
+        Dim vTraslado_Creado As Boolean = False
+        Dim vSolicitud_Creada As Boolean = False
+        Dim vDebeGenerarSolicitud As Boolean = False
+
+        Try
+
+            Dim vHanaService As New SapServiceLayerClient()
+            Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+
+            If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
+                clsPublic.Actualizar_Progreso(lblprg, "No se pudo obtener sesión.")
+                Return False
+            Else
+                clsPublic.Actualizar_Progreso(lblprg, "Conexión correcta.")
+            End If
+
+            Dim vIdOrdenCompraEnc = transaccionesOut.FirstOrDefault.Idordencompra
+            Dim vIdRecepcionEnc = transaccionesOut.FirstOrDefault.Idrecepcionenc
+            Dim BeTransReOC As clsBeTrans_re_oc = clsLnTrans_re_oc.GetSingle(vIdRecepcionEnc, vIdOrdenCompraEnc, clsTrans.lConnection, clsTrans.lTransaction)
+
+            ' 1) POST /StockTransfers
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+            ServicePointManager.Expect100Continue = False
+            ServicePointManager.FindServicePoint(New Uri(SapServiceLayerClient.baseUrl)).ConnectionLeaseTimeout = 0
+
+            If BeTransReOC.No_Erp_Docnum_Entrega = "" Then
+
+                ' 2) Payload StockTransfer
+                Dim payloadStockTransfer = Build_StockTransfer_Payload(BePedidoEnc.Referencia,
+                                                                       BePedidoEnc.No_Documento,
+                                                                       BePedidoEnc.ProveedorBodega.Proveedor.Codigo,
+                                                                       BePedidoEnc.IdBodega,
+                                                                       transaccionesOut)
+
+                Dim handler As New HttpClientHandler With {
+                .AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate,
+                .ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True,
+                .UseCookies = False
+            }
+
+                Using http As New HttpClient(handler) With {.BaseAddress = New Uri(SapServiceLayerClient.baseUrl)}
+                    Dim json As String = JsonConvert.SerializeObject(payloadStockTransfer, New JsonSerializerSettings With {.NullValueHandling = NullValueHandling.Ignore})
+                    Dim content = New StringContent(json, Encoding.UTF8)
+                    Dim mediaType = New MediaTypeHeaderValue("application/json")
+                    mediaType.CharSet = "utf-8"
+                    content.Headers.ContentType = mediaType
+
+                    Dim req As New HttpRequestMessage(HttpMethod.Post, ENTITY_TARGET_STOCK_TRANSFER) With {.Content = content}
+                    req.Headers.Add("Cookie", vHanaService.SessionCookie)
+                    req.Headers.ConnectionClose = True
+
+                    Dim resp = Await http.SendAsync(req).ConfigureAwait(False)
+                    Dim body = Await resp.Content.ReadAsStringAsync().ConfigureAwait(False)
+
+                    ' Parsear el JSON
+                    Dim jsonObj As JObject = JObject.Parse(body)
+
+                    Dim docEntry As Integer = 0
+                    Dim docNum As Integer = 0
+
+                    If resp.IsSuccessStatusCode Then
+                        ' Capturar los valores
+                        docEntry = jsonObj("DocEntry")
+                        docNum = jsonObj("DocNum")
+                    End If
+
+                    If resp.IsSuccessStatusCode Then
+
+                        clsPublic.Actualizar_Progreso(lblprg, "✅ Respuesta:")
+                        clsPublic.Actualizar_Progreso(lblprg, "Se creó la transferencia: " & docNum & " en SAP")
+
+                        If BeTransReOC IsNot Nothing Then
+                            BeTransReOC.No_Erp_Docnum_Entrega = docNum
+                            BeTransReOC.No_Erp_Docentry_Entrega = docEntry
+                            clsLnTrans_re_oc.Actualizar_No_Entrega_ERP(BeTransReOC)
+                        End If
+
+                        vTraslado_Creado = True
+
+                    Else
+                        clsPublic.Actualizar_Progreso(lblprg, $"❌ Error SL {resp.StatusCode}:")
+                        clsPublic.Actualizar_Progreso(lblprg, body)
+
+                    End If
+
+                End Using
+
+            End If
+
+            Return vTraslado_Creado
+
+        Catch ex As Exception
+            clsPublic.Actualizar_Progreso(lblprg, $"❌ Error al crear la transferencia: {ex.Message}")
+            Return False
+        End Try
+    End Function
+
     Private Shared Function Build_StockTransfer_Payload(docEntrySolicitud As Integer,
                                                         docNumSolicitud As String,
                                                         Fromwarehouse As String,
@@ -791,10 +1004,9 @@ Public Class clsSyncSapTrasladosEnvio
         .FromWarehouse = Fromwarehouse,
         .ToWarehouse = ToWarehouse,
         .DocDate = Today,
-        .Comments = $"Traslado generado por WMS sobre Solicitud SAP: {docEntrySolicitud} - Ref: {docNumSolicitud}",
-        .JournalMemo = $"WMS Transfer from OWTQ {docEntrySolicitud}",
-        .StockTransferLines = New List(Of StockTransferLineDto)()
-    }
+        .Comments = $"Traslado generado por WMS sobre Solicitud SAP: {docEntrySolicitud} - Ref: {docNumSolicitud} - IdDocumentoWMS: {lTransaccionesSalida.FirstOrDefault.Idordencompra}",
+        .JournalMemo = $"WMS Transfer from OWTQ {docNumSolicitud}",
+        .StockTransferLines = New List(Of StockTransferLineDto)()}
 
         ' Agrupar por Item + Línea + Talla + Color + Lote para construir lotes correctos
         Dim grupos = lTransaccionesSalida.
@@ -930,13 +1142,25 @@ Public Class clsSyncSapTrasladosEnvio
     End Function
 
     <Serializable>
-    Private Class StockTransferDto
+    <JsonObject(MemberSerialization:=MemberSerialization.OptOut)>
+    Public Class StockTransferDto
+        <JsonProperty("DocDate", Order:=1)>
         Public Property DocDate As Date = Today
-        Public Property FromWarehouse As String
-        Public Property Comments As String
-        Public Property JournalMemo As String
+
+        <JsonProperty("FromWarehouse", Order:=2)>
+        Public Property FromWarehouse As String = ""
+
+        <JsonProperty("ToWarehouse", Order:=3)>
+        Public Property ToWarehouse As String = ""
+
+        <JsonProperty("Comments", Order:=4)>
+        Public Property Comments As String = ""
+
+        <JsonProperty("JournalMemo", Order:=5)>
+        Public Property JournalMemo As String = ""
+
+        <JsonProperty("StockTransferLines", Order:=6)>
         Public Property StockTransferLines As List(Of StockTransferLineDto)
-        Public Property ToWarehouse As String
     End Class
     Private Class StockTransferRequestDto
         Public Property FromWarehouse As String
@@ -948,17 +1172,36 @@ Public Class clsSyncSapTrasladosEnvio
         Public Property U_ENVIADO_WMS = 2
     End Class
 
-    <Serializable>
+    <JsonObject(MemberSerialization:=MemberSerialization.OptOut)>
     Public Class StockTransferLineDto
-        Public Property BaseType As Integer?
-        Public Property BaseEntry As Integer?
-        Public Property BaseLine As Integer?
+        <JsonProperty("BaseType", Order:=1)>
+        Public Property BaseType As Integer
+
+        <JsonProperty("BaseEntry", Order:=2)>
+        Public Property BaseEntry As Integer
+
+        <JsonProperty("BaseLine", Order:=3)>
+        Public Property BaseLine As Integer
+
+        <JsonProperty("ItemCode", Order:=4)>
         Public Property ItemCode As String
+
+        <JsonProperty("Quantity", Order:=5)>
         Public Property Quantity As Decimal
+
+        <JsonProperty("FromWarehouseCode", Order:=6)>
         Public Property FromWarehouseCode As String
+
+        <JsonProperty("WarehouseCode", Order:=7)>
         Public Property WarehouseCode As String
+
+        <JsonProperty("U_Color", Order:=8)>
         Public Property U_Color As String
+
+        <JsonProperty("U_Talla", Order:=9)>
         Public Property U_Talla As String
+
+        <JsonProperty("BatchNumbers", Order:=10)>
         Public Property BatchNumbers As List(Of BatchNumberDto)
     End Class
 
