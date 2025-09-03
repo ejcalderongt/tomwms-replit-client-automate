@@ -859,6 +859,12 @@
     <Compile Include="Reportes\Despacho\Packing\frmPackingDespachado.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Reportes\Despacho\rptDespachoMampa.Designer.vb">
+      <DependentUpon>rptDespachoMampa.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Despacho\rptDespachoMampa.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reportes\Despacho\rptDespachofCealsa.Designer.vb">
       <DependentUpon>rptDespachofCealsa.vb</DependentUpon>
     </Compile>
@@ -3355,6 +3361,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Despacho\Packing\frmPackingDespachado.resx">
       <DependentUpon>frmPackingDespachado.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Despacho\rptDespachoMampa.resx">
+      <DependentUpon>rptDespachoMampa.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Despacho\rptDespachofCealsa.resx">
       <DependentUpon>rptDespachofCealsa.vb</DependentUpon>

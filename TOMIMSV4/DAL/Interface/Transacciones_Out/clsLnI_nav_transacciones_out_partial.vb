@@ -410,6 +410,20 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                 BeInavTransaccionesOUT.IdProductoTallaColor = BeTransReDet.IdProductoTallaColor
 
+                If BeTransOcDet.IdProductoTallaColor <> 0 Then
+                    Dim BeProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransOcDet.IdProductoTallaColor,
+                                                                                   lConnection,
+                                                                                   lTransaction)
+
+                    If BeProductoTallaColor IsNot Nothing Then
+                        Dim Talla = clsLnTalla.GetSingle(BeProductoTallaColor.IdTalla, lConnection, lTransaction)
+                        Dim Color = clsLnColor.GetSingle(BeProductoTallaColor.IdColor, lConnection, lTransaction)
+
+                        BeInavTransaccionesOUT.Talla = Talla?.Nombre
+                        BeInavTransaccionesOUT.Color = Color?.Nombre
+                    End If
+                End If
+
                 Insertar(BeInavTransaccionesOUT,
                          lConnection,
                          lTransaction)

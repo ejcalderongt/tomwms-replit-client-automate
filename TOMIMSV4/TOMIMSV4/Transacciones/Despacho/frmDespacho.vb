@@ -2706,6 +2706,26 @@ Public Class frmDespacho
                         Rep.RequestParameters = False
                         Rep.ShowPreview()
 
+                    Case 5 '#MECR29082025: Formato para MAMPA
+                        Dim Rep As New rptDespachoMAMPA
+                        Rep.DataSource = clsLnTrans_despacho_enc.Get_Reporte_Despacho(BeDespachoEnc.IdDespachoEnc)
+                        Rep.DataMember = "Result"
+                        Rep.Parameters("Empresa").Value = AP.NomEmpresa
+                        Rep.Parameters("Empresa").Visible = False
+                        Rep.Parameters("Bodega").Value = AP.NomBodega
+                        Rep.Parameters("Bodega").Visible = False
+                        Rep.RequestParameters = False
+
+                        Rep.MostrarEncabezadoSoloEnPrimeraPagina = (Not mnuRepetirEncabezadoEnCadaPagina.Checked)
+
+                        If clsLnEmpresa.GetImagen(AP.IdEmpresa) Is Nothing Then
+                            Rep.XrLogo.Image = Nothing
+                        Else
+                            Rep.XrLogo.Image = clsPublic.ByteArrayToImage(clsLnEmpresa.GetImagen(AP.IdEmpresa))
+                        End If
+
+                        Rep.ShowPreview()
+
                     Case Else
 
                         Dim Rep As New rptDespacho
@@ -2826,6 +2846,9 @@ Public Class frmDespacho
 
                 Select Case TipoReporteDespacho
                     Case 1 '#EJC20200714: Forma
+                        mnuRepetirEncabezadoEnCadaPagina.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
+                        mnuRepetirEncabezadoEnCadaPagina.Checked = True
+                    Case 5 '#MECR29082025: Se agrego forma para MAMPA
                         mnuRepetirEncabezadoEnCadaPagina.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
                         mnuRepetirEncabezadoEnCadaPagina.Checked = True
                     Case Else
