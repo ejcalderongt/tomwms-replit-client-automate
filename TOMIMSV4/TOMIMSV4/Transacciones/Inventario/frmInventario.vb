@@ -6878,6 +6878,8 @@ Public Class frmInventario
             If gBeTransInvEnc.Regularizado Then
                 Close()
                 'Desactiva_Menu()
+            Else
+                Listar_Datos_De_Inventario()
             End If
 
         Catch ex As Exception

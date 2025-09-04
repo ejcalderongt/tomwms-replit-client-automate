@@ -7746,14 +7746,48 @@ Partial Public Class clsLnTrans_inv_ciclico
 
         Try
 
-            Dim vSQL As String = "SELECT IdInventario, codigo as Código,producto as Producto ,LoteOrigen as LoteOrigen, Lote, FechaVence,Licencia, 
-                                        EstadoOrigen, EstadoDestino, UbicacionOrigen, UbicacionDestino,
-                                        Cantidad_Stock as CantidadStock,
-                                        Peso_Stock as PesoStock,Cantidad as CantidadConteo,Peso as PesoConteo,Entradas,Salidas,Entradas_Salidas,
-                                        (Cantidad+Entradas_Salidas) as NuevoStock,(Cantidad-Cantidad_Stock+Entradas_Salidas) as DiferenciaCantidad, 
-                                        (Peso_Stock - Peso) as DiferenciaPeso, Cantidad_Reservada_UmBas, TieneReservaYConteoInsuficiente, Observacion
-                                        from ComparacionInventario
-                                        Where IdInventario=@idinventarioenc"
+            Dim vSQL As String = "SELECT 
+                                    codigo AS Código,
+                                    producto AS Producto,
+                                    LoteOrigen AS LoteOrigen,
+                                    Lote,
+                                    FechaVence,
+                                    Licencia, 
+                                    EstadoOrigen,
+                                    EstadoDestino,
+                                    UbicacionOrigen,
+                                    UbicacionDestino,
+                                    Cantidad_Stock AS CantidadStock,
+                                    Peso_Stock AS PesoStock,
+                                    Cantidad AS CantidadConteo,
+                                    Peso AS PesoConteo,
+                                    Entradas,
+                                    Salidas,
+                                    Entradas_Salidas,
+
+                                    -- NuevoStock con múltiples condiciones 
+                                    CASE 
+                                        WHEN Cantidad = (Cantidad_Stock + Entradas ) AND Salidas = 0  THEN Cantidad
+                                        WHEN Salidas IS NOT NULL AND Salidas < 0 THEN (Cantidad_Stock + Salidas)
+                                        ELSE (Cantidad + Entradas_Salidas + Salidas)
+                                    END AS NuevoStock,
+
+                                    -- DiferenciaCantidad con múltiples condiciones 
+                                    CASE 
+                                        WHEN (Cantidad = (Cantidad_Stock + Entradas)) AND Salidas = 0 THEN (Cantidad_Stock + Entradas - Cantidad)
+                                        WHEN Salidas IS NOT NULL AND Salidas < 0 THEN  (Cantidad_Stock + Salidas - Cantidad) * -1
+                                        ELSE ((Cantidad_Stock + Entradas_Salidas) - Cantidad) * -1
+                                    END AS DiferenciaCantidad,
+
+                                    -- DiferenciaPeso se mantiene igual
+                                    (Peso_Stock - Peso) AS DiferenciaPeso,
+                                    Cantidad_Reservada_UmBas,
+                                    TieneReservaYConteoInsuficiente,  
+                                    Observacion
+                                FROM 
+                                    ComparacionInventario
+                                WHERE 
+                                    IdInventario = @idinventarioenc AND TieneReservaYConteoInsuficiente = 0;"
 
             Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
 
