@@ -4391,7 +4391,7 @@
     <None Include="Conn_MAMPA.ini" />
     <None Include="Conn_Mercosal.ini" />
     <None Include="Conn_DYD.ini" />
-    <None Include="Conn_Merhonsa.ini" />    
+    <None Include="Conn_Merhonsa.ini" />
     <Content Include="Mantenimientos\plantillas\WMS_plantilla_Importacion_Productos.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -4510,10 +4510,6 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
-    <Content Include="SAPBOSyncCumbre.exe" />
-    <Content Include="SAPBOSyncKillios.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
