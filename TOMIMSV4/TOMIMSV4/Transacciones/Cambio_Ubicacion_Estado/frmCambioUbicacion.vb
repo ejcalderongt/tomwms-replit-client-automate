@@ -232,6 +232,8 @@ Public Class frmCambioUbicacion
 
                     '#CM_20092018_1142AM: se busca la bodega por el IdPropietarioBodega ya que no está en la tabla de encabezado.
                     Bodega = clsLnPropietario_bodega.GetBodegaByIdPropietarioBodega(gBeTransubicacionHHEnc.IdPropietarioBodega)
+                    clsLnBodega.GetSingle(Bodega)
+
 
                     If Bodega IsNot Nothing Then
                         cmbBodega.EditValue = Bodega.IdBodega
@@ -512,8 +514,11 @@ Public Class frmCambioUbicacion
             DT.Columns.Add("FechaVence", GetType(Date))
             DT.Columns.Add("No_Linea", GetType(Integer))
             '#GT08092025: campos talla/color
-            DT.Columns.Add("Talla", GetType(String))
-            DT.Columns.Add("Color", GetType(String))
+
+            If Bodega.Control_Talla_Color Then
+                DT.Columns.Add("Talla", GetType(String))
+                DT.Columns.Add("Color", GetType(String))
+            End If
 
             grdDetalle.DataSource = Nothing
 

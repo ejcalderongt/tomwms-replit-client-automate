@@ -6111,6 +6111,23 @@ Partial Public Class clsLnStock_res
                             '    Throw New Exception("Error_202303101448P: El valor a insertar en stock sería un valor decimal no válido, se prevendrá continuar para evitar inconvenientes en reserva.")
                             'End If
 
+                            '#GT08092025: añadir talla/color
+                            If BeStock.IdProductoTallaColor > 0 Then
+
+                                Dim tmpTalla As New clsBeTalla
+                                Dim tmpColor As New clsBeColor
+
+                                Dim tmpProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeStock.IdProductoTallaColor, lConnection, lTransaction)
+
+                                tmpTalla = clsLnTalla.GetSingle(tmpProductoTallaColor.IdTalla, lConnection, lTransaction)
+                                tmpColor = clsLnColor.GetSingle(tmpProductoTallaColor.IdColor, lConnection, lTransaction)
+
+                                BeStockRes.Talla = tmpTalla.Codigo
+                                BeStockRes.Color = tmpColor.Codigo
+                                BeStockRes.IdProductoTallaColor = BeStock.IdProductoTallaColor
+
+                            End If
+
                             Insertar(BeStockRes, lConnection, lTransaction)
 
                         End Using

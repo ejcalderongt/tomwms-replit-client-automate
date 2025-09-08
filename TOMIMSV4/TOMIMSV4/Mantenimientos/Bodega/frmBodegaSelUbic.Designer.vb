@@ -399,7 +399,7 @@ Partial Class frmBodegaSelUbic
         Me.PanelControl2.Location = New System.Drawing.Point(329, 4)
         Me.PanelControl2.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.PanelControl2.Name = "PanelControl2"
-        Me.PanelControl2.Size = New System.Drawing.Size(589, 700)
+        Me.PanelControl2.Size = New System.Drawing.Size(588, 700)
         Me.PanelControl2.TabIndex = 1
         '
         'PanelControl5
@@ -425,7 +425,7 @@ Partial Class frmBodegaSelUbic
         Me.PanelControl5.Location = New System.Drawing.Point(5, 89)
         Me.PanelControl5.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.PanelControl5.Name = "PanelControl5"
-        Me.PanelControl5.Size = New System.Drawing.Size(578, 148)
+        Me.PanelControl5.Size = New System.Drawing.Size(577, 148)
         Me.PanelControl5.TabIndex = 3
         '
         'lblDisponible
@@ -595,7 +595,7 @@ Partial Class frmBodegaSelUbic
         '
         Me.lblUbicacion.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lblUbicacion.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblUbicacion.Location = New System.Drawing.Point(445, 7)
+        Me.lblUbicacion.Location = New System.Drawing.Point(444, 7)
         Me.lblUbicacion.Name = "lblUbicacion"
         Me.lblUbicacion.Size = New System.Drawing.Size(138, 27)
         Me.lblUbicacion.TabIndex = 1
@@ -613,7 +613,7 @@ Partial Class frmBodegaSelUbic
         Me.PanelControl4.Location = New System.Drawing.Point(5, 43)
         Me.PanelControl4.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.PanelControl4.Name = "PanelControl4"
-        Me.PanelControl4.Size = New System.Drawing.Size(578, 41)
+        Me.PanelControl4.Size = New System.Drawing.Size(577, 41)
         Me.PanelControl4.TabIndex = 2
         '
         'lblVolumenDisponible
@@ -670,7 +670,7 @@ Partial Class frmBodegaSelUbic
         Me.dgridStockUbic.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridStockUbic.MenuManager = Me.RibbonControl
         Me.dgridStockUbic.Name = "dgridStockUbic"
-        Me.dgridStockUbic.Size = New System.Drawing.Size(583, 503)
+        Me.dgridStockUbic.Size = New System.Drawing.Size(582, 503)
         Me.dgridStockUbic.TabIndex = 4
         Me.dgridStockUbic.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1, Me.GridView6})
         '
@@ -921,7 +921,7 @@ Partial Class frmBodegaSelUbic
         Me.TableLayoutPanel1.ColumnCount = 3
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35.4536!))
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 64.5464!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 369.0!))
+        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 370.0!))
         Me.TableLayoutPanel1.Controls.Add(Me.xtrBodegaSelUbic, 0, 0)
         Me.TableLayoutPanel1.Controls.Add(Me.PanelControl2, 1, 0)
         Me.TableLayoutPanel1.Controls.Add(Me.PanelControl1, 2, 0)

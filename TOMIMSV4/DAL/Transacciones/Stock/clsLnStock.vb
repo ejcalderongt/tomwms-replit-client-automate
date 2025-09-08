@@ -97,7 +97,10 @@ Public Class clsLnStock
             Ins.Add("temperatura", "@temperatura", DataType.Parametro)
             Ins.Add("pallet_no_estandar", "@pallet_no_estandar", DataType.Parametro)
             Ins.Add("atributo_variante_1", "@atributo_variante_1", DataType.Parametro)
-            Ins.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
+
+            If oBeStock.IdProductoTallaColor > 0 Then
+                Ins.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
+            End If
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -950,6 +953,7 @@ Public Class clsLnStock
         cmd.Parameters.Add(New SqlParameter("@TEMPERATURA", oBeStock.Temperatura))
         cmd.Parameters.Add(New SqlParameter("@PALLET_NO_ESTANDAR", oBeStock.Pallet_No_Estandar))
         cmd.Parameters.Add(New SqlParameter("@ATRIBUTO_VARIANTE_1", oBeStock.Atributo_Variante_1))
+        '#GT08092025: aqui ya se valida que si no maneja talla color, el valor es null
         cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", IIf(oBeStock.IdProductoTallaColor = 0, DBNull.Value, oBeStock.IdProductoTallaColor)))
 
     End Sub
