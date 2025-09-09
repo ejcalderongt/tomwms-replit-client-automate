@@ -14893,6 +14893,7 @@ Partial Public Class clsLnStock
 
         Try
 
+            '#MECR04092025: Se agrego columna de Talla y Color
             Dim vSQL As String = "SELECT Bodega,Propietario,IdProducto,Codigo,
 							      nombre as Producto,NomEstado as Estado,
 							      IdPresentacion,sum(isnull(CantidadSF,0)) as CantidadUMBas,
@@ -14907,7 +14908,7 @@ Partial Public Class clsLnStock
                                   Fecha_Ingreso,
                                   Fecha_Vence, Nombre_Completo AS [Ubicación],
                                   codigo_poliza,Numero_poliza numero_orden,ubicacion_picking, Area, Factor, IdUbicacion, 
-                                  dbo.Nombre_Tramo(IdTramo, IdBodega) Tramo,IdStock
+                                  dbo.Nombre_Tramo(IdTramo, IdBodega) Tramo,IdStock, Codigo_Talla as Talla, Codigo_Color as Color
 							      FROM VW_Stock_Res WHERE 1 > 0 "
 
             If pIdBodega <> 0 Then
@@ -14922,7 +14923,7 @@ Partial Public Class clsLnStock
 					  Nombre,Presentacion,IdPresentacion,UnidadMedida,peso, 
 					  Lote,fecha_vence, Nombre_Completo,lic_plate,
 				      Factor,codigo_poliza,Numero_poliza, CantidadReservada,Cantidad,
-                      CantidadSF,ubicacion_picking,Area, Factor, IdUbicacion, IdTramo, IdBodega, IdStock "
+                      CantidadSF,ubicacion_picking,Area, Factor, IdUbicacion, IdTramo, IdBodega, IdStock, Codigo_Talla, Codigo_Color "
 
             vSQL += "ORDER BY CODIGO, Nombre_Completo, IdStock "
 

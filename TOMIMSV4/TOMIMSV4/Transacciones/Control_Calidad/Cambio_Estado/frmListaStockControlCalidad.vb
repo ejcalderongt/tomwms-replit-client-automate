@@ -1,5 +1,6 @@
 ﻿Imports System.IO
 Imports System.Reflection
+Imports DevExpress.DashboardCommon
 Imports DevExpress.Data
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
@@ -704,6 +705,16 @@ Public Class frmListaStockControlCalidad
                         clsLnStock.GetSingle(pObjStockMov)
                         pObjStockMov.IdUbicacion_anterior = Stock.IdUbicacion
                         pObjStockMov.IdProductoEstado = Stock.IdProductoEstado
+
+                        '#MECR05092025: se agrego columna de "IdProductoTallaColor", "Talla" y "Color"
+                        If Stock.IdProductoTallaColor > 0 Then
+                            Dim DtPtc = clsLnProducto_talla_color.Get_All_Dt_By_IdProductoTallaColor(Stock.IdProductoTallaColor)
+                            If DtPtc.Rows.Count > 0 Then
+                                pObjStockMov.Talla = DtPtc.Rows(0)("Talla")
+                                pObjStockMov.Color = DtPtc.Rows(0)("Color")
+                            End If
+                        End If
+
                         pListStockMov.Add(pObjStockMov)
 
                         '#GT02012023: creamos la tarea detalle de la HH
@@ -996,26 +1007,46 @@ Public Class frmListaStockControlCalidad
                 Dim idBodega As Integer = (From row In DT.AsEnumerable()
                                            Select row.Field(Of Integer)("IdBodega")).FirstOrDefault()
 
-                Dim vNombreBodega As String = clsLnBodega.Get_Nombre_Bodega_By_IdBodega(idBodega)
-                Dim IdEmpresa As Integer = clsLnBodega.Get_IdEmpresa_By_IdBodega(idBodega)
-                Dim vNombreEmpresa As String = clsLnEmpresa.Get_Nombre_Empresa_By_IdEmpresa(IdEmpresa)
+                Dim beBodega As New clsBeBodega() With {.IdBodega = idBodega}
+                clsLnBodega.GetSingle(beBodega)
 
-                Dim Rep As New rptControlCalidadCambioEstado
-                Rep.DataSource = DT
-                Rep.DataMember = "Result"
-                Rep.Parameters("Empresa").Value = vNombreEmpresa
-                Rep.Parameters("Empresa").Visible = False
-                Rep.Parameters("Bodega").Value = vNombreBodega
-                Rep.Parameters("Bodega").Visible = False
-                Rep.RequestParameters = False
+                Dim vNombreEmpresa As String = clsLnEmpresa.Get_Nombre_Empresa_By_IdEmpresa(beBodega.IdEmpresa)
 
-                If clsLnEmpresa.GetImagen(IdEmpresa) Is Nothing Then
-                    Rep.XrLogo.Image = Nothing
+                If beBodega.Control_Talla_Color Then
+                    Dim Rep As New rptControlCalidadCambioEstadoMampa
+                    Rep.DataSource = DT
+                    Rep.DataMember = "Result"
+                    Rep.Parameters("Empresa").Value = vNombreEmpresa
+                    Rep.Parameters("Empresa").Visible = False
+                    Rep.Parameters("Bodega").Value = beBodega.Nombre
+                    Rep.Parameters("Bodega").Visible = False
+                    Rep.RequestParameters = False
+
+                    If clsLnEmpresa.GetImagen(beBodega.IdEmpresa) Is Nothing Then
+                        Rep.XrLogo.Image = Nothing
+                    Else
+                        Rep.XrLogo.Image = clsPublic.ByteArrayToImage(clsLnEmpresa.GetImagen(beBodega.IdEmpresa))
+                    End If
+
+                    Rep.ShowPreview()
                 Else
-                    Rep.XrLogo.Image = clsPublic.ByteArrayToImage(clsLnEmpresa.GetImagen(IdEmpresa))
-                End If
+                    Dim Rep As New rptControlCalidadCambioEstado
+                    Rep.DataSource = DT
+                    Rep.DataMember = "Result"
+                    Rep.Parameters("Empresa").Value = vNombreEmpresa
+                    Rep.Parameters("Empresa").Visible = False
+                    Rep.Parameters("Bodega").Value = beBodega.Nombre
+                    Rep.Parameters("Bodega").Visible = False
+                    Rep.RequestParameters = False
 
-                Rep.ShowPreview()
+                    If clsLnEmpresa.GetImagen(beBodega.IdEmpresa) Is Nothing Then
+                        Rep.XrLogo.Image = Nothing
+                    Else
+                        Rep.XrLogo.Image = clsPublic.ByteArrayToImage(clsLnEmpresa.GetImagen(beBodega.IdEmpresa))
+                    End If
+
+                    Rep.ShowPreview()
+                End If
 
             End If
 
