@@ -456,7 +456,7 @@ Partial Public Class clsLnTrans_ajuste_enc
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
                 Dim vSQL As String = "UPDATE trans_ajuste_enc SET referencia=@referencia
-                    WHERE IdAjusteEnc=@IdAjusteEnc"
+                    WHERE IdAjusteEnc=@IdAjusteEnc "
 
                 lConnection.Open()
 

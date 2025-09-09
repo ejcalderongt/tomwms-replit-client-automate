@@ -184,7 +184,7 @@ Partial Public Class clsLnI_nav_transacciones_out
                     BeTransaccionesOut.IdProductoTallaColor = BeTransReDet.IdProductoTallaColor
 
                     '#EJC20210923: Obtener talla y color.   
-                    Dim DtPtc = clsLnProducto_talla_color.Get_All_Dt_By_IdProductoTallaColor(BeTransReDet.IdProductoBodega)
+                    Dim DtPtc = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeTransReDet.IdProductoBodega)
 
                     If Not DtPtc Is Nothing Then
                         If DtPtc.Rows.Count > 0 Then
@@ -2798,7 +2798,9 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Observacion = AjDet.Observacion
                                         BeAjusteMI3.Seccion = AjDet.Seccion
                                         BeAjusteMI3.IdCentroCosto = AjEnc.IdCentroCosto
-                                        BeAjusteMI3.Codigo_Centro_Costo = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(AjEnc.IdCentroCosto)
+                                        BeAjusteMI3.Codigo_Centro_Costo = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(AjEnc.IdCentroCosto, lConnection, lTransaction)
+                                        BeAjusteMI3.Talla = AjDet.Talla
+                                        BeAjusteMI3.Color = AjDet.Color
                                         lAjustesMI3.Add(BeAjusteMI3)
 
                                         clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste negativo para: " & AjDet.Codigo_Producto & " " & AjDet.Nombre_Producto)
@@ -2840,7 +2842,9 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Observacion = AjDet.Observacion
                                         BeAjusteMI3.Seccion = AjDet.Seccion
                                         BeAjusteMI3.IdCentroCosto = AjEnc.IdCentroCosto
-                                        BeAjusteMI3.Codigo_Centro_Costo = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(AjEnc.IdCentroCosto)
+                                        BeAjusteMI3.Codigo_Centro_Costo = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(AjEnc.IdCentroCosto, lConnection, lTransaction)
+                                        BeAjusteMI3.Talla = AjDet.Talla
+                                        BeAjusteMI3.Color = AjDet.Color
                                         lAjustesMI3.Add(BeAjusteMI3)
 
                                         clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste positivo para: " & AjDet.Codigo_Producto & " " & AjDet.Nombre_Producto)

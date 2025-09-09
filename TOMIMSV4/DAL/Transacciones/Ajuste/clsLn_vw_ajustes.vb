@@ -38,6 +38,8 @@ Public Class clsLn_vw_ajustes
                 .Factor = IIf(IsDBNull(dr.Item("Factor")), 0, dr.Item("Factor"))
                 .Codigo_Centro_Costo = IIf(IsDBNull(dr.Item("Codigo_Centro_Costo")), 0, dr.Item("Codigo_Centro_Costo"))
                 .Nombre_Centro_Costo = IIf(IsDBNull(dr.Item("Nombre_Centro_Costo")), 0, dr.Item("Nombre_Centro_Costo"))
+                .Talla = IIf(IsDBNull(dr.Item("Talla")), "", dr.Item("Talla"))
+                .Color = IIf(IsDBNull(dr.Item("Color")), "", dr.Item("Color"))
             End With
 
         Catch ex As Exception
@@ -45,113 +47,5 @@ Public Class clsLn_vw_ajustes
         End Try
 
     End Sub
-
-    Public Shared Function Listar() As DataTable
-
-        Try
-
-            Const sp As String = "SELECT * FROM vw_ajustes"
-            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
-            Dim dad As New SqlDataAdapter(cmd)
-            Dim dt As New DataTable
-            dad.Fill(dt)
-
-            Return dt
-
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Function Obtener(ByRef oBeT_vw_ajustes As clsBe_vw_ajustes) As Boolean
-
-        Try
-
-            Const sp As String = "SELECT * FROM vw_ajustes"
-
-            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
-            Dim dad As New SqlDataAdapter(cmd)
-
-            Dim dt As New DataTable
-            dad.Fill(dt)
-
-            If dt.Rows.Count = 1 Then
-                Cargar(oBeT_vw_ajustes, dt.Rows(0))
-            End If
-
-            Return True
-
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Function GetAll() As List(Of clsBe_vw_ajustes)
-
-        Try
-
-            Dim lReturnList As New List(Of clsBe_vw_ajustes)
-            Const sp As String = "SELECT * FROM vw_ajustes"
-            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
-            Dim dad As New SqlDataAdapter(cmd)
-            Dim dt As New DataTable
-
-            dad.Fill(dt)
-
-            Dim vBeT_vw_ajustes As New clsBe_vw_ajustes
-
-            For Each dr As DataRow In dt.Rows
-                vBeT_vw_ajustes = New clsBe_vw_ajustes
-                Cargar(vBeT_vw_ajustes, dr)
-                lReturnList.Add(vBeT_vw_ajustes)
-            Next
-
-            Return lReturnList
-
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Function GetSingle(ByRef pBeT_vw_ajustes As clsBe_vw_ajustes)
-
-        Try
-
-            Const sp As String = "SELECT * FROM vw_ajustes"
-
-            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
-            Dim dad As New SqlDataAdapter(cmd)
-
-            Dim dt As New DataTable
-            dad.Fill(dt)
-
-            If dt.Rows.Count = 1 Then
-                Cargar(pBeT_vw_ajustes, dt.Rows(0))
-            End If
-
-            Return True
-
-        Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-        End Try
-
-    End Function
 
 End Class

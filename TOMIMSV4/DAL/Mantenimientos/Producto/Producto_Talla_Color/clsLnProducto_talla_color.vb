@@ -831,7 +831,7 @@ Public Class clsLnProducto_talla_color
 
 	End Function
 
-	Public Shared Function Get_All_Dt_By_IdProductoTallaColor(IdProductoTallaColor As Integer) As DataTable
+	Public Shared Function Get_Single_Dt_By_IdProductoTallaColor(IdProductoTallaColor As Integer) As DataTable
 		Try
 			Const sql As String = "
 						SELECT 
@@ -1102,6 +1102,38 @@ Public Class clsLnProducto_talla_color
 			If Not lTransaction Is Nothing Then lTransaction.Dispose()
 		End Try
 
+	End Function
+
+	Public Shared Function Get_Single_Dt_By_IdProductoTallaColor(IdProductoTallaColor As Integer, lConnection As SqlConnection, lTransaction As SqlTransaction) As DataTable
+		Try
+			Const sql As String = "
+						SELECT 
+							ptc.IdProductoTallaColor AS Codigo, 
+							t.Codigo AS Talla,
+							c.Codigo AS Color,									
+							ptc.CodigoSKU AS SKU
+						FROM producto_talla_color AS ptc
+						INNER JOIN talla  AS t ON ptc.IdTalla  = t.IdTalla
+						INNER JOIN color  AS c ON ptc.IdColor  = c.IdColor
+						INNER JOIN [campaña] AS ca ON ptc.IdCampaña = ca.IdCampaña
+						WHERE ptc.IdProductoTallaColor = @IdProductoTallaColor;"
+
+			Dim dt As New DataTable()
+
+			Using cmd As New SqlCommand(sql, lConnection, lTransaction)
+				cmd.CommandType = CommandType.Text
+				cmd.Parameters.Add("@IdProductoTallaColor", SqlDbType.Int).Value = IdProductoTallaColor
+
+				Using dad As New SqlDataAdapter(cmd)
+					dad.Fill(dt)
+				End Using
+			End Using
+
+			Return dt
+
+		Catch ex As Exception
+			Throw New Exception($"Error en Get_All_Dt_By_IdProductoTallaColor: {ex.Message}", ex)
+		End Try
 	End Function
 
 End Class
