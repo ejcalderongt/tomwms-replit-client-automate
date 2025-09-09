@@ -3119,9 +3119,12 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                          lConectionInterface,
                                                          lTransactionInterface)
             Try
-                '#CKFK 20240723 Agregué esta funcionalidad para Clarispharma porque en el caso de ellos si van a poder sacar produdcto de cualquier área
+                '#CKFK 20240723 Agregué esta funcionalidad para Clarispharma porque en el caso de ellos si van a
+                'poder sacar produdcto de cualquier área
                 If Not BeBodega Is Nothing Then
+
                     If BeBodega.Interface_SAP AndAlso BeBodega.Restringir_Areas_SAP Then
+
                         pBeStockRes.IdProductoEstado = clsLnProducto_estado.Get_IdEstado_By_Codigo_Area(BePedidoEnc.Bodega_Origen,
                                                                                                         lConectionInterface,
                                                                                                         lTransactionInterface)
