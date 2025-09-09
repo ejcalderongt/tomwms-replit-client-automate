@@ -3070,6 +3070,10 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
 
                             vInsertoLineaDetalle = False
 
+                            If BeProducto.Codigo = "00420441" Then
+                                Debug.Print("Aqui")
+                            End If
+
                             '#EJC20220224_0123AM: El producto viene en UMBAS.
                             If BeProducto.UnidadMedida.Codigo = PDet.Unit_of_Measure_Code Then 'And Not PDet.Unit_of_Measure_Code.StartsWith("CJ")
 
