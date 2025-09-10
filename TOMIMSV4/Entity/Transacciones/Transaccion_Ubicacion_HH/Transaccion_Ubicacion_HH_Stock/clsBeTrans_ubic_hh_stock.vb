@@ -36,6 +36,9 @@ Public Class clsBeTrans_ubic_hh_stock
     Public Property Temperatura() As Double = 0.0
     Public Property Fecha_mov_hist() As Date = Date.Now
     Public Property Atributo_variante_1() As String = ""
+    Public Property IdProductoTallaColor() As Integer = 0
+    Public Property Talla() As String = String.Empty
+    Public Property Color() As String = String.Empty
 
     Sub New()
     End Sub
