@@ -18267,6 +18267,11 @@ Partial Public Class clsLnStock_res
             Dim vEsReempaque As Boolean = False
 
 #End Region
+
+            If pStockResSolicitud.IdProductoBodega = 158 And pStockResSolicitud.Cantidad = 41 And pStockResSolicitud.Atributo_Variante_1 = "" Then
+                Debug.Print("Aqui")
+            End If
+
             vIdTipoPedido = clsLnTrans_pe_enc.Get_IdTipoPedido_By_IdPedidoEnc(pStockResSolicitud.IdPedido,
                                                                               lConnection,
                                                                               ltransaction)
@@ -18666,7 +18671,7 @@ EXPLOSIONAR_PRODUCTO:
 
                         End If
 
-                        If vBusquedaEnUmBas AndAlso lBeStockExistente.Count = 0 Then
+                        If (vBusquedaEnUmBas AndAlso lBeStockExistente.Count = 0) Then
 
                             If pBeConfigEnc.Rechazar_pedido_incompleto = tRechazarPedidoIncompleto.Si Then
                                 Throw New Exception(String.Format("Error_202212140140D: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
@@ -19122,7 +19127,26 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                 vFechaMinimaVenceZonaALM.Date > vFechaDefecto) Then
                                 If Not lBeStockExistenteZonasNoPicking Is Nothing Then
                                     If lBeStockExistenteZonasNoPicking.Count > 0 Then
-                                        lBeStockExistente = lBeStockExistenteZonasNoPicking
+                                        If (vRestoInventarioEnUmBas _
+                                                AndAlso pStockResBusquedaParaExplosion IsNot Nothing _
+                                                AndAlso pStockResBusquedaParaExplosion.IdPresentacion <> 0) Then
+                                            If pBeConfigEnc.Rechazar_pedido_incompleto = tRechazarPedidoIncompleto.Si Then
+                                                Throw New Exception(String.Format("Error_202212140140D: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
+                                                                               BeProducto.Codigo,
+                                                                               pStockResSolicitud.Cantidad,
+                                                                               0))
+                                            Else
+
+                                                If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                    vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                    clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking, lConnection, ltransaction)
+                                                    Return False
+                                                End If
+
+                                            End If
+                                        Else
+                                            lBeStockExistente = lBeStockExistenteZonasNoPicking
+                                        End If
                                     End If
                                 End If
                             ElseIf vFechaMinimaVenceZonaPicking > vFechaDefecto Then
@@ -20733,6 +20757,10 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
 
                     If Not vCantidadCompletada Then
 
+                        If BeProducto.Codigo = "00420441" Then
+                            Debug.Print("Aqui")
+                        End If
+
                         FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
                                                                                          DiasVencimiento,
                                                                                          pBeConfigEnc,
@@ -20745,7 +20773,8 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                                                          lBeStockExistente,
                                                                                          BePresentacionDefecto)
 
-                        If Not ExcepcionFechaVenceEsInferiorEnZonaPicking Then
+                        '#CKFK20250910 Agregué esto AndAlso lBeStockZonaPicking.Count > 0 porque en este caso este stock deberia tener inventario
+                        If Not ExcepcionFechaVenceEsInferiorEnZonaPicking AndAlso lBeStockZonaPicking.Count > 0 Then
 
                             If pStockResSolicitud.IdPresentacion = 0 Then
                                 '#EJC: Verificar que en ALM, no existan unidades antes de llevar de PICK.
@@ -20830,7 +20859,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                 End If
 
                                 If vCantidadDispStock < 0 Then
-                                    Throw New Exception("ERROR_202302061300G: La cantidad disponible en stock, reflejó un resultado negativo y no hay fundamento técncio para que eso ocurra (aún), reportar a dsearrollo.")
+                                    Throw New Exception("ERROR_202302061300G: La cantidad disponible en stock, reflejó un resultado negativo y no hay fundamento técnico para que eso ocurra (aún), reportar a dsearrollo.")
                                 End If
 
                                 If vCantidadDispStock > 0 Then
@@ -22681,6 +22710,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                     ListaEstadosDeProceso.Add(104)
                                     GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
                                 Else
+                                    '#CKFK20250909 Analizar si es correcto que se vaya
                                     Exit For
                                 End If
                             Else
@@ -25302,7 +25332,8 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
                                         vRestoInventarioEnUmBas = True
 
-                                        lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
+                                        '#CKFK20250910 Agregué  AndAlso x.IdPresentacion = 0
+                                        lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0 AndAlso x.IdPresentacion = 0).ToList()
 
                                         '#EJC20231019_Get_Fecha_Vence_Minima_Stock_Reserva_MI3
                                         FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
