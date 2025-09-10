@@ -261,9 +261,10 @@ Public Class frmLicSolicitud
             Dim ValoresLLaveSeparados As String() = vLlaveDecodificada.Split(",")
             cLic.CantBackOffice = ValoresLLaveSeparados(1)
             cLic.CantHandHeld = ValoresLLaveSeparados(2)
-            Dim vAño As Integer = ValoresLLaveSeparados(3) + 2000
-            Dim vMes As Integer = ValoresLLaveSeparados(4)
-            Dim vDia As Integer = ValoresLLaveSeparados(5)
+            cLic.CantUx = ValoresLLaveSeparados(3) '#GT09092025: nuevo valor para los usuarios con acceso a portal web, los demas index, se corren un valor
+            Dim vAño As Integer = ValoresLLaveSeparados(4) + 2000
+            Dim vMes As Integer = ValoresLLaveSeparados(5)
+            Dim vDia As Integer = ValoresLLaveSeparados(6)
             Dim vFechaVence As Date = New Date(vAño, vMes, vDia)
             cLic.Vence = vFechaVence
 
@@ -299,7 +300,7 @@ Public Class frmLicSolicitud
 
             '#EJC2018106: Agregado para actualizar servidor de licencia,
             'Creo que me falta una bandera de validación que agregue si HosEsNuevoServidor
-            If XtraMessageBox.Show(String.Format("¿Aplicar licencia: {0}Backoffice: {1}  {0}HandHeld:{2} {0}Vence:{3}?", vbCrLf, cLic.CantBackOffice, cLic.CantHandHeld, cLic.Vence.ToShortDateString), Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+            If XtraMessageBox.Show(String.Format("¿Aplicar licencia: {0}Backoffice: {1}  {0}HandHeld:{2} {0}Usuarios UX:{3} {0}Vence:{4}?", vbCrLf, cLic.CantBackOffice, cLic.CantHandHeld, cLic.CantUx, cLic.Vence.ToShortDateString), Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
 
                 clsLnLicencia_llave.EliminarTodos()
 
@@ -308,6 +309,7 @@ Public Class frmLicSolicitud
 
                 BeLicLlaveSol.CantBackOffice = cLic.CantBackOffice
                 BeLicLlaveSol.CantHandHeld = cLic.CantHandHeld
+                BeLicLlaveSol.CantUx = cLic.CantUx
 
                 '#EJC20171108_REF02_0605PM: Refactoring clsBeLicencia_llave                
                 If Not clsLnLicencia_llave.Exist(txtLic.Text) Then
