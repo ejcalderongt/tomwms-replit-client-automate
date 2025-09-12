@@ -15,7 +15,7 @@ Partial Public Class clsLnI_nav_barras_pallet
             Upd.Add("idrecepcion", "@idrecepcion", DataType.Parametro)
             Upd.Add("bodega_destino", "@bodega_destino", DataType.Parametro)
             Upd.Where("codigo_barra = @codigo_barra " &
-                      IIf(oBeI_nav_barras_pallet.Codigo_barra <> "", " AND bodega_origen = @bodega_origen", "") &
+                      IIf(oBeI_nav_barras_pallet.Bodega_Origen <> "", " AND bodega_origen = @bodega_origen", "") &
                       " AND idrecepcion = 0 ")
 
             Dim sp As String = Upd.SQL()

@@ -18268,8 +18268,8 @@ Partial Public Class clsLnStock_res
 
 #End Region
 
-            If pStockResSolicitud.IdProductoBodega = 158 And pStockResSolicitud.Cantidad = 41 And pStockResSolicitud.Atributo_Variante_1 = "" Then
-                Debug.Print("Aqui")
+            If pStockResSolicitud.IdProductoBodega = 125 And pStockResSolicitud.Cantidad = 364 And pStockResSolicitud.IdPresentacion <> 0 Then
+                Debug.Print("Aqui " & DiasVencimiento)
             End If
 
             vIdTipoPedido = clsLnTrans_pe_enc.Get_IdTipoPedido_By_IdPedidoEnc(pStockResSolicitud.IdPedido,
@@ -20653,6 +20653,12 @@ INICIAR_EN_2:
 
                                                 clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva(BeStockRes, vNombreCasoReservaInternoWMS, vMensajeReserva)
 
+                                                If BeStockRes.IdProductoBodega = 125 Then
+                                                    Debug.Print("" & vFechaMinimaVenceZonaALM.Date)
+                                                    Debug.Print("" & FechaMinimaVenceStock.Date)
+                                                    Debug.Print("" & BeStockRes.Fecha_vence.Date)
+                                                End If
+
                                                 If Not pBeTrasladoDet Is Nothing Then
 
                                                     If BeStockRes.IdPresentacion = 0 Then
@@ -20757,7 +20763,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
 
                     If Not vCantidadCompletada Then
 
-                        If BeProducto.Codigo = "00420441" Then
+                        If BeProducto.Codigo = "00190454" Then
                             Debug.Print("Aqui")
                         End If
 
@@ -24731,6 +24737,12 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                                         " Presentacion: " & BeStockRes.Atributo_Variante_1
 
                                         clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva(BeStockRes, vNombreCasoReservaInternoWMS, vMensajeReserva)
+
+                                        If BeStockRes.IdProductoBodega = 125 Then
+                                            Debug.Print("" & vFechaMinimaVenceZonaALM.Date)
+                                            Debug.Print("" & FechaMinimaVenceStock.Date)
+                                            Debug.Print("" & BeStockRes.Fecha_vence.Date)
+                                        End If
 
                                         If Not pBeTrasladoDet Is Nothing Then
 

@@ -2752,4 +2752,37 @@ Partial Public Class clsLnCliente
 
     End Function
 
+
+    Public Shared Function Get_IdUbicacionAbastecerCon_By_IdCliente(ByVal IdCliente As Integer,
+                                                                    ByVal lConnection As SqlConnection,
+                                                                    ByVal lTransaction As SqlTransaction) As Integer
+
+        Get_IdUbicacionAbastecerCon_By_IdCliente = 0
+
+        Try
+
+            Const sp As String = "SELECT IdUbicacionAbastecerCon FROM Cliente 
+                                  Where (IdCliente = @IdCliente) "
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdCliente", IdCliente))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Get_IdUbicacionAbastecerCon_By_IdCliente = IIf(IsDBNull(dt.Rows(0).Item("IdUbicacionAbastecerCon")), 0, dt.Rows(0).Item("IdUbicacionAbastecerCon"))
+            End If
+
+        Catch ex1 As SqlException
+            Throw ex1
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
 End Class

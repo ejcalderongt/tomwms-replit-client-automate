@@ -10414,6 +10414,8 @@ Public Class frmPedido
             End If
 
             printingSystem1.PageSettings.Landscape = False
+            printingSystem1.PageMargins().Right = 10
+            printingSystem1.PageMargins().Left = 10
             printLink.Component = dgridVerificacion
             printLink.Landscape = False
             printLink.CreateDocument(printingSystem1)
