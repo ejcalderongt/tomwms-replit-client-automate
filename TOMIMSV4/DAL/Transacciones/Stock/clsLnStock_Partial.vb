@@ -5967,11 +5967,11 @@ Partial Public Class clsLnStock
                 Case 3 'FEFO
                     'vSQL += " ORDER BY fecha_vence, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.idubicacion,bodega_ubicacion.idbodega),cantidad "
                     vSQL += " ORDER BY" &
+                        " stock.fecha_vence ASC," &
                         " CASE" &
                         " WHEN stock.cantidad = @CantidadSolicitada THEN 0" &
                         " WHEN stock.cantidad > @CantidadSolicitada THEN 1" &
                         " ELSE 2 END," &
-                        " stock.fecha_vence ASC," &
                         " stock.cantidad ASC," &
                         " dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) "
                 Case 4 'UPSR (Ubicación prioritaria sobre rotación)
@@ -11668,7 +11668,13 @@ Partial Public Class clsLnStock
                     If objStockOrigen.Presentacion.EsPallet Then
                         vCantidadDisponible = Math.Round((objStockOrigen.Cantidad * objStockOrigen.Presentacion.Factor * objStockOrigen.Presentacion.CamasPorTarima * objStockOrigen.Presentacion.CajasPorCama), 6)
                     Else
-                        vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
+                        If (objStockOrigen.Presentacion.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion <> 0) AndAlso (objStockOrigen.Presentacion.IdPresentacion = BeTransPeDet.IdPresentacion) Then
+                            'Killios, Quantity 12.5 = 144, Erik. #EJC20250909
+                            vCantidadDisponible = Math.Round((objStockOrigen.Cantidad * objStockOrigen.Presentacion.Factor), 6)
+                        Else
+                            vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
+                        End If
+
                     End If
 
                 End If

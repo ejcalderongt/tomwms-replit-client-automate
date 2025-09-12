@@ -600,6 +600,7 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
             Dim lineaSAP = oOrderSales.Lines.LineNum
             Dim uomEntry = oOrderSales.Lines.UoMEntry
             Dim uomCode = oOrderSales.Lines.UoMCode
+            Dim orderQuantity = oOrderSales.Lines.Quantity
 
             Dim productoWMS = productosTransferidos.FirstOrDefault(Function(x) x.CodigoProductoSAP = itemSAP)?.CodigoProductoWMS
 
@@ -971,7 +972,8 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
                 Dim umEntryOrdenVenta As Integer = Buscar_UoMEntry_OrdenVenta(oOrdenVenta, linea.CodigoProductoSAP, linea.No_Linea)
 
                 If resultado.UoMEntry > 0 Then
-                    If resultado.UoMEntry <> umEntryOrdenVenta Then
+                    '"EJC20250902: Cuando el pedido es de exportación laumEntryOrdenVenta es -1 por la comparación por código, no enviar la cantidad dividida.
+                    If (resultado.UoMEntry <> umEntryOrdenVenta) AndAlso (umEntryOrdenVenta <> -1) Then
                         oTransfer.Lines.Quantity = Math.Round(linea.Cantidad_Total / resultado.Factor, 6)
                     End If
                     oTransfer.Lines.UoMEntry = resultado.UoMEntry
