@@ -18264,7 +18264,7 @@ Partial Public Class clsLnStock_res
             Dim vIdTipoPedido As Integer = 0
             Dim pEs_Devolucion As Boolean = False
             Dim vPresReserva As Integer = 0
-            Dim vEsReempaque As Boolean = False
+            Dim vBeCliente As New clsBeCliente
 
 #End Region
             vIdTipoPedido = clsLnTrans_pe_enc.Get_IdTipoPedido_By_IdPedidoEnc(pStockResSolicitud.IdPedido,
@@ -18402,11 +18402,15 @@ EXPLOSIONAR_PRODUCTO:
 
                     If lBeStockExistente.Count = 0 Then
 
-                        '#EJC20250714: K, reempaque.
-                        'If productoEstado.EsReempaque then
-                        If pStockResSolicitud.IdProductoEstado = 8 AndAlso pBeConfigEnc.Interface_SAP Then
+                        '#EJC20250714: Funcionalidad para Killios por funcionalidad del estado reempaque.
+                        Dim vEstadoProducto As New clsBeProducto_estado
+                        Dim vReservaUMBas As Boolean = False
+
+                        vEstadoProducto = clsLnProducto_estado.GetSingle(pStockResSolicitud.IdProductoEstado, lConnection, ltransaction)
+                        vReservaUMBas = vEstadoProducto.Reservar_En_UmBas
+
+                        If vReservaUMBas AndAlso pBeConfigEnc.Interface_SAP Then
                             vBusquedaEnUmBas = True
-                            vEsReempaque = True
                             pStockResSolicitud.IdPresentacion = 0
                         ElseIf pStockResSolicitud.IdPresentacion = 0 Then
                             If BePresentacionDefecto IsNot Nothing Then
@@ -20340,6 +20344,19 @@ INICIAR_EN_2:
 
                                                         vCantidadCompletada = (vCantidadPendiente = 0)
 
+                                                        '#CKFK20250912_Get_Fecha_Vence_Minima_Stock_Reserva_MI3
+                                                        FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
+                                                                                                     DiasVencimiento,
+                                                                                                     pBeConfigEnc,
+                                                                                                     lConnection,
+                                                                                                     ltransaction,
+                                                                                                     BeProducto,
+                                                                                                     pTarea_Reabasto,
+                                                                                                     vFechaMinimaVenceZonaPicking,
+                                                                                                     vFechaMinimaVenceZonaALM,
+                                                                                                     lBeStockExistente,
+                                                                                                     BePresentacionDefecto)
+
                                                         If vCantidadCompletada Then Exit For
 
                                                     End If
@@ -20445,6 +20462,19 @@ INICIAR_EN_2:
                                                                        ltransaction)
 
                                                 vCantidadDecimalTarimasCompletasClavaud -= 1
+
+                                                '#CKFK20250912_Get_Fecha_Vence_Minima_Stock_Reserva_MI3
+                                                FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
+                                                                                                     DiasVencimiento,
+                                                                                                     pBeConfigEnc,
+                                                                                                     lConnection,
+                                                                                                     ltransaction,
+                                                                                                     BeProducto,
+                                                                                                     pTarea_Reabasto,
+                                                                                                     vFechaMinimaVenceZonaPicking,
+                                                                                                     vFechaMinimaVenceZonaALM,
+                                                                                                     lBeStockExistente,
+                                                                                                     BePresentacionDefecto)
 
                                                 If vCantidadCompletada Then Exit For
 
@@ -20671,6 +20701,19 @@ INICIAR_EN_2:
                                                 End If
 
                                                 vCantidadDecimalTarimasCompletasClavaud -= 1
+
+                                                '#CKFK20250912_Get_Fecha_Vence_Minima_Stock_Reserva_MI3
+                                                FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
+                                                                                                     DiasVencimiento,
+                                                                                                     pBeConfigEnc,
+                                                                                                     lConnection,
+                                                                                                     ltransaction,
+                                                                                                     BeProducto,
+                                                                                                     pTarea_Reabasto,
+                                                                                                     vFechaMinimaVenceZonaPicking,
+                                                                                                     vFechaMinimaVenceZonaALM,
+                                                                                                     lBeStockExistente,
+                                                                                                     BePresentacionDefecto)
 
                                                 If vCantidadCompletada Then
                                                     Exit For

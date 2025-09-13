@@ -278,6 +278,7 @@ Public Class frmCliente
             IMS.Listar_Bodegas_Por_Empresa(cmbBodegaWMS, cmbEmpresa.EditValue)
             IMS.Listar_Areas_By_IdBodega_For_Combo(cmbBodegaAreaSAP, AP.IdBodega)
             IMS.Listar_Ubicaciones_Despacho_By_IdBodega(txtIdUbicacionAbastecerCon, AP.IdBodega)
+            IMS.Listar_Producto_Estado_Grid(txtIdProductoEstadoDefecto)
 
             ValidaBodegas()
 
@@ -374,6 +375,13 @@ Public Class frmCliente
                 txtIdUbicacionAbastecerCon.EditValue = gBeCliente.IdUbicacionAbastecerCon
             Else
                 txtIdUbicacionAbastecerCon.EditValue = Nothing
+            End If
+
+            '#CKFK20250905: IdProductoEstadoDefecto
+            If gBeCliente.IdProductoEstadoDefecto <> 0 Then
+                txtIdProductoEstadoDefecto.EditValue = gBeCliente.IdProductoEstadoDefecto
+            Else
+                txtIdProductoEstadoDefecto.EditValue = Nothing
             End If
 
             cmbBodegaAreaSAP.EditValue = gBeCliente.IdBodegaAreaSAP
@@ -625,6 +633,7 @@ Public Class frmCliente
                 .IdUbicacionAbastecerCon = txtIdUbicacionAbastecerCon.EditValue
                 .IdBodegaAreaSAP = cmbBodegaAreaSAP.EditValue
                 .Es_Proveedor = chkEsProveedor.Checked
+                .IdProductoEstadoDefecto = txtIdProductoEstadoDefecto.EditValue
 
             End With
 
@@ -696,6 +705,7 @@ Public Class frmCliente
                 gBeCliente.IdUbicacionAbastecerCon = txtIdUbicacionAbastecerCon.EditValue
                 gBeCliente.IdBodegaAreaSAP = cmbBodegaAreaSAP.EditValue
                 gBeCliente.Es_Proveedor = chkEsProveedor.Checked
+                gBeCliente.IdProductoEstadoDefecto = txtIdProductoEstadoDefecto.EditValue
 
                 clsLnCliente.Guardar_Transaccion(gBeCliente,
                                                  pClienteTiemposList,
@@ -1927,7 +1937,13 @@ Public Class frmCliente
 
     End Sub
 
-    Private Sub DgridLotesBloqueados_Click(sender As Object, e As EventArgs) Handles DgridLotesBloqueados.Click
+    Private Sub txtIdProductoEstadoDefecto_KeyDown(sender As Object, e As KeyEventArgs) Handles txtIdProductoEstadoDefecto.KeyDown
+        Try
+            If e.KeyCode = Keys.Delete Then
+                txtIdProductoEstadoDefecto.EditValue = Nothing
+            End If
+        Catch ex As Exception
 
+        End Try
     End Sub
 End Class

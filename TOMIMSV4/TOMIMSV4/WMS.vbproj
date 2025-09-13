@@ -4391,7 +4391,7 @@
     <None Include="Conn_MAMPA.ini" />
     <None Include="Conn_Mercosal.ini" />
     <None Include="Conn_DYD.ini" />
-    <None Include="Conn_Merhonsa.ini" />    
+    <None Include="Conn_Merhonsa.ini" />
     <Content Include="Mantenimientos\plantillas\WMS_plantilla_Importacion_Productos.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -4437,8 +4437,6 @@
     </Content>
     <None Include="Mantenimientos\Producto_Color\frmProducto_Color.resx.bak" />
     <None Include="Mantenimientos\Producto_Color\frmProducto_ColorList.resx.bak" />
-    <None Include="Mantenimientos\Producto_Estado\frmProducto_Estado.resx.bak" />
-    <None Include="Mantenimientos\Producto_Estado\frmProducto_EstadoList.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_Talla.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx.bak" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho11.wsdl" />
