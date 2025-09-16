@@ -41,7 +41,7 @@ Public Class clsLnCliente
                 .IdBodegaAreaSAP = IIf(IsDBNull(dr.Item("IdBodegaAreaSAP")), 0, dr.Item("IdBodegaAreaSAP"))
                 .Es_Proveedor = IIf(IsDBNull(dr.Item("Es_proveedor")), False, dr.Item("Es_proveedor"))
                 .Codigo_Empresa_ERP = IIf(IsDBNull(dr.Item("Codigo_Empresa_ERP")), "", dr.Item("Codigo_Empresa_ERP"))
-
+                .IdProductoEstadoDefecto = IIf(IsDBNull(dr.Item("IdProductoEstadoDefecto")), 0, dr.Item("IdProductoEstadoDefecto"))
             End With
 
         Catch ex1 As SqlException
@@ -100,6 +100,7 @@ Public Class clsLnCliente
             Ins.Add("IdBodegaAreaSAP", "@IdBodegaAreaSAP", DataType.Parametro)
             Ins.Add("Es_proveedor", "@Es_proveedor", DataType.Parametro)
             Ins.Add("Codigo_Empresa_ERP", "@Codigo_Empresa_ERP", DataType.Parametro)
+            Ins.Add("idproductoestadodefecto", "@idproductoestadodefecto", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -144,6 +145,7 @@ Public Class clsLnCliente
             cmd.Parameters.Add(New SqlParameter("@IDBODEGAAREASAP", oBeCliente.IdBodegaAreaSAP))
             cmd.Parameters.Add(New SqlParameter("@ES_PROVEEDOR", oBeCliente.Es_Proveedor))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_EMPRESA_ERP", oBeCliente.Codigo_Empresa_ERP))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADODEFECTO", oBeCliente.IdProductoEstadoDefecto))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -213,6 +215,7 @@ Public Class clsLnCliente
             Upd.Add("IdBodegaAreaSAP", "@IdBodegaAreaSAP", DataType.Parametro)
             Upd.Add("es_proveedor", "@es_proveedor", DataType.Parametro)
             Upd.Add("codigo_empresa_erp", "@codigo_empresa_erp", DataType.Parametro)
+            Upd.Add("idproductoestadodefecto", "@idproductoestadodefecto", DataType.Parametro)
             Upd.Where("IdCliente = @IdCliente")
 
             Dim sp As String = Upd.SQL()
@@ -258,6 +261,7 @@ Public Class clsLnCliente
             cmd.Parameters.Add(New SqlParameter("@IDBODEGAAREASAP", oBeCliente.IdBodegaAreaSAP))
             cmd.Parameters.Add(New SqlParameter("@ES_PROVEEDOR", oBeCliente.Es_Proveedor))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_EMPRESA_ERP", oBeCliente.Codigo_Empresa_ERP))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADODEFECTO", oBeCliente.IdProductoEstadoDefecto))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

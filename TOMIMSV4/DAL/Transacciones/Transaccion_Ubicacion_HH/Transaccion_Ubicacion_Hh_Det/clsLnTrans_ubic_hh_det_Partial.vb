@@ -721,6 +721,8 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
                             End If
 
+                        Else
+                            Throw New Exception("No hay cantidad disponible para implosionar")
                         End If
 
                     Next

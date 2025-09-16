@@ -4436,8 +4436,6 @@
     </Content>
     <None Include="Mantenimientos\Producto_Color\frmProducto_Color.resx.bak" />
     <None Include="Mantenimientos\Producto_Color\frmProducto_ColorList.resx.bak" />
-    <None Include="Mantenimientos\Producto_Estado\frmProducto_Estado.resx.bak" />
-    <None Include="Mantenimientos\Producto_Estado\frmProducto_EstadoList.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_Talla.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx.bak" />
     <None Include="NavSync.exe.config" />

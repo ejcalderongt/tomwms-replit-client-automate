@@ -7628,7 +7628,7 @@ Public Class frmPedido
 
                         Application.DoEvents()
 
-                        SplashScreenManager.Default.SetWaitFormDescription("Manufactura. ")
+                        SplashScreenManager.Default.SetWaitFormDescription("Manufactura...")
 
                         Cargar_Manufactura(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
