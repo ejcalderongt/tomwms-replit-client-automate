@@ -6,7 +6,9 @@ using System.Security.Claims;
 using System.Text;
 using WMS.EntityCore.Log;
 using WMS.EntityCore.Propietario;
+using WMSWebAPI.Dtos.Log_portal_ux;
 using WMSWebAPI.Dtos.Login;
+using WMSWebAPI.Services.LogPortalUx;
 
 
 namespace WMSWebAPI.Controllers
@@ -16,19 +18,57 @@ namespace WMSWebAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _config;
-
-        public AuthController(IConfiguration config)
+        
+        public AuthController( IConfiguration config)
         {
             _config = config;
+            
         }        
 
         [HttpPost("login-propietario")]
         [AllowAnonymous]
         public IActionResult Login_proietario([FromBody] LoginDto dto)
         {
+
+            // Capturamos datos para log de sesión
+            string? ip = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+
+            if (string.IsNullOrEmpty(ip))
+            {
+                ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+            }
+            if (string.IsNullOrEmpty(ip) || ip == "::1")
+            {
+                ip = "null";
+            }
+
+            string userAgent = Request.Headers["User-Agent"].ToString();
+            DateTime Fecha = DateTime.UtcNow;
+
             clsBePropietarios propietario = new clsBePropietarios();
             clsBeLog_error_wms log_error = new clsBeLog_error_wms();
+            
             bool esValido = clsLnPropietarios.EsPropietarioValido(_config, dto.Username, dto.Password, ref propietario);
+
+
+            // Creamos objeto de logportalux
+            var logDto = new clsBeLog_portal_ux
+            {
+                Idpropietario = propietario.IdPropietario,
+                Usuario = dto.Username,
+                Email = propietario.Email,
+                IPAddress = ip,
+                UserAgent = userAgent,
+                Fecha = Fecha,
+                Acceso = esValido,
+                UrlAcceso = "Login-propietario",
+                MensajeError = esValido ? "acceso correcto": "acceso incorrecto",
+
+            };
+
+            //#GT: el método no retorna excepciones para evitar romper el proceso de login
+            clsLnLog_portal_ux._InsertOrUpdate(_config, logDto);
+            
 
             if (!esValido)
             {
@@ -47,8 +87,8 @@ namespace WMSWebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { mensaje = "Configuración de JWT no válida." });
             }
 
-            string MsgLogin = "controlUx: Inicio de sesión exitoso. " + dto.Username;
-            clsLnLog_error_wms.Agregar_Error(_config, MsgLogin);
+            //string MsgLogin = "controlUx: Inicio de sesión exitoso. " + dto.Username;
+            //clsLnLog_error_wms.Agregar_Error(_config, MsgLogin);
 
 
             var key = Encoding.ASCII.GetBytes(keyString);
@@ -85,6 +125,14 @@ namespace WMSWebAPI.Controllers
                     propietario.Activo
                 }
             });
-        }        
+        }
+
+        //[HttpPost("reset-passowrd")]
+        //[AllowAnonymous]
+        //public IActionResult Reser_password([FromBody] Reser_passwordDto dto ) { 
+        //    return Ok(dto);
+        //}
+
+
     }
 }

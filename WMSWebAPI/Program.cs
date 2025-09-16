@@ -7,6 +7,7 @@ using Serilog;
 using System.Text;
 using WMSWebAPI.Services;
 using WMSWebAPI.Services.Ingresos;
+using WMSWebAPI.Services.LogPortalUx;
 using WMSWebAPI.Services.Salidas;
 
 var builder = WebApplication.CreateBuilder(args);
