@@ -2660,6 +2660,9 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
                 If vIndiceListaCliente > -1 Then
                     ' Si lo encuentra, clona el objeto para evitar modificaciones por referencia
                     BeClienteDetalle = lClientes(vIndiceListaCliente).Clone()
+                    BeClienteDetalle.IdUbicacionAbastecerCon = clsLnCliente.Get_IdUbicacionAbastecerCon_By_IdCliente(BeClienteDetalle.IdCliente,
+                                                                                                                     lConnectionInterface,
+                                                                                                                     lTransInterface)
                 Else
                     ' Si no está en la lista, busca en la base de datos
                     BeClienteDetalle = clsLnCliente.Get_Single_By_Codigo(PDet.Transfer_to_CodeField,
@@ -3028,6 +3031,7 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
 
                             vDiasVencimientoCliente = 0
 
+                            BeClienteDetalle = New clsBeCliente
                             BeClienteDetalle = Get_Cliente_Detalle(PDet,
                                                                    NAVEnvioAlm,
                                                                    BeProducto,

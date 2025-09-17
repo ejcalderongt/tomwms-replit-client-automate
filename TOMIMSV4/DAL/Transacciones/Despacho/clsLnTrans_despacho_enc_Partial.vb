@@ -1533,6 +1533,10 @@ Partial Public Class clsLnTrans_despacho_enc
                                 '#20180822_0452PM_ESA: Iterar solo sobre los pedidos que aún tiene cantidad pendientes de despacho.
                                 For Each BePedidoDet As clsBeTrans_pe_det In BePedidoEnc.Detalle
 
+                                    '#GT16092025: aqui la lista del pedido deberia traer solo lineas sin stock liberado, para que haga match con las lineas del despacho
+                                    'If BePedidoDet.Stock_Liberado = 0 Then
+                                    'End If
+
                                     '#EJC20180607: Si un producto del pedido, no tiene picking ni verificación, entonces la lista es vacía.
                                     If Not BePedidoDet.ListaPickingUbic Is Nothing Then
 
@@ -1729,7 +1733,7 @@ Partial Public Class clsLnTrans_despacho_enc
                                             vPedidoCompletado = False
                                         End If 'Fin tiene cantidad verificada
 
-                                    End If 'Fin si, el producto se pickeó, se verificó                        
+                                    End If 'Fin si, el producto se pickeó, se verificó    
 
                                 Next BePedidoDet
 

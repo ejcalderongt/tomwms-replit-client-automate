@@ -60,8 +60,11 @@ Public Class frmStockReservado
     Private Function Eliminar() As Boolean
 
         Eliminar = False
+        Dim clsTransaccion As New clsTransaccion()
 
         Try
+
+            clsTransaccion.Begin_Transaction()
 
             Dim Stock As New clsBeStock_res
 
@@ -83,6 +86,20 @@ Public Class frmStockReservado
                         vIdPickingEnc = Stock.IdPicking
 
                         If vIdPickingEnc <> 0 Then
+
+                            '#GT16092025: aqui validamos que linea del pedido es, y se envia la bandera
+                            '#GT16092025: Identificar linea del pedido que liberara stock
+                            Dim BePedido_Det As New clsBeTrans_pe_det
+                            BePedido_Det = clsLnTrans_pe_det.Get_Single_By_IdPedidoEnc_And_IdPedidoDet(Stock.IdPedido, Stock.IdPedidoDet,
+                                                                                           clsTransaccion.lConnection,
+                                                                                           clsTransaccion.lTransaction)
+
+                            If BePedido_Det IsNot Nothing Then
+                                '#GT16092025: actualizar linea del pedido como stock_liberado
+                                clsLnTrans_pe_det.Marcar_Linea_Stock_Liberado(BePedido_Det, clsTransaccion.lConnection,
+                                                                                          clsTransaccion.lTransaction)
+                            End If
+
 
                             If Not (clsLnTrans_picking_det.Liberar_Producto_No_Pickeado(vIdPedidoDet,
                                                                                         vIdPedidoEnc,
@@ -112,16 +129,40 @@ Public Class frmStockReservado
 
             Else
 
+
+
                 Stock.IdStockRes = pBeStockRes.IdStockRes
-                Eliminar = (clsLnStock_res.Eliminar(Stock) > 0)
+
+                '#GT16092025: Identificar linea del pedido que liberara stock
+                Dim BePedido_Det As New clsBeTrans_pe_det
+                BePedido_Det = clsLnTrans_pe_det.Get_Single_By_IdPedidoEnc_And_IdPedidoDet(pBeStockRes.IdPedido, pBeStockRes.IdPedidoDet,
+                                                                                           clsTransaccion.lConnection,
+                                                                                           clsTransaccion.lTransaction)
+
+                If BePedido_Det IsNot Nothing Then
+                    '#GT16092025: actualizar linea del pedido como stock_liberado
+                    clsLnTrans_pe_det.Marcar_Linea_Stock_Liberado(BePedido_Det, clsTransaccion.lConnection,
+                                                                                          clsTransaccion.lTransaction)
+                End If
+
+                Eliminar = (clsLnStock_res.Eliminar(Stock,
+                                                    clsTransaccion.lConnection,
+                                                    clsTransaccion.lTransaction) > 0)
 
             End If
 
+            clsTransaccion.Commit_Transaction()
+
         Catch ex As Exception
+
+            clsTransaccion.RollBack_Transaction()
+
             XtraMessageBox.Show(ex.Message,
             Text,
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
+        Finally
+            clsTransaccion.Close_Conection()
         End Try
 
     End Function

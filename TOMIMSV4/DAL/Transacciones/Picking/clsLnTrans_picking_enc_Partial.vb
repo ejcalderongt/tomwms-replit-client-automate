@@ -1085,9 +1085,7 @@ Partial Public Class clsLnTrans_picking_enc
 
                                 Dim vMensajeLog As String = "Advertencia_202303032146: Se actualizó a procesado_bof el picking_enc: " & pBeTrans_picking_enc.IdPickingEnc
 
-                                clsLnLog_error_wms.Agregar_Error(vMensajeLog,
-                                                                 lConnection,
-                                                                 lTransaction)
+                                clsLnLog_error_wms.Agregar_Error(vMensajeLog)
                             End If
                         End If
                     End If
@@ -1513,9 +1511,7 @@ Partial Public Class clsLnTrans_picking_enc
                                                  Ped.IdPedidoEnc,
                                                  pBePickingEnc.IdPickingEnc,
                                                  0,
-                                                 pBePickingEnc.User_mod,
-                                                 lConnection,
-                                                 lTransaction)
+                                                 pBePickingEnc.User_mod)
 
             Next
 

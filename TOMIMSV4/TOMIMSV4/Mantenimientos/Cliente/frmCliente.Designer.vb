@@ -73,6 +73,7 @@ Partial Class frmCliente
         Dim Label23 As System.Windows.Forms.Label
         Dim Label18 As System.Windows.Forms.Label
         Dim Label19 As System.Windows.Forms.Label
+        Dim Label24 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCliente))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
@@ -94,6 +95,8 @@ Partial Class frmCliente
         Me.RibbonPageGroup3 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.GrpCliente = New DevExpress.XtraEditors.GroupControl()
+        Me.txtIdProductoEstadoDefecto = New DevExpress.XtraEditors.GridLookUpEdit()
+        Me.GridView7 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.cmbBodegaAreaSAP = New DevExpress.XtraEditors.GridLookUpEdit()
         Me.GridView2 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.txtIdUbicacionAbastecerCon = New DevExpress.XtraEditors.GridLookUpEdit()
@@ -257,9 +260,12 @@ Partial Class frmCliente
         Label23 = New System.Windows.Forms.Label()
         Label18 = New System.Windows.Forms.Label()
         Label19 = New System.Windows.Forms.Label()
+        Label24 = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GrpCliente, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GrpCliente.SuspendLayout()
+        CType(Me.txtIdProductoEstadoDefecto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView7, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbBodegaAreaSAP.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtIdUbicacionAbastecerCon.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -981,6 +987,18 @@ Partial Class frmCliente
         Label19.TabIndex = 85
         Label19.Text = "Estado:"
         '
+        'Label24
+        '
+        Label24.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label24.AutoSize = True
+        Label24.Location = New System.Drawing.Point(38, 507)
+        Label24.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
+        Label24.Name = "Label24"
+        Label24.Size = New System.Drawing.Size(212, 16)
+        Label24.TabIndex = 85
+        Label24.Text = "Estado producto de abastecimiento:"
+        '
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
@@ -1125,6 +1143,8 @@ Partial Class frmCliente
         '
         'GrpCliente
         '
+        Me.GrpCliente.Controls.Add(Label24)
+        Me.GrpCliente.Controls.Add(Me.txtIdProductoEstadoDefecto)
         Me.GrpCliente.Controls.Add(Label13)
         Me.GrpCliente.Controls.Add(Me.cmbBodegaAreaSAP)
         Me.GrpCliente.Controls.Add(Label9)
@@ -1163,6 +1183,26 @@ Partial Class frmCliente
         Me.GrpCliente.Name = "GrpCliente"
         Me.GrpCliente.Size = New System.Drawing.Size(1697, 603)
         Me.GrpCliente.TabIndex = 0
+        '
+        'txtIdProductoEstadoDefecto
+        '
+        Me.txtIdProductoEstadoDefecto.Location = New System.Drawing.Point(268, 504)
+        Me.txtIdProductoEstadoDefecto.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
+        Me.txtIdProductoEstadoDefecto.MenuManager = Me.RibbonControl
+        Me.txtIdProductoEstadoDefecto.Name = "txtIdProductoEstadoDefecto"
+        Me.txtIdProductoEstadoDefecto.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.txtIdProductoEstadoDefecto.Properties.PopupView = Me.GridView7
+        Me.txtIdProductoEstadoDefecto.Size = New System.Drawing.Size(376, 22)
+        Me.txtIdProductoEstadoDefecto.TabIndex = 84
+        Me.txtIdProductoEstadoDefecto.ToolTip = "Config = Activo =1 Bloqueada = 0 Sistema = 0 Despacho = 1 "
+        '
+        'GridView7
+        '
+        Me.GridView7.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
+        Me.GridView7.Name = "GridView7"
+        Me.GridView7.OptionsSelection.EnableAppearanceFocusedCell = False
+        Me.GridView7.OptionsView.ShowAutoFilterRow = True
+        Me.GridView7.OptionsView.ShowGroupPanel = False
         '
         'cmbBodegaAreaSAP
         '
@@ -2414,6 +2454,8 @@ Partial Class frmCliente
         CType(Me.GrpCliente, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GrpCliente.ResumeLayout(False)
         Me.GrpCliente.PerformLayout()
+        CType(Me.txtIdProductoEstadoDefecto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView7, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbBodegaAreaSAP.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtIdUbicacionAbastecerCon.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -2660,4 +2702,6 @@ Partial Class frmCliente
     Friend WithEvents cmbLote As DevExpress.XtraEditors.GridLookUpEdit
     Friend WithEvents GridView5 As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents mnuGuardarLote As ToolStripButton
+    Friend WithEvents txtIdProductoEstadoDefecto As DevExpress.XtraEditors.GridLookUpEdit
+    Friend WithEvents GridView7 As DevExpress.XtraGrid.Views.Grid.GridView
 End Class
