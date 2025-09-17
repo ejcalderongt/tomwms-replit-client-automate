@@ -2337,7 +2337,7 @@ Partial Public Class clsLnTrans_despacho_enc
 
                                         If String.IsNullOrEmpty(BeProductoEstado.Nombre) Then
                                             Dim vMensajeLog As String = "Advertencia_20250128_Transferencia_WMS: Error desconocido, no se obtuvo un Estado para el producto " & BePickingUbic.IdProducto & " con propietario " & vIdPropietario & " bodega " & BeOrdenCompraEnc.IdBodega & " propietario_bodega " & BeOrdenCompraEnc.IdPropietarioBodega
-                                            clsLnLog_error_wms.Agregar_Error(vMensajeLog, lConnection, lTransaction)
+                                            clsLnLog_error_wms.Agregar_Error(vMensajeLog)
                                         End If
 
 
@@ -2345,7 +2345,7 @@ Partial Public Class clsLnTrans_despacho_enc
 
                                         If String.IsNullOrEmpty(BeUnidadMedida.Nombre) Then
                                             Dim vMensajeLog As String = "Advertencia_20250128_Transferencia_WMS: Error desconocido, no se obtuvo la umbas para el producto " & BePickingUbic.IdProducto & " con Picking_Umbas " & BePickingUbic.IdUnidadMedida
-                                            clsLnLog_error_wms.Agregar_Error(vMensajeLog, lConnection, lTransaction)
+                                            clsLnLog_error_wms.Agregar_Error(vMensajeLog)
                                         End If
 
 
