@@ -1442,12 +1442,6 @@ Partial Public Class clsLnJornada_sistema
                     Debug.Print("IdStock: " & BeStockJornadaExistente.IdStock)
                     Debug.Print("LP: " & BeStockJornadaExistente.Lic_plate)
 
-                    If BeStockJornadaExistente.Lic_plate = "BG000000267" Then
-                        Debug.Write("aqui va")
-                    End If
-
-
-
                     If ValidarRetroactivo AndAlso BeStockJornadaExistente.IdTicketTMS <> 0 Then
                         '#EJC20210521: Si el ticket ya fue procesado, no volver a escribir los días en el retroactivo.
                         '#GT12012023: Aunque el ticket ya este procesado validamos, con maximo 10 dias atras, para no cargar todo.

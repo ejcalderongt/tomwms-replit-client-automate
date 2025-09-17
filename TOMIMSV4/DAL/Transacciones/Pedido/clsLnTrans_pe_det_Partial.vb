@@ -210,10 +210,16 @@ Partial Public Class clsLnTrans_pe_det
                             .EsPadre = IIf(IsDBNull(lRow.Item("EsPadre")), False, lRow.Item("EsPadre"))
                             .IdPedidoDetPadre = IIf(IsDBNull(lRow.Item("IdPedidoDetPadre")), 0, lRow.Item("IdPedidoDetPadre"))
                             .IdCliente = IIf(IsDBNull(lRow.Item("IdCliente")), 0, lRow.Item("IdCliente"))
+                            .Stock_Liberado = IIf(IsDBNull(lRow.Item("stock_liberado")), False, lRow.Item("stock_liberado"))
 
                         End With
 
-                        lReturnList.Add(BeTransPeDet)
+                        '#GT16092025:si la linea del pedido no tiene stock liberado, se infiere que esta asociada a una linea de despacho
+                        If Not BeTransPeDet.Stock_Liberado Then
+                            lReturnList.Add(BeTransPeDet)
+                        End If
+
+
 
                     Next
 
@@ -460,6 +466,9 @@ Partial Public Class clsLnTrans_pe_det
                             .No_linea = IIf(IsDBNull(lRow.Item("No_linea")), 0.0, lRow.Item("No_linea"))
                             .Atributo_Variante_1 = IIf(IsDBNull(lRow.Item("Atributo_Variante_1")), 0.0, lRow.Item("Atributo_Variante_1"))
                             .IdStockEspecifico = IIf(IsDBNull(lRow.Item("IdStockEspecifico")), 0, lRow.Item("IdStockEspecifico"))
+
+                            '#GT17092025: cargar propiedad de stock_liberado en la linea de detalle
+                            .Stock_Liberado = IIf(IsDBNull(lRow.Item("stock_liberado")), False, lRow.Item("stock_liberado"))
 
                             If pEstadoPedido = "Despachado" Then
 
@@ -4623,6 +4632,161 @@ Partial Public Class clsLnTrans_pe_det
                 clsLnProducto_presentacion.Cargar(vPresentacion, dt.Rows(0))
                 Get_BePresentacion_By_NoLinea = vPresentacion
             End If
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Marcar_Linea_Stock_Liberado(ByRef oBeTrans_pe_det As clsBeTrans_pe_det, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+
+        Try
+
+            Dim vSQL As String = "update trans_pe_det 
+                    set stock_liberado = 1 Where( IdPedidoEnc=@IdPedidoEnc and IdPedidoDet = @IdPedidoDet)"
+
+
+            Dim cmd As New SqlCommand(vSQL, lConnection) With {.CommandType = CommandType.Text}
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(vSQL, pConection, pTransaction)
+                cmd.CommandTimeout = 60
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                cmd = New SqlCommand(vSQL, lConnection, lTransaction)
+            End If
+
+            cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", oBeTrans_pe_det.IdPedidoEnc))
+            cmd.Parameters.Add(New SqlParameter("@IDPEDIDODET", oBeTrans_pe_det.IdPedidoDet))
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            cmd.Dispose()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex1 As SqlException
+            If Not Es_Transaccion_Remota Then If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex1
+        Catch ex As Exception
+            If Not Es_Transaccion_Remota Then If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If Not Es_Transaccion_Remota Then
+                If lConnection.State = ConnectionState.Open Then lConnection.Close()
+                If lTransaction IsNot Nothing Then lTransaction.Dispose()
+                If lConnection IsNot Nothing Then lConnection.Dispose()
+            End If
+
+        End Try
+
+    End Function
+
+    '#GT17092025: método que retonra el detalle del pedido sin filtrar las lineas que tengan stock_liberado
+    Public Shared Function Get_Detalle_By_IdPedidoEnc_For_Pedido(ByVal pIdPedidoEnc As Integer,
+                                                      ByRef lConnection As SqlConnection,
+                                                      ByRef lTransaction As SqlTransaction) As List(Of clsBeTrans_pe_det)
+
+        Dim lReturnList As New List(Of clsBeTrans_pe_det)
+        Dim vIdxProducto As Integer = 0
+
+        Try
+
+            Dim vSQL As String = " SELECT det.*, pb.IdProducto 
+                                   FROM trans_pe_det det
+                                    INNER JOIN producto_bodega AS pb ON det.IdProductoBodega = pb.IdProductoBodega
+                                    WHERE det.IdPedidoEnc= @IdPedidoEnc "
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.CommandType = CommandType.Text
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                Dim BeTransPeDet As clsBeTrans_pe_det
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                    Dim lProductos = clsLnProducto.Get_All_By_IdPedidoEnc(pIdPedidoEnc, lConnection, lTransaction)
+
+                    For Each lRow As DataRow In lDataTable.Rows
+
+                        BeTransPeDet = New clsBeTrans_pe_det
+
+                        With BeTransPeDet
+
+                            .IdPedidoDet = IIf(IsDBNull(lRow.Item("IdPedidoDet")), 0, lRow.Item("IdPedidoDet"))
+                            .IdPedidoEnc = IIf(IsDBNull(lRow.Item("IdPedidoEnc")), 0, lRow.Item("IdPedidoEnc"))
+                            .ProductoBodega.IdProductoBodega = IIf(IsDBNull(lRow.Item("IdProductoBodega")), 0, lRow.Item("IdProductoBodega"))
+                            .IdProductoBodega = IIf(IsDBNull(lRow.Item("IdProductoBodega")), 0, lRow.Item("IdProductoBodega"))
+
+                            .Producto = New clsBeProducto()
+                            .Producto.IdProducto = IIf(IsDBNull(lRow.Item("IdProducto")), 0, lRow.Item("IdProducto"))
+
+                            Dim vIdProducto As Integer = .Producto.IdProducto
+
+                            vIdxProducto = lProductosInMemory.FindIndex(Function(x) x.IdProducto = vIdProducto)
+
+                            If vIdxProducto = -1 Then
+                                .Producto = lProductos.Find(Function(x) x.IdProducto = vIdProducto)
+                                lProductosInMemory.Add(.Producto.Clone())
+                            Else
+                                .Producto = lProductosInMemory(vIdxProducto).Clone()
+                            End If
+
+                            .IdEstado = IIf(IsDBNull(lRow.Item("IdEstado")), 0, lRow.Item("IdEstado"))
+                            .IdPresentacion = IIf(IsDBNull(lRow.Item("IdPresentacion")), 0, lRow.Item("IdPresentacion"))
+                            .IdUnidadMedidaBasica = IIf(IsDBNull(lRow.Item("IdUnidadMedidaBasica")), 0, lRow.Item("IdUnidadMedidaBasica"))
+                            .Cantidad = IIf(IsDBNull(lRow.Item("Cantidad")), 0.0, lRow.Item("Cantidad"))
+                            .Peso = IIf(IsDBNull(lRow.Item("Peso")), 0.0, lRow.Item("Peso"))
+                            .Precio = IIf(IsDBNull(lRow.Item("Precio")), 0.0, lRow.Item("Precio"))
+                            .No_recepcion = IIf(IsDBNull(lRow.Item("no_recepcion")), 0, lRow.Item("no_recepcion"))
+                            .Ndias = IIf(IsDBNull(lRow.Item("ndias")), 0, lRow.Item("ndias"))
+                            .Cant_despachada = IIf(IsDBNull(lRow.Item("cant_despachada")), 0.0, lRow.Item("cant_despachada"))
+                            .Codigo_Producto = IIf(IsDBNull(lRow.Item("codigo_producto")), "", lRow.Item("codigo_producto"))
+                            .Nombre_producto = IIf(IsDBNull(lRow.Item("nombre_producto")), "", lRow.Item("nombre_producto"))
+                            .Nom_presentacion = IIf(IsDBNull(lRow.Item("nom_presentacion")), "", lRow.Item("nom_presentacion"))
+                            .Nom_unid_med = IIf(IsDBNull(lRow.Item("nom_unid_med")), "", lRow.Item("nom_unid_med"))
+                            .Nom_estado = IIf(IsDBNull(lRow.Item("nom_estado")), "", lRow.Item("nom_estado"))
+                            .User_agr = IIf(IsDBNull(lRow.Item("user_agr")), "", lRow.Item("user_agr"))
+                            .Fec_agr = IIf(IsDBNull(lRow.Item("fec_agr")), Date.Now, lRow.Item("fec_agr"))
+                            .Fecha_especifica = IIf(IsDBNull(lRow.Item("fecha_especifica")), False, lRow.Item("fecha_especifica"))
+                            .RoadDes = IIf(IsDBNull(lRow.Item("RoadDes")), 0.0, lRow.Item("RoadDes"))
+                            .RoadDesMon = IIf(IsDBNull(lRow.Item("RoadDesMon")), 0.0, lRow.Item("RoadDesMon"))
+                            .RoadTotal = IIf(IsDBNull(lRow.Item("RoadTotal")), 0.0, lRow.Item("RoadTotal"))
+                            .RoadPrecioDoc = IIf(IsDBNull(lRow.Item("RoadPrecioDoc")), 0.0, lRow.Item("RoadPrecioDoc"))
+                            .RoadVAL1 = IIf(IsDBNull(lRow.Item("RoadVAL1")), 0.0, lRow.Item("RoadVAL1"))
+                            .RoadVAL2 = IIf(IsDBNull(lRow.Item("RoadVAL2")), "", lRow.Item("RoadVAL2"))
+                            .RoadCantProc = IIf(IsDBNull(lRow.Item("RoadCantProc")), 0.0, lRow.Item("RoadCantProc"))
+                            .No_linea = IIf(IsDBNull(lRow.Item("No_linea")), 0.0, lRow.Item("No_linea"))
+                            .Atributo_Variante_1 = IIf(IsDBNull(lRow.Item("Atributo_Variante_1")), 0.0, lRow.Item("Atributo_Variante_1"))
+                            .IdStockEspecifico = IIf(IsDBNull(lRow.Item("IdStockEspecifico")), 0, lRow.Item("IdStockEspecifico"))
+                            .EsPadre = IIf(IsDBNull(lRow.Item("EsPadre")), False, lRow.Item("EsPadre"))
+                            .IdPedidoDetPadre = IIf(IsDBNull(lRow.Item("IdPedidoDetPadre")), 0, lRow.Item("IdPedidoDetPadre"))
+                            .IdCliente = IIf(IsDBNull(lRow.Item("IdCliente")), 0, lRow.Item("IdCliente"))
+                            .Stock_Liberado = IIf(IsDBNull(lRow.Item("stock_liberado")), False, lRow.Item("stock_liberado"))
+
+                        End With
+
+                        lReturnList.Add(BeTransPeDet)
+
+                    Next
+
+                End If
+
+            End Using
+
+            Return lReturnList
 
         Catch ex As Exception
             Throw ex
