@@ -18264,12 +18264,12 @@ Partial Public Class clsLnStock_res
             Dim vIdTipoPedido As Integer = 0
             Dim pEs_Devolucion As Boolean = False
             Dim vPresReserva As Integer = 0
-            Dim vEsReempaque As Boolean = False
+            Dim vBeCliente As New clsBeCliente
 
 #End Region
 
-            If pStockResSolicitud.IdProductoBodega = 158 And pStockResSolicitud.Cantidad = 41 And pStockResSolicitud.Atributo_Variante_1 = "" Then
-                Debug.Print("Aqui")
+            If pStockResSolicitud.IdProductoBodega = 125 And pStockResSolicitud.Cantidad = 364 And pStockResSolicitud.IdPresentacion <> 0 Then
+                Debug.Print("Aqui " & DiasVencimiento)
             End If
 
             vIdTipoPedido = clsLnTrans_pe_enc.Get_IdTipoPedido_By_IdPedidoEnc(pStockResSolicitud.IdPedido,
@@ -18407,11 +18407,15 @@ EXPLOSIONAR_PRODUCTO:
 
                     If lBeStockExistente.Count = 0 Then
 
-                        '#EJC20250714: K, reempaque.
-                        'If productoEstado.EsReempaque then
-                        If pStockResSolicitud.IdProductoEstado = 8 AndAlso pBeConfigEnc.Interface_SAP Then
+                        '#EJC20250714: Funcionalidad para Killios por funcionalidad del estado reempaque.
+                        Dim vEstadoProducto As New clsBeProducto_estado
+                        Dim vReservaUMBas As Boolean = False
+
+                        vEstadoProducto = clsLnProducto_estado.GetSingle(pStockResSolicitud.IdProductoEstado, lConnection, ltransaction)
+                        vReservaUMBas = vEstadoProducto.Reservar_En_UmBas
+
+                        If vReservaUMBas AndAlso pBeConfigEnc.Interface_SAP Then
                             vBusquedaEnUmBas = True
-                            vEsReempaque = True
                             pStockResSolicitud.IdPresentacion = 0
                         ElseIf pStockResSolicitud.IdPresentacion = 0 Then
                             If BePresentacionDefecto IsNot Nothing Then
@@ -20364,6 +20368,19 @@ INICIAR_EN_2:
 
                                                         vCantidadCompletada = (vCantidadPendiente = 0)
 
+                                                        '#CKFK20250912_Get_Fecha_Vence_Minima_Stock_Reserva_MI3
+                                                        FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
+                                                                                                     DiasVencimiento,
+                                                                                                     pBeConfigEnc,
+                                                                                                     lConnection,
+                                                                                                     ltransaction,
+                                                                                                     BeProducto,
+                                                                                                     pTarea_Reabasto,
+                                                                                                     vFechaMinimaVenceZonaPicking,
+                                                                                                     vFechaMinimaVenceZonaALM,
+                                                                                                     lBeStockExistente,
+                                                                                                     BePresentacionDefecto)
+
                                                         If vCantidadCompletada Then Exit For
 
                                                     End If
@@ -20469,6 +20486,19 @@ INICIAR_EN_2:
                                                                        ltransaction)
 
                                                 vCantidadDecimalTarimasCompletasClavaud -= 1
+
+                                                '#CKFK20250912_Get_Fecha_Vence_Minima_Stock_Reserva_MI3
+                                                FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
+                                                                                                     DiasVencimiento,
+                                                                                                     pBeConfigEnc,
+                                                                                                     lConnection,
+                                                                                                     ltransaction,
+                                                                                                     BeProducto,
+                                                                                                     pTarea_Reabasto,
+                                                                                                     vFechaMinimaVenceZonaPicking,
+                                                                                                     vFechaMinimaVenceZonaALM,
+                                                                                                     lBeStockExistente,
+                                                                                                     BePresentacionDefecto)
 
                                                 If vCantidadCompletada Then Exit For
 
@@ -20653,6 +20683,12 @@ INICIAR_EN_2:
 
                                                 clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva(BeStockRes, vNombreCasoReservaInternoWMS, vMensajeReserva)
 
+                                                If BeStockRes.IdProductoBodega = 125 Then
+                                                    Debug.Print("" & vFechaMinimaVenceZonaALM.Date)
+                                                    Debug.Print("" & FechaMinimaVenceStock.Date)
+                                                    Debug.Print("" & BeStockRes.Fecha_vence.Date)
+                                                End If
+
                                                 If Not pBeTrasladoDet Is Nothing Then
 
                                                     If BeStockRes.IdPresentacion = 0 Then
@@ -20695,6 +20731,19 @@ INICIAR_EN_2:
                                                 End If
 
                                                 vCantidadDecimalTarimasCompletasClavaud -= 1
+
+                                                '#CKFK20250912_Get_Fecha_Vence_Minima_Stock_Reserva_MI3
+                                                FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
+                                                                                                     DiasVencimiento,
+                                                                                                     pBeConfigEnc,
+                                                                                                     lConnection,
+                                                                                                     ltransaction,
+                                                                                                     BeProducto,
+                                                                                                     pTarea_Reabasto,
+                                                                                                     vFechaMinimaVenceZonaPicking,
+                                                                                                     vFechaMinimaVenceZonaALM,
+                                                                                                     lBeStockExistente,
+                                                                                                     BePresentacionDefecto)
 
                                                 If vCantidadCompletada Then
                                                     Exit For
@@ -20757,7 +20806,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
 
                     If Not vCantidadCompletada Then
 
-                        If BeProducto.Codigo = "00420441" Then
+                        If BeProducto.Codigo = "00190454" Then
                             Debug.Print("Aqui")
                         End If
 
@@ -24731,6 +24780,12 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                                         " Presentacion: " & BeStockRes.Atributo_Variante_1
 
                                         clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva(BeStockRes, vNombreCasoReservaInternoWMS, vMensajeReserva)
+
+                                        If BeStockRes.IdProductoBodega = 125 Then
+                                            Debug.Print("" & vFechaMinimaVenceZonaALM.Date)
+                                            Debug.Print("" & FechaMinimaVenceStock.Date)
+                                            Debug.Print("" & BeStockRes.Fecha_vence.Date)
+                                        End If
 
                                         If Not pBeTrasladoDet Is Nothing Then
 

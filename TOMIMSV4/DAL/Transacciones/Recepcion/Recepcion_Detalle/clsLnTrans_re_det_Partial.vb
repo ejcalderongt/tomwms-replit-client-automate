@@ -2730,7 +2730,8 @@ Partial Public Class clsLnTrans_re_det
                     BeMensajeErrorOC.Fecha = Now
                     BeMensajeErrorOC.IdBodega = pRecEnc.IdBodega
                     BeMensajeErrorOC.Cantidad = pRecDet.cantidad_recibida
-                    BeMensajeErrorOC.MensajeError = "AVISO19122024A_HH_EliminarRecepcion: Se actualiza OC " & IdOrdenCompraEnc & " con recepcion det " & pIdRecepcionDet & " cantidad " & pRecDet.cantidad_recibida
+                    BeMensajeErrorOC.MensajeError = "AVISO19122024A_HH_EliminarRecepcion: Se actualiza OC " & IdOrdenCompraEnc &
+                        " con recepcion det " & pIdRecepcionDet & " cantidad " & pRecDet.cantidad_recibida
                     clsLnLog_error_wms.Insertar(BeMensajeErrorOC, lConnection, lTrans)
                     Resultado += String.Format(" Actualicé {0} orden de compra detalle ", FilasAfectadas)
                 Else

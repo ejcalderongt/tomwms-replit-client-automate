@@ -3398,4 +3398,36 @@ Public Class IMS
         End Try
 
     End Function
+
+    Public Shared Function Listar_Producto_Estado_Grid(ByRef Cmb As GridLookUpEdit) As Boolean
+
+        Listar_Producto_Estado_Grid = False
+
+        Try
+
+            Dim DT As DataTable = clsLnProducto_estado.GetAllByForCombo()
+
+            If Not DT Is Nothing Then
+
+                If DT.Rows.Count > 0 Then
+                    Cmb.Properties.DisplayMember = "nombre"
+                    Cmb.Properties.ValueMember = "IdEstado"
+                    Cmb.Properties.DataSource = DT
+                    Cmb.Properties.PopulateViewColumns()
+                    'Cmb.Properties.View.Columns(1).Visible = False
+                    Cmb.Properties.PopupFormSize = New Size(1000, 200)
+                    Cmb.Properties.View.BestFitColumns()
+                    Cmb.Properties.NullText = ""
+                End If
+
+                Listar_Producto_Estado_Grid = DT.Rows.Count > 0
+
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End Try
+
+    End Function
+
 End Class

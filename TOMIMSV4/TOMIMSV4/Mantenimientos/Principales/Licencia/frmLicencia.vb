@@ -13,9 +13,11 @@ Public Class frmLicencia
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
     Private licBofAsignadas As Integer = 0
     Private licHHAsignadas As Integer = 0
+    Private licUxAsignadas As Integer = 0
 
     Private licBofDisponible As Integer = 0
     Private licHHDisponible As Integer = 0
+    Private LicUxDisponible As Integer = 0
 
 
 
@@ -122,6 +124,7 @@ Public Class frmLicencia
 
                 licBofDisponible = cLic.CantBackOffice
                 licHHDisponible = cLic.CantHandHeld
+                LicUxDisponible = cLic.CantUx
                 'lblBO.Text = cLic.CantBackOffice
                 'lblHH.Text = cLic.CantHandHeld
                 lblExpira.Text = cLic.Vence.ToShortDateString
@@ -169,10 +172,12 @@ Public Class frmLicencia
 
                 licBofAsignadas = aItems.Where(Function(x) x.Tipo = 1).Count
                 licHHAsignadas = aItems.Where(Function(x) x.Tipo = 0).Count
+                licUxAsignadas = aItems.Where(Function(x) x.Tipo = 2).Count
 
                 '#GT17012025: mostrar licencias asignadas contra las disponibles
                 lblBO.Text = String.Format("{0}/{1}", licBofAsignadas, licBofDisponible)
                 lblHH.Text = String.Format("{0}/{1}", licHHAsignadas, licHHDisponible)
+                txtLicUx.Text = String.Format("{0}/{1}", licUxAsignadas, LicUxDisponible)
 
 
             End If

@@ -2982,24 +2982,25 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
         Dim IdxPresentacion As Integer = -1
         Dim vNombreEstado As String = "Buen Estado"
         Dim beProductoEstadoReempaque As New clsBeProducto_estado
-        Dim EsReempaque As Boolean = False
+        'Dim EsReempaque As Boolean = False
 
         BePedidoDet = Nothing
 
         Try
 
-            If Not pBeConfigEnc Is Nothing Then
-                If pBeConfigEnc.Interface_SAP Then
-                    If BePedidoEnc.Bodega_Destino = "BOD6" Then 'Es bodega reempaque
-                        'Existse config producto reempaque
-                        beProductoEstadoReempaque = clsLnProducto_estado.GetSingle(8, lConectionInterface, lTransactionInterface)
-                        If Not beProductoEstadoReempaque Is Nothing Then
-                            vNombreEstado = beProductoEstadoReempaque.Nombre
-                            EsReempaque = True
-                        End If
-                    End If
-                End If
-            End If
+            '#CKFK20250905 Quité esta validación porque lo vamos a configurar de otra forma
+            'If Not pBeConfigEnc Is Nothing Then
+            '    If pBeConfigEnc.Interface_SAP Then
+            '        If BePedidoEnc.Bodega_Destino = "BOD6" Then 'Es bodega reempaque
+            '            'Existse config producto reempaque
+            '            beProductoEstadoReempaque = clsLnProducto_estado.GetSingle(8, lConectionInterface, lTransactionInterface)
+            '            If Not beProductoEstadoReempaque Is Nothing Then
+            '                vNombreEstado = beProductoEstadoReempaque.Nombre
+            '                EsReempaque = True
+            '            End If
+            '        End If
+            '    End If
+            'End If
 
             pBePedidoDet = New clsBeTrans_pe_det
             'pBePedidoDet.IdPedidoDet = clsLnTrans_pe_det.MaxID() + 1
@@ -3132,9 +3133,14 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                         Dim vIdEstadoProductoInterface As Integer = pBeConfigEnc.IdProductoEstado
 
-                        If EsReempaque Then
-                            vIdEstadoProductoInterface = beProductoEstadoReempaque.IdEstado
+                        If Val(pBeCliente.IdProductoEstadoDefecto) <> 0 Then
+                            vIdEstadoProductoInterface = Val(pBeCliente.IdProductoEstadoDefecto)
                         End If
+
+                        ''#CKFK20250905 Puse esto en comentario
+                        'If EsReempaque Then
+                        '    vIdEstadoProductoInterface = beProductoEstadoReempaque.IdEstado
+                        'End If
 
                         BeProductoEstadoList = clsLnProducto_estado.Existe_IdEstado_By_IdPropietario(vIdPropietario,
                                                                                                      vIdEstadoProductoInterface,
