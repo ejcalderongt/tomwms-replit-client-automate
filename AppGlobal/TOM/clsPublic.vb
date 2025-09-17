@@ -85,8 +85,7 @@ Public Class clsPublic
     Public Shared Function EncodeString(ByVal origText As String) As String
 
         Try
-            'Dim stringBytes As Byte() = Encoding.Unicode.GetBytes(origText)
-            Dim stringBytes As Byte() = Encoding.UTF8.GetBytes(origText) '#GT09092025: formato de codificación estandar a Unicode
+            Dim stringBytes As Byte() = Encoding.Unicode.GetBytes(origText)
             Return Convert.ToBase64String(stringBytes, 0, stringBytes.Length)
         Catch ex As Exception
             'Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
@@ -96,62 +95,62 @@ Public Class clsPublic
 
     End Function
 
-    'Public Shared Function DecodeString(ByVal encodedText As String) As String
+    Public Shared Function DecodeString(ByVal encodedText As String) As String
 
-    '    Try
-    '        Dim stringBytes As Byte() = Convert.FromBase64String(encodedText)
-    '        Return Encoding.Unicode.GetString(stringBytes)
-    '    Catch ex As Exception
-    '        'Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-    '        'clsLnLog_error_wms.Agregar_Error(vMsgError)
-    '        Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-    '    End Try
+        Try
+            Dim stringBytes As Byte() = Convert.FromBase64String(encodedText)
+            Return Encoding.Unicode.GetString(stringBytes)
+        Catch ex As Exception
+            'Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        End Try
 
-    'End Function
+    End Function
 
     '#GT09092025: metodo para decodificar con formato estandar a unicode 
-    Public Shared Function DecodeString(ByVal encodedText As String) As String
-        Dim bytes As Byte() = Convert.FromBase64String(encodedText)
+    'Public Shared Function DecodeString(ByVal encodedText As String) As String
+    '    Dim bytes As Byte() = Convert.FromBase64String(encodedText)
 
-        ' 1) Detectar BOMs
-        If bytes.Length >= 2 Then
-            ' UTF-16 LE BOM: FF FE
-            If bytes(0) = &HFF AndAlso bytes(1) = &HFE Then
-                Return Encoding.Unicode.GetString(bytes, 2, bytes.Length - 2)
-            End If
-            ' UTF-16 BE BOM: FE FF
-            If bytes(0) = &HFE AndAlso bytes(1) = &HFF Then
-                Return Encoding.BigEndianUnicode.GetString(bytes, 2, bytes.Length - 2)
-            End If
-        End If
-        ' UTF-8 BOM: EF BB BF
-        If bytes.Length >= 3 AndAlso bytes(0) = &HEF AndAlso bytes(1) = &HBB AndAlso bytes(2) = &HBF Then
-            Return Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3)
-        End If
+    '    ' 1) Detectar BOMs
+    '    If bytes.Length >= 2 Then
+    '        ' UTF-16 LE BOM: FF FE
+    '        If bytes(0) = &HFF AndAlso bytes(1) = &HFE Then
+    '            Return Encoding.Unicode.GetString(bytes, 2, bytes.Length - 2)
+    '        End If
+    '        ' UTF-16 BE BOM: FE FF
+    '        If bytes(0) = &HFE AndAlso bytes(1) = &HFF Then
+    '            Return Encoding.BigEndianUnicode.GetString(bytes, 2, bytes.Length - 2)
+    '        End If
+    '    End If
+    '    ' UTF-8 BOM: EF BB BF
+    '    If bytes.Length >= 3 AndAlso bytes(0) = &HEF AndAlso bytes(1) = &HBB AndAlso bytes(2) = &HBF Then
+    '        Return Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3)
+    '    End If
 
-        ' 2) Heurística: ¿parece UTF-16 LE sin BOM? (alto = 0 en bytes impares)
-        If (bytes.Length Mod 2 = 0) Then
-            Dim looksUtf16Le As Boolean = True
-            For i As Integer = 1 To bytes.Length - 1 Step 2
-                If bytes(i) <> 0 Then
-                    looksUtf16Le = False
-                    Exit For
-                End If
-            Next
-            If looksUtf16Le Then
-                Return Encoding.Unicode.GetString(bytes)
-            End If
-        End If
+    '    ' 2) Heurística: ¿parece UTF-16 LE sin BOM? (alto = 0 en bytes impares)
+    '    If (bytes.Length Mod 2 = 0) Then
+    '        Dim looksUtf16Le As Boolean = True
+    '        For i As Integer = 1 To bytes.Length - 1 Step 2
+    '            If bytes(i) <> 0 Then
+    '                looksUtf16Le = False
+    '                Exit For
+    '            End If
+    '        Next
+    '        If looksUtf16Le Then
+    '            Return Encoding.Unicode.GetString(bytes)
+    '        End If
+    '    End If
 
-        ' 3) Por defecto: UTF-8 (estricto)
-        Dim utf8Strict As New UTF8Encoding(False, True)
-        Try
-            Return utf8Strict.GetString(bytes)
-        Catch ex As DecoderFallbackException
-            ' Último recurso: intentar UTF-16 LE
-            Return Encoding.Unicode.GetString(bytes)
-        End Try
-    End Function
+    '    ' 3) Por defecto: UTF-8 (estricto)
+    '    Dim utf8Strict As New UTF8Encoding(False, True)
+    '    Try
+    '        Return utf8Strict.GetString(bytes)
+    '    Catch ex As DecoderFallbackException
+    '        ' Último recurso: intentar UTF-16 LE
+    '        Return Encoding.Unicode.GetString(bytes)
+    '    End Try
+    'End Function
 
     Public Shared Function ByteArrayToImage(ByVal byteArrayIn As Byte()) As Image
         Dim ms As New IO.MemoryStream(byteArrayIn)

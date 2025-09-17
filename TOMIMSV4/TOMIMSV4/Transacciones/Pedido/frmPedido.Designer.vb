@@ -5074,12 +5074,12 @@ Partial Class frmPedido
         Me.GrdImagen.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
         GridLevelNode2.RelationName = "Level1"
         Me.GrdImagen.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode2})
-        Me.GrdImagen.Location = New System.Drawing.Point(1, 55)
+        Me.GrdImagen.Location = New System.Drawing.Point(1, 59)
         Me.GrdImagen.MainView = Me.GridViewImg
         Me.GrdImagen.Margin = New System.Windows.Forms.Padding(4)
         Me.GrdImagen.MenuManager = Me.RibbonControl
         Me.GrdImagen.Name = "GrdImagen"
-        Me.GrdImagen.Size = New System.Drawing.Size(0, 516)
+        Me.GrdImagen.Size = New System.Drawing.Size(0, 512)
         Me.GrdImagen.TabIndex = 1
         Me.GrdImagen.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridViewImg})
         '
@@ -5098,7 +5098,7 @@ Partial Class frmPedido
         Me.ToolStrip.Location = New System.Drawing.Point(1, 28)
         Me.ToolStrip.Name = "ToolStrip"
         Me.ToolStrip.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStrip.Size = New System.Drawing.Size(-2, 27)
+        Me.ToolStrip.Size = New System.Drawing.Size(-2, 31)
         Me.ToolStrip.TabIndex = 0
         Me.ToolStrip.Text = "ToolStrip4"
         '

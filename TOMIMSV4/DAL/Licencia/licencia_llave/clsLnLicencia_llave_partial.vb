@@ -57,7 +57,15 @@ Partial Public Class clsLnLicencia_llave
 
                 vLlave = vLlave.Remove(0, vMacServer.Length + 1) 'Remover MaccAdrr + indicador "#"
 
+                '#GT16092025: si la cadena original tiene 6 valores, significa que es servidor legacy, que aun no maneja licencias UX
+                'Se añade el valor 0 como licencia UX
+
                 vParsingClaveDesencriptada = vLlave.Split(",")
+                If vParsingClaveDesencriptada.Length = 6 Then
+                    Dim lista As List(Of String) = vParsingClaveDesencriptada.ToList()
+                    lista.Insert(3, 0)
+                    vParsingClaveDesencriptada = lista.ToArray()
+                End If
 
                 vNoLicenciasBOF = vParsingClaveDesencriptada(1)
                 vNoLicenciasHH = vParsingClaveDesencriptada(2)

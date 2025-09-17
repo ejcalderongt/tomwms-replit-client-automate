@@ -259,6 +259,14 @@ Public Class frmLicSolicitud
             Dim vIdentificadorLicencia As String = Mid(vLicenciaDecodificada, 1, 7)
             Dim vLlaveDecodificada As String = vLicenciaDecodificada.Remove(0, 7)
             Dim ValoresLLaveSeparados As String() = vLlaveDecodificada.Split(",")
+
+            '#GT16092025: valida que si retorna 6 valores, es server legacy sin licencia para UX, se añade valor 0 por defecto para completar la cadena
+            If ValoresLLaveSeparados.Length = 6 Then
+                Dim lista As List(Of String) = ValoresLLaveSeparados.ToList()
+                lista.Insert(3, 0)
+                ValoresLLaveSeparados = lista.ToArray()
+            End If
+
             cLic.CantBackOffice = ValoresLLaveSeparados(1)
             cLic.CantHandHeld = ValoresLLaveSeparados(2)
             cLic.CantUx = ValoresLLaveSeparados(3) '#GT09092025: nuevo valor para los usuarios con acceso a portal web, los demas index, se corren un valor

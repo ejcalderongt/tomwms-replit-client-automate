@@ -211,59 +211,56 @@ Public Class frmLicGen
     End Sub
 
     Private Shared Function EncodeString(ByVal origText As String) As String
-        'Dim stringBytes As Byte() = System.Text.Encoding.Unicode.GetBytes(origText)
-        Dim stringBytes As Byte() = System.Text.Encoding.UTF8.GetBytes(origText)
+        Dim stringBytes As Byte() = System.Text.Encoding.Unicode.GetBytes(origText)
         Return Convert.ToBase64String(stringBytes, 0, stringBytes.Length)
+    End Function
 
+    Private Shared Function DecodeString(ByVal encodedText As String) As String
+        Dim stringBytes As Byte() = Convert.FromBase64String(encodedText)
+        Return System.Text.Encoding.Unicode.GetString(stringBytes)
     End Function
 
     'Private Shared Function DecodeString(ByVal encodedText As String) As String
-    '    Dim stringBytes As Byte() = Convert.FromBase64String(encodedText)
-    '    'Return System.Text.Encoding.Unicode.GetString(stringBytes)
-    '    Return System.Text.Encoding.UTF8.GetString(stringBytes)
+    '    Dim bytes As Byte() = Convert.FromBase64String(encodedText)
+
+    '    ' 1) Detectar BOMs
+    '    If bytes.Length >= 2 Then
+    '        ' UTF-16 LE BOM: FF FE
+    '        If bytes(0) = &HFF AndAlso bytes(1) = &HFE Then
+    '            Return Encoding.Unicode.GetString(bytes, 2, bytes.Length - 2)
+    '        End If
+    '        ' UTF-16 BE BOM: FE FF
+    '        If bytes(0) = &HFE AndAlso bytes(1) = &HFF Then
+    '            Return Encoding.BigEndianUnicode.GetString(bytes, 2, bytes.Length - 2)
+    '        End If
+    '    End If
+    '    ' UTF-8 BOM: EF BB BF
+    '    If bytes.Length >= 3 AndAlso bytes(0) = &HEF AndAlso bytes(1) = &HBB AndAlso bytes(2) = &HBF Then
+    '        Return Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3)
+    '    End If
+
+    '    ' 2) Heurística: ¿parece UTF-16 LE sin BOM? (alto = 0 en bytes impares)
+    '    If (bytes.Length Mod 2 = 0) Then
+    '        Dim looksUtf16Le As Boolean = True
+    '        For i As Integer = 1 To bytes.Length - 1 Step 2
+    '            If bytes(i) <> 0 Then
+    '                looksUtf16Le = False
+    '                Exit For
+    '            End If
+    '        Next
+    '        If looksUtf16Le Then
+    '            Return Encoding.Unicode.GetString(bytes)
+    '        End If
+    '    End If
+
+    '    ' 3) Por defecto: UTF-8 (estricto)
+    '    Dim utf8Strict As New UTF8Encoding(False, True)
+    '    Try
+    '        Return utf8Strict.GetString(bytes)
+    '    Catch ex As DecoderFallbackException
+    '        ' Último recurso: intentar UTF-16 LE
+    '        Return Encoding.Unicode.GetString(bytes)
+    '    End Try
     'End Function
-
-    Private Shared Function DecodeString(ByVal encodedText As String) As String
-        Dim bytes As Byte() = Convert.FromBase64String(encodedText)
-
-        ' 1) Detectar BOMs
-        If bytes.Length >= 2 Then
-            ' UTF-16 LE BOM: FF FE
-            If bytes(0) = &HFF AndAlso bytes(1) = &HFE Then
-                Return Encoding.Unicode.GetString(bytes, 2, bytes.Length - 2)
-            End If
-            ' UTF-16 BE BOM: FE FF
-            If bytes(0) = &HFE AndAlso bytes(1) = &HFF Then
-                Return Encoding.BigEndianUnicode.GetString(bytes, 2, bytes.Length - 2)
-            End If
-        End If
-        ' UTF-8 BOM: EF BB BF
-        If bytes.Length >= 3 AndAlso bytes(0) = &HEF AndAlso bytes(1) = &HBB AndAlso bytes(2) = &HBF Then
-            Return Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3)
-        End If
-
-        ' 2) Heurística: ¿parece UTF-16 LE sin BOM? (alto = 0 en bytes impares)
-        If (bytes.Length Mod 2 = 0) Then
-            Dim looksUtf16Le As Boolean = True
-            For i As Integer = 1 To bytes.Length - 1 Step 2
-                If bytes(i) <> 0 Then
-                    looksUtf16Le = False
-                    Exit For
-                End If
-            Next
-            If looksUtf16Le Then
-                Return Encoding.Unicode.GetString(bytes)
-            End If
-        End If
-
-        ' 3) Por defecto: UTF-8 (estricto)
-        Dim utf8Strict As New UTF8Encoding(False, True)
-        Try
-            Return utf8Strict.GetString(bytes)
-        Catch ex As DecoderFallbackException
-            ' Último recurso: intentar UTF-16 LE
-            Return Encoding.Unicode.GetString(bytes)
-        End Try
-    End Function
 
 End Class

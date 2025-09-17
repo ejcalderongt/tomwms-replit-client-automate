@@ -290,8 +290,9 @@ Public Class frmPedido_List
                     SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
                     SplashScreenManager.Default.SetWaitFormDescription("Abriendo documento")
 
+                    '#GT17092025: metodo exclusivo para cargar pedido y detalle sin filtrar que alguna linea tenga stock_liberado y no se muestre en el grid
                     pBePedidoEnc = New clsBeTrans_pe_enc
-                    pBePedidoEnc = clsLnTrans_pe_enc.GetSingle(Dr.Item("Correlativo"))
+                    pBePedidoEnc = clsLnTrans_pe_enc.GetSingle_For_Pedido(Dr.Item("Correlativo"))
 
                     Dim lSelectionIndex As Integer = gviewEncabezadoPedido.FocusedRowHandle
 
