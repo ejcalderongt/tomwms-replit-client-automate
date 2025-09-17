@@ -1191,7 +1191,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                         BeMensajeErrorWMS.Cantidad = PDet.Quantity
                                         BeMensajeErrorWMS.Referencia_Documento = pBePedidoEnc.Referencia
                                         BeMensajeErrorWMS.Item_No = PDet.Item_No
-                                        clsLnLog_error_wms.Insertar(BeMensajeErrorWMS, lConectionInterface, lTransInterface)
+                                        clsLnLog_error_wms.Insertar(BeMensajeErrorWMS)
 
                                         clsPublic.Actualizar_Progreso(lblprg, vMensajeEx)
 
@@ -1315,7 +1315,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                             BeMensajeErrorWMS.Cantidad = PDet.Quantity
                                             BeMensajeErrorWMS.Referencia_Documento = pBePedidoEnc.Referencia
                                             BeMensajeErrorWMS.Item_No = PDet.Item_No
-                                            clsLnLog_error_wms.Insertar(BeMensajeErrorWMS, lConectionInterface, lTransInterface)
+                                            clsLnLog_error_wms.Insertar(BeMensajeErrorWMS)
 
                                         End If
 
@@ -2707,7 +2707,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                         BeMensajeErrorWMS.Cantidad = PDet.Quantity
                                         BeMensajeErrorWMS.Referencia_Documento = pBePedidoEnc.Referencia
                                         BeMensajeErrorWMS.Item_No = PDet.Item_No
-                                        clsLnLog_error_wms.Insertar(BeMensajeErrorWMS, lConectionInterface, lTransInterface)
+                                        clsLnLog_error_wms.Insertar(BeMensajeErrorWMS)
 
                                         clsPublic.Actualizar_Progreso(lblprg, vMensajeEx)
 
@@ -2794,7 +2794,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                             BeMensajeErrorWMS.Cantidad = PDet.Quantity
                                             BeMensajeErrorWMS.Referencia_Documento = pBePedidoEnc.Referencia
                                             BeMensajeErrorWMS.Item_No = PDet.Item_No
-                                            clsLnLog_error_wms.Insertar(BeMensajeErrorWMS, lConectionInterface, lTransInterface)
+                                            clsLnLog_error_wms.Insertar(BeMensajeErrorWMS)
 
                                         End If
 

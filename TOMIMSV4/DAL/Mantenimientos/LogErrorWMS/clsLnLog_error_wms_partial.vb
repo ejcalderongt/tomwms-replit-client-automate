@@ -25,7 +25,7 @@ Partial Public Class clsLnLog_error_wms
                 oBeLog_error_wms.Fecha = Now
                 oBeLog_error_wms.IdEmpresa = 0
                 oBeLog_error_wms.IdBodega = 0
-                Insertar(oBeLog_error_wms, lConnection, lTransaction)
+                Insertar(oBeLog_error_wms)
 
             End If
 
@@ -69,7 +69,7 @@ Partial Public Class clsLnLog_error_wms
             oBeLog_error_wms.Fecha = Now
             oBeLog_error_wms.IdEmpresa = pIdEmpresa
             oBeLog_error_wms.IdBodega = pIdBodega
-            Insertar(oBeLog_error_wms, lConnection, lTransaction)
+            Insertar(oBeLog_error_wms)
 
             lTransaction.Commit()
 
@@ -128,7 +128,7 @@ Partial Public Class clsLnLog_error_wms
             oBeLog_error_wms.Fecha = Now
             oBeLog_error_wms.IdEmpresa = 0
             oBeLog_error_wms.IdBodega = 0
-            Insertar(oBeLog_error_wms, lConnection, lTransaction)
+            Insertar(oBeLog_error_wms)
 
         Catch ex As Exception
 
@@ -165,7 +165,7 @@ Partial Public Class clsLnLog_error_wms
             oBeLog_error_wms.IdPickingEnc = pIdPIckingEnc
             oBeLog_error_wms.IdRecepcionEnc = pIdRecepcionEnc
             oBeLog_error_wms.IdUsuarioAgr = pIdUsuarioAgr
-            Insertar(oBeLog_error_wms, lConnection, lTransaction)
+            Insertar(oBeLog_error_wms)
 
             lTransaction.Commit()
 
@@ -209,7 +209,7 @@ Partial Public Class clsLnLog_error_wms
             oBeLog_error_wms.IdPickingEnc = pIdPIckingEnc
             oBeLog_error_wms.IdRecepcionEnc = pIdRecepcionEnc
             oBeLog_error_wms.IdUsuarioAgr = pIdUsuarioAgr
-            Insertar(oBeLog_error_wms, lConnection, lTransaction)
+            Insertar(oBeLog_error_wms)
 
         Catch ex As Exception
             Throw ex
@@ -243,7 +243,7 @@ Partial Public Class clsLnLog_error_wms
                 oBeLog_error_wms.Item_No = pBeStockAReservar.IdProductoBodega
                 oBeLog_error_wms.UmBas = pBeStockAReservar.IdUnidadMedida
 
-                Insertar(oBeLog_error_wms, lConnection, lTransaction)
+                Insertar(oBeLog_error_wms)
 
             End If
 

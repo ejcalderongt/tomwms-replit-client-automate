@@ -3790,7 +3790,7 @@ Partial Public Class clsLnTrans_oc_enc
             BeLogErrorWMS.IdPedidoEnc = 0
             BeLogErrorWMS.IdPickingEnc = 0
             BeLogErrorWMS.IdUsuarioAgr = pUsuario.IdUsuario
-            clsLnLog_error_wms.Insertar(BeLogErrorWMS, lConnection, lTransaction)
+            clsLnLog_error_wms.Insertar(BeLogErrorWMS)
 
             lTransaction.Commit()
 

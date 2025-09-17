@@ -1122,7 +1122,7 @@ Partial Public Class clsLnTrans_re_det
             BeMensajeError.IdUsuarioAgr = pRecEnc.User_agr
             BeMensajeError.MensajeError = " #EJC240427: Se eliminó el producto " & pRecDet.Codigo_Producto & " Licencia: " & pRecDet.Lic_plate & " Cantidad: " & pRecDet.cantidad_recibida & " Usuario: " & pRecEnc.User_agr & " host: " & pIdHost
             BeMensajeError.Referencia_Documento = pRecEnc.NoOrdencompra
-            clsLnLog_error_wms.Insertar(BeMensajeError, IIf(Es_Transaccion_Remota, pConnection, lConnection), IIf(Es_Transaccion_Remota, pTransaction, lTrans))
+            clsLnLog_error_wms.Insertar(BeMensajeError)
 
             If Not Es_Transaccion_Remota Then
 
@@ -2731,7 +2731,7 @@ Partial Public Class clsLnTrans_re_det
                     BeMensajeErrorOC.IdBodega = pRecEnc.IdBodega
                     BeMensajeErrorOC.Cantidad = pRecDet.cantidad_recibida
                     BeMensajeErrorOC.MensajeError = "AVISO19122024A_HH_EliminarRecepcion: Se actualiza OC " & IdOrdenCompraEnc & " con recepcion det " & pIdRecepcionDet & " cantidad " & pRecDet.cantidad_recibida
-                    clsLnLog_error_wms.Insertar(BeMensajeErrorOC, lConnection, lTrans)
+                    clsLnLog_error_wms.Insertar(BeMensajeErrorOC)
                     Resultado += String.Format(" Actualicé {0} orden de compra detalle ", FilasAfectadas)
                 Else
                     Resultado += " No actualicé el detalle de la OC."
@@ -2780,7 +2780,7 @@ Partial Public Class clsLnTrans_re_det
                 BeMensajeError.IdUsuarioAgr = pRecEnc.User_agr
                 BeMensajeError.MensajeError = "EJC240427_HH_EliminarRecepcion: Se eliminó el producto " & pRecDet.Codigo_Producto & " Licencia: " & pRecDet.Lic_plate & " Cantidad: " & pRecDet.cantidad_recibida & " Usuario: " & pRecEnc.User_agr & " host: " & pIdHost
                 BeMensajeError.Referencia_Documento = pRecEnc.NoOrdencompra
-                clsLnLog_error_wms.Insertar(BeMensajeError, lConnection, lTrans)
+                clsLnLog_error_wms.Insertar(BeMensajeError)
 
             Else
                 Throw New Exception("ERROR_DE_PROCESO_20241205_HH: La recepción " & pIdRecepcionEnc & " fue previamente finalizada.")
