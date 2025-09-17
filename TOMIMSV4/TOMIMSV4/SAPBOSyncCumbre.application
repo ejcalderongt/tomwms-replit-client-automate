@@ -7,14 +7,14 @@
     <framework targetVersion="4.8" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="SAPBOSyncCumbre.exe.manifest" size="20533">
+    <dependentAssembly dependencyType="install" codebase="SAPBOSyncCumbre.exe.manifest" size="20530">
       <assemblyIdentity name="SAPBOSyncCumbre.exe" version="1.0.0.2" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="amd64" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Ia6gNgag802i/W2cBB0d0iYy2moUnxbqUmh/DKBHN/8=</dsig:DigestValue>
+        <dsig:DigestValue>ATPjW4hV/LOyNGSvcFoGS0cCoxEckmNQ5JCkk6E921I=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
