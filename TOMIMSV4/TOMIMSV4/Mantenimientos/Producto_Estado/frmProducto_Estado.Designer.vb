@@ -42,10 +42,10 @@ Partial Class frmProducto_Estado
         Dim Label12 As System.Windows.Forms.Label
         Dim Label2 As System.Windows.Forms.Label
         Dim Label1 As System.Windows.Forms.Label
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmProducto_Estado))
-        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim Label3 As System.Windows.Forms.Label
         Dim Label4 As System.Windows.Forms.Label
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmProducto_Estado))
+        Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuActualizar = New DevExpress.XtraBars.BarButtonItem()
@@ -59,6 +59,8 @@ Partial Class frmProducto_Estado
         Me.RibbonPageGroup2 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
+        Me.nudToleranciaDiasVencimiento = New System.Windows.Forms.NumericUpDown()
+        Me.nudDiasVencimientoClasificacion = New System.Windows.Forms.NumericUpDown()
         Me.txtCodigoBodegaERP = New DevExpress.XtraEditors.TextEdit()
         Me.GroupControl2 = New DevExpress.XtraEditors.GroupControl()
         Me.rdMalo = New System.Windows.Forms.RadioButton()
@@ -84,8 +86,7 @@ Partial Class frmProducto_Estado
         Me.hideContainerBottom = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
-        Me.nudDiasVencimientoClasificacion = New System.Windows.Forms.NumericUpDown()
-        Me.nudToleranciaDiasVencimiento = New System.Windows.Forms.NumericUpDown()
+        Me.chkReservaRequiereUMBas = New DevExpress.XtraEditors.ToggleSwitch()
         IdPropietarioLabel = New System.Windows.Forms.Label()
         NombreLabel = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
@@ -100,6 +101,8 @@ Partial Class frmProducto_Estado
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl1.SuspendLayout()
+        CType(Me.nudToleranciaDiasVencimiento, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.nudDiasVencimientoClasificacion, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCodigoBodegaERP.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl2.SuspendLayout()
@@ -123,8 +126,7 @@ Partial Class frmProducto_Estado
         Me.hideContainerBottom.SuspendLayout()
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
-        CType(Me.nudDiasVencimientoClasificacion, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.nudToleranciaDiasVencimiento, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkReservaRequiereUMBas.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'IdPropietarioLabel
@@ -208,6 +210,24 @@ Partial Class frmProducto_Estado
         Label1.Size = New System.Drawing.Size(123, 16)
         Label1.TabIndex = 16
         Label1.Text = "Código Bodega ERP:"
+        '
+        'Label3
+        '
+        Label3.AutoSize = True
+        Label3.Location = New System.Drawing.Point(29, 202)
+        Label3.Name = "Label3"
+        Label3.Size = New System.Drawing.Size(108, 16)
+        Label3.TabIndex = 18
+        Label3.Text = "Días vencimiento:"
+        '
+        'Label4
+        '
+        Label4.AutoSize = True
+        Label4.Location = New System.Drawing.Point(28, 234)
+        Label4.Name = "Label4"
+        Label4.Size = New System.Drawing.Size(171, 16)
+        Label4.TabIndex = 19
+        Label4.Text = "Tolerancia días vencimiento:"
         '
         'RibbonControl
         '
@@ -303,6 +323,7 @@ Partial Class frmProducto_Estado
         '
         'GroupControl1
         '
+        Me.GroupControl1.Controls.Add(Me.chkReservaRequiereUMBas)
         Me.GroupControl1.Controls.Add(Me.nudToleranciaDiasVencimiento)
         Me.GroupControl1.Controls.Add(Me.nudDiasVencimientoClasificacion)
         Me.GroupControl1.Controls.Add(Label4)
@@ -327,6 +348,20 @@ Partial Class frmProducto_Estado
         Me.GroupControl1.TabIndex = 0
         Me.GroupControl1.Text = "Datos Estado Producto"
         '
+        'nudToleranciaDiasVencimiento
+        '
+        Me.nudToleranciaDiasVencimiento.Location = New System.Drawing.Point(206, 234)
+        Me.nudToleranciaDiasVencimiento.Name = "nudToleranciaDiasVencimiento"
+        Me.nudToleranciaDiasVencimiento.Size = New System.Drawing.Size(132, 23)
+        Me.nudToleranciaDiasVencimiento.TabIndex = 21
+        '
+        'nudDiasVencimientoClasificacion
+        '
+        Me.nudDiasVencimientoClasificacion.Location = New System.Drawing.Point(206, 195)
+        Me.nudDiasVencimientoClasificacion.Name = "nudDiasVencimientoClasificacion"
+        Me.nudDiasVencimientoClasificacion.Size = New System.Drawing.Size(132, 23)
+        Me.nudDiasVencimientoClasificacion.TabIndex = 20
+        '
         'txtCodigoBodegaERP
         '
         Me.txtCodigoBodegaERP.Location = New System.Drawing.Point(206, 165)
@@ -336,7 +371,7 @@ Partial Class frmProducto_Estado
         Me.txtCodigoBodegaERP.Properties.Appearance.BackColor = System.Drawing.Color.AliceBlue
         Me.txtCodigoBodegaERP.Properties.Appearance.Options.UseBackColor = True
         Me.txtCodigoBodegaERP.Properties.MaxLength = 30
-        Me.txtCodigoBodegaERP.Size = New System.Drawing.Size(419, 22)
+        Me.txtCodigoBodegaERP.Size = New System.Drawing.Size(417, 22)
         Me.txtCodigoBodegaERP.TabIndex = 17
         Me.txtCodigoBodegaERP.ToolTip = "Código de la bodega de SAP (Interface)"
         '
@@ -384,18 +419,18 @@ Partial Class frmProducto_Estado
         Me.cmbPropietario.Name = "cmbPropietario"
         Me.cmbPropietario.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbPropietario.Properties.NullText = ""
-        Me.cmbPropietario.Size = New System.Drawing.Size(419, 22)
+        Me.cmbPropietario.Size = New System.Drawing.Size(417, 22)
         Me.cmbPropietario.TabIndex = 14
         '
         'txtNombreUbicación
         '
         Me.txtNombreUbicación.CausesValidation = False
-        Me.txtNombreUbicación.Location = New System.Drawing.Point(296, 135)
+        Me.txtNombreUbicación.Location = New System.Drawing.Point(291, 135)
         Me.txtNombreUbicación.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtNombreUbicación.MenuManager = Me.RibbonControl
         Me.txtNombreUbicación.Name = "txtNombreUbicación"
         Me.txtNombreUbicación.Properties.ReadOnly = True
-        Me.txtNombreUbicación.Size = New System.Drawing.Size(326, 22)
+        Me.txtNombreUbicación.Size = New System.Drawing.Size(331, 22)
         Me.txtNombreUbicación.TabIndex = 11
         '
         'txtIdUbicacion
@@ -434,7 +469,7 @@ Partial Class frmProducto_Estado
         Me.txtNombre.MenuManager = Me.RibbonControl
         Me.txtNombre.Name = "txtNombre"
         Me.txtNombre.Properties.MaxLength = 30
-        Me.txtNombre.Size = New System.Drawing.Size(416, 22)
+        Me.txtNombre.Size = New System.Drawing.Size(417, 22)
         Me.txtNombre.TabIndex = 7
         '
         'Fec_agrDateEdit
@@ -488,8 +523,8 @@ Partial Class frmProducto_Estado
         Me.Dgrid.Cursor = System.Windows.Forms.Cursors.Default
         Me.Dgrid.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Dgrid.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        GridLevelNode1.RelationName = "Level1"
-        Me.Dgrid.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
+        GridLevelNode2.RelationName = "Level1"
+        Me.Dgrid.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode2})
         Me.Dgrid.Location = New System.Drawing.Point(2, 55)
         Me.Dgrid.MainView = Me.GridView1
         Me.Dgrid.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
@@ -609,37 +644,15 @@ Partial Class frmProducto_Estado
         Me.DockPanel1_Container.Size = New System.Drawing.Size(946, 84)
         Me.DockPanel1_Container.TabIndex = 0
         '
-        'Label3
+        'chkReservaRequiereUMBas
         '
-        Label3.AutoSize = True
-        Label3.Location = New System.Drawing.Point(29, 202)
-        Label3.Name = "Label3"
-        Label3.Size = New System.Drawing.Size(108, 16)
-        Label3.TabIndex = 18
-        Label3.Text = "Días vencimiento:"
-        '
-        'Label4
-        '
-        Label4.AutoSize = True
-        Label4.Location = New System.Drawing.Point(28, 234)
-        Label4.Name = "Label4"
-        Label4.Size = New System.Drawing.Size(171, 16)
-        Label4.TabIndex = 19
-        Label4.Text = "Tolerancia días vencimiento:"
-        '
-        'nudDiasVencimientoClasificacion
-        '
-        Me.nudDiasVencimientoClasificacion.Location = New System.Drawing.Point(206, 195)
-        Me.nudDiasVencimientoClasificacion.Name = "nudDiasVencimientoClasificacion"
-        Me.nudDiasVencimientoClasificacion.Size = New System.Drawing.Size(132, 23)
-        Me.nudDiasVencimientoClasificacion.TabIndex = 20
-        '
-        'nudToleranciaDiasVencimiento
-        '
-        Me.nudToleranciaDiasVencimiento.Location = New System.Drawing.Point(206, 234)
-        Me.nudToleranciaDiasVencimiento.Name = "nudToleranciaDiasVencimiento"
-        Me.nudToleranciaDiasVencimiento.Size = New System.Drawing.Size(132, 23)
-        Me.nudToleranciaDiasVencimiento.TabIndex = 21
+        Me.chkReservaRequiereUMBas.Location = New System.Drawing.Point(386, 233)
+        Me.chkReservaRequiereUMBas.MenuManager = Me.RibbonControl
+        Me.chkReservaRequiereUMBas.Name = "chkReservaRequiereUMBas"
+        Me.chkReservaRequiereUMBas.Properties.OffText = "Reserva no requiere UM Bas"
+        Me.chkReservaRequiereUMBas.Properties.OnText = "Reserva requiere UM Bas"
+        Me.chkReservaRequiereUMBas.Size = New System.Drawing.Size(236, 24)
+        Me.chkReservaRequiereUMBas.TabIndex = 22
         '
         'frmProducto_Estado
         '
@@ -662,6 +675,8 @@ Partial Class frmProducto_Estado
         CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl1.ResumeLayout(False)
         Me.GroupControl1.PerformLayout()
+        CType(Me.nudToleranciaDiasVencimiento, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.nudDiasVencimientoClasificacion, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCodigoBodegaERP.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl2.ResumeLayout(False)
@@ -689,8 +704,7 @@ Partial Class frmProducto_Estado
         Me.DockPanel1.ResumeLayout(False)
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
-        CType(Me.nudDiasVencimientoClasificacion, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.nudToleranciaDiasVencimiento, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkReservaRequiereUMBas.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -736,4 +750,5 @@ Partial Class frmProducto_Estado
     Friend WithEvents GroupControl2 As DevExpress.XtraEditors.GroupControl
     Friend WithEvents nudToleranciaDiasVencimiento As NumericUpDown
     Friend WithEvents nudDiasVencimientoClasificacion As NumericUpDown
+    Friend WithEvents chkReservaRequiereUMBas As DevExpress.XtraEditors.ToggleSwitch
 End Class

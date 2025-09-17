@@ -7628,7 +7628,7 @@ Public Class frmPedido
 
                         Application.DoEvents()
 
-                        SplashScreenManager.Default.SetWaitFormDescription("Manufactura. ")
+                        SplashScreenManager.Default.SetWaitFormDescription("Manufactura...")
 
                         Cargar_Manufactura(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
@@ -10388,7 +10388,13 @@ Public Class frmPedido
             Dim printingSystem1 As New PrintingSystem()
             Dim printLink As New PrintableComponentLink()
             ' Aumentar el margen superior en 100 píxeles
-            printLink.Margins.Top += 80
+            'printLink.Margins.Top += 80
+
+            '#MECR12092025: Se agrego formato y margenes al diseño.
+            printLink.PaperKind = System.Drawing.Printing.PaperKind.Letter
+            printLink.Landscape = False
+            printLink.Margins = New System.Drawing.Printing.Margins(30, 30, 80, 40)
+
             AddHandler printLink.CreateMarginalHeaderArea, AddressOf PrintableComponentLinkHojaVeri_CreateReportHeaderArea
 
             Const leftColumnFoot As String = "Páginas: [Page # of Pages #] "
@@ -10414,6 +10420,8 @@ Public Class frmPedido
             End If
 
             printingSystem1.PageSettings.Landscape = False
+            printingSystem1.PageMargins().Right = 10
+            printingSystem1.PageMargins().Left = 10
             printLink.Component = dgridVerificacion
             printLink.Landscape = False
             printLink.CreateDocument(printingSystem1)

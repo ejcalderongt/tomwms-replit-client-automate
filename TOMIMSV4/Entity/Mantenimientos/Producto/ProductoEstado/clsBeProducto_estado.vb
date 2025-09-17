@@ -87,6 +87,13 @@ Public Class clsBeProducto_estado
     Public Property Tolerancia_Dias_Vencimiento As Integer = 0
 
     ''' <summary>
+    ''' #CKFK20250910: Campo para saber si el estado del producto en la reserva requiere UMBas,
+    ''' esto aplica si el cliente tiene definido un estado de producto a importar
+    ''' </summary>
+    ''' <returns></returns>
+    Public Property Reservar_En_UmBas As Boolean = False
+
+    ''' <summary>
     ''' Initializes a new instance of the <see cref="clsBeProducto_estado"/> class.
     ''' </summary>
     Sub New()
