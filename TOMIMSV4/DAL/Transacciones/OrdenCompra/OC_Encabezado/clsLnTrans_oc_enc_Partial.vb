@@ -3782,7 +3782,7 @@ Partial Public Class clsLnTrans_oc_enc
             End If
 
             Dim BeLogErrorWMS As New clsBeLog_error_wms
-            BeLogErrorWMS.IdError = clsLnLog_error_wms.MaxID(lConnection, lTransaction) + 1
+            BeLogErrorWMS.IdError = clsLnLog_error_wms.MaxID() + 1
             BeLogErrorWMS.IdEmpresa = pUsuario.IdEmpresa
             BeLogErrorWMS.IdBodega = pOrdenCompraEnc.IdBodega
             BeLogErrorWMS.Fecha = Now
@@ -3790,7 +3790,7 @@ Partial Public Class clsLnTrans_oc_enc
             BeLogErrorWMS.IdPedidoEnc = 0
             BeLogErrorWMS.IdPickingEnc = 0
             BeLogErrorWMS.IdUsuarioAgr = pUsuario.IdUsuario
-            clsLnLog_error_wms.Insertar(BeLogErrorWMS, lConnection, lTransaction)
+            clsLnLog_error_wms.Insertar(BeLogErrorWMS)
 
             lTransaction.Commit()
 

@@ -174,7 +174,6 @@ Public Class clsLnLog_error_wms
 
     End Function
 
-
     Public Shared Function Eliminar(ByRef oBeLog_error_wms As clsBeLog_error_wms, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
