@@ -3781,6 +3781,8 @@ Partial Public Class clsLnTrans_oc_enc
 
             End If
 
+            lTransaction.Commit()
+
             Dim BeLogErrorWMS As New clsBeLog_error_wms
             BeLogErrorWMS.IdError = clsLnLog_error_wms.MaxID() + 1
             BeLogErrorWMS.IdEmpresa = pUsuario.IdEmpresa
@@ -3791,8 +3793,6 @@ Partial Public Class clsLnTrans_oc_enc
             BeLogErrorWMS.IdPickingEnc = 0
             BeLogErrorWMS.IdUsuarioAgr = pUsuario.IdUsuario
             clsLnLog_error_wms.Insertar(BeLogErrorWMS)
-
-            lTransaction.Commit()
 
             Eliminar_OC = True
 

@@ -15,7 +15,7 @@ Partial Public Class clsLnLog_error_wms
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             Dim oBeLog_error_wms As New clsBeLog_error_wms()
-            oBeLog_error_wms.IdError = MaxID() + 1
+            oBeLog_error_wms.IdError = MaxID(lConnection, lTransaction) + 1
             oBeLog_error_wms.MensajeError = pMensajeExcepcion
             oBeLog_error_wms.Fecha = Now
             oBeLog_error_wms.IdEmpresa = pIdEmpresa
@@ -41,25 +41,21 @@ Partial Public Class clsLnLog_error_wms
 
     End Sub
 
-
     Public Shared Sub Agregar_Error(ByVal pMensajeExcepcion As String)
 
         Try
 
-            Dim oBeLog_error_wms As New clsBeLog_error_wms()
-            oBeLog_error_wms.IdError = MaxID() + 1
-            oBeLog_error_wms.MensajeError = pMensajeExcepcion
-            oBeLog_error_wms.Fecha = Now
-            oBeLog_error_wms.IdEmpresa = 0
-            oBeLog_error_wms.IdBodega = 0
-            Insertar(oBeLog_error_wms)
+            'Dim oBeLog_error_wms As New clsBeLog_error_wms()
+            'oBeLog_error_wms.IdError = MaxID() + 1
+            'oBeLog_error_wms.MensajeError = pMensajeExcepcion
+            'oBeLog_error_wms.Fecha = Now
+            'oBeLog_error_wms.IdEmpresa = 0
+            'oBeLog_error_wms.IdBodega = 0
+            'Insertar(oBeLog_error_wms)
 
         Catch ex As Exception
-
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-
             Throw ex
-
         End Try
 
     End Sub
@@ -80,7 +76,7 @@ Partial Public Class clsLnLog_error_wms
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             Dim oBeLog_error_wms As New clsBeLog_error_wms()
-            oBeLog_error_wms.IdError = MaxID() + 1
+            oBeLog_error_wms.IdError = MaxID(lConnection, lTransaction) + 1
             oBeLog_error_wms.MensajeError = pMensajeExcepcion
             oBeLog_error_wms.Fecha = Now
             oBeLog_error_wms.IdEmpresa = pIdEmpresa
@@ -123,7 +119,7 @@ Partial Public Class clsLnLog_error_wms
             If lConnection.State = ConnectionState.Open Then
 
                 Dim oBeLog_error_wms As New clsBeLog_error_wms()
-                oBeLog_error_wms.IdError = MaxID() + 1
+                oBeLog_error_wms.IdError = MaxID(lConnection, lTransaction) + 1
                 oBeLog_error_wms.MensajeError = pNombreEscenario
                 oBeLog_error_wms.Fecha = Now
                 oBeLog_error_wms.IdEmpresa = 0
