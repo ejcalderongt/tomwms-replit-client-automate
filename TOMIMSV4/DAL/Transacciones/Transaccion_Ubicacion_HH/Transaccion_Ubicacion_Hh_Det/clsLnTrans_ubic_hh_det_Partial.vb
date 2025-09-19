@@ -811,7 +811,7 @@ Partial Public Class clsLnTrans_ubic_hh_det
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             Dim vMsgError As String = "AVISO_20242211_HH_CambioEstadoUbic: ubicacion: " & pStockRes.IdUbicacion & " ubicacion anterior " & pStockRes.IdUbicacion_Anterior & "opoerador " & pMovimiento.IdOperadorBodega
-            clsLnLog_error_wms.Agregar_Error(vMsgError, lConnection, lTransaction)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
             If pStockRes.Lic_plate = "" Then
                 ListaStock = clsLnVW_stock_res.Get_Lista_Stock(pStockRes,

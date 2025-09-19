@@ -18485,7 +18485,7 @@ EXPLOSIONAR_PRODUCTO:
                                                                                     BeProducto.Codigo,
                                                                                     vCantidadSolicitadaPedido,
                                                                                     vCantidadStock)
-                                    clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_MI3 = false", lConnection, ltransaction)
+                                    clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_MI3 = false")
                                     'Exit Function
                                 End If
                             End If
@@ -19143,7 +19143,7 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
 
                                                 If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
                                                     vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                    clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking, lConnection, ltransaction)
+                                                    clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
                                                     Return False
                                                 End If
 
@@ -22888,7 +22888,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                         Else
                                                             '#CKFK20240116 Agregué este mensaje para ver lo que pasa
                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking, lConnection, ltransaction)
+                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
                                                         End If
 
                                                     End If
@@ -23240,7 +23240,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                     vMensajeNoExplosionEnZonasNoPicking = "#ERROR_20231101: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp: " & vStockDispZonaPicking
                                                 End If
 
-                                                clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking, lConnection, ltransaction)
+                                                clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
                                                 Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
 
@@ -26761,7 +26761,7 @@ EXPLOSIONAR_PRODUCTO:
                                                                                     BeProducto.Codigo,
                                                                                     vCantidadSolicitadaPedido,
                                                                                     vCantidadStock)
-                                    clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_SAP = false", lConnection, ltransaction)
+                                    clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_SAP = false")
                                     'Exit Function
                                 End If
                             End If
@@ -30571,7 +30571,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                         Else
                                                             '#CKFK20240116 Agregué este mensaje para ver lo que pasa
                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking, lConnection, ltransaction)
+                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
                                                         End If
 
                                                     End If
@@ -30921,7 +30921,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                     vMensajeNoExplosionEnZonasNoPicking = "#ERROR_20231101: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp: " & vStockDispZonaPicking
                                                 End If
 
-                                                clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking, lConnection, ltransaction)
+                                                clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
                                                 Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
 

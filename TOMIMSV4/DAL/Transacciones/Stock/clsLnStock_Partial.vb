@@ -13965,7 +13965,7 @@ Partial Public Class clsLnStock
 
                                     Dim vInsert As String = "update stock set fecha_vence = " & FormatoFechas.fFecha(L.Vence) & " where IdStock = " & L.IdStock
 
-                                    clsLnLog_error_wms.Agregar_Error(vInsert, lConnection, lTransaction)
+                                    clsLnLog_error_wms.Agregar_Error(vInsert)
 
                                     vRegistros += lReturnValue
 

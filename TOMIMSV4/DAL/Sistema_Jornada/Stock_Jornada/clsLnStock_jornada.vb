@@ -1090,7 +1090,7 @@ Public Class clsLnStock_jornada
             Dim rowsAfected As Integer = cmd.ExecuteNonQuery()
             cmd.Dispose()
 
-            clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_14042023: Se agregó licencia " & Lic_Sin_Registro.Lic_plate & " a proceso_licencias_pendientes_retroactivo", lConnection, lTransaction)
+            clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_14042023: Se agregó licencia " & Lic_Sin_Registro.Lic_plate & " a proceso_licencias_pendientes_retroactivo")
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
