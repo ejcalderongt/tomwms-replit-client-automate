@@ -3933,7 +3933,7 @@ Entity
  </summary>
  <returns></returns>
 </member>
-<member name="P:TOMWMS.clsBeProducto_estado.Reserva_Requiere_UM_Bas">
+<member name="P:TOMWMS.clsBeProducto_estado.Reservar_En_UmBas">
  <summary>
  #CKFK20250910: Campo para saber si el estado del producto en la reserva requiere UMBas,
  esto aplica si el cliente tiene definido un estado de producto a importar
