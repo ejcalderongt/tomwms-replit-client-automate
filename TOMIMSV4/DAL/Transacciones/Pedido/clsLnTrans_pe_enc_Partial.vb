@@ -1645,7 +1645,7 @@ Partial Public Class clsLnTrans_pe_enc
             '#EJC202207181029: Agregar aquí en el log que se eliminó una línea del pedido.
             If Not pPickingEnc Is Nothing Then
                 Dim vIdEmpresa As Integer = clsLnBodega.Get_IdEmpresa_By_IdBodega(pPickingEnc.IdBodega, lConnection, lTransaction)
-                clsLnLog_error_wms.Agregar_Error("PED_DEL_DET: Se eliminó el Idpedido: " & IdPedidoEnc & " con IdDetalle: " & IdPedidoDet & " con empresa: " & vIdEmpresa & " bodega: " & pPickingEnc.IdBodega, lConnection, lTransaction)
+                clsLnLog_error_wms.Agregar_Error("PED_DEL_DET: Se eliminó el Idpedido: " & IdPedidoEnc & " con IdDetalle: " & IdPedidoDet & " con empresa: " & vIdEmpresa & " bodega: " & pPickingEnc.IdBodega)
 
             End If
 
@@ -2915,7 +2915,7 @@ Partial Public Class clsLnTrans_pe_enc
 
             '#EJC202303032014: Log mejorado
             Dim BeLogErrorWMS As New clsBeLog_error_wms
-            BeLogErrorWMS.IdError = clsLnLog_error_wms.MaxID(lConnection, lTransaction) + 1
+            BeLogErrorWMS.IdError = clsLnLog_error_wms.MaxID() + 1
             BeLogErrorWMS.IdEmpresa = vIdEmpresa
             BeLogErrorWMS.IdBodega = pBePedidoEnc.IdBodega
             BeLogErrorWMS.Fecha = Now
@@ -2923,7 +2923,7 @@ Partial Public Class clsLnTrans_pe_enc
             BeLogErrorWMS.IdPedidoEnc = pBePedidoEnc.IdPedidoEnc
             BeLogErrorWMS.IdPickingEnc = pBePedidoEnc.IdPickingEnc
             BeLogErrorWMS.IdUsuarioAgr = pIdUsuario
-            clsLnLog_error_wms.Insertar(BeLogErrorWMS, lConnection, lTransaction)
+            clsLnLog_error_wms.Insertar(BeLogErrorWMS)
 
             lTransaction.Commit()
 

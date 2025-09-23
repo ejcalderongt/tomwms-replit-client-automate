@@ -972,7 +972,7 @@ Public Class frmCargaExcel_DI
                 Else
                     pNumero_Orden = "0"
 
-                    clsLnLog_error_wms.Agregar_Error("Advertencia_21062024: Importación por Excel no contiene el scanner de la póliza. Operado por: " & AP.UsuarioAp.IdUsuario, lConnection, lTransaction)
+                    clsLnLog_error_wms.Agregar_Error("Advertencia_21062024: Importación por Excel no contiene el scanner de la póliza. Operado por: " & AP.UsuarioAp.IdUsuario)
 
                 End If
 
