@@ -134,6 +134,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="My Project\PublishProfiles\WCFTOM4_mio.pubxml" />
+    <None Include="My Project\PublishProfiles\WCFTOM4_PRD.pubxml" />
     <None Include="My Project\PublishProfiles\WCFTOM4_QA.pubxml" />
     <None Include="My Project\PublishProfiles\WCFTOM4_QAS_B1.pubxml" />
     <None Include="My Project\PublishProfiles\WSTOMHH_QAP.pubxml" />

@@ -1112,7 +1112,7 @@ Partial Public Class clsLnTrans_re_det
             '#EJC202404270040: Log Error WMS. al eliminar línea de recepción BOF.
             '#GT16102024: Se agrega al log del error, el host desde donde se elimina la linea.
             Dim BeMensajeError As New clsBeLog_error_wms
-            BeMensajeError.IdError = clsLnLog_error_wms.MaxID(IIf(Es_Transaccion_Remota, pConnection, lConnection), IIf(Es_Transaccion_Remota, pTransaction, lTrans)) + 1
+            BeMensajeError.IdError = clsLnLog_error_wms.MaxID() + 1
             BeMensajeError.Item_No = pRecDet.Codigo_Producto
             BeMensajeError.Fecha = Now
             BeMensajeError.IdRecepcionEnc = pRecDet.IdRecepcionEnc
@@ -1122,7 +1122,7 @@ Partial Public Class clsLnTrans_re_det
             BeMensajeError.IdUsuarioAgr = pRecEnc.User_agr
             BeMensajeError.MensajeError = " #EJC240427: Se eliminó el producto " & pRecDet.Codigo_Producto & " Licencia: " & pRecDet.Lic_plate & " Cantidad: " & pRecDet.cantidad_recibida & " Usuario: " & pRecEnc.User_agr & " host: " & pIdHost
             BeMensajeError.Referencia_Documento = pRecEnc.NoOrdencompra
-            clsLnLog_error_wms.Insertar(BeMensajeError, IIf(Es_Transaccion_Remota, pConnection, lConnection), IIf(Es_Transaccion_Remota, pTransaction, lTrans))
+            clsLnLog_error_wms.Insertar(BeMensajeError)
 
             If Not Es_Transaccion_Remota Then
 
@@ -2393,9 +2393,7 @@ Partial Public Class clsLnTrans_re_det
 
                 If BeTransReDet.Lic_plate.Equals("") Then
                     Dim vMsgError As String = "AVISO_02122024: insert rec_det lp_vacia IdRecepcionEnc:" & BeTransReDet.IdRecepcionEnc & " y IdRecepcionDet:" & BeTransReDet.IdRecepcionDet
-                    clsLnLog_error_wms.Agregar_Error(vMsgError,
-                                                     lConnection,
-                                                     lTransaction)
+                    clsLnLog_error_wms.Agregar_Error(vMsgError)
                 End If
 
             Else
@@ -2404,9 +2402,7 @@ Partial Public Class clsLnTrans_re_det
 
                 If BeTransReDet.Lic_plate.Equals("") Then
                     Dim vMsgError As String = "AVISO_02122024: update rec_det lp_vacia IdRecepcionEnc:" & BeTransReDet.IdRecepcionEnc & " y IdRecepcionDet:" & BeTransReDet.IdRecepcionDet
-                    clsLnLog_error_wms.Agregar_Error(vMsgError,
-                                                     lConnection,
-                                                     lTransaction)
+                    clsLnLog_error_wms.Agregar_Error(vMsgError)
                 End If
 
             End If
@@ -2724,15 +2720,14 @@ Partial Public Class clsLnTrans_re_det
                     Actualiza_Detalle_OC(IdOrdenCompraEnc, pIdRecepcionEnc, pIdRecepcionDet, lConnection, lTrans)
                     '#GT19122024: actualizo la OC por eliminar un detalle.
                     Dim BeMensajeErrorOC As New clsBeLog_error_wms
-                    BeMensajeErrorOC.IdError = clsLnLog_error_wms.MaxID(lConnection, lTrans) + 1
+                    BeMensajeErrorOC.IdError = clsLnLog_error_wms.MaxID() + 1
                     BeMensajeErrorOC.IdRecepcionEnc = pIdRecepcionEnc
                     BeMensajeErrorOC.Line_No = pIdRecepcionDet
                     BeMensajeErrorOC.Fecha = Now
                     BeMensajeErrorOC.IdBodega = pRecEnc.IdBodega
                     BeMensajeErrorOC.Cantidad = pRecDet.cantidad_recibida
-                    BeMensajeErrorOC.MensajeError = "AVISO19122024A_HH_EliminarRecepcion: Se actualiza OC " & IdOrdenCompraEnc &
-                        " con recepcion det " & pIdRecepcionDet & " cantidad " & pRecDet.cantidad_recibida
-                    clsLnLog_error_wms.Insertar(BeMensajeErrorOC, lConnection, lTrans)
+                    BeMensajeErrorOC.MensajeError = "AVISO19122024A_HH_EliminarRecepcion: Se actualiza OC " & IdOrdenCompraEnc & " con recepcion det " & pIdRecepcionDet & " cantidad " & pRecDet.cantidad_recibida
+                    clsLnLog_error_wms.Insertar(BeMensajeErrorOC)
                     Resultado += String.Format(" Actualicé {0} orden de compra detalle ", FilasAfectadas)
                 Else
                     Resultado += " No actualicé el detalle de la OC."
@@ -2744,7 +2739,7 @@ Partial Public Class clsLnTrans_re_det
                 If FilasAfectadas Then
                     '#GT19122024: eliminar la linea de recepcion
                     Dim vMsgError As String = "AVISO19122024B_HH_EliminarRecepcion: Se elimina recepcion " & pIdRecepcionEnc & " linea detalle " & pIdRecepcionDet & " cantidad " & pRecDet.cantidad_recibida & " y licencia " & pRecDet.Lic_plate
-                    clsLnLog_error_wms.Agregar_Error(vMsgError, lConnection, lTrans)
+                    clsLnLog_error_wms.Agregar_Error(vMsgError)
                 Else
                     Throw New Exception("ERROR19122024B_HH_EliminarRecepcion: No se puede eliminar la linea seleccionada de la recepciòn.")
                 End If
@@ -2760,7 +2755,7 @@ Partial Public Class clsLnTrans_re_det
 
                     If pFilasAfectadas = 0 Then
                         Dim vMsgError As String = "AVISO19122024C_HH_EliminarRecepcion: No se pudo eliminar registro de i_nav_transacciones_out, recepcion " & pIdRecepcionEnc & " recepcion detalle " & pIdRecepcionDet & " producto " & pRecDet.IdProductoBodega & " y licencia " & pRecDet.Lic_plate
-                        clsLnLog_error_wms.Agregar_Error(vMsgError, lConnection, lTrans)
+                        clsLnLog_error_wms.Agregar_Error(vMsgError)
                         Throw New Exception("ERROR19122024B_HH_EliminarRecepcion: No se pudo eliminar el registro de i_nav_transacciones_out")
                     Else
                         Resultado += String.Format(" Eliminé {0} registros de la i_nav_transacciones_out ", FilasAfectadas)
@@ -2771,7 +2766,7 @@ Partial Public Class clsLnTrans_re_det
                 '#EJC202404270040: Log Error WMS. al eliminar línea de recepción BOF.
                 '#GT16102024: Se agrega al log del error, el host desde donde se elimina la linea.
                 Dim BeMensajeError As New clsBeLog_error_wms
-                BeMensajeError.IdError = clsLnLog_error_wms.MaxID(lConnection, lTrans) + 1
+                BeMensajeError.IdError = clsLnLog_error_wms.MaxID() + 1
                 BeMensajeError.Item_No = pRecDet.Codigo_Producto
                 BeMensajeError.Fecha = Now
                 BeMensajeError.IdRecepcionEnc = pRecDet.IdRecepcionEnc
@@ -2781,7 +2776,7 @@ Partial Public Class clsLnTrans_re_det
                 BeMensajeError.IdUsuarioAgr = pRecEnc.User_agr
                 BeMensajeError.MensajeError = "EJC240427_HH_EliminarRecepcion: Se eliminó el producto " & pRecDet.Codigo_Producto & " Licencia: " & pRecDet.Lic_plate & " Cantidad: " & pRecDet.cantidad_recibida & " Usuario: " & pRecEnc.User_agr & " host: " & pIdHost
                 BeMensajeError.Referencia_Documento = pRecEnc.NoOrdencompra
-                clsLnLog_error_wms.Insertar(BeMensajeError, lConnection, lTrans)
+                clsLnLog_error_wms.Insertar(BeMensajeError)
 
             Else
                 Throw New Exception("ERROR_DE_PROCESO_20241205_HH: La recepción " & pIdRecepcionEnc & " fue previamente finalizada.")

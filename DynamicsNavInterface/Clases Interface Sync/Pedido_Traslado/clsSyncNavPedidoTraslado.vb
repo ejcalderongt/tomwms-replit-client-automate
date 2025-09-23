@@ -1533,7 +1533,7 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                         Debug.Print("espera")
                     End If
                     'Insertar Encabezado
-                    If clsLnI_nav_ped_traslado_enc.Exist(BeI_Nav_PedidoTraslado.No) Then
+                    If Not clsLnI_nav_ped_traslado_enc.Exist(BeI_Nav_PedidoTraslado.No) Then
                         clsLnI_nav_ped_traslado_enc.Insertar(BeI_Nav_PedidoTraslado, lConnection, lTransaction)
                     End If
 

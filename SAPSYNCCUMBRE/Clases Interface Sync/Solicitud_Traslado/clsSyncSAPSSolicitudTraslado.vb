@@ -363,8 +363,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
             clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
                                                       "",
                                                       BeNavEjecucionEnc.IdEjecucionEnc,
-                                                      BeConfigDet.Idnavconfigdet,
-                                                      CnnLog)
+                                                      BeConfigDet.Idnavconfigdet)
 
             clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al insertar pedido de cliente a tabla de TOMWMS: {1} {0} {1}", ex.Message, vbNewLine))
 
