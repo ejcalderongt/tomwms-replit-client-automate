@@ -5453,7 +5453,8 @@ Partial Public Class clsLnTrans_re_enc
                                        ByVal pIdBodega As Integer,
                                        ByVal pIdUsuario As Integer,
                                        ByVal pIdResolucionLp As Integer,
-                                       Optional pIdOperadorBodega As Integer = 0) As String
+                                       Optional pIdOperadorBodega As Integer = 0,
+                                       Optional EsCajaMaster As Boolean = False) As String
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -5556,7 +5557,8 @@ Partial Public Class clsLnTrans_re_enc
 
                         Next
 
-                        If pIdResolucionLp > 0 AndAlso vGenera_LP Then
+                        '#AT20250915 Agregue EsCajaMaster a la validacion
+                        If pIdResolucionLp > 0 AndAlso vGenera_LP AndAlso Not EsCajaMaster Then
 
                             Dim BeResolLp As New clsBeResolucion_lp_operador()
                             BeResolLp = clsLnResolucion_lp_operador.GetSingle(pIdResolucionLp,
@@ -5577,14 +5579,16 @@ Partial Public Class clsLnTrans_re_enc
                             End If
 
                         Else
+                            '#AT20250915 Solo si escajamaster = false
+                            If Not EsCajaMaster Then
+                                If vGenera_LP AndAlso pIdResolucionLp <= 0 Then
+                                    Throw New Exception("ERROR_02122024_HH_GuardarRecepcion: El producto maneja lic_plate, pero la resoluciòn no es correcta!." & pIdResolucionLp)
+                                End If
 
-                            If vGenera_LP AndAlso pIdResolucionLp <= 0 Then
-                                Throw New Exception("ERROR_02122024_HH_GuardarRecepcion: El producto maneja lic_plate, pero la resoluciòn no es correcta!." & pIdResolucionLp)
-                            End If
-
-                            If Not vGenera_LP And pIdResolucionLp <= 0 Then
-                                Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S recepcion sin licencia : " & pRecEnc.IdRecepcionEnc
-                                clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                If Not vGenera_LP And pIdResolucionLp <= 0 Then
+                                    Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S recepcion sin licencia : " & pRecEnc.IdRecepcionEnc
+                                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                End If
                             End If
                         End If
 

@@ -708,7 +708,7 @@ Public Class frmListaStockControlCalidad
 
                         '#MECR05092025: se agrego columna de "IdProductoTallaColor", "Talla" y "Color"
                         If Stock.IdProductoTallaColor > 0 Then
-                            Dim DtPtc = clsLnProducto_talla_color.Get_All_Dt_By_IdProductoTallaColor(Stock.IdProductoTallaColor)
+                            Dim DtPtc = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(Stock.IdProductoTallaColor)
                             If DtPtc.Rows.Count > 0 Then
                                 pObjStockMov.Talla = DtPtc.Rows(0)("Talla")
                                 pObjStockMov.Color = DtPtc.Rows(0)("Color")
