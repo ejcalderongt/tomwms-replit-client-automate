@@ -74,16 +74,18 @@ public class clsLnLog_portal_ux
                     lTransaction.Commit();
                     return result;
                 }
-                catch (SqlException)
+                catch (SqlException ex1)
                 {
-                    lTransaction.Rollback();
-                    // Silencioso: no lanzamos excepción para no afectar el login
+                    if (lTransaction is not null)
+                        lTransaction.Rollback();
+                    string vMsgError = string.Format("{0}",ex1.Message);
                     return -1;
                 }
-                catch (Exception)
+                finally
                 {
-                    lTransaction.Rollback();
-                    return -1;
+                    if (lConnection.State == ConnectionState.Open) lConnection.Close();
+                    if (lConnection != null) lConnection.Dispose();
+                    if (lTransaction != null) lTransaction.Dispose();
                 }
             }
         }

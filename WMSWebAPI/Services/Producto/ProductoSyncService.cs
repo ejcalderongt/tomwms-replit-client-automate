@@ -15,6 +15,8 @@ public class ProductoSyncService : IProductoSyncService
         _configuration = configuration;
         _mapper = mapper;
     }
+
+
     public void ProcesarProductoDesdeDto(ProductoTransDto dto, SqlConnection conn, SqlTransaction tx)
     {
         try

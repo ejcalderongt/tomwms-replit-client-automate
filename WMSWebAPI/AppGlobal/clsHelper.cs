@@ -4,24 +4,10 @@ using System.Security.Cryptography;
 
 namespace AppGlobal
 {
-    public static class clsPublic
+    public static class clsHelper
     {
-        public static string Quitar_Caracteres_No_Permitidos(string? input)
-        {
-            string vResultText = "";
-
-            if (input != null)
-            {
-                Regex regexCaracteresNoValidos = new Regex("(?:[^a-z0-9 .,-/]|(?<=['\"&<>])s)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
-                string vTexto = regexCaracteresNoValidos.Replace(input, string.Empty);
-                vResultText = Regex.Replace(vTexto, @"\s{2,}", " ");
-            }
-
-            return vResultText;
-        }
         private const string Ek64 = "rpaSPvIvVLlrcmtzPU9/c67Gkj7yL1S5";
         private const string Iv = "qualityi";
-
         public static string Cifrado(string input)
         {
             try
@@ -74,5 +60,6 @@ namespace AppGlobal
                 throw new Exception("Error en Desencriptar: " + ex.Message, ex);
             }
         }
+
     }
 }

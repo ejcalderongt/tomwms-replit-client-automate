@@ -1,0 +1,39 @@
+﻿using AutoMapper;
+using Microsoft.Data.SqlClient;
+using WMS.EntityCore.Proveedor;
+using WMSWebAPI.Dtos.Catalogos;
+
+namespace WMSWebAPI.Services.Proveedor
+{
+    public class SyncProveedorService : ISyncProveedorService
+    {
+
+        private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
+
+        public SyncProveedorService(IConfiguration configuration, IMapper mapper)
+        {
+            _configuration = configuration;
+            _mapper = mapper;
+        }
+
+        public void ProcesarProveedorListDto(List<ProveedorDto> listaDto, SqlConnection conn, SqlTransaction tx)
+        {
+            try
+            {
+                if (listaDto == null || listaDto.Count == 0)
+                    throw new ArgumentNullException(nameof(listaDto), "La lista de proveedores no puede ser nula o vacía.");
+
+                var proveedorList = _mapper.Map<List<clsBeProveedor>>(listaDto);
+                if (proveedorList != null)
+                    clsLnProveedor.InsertarOActualizar(_configuration, proveedorList, conn, tx);
+                    
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al procesar Proveedores → " + ex.Message, ex);
+            }
+        }
+
+    }
+}

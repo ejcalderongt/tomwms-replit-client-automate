@@ -78,6 +78,8 @@ public class MappingProfile : Profile
         CreateMap<ProveedorBodegaDto, clsBeProveedor_bodega>().ReverseMap();
         CreateMap<ClienteDto, clsBeCliente>().ReverseMap();
         CreateMap<LogPortalUxDto,clsBeLog_portal_ux>().ReverseMap();
+        CreateMap<ProductoMhsDto, clsBeProductoMhs>().ReverseMap();
+        
         
     }
 }

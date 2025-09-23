@@ -52,44 +52,41 @@ public class clsLnProductoMarca
         Inserter.Add("fec_mod", "@fec_mod", "F");
         Inserter.Add("codigo", "@codigo", "F");
 
-        var sql = Inserter.SQL();
-        bool isExternalTx = conn != null && tx != null;
+        string sql = Inserter.SQL();
+        bool externa = conn != null && tx != null;
 
-        using var connection = isExternalTx ? conn! : new SqlConnection(GetConnectionString(config));
-        SqlTransaction? localTx = null;
-
-        if (!isExternalTx)
+        var lConn = externa ? conn! : new SqlConnection(config.GetConnectionString("CST"));
+        SqlTransaction? lTx = null;
+        if (!externa)
         {
-            connection.Open();
-            localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
+            lConn.Open();
+            lTx = lConn.BeginTransaction(IsolationLevel.ReadUncommitted);
         }
+
 
         try
         {
-            using var cmd = new SqlCommand(sql, connection, isExternalTx ? tx! : localTx!);
+            using var cmd = new SqlCommand(sql, lConn, externa ? tx! : lTx!);
             BindParams(cmd, entity);
             int result = cmd.ExecuteNonQuery();
 
-            if (!isExternalTx)
-                localTx!.Commit();
+            if (!externa)
+                lTx?.Commit();
 
             return result;
         }
         catch (Exception ex)
         {
-            if (!isExternalTx)
-                localTx?.Rollback();
+            if (!externa)
+                lTx?.Rollback();
 
             var method = new StackTrace().GetFrame(0)?.GetMethod();
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
         finally
         {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-            }
+            if (!externa && lConn.State == ConnectionState.Open)
+                lConn.Close();
         }
     }
     public static int Update(IConfiguration config, clsBeProducto_marca entity, SqlConnection? conn = null, SqlTransaction? tx = null)
@@ -289,4 +286,58 @@ public class clsLnProductoMarca
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
     }
+
+    public static int MaxId(IConfiguration config, SqlConnection? conn = null, SqlTransaction? tx = null)
+    {
+        const string sql = "SELECT ISNULL(MAX(IdMarca), 0) FROM Producto_marca";
+        bool localConnection = false;
+        bool localTransaction = false;
+
+        try
+        {
+            // Crear conexión local si no se recibió una externa
+            if (conn == null)
+            {
+                conn = new SqlConnection(GetConnectionString(config));
+                conn.Open();
+                localConnection = true;
+            }
+
+            // Crear transacción local si no se recibió una externa
+            if (tx == null)
+            {
+                tx = conn.BeginTransaction(IsolationLevel.ReadUncommitted);
+                localTransaction = true;
+            }
+
+            using var cmd = CreateCommand(sql, conn, tx);
+            var result = cmd.ExecuteScalar();
+
+            // Si la transacción fue creada en este método → commit
+            if (localTransaction)
+                tx.Commit();
+
+            return result != null && result != DBNull.Value ? Convert.ToInt32(result) : 0;
+        }
+        catch (Exception ex)
+        {
+            // Rollback solo si la transacción fue creada localmente
+            if (localTransaction && tx != null)
+                tx.Rollback();
+
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
+        }
+        finally
+        {
+            // Cerrar conexión solo si fue creada localmente
+            if (localConnection && conn != null)
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+    }
+
+
 }
