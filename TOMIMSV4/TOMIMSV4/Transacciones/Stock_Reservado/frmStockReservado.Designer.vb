@@ -60,6 +60,8 @@ Partial Class frmStockReservado
         Me.lblEstadoRes = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.txtIdTransaccion = New System.Windows.Forms.Label()
+        Me.lblIdTransaccion = New System.Windows.Forms.Label()
         Me.txtRef = New DevExpress.XtraEditors.TextEdit()
         Me.Label23 = New System.Windows.Forms.Label()
         Me.lblDespacho = New System.Windows.Forms.Label()
@@ -74,16 +76,14 @@ Partial Class frmStockReservado
         Me.Label3 = New System.Windows.Forms.Label()
         Me.lblIdStockRes = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.txtIdTransaccion = New System.Windows.Forms.Label()
-        Me.lblIdTransaccion = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PanelControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PanelControl1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
-        CType(Me.txtFechaIng.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtFechaIng.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtFechaVence.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtFechaIng.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtFechaVence.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtFechaVence.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCantidad.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCantFisica.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtHost.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -103,15 +103,16 @@ Partial Class frmStockReservado
         '
         'RibbonControl
         '
+        Me.RibbonControl.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(26, 24, 26, 24)
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.RibbonControl.SearchEditItem, Me.cmdEliminar})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdEliminar})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonControl.MaxItemId = 2
         Me.RibbonControl.Name = "RibbonControl"
+        Me.RibbonControl.OptionsMenuMinWidth = 283
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1088, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(813, 158)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'cmdEliminar
@@ -134,21 +135,19 @@ Partial Class frmStockReservado
         '
         'RibbonStatusBar
         '
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 889)
-        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 723)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1088, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(813, 24)
         '
         'PanelControl1
         '
         Me.PanelControl1.Controls.Add(Me.GroupBox2)
         Me.PanelControl1.Controls.Add(Me.GroupBox1)
         Me.PanelControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.PanelControl1.Location = New System.Drawing.Point(0, 193)
-        Me.PanelControl1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.PanelControl1.Location = New System.Drawing.Point(0, 158)
         Me.PanelControl1.Name = "PanelControl1"
-        Me.PanelControl1.Size = New System.Drawing.Size(1088, 696)
+        Me.PanelControl1.Size = New System.Drawing.Size(813, 565)
         Me.PanelControl1.TabIndex = 0
         '
         'GroupBox2
@@ -187,10 +186,8 @@ Partial Class frmStockReservado
         Me.GroupBox2.Controls.Add(Me.Label1)
         Me.GroupBox2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.GroupBox2.Location = New System.Drawing.Point(2, 2)
-        Me.GroupBox2.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Padding = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.GroupBox2.Size = New System.Drawing.Size(706, 692)
+        Me.GroupBox2.Size = New System.Drawing.Size(460, 561)
         Me.GroupBox2.TabIndex = 0
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Datos del producto"
@@ -198,309 +195,294 @@ Partial Class frmStockReservado
         'txtFechaIng
         '
         Me.txtFechaIng.EditValue = ""
-        Me.txtFechaIng.Location = New System.Drawing.Point(182, 535)
-        Me.txtFechaIng.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtFechaIng.Location = New System.Drawing.Point(156, 435)
         Me.txtFechaIng.MenuManager = Me.RibbonControl
         Me.txtFechaIng.Name = "txtFechaIng"
         Me.txtFechaIng.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.txtFechaIng.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.txtFechaIng.Properties.ReadOnly = True
-        Me.txtFechaIng.Size = New System.Drawing.Size(209, 22)
+        Me.txtFechaIng.Size = New System.Drawing.Size(179, 20)
         Me.txtFechaIng.TabIndex = 27
         '
         'txtFechaVence
         '
         Me.txtFechaVence.EditValue = ""
-        Me.txtFechaVence.Location = New System.Drawing.Point(182, 581)
-        Me.txtFechaVence.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtFechaVence.Location = New System.Drawing.Point(156, 472)
         Me.txtFechaVence.MenuManager = Me.RibbonControl
         Me.txtFechaVence.Name = "txtFechaVence"
         Me.txtFechaVence.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.txtFechaVence.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.txtFechaVence.Properties.ReadOnly = True
-        Me.txtFechaVence.Size = New System.Drawing.Size(209, 22)
+        Me.txtFechaVence.Size = New System.Drawing.Size(179, 20)
         Me.txtFechaVence.TabIndex = 29
         '
         'Label22
         '
         Me.Label22.AutoSize = True
-        Me.Label22.Location = New System.Drawing.Point(56, 305)
+        Me.Label22.Location = New System.Drawing.Point(48, 248)
         Me.Label22.Name = "Label22"
-        Me.Label22.Size = New System.Drawing.Size(67, 17)
+        Me.Label22.Size = New System.Drawing.Size(54, 13)
         Me.Label22.TabIndex = 14
         Me.Label22.Text = "Cantidad:"
         '
         'Label21
         '
         Me.Label21.AutoSize = True
-        Me.Label21.Location = New System.Drawing.Point(56, 266)
+        Me.Label21.Location = New System.Drawing.Point(48, 216)
         Me.Label21.Name = "Label21"
-        Me.Label21.Size = New System.Drawing.Size(102, 17)
+        Me.Label21.Size = New System.Drawing.Size(83, 13)
         Me.Label21.TabIndex = 12
         Me.Label21.Text = "Cantidad Física:"
         '
         'txtCantidad
         '
-        Me.txtCantidad.Location = New System.Drawing.Point(182, 300)
-        Me.txtCantidad.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtCantidad.Location = New System.Drawing.Point(156, 244)
         Me.txtCantidad.MenuManager = Me.RibbonControl
         Me.txtCantidad.Name = "txtCantidad"
         Me.txtCantidad.Properties.ReadOnly = True
-        Me.txtCantidad.Size = New System.Drawing.Size(209, 22)
+        Me.txtCantidad.Size = New System.Drawing.Size(179, 20)
         Me.txtCantidad.TabIndex = 15
         '
         'txtCantFisica
         '
-        Me.txtCantFisica.Location = New System.Drawing.Point(182, 262)
-        Me.txtCantFisica.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtCantFisica.Location = New System.Drawing.Point(156, 213)
         Me.txtCantFisica.MenuManager = Me.RibbonControl
         Me.txtCantFisica.Name = "txtCantFisica"
         Me.txtCantFisica.Properties.ReadOnly = True
-        Me.txtCantFisica.Size = New System.Drawing.Size(209, 22)
+        Me.txtCantFisica.Size = New System.Drawing.Size(179, 20)
         Me.txtCantFisica.TabIndex = 13
         '
         'txtHost
         '
-        Me.txtHost.Location = New System.Drawing.Point(182, 624)
-        Me.txtHost.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtHost.Location = New System.Drawing.Point(156, 507)
         Me.txtHost.MenuManager = Me.RibbonControl
         Me.txtHost.Name = "txtHost"
         Me.txtHost.Properties.ReadOnly = True
-        Me.txtHost.Size = New System.Drawing.Size(209, 22)
+        Me.txtHost.Size = New System.Drawing.Size(179, 20)
         Me.txtHost.TabIndex = 31
         '
         'txtLic_plate
         '
-        Me.txtLic_plate.Location = New System.Drawing.Point(182, 496)
-        Me.txtLic_plate.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtLic_plate.Location = New System.Drawing.Point(156, 403)
         Me.txtLic_plate.MenuManager = Me.RibbonControl
         Me.txtLic_plate.Name = "txtLic_plate"
         Me.txtLic_plate.Properties.ReadOnly = True
-        Me.txtLic_plate.Size = New System.Drawing.Size(209, 22)
+        Me.txtLic_plate.Size = New System.Drawing.Size(179, 20)
         Me.txtLic_plate.TabIndex = 25
         '
         'txtLote
         '
-        Me.txtLote.Location = New System.Drawing.Point(182, 459)
-        Me.txtLote.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtLote.Location = New System.Drawing.Point(156, 373)
         Me.txtLote.MenuManager = Me.RibbonControl
         Me.txtLote.Name = "txtLote"
         Me.txtLote.Properties.ReadOnly = True
-        Me.txtLote.Size = New System.Drawing.Size(209, 22)
+        Me.txtLote.Size = New System.Drawing.Size(179, 20)
         Me.txtLote.TabIndex = 23
         '
         'txtUbicAnt
         '
-        Me.txtUbicAnt.Location = New System.Drawing.Point(182, 418)
-        Me.txtUbicAnt.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtUbicAnt.Location = New System.Drawing.Point(156, 340)
         Me.txtUbicAnt.MenuManager = Me.RibbonControl
         Me.txtUbicAnt.Name = "txtUbicAnt"
         Me.txtUbicAnt.Properties.ReadOnly = True
-        Me.txtUbicAnt.Size = New System.Drawing.Size(209, 22)
+        Me.txtUbicAnt.Size = New System.Drawing.Size(179, 20)
         Me.txtUbicAnt.TabIndex = 21
         '
         'txtUbicaAct
         '
-        Me.txtUbicaAct.Location = New System.Drawing.Point(182, 379)
-        Me.txtUbicaAct.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtUbicaAct.Location = New System.Drawing.Point(156, 308)
         Me.txtUbicaAct.MenuManager = Me.RibbonControl
         Me.txtUbicaAct.Name = "txtUbicaAct"
         Me.txtUbicaAct.Properties.ReadOnly = True
-        Me.txtUbicaAct.Size = New System.Drawing.Size(209, 22)
+        Me.txtUbicaAct.Size = New System.Drawing.Size(179, 20)
         Me.txtUbicaAct.TabIndex = 19
         '
         'txtPropietario
         '
-        Me.txtPropietario.Location = New System.Drawing.Point(182, 340)
-        Me.txtPropietario.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtPropietario.Location = New System.Drawing.Point(156, 276)
         Me.txtPropietario.MenuManager = Me.RibbonControl
         Me.txtPropietario.Name = "txtPropietario"
         Me.txtPropietario.Properties.ReadOnly = True
-        Me.txtPropietario.Size = New System.Drawing.Size(209, 22)
+        Me.txtPropietario.Size = New System.Drawing.Size(179, 20)
         Me.txtPropietario.TabIndex = 17
         '
         'txtEstadoProd
         '
-        Me.txtEstadoProd.Location = New System.Drawing.Point(182, 223)
-        Me.txtEstadoProd.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtEstadoProd.Location = New System.Drawing.Point(156, 181)
         Me.txtEstadoProd.MenuManager = Me.RibbonControl
         Me.txtEstadoProd.Name = "txtEstadoProd"
         Me.txtEstadoProd.Properties.ReadOnly = True
-        Me.txtEstadoProd.Size = New System.Drawing.Size(209, 22)
+        Me.txtEstadoProd.Size = New System.Drawing.Size(179, 20)
         Me.txtEstadoProd.TabIndex = 11
         '
         'txtPresentacion
         '
-        Me.txtPresentacion.Location = New System.Drawing.Point(182, 186)
-        Me.txtPresentacion.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtPresentacion.Location = New System.Drawing.Point(156, 151)
         Me.txtPresentacion.MenuManager = Me.RibbonControl
         Me.txtPresentacion.Name = "txtPresentacion"
         Me.txtPresentacion.Properties.ReadOnly = True
-        Me.txtPresentacion.Size = New System.Drawing.Size(209, 22)
+        Me.txtPresentacion.Size = New System.Drawing.Size(179, 20)
         Me.txtPresentacion.TabIndex = 9
         '
         'txtUMbas
         '
-        Me.txtUMbas.Location = New System.Drawing.Point(182, 151)
-        Me.txtUMbas.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtUMbas.Location = New System.Drawing.Point(156, 123)
         Me.txtUMbas.MenuManager = Me.RibbonControl
         Me.txtUMbas.Name = "txtUMbas"
         Me.txtUMbas.Properties.ReadOnly = True
-        Me.txtUMbas.Size = New System.Drawing.Size(209, 22)
+        Me.txtUMbas.Size = New System.Drawing.Size(179, 20)
         Me.txtUMbas.TabIndex = 7
         '
         'txtProducto
         '
-        Me.txtProducto.Location = New System.Drawing.Point(182, 113)
-        Me.txtProducto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtProducto.Location = New System.Drawing.Point(156, 92)
         Me.txtProducto.MenuManager = Me.RibbonControl
         Me.txtProducto.Name = "txtProducto"
         Me.txtProducto.Properties.ReadOnly = True
-        Me.txtProducto.Size = New System.Drawing.Size(209, 22)
+        Me.txtProducto.Size = New System.Drawing.Size(179, 20)
         Me.txtProducto.TabIndex = 5
         '
         'txtCodigo
         '
-        Me.txtCodigo.Location = New System.Drawing.Point(182, 75)
-        Me.txtCodigo.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtCodigo.Location = New System.Drawing.Point(156, 61)
         Me.txtCodigo.MenuManager = Me.RibbonControl
         Me.txtCodigo.Name = "txtCodigo"
         Me.txtCodigo.Properties.ReadOnly = True
-        Me.txtCodigo.Size = New System.Drawing.Size(209, 22)
+        Me.txtCodigo.Size = New System.Drawing.Size(179, 20)
         Me.txtCodigo.TabIndex = 3
         '
         'Label16
         '
         Me.Label16.AutoSize = True
-        Me.Label16.Location = New System.Drawing.Point(56, 628)
+        Me.Label16.Location = New System.Drawing.Point(48, 510)
         Me.Label16.Name = "Label16"
-        Me.Label16.Size = New System.Drawing.Size(41, 17)
+        Me.Label16.Size = New System.Drawing.Size(33, 13)
         Me.Label16.TabIndex = 30
         Me.Label16.Text = "Host:"
         '
         'Label15
         '
         Me.Label15.AutoSize = True
-        Me.Label15.Location = New System.Drawing.Point(56, 544)
+        Me.Label15.Location = New System.Drawing.Point(48, 442)
         Me.Label15.Name = "Label15"
-        Me.Label15.Size = New System.Drawing.Size(99, 17)
+        Me.Label15.Size = New System.Drawing.Size(80, 13)
         Me.Label15.TabIndex = 26
         Me.Label15.Text = "Fecha Ingreso:"
         '
         'Label14
         '
         Me.Label14.AutoSize = True
-        Me.Label14.Location = New System.Drawing.Point(56, 585)
+        Me.Label14.Location = New System.Drawing.Point(48, 475)
         Me.Label14.Name = "Label14"
-        Me.Label14.Size = New System.Drawing.Size(90, 17)
+        Me.Label14.Size = New System.Drawing.Size(72, 13)
         Me.Label14.TabIndex = 28
         Me.Label14.Text = "Fecha Vence:"
         '
         'Label13
         '
         Me.Label13.AutoSize = True
-        Me.Label13.Location = New System.Drawing.Point(56, 500)
+        Me.Label13.Location = New System.Drawing.Point(48, 406)
         Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(62, 17)
+        Me.Label13.Size = New System.Drawing.Size(50, 13)
         Me.Label13.TabIndex = 24
         Me.Label13.Text = "Lic Plate:"
         '
         'Label12
         '
         Me.Label12.AutoSize = True
-        Me.Label12.Location = New System.Drawing.Point(56, 463)
+        Me.Label12.Location = New System.Drawing.Point(48, 376)
         Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(40, 17)
+        Me.Label12.Size = New System.Drawing.Size(32, 13)
         Me.Label12.TabIndex = 22
         Me.Label12.Text = "Lote:"
         '
         'Label11
         '
         Me.Label11.AutoSize = True
-        Me.Label11.Location = New System.Drawing.Point(56, 422)
+        Me.Label11.Location = New System.Drawing.Point(48, 343)
         Me.Label11.Name = "Label11"
-        Me.Label11.Size = New System.Drawing.Size(123, 17)
+        Me.Label11.Size = New System.Drawing.Size(98, 13)
         Me.Label11.TabIndex = 20
         Me.Label11.Text = "Ubicación Anterior:"
         '
         'Label10
         '
         Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(56, 343)
+        Me.Label10.Location = New System.Drawing.Point(48, 279)
         Me.Label10.Name = "Label10"
-        Me.Label10.Size = New System.Drawing.Size(78, 17)
+        Me.Label10.Size = New System.Drawing.Size(63, 13)
         Me.Label10.TabIndex = 16
         Me.Label10.Text = "Propietario:"
         '
         'Label9
         '
         Me.Label9.AutoSize = True
-        Me.Label9.Location = New System.Drawing.Point(56, 383)
+        Me.Label9.Location = New System.Drawing.Point(48, 311)
         Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(112, 17)
+        Me.Label9.Size = New System.Drawing.Size(89, 13)
         Me.Label9.TabIndex = 18
         Me.Label9.Text = "Ubicación Actual:"
         '
         'Label8
         '
         Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(56, 230)
+        Me.Label8.Location = New System.Drawing.Point(48, 187)
         Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(116, 17)
+        Me.Label8.Size = New System.Drawing.Size(90, 13)
         Me.Label8.TabIndex = 10
         Me.Label8.Text = "Producto Estado:"
         '
         'Label7
         '
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(56, 188)
+        Me.Label7.Location = New System.Drawing.Point(48, 153)
         Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(91, 17)
+        Me.Label7.Size = New System.Drawing.Size(73, 13)
         Me.Label7.TabIndex = 8
         Me.Label7.Text = "Presentación:"
         '
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(56, 154)
+        Me.Label6.Location = New System.Drawing.Point(48, 125)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(53, 17)
+        Me.Label6.Size = New System.Drawing.Size(43, 13)
         Me.Label6.TabIndex = 6
         Me.Label6.Text = "UMBas:"
         '
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(56, 117)
+        Me.Label5.Location = New System.Drawing.Point(48, 95)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(70, 17)
+        Me.Label5.Size = New System.Drawing.Size(54, 13)
         Me.Label5.TabIndex = 4
         Me.Label5.Text = "Producto:"
         '
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(56, 79)
+        Me.Label4.Location = New System.Drawing.Point(48, 64)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(56, 17)
+        Me.Label4.Size = New System.Drawing.Size(44, 13)
         Me.Label4.TabIndex = 2
         Me.Label4.Text = "Código:"
         '
         'lblEstadoRes
         '
         Me.lblEstadoRes.AutoSize = True
-        Me.lblEstadoRes.Location = New System.Drawing.Point(178, 42)
+        Me.lblEstadoRes.Location = New System.Drawing.Point(153, 34)
         Me.lblEstadoRes.Name = "lblEstadoRes"
-        Me.lblEstadoRes.Size = New System.Drawing.Size(23, 17)
+        Me.lblEstadoRes.Size = New System.Drawing.Size(19, 13)
         Me.lblEstadoRes.TabIndex = 1
         Me.lblEstadoRes.Text = "---"
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(56, 42)
+        Me.Label1.Location = New System.Drawing.Point(48, 34)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(55, 17)
+        Me.Label1.Size = New System.Drawing.Size(44, 13)
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Estado:"
         '
@@ -523,169 +505,165 @@ Partial Class frmStockReservado
         Me.GroupBox1.Controls.Add(Me.lblIdStockRes)
         Me.GroupBox1.Controls.Add(Me.Label2)
         Me.GroupBox1.Dock = System.Windows.Forms.DockStyle.Right
-        Me.GroupBox1.Location = New System.Drawing.Point(708, 2)
-        Me.GroupBox1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.GroupBox1.Location = New System.Drawing.Point(462, 2)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Padding = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.GroupBox1.Size = New System.Drawing.Size(378, 692)
+        Me.GroupBox1.Size = New System.Drawing.Size(349, 561)
         Me.GroupBox1.TabIndex = 1
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Sistema"
         '
-        'txtRef
-        '
-        Me.txtRef.Location = New System.Drawing.Point(170, 33)
-        Me.txtRef.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.txtRef.MenuManager = Me.RibbonControl
-        Me.txtRef.Name = "txtRef"
-        Me.txtRef.Properties.ReadOnly = True
-        Me.txtRef.Size = New System.Drawing.Size(184, 22)
-        Me.txtRef.TabIndex = 1
-        '
-        'Label23
-        '
-        Me.Label23.AutoSize = True
-        Me.Label23.Location = New System.Drawing.Point(27, 42)
-        Me.Label23.Name = "Label23"
-        Me.Label23.Size = New System.Drawing.Size(82, 17)
-        Me.Label23.TabIndex = 0
-        Me.Label23.Text = "Ref. Pedido:"
-        '
-        'lblDespacho
-        '
-        Me.lblDespacho.AutoSize = True
-        Me.lblDespacho.Location = New System.Drawing.Point(167, 266)
-        Me.lblDespacho.Name = "lblDespacho"
-        Me.lblDespacho.Size = New System.Drawing.Size(23, 17)
-        Me.lblDespacho.TabIndex = 13
-        Me.lblDespacho.Text = "---"
-        '
-        'lblPedido
-        '
-        Me.lblPedido.AutoSize = True
-        Me.lblPedido.Location = New System.Drawing.Point(167, 226)
-        Me.lblPedido.Name = "lblPedido"
-        Me.lblPedido.Size = New System.Drawing.Size(23, 17)
-        Me.lblPedido.TabIndex = 11
-        Me.lblPedido.Text = "---"
-        '
-        'lblPicking
-        '
-        Me.lblPicking.AutoSize = True
-        Me.lblPicking.Location = New System.Drawing.Point(167, 192)
-        Me.lblPicking.Name = "lblPicking"
-        Me.lblPicking.Size = New System.Drawing.Size(23, 17)
-        Me.lblPicking.TabIndex = 9
-        Me.lblPicking.Text = "---"
-        '
-        'lblIdRece
-        '
-        Me.lblIdRece.AutoSize = True
-        Me.lblIdRece.Location = New System.Drawing.Point(167, 155)
-        Me.lblIdRece.Name = "lblIdRece"
-        Me.lblIdRece.Size = New System.Drawing.Size(23, 17)
-        Me.lblIdRece.TabIndex = 7
-        Me.lblIdRece.Text = "---"
-        '
-        'Label20
-        '
-        Me.Label20.AutoSize = True
-        Me.Label20.Location = New System.Drawing.Point(27, 266)
-        Me.Label20.Name = "Label20"
-        Me.Label20.Size = New System.Drawing.Size(90, 17)
-        Me.Label20.TabIndex = 12
-        Me.Label20.Text = "Id Despacho:"
-        '
-        'Label19
-        '
-        Me.Label19.AutoSize = True
-        Me.Label19.Location = New System.Drawing.Point(27, 155)
-        Me.Label19.Name = "Label19"
-        Me.Label19.Size = New System.Drawing.Size(92, 17)
-        Me.Label19.TabIndex = 6
-        Me.Label19.Text = "Id Recepción:"
-        '
-        'Label18
-        '
-        Me.Label18.AutoSize = True
-        Me.Label18.Location = New System.Drawing.Point(27, 226)
-        Me.Label18.Name = "Label18"
-        Me.Label18.Size = New System.Drawing.Size(70, 17)
-        Me.Label18.TabIndex = 10
-        Me.Label18.Text = "Id Pedido:"
-        '
-        'Label17
-        '
-        Me.Label17.AutoSize = True
-        Me.Label17.Location = New System.Drawing.Point(27, 192)
-        Me.Label17.Name = "Label17"
-        Me.Label17.Size = New System.Drawing.Size(71, 17)
-        Me.Label17.TabIndex = 8
-        Me.Label17.Text = "Id Picking:"
-        '
-        'lblIdStock
-        '
-        Me.lblIdStock.AutoSize = True
-        Me.lblIdStock.Location = New System.Drawing.Point(167, 117)
-        Me.lblIdStock.Name = "lblIdStock"
-        Me.lblIdStock.Size = New System.Drawing.Size(23, 17)
-        Me.lblIdStock.TabIndex = 5
-        Me.lblIdStock.Text = "---"
-        '
-        'Label3
-        '
-        Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(27, 117)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(64, 17)
-        Me.Label3.TabIndex = 4
-        Me.Label3.Text = "Id Stock:"
-        '
-        'lblIdStockRes
-        '
-        Me.lblIdStockRes.AutoSize = True
-        Me.lblIdStockRes.Location = New System.Drawing.Point(167, 79)
-        Me.lblIdStockRes.Name = "lblIdStockRes"
-        Me.lblIdStockRes.Size = New System.Drawing.Size(23, 17)
-        Me.lblIdStockRes.TabIndex = 3
-        Me.lblIdStockRes.Text = "---"
-        '
-        'Label2
-        '
-        Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(27, 79)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(90, 17)
-        Me.Label2.TabIndex = 2
-        Me.Label2.Text = "Id Stock Res:"
-        '
         'txtIdTransaccion
         '
         Me.txtIdTransaccion.AutoSize = True
-        Me.txtIdTransaccion.Location = New System.Drawing.Point(167, 305)
+        Me.txtIdTransaccion.Location = New System.Drawing.Point(143, 179)
         Me.txtIdTransaccion.Name = "txtIdTransaccion"
-        Me.txtIdTransaccion.Size = New System.Drawing.Size(23, 17)
+        Me.txtIdTransaccion.Size = New System.Drawing.Size(19, 13)
         Me.txtIdTransaccion.TabIndex = 15
         Me.txtIdTransaccion.Text = "---"
         '
         'lblIdTransaccion
         '
         Me.lblIdTransaccion.AutoSize = True
-        Me.lblIdTransaccion.Location = New System.Drawing.Point(27, 305)
+        Me.lblIdTransaccion.Location = New System.Drawing.Point(23, 179)
         Me.lblIdTransaccion.Name = "lblIdTransaccion"
-        Me.lblIdTransaccion.Size = New System.Drawing.Size(98, 17)
+        Me.lblIdTransaccion.Size = New System.Drawing.Size(78, 13)
         Me.lblIdTransaccion.TabIndex = 14
         Me.lblIdTransaccion.Text = "IdTransacción:"
         '
+        'txtRef
+        '
+        Me.txtRef.Location = New System.Drawing.Point(146, 27)
+        Me.txtRef.MenuManager = Me.RibbonControl
+        Me.txtRef.Name = "txtRef"
+        Me.txtRef.Properties.ReadOnly = True
+        Me.txtRef.Size = New System.Drawing.Size(158, 20)
+        Me.txtRef.TabIndex = 1
+        '
+        'Label23
+        '
+        Me.Label23.AutoSize = True
+        Me.Label23.Location = New System.Drawing.Point(23, 34)
+        Me.Label23.Name = "Label23"
+        Me.Label23.Size = New System.Drawing.Size(67, 13)
+        Me.Label23.TabIndex = 0
+        Me.Label23.Text = "Ref. Pedido:"
+        '
+        'lblDespacho
+        '
+        Me.lblDespacho.AutoSize = True
+        Me.lblDespacho.Location = New System.Drawing.Point(143, 150)
+        Me.lblDespacho.Name = "lblDespacho"
+        Me.lblDespacho.Size = New System.Drawing.Size(19, 13)
+        Me.lblDespacho.TabIndex = 13
+        Me.lblDespacho.Text = "---"
+        '
+        'lblPedido
+        '
+        Me.lblPedido.AutoSize = True
+        Me.lblPedido.Location = New System.Drawing.Point(143, 92)
+        Me.lblPedido.Name = "lblPedido"
+        Me.lblPedido.Size = New System.Drawing.Size(19, 13)
+        Me.lblPedido.TabIndex = 11
+        Me.lblPedido.Text = "---"
+        '
+        'lblPicking
+        '
+        Me.lblPicking.AutoSize = True
+        Me.lblPicking.Location = New System.Drawing.Point(143, 119)
+        Me.lblPicking.Name = "lblPicking"
+        Me.lblPicking.Size = New System.Drawing.Size(19, 13)
+        Me.lblPicking.TabIndex = 9
+        Me.lblPicking.Text = "---"
+        '
+        'lblIdRece
+        '
+        Me.lblIdRece.AutoSize = True
+        Me.lblIdRece.Location = New System.Drawing.Point(143, 64)
+        Me.lblIdRece.Name = "lblIdRece"
+        Me.lblIdRece.Size = New System.Drawing.Size(19, 13)
+        Me.lblIdRece.TabIndex = 7
+        Me.lblIdRece.Text = "---"
+        '
+        'Label20
+        '
+        Me.Label20.AutoSize = True
+        Me.Label20.Location = New System.Drawing.Point(23, 150)
+        Me.Label20.Name = "Label20"
+        Me.Label20.Size = New System.Drawing.Size(71, 13)
+        Me.Label20.TabIndex = 12
+        Me.Label20.Text = "Id Despacho:"
+        '
+        'Label19
+        '
+        Me.Label19.AutoSize = True
+        Me.Label19.Location = New System.Drawing.Point(23, 64)
+        Me.Label19.Name = "Label19"
+        Me.Label19.Size = New System.Drawing.Size(73, 13)
+        Me.Label19.TabIndex = 6
+        Me.Label19.Text = "Id Recepción:"
+        '
+        'Label18
+        '
+        Me.Label18.AutoSize = True
+        Me.Label18.Location = New System.Drawing.Point(23, 92)
+        Me.Label18.Name = "Label18"
+        Me.Label18.Size = New System.Drawing.Size(56, 13)
+        Me.Label18.TabIndex = 10
+        Me.Label18.Text = "Id Pedido:"
+        '
+        'Label17
+        '
+        Me.Label17.AutoSize = True
+        Me.Label17.Location = New System.Drawing.Point(23, 119)
+        Me.Label17.Name = "Label17"
+        Me.Label17.Size = New System.Drawing.Size(56, 13)
+        Me.Label17.TabIndex = 8
+        Me.Label17.Text = "Id Picking:"
+        '
+        'lblIdStock
+        '
+        Me.lblIdStock.AutoSize = True
+        Me.lblIdStock.Location = New System.Drawing.Point(143, 235)
+        Me.lblIdStock.Name = "lblIdStock"
+        Me.lblIdStock.Size = New System.Drawing.Size(19, 13)
+        Me.lblIdStock.TabIndex = 5
+        Me.lblIdStock.Text = "---"
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(23, 235)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(50, 13)
+        Me.Label3.TabIndex = 4
+        Me.Label3.Text = "Id Stock:"
+        '
+        'lblIdStockRes
+        '
+        Me.lblIdStockRes.AutoSize = True
+        Me.lblIdStockRes.Location = New System.Drawing.Point(143, 207)
+        Me.lblIdStockRes.Name = "lblIdStockRes"
+        Me.lblIdStockRes.Size = New System.Drawing.Size(19, 13)
+        Me.lblIdStockRes.TabIndex = 3
+        Me.lblIdStockRes.Text = "---"
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(23, 207)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(71, 13)
+        Me.Label2.TabIndex = 2
+        Me.Label2.Text = "Id Stock Res:"
+        '
         'frmStockReservado
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1088, 919)
+        Me.ClientSize = New System.Drawing.Size(813, 747)
         Me.Controls.Add(Me.PanelControl1)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
-        Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Name = "frmStockReservado"
         Me.Ribbon = Me.RibbonControl
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
