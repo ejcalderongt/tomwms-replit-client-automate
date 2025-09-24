@@ -18268,7 +18268,7 @@ Partial Public Class clsLnStock_res
 
 #End Region
 
-            If pStockResSolicitud.IdProductoBodega = 125 And pStockResSolicitud.Cantidad = 364 And pStockResSolicitud.IdPresentacion <> 0 Then
+            If pStockResSolicitud.IdProductoBodega = 102 Then
                 Debug.Print("Aqui " & DiasVencimiento)
             End If
 
@@ -23840,7 +23840,14 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                     '    '#CKFK20240320 Puse este exit for en comentario porque no aplica ese exit for
                                     '    GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
                                     'End If
-                                    '
+
+                                    '#EJC20250923 Se agregó validacion al proceso 105
+                                    If ListaEstadosDeProceso.Contains(105) Then
+                                        If (FechaMinimaVenceStock < vStockOrigen.Fecha_vence) AndAlso Not (FechaMinimaVenceStock = New Date(1900, 1, 1)) Then
+                                            GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
+                                        End If
+                                    End If
+
                                     '#EJC20241104 Se agregó validacion del proceso 105
                                     If Not ListaEstadosDeProceso.Contains(105) Then
                                         If Not (FechaMinimaVenceStock = New Date(1900, 1, 1) AndAlso pBeConfigEnc.Interface_SAP) Then
@@ -24806,6 +24813,9 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                         BeStockRes.Estado = "UNCOMMITED"
                                         BeStockRes.Fecha_ingreso = vStockOrigen.Fecha_Ingreso
                                         BeStockRes.Fecha_vence = vStockOrigen.Fecha_vence
+                                        If vStockOrigen.IdProductoBodega = 102 Then
+                                            Debug.Print("Aqui")
+                                        End If
                                         BeStockRes.Uds_lic_plate = vStockOrigen.Uds_lic_plate
                                         BeStockRes.Ubicacion_ant = vStockOrigen.IdUbicacion_anterior
                                         BeStockRes.No_bulto = vStockOrigen.No_bulto
@@ -24878,7 +24888,6 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                         If vCantidadCompletada AndAlso (vCantidadPendienteEnPres < 1) Then vCantidadDecimalUMBas = 0
 
                                         lBeStockAReservar.Add(BeStockRes)
-
 
                                         lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
 
