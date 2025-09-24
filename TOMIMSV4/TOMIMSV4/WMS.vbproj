@@ -11,7 +11,7 @@
     <OutputType>WinExe</OutputType>
     <StartupObject>TOMWMS.My.MyApplication</StartupObject>
     <RootNamespace>TOMWMS</RootNamespace>
-    <AssemblyName>WMS_QAS</AssemblyName>
+    <AssemblyName>WMS_PRD</AssemblyName>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileUpgradeFlags>
@@ -24,7 +24,7 @@
     <TargetFrameworkProfile />
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PublishUrl>C:\inetpub\wwwroot\WMS_QAS\</PublishUrl>
+    <PublishUrl>C:\inetpub\wwwroot\WMS_PRD\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -34,14 +34,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\172.16.100.26\WMS_QAS\</InstallUrl>
-    <UpdateUrl>\\172.16.100.26\WMS_QAS\</UpdateUrl>
-    <ProductName>WMS_QAS</ProductName>
+    <InstallUrl>\\192.168.2.204\WMS_PRD\</InstallUrl>
+    <UpdateUrl>\\192.168.2.204\WMS_PRD\</UpdateUrl>
+    <ProductName>WMS_PRD</ProductName>
     <PublisherName>DTSolutions</PublisherName>
-    <SuiteName>WMS_QAS</SuiteName>
+    <SuiteName>WMS_PRD</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>24</ApplicationRevision>
+    <ApplicationRevision>30</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -55,7 +55,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
+    <DocumentationFile>WMS_PRD.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -67,7 +67,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
+    <DocumentationFile>WMS_PRD.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -92,7 +92,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
+    <DocumentationFile>WMS_PRD.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -107,7 +107,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
+    <DocumentationFile>WMS_PRD.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -4438,7 +4438,7 @@
     <None Include="Mantenimientos\Producto_Color\frmProducto_ColorList.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_Talla.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx.bak" />
-    <None Include="NavSync.exe.config" />
+    <None Include="SAPBOSyncKillios.exe.config" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho11.wsdl" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho33.xsd">
       <SubType>Designer</SubType>
@@ -4477,7 +4477,6 @@
       <DependentUpon>DetTramoByBodega.xsd</DependentUpon>
     </None>
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho1.disco" />
-    <Content Include="NavSync.exe" />
     <Content Include="PerceptronUbicacion.exe" />
     <None Include="Resources\tomimsazteccode.jpeg" />
     <None Include="Resources\tomimslogoclasic.jpeg" />
@@ -4509,6 +4508,7 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
+    <Content Include="SAPBOSyncKillios.exe" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

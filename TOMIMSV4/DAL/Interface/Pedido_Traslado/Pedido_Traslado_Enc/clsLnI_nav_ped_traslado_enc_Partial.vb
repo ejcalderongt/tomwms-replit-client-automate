@@ -1632,7 +1632,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                 End If
 
             Catch ex As Exception
-                Throw New Exception("ERES_TU: " & ex.Message)
+                Throw New Exception("ERR_20250917: " & ex.Message)
             End Try
 
             pBeStockRes.IdPedido = BePedidoEnc.IdPedidoEnc

@@ -19356,6 +19356,8 @@ INICIAR_EN_1:
 
                             If pBeConfigEnc.Conservar_Zona_Picking_Clavaud Then
 
+                                Restar_Stock_Reservado(lBeStockConPalletsCompletosClavaud, pBeConfigEnc, lConnection, ltransaction)
+
                                 For Each vStockOrigen As clsBeStock In lBeStockConPalletsCompletosClavaud
 
                                     BeStockDestino = New clsBeStock()
@@ -20003,6 +20005,8 @@ INICIAR_EN_2:
                                         End If
 
                                     End If
+
+                                    Restar_Stock_Reservado(lBeStockConPalletsInCompletosClavaud, pBeConfigEnc, lConnection, ltransaction)
 
                                     For Each vStockOrigen As clsBeStock In lBeStockConPalletsInCompletosClavaud
 
@@ -21969,6 +21973,8 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
 EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1:
                             If Not vCantidadCompletada Then
 
+                                Restar_Stock_Reservado(lBeStockZonasNoPicking, pBeConfigEnc, lConnection, ltransaction)
+
                                 For Each vStockOrigen As clsBeStock In lBeStockZonasNoPicking
 
                                     BeStockDestino = New clsBeStock()
@@ -23751,6 +23757,11 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
                                 End If
                             End If
+
+                            Restar_Stock_Reservado(lBeStockExistente,
+                                                   pBeConfigEnc,
+                                                   lConnection,
+                                                   ltransaction)
 
                             For Each vStockOrigen As clsBeStock In lBeStockExistente.FindAll(Function(x) Math.Round(x.Cantidad, 6) > 0)
 
@@ -25902,6 +25913,8 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                     Dim vCantDisRef As Double = 0
 
                                     If Inserta_Stock_Reservado(lBeStockAReservar, lConnection, ltransaction) Then
+
+                                        '#CKFK20250924 Agregar al log
 
                                         If Not Reserva_Stock_From_MI3(BeStockResUMBas,
                                                                           DiasVencimiento,
