@@ -18268,7 +18268,7 @@ Partial Public Class clsLnStock_res
 
 #End Region
 
-            If pStockResSolicitud.IdProductoBodega = 125 And pStockResSolicitud.Cantidad = 364 And pStockResSolicitud.IdPresentacion <> 0 Then
+            If pStockResSolicitud.IdProductoBodega = 102 Then
                 Debug.Print("Aqui " & DiasVencimiento)
             End If
 
@@ -18485,7 +18485,7 @@ EXPLOSIONAR_PRODUCTO:
                                                                                     BeProducto.Codigo,
                                                                                     vCantidadSolicitadaPedido,
                                                                                     vCantidadStock)
-                                    clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_MI3 = false", lConnection, ltransaction)
+                                    clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_MI3 = false")
                                     'Exit Function
                                 End If
                             End If
@@ -19102,6 +19102,11 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
 
                         vFechaMinima = FechaMinimaVenceStock
 
+                        '#CKFK20250919 Agregué esto para que solo tome de la zona de picking lo no reservado
+                        If Not lBeStockExistenteZonaPicking Is Nothing Then
+                            lBeStockExistenteZonaPicking = lBeStockExistenteZonaPicking.FindAll(Function(x) x.Cantidad > 0)
+                        End If
+
                         If (vFechaMinimaVenceZonaALM.Date > vFechaMinimaVenceZonaPicking.Date) AndAlso
                             Not (vFechaMinimaVenceZonaPicking.Date = vFechaDefecto) Then
 
@@ -19134,6 +19139,7 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                         If (vRestoInventarioEnUmBas _
                                                 AndAlso pStockResBusquedaParaExplosion IsNot Nothing _
                                                 AndAlso pStockResBusquedaParaExplosion.IdPresentacion <> 0) Then
+                                            '#CKFK20250909 Agregué este else porque si no no encuentra salida
                                             If pBeConfigEnc.Rechazar_pedido_incompleto = tRechazarPedidoIncompleto.Si Then
                                                 Throw New Exception(String.Format("Error_202212140140D: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
                                                                                BeProducto.Codigo,
@@ -19143,7 +19149,7 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
 
                                                 If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
                                                     vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                    clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking, lConnection, ltransaction)
+                                                    clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
                                                     Return False
                                                 End If
 
@@ -19154,11 +19160,67 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                     End If
                                 End If
                             ElseIf vFechaMinimaVenceZonaPicking > vFechaDefecto Then
+
                                 If Not lBeStockExistenteZonaPicking Is Nothing Then
                                     If lBeStockExistenteZonaPicking.Count > 0 Then
                                         lBeStockExistente = lBeStockExistenteZonaPicking
+                                    Else
+                                        '#CKFK20250919 Agregué este else porque si no no encuentra salida
+                                        If Not lBeStockExistenteZonasNoPicking Is Nothing Then
+                                            If lBeStockExistenteZonasNoPicking.Count > 0 Then
+                                                If (vRestoInventarioEnUmBas _
+                                                AndAlso pStockResBusquedaParaExplosion IsNot Nothing _
+                                                AndAlso pStockResBusquedaParaExplosion.IdPresentacion <> 0) Then
+                                                    If pBeConfigEnc.Rechazar_pedido_incompleto = tRechazarPedidoIncompleto.Si Then
+                                                        Throw New Exception(String.Format("Error_202212140140D: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
+                                                                               BeProducto.Codigo,
+                                                                               pStockResSolicitud.Cantidad,
+                                                                               0))
+                                                    Else
+
+                                                        If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                            vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                            Return False
+                                                        End If
+
+                                                    End If
+                                                Else
+                                                    lBeStockExistente = lBeStockExistenteZonasNoPicking
+                                                End If
+                                            End If
+                                        End If
+
                                     End If
                                 End If
+
+                            Else
+                                '#CKFK20250919 Agregué este else porque si no no encuentra salida
+                                If Not lBeStockExistenteZonasNoPicking Is Nothing Then
+                                    If lBeStockExistenteZonasNoPicking.Count > 0 Then
+                                        If (vRestoInventarioEnUmBas _
+                                                AndAlso pStockResBusquedaParaExplosion IsNot Nothing _
+                                                AndAlso pStockResBusquedaParaExplosion.IdPresentacion <> 0) Then
+                                            If pBeConfigEnc.Rechazar_pedido_incompleto = tRechazarPedidoIncompleto.Si Then
+                                                Throw New Exception(String.Format("Error_202212140140D: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
+                                                                               BeProducto.Codigo,
+                                                                               pStockResSolicitud.Cantidad,
+                                                                               0))
+                                            Else
+
+                                                If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                    vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                    clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                    Return False
+                                                End If
+
+                                            End If
+                                        Else
+                                            lBeStockExistente = lBeStockExistenteZonasNoPicking
+                                        End If
+                                    End If
+                                End If
+
                             End If
 
                         End If
@@ -22894,7 +22956,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                         Else
                                                             '#CKFK20240116 Agregué este mensaje para ver lo que pasa
                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking, lConnection, ltransaction)
+                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
                                                         End If
 
                                                     End If
@@ -23246,7 +23308,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                     vMensajeNoExplosionEnZonasNoPicking = "#ERROR_20231101: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp: " & vStockDispZonaPicking
                                                 End If
 
-                                                clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking, lConnection, ltransaction)
+                                                clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
                                                 Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
 
@@ -23789,7 +23851,14 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                     '    '#CKFK20240320 Puse este exit for en comentario porque no aplica ese exit for
                                     '    GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
                                     'End If
-                                    '
+
+                                    '#EJC20250923 Se agregó validacion al proceso 105
+                                    If ListaEstadosDeProceso.Contains(105) Then
+                                        If (FechaMinimaVenceStock < vStockOrigen.Fecha_vence) AndAlso Not (FechaMinimaVenceStock = New Date(1900, 1, 1)) Then
+                                            GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
+                                        End If
+                                    End If
+
                                     '#EJC20241104 Se agregó validacion del proceso 105
                                     If Not ListaEstadosDeProceso.Contains(105) Then
                                         If Not (FechaMinimaVenceStock = New Date(1900, 1, 1) AndAlso pBeConfigEnc.Interface_SAP) Then
@@ -24755,6 +24824,9 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                         BeStockRes.Estado = "UNCOMMITED"
                                         BeStockRes.Fecha_ingreso = vStockOrigen.Fecha_Ingreso
                                         BeStockRes.Fecha_vence = vStockOrigen.Fecha_vence
+                                        If vStockOrigen.IdProductoBodega = 102 Then
+                                            Debug.Print("Aqui")
+                                        End If
                                         BeStockRes.Uds_lic_plate = vStockOrigen.Uds_lic_plate
                                         BeStockRes.Ubicacion_ant = vStockOrigen.IdUbicacion_anterior
                                         BeStockRes.No_bulto = vStockOrigen.No_bulto
@@ -24827,7 +24899,6 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                         If vCantidadCompletada AndAlso (vCantidadPendienteEnPres < 1) Then vCantidadDecimalUMBas = 0
 
                                         lBeStockAReservar.Add(BeStockRes)
-
 
                                         lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
 
@@ -26774,7 +26845,7 @@ EXPLOSIONAR_PRODUCTO:
                                                                                     BeProducto.Codigo,
                                                                                     vCantidadSolicitadaPedido,
                                                                                     vCantidadStock)
-                                    clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_SAP = false", lConnection, ltransaction)
+                                    clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_SAP = false")
                                     'Exit Function
                                 End If
                             End If
@@ -30584,7 +30655,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                         Else
                                                             '#CKFK20240116 Agregué este mensaje para ver lo que pasa
                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking, lConnection, ltransaction)
+                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
                                                         End If
 
                                                     End If
@@ -30934,7 +31005,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                     vMensajeNoExplosionEnZonasNoPicking = "#ERROR_20231101: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp: " & vStockDispZonaPicking
                                                 End If
 
-                                                clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking, lConnection, ltransaction)
+                                                clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
                                                 Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
 

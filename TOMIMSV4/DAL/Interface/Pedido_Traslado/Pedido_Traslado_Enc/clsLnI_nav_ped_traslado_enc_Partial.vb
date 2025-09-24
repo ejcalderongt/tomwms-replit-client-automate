@@ -1180,7 +1180,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                                        lTransInterface)
 
                                         Dim BeMensajeErrorWMS As New clsBeLog_error_wms
-                                        BeMensajeErrorWMS.IdError = clsLnLog_error_wms.MaxID(lConectionInterface, lTransInterface) + 1
+                                        BeMensajeErrorWMS.IdError = clsLnLog_error_wms.MaxID() + 1
                                         BeMensajeErrorWMS.IdEmpresa = BeEmpresa.IdEmpresa
                                         BeMensajeErrorWMS.IdBodega = IdBodegaOrigen
                                         BeMensajeErrorWMS.Fecha = Now
@@ -1191,7 +1191,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                         BeMensajeErrorWMS.Cantidad = PDet.Quantity
                                         BeMensajeErrorWMS.Referencia_Documento = pBePedidoEnc.Referencia
                                         BeMensajeErrorWMS.Item_No = PDet.Item_No
-                                        clsLnLog_error_wms.Insertar(BeMensajeErrorWMS, lConectionInterface, lTransInterface)
+                                        clsLnLog_error_wms.Insertar(BeMensajeErrorWMS)
 
                                         clsPublic.Actualizar_Progreso(lblprg, vMensajeEx)
 
@@ -1304,7 +1304,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                             BeEmpresa = clsLnEmpresa.GetSingle_By_IdBodega(IdBodegaOrigen)
 
                                             Dim BeMensajeErrorWMS As New clsBeLog_error_wms
-                                            BeMensajeErrorWMS.IdError = clsLnLog_error_wms.MaxID(lConectionInterface, lTransInterface) + 1
+                                            BeMensajeErrorWMS.IdError = clsLnLog_error_wms.MaxID() + 1
                                             BeMensajeErrorWMS.IdEmpresa = BeEmpresa.IdEmpresa
                                             BeMensajeErrorWMS.IdBodega = pBePedidoEnc.IdBodega
                                             BeMensajeErrorWMS.Fecha = Now
@@ -1315,7 +1315,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                             BeMensajeErrorWMS.Cantidad = PDet.Quantity
                                             BeMensajeErrorWMS.Referencia_Documento = pBePedidoEnc.Referencia
                                             BeMensajeErrorWMS.Item_No = PDet.Item_No
-                                            clsLnLog_error_wms.Insertar(BeMensajeErrorWMS, lConectionInterface, lTransInterface)
+                                            clsLnLog_error_wms.Insertar(BeMensajeErrorWMS)
 
                                         End If
 
@@ -2696,7 +2696,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                                        lTransInterface)
 
                                         Dim BeMensajeErrorWMS As New clsBeLog_error_wms
-                                        BeMensajeErrorWMS.IdError = clsLnLog_error_wms.MaxID(lConectionInterface, lTransInterface) + 1
+                                        BeMensajeErrorWMS.IdError = clsLnLog_error_wms.MaxID() + 1
                                         BeMensajeErrorWMS.IdEmpresa = BeEmpresa.IdEmpresa
                                         BeMensajeErrorWMS.IdBodega = IdBodegaOrigen
                                         BeMensajeErrorWMS.Fecha = Now
@@ -2707,7 +2707,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                         BeMensajeErrorWMS.Cantidad = PDet.Quantity
                                         BeMensajeErrorWMS.Referencia_Documento = pBePedidoEnc.Referencia
                                         BeMensajeErrorWMS.Item_No = PDet.Item_No
-                                        clsLnLog_error_wms.Insertar(BeMensajeErrorWMS, lConectionInterface, lTransInterface)
+                                        clsLnLog_error_wms.Insertar(BeMensajeErrorWMS)
 
                                         clsPublic.Actualizar_Progreso(lblprg, vMensajeEx)
 
@@ -2783,7 +2783,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                             BeEmpresa = clsLnEmpresa.GetSingle_By_IdBodega(IdBodegaOrigen)
 
                                             Dim BeMensajeErrorWMS As New clsBeLog_error_wms
-                                            BeMensajeErrorWMS.IdError = clsLnLog_error_wms.MaxID(lConectionInterface, lTransInterface) + 1
+                                            BeMensajeErrorWMS.IdError = clsLnLog_error_wms.MaxID() + 1
                                             BeMensajeErrorWMS.IdEmpresa = BeEmpresa.IdEmpresa
                                             BeMensajeErrorWMS.IdBodega = pBePedidoEnc.IdBodega
                                             BeMensajeErrorWMS.Fecha = Now
@@ -2794,7 +2794,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                             BeMensajeErrorWMS.Cantidad = PDet.Quantity
                                             BeMensajeErrorWMS.Referencia_Documento = pBePedidoEnc.Referencia
                                             BeMensajeErrorWMS.Item_No = PDet.Item_No
-                                            clsLnLog_error_wms.Insertar(BeMensajeErrorWMS, lConectionInterface, lTransInterface)
+                                            clsLnLog_error_wms.Insertar(BeMensajeErrorWMS)
 
                                         End If
 

@@ -720,7 +720,7 @@ Public Class frmDespacho
 
                     End If
 
-                    For Each BePedidoDet As clsBeTrans_pe_det In vPedido.Detalle
+                    For Each BePedidoDet As clsBeTrans_pe_det In vPedido.Detalle.Where(Function(x) x.Stock_Liberado = 0)
                         SetProducto(BePedidoDet, clsTransaccion.lConnection, clsTransaccion.lTransaction)
                         SetProducto_By_Lista_PickingUbic(BePedidoDet.ListaPickingUbic)
                         Get_Stock_Res(BePedidoDet, True)
@@ -1592,6 +1592,7 @@ Public Class frmDespacho
                                                             .ToList()
 
                                     ' Recorrer los detalles del pedido que coincidan con esos IDs
+                                    '#GT16092025: tomar detalle de pedido que no tenga lineas liberadas de stock
                                     For Each BePedidoDet As clsBeTrans_pe_det In bo.pBePedidoEnc.Detalle.Where(Function(x) idsConDiferencia.Contains(x.IdProductoBodega))
 
                                         SetProducto(BePedidoDet, clsTransaccion.lConnection, clsTransaccion.lTransaction)
@@ -3520,6 +3521,5 @@ Public Class frmDespacho
         End Try
 
     End Function
-
 
 End Class

@@ -6258,7 +6258,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                      clsTrans.lConnection,
                                                                      clsTrans.lTransaction)
                 resultado += " Codigo " & vBePickingUbic.CodigoProducto & " Pedido parámetro " & pIdPedidoEnc
-                clsLnLog_error_wms.Agregar_Error(resultado, clsTrans.lConnection, clsTrans.lTransaction)
+                clsLnLog_error_wms.Agregar_Error(resultado)
                 If (Math.Round(pCantidad - CantPendiente, 6) = 0) Then
                     Exit For
                 Else

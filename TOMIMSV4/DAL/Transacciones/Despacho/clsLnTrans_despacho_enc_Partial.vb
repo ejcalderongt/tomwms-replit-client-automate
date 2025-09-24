@@ -1533,6 +1533,10 @@ Partial Public Class clsLnTrans_despacho_enc
                                 '#20180822_0452PM_ESA: Iterar solo sobre los pedidos que aún tiene cantidad pendientes de despacho.
                                 For Each BePedidoDet As clsBeTrans_pe_det In BePedidoEnc.Detalle
 
+                                    '#GT16092025: aqui la lista del pedido deberia traer solo lineas sin stock liberado, para que haga match con las lineas del despacho
+                                    'If BePedidoDet.Stock_Liberado = 0 Then
+                                    'End If
+
                                     '#EJC20180607: Si un producto del pedido, no tiene picking ni verificación, entonces la lista es vacía.
                                     If Not BePedidoDet.ListaPickingUbic Is Nothing Then
 
@@ -1729,7 +1733,7 @@ Partial Public Class clsLnTrans_despacho_enc
                                             vPedidoCompletado = False
                                         End If 'Fin tiene cantidad verificada
 
-                                    End If 'Fin si, el producto se pickeó, se verificó                        
+                                    End If 'Fin si, el producto se pickeó, se verificó    
 
                                 Next BePedidoDet
 
@@ -2333,7 +2337,7 @@ Partial Public Class clsLnTrans_despacho_enc
 
                                         If String.IsNullOrEmpty(BeProductoEstado.Nombre) Then
                                             Dim vMensajeLog As String = "Advertencia_20250128_Transferencia_WMS: Error desconocido, no se obtuvo un Estado para el producto " & BePickingUbic.IdProducto & " con propietario " & vIdPropietario & " bodega " & BeOrdenCompraEnc.IdBodega & " propietario_bodega " & BeOrdenCompraEnc.IdPropietarioBodega
-                                            clsLnLog_error_wms.Agregar_Error(vMensajeLog, lConnection, lTransaction)
+                                            clsLnLog_error_wms.Agregar_Error(vMensajeLog)
                                         End If
 
 
@@ -2341,7 +2345,7 @@ Partial Public Class clsLnTrans_despacho_enc
 
                                         If String.IsNullOrEmpty(BeUnidadMedida.Nombre) Then
                                             Dim vMensajeLog As String = "Advertencia_20250128_Transferencia_WMS: Error desconocido, no se obtuvo la umbas para el producto " & BePickingUbic.IdProducto & " con Picking_Umbas " & BePickingUbic.IdUnidadMedida
-                                            clsLnLog_error_wms.Agregar_Error(vMensajeLog, lConnection, lTransaction)
+                                            clsLnLog_error_wms.Agregar_Error(vMensajeLog)
                                         End If
 
 

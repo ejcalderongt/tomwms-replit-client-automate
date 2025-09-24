@@ -4295,29 +4295,66 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                     '#GT02032022_1906: si no tiene control operador, visualmente esta desmarcado y pListOp debe estar vacio
                                     If BeBodega.control_operador_ubicacion Then
 
-                                        Dim Obj As New clsBeTrans_re_op() With
-                                          {.IdOperadorBodega = DTOperadores(i)(0),
-                                             .User_agr = AP.UsuarioAp.IdUsuario,
-                                             .Fec_agr = Now,
-                                             .User_mod = AP.UsuarioAp.IdUsuario,
-                                             .Fec_mod = Now,
-                                             .IsNew = True,
-                                             .UsaHH = DTOperadores(i)(2)}
-                                        pListOpe.Add(Obj)
+                                        Dim tmpIdOperadorBodega As Integer = CInt(DTOperadores(i)(0))
+
+                                        '#GT23092025: validar que no se añada el mismo operador mas de una vez
+                                        If Not pListOpe.Any(Function(x) x.IdOperadorBodega = tmpIdOperadorBodega) Then
+
+                                            Dim ReOperador As New clsBeTrans_re_op() With {
+                                                .IdOperadorBodega = tmpIdOperadorBodega,
+                                                .User_agr = AP.UsuarioAp.IdUsuario,
+                                                .Fec_agr = Now,
+                                                .User_mod = AP.UsuarioAp.IdUsuario,
+                                                .Fec_mod = Now,
+                                                .IsNew = True,
+                                                .UsaHH = DTOperadores(i)(2)
+                                                }
+                                            pListOpe.Add(ReOperador)
+
+                                        End If
+
+                                        'Dim Obj As New clsBeTrans_re_op() With
+                                        '  {.IdOperadorBodega = DTOperadores(i)(0),
+                                        '     .User_agr = AP.UsuarioAp.IdUsuario,
+                                        '     .Fec_agr = Now,
+                                        '     .User_mod = AP.UsuarioAp.IdUsuario,
+                                        '     .Fec_mod = Now,
+                                        '     .IsNew = True,
+                                        '     .UsaHH = DTOperadores(i)(2)}
+                                        'pListOpe.Add(Obj)
 
                                     End If
 
                                 Else
                                     If vIdOperadorBodega = IdOperadorBodegaDefecto Then
-                                        Dim Obj As New clsBeTrans_re_op() With
-                                                                              {.IdOperadorBodega = DTOperadores(i)(0),
+
+                                        '#GT23092025: validar que el operador no existe en la lista para no duplicar
+                                        Dim tmpReOperador = DTOperadores(i)(0)
+                                        If Not pListOpe.Any(Function(x) x.IdOperadorBodega = tmpReOperador) Then
+
+                                            Dim Obj As New clsBeTrans_re_op() With
+                                                                              {.IdOperadorBodega = tmpReOperador,
                                                                               .User_agr = AP.UsuarioAp.IdUsuario,
                                                                               .Fec_agr = Now,
                                                                               .User_mod = AP.UsuarioAp.IdUsuario,
                                                                               .Fec_mod = Now,
                                                                               .IsNew = True,
                                                                               .UsaHH = DTOperadores(i)(2)}
-                                        pListOpe.Add(Obj)
+                                            pListOpe.Add(Obj)
+
+                                        End If
+
+
+                                        'Dim Obj As New clsBeTrans_re_op() With
+                                        '                                      {.IdOperadorBodega = DTOperadores(i)(0),
+                                        '                                      .User_agr = AP.UsuarioAp.IdUsuario,
+                                        '                                      .Fec_agr = Now,
+                                        '                                      .User_mod = AP.UsuarioAp.IdUsuario,
+                                        '                                      .Fec_mod = Now,
+                                        '                                      .IsNew = True,
+                                        '                                      .UsaHH = DTOperadores(i)(2)}
+                                        'pListOpe.Add(Obj)
+
                                     End If
                                 End If
                             End If
@@ -6489,7 +6526,10 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             Else
                 If pSeleccion Then
-                    Dim Obj As New clsBeTrans_re_op() With
+
+                    '#GT23092025: evita duplicar al operador en la lista
+                    If Not pListOpe.Any(Function(x) x.IdOperadorBodega = pIdOperadorBodega) Then
+                        Dim Obj As New clsBeTrans_re_op() With
                         {.IdOperadorBodega = pIdOperadorBodega,
                         .User_agr = AP.UsuarioAp.IdUsuario,
                         .Fec_agr = Now,
@@ -6497,7 +6537,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                         .Fec_mod = Now,
                         .IsNew = True,
                         .UsaHH = pUsaHH}
-                    pListOpe.Add(Obj)
+                        pListOpe.Add(Obj)
+                    End If
+
                 End If
             End If
 
@@ -6583,15 +6625,21 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                     Else
 
-                        Dim Obj As New clsBeTrans_re_op() With
-                        {.IdOperadorBodega = Dr.Item("IdOperadorBodega"),
-                        .User_agr = AP.UsuarioAp.IdUsuario,
-                        .Fec_agr = Now,
-                        .User_mod = AP.UsuarioAp.IdUsuario,
-                        .Fec_mod = Now,
-                        .IsNew = True,
-                        .UsaHH = Dr.Item("colUsaHH")}
-                        pListOpe.Add(Obj)
+                        '#GT23092025: evita duplicar al mismo operador en la lista
+                        Dim tmpOperadorBodega = CInt(Dr.Item("IdOperadorBodega"))
+
+                        If Not pListOpe.Any(Function(x) x.IdOperadorBodega = tmpOperadorBodega) Then
+
+                            Dim Obj As New clsBeTrans_re_op() With
+                                {.IdOperadorBodega = Dr.Item("IdOperadorBodega"),
+                                .User_agr = AP.UsuarioAp.IdUsuario,
+                                .Fec_agr = Now,
+                                .User_mod = AP.UsuarioAp.IdUsuario,
+                                .Fec_mod = Now,
+                                .IsNew = True,
+                                .UsaHH = Dr.Item("colUsaHH")}
+                            pListOpe.Add(Obj)
+                        End If
 
                     End If
 

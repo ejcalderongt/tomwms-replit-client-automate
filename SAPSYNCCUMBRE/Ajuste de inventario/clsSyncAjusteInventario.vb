@@ -479,11 +479,11 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                         If ajuste.TipoAjusteWMS = clsDataContractDI.tTipoAjusteWMS.Ajuste_Positivo Then
                             ajustesPositivos.Add(entry)
                             clsPublic.Actualizar_Progreso(lblprg, "Agregando producto a ajuste positivo: " & ajuste.Codigo_Producto)
-                            clsLnLog_error_wms.Agregar_Error("Ajuste positivo: " & ajuste.IdAjusteEnc & " Tipo: " & ajuste.TipoAjusteWMS & " Producto: " & ajuste.Codigo_Producto & " Cantidad ajuste: " & ajuste.Cantidad, CnnLog, TransLog)
+                            clsLnLog_error_wms.Agregar_Error("Ajuste positivo: " & ajuste.IdAjusteEnc & " Tipo: " & ajuste.TipoAjusteWMS & " Producto: " & ajuste.Codigo_Producto & " Cantidad ajuste: " & ajuste.Cantidad)
                         ElseIf ajuste.TipoAjusteWMS = clsDataContractDI.tTipoAjusteWMS.Ajuste_Negativo Then
                             ajustesNegativos.Add(entry)
                             clsPublic.Actualizar_Progreso(lblprg, "Agregando producto a ajuste negativo: " & ajuste.Codigo_Producto)
-                            clsLnLog_error_wms.Agregar_Error("Ajuste negativo: " & ajuste.IdAjusteEnc & " Tipo: " & ajuste.TipoAjusteWMS & " Producto: " & ajuste.Codigo_Producto & " Cantidad ajuste: " & ajuste.Cantidad, CnnLog, TransLog)
+                            clsLnLog_error_wms.Agregar_Error("Ajuste negativo: " & ajuste.IdAjusteEnc & " Tipo: " & ajuste.TipoAjusteWMS & " Producto: " & ajuste.Codigo_Producto & " Cantidad ajuste: " & ajuste.Cantidad)
                         End If
                     Next
 
@@ -500,7 +500,7 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
 
                         clsPublic.Actualizar_Progreso(lblprg, "Ajuste positivo enviado a SAP para IdAjusteEnc: " & IdAjusteEncActual)
                         clsPublic.Actualizar_Progreso(lblprg, entradaResponse.ToString())
-                        clsLnLog_error_wms.Agregar_Error("Ajuste positivo enviado a SAP: " & entradaJson.Substring(1, Math.Min(entradaJson.Length - 1, 3500)), CnnLog, TransLog)
+                        clsLnLog_error_wms.Agregar_Error("Ajuste positivo enviado a SAP: " & entradaJson.Substring(1, Math.Min(entradaJson.Length - 1, 3500)))
 
                         ' Marcar ajustes positivos como enviados
                         If entradaResponse.ToString.Contains("""status"":1") Then
@@ -523,7 +523,7 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
 
                         clsPublic.Actualizar_Progreso(lblprg, "Ajuste negativo enviado a SAP para IdAjusteEnc: " & IdAjusteEncActual)
                         clsPublic.Actualizar_Progreso(lblprg, salidaResponse.ToString())
-                        clsLnLog_error_wms.Agregar_Error("Ajuste negativo enviado a SAP: " & salidaJson.Substring(1, Math.Min(salidaJson.Length - 1, 3500)), CnnLog, TransLog)
+                        clsLnLog_error_wms.Agregar_Error("Ajuste negativo enviado a SAP: " & salidaJson.Substring(1, Math.Min(salidaJson.Length - 1, 3500)))
 
 
                         ' Marcar ajustes negativos como enviados
@@ -616,7 +616,7 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
 
                             BeLogError = New clsBeLog_error_wms
 
-                            BeLogError.IdError = clsLnLog_error_wms.MaxID(CnnLog, TransLog) + 1
+                            BeLogError.IdError = clsLnLog_error_wms.MaxID() + 1
                             BeLogError.IdEmpresa = 0
                             BeLogError.IdBodega = lAjustesPendEnvio(0).Codigo_Bodega
                             BeLogError.Fecha = Now
