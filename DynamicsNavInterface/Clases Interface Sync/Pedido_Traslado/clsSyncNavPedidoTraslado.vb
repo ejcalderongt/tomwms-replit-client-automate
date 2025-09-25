@@ -1820,8 +1820,10 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
 
                 If Not BePresentacion Is Nothing Then
                     pBeStockRes.IdPresentacion = BePresentacion.IdPresentacion
+                    pBePedidoDet.IdPresentacion = BePresentacion.IdPresentacion
                 Else
                     pBeStockRes.IdPresentacion = -1 'No se encontró la presentación solicitada
+                    pBePedidoDet.IdPresentacion = -1
                 End If
 
             End If
