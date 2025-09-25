@@ -10000,7 +10000,7 @@ Partial Public Class clsLnProducto
                                            wp.Producto as Nombre,
                                            --wp.IndiceRotacion,
                                            --wp.Kit as Es_Producto_Kit,
-                                           wp.genera_lp,
+                                           wp.genera_lp_old,
                                            wp.Control_Vencimiento,
                                            wp.Control_Lote
                                            --wp.producto_parametro_nombreA as [Parámetro A],

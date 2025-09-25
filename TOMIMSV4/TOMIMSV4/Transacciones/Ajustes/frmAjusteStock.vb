@@ -2383,6 +2383,7 @@ Public Class frmAjusteStock
             pStock_Sin_Existencia_Previa.Fec_mod = Now
             pStock_Sin_Existencia_Previa.IdBodega = AP.IdBodega
             pStock_Sin_Existencia_Previa.Activo = 1
+            pStock_Sin_Existencia_Previa.Presentacion.IdPresentacion = BeAjusteDet.IdPresentacion
 
             '#GT02122024: se inserta primero el stock antes de reservarlo, y hacer el ajuste positivo
             If clsLnStock.Guardar_Stock_Ajuste_Positivo(pStock_Sin_Existencia_Previa,
