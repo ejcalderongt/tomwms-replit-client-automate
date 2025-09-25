@@ -135,7 +135,7 @@ Public Class clsLnProducto_estado
             Upd.Add("codigo_bodega_erp", "@codigo_bodega_erp", DataType.Parametro)
             Upd.Add("dias_vencimiento_clasificacion", "@dias_vencimiento_clasificacion", DataType.Parametro)
             Upd.Add("tolerancia_dias_vencimiento", "@tolerancia_dias_vencimiento", DataType.Parametro)
-            Upd.Add("reserva_en_umbas", "@reservar_en_umbas", DataType.Parametro)
+            Upd.Add("reservar_en_umbas", "@reserva_en_umbas", DataType.Parametro)
             Upd.Where("IdEstado = @IdEstado")
 
             Dim sp As String = Upd.SQL()
