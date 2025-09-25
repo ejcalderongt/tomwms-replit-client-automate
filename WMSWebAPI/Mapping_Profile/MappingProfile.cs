@@ -80,6 +80,5 @@ public class MappingProfile : Profile
         CreateMap<LogPortalUxDto,clsBeLog_portal_ux>().ReverseMap();
         CreateMap<ProductoMhsDto, clsBeProductoMhs>().ReverseMap();
         
-        
     }
 }

@@ -339,5 +339,78 @@ public class clsLnProductoMarca
         }
     }
 
+    public static bool Existe_By_Codigo(string Codigo, SqlConnection cn, SqlTransaction? tx = null)
+    {
+        try
+        {
+            const string sql = "SELECT COUNT(1) FROM producto_marca WHERE codigo = @codigo";
+
+            using var cmd = new SqlCommand(sql, cn, tx);
+            cmd.Parameters.AddWithValue("@codigo", Codigo);
+
+            return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+        }
+        catch (Exception ex)
+        {
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
+        }
+    }
+    public static void Valida_Atributos(IConfiguration config, clsBeProducto_marca entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    {
+        bool isExternalTx = conn != null && tx != null;
+        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
+        SqlTransaction? localTx = null;
+
+        try
+        {
+            if (!isExternalTx)
+            {
+                connection.Open();
+                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
+            }
+
+            bool existe = Existe_By_Codigo(entity.Codigo, connection, isExternalTx ? tx! : localTx!);
+
+            if (!existe)
+            {
+
+                var Marca = new clsBeProducto_marca();
+
+                if (!string.IsNullOrEmpty(entity.Codigo))
+                {
+                    Marca.IdMarca = clsLnProductoMarca.MaxId(config, connection, isExternalTx ? tx : localTx) + 1;
+                    Marca.Codigo = entity.Codigo;
+                    Marca.Nombre = entity.Nombre;
+                    Marca.User_agr = "1";
+                    Marca.Fec_agr = DateTime.Now;
+                    Marca.Fec_mod = DateTime.Now;
+                    Marca.Activo = true;
+                    Marca.IdPropietario = entity.IdPropietario;
+                    clsLnProductoMarca.Insert(config, Marca, connection, isExternalTx ? tx : localTx);
+                }
+
+            }
+
+        }
+        catch (SqlException ex)
+        {
+            if (!isExternalTx && localTx is not null)
+                localTx.Rollback();
+
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
+        }
+        finally
+        {
+            if (!isExternalTx)
+            {
+                connection.Close();
+                connection.Dispose();
+                localTx?.Dispose();
+            }
+        }
+    }
+
 
 }

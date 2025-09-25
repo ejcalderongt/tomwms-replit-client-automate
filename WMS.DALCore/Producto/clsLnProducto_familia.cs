@@ -290,4 +290,79 @@ public class clsLnProducto_familia
         cmd.Parameters.AddWithValue("@fec_mod", e.Fec_mod);
         cmd.Parameters.AddWithValue("@codigo", e.Codigo);
     }
+
+    public static bool Existe_By_Codigo(string Codigo, SqlConnection cn, SqlTransaction? tx = null)
+    {
+        try
+        {
+            const string sql = "SELECT COUNT(1) FROM producto_familia WHERE codigo = @codigo";
+
+            using var cmd = new SqlCommand(sql, cn, tx);
+            cmd.Parameters.AddWithValue("@codigo", Codigo);
+
+            return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+        }
+        catch (Exception ex)
+        {
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
+        }
+    }
+    public static void Valida_Atributos(IConfiguration config, clsBeProducto_familia entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    {
+        bool isExternalTx = conn != null && tx != null;
+        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
+        SqlTransaction? localTx = null;
+
+        try
+        {
+            if (!isExternalTx)
+            {
+                connection.Open();
+                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
+            }
+
+            bool existe = Existe_By_Codigo(entity.Codigo, connection, isExternalTx ? tx! : localTx!);
+
+            if (!existe)
+            {
+
+                var Familia = new clsBeProducto_familia();
+
+                if (!string.IsNullOrEmpty(entity.Codigo))
+                {
+                    Familia.IdFamilia = clsLnProducto_familia.MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                    Familia.Codigo = entity.Codigo;
+                    Familia.Nombre = entity.Nombre;
+                    Familia.User_agr = "1";
+                    Familia.Fec_agr = DateTime.Now;
+                    Familia.Fec_agr = DateTime.Now;
+                    Familia.Activo = true;
+                    Familia.IdPropietario = entity.IdPropietario;
+                    clsLnProducto_familia.Insertar(config, Familia, connection, isExternalTx ? tx : localTx);
+                }
+
+            }
+
+        }
+        catch (SqlException ex)
+        {
+            if (!isExternalTx && localTx is not null)
+                localTx.Rollback();
+
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
+        }
+        finally
+        {
+            if (!isExternalTx)
+            {
+                connection.Close();
+                connection.Dispose();
+                localTx?.Dispose();
+            }
+        }
+    }
+
+
 }

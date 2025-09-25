@@ -15,7 +15,6 @@ namespace WMSWebAPI.Controllers
     public class ProductosController : ControllerBase
     {
         private readonly IMapper _mapper;
-        //private readonly ISyncIngresosService _service;
         private readonly IProductoMhsSyncService _mhsSyncService;
 
         public ProductosController(IMapper mapper, IProductoMhsSyncService mhsSyncService)

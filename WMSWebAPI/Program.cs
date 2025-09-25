@@ -9,6 +9,9 @@ using WMSWebAPI.Services;
 using WMSWebAPI.Services.Ingresos;
 using WMSWebAPI.Services.LogPortalUx;
 using WMSWebAPI.Services.Producto;
+using WMSWebAPI.Services.Producto.Clasificacion;
+using WMSWebAPI.Services.Producto.Familia;
+using WMSWebAPI.Services.Producto.Marca;
 using WMSWebAPI.Services.Reset_Password;
 using WMSWebAPI.Services.Salidas;
 
@@ -42,6 +45,9 @@ builder.Services.AddScoped<IProductoSyncService, ProductoSyncService>();
 builder.Services.AddScoped<ISyncSalidasService, SyncSalidasService>();
 builder.Services.AddScoped<IResetPasswordService, ResetPasswordService>();
 builder.Services.AddScoped<IProductoMhsSyncService, ProductoMhsSyncService>();
+builder.Services.AddScoped<IProductoClasificacionSyncService, ProductoClasificacionSyncService>();
+builder.Services.AddScoped<IProductoFamiliaSyncService, ProductoFamiliaSyncService>();
+builder.Services.AddScoped<IProductoMarcaSyncService, ProductoMarcaSyncService>();
 
 // JWT
 var key = "OPaVvHGoW1WqtwoFdS0er9cC1RMrSCxd5ovsEYw22uzKlsyaO-7uOQB16jL3YnKsLB4U_BX5gWNUk0ELXMsEtg";

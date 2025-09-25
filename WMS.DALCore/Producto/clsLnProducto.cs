@@ -1016,6 +1016,7 @@ public class clsLnProducto
                 {   
                     Clasificacion.IdClasificacion = clsLnProducto_clasificacion.MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
                     Clasificacion.Codigo = entity.CodigoClasificacion;
+                    Clasificacion.Nombre = entity.nombre;
                     Clasificacion.User_agr = "1";
                     Clasificacion.Fec_agr = DateTime.Now;
                     Clasificacion.Fec_mod = DateTime.Now;
@@ -1029,6 +1030,7 @@ public class clsLnProducto
                 {
                     Familia.IdFamilia = clsLnProducto_familia.MaxID(config, connection, isExternalTx ? tx : localTx)+1;
                     Familia.Codigo = entity.CodigoFamilia;
+                    Familia.Nombre = entity.nombre;
                     Familia.User_agr = "1";
                     Familia.Fec_agr = DateTime.Now;
                     Familia.Fec_agr = DateTime.Now;
@@ -1041,6 +1043,7 @@ public class clsLnProducto
                 {
                     Marca.IdMarca = clsLnProductoMarca.MaxId(config, connection, isExternalTx ? tx : localTx) + 1;
                     Marca.Codigo = entity.CodigoMarca;
+                    Marca.Nombre = entity.nombre;
                     Marca.User_agr = "1";
                     Marca.Fec_agr = DateTime.Now;
                     Marca.Fec_mod = DateTime.Now;
@@ -1052,6 +1055,7 @@ public class clsLnProducto
                
                 var pProducto = new clsBeProducto();
                 pProducto.IdProducto = MaxID(config, connection, isExternalTx ? tx : localTx)+1;
+                pProducto.nombre = entity.nombre;
                 pProducto.IdPropietario = entity.IdPropietario;
                 pProducto.IdClasificacion = Clasificacion.IdClasificacion;
                 pProducto.IdFamilia = Familia.IdFamilia;
