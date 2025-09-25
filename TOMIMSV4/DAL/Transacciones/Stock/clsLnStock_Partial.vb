@@ -11681,11 +11681,11 @@ Partial Public Class clsLnStock
 
                 vCantidadSolicitadaPedido = BeTransPeDet.Cantidad
 
-                If Not objStockDet Is Nothing Then
-                    vCantPosiciones = objStockDet.Posiciones
-                End If
+                    If Not objStockDet Is Nothing Then
+                        vCantPosiciones = objStockDet.Posiciones
+                    End If
 
-                Dim vMensajeSingularidadPalletCealsa As String = String.Format("Hipotéticamente: lo que solicita no debería ocurrir:
+                    Dim vMensajeSingularidadPalletCealsa As String = String.Format("Hipotéticamente: lo que solicita no debería ocurrir:
 									                                            En teoría se está despachando un pallet, el prorrateo de las posiciones que ocupa no permite un despacho parcial del mismo, 
                                                                                 la cantidad restante de posiciones resulta en un valor no entero no válido para la cantida de posiciones que ocupa al despacharle parcialmente.
 									                                            El IdStock: {0} reporta una cantidad: {1} de la que se intentarán restar: {2}, 
@@ -11693,115 +11693,86 @@ Partial Public Class clsLnStock
                                                                                 de forma preventiva se ha restringido el despacho de este documento,
 									                                            En verdad, lamento interrumpir el proceso, lo mejor que puedo hacer es eliminar las posiciones ocupadas por la mercancía, proceder de esta forma?.", objStockOrigen.IdStock, objStockOrigen.Cantidad, pPickingUbic.Cantidad_Verificada, vCantPosiciones)
 
-                vMensaje = String.Format("No se puede realizar el despacho, 
+                    vMensaje = String.Format("No se puede realizar el despacho, 
 									éste es un error poco usual y estamos trabajando para resolverlo. 
 									El IdStock: {0} reporta una cantidad: {1} de la que se intentarán restar: {2}, 
 									esto generaría un stock negativo no válido para el sistema, de forma preventiva se ha restringido el despacho de este documento,
 									lo sentimos, EJC.", objStockOrigen.IdStock, objStockOrigen.Cantidad, pPickingUbic.Cantidad_Verificada)
 
-                Dim vMensaje1 As String = String.Format("No se puede realizar el despacho, 
+                    Dim vMensaje1 As String = String.Format("No se puede realizar el despacho, 
 									éste es un error poco usual y estamos trabajando para resolverlo. 
 									El Picking reporta una cantidad verificada mayor a la solicitada en el pedido
                                     esto generaría un desfase de stock no válido para el sistema, 
                                     de forma preventiva se ha restringido el despacho de este documento.
 									Por favor reportar este problema a DevOps.", objStockOrigen.IdStock, objStockOrigen.Cantidad, pPickingUbic.Cantidad_Verificada)
 
-                '#EJC20190108: Punto de control agregado para evitar que se generen despachos con más cantidad de la solicitada en el pedido.
-                'Lo sé, es extraño pero anda un error errante en el picking que hacer que la cantidad_solicitada sea mayor a la cantidad en el pedido.
-                'Sos-pecho, que también puede ser un problema en la edición del pedido.
-                If pPickingUbic.IdPresentacion = BeTransPeDet.IdPresentacion Then
-                    If (pPickingUbic.Cantidad_Verificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
-                        Throw New Exception(vMensaje1)
-                    End If
-                Else
-                    If (pPickingUbic.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion = 0) Then
-                        Dim vFactor As Integer
-                        vFactor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
-                                                                                                         pPickingUbic.IdPresentacion,
-                                                                                                         lConnection,
-                                                                                                         lTransaction)
-                        Dim vCantidadVerificada As Double = pPickingUbic.Cantidad_Verificada * vFactor
-
-                        If (vCantidadVerificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
-                            Throw New Exception(vMensaje1)
-                        End If
-                        '#CKFK20250702 Agregué esta validacion para cuando el picking ubic es sin presentacion, pero el pedido tiene presentacion
-                    ElseIf (pPickingUbic.IdPresentacion = 0) AndAlso (BeTransPeDet.IdPresentacion <> 0) Then
-                        Dim vFactor As Integer
-                        vFactor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
-                                                                                                         BeTransPeDet.IdPresentacion,
-                                                                                                         lConnection,
-                                                                                                         lTransaction)
-                        Dim vCantidadVerificada As Double = pPickingUbic.Cantidad_Verificada / vFactor
-
-                        If (vCantidadVerificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
-                            Throw New Exception(vMensaje1)
-                        End If
-                    Else
+                    '#EJC20190108: Punto de control agregado para evitar que se generen despachos con más cantidad de la solicitada en el pedido.
+                    'Lo sé, es extraño pero anda un error errante en el picking que hacer que la cantidad_solicitada sea mayor a la cantidad en el pedido.
+                    'Sos-pecho, que también puede ser un problema en la edición del pedido.
+                    If pPickingUbic.IdPresentacion = BeTransPeDet.IdPresentacion Then
                         If (pPickingUbic.Cantidad_Verificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
                             Throw New Exception(vMensaje1)
                         End If
-                    End If
-                End If
+                    Else
+                        If (pPickingUbic.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion = 0) Then
+                            Dim vFactor As Integer
+                            vFactor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
+                                                                                                             pPickingUbic.IdPresentacion,
+                                                                                                             lConnection,
+                                                                                                             lTransaction)
+                            Dim vCantidadVerificada As Double = pPickingUbic.Cantidad_Verificada * vFactor
 
-                Dim vDiferenciaDespachoParcial As Double = pPickingUbic.Cantidad_Verificada - pPickingUbic.Cantidad_despachada
+                            If (vCantidadVerificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
+                                Throw New Exception(vMensaje1)
+                            End If
+                            '#CKFK20250702 Agregué esta validacion para cuando el picking ubic es sin presentacion, pero el pedido tiene presentacion
+                        ElseIf (pPickingUbic.IdPresentacion = 0) AndAlso (BeTransPeDet.IdPresentacion <> 0) Then
+                            Dim vFactor As Integer
+                            vFactor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
+                                                                                                             BeTransPeDet.IdPresentacion,
+                                                                                                             lConnection,
+                                                                                                             lTransaction)
+                            Dim vCantidadVerificada As Double = pPickingUbic.Cantidad_Verificada / vFactor
 
-                If vDiferenciaDespachoParcial < 0.00000000001 Then
-                    vDiferenciaDespachoParcial = 0
-                End If
-
-                '#EJC20180619: Punto de control agregado para evitar que se generen despachos sobre cantidad 0.
-                If vCantidadDisponible < 0 OrElse (vDiferenciaDespachoParcial > vCantidadDisponible) AndAlso Not AllowNegativeExceptionOnStock Then
-                    Throw New Exception(vMensaje)
-                Else
-
-                    If (objStockOrigen.Presentacion.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion <> 0) Then
-
-                        If objStockOrigen.Presentacion.EsPallet Then
-                            Despacha_Pallet(objStockOrigen, lConnection, lTransaction)
+                            If (vCantidadVerificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
+                                Throw New Exception(vMensaje1)
+                            End If
                         Else
+                            If (pPickingUbic.Cantidad_Verificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
+                                Throw New Exception(vMensaje1)
+                            End If
+                        End If
+                    End If
 
-                            '#CKFK20220719 Modifiqué la forma en que se obtiene el valor a restar
-                            'Dim Res As Double = Math.Round(vCantidadDisponible - pPickingUbic.Cantidad_Verificada, 6)
-                            Dim Res As Double = Math.Round(vCantidadDisponible - vDiferenciaDespachoParcial, 6)
+                    Dim vDiferenciaDespachoParcial As Double = pPickingUbic.Cantidad_Verificada - pPickingUbic.Cantidad_despachada
 
-                            objStockOrigen.Cantidad = Math.Round(Res * objStockOrigen.Presentacion.Factor, 6)
-                            objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
+                    If vDiferenciaDespachoParcial < 0.00000000001 Then
+                        vDiferenciaDespachoParcial = 0
+                    End If
 
-                            objStockOrigen.Peso -= pPickingUbic.Peso_verificado
-                            objStockOrigen.Peso -= Math.Round(pPickingUbic.Peso_verificado, 6)
+                    '#EJC20180619: Punto de control agregado para evitar que se generen despachos sobre cantidad 0.
+                    If vCantidadDisponible < 0 OrElse (vDiferenciaDespachoParcial > vCantidadDisponible) AndAlso Not AllowNegativeExceptionOnStock Then
+                        Throw New Exception(vMensaje)
+                    Else
 
-                            If objStockOrigen.Cantidad = 0 Then
+                        If (objStockOrigen.Presentacion.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion <> 0) Then
 
-                                '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo
-                                clsPublic.CopyObject(objStockOrigen, objStockHist)
-                                objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
-                                objStockHist.IdPedidoEnc = pPickingUbic.IdPedidoEnc
-                                objStockHist.IdPickingEnc = pPickingUbic.IdPickingEnc
-                                objStockHist.IdDespachoEnc = IdDespachoEnc
-                                objStockHist.IdNuevoStock = 0
-                                objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada, 6)
-                                objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
-                                objStockHist.Fec_agr = Now
-                                objStockHist.Fec_mod = Now
-                                clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
-                                '#EJC20180625:1036AM => Fin_Stock_Hist
+                            If objStockOrigen.Presentacion.EsPallet Then
+                                Despacha_Pallet(objStockOrigen, lConnection, lTransaction)
+                            Else
 
-                                clsLnStock_parametro.Eliminar_Todos_By_IdStock(objStockOrigen.IdStock, lConnection, lTransaction)
+                                '#CKFK20220719 Modifiqué la forma en que se obtiene el valor a restar
+                                'Dim Res As Double = Math.Round(vCantidadDisponible - pPickingUbic.Cantidad_Verificada, 6)
+                                Dim Res As Double = Math.Round(vCantidadDisponible - vDiferenciaDespachoParcial, 6)
 
-                                Eliminar(objStockOrigen, lConnection, lTransaction)
+                                objStockOrigen.Cantidad = Math.Round(Res * objStockOrigen.Presentacion.Factor, 6)
+                                objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
 
-                                '#EJC20210603: Eliminar posiciones ocupadas por IdStock para CEALSA.
-                                If Not objStockDet Is Nothing Then
-                                    clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
-                                End If
+                                objStockOrigen.Peso -= pPickingUbic.Peso_verificado
+                                objStockOrigen.Peso -= Math.Round(pPickingUbic.Peso_verificado, 6)
 
-                            ElseIf objStockOrigen.Cantidad > 0 Then
-                                Actualiza_Cantidad_Y_Peso(objStockOrigen, lConnection, lTransaction)
-                            ElseIf objStockOrigen.Cantidad < 0 Then
+                                If objStockOrigen.Cantidad = 0 Then
 
-                                'If MsgBox(vMensaje, MsgBoxStyle.YesNo, "AllowNegativeExceptionOnStock") = MsgBoxResult.Yes Then
-                                If AllowNegativeExceptionOnStock Then
                                     '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo
                                     clsPublic.CopyObject(objStockOrigen, objStockHist)
                                     objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
@@ -11815,112 +11786,88 @@ Partial Public Class clsLnStock
                                     objStockHist.Fec_mod = Now
                                     clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                                     '#EJC20180625:1036AM => Fin_Stock_Hist
-                                End If
 
-                                '#EJC20210603: Eliminar posiciones ocupadas por IdStock para CEALSA.
-                                If Not objStockDet Is Nothing Then
+                                    clsLnStock_parametro.Eliminar_Todos_By_IdStock(objStockOrigen.IdStock, lConnection, lTransaction)
 
-                                    If objStockDet.Posiciones <> Math.Round(pPickingUbic.Cantidad_Verificada, 6) Then
-                                        '#EJC20210603: En teoría si llegamos a este punto, algo ocurrió mal en el inicio de los tiempos, es decir en la repceción o en la ubicación.
-                                        If MsgBox(vMensajeSingularidadPalletCealsa, MsgBoxStyle.YesNo, "AllowNegativeExceptionOnStock") = MsgBoxResult.Yes Then
+                                    Eliminar(objStockOrigen, lConnection, lTransaction)
+
+                                    '#EJC20210603: Eliminar posiciones ocupadas por IdStock para CEALSA.
+                                    If Not objStockDet Is Nothing Then
+                                        clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
+                                    End If
+
+                                ElseIf objStockOrigen.Cantidad > 0 Then
+                                    Actualiza_Cantidad_Y_Peso(objStockOrigen, lConnection, lTransaction)
+                                ElseIf objStockOrigen.Cantidad < 0 Then
+
+                                    'If MsgBox(vMensaje, MsgBoxStyle.YesNo, "AllowNegativeExceptionOnStock") = MsgBoxResult.Yes Then
+                                    If AllowNegativeExceptionOnStock Then
+                                        '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo
+                                        clsPublic.CopyObject(objStockOrigen, objStockHist)
+                                        objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
+                                        objStockHist.IdPedidoEnc = pPickingUbic.IdPedidoEnc
+                                        objStockHist.IdPickingEnc = pPickingUbic.IdPickingEnc
+                                        objStockHist.IdDespachoEnc = IdDespachoEnc
+                                        objStockHist.IdNuevoStock = 0
+                                        objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada, 6)
+                                        objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
+                                        objStockHist.Fec_agr = Now
+                                        objStockHist.Fec_mod = Now
+                                        clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
+                                        '#EJC20180625:1036AM => Fin_Stock_Hist
+                                    End If
+
+                                    '#EJC20210603: Eliminar posiciones ocupadas por IdStock para CEALSA.
+                                    If Not objStockDet Is Nothing Then
+
+                                        If objStockDet.Posiciones <> Math.Round(pPickingUbic.Cantidad_Verificada, 6) Then
+                                            '#EJC20210603: En teoría si llegamos a este punto, algo ocurrió mal en el inicio de los tiempos, es decir en la repceción o en la ubicación.
+                                            If MsgBox(vMensajeSingularidadPalletCealsa, MsgBoxStyle.YesNo, "AllowNegativeExceptionOnStock") = MsgBoxResult.Yes Then
+                                                clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
+                                            End If
+                                        Else
                                             clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
                                         End If
-                                    Else
-                                        clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
+
                                     End If
 
                                 End If
 
                             End If
 
-                        End If
-
-                    Else
-
-                        Dim vFactorPres As Integer = 0
-
-                        If pPickingUbic.IdPresentacion <> 0 Then
-                            vFactorPres = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
-                                                                                                             pPickingUbic.IdPresentacion,
-                                                                                                             lConnection,
-                                                                                                             lTransaction)
-                            If vFactorPres = 0 Then
-                                Throw New Exception("El factor de la presentación es 0 no se puede continuar el proceso de actualización de Stock")
-                            End If
-
-                        End If
-
-                        If pPickingUbic.IdPresentacion <> 0 Then
-                            objStockOrigen.Cantidad -= (pPickingUbic.Cantidad_Verificada * vFactorPres) - (pPickingUbic.Cantidad_despachada * vFactorPres)
-                            objStockOrigen.Peso -= pPickingUbic.Peso_verificado - pPickingUbic.Peso_despachado
-                            objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
                         Else
-                            objStockOrigen.Cantidad -= pPickingUbic.Cantidad_Verificada - pPickingUbic.Cantidad_despachada
-                            objStockOrigen.Peso -= pPickingUbic.Peso_verificado - pPickingUbic.Peso_despachado
-                            objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
-                        End If
 
-                        If objStockOrigen.Cantidad = 0 Then
-
-                            '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo
-                            clsPublic.CopyObject(objStockOrigen, objStockHist)
-                            objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
-                            objStockHist.IdPedidoEnc = pPickingUbic.IdPedidoEnc
-                            objStockHist.IdPickingEnc = pPickingUbic.IdPickingEnc
-
-                            objStockHist.IdDespachoEnc = IdDespachoEnc
-                            objStockHist.IdNuevoStock = 0
+                            Dim vFactorPres As Integer = 0
 
                             If pPickingUbic.IdPresentacion <> 0 Then
-                                objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada * vFactorPres, 6)
-                            Else
-                                objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada, 6)
-                            End If
-
-                            objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
-                            objStockHist.Fec_agr = Now
-                            objStockHist.Fec_mod = Now
-                            objStockHist.Posiciones = vCantPosiciones
-                            clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
-                            '#EJC20180625:1036AM => Fin_Stock_Hist
-
-                            clsLnStock_parametro.Eliminar_Todos_By_IdStock(objStockOrigen.IdStock, lConnection, lTransaction)
-
-                            Eliminar(objStockOrigen, lConnection, lTransaction)
-
-                            '#EJC20210603: Eliminar posiciones ocupadas por IdStock para CEALSA.
-                            If Not objStockDet Is Nothing Then
-                                clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
-                            End If
-
-                        ElseIf objStockOrigen.Cantidad > 0 Then
-
-                            Actualiza_Cantidad_Y_Peso(objStockOrigen, lConnection, lTransaction)
-
-                            '#EJC20210603: Eliminar posiciones ocupadas por IdStock para CEALSA.
-                            If Not objStockDet Is Nothing Then
-
-                                If objStockDet.Posiciones <> Math.Round(pPickingUbic.Cantidad_Verificada, 6) Then
-                                    '#EJC20210603: En teoría si llegamos a este punto, algo ocurrió mal en el inicio de los tiempos, es decir en la repceción o en la ubicación.
-                                    If MsgBox(vMensajeSingularidadPalletCealsa, MsgBoxStyle.YesNo, "AllowNegativeExceptionOnStock") = MsgBoxResult.Yes Then
-                                        clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
-                                    Else
-                                        Throw New Exception(vMensajeSingularidadPalletCealsa)
-                                    End If
-                                Else
-                                    clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
+                                vFactorPres = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
+                                                                                                                 pPickingUbic.IdPresentacion,
+                                                                                                                 lConnection,
+                                                                                                                 lTransaction)
+                                If vFactorPres = 0 Then
+                                    Throw New Exception("El factor de la presentación es 0 no se puede continuar el proceso de actualización de Stock")
                                 End If
 
                             End If
 
-                        ElseIf objStockOrigen.Cantidad < 0 Then
+                            If pPickingUbic.IdPresentacion <> 0 Then
+                                objStockOrigen.Cantidad -= (pPickingUbic.Cantidad_Verificada * vFactorPres) - (pPickingUbic.Cantidad_despachada * vFactorPres)
+                                objStockOrigen.Peso -= pPickingUbic.Peso_verificado - pPickingUbic.Peso_despachado
+                                objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
+                            Else
+                                objStockOrigen.Cantidad -= pPickingUbic.Cantidad_Verificada - pPickingUbic.Cantidad_despachada
+                                objStockOrigen.Peso -= pPickingUbic.Peso_verificado - pPickingUbic.Peso_despachado
+                                objStockOrigen.Cantidad = Math.Round(objStockOrigen.Cantidad, 6)
+                            End If
 
-                            If MsgBox(vMensaje, MsgBoxStyle.YesNo, "AllowNegativeExceptionOnStock") = MsgBoxResult.Yes Then
+                            If objStockOrigen.Cantidad = 0 Then
+
                                 '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo
                                 clsPublic.CopyObject(objStockOrigen, objStockHist)
                                 objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
                                 objStockHist.IdPedidoEnc = pPickingUbic.IdPedidoEnc
                                 objStockHist.IdPickingEnc = pPickingUbic.IdPickingEnc
+
                                 objStockHist.IdDespachoEnc = IdDespachoEnc
                                 objStockHist.IdNuevoStock = 0
 
@@ -11933,20 +11880,73 @@ Partial Public Class clsLnStock
                                 objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
                                 objStockHist.Fec_agr = Now
                                 objStockHist.Fec_mod = Now
+                                objStockHist.Posiciones = vCantPosiciones
                                 clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                                 '#EJC20180625:1036AM => Fin_Stock_Hist
+
+                                clsLnStock_parametro.Eliminar_Todos_By_IdStock(objStockOrigen.IdStock, lConnection, lTransaction)
+
+                                Eliminar(objStockOrigen, lConnection, lTransaction)
+
+                                '#EJC20210603: Eliminar posiciones ocupadas por IdStock para CEALSA.
+                                If Not objStockDet Is Nothing Then
+                                    clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
+                                End If
+
+                            ElseIf objStockOrigen.Cantidad > 0 Then
+
+                                Actualiza_Cantidad_Y_Peso(objStockOrigen, lConnection, lTransaction)
+
+                                '#EJC20210603: Eliminar posiciones ocupadas por IdStock para CEALSA.
+                                If Not objStockDet Is Nothing Then
+
+                                    If objStockDet.Posiciones <> Math.Round(pPickingUbic.Cantidad_Verificada, 6) Then
+                                        '#EJC20210603: En teoría si llegamos a este punto, algo ocurrió mal en el inicio de los tiempos, es decir en la repceción o en la ubicación.
+                                        If MsgBox(vMensajeSingularidadPalletCealsa, MsgBoxStyle.YesNo, "AllowNegativeExceptionOnStock") = MsgBoxResult.Yes Then
+                                            clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
+                                        Else
+                                            Throw New Exception(vMensajeSingularidadPalletCealsa)
+                                        End If
+                                    Else
+                                        clsLnStock_det.Eliminar(objStockDet, lConnection, lTransaction)
+                                    End If
+
+                                End If
+
+                            ElseIf objStockOrigen.Cantidad < 0 Then
+
+                                If MsgBox(vMensaje, MsgBoxStyle.YesNo, "AllowNegativeExceptionOnStock") = MsgBoxResult.Yes Then
+                                    '#EJC20180625:1036AM => Insertar stock historico de despacho antes de eliminarlo
+                                    clsPublic.CopyObject(objStockOrigen, objStockHist)
+                                    objStockHist.IdStockHist = clsLnStock_hist.MaxID(lConnection, lTransaction) + 1
+                                    objStockHist.IdPedidoEnc = pPickingUbic.IdPedidoEnc
+                                    objStockHist.IdPickingEnc = pPickingUbic.IdPickingEnc
+                                    objStockHist.IdDespachoEnc = IdDespachoEnc
+                                    objStockHist.IdNuevoStock = 0
+
+                                    If pPickingUbic.IdPresentacion <> 0 Then
+                                        objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada * vFactorPres, 6)
+                                    Else
+                                        objStockHist.Cantidad += Math.Round(pPickingUbic.Cantidad_Verificada, 6)
+                                    End If
+
+                                    objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
+                                    objStockHist.Fec_agr = Now
+                                    objStockHist.Fec_mod = Now
+                                    clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
+                                    '#EJC20180625:1036AM => Fin_Stock_Hist
+                                End If
+
                             End If
 
                         End If
 
                     End If
 
+                    Else
+                    Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), vMensaje)
+                    clsLnLog_error_wms.Agregar_Error(vMsgError)
                 End If
-
-            Else
-                Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), vMensaje)
-                clsLnLog_error_wms.Agregar_Error(vMsgError)
-            End If
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
