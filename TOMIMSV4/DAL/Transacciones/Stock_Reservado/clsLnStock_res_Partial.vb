@@ -23852,12 +23852,13 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                     '    GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
                                     'End If
 
+
                                     '#EJC20250923 Se agregó validacion al proceso 105
-                                    If ListaEstadosDeProceso.Contains(105) Then
-                                        If (FechaMinimaVenceStock < vStockOrigen.Fecha_vence) AndAlso Not (FechaMinimaVenceStock = New Date(1900, 1, 1)) Then
-                                            GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
-                                        End If
-                                    End If
+                                    'If ListaEstadosDeProceso.Contains(105) Then
+                                    '    If (FechaMinimaVenceStock < vStockOrigen.Fecha_vence) AndAlso Not (FechaMinimaVenceStock = New Date(1900, 1, 1)) Then
+                                    '        GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
+                                    '    End If
+                                    'End If
 
                                     '#EJC20241104 Se agregó validacion del proceso 105
                                     If Not ListaEstadosDeProceso.Contains(105) Then
@@ -23865,6 +23866,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                             GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
                                         End If
                                     End If
+
                                 Else
                                     If Not ListaEstadosDeProceso.Contains(105) Then
                                         ListaEstadosDeProceso.Add(105)
