@@ -125,6 +125,12 @@ Public Class clsBeStock_jornada
     'el mismo proceso, es redundante y causa duplicados.
     Public Property Procesado_Retroactivo As Boolean = False
 
+    '#GT10092025: campos de talla color
+    Public Property Talla As String = ""
+    Public Property Color As String = ""
+    Public Property IdProductoTallaColor As Integer = 0
+
+
     Sub New()
         '#EJC: Add your constructor here... 
     End Sub

@@ -144,9 +144,10 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="DevExpress.XtraWizard.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="Interop.SAPbobsCOM">
-      <HintPath>..\SAPSYNCCUMBRE\Interop.SAPbobsCOM.dll</HintPath>
+    <Reference Include="Interop.SAPbobsCOM, Version=10.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\TOMIMSV4\TOMIMSV4\Interop.SAPbobsCOM.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
@@ -399,18 +400,16 @@
       <Project>{b7df5657-9a16-45a4-bf2f-ffda6138e06b}</Project>
       <Name>DAL</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TOMIMSV4\DAL\DAL.vbproj">
-      <Project>{b7df5657-9a16-45a4-bf2f-ffda6138e06b}</Project>
-      <Name>DAL</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TOMIMSV4\Entity\Entity.vbproj">
       <Project>{df210a4e-56dd-4604-8558-ff6c51469a05}</Project>
       <Name>Entity</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TOMIMSV4\DAL\DAL.vbproj">
+      <Project>{b7df5657-9a16-45a4-bf2f-ffda6138e06b}</Project>
+      <Name>DAL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TOMIMSV4\DAL\DAL.vbproj">
       <Project>{b7df5657-9a16-45a4-bf2f-ffda6138e06b}</Project>
       <Name>DAL</Name>

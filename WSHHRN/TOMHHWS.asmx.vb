@@ -7831,13 +7831,20 @@ Public Class TOMHHWS
     Public Function Inventario_Ciclico_Act_Conteo_Andr(ByVal pitem As clsBeTrans_inv_ciclico,
                                                        ByVal pReconteo As Integer,
                                                        ByVal esOriginal As Boolean,
-                                                       ByRef Resultado As String) As Integer
+                                                       ByRef Resultado As String,
+                                                       ByVal CrearTallaColor As Boolean,
+                                                       ByVal ProductoTallaColor As clsBeProducto_talla_color) As Integer
 
         Inventario_Ciclico_Act_Conteo_Andr = 0
 
         Try
             Dim Res As String = ""
-            Return clsLnTrans_inv_ciclico.Actualiza_Conteo_Ciclico_HH(pitem, pReconteo, esOriginal, Res)
+            Return clsLnTrans_inv_ciclico.Actualiza_Conteo_Ciclico_HH(pitem,
+                                                                      pReconteo,
+                                                                      esOriginal,
+                                                                      Res,
+                                                                      CrearTallaColor,
+                                                                      ProductoTallaColor)
 
         Catch ex As Exception
 
@@ -15010,7 +15017,8 @@ Public Class TOMHHWS
                                         ByVal pIdBodega As Integer,
                                         ByVal pIdUsuario As Integer,
                                         ByVal pIdResolucionLp As Integer,
-                                        ByVal pIdOperadorBodega As Integer) As String
+                                        ByVal pIdOperadorBodega As Integer,
+                                        ByVal EsCajaMaster As Boolean) As String
 
         Guardar_Recepcion_S = ""
 
@@ -15032,7 +15040,8 @@ Public Class TOMHHWS
                                                     pIdBodega,
                                                     pIdUsuario,
                                                     pIdResolucionLp,
-                                                    pIdOperadorBodega)
+                                                    pIdOperadorBodega,
+                                                    EsCajaMaster)
 
 
             Return String.Format("Res:{0}", vResult)
@@ -16936,4 +16945,235 @@ Public Class TOMHHWS
 
     End Function
 
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Get_Producto_Talla_Color(IdProductoTallaColor As Integer) As List(Of clsBeProducto_talla_color)
+        Get_Producto_Talla_Color = Nothing
+
+        Try
+            Get_Producto_Talla_Color = clsLnProducto_talla_color.Get_All()
+
+            Return Get_Producto_Talla_Color
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
+    <WebMethod, SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Get_Colores()
+
+        Try
+            Dim lColores As New List(Of clsBeColor)
+            lColores = clsLnColor.Get_All()
+
+            HttpContext.Current.Response.AddHeader("Access-Control-Allow-Methods", "GET")
+            Dim strserialize As String = JsonConvert.SerializeObject(lColores)
+            Dim currrentContext As HttpContext = HttpContext.Current
+            currrentContext.Response.ContentType = "application/json"
+            currrentContext.Response.Write(strserialize)
+            currrentContext.Response.Flush()
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Sub
+
+    <WebMethod, SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Get_Tallas()
+
+        Try
+            Dim lTallas As New List(Of clsBeTalla)
+            lTallas = clsLnTalla.Get_All()
+
+            HttpContext.Current.Response.AddHeader("Access-Control-Allow-Methods", "GET")
+            Dim strserialize As String = JsonConvert.SerializeObject(lTallas)
+            Dim currrentContext As HttpContext = HttpContext.Current
+            currrentContext.Response.ContentType = "application/json"
+            currrentContext.Response.Write(strserialize)
+            currrentContext.Response.Flush()
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Sub
+
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Get_Detalle_Rec_By_IdCompra_Licencia(pIdOrdenCompra As Integer,
+                                                         pLicencia As String) As List(Of clsBeTrans_re_det)
+        Get_Detalle_Rec_By_IdCompra_Licencia = Nothing
+
+        Try
+            Get_Detalle_Rec_By_IdCompra_Licencia = clsLnTrans_re_det.Get_Detalle_Rec_By_IdCompra_Licencia(pIdOrdenCompra,
+                                                                                                          pLicencia)
+
+            Return Get_Detalle_Rec_By_IdCompra_Licencia
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
+    <WebMethod, SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Get_Producto_Talla_Color_By_Id(pIdProductoTallaColor As Integer)
+
+        Try
+            Dim TallaColor As New clsBeProducto_talla_color()
+            TallaColor = clsLnProducto_talla_color.GetSingle(pIdProductoTallaColor)
+
+            HttpContext.Current.Response.AddHeader("Access-Control-Allow-Methods", "GET")
+            Dim strserialize As String = JsonConvert.SerializeObject(TallaColor)
+            Dim currrentContext As HttpContext = HttpContext.Current
+            currrentContext.Response.ContentType = "application/json"
+            currrentContext.Response.Write(strserialize)
+            currrentContext.Response.Flush()
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Sub
 End Class

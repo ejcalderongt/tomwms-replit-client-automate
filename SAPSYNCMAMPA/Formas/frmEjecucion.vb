@@ -1,8 +1,8 @@
 ﻿Imports System.Net
 Imports System.Net.Security
 Imports System.Reflection
-Imports System.Security.Cryptography
 Imports System.Security.Cryptography.X509Certificates
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraBars.Ribbon
 Imports DevExpress.XtraEditors
@@ -1107,8 +1107,186 @@ Public Class frmEjecucion
             If Ejecutar Then
                 lblprg.Text = ""
                 Await clsSyncSapTrasladosEnvio.Enviar_Traslados_Desde_Solicitud(lblprg,
-                                                                          prg,
-                                                                          tTipoDocumentoSalida.Transferencia_Interna_WMS)
+                                                                                prg,
+                                                                                tTipoDocumentoSalida.Transferencia_Interna_WMS)
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        Finally
+            procesoEnEjecucion = False
+        End Try
+
+    End Sub
+
+    Private Sub mnuRecibirTrasladosTienda_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuRecibirTrasladosTienda.ItemClick
+
+        Dim args As New XtraInputBoxArgs()
+        Dim tmpResult As Object
+        Dim pSolDevolProveedor As String = ""
+
+        mnuImportarSolDevolProv.Enabled = False
+
+        Try
+
+            args.Caption = "Ingrese Sol. Traslado"
+            args.Prompt = "Solicitud Traslado No."
+
+            Dim editor As New TextEdit
+            args.Editor = editor
+
+            args.DefaultButtonIndex = 0
+            args.DefaultResponse = ""
+            AddHandler args.Showing, AddressOf Args_Showing
+
+            tmpResult = XtraInputBox.Show(args)
+
+            lblprg.Text = ""
+
+            If Not tmpResult Is Nothing Then
+
+                pSolDevolProveedor = tmpResult.ToString
+
+                Ejecuta_Interface_Sol_Traslado_Tienda_SAP_Hana(True, pSolDevolProveedor)
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                               Text,
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        Finally
+            mnuImportarSolDevolProv.Enabled = True
+            prg.Visible = False
+        End Try
+
+    End Sub
+
+    Private Sub Ejecuta_Interface_Sol_Traslado_Tienda_SAP_Hana(Optional ByVal Preguntar As Boolean = True,
+                                                               Optional ByVal pNoDocumentoSolTraslado As String = "")
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Actualizar Solicitudes de traslado a Tienda?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                Dim unused = clsSyncSapSolTrasladoRec.Procesar_Solicitud_Traslado_Tienda_SAP(lblprg, prg, pNoDocumentoSolTraslado)
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        End Try
+
+    End Sub
+
+    Private Sub mnuEnviarTrasladosTienda_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarTrasladosTienda.ItemClick
+        mnuEnviarTrasladosTienda.Visibility = BarItemVisibility.Never
+        Enviar_Traslado_Desde_Solicitud_Tiendas(True)
+        mnuEnviarTrasladosTienda.Visibility = BarItemVisibility.Always
+    End Sub
+
+    Private Async Sub Enviar_Traslado_Desde_Solicitud_Tiendas(Optional ByVal Preguntar As Boolean = True)
+
+        Dim MostrarMensaje As Boolean = False
+        procesoEnEjecucion = True
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Enviar traslados recibidos en tienda a SAP?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                lblprg.Text = ""
+
+                Dim BeConfiEnc = clsLnI_nav_config_enc.GetSingle(IdConfiguracion)
+
+                If BeConfiEnc IsNot Nothing Then
+                    Await clsSyncSapTrasladosEnvio.Enviar_Traslados_Desde_Solicitud_Tiendas(lblprg,
+                                                                                            prg,
+                                                                                            tTipoDocumentoIngreso.Transferencia_de_Ingreso,
+                                                                                            BeConfiEnc)
+                Else
+                    clsPublic.Actualizar_Progreso(lblprg, "No está definida la configuración de interface para el identificador: " & IdConfiguracion)
+                End If
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        Finally
+            procesoEnEjecucion = False
+        End Try
+
+    End Sub
+
+    Private Sub mnuEnviarAjustes_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarAjustes.ItemClick
+
+        Try
+
+            Enviar_Ajustes(True)
+
+        Catch ex As Exception
+            clsPublic.Actualizar_Progreso(lblprg, ex.Message)
+        End Try
+
+    End Sub
+
+    Private Async Sub Enviar_Ajustes(Optional ByVal Preguntar As Boolean = True)
+
+        Dim MostrarMensaje As Boolean = False
+        procesoEnEjecucion = True
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Enviar ajustes a SAP?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+
+                lblprg.Text = ""
+
+                Dim BeConfiEnc = clsLnI_nav_config_enc.GetSingle(IdConfiguracion)
+
+                If BeConfiEnc IsNot Nothing Then
+                    Await clsSyncSapAjustes.Enviar_Ajustes_WMS_SAP(lblprg)
+                Else
+                    clsPublic.Actualizar_Progreso(lblprg, "No está definida la configuración de interface para el identificador: " & IdConfiguracion)
+                End If
             End If
 
         Catch ex As Exception

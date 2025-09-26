@@ -108,6 +108,7 @@ Public Class frmCambioUbicacion
 
 #End Region
 
+    Dim Bodega As New clsBeBodega
     Private Sub frmCambioUbicacion_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         Try
@@ -147,6 +148,9 @@ Public Class frmCambioUbicacion
 
                 Case TipoTrans.Nuevo
 
+                    Bodega = New clsBeBodega
+                    Bodega = AP.Bodega
+
                     User_agrTextEdit.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
                     Fec_agrDateEdit.Text = Now
                     User_modTextEdit.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
@@ -178,9 +182,17 @@ Public Class frmCambioUbicacion
                         Es_Seleccion_Multiple = False
                     End If
 
+                    If Not Bodega.Control_Talla_Color Then
+                        lblTalla.Visible = False
+                        lblColor.Visible = False
+                        txtTalla.Visible = False
+                        txtColor.Visible = False
+                    End If
+
                 Case TipoTrans.Editar
 
-                    Dim Bodega As New clsBeBodega
+                    'Dim Bodega As New clsBeBodega #se traslada a #GT08092025 para uso cuando es nuevo registro.
+                    Bodega = New clsBeBodega
 
                     clsLnTarimas.GetAllTarimas(lvTarimasDisponibles)
 
@@ -220,6 +232,8 @@ Public Class frmCambioUbicacion
 
                     '#CM_20092018_1142AM: se busca la bodega por el IdPropietarioBodega ya que no está en la tabla de encabezado.
                     Bodega = clsLnPropietario_bodega.GetBodegaByIdPropietarioBodega(gBeTransubicacionHHEnc.IdPropietarioBodega)
+                    clsLnBodega.GetSingle(Bodega)
+
 
                     If Bodega IsNot Nothing Then
                         cmbBodega.EditValue = Bodega.IdBodega
@@ -499,6 +513,12 @@ Public Class frmCambioUbicacion
             DT.Columns.Add("Lote", GetType(String))
             DT.Columns.Add("FechaVence", GetType(Date))
             DT.Columns.Add("No_Linea", GetType(Integer))
+            '#GT08092025: campos talla/color
+
+            If Bodega.Control_Talla_Color Then
+                DT.Columns.Add("Talla", GetType(String))
+                DT.Columns.Add("Color", GetType(String))
+            End If
 
             grdDetalle.DataSource = Nothing
 
@@ -518,6 +538,21 @@ Public Class frmCambioUbicacion
                 lRow.Item("Licencia") = Obj.Stock.Lic_plate
                 lRow.Item("Lote") = Obj.Stock.Lote
                 lRow.Item("FechaVence") = Obj.Stock.Fecha_vence
+
+                '#GT08092025: valida si mostrar talla/color
+                If Bodega.Control_Talla_Color Then
+
+                    Dim pProductoTallaColor = clsLnProducto_talla_color.GetSingle(Obj.Stock.IdProductoTallaColor)
+                    Dim tmpTalla As New clsBeTalla
+                    Dim tmpColor As New clsBeColor
+
+                    tmpTalla = clsLnTalla.GetSingle_By_IdTalla(pProductoTallaColor.IdTalla)
+                    tmpColor = clsLnColor.GetSingle_By_IdColor(pProductoTallaColor.IdColor)
+
+                    lRow.Item("Talla") = tmpTalla.Codigo
+                    lRow.Item("Color") = tmpColor.Codigo
+
+                End If
 
                 If Obj.IdUbicacionOrigen <> Nothing AndAlso Obj.IdUbicacionOrigen <> 0 Then
                     lRow("IdUbicacionOrigen") = Obj.IdUbicacionOrigen
@@ -1359,6 +1394,12 @@ Public Class frmCambioUbicacion
                     pUbicSugReq.Lote = Stock.pObjStock.Lote
                     pUbicSugReq.IdUbicStock = Stock.pObjStock.IdStock
 
+                    '#GT08092025: mostrar descriptores talla/color si la bodega tiene el parametro.
+                    If Bodega.Control_Talla_Color Then
+                        txtTalla.Text = Stock.pObjStock.Codigo_Talla
+                        txtColor.Text = Stock.pObjStock.Codigo_Color
+                    End If
+
                 ElseIf (Stock.listaStockSeleccionado.Count > 0) Then
 
                     '#GT18102024: con selección multiple, asociados lista de stock para enviarla a la forma de bodegaUbic
@@ -1971,8 +2012,11 @@ Public Class frmCambioUbicacion
             lblFactor.Text = String.Empty
 
             chkRealizadoDet.Checked = False
-
             lblItemBandera.Visible = False
+
+            txtTalla.Text = String.Empty
+            txtColor.Text = String.Empty
+            txtLicPlate.Text = String.Empty
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -2327,6 +2371,9 @@ Public Class frmCambioUbicacion
     Private Sub cmbBodega_EditValueChanged(sender As Object, e As EventArgs) Handles cmbBodega.EditValueChanged
 
         Try
+
+            Bodega = New clsBeBodega
+            Bodega = clsLnBodega.GetSingle_By_Idbodega(cmbBodega.EditValue)
 
             If Not IMS.Listar_Propietarios_By_IdBodega(cmbPropietarioBodega, cmbBodega.EditValue) Then
                 XtraMessageBox.Show("No hay propietarios definidos para la bodega", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)

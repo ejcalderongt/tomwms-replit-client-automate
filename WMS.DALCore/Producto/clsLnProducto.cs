@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Producto.ProductoSimple;
 public class clsLnProducto
 {
 
@@ -115,6 +116,9 @@ public class clsLnProducto
             Ins.Add("idclasificacion", "@idclasificacion", "F");
             Ins.Add("idfamilia", "@idfamilia", "F");
             Ins.Add("idmarca", "@idmarca", "F");
+            if (oBeProducto.IdTipoProducto > 0) {
+                
+            }
             Ins.Add("idtipoproducto", "@idtipoproducto", "F");
             Ins.Add("idunidadmedidabasica", "@idunidadmedidabasica", "F");
             Ins.Add("idcamara", "@idcamara", "F");
@@ -711,67 +715,96 @@ public class clsLnProducto
             throw new Exception(vMsgError, ex1);
         }
     }
-    public static int MaxID(IConfiguration configuration, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    //public static int MaxID(IConfiguration configuration, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    //{
+    //    SqlConnection? lConnection = null;
+    //    SqlTransaction? lTransaction = null;
+    //    int lMax = 0;
+
+    //    try
+    //    {
+    //        const string sp = "SELECT ISNULL(MAX(IdProducto), 0) FROM Producto";
+    //        bool esTransaccionRemota = pConection is not null && pTransaction is not null;
+
+    //        SqlCommand cmd;
+
+    //        if (esTransaccionRemota)
+    //        {
+    //            cmd = new SqlCommand(sp, pConection, pTransaction);
+    //        }
+    //        else
+    //        {
+    //            lConnection = new SqlConnection(configuration.GetConnectionString("CST"));
+    //            lConnection.Open();
+    //            lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
+    //            cmd = new SqlCommand(sp, lConnection, lTransaction);
+    //        }
+
+    //        object lreturnValue = cmd.ExecuteScalar();
+
+    //        if (lreturnValue != DBNull.Value && lreturnValue != null)
+    //        {
+    //            lMax = Convert.ToInt32(lreturnValue);
+    //        }
+
+    //        if (!esTransaccionRemota && lTransaction is not null)
+    //        {
+    //            lTransaction.Commit();
+    //        }
+
+    //        return lMax;
+    //    }
+    //    catch (SqlException ex1)
+    //    {
+    //        if (lTransaction is not null)
+    //        {
+    //            try { lTransaction.Rollback(); } catch { /* Opcional: manejo de rollback fallido */ }
+    //        }
+
+    //        var st = new StackTrace();
+    //        var sf = st.GetFrame(0);
+    //        MethodBase? currentMethodName = sf?.GetMethod();
+    //        string vMsgError = string.Format("{0} {1}", currentMethodName?.Name ?? "UnknownMethod", ex1.Message);
+
+    //        throw new Exception(vMsgError, ex1);
+    //    }
+    //    finally
+    //    {
+    //        if (lConnection is not null && lConnection.State == ConnectionState.Open)
+    //        {
+    //            lConnection.Close();
+    //        }
+    //    }
+    //}
+
+
+    public static int MaxID(IConfiguration config, SqlConnection? conn = null, SqlTransaction? tx = null)
     {
-        SqlConnection? lConnection = null;
-        SqlTransaction? lTransaction = null;
-        int lMax = 0;
+        const string sql = "SELECT ISNULL(MAX(IdProducto), 0) FROM Producto";
+        bool externa = conn != null && tx != null;
+
+        var lConn = externa ? conn! : new SqlConnection(config.GetConnectionString("CST"));
+        SqlTransaction? lTx = null;
+        if (!externa) { lConn.Open(); lTx = lConn.BeginTransaction(); }
 
         try
         {
-            const string sp = "SELECT ISNULL(MAX(IdProducto), 0) FROM Producto";
-            bool esTransaccionRemota = pConection is not null && pTransaction is not null;
-
-            SqlCommand cmd;
-
-            if (esTransaccionRemota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection = new SqlConnection(configuration.GetConnectionString("CST"));
-                lConnection.Open();
-                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
-
-            object lreturnValue = cmd.ExecuteScalar();
-
-            if (lreturnValue != DBNull.Value && lreturnValue != null)
-            {
-                lMax = Convert.ToInt32(lreturnValue);
-            }
-
-            if (!esTransaccionRemota && lTransaction is not null)
-            {
-                lTransaction.Commit();
-            }
-
-            return lMax;
+            using var cmd = new SqlCommand(sql, lConn, externa ? tx! : lTx!);
+            var result = cmd.ExecuteScalar();
+            if (!externa) lTx?.Commit();
+            return Convert.ToInt32(result);
         }
-        catch (SqlException ex1)
+        catch
         {
-            if (lTransaction is not null)
-            {
-                try { lTransaction.Rollback(); } catch { /* Opcional: manejo de rollback fallido */ }
-            }
-
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = sf?.GetMethod();
-            string vMsgError = string.Format("{0} {1}", currentMethodName?.Name ?? "UnknownMethod", ex1.Message);
-
-            throw new Exception(vMsgError, ex1);
+            if (!externa) lTx?.Rollback();
+            throw;
         }
         finally
         {
-            if (lConnection is not null && lConnection.State == ConnectionState.Open)
-            {
-                lConnection.Close();
-            }
+            if (!externa) lConn.Close();
         }
     }
+
     //public static bool Existe(int IdProducto, SqlConnection pConnection, SqlTransaction pTransaction)
     //{
     //    try
@@ -900,7 +933,7 @@ public class clsLnProducto
         cmd.Parameters.AddWithValue("@IDPRODUCTOPARAMETROB", o.IDPRODUCTOPARAMETROB == 0 ? DBNull.Value : o.IDPRODUCTOPARAMETROB);
         cmd.Parameters.AddWithValue("@IdTipoManufactura", o.IdTipoManufactura == 0 ? DBNull.Value : o.IdTipoManufactura);
     }
-    public static bool Existe(int IdOrdenCompraEnc, SqlConnection pConnection, SqlTransaction pTransaction)
+    public static bool Existe(int IdProducto, SqlConnection pConnection, SqlTransaction pTransaction)
     {
         try
         {
@@ -909,7 +942,7 @@ public class clsLnProducto
             using (SqlCommand cmd = new SqlCommand(query, pConnection, pTransaction))
             {
                 cmd.CommandType = CommandType.Text;
-                cmd.Parameters.Add(new SqlParameter("@IdProducto", IdOrdenCompraEnc));
+                cmd.Parameters.Add(new SqlParameter("@IdProducto", IdProducto));
 
                 object result = cmd.ExecuteScalar();
                 int count = Convert.ToInt32(result);
@@ -927,4 +960,147 @@ public class clsLnProducto
             throw new Exception(vMsgError, ex);
         }
     }
+
+
+    public static bool Existe_By_Codigo(string pCodigo, SqlConnection pConnection, SqlTransaction pTransaction)
+    {
+        try
+        {
+            const string query = "SELECT COUNT(1) FROM producto WHERE codigo= @codigo";
+
+            using (SqlCommand cmd = new SqlCommand(query, pConnection, pTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.Add(new SqlParameter("@codigo", pCodigo));
+
+                object result = cmd.ExecuteScalar();
+                int count = Convert.ToInt32(result);
+
+                return count > 0;
+            }
+        }
+        catch (SqlException ex)
+        {
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = sf?.GetMethod();
+            string vMsgError = string.Format("{0} {1}", currentMethodName?.Name ?? "UnknownMethod", ex.Message);
+
+            throw new Exception(vMsgError, ex);
+        }
+    }
+
+    public static void Valida_Atributos(IConfiguration config, clsBeProductoSimple entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    {
+        bool isExternalTx = conn != null && tx != null;
+        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
+        SqlTransaction? localTx = null;
+
+        try
+        {
+            if (!isExternalTx)
+            {
+                connection.Open();
+                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
+            }
+
+            bool existe = Existe_By_Codigo(entity.codigo, connection, isExternalTx ? tx! : localTx!);
+
+            if (!existe)
+            {
+
+                var Clasificacion = new clsBeProducto_clasificacion();
+                var Familia = new clsBeProducto_familia();
+                var Marca = new clsBeProducto_marca();
+
+                if (!string.IsNullOrEmpty(entity.CodigoClasificacion)) 
+                {   
+                    Clasificacion.IdClasificacion = clsLnProducto_clasificacion.MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                    Clasificacion.Codigo = entity.CodigoClasificacion;
+                    Clasificacion.Nombre = entity.nombre;
+                    Clasificacion.User_agr = "1";
+                    Clasificacion.Fec_agr = DateTime.Now;
+                    Clasificacion.Fec_mod = DateTime.Now;
+                    Clasificacion.Activo = true;
+                    Clasificacion.IdPropietario = entity.IdPropietario;
+                    clsLnProducto_clasificacion.Insertar(config, Clasificacion, connection, isExternalTx ? tx : localTx);
+                }
+
+
+                if (!string.IsNullOrEmpty(entity.CodigoFamilia)) 
+                {
+                    Familia.IdFamilia = clsLnProducto_familia.MaxID(config, connection, isExternalTx ? tx : localTx)+1;
+                    Familia.Codigo = entity.CodigoFamilia;
+                    Familia.Nombre = entity.nombre;
+                    Familia.User_agr = "1";
+                    Familia.Fec_agr = DateTime.Now;
+                    Familia.Fec_agr = DateTime.Now;
+                    Familia.Activo = true;
+                    Familia.IdPropietario = entity.IdPropietario;
+                    clsLnProducto_familia.Insertar(config, Familia, connection, isExternalTx ? tx : localTx);
+                }
+
+                if (!string.IsNullOrEmpty(entity.CodigoMarca)) 
+                {
+                    Marca.IdMarca = clsLnProductoMarca.MaxId(config, connection, isExternalTx ? tx : localTx) + 1;
+                    Marca.Codigo = entity.CodigoMarca;
+                    Marca.Nombre = entity.nombre;
+                    Marca.User_agr = "1";
+                    Marca.Fec_agr = DateTime.Now;
+                    Marca.Fec_mod = DateTime.Now;
+                    Marca.Activo = true;
+                    Marca.IdPropietario = entity.IdPropietario; //los propietarios deben ser sincronizados previamente.
+                    clsLnProductoMarca.Insert(config, Marca, connection, isExternalTx ? tx : localTx);
+                }
+
+               
+                var pProducto = new clsBeProducto();
+                pProducto.IdProducto = MaxID(config, connection, isExternalTx ? tx : localTx)+1;
+                pProducto.nombre = entity.nombre;
+                pProducto.IdPropietario = entity.IdPropietario;
+                pProducto.IdClasificacion = Clasificacion.IdClasificacion;
+                pProducto.IdFamilia = Familia.IdFamilia;
+                pProducto.IdMarca = Marca.IdMarca;
+                pProducto.IdTipoProducto = entity.IdTipoProducto;
+                pProducto.IdUnidadMedidaBasica = entity.IdUnidadMedidaBasica;
+                pProducto.IdSimbologia = entity.IdSimbologia;
+                pProducto.codigo = entity.codigo;
+                pProducto.nombre = entity.nombre;
+                pProducto.codigo_barra = entity.codigo_barra;
+                pProducto.activo = true;
+                //
+                pProducto.genera_lp_old = entity.genera_lp_old;
+                pProducto.control_lote = entity.control_lote;
+                pProducto.control_peso = entity.control_peso;
+                pProducto.control_vencimiento= entity.control_vencimiento;
+                pProducto.IdTipoRotacion = entity.IdTipoRotacion;
+                pProducto.user_agr = "1";
+                pProducto.user_mod = "1";
+                pProducto.fec_agr = DateTime.Now;
+                pProducto.fec_mod= DateTime.Now;  
+
+
+                Insertar(config, pProducto, connection, isExternalTx ? tx : localTx);
+            }
+
+        }
+        catch (SqlException ex)
+        {
+            if (!isExternalTx && localTx is not null)
+                localTx.Rollback();
+
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
+        }
+        finally
+        {
+            if (!isExternalTx)
+            {
+                connection.Close();
+                connection.Dispose();
+                localTx?.Dispose();
+            }
+        }
+    }
+
 }

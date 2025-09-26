@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Producto.ProductoSimple;
 public class clsLnProducto_clasificacion
 {
     private static clsInsert Ins = new clsInsert();
@@ -378,4 +379,99 @@ public class clsLnProducto_clasificacion
             }
         }
     }
+
+    public static bool Existe_By_Codigo(string Codigo, ref clsBeProducto_clasificacion pBeClasificacion, SqlConnection cn, SqlTransaction? tx = null)
+    {
+        try
+        {
+            const string sql = @"SELECT TOP 1 * FROM producto_clasificacion WHERE codigo = @codigo";
+
+            using var cmd = new SqlCommand(sql, cn, tx);
+            cmd.Parameters.AddWithValue("@codigo", Codigo);
+
+            using var da = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count == 1)
+            {
+                Cargar(ref pBeClasificacion, dt.Rows[0]);
+                return true;
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
+        }
+    }
+
+    public static void Valida_Atributos(IConfiguration config, clsBeProducto_clasificacionSimple entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    {
+        bool isExternalTx = conn != null && tx != null;
+        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
+        SqlTransaction? localTx = null;
+
+        try
+        {
+            if (!isExternalTx)
+            {
+                connection.Open();
+                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
+            }
+
+            var Clasificacion = new clsBeProducto_clasificacion();
+            bool existe = Existe_By_Codigo(entity.Codigo, ref Clasificacion, connection, isExternalTx ? tx! : localTx!);
+
+            if (!existe)
+            {
+
+                if (!string.IsNullOrEmpty(entity.Codigo))
+                {
+                    Clasificacion.IdClasificacion = clsLnProducto_clasificacion.MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                    Clasificacion.Codigo = entity.Codigo;
+                    Clasificacion.Nombre = entity.Nombre ?? entity.Codigo;
+                    Clasificacion.User_agr = "1";
+                    Clasificacion.User_mod = "1";
+                    Clasificacion.Fec_agr = DateTime.Now;
+                    Clasificacion.Fec_mod = DateTime.Now;
+                    Clasificacion.Activo = entity.Activo;
+                    Clasificacion.IdPropietario = entity.IdPropietario;
+                    clsLnProducto_clasificacion.Insertar(config, Clasificacion, connection, isExternalTx ? tx : localTx);
+                }
+
+            }
+            else {
+
+                Clasificacion.Codigo = entity.Codigo;
+                Clasificacion.Nombre = entity.Nombre ?? entity.Codigo ;
+                Clasificacion.User_mod = "1";
+                Clasificacion.Fec_mod = DateTime.Now;
+                Clasificacion.Activo = entity.Activo;
+                clsLnProducto_clasificacion.Actualizar(config, Clasificacion, connection, isExternalTx ? tx : localTx);
+
+            }
+
+        }
+        catch (SqlException ex)
+        {
+            if (!isExternalTx && localTx is not null)
+                localTx.Rollback();
+
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
+        }
+        finally
+        {
+            if (!isExternalTx)
+            {
+                connection.Close();
+                connection.Dispose();
+                localTx?.Dispose();
+            }
+        }
+    }
+
 }

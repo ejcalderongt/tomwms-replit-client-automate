@@ -27,10 +27,11 @@ Public Class clsBe_vw_ajustes
     Public Property Seccion As String = ""
     Public Property IdProductoFamilia As Integer = 0
     Public Property Nombre_Presentacion As String = ""
-
     Public Property Factor As Double = 0
     Public Property Codigo_Centro_Costo As String = ""
     Public Property Nombre_Centro_Costo As String = ""
+    Public Property Talla As String = ""
+    Public Property Color As String = ""
 
     Sub New()
     End Sub

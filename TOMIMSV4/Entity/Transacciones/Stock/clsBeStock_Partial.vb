@@ -13,6 +13,9 @@
     Public Property UbicacionPicking As Boolean = False
     Public Property UbicacionNivel As Integer = 0
     Public Property Pallet_Completo As Boolean = False
+    Public Property Talla As String = String.Empty
+    Public Property Color As String = String.Empty
+
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls

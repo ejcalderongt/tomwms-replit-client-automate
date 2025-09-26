@@ -4,7 +4,9 @@ Imports System.Reflection
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraPrinting
 Imports DevExpress.XtraReports.UI
+Imports DevExpress.XtraRichEdit.Ruler
 Imports DevExpress.XtraSplashScreen
+Imports TOMWMS.clsDataContractDI
 
 Public Class frmAjusteStock
 
@@ -31,8 +33,9 @@ Public Class frmAjusteStock
     Private LastEventHandlerMotivo As EventHandler = AddressOf combomotivo_SelectedIndexChanged
 
     Dim DgComboBodega As New DataGridViewComboBoxCell()
-
     Private Es_Ajuste_Positivo As Boolean = False
+
+    Private BeBodega As clsBeBodega
 
     Public Enum TipoTrans
         Nuevo = 1
@@ -79,6 +82,7 @@ Public Class frmAjusteStock
                 Else
                     Col.ReadOnly = False
                 End If
+
             Next
 
         Catch ex As Exception
@@ -287,6 +291,23 @@ Public Class frmAjusteStock
                     dgrid.Rows(rc).Cells("UmBas").Value = vBeAjustDet.UmBas
                     dgrid.Rows(rc).Cells("ColObservacion").Value = vBeAjustDet.Observacion
                     dgrid.Rows(rc).Cells("ColLicPlate").Value = vBeAjustDet.lic_plate
+
+                    If BeBodega.Control_Talla_Color Then
+
+                        Dim tmpProductoTallaColor = clsLnProducto_talla_color.GetSingle(vBeAjustDet.IdProductoTallaColor)
+
+                        If tmpProductoTallaColor IsNot Nothing Then
+
+                            Dim tmpTalla = clsLnTalla.GetSingle_By_IdTalla(tmpProductoTallaColor.IdTalla)
+                            Dim tmpColor = clsLnColor.GetSingle_By_IdColor(tmpProductoTallaColor.IdColor)
+                            dgrid.Rows(rc).Cells("colIdProductoTallaColor").Value = tmpProductoTallaColor.IdProductoTallaColor
+                            dgrid.Rows(rc).Cells("colTalla").Value = tmpTalla.Codigo
+                            dgrid.Rows(rc).Cells("colColor").Value = tmpColor.Codigo
+
+                        End If
+
+                    End If
+
                 End If
 
                 Application.DoEvents()
@@ -438,10 +459,27 @@ Public Class frmAjusteStock
                 BeAjusteDet.idstockres = IdStockRes
                 BeAjusteDet.idstocklink = 0
                 BeAjusteDet.esnuevolink = 0
+
+                If BeBodega.Control_Talla_Color Then
+
+                    Dim pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeAjusteDet.IdProductoTallaColor)
+
+                    If pProductoTallaColor IsNot Nothing Then
+
+                        BeAjusteDet.IdProductoTallaColor = BeAjusteDet.IdProductoTallaColor
+
+                        BeAjusteDet.Talla = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
+                        BeAjusteDet.Color = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
+
+                    End If
+
+                End If
+
                 lBeTransAjusteDet.Add(BeAjusteDet)
 
                 ubic = clsLnBodega_ubicacion.GetSingle(BeAjusteDet.IdUbicacion, AP.IdBodega).NombreCompleto
                 codigo = clsLnProducto.Get_Single_By_IdProducto(clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(BeAjusteDet.IdProductoBodega)).Codigo
+
 
                 rc = dgrid.Rows.Add(codigo, BeAjusteDet.Nombre_producto, BeAjusteDet.UmBas, ubic)
                 dgrid.Rows(rc).Cells("ColDiferencia").Value = PictureBox1.Image
@@ -467,8 +505,8 @@ Public Class frmAjusteStock
                     dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
                 Else
                     dgrid.Rows(rc).Cells("colPresentacion").Value = Nothing
-                    dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
-                End If
+                        dgrid.Rows(rc).Cells("colPresentacion").ReadOnly = True
+                    End If
 
                 If BeAjusteDet.lic_plate <> "" Then
                     dgrid.Rows(rc).Cells("ColLicPlate").Value = BeAjusteDet.lic_plate
@@ -497,9 +535,24 @@ Public Class frmAjusteStock
                     cmbTipoAjuste.Enabled = False
                 End If
 
+                '#GT29082025: si control talla/color mostrar los codigos en el grid
+                If BeBodega.Control_Talla_Color Then
+
+                    Dim pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeAjusteDet.IdProductoTallaColor)
+
+                    If pProductoTallaColor IsNot Nothing Then
+                        dgrid.Rows(rc).Cells("colIdProductoTallaColor").Value = BeAjusteDet.IdProductoTallaColor
+                        dgrid.Rows(rc).Cells("colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
+                        dgrid.Rows(rc).Cells("colTalla").ReadOnly = True
+                        dgrid.Rows(rc).Cells("colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
+                        dgrid.Rows(rc).Cells("colColor").ReadOnly = True
+                    End If
+
+                End If
+
             End If
 
-            Stock.Hide()
+                Stock.Hide()
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -601,6 +654,21 @@ Public Class frmAjusteStock
                 dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
             End If
 
+            '#GT28082025: si hay control talla color, mostrar los codigos porque no se manejan las columnas como combos (no hay que llenar id´s)
+            If BeBodega.Control_Talla_Color Then
+
+                Dim pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeAjusteDet.IdProductoTallaColor)
+
+                If pProductoTallaColor IsNot Nothing Then
+
+                    dgrid.Rows(rc).Cells("ColIdProductoTallaColor").Value = BeAjusteDet.IdProductoTallaColor
+                    dgrid.Rows(rc).Cells("colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
+                    dgrid.Rows(rc).Cells("colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
+
+                End If
+
+            End If
+
             Llenar_Motivo(rc, -1)
             'Llenar_Tipo(rc, -1)
             Llenar_Tipo(rc, pTipoAjuste)
@@ -619,55 +687,76 @@ Public Class frmAjusteStock
 
     Private Sub Reservar_Stock(idstock As Integer)
 
-        Dim rs As New clsBeStock_res
-        Dim st As New clsBeStock
+        Dim pStock_Reservado As New clsBeStock_res
+        Dim pStock As New clsBeStock
+        Dim clsTransaccion As New clsTransaccion()
 
         Try
 
-            IdStockRes = clsLnStock_res.MaxID() + 1
+            clsTransaccion.Begin_Transaction()
 
-            st.IdStock = idstock
-            clsLnStock.GetSingle(st)
+            IdStockRes = clsLnStock_res.MaxID(clsTransaccion.lConnection, clsTransaccion.lTransaction) + 1
 
-            rs.IdStockRes = IdStockRes
-            rs.IdTransaccion = pBeTransAjustEnc.Idajusteenc
-            rs.Indicador = "ajuste_stock" '#EJC20180613 ajuste_stock aplicado.
-            rs.IdPedidoDet = 0
-            rs.IdStock = st.IdStock
-            rs.IdPropietarioBodega = st.IdPropietarioBodega
-            rs.IdProductoBodega = st.IdProductoBodega
-            rs.IdUbicacion = st.IdUbicacion
-            rs.IdProductoEstado = st.IdProductoEstado
-            rs.IdPresentacion = st.IdPresentacion
-            rs.IdUnidadMedida = st.IdUnidadMedida
-            rs.Lote = st.Lote
-            rs.Lic_plate = st.Lic_plate
-            rs.Serial = st.Serial
-            rs.Cantidad = st.Cantidad
-            rs.Peso = st.Peso
-            rs.Estado = ""
-            rs.Fecha_ingreso = st.Fecha_Ingreso
-            rs.Fecha_vence = st.Fecha_vence
-            rs.Uds_lic_plate = st.Uds_lic_plate
-            rs.Ubicacion_ant = st.UbicacionAnterior
-            rs.No_bulto = st.No_bulto
-            rs.IdRecepcion = st.IdRecepcionEnc
-            rs.IdPicking = st.IdPickingEnc
-            rs.IdPedido = st.IdPedidoEnc
-            rs.IdDespacho = st.IdDespachoEnc
-            rs.User_agr = st.User_agr
-            rs.Fec_agr = st.Fec_agr
-            rs.User_mod = st.User_mod
-            rs.Fec_mod = st.Fec_mod
-            rs.Host = AP.HostName
-            rs.añada = st.Añada
-            rs.Fecha_manufactura = st.Fecha_Manufactura
-            rs.Atributo_Variante_1 = st.Atributo_Variante_1
-            rs.IdBodega = st.IdBodega
+            pStock.IdStock = idstock
+            clsLnStock.GetSingle(pStock, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
-            clsLnStock_res.Insertar(rs)
+            If BeBodega.Control_Talla_Color Then
+                Dim pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(pStock.IdProductoTallaColor,
+                                                                                                      clsTransaccion.lConnection,
+                                                                                                      clsTransaccion.lTransaction)
+
+                If pProductoTallaColor IsNot Nothing Then
+                    pStock_Reservado.IdProductoTallaColor = pStock.IdProductoTallaColor
+                    pStock_Reservado.Talla = pProductoTallaColor.Rows(0).Item("Talla")
+                    pStock_Reservado.Color = pProductoTallaColor.Rows(0).Item("Color")
+                End If
+
+            End If
+
+
+            pStock_Reservado.IdStockRes = IdStockRes
+            pStock_Reservado.IdTransaccion = pBeTransAjustEnc.Idajusteenc
+            pStock_Reservado.Indicador = "ajuste_stock" '#EJC20180613 ajuste_stock aplicado.
+            pStock_Reservado.IdPedidoDet = 0
+            pStock_Reservado.IdStock = pStock.IdStock
+            pStock_Reservado.IdPropietarioBodega = pStock.IdPropietarioBodega
+            pStock_Reservado.IdProductoBodega = pStock.IdProductoBodega
+            pStock_Reservado.IdUbicacion = pStock.IdUbicacion
+            pStock_Reservado.IdProductoEstado = pStock.IdProductoEstado
+            pStock_Reservado.IdPresentacion = pStock.IdPresentacion
+            pStock_Reservado.IdUnidadMedida = pStock.IdUnidadMedida
+            pStock_Reservado.Lote = pStock.Lote
+            pStock_Reservado.Lic_plate = pStock.Lic_plate
+            pStock_Reservado.Serial = pStock.Serial
+            pStock_Reservado.Cantidad = pStock.Cantidad
+            pStock_Reservado.Peso = pStock.Peso
+            pStock_Reservado.Estado = ""
+            pStock_Reservado.Fecha_ingreso = pStock.Fecha_Ingreso
+            pStock_Reservado.Fecha_vence = pStock.Fecha_vence
+            pStock_Reservado.Uds_lic_plate = pStock.Uds_lic_plate
+            pStock_Reservado.Ubicacion_ant = pStock.UbicacionAnterior
+            pStock_Reservado.No_bulto = pStock.No_bulto
+            pStock_Reservado.IdRecepcion = pStock.IdRecepcionEnc
+            pStock_Reservado.IdPicking = pStock.IdPickingEnc
+            pStock_Reservado.IdPedido = pStock.IdPedidoEnc
+            pStock_Reservado.IdDespacho = pStock.IdDespachoEnc
+            pStock_Reservado.User_agr = pStock.User_agr
+            pStock_Reservado.Fec_agr = pStock.Fec_agr
+            pStock_Reservado.User_mod = pStock.User_mod
+            pStock_Reservado.Fec_mod = pStock.Fec_mod
+            pStock_Reservado.Host = AP.HostName
+            pStock_Reservado.añada = pStock.Añada
+            pStock_Reservado.Fecha_manufactura = pStock.Fecha_Manufactura
+            pStock_Reservado.Atributo_Variante_1 = pStock.Atributo_Variante_1
+            pStock_Reservado.IdBodega = pStock.IdBodega
+
+            clsLnStock_res.Insertar(pStock_Reservado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+            clsTransaccion.Commit_Transaction()
 
         Catch ex As Exception
+
+            clsTransaccion.RollBack_Transaction()
 
             XtraMessageBox.Show(ex.Message,
             Text,
@@ -677,6 +766,8 @@ Public Class frmAjusteStock
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
+        Finally
+            clsTransaccion.Close_Conection()
         End Try
 
     End Sub
@@ -2374,6 +2465,8 @@ Public Class frmAjusteStock
             pStock_Sin_Existencia_Previa.Fec_mod = Now
             pStock_Sin_Existencia_Previa.IdBodega = AP.IdBodega
             pStock_Sin_Existencia_Previa.Activo = 1
+            '#GT28082025: talla/color    
+            pStock_Sin_Existencia_Previa.IdProductoTallaColor = BeAjusteDet.IdProductoTallaColor
 
             '#GT02122024: se inserta primero el stock antes de reservarlo, y hacer el ajuste positivo
             If clsLnStock.Guardar_Stock_Ajuste_Positivo(pStock_Sin_Existencia_Previa,
@@ -2696,6 +2789,13 @@ Public Class frmAjusteStock
                     End If
 
                 End If
+
+                If item.IdProductoTallaColor > 0 Then
+                    BeMov.IdProductoTallaColor = item.IdProductoTallaColor
+                    BeMov.Talla = item.Talla
+                    BeMov.Color = item.Color
+                End If
+
 
                 lBeTransMovimientos.Add(BeMov) : IdMovimiento += 1
 
@@ -3888,10 +3988,16 @@ Public Class frmAjusteStock
 
             IMS.Listar_Centro_Costo_By_IdEmpresa(lcmbCentroCosto, AP.IdEmpresa)
 
+            '#GT28082025: si bodega controla talla/color mostrar columnas de lo contrario, ocultarlas.
+            BeBodega = AP.Bodega
+
             'GT22042022_1034: Carga los tipos de ajuste activos para el combo del encabezado.
-            IMS.Listar_Tipo_Ajuste_Activo(cmbTipoAjuste)
+            IMS.Listar_Tipo_Ajuste_Activo(cmbTipoAjuste, BeBodega.Control_Talla_Color)
 
             BeConfig = clsLnI_nav_config_enc.GetSingle(AP.IdConfiguracionInterface)
+
+            '#GT29082025: mostrar u ocultar las columnas de talla/color
+            Mostrar_Columnas_Talla_Color(BeBodega.Control_Talla_Color)
 
             Application.DoEvents()
 
@@ -3961,6 +4067,32 @@ Public Class frmAjusteStock
         Finally
             IsLoading = False
             SplashScreenManager.CloseForm(False)
+        End Try
+
+    End Sub
+
+    Private Sub Mostrar_Columnas_Talla_Color(ByVal mostrar_talla_color As Boolean)
+        Try
+
+            '#EJC20180924_1048PM: Si es un ajuste por inventario, se debe habilitar en el grid la bodega para que sea editable, para que se modifique, previo a envío a ERP.
+            For Each Col As DataGridViewColumn In dgrid.Columns
+                If Col.Name = "ColTalla" AndAlso Not mostrar_talla_color Then
+                    Col.Visible = False
+                ElseIf (Col.Name = "ColColor") AndAlso Not mostrar_talla_color Then
+                    Col.Visible = False
+                End If
+            Next
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
         End Try
 
     End Sub

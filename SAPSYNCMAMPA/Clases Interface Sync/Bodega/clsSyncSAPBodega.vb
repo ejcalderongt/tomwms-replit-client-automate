@@ -398,7 +398,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
 
     End Function
 
-    Public Shared Async Function Get_Bodeta_SAP_By_Codigo(whsCode As String, sessionCookie As String, baseUrl As String) As Task(Of clsBeI_nav_bodega)
+    Public Shared Async Function Get_Bodega_SAP_By_Codigo(whsCode As String, sessionCookie As String, baseUrl As String) As Task(Of clsBeI_nav_bodega)
 
         Dim bodega As New clsBeI_nav_bodega()
 

@@ -3,6 +3,7 @@ using System.Data;
 using System.Diagnostics;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Producto.ProductoSimple;
 public class clsLnProductoMarca
 {
     private static readonly clsInsert Inserter = new clsInsert();
@@ -52,44 +53,41 @@ public class clsLnProductoMarca
         Inserter.Add("fec_mod", "@fec_mod", "F");
         Inserter.Add("codigo", "@codigo", "F");
 
-        var sql = Inserter.SQL();
-        bool isExternalTx = conn != null && tx != null;
+        string sql = Inserter.SQL();
+        bool externa = conn != null && tx != null;
 
-        using var connection = isExternalTx ? conn! : new SqlConnection(GetConnectionString(config));
-        SqlTransaction? localTx = null;
-
-        if (!isExternalTx)
+        var lConn = externa ? conn! : new SqlConnection(config.GetConnectionString("CST"));
+        SqlTransaction? lTx = null;
+        if (!externa)
         {
-            connection.Open();
-            localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
+            lConn.Open();
+            lTx = lConn.BeginTransaction(IsolationLevel.ReadUncommitted);
         }
+
 
         try
         {
-            using var cmd = new SqlCommand(sql, connection, isExternalTx ? tx! : localTx!);
+            using var cmd = new SqlCommand(sql, lConn, externa ? tx! : lTx!);
             BindParams(cmd, entity);
             int result = cmd.ExecuteNonQuery();
 
-            if (!isExternalTx)
-                localTx!.Commit();
+            if (!externa)
+                lTx?.Commit();
 
             return result;
         }
         catch (Exception ex)
         {
-            if (!isExternalTx)
-                localTx?.Rollback();
+            if (!externa)
+                lTx?.Rollback();
 
             var method = new StackTrace().GetFrame(0)?.GetMethod();
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
         finally
         {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-            }
+            if (!externa && lConn.State == ConnectionState.Open)
+                lConn.Close();
         }
     }
     public static int Update(IConfiguration config, clsBeProducto_marca entity, SqlConnection? conn = null, SqlTransaction? tx = null)
@@ -289,4 +287,150 @@ public class clsLnProductoMarca
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
     }
+
+    public static int MaxId(IConfiguration config, SqlConnection? conn = null, SqlTransaction? tx = null)
+    {
+        const string sql = "SELECT ISNULL(MAX(IdMarca), 0) FROM Producto_marca";
+        bool localConnection = false;
+        bool localTransaction = false;
+
+        try
+        {
+            // Crear conexión local si no se recibió una externa
+            if (conn == null)
+            {
+                conn = new SqlConnection(GetConnectionString(config));
+                conn.Open();
+                localConnection = true;
+            }
+
+            // Crear transacción local si no se recibió una externa
+            if (tx == null)
+            {
+                tx = conn.BeginTransaction(IsolationLevel.ReadUncommitted);
+                localTransaction = true;
+            }
+
+            using var cmd = CreateCommand(sql, conn, tx);
+            var result = cmd.ExecuteScalar();
+
+            // Si la transacción fue creada en este método → commit
+            if (localTransaction)
+                tx.Commit();
+
+            return result != null && result != DBNull.Value ? Convert.ToInt32(result) : 0;
+        }
+        catch (Exception ex)
+        {
+            // Rollback solo si la transacción fue creada localmente
+            if (localTransaction && tx != null)
+                tx.Rollback();
+
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
+        }
+        finally
+        {
+            // Cerrar conexión solo si fue creada localmente
+            if (localConnection && conn != null)
+            {
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+    }
+
+    public static bool Existe_By_Codigo(string Codigo, ref clsBeProducto_marca pBeMarca ,SqlConnection cn, SqlTransaction? tx = null)
+    {
+        try
+        {
+            const string sql = "SELECT TOP 1 * FROM producto_marca WHERE codigo = @codigo";
+
+            using var cmd = new SqlCommand(sql, cn, tx);
+            cmd.Parameters.AddWithValue("@codigo", Codigo);
+
+
+            using var da = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count == 1)
+            {
+                Cargar(ref pBeMarca, dt.Rows[0]);
+                return true;
+            }
+
+            return false;
+            
+        }
+        catch (Exception ex)
+        {
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
+        }
+    }
+    public static void Valida_Atributos(IConfiguration config, clsBeProducto_marcaSimple entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    {
+        bool isExternalTx = conn != null && tx != null;
+        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
+        SqlTransaction? localTx = null;
+
+        try
+        {
+            if (!isExternalTx)
+            {
+                connection.Open();
+                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
+            }
+
+            var Marca = new clsBeProducto_marca();
+            bool existe = Existe_By_Codigo(entity.Codigo, ref Marca, connection, isExternalTx ? tx! : localTx!);
+
+            if (!existe)
+            {
+                if (!string.IsNullOrEmpty(entity.Codigo))
+                {
+                    Marca.IdMarca = clsLnProductoMarca.MaxId(config, connection, isExternalTx ? tx : localTx) + 1;
+                    Marca.Codigo = entity.Codigo;
+                    Marca.Nombre = entity.Nombre ?? entity.Codigo;
+                    Marca.User_agr = "1";
+                    Marca.User_mod = "1";
+                    Marca.Fec_agr = DateTime.Now;
+                    Marca.Fec_mod = DateTime.Now;
+                    Marca.Activo = entity.Activo;
+                    Marca.IdPropietario = entity.IdPropietario;
+                    clsLnProductoMarca.Insert(config, Marca, connection, isExternalTx ? tx : localTx);
+                }
+
+            }
+            else {
+                Marca.Codigo = entity.Codigo;
+                Marca.Nombre = entity.Nombre ?? entity.Codigo;
+                Marca.User_mod = "1";
+                Marca.Fec_mod = DateTime.Now;
+                Marca.Activo = entity.Activo;
+                clsLnProductoMarca.Update(config, Marca, connection, isExternalTx ? tx : localTx);
+            }
+
+        }
+        catch (SqlException ex)
+        {
+            if (!isExternalTx && localTx is not null)
+                localTx.Rollback();
+
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
+        }
+        finally
+        {
+            if (!isExternalTx)
+            {
+                connection.Close();
+                connection.Dispose();
+                localTx?.Dispose();
+            }
+        }
+    }
+
+
 }

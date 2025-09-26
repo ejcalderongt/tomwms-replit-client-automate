@@ -468,7 +468,7 @@ Public Class clsSyncSapDevolProveedor
                 Dim vColor As String = ""
                 Dim vTalla As String = ""
                 Try
-                    Dim dt As DataTable = clsLnProducto_talla_color.Get_All_Dt_By_IdProductoTallaColor(g.IdProductoTallaColor)
+                    Dim dt As DataTable = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(g.IdProductoTallaColor)
                     If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
                         vColor = If(dt.Rows(0)("Color") IsNot DBNull.Value, dt.Rows(0)("Color").ToString(), "")
                         vTalla = If(dt.Rows(0)("Talla") IsNot DBNull.Value, dt.Rows(0)("Talla").ToString(), "")
