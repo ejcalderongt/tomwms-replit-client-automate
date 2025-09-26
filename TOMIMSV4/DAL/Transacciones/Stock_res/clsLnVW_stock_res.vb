@@ -259,6 +259,26 @@ Public Class clsLnVW_stock_res
                 If dr.Table.Columns.Contains("Fecha_Pedido") Then .Fecha_Pedido = IIf(IsDBNull(dr.Item("Fecha_Pedido")), New Date(1900, 1, 1), dr.Item("Fecha_Pedido"))
                 If dr.Table.Columns.Contains("IdPropietarioBodega") Then .IdPropietarioBodega = IIf(IsDBNull(dr.Item("IdPropietarioBodega")), 0, dr.Item("IdPropietarioBodega"))
 
+                If dr.Table.Columns.Contains("Codigo_Talla") Then
+                    .Codigo_Talla = IIf(IsDBNull(dr.Item("Codigo_Talla")), "", dr.Item("Codigo_Talla"))
+                End If
+
+                If dr.Table.Columns.Contains("Nombre_Talla") Then
+                    .Nombre_Talla = IIf(IsDBNull(dr.Item("Nombre_Talla")), "", dr.Item("Nombre_Talla"))
+                End If
+
+                If dr.Table.Columns.Contains("Codigo_Color") Then
+                    .Codigo_Color = IIf(IsDBNull(dr.Item("Codigo_Color")), "", dr.Item("Codigo_Color"))
+                End If
+
+                If dr.Table.Columns.Contains("Nombre_Color") Then
+                    .Nombre_Color = IIf(IsDBNull(dr.Item("Nombre_Color")), "", dr.Item("Nombre_Color"))
+                End If
+
+                If dr.Table.Columns.Contains("IdProductoTallaColor") Then
+                    .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                End If
+
             End With
 
         Catch ex As Exception

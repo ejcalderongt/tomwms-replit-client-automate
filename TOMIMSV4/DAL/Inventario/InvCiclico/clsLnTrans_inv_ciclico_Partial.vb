@@ -3170,7 +3170,9 @@ Partial Public Class clsLnTrans_inv_ciclico
     Public Shared Function Actualiza_Conteo_Ciclico_HH(ByVal BeTransInvCiclico As clsBeTrans_inv_ciclico,
                                                        ByVal pReconteo As Integer,
                                                        ByVal esOriginal As Boolean,
-                                                       ByRef Resultado As String) As Integer
+                                                       ByRef Resultado As String,
+                                                       ByVal CrearTallaColor As Boolean,
+                                                       ByVal ProductoTallaColor As clsBeProducto_talla_color) As Integer
         Dim rslt As Integer = 0
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -3202,10 +3204,20 @@ Partial Public Class clsLnTrans_inv_ciclico
                 InvCiclico = Get_Inventario_Ciclico(BeTransInvCiclico, pBeProducto, lConnection, lTransaction)
 
 
+                If CrearTallaColor AndAlso ProductoTallaColor IsNot Nothing Then
+                    ProductoTallaColor.IdProductoTallaColor = clsLnProducto_talla_color.MaxID() + 1
+
+                    If clsLnProducto_talla_color.Insertar(ProductoTallaColor) > 0 Then
+                        Dim PrdTallaColor = clsLnProducto_talla_color.Get_Single_By_IdColor_IdTalla(ProductoTallaColor.IdProducto, ProductoTallaColor.IdTalla, ProductoTallaColor.IdColor)
+
+                        BeTransInvCiclico.IdProductoTallaColor = PrdTallaColor.IdProductoTallaColor
+                    End If
+                End If
+
                 If esOriginal And (BeTransInvCiclico.Fecha_vence <> BeTransInvCiclico.Fecha_vence_stock OrElse
                        (BeTransInvCiclico.IdProductoEstado <> BeTransInvCiclico.IdProductoEst_nuevo AndAlso BeTransInvCiclico.IdProductoEst_nuevo <> 0) OrElse
                        BeTransInvCiclico.Lote <> BeTransInvCiclico.Lote_stock OrElse
-                       BeTransInvCiclico.IdUbicacion_nuevo <> 0) Then
+                       BeTransInvCiclico.IdUbicacion_nuevo <> 0 OrElse CrearTallaColor) Then
 
                     BeTransInvCiclico.IdInvCiclico = MaxID(lConnection, lTransaction) + 1
                     BeTransInvCiclico.IdStock = InvCiclico.IdStock
@@ -4313,6 +4325,7 @@ Partial Public Class clsLnTrans_inv_ciclico
             Upd.Add("cantidad", "@cantidad", DataType.Parametro)
             Upd.Add("IdProductoEst_nuevo", "@IdProductoEst_nuevo", DataType.Parametro)
             Upd.Add("IdUbicacion_nuevo", "@IdUbicacion_nuevo", DataType.Parametro)
+            Upd.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
             Upd.Where("idinvciclico = @idinvciclico")
 
             Dim sp As String = Upd.SQL()
@@ -4343,8 +4356,8 @@ Partial Public Class clsLnTrans_inv_ciclico
             cmd.Parameters.Add(New SqlParameter("@CANTIDAD", oBeTrans_inv_ciclico.Cantidad))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOEST_NUEVO", IIf(oBeTrans_inv_ciclico.IdProductoEst_nuevo = 0, 0, oBeTrans_inv_ciclico.IdProductoEst_nuevo)))
             cmd.Parameters.Add(New SqlParameter("@IDUBICACION_NUEVO", IIf(oBeTrans_inv_ciclico.IdUbicacion_nuevo = 0, 0, oBeTrans_inv_ciclico.IdUbicacion_nuevo)))
-
             cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeTrans_inv_ciclico.Fec_Mod))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_inv_ciclico.IdProductoTallaColor))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
