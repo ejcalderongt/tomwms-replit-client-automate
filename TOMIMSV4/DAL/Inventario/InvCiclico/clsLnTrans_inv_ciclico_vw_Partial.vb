@@ -239,7 +239,8 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         ISNULL(c.Codigo, '') as Codigo_Color,
                         ISNULL(c.Nombre, '') as Nombre_Color,
                         ISNULL(t.Codigo, '') as Codigo_Talla,
-                        ISNULL(t.Nombre, '') as Nombre_Talla
+                        ISNULL(t.Nombre, '') as Nombre_Talla,
+                        producto.IdProducto
                         FROM unidad_medida RIGHT OUTER JOIN
                         trans_inv_ciclico INNER JOIN
                         bodega_ubicacion ON trans_inv_ciclico.IdUbicacion = bodega_ubicacion.IdUbicacion INNER JOIN
@@ -294,7 +295,8 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         c.Codigo,
                         c.Nombre,
                         t.Codigo,
-                        t.Nombre
+                        t.Nombre,
+                        producto.IdProducto
 
             UNION
 
@@ -343,7 +345,8 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         '' as Codigo_Color,
                         '' as Nombre_Color,
                         '' as Codigo_Talla,
-                        '' as Nombre_Talla
+                        '' as Nombre_Talla,
+                        0 as IdProducto
                         FROM  trans_inv_enc_reconteo INNER JOIN
                         trans_inv_reconteo INNER JOIN
                         bodega_ubicacion ON trans_inv_reconteo.IdUbicacion = bodega_ubicacion.IdUbicacion INNER JOIN
@@ -410,7 +413,8 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         ISNULL(c.Codigo, '') as Codigo_Color,
                         ISNULL(c.Nombre, '') as Nombre_Color,
                         ISNULL(t.Codigo, '') as Codigo_Talla,
-                        ISNULL(t.Nombre, '') as Nombre_Talla
+                        ISNULL(t.Nombre, '') as Nombre_Talla,
+                        producto.IdProducto
                         FROM  trans_inv_ciclico INNER JOIN
                         producto_estado ON trans_inv_ciclico.IdProductoEstado = producto_estado.IdEstado INNER JOIN
                         producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
@@ -449,7 +453,8 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         c.Codigo,
                         c.Nombre,
                         t.Codigo,
-                        t.Nombre
+                        t.Nombre,
+                        producto.IdProducto
 						) AS T  "
 
 
