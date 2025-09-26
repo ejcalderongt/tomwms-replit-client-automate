@@ -3,6 +3,7 @@ using System.Data;
 using System.Diagnostics;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Producto.ProductoSimple;
 public class clsLnProductoMarca
 {
     private static readonly clsInsert Inserter = new clsInsert();
@@ -339,16 +340,28 @@ public class clsLnProductoMarca
         }
     }
 
-    public static bool Existe_By_Codigo(string Codigo, SqlConnection cn, SqlTransaction? tx = null)
+    public static bool Existe_By_Codigo(string Codigo, ref clsBeProducto_marca pBeMarca ,SqlConnection cn, SqlTransaction? tx = null)
     {
         try
         {
-            const string sql = "SELECT COUNT(1) FROM producto_marca WHERE codigo = @codigo";
+            const string sql = "SELECT TOP 1 * FROM producto_marca WHERE codigo = @codigo";
 
             using var cmd = new SqlCommand(sql, cn, tx);
             cmd.Parameters.AddWithValue("@codigo", Codigo);
 
-            return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+
+            using var da = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count == 1)
+            {
+                Cargar(ref pBeMarca, dt.Rows[0]);
+                return true;
+            }
+
+            return false;
+            
         }
         catch (Exception ex)
         {
@@ -356,7 +369,7 @@ public class clsLnProductoMarca
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
     }
-    public static void Valida_Atributos(IConfiguration config, clsBeProducto_marca entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static void Valida_Atributos(IConfiguration config, clsBeProducto_marcaSimple entity, SqlConnection? conn = null, SqlTransaction? tx = null)
     {
         bool isExternalTx = conn != null && tx != null;
         var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
@@ -370,26 +383,33 @@ public class clsLnProductoMarca
                 localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
             }
 
-            bool existe = Existe_By_Codigo(entity.Codigo, connection, isExternalTx ? tx! : localTx!);
+            var Marca = new clsBeProducto_marca();
+            bool existe = Existe_By_Codigo(entity.Codigo, ref Marca, connection, isExternalTx ? tx! : localTx!);
 
             if (!existe)
             {
-
-                var Marca = new clsBeProducto_marca();
-
                 if (!string.IsNullOrEmpty(entity.Codigo))
                 {
                     Marca.IdMarca = clsLnProductoMarca.MaxId(config, connection, isExternalTx ? tx : localTx) + 1;
                     Marca.Codigo = entity.Codigo;
-                    Marca.Nombre = entity.Nombre;
+                    Marca.Nombre = entity.Nombre ?? entity.Codigo;
                     Marca.User_agr = "1";
+                    Marca.User_mod = "1";
                     Marca.Fec_agr = DateTime.Now;
                     Marca.Fec_mod = DateTime.Now;
-                    Marca.Activo = true;
+                    Marca.Activo = entity.Activo;
                     Marca.IdPropietario = entity.IdPropietario;
                     clsLnProductoMarca.Insert(config, Marca, connection, isExternalTx ? tx : localTx);
                 }
 
+            }
+            else {
+                Marca.Codigo = entity.Codigo;
+                Marca.Nombre = entity.Nombre ?? entity.Codigo;
+                Marca.User_mod = "1";
+                Marca.Fec_mod = DateTime.Now;
+                Marca.Activo = entity.Activo;
+                clsLnProductoMarca.Update(config, Marca, connection, isExternalTx ? tx : localTx);
             }
 
         }

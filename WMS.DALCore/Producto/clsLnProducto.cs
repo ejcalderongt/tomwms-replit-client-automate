@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Producto.ProductoSimple;
 public class clsLnProducto
 {
 
@@ -989,7 +990,7 @@ public class clsLnProducto
         }
     }
 
-    public static void Valida_Atributos(IConfiguration config, clsBeProductoMhs entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static void Valida_Atributos(IConfiguration config, clsBeProductoSimple entity, SqlConnection? conn = null, SqlTransaction? tx = null)
     {
         bool isExternalTx = conn != null && tx != null;
         var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WMSWebAPI.Dtos.Catalogos
 {
-    public class ProductoMhsDto
+    public class ProductoSimpleDto
     {
 
         public int IdProducto { get; set; }

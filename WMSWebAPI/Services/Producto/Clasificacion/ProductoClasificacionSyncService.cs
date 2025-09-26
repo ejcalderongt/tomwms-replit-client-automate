@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
+using WMS.EntityCore.Dtos.Catalogos;
 using WMS.EntityCore.Producto;
+using WMS.EntityCore.Producto.ProductoSimple;
 using WMSWebAPI.Dtos.Catalogos;
 using WMSWebAPI.Dtos.Productos;
 
@@ -17,16 +19,14 @@ namespace WMSWebAPI.Services.Producto.Clasificacion
             _mapper = mapper;
         }
 
-        public void ProcesarClasificacionDesdeDto(ProductoClasificacionDto dto, SqlConnection conn, SqlTransaction tx)
+        public void ProcesarClasificacionDesdeDto(ProductoClasificacionSimpleDto dto, SqlConnection conn, SqlTransaction tx)
         {
             try
             {
                 if (dto.Codigo != null)
                 {
-                    var Clasificacion = _mapper.Map<clsBeProducto_clasificacion>(dto);
-
+                    var Clasificacion = _mapper.Map<clsBeProducto_clasificacionSimple>(dto);
                     clsLnProducto_clasificacion.Valida_Atributos(_configuration, Clasificacion, conn, tx);
-                    
                 }
 
             }

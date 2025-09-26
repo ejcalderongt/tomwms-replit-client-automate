@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WMS.EntityCore.Producto
 {
-    public class clsBeProductoMhs : ICloneable
+    public class clsBeProductoSimple : ICloneable
     {
 
         [Column("IdProducto")]
@@ -243,7 +243,7 @@ namespace WMS.EntityCore.Producto
         [DisplayName("IdTipoManufactura")]
         public int IdTipoManufactura { get; set; } = 0;
 
-        public clsBeProductoMhs() { }
+        public clsBeProductoSimple() { }
 
         public object Clone()
         {

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
-using WMS.EntityCore.Producto;
-using WMSWebAPI.Dtos.Catalogos;
-using WMSWebAPI.Dtos.Productos;
+using WMS.EntityCore.Dtos.Catalogos;
+using WMS.EntityCore.Producto.ProductoSimple;
+
 
 namespace WMSWebAPI.Services.Producto.Marca
 {
@@ -17,11 +17,11 @@ namespace WMSWebAPI.Services.Producto.Marca
         }
 
       
-        public void ProcesarMarcaDesdeDto(ProductoMarcaDto dto, SqlConnection conn, SqlTransaction tx)
+        public void ProcesarMarcaDesdeDto(ProductoMarcaSimpleDto dto, SqlConnection conn, SqlTransaction tx)
         {
             try
             {
-                var Marca = _mapper.Map<clsBeProducto_marca>(dto);
+                var Marca = _mapper.Map<clsBeProducto_marcaSimple>(dto);
                 if (Marca != null)
                     clsLnProductoMarca.Valida_Atributos(_configuration, Marca, conn, tx);
                     

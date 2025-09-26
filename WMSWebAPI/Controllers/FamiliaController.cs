@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Transactions;
-using WMSWebAPI.Dtos.Catalogos;
+using WMS.EntityCore.Dtos.Catalogos;
 using WMSWebAPI.Services.Producto.Familia;
 
 namespace WMSWebAPI.Controllers
@@ -12,18 +12,17 @@ namespace WMSWebAPI.Controllers
     [ApiController]
     public class FamiliaController : ControllerBase
     {
-
-        private readonly MapperConfiguration _config;
+        private readonly IMapper _mapper;
         private readonly IProductoFamiliaSyncService _syncService;
 
-        public FamiliaController(MapperConfiguration config, IProductoFamiliaSyncService syncService)
+        public FamiliaController(IMapper mapper, IProductoFamiliaSyncService syncService)
         {
-            _config = config;
+            _mapper = mapper;
             _syncService = syncService;
         }
 
-        [HttpPost("sincronizar")]
-        public IActionResult Sincronizar([FromBody] List<ProductoFamiliaDto> FamiliaDto, [FromServices] IConfiguration configuration)
+        [HttpPost("list/mi3/insert")]
+        public IActionResult Sincronizar([FromBody] List<ProductoFamiliaSimpleDto> FamiliaDto, [FromServices] IConfiguration configuration)
         {
             if (FamiliaDto == null || FamiliaDto.Count == 0)
                 return BadRequest("La lista de productos está vacía.");
@@ -51,7 +50,7 @@ namespace WMSWebAPI.Controllers
                             foreach (var dto in FamiliaDto)
                             {
                                 _syncService.ProcesarFamiliaDesdeDto(dto, connection, transaction);
-                                resultados.Add(new { dto.IdFamilia, Procesado = true, Mensaje = "Procesado correctamente" });
+                                resultados.Add(new { dto.Codigo, Procesado = true, Mensaje = "Procesado correctamente" });
                             }
 
                             transaction.Commit();
@@ -69,7 +68,6 @@ namespace WMSWebAPI.Controllers
             }
 
         }
-
 
     }
 }

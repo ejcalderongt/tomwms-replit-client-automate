@@ -1,13 +1,12 @@
 ﻿using Microsoft.Data.SqlClient;
-using WMSWebAPI.Dtos.Catalogos;
-using WMSWebAPI.Dtos.Productos;
+using WMS.EntityCore.Dtos.Catalogos;
 
 namespace WMSWebAPI.Services.Producto.Clasificacion
 {
     public interface IProductoClasificacionSyncService
     {
 
-        void ProcesarClasificacionDesdeDto(ProductoClasificacionDto dto, SqlConnection connection, SqlTransaction transaction);
+        void ProcesarClasificacionDesdeDto(ProductoClasificacionSimpleDto dto, SqlConnection connection, SqlTransaction transaction);
 
     }
 

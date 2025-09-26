@@ -44,10 +44,11 @@ builder.Services.AddScoped<ISyncIngresosService, SyncIngresosService>();
 builder.Services.AddScoped<IProductoSyncService, ProductoSyncService>();
 builder.Services.AddScoped<ISyncSalidasService, SyncSalidasService>();
 builder.Services.AddScoped<IResetPasswordService, ResetPasswordService>();
-builder.Services.AddScoped<IProductoMhsSyncService, ProductoMhsSyncService>();
+builder.Services.AddScoped<IProductoSimpleSyncService, ProductoSimpleSyncService>();
 builder.Services.AddScoped<IProductoClasificacionSyncService, ProductoClasificacionSyncService>();
-builder.Services.AddScoped<IProductoFamiliaSyncService, ProductoFamiliaSyncService>();
 builder.Services.AddScoped<IProductoMarcaSyncService, ProductoMarcaSyncService>();
+builder.Services.AddScoped<IProductoFamiliaSyncService, ProductoFamiliaSyncService>();
+
 
 // JWT
 var key = "OPaVvHGoW1WqtwoFdS0er9cC1RMrSCxd5ovsEYw22uzKlsyaO-7uOQB16jL3YnKsLB4U_BX5gWNUk0ELXMsEtg";

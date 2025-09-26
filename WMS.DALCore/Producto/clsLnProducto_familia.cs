@@ -1,8 +1,9 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Diagnostics;
 using WMS.EntityCore.Producto;
-using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Producto.ProductoSimple;
 public class clsLnProducto_familia
 {
     private static readonly clsInsert ins = new clsInsert();
@@ -291,16 +292,26 @@ public class clsLnProducto_familia
         cmd.Parameters.AddWithValue("@codigo", e.Codigo);
     }
 
-    public static bool Existe_By_Codigo(string Codigo, SqlConnection cn, SqlTransaction? tx = null)
+    public static bool Existe_By_Codigo(string Codigo, ref clsBeProducto_familia pBeFamilia ,SqlConnection cn, SqlTransaction? tx = null)
     {
         try
         {
-            const string sql = "SELECT COUNT(1) FROM producto_familia WHERE codigo = @codigo";
+            const string sql = "SELECT TOP 1 * FROM producto_familia WHERE codigo = @codigo";
 
             using var cmd = new SqlCommand(sql, cn, tx);
             cmd.Parameters.AddWithValue("@codigo", Codigo);
 
-            return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+            using var da = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count == 1)
+            {
+                Cargar(ref pBeFamilia, dt.Rows[0]);
+                return true;
+            }
+
+            return false;
         }
         catch (Exception ex)
         {
@@ -308,7 +319,7 @@ public class clsLnProducto_familia
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
     }
-    public static void Valida_Atributos(IConfiguration config, clsBeProducto_familia entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static void Valida_Atributos(IConfiguration config, clsBeProducto_familiaSimple entity, SqlConnection? conn = null, SqlTransaction? tx = null)
     {
         bool isExternalTx = conn != null && tx != null;
         var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
@@ -322,26 +333,34 @@ public class clsLnProducto_familia
                 localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
             }
 
-            bool existe = Existe_By_Codigo(entity.Codigo, connection, isExternalTx ? tx! : localTx!);
+            var Familia = new clsBeProducto_familia();
+            bool existe = Existe_By_Codigo(entity.Codigo, ref Familia ,connection, isExternalTx ? tx! : localTx!);
 
             if (!existe)
             {
-
-                var Familia = new clsBeProducto_familia();
-
                 if (!string.IsNullOrEmpty(entity.Codigo))
                 {
                     Familia.IdFamilia = clsLnProducto_familia.MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
                     Familia.Codigo = entity.Codigo;
-                    Familia.Nombre = entity.Nombre;
+                    Familia.Nombre = entity.Nombre ?? entity.Codigo;
                     Familia.User_agr = "1";
+                    Familia.User_mod = "1";
                     Familia.Fec_agr = DateTime.Now;
                     Familia.Fec_agr = DateTime.Now;
-                    Familia.Activo = true;
+                    Familia.Activo = entity.Activo;
                     Familia.IdPropietario = entity.IdPropietario;
                     clsLnProducto_familia.Insertar(config, Familia, connection, isExternalTx ? tx : localTx);
                 }
 
+            }
+            else
+            {
+                Familia.Codigo = entity.Codigo;
+                Familia.Nombre = entity.Nombre ?? entity.Codigo;
+                Familia.User_mod = "1";
+                Familia.Fec_agr = DateTime.Now;
+                Familia.Activo = entity.Activo;
+                clsLnProducto_familia.Actualizar(config, Familia, connection, isExternalTx ? tx : localTx);
             }
 
         }

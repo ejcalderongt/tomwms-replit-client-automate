@@ -1,9 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Transactions;
-using WMSWebAPI.Dtos.Catalogos;
+using WMS.EntityCore.Dtos.Catalogos;
 using WMSWebAPI.Services.Producto.Clasificacion;
 
 namespace WMSWebAPI.Controllers
@@ -22,8 +21,8 @@ namespace WMSWebAPI.Controllers
         }
 
 
-        [HttpPost("sincronizar")]
-        public IActionResult Sincronizar([FromBody] List<ProductoClasificacionDto> Clasificaciondto, [FromServices] IConfiguration configuration) 
+        [HttpPost("list/mi3/insert")]
+        public IActionResult Sincronizar([FromBody] List<ProductoClasificacionSimpleDto> Clasificaciondto, [FromServices] IConfiguration configuration) 
         {
             if (Clasificaciondto == null || Clasificaciondto.Count == 0)
                 return BadRequest("La lista de productos está vacía.");
@@ -51,7 +50,7 @@ namespace WMSWebAPI.Controllers
                             foreach (var dto in Clasificaciondto)
                             {
                                 _syncService.ProcesarClasificacionDesdeDto(dto, connection, transaction);
-                                resultados.Add(new { dto.IdClasificacion, Procesado = true, Mensaje = "Procesado correctamente" });
+                                resultados.Add(new { dto.Codigo, Procesado = true, Mensaje = "Procesado correctamente" });
                             }
 
                             transaction.Commit();

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Transactions;
+using WMS.EntityCore.Dtos.Catalogos;
 using WMSWebAPI.Dtos.Catalogos;
 using WMSWebAPI.Services.Producto.Marca;
 
@@ -12,17 +13,17 @@ namespace WMSWebAPI.Controllers
     [ApiController]
     public class MarcaController : ControllerBase
     {
-        private readonly MapperConfiguration configuration;
+        private readonly IMapper configuration;
         private readonly IProductoMarcaSyncService _syncService;
 
-        public MarcaController(MapperConfiguration configuration, IProductoMarcaSyncService syncService)
+        public MarcaController(IMapper configuration, IProductoMarcaSyncService syncService)
         {
             this.configuration = configuration;
             _syncService = syncService;
         }
 
-        [HttpPost("sincronizar")]
-        public IActionResult Sincronizar([FromBody] List<ProductoMarcaDto> MarcaDto, [FromServices] IConfiguration configuration) 
+        [HttpPost("list/mi3/insert")]
+        public IActionResult Sincronizar([FromBody] List<ProductoMarcaSimpleDto> MarcaDto, [FromServices] IConfiguration configuration) 
         {
             if (MarcaDto == null || MarcaDto.Count == 0)
                 return BadRequest("La lista de productos está vacía.");
@@ -50,7 +51,7 @@ namespace WMSWebAPI.Controllers
                             foreach (var dto in MarcaDto)
                             {
                                 _syncService.ProcesarMarcaDesdeDto(dto, connection, transaction);
-                                resultados.Add(new { dto.IdMarca, Procesado = true, Mensaje = "Procesado correctamente" });
+                                resultados.Add(new { dto.Codigo, Procesado = true, Mensaje = "Procesado correctamente" });
                             }
 
                             transaction.Commit();

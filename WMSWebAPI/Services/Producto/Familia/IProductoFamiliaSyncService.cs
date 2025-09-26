@@ -1,11 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
-using WMSWebAPI.Dtos.Catalogos;
-using WMSWebAPI.Dtos.Productos;
+using WMS.EntityCore.Dtos.Catalogos;
 
 namespace WMSWebAPI.Services.Producto.Familia
 {
     public interface IProductoFamiliaSyncService
     {
-        void ProcesarFamiliaDesdeDto(ProductoFamiliaDto dto, SqlConnection connection, SqlTransaction transaction);
+        void ProcesarFamiliaDesdeDto(ProductoFamiliaSimpleDto dto, SqlConnection connection, SqlTransaction transaction);
     }
 }

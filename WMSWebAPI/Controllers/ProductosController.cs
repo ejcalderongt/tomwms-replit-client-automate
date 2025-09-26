@@ -15,15 +15,15 @@ namespace WMSWebAPI.Controllers
     public class ProductosController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IProductoMhsSyncService _mhsSyncService;
+        private readonly IProductoSimpleSyncService _mhsSyncService;
 
-        public ProductosController(IMapper mapper, IProductoMhsSyncService mhsSyncService)
+        public ProductosController(IMapper mapper, IProductoSimpleSyncService mhsSyncService)
         {
             _mapper = mapper;
             _mhsSyncService = mhsSyncService;
         }
 
-        [HttpPost("sincronizar")]
+        [HttpPost("list/insert")]
         public IActionResult Sincronizar([FromBody] List<ProductoTransDto> productosDto, [FromServices] IConfiguration configuration)
         {
             if (productosDto == null || productosDto.Count == 0)
@@ -72,7 +72,7 @@ namespace WMSWebAPI.Controllers
             }
         }
 
-        [HttpPost("sincronizar_single")]
+        [HttpPost("single/insert")]
         public IActionResult Sincronizar_single([FromBody] ProductoDto productosDto, [FromServices] IConfiguration configuration)
         {
             if (productosDto == null)
@@ -120,8 +120,8 @@ namespace WMSWebAPI.Controllers
         }
 
 
-        [HttpPost("sincronizar_mhs")]
-        public IActionResult Sincronizar_mhs([FromBody] List<ProductoMhsDto> productosDto, [FromServices] IConfiguration configuration)
+        [HttpPost("list/mi3/insert")]
+        public IActionResult Sincronizar_mhs([FromBody] List<ProductoSimpleDto> productosDto, [FromServices] IConfiguration configuration)
         {
             if (productosDto == null || productosDto.Count == 0)
                 return BadRequest("La lista de productos está vacía.");

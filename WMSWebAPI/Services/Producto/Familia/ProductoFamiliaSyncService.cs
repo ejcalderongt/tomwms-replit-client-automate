@@ -1,15 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
-using WMS.EntityCore.Producto;
-using WMSWebAPI.Dtos.Catalogos;
-using WMSWebAPI.Dtos.Productos;
-using WMSWebAPI.Services.Producto.Clasificacion;
+using WMS.EntityCore.Dtos.Catalogos;
+using WMS.EntityCore.Producto.ProductoSimple;
 
 namespace WMSWebAPI.Services.Producto.Familia
 {
     public class ProductoFamiliaSyncService : IProductoFamiliaSyncService
     {
-
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
@@ -18,16 +15,14 @@ namespace WMSWebAPI.Services.Producto.Familia
             _mapper = mapper;
         }
 
-   
-        public void ProcesarFamiliaDesdeDto(ProductoFamiliaDto dto, SqlConnection conn, SqlTransaction tx)
+        public void ProcesarFamiliaDesdeDto(ProductoFamiliaSimpleDto dto, SqlConnection conn, SqlTransaction tx)
         {
             try
             {
                 if (dto.Codigo != null)
                 {
-                    var Familia = _mapper.Map<clsBeProducto_familia>(dto);
+                    var Familia = _mapper.Map<clsBeProducto_familiaSimple>(dto);
                     clsLnProducto_familia.Valida_Atributos(_configuration, Familia, conn, tx);
-
                 }
 
             }
