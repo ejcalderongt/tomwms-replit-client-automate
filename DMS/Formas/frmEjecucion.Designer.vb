@@ -90,7 +90,7 @@ Partial Class frmEjecucion
         '
         'cmdLogErrores
         '
-        Me.cmdLogErrores.Caption = "Log de errores en exportación"
+        Me.cmdLogErrores.Caption = "Log de eventos en exportación"
         Me.cmdLogErrores.Id = 8
         Me.cmdLogErrores.ImageOptions.SvgImage = CType(resources.GetObject("cmdLogErrores.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdLogErrores.Name = "cmdLogErrores"
