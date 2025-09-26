@@ -1,10 +1,11 @@
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.VisualBasic.CompilerServices;
 using System.Data;
 using System.Diagnostics;
 using System.Reflection;
-using Microsoft.Data.SqlClient;
-using Microsoft.VisualBasic.CompilerServices;
+using WMS.EntityCore.Producto.ProductoSimple;
 using WMS.EntityCore.Proveedor;
-using Microsoft.Extensions.Configuration;
 public class clsLnProveedor
 {
 
@@ -711,6 +712,103 @@ public class clsLnProveedor
             string vMsgError = string.Format("{0} {1}", currentMethodName?.Name ?? "UnknownMethod", ex.Message);
 
             throw new Exception(vMsgError, ex);
+        }
+    }
+
+    public static bool Existe_By_Codigo(string Codigo, ref clsBeProveedor pBeProveedor, SqlConnection cn, SqlTransaction? tx = null)
+    {
+        try
+        {
+            const string sql = @"SELECT TOP 1 * FROM proveedor WHERE codigo = @codigo";
+
+            using var cmd = new SqlCommand(sql, cn, tx);
+            cmd.Parameters.AddWithValue("@codigo", Codigo);
+
+            using var da = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count == 1)
+            {
+                Cargar(ref pBeProveedor, dt.Rows[0]);
+                return true;
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
+        }
+    }
+
+    public static void Valida_Atributos(IConfiguration config, clsBeProveedor entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    {
+        bool isExternalTx = conn != null && tx != null;
+        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
+        SqlTransaction? localTx = null;
+
+        try
+        {
+            if (!isExternalTx)
+            {
+                connection.Open();
+                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
+            }
+
+            var BeProveedor = new clsBeProveedor();
+            bool existe = Existe_By_Codigo(entity.Codigo, ref BeProveedor, connection, isExternalTx ? tx! : localTx!);
+
+            if (!existe)
+            {
+
+                if (!string.IsNullOrEmpty(entity.Codigo))
+                {
+                    BeProveedor.IdPropietario = MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                    BeProveedor.Codigo = entity.Codigo;
+                    BeProveedor.Nombre = entity.Nombre ?? entity.Codigo;
+                    BeProveedor.Nit = entity.Nit;
+                    BeProveedor.Contacto = entity.Contacto;
+                    BeProveedor.User_agr = "1";
+                    BeProveedor.User_mod = "1";
+                    BeProveedor.Fec_agr = DateTime.Now;
+                    BeProveedor.Fec_mod = DateTime.Now;
+                    BeProveedor.Activo = entity.Activo;
+                    BeProveedor.IdPropietario = entity.IdPropietario;
+                    Insertar(config, BeProveedor, connection, isExternalTx ? tx : localTx);
+                }
+
+            }
+            else
+            {
+
+                BeProveedor.Codigo = entity.Codigo;
+                BeProveedor.Nombre = entity.Nombre ?? entity.Codigo;
+                BeProveedor.User_mod = "1";
+                BeProveedor.Fec_mod = DateTime.Now;
+                BeProveedor.Activo = entity.Activo;
+                Actualizar(config, BeProveedor, connection, isExternalTx ? tx : localTx);
+
+            }
+
+        }
+        catch (SqlException ex)
+        {
+            if (!isExternalTx && localTx is not null)
+                localTx.Rollback();
+
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
+        }
+        finally
+        {
+            if (!isExternalTx)
+            {
+                connection.Close();
+                connection.Dispose();
+                localTx?.Dispose();
+            }
         }
     }
 

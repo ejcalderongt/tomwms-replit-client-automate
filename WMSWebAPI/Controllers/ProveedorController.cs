@@ -26,8 +26,63 @@ namespace WMSWebAPI.Controllers
             _configuration = configuration;
         }
 
+        //#GT26092025: no recuerdo si tiene uso o se agregó sin considerar DMS
+        //[HttpPost("list/insert")]
+        //public async Task<IActionResult> Sincronizar([FromBody] List<ProveedorDto> proveedorDto, [FromServices] IConfiguration configuration)
+        //{
+        //    if (proveedorDto == null)
+        //    {
+        //        _logger.LogWarning("proveedorDto recibido es nulo.");
+        //        return BadRequest("El objeto proveedorDto no puede ser nulo.");
+        //    }
 
-        [HttpPost("sincronizar")]
+        //    string? connectionString = _configuration.GetConnectionString("CST");
+        //    if (string.IsNullOrEmpty(connectionString))
+        //    {
+        //        _logger.LogError("Cadena de conexión 'CST' no configurada.");
+        //        return StatusCode(500, new { Exito = false, Mensaje = "La cadena de conexión no está configurada." });
+        //    }
+
+        //    using (var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions
+        //    {
+        //        IsolationLevel = IsolationLevel.ReadCommitted
+        //    }, TransactionScopeAsyncFlowOption.Enabled))
+        //    {
+        //        using (var connection = new SqlConnection(connectionString))
+        //        {
+        //            await connection.OpenAsync();
+        //            using (var transaction = connection.BeginTransaction())
+        //            {
+        //                try
+        //                {
+                            
+        //                    _syncProveedorService.ProcesarProveedorListDto(proveedorDto, connection, transaction);
+
+        //                    transaction.Commit();
+        //                    scope.Complete();
+
+        //                    _logger.LogInformation("Lista proveedor procesado correctamente.");
+        //                    return Ok(new { Exito = true, Mensaje = "Lista proveedor procesado correctamente." });
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    _logger.LogError(ex, "Error al procesar proveedorDto");
+        //                    transaction.Rollback();
+
+        //                    var showStackTrace = _configuration.GetValue<bool>("MostrarDetallesErrores");
+        //                    return StatusCode(500, new
+        //                    {
+        //                        Exito = false,
+        //                        Mensaje = ex.Message,
+        //                        Detalles = showStackTrace ? ex.ToString() : null
+        //                    });
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+        [HttpPost("list/mi3/insert")]
         public async Task<IActionResult> Sincronizar([FromBody] List<ProveedorDto> proveedorDto, [FromServices] IConfiguration configuration)
         {
             if (proveedorDto == null)
@@ -36,6 +91,7 @@ namespace WMSWebAPI.Controllers
                 return BadRequest("El objeto proveedorDto no puede ser nulo.");
             }
 
+            var resultados = new List<object>();
             string? connectionString = _configuration.GetConnectionString("CST");
             if (string.IsNullOrEmpty(connectionString))
             {
@@ -55,18 +111,23 @@ namespace WMSWebAPI.Controllers
                     {
                         try
                         {
-                            
-                            _syncProveedorService.ProcesarProveedorListDto(proveedorDto, connection, transaction);
 
+                            foreach (var dto in proveedorDto)
+                            {
+                                _syncProveedorService.ProcesarProveedorDto(dto, connection, transaction);
+                                resultados.Add(new { dto.Codigo, Procesado = true, Mensaje = "Procesado correctamente" });
+                            }
+
+                           
                             transaction.Commit();
                             scope.Complete();
 
-                            _logger.LogInformation("Lista proveedor procesado correctamente.");
-                            return Ok(new { Exito = true, Mensaje = "Lista proveedor procesado correctamente." });
+                            return Ok(new { Exito = true, Resultados = resultados });
+
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(ex, "Error al procesar proveedorDto");
+                            _logger.LogError(ex, "Error al procesar proveedorDto_mi3");
                             transaction.Rollback();
 
                             var showStackTrace = _configuration.GetValue<bool>("MostrarDetallesErrores");

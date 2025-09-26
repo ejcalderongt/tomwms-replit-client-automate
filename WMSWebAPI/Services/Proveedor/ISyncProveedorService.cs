@@ -8,5 +8,8 @@ namespace WMSWebAPI.Services.Proveedor
     public interface ISyncProveedorService
     {
         void ProcesarProveedorListDto(List<ProveedorDto> listaDto, SqlConnection conn, SqlTransaction tx);
+
+        void ProcesarProveedorDto(ProveedorDto dto, SqlConnection conn, SqlTransaction tx);
+
     }
 }
