@@ -823,6 +823,12 @@
     <Compile Include="Reportes\Analítica\frmIndicadores.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Reportes\ControlCalidad\rptControlCalidadCambioEstadoMampa.Designer.vb">
+      <DependentUpon>rptControlCalidadCambioEstadoMampa.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\ControlCalidad\rptControlCalidadCambioEstadoMampa.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reportes\ControlCalidad\rptControlCalidadCambioEstado.Designer.vb">
       <DependentUpon>rptControlCalidadCambioEstado.vb</DependentUpon>
     </Compile>
@@ -3343,6 +3349,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Analítica\frmIndicadores.resx">
       <DependentUpon>frmIndicadores.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\ControlCalidad\rptControlCalidadCambioEstadoMampa.resx">
+      <DependentUpon>rptControlCalidadCambioEstadoMampa.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\ControlCalidad\rptControlCalidadCambioEstado.resx">
       <DependentUpon>rptControlCalidadCambioEstado.vb</DependentUpon>

@@ -22,7 +22,7 @@ namespace AppGlobal
         private const string Ek64 = "rpaSPvIvVLlrcmtzPU9/c67Gkj7yL1S5";
         private const string Iv = "qualityi";
 
-        public static string Encriptar(string input)
+        public static string Cifrado(string input)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace AppGlobal
                     string encrypted = Convert.ToBase64String(
                         des.CreateEncryptor().TransformFinalBlock(buffer, 0, buffer.Length));
 
-                    string decrypted = Desencriptar(encrypted);
+                    string decrypted = Descifrar(encrypted);
 
                     if (decrypted != input)
                         throw new Exception("El algoritmo de encripción tipo Erik dice que no coincide el patrón");
@@ -52,7 +52,7 @@ namespace AppGlobal
             }
         }
 
-        public static string Desencriptar(string input)
+        public static string Descifrar(string input)
         {
             try
             {

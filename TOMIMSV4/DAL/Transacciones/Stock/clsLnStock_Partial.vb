@@ -6374,7 +6374,12 @@ Partial Public Class clsLnStock
 		                            bodega_tramo.es_rack,
 		                            bodega_ubicacion.IdTramo, IdStock,                                  
                                     dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) as UbicacionActual,
-                                    ISNULL(producto_presentacion.factor,0) Factor
+                                    ISNULL(producto_presentacion.factor,0) Factor,
+                                    ISNULL(stock.IdProductoTallaColor, 0) IdProductoTallaColor,
+                                    ISNULL(t.Codigo, '') AS Codigo_Talla,
+                                    ISNULL(t.Nombre, '') AS Nombre_Talla,
+                                    ISNULL(c.Codigo, '') AS Codigo_Color,
+                                    ISNULL(c.Nombre, '') AS Nombre_Color
 					FROM stock INNER JOIN
 		            producto_bodega ON stock.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
 		            producto on producto.IdProducto = producto_bodega.IdProducto AND
@@ -6387,14 +6392,16 @@ Partial Public Class clsLnStock
                     AND bodega_ubicacion.IdSector = bodega_tramo.IdSector inner join
 		            producto_estado on producto_estado.IdEstado = stock.IdProductoEstado inner join
 		            unidad_medida on unidad_medida.IdUnidadMedida = producto.IdUnidadMedidaBasica left outer join
-		            producto_presentacion on producto_presentacion.IdProducto = producto.IdProducto and stock.IdPresentacion = producto_presentacion.IdPresentacion "
+		            producto_presentacion on producto_presentacion.IdProducto = producto.IdProducto and stock.IdPresentacion = producto_presentacion.IdPresentacion
+                    left join producto_talla_color ptc on ptc.IdProductoTallaColor = stock.IdProductoTallaColor
+                    left join talla t on t.IdTalla = ptc.IdTalla
+                    left join color c on c.IdColor = ptc.IdColor "
 
             If pBeStockRes.Control_Ultimo_Lote Then
                 vSQL += " LEFT OUTER JOIN
 						 trans_re_det_lote_num ON stock.IdProductoBodega = trans_re_det_lote_num.IdProductoBodega 
 						 AND stock.lote = trans_re_det_lote_num.Lote "
             End If
-
 
             vSQL += " WHERE bodega_ubicacion.Activo = 1 
                       and bodega_ubicacion.bloqueada = 0
@@ -14893,6 +14900,7 @@ Partial Public Class clsLnStock
 
         Try
 
+            '#MECR04092025: Se agrego columna de Talla y Color
             Dim vSQL As String = "SELECT Bodega,Propietario,IdProducto,Codigo,
 							      nombre as Producto,NomEstado as Estado,
 							      IdPresentacion,sum(isnull(CantidadSF,0)) as CantidadUMBas,
@@ -14907,7 +14915,7 @@ Partial Public Class clsLnStock
                                   Fecha_Ingreso,
                                   Fecha_Vence, Nombre_Completo AS [Ubicación],
                                   codigo_poliza,Numero_poliza numero_orden,ubicacion_picking, Area, Factor, IdUbicacion, 
-                                  dbo.Nombre_Tramo(IdTramo, IdBodega) Tramo,IdStock
+                                  dbo.Nombre_Tramo(IdTramo, IdBodega) Tramo,IdStock, Codigo_Talla as Talla, Codigo_Color as Color
 							      FROM VW_Stock_Res WHERE 1 > 0 "
 
             If pIdBodega <> 0 Then
@@ -14922,7 +14930,7 @@ Partial Public Class clsLnStock
 					  Nombre,Presentacion,IdPresentacion,UnidadMedida,peso, 
 					  Lote,fecha_vence, Nombre_Completo,lic_plate,
 				      Factor,codigo_poliza,Numero_poliza, CantidadReservada,Cantidad,
-                      CantidadSF,ubicacion_picking,Area, Factor, IdUbicacion, IdTramo, IdBodega, IdStock "
+                      CantidadSF,ubicacion_picking,Area, Factor, IdUbicacion, IdTramo, IdBodega, IdStock, Codigo_Talla, Codigo_Color "
 
             vSQL += "ORDER BY CODIGO, Nombre_Completo, IdStock "
 

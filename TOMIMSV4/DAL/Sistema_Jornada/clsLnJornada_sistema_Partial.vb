@@ -1315,6 +1315,11 @@ Partial Public Class clsLnJornada_sistema
                     BeStockJornadaExistente.Regimen = IIf(IsDBNull(R.Item("Regimen")), "", R.Item("Regimen"))
                     BeStockJornadaExistente.Nom_presentacion_producto = IIf(IsDBNull(R.Item("Presentacion_Producto")), "", R.Item("Presentacion_Producto"))
 
+                    '#GT10092025: campos de talla color
+                    BeStockJornadaExistente.IdProductoTallaColor = IIf(IsDBNull(R.Item("IdProductoTallaColor")), 0, R.Item("IdProductoTallaColor"))
+                    BeStockJornadaExistente.Talla = IIf(IsDBNull(R.Item("Talla")), "", R.Item("Talla"))
+                    BeStockJornadaExistente.Color = IIf(IsDBNull(R.Item("Color")), "", R.Item("Color"))
+
                     '#EJC20210618: Optimizado, se obtiene la lista completo primero.-
                     'GT 020820211028: En la lista completa, se valida que el id stock coincida con el detalle, para traer las posiciones ocupadas.
                     BeStockDet = lBeStockDet.Find(Function(x) x.IdStock = BeStockJornadaExistente.IdStock)
@@ -1441,12 +1446,6 @@ Partial Public Class clsLnJornada_sistema
 
                     Debug.Print("IdStock: " & BeStockJornadaExistente.IdStock)
                     Debug.Print("LP: " & BeStockJornadaExistente.Lic_plate)
-
-                    If BeStockJornadaExistente.Lic_plate = "BG000000267" Then
-                        Debug.Write("aqui va")
-                    End If
-
-
 
                     If ValidarRetroactivo AndAlso BeStockJornadaExistente.IdTicketTMS <> 0 Then
                         '#EJC20210521: Si el ticket ya fue procesado, no volver a escribir los días en el retroactivo.

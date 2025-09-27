@@ -3425,4 +3425,8 @@ Public Class frmPrincipal02
     Private Sub dgridRellenado_Click(sender As Object, e As EventArgs) Handles dgridRellenado.Click
 
     End Sub
+
+    Private Sub DgridTareas_Click(sender As Object, e As EventArgs) Handles DgridTareas.Click
+
+    End Sub
 End Class

@@ -1253,7 +1253,8 @@ Public Class frmBodegaSelUbic
                 .IdUbicacionDestino = det.IdUbicacionDestino,
                 .IdPresentacion = pObjStock.IdPresentacion,
                 .IdEstadoOrigen = pObjStock.IdProductoEstado,
-                .IdEstadoDestino = pObjStock.IdProductoEstado}
+                .IdEstadoDestino = pObjStock.IdProductoEstado,
+                .IdProductoTallaColor = pObjStock.IdProductoTallaColor}
 
             If EsCambioEstado Then
                 mov.IdEstadoDestino = pObjDet.IdEstadoDestino

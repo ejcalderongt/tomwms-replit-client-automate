@@ -46,15 +46,15 @@ Partial Class frmConfiguracion
         Dim Label25 As System.Windows.Forms.Label
         Dim Label26 As System.Windows.Forms.Label
         Dim lblDiasImportacion As System.Windows.Forms.Label
+        Dim Label28 As System.Windows.Forms.Label
+        Dim Label29 As System.Windows.Forms.Label
+        Dim Label30 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmConfiguracion))
         Dim EditorButtonImageOptions1 As DevExpress.XtraEditors.Controls.EditorButtonImageOptions = New DevExpress.XtraEditors.Controls.EditorButtonImageOptions()
         Dim SerializableAppearanceObject1 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
         Dim SerializableAppearanceObject2 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
         Dim SerializableAppearanceObject3 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
         Dim SerializableAppearanceObject4 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
-        Dim Label28 As System.Windows.Forms.Label
-        Dim Label29 As System.Windows.Forms.Label
-        Dim Label30 As System.Windows.Forms.Label
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuActualizar = New DevExpress.XtraBars.BarButtonItem()
@@ -69,6 +69,9 @@ Partial Class frmConfiguracion
         Me.XtraTabControl = New DevExpress.XtraTab.XtraTabControl()
         Me.XtraTabPage1 = New DevExpress.XtraTab.XtraTabPage()
         Me.pnlEncabezado = New DevExpress.XtraEditors.PanelControl()
+        Me.txtCodigoBodegaProrrateo1 = New DevExpress.XtraEditors.TextEdit()
+        Me.txtCodigoBodegaProrrateo = New DevExpress.XtraEditors.TextEdit()
+        Me.txtCodigoBodegaFacturacion = New DevExpress.XtraEditors.TextEdit()
         Me.chkExcluirRececpionPicking = New DevExpress.XtraEditors.CheckEdit()
         Me.chkValidaSoloCodigo = New DevExpress.XtraEditors.CheckEdit()
         Me.chkRechazarBonificacionIncompleta = New DevExpress.XtraEditors.CheckEdit()
@@ -156,9 +159,6 @@ Partial Class frmConfiguracion
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
         Me.HelpProvider1 = New System.Windows.Forms.HelpProvider()
-        Me.txtCodigoBodegaFacturacion = New DevExpress.XtraEditors.TextEdit()
-        Me.txtCodigoBodegaProrrateo = New DevExpress.XtraEditors.TextEdit()
-        Me.txtCodigoBodegaProrrateo1 = New DevExpress.XtraEditors.TextEdit()
         User_modLabel = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_modLabel = New System.Windows.Forms.Label()
@@ -198,6 +198,9 @@ Partial Class frmConfiguracion
         Me.XtraTabPage1.SuspendLayout()
         CType(Me.pnlEncabezado, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlEncabezado.SuspendLayout()
+        CType(Me.txtCodigoBodegaProrrateo1.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtCodigoBodegaProrrateo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtCodigoBodegaFacturacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkExcluirRececpionPicking.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkValidaSoloCodigo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkRechazarBonificacionIncompleta.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -265,9 +268,6 @@ Partial Class frmConfiguracion
         Me.hideContainerBottom.SuspendLayout()
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
-        CType(Me.txtCodigoBodegaFacturacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtCodigoBodegaProrrateo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtCodigoBodegaProrrateo1.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_modLabel
@@ -548,6 +548,39 @@ Partial Class frmConfiguracion
         lblDiasImportacion.TabIndex = 63
         lblDiasImportacion.Text = "Rango días importación:"
         '
+        'Label28
+        '
+        Label28.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label28.AutoSize = True
+        Label28.Location = New System.Drawing.Point(68, 464)
+        Label28.Name = "Label28"
+        Label28.Size = New System.Drawing.Size(164, 16)
+        Label28.TabIndex = 68
+        Label28.Text = "Código bodega facturación:"
+        '
+        'Label29
+        '
+        Label29.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label29.AutoSize = True
+        Label29.Location = New System.Drawing.Point(68, 494)
+        Label29.Name = "Label29"
+        Label29.Size = New System.Drawing.Size(155, 16)
+        Label29.TabIndex = 70
+        Label29.Text = "Código bodega prorrateo:"
+        '
+        'Label30
+        '
+        Label30.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label30.AutoSize = True
+        Label30.Location = New System.Drawing.Point(68, 524)
+        Label30.Name = "Label30"
+        Label30.Size = New System.Drawing.Size(162, 16)
+        Label30.TabIndex = 72
+        Label30.Text = "Código bodega prorrateo1:"
+        '
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
@@ -738,6 +771,39 @@ Partial Class frmConfiguracion
         Me.pnlEncabezado.Size = New System.Drawing.Size(1507, 589)
         Me.pnlEncabezado.TabIndex = 0
         '
+        'txtCodigoBodegaProrrateo1
+        '
+        Me.txtCodigoBodegaProrrateo1.EditValue = ""
+        Me.txtCodigoBodegaProrrateo1.Location = New System.Drawing.Point(300, 520)
+        Me.txtCodigoBodegaProrrateo1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtCodigoBodegaProrrateo1.MenuManager = Me.RibbonControl
+        Me.txtCodigoBodegaProrrateo1.Name = "txtCodigoBodegaProrrateo1"
+        Me.txtCodigoBodegaProrrateo1.Properties.MaxLength = 256
+        Me.txtCodigoBodegaProrrateo1.Size = New System.Drawing.Size(431, 22)
+        Me.txtCodigoBodegaProrrateo1.TabIndex = 73
+        '
+        'txtCodigoBodegaProrrateo
+        '
+        Me.txtCodigoBodegaProrrateo.EditValue = ""
+        Me.txtCodigoBodegaProrrateo.Location = New System.Drawing.Point(300, 490)
+        Me.txtCodigoBodegaProrrateo.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtCodigoBodegaProrrateo.MenuManager = Me.RibbonControl
+        Me.txtCodigoBodegaProrrateo.Name = "txtCodigoBodegaProrrateo"
+        Me.txtCodigoBodegaProrrateo.Properties.MaxLength = 256
+        Me.txtCodigoBodegaProrrateo.Size = New System.Drawing.Size(431, 22)
+        Me.txtCodigoBodegaProrrateo.TabIndex = 71
+        '
+        'txtCodigoBodegaFacturacion
+        '
+        Me.txtCodigoBodegaFacturacion.EditValue = ""
+        Me.txtCodigoBodegaFacturacion.Location = New System.Drawing.Point(300, 460)
+        Me.txtCodigoBodegaFacturacion.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtCodigoBodegaFacturacion.MenuManager = Me.RibbonControl
+        Me.txtCodigoBodegaFacturacion.Name = "txtCodigoBodegaFacturacion"
+        Me.txtCodigoBodegaFacturacion.Properties.MaxLength = 256
+        Me.txtCodigoBodegaFacturacion.Size = New System.Drawing.Size(431, 22)
+        Me.txtCodigoBodegaFacturacion.TabIndex = 69
+        '
         'chkExcluirRececpionPicking
         '
         Me.chkExcluirRececpionPicking.Location = New System.Drawing.Point(1122, 420)
@@ -781,6 +847,7 @@ Partial Class frmConfiguracion
         'nudRangoDiasImportacion
         '
         Me.nudRangoDiasImportacion.Location = New System.Drawing.Point(981, 109)
+        Me.nudRangoDiasImportacion.Maximum = New Decimal(New Integer() {1000, 0, 0, 0})
         Me.nudRangoDiasImportacion.Name = "nudRangoDiasImportacion"
         Me.nudRangoDiasImportacion.Size = New System.Drawing.Size(135, 23)
         Me.nudRangoDiasImportacion.TabIndex = 62
@@ -1668,72 +1735,6 @@ Partial Class frmConfiguracion
         Me.DockPanel1_Container.Size = New System.Drawing.Size(1101, 75)
         Me.DockPanel1_Container.TabIndex = 0
         '
-        'txtCodigoBodegaFacturacion
-        '
-        Me.txtCodigoBodegaFacturacion.EditValue = ""
-        Me.txtCodigoBodegaFacturacion.Location = New System.Drawing.Point(300, 460)
-        Me.txtCodigoBodegaFacturacion.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.txtCodigoBodegaFacturacion.MenuManager = Me.RibbonControl
-        Me.txtCodigoBodegaFacturacion.Name = "txtCodigoBodegaFacturacion"
-        Me.txtCodigoBodegaFacturacion.Properties.MaxLength = 256
-        Me.txtCodigoBodegaFacturacion.Size = New System.Drawing.Size(431, 22)
-        Me.txtCodigoBodegaFacturacion.TabIndex = 69
-        '
-        'Label28
-        '
-        Label28.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label28.AutoSize = True
-        Label28.Location = New System.Drawing.Point(68, 464)
-        Label28.Name = "Label28"
-        Label28.Size = New System.Drawing.Size(164, 16)
-        Label28.TabIndex = 68
-        Label28.Text = "Código bodega facturación:"
-        '
-        'txtCodigoBodegaProrrateo
-        '
-        Me.txtCodigoBodegaProrrateo.EditValue = ""
-        Me.txtCodigoBodegaProrrateo.Location = New System.Drawing.Point(300, 490)
-        Me.txtCodigoBodegaProrrateo.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.txtCodigoBodegaProrrateo.MenuManager = Me.RibbonControl
-        Me.txtCodigoBodegaProrrateo.Name = "txtCodigoBodegaProrrateo"
-        Me.txtCodigoBodegaProrrateo.Properties.MaxLength = 256
-        Me.txtCodigoBodegaProrrateo.Size = New System.Drawing.Size(431, 22)
-        Me.txtCodigoBodegaProrrateo.TabIndex = 71
-        '
-        'Label29
-        '
-        Label29.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label29.AutoSize = True
-        Label29.Location = New System.Drawing.Point(68, 494)
-        Label29.Name = "Label29"
-        Label29.Size = New System.Drawing.Size(155, 16)
-        Label29.TabIndex = 70
-        Label29.Text = "Código bodega prorrateo:"
-        '
-        'txtCodigoBodegaProrrateo1
-        '
-        Me.txtCodigoBodegaProrrateo1.EditValue = ""
-        Me.txtCodigoBodegaProrrateo1.Location = New System.Drawing.Point(300, 520)
-        Me.txtCodigoBodegaProrrateo1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.txtCodigoBodegaProrrateo1.MenuManager = Me.RibbonControl
-        Me.txtCodigoBodegaProrrateo1.Name = "txtCodigoBodegaProrrateo1"
-        Me.txtCodigoBodegaProrrateo1.Properties.MaxLength = 256
-        Me.txtCodigoBodegaProrrateo1.Size = New System.Drawing.Size(431, 22)
-        Me.txtCodigoBodegaProrrateo1.TabIndex = 73
-        '
-        'Label30
-        '
-        Label30.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label30.AutoSize = True
-        Label30.Location = New System.Drawing.Point(68, 524)
-        Label30.Name = "Label30"
-        Label30.Size = New System.Drawing.Size(162, 16)
-        Label30.TabIndex = 72
-        Label30.Text = "Código bodega prorrateo1:"
-        '
         'frmConfiguracion
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -1761,6 +1762,9 @@ Partial Class frmConfiguracion
         CType(Me.pnlEncabezado, System.ComponentModel.ISupportInitialize).EndInit()
         Me.pnlEncabezado.ResumeLayout(False)
         Me.pnlEncabezado.PerformLayout()
+        CType(Me.txtCodigoBodegaProrrateo1.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtCodigoBodegaProrrateo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtCodigoBodegaFacturacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkExcluirRececpionPicking.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkValidaSoloCodigo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkRechazarBonificacionIncompleta.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -1831,9 +1835,6 @@ Partial Class frmConfiguracion
         Me.DockPanel1.ResumeLayout(False)
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
-        CType(Me.txtCodigoBodegaFacturacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtCodigoBodegaProrrateo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtCodigoBodegaProrrateo1.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

@@ -93,6 +93,10 @@ Public Class clsLnStock_jornada
                 If dr.Table.Columns.Contains("TipoRubro") Then .TipoRubro = IIf(IsDBNull(dr.Item("TipoRubro")), 0, dr.Item("TipoRubro"))
                 If dr.Table.Columns.Contains("Bultos_Por_Tarima") Then .Bultos_Por_Tarima = IIf(IsDBNull(dr.Item("Bultos_Por_Tarima")), 0, dr.Item("Bultos_Por_Tarima"))
                 If dr.Table.Columns.Contains("UMBultos") Then .Nom_presentacion_producto = IIf(IsDBNull(dr.Item("UMBultos")), 0, dr.Item("UMBultos"))
+                '#GT10092025: talla/color
+                If dr.Table.Columns.Contains("IdProductoTallaColor") Then .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                If dr.Table.Columns.Contains("Talla") Then .Talla = IIf(IsDBNull(dr.Item("Talla")), 0, dr.Item("Talla"))
+                If dr.Table.Columns.Contains("Color") Then .Color = IIf(IsDBNull(dr.Item("Color")), 0, dr.Item("Color"))
 
             End With
 
@@ -199,6 +203,14 @@ Public Class clsLnStock_jornada
             Ins.Add("no_documento_procesado_erp", "@no_documento_procesado_erp", DataType.Parametro)
             Ins.Add("procesado_erp", "@procesado_erp", DataType.Parametro)
             Ins.Add("fecha_procesado_stock_jornada", "@fecha_procesado_stock_jornada", DataType.Parametro)
+            '#GT10092025: talla/color
+            If oBeStock_jornada.IdProductoTallaColor > 0 Then
+                Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
+                Ins.Add("Talla", "@Talla", DataType.Parametro)
+                Ins.Add("Color", "@Color", DataType.Parametro)
+            End If
+
+
 
             Dim sp As String = Ins.SQL()
 
@@ -302,6 +314,12 @@ Public Class clsLnStock_jornada
             cmd.Parameters.Add(New SqlParameter("@NO_DOCUMENTO_PROCESADO_ERP", oBeStock_jornada.No_Documento_Procesado_ERP))
             cmd.Parameters.Add(New SqlParameter("@PROCESADO_ERP", oBeStock_jornada.Procesado_ERP))
             cmd.Parameters.Add(New SqlParameter("@FECHA_PROCESADO_STOCK_JORNADA", oBeStock_jornada.Fecha_Procesado_Stock_Jornada))
+
+            If oBeStock_jornada.IdProductoTallaColor > 0 Then
+                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeStock_jornada.IdProductoTallaColor))
+                cmd.Parameters.Add(New SqlParameter("@TALLA", oBeStock_jornada.Talla))
+                cmd.Parameters.Add(New SqlParameter("@COLOR", oBeStock_jornada.Color))
+            End If
 
             Dim rowsAfected As Integer = cmd.ExecuteNonQuery()
 
@@ -645,6 +663,13 @@ Public Class clsLnStock_jornada
             Upd.Add("costo_unitario", "@costo_unitario", DataType.Parametro)
             Upd.Add("no_documento_procesado_erp", "@no_documento_procesado_erp", DataType.Parametro)
             Upd.Add("procesado_erp", "@procesado_erp", DataType.Parametro)
+
+            If oBeStock_jornada.IdProductoTallaColor > 0 Then
+                Upd.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
+                Upd.Add("Talla", "@Talla", DataType.Parametro)
+                Upd.Add("Color", "@Color", DataType.Parametro)
+            End If
+
             Upd.Where("IdStockJornada = @IdStockJornada")
 
             Dim sp As String = Upd.SQL()
@@ -740,6 +765,12 @@ Public Class clsLnStock_jornada
             cmd.Parameters.Add(New SqlParameter("@COSTO_UNITARIO", oBeStock_jornada.Costo_Unitario))
             cmd.Parameters.Add(New SqlParameter("@NO_DOCUMENTO_PROCESADO_ERP", oBeStock_jornada.No_Documento_Procesado_ERP))
             cmd.Parameters.Add(New SqlParameter("@PROCESADO_ERP", oBeStock_jornada.Procesado_ERP))
+
+            If oBeStock_jornada.IdProductoTallaColor > 0 Then
+                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeStock_jornada.IdProductoTallaColor))
+                cmd.Parameters.Add(New SqlParameter("@TALLA", oBeStock_jornada.Talla))
+                cmd.Parameters.Add(New SqlParameter("@COLOR", oBeStock_jornada.Color))
+            End If
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

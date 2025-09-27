@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Propietario;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity.UI.Services;
 public class clsLnPropietarios
 {
     private static clsInsert Ins = new clsInsert();
@@ -722,4 +723,120 @@ public class clsLnPropietarios
         return false;
     }
 
+    public static bool EmailValido(IConfiguration config, string pEmail, ref clsBePropietarios pBePropietarios, SqlConnection? conn = null, SqlTransaction? tx = null)
+    {
+        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
+        SqlTransaction? lTransaction = null;
+
+        try
+        {
+            const string sp = "SELECT * FROM Propietarios WHERE (email=@email AND controlux =1 and activo=1) ";
+
+            lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
+
+            SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
+            cmd.Parameters.Add(new SqlParameter("@email", pEmail));
+
+            SqlDataAdapter dad = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            dad.Fill(dt);
+
+            lTransaction.Commit();
+
+
+            if (dt.Rows.Count == 1)
+            {
+                DataRow r;
+                r = dt.Rows[0];
+                Cargar(ref pBePropietarios, r);
+                return true;
+            }
+
+        }
+        catch (SqlException ex1)
+        {
+            if (lTransaction is not null)
+                lTransaction.Rollback();
+
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = sf?.GetMethod();
+            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
+
+            throw new Exception(vMsgError);
+        }
+        finally
+        {
+            if (lConnection.State == ConnectionState.Open) lConnection.Close();
+            if (lConnection != null) lConnection.Dispose();
+            if (lTransaction != null) lTransaction.Dispose();
+        }
+
+        return false;
+    }
+
+    public static bool Actualizar_Password_Ux(IConfiguration config, clsBePropietarios oBePropietarios, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    {
+        int rowsAffected = 0;
+        bool isLocal = pConection == null || pTransaction == null;
+        SqlConnection lConnection = isLocal ? new SqlConnection(config.GetConnectionString("CST")) : pConection!;
+        SqlTransaction? lTransaction = pTransaction;
+
+        try
+        {
+            if (isLocal)
+            {
+                lConnection.Open();
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
+            }
+
+            Upd.Init("propietarios");
+            Upd.Add("fec_mod", "@fec_mod", "F");
+            Upd.Add("clave_acceso", "@clave_acceso", "F");
+       
+            Upd.Where("IdPropietario = @IdPropietario");
+
+            string sp = Upd.SQL();
+            SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            cmd.Parameters.AddWithValue("@IdPropietario", oBePropietarios.IdPropietario);
+            cmd.Parameters.AddWithValue("@clave_acceso", oBePropietarios.Clave_acceso);
+            cmd.Parameters.AddWithValue("@fec_mod", oBePropietarios.Fec_mod);
+
+            //Bind(cmd, oBePropietarios);
+            rowsAffected = cmd.ExecuteNonQuery();
+
+            if (isLocal)
+                lTransaction?.Commit();
+
+          
+        }
+        catch (SqlException ex1)
+        {
+            if (isLocal)
+                lTransaction?.Rollback();
+
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = sf?.GetMethod();
+            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
+
+            throw new Exception(vMsgError);
+        }
+        finally
+        {
+            if (isLocal && lConnection.State == ConnectionState.Open)
+            {
+                lConnection.Close();
+                lConnection.Dispose();
+                lTransaction?.Dispose();
+            }
+        }
+
+        return rowsAffected > 0;
+
+    }
 }
