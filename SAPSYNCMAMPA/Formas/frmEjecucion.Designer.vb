@@ -52,6 +52,7 @@ Partial Class frmEjecucion
         Me.BarSubItem2 = New DevExpress.XtraBars.BarSubItem()
         Me.mnuRecibirTrasladosTienda = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuEnviarTrasladosTienda = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuEnviarAjustes = New DevExpress.XtraBars.BarButtonItem()
         Me.rpInterfaceSAP = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.rpgDatosMaestros = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.rpgIngresosInterface = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -65,17 +66,17 @@ Partial Class frmEjecucion
         Me.timerProducto = New System.Windows.Forms.Timer(Me.components)
         Me.BwProducto = New System.ComponentModel.BackgroundWorker()
         Me.BarButtonItem3 = New DevExpress.XtraBars.BarButtonItem()
-        Me.mnuEnviarAjustes = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuSincronizarTienda = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.rbMain, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'rbMain
         '
         Me.rbMain.ExpandCollapseItem.Id = 0
-        Me.rbMain.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.rbMain.ExpandCollapseItem, Me.mnuActualizarProveedores, Me.BarButtonItem2, Me.mnuImprimir, Me.mnuImprimirGrid1, Me.mnuImprimirgrid2, Me.mnuReporteEjecuciones, Me.mnuEnviarPedidosCompra, Me.mnuEnviarPedidosTransferencia, Me.cmdRptTransac, Me.mnuProductosI, Me.BarButtonItem1, Me.mnuBodegas, Me.mnuActualizarCodigosBarra, Me.BarButtonItem4, Me.mnuClientes, Me.mnuReporteComparativoWMSvrsERP, Me.mnuTallas, Me.mnuColores, Me.mnuFacturaReservaMenu, Me.mnuRecibirFacturaReservaProv, Me.mnuEnviarFacturaReservaIngreso, Me.BarSubItem1, Me.mnuRecibirTrasladosCedis, Me.mnuEnviarTrasladosCedis, Me.mnuSolDevolProveedorMenu, Me.mnuImportarSolDevolProv, Me.mnuEnviarSolDevolProv, Me.BarSubItem2, Me.mnuRecibirTrasladosTienda, Me.mnuEnviarTrasladosTienda, Me.mnuEnviarAjustes})
+        Me.rbMain.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.rbMain.ExpandCollapseItem, Me.mnuActualizarProveedores, Me.BarButtonItem2, Me.mnuImprimir, Me.mnuImprimirGrid1, Me.mnuImprimirgrid2, Me.mnuReporteEjecuciones, Me.mnuEnviarPedidosCompra, Me.mnuEnviarPedidosTransferencia, Me.cmdRptTransac, Me.mnuProductosI, Me.BarButtonItem1, Me.mnuBodegas, Me.mnuActualizarCodigosBarra, Me.BarButtonItem4, Me.mnuClientes, Me.mnuReporteComparativoWMSvrsERP, Me.mnuTallas, Me.mnuColores, Me.mnuFacturaReservaMenu, Me.mnuRecibirFacturaReservaProv, Me.mnuEnviarFacturaReservaIngreso, Me.BarSubItem1, Me.mnuRecibirTrasladosCedis, Me.mnuEnviarTrasladosCedis, Me.mnuSolDevolProveedorMenu, Me.mnuImportarSolDevolProv, Me.mnuEnviarSolDevolProv, Me.BarSubItem2, Me.mnuRecibirTrasladosTienda, Me.mnuEnviarTrasladosTienda, Me.mnuEnviarAjustes, Me.mnuSincronizarTienda})
         Me.rbMain.Location = New System.Drawing.Point(0, 0)
         Me.rbMain.Margin = New System.Windows.Forms.Padding(4)
-        Me.rbMain.MaxItemId = 82
+        Me.rbMain.MaxItemId = 83
         Me.rbMain.Name = "rbMain"
         Me.rbMain.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.rpInterfaceSAP, Me.RibbonPage1})
         Me.rbMain.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -288,6 +289,13 @@ Partial Class frmEjecucion
         Me.mnuEnviarTrasladosTienda.Id = 80
         Me.mnuEnviarTrasladosTienda.Name = "mnuEnviarTrasladosTienda"
         '
+        'mnuEnviarAjustes
+        '
+        Me.mnuEnviarAjustes.Caption = "Enviar Ajustes"
+        Me.mnuEnviarAjustes.Id = 81
+        Me.mnuEnviarAjustes.ImageOptions.SvgImage = CType(resources.GetObject("mnuEnviarAjustes.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuEnviarAjustes.Name = "mnuEnviarAjustes"
+        '
         'rpInterfaceSAP
         '
         Me.rpInterfaceSAP.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.rpgDatosMaestros, Me.rpgIngresosInterface, Me.rpgSalidasInterface, Me.rpgResumen})
@@ -318,6 +326,7 @@ Partial Class frmEjecucion
         Me.rpgSalidasInterface.ItemLinks.Add(Me.mnuSolDevolProveedorMenu)
         Me.rpgSalidasInterface.ItemLinks.Add(Me.BarSubItem2)
         Me.rpgSalidasInterface.ItemLinks.Add(Me.mnuEnviarAjustes)
+        Me.rpgSalidasInterface.ItemLinks.Add(Me.mnuSincronizarTienda)
         Me.rpgSalidasInterface.Name = "rpgSalidasInterface"
         Me.rpgSalidasInterface.Text = "Transacciones"
         '
@@ -393,12 +402,12 @@ Partial Class frmEjecucion
         Me.BarButtonItem3.ImageOptions.LargeImage = CType(resources.GetObject("BarButtonItem3.ImageOptions.LargeImage"), System.Drawing.Image)
         Me.BarButtonItem3.Name = "BarButtonItem3"
         '
-        'mnuEnviarAjustes
+        'mnuSincronizarTienda
         '
-        Me.mnuEnviarAjustes.Caption = "Enviar Ajustes"
-        Me.mnuEnviarAjustes.Id = 81
-        Me.mnuEnviarAjustes.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem5.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.mnuEnviarAjustes.Name = "mnuEnviarAjustes"
+        Me.mnuSincronizarTienda.Caption = "Sincronizar Tienda Batch"
+        Me.mnuSincronizarTienda.Id = 82
+        Me.mnuSincronizarTienda.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem5.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuSincronizarTienda.Name = "mnuSincronizarTienda"
         '
         'frmEjecucion
         '
@@ -464,4 +473,5 @@ End Sub
     Friend WithEvents mnuRecibirTrasladosTienda As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuEnviarTrasladosTienda As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuEnviarAjustes As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents mnuSincronizarTienda As DevExpress.XtraBars.BarButtonItem
 End Class

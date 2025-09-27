@@ -225,7 +225,7 @@ Public Class clsLnBodega
             Ins.Add("limpiar_campos", "@limpiar_campos", DataType.Parametro)
             Ins.Add("permitir_cambio_ubic_recepcion", "@permitir_cambio_ubic_recepcion", DataType.Parametro)
             Ins.Add("ruta_cdn", "@ruta_cdn", DataType.Parametro)
-            Ins.Add("rango_dias_documentos", "rango_dias_documentos", DataType.Parametro)
+            Ins.Add("rango_dias_documentos", "@rango_dias_documentos", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}

@@ -54,7 +54,7 @@ Public Class clsSyncSapFacturaReserva
             clsPublic.Actualizar_Progreso(lblprg, "Obteniendo documento(s).")
 
             Dim lPedidosCompra As New List(Of clsBeI_nav_ped_compra_enc)
-            lPedidosCompra = Await Get_Factura_Reserva_SAP_Hana_SL(pNoDocumentoSAP,
+            lPedidosCompra = Await Get_Factura_Reserva_SAP_Hana_SL(Val(pNoDocumentoSAP),
                                                                   BeBodega.Codigo,
                                                                   vHanaService.SessionCookie,
                                                                   BD.Instancia.HANA_SL,
@@ -716,7 +716,7 @@ Public Class clsSyncSapFacturaReserva
         ServicePointManager.Expect100Continue = False
 
         Dim filtro As String = "U_ENVIADO_WMS eq 2 and CancelStatus eq 'csNo'"
-        If docNum.HasValue Then
+        If docNum.HasValue AndAlso docNum > 0 Then
             filtro &= $" and DocNum eq {docNum.Value}"
         End If
 
