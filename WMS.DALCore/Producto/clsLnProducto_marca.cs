@@ -390,7 +390,7 @@ public class clsLnProductoMarca
             {
                 if (!string.IsNullOrEmpty(entity.Codigo))
                 {
-                    Marca.IdMarca = clsLnProductoMarca.MaxId(config, connection, isExternalTx ? tx : localTx) + 1;
+                    Marca.IdMarca = MaxId(config, connection, isExternalTx ? tx : localTx) + 1;
                     Marca.Codigo = entity.Codigo;
                     Marca.Nombre = entity.Nombre ?? entity.Codigo;
                     Marca.User_agr = "1";
@@ -399,7 +399,7 @@ public class clsLnProductoMarca
                     Marca.Fec_mod = DateTime.Now;
                     Marca.Activo = entity.Activo;
                     Marca.IdPropietario = entity.IdPropietario;
-                    clsLnProductoMarca.Insert(config, Marca, connection, isExternalTx ? tx : localTx);
+                    Insert(config, Marca, connection, isExternalTx ? tx : localTx);
                 }
 
             }
@@ -409,7 +409,7 @@ public class clsLnProductoMarca
                 Marca.User_mod = "1";
                 Marca.Fec_mod = DateTime.Now;
                 Marca.Activo = entity.Activo;
-                clsLnProductoMarca.Update(config, Marca, connection, isExternalTx ? tx : localTx);
+                Update(config, Marca, connection, isExternalTx ? tx : localTx);
             }
 
         }

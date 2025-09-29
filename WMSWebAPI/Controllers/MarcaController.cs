@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Transactions;
 using WMS.EntityCore.Dtos.Catalogos;
-using WMSWebAPI.Dtos.Catalogos;
 using WMSWebAPI.Services.Producto.Marca;
 
 namespace WMSWebAPI.Controllers
@@ -26,7 +24,7 @@ namespace WMSWebAPI.Controllers
         public IActionResult Sincronizar([FromBody] List<ProductoMarcaSimpleDto> MarcaDto, [FromServices] IConfiguration configuration) 
         {
             if (MarcaDto == null || MarcaDto.Count == 0)
-                return BadRequest("La lista de productos está vacía.");
+                return BadRequest("La lista de marcas está vacía.");
 
             var resultados = new List<object>();
             string? connectionString = configuration.GetConnectionString("CST");
