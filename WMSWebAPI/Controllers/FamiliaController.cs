@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Transactions;
@@ -25,7 +24,7 @@ namespace WMSWebAPI.Controllers
         public IActionResult Sincronizar([FromBody] List<ProductoFamiliaSimpleDto> FamiliaDto, [FromServices] IConfiguration configuration)
         {
             if (FamiliaDto == null || FamiliaDto.Count == 0)
-                return BadRequest("La lista de productos está vacía.");
+                return BadRequest("La lista de familias está vacía.");
 
             var resultados = new List<object>();
             string? connectionString = configuration.GetConnectionString("CST");

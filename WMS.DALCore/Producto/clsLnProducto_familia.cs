@@ -340,7 +340,7 @@ public class clsLnProducto_familia
             {
                 if (!string.IsNullOrEmpty(entity.Codigo))
                 {
-                    Familia.IdFamilia = clsLnProducto_familia.MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                    Familia.IdFamilia = MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
                     Familia.Codigo = entity.Codigo;
                     Familia.Nombre = entity.Nombre ?? entity.Codigo;
                     Familia.User_agr = "1";
@@ -349,7 +349,7 @@ public class clsLnProducto_familia
                     Familia.Fec_agr = DateTime.Now;
                     Familia.Activo = entity.Activo;
                     Familia.IdPropietario = entity.IdPropietario;
-                    clsLnProducto_familia.Insertar(config, Familia, connection, isExternalTx ? tx : localTx);
+                    Insertar(config, Familia, connection, isExternalTx ? tx : localTx);
                 }
 
             }
@@ -360,7 +360,7 @@ public class clsLnProducto_familia
                 Familia.User_mod = "1";
                 Familia.Fec_agr = DateTime.Now;
                 Familia.Activo = entity.Activo;
-                clsLnProducto_familia.Actualizar(config, Familia, connection, isExternalTx ? tx : localTx);
+                Actualizar(config, Familia, connection, isExternalTx ? tx : localTx);
             }
 
         }
