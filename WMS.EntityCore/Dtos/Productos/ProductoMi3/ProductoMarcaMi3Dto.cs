@@ -1,6 +1,6 @@
 ﻿namespace WMS.EntityCore.Dtos.Catalogos
 {
-    public class ProductoMarcaSimpleDto
+    public class ProductoMarcaMi3Dto
     {
         public int IdPropietario { get; set; }
         public string? Nombre { get; set; }

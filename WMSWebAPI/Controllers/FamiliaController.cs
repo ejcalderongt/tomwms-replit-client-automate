@@ -21,7 +21,7 @@ namespace WMSWebAPI.Controllers
         }
 
         [HttpPost("list/mi3/insert")]
-        public IActionResult Sincronizar([FromBody] List<ProductoFamiliaSimpleDto> FamiliaDto, [FromServices] IConfiguration configuration)
+        public IActionResult Sincronizar([FromBody] List<ProductoFamiliaMi3Dto> FamiliaDto, [FromServices] IConfiguration configuration)
         {
             if (FamiliaDto == null || FamiliaDto.Count == 0)
                 return BadRequest("La lista de familias está vacía.");

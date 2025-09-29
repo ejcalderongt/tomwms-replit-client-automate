@@ -31,7 +31,7 @@ namespace WMSWebAPI.Services.Proveedor
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al procesar Clasificación → " + ex.Message, ex);
+                throw new Exception("Error al procesar Proveedor → " + ex.Message, ex);
             }
         }
 

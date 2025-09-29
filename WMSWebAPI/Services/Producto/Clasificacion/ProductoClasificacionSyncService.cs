@@ -19,7 +19,7 @@ namespace WMSWebAPI.Services.Producto.Clasificacion
             _mapper = mapper;
         }
 
-        public void ProcesarClasificacionDesdeDto(ProductoClasificacionSimpleDto dto, SqlConnection conn, SqlTransaction tx)
+        public void ProcesarClasificacionDesdeDto(ProductoClasificacionMi3Dto dto, SqlConnection conn, SqlTransaction tx)
         {
             try
             {

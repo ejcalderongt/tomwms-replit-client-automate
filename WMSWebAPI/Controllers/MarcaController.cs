@@ -21,7 +21,7 @@ namespace WMSWebAPI.Controllers
         }
 
         [HttpPost("list/mi3/insert")]
-        public IActionResult Sincronizar([FromBody] List<ProductoMarcaSimpleDto> MarcaDto, [FromServices] IConfiguration configuration) 
+        public IActionResult Sincronizar([FromBody] List<ProductoMarcaMi3Dto> MarcaDto, [FromServices] IConfiguration configuration) 
         {
             if (MarcaDto == null || MarcaDto.Count == 0)
                 return BadRequest("La lista de marcas está vacía.");

@@ -15,7 +15,7 @@ namespace WMSWebAPI.Services.Producto.Familia
             _mapper = mapper;
         }
 
-        public void ProcesarFamiliaDesdeDto(ProductoFamiliaSimpleDto dto, SqlConnection conn, SqlTransaction tx)
+        public void ProcesarFamiliaDesdeDto(ProductoFamiliaMi3Dto dto, SqlConnection conn, SqlTransaction tx)
         {
             try
             {
