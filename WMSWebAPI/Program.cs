@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
 using WMSWebAPI.Services;
+using WMSWebAPI.Services.Cliente;
 using WMSWebAPI.Services.Ingresos;
 using WMSWebAPI.Services.LogPortalUx;
 using WMSWebAPI.Services.Producto;
@@ -48,7 +49,7 @@ builder.Services.AddScoped<IProductoSimpleSyncService, ProductoSimpleSyncService
 builder.Services.AddScoped<IProductoClasificacionSyncService, ProductoClasificacionSyncService>();
 builder.Services.AddScoped<IProductoMarcaSyncService, ProductoMarcaSyncService>();
 builder.Services.AddScoped<IProductoFamiliaSyncService, ProductoFamiliaSyncService>();
-
+builder.Services.AddScoped<IClienteMi3SyncService,ClienteMi3SyncService>();
 
 // JWT
 var key = "OPaVvHGoW1WqtwoFdS0er9cC1RMrSCxd5ovsEYw22uzKlsyaO-7uOQB16jL3YnKsLB4U_BX5gWNUk0ELXMsEtg";
