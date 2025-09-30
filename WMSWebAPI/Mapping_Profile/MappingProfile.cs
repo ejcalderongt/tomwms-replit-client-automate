@@ -24,6 +24,7 @@ using WMSWebAPI.Dtos.Log_portal_ux;
 using WMS.EntityCore.Producto.ProductoSimple;
 using WMS.EntityCore.Dtos.Catalogos;
 using WMS.EntityCore.Dtos.Clientes;
+using WMS.EntityCore.Dtos.Productos;
 
 public class MappingProfile : Profile
 {
@@ -86,6 +87,8 @@ public class MappingProfile : Profile
         CreateMap<ProductoMarcaMi3Dto,clsBeProducto_marcaSimple>().ReverseMap();
         CreateMap<ProductoFamiliaMi3Dto, clsBeProducto_familiaSimple>().ReverseMap();
         CreateMap<ClienteMi3Dto, clsBeClientesMi3>().ReverseMap();
+        CreateMap<Producto_tipoMi3Dto,clsBeProducto_tipoMi3>().ReverseMap();
+        CreateMap<UnidadMedidaMi3Dto, clsBeUnidad_medidaMi3>().ReverseMap();
         
     }
 }

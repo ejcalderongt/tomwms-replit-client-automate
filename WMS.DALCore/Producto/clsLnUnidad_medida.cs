@@ -473,7 +473,7 @@ public class clsLnUnidad_medida
                         var lreturnValue = lCommand.ExecuteScalar();
                         if (lreturnValue != DBNull.Value && lreturnValue != null)
                         {
-                            lMax = int.Parse((String)lreturnValue);
+                            lMax = Convert.ToInt32(lreturnValue);
                         }
                     }
                     lTransaction.Commit();
@@ -526,7 +526,8 @@ public class clsLnUnidad_medida
 
             if (lreturnValue != DBNull.Value && lreturnValue != null)
             {
-                lMax = int.Parse((string)lreturnValue);
+                lMax = Convert.ToInt32(lreturnValue);
+                
             }
 
             if (!Es_Transaccion_Remota)
@@ -674,10 +675,10 @@ public class clsLnUnidad_medida
 
                 if (!string.IsNullOrEmpty(entity.Codigo))
                 {
-                    BeUmbas.IdPropietario = MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                    BeUmbas.IdUnidadMedida= MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                    BeUmbas.IdPropietario = entity.IdPropietario;
                     BeUmbas.Codigo = entity.Codigo;
                     BeUmbas.Nombre = entity.Nombre ?? entity.Codigo;
-                    
                     BeUmbas.User_agr = "1";
                     BeUmbas.User_mod = "1";
                     BeUmbas.Fec_agr = DateTime.Now;
