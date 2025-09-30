@@ -1,5 +1,6 @@
 Imports System.Data.SqlClient
 Imports System.Reflection
+Imports System.Runtime.InteropServices
 
 Public Class clsLnBodega
     Implements IDisposable
@@ -1461,6 +1462,82 @@ Public Class clsLnBodega
 
             If dt.Rows.Count = 1 Then
                 GetRutaCDN_By_Idbodega = IIf(IsDBNull(dt.Rows(0).Item("RUTA_CDN")), "", dt.Rows(0).Item("RUTA_CDN"))
+            End If
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            lTransaction.Dispose()
+            lConnection.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function GetIdBodegaGeneral() As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Const sp As String = "SELECT * FROM Bodega " &
+                                 " Where(es_bodega_fiscal =0 )"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Dim pBeBodega As New clsBeBodega
+                Cargar(pBeBodega, dt.Rows(0))
+                GetIdBodegaGeneral = pBeBodega.IdBodega
+            End If
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            lTransaction.Dispose()
+            lConnection.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function GetIdBodegaFiscal() As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Const sp As String = "SELECT * FROM Bodega " &
+                                 " Where(es_bodega_fiscal =1)"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Dim pBeBodega As New clsBeBodega
+                Cargar(pBeBodega, dt.Rows(0))
+                GetIdBodegaFiscal = pBeBodega.IdBodega
             End If
 
             lTransaction.Commit()

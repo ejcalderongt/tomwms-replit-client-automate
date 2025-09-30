@@ -30,6 +30,7 @@ Partial Class frmEjecucion
         Me.cmdParametrizacion = New DevExpress.XtraBars.BarButtonItem()
         Me.lblServerAPP = New DevExpress.XtraBars.BarStaticItem()
         Me.lblBDAPP = New DevExpress.XtraBars.BarStaticItem()
+        Me.BarButtonItem1 = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup2 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -39,7 +40,6 @@ Partial Class frmEjecucion
         Me.lblTLog = New DevExpress.XtraEditors.LabelControl()
         Me.prg = New System.Windows.Forms.ProgressBar()
         Me.lblprg = New System.Windows.Forms.RichTextBox()
-        Me.BarButtonItem1 = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -90,14 +90,14 @@ Partial Class frmEjecucion
         '
         'cmdLogErrores
         '
-        Me.cmdLogErrores.Caption = "Log de errores en exportación"
+        Me.cmdLogErrores.Caption = "Log de eventos en exportación"
         Me.cmdLogErrores.Id = 8
         Me.cmdLogErrores.ImageOptions.SvgImage = CType(resources.GetObject("cmdLogErrores.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdLogErrores.Name = "cmdLogErrores"
         '
         'cmdParametrizacion
         '
-        Me.cmdParametrizacion.Caption = "Configuración General"
+        Me.cmdParametrizacion.Caption = "Configurar horarios"
         Me.cmdParametrizacion.Id = 9
         Me.cmdParametrizacion.ImageOptions.SvgImage = CType(resources.GetObject("cmdParametrizacion.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdParametrizacion.Name = "cmdParametrizacion"
@@ -106,7 +106,6 @@ Partial Class frmEjecucion
         '
         Me.lblServerAPP.Caption = "SERVER"
         Me.lblServerAPP.Id = 10
-        Me.lblServerAPP.ImageOptions.Image = CType(resources.GetObject("lblServerAPP.ImageOptions.Image"), System.Drawing.Image)
         Me.lblServerAPP.Name = "lblServerAPP"
         Me.lblServerAPP.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph
         '
@@ -114,9 +113,15 @@ Partial Class frmEjecucion
         '
         Me.lblBDAPP.Caption = "BD"
         Me.lblBDAPP.Id = 11
-        Me.lblBDAPP.ImageOptions.Image = CType(resources.GetObject("lblBDAPP.ImageOptions.Image"), System.Drawing.Image)
         Me.lblBDAPP.Name = "lblBDAPP"
         Me.lblBDAPP.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph
+        '
+        'BarButtonItem1
+        '
+        Me.BarButtonItem1.Caption = "Reiniciar Fecha Sincronizacion"
+        Me.BarButtonItem1.Id = 12
+        Me.BarButtonItem1.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.BarButtonItem1.Name = "BarButtonItem1"
         '
         'RibbonPage1
         '
@@ -192,13 +197,6 @@ Partial Class frmEjecucion
         Me.lblprg.Size = New System.Drawing.Size(1104, 165)
         Me.lblprg.TabIndex = 6
         Me.lblprg.Text = ""
-        '
-        'BarButtonItem1
-        '
-        Me.BarButtonItem1.Caption = "Reiniciar Fecha Sincronizacion"
-        Me.BarButtonItem1.Id = 12
-        Me.BarButtonItem1.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.BarButtonItem1.Name = "BarButtonItem1"
         '
         'frmEjecucion
         '

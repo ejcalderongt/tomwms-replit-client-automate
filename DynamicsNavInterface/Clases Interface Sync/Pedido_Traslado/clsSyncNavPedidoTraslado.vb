@@ -1533,7 +1533,7 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                         Debug.Print("espera")
                     End If
                     'Insertar Encabezado
-                    If clsLnI_nav_ped_traslado_enc.Exist(BeI_Nav_PedidoTraslado.No) Then
+                    If Not clsLnI_nav_ped_traslado_enc.Exist(BeI_Nav_PedidoTraslado.No) Then
                         clsLnI_nav_ped_traslado_enc.Insertar(BeI_Nav_PedidoTraslado, lConnection, lTransaction)
                     End If
 
@@ -1820,8 +1820,10 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
 
                 If Not BePresentacion Is Nothing Then
                     pBeStockRes.IdPresentacion = BePresentacion.IdPresentacion
+                    pBePedidoDet.IdPresentacion = BePresentacion.IdPresentacion
                 Else
                     pBeStockRes.IdPresentacion = -1 'No se encontró la presentación solicitada
+                    pBePedidoDet.IdPresentacion = -1
                 End If
 
             End If

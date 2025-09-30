@@ -160,25 +160,6 @@ Public Class frmEjecucion
 
                         setAPP()
 
-                        'If esInvocacionAutomatica Then
-
-                        '    If ModoQA Then
-                        '        clsLnLog_error_wms.Agregar_Error("simulacion ejecutada")
-                        '        Await Task.Delay(3000) ' opcional, para evitar cierres inmediatos si fuera necesario
-                        '        Close()
-                        '        Return
-                        '    Else
-                        '        Await EjecutarSecuenciaAutomaticaAsync()
-                        '        clsLnLog_error_wms.Agregar_Error("Simulación ejecutada")
-                        '    End If
-
-
-                        'Else
-                        '    ' Lógica normal al abrir manualmente
-                        '    Console.WriteLine("Ejecutado manualmente por el usuario")
-                        'End If
-
-
                     Else
                         Throw New Exception("No se pudo establecer una conexión hacia la instancia")
                     End If
@@ -438,62 +419,20 @@ Public Class frmEjecucion
                     })
                 Next
 
-
                 clsTransaccion.Commit_Transaction()
-
 
                 If listaDuplas.Count > 0 Then
                     Dim frm As New frmRegistraFechaExpotacion(listaDuplas)
 
                     If frm.ShowDialog() <> DialogResult.OK Then
                         clsHelper.LogMensaje(lblprg, "No se ingresaron fechas individuales. Se cancelará el proceso de sincronización.", clsHelper.TipoMensaje.Error_)
+                        HabilitarOpciones(False)
                         Return
                     End If
 
                     Dim listaResultado As List(Of DuplaSinFecha) = frm.Resultado
                     ' Aquí puedes usar listaResultado con las fechas ingresadas
                 End If
-
-                '' pedir fecha inicial solo una vez
-                'Dim msg As String = String.Format("{0} duplas (propietario/tabla) sin sincronización inicial", listaDuplasSinFecha.Count)
-                'fechaInicio = PedirFechaBaseConDevExpress(msg)
-
-                'If Not fechaInicio.HasValue Then
-                '    clsHelper.LogMensaje(lblprg, "No se ingresó una fecha base. Se cancelará el proceso de sincronización.", clsHelper.TipoMensaje.Error_)
-                '    HabilitarOpciones(False)
-                '    cmdFechaBaseSync.Enabled = True
-                '    clsTransaccion.RollBack_Transaction()
-                '    Return
-                'End If
-
-                '' SEGUNDO CICLO: insertar registros para cada dupla
-                'Dim maxIdActual As Integer = clsLnDMS_Log_sincronizacion_nube.MaxID(clsTransaccion.lConnection, clsTransaccion.lTransaction)
-
-                'For Each dupla In listaDuplasSinFecha
-                '    Dim tabla As String = dupla.Item1
-                '    Dim pIdPropietario As Integer = dupla.Item2
-
-                '    Dim beLog As New clsBeDMS_Log_sincronizacion_nube()
-                '    beLog.IdLog = maxIdActual
-                '    beLog.Fecha_sincronizacion = IIf(tabla.Contains("producto"), New Date(2022, 1, 1), fechaInicio.Value)
-                '    beLog.Registros_enviados = 0
-                '    beLog.Estado = "Ok"
-                '    beLog.Mensaje_error = "Sincronización inicial"
-                '    beLog.Tiempo_de_envio = 0
-                '    beLog.User_agr = AP.UsuarioAp.IdUsuario
-                '    beLog.Fec_agr = Now
-                '    beLog.Entidad = tabla
-                '    beLog.IdPropietario = pIdPropietario
-
-                '    clsLnDMS_Log_sincronizacion_nube.Insertar(beLog, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                '    clsHelper.LogMensaje(lblprg, $"Se agregó fecha base para tabla '{tabla}', propietario {pIdPropietario}", clsHelper.TipoMensaje.Exito)
-
-                '    maxIdActual += 1
-                'Next
-
-
-                'HabilitarOpciones(True)
-                'cmdFechaBaseSync.Enabled = False
 
             Else
                 ' No hay propietarios sin fecha inicial

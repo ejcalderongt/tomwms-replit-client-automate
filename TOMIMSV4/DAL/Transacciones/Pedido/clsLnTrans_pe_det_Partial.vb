@@ -2457,9 +2457,10 @@ Partial Public Class clsLnTrans_pe_det
                                 '#EJC20191218: Corrección a raiz de que el picking ubic si tiene pres, 
                                 'La cantidad va en pres.
                                 If pBePedidoDet.IdPresentacion <> 0 Then
-                                    Sr.Cantidad = Sr.Cantidad / pBePedidoDet.Presentacion.Factor
+                                    'Sr.Cantidad = Sr.Cantidad / pBePedidoDet.Presentacion.Factor
                                     Dim vEsMultiplo = (Sr.Cantidad Mod pBePedidoDet.Presentacion.Factor = 0)
                                     Dim cantidadMultiplo = (Sr.Cantidad \ pBePedidoDet.Presentacion.Factor) * pBePedidoDet.Presentacion.Factor
+                                    Sr.Cantidad = Sr.Cantidad / pBePedidoDet.Presentacion.Factor
                                     If Not vEsMultiplo Then
                                         Sr.Cantidad = Sr.Cantidad * pBePedidoDet.Presentacion.Factor
                                         Sr.IdPresentacion = 0
