@@ -1,4 +1,4 @@
-using Microsoft.Data.SqlClient;
+ï»¿using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic.CompilerServices;
 using System.Data;
 using System.Diagnostics;
@@ -962,6 +962,33 @@ public class clsLnProducto
         }
     }
 
+    public static bool Existe_By_Codigo(string Codigo, ref clsBeProducto pBeProducto, SqlConnection cn, SqlTransaction? tx = null)
+    {
+        try
+        {
+            const string sql = "SELECT TOP 1 * FROM producto WHERE codigo = @codigo";
+
+            using var cmd = new SqlCommand(sql, cn, tx);
+            cmd.Parameters.AddWithValue("@codigo", Codigo);
+
+            using var da = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count == 1)
+            {
+                Cargar(ref pBeProducto, dt.Rows[0]);
+                return true;
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} â†’ {ex.Message}", ex);
+        }
+    }
 
     public static bool Existe_By_Codigo(string pCodigo, SqlConnection pConnection, SqlTransaction pTransaction)
     {
@@ -1023,7 +1050,7 @@ public class clsLnProducto
                     bool ExisteClasificacion= clsLnProducto_clasificacion.Existe_By_Codigo(BeProductoMi3.CodigoClasificacion,ref Clasificacion, connection, isExternalTx ? tx! : localTx!);
 
                     if (!ExisteClasificacion) {
-                        throw new Exception("Error al procesar código de clasificación en ProductoMi3");
+                        throw new Exception("Error al procesar cÃ³digo de clasificaciÃ³n en ProductoMi3");
                     }
 
                 }
@@ -1037,7 +1064,7 @@ public class clsLnProducto
 
                     if (!ExisteFamilia)
                     {
-                        throw new Exception("Error al procesar código de Familia en ProductoMi3");
+                        throw new Exception("Error al procesar cÃ³digo de Familia en ProductoMi3");
                     }
                 }
 
@@ -1048,7 +1075,7 @@ public class clsLnProducto
 
                     if (!ExisteMarca)
                     {
-                        throw new Exception("Error al procesar código de Marca en ProductoMi3");
+                        throw new Exception("Error al procesar cÃ³digo de Marca en ProductoMi3");
                     }
 
                 }
@@ -1059,7 +1086,7 @@ public class clsLnProducto
 
                     if (!ExisteTipo)
                     {
-                        throw new Exception("Error al procesar código de TipoProducto en ProductoMi3");
+                        throw new Exception("Error al procesar cÃ³digo de TipoProducto en ProductoMi3");
                     }
                 }
 
@@ -1069,7 +1096,7 @@ public class clsLnProducto
 
                     if (!ExisteUmbas)
                     {
-                        throw new Exception("Error al procesar código de Umbas en ProductoMi3");
+                        throw new Exception("Error al procesar cÃ³digo de Umbas en ProductoMi3");
                     }
                 }
 

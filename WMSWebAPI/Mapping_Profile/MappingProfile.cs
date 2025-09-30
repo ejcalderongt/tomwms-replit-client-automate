@@ -89,6 +89,7 @@ public class MappingProfile : Profile
         CreateMap<ClienteMi3Dto, clsBeClientesMi3>().ReverseMap();
         CreateMap<Producto_tipoMi3Dto,clsBeProducto_tipoMi3>().ReverseMap();
         CreateMap<UnidadMedidaMi3Dto, clsBeUnidad_medidaMi3>().ReverseMap();
+        CreateMap<ProductoPresentacionMi3Dto,clsBeProducto_presentacionMi3>().ReverseMap();
         
     }
 }
