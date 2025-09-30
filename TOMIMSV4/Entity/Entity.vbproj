@@ -249,6 +249,7 @@
     <Compile Include="Mantenimientos\Impresora_Mensaje\clsBeImpresora_mensaje.vb" />
     <Compile Include="Mantenimientos\I_Nav_Tarifa_Tipo_Transaccion\clsBeTarifa_tipo_transaccion.vb" />
     <Compile Include="Mantenimientos\I_Nav_Tarifa_Tipo_Transaccion\clsBeTarifa_tipo_transaccion_det.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSRec\clsBeLog_error_wms_rec.vb" />
     <Compile Include="Mantenimientos\LogErrorWMS\clsBeLog_error_wms.vb" />
     <Compile Include="Mantenimientos\Manufactura\Manufactura_Tipo\clsBeTrans_manufactura_tipo.vb" />
     <Compile Include="Mantenimientos\Menu_Rol\clsBeOpcionesMenuRol.vb" />
