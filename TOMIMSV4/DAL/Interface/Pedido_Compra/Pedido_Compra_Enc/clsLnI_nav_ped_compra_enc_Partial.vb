@@ -987,17 +987,42 @@ Partial Public Class clsLnI_nav_ped_compra_enc
                         InsertoEncabezado = True
                         VContadorBitacoraTOMWMS += 1
 
+                        Dim BeUnidadMedidaPedCompra As New clsBeUnidad_medida
+                        Dim BePresentacion As New clsBeProducto_Presentacion
+                        Dim vCantidadSolicitadaPedido As Double = 0
+
                         For Each navPedidoCompraDet In navPedidoCompraEnc.Lineas_Detalle
                             Dim BeProductoBodega = BuscarProductoBodega(navPedidoCompraDet, IdBodegaDestino, BeConfigEnc, lConnection, lTransInterface)
                             If BeProductoBodega IsNot Nothing Then
-                                Dim BeUnidadMedidaPedCompra As New clsBeUnidad_medida
-                                Dim BePresentacion As New clsBeProducto_Presentacion
-                                Dim vCantidadSolicitadaPedido As Double = 0
                                 ValidarYCalcularUMBas(navPedidoCompraDet, BeUnidadMedidaPedCompra, BePresentacion, BeProductoBodega, BeConfigEnc, vCantidadSolicitadaPedido, vCantidadEnteraPres, vCantidadDecimalUMBas, lblprg, lConnection, lTransInterface)
                                 InsertarDetalleOrdenCompra(navPedidoCompraEnc, navPedidoCompraDet, BeProductoBodega, BePresentacion, BeConfigEnc, BeUnidadMedidaPedCompra, vCantidadEnteraPres, vCantidadDecimalUMBas, vContadorLineasDetInsertadas, lblprg, BeOcDetLote, LotesExistentes, gBeOrdenCompraEnc, lConnection, lTransInterface)
                             Else
-                                lblprg += $"El código de producto:{navPedidoCompraDet.No} no existe o no está asociado a la bodega:{navPedidoCompraDet.Location_Code}" & vbNewLine
-                                vProductoNoExiste += 1
+                                Dim beProducto As New clsBeProducto
+                                beProducto = clsLnProducto.Get_Single_By_Codigo(navPedidoCompraDet.No, lConnection, lTransInterface)
+                                If beProducto IsNot Nothing Then
+                                    BeProductoBodega = New clsBeProducto_bodega With {
+                                                .IdProductoBodega = clsLnProducto_bodega.MaxID(lConnection, lTransInterface) + 1,
+                                                .IdProducto = beProducto.IdProducto,
+                                                .IdBodega = BeConfigEnc.Idbodega,
+                                                .Activo = True,
+                                                .User_agr = BeConfigEnc.IdUsuario,
+                                                .User_mod = BeConfigEnc.IdUsuario,
+                                                .Fec_agr = Now,
+                                                .Fec_mod = Now
+                                            }
+
+                                    clsLnProducto_bodega.InsertarFromInterface(BeProductoBodega, lConnection, lTransInterface)
+
+                                    lblprg += $"El código de producto:{navPedidoCompraDet.No} no estaba asociado a la bodega y ya lo asociamos:{navPedidoCompraDet.Location_Code}" & vbNewLine
+                                    ValidarYCalcularUMBas(navPedidoCompraDet, BeUnidadMedidaPedCompra, BePresentacion, BeProductoBodega, BeConfigEnc, vCantidadSolicitadaPedido, vCantidadEnteraPres, vCantidadDecimalUMBas, lblprg, lConnection, lTransInterface)
+                                    InsertarDetalleOrdenCompra(navPedidoCompraEnc, navPedidoCompraDet, BeProductoBodega, BePresentacion, BeConfigEnc, BeUnidadMedidaPedCompra, vCantidadEnteraPres, vCantidadDecimalUMBas, vContadorLineasDetInsertadas, lblprg, BeOcDetLote, LotesExistentes, gBeOrdenCompraEnc, lConnection, lTransInterface)
+
+                                Else
+
+                                    lblprg += $"El código de producto:{navPedidoCompraDet.No} no existe:{navPedidoCompraDet.Location_Code}" & vbNewLine
+                                    vProductoNoExiste += 1
+                                End If
+
                             End If
                         Next
 
@@ -1218,28 +1243,28 @@ Partial Public Class clsLnI_nav_ped_compra_enc
 
             If BeConfigEnc.Equiparar_Productos Then
                 productoBodega = clsLnProducto_bodega.Existe_Codigo_By_IdBodega(navPedidoCompraDet.No,
-                                                                            IdBodegaDestino,
-                                                                            lConnection,
-                                                                            lTransInterface)
+                                                                                IdBodegaDestino,
+                                                                                lConnection,
+                                                                                lTransInterface)
 
                 If productoBodega Is Nothing Then
                     productoBodega = clsLnProducto_bodega.Existe_Parte_By_IdBodega(navPedidoCompraDet.No,
-                                                                               IdBodegaDestino,
-                                                                               lConnection,
-                                                                               lTransInterface)
+                                                                                   IdBodegaDestino,
+                                                                                   lConnection,
+                                                                                   lTransInterface)
 
                     If productoBodega Is Nothing Then
                         productoBodega = clsLnProducto_bodega.Existe_NoSerie_By_IdBodega(navPedidoCompraDet.No,
-                                                                                      IdBodegaDestino,
-                                                                                      lConnection,
-                                                                                      lTransInterface)
+                                                                                          IdBodegaDestino,
+                                                                                          lConnection,
+                                                                                          lTransInterface)
                     End If
                 End If
             Else
                 productoBodega = clsLnProducto_bodega.Existe_Codigo_By_IdBodega(navPedidoCompraDet.No,
-                                                                            IdBodegaDestino,
-                                                                            lConnection,
-                                                                            lTransInterface)
+                                                                                IdBodegaDestino,
+                                                                                lConnection,
+                                                                                lTransInterface)
             End If
 
             Return productoBodega
