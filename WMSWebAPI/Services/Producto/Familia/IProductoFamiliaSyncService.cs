@@ -5,6 +5,6 @@ namespace WMSWebAPI.Services.Producto.Familia
 {
     public interface IProductoFamiliaSyncService
     {
-        void ProcesarFamiliaDesdeDto(ProductoFamiliaSimpleDto dto, SqlConnection connection, SqlTransaction transaction);
+        void ProcesarFamiliaDesdeDto(ProductoFamiliaMi3Dto dto, SqlConnection connection, SqlTransaction transaction);
     }
 }

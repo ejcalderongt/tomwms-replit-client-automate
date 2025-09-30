@@ -1,31 +1,31 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Transactions;
 using WMS.EntityCore.Dtos.Catalogos;
-using WMSWebAPI.Services.Producto.Clasificacion;
+using WMSWebAPI.Services.Producto.Presentacion;
 
 namespace WMSWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ClasificacionController : ControllerBase
+    public class PresentacionController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IProductoClasificacionSyncService _syncService;
+        private readonly IPresentacionMi3SyncService _presentacionMi3SyncService;
 
-        public ClasificacionController(IMapper mapper, IProductoClasificacionSyncService syncService)
+        public PresentacionController(IMapper mapper, IPresentacionMi3SyncService presentacionMi3SyncService)
         {
             _mapper = mapper;
-            _syncService = syncService;
+            _presentacionMi3SyncService = presentacionMi3SyncService;
         }
 
-
         [HttpPost("list/mi3/insert")]
-        public IActionResult Sincronizar([FromBody] List<ProductoClasificacionMi3Dto> Clasificaciondto, [FromServices] IConfiguration configuration) 
+        public IActionResult Sincronizar([FromBody] List<ProductoPresentacionMi3Dto> listPresentacionMi3dto, [FromServices] IConfiguration configuration)
         {
-            if (Clasificaciondto == null || Clasificaciondto.Count == 0)
-                return BadRequest("La lista de clasificación está vacía.");
+            if (listPresentacionMi3dto == null || listPresentacionMi3dto.Count == 0)
+                return BadRequest("La lista de presentación está vacía.");
 
             var resultados = new List<object>();
             string? connectionString = configuration.GetConnectionString("CST");
@@ -47,10 +47,10 @@ namespace WMSWebAPI.Controllers
                     {
                         try
                         {
-                            foreach (var dto in Clasificaciondto)
+                            foreach (var dto in listPresentacionMi3dto)
                             {
-                                _syncService.ProcesarClasificacionDesdeDto(dto, connection, transaction);
-                                resultados.Add(new { dto.Codigo, Procesado = true, Mensaje = "Procesado correctamente" });
+                                _presentacionMi3SyncService.ProcesarPresentacionMi3Dto(dto, connection, transaction);
+                                resultados.Add(new { dto.Codigo_presentacion, Procesado = true, Mensaje = "Procesado correctamente" });
                             }
 
                             transaction.Commit();
@@ -69,5 +69,6 @@ namespace WMSWebAPI.Controllers
 
 
         }
+
     }
 }

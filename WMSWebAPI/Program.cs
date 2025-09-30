@@ -6,12 +6,16 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
 using WMSWebAPI.Services;
+using WMSWebAPI.Services.Cliente;
 using WMSWebAPI.Services.Ingresos;
 using WMSWebAPI.Services.LogPortalUx;
 using WMSWebAPI.Services.Producto;
 using WMSWebAPI.Services.Producto.Clasificacion;
 using WMSWebAPI.Services.Producto.Familia;
 using WMSWebAPI.Services.Producto.Marca;
+using WMSWebAPI.Services.Producto.Presentacion;
+using WMSWebAPI.Services.Producto.Tipo;
+using WMSWebAPI.Services.Producto.Umbas;
 using WMSWebAPI.Services.Reset_Password;
 using WMSWebAPI.Services.Salidas;
 
@@ -44,11 +48,14 @@ builder.Services.AddScoped<ISyncIngresosService, SyncIngresosService>();
 builder.Services.AddScoped<IProductoSyncService, ProductoSyncService>();
 builder.Services.AddScoped<ISyncSalidasService, SyncSalidasService>();
 builder.Services.AddScoped<IResetPasswordService, ResetPasswordService>();
-builder.Services.AddScoped<IProductoSimpleSyncService, ProductoSimpleSyncService>();
 builder.Services.AddScoped<IProductoClasificacionSyncService, ProductoClasificacionSyncService>();
 builder.Services.AddScoped<IProductoMarcaSyncService, ProductoMarcaSyncService>();
 builder.Services.AddScoped<IProductoFamiliaSyncService, ProductoFamiliaSyncService>();
-
+builder.Services.AddScoped<IProductoMi3SyncService, ProductoMi3SyncService>();
+builder.Services.AddScoped<IClienteMi3SyncService,ClienteMi3SyncService>();
+builder.Services.AddScoped<IProductoTipoMi3SyncService,ProductoTipoMi3SyncService>();
+builder.Services.AddScoped<IUmbasMi3SyncService, UmbasMi3SyncService>();
+builder.Services.AddScoped<IPresentacionMi3SyncService, PresentacionMi3SyncService>();
 
 // JWT
 var key = "OPaVvHGoW1WqtwoFdS0er9cC1RMrSCxd5ovsEYw22uzKlsyaO-7uOQB16jL3YnKsLB4U_BX5gWNUk0ELXMsEtg";

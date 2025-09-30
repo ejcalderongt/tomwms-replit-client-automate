@@ -2,36 +2,41 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Transactions;
-using WMS.EntityCore.Dtos.Catalogos;
-using WMSWebAPI.Services.Producto.Clasificacion;
+using WMS.EntityCore.Dtos.Productos;
+using WMSWebAPI.Dtos.Catalogos;
+using WMSWebAPI.Services.Producto.Umbas;
 
 namespace WMSWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ClasificacionController : ControllerBase
+    public class UmbasController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IProductoClasificacionSyncService _syncService;
+        private readonly IUmbasMi3SyncService _umbasMi3SyncService;
+        private readonly ILogger<UmbasController> _logger;
 
-        public ClasificacionController(IMapper mapper, IProductoClasificacionSyncService syncService)
+        public UmbasController(IMapper mapper, ILogger<UmbasController> logger, IUmbasMi3SyncService service)
         {
             _mapper = mapper;
-            _syncService = syncService;
+            _logger = logger;
+            _umbasMi3SyncService = service;
         }
 
-
         [HttpPost("list/mi3/insert")]
-        public IActionResult Sincronizar([FromBody] List<ProductoClasificacionMi3Dto> Clasificaciondto, [FromServices] IConfiguration configuration) 
+        public async Task<IActionResult> Sincronizar([FromBody] List<UnidadMedidaMi3Dto> ListUmbasDto, [FromServices] IConfiguration configuration) 
         {
-            if (Clasificaciondto == null || Clasificaciondto.Count == 0)
-                return BadRequest("La lista de clasificación está vacía.");
+            if (ListUmbasDto == null || ListUmbasDto.Count == 0)
+            {
+                _logger.LogWarning("UmbasMi3Dto recibido es nulo o viene vacio.");
+                return BadRequest("El objeto UmbasMi3Dto no puede ser nulo o vacio.");
+            }
 
             var resultados = new List<object>();
             string? connectionString = configuration.GetConnectionString("CST");
-
             if (string.IsNullOrEmpty(connectionString))
             {
+                _logger.LogError("Cadena de conexión 'CST' no configurada.");
                 return StatusCode(500, new { Exito = false, Mensaje = "La cadena de conexión no está configurada." });
             }
 
@@ -42,14 +47,15 @@ namespace WMSWebAPI.Controllers
             {
                 using (var connection = new SqlConnection(connectionString))
                 {
-                    connection.Open();
+                    await connection.OpenAsync();
                     using (var transaction = connection.BeginTransaction())
                     {
                         try
                         {
-                            foreach (var dto in Clasificaciondto)
+
+                            foreach (var dto in ListUmbasDto)
                             {
-                                _syncService.ProcesarClasificacionDesdeDto(dto, connection, transaction);
+                                _umbasMi3SyncService.ProcesarUmbasMi3Dto(dto, connection, transaction);
                                 resultados.Add(new { dto.Codigo, Procesado = true, Mensaje = "Procesado correctamente" });
                             }
 
@@ -57,17 +63,26 @@ namespace WMSWebAPI.Controllers
                             scope.Complete();
 
                             return Ok(new { Exito = true, Resultados = resultados });
+
                         }
                         catch (Exception ex)
                         {
+                            _logger.LogError(ex, "Error al procesar UmbasMi3Dto");
                             transaction.Rollback();
-                            return StatusCode(500, new { Exito = false, Mensaje = ex.Message });
+
+                            var showStackTrace = configuration.GetValue<bool>("MostrarDetallesErrores");
+                            return StatusCode(500, new
+                            {
+                                Exito = false,
+                                Mensaje = ex.Message,
+                                Detalles = showStackTrace ? ex.ToString() : null
+                            });
                         }
                     }
                 }
             }
 
-
         }
+
     }
 }

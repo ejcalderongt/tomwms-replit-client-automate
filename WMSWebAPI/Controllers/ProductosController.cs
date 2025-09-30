@@ -5,8 +5,6 @@ using System.Transactions;
 using WMSWebAPI.Dtos.Catalogos;
 using WMSWebAPI.Dtos.Productos;
 using WMSWebAPI.Services;
-using WMSWebAPI.Services.Ingresos;
-using WMSWebAPI.Services.Producto;
 
 namespace WMSWebAPI.Controllers
 {
@@ -15,9 +13,9 @@ namespace WMSWebAPI.Controllers
     public class ProductosController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IProductoSimpleSyncService _mhsSyncService;
+        private readonly IProductoMi3SyncService _mhsSyncService;
 
-        public ProductosController(IMapper mapper, IProductoSimpleSyncService mhsSyncService)
+        public ProductosController(IMapper mapper, IProductoMi3SyncService mhsSyncService)
         {
             _mapper = mapper;
             _mhsSyncService = mhsSyncService;
@@ -121,10 +119,10 @@ namespace WMSWebAPI.Controllers
 
 
         [HttpPost("list/mi3/insert")]
-        public IActionResult Sincronizar_mhs([FromBody] List<ProductoSimpleDto> productosDto, [FromServices] IConfiguration configuration)
+        public IActionResult Sincronizar_mhs([FromBody] List<ProductoMi3Dto> productosDto, [FromServices] IConfiguration configuration)
         {
             if (productosDto == null || productosDto.Count == 0)
-                return BadRequest("La lista de productos está vacía.");
+                return BadRequest("La lista de ProductosMi3 está vacía.");
 
             var resultados = new List<object>();
             string? connectionString = configuration.GetConnectionString("CST");
