@@ -24,40 +24,40 @@ Partial Class frmConfiguracionHorarios
         Dim User_agrLabel As System.Windows.Forms.Label
         Dim Fec_modLabel As System.Windows.Forms.Label
         Dim Fec_agrLabel As System.Windows.Forms.Label
-        Dim IdEmpresaLabel As System.Windows.Forms.Label
-        Dim Label1 As System.Windows.Forms.Label
-        Dim Label2 As System.Windows.Forms.Label
-        Dim Label7 As System.Windows.Forms.Label
-        Dim Label8 As System.Windows.Forms.Label
-        Dim lblEstadoProductoPedidos As System.Windows.Forms.Label
-        Dim Label10 As System.Windows.Forms.Label
-        Dim Label11 As System.Windows.Forms.Label
-        Dim Label12 As System.Windows.Forms.Label
-        Dim Label13 As System.Windows.Forms.Label
         Dim Label9 As System.Windows.Forms.Label
         Dim Label6 As System.Windows.Forms.Label
         Dim Label5 As System.Windows.Forms.Label
         Dim Label4 As System.Windows.Forms.Label
         Dim Label3 As System.Windows.Forms.Label
-        Dim Label18 As System.Windows.Forms.Label
-        Dim Label19 As System.Windows.Forms.Label
-        Dim Label23 As System.Windows.Forms.Label
-        Dim Label24 As System.Windows.Forms.Label
-        Dim Label25 As System.Windows.Forms.Label
-        Dim Label26 As System.Windows.Forms.Label
-        Dim lblDiasImportacion As System.Windows.Forms.Label
-        Dim Label28 As System.Windows.Forms.Label
-        Dim Label29 As System.Windows.Forms.Label
-        Dim Label30 As System.Windows.Forms.Label
         Dim Label31 As System.Windows.Forms.Label
         Dim Label32 As System.Windows.Forms.Label
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmConfiguracionHorarios))
+        Dim Label33 As System.Windows.Forms.Label
         Dim EditorButtonImageOptions1 As DevExpress.XtraEditors.Controls.EditorButtonImageOptions = New DevExpress.XtraEditors.Controls.EditorButtonImageOptions()
         Dim SerializableAppearanceObject1 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
         Dim SerializableAppearanceObject2 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
         Dim SerializableAppearanceObject3 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
         Dim SerializableAppearanceObject4 As DevExpress.Utils.SerializableAppearanceObject = New DevExpress.Utils.SerializableAppearanceObject()
-        Dim Label33 As System.Windows.Forms.Label
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmConfiguracionHorarios))
+        Me.IdEmpresaLabel = New System.Windows.Forms.Label()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.Label8 = New System.Windows.Forms.Label()
+        Me.lblEstadoProductoPedidos = New System.Windows.Forms.Label()
+        Me.Label10 = New System.Windows.Forms.Label()
+        Me.Label11 = New System.Windows.Forms.Label()
+        Me.Label12 = New System.Windows.Forms.Label()
+        Me.Label13 = New System.Windows.Forms.Label()
+        Me.Label18 = New System.Windows.Forms.Label()
+        Me.Label19 = New System.Windows.Forms.Label()
+        Me.Label23 = New System.Windows.Forms.Label()
+        Me.Label24 = New System.Windows.Forms.Label()
+        Me.Label25 = New System.Windows.Forms.Label()
+        Me.Label26 = New System.Windows.Forms.Label()
+        Me.lblDiasImportacion = New System.Windows.Forms.Label()
+        Me.Label28 = New System.Windows.Forms.Label()
+        Me.Label29 = New System.Windows.Forms.Label()
+        Me.Label30 = New System.Windows.Forms.Label()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -121,6 +121,7 @@ Partial Class frmConfiguracionHorarios
         Me.Dgrid = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.pnlEntidades = New DevExpress.XtraEditors.PanelControl()
+        Me.chkActivo = New DevExpress.XtraEditors.CheckEdit()
         Me.cmbInterfaces = New DevExpress.XtraEditors.LookUpEdit()
         Me.cmbEntidades = New DevExpress.XtraEditors.LookUpEdit()
         Me.checBoxDomingo = New System.Windows.Forms.CheckBox()
@@ -164,36 +165,15 @@ Partial Class frmConfiguracionHorarios
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
         Me.HelpProvider1 = New System.Windows.Forms.HelpProvider()
-        Me.chkActivo = New DevExpress.XtraEditors.CheckEdit()
         User_modLabel = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_modLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
-        IdEmpresaLabel = New System.Windows.Forms.Label()
-        Label1 = New System.Windows.Forms.Label()
-        Label2 = New System.Windows.Forms.Label()
-        Label7 = New System.Windows.Forms.Label()
-        Label8 = New System.Windows.Forms.Label()
-        lblEstadoProductoPedidos = New System.Windows.Forms.Label()
-        Label10 = New System.Windows.Forms.Label()
-        Label11 = New System.Windows.Forms.Label()
-        Label12 = New System.Windows.Forms.Label()
-        Label13 = New System.Windows.Forms.Label()
         Label9 = New System.Windows.Forms.Label()
         Label6 = New System.Windows.Forms.Label()
         Label5 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
         Label3 = New System.Windows.Forms.Label()
-        Label18 = New System.Windows.Forms.Label()
-        Label19 = New System.Windows.Forms.Label()
-        Label23 = New System.Windows.Forms.Label()
-        Label24 = New System.Windows.Forms.Label()
-        Label25 = New System.Windows.Forms.Label()
-        Label26 = New System.Windows.Forms.Label()
-        lblDiasImportacion = New System.Windows.Forms.Label()
-        Label28 = New System.Windows.Forms.Label()
-        Label29 = New System.Windows.Forms.Label()
-        Label30 = New System.Windows.Forms.Label()
         Label31 = New System.Windows.Forms.Label()
         Label32 = New System.Windows.Forms.Label()
         Label33 = New System.Windows.Forms.Label()
@@ -245,6 +225,7 @@ Partial Class frmConfiguracionHorarios
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.pnlEntidades, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlEntidades.SuspendLayout()
+        CType(Me.chkActivo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbInterfaces.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbEntidades.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ToolStrip.SuspendLayout()
@@ -269,7 +250,6 @@ Partial Class frmConfiguracionHorarios
         Me.hideContainerBottom.SuspendLayout()
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
-        CType(Me.chkActivo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_modLabel
@@ -310,113 +290,123 @@ Partial Class frmConfiguracionHorarios
         '
         'IdEmpresaLabel
         '
-        IdEmpresaLabel.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.IdEmpresaLabel.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        IdEmpresaLabel.AutoSize = True
-        IdEmpresaLabel.Location = New System.Drawing.Point(68, 50)
-        IdEmpresaLabel.Name = "IdEmpresaLabel"
-        IdEmpresaLabel.Size = New System.Drawing.Size(62, 16)
-        IdEmpresaLabel.TabIndex = 0
-        IdEmpresaLabel.Text = "Empresa:"
+        Me.IdEmpresaLabel.AutoSize = True
+        Me.IdEmpresaLabel.Location = New System.Drawing.Point(68, 50)
+        Me.IdEmpresaLabel.Name = "IdEmpresaLabel"
+        Me.IdEmpresaLabel.Size = New System.Drawing.Size(62, 16)
+        Me.IdEmpresaLabel.TabIndex = 0
+        Me.IdEmpresaLabel.Text = "Empresa:"
+        Me.IdEmpresaLabel.Visible = False
         '
         'Label1
         '
-        Label1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label1.AutoSize = True
-        Label1.Location = New System.Drawing.Point(68, 83)
-        Label1.Name = "Label1"
-        Label1.Size = New System.Drawing.Size(54, 16)
-        Label1.TabIndex = 4
-        Label1.Text = "Bodega:"
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(68, 83)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(54, 16)
+        Me.Label1.TabIndex = 4
+        Me.Label1.Text = "Bodega:"
+        Me.Label1.Visible = False
         '
         'Label2
         '
-        Label2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label2.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label2.AutoSize = True
-        Label2.Location = New System.Drawing.Point(68, 17)
-        Label2.Name = "Label2"
-        Label2.Size = New System.Drawing.Size(57, 16)
-        Label2.TabIndex = 10
-        Label2.Text = "Nombre:"
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(68, 17)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(57, 16)
+        Me.Label2.TabIndex = 10
+        Me.Label2.Text = "Nombre:"
+        Me.Label2.Visible = False
         '
         'Label7
         '
-        Label7.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label7.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label7.AutoSize = True
-        Label7.Location = New System.Drawing.Point(68, 116)
-        Label7.Name = "Label7"
-        Label7.Size = New System.Drawing.Size(74, 16)
-        Label7.TabIndex = 6
-        Label7.Text = "Propietario:"
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(68, 116)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(74, 16)
+        Me.Label7.TabIndex = 6
+        Me.Label7.Text = "Propietario:"
+        Me.Label7.Visible = False
         '
         'Label8
         '
-        Label8.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label8.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label8.AutoSize = True
-        Label8.Location = New System.Drawing.Point(68, 149)
-        Label8.Name = "Label8"
-        Label8.Size = New System.Drawing.Size(55, 16)
-        Label8.TabIndex = 8
-        Label8.Text = "Usuario:"
+        Me.Label8.AutoSize = True
+        Me.Label8.Location = New System.Drawing.Point(68, 149)
+        Me.Label8.Name = "Label8"
+        Me.Label8.Size = New System.Drawing.Size(55, 16)
+        Me.Label8.TabIndex = 8
+        Me.Label8.Text = "Usuario:"
+        Me.Label8.Visible = False
         '
         'lblEstadoProductoPedidos
         '
-        lblEstadoProductoPedidos.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.lblEstadoProductoPedidos.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        lblEstadoProductoPedidos.AutoSize = True
-        lblEstadoProductoPedidos.Location = New System.Drawing.Point(68, 182)
-        lblEstadoProductoPedidos.Name = "lblEstadoProductoPedidos"
-        lblEstadoProductoPedidos.Size = New System.Drawing.Size(200, 16)
-        lblEstadoProductoPedidos.TabIndex = 1
-        lblEstadoProductoPedidos.Text = "Estado de producto para pedidos:"
+        Me.lblEstadoProductoPedidos.AutoSize = True
+        Me.lblEstadoProductoPedidos.Location = New System.Drawing.Point(68, 182)
+        Me.lblEstadoProductoPedidos.Name = "lblEstadoProductoPedidos"
+        Me.lblEstadoProductoPedidos.Size = New System.Drawing.Size(200, 16)
+        Me.lblEstadoProductoPedidos.TabIndex = 1
+        Me.lblEstadoProductoPedidos.Text = "Estado de producto para pedidos:"
+        Me.lblEstadoProductoPedidos.Visible = False
         '
         'Label10
         '
-        Label10.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label10.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label10.AutoSize = True
-        Label10.Location = New System.Drawing.Point(68, 245)
-        Label10.Name = "Label10"
-        Label10.Size = New System.Drawing.Size(53, 16)
-        Label10.TabIndex = 12
-        Label10.Text = "Familia:"
+        Me.Label10.AutoSize = True
+        Me.Label10.Location = New System.Drawing.Point(68, 245)
+        Me.Label10.Name = "Label10"
+        Me.Label10.Size = New System.Drawing.Size(53, 16)
+        Me.Label10.TabIndex = 12
+        Me.Label10.Text = "Familia:"
+        Me.Label10.Visible = False
         '
         'Label11
         '
-        Label11.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label11.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label11.AutoSize = True
-        Label11.Location = New System.Drawing.Point(68, 311)
-        Label11.Name = "Label11"
-        Label11.Size = New System.Drawing.Size(47, 16)
-        Label11.TabIndex = 14
-        Label11.Text = "Marca:"
+        Me.Label11.AutoSize = True
+        Me.Label11.Location = New System.Drawing.Point(68, 311)
+        Me.Label11.Name = "Label11"
+        Me.Label11.Size = New System.Drawing.Size(47, 16)
+        Me.Label11.TabIndex = 14
+        Me.Label11.Text = "Marca:"
+        Me.Label11.Visible = False
         '
         'Label12
         '
-        Label12.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label12.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label12.AutoSize = True
-        Label12.Location = New System.Drawing.Point(68, 344)
-        Label12.Name = "Label12"
-        Label12.Size = New System.Drawing.Size(91, 16)
-        Label12.TabIndex = 16
-        Label12.Text = "Tipo Producto:"
+        Me.Label12.AutoSize = True
+        Me.Label12.Location = New System.Drawing.Point(68, 344)
+        Me.Label12.Name = "Label12"
+        Me.Label12.Size = New System.Drawing.Size(91, 16)
+        Me.Label12.TabIndex = 16
+        Me.Label12.Text = "Tipo Producto:"
+        Me.Label12.Visible = False
         '
         'Label13
         '
-        Label13.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label13.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label13.AutoSize = True
-        Label13.Location = New System.Drawing.Point(68, 278)
-        Label13.Name = "Label13"
-        Label13.Size = New System.Drawing.Size(82, 16)
-        Label13.TabIndex = 18
-        Label13.Text = "Clasificación:"
+        Me.Label13.AutoSize = True
+        Me.Label13.Location = New System.Drawing.Point(68, 278)
+        Me.Label13.Name = "Label13"
+        Me.Label13.Size = New System.Drawing.Size(82, 16)
+        Me.Label13.TabIndex = 18
+        Me.Label13.Text = "Clasificación:"
+        Me.Label13.Visible = False
         '
         'Label9
         '
@@ -475,113 +465,123 @@ Partial Class frmConfiguracionHorarios
         '
         'Label18
         '
-        Label18.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label18.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label18.AutoSize = True
-        Label18.Location = New System.Drawing.Point(749, 79)
-        Label18.Name = "Label18"
-        Label18.Size = New System.Drawing.Size(179, 16)
-        Label18.TabIndex = 29
-        Label18.Text = "Código proveedor producción:"
+        Me.Label18.AutoSize = True
+        Me.Label18.Location = New System.Drawing.Point(749, 79)
+        Me.Label18.Name = "Label18"
+        Me.Label18.Size = New System.Drawing.Size(179, 16)
+        Me.Label18.TabIndex = 29
+        Me.Label18.Text = "Código proveedor producción:"
+        Me.Label18.Visible = False
         '
         'Label19
         '
-        Label19.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label19.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label19.AutoSize = True
-        Label19.Location = New System.Drawing.Point(1174, 75)
-        Label19.Name = "Label19"
-        Label19.Size = New System.Drawing.Size(85, 16)
-        Label19.TabIndex = 35
-        Label19.Text = "IdAcuerdoEnc"
+        Me.Label19.AutoSize = True
+        Me.Label19.Location = New System.Drawing.Point(1174, 75)
+        Me.Label19.Name = "Label19"
+        Me.Label19.Size = New System.Drawing.Size(85, 16)
+        Me.Label19.TabIndex = 35
+        Me.Label19.Text = "IdAcuerdoEnc"
+        Me.Label19.Visible = False
         '
         'Label23
         '
-        Label23.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label23.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label23.AutoSize = True
-        Label23.Location = New System.Drawing.Point(68, 374)
-        Label23.Name = "Label23"
-        Label23.Size = New System.Drawing.Size(143, 16)
-        Label23.TabIndex = 52
-        Label23.Text = "Código bodega ERP NC:"
+        Me.Label23.AutoSize = True
+        Me.Label23.Location = New System.Drawing.Point(68, 374)
+        Me.Label23.Name = "Label23"
+        Me.Label23.Size = New System.Drawing.Size(143, 16)
+        Me.Label23.TabIndex = 52
+        Me.Label23.Text = "Código bodega ERP NC:"
+        Me.Label23.Visible = False
         '
         'Label24
         '
-        Label24.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label24.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label24.AutoSize = True
-        Label24.Location = New System.Drawing.Point(68, 404)
-        Label24.Name = "Label24"
-        Label24.Size = New System.Drawing.Size(150, 16)
-        Label24.TabIndex = 54
-        Label24.Text = "Lote defecto entrada NC:"
+        Me.Label24.AutoSize = True
+        Me.Label24.Location = New System.Drawing.Point(68, 404)
+        Me.Label24.Name = "Label24"
+        Me.Label24.Size = New System.Drawing.Size(150, 16)
+        Me.Label24.TabIndex = 54
+        Me.Label24.Text = "Lote defecto entrada NC:"
+        Me.Label24.Visible = False
         '
         'Label25
         '
-        Label25.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label25.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label25.AutoSize = True
-        Label25.Location = New System.Drawing.Point(749, 23)
-        Label25.Name = "Label25"
-        Label25.Size = New System.Drawing.Size(149, 16)
-        Label25.TabIndex = 56
-        Label25.Text = "Fecha vence defecto NC:"
+        Me.Label25.AutoSize = True
+        Me.Label25.Location = New System.Drawing.Point(749, 23)
+        Me.Label25.Name = "Label25"
+        Me.Label25.Size = New System.Drawing.Size(149, 16)
+        Me.Label25.TabIndex = 56
+        Me.Label25.Text = "Fecha vence defecto NC:"
+        Me.Label25.Visible = False
         '
         'Label26
         '
-        Label26.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label26.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label26.AutoSize = True
-        Label26.Location = New System.Drawing.Point(68, 214)
-        Label26.Name = "Label26"
-        Label26.Size = New System.Drawing.Size(224, 16)
-        Label26.TabIndex = 58
-        Label26.Text = "Estado de producto para nota crédito:"
+        Me.Label26.AutoSize = True
+        Me.Label26.Location = New System.Drawing.Point(68, 214)
+        Me.Label26.Name = "Label26"
+        Me.Label26.Size = New System.Drawing.Size(224, 16)
+        Me.Label26.TabIndex = 58
+        Me.Label26.Text = "Estado de producto para nota crédito:"
+        Me.Label26.Visible = False
         '
         'lblDiasImportacion
         '
-        lblDiasImportacion.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.lblDiasImportacion.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        lblDiasImportacion.AutoSize = True
-        lblDiasImportacion.Location = New System.Drawing.Point(750, 109)
-        lblDiasImportacion.Name = "lblDiasImportacion"
-        lblDiasImportacion.Size = New System.Drawing.Size(146, 16)
-        lblDiasImportacion.TabIndex = 63
-        lblDiasImportacion.Text = "Rango días importación:"
+        Me.lblDiasImportacion.AutoSize = True
+        Me.lblDiasImportacion.Location = New System.Drawing.Point(750, 109)
+        Me.lblDiasImportacion.Name = "lblDiasImportacion"
+        Me.lblDiasImportacion.Size = New System.Drawing.Size(146, 16)
+        Me.lblDiasImportacion.TabIndex = 63
+        Me.lblDiasImportacion.Text = "Rango días importación:"
+        Me.lblDiasImportacion.Visible = False
         '
         'Label28
         '
-        Label28.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label28.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label28.AutoSize = True
-        Label28.Location = New System.Drawing.Point(68, 464)
-        Label28.Name = "Label28"
-        Label28.Size = New System.Drawing.Size(164, 16)
-        Label28.TabIndex = 68
-        Label28.Text = "Código bodega facturación:"
+        Me.Label28.AutoSize = True
+        Me.Label28.Location = New System.Drawing.Point(68, 464)
+        Me.Label28.Name = "Label28"
+        Me.Label28.Size = New System.Drawing.Size(164, 16)
+        Me.Label28.TabIndex = 68
+        Me.Label28.Text = "Código bodega facturación:"
+        Me.Label28.Visible = False
         '
         'Label29
         '
-        Label29.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label29.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label29.AutoSize = True
-        Label29.Location = New System.Drawing.Point(68, 494)
-        Label29.Name = "Label29"
-        Label29.Size = New System.Drawing.Size(155, 16)
-        Label29.TabIndex = 70
-        Label29.Text = "Código bodega prorrateo:"
+        Me.Label29.AutoSize = True
+        Me.Label29.Location = New System.Drawing.Point(68, 494)
+        Me.Label29.Name = "Label29"
+        Me.Label29.Size = New System.Drawing.Size(155, 16)
+        Me.Label29.TabIndex = 70
+        Me.Label29.Text = "Código bodega prorrateo:"
+        Me.Label29.Visible = False
         '
         'Label30
         '
-        Label30.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.Label30.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label30.AutoSize = True
-        Label30.Location = New System.Drawing.Point(68, 524)
-        Label30.Name = "Label30"
-        Label30.Size = New System.Drawing.Size(162, 16)
-        Label30.TabIndex = 72
-        Label30.Text = "Código bodega prorrateo1:"
+        Me.Label30.AutoSize = True
+        Me.Label30.Location = New System.Drawing.Point(68, 524)
+        Me.Label30.Name = "Label30"
+        Me.Label30.Size = New System.Drawing.Size(162, 16)
+        Me.Label30.TabIndex = 72
+        Me.Label30.Text = "Código bodega prorrateo1:"
+        Me.Label30.Visible = False
         '
         'Label31
         '
@@ -602,6 +602,17 @@ Partial Class frmConfiguracionHorarios
         Label32.Size = New System.Drawing.Size(63, 16)
         Label32.TabIndex = 52
         Label32.Text = "Interface:"
+        '
+        'Label33
+        '
+        Label33.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label33.AutoSize = True
+        Label33.Location = New System.Drawing.Point(25, 296)
+        Label33.Name = "Label33"
+        Label33.Size = New System.Drawing.Size(46, 16)
+        Label33.TabIndex = 54
+        Label33.Text = "Activo:"
         '
         'RibbonControl
         '
@@ -695,27 +706,27 @@ Partial Class frmConfiguracionHorarios
         Me.pnlEncabezado.AutoSize = True
         Me.pnlEncabezado.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.pnlEncabezado.Controls.Add(Me.txtCodigoBodegaProrrateo1)
-        Me.pnlEncabezado.Controls.Add(Label30)
+        Me.pnlEncabezado.Controls.Add(Me.Label30)
         Me.pnlEncabezado.Controls.Add(Me.txtCodigoBodegaProrrateo)
-        Me.pnlEncabezado.Controls.Add(Label29)
+        Me.pnlEncabezado.Controls.Add(Me.Label29)
         Me.pnlEncabezado.Controls.Add(Me.txtCodigoBodegaFacturacion)
-        Me.pnlEncabezado.Controls.Add(Label28)
+        Me.pnlEncabezado.Controls.Add(Me.Label28)
         Me.pnlEncabezado.Controls.Add(Me.chkExcluirRececpionPicking)
         Me.pnlEncabezado.Controls.Add(Me.chkValidaSoloCodigo)
         Me.pnlEncabezado.Controls.Add(Me.chkRechazarBonificacionIncompleta)
         Me.pnlEncabezado.Controls.Add(Me.chkInferirBonificacionPedidoSAP)
-        Me.pnlEncabezado.Controls.Add(lblDiasImportacion)
+        Me.pnlEncabezado.Controls.Add(Me.lblDiasImportacion)
         Me.pnlEncabezado.Controls.Add(Me.nudRangoDiasImportacion)
         Me.pnlEncabezado.Controls.Add(Me.cmbIndiceRotacion)
         Me.pnlEncabezado.Controls.Add(Me.Label27)
-        Me.pnlEncabezado.Controls.Add(Label26)
+        Me.pnlEncabezado.Controls.Add(Me.Label26)
         Me.pnlEncabezado.Controls.Add(Me.cmbIdEstadoProductoNC)
         Me.pnlEncabezado.Controls.Add(Me.dtpVenceDefectoNC)
-        Me.pnlEncabezado.Controls.Add(Label25)
+        Me.pnlEncabezado.Controls.Add(Me.Label25)
         Me.pnlEncabezado.Controls.Add(Me.txtLoteDefectoEntradaNC)
-        Me.pnlEncabezado.Controls.Add(Label24)
+        Me.pnlEncabezado.Controls.Add(Me.Label24)
         Me.pnlEncabezado.Controls.Add(Me.txtCodigoBodegaERPNC)
-        Me.pnlEncabezado.Controls.Add(Label23)
+        Me.pnlEncabezado.Controls.Add(Me.Label23)
         Me.pnlEncabezado.Controls.Add(Me.chkConsiderar_Paletizado_En_Reabasto)
         Me.pnlEncabezado.Controls.Add(Me.chkExcluirUbicacionesReabasto)
         Me.pnlEncabezado.Controls.Add(Me.chkRecepcionGeneraHistorico)
@@ -731,10 +742,10 @@ Partial Class frmConfiguracionHorarios
         Me.pnlEncabezado.Controls.Add(Me.cmbEtiqueta)
         Me.pnlEncabezado.Controls.Add(Me.lblEtiqueta)
         Me.pnlEncabezado.Controls.Add(Me.txtIdAcuerdoEnc)
-        Me.pnlEncabezado.Controls.Add(Label19)
+        Me.pnlEncabezado.Controls.Add(Me.Label19)
         Me.pnlEncabezado.Controls.Add(Me.chkControlPeso)
         Me.pnlEncabezado.Controls.Add(Me.txtCodigoProvProd)
-        Me.pnlEncabezado.Controls.Add(Label18)
+        Me.pnlEncabezado.Controls.Add(Me.Label18)
         Me.pnlEncabezado.Controls.Add(Me.chkGenerarRecAutoBD)
         Me.pnlEncabezado.Controls.Add(Me.chkGenerarPedidoIngresoBD)
         Me.pnlEncabezado.Controls.Add(Me.chkControlLote)
@@ -742,24 +753,24 @@ Partial Class frmConfiguracionHorarios
         Me.pnlEncabezado.Controls.Add(Me.chkControlFechaVencimiento)
         Me.pnlEncabezado.Controls.Add(Me.Label14)
         Me.pnlEncabezado.Controls.Add(Me.chkGeneraLP)
-        Me.pnlEncabezado.Controls.Add(Label13)
+        Me.pnlEncabezado.Controls.Add(Me.Label13)
         Me.pnlEncabezado.Controls.Add(Me.cmbClasificación)
-        Me.pnlEncabezado.Controls.Add(Label12)
+        Me.pnlEncabezado.Controls.Add(Me.Label12)
         Me.pnlEncabezado.Controls.Add(Me.cmbTipoProducto)
-        Me.pnlEncabezado.Controls.Add(Label11)
+        Me.pnlEncabezado.Controls.Add(Me.Label11)
         Me.pnlEncabezado.Controls.Add(Me.cmbMarca)
-        Me.pnlEncabezado.Controls.Add(Label10)
+        Me.pnlEncabezado.Controls.Add(Me.Label10)
         Me.pnlEncabezado.Controls.Add(Me.cmbFamilia)
-        Me.pnlEncabezado.Controls.Add(lblEstadoProductoPedidos)
+        Me.pnlEncabezado.Controls.Add(Me.lblEstadoProductoPedidos)
         Me.pnlEncabezado.Controls.Add(Me.cmbProductoEstado)
-        Me.pnlEncabezado.Controls.Add(Label8)
+        Me.pnlEncabezado.Controls.Add(Me.Label8)
         Me.pnlEncabezado.Controls.Add(Me.cmbUsuario)
-        Me.pnlEncabezado.Controls.Add(Label7)
+        Me.pnlEncabezado.Controls.Add(Me.Label7)
         Me.pnlEncabezado.Controls.Add(Me.cmbPropietario)
         Me.pnlEncabezado.Controls.Add(Me.txtNombre)
-        Me.pnlEncabezado.Controls.Add(Label2)
-        Me.pnlEncabezado.Controls.Add(Label1)
-        Me.pnlEncabezado.Controls.Add(IdEmpresaLabel)
+        Me.pnlEncabezado.Controls.Add(Me.Label2)
+        Me.pnlEncabezado.Controls.Add(Me.Label1)
+        Me.pnlEncabezado.Controls.Add(Me.IdEmpresaLabel)
         Me.pnlEncabezado.Controls.Add(Me.cmbEmpresa)
         Me.pnlEncabezado.Controls.Add(Me.cmbBodega)
         Me.pnlEncabezado.Dock = System.Windows.Forms.DockStyle.Fill
@@ -779,6 +790,7 @@ Partial Class frmConfiguracionHorarios
         Me.txtCodigoBodegaProrrateo1.Properties.MaxLength = 256
         Me.txtCodigoBodegaProrrateo1.Size = New System.Drawing.Size(431, 22)
         Me.txtCodigoBodegaProrrateo1.TabIndex = 73
+        Me.txtCodigoBodegaProrrateo1.Visible = False
         '
         'txtCodigoBodegaProrrateo
         '
@@ -790,6 +802,7 @@ Partial Class frmConfiguracionHorarios
         Me.txtCodigoBodegaProrrateo.Properties.MaxLength = 256
         Me.txtCodigoBodegaProrrateo.Size = New System.Drawing.Size(431, 22)
         Me.txtCodigoBodegaProrrateo.TabIndex = 71
+        Me.txtCodigoBodegaProrrateo.Visible = False
         '
         'txtCodigoBodegaFacturacion
         '
@@ -801,6 +814,7 @@ Partial Class frmConfiguracionHorarios
         Me.txtCodigoBodegaFacturacion.Properties.MaxLength = 256
         Me.txtCodigoBodegaFacturacion.Size = New System.Drawing.Size(431, 22)
         Me.txtCodigoBodegaFacturacion.TabIndex = 69
+        Me.txtCodigoBodegaFacturacion.Visible = False
         '
         'chkExcluirRececpionPicking
         '
@@ -811,6 +825,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkExcluirRececpionPicking.Properties.Caption = "Excluir recepción de picking"
         Me.chkExcluirRececpionPicking.Size = New System.Drawing.Size(256, 24)
         Me.chkExcluirRececpionPicking.TabIndex = 67
+        Me.chkExcluirRececpionPicking.Visible = False
         '
         'chkValidaSoloCodigo
         '
@@ -821,6 +836,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkValidaSoloCodigo.Properties.Caption = "Valida sólo código"
         Me.chkValidaSoloCodigo.Size = New System.Drawing.Size(256, 24)
         Me.chkValidaSoloCodigo.TabIndex = 66
+        Me.chkValidaSoloCodigo.Visible = False
         '
         'chkRechazarBonificacionIncompleta
         '
@@ -831,6 +847,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkRechazarBonificacionIncompleta.Properties.Caption = "Rechazar bonificación incompleta"
         Me.chkRechazarBonificacionIncompleta.Size = New System.Drawing.Size(256, 24)
         Me.chkRechazarBonificacionIncompleta.TabIndex = 65
+        Me.chkRechazarBonificacionIncompleta.Visible = False
         '
         'chkInferirBonificacionPedidoSAP
         '
@@ -841,6 +858,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkInferirBonificacionPedidoSAP.Properties.Caption = "Inferir bonificación pedido SAP"
         Me.chkInferirBonificacionPedidoSAP.Size = New System.Drawing.Size(256, 24)
         Me.chkInferirBonificacionPedidoSAP.TabIndex = 64
+        Me.chkInferirBonificacionPedidoSAP.Visible = False
         '
         'nudRangoDiasImportacion
         '
@@ -848,6 +866,7 @@ Partial Class frmConfiguracionHorarios
         Me.nudRangoDiasImportacion.Name = "nudRangoDiasImportacion"
         Me.nudRangoDiasImportacion.Size = New System.Drawing.Size(135, 23)
         Me.nudRangoDiasImportacion.TabIndex = 62
+        Me.nudRangoDiasImportacion.Visible = False
         '
         'cmbIndiceRotacion
         '
@@ -859,6 +878,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbIndiceRotacion.Properties.NullText = ""
         Me.cmbIndiceRotacion.Size = New System.Drawing.Size(135, 22)
         Me.cmbIndiceRotacion.TabIndex = 61
+        Me.cmbIndiceRotacion.Visible = False
         '
         'Label27
         '
@@ -868,6 +888,7 @@ Partial Class frmConfiguracionHorarios
         Me.Label27.Size = New System.Drawing.Size(109, 16)
         Me.Label27.TabIndex = 60
         Me.Label27.Text = "Índice de rotación"
+        Me.Label27.Visible = False
         '
         'cmbIdEstadoProductoNC
         '
@@ -879,6 +900,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbIdEstadoProductoNC.Name = "cmbIdEstadoProductoNC"
         Me.cmbIdEstadoProductoNC.Size = New System.Drawing.Size(431, 25)
         Me.cmbIdEstadoProductoNC.TabIndex = 59
+        Me.cmbIdEstadoProductoNC.Visible = False
         '
         'dtpVenceDefectoNC
         '
@@ -888,6 +910,7 @@ Partial Class frmConfiguracionHorarios
         Me.dtpVenceDefectoNC.Name = "dtpVenceDefectoNC"
         Me.dtpVenceDefectoNC.Size = New System.Drawing.Size(136, 23)
         Me.dtpVenceDefectoNC.TabIndex = 57
+        Me.dtpVenceDefectoNC.Visible = False
         '
         'txtLoteDefectoEntradaNC
         '
@@ -899,6 +922,7 @@ Partial Class frmConfiguracionHorarios
         Me.txtLoteDefectoEntradaNC.Properties.MaxLength = 256
         Me.txtLoteDefectoEntradaNC.Size = New System.Drawing.Size(431, 22)
         Me.txtLoteDefectoEntradaNC.TabIndex = 55
+        Me.txtLoteDefectoEntradaNC.Visible = False
         '
         'txtCodigoBodegaERPNC
         '
@@ -910,6 +934,7 @@ Partial Class frmConfiguracionHorarios
         Me.txtCodigoBodegaERPNC.Properties.MaxLength = 256
         Me.txtCodigoBodegaERPNC.Size = New System.Drawing.Size(431, 22)
         Me.txtCodigoBodegaERPNC.TabIndex = 53
+        Me.txtCodigoBodegaERPNC.Visible = False
         '
         'chkConsiderar_Paletizado_En_Reabasto
         '
@@ -920,6 +945,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkConsiderar_Paletizado_En_Reabasto.Properties.Caption = "Considerar paletizado en reabasto"
         Me.chkConsiderar_Paletizado_En_Reabasto.Size = New System.Drawing.Size(256, 24)
         Me.chkConsiderar_Paletizado_En_Reabasto.TabIndex = 51
+        Me.chkConsiderar_Paletizado_En_Reabasto.Visible = False
         '
         'chkExcluirUbicacionesReabasto
         '
@@ -930,6 +956,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkExcluirUbicacionesReabasto.Properties.Caption = "Excluir ubicaciones de reabasto"
         Me.chkExcluirUbicacionesReabasto.Size = New System.Drawing.Size(226, 24)
         Me.chkExcluirUbicacionesReabasto.TabIndex = 50
+        Me.chkExcluirUbicacionesReabasto.Visible = False
         '
         'chkRecepcionGeneraHistorico
         '
@@ -940,6 +967,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkRecepcionGeneraHistorico.Properties.Caption = "Recepción genera histórico"
         Me.chkRecepcionGeneraHistorico.Size = New System.Drawing.Size(196, 24)
         Me.chkRecepcionGeneraHistorico.TabIndex = 49
+        Me.chkRecepcionGeneraHistorico.Visible = False
         '
         'chkmantener_zona_picking_clavaud
         '
@@ -950,7 +978,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkmantener_zona_picking_clavaud.Properties.Caption = "Conservar Zona de Picking (Modelo Clavaud)"
         Me.chkmantener_zona_picking_clavaud.Size = New System.Drawing.Size(298, 24)
         Me.chkmantener_zona_picking_clavaud.TabIndex = 48
-        Me.chkmantener_zona_picking_clavaud.ToolTip = resources.GetString("chkmantener_zona_picking_clavaud.ToolTip")
+        Me.chkmantener_zona_picking_clavaud.Visible = False
         '
         'cmbTipoRotacion
         '
@@ -962,6 +990,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbTipoRotacion.Properties.NullText = ""
         Me.cmbTipoRotacion.Size = New System.Drawing.Size(135, 22)
         Me.cmbTipoRotacion.TabIndex = 47
+        Me.cmbTipoRotacion.Visible = False
         '
         'Label20
         '
@@ -971,6 +1000,7 @@ Partial Class frmConfiguracionHorarios
         Me.Label20.Size = New System.Drawing.Size(82, 16)
         Me.Label20.TabIndex = 46
         Me.Label20.Text = "Tipo rotación"
+        Me.Label20.Visible = False
         '
         'chkEjecutarEnDespachoAuotmaticamente
         '
@@ -984,6 +1014,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkEjecutarEnDespachoAuotmaticamente.ToolTip = "#EJC20220307: Si está habilitado y se tiene un Id de  configuración de interface " &
     "válido, entonces la interface correspondiente configurada se ejecuta después de " &
     "cada transacción de despaacho. "
+        Me.chkEjecutarEnDespachoAuotmaticamente.Visible = False
         '
         'chkExplosionAutomaticaInterface
         '
@@ -999,6 +1030,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkExplosionAutomaticaInterface.TabIndex = 43
         Me.chkExplosionAutomaticaInterface.ToolTip = "Determina si cuando el producto se solicita en umbas y solo hay disponible en pre" &
     "sentación "
+        Me.chkExplosionAutomaticaInterface.Visible = False
         '
         'chkImplosionAutomaticaEnInterface
         '
@@ -1014,6 +1046,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkImplosionAutomaticaEnInterface.TabIndex = 42
         Me.chkImplosionAutomaticaEnInterface.ToolTip = "Determina si cuando el producto se solicita en presentación y solo hay umbas y se" &
     " corresponde con el factor."
+        Me.chkImplosionAutomaticaEnInterface.Visible = False
         '
         'chkpush_ingreso_nav_desde_hh
         '
@@ -1024,6 +1057,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkpush_ingreso_nav_desde_hh.Properties.Caption = "Push Ingreso NAV Desde HH"
         Me.chkpush_ingreso_nav_desde_hh.Size = New System.Drawing.Size(257, 24)
         Me.chkpush_ingreso_nav_desde_hh.TabIndex = 41
+        Me.chkpush_ingreso_nav_desde_hh.Visible = False
         '
         'chkCrearRecTransfNAV
         '
@@ -1034,6 +1068,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkCrearRecTransfNAV.Properties.Caption = "Crear recepcion_De_Transferencia_NAV"
         Me.chkCrearRecTransfNAV.Size = New System.Drawing.Size(257, 24)
         Me.chkCrearRecTransfNAV.TabIndex = 40
+        Me.chkCrearRecTransfNAV.Visible = False
         '
         'chkCrearRecCompraNAV
         '
@@ -1044,6 +1079,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkCrearRecCompraNAV.Properties.Caption = "Crear recepción automática para documentos de ingreso"
         Me.chkCrearRecCompraNAV.Size = New System.Drawing.Size(374, 24)
         Me.chkCrearRecCompraNAV.TabIndex = 39
+        Me.chkCrearRecCompraNAV.Visible = False
         '
         'cmbEtiqueta
         '
@@ -1055,6 +1091,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbEtiqueta.Properties.NullText = ""
         Me.cmbEtiqueta.Size = New System.Drawing.Size(135, 22)
         Me.cmbEtiqueta.TabIndex = 38
+        Me.cmbEtiqueta.Visible = False
         '
         'lblEtiqueta
         '
@@ -1064,6 +1101,7 @@ Partial Class frmConfiguracionHorarios
         Me.lblEtiqueta.Size = New System.Drawing.Size(53, 16)
         Me.lblEtiqueta.TabIndex = 37
         Me.lblEtiqueta.Text = "Etiqueta"
+        Me.lblEtiqueta.Visible = False
         '
         'txtIdAcuerdoEnc
         '
@@ -1075,6 +1113,7 @@ Partial Class frmConfiguracionHorarios
         Me.txtIdAcuerdoEnc.Properties.MaxLength = 50
         Me.txtIdAcuerdoEnc.Size = New System.Drawing.Size(135, 22)
         Me.txtIdAcuerdoEnc.TabIndex = 36
+        Me.txtIdAcuerdoEnc.Visible = False
         '
         'chkControlPeso
         '
@@ -1085,6 +1124,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkControlPeso.Properties.Caption = "Control peso"
         Me.chkControlPeso.Size = New System.Drawing.Size(107, 24)
         Me.chkControlPeso.TabIndex = 34
+        Me.chkControlPeso.Visible = False
         '
         'txtCodigoProvProd
         '
@@ -1096,6 +1136,7 @@ Partial Class frmConfiguracionHorarios
         Me.txtCodigoProvProd.Properties.MaxLength = 50
         Me.txtCodigoProvProd.Size = New System.Drawing.Size(135, 22)
         Me.txtCodigoProvProd.TabIndex = 33
+        Me.txtCodigoProvProd.Visible = False
         '
         'chkGenerarRecAutoBD
         '
@@ -1106,6 +1147,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkGenerarRecAutoBD.Properties.Caption = "Generar recepcion auto Bodega Destino"
         Me.chkGenerarRecAutoBD.Size = New System.Drawing.Size(274, 24)
         Me.chkGenerarRecAutoBD.TabIndex = 24
+        Me.chkGenerarRecAutoBD.Visible = False
         '
         'chkGenerarPedidoIngresoBD
         '
@@ -1117,6 +1159,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkGenerarPedidoIngresoBD.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.chkGenerarPedidoIngresoBD.Size = New System.Drawing.Size(257, 24)
         Me.chkGenerarPedidoIngresoBD.TabIndex = 23
+        Me.chkGenerarPedidoIngresoBD.Visible = False
         '
         'chkControlLote
         '
@@ -1127,6 +1170,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkControlLote.Properties.Caption = "Control por Lote"
         Me.chkControlLote.Size = New System.Drawing.Size(128, 24)
         Me.chkControlLote.TabIndex = 18
+        Me.chkControlLote.Visible = False
         '
         'txtArchivo
         '
@@ -1137,6 +1181,7 @@ Partial Class frmConfiguracionHorarios
         Me.txtArchivo.Properties.ButtonsStyle = DevExpress.XtraEditors.Controls.BorderStyles.HotFlat
         Me.txtArchivo.Size = New System.Drawing.Size(431, 22)
         Me.txtArchivo.TabIndex = 22
+        Me.txtArchivo.Visible = False
         '
         'chkControlFechaVencimiento
         '
@@ -1147,6 +1192,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkControlFechaVencimiento.Properties.Caption = "Controlar Vencimientos"
         Me.chkControlFechaVencimiento.Size = New System.Drawing.Size(196, 24)
         Me.chkControlFechaVencimiento.TabIndex = 19
+        Me.chkControlFechaVencimiento.Visible = False
         '
         'Label14
         '
@@ -1157,6 +1203,7 @@ Partial Class frmConfiguracionHorarios
         Me.Label14.Size = New System.Drawing.Size(49, 16)
         Me.Label14.TabIndex = 21
         Me.Label14.Text = "Archivo"
+        Me.Label14.Visible = False
         '
         'chkGeneraLP
         '
@@ -1167,6 +1214,7 @@ Partial Class frmConfiguracionHorarios
         Me.chkGeneraLP.Properties.Caption = "Generar Licencia (Automáticamente)"
         Me.chkGeneraLP.Size = New System.Drawing.Size(221, 24)
         Me.chkGeneraLP.TabIndex = 20
+        Me.chkGeneraLP.Visible = False
         '
         'cmbClasificación
         '
@@ -1178,6 +1226,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbClasificación.Name = "cmbClasificación"
         Me.cmbClasificación.Size = New System.Drawing.Size(431, 25)
         Me.cmbClasificación.TabIndex = 19
+        Me.cmbClasificación.Visible = False
         '
         'cmbTipoProducto
         '
@@ -1189,6 +1238,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbTipoProducto.Name = "cmbTipoProducto"
         Me.cmbTipoProducto.Size = New System.Drawing.Size(431, 25)
         Me.cmbTipoProducto.TabIndex = 17
+        Me.cmbTipoProducto.Visible = False
         '
         'cmbMarca
         '
@@ -1200,6 +1250,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbMarca.Name = "cmbMarca"
         Me.cmbMarca.Size = New System.Drawing.Size(431, 25)
         Me.cmbMarca.TabIndex = 15
+        Me.cmbMarca.Visible = False
         '
         'cmbFamilia
         '
@@ -1211,6 +1262,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbFamilia.Name = "cmbFamilia"
         Me.cmbFamilia.Size = New System.Drawing.Size(431, 25)
         Me.cmbFamilia.TabIndex = 13
+        Me.cmbFamilia.Visible = False
         '
         'cmbProductoEstado
         '
@@ -1222,6 +1274,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbProductoEstado.Name = "cmbProductoEstado"
         Me.cmbProductoEstado.Size = New System.Drawing.Size(431, 25)
         Me.cmbProductoEstado.TabIndex = 2
+        Me.cmbProductoEstado.Visible = False
         '
         'cmbUsuario
         '
@@ -1233,6 +1286,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbUsuario.Name = "cmbUsuario"
         Me.cmbUsuario.Size = New System.Drawing.Size(431, 25)
         Me.cmbUsuario.TabIndex = 9
+        Me.cmbUsuario.Visible = False
         '
         'cmbPropietario
         '
@@ -1244,6 +1298,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbPropietario.Name = "cmbPropietario"
         Me.cmbPropietario.Size = New System.Drawing.Size(431, 25)
         Me.cmbPropietario.TabIndex = 7
+        Me.cmbPropietario.Visible = False
         '
         'txtNombre
         '
@@ -1255,6 +1310,7 @@ Partial Class frmConfiguracionHorarios
         Me.txtNombre.Properties.MaxLength = 256
         Me.txtNombre.Size = New System.Drawing.Size(253, 22)
         Me.txtNombre.TabIndex = 11
+        Me.txtNombre.Visible = False
         '
         'cmbEmpresa
         '
@@ -1266,6 +1322,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbEmpresa.Name = "cmbEmpresa"
         Me.cmbEmpresa.Size = New System.Drawing.Size(431, 25)
         Me.cmbEmpresa.TabIndex = 3
+        Me.cmbEmpresa.Visible = False
         '
         'cmbBodega
         '
@@ -1277,6 +1334,7 @@ Partial Class frmConfiguracionHorarios
         Me.cmbBodega.Name = "cmbBodega"
         Me.cmbBodega.Size = New System.Drawing.Size(431, 25)
         Me.cmbBodega.TabIndex = 5
+        Me.cmbBodega.Visible = False
         '
         'XtraTabPage2
         '
@@ -1340,6 +1398,15 @@ Partial Class frmConfiguracionHorarios
         Me.pnlEntidades.Name = "pnlEntidades"
         Me.pnlEntidades.Size = New System.Drawing.Size(1507, 337)
         Me.pnlEntidades.TabIndex = 3
+        '
+        'chkActivo
+        '
+        Me.chkActivo.Location = New System.Drawing.Point(178, 292)
+        Me.chkActivo.MenuManager = Me.RibbonControl
+        Me.chkActivo.Name = "chkActivo"
+        Me.chkActivo.Properties.Caption = ""
+        Me.chkActivo.Size = New System.Drawing.Size(94, 24)
+        Me.chkActivo.TabIndex = 53
         '
         'cmbInterfaces
         '
@@ -1802,26 +1869,6 @@ Partial Class frmConfiguracionHorarios
         Me.DockPanel1_Container.Size = New System.Drawing.Size(1101, 75)
         Me.DockPanel1_Container.TabIndex = 0
         '
-        'chkActivo
-        '
-        Me.chkActivo.Location = New System.Drawing.Point(178, 292)
-        Me.chkActivo.MenuManager = Me.RibbonControl
-        Me.chkActivo.Name = "chkActivo"
-        Me.chkActivo.Properties.Caption = ""
-        Me.chkActivo.Size = New System.Drawing.Size(94, 24)
-        Me.chkActivo.TabIndex = 53
-        '
-        'Label33
-        '
-        Label33.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label33.AutoSize = True
-        Label33.Location = New System.Drawing.Point(25, 296)
-        Label33.Name = "Label33"
-        Label33.Size = New System.Drawing.Size(46, 16)
-        Label33.TabIndex = 54
-        Label33.Text = "Activo:"
-        '
         'frmConfiguracionHorarios
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -1888,6 +1935,7 @@ Partial Class frmConfiguracionHorarios
         CType(Me.pnlEntidades, System.ComponentModel.ISupportInitialize).EndInit()
         Me.pnlEntidades.ResumeLayout(False)
         Me.pnlEntidades.PerformLayout()
+        CType(Me.chkActivo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbInterfaces.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbEntidades.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ToolStrip.ResumeLayout(False)
@@ -1915,7 +1963,6 @@ Partial Class frmConfiguracionHorarios
         Me.DockPanel1.ResumeLayout(False)
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
-        CType(Me.chkActivo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -2028,4 +2075,24 @@ Partial Class frmConfiguracionHorarios
     Friend WithEvents cmbEntidades As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents cmbInterfaces As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents chkActivo As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents IdEmpresaLabel As Label
+    Friend WithEvents Label1 As Label
+    Friend WithEvents Label2 As Label
+    Friend WithEvents Label7 As Label
+    Friend WithEvents Label8 As Label
+    Friend WithEvents lblEstadoProductoPedidos As Label
+    Friend WithEvents Label10 As Label
+    Friend WithEvents Label11 As Label
+    Friend WithEvents Label12 As Label
+    Friend WithEvents Label13 As Label
+    Friend WithEvents Label18 As Label
+    Friend WithEvents Label19 As Label
+    Friend WithEvents Label23 As Label
+    Friend WithEvents Label24 As Label
+    Friend WithEvents Label25 As Label
+    Friend WithEvents Label26 As Label
+    Friend WithEvents lblDiasImportacion As Label
+    Friend WithEvents Label28 As Label
+    Friend WithEvents Label29 As Label
+    Friend WithEvents Label30 As Label
 End Class

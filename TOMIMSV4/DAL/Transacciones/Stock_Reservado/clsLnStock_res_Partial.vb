@@ -1,5 +1,6 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
+Imports DevExpress.CodeParser
 Imports DevExpress.XtraEditors
 Imports TOMWMS.clsBeI_nav_config_enc
 
@@ -23852,10 +23853,14 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                     '    GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
                                     'End If
 
+
                                     '#EJC20250923 Se agregó validacion al proceso 105
                                     If ListaEstadosDeProceso.Contains(105) Then
                                         If (FechaMinimaVenceStock < vStockOrigen.Fecha_vence) AndAlso Not (FechaMinimaVenceStock = New Date(1900, 1, 1)) Then
-                                            GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
+                                            If Not ListaEstadosDeProceso.Contains(106) Then
+                                                ListaEstadosDeProceso.Add(106)
+                                                GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
+                                            End If
                                         End If
                                     End If
 
@@ -23865,6 +23870,7 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                             GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
                                         End If
                                     End If
+
                                 Else
                                     If Not ListaEstadosDeProceso.Contains(105) Then
                                         ListaEstadosDeProceso.Add(105)
