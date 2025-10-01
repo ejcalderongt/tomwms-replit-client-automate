@@ -4,7 +4,8 @@ Imports SAPbobsCOM
 Imports TOMWMS.clsDataContractDI
 Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
-    Private Shared Function Get_Pedidos_Cliente_SAP(Optional ByVal pPedidoCliente As String = "", Optional ByVal pCompany As pEmpresa = pEmpresa.Killios) As List(Of clsBeI_nav_ped_traslado_enc)
+    Private Shared Function Get_Pedidos_Cliente_SAP(Optional ByVal pPedidoCliente As String = "",
+                                                    Optional ByVal pCompany As pEmpresa = pEmpresa.Killios) As List(Of clsBeI_nav_ped_traslado_enc)
 
         Dim lPedidosCliente As New List(Of clsBeI_nav_ped_traslado_enc)
         Dim BePropietario As New clsBePropietarios
@@ -68,7 +69,8 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
             Return lPedidosCliente
 
         Catch ex As Exception
-            Throw
+            'Throw
+            Get_Pedidos_Cliente_SAP = Nothing
         Finally
             If conn IsNot Nothing Then
                 sapPool.ReleaseConnection(conn)
@@ -457,29 +459,72 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
                 Throw New Exception("No está definida la configuración de interface para el identificador: " & BD.Instancia.IdConfiguracionInterface)
             End If
 
-            ' Genera transferencia de stock
-            Dim lResultProductosTransferSap As List(Of ProductoTransferSAP) =
-            Enviar_Transferencia_Stock_SAP(_Docentry,
-                                           lINavTransaccionesOut,
-                                           lblprg,
-                                           prg,
-                                           BePedido,
-                                           clsTransaccion,
-                                           oCompany,
-                                           BeConfigEnc,
-                                           vEmpresa)
+            Dim lResultProductosTransferSap As List(Of ProductoTransferSAP) = Nothing
+            Dim transferencia As String = clsLnTrans_pe_enc.Existe_Transferencia_By_IdPedidoEnc(BePedido.IdPedidoEnc, BePedido.No_despacho)
+
+            If (transferencia = "") Then
+
+                ' Genera transferencia de stock
+                lResultProductosTransferSap =
+                Enviar_Transferencia_Stock_SAP(_Docentry,
+                                               lINavTransaccionesOut,
+                                               lblprg,
+                                               prg,
+                                               BePedido,
+                                               clsTransaccion,
+                                               oCompany,
+                                               BeConfigEnc,
+                                               vEmpresa)
+            Else
+
+                lResultProductosTransferSap = Preparar_Productos_Transferencia(lINavTransaccionesOut,
+                                                                               BePedido,
+                                                                               clsTransaccion,
+                                                                               oCompany,
+                                                                               pEmpresa)
+
+            End If
 
             ' Genera la entrega si fue exitosa la transferencia
             If lResultProductosTransferSap IsNot Nothing Then
-                Generar_Entrega_OV(_Docentry,
-                                   BePedido,
-                                   clsTransaccion,
-                                   lblprg,
-                                   lINavTransaccionesOut,
-                                   lResultProductosTransferSap,
-                                   vEmpresa,
-                                   oCompany,
-                                   BeConfigEnc)
+
+                Dim entrega As String = clsLnTrans_pe_enc.Existe_Entrega_By_IdDespachoEnc(BePedido.No_despacho)
+                Dim generoentregaOV As Boolean = False
+
+                generoentregaOV =
+                    Generar_Entrega_OV(_Docentry,
+                                       BePedido,
+                                       clsTransaccion,
+                                       lblprg,
+                                       lINavTransaccionesOut,
+                                       lResultProductosTransferSap,
+                                       vEmpresa,
+                                       oCompany,
+                                       BeConfigEnc)
+                'If entrega = "0" OrElse entrega = "" Then
+                '    generoentregaOV =
+                '    Generar_Entrega_OV(_Docentry,
+                '                       BePedido,
+                '                       clsTransaccion,
+                '                       lblprg,
+                '                       lINavTransaccionesOut,
+                '                       lResultProductosTransferSap,
+                '                       vEmpresa,
+                '                       oCompany,
+                '                       BeConfigEnc)
+                'Else
+                '    generoentregaOV = True
+                '    clsPublic.Actualizar_Progreso(lblprg, "Ya existe la entrega " & entrega & " para la orden de venta " & BePedido.Referencia_Documento_Ingreso_Bodega_Destino)
+
+                '    clsLnTrans_pe_enc.Actualizar_Estado_Enviado_A_ERP(BePedido.IdPedidoEnc, True, BeConfigEnc.IdUsuario, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                '    clsLnI_nav_transacciones_out.Actualizar_Bandera_Enviado_By_IdPedidoEnc(BePedido.IdPedidoEnc, True, BeConfigEnc.IdUsuario, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                'End If
+
+                'If Not generoentregaOV Then
+                '    Throw New Exception("No se pudo generar la entrega para la orden de venta " & BePedido.Referencia_Documento_Ingreso_Bodega_Destino)
+                'End If
             End If
 
             ' Confirmar transacciones
@@ -489,7 +534,7 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
             Enviar_Entrega_Mercancia_OV_SAP3 = True
 
         Catch errMsg As Exception
-            Dim vMensaje As String = String.Format("Error al enviar entrada de mercancía a SAP: {1} {0} {1} DocumentoSAP {2} PedidoWMS {3}",
+            Dim vMensaje As String = String.Format("Error al enviar entrada de mercancía a SAP:  {1} {0} {1} DocumentoSAP {2} PedidoWMS {3}",
                                                errMsg.Message, vbNewLine, _Docentry, If(BePedido IsNot Nothing, BePedido.IdPedidoEnc.ToString(), "N/D"))
 
             clsLnI_nav_ejecucion_det_error.Inserta_Log(vMensaje,
@@ -605,55 +650,60 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
             Dim productoWMS = productosTransferidos.FirstOrDefault(Function(x) x.CodigoProductoSAP = itemSAP)?.CodigoProductoWMS
 
             If String.IsNullOrEmpty(productoWMS) Then
-                clsPublic.Actualizar_Progreso(lblprg, $"Adv: El Producto: {itemSAP} no tiene equivalente en la lista.")
-                '#CKFK20250909 Considero que aquí no va un continue for sino un Throw exception, ya que no se debe enviar a SAP
-                'el pedido parcial
-                Throw New Exception($"Error de configuración: El Producto: {itemSAP} de WMS no tiene equivalente en la lista de SAP.")
-            End If
-
-            Dim agrupadas = AgruparTransaccionesPorLinea(transacciones, productoWMS, lineaSAP)
-
-            agrupadas = UnificarTransaccionesPorLineaSAP(agrupadas, productosTransferidos, uomEntry, uomCode, clsTrans)
-
-            For Each producto In agrupadas
-
-                If oOrderSales.Lines.LineStatus = BoStatus.bost_Close Then
-                    clsLnLog_error_wms.Agregar_Error(1, BePedido.IdBodega, $"El Producto: {itemSAP} ya fue completado.")
-                    Continue For
+                If Not BePedido.EsExportacion Then
+                    clsPublic.Actualizar_Progreso(lblprg, $"Adv: El Producto: {itemSAP} no fue pickeado en WMS.")
+                Else
+                    '#CKFK20250909 Considero que aquí no va un continue for sino un Throw exception, ya que no se debe enviar a SAP
+                    'el pedido parcial si es de exportación porque debe ser un producto sin equivalente
+                    Throw New Exception($"Error de configuración: El Producto: {itemSAP} de WMS no tiene equivalente en la lista de SAP.")
                 End If
+            Else
 
-                If vCodigoAnterior <> itemSAP OrElse vNoLineaAnterior <> lineaSAP Then
+                Dim agrupadas = AgruparTransaccionesPorLinea(transacciones, productoWMS, lineaSAP)
 
-                    oEntrega.Lines.SetCurrentLine(NoLineaEntrega)
-                    oEntrega.Lines.BaseType = BoObjectTypes.oOrders
-                    oEntrega.Lines.ItemCode = itemSAP
-                    oEntrega.Lines.BaseEntry = docEntry
-                    oEntrega.Lines.BaseLine = lineaSAP
-                    oEntrega.Lines.Quantity = producto.Cantidad_Total
+                agrupadas = UnificarTransaccionesPorLineaSAP(agrupadas, productosTransferidos, uomEntry, uomCode, clsTrans)
 
-                    If uomEntry > 0 Then
-                        oEntrega.Lines.UoMEntry = uomEntry
+                For Each producto In agrupadas
+
+                    If oOrderSales.Lines.LineStatus = BoStatus.bost_Close Then
+                        clsLnLog_error_wms.Agregar_Error(1, BePedido.IdBodega, $"El Producto: {itemSAP} ya fue completado.")
+                        Continue For
                     End If
 
-                    oEntrega.Lines.WarehouseCode = BeConfigEnc.Bodega_Facturacion
-                    oEntrega.Lines.Add()
+                    If vCodigoAnterior <> itemSAP OrElse vNoLineaAnterior <> lineaSAP Then
 
-                    NoLineaEntrega += 1
+                        oEntrega.Lines.SetCurrentLine(NoLineaEntrega)
+                        oEntrega.Lines.BaseType = BoObjectTypes.oOrders
+                        oEntrega.Lines.ItemCode = itemSAP
+                        oEntrega.Lines.BaseEntry = docEntry
+                        oEntrega.Lines.BaseLine = lineaSAP
+                        oEntrega.Lines.Quantity = producto.Cantidad_Total
 
-                    Dim transActual = transacciones.
+                        If uomEntry > 0 Then
+                            oEntrega.Lines.UoMEntry = uomEntry
+                        End If
+
+                        oEntrega.Lines.WarehouseCode = BeConfigEnc.Bodega_Facturacion
+                        oEntrega.Lines.Add()
+
+                        NoLineaEntrega += 1
+
+                        Dim transActual = transacciones.
                     Where(Function(x) x.No_pedido = oOrderSales.DocEntry AndAlso
                                       x.No_linea = lineaSAP AndAlso
                                       x.Codigo_producto = producto.Codigo_producto AndAlso
                                       Not x.Enviado).ToList()
 
-                    listaActualizar.AddRange(transActual)
+                        listaActualizar.AddRange(transActual)
 
-                    vCodigoAnterior = itemSAP
-                    vNoLineaAnterior = lineaSAP
+                        vCodigoAnterior = itemSAP
+                        vNoLineaAnterior = lineaSAP
 
-                End If
+                    End If
 
-            Next
+                Next
+
+            End If
 
         Next
 
@@ -813,7 +863,7 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
                                                              ByVal IdPedidoEnc As Integer,
                                                              Optional ByVal pCompany As Integer = pEmpresa.Killios) As Boolean
         Dim conn As SapConnectionWrapper = Nothing
-        Dim intentos As Integer = 3
+        Dim intentos As Integer = 10
         Dim esperaMs As Integer = 300
         Marcar_Documento_Sincronizado_SAP = False
 
@@ -934,7 +984,9 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
                 If BePedido.EsExportacion Then
                     codigoSAP = SapHelper.Obtener_Codigo_Exportacion_SAP(codigoSAP, prod.Codigo, oCompany)
                 End If
-
+                If codigoSAP = "425" Then
+                    Debug.Print("Aqui")
+                End If
                 Dim cantidad = Ajustar_Cantidad_Presentacion(trans, clsTrans)
 
                 Dim existente = productos.FirstOrDefault(Function(p) p.IdPedidoEnc = trans.Idpedidoenc AndAlso

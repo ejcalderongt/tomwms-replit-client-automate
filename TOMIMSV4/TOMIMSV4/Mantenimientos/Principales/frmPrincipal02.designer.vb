@@ -1073,7 +1073,7 @@ Partial Class frmPrincipal02
         Me.LabelGrafica.Name = "LabelGrafica"
         Me.LabelGrafica.Size = New System.Drawing.Size(758, 41)
         Me.LabelGrafica.TabIndex = 3
-        Me.LabelGrafica.Text = "Disperción"
+        Me.LabelGrafica.Text = "Dispersión"
         Me.LabelGrafica.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'txtUbicacionesVacias

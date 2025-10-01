@@ -11668,13 +11668,13 @@ Partial Public Class clsLnStock
                     If objStockOrigen.Presentacion.EsPallet Then
                         vCantidadDisponible = Math.Round((objStockOrigen.Cantidad * objStockOrigen.Presentacion.Factor * objStockOrigen.Presentacion.CamasPorTarima * objStockOrigen.Presentacion.CajasPorCama), 6)
                     Else
-                        If (objStockOrigen.Presentacion.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion <> 0) AndAlso (objStockOrigen.Presentacion.IdPresentacion = BeTransPeDet.IdPresentacion) Then
-                            'Killios, Quantity 12.5 = 144, Erik. #EJC20250909
-                            vCantidadDisponible = Math.Round((objStockOrigen.Cantidad * objStockOrigen.Presentacion.Factor), 6)
-                        Else
-                            vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
-                        End If
-
+                        'If (objStockOrigen.Presentacion.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion <> 0) AndAlso (objStockOrigen.Presentacion.IdPresentacion = BeTransPeDet.IdPresentacion) Then
+                        '    'Killios, Quantity 12.5 = 144, Erik. #EJC20250909
+                        '    vCantidadDisponible = Math.Round((objStockOrigen.Cantidad * objStockOrigen.Presentacion.Factor), 6)
+                        'Else
+                        '    vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
+                        'End If
+                        vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
                     End If
 
                 End If
@@ -11717,9 +11717,9 @@ Partial Public Class clsLnStock
                     If (pPickingUbic.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion = 0) Then
                         Dim vFactor As Integer
                         vFactor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
-                                                                                                         pPickingUbic.IdPresentacion,
-                                                                                                         lConnection,
-                                                                                                         lTransaction)
+                                                                                                             pPickingUbic.IdPresentacion,
+                                                                                                             lConnection,
+                                                                                                             lTransaction)
                         Dim vCantidadVerificada As Double = pPickingUbic.Cantidad_Verificada * vFactor
 
                         If (vCantidadVerificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
@@ -11729,9 +11729,9 @@ Partial Public Class clsLnStock
                     ElseIf (pPickingUbic.IdPresentacion = 0) AndAlso (BeTransPeDet.IdPresentacion <> 0) Then
                         Dim vFactor As Integer
                         vFactor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
-                                                                                                         BeTransPeDet.IdPresentacion,
-                                                                                                         lConnection,
-                                                                                                         lTransaction)
+                                                                                                             BeTransPeDet.IdPresentacion,
+                                                                                                             lConnection,
+                                                                                                             lTransaction)
                         Dim vCantidadVerificada As Double = pPickingUbic.Cantidad_Verificada / vFactor
 
                         If (vCantidadVerificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
@@ -11841,9 +11841,9 @@ Partial Public Class clsLnStock
 
                         If pPickingUbic.IdPresentacion <> 0 Then
                             vFactorPres = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
-                                                                                                             pPickingUbic.IdPresentacion,
-                                                                                                             lConnection,
-                                                                                                             lTransaction)
+                                                                                                                 pPickingUbic.IdPresentacion,
+                                                                                                                 lConnection,
+                                                                                                                 lTransaction)
                             If vFactorPres = 0 Then
                                 Throw New Exception("El factor de la presentación es 0 no se puede continuar el proceso de actualización de Stock")
                             End If

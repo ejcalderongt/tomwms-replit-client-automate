@@ -2,6 +2,7 @@
 Imports System.Data.SqlClient
 Imports System.Reflection
 Imports System.Threading.Tasks
+Imports DevExpress.Data.Linq.Helpers
 
 Partial Public Class clsLnTrans_pe_enc
 
@@ -6822,6 +6823,96 @@ Partial Public Class clsLnTrans_pe_enc
             Throw ex
         Finally
             If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Function
+
+    Public Shared Function Existe_Transferencia_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer,
+                                                               ByVal pNo_Despacho As String) As String
+
+        Existe_Transferencia_By_IdPedidoEnc = ""
+
+        Dim vPedidoEnc As New clsBeTrans_pe_enc()
+
+        Try
+
+            Dim vSQL As String = "SELECT No_Picking_ERP FROM trans_pe_enc WHERE IdPedidoEnc=@IdPedidoEnc and no_despacho = @no_despacho "
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lCommand As New SqlCommand(vSQL, lConnection, lTransaction)
+
+                        lCommand.CommandType = CommandType.Text
+
+                        lCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
+                        lCommand.Parameters.AddWithValue("@no_despacho", pNo_Despacho)
+
+                        Dim lReturnValue As Object = lCommand.ExecuteScalar()
+
+                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                            Existe_Transferencia_By_IdPedidoEnc = lReturnValue
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Existe_Entrega_By_IdDespachoEnc(ByVal pIdDespachoEnc As Integer) As String
+
+        Existe_Entrega_By_IdDespachoEnc = ""
+
+        Dim vPedidoEnc As New clsBeTrans_pe_enc()
+
+        Try
+
+            Dim vSQL As String = "SELECT no_pase FROM trans_despacho_enc WHERE IdDespachoEnc=@IdDespachoEnc "
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lCommand As New SqlCommand(vSQL, lConnection, lTransaction)
+
+                        lCommand.CommandType = CommandType.Text
+
+                        lCommand.Parameters.AddWithValue("@IdDespachoEnc", pIdDespachoEnc)
+
+                        Dim lReturnValue As Object = lCommand.ExecuteScalar()
+
+                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                            Existe_Entrega_By_IdDespachoEnc = lReturnValue
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
         End Try
 
     End Function
