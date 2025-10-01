@@ -17,7 +17,7 @@ namespace WMSWebAPI.Services.Producto.Marca
         }
 
       
-        public void ProcesarMarcaDesdeDto(ProductoMarcaSimpleDto dto, SqlConnection conn, SqlTransaction tx)
+        public void ProcesarMarcaDesdeDto(ProductoMarcaMi3Dto dto, SqlConnection conn, SqlTransaction tx)
         {
             try
             {

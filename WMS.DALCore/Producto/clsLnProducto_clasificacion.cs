@@ -410,6 +410,9 @@ public class clsLnProducto_clasificacion
 
     public static void Valida_Atributos(IConfiguration config, clsBeProducto_clasificacionSimple entity, SqlConnection? conn = null, SqlTransaction? tx = null)
     {
+        if (entity.Codigo == null)
+            throw new ArgumentNullException(nameof(entity.Codigo), "El código no puede ser nulo.");
+
         bool isExternalTx = conn != null && tx != null;
         var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
         SqlTransaction? localTx = null;
@@ -427,10 +430,9 @@ public class clsLnProducto_clasificacion
 
             if (!existe)
             {
-
                 if (!string.IsNullOrEmpty(entity.Codigo))
                 {
-                    Clasificacion.IdClasificacion = clsLnProducto_clasificacion.MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                    Clasificacion.IdClasificacion = MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
                     Clasificacion.Codigo = entity.Codigo;
                     Clasificacion.Nombre = entity.Nombre ?? entity.Codigo;
                     Clasificacion.User_agr = "1";
@@ -439,21 +441,18 @@ public class clsLnProducto_clasificacion
                     Clasificacion.Fec_mod = DateTime.Now;
                     Clasificacion.Activo = entity.Activo;
                     Clasificacion.IdPropietario = entity.IdPropietario;
-                    clsLnProducto_clasificacion.Insertar(config, Clasificacion, connection, isExternalTx ? tx : localTx);
+                    Insertar(config, Clasificacion, connection, isExternalTx ? tx : localTx);
                 }
-
             }
-            else {
-
+            else
+            {
                 Clasificacion.Codigo = entity.Codigo;
-                Clasificacion.Nombre = entity.Nombre ?? entity.Codigo ;
+                Clasificacion.Nombre = entity.Nombre ?? entity.Codigo;
                 Clasificacion.User_mod = "1";
                 Clasificacion.Fec_mod = DateTime.Now;
                 Clasificacion.Activo = entity.Activo;
-                clsLnProducto_clasificacion.Actualizar(config, Clasificacion, connection, isExternalTx ? tx : localTx);
-
+                Actualizar(config, Clasificacion, connection, isExternalTx ? tx : localTx);
             }
-
         }
         catch (SqlException ex)
         {

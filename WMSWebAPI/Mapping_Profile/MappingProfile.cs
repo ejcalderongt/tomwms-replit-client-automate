@@ -23,6 +23,8 @@ using WMSWebAPI.Dtos.Stock;
 using WMSWebAPI.Dtos.Log_portal_ux;
 using WMS.EntityCore.Producto.ProductoSimple;
 using WMS.EntityCore.Dtos.Catalogos;
+using WMS.EntityCore.Dtos.Clientes;
+using WMS.EntityCore.Dtos.Productos;
 
 public class MappingProfile : Profile
 {
@@ -80,10 +82,14 @@ public class MappingProfile : Profile
         CreateMap<ProveedorBodegaDto, clsBeProveedor_bodega>().ReverseMap();
         CreateMap<ClienteDto, clsBeCliente>().ReverseMap();
         CreateMap<LogPortalUxDto,clsBeLog_portal_ux>().ReverseMap();
-        CreateMap<ProductoSimpleDto, clsBeProductoSimple>().ReverseMap();
-        CreateMap<ProductoClasificacionSimpleDto,clsBeProducto_clasificacionSimple>().ReverseMap();
-        CreateMap<ProductoMarcaSimpleDto,clsBeProducto_marcaSimple>().ReverseMap();
-        CreateMap<ProductoFamiliaSimpleDto, clsBeProducto_familiaSimple>().ReverseMap();
+        CreateMap<ProductoMi3Dto, clsBeProductoMi3>().ReverseMap();
+        CreateMap<ProductoClasificacionMi3Dto,clsBeProducto_clasificacionSimple>().ReverseMap();
+        CreateMap<ProductoMarcaMi3Dto,clsBeProducto_marcaSimple>().ReverseMap();
+        CreateMap<ProductoFamiliaMi3Dto, clsBeProducto_familiaSimple>().ReverseMap();
+        CreateMap<ClienteMi3Dto, clsBeClientesMi3>().ReverseMap();
+        CreateMap<Producto_tipoMi3Dto,clsBeProducto_tipoMi3>().ReverseMap();
+        CreateMap<UnidadMedidaMi3Dto, clsBeUnidad_medidaMi3>().ReverseMap();
+        CreateMap<ProductoPresentacionMi3Dto,clsBeProducto_presentacionMi3>().ReverseMap();
         
     }
 }

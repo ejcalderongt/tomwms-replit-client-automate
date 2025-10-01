@@ -1,10 +1,11 @@
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.VisualBasic.CompilerServices;
 using System.Data;
 using System.Diagnostics;
 using System.Reflection;
-using Microsoft.Data.SqlClient;
-using Microsoft.VisualBasic.CompilerServices;
 using WMS.EntityCore.Cliente;
-using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Producto.ProductoSimple;
 public class clsLnCliente
 {
 
@@ -716,4 +717,100 @@ public class clsLnCliente
 
         return count > 0;
     }
+
+    public static bool Existe_By_Codigo(string Codigo, ref clsBeCliente pBeCliente, SqlConnection cn, SqlTransaction? tx = null)
+    {
+        try
+        {
+            const string sql = @"SELECT TOP 1 * FROM cliente WHERE codigo = @codigo";
+
+            using var cmd = new SqlCommand(sql, cn, tx);
+            cmd.Parameters.AddWithValue("@codigo", Codigo);
+
+            using var da = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count == 1)
+            {
+                Cargar(ref pBeCliente, dt.Rows[0]);
+                return true;
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
+        }
+    }
+
+    public static void Valida_Atributos(IConfiguration config, clsBeClientesMi3 entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    {
+        bool isExternalTx = conn != null && tx != null;
+        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
+        SqlTransaction? localTx = null;
+
+        try
+        {
+            if (!isExternalTx)
+            {
+                connection.Open();
+                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
+            }
+
+            var Cliente = new clsBeCliente();
+            bool existe = Existe_By_Codigo(entity.codigo, ref Cliente, connection, isExternalTx ? tx! : localTx!);
+
+            if (!existe)
+            {
+
+                if (!string.IsNullOrEmpty(entity.codigo))
+                {
+                    Cliente.IdCliente = clsLnCliente.MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                    Cliente.Codigo = entity.codigo;
+                    Cliente.Nombre_comercial = entity.nombre_comercial ?? entity.codigo;
+                    Cliente.User_agr = "1";
+                    Cliente.User_mod = "1";
+                    Cliente.Fec_agr = DateTime.Now;
+                    Cliente.Fec_mod = DateTime.Now;
+                    Cliente.Activo = entity.activo;
+                    Cliente.IdPropietario = entity.IdPropietario;
+                    clsLnCliente.Insertar(config, Cliente, connection, isExternalTx ? tx : localTx);
+                }
+
+            }
+            else
+            {
+
+                Cliente.Codigo = entity.codigo;
+                Cliente.Nombre_comercial = entity.nombre_comercial ?? entity.codigo;
+                Cliente.User_mod = "1";
+                Cliente.Fec_mod = DateTime.Now;
+                Cliente.Activo = entity.activo;
+                clsLnCliente.Actualizar(config, Cliente, connection, isExternalTx ? tx : localTx);
+
+            }
+
+        }
+        catch (SqlException ex)
+        {
+            if (!isExternalTx && localTx is not null)
+                localTx.Rollback();
+
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
+        }
+        finally
+        {
+            if (!isExternalTx)
+            {
+                connection.Close();
+                connection.Dispose();
+                localTx?.Dispose();
+            }
+        }
+    }
+
 }

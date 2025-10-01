@@ -22,10 +22,10 @@ namespace WMSWebAPI.Controllers
 
 
         [HttpPost("list/mi3/insert")]
-        public IActionResult Sincronizar([FromBody] List<ProductoClasificacionSimpleDto> Clasificaciondto, [FromServices] IConfiguration configuration) 
+        public IActionResult Sincronizar([FromBody] List<ProductoClasificacionMi3Dto> Clasificaciondto, [FromServices] IConfiguration configuration) 
         {
             if (Clasificaciondto == null || Clasificaciondto.Count == 0)
-                return BadRequest("La lista de productos está vacía.");
+                return BadRequest("La lista de clasificación está vacía.");
 
             var resultados = new List<object>();
             string? connectionString = configuration.GetConnectionString("CST");

@@ -5,6 +5,6 @@ namespace WMSWebAPI.Services.Producto.Marca
 {
     public interface IProductoMarcaSyncService
     {
-        void ProcesarMarcaDesdeDto(ProductoMarcaSimpleDto dto, SqlConnection connection, SqlTransaction transaction);
+        void ProcesarMarcaDesdeDto(ProductoMarcaMi3Dto dto, SqlConnection connection, SqlTransaction transaction);
     }
 }

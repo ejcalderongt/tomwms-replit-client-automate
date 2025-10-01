@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using Microsoft.Data.SqlClient;
@@ -473,7 +473,7 @@ public class clsLnUnidad_medida
                         var lreturnValue = lCommand.ExecuteScalar();
                         if (lreturnValue != DBNull.Value && lreturnValue != null)
                         {
-                            lMax = int.Parse((String)lreturnValue);
+                            lMax = Convert.ToInt32(lreturnValue);
                         }
                     }
                     lTransaction.Commit();
@@ -526,7 +526,8 @@ public class clsLnUnidad_medida
 
             if (lreturnValue != DBNull.Value && lreturnValue != null)
             {
-                lMax = int.Parse((string)lreturnValue);
+                lMax = Convert.ToInt32(lreturnValue);
+                
             }
 
             if (!Es_Transaccion_Remota)
@@ -624,4 +625,102 @@ public class clsLnUnidad_medida
         cmd.Parameters.Add(new SqlParameter("@factor", (object?)oBeUnidad_medida.Factor ?? DBNull.Value));
     }
 
+    public static bool Existe_By_Codigo(string Codigo, ref clsBeUnidad_medida pBeUmbas, SqlConnection cn, SqlTransaction? tx = null)
+    {
+        try
+        {
+            const string sql = @"SELECT TOP 1 * FROM unidad_medida WHERE codigo = @codigo";
+
+            using var cmd = new SqlCommand(sql, cn, tx);
+            cmd.Parameters.AddWithValue("@codigo", Codigo);
+
+            using var da = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count == 1)
+            {
+                Cargar(ref pBeUmbas, dt.Rows[0]);
+                return true;
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
+        }
+    }
+
+    public static void Valida_Atributos(IConfiguration config, clsBeUnidad_medidaMi3 entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    {
+        bool isExternalTx = conn != null && tx != null;
+        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
+        SqlTransaction? localTx = null;
+
+        try
+        {
+            if (!isExternalTx)
+            {
+                connection.Open();
+                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
+            }
+
+            var BeUmbas = new clsBeUnidad_medida();
+            bool existe = Existe_By_Codigo(entity.Codigo, ref BeUmbas, connection, isExternalTx ? tx! : localTx!);
+
+            if (!existe)
+            {
+
+                if (!string.IsNullOrEmpty(entity.Codigo))
+                {
+                    BeUmbas.IdUnidadMedida= MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                    BeUmbas.IdPropietario = entity.IdPropietario;
+                    BeUmbas.Codigo = entity.Codigo;
+                    BeUmbas.Nombre = entity.Nombre ?? entity.Codigo;
+                    BeUmbas.User_agr = "1";
+                    BeUmbas.User_mod = "1";
+                    BeUmbas.Fec_agr = DateTime.Now;
+                    BeUmbas.Fec_mod = DateTime.Now;
+                    BeUmbas.Activo = entity.Activo;
+                    BeUmbas.IdPropietario = entity.IdPropietario;
+                    BeUmbas.Es_um_cobro = false; //Propiedad no solicitada en el json
+                    BeUmbas.Factor = 1; //Propiedad no solicitada en el json
+                    Insertar(config, BeUmbas, connection, isExternalTx ? tx : localTx);
+                }
+
+            }
+            else
+            {
+                BeUmbas.Codigo = entity.Codigo;
+                BeUmbas.Nombre = entity.Nombre ?? entity.Codigo;
+                BeUmbas.User_mod = "1";
+                BeUmbas.Fec_mod = DateTime.Now;
+                BeUmbas.Activo = entity.Activo;
+                BeUmbas.Es_um_cobro = false;//Propiedad no solicitada en el json
+                BeUmbas.Factor = 1;//Propiedad no solicitada en el json
+                Actualizar(config, BeUmbas, connection, isExternalTx ? tx : localTx);
+
+            }
+
+        }
+        catch (SqlException ex)
+        {
+            if (!isExternalTx && localTx is not null)
+                localTx.Rollback();
+
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
+        }
+        finally
+        {
+            if (!isExternalTx)
+            {
+                connection.Close();
+                connection.Dispose();
+                localTx?.Dispose();
+            }
+        }
+    }
 }
