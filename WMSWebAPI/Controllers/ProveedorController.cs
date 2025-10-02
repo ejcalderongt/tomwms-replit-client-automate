@@ -115,11 +115,13 @@ namespace WMSWebAPI.Controllers
 
                             foreach (var dto in proveedorDto)
                             {
+                                if (string.IsNullOrEmpty(dto.Codigo))
+                                    return StatusCode(500, new { Exito = false, Mensaje = "El código no puede estar vacio." });
+
                                 _syncProveedorService.ProcesarProveedorDto(dto, connection, transaction);
                                 resultados.Add(new { dto.Codigo, Procesado = true, Mensaje = "Procesado correctamente" });
                             }
 
-                           
                             transaction.Commit();
                             scope.Complete();
 
@@ -132,12 +134,7 @@ namespace WMSWebAPI.Controllers
                             transaction.Rollback();
 
                             var showStackTrace = configuration.GetValue<bool>("MostrarDetallesErrores");
-                            return StatusCode(500, new
-                            {
-                                Exito = false,
-                                Mensaje = ex.Message,
-                                Detalles = showStackTrace ? ex.ToString() : null
-                            });
+                            return StatusCode(500, new { Exito = false, Mensaje = ex.Message });
                         }
                     }
                 }

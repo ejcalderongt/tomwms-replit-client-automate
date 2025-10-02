@@ -7,6 +7,7 @@ using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
 using WMS.EntityCore.Producto.ProductoSimple;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using WMS.EntityCore.Datos_Maestros;
 public class clsLnProducto
 {
 
@@ -1042,6 +1043,7 @@ public class clsLnProducto
                 var Marca = new clsBeProducto_marca();
                 var TipoProducto = new clsBeProducto_tipo();
                 var Umbas = new clsBeUnidad_medida();
+                var ProductoBodega = new clsBeProducto_bodega();
 
 
                 if (!string.IsNullOrEmpty(BeProductoMi3.CodigoClasificacion)) 
@@ -1052,9 +1054,7 @@ public class clsLnProducto
                     if (!ExisteClasificacion) {
                         throw new Exception("Error al procesar código de clasificación en ProductoMi3");
                     }
-
                 }
-
 
                 if (!string.IsNullOrEmpty(BeProductoMi3.CodigoFamilia)) 
                 {
@@ -1126,6 +1126,35 @@ public class clsLnProducto
                 pProducto.fec_mod= DateTime.Now;  
 
                 Insertar(config, pProducto, connection, isExternalTx ? tx : localTx);
+
+                var listBeBodega = clsLnBodega.GetAll(connection, isExternalTx ? tx : localTx);
+
+                if (listBeBodega.Count == 0)
+                    throw new ArgumentNullException(nameof(listBeBodega), "No se encontraron bodegas activas para asociar productos.");
+
+                //var BeInavConfigEnc = clsLn ******* agregar objetos para i_nav_config_enc
+
+                if (listBeBodega.Count > 0)
+                {
+                    ProductoBodega = new clsBeProducto_bodega();
+
+                    foreach (clsBeBodega BeBodega in listBeBodega) {
+
+                        ProductoBodega.IdProductoBodega = clsLnProducto_bodega.MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                        ProductoBodega.IdProducto = pProducto.IdProducto;
+                        ProductoBodega.IdBodega = BeBodega.IdBodega;
+                        ProductoBodega.Activo = true;
+                        ProductoBodega.Sistema = false;
+                        ProductoBodega.Fec_agr = DateTime.Now;
+                        ProductoBodega.Fec_mod = DateTime.Now;
+                        ProductoBodega.User_agr = "1";
+                        ProductoBodega.User_mod = "1";
+
+                        clsLnProducto_bodega.Insertar(config, ProductoBodega, connection, isExternalTx ? tx : localTx);
+                    }
+
+                }
+
             }
 
         }

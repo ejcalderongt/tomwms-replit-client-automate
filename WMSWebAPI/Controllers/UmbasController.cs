@@ -55,6 +55,9 @@ namespace WMSWebAPI.Controllers
 
                             foreach (var dto in ListUmbasDto)
                             {
+                                if (string.IsNullOrEmpty(dto.Codigo))
+                                    return StatusCode(500, new { Exito = false, Mensaje = "El código no puede estar vacio." });
+
                                 _umbasMi3SyncService.ProcesarUmbasMi3Dto(dto, connection, transaction);
                                 resultados.Add(new { dto.Codigo, Procesado = true, Mensaje = "Procesado correctamente" });
                             }
@@ -70,13 +73,8 @@ namespace WMSWebAPI.Controllers
                             _logger.LogError(ex, "Error al procesar UmbasMi3Dto");
                             transaction.Rollback();
 
-                            var showStackTrace = configuration.GetValue<bool>("MostrarDetallesErrores");
-                            return StatusCode(500, new
-                            {
-                                Exito = false,
-                                Mensaje = ex.Message,
-                                Detalles = showStackTrace ? ex.ToString() : null
-                            });
+                            //var showStackTrace = configuration.GetValue<bool>("MostrarDetallesErrores");
+                            return StatusCode(500, new { Exito = false, Mensaje = ex.Message });
                         }
                     }
                 }

@@ -442,6 +442,9 @@ public class clsLnProducto_clasificacion
                     Clasificacion.Activo = entity.Activo;
                     Clasificacion.IdPropietario = entity.IdPropietario;
                     Insertar(config, Clasificacion, connection, isExternalTx ? tx : localTx);
+
+                    var BeBodega = clsLnBodega.GetAll();
+
                 }
             }
             else

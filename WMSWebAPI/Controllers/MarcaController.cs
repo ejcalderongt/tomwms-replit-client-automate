@@ -48,6 +48,9 @@ namespace WMSWebAPI.Controllers
                         {
                             foreach (var dto in MarcaDto)
                             {
+                                if (string.IsNullOrEmpty(dto.Codigo))
+                                    return StatusCode(500, new { Exito = false, Mensaje = "El código no puede estar vacio." });
+
                                 _syncService.ProcesarMarcaDesdeDto(dto, connection, transaction);
                                 resultados.Add(new { dto.Codigo, Procesado = true, Mensaje = "Procesado correctamente" });
                             }

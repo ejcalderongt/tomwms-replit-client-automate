@@ -223,10 +223,6 @@ Partial Class frmPedido
         Dim Label44 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPedido))
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
-        Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
-        Dim GridLevelNode3 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
-        Dim PushTransition1 As DevExpress.Utils.Animation.PushTransition = New DevExpress.Utils.Animation.PushTransition()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
@@ -236,6 +232,10 @@ Partial Class frmPedido
         Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim GridLevelNode3 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim PushTransition1 As DevExpress.Utils.Animation.PushTransition = New DevExpress.Utils.Animation.PushTransition()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.BarButtonItem4 = New DevExpress.XtraBars.BarButtonItem()
         Me.lblRegs = New DevExpress.XtraBars.BarStaticItem()
@@ -356,6 +356,36 @@ Partial Class frmPedido
         Me.dtpFechaPedido = New DevExpress.XtraEditors.DateEdit()
         Me.grpDetallePed = New DevExpress.XtraEditors.GroupControl()
         Me.dgrid = New System.Windows.Forms.DataGridView()
+        Me.colNo_Linea = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colIdProducto = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colIsNew = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColCodProducto = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColNomProducto = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colUnidadMedida = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colTalla = New System.Windows.Forms.DataGridViewComboBoxColumn()
+        Me.colColor = New System.Windows.Forms.DataGridViewComboBoxColumn()
+        Me.colSKU = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colIdProductoTallaColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colPresentacion = New System.Windows.Forms.DataGridViewComboBoxColumn()
+        Me.colEstadoProducto = New System.Windows.Forms.DataGridViewComboBoxColumn()
+        Me.colCantidadExistencia = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colPesoExistencia = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColCantidad = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColPeso = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColPrecio = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColTotal = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColIdStockRes = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colNoDias = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColFechaEspecifica = New System.Windows.Forms.DataGridViewCheckBoxColumn()
+        Me.colNoSerie = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colPesoUnitario = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.CantidadPickeada = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.CantidadVerificada = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Atributo_Variante_1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.IdStockEspecifico = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colIdProductoBodega = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colIdPedidoDet = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.IdCliente = New System.Windows.Forms.DataGridViewComboBoxColumn()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.lblTotal = New System.Windows.Forms.Label()
         Me.lblCantidad = New System.Windows.Forms.Label()
@@ -523,36 +553,6 @@ Partial Class frmPedido
         Me.DetalleBindingSource1 = New System.Windows.Forms.BindingSource(Me.components)
         Me.AutoHideContainer1 = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.WorkspaceManager1 = New DevExpress.Utils.WorkspaceManager(Me.components)
-        Me.colNo_Linea = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colIdProducto = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colIsNew = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ColCodProducto = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ColNomProducto = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colUnidadMedida = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colTalla = New System.Windows.Forms.DataGridViewComboBoxColumn()
-        Me.colColor = New System.Windows.Forms.DataGridViewComboBoxColumn()
-        Me.colSKU = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colIdProductoTallaColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colPresentacion = New System.Windows.Forms.DataGridViewComboBoxColumn()
-        Me.colEstadoProducto = New System.Windows.Forms.DataGridViewComboBoxColumn()
-        Me.colCantidadExistencia = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colPesoExistencia = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ColCantidad = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ColPeso = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ColPrecio = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ColTotal = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ColIdStockRes = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colNoDias = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ColFechaEspecifica = New System.Windows.Forms.DataGridViewCheckBoxColumn()
-        Me.colNoSerie = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colPesoUnitario = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.CantidadPickeada = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.CantidadVerificada = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Atributo_Variante_1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.IdStockEspecifico = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colIdProductoBodega = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colIdPedidoDet = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.IdCliente = New System.Windows.Forms.DataGridViewComboBoxColumn()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
@@ -2309,10 +2309,10 @@ Partial Class frmPedido
         Me.GroupControl4.Controls.Add(Me.dtpHoraEntregaDesde)
         Me.GroupControl4.Controls.Add(Label2)
         Me.GroupControl4.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.GroupControl4.Location = New System.Drawing.Point(0, 636)
+        Me.GroupControl4.Location = New System.Drawing.Point(0, 660)
         Me.GroupControl4.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl4.Name = "GroupControl4"
-        Me.GroupControl4.Size = New System.Drawing.Size(1669, 120)
+        Me.GroupControl4.Size = New System.Drawing.Size(1669, 96)
         Me.GroupControl4.TabIndex = 80
         Me.GroupControl4.Text = "Parámetros Road"
         '
@@ -2478,9 +2478,9 @@ Partial Class frmPedido
         '
         Me.lblprg.BackColor = System.Drawing.Color.AliceBlue
         Me.lblprg.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.lblprg.Location = New System.Drawing.Point(4, 624)
+        Me.lblprg.Location = New System.Drawing.Point(5, 739)
         Me.lblprg.Name = "lblprg"
-        Me.lblprg.Size = New System.Drawing.Size(990, 130)
+        Me.lblprg.Size = New System.Drawing.Size(764, 204)
         Me.lblprg.TabIndex = 101
         Me.lblprg.Text = ""
         Me.lblprg.Visible = False
@@ -2504,10 +2504,10 @@ Partial Class frmPedido
         Me.grpInfoPicking.Controls.Add(Me.txtIdPicking)
         Me.grpInfoPicking.Controls.Add(Me.lblNoPicking)
         Me.grpInfoPicking.Dock = System.Windows.Forms.DockStyle.Right
-        Me.grpInfoPicking.Location = New System.Drawing.Point(994, 18)
+        Me.grpInfoPicking.Location = New System.Drawing.Point(1031, 23)
         Me.grpInfoPicking.Margin = New System.Windows.Forms.Padding(6, 2, 6, 2)
         Me.grpInfoPicking.Name = "grpInfoPicking"
-        Me.grpInfoPicking.Size = New System.Drawing.Size(671, 736)
+        Me.grpInfoPicking.Size = New System.Drawing.Size(1049, 920)
         Me.grpInfoPicking.TabIndex = 67
         Me.grpInfoPicking.Text = "Transacciones Asociadas"
         '
@@ -2519,7 +2519,7 @@ Partial Class frmPedido
         Me.GroupControl3.Location = New System.Drawing.Point(2, 324)
         Me.GroupControl3.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.GroupControl3.Name = "GroupControl3"
-        Me.GroupControl3.Size = New System.Drawing.Size(667, 210)
+        Me.GroupControl3.Size = New System.Drawing.Size(1045, 210)
         Me.GroupControl3.TabIndex = 26
         Me.GroupControl3.Text = "Observación"
         '
@@ -2533,7 +2533,7 @@ Partial Class frmPedido
         Me.txtObservacion.Multiline = True
         Me.txtObservacion.Name = "txtObservacion"
         Me.txtObservacion.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.txtObservacion.Size = New System.Drawing.Size(663, 167)
+        Me.txtObservacion.Size = New System.Drawing.Size(1041, 167)
         Me.txtObservacion.TabIndex = 56
         '
         'grpScanPoliza
@@ -2546,7 +2546,7 @@ Partial Class frmPedido
         Me.grpScanPoliza.Location = New System.Drawing.Point(2, 222)
         Me.grpScanPoliza.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.grpScanPoliza.Name = "grpScanPoliza"
-        Me.grpScanPoliza.Size = New System.Drawing.Size(667, 102)
+        Me.grpScanPoliza.Size = New System.Drawing.Size(1045, 102)
         Me.grpScanPoliza.TabIndex = 25
         Me.grpScanPoliza.Text = "Escanéo de Poliza"
         '
@@ -2560,7 +2560,7 @@ Partial Class frmPedido
         Me.txtScanPoliza.Properties.Appearance.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtScanPoliza.Properties.Appearance.Options.UseBackColor = True
         Me.txtScanPoliza.Properties.Appearance.Options.UseFont = True
-        Me.txtScanPoliza.Size = New System.Drawing.Size(663, 32)
+        Me.txtScanPoliza.Size = New System.Drawing.Size(1041, 32)
         Me.txtScanPoliza.TabIndex = 1
         '
         'LabelControl2
@@ -2584,7 +2584,7 @@ Partial Class frmPedido
         Me.LabelControl4.Location = New System.Drawing.Point(2, 33)
         Me.LabelControl4.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.LabelControl4.Name = "LabelControl4"
-        Me.LabelControl4.Size = New System.Drawing.Size(663, 34)
+        Me.LabelControl4.Size = New System.Drawing.Size(1041, 34)
         Me.LabelControl4.TabIndex = 0
         Me.LabelControl4.Text = "Escanée Poliza:"
         '
@@ -2597,7 +2597,7 @@ Partial Class frmPedido
         Me.txtIdDespacho.Location = New System.Drawing.Point(2, 168)
         Me.txtIdDespacho.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.txtIdDespacho.Name = "txtIdDespacho"
-        Me.txtIdDespacho.Size = New System.Drawing.Size(667, 54)
+        Me.txtIdDespacho.Size = New System.Drawing.Size(1045, 54)
         Me.txtIdDespacho.TabIndex = 24
         Me.txtIdDespacho.TabStop = True
         Me.txtIdDespacho.Text = "0"
@@ -2612,7 +2612,7 @@ Partial Class frmPedido
         Me.lblUltDespacho.Location = New System.Drawing.Point(2, 128)
         Me.lblUltDespacho.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblUltDespacho.Name = "lblUltDespacho"
-        Me.lblUltDespacho.Size = New System.Drawing.Size(667, 40)
+        Me.lblUltDespacho.Size = New System.Drawing.Size(1045, 40)
         Me.lblUltDespacho.TabIndex = 14
         Me.lblUltDespacho.Text = "Ult. Despacho #: "
         Me.lblUltDespacho.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -2625,7 +2625,7 @@ Partial Class frmPedido
         Me.txtIdPicking.Location = New System.Drawing.Point(2, 64)
         Me.txtIdPicking.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.txtIdPicking.Name = "txtIdPicking"
-        Me.txtIdPicking.Size = New System.Drawing.Size(667, 64)
+        Me.txtIdPicking.Size = New System.Drawing.Size(1045, 64)
         Me.txtIdPicking.TabIndex = 7
         Me.txtIdPicking.TabStop = True
         Me.txtIdPicking.Text = "0"
@@ -2640,7 +2640,7 @@ Partial Class frmPedido
         Me.lblNoPicking.Location = New System.Drawing.Point(2, 28)
         Me.lblNoPicking.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblNoPicking.Name = "lblNoPicking"
-        Me.lblNoPicking.Size = New System.Drawing.Size(667, 36)
+        Me.lblNoPicking.Size = New System.Drawing.Size(1045, 36)
         Me.lblNoPicking.TabIndex = 1
         Me.lblNoPicking.Text = "Ult. Picking #: "
         Me.lblNoPicking.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -3117,6 +3117,290 @@ Partial Class frmPedido
         Me.dgrid.Size = New System.Drawing.Size(1669, 522)
         Me.dgrid.TabIndex = 1
         '
+        'colNo_Linea
+        '
+        DataGridViewCellStyle2.Format = "N0"
+        DataGridViewCellStyle2.NullValue = Nothing
+        Me.colNo_Linea.DefaultCellStyle = DataGridViewCellStyle2
+        Me.colNo_Linea.HeaderText = "No_Linea"
+        Me.colNo_Linea.MinimumWidth = 6
+        Me.colNo_Linea.Name = "colNo_Linea"
+        Me.colNo_Linea.Width = 125
+        '
+        'colIdProducto
+        '
+        Me.colIdProducto.HeaderText = "IdProducto"
+        Me.colIdProducto.MinimumWidth = 6
+        Me.colIdProducto.Name = "colIdProducto"
+        Me.colIdProducto.ReadOnly = True
+        Me.colIdProducto.Visible = False
+        Me.colIdProducto.Width = 125
+        '
+        'colIsNew
+        '
+        Me.colIsNew.HeaderText = "IsNew"
+        Me.colIsNew.MinimumWidth = 6
+        Me.colIsNew.Name = "colIsNew"
+        Me.colIsNew.ReadOnly = True
+        Me.colIsNew.Visible = False
+        Me.colIsNew.Width = 125
+        '
+        'ColCodProducto
+        '
+        Me.ColCodProducto.HeaderText = "Código"
+        Me.ColCodProducto.MinimumWidth = 6
+        Me.ColCodProducto.Name = "ColCodProducto"
+        Me.ColCodProducto.Width = 125
+        '
+        'ColNomProducto
+        '
+        Me.ColNomProducto.HeaderText = "Descripción"
+        Me.ColNomProducto.MinimumWidth = 6
+        Me.ColNomProducto.Name = "ColNomProducto"
+        Me.ColNomProducto.ReadOnly = True
+        Me.ColNomProducto.Width = 250
+        '
+        'colUnidadMedida
+        '
+        Me.colUnidadMedida.HeaderText = "U.M.Bas"
+        Me.colUnidadMedida.MinimumWidth = 6
+        Me.colUnidadMedida.Name = "colUnidadMedida"
+        Me.colUnidadMedida.ReadOnly = True
+        Me.colUnidadMedida.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.colUnidadMedida.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
+        Me.colUnidadMedida.Width = 125
+        '
+        'colTalla
+        '
+        Me.colTalla.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
+        Me.colTalla.HeaderText = "Talla"
+        Me.colTalla.MinimumWidth = 6
+        Me.colTalla.Name = "colTalla"
+        Me.colTalla.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
+        Me.colTalla.Width = 125
+        '
+        'colColor
+        '
+        Me.colColor.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
+        Me.colColor.HeaderText = "Color"
+        Me.colColor.MinimumWidth = 6
+        Me.colColor.Name = "colColor"
+        Me.colColor.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
+        Me.colColor.Width = 125
+        '
+        'colSKU
+        '
+        Me.colSKU.HeaderText = "SKU"
+        Me.colSKU.MinimumWidth = 6
+        Me.colSKU.Name = "colSKU"
+        Me.colSKU.Visible = False
+        Me.colSKU.Width = 125
+        '
+        'colIdProductoTallaColor
+        '
+        Me.colIdProductoTallaColor.HeaderText = "IdProductoTallaColor"
+        Me.colIdProductoTallaColor.MinimumWidth = 6
+        Me.colIdProductoTallaColor.Name = "colIdProductoTallaColor"
+        Me.colIdProductoTallaColor.ReadOnly = True
+        Me.colIdProductoTallaColor.Visible = False
+        Me.colIdProductoTallaColor.Width = 125
+        '
+        'colPresentacion
+        '
+        Me.colPresentacion.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
+        Me.colPresentacion.HeaderText = "Presentación"
+        Me.colPresentacion.MinimumWidth = 6
+        Me.colPresentacion.Name = "colPresentacion"
+        Me.colPresentacion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
+        Me.colPresentacion.Width = 150
+        '
+        'colEstadoProducto
+        '
+        Me.colEstadoProducto.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
+        Me.colEstadoProducto.HeaderText = "Estado"
+        Me.colEstadoProducto.MinimumWidth = 6
+        Me.colEstadoProducto.Name = "colEstadoProducto"
+        Me.colEstadoProducto.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.colEstadoProducto.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
+        Me.colEstadoProducto.Width = 125
+        '
+        'colCantidadExistencia
+        '
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle3.Format = "N2"
+        DataGridViewCellStyle3.NullValue = Nothing
+        Me.colCantidadExistencia.DefaultCellStyle = DataGridViewCellStyle3
+        Me.colCantidadExistencia.HeaderText = "Cant. Disp"
+        Me.colCantidadExistencia.MinimumWidth = 6
+        Me.colCantidadExistencia.Name = "colCantidadExistencia"
+        Me.colCantidadExistencia.ReadOnly = True
+        Me.colCantidadExistencia.Width = 125
+        '
+        'colPesoExistencia
+        '
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle4.Format = "N2"
+        Me.colPesoExistencia.DefaultCellStyle = DataGridViewCellStyle4
+        Me.colPesoExistencia.HeaderText = "Peso Disp."
+        Me.colPesoExistencia.MinimumWidth = 6
+        Me.colPesoExistencia.Name = "colPesoExistencia"
+        Me.colPesoExistencia.ReadOnly = True
+        Me.colPesoExistencia.Width = 125
+        '
+        'ColCantidad
+        '
+        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle5.Format = "N2"
+        DataGridViewCellStyle5.NullValue = "0"
+        Me.ColCantidad.DefaultCellStyle = DataGridViewCellStyle5
+        Me.ColCantidad.HeaderText = "Cantidad"
+        Me.ColCantidad.MinimumWidth = 6
+        Me.ColCantidad.Name = "ColCantidad"
+        Me.ColCantidad.Width = 125
+        '
+        'ColPeso
+        '
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle6.Format = "N3"
+        DataGridViewCellStyle6.NullValue = "0"
+        Me.ColPeso.DefaultCellStyle = DataGridViewCellStyle6
+        Me.ColPeso.HeaderText = "Peso"
+        Me.ColPeso.MinimumWidth = 6
+        Me.ColPeso.Name = "ColPeso"
+        Me.ColPeso.Width = 125
+        '
+        'ColPrecio
+        '
+        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle7.Format = "N2"
+        DataGridViewCellStyle7.NullValue = Nothing
+        Me.ColPrecio.DefaultCellStyle = DataGridViewCellStyle7
+        Me.ColPrecio.HeaderText = "Precio"
+        Me.ColPrecio.MinimumWidth = 6
+        Me.ColPrecio.Name = "ColPrecio"
+        Me.ColPrecio.Width = 125
+        '
+        'ColTotal
+        '
+        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle8.Format = "N2"
+        DataGridViewCellStyle8.NullValue = Nothing
+        Me.ColTotal.DefaultCellStyle = DataGridViewCellStyle8
+        Me.ColTotal.HeaderText = "Total"
+        Me.ColTotal.MinimumWidth = 6
+        Me.ColTotal.Name = "ColTotal"
+        Me.ColTotal.ReadOnly = True
+        Me.ColTotal.Width = 125
+        '
+        'ColIdStockRes
+        '
+        Me.ColIdStockRes.HeaderText = "IdStockRes"
+        Me.ColIdStockRes.MinimumWidth = 6
+        Me.ColIdStockRes.Name = "ColIdStockRes"
+        Me.ColIdStockRes.ReadOnly = True
+        Me.ColIdStockRes.Visible = False
+        Me.ColIdStockRes.Width = 125
+        '
+        'colNoDias
+        '
+        Me.colNoDias.HeaderText = "NoDias"
+        Me.colNoDias.MinimumWidth = 6
+        Me.colNoDias.Name = "colNoDias"
+        Me.colNoDias.ReadOnly = True
+        Me.colNoDias.Width = 125
+        '
+        'ColFechaEspecifica
+        '
+        Me.ColFechaEspecifica.HeaderText = "FechaEspecifica"
+        Me.ColFechaEspecifica.MinimumWidth = 6
+        Me.ColFechaEspecifica.Name = "ColFechaEspecifica"
+        Me.ColFechaEspecifica.ReadOnly = True
+        Me.ColFechaEspecifica.Width = 125
+        '
+        'colNoSerie
+        '
+        Me.colNoSerie.HeaderText = "Serie"
+        Me.colNoSerie.MinimumWidth = 6
+        Me.colNoSerie.Name = "colNoSerie"
+        Me.colNoSerie.ReadOnly = True
+        Me.colNoSerie.Visible = False
+        Me.colNoSerie.Width = 125
+        '
+        'colPesoUnitario
+        '
+        Me.colPesoUnitario.HeaderText = "PesoUnitario"
+        Me.colPesoUnitario.MinimumWidth = 6
+        Me.colPesoUnitario.Name = "colPesoUnitario"
+        Me.colPesoUnitario.ReadOnly = True
+        Me.colPesoUnitario.Visible = False
+        Me.colPesoUnitario.Width = 125
+        '
+        'CantidadPickeada
+        '
+        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle9.Format = "N2"
+        DataGridViewCellStyle9.NullValue = "0"
+        Me.CantidadPickeada.DefaultCellStyle = DataGridViewCellStyle9
+        Me.CantidadPickeada.HeaderText = "Pick"
+        Me.CantidadPickeada.MinimumWidth = 6
+        Me.CantidadPickeada.Name = "CantidadPickeada"
+        Me.CantidadPickeada.ReadOnly = True
+        Me.CantidadPickeada.Width = 125
+        '
+        'CantidadVerificada
+        '
+        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle10.Format = "N2"
+        DataGridViewCellStyle10.NullValue = "0"
+        Me.CantidadVerificada.DefaultCellStyle = DataGridViewCellStyle10
+        Me.CantidadVerificada.HeaderText = "Veri"
+        Me.CantidadVerificada.MinimumWidth = 6
+        Me.CantidadVerificada.Name = "CantidadVerificada"
+        Me.CantidadVerificada.ReadOnly = True
+        Me.CantidadVerificada.Width = 125
+        '
+        'Atributo_Variante_1
+        '
+        Me.Atributo_Variante_1.HeaderText = "Atributo_Variante"
+        Me.Atributo_Variante_1.MinimumWidth = 6
+        Me.Atributo_Variante_1.Name = "Atributo_Variante_1"
+        Me.Atributo_Variante_1.ReadOnly = True
+        Me.Atributo_Variante_1.Visible = False
+        Me.Atributo_Variante_1.Width = 125
+        '
+        'IdStockEspecifico
+        '
+        Me.IdStockEspecifico.HeaderText = "IdStockEspecifico"
+        Me.IdStockEspecifico.MinimumWidth = 6
+        Me.IdStockEspecifico.Name = "IdStockEspecifico"
+        Me.IdStockEspecifico.ReadOnly = True
+        Me.IdStockEspecifico.Width = 125
+        '
+        'colIdProductoBodega
+        '
+        Me.colIdProductoBodega.HeaderText = "IdProductoBodega"
+        Me.colIdProductoBodega.MinimumWidth = 6
+        Me.colIdProductoBodega.Name = "colIdProductoBodega"
+        Me.colIdProductoBodega.ReadOnly = True
+        Me.colIdProductoBodega.Visible = False
+        Me.colIdProductoBodega.Width = 125
+        '
+        'colIdPedidoDet
+        '
+        Me.colIdPedidoDet.HeaderText = "IdPedidoDet"
+        Me.colIdPedidoDet.MinimumWidth = 6
+        Me.colIdPedidoDet.Name = "colIdPedidoDet"
+        Me.colIdPedidoDet.Width = 125
+        '
+        'IdCliente
+        '
+        Me.IdCliente.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
+        Me.IdCliente.HeaderText = "Cliente"
+        Me.IdCliente.MinimumWidth = 6
+        Me.IdCliente.Name = "IdCliente"
+        Me.IdCliente.ReadOnly = True
+        Me.IdCliente.Width = 200
+        '
         'GroupBox2
         '
         Me.GroupBox2.Controls.Add(Me.lblTotal)
@@ -3474,7 +3758,7 @@ Partial Class frmPedido
         Me.DockPanel2.OriginalSize = New System.Drawing.Size(200, 121)
         Me.DockPanel2.SavedDock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel2.SavedIndex = 0
-        Me.DockPanel2.Size = New System.Drawing.Size(1851, 151)
+        Me.DockPanel2.Size = New System.Drawing.Size(1675, 151)
         Me.DockPanel2.Text = "Bitácora"
         Me.DockPanel2.Visibility = DevExpress.XtraBars.Docking.DockVisibility.AutoHide
         '
@@ -3491,7 +3775,7 @@ Partial Class frmPedido
         Me.DockPanel2_Container.Location = New System.Drawing.Point(4, 34)
         Me.DockPanel2_Container.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel2_Container.Name = "DockPanel2_Container"
-        Me.DockPanel2_Container.Size = New System.Drawing.Size(1843, 113)
+        Me.DockPanel2_Container.Size = New System.Drawing.Size(1667, 113)
         Me.DockPanel2_Container.TabIndex = 0
         '
         'Fec_modDateEdit1
@@ -4033,10 +4317,10 @@ Partial Class frmPedido
         Me.GrpEmbarque.Controls.Add(Me.BLNo)
         Me.GrpEmbarque.Controls.Add(Me.txtPuertaDescarga)
         Me.GrpEmbarque.Controls.Add(Label37)
-        Me.GrpEmbarque.Location = New System.Drawing.Point(1528, 51)
+        Me.GrpEmbarque.Location = New System.Drawing.Point(1222, 41)
         Me.GrpEmbarque.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.GrpEmbarque.Name = "GrpEmbarque"
-        Me.GrpEmbarque.Size = New System.Drawing.Size(662, 504)
+        Me.GrpEmbarque.Size = New System.Drawing.Size(530, 403)
         Me.GrpEmbarque.TabIndex = 0
         Me.GrpEmbarque.Text = "Embarque"
         '
@@ -4631,11 +4915,11 @@ Partial Class frmPedido
         '
         Me.dgridServiciosAsociados.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgridServiciosAsociados.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(6, 2, 6, 2)
-        Me.dgridServiciosAsociados.Location = New System.Drawing.Point(0, 126)
+        Me.dgridServiciosAsociados.Location = New System.Drawing.Point(0, 166)
         Me.dgridServiciosAsociados.MainView = Me.gvDetalleServicios
         Me.dgridServiciosAsociados.Margin = New System.Windows.Forms.Padding(6, 2, 6, 2)
         Me.dgridServiciosAsociados.Name = "dgridServiciosAsociados"
-        Me.dgridServiciosAsociados.Size = New System.Drawing.Size(1673, 660)
+        Me.dgridServiciosAsociados.Size = New System.Drawing.Size(2091, 816)
         Me.dgridServiciosAsociados.TabIndex = 18
         Me.dgridServiciosAsociados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvDetalleServicios})
         '
@@ -4648,7 +4932,7 @@ Partial Class frmPedido
         'cmbAcuerdoComercial
         '
         Me.cmbAcuerdoComercial.Dock = System.Windows.Forms.DockStyle.Top
-        Me.cmbAcuerdoComercial.Location = New System.Drawing.Point(0, 98)
+        Me.cmbAcuerdoComercial.Location = New System.Drawing.Point(0, 123)
         Me.cmbAcuerdoComercial.Margin = New System.Windows.Forms.Padding(6, 2, 6, 2)
         Me.cmbAcuerdoComercial.Name = "cmbAcuerdoComercial"
         Me.cmbAcuerdoComercial.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -4656,7 +4940,7 @@ Partial Class frmPedido
         Me.cmbAcuerdoComercial.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.cmbAcuerdoComercial.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbAcuerdoComercial.Properties.NullText = ""
-        Me.cmbAcuerdoComercial.Size = New System.Drawing.Size(1673, 28)
+        Me.cmbAcuerdoComercial.Size = New System.Drawing.Size(2091, 35)
         Me.cmbAcuerdoComercial.TabIndex = 58
         '
         'lblAcuerdoComercial
@@ -4670,7 +4954,7 @@ Partial Class frmPedido
         Me.lblAcuerdoComercial.Location = New System.Drawing.Point(0, 0)
         Me.lblAcuerdoComercial.Margin = New System.Windows.Forms.Padding(6, 2, 6, 2)
         Me.lblAcuerdoComercial.Name = "lblAcuerdoComercial"
-        Me.lblAcuerdoComercial.Size = New System.Drawing.Size(1673, 98)
+        Me.lblAcuerdoComercial.Size = New System.Drawing.Size(2091, 98)
         Me.lblAcuerdoComercial.TabIndex = 59
         Me.lblAcuerdoComercial.Text = "Acuerdo Comercial:"
         '
@@ -4691,7 +4975,7 @@ Partial Class frmPedido
         Me.dgridStockLiberado.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dgridStockLiberado.MenuManager = Me.RibbonControl
         Me.dgridStockLiberado.Name = "dgridStockLiberado"
-        Me.dgridStockLiberado.Size = New System.Drawing.Size(1673, 786)
+        Me.dgridStockLiberado.Size = New System.Drawing.Size(2091, 983)
         Me.dgridStockLiberado.TabIndex = 1
         Me.dgridStockLiberado.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvLogStockLiberado})
         '
@@ -4721,7 +5005,7 @@ Partial Class frmPedido
         Me.dgridLogMI3.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dgridLogMI3.MenuManager = Me.RibbonControl
         Me.dgridLogMI3.Name = "dgridLogMI3"
-        Me.dgridLogMI3.Size = New System.Drawing.Size(1673, 786)
+        Me.dgridLogMI3.Size = New System.Drawing.Size(2091, 983)
         Me.dgridLogMI3.TabIndex = 1
         Me.dgridLogMI3.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView5})
         '
@@ -4752,7 +5036,7 @@ Partial Class frmPedido
         Me.dgridVerificacion.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dgridVerificacion.MenuManager = Me.RibbonControl
         Me.dgridVerificacion.Name = "dgridVerificacion"
-        Me.dgridVerificacion.Size = New System.Drawing.Size(1673, 786)
+        Me.dgridVerificacion.Size = New System.Drawing.Size(2091, 983)
         Me.dgridVerificacion.TabIndex = 1
         Me.dgridVerificacion.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView9})
         '
@@ -4900,7 +5184,7 @@ Partial Class frmPedido
         Me.dgrdLogReserva.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dgrdLogReserva.MenuManager = Me.RibbonControl
         Me.dgrdLogReserva.Name = "dgrdLogReserva"
-        Me.dgrdLogReserva.Size = New System.Drawing.Size(1673, 786)
+        Me.dgrdLogReserva.Size = New System.Drawing.Size(2091, 983)
         Me.dgrdLogReserva.TabIndex = 2
         Me.dgrdLogReserva.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView10})
         '
@@ -4930,7 +5214,7 @@ Partial Class frmPedido
         Me.dgridExistencias.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dgridExistencias.MenuManager = Me.RibbonControl
         Me.dgridExistencias.Name = "dgridExistencias"
-        Me.dgridExistencias.Size = New System.Drawing.Size(1673, 786)
+        Me.dgridExistencias.Size = New System.Drawing.Size(2091, 983)
         Me.dgridExistencias.TabIndex = 3
         Me.dgridExistencias.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView11})
         '
@@ -4960,290 +5244,6 @@ Partial Class frmPedido
         '
         Me.WorkspaceManager1.TargetControl = Me
         Me.WorkspaceManager1.TransitionType = PushTransition1
-        '
-        'colNo_Linea
-        '
-        DataGridViewCellStyle2.Format = "N0"
-        DataGridViewCellStyle2.NullValue = Nothing
-        Me.colNo_Linea.DefaultCellStyle = DataGridViewCellStyle2
-        Me.colNo_Linea.HeaderText = "No_Linea"
-        Me.colNo_Linea.MinimumWidth = 6
-        Me.colNo_Linea.Name = "colNo_Linea"
-        Me.colNo_Linea.Width = 125
-        '
-        'colIdProducto
-        '
-        Me.colIdProducto.HeaderText = "IdProducto"
-        Me.colIdProducto.MinimumWidth = 6
-        Me.colIdProducto.Name = "colIdProducto"
-        Me.colIdProducto.ReadOnly = True
-        Me.colIdProducto.Visible = False
-        Me.colIdProducto.Width = 125
-        '
-        'colIsNew
-        '
-        Me.colIsNew.HeaderText = "IsNew"
-        Me.colIsNew.MinimumWidth = 6
-        Me.colIsNew.Name = "colIsNew"
-        Me.colIsNew.ReadOnly = True
-        Me.colIsNew.Visible = False
-        Me.colIsNew.Width = 125
-        '
-        'ColCodProducto
-        '
-        Me.ColCodProducto.HeaderText = "Código"
-        Me.ColCodProducto.MinimumWidth = 6
-        Me.ColCodProducto.Name = "ColCodProducto"
-        Me.ColCodProducto.Width = 125
-        '
-        'ColNomProducto
-        '
-        Me.ColNomProducto.HeaderText = "Descripción"
-        Me.ColNomProducto.MinimumWidth = 6
-        Me.ColNomProducto.Name = "ColNomProducto"
-        Me.ColNomProducto.ReadOnly = True
-        Me.ColNomProducto.Width = 250
-        '
-        'colUnidadMedida
-        '
-        Me.colUnidadMedida.HeaderText = "U.M.Bas"
-        Me.colUnidadMedida.MinimumWidth = 6
-        Me.colUnidadMedida.Name = "colUnidadMedida"
-        Me.colUnidadMedida.ReadOnly = True
-        Me.colUnidadMedida.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.colUnidadMedida.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable
-        Me.colUnidadMedida.Width = 125
-        '
-        'colTalla
-        '
-        Me.colTalla.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
-        Me.colTalla.HeaderText = "Talla"
-        Me.colTalla.MinimumWidth = 6
-        Me.colTalla.Name = "colTalla"
-        Me.colTalla.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
-        Me.colTalla.Width = 125
-        '
-        'colColor
-        '
-        Me.colColor.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
-        Me.colColor.HeaderText = "Color"
-        Me.colColor.MinimumWidth = 6
-        Me.colColor.Name = "colColor"
-        Me.colColor.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
-        Me.colColor.Width = 125
-        '
-        'colSKU
-        '
-        Me.colSKU.HeaderText = "SKU"
-        Me.colSKU.MinimumWidth = 6
-        Me.colSKU.Name = "colSKU"
-        Me.colSKU.Visible = False
-        Me.colSKU.Width = 125
-        '
-        'colIdProductoTallaColor
-        '
-        Me.colIdProductoTallaColor.HeaderText = "IdProductoTallaColor"
-        Me.colIdProductoTallaColor.MinimumWidth = 6
-        Me.colIdProductoTallaColor.Name = "colIdProductoTallaColor"
-        Me.colIdProductoTallaColor.ReadOnly = True
-        Me.colIdProductoTallaColor.Visible = False
-        Me.colIdProductoTallaColor.Width = 125
-        '
-        'colPresentacion
-        '
-        Me.colPresentacion.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
-        Me.colPresentacion.HeaderText = "Presentación"
-        Me.colPresentacion.MinimumWidth = 6
-        Me.colPresentacion.Name = "colPresentacion"
-        Me.colPresentacion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
-        Me.colPresentacion.Width = 150
-        '
-        'colEstadoProducto
-        '
-        Me.colEstadoProducto.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
-        Me.colEstadoProducto.HeaderText = "Estado"
-        Me.colEstadoProducto.MinimumWidth = 6
-        Me.colEstadoProducto.Name = "colEstadoProducto"
-        Me.colEstadoProducto.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.colEstadoProducto.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
-        Me.colEstadoProducto.Width = 125
-        '
-        'colCantidadExistencia
-        '
-        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle3.Format = "N2"
-        DataGridViewCellStyle3.NullValue = Nothing
-        Me.colCantidadExistencia.DefaultCellStyle = DataGridViewCellStyle3
-        Me.colCantidadExistencia.HeaderText = "Cant. Disp"
-        Me.colCantidadExistencia.MinimumWidth = 6
-        Me.colCantidadExistencia.Name = "colCantidadExistencia"
-        Me.colCantidadExistencia.ReadOnly = True
-        Me.colCantidadExistencia.Width = 125
-        '
-        'colPesoExistencia
-        '
-        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle4.Format = "N2"
-        Me.colPesoExistencia.DefaultCellStyle = DataGridViewCellStyle4
-        Me.colPesoExistencia.HeaderText = "Peso Disp."
-        Me.colPesoExistencia.MinimumWidth = 6
-        Me.colPesoExistencia.Name = "colPesoExistencia"
-        Me.colPesoExistencia.ReadOnly = True
-        Me.colPesoExistencia.Width = 125
-        '
-        'ColCantidad
-        '
-        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle5.Format = "N2"
-        DataGridViewCellStyle5.NullValue = "0"
-        Me.ColCantidad.DefaultCellStyle = DataGridViewCellStyle5
-        Me.ColCantidad.HeaderText = "Cantidad"
-        Me.ColCantidad.MinimumWidth = 6
-        Me.ColCantidad.Name = "ColCantidad"
-        Me.ColCantidad.Width = 125
-        '
-        'ColPeso
-        '
-        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle6.Format = "N3"
-        DataGridViewCellStyle6.NullValue = "0"
-        Me.ColPeso.DefaultCellStyle = DataGridViewCellStyle6
-        Me.ColPeso.HeaderText = "Peso"
-        Me.ColPeso.MinimumWidth = 6
-        Me.ColPeso.Name = "ColPeso"
-        Me.ColPeso.Width = 125
-        '
-        'ColPrecio
-        '
-        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle7.Format = "N2"
-        DataGridViewCellStyle7.NullValue = Nothing
-        Me.ColPrecio.DefaultCellStyle = DataGridViewCellStyle7
-        Me.ColPrecio.HeaderText = "Precio"
-        Me.ColPrecio.MinimumWidth = 6
-        Me.ColPrecio.Name = "ColPrecio"
-        Me.ColPrecio.Width = 125
-        '
-        'ColTotal
-        '
-        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle8.Format = "N2"
-        DataGridViewCellStyle8.NullValue = Nothing
-        Me.ColTotal.DefaultCellStyle = DataGridViewCellStyle8
-        Me.ColTotal.HeaderText = "Total"
-        Me.ColTotal.MinimumWidth = 6
-        Me.ColTotal.Name = "ColTotal"
-        Me.ColTotal.ReadOnly = True
-        Me.ColTotal.Width = 125
-        '
-        'ColIdStockRes
-        '
-        Me.ColIdStockRes.HeaderText = "IdStockRes"
-        Me.ColIdStockRes.MinimumWidth = 6
-        Me.ColIdStockRes.Name = "ColIdStockRes"
-        Me.ColIdStockRes.ReadOnly = True
-        Me.ColIdStockRes.Visible = False
-        Me.ColIdStockRes.Width = 125
-        '
-        'colNoDias
-        '
-        Me.colNoDias.HeaderText = "NoDias"
-        Me.colNoDias.MinimumWidth = 6
-        Me.colNoDias.Name = "colNoDias"
-        Me.colNoDias.ReadOnly = True
-        Me.colNoDias.Width = 125
-        '
-        'ColFechaEspecifica
-        '
-        Me.ColFechaEspecifica.HeaderText = "FechaEspecifica"
-        Me.ColFechaEspecifica.MinimumWidth = 6
-        Me.ColFechaEspecifica.Name = "ColFechaEspecifica"
-        Me.ColFechaEspecifica.ReadOnly = True
-        Me.ColFechaEspecifica.Width = 125
-        '
-        'colNoSerie
-        '
-        Me.colNoSerie.HeaderText = "Serie"
-        Me.colNoSerie.MinimumWidth = 6
-        Me.colNoSerie.Name = "colNoSerie"
-        Me.colNoSerie.ReadOnly = True
-        Me.colNoSerie.Visible = False
-        Me.colNoSerie.Width = 125
-        '
-        'colPesoUnitario
-        '
-        Me.colPesoUnitario.HeaderText = "PesoUnitario"
-        Me.colPesoUnitario.MinimumWidth = 6
-        Me.colPesoUnitario.Name = "colPesoUnitario"
-        Me.colPesoUnitario.ReadOnly = True
-        Me.colPesoUnitario.Visible = False
-        Me.colPesoUnitario.Width = 125
-        '
-        'CantidadPickeada
-        '
-        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle9.Format = "N2"
-        DataGridViewCellStyle9.NullValue = "0"
-        Me.CantidadPickeada.DefaultCellStyle = DataGridViewCellStyle9
-        Me.CantidadPickeada.HeaderText = "Pick"
-        Me.CantidadPickeada.MinimumWidth = 6
-        Me.CantidadPickeada.Name = "CantidadPickeada"
-        Me.CantidadPickeada.ReadOnly = True
-        Me.CantidadPickeada.Width = 125
-        '
-        'CantidadVerificada
-        '
-        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle10.Format = "N2"
-        DataGridViewCellStyle10.NullValue = "0"
-        Me.CantidadVerificada.DefaultCellStyle = DataGridViewCellStyle10
-        Me.CantidadVerificada.HeaderText = "Veri"
-        Me.CantidadVerificada.MinimumWidth = 6
-        Me.CantidadVerificada.Name = "CantidadVerificada"
-        Me.CantidadVerificada.ReadOnly = True
-        Me.CantidadVerificada.Width = 125
-        '
-        'Atributo_Variante_1
-        '
-        Me.Atributo_Variante_1.HeaderText = "Atributo_Variante"
-        Me.Atributo_Variante_1.MinimumWidth = 6
-        Me.Atributo_Variante_1.Name = "Atributo_Variante_1"
-        Me.Atributo_Variante_1.ReadOnly = True
-        Me.Atributo_Variante_1.Visible = False
-        Me.Atributo_Variante_1.Width = 125
-        '
-        'IdStockEspecifico
-        '
-        Me.IdStockEspecifico.HeaderText = "IdStockEspecifico"
-        Me.IdStockEspecifico.MinimumWidth = 6
-        Me.IdStockEspecifico.Name = "IdStockEspecifico"
-        Me.IdStockEspecifico.ReadOnly = True
-        Me.IdStockEspecifico.Width = 125
-        '
-        'colIdProductoBodega
-        '
-        Me.colIdProductoBodega.HeaderText = "IdProductoBodega"
-        Me.colIdProductoBodega.MinimumWidth = 6
-        Me.colIdProductoBodega.Name = "colIdProductoBodega"
-        Me.colIdProductoBodega.ReadOnly = True
-        Me.colIdProductoBodega.Visible = False
-        Me.colIdProductoBodega.Width = 125
-        '
-        'colIdPedidoDet
-        '
-        Me.colIdPedidoDet.HeaderText = "IdPedidoDet"
-        Me.colIdPedidoDet.MinimumWidth = 6
-        Me.colIdPedidoDet.Name = "colIdPedidoDet"
-        Me.colIdPedidoDet.Width = 125
-        '
-        'IdCliente
-        '
-        Me.IdCliente.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
-        Me.IdCliente.HeaderText = "Cliente"
-        Me.IdCliente.MinimumWidth = 6
-        Me.IdCliente.Name = "IdCliente"
-        Me.IdCliente.ReadOnly = True
-        Me.IdCliente.Width = 200
         '
         'frmPedido
         '

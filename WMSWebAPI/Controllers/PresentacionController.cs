@@ -49,6 +49,9 @@ namespace WMSWebAPI.Controllers
                         {
                             foreach (var dto in listPresentacionMi3dto)
                             {
+                                if (string.IsNullOrEmpty(dto.Codigo_presentacion))
+                                    return StatusCode(500, new { Exito = false, Mensaje = "El código no puede estar vacio." });
+
                                 _presentacionMi3SyncService.ProcesarPresentacionMi3Dto(dto, connection, transaction);
                                 resultados.Add(new { dto.Codigo_presentacion, Procesado = true, Mensaje = "Procesado correctamente" });
                             }

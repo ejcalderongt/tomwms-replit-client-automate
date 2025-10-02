@@ -58,7 +58,10 @@ namespace WMSWebAPI.Controllers
 
                             foreach (var dto in ClienteMi3Dto)
                             {
-                               _syncService.ProcesarClienteDesdeDto(dto, connection, transaction);
+                                if (string.IsNullOrEmpty(dto.codigo))
+                                    return StatusCode(500, new { Exito = false, Mensaje = "El código no puede estar vacio." });
+
+                                _syncService.ProcesarClienteDesdeDto(dto, connection, transaction);
                                 resultados.Add(new { dto.codigo, Procesado = true, Mensaje = "Procesado correctamente" });
                             }
 
@@ -74,12 +77,7 @@ namespace WMSWebAPI.Controllers
                             transaction.Rollback();
 
                             var showStackTrace = configuration.GetValue<bool>("MostrarDetallesErrores");
-                            return StatusCode(500, new
-                            {
-                                Exito = false,
-                                Mensaje = ex.Message,
-                                Detalles = showStackTrace ? ex.ToString() : null
-                            });
+                            return StatusCode(500, new { Exito = false, Mensaje = ex.Message });
                         }
                     }
                 }
