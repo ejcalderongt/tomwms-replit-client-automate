@@ -55,13 +55,13 @@ Public Class clsSyncSapFacturaReserva
 
             Dim lPedidosCompra As New List(Of clsBeI_nav_ped_compra_enc)
             lPedidosCompra = Await Get_Factura_Reserva_SAP_Hana_SL(Val(pNoDocumentoSAP),
-                                                                  BeBodega.Codigo,
-                                                                  vHanaService.SessionCookie,
-                                                                  BD.Instancia.HANA_SL,
-                                                                  lConnection,
-                                                                  lTransaction,
-                                                                  IdUsuario,
-                                                                  lblprg)
+                                                                      BeBodega.Codigo,
+                                                                      vHanaService.SessionCookie,
+                                                                      BD.Instancia.HANA_SL,
+                                                                      lConnection,
+                                                                      lTransaction,
+                                                                      IdUsuario,
+                                                                      lblprg)
 
             If lPedidosCompra Is Nothing Then
                 clsPublic.Actualizar_Progreso(lblprg, "No se obtuvieron facturas de reserva.")
@@ -720,17 +720,17 @@ Public Class clsSyncSapFacturaReserva
             filtro &= $" and DocNum eq {docNum.Value}"
         End If
 
-        'Dim requestUrl As String = $"PurchaseInvoices?$filter={Uri.EscapeDataString(filtro)}"
+        Dim requestUrl As String = $"PurchaseInvoices?$filter={Uri.EscapeDataString(filtro)}"
 
-        Dim campos As String = String.Join(","c, {"DocEntry", "DocNum", "Series",
-                                                  "CardCode", "CardName",
-                                                  "JournalMemo", "Comments", "NumAtCard",
-                                                  "U_Campania", "U_Estado",
-                                                  "SalesPersonCode",
-                                                  "DocDate", "DocTime",
-                                                  "DocumentLines"})
+        'Dim campos As String = String.Join(","c, {"DocEntry", "DocNum", "Series",
+        '                                          "CardCode", "CardName",
+        '                                          "JournalMemo", "Comments", "NumAtCard",
+        '                                          "U_Campania", "U_Estado",
+        '                                          "SalesPersonCode",
+        '                                          "DocDate", "DocTime",
+        '                                          "DocumentLines"})
 
-        Dim requestUrl As String = $"PurchaseInvoices?$select={campos}&$filter={Uri.EscapeDataString(filtro)}"
+        'Dim requestUrl As String = $"PurchaseInvoices?$select={campos}&$filter={Uri.EscapeDataString(filtro)}"
         Dim resultados As New List(Of clsBeI_nav_ped_compra_enc)()
 
         Try
