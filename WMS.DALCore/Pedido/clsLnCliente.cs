@@ -7,6 +7,7 @@ using System.Reflection;
 using WMS.EntityCore.Cliente;
 using WMS.EntityCore.Datos_Maestros;
 using WMS.EntityCore.Pedido;
+using WMS.EntityCore.Interface;
 
 public class clsLnCliente
 {
@@ -767,6 +768,13 @@ public class clsLnCliente
 
             bool existe = Existe_By_Codigo(entity.codigo, ref Cliente, connection, isExternalTx ? tx! : localTx!);
 
+            var BeInavConfigEnc = new clsBeI_nav_config_enc();
+            clsLnI_nav_config_enc.GetSingle(config, BeInavConfigEnc, connection, isExternalTx ? tx : localTx);
+
+            if (BeInavConfigEnc == null)
+                throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
+
+
             if (!existe)
             {
 
@@ -775,8 +783,8 @@ public class clsLnCliente
                     Cliente.IdCliente = clsLnCliente.MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
                     Cliente.Codigo = entity.codigo;
                     Cliente.Nombre_comercial = entity.nombre_comercial ?? entity.codigo;
-                    Cliente.User_agr = "1";
-                    Cliente.User_mod = "1";
+                    Cliente.User_agr = BeInavConfigEnc.IdUsuario.ToString();
+                    Cliente.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                     Cliente.Fec_agr = DateTime.Now;
                     Cliente.Fec_mod = DateTime.Now;
                     Cliente.Activo = entity.activo;
@@ -795,8 +803,8 @@ public class clsLnCliente
                             Cliente_Bodega.IdClienteBodega = clsLnCliente_bodega.MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
                             Cliente_Bodega.IdBodega = BeBodega.IdBodega;
                             Cliente_Bodega.IdCliente = Cliente.IdCliente;
-                            Cliente_Bodega.User_agr = "1";
-                            Cliente_Bodega.User_mod = "1";
+                            Cliente_Bodega.User_agr = BeInavConfigEnc.IdUsuario.ToString();
+                            Cliente_Bodega.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                             Cliente_Bodega.Fec_agr = DateTime.Now;
                             Cliente_Bodega.Fec_mod = DateTime.Now;
                             Cliente_Bodega.Activo = true;
@@ -814,7 +822,7 @@ public class clsLnCliente
 
                 Cliente.Codigo = entity.codigo;
                 Cliente.Nombre_comercial = entity.nombre_comercial ?? entity.codigo;
-                Cliente.User_mod = "1";
+                Cliente.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                 Cliente.Fec_mod = DateTime.Now;
                 Cliente.Activo = entity.activo;
                 clsLnCliente.Actualizar(config, Cliente, connection, isExternalTx ? tx : localTx);

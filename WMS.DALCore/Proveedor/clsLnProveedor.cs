@@ -5,7 +5,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Datos_Maestros;
-using WMS.EntityCore.Producto.ProductoSimple;
+using WMS.EntityCore.Interface;
 using WMS.EntityCore.Proveedor;
 public class clsLnProveedor
 {
@@ -762,6 +762,13 @@ public class clsLnProveedor
             var BeProveedor_Bodega = new clsBeProveedor_bodega();
             bool existe = Existe_By_Codigo(pBeProveedor.Codigo, ref BeProveedor, connection, isExternalTx ? tx! : localTx!);
 
+            var BeInavConfigEnc = new clsBeI_nav_config_enc();
+            clsLnI_nav_config_enc.GetSingle(config, BeInavConfigEnc, connection, isExternalTx ? tx : localTx);
+
+            if (BeInavConfigEnc == null)
+                throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
+
+
             if (!existe)
             {
 
@@ -772,8 +779,8 @@ public class clsLnProveedor
                     BeProveedor.Nombre = pBeProveedor.Nombre ?? pBeProveedor.Codigo;
                     BeProveedor.Nit = pBeProveedor.Nit;
                     BeProveedor.Contacto = pBeProveedor.Contacto;
-                    BeProveedor.User_agr = "1";
-                    BeProveedor.User_mod = "1";
+                    BeProveedor.User_agr = BeInavConfigEnc.IdUsuario.ToString();
+                    BeProveedor.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                     BeProveedor.Fec_agr = DateTime.Now;
                     BeProveedor.Fec_mod = DateTime.Now;
                     BeProveedor.Activo = pBeProveedor.Activo;
@@ -795,8 +802,8 @@ public class clsLnProveedor
                             BeProveedor_Bodega.IdProveedor = clsLnProveedor_bodega.MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
                             BeProveedor_Bodega.IdBodega = BeBodega.IdBodega;
                             BeProveedor_Bodega.IdAreaOrigen = 0;
-                            BeProveedor_Bodega.User_agr = "1";
-                            BeProveedor_Bodega.User_mod = "1";
+                            BeProveedor_Bodega.User_agr = BeInavConfigEnc.IdUsuario.ToString();
+                            BeProveedor_Bodega.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                             BeProveedor_Bodega.Fec_agr = DateTime.Now;
                             BeProveedor_Bodega.Fec_mod = DateTime.Now;
                             BeProveedor_Bodega.Activo = true;
@@ -814,7 +821,7 @@ public class clsLnProveedor
 
                 BeProveedor.Codigo = pBeProveedor.Codigo;
                 BeProveedor.Nombre = pBeProveedor.Nombre ?? pBeProveedor.Codigo;
-                BeProveedor.User_mod = "1";
+                BeProveedor.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                 BeProveedor.Fec_mod = DateTime.Now;
                 BeProveedor.Activo = pBeProveedor.Activo;
                 Actualizar(config, BeProveedor, connection, isExternalTx ? tx : localTx);

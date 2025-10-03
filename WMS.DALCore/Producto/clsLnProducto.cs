@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using WMS.EntityCore.Producto.ProductoSimple;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WMS.EntityCore.Datos_Maestros;
+using WMS.EntityCore.Interface;
 public class clsLnProducto
 {
 
@@ -1035,6 +1036,12 @@ public class clsLnProducto
 
             bool existe = Existe_By_Codigo(BeProductoMi3.codigo, connection, isExternalTx ? tx! : localTx!);
 
+            var BeInavConfigEnc = new clsBeI_nav_config_enc();
+            clsLnI_nav_config_enc.GetSingle(config, BeInavConfigEnc, connection, isExternalTx ? tx : localTx);
+
+            if (BeInavConfigEnc == null)
+                throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
+
             if (!existe)
             {
 
@@ -1120,8 +1127,8 @@ public class clsLnProducto
                 pProducto.control_vencimiento= BeProductoMi3.control_vencimiento;
                 pProducto.IdTipoRotacion = BeProductoMi3.IdTipoRotacion;
                 pProducto.IdTipoEtiqueta = BeProductoMi3.IdTipoEtiqueta;
-                pProducto.user_agr = "1";
-                pProducto.user_mod = "1";
+                pProducto.user_agr = BeInavConfigEnc.IdUsuario.ToString();
+                pProducto.user_mod = BeInavConfigEnc.IdUsuario.ToString();
                 pProducto.fec_agr = DateTime.Now;
                 pProducto.fec_mod= DateTime.Now;  
 
@@ -1132,7 +1139,7 @@ public class clsLnProducto
                 if (listBeBodega.Count == 0)
                     throw new ArgumentNullException(nameof(listBeBodega), "No se encontraron bodegas activas para asociar productos.");
 
-                //var BeInavConfigEnc = clsLn ******* agregar objetos para i_nav_config_enc
+             
 
                 if (listBeBodega.Count > 0)
                 {
@@ -1147,8 +1154,8 @@ public class clsLnProducto
                         ProductoBodega.Sistema = false;
                         ProductoBodega.Fec_agr = DateTime.Now;
                         ProductoBodega.Fec_mod = DateTime.Now;
-                        ProductoBodega.User_agr = "1";
-                        ProductoBodega.User_mod = "1";
+                        ProductoBodega.User_agr = BeInavConfigEnc.IdUsuario.ToString();
+                        ProductoBodega.User_mod = BeInavConfigEnc.IdUsuario.ToString();
 
                         clsLnProducto_bodega.Insertar(config, ProductoBodega, connection, isExternalTx ? tx : localTx);
                     }

@@ -4,7 +4,8 @@ using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Producto;
-using WMS.EntityCore.Producto.ProductoSimple;
+using WMS.EntityCore.Interface;
+
 public class clsLnProducto_presentacion
 {
     private static clsInsert Ins = new clsInsert();
@@ -709,6 +710,13 @@ public class clsLnProducto_presentacion
             var Presentacion = new clsBeProducto_presentacion();
             bool existe = Existe_By_Codigo(pPresentacionMi3.Codigo_presentacion, ref Presentacion, connection, isExternalTx ? tx! : localTx!);
 
+            var BeInavConfigEnc = new clsBeI_nav_config_enc();
+            clsLnI_nav_config_enc.GetSingle(config, BeInavConfigEnc, connection, isExternalTx ? tx : localTx);
+
+            if (BeInavConfigEnc == null)
+                throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
+
+
             if (!existe)
             {
                 if (!string.IsNullOrEmpty(pPresentacionMi3.Codigo_presentacion))
@@ -727,8 +735,8 @@ public class clsLnProducto_presentacion
                         Presentacion.Activo = pPresentacionMi3.Activo;
                         Presentacion.EsPallet = pPresentacionMi3.EsPallet;
                         Presentacion.Genera_lp_auto = pPresentacionMi3.Genera_lp_auto;
-                        Presentacion.User_agr = "1";
-                        Presentacion.User_mod = "1";
+                        Presentacion.User_agr = BeInavConfigEnc.IdUsuario.ToString();
+                        Presentacion.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                         Presentacion.Fec_agr = DateTime.Now;
                         Presentacion.Fec_mod = DateTime.Now;
 
@@ -747,6 +755,8 @@ public class clsLnProducto_presentacion
                 Presentacion.Activo = pPresentacionMi3.Activo;
                 Presentacion.EsPallet = pPresentacionMi3.EsPallet;
                 Presentacion.Genera_lp_auto = pPresentacionMi3.Genera_lp_auto;
+                Presentacion.User_mod = BeInavConfigEnc.IdUsuario.ToString();
+                Presentacion.Fec_mod = DateTime.Now;
                 Actualizar(config, Presentacion, connection, isExternalTx ? tx : localTx);
             }
         }

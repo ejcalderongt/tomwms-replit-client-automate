@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Producto.ProductoSimple;
+using WMS.EntityCore.Interface;
 public class clsLnProducto_familia
 {
     private static readonly clsInsert ins = new clsInsert();
@@ -336,6 +337,12 @@ public class clsLnProducto_familia
             var Familia = new clsBeProducto_familia();
             bool existe = Existe_By_Codigo(entity.Codigo, ref Familia ,connection, isExternalTx ? tx! : localTx!);
 
+            var BeInavConfigEnc = new clsBeI_nav_config_enc();
+            clsLnI_nav_config_enc.GetSingle(config, BeInavConfigEnc, connection, isExternalTx ? tx : localTx);
+
+            if (BeInavConfigEnc == null)
+                throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
+
             if (!existe)
             {
                 if (!string.IsNullOrEmpty(entity.Codigo))
@@ -343,8 +350,8 @@ public class clsLnProducto_familia
                     Familia.IdFamilia = MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
                     Familia.Codigo = entity.Codigo;
                     Familia.Nombre = entity.Nombre ?? entity.Codigo;
-                    Familia.User_agr = "1";
-                    Familia.User_mod = "1";
+                    Familia.User_agr = BeInavConfigEnc.IdUsuario.ToString();
+                    Familia.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                     Familia.Fec_agr = DateTime.Now;
                     Familia.Fec_agr = DateTime.Now;
                     Familia.Activo = entity.Activo;
@@ -357,7 +364,7 @@ public class clsLnProducto_familia
             {
                 Familia.Codigo = entity.Codigo;
                 Familia.Nombre = entity.Nombre ?? entity.Codigo;
-                Familia.User_mod = "1";
+                Familia.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                 Familia.Fec_agr = DateTime.Now;
                 Familia.Activo = entity.Activo;
                 Actualizar(config, Familia, connection, isExternalTx ? tx : localTx);
