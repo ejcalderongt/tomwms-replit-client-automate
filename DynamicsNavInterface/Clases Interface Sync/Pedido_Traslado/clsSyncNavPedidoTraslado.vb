@@ -2710,7 +2710,8 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                             Try
 
                                 '#CKFK 20211123 Registrar el Picking de los pedidos de transferencia o de venta
-                                If PT.IdTipoDocumento = clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS Then
+                                If PT.IdTipoDocumento = clsDataContractDI.tTipoDocumentoSalida.Transferencia_Interna_WMS OrElse
+                                    PT.IdTipoDocumento = clsDataContractDI.tTipoDocumentoSalida.Pedido_De_Cliente Then
 
                                     Dim vURLPickingNAV As String = My.Settings.NavSync_WSPicking_Picking_Service
 
