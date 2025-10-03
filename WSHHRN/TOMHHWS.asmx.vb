@@ -16907,6 +16907,7 @@ Public Class TOMHHWS
             serializer.MaxJsonLength = Integer.MaxValue
             HttpContext.Current.Response.AddHeader("Access-Control-Allow-Methods", "GET")
             Dim strserialize As String = JsonConvert.SerializeObject(beRecepcion)
+            GetSingleRecJson = strserialize
             Dim currrentContext As HttpContext = HttpContext.Current
             currrentContext.Response.ContentType = "application/json"
             currrentContext.Response.Write(strserialize)
