@@ -2741,7 +2741,6 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                                             .Url = vURLEnviosAlm
                                         }
 
-
                                     Dim BePedidoEnc As New clsBeTrans_pe_enc
                                     Dim BePickingUbic As New List(Of clsBeTrans_picking_ubic)
 
