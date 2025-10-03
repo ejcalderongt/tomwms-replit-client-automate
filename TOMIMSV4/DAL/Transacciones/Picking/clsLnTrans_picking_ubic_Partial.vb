@@ -6695,7 +6695,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                             dbo.producto_estado.nombre AS nom_estado, pdet.IdEstado, max(pdet.Peso), max(pdet.Precio),pu.IdBodega, 
 		                                    '' AS NombreUbicacion, pu.IdUbicacionTemporal, 
 		                                    pu.IdPedidoEnc, 0 IdOperadorBodega_Pickeo, 0 IdOperadorBodega_Verifico,
-                                            0 IdOperadorBodega_Asignado,pe.bodega_destino Referencia
+                                            0 IdOperadorBodega_Asignado,pe.bodega_destino Referencia, pu.IdProductoTallaColor
                                     FROM    dbo.bodega_sector INNER JOIN
                                             dbo.bodega_area ON dbo.bodega_sector.IdArea = dbo.bodega_area.IdArea AND dbo.bodega_sector.IdBodega = dbo.bodega_area.IdBodega INNER JOIN
                                             dbo.bodega_tramo ON dbo.bodega_sector.IdSector = dbo.bodega_tramo.IdSector AND dbo.bodega_sector.IdBodega = dbo.bodega_tramo.IdBodega INNER JOIN
@@ -6721,7 +6721,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                             pdet.codigo_producto, pdet.nombre_producto, pdet.nom_presentacion, pdet.nom_unid_med, 
                                             dbo.producto_estado.nombre, pdet.IdEstado,pu.IdBodega, 
                                             pu.IdUbicacionTemporal, 
-                                            pu.IdPedidoEnc,pe.bodega_destino"
+                                            pu.IdPedidoEnc,pe.bodega_destino, pu.IdProductoTallaColor "
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
