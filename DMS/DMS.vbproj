@@ -72,10 +72,10 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>2DBA1FE848BEF82E50B6007390175C0262A87D22</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>9F2282C96F064ED3AB86F3CD2AC31927F16A2B89</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>DMS_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>DMS_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -213,6 +213,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="dms.ico" />
+    <None Include="DMS_1_TemporaryKey.pfx" />
     <None Include="DMS_TemporaryKey.pfx" />
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Application.myapp">
