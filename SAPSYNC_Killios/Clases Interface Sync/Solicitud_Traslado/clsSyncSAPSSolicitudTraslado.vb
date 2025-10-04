@@ -1507,9 +1507,11 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
             clsPublic.Actualizar_Progreso(lblprg, mensaje)
             clsLnLog_error_wms.Agregar_Error("#TRSAPSOL20250610: " & mensaje)
 
+            Dim solicitudTraslado As Boolean = False
+
             ' Enviar traslado final si aplica
             If Not String.IsNullOrEmpty(bodegaDestinoFinal) Then
-                Enviar_Solicitud_Traslado_SAP(productosAgrupados,
+                solicitudTraslado = Enviar_Solicitud_Traslado_SAP(productosAgrupados,
                                               bodegaIntermedia,
                                               bodegaDestinoFinal,
                                               nuevoDocEntry,
@@ -1522,6 +1524,21 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                                               clsTrans.lTransaction,
                                               lblprg,
                                               prg)
+            End If
+
+            If Not String.IsNullOrEmpty(bodegaDestinoFinal) Then
+
+                If Not solicitudTraslado Then
+
+                    Dim vSolicitud As String = ""
+                    vSolicitud = clsLnTrans_despacho_enc.Get_No_Pase_By_IdDespachoEnc(despachoEnc.IdDespachoEnc, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    If vSolicitud = "" Then
+                        Throw New Exception("No se pudo generar la solicitud de traslado.")
+                    End If
+
+                End If
+
             End If
 
             ' Marcar registros como enviados            
