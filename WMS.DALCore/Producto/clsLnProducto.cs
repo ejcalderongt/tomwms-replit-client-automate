@@ -1121,12 +1121,12 @@ public class clsLnProducto
                 pProducto.nombre = BeProductoMi3.nombre;
                 pProducto.codigo_barra = BeProductoMi3.codigo_barra;
                 pProducto.activo = true;
-                pProducto.genera_lp_old = BeProductoMi3.genera_lp_old;
-                pProducto.control_lote = BeProductoMi3.control_lote;
-                pProducto.control_peso = BeProductoMi3.control_peso;
-                pProducto.control_vencimiento= BeProductoMi3.control_vencimiento;
+                pProducto.genera_lp_old = false;
+                pProducto.control_lote = false;
+                pProducto.control_peso = false;
+                pProducto.control_vencimiento= false;
                 pProducto.IdTipoRotacion = BeProductoMi3.IdTipoRotacion;
-                pProducto.IdTipoEtiqueta = BeProductoMi3.IdTipoEtiqueta;
+                pProducto.IdTipoEtiqueta = 0;
                 pProducto.user_agr = BeInavConfigEnc.IdUsuario.ToString();
                 pProducto.user_mod = BeInavConfigEnc.IdUsuario.ToString();
                 pProducto.fec_agr = DateTime.Now;
