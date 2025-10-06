@@ -18412,8 +18412,10 @@ EXPLOSIONAR_PRODUCTO:
                         Dim vEstadoProducto As New clsBeProducto_estado
                         Dim vReservaUMBas As Boolean = False
 
-                        vEstadoProducto = clsLnProducto_estado.GetSingle(pStockResSolicitud.IdProductoEstado, lConnection, ltransaction)
-                        vReservaUMBas = vEstadoProducto.Reservar_En_UmBas
+                        If pStockResSolicitud.IdProductoEstado <> 0 Then
+                            vEstadoProducto = clsLnProducto_estado.GetSingle(pStockResSolicitud.IdProductoEstado, lConnection, ltransaction)
+                            vReservaUMBas = vEstadoProducto.Reservar_En_UmBas
+                        End If
 
                         If vReservaUMBas AndAlso pBeConfigEnc.Interface_SAP Then
                             vBusquedaEnUmBas = True

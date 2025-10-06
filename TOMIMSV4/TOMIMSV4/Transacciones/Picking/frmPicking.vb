@@ -431,7 +431,7 @@ Public Class frmPicking
             End If
 
             BePickingEnc.Referencia = txtReferencia.Text
-            BePickingEnc.Observacion = txtObservacion.Text
+            BePickingEnc.Observacion = clsPublic.Quitar_Caracteres_No_Permitidos(txtObservacion.Text.Trim)
             BePickingEnc.IdBodegaMuelle = cmbMuelle.EditValue
 
             If rbAlto.Checked Then

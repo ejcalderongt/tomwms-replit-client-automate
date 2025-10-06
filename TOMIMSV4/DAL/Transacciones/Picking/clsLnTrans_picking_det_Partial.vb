@@ -2613,8 +2613,8 @@ Partial Public Class clsLnTrans_picking_det
                                                                                     vIdStock = PickingUbic.IdStock
                                                                                     objStockOrigen = New clsBeStock()
                                                                                     objStockOrigen = clsLnStock.GetSingle(vIdStock,
-                                                                                                                              lConnection,
-                                                                                                                              lTransaction)
+                                                                                                                          lConnection,
+                                                                                                                          lTransaction)
 
                                                                                     If Not objStockOrigen Is Nothing Then
 

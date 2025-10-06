@@ -359,7 +359,7 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
                 Dim oBP As BusinessPartners = CType(oCompany.GetBusinessObject(BoObjectTypes.oBusinessPartners), BusinessPartners)
                 If oBP.GetByKey(pCodigo) Then
                     oBP.UserFields.Fields.Item("U_Enviado_WMS").Value = "1"
-                    oBP.UserFields.Fields.Item("U_Observaciones").Value = BeCliente.IdCliente.ToString()
+                    'oBP.UserFields.Fields.Item("U_Observaciones").Value = BeCliente.IdCliente.ToString()
                     If oBP.Update() <> 0 Then
                         Throw New Exception("Error al actualizar UDFs del cliente en SAP: " & oCompany.GetLastErrorDescription())
                     End If
