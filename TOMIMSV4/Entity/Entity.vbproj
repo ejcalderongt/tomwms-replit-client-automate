@@ -300,6 +300,7 @@
     <Compile Include="Transacciones\Manufactura\clsBeTrans_manufactura_enc_partial.vb" />
     <Compile Include="Transacciones\Manufactura\clsBeTrans_manufactura_enc.vb" />
     <Compile Include="Transacciones\Manufactura\clsBeTrans_manufactura_picking.vb" />
+    <Compile Include="Transacciones\Packing\clsBeTrans_packing_enc_Partial.vb" />
     <Compile Include="Transacciones\Pedido\Log_Reserva\clsBeTrans_pe_det_log_reserva.vb" />
     <Compile Include="Road\clsBeP_CLIENTE.vb" />
     <Compile Include="Road\clsBeP_PRODUCTO.vb" />

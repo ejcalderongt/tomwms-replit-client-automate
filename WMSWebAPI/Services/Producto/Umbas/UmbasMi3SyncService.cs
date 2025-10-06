@@ -31,7 +31,7 @@ namespace WMSWebAPI.Services.Producto.Umbas
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al procesar UmbasMi3 → " + ex.Message, ex);
+                throw new Exception("Error al procesar UmbasMi3 " + ex.Message);
             }
         }
     }

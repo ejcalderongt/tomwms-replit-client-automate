@@ -51,6 +51,9 @@ namespace WMSWebAPI.Controllers
                         {
                             foreach (var dto in productosDto)
                             {
+                                if (string.IsNullOrEmpty(dto.Codigo))
+                                    return StatusCode(500, new { Exito = false, Mensaje = "El código no puede estar vacio." });
+
                                 syncService.ProcesarProductoDesdeDto(dto, connection, transaction);
                                 resultados.Add(new { dto.IdProducto, Procesado = true, Mensaje = "Procesado correctamente" });
                             }
@@ -147,6 +150,9 @@ namespace WMSWebAPI.Controllers
                         {
                             foreach (var dto in productosDto)
                             {
+                                if (string.IsNullOrEmpty(dto.Codigo))
+                                    return StatusCode(500, new { Exito = false, Mensaje = "El código no puede estar vacio." });
+
                                 _mhsSyncService.ProcesarProductoSingleDto(dto, connection, transaction);
                                resultados.Add(new { dto.IdProducto, Procesado = true, Mensaje = "Procesado correctamente" });
                             }

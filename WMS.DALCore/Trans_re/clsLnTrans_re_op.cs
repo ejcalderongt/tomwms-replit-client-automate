@@ -564,12 +564,14 @@ public class clsLnTrans_re_op
 
             foreach (var entity in entities)
             {
-                bool existe = Existe(entity.IdOperadorRec, entity.IdRecepcionEnc, connection, isExternalTx ? tx! : localTx!);
+                if (entity.IdOperadorBodega != 0) {
+                    bool existe = Existe(entity.IdOperadorRec, entity.IdRecepcionEnc, connection, isExternalTx ? tx! : localTx!);
 
-                if (existe)
-                    Actualizar(config, entity, connection, isExternalTx ? tx : localTx);
-                else
-                    Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                    if (existe)
+                        Actualizar(config, entity, connection, isExternalTx ? tx : localTx);
+                    else
+                        Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                }
             }
 
             if (!isExternalTx)

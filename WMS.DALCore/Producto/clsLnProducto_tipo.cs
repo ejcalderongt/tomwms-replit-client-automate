@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Interface;
 public class clsLnProducto_tipo
 {
 
@@ -520,6 +521,12 @@ public class clsLnProducto_tipo
             var BeProductoTipo = new clsBeProducto_tipo();
             bool existe = Existe_By_Codigo(entity.Codigo, ref BeProductoTipo, connection, isExternalTx ? tx! : localTx!);
 
+            var BeInavConfigEnc = new clsBeI_nav_config_enc();
+            clsLnI_nav_config_enc.GetSingle(config, BeInavConfigEnc, connection, isExternalTx ? tx : localTx);
+
+            if (BeInavConfigEnc == null)
+                throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
+
             if (!existe)
             {
 
@@ -530,8 +537,8 @@ public class clsLnProducto_tipo
                     BeTipoProducto.IdPropietario = entity.IdPropietario;
                     BeTipoProducto.Codigo = entity.Codigo;
                     BeTipoProducto.NombreTipoProducto = entity.NombreTipoProducto ?? entity.Codigo;
-                    BeTipoProducto.User_agr = "1";
-                    BeTipoProducto.User_mod = "1";
+                    BeTipoProducto.User_agr = BeInavConfigEnc.IdUsuario.ToString();
+                    BeTipoProducto.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                     BeTipoProducto.Fec_agr = DateTime.Now;
                     BeTipoProducto.Fec_mod = DateTime.Now;
                     BeTipoProducto.Activo = entity.Activo;
@@ -543,7 +550,7 @@ public class clsLnProducto_tipo
             {
                 BeProductoTipo.Codigo = entity.Codigo;
                 BeProductoTipo.NombreTipoProducto = entity.NombreTipoProducto ?? entity.Codigo;
-                BeProductoTipo.User_mod = "1";
+                BeProductoTipo.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                 BeProductoTipo.Fec_mod = DateTime.Now;
                 BeProductoTipo.Activo = entity.Activo;
                 Actualizar( BeProductoTipo, config, connection, isExternalTx ? tx : localTx);

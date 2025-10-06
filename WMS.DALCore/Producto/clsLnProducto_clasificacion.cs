@@ -5,6 +5,7 @@ using System.Reflection;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
 using WMS.EntityCore.Producto.ProductoSimple;
+using WMS.EntityCore.Interface;
 public class clsLnProducto_clasificacion
 {
     private static clsInsert Ins = new clsInsert();
@@ -428,6 +429,13 @@ public class clsLnProducto_clasificacion
             var Clasificacion = new clsBeProducto_clasificacion();
             bool existe = Existe_By_Codigo(entity.Codigo, ref Clasificacion, connection, isExternalTx ? tx! : localTx!);
 
+            var BeInavConfigEnc = new clsBeI_nav_config_enc();
+            clsLnI_nav_config_enc.GetSingle(config, BeInavConfigEnc, connection, isExternalTx ? tx : localTx);
+
+            if (BeInavConfigEnc == null)
+                throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
+
+
             if (!existe)
             {
                 if (!string.IsNullOrEmpty(entity.Codigo))
@@ -435,20 +443,21 @@ public class clsLnProducto_clasificacion
                     Clasificacion.IdClasificacion = MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
                     Clasificacion.Codigo = entity.Codigo;
                     Clasificacion.Nombre = entity.Nombre ?? entity.Codigo;
-                    Clasificacion.User_agr = "1";
-                    Clasificacion.User_mod = "1";
+                    Clasificacion.User_agr = BeInavConfigEnc.IdUsuario.ToString();
+                    Clasificacion.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                     Clasificacion.Fec_agr = DateTime.Now;
                     Clasificacion.Fec_mod = DateTime.Now;
                     Clasificacion.Activo = entity.Activo;
                     Clasificacion.IdPropietario = entity.IdPropietario;
                     Insertar(config, Clasificacion, connection, isExternalTx ? tx : localTx);
+
                 }
             }
             else
             {
                 Clasificacion.Codigo = entity.Codigo;
                 Clasificacion.Nombre = entity.Nombre ?? entity.Codigo;
-                Clasificacion.User_mod = "1";
+                Clasificacion.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                 Clasificacion.Fec_mod = DateTime.Now;
                 Clasificacion.Activo = entity.Activo;
                 Actualizar(config, Clasificacion, connection, isExternalTx ? tx : localTx);

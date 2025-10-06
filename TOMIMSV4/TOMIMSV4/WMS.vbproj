@@ -4438,7 +4438,6 @@
     <None Include="Mantenimientos\Producto_Estado\frmProducto_EstadoList.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_Talla.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx.bak" />
-    <None Include="SAPBOSyncMampa.exe.config" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho11.wsdl" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho33.xsd">
       <SubType>Designer</SubType>

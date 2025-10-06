@@ -5,6 +5,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic.CompilerServices;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Interface;
 public class clsLnUnidad_medida
 {
 
@@ -473,7 +474,7 @@ public class clsLnUnidad_medida
                         var lreturnValue = lCommand.ExecuteScalar();
                         if (lreturnValue != DBNull.Value && lreturnValue != null)
                         {
-                            lMax = int.Parse((String)lreturnValue);
+                            lMax = Convert.ToInt32(lreturnValue);
                         }
                     }
                     lTransaction.Commit();
@@ -526,7 +527,8 @@ public class clsLnUnidad_medida
 
             if (lreturnValue != DBNull.Value && lreturnValue != null)
             {
-                lMax = int.Parse((string)lreturnValue);
+                lMax = Convert.ToInt32(lreturnValue);
+                
             }
 
             if (!Es_Transaccion_Remota)
@@ -669,17 +671,24 @@ public class clsLnUnidad_medida
             var BeUmbas = new clsBeUnidad_medida();
             bool existe = Existe_By_Codigo(entity.Codigo, ref BeUmbas, connection, isExternalTx ? tx! : localTx!);
 
+            var BeInavConfigEnc = new clsBeI_nav_config_enc();
+            clsLnI_nav_config_enc.GetSingle(config, BeInavConfigEnc, connection, isExternalTx ? tx : localTx);
+
+            if (BeInavConfigEnc == null)
+                throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
+
+
             if (!existe)
             {
 
                 if (!string.IsNullOrEmpty(entity.Codigo))
                 {
-                    BeUmbas.IdPropietario = MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                    BeUmbas.IdUnidadMedida= MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                    BeUmbas.IdPropietario = entity.IdPropietario;
                     BeUmbas.Codigo = entity.Codigo;
                     BeUmbas.Nombre = entity.Nombre ?? entity.Codigo;
-                    
-                    BeUmbas.User_agr = "1";
-                    BeUmbas.User_mod = "1";
+                    BeUmbas.User_agr = BeInavConfigEnc.IdUsuario.ToString();
+                    BeUmbas.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                     BeUmbas.Fec_agr = DateTime.Now;
                     BeUmbas.Fec_mod = DateTime.Now;
                     BeUmbas.Activo = entity.Activo;

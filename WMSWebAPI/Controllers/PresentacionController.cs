@@ -3,43 +3,35 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Transactions;
-using WMS.EntityCore.Dtos.Productos;
-using WMSWebAPI.Dtos.Catalogos;
-using WMSWebAPI.Services.Producto.Tipo;
-using WMSWebAPI.Services.Producto.Umbas;
+using WMS.EntityCore.Dtos.Catalogos;
+using WMSWebAPI.Services.Producto.Presentacion;
 
 namespace WMSWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TipoProductoController : ControllerBase
+    public class PresentacionController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly IProductoTipoMi3SyncService _syncService;
-        private readonly ILogger<UmbasController> _logger;
+        private readonly IPresentacionMi3SyncService _presentacionMi3SyncService;
 
-        public TipoProductoController(IMapper mapper, ILogger<UmbasController> logger, IProductoTipoMi3SyncService service)
+        public PresentacionController(IMapper mapper, IPresentacionMi3SyncService presentacionMi3SyncService)
         {
             _mapper = mapper;
-            _logger = logger;
-            _syncService = service;
+            _presentacionMi3SyncService = presentacionMi3SyncService;
         }
 
-
         [HttpPost("list/mi3/insert")]
-        public async Task<IActionResult> Sincronizar([FromBody] List<Producto_tipoMi3Dto> ListTipoProductoMi3, [FromServices] IConfiguration configuration)
+        public IActionResult Sincronizar([FromBody] List<ProductoPresentacionMi3Dto> listPresentacionMi3dto, [FromServices] IConfiguration configuration)
         {
-            if (ListTipoProductoMi3 == null || ListTipoProductoMi3.Count == 0)
-            {
-                _logger.LogWarning("TipoProductoMi3Dto recibido es nulo o viene vacio.");
-                return BadRequest("El objeto TipoProductoMi3Dto no puede ser nulo o vacio.");
-            }
+            if (listPresentacionMi3dto == null || listPresentacionMi3dto.Count == 0)
+                return BadRequest("La lista de presentación está vacía.");
 
             var resultados = new List<object>();
             string? connectionString = configuration.GetConnectionString("CST");
+
             if (string.IsNullOrEmpty(connectionString))
             {
-                _logger.LogError("Cadena de conexión 'CST' no configurada.");
                 return StatusCode(500, new { Exito = false, Mensaje = "La cadena de conexión no está configurada." });
             }
 
@@ -50,39 +42,34 @@ namespace WMSWebAPI.Controllers
             {
                 using (var connection = new SqlConnection(connectionString))
                 {
-                    await connection.OpenAsync();
+                    connection.Open();
                     using (var transaction = connection.BeginTransaction())
                     {
                         try
                         {
-
-                            foreach (var dto in ListTipoProductoMi3)
+                            foreach (var dto in listPresentacionMi3dto)
                             {
-                                if (string.IsNullOrEmpty(dto.Codigo))
+                                if (string.IsNullOrEmpty(dto.Codigo_presentacion))
                                     return StatusCode(500, new { Exito = false, Mensaje = "El código no puede estar vacio." });
 
-                                _syncService.ProcesarTipoProductoMi3Dto(dto, connection, transaction);
-                                resultados.Add(new { dto.Codigo, Procesado = true, Mensaje = "Procesado correctamente" });
+                                _presentacionMi3SyncService.ProcesarPresentacionMi3Dto(dto, connection, transaction);
+                                resultados.Add(new { dto.Codigo_presentacion, Procesado = true, Mensaje = "Procesado correctamente" });
                             }
-
 
                             transaction.Commit();
                             scope.Complete();
 
                             return Ok(new { Exito = true, Resultados = resultados });
-
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(ex, "Error al procesar TipoProductoMi3Dto");
                             transaction.Rollback();
-
-                            var showStackTrace = configuration.GetValue<bool>("MostrarDetallesErrores");
                             return StatusCode(500, new { Exito = false, Mensaje = ex.Message });
                         }
                     }
                 }
             }
+
 
         }
 

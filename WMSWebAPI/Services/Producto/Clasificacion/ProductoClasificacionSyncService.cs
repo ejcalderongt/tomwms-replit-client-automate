@@ -32,7 +32,7 @@ namespace WMSWebAPI.Services.Producto.Clasificacion
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al procesar Clasificación → " + ex.Message, ex);
+                throw new Exception("Error al procesar Clasificación " + ex.Message, ex);
             }
         }
     }

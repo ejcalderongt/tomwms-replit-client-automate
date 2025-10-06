@@ -235,7 +235,7 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         ISNULL(e.nombre, '') as nuevo_estado,
 	                    trans_inv_ciclico.IdStock,
                         trans_inv_ciclico.idinvciclico,
-                        ISNULL(s.IdProductoTallaColor,0) IdProductoTallaColor,
+                        ISNULL(trans_inv_ciclico.IdProductoTallaColor,0) IdProductoTallaColor,
                         ISNULL(c.Codigo, '') as Codigo_Color,
                         ISNULL(c.Nombre, '') as Nombre_Color,
                         ISNULL(t.Codigo, '') as Codigo_Talla,
@@ -253,7 +253,7 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         producto_presentacion ON trans_inv_ciclico.IdPresentacion = producto_presentacion.IdPresentacion
                         LEFT JOIN producto_estado e on e.IdEstado = trans_inv_ciclico.IdProductoEst_nuevo
                         LEFT JOIN stock s ON s.IdStock = trans_inv_ciclico.IdStock
-                        LEFT JOIN producto_talla_color ptc ON ptc.IdProductoTallaColor = s.IdProductoTallaColor
+                        LEFT JOIN producto_talla_color ptc ON ptc.IdProductoTallaColor = trans_inv_ciclico.IdProductoTallaColor
                         LEFT JOIN color c ON c.IdColor = ptc.IdColor
                         LEFT JOIN talla t ON t.IdTalla= ptc.IdTalla
                         WHERE (trans_inv_ciclico.idinventarioenc=@idinventarioenc AND trans_inv_ciclico.idoperador=@idoperador and trans_inv_ciclico.IdStock <>0) 
@@ -291,7 +291,7 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         e.nombre,       
                         trans_inv_ciclico.IdStock,
                         trans_inv_ciclico.idinvciclico,
-                        s.IdProductoTallaColor,
+                        trans_inv_ciclico.IdProductoTallaColor,
                         c.Codigo,
                         c.Nombre,
                         t.Codigo,
@@ -409,7 +409,7 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         ISNULL(e.nombre, '') as nuevo_estado,
                         trans_inv_ciclico.IdStock,
                         trans_inv_ciclico.idinvciclico,
-                        ISNULL(s.IdProductoTallaColor,0) IdProductoTallaColor,
+                        ISNULL(trans_inv_ciclico.IdProductoTallaColor,0) IdProductoTallaColor,
                         ISNULL(c.Codigo, '') as Codigo_Color,
                         ISNULL(c.Nombre, '') as Nombre_Color,
                         ISNULL(t.Codigo, '') as Codigo_Talla,
@@ -425,7 +425,7 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         bodega ON producto_bodega.IdBodega = bodega.IdBodega AND bodega_ubicacion.IdBodega = bodega.IdBodega
                         LEFT JOIN producto_estado e on e.IdEstado = trans_inv_ciclico.IdProductoEst_nuevo
                         LEFT JOIN stock s ON s.IdStock = trans_inv_ciclico.IdStock
-                        LEFT JOIN producto_talla_color ptc ON ptc.IdProductoTallaColor = s.IdProductoTallaColor
+                        LEFT JOIN producto_talla_color ptc ON ptc.IdProductoTallaColor = trans_inv_ciclico.IdProductoTallaColor
                         LEFT JOIN color c ON c.IdColor = ptc.IdColor
                         LEFT JOIN talla t ON t.IdTalla= ptc.IdTalla
 						WHERE trans_inv_ciclico.idinventarioenc=@idinventarioenc  AND trans_inv_ciclico.idoperador = @idoperador 
@@ -449,7 +449,7 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         e.nombre,
                         trans_inv_ciclico.IdStock,
                         trans_inv_ciclico.idinvciclico,
-                        s.IdProductoTallaColor,
+                        trans_inv_ciclico.IdProductoTallaColor,
                         c.Codigo,
                         c.Nombre,
                         t.Codigo,

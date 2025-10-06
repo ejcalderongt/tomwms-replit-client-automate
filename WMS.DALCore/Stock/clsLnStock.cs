@@ -715,7 +715,7 @@ public class clsLnStock
 
             foreach (var entity in entities)
             {
-                //GT01072025: borrar comentario, donde valido que el idstock tenga un valor y no sea un registro de relleno de Json.
+             
                 if (entity.IdStock != 0)
                 {
                     bool existe = Existe(entity.IdStock, connection, isExternalTx ? tx! : localTx!);
