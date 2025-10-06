@@ -30,9 +30,12 @@ Public Class clsLnDMS_Log_sincronizacion_fallos
 			Ins.Add("idlogfallo", "@idlogfallo", DataType.Parametro)
 			Ins.Add("idordencompraenc", "@idordencompraenc", DataType.Parametro)
 			Ins.Add("idpedidoenc", "@idpedidoenc", DataType.Parametro)
+			Ins.Add("idproducto", "@idproducto", DataType.Parametro)
 			Ins.Add("estado", "@estado", DataType.Parametro)
 			Ins.Add("mensaje_error", "@mensaje_error", DataType.Parametro)
 			Ins.Add("fec_agr", "@fec_agr", DataType.Parametro)
+			Ins.Add("fec_mod", "@fec_mod", DataType.Parametro)
+			Ins.Add("IdPropietario", "@IdPropietario", DataType.Parametro)
 
 			Dim sp As String = Ins.SQL()
 			Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
@@ -49,9 +52,12 @@ Public Class clsLnDMS_Log_sincronizacion_fallos
 			cmd.Parameters.Add(New SqlParameter("@IDLOGFALLO", oBeLog_sincronizacion_fallos.IdLogFallo))
 			cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRAENC", oBeLog_sincronizacion_fallos.IdOrdenCompraEnc))
 			cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", oBeLog_sincronizacion_fallos.IdPedidoEnc))
+			cmd.Parameters.Add(New SqlParameter("@IDPRODUCTO", oBeLog_sincronizacion_fallos.IdProducto))
 			cmd.Parameters.Add(New SqlParameter("@ESTADO", oBeLog_sincronizacion_fallos.Estado))
 			cmd.Parameters.Add(New SqlParameter("@MENSAJE_ERROR", oBeLog_sincronizacion_fallos.Mensaje_error))
 			cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeLog_sincronizacion_fallos.Fec_agr))
+			cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeLog_sincronizacion_fallos.Fec_mod))
+			cmd.Parameters.Add(New SqlParameter("@IDPROPIETARIO", oBeLog_sincronizacion_fallos.IdPropietario))
 
 			Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

@@ -66,17 +66,17 @@ Public Class clsLnTrans_oc_encDMS
                 Dim propietarioAnterior As Integer = -1
 
                 For Each grupo In grupos
-                    ' 🔹 Mensaje visual de control (opcional)
+                    ' Mensaje visual de control (opcional)
                     If propietarioAnterior <> grupo.IdPropietario Then
-                        clsHelper.LogMensaje(lblprg, $"➡ Procesando registros del propietario {grupo.IdPropietario}", clsHelper.TipoMensaje.Info)
+                        clsHelper.LogMensaje(lblprg, $"Procesando registros del propietario {grupo.IdPropietario}", clsHelper.TipoMensaje.Info)
                     End If
 
-                    ' 🔹 Procesar todos los registros de este propietario
+                    ' Procesar todos los registros de este propietario
                     Dim objRespuesta As Object = Await ProcesarIngresos(lblprg, grupo.Lista)
                     pRegistrosExitosos += objRespuesta.item1
                     pRegistrosFallidos += objRespuesta.item2
 
-                    ' 🔹 Guardar log al terminar este grupo (independientemente de la bandera)
+                    ' Guardar log al terminar este grupo (independientemente de la bandera)
                     Dim pRespuesta As String = ""
                     If objRespuesta.item2 > 0 AndAlso objRespuesta.item1 > 0 Then
                         pRespuesta = $"Parcial: no se sincronizaron {objRespuesta.item2} registros de propietario {grupo.IdPropietario}. Total enviados: {objRespuesta.item1 + objRespuesta.item2}"
@@ -623,7 +623,7 @@ Public Class clsLnTrans_oc_encDMS
                                                                         .fec_mod = Now.Date,
                                                                         .costo_hora = 0,
                                                                         .usa_hh = False,
-                                                                        .foto = False,
+                                                                        .foto = New Byte() {},
                                                                         .recibe = False,
                                                                         .ubica = False,
                                                                         .transporta = False,
@@ -786,11 +786,24 @@ Public Class clsLnTrans_oc_encDMS
                         pStock = New clsBeStock()
 
 
+                        If re_det.IdOrdenCompraEnc = 3868 Then
+                            Debug.Write("aqui")
+                        End If
+
                         pTrans_movimientos = clsLnTrans_movimientos.GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet(re_det.IdRecepcionEnc,
                                                                                                                                re_det.IdRecepcionDet,
                                                                                                                                re_det.Lic_plate,
                                                                                                                                clsTransaccion.lConnection,
                                                                                                                                clsTransaccion.lTransaction)
+
+                        '#GT06102025: no hay asociación por recepcion enc/det, validamos solo por lic_plate
+                        If pTrans_movimientos Is Nothing Then
+                            pTrans_movimientos = clsLnTrans_movimientos.GetSingle_By_LicPlate(re_det.IdRecepcionEnc, re_det.Lic_plate,
+                                                                                                                    clsTransaccion.lConnection,
+                                                                                                                    clsTransaccion.lTransaction)
+                        End If
+
+
 
                         pStock_Rec = clsLnStock_rec.GetSingle_Stock_By_IdRecepcionEnc_And_IdRecpecionDet(re_det.IdRecepcionEnc,
                                                                                                                      re_det.IdRecepcionDet,
@@ -891,10 +904,50 @@ Public Class clsLnTrans_oc_encDMS
                                                                 .pallet_no_estandar = pStock_Rec.Pallet_No_Estandar
                                                       })
                         Else
-                            resultado = "No se obtuvo el stock_rec asociado a la recepción " & re_det.IdRecepcionEnc & " detalle: " & re_det.IdRecepcionDet
-                            clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
-                            Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                            Return ""
+                            'resultado = "No se obtuvo el stock_rec asociado a la recepción " & re_det.IdRecepcionEnc & " detalle: " & re_det.IdRecepcionDet
+                            'clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
+                            'Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                            'Return ""
+
+                            stock_recList.Add(New With {.IdStockRec = 0,
+                                                                .IdPropietarioBodega = 0,
+                                                                .IdProductoBodega = 0,
+                                                                .IdProductoEstado = 0,
+                                                                .IdPresentacion = 0,
+                                                                .IdUnidadMedida = 0,
+                                                                .IdUbicacion = 0,
+                                                                .IdUbicacion_anterior = 0,
+                                                                .IdRecepcionEnc = 0,
+                                                                .IdRecepcionDet = 0,
+                                                                .IdPedidoEnc = 0,
+                                                                .IdPickingEnc = 0,
+                                                                .IdDespachoEnc = 0,
+                                                                .lote = "",
+                                                                .lic_plate = "",
+                                                                .serial = "",
+                                                                .cantidad = 0,
+                                                                .fecha_ingreso = New Date(1900, 1, 1),
+                                                                .fecha_vence = New Date(1900, 1, 1),
+                                                                .uds_lic_plate = 0.0,
+                                                                .no_bulto = 0,
+                                                                .fecha_manufactura = New Date(1900, 1, 1),
+                                                                .añada = 0,
+                                                                .user_agr = "",
+                                                                .fec_agr = New Date(1900, 1, 1),
+                                                                .user_mod = "1",
+                                                                .fec_mod = New Date(1900, 1, 1),
+                                                                .activo = False,
+                                                                .peso = 0.0,
+                                                                .temperatura = 0,
+                                                                .regularizado = False,
+                                                                .fecha_regularizacion = New Date(1900, 1, 1),
+                                                                .no_linea = 0,
+                                                                .atributo_variante_1 = "",
+                                                                .impreso = False,
+                                                                .IdBodega = 0,
+                                                                .pallet_no_estandar = False
+                                                      })
+
                         End If
 
                         If pStock IsNot Nothing Then
