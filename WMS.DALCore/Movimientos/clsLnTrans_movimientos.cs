@@ -713,6 +713,7 @@ public class clsLnTrans_movimientos
 
             foreach (var entity in entities)
             {
+
                 bool existe = Existe(entity.IdMovimiento, connection, isExternalTx ? tx! : localTx!);
 
                 if (existe)

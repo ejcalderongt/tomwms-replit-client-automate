@@ -635,12 +635,17 @@ public class clsLnTrans_re_tr
 
             foreach (var entity in entities)
             {
-                bool existe = Existe(entity.IdTipoTransaccion, connection, isExternalTx ? tx! : localTx!);
 
-                if (existe)
-                    Actualizar(config, entity, connection, isExternalTx ? tx : localTx);
-                else
-                    Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                if (string.IsNullOrEmpty(entity.IdTipoTransaccion)) {
+
+                    bool existe = Existe(entity.IdTipoTransaccion, connection, isExternalTx ? tx! : localTx!);
+
+                    if (existe)
+                        Actualizar(config, entity, connection, isExternalTx ? tx : localTx);
+                    else
+                        Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                }
+               
             }
 
             if (!isExternalTx)
