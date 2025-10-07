@@ -325,7 +325,10 @@ Public Class frmUsu
                 Usuario.Email = EmailTextEdit.Text
                 Usuario.Codigo = clsPublic.Encriptar(CodigoTextEdit.Text)
                 Usuario.Clave = clsPublic.Encriptar(ClaveTextEdit.Text)
-                Usuario.Clave_autorizacion = clsPublic.Encriptar(txtClaveAutoriza.Text)
+                '#EJC20251004: No encriptar la clave si no está definida.
+                If Not txtClaveAutoriza.Text.Trim = "" Then
+                    Usuario.Clave_autorizacion = clsPublic.Encriptar(txtClaveAutoriza.Text)
+                End If
                 Usuario.Activo = chkActivo.Checked
                 Usuario.Sistema = chkSistema.Checked
                 Usuario.User_mod = AP.UsuarioAp.IdUsuario
@@ -629,8 +632,8 @@ Public Class frmUsu
             If Dgrid.Rows.Count > 0 Then
 
                 For Each oRow As DataGridViewRow In Dgrid.Rows
-
-                    If oRow.Cells("ColClave").Value = True AndAlso oRow.Cells("ColAsignado").Value = True Then
+                    'EJC20251004: aNtnIq2NjJM =  VACÍO
+                    If oRow.Cells("ColClave").Value = True AndAlso oRow.Cells("ColAsignado").Value = True AndAlso Not Usuario.Clave_autorizacion = "aNtnIq2NjJM=" Then
                         If txtClaveAutoriza.Text.Trim = "" Then
                             XtraMessageBox.Show("Ingrese clave de autorización", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                             CodigoTextEdit.Focus()

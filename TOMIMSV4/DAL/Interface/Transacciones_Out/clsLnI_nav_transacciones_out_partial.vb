@@ -1037,6 +1037,7 @@ Partial Public Class clsLnI_nav_transacciones_out
             For Each dr As DataRow In dt.Rows
                 vBeI_nav_transacciones_out = New clsBeI_nav_transacciones_out
                 Cargar(vBeI_nav_transacciones_out, dr)
+                vBeI_nav_transacciones_out.Codigo_Bodega_Origen = clsLnBodega.Get_Codigo_By_IdBodega(vBeI_nav_transacciones_out.Idbodega, lConnection, lTransaction)
                 lReturnList.Add(vBeI_nav_transacciones_out)
             Next
 
