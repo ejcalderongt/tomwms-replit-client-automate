@@ -8,7 +8,7 @@ Public Class frmLicGen
         Try
 
             Select Case TabLic.SelectedPageIndex
-                Case 0 : Genera_Licencia_Servidor()
+                Case 0 : Genera_Licencia_Servidor(chkConUx.Checked)
                 Case 1 : Genera_Licencia_Cliente()
                 Case 2 : Genera_Antidoto_Licencia_Conectada()
                 Case 3 : Genera_Licencia_Activacion_Server()
@@ -58,21 +58,31 @@ Public Class frmLicGen
 
     End Function
 
-    Private Sub Genera_Licencia_Servidor()
+    Private Sub Genera_Licencia_Servidor(ByVal conUx As Boolean)
 
         Try
 
             txtLlave.Text = ""
 
             If Parse_Data() Then
+                Dim s As String
+                If conUx Then
+                    s = String.Format("{0},{1},{2},{3},{4},{5}",
+                                                                    cbo,
+                                                                    chh,
+                                                                    ux,
+                                                                    yy,
+                                                                    mm,
+                                                                    dd)
+                Else
+                    s = String.Format("{0},{1},{2},{3},{4}",
+                                                                    cbo,
+                                                                    chh,
+                                                                    yy,
+                                                                    mm,
+                                                                    dd)
+                End If
 
-                Dim s As String = String.Format("{0},{1},{2},{3},{4},{5}",
-                                                cbo,
-                                                chh,
-                                                ux,
-                                                yy,
-                                                mm,
-                                                dd)
                 txtLlave.Text = EncodeString(s)
                 txtLlave.SelectAll()
                 txtLlave.Focus()
@@ -199,7 +209,11 @@ Public Class frmLicGen
             si = String.Format("SERVLIC{0}#", mac)
 
             If Parse_Data() Then
-                si += String.Format(",{0},{1},{2},{3},{4},{5}", cbo, chh, ux, yy, mm, dd)
+                If chkConUx.Checked Then
+                    si += String.Format(",{0},{1},{2},{3},{4},{5}", cbo, chh, ux, yy, mm, dd)
+                Else
+                    si += String.Format(",{0},{1},{2},{3},{4}", cbo, chh, yy, mm, dd)
+                End If
             End If
 
             txtServ.Text = EncodeString(si) : txtServ.Focus() : txtServ.SelectAll()

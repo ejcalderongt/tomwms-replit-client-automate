@@ -10524,7 +10524,8 @@ Partial Public Class clsLnProducto
         Get_All_By_Activo = Nothing
 
         Try
-            Dim vSQL As String = "SELECT * FROM producto WHERE (activo=@pActivo AND fec_mod>=@pUltimaFechaSincro)"
+            'Dim vSQL As String = "SELECT * FROM producto WHERE (activo=@pActivo AND fec_mod>=@pUltimaFechaSincro)"
+            Dim vSQL As String = "SELECT * FROM producto WHERE (fec_mod>=@pUltimaFechaSincro)"
 
             '#GT15072025: iteramos lista de propietarios Integer
             If pPropietario > 0 Then
