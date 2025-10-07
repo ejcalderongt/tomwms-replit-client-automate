@@ -242,7 +242,7 @@ public class clsLnPropietarios
             Upd.Add("sistema", "@sistema", "F");
             Upd.Add("nit", "@nit", "F");
             Upd.Add("codigo_acceso", "@codigo_acceso", "F");
-            Upd.Add("clave_acceso", "@clave_acceso", "F");
+            //Upd.Add("clave_acceso", "@clave_acceso", "F");
             Upd.Add("idbodegaareasap", "@idbodegaareasap", "F");
             Upd.Add("es_consolidador", "@es_consolidador", "F");
             Upd.Where("IdPropietario = @IdPropietario");
@@ -610,7 +610,7 @@ public class clsLnPropietarios
         cmd.Parameters.AddWithValue("@sistema", o.Sistema);
         cmd.Parameters.AddWithValue("@NIT", string.IsNullOrEmpty(o.NIT) ? DBNull.Value : o.NIT);
         cmd.Parameters.AddWithValue("@codigo_acceso", string.IsNullOrEmpty(o.Codigo_acceso) ? DBNull.Value : o.Codigo_acceso);
-        cmd.Parameters.AddWithValue("@clave_acceso", string.IsNullOrEmpty(o.Clave_acceso) ? DBNull.Value : o.Clave_acceso);
+        //cmd.Parameters.AddWithValue("@clave_acceso", string.IsNullOrEmpty(o.Clave_acceso) ? DBNull.Value : o.Clave_acceso);
         cmd.Parameters.AddWithValue("@IdBodegaAreaSAP", o.IdBodegaAreaSAP);
         cmd.Parameters.AddWithValue("@es_consolidador", o.Es_consolidador);
     }
