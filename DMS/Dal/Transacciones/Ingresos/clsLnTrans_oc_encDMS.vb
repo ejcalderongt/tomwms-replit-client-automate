@@ -290,6 +290,11 @@ Public Class clsLnTrans_oc_encDMS
             listPayload = New List(Of Object)
             clsHelper.LogMensaje(lblprg, "Procesando ingreso: " & pOCEnc.IdOrdenCompraEnc, clsHelper.TipoMensaje.Info)
 
+
+            If pOCEnc.IdOrdenCompraEnc = 1257 Then
+                Debug.Write("aqui")
+            End If
+
             reOcList = New List(Of Object)()
             reOperadorList = New List(Of Object)()
             operadorBodegaList = New List(Of Object)
@@ -370,6 +375,7 @@ Public Class clsLnTrans_oc_encDMS
                             resultado = "Por un error desconocido, no se pudo obtener proveedor_bodega del ingreso: " & pOCEnc.IdOrdenCompraEnc
                             clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                             Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                            clsTransaccion.Commit_Transaction()
                             Return ""
                         End If
 
@@ -378,12 +384,14 @@ Public Class clsLnTrans_oc_encDMS
                     resultado = "Por un error desconocido, no se pudo obtener proveedor del ingreso: " & pOCEnc.IdOrdenCompraEnc
                     clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                     Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                    clsTransaccion.Commit_Transaction()
                     Return ""
                 End If
             Else
                 resultado = "Por un error desconocido, no se pudo obtener propietario del ingreso: " & pOCEnc.IdOrdenCompraEnc
                 clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                 Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                clsTransaccion.Commit_Transaction()
                 Return ""
             End If
 
@@ -456,6 +464,7 @@ Public Class clsLnTrans_oc_encDMS
                         resultado = "Por un error desconocido, no se pudo obtener el producto_bodega del ingreso: " & pOCEnc.IdOrdenCompraEnc
                         clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                         Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                        clsTransaccion.Commit_Transaction()
                         Return ""
                     End If
 
@@ -467,6 +476,7 @@ Public Class clsLnTrans_oc_encDMS
                 resultado = "Por un error desconocido, no se cargo detale del ingreso: " & pOCEnc.IdOrdenCompraEnc
                 clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                 Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                clsTransaccion.Commit_Transaction()
                 Return ""
             End If
 
@@ -705,9 +715,14 @@ Public Class clsLnTrans_oc_encDMS
                                                             .Activo = pTrans_re_tr.Activo
                                         }
                     Else
-                        clsHelper.LogMensaje(lblprg, "La tarea de recepción no tiene asociado un tipo de transacción", clsHelper.TipoMensaje.Error_)
+
+                        ''clsHelper.LogMensaje(lblprg, "La tarea de recepción no tiene asociado un tipo de transacción", clsHelper.TipoMensaje.Error_)
+                        resultado = "Por un error desconocido, La tarea de recepción no tiene asociado un tipo de transacción: " & pOCEnc.IdOrdenCompraEnc
+                        clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
+                        Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                        clsTransaccion.Commit_Transaction()
                         Return ""
-                        'Throw New Exception("La tarea de recepción no tiene asociado un tipo de transacción!")
+
                     End If
 
                     '*********************************************************************************************
@@ -768,6 +783,7 @@ Public Class clsLnTrans_oc_encDMS
                         resultado = "Por un error desconocido, no se cargo la recepcion del ingreso: " & pOCEnc.IdOrdenCompraEnc
                         clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                         Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                        clsTransaccion.Commit_Transaction()
                         Return ""
                     End If
 
@@ -775,6 +791,7 @@ Public Class clsLnTrans_oc_encDMS
                         resultado = "La recepción no tiene detalle del ingreso: " & pOCEnc.IdOrdenCompraEnc
                         clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                         Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                        clsTransaccion.Commit_Transaction()
                         Return ""
                     End If
 
@@ -860,6 +877,7 @@ Public Class clsLnTrans_oc_encDMS
                             resultado = "No se obtuvo el movimiento asociado a la recepción " & re_det.IdRecepcionEnc & " detalle: " & re_det.IdRecepcionDet
                             clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                             Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                            clsTransaccion.Commit_Transaction()
                             Return ""
                         End If
 
@@ -1038,6 +1056,7 @@ Public Class clsLnTrans_oc_encDMS
                 resultado = "No existe el registro entre la recepción y el  ingreso: " & pOCEnc.IdOrdenCompraEnc
                 clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                 Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                clsTransaccion.Commit_Transaction()
                 Return ""
 
             End If

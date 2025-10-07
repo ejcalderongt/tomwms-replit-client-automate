@@ -661,7 +661,7 @@ Public Class clsLnDMS_Log_sincronizacion_fallos
 			End If
 
 			If oBeLog_sincronizacion_fallos.IdProducto > 0 Then
-				cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRAENC", oBeLog_sincronizacion_fallos.IdProducto))
+				cmd.Parameters.Add(New SqlParameter("@IDPRODUCTO", oBeLog_sincronizacion_fallos.IdProducto))
 			End If
 
 			Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
