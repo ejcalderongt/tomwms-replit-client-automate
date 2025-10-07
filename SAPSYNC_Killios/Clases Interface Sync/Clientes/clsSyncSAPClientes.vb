@@ -268,8 +268,10 @@ Public Class clsSyncSAPClientes : Inherits clsInterfaceBase
 
                     If oBusinessPartnerSBO.GetByKey(vCodigoClienteSAP) Then
                         oBusinessPartnerSBO.UserFields.Fields.Item("U_Enviado_WMS").Value = "1"
-                        oBusinessPartnerSBO.UserFields.Fields.Item("U_Observaciones").Value = BeCliente.IdCliente.ToString()
-                        oBusinessPartnerSBO.Update()
+                        'oBusinessPartnerSBO.UserFields.Fields.Item("U_Observaciones").Value = BeCliente.IdCliente.ToString()
+                        If oBusinessPartnerSBO.Update() <> 0 Then
+                            Throw New Exception("Error al actualizar UDFs del cliente en SAP: " & oCompany.GetLastErrorDescription())
+                        End If
                     End If
 
                     Get_Clientes_SAP = True

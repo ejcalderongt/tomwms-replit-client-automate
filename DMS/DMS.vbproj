@@ -72,10 +72,11 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>9F2282C96F064ED3AB86F3CD2AC31927F16A2B89</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>2DBA1FE848BEF82E50B6007390175C0262A87D22</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>DMS_1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>
+    </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>

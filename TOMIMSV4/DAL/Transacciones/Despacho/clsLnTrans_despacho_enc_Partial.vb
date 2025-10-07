@@ -3235,4 +3235,36 @@ Partial Public Class clsLnTrans_despacho_enc
 
     End Sub
 
+    Public Shared Function Get_No_Pase_By_IdDespachoEnc(ByVal IdDespachoEnc As Integer,
+                                                        ByVal pConnection As SqlConnection,
+                                                        ByVal pTransaction As SqlTransaction) As String
+
+        Try
+
+            Dim lNoPase As String = 0
+
+            Dim vSQL As String = "SELECT ISNULL(no_pase,'') no_pase FROM trans_despacho_enc WHERE IdDespachoEnc = @IdDespachoEnc "
+
+            Using lCommand As New SqlCommand(vSQL, pConnection)
+
+                lCommand.Transaction = pTransaction
+                lCommand.CommandType = CommandType.Text
+                lCommand.Parameters.AddWithValue("@IdDespachoEnc", IdDespachoEnc)
+
+                Dim lReturnValue As Object = lCommand.ExecuteScalar()
+
+                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                    lNoPase = CStr(lReturnValue)
+                End If
+
+            End Using
+
+            Return lNoPase
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 End Class
