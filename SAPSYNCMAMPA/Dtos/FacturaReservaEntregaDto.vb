@@ -5,7 +5,8 @@ Public Class FacturaReservaEntregaDto
     Public Property DocDate As String
     Public Property DocDueDate As String
     Public Property Comments As String
-    Public Property U_LOGISTIKA_ID As String = ""
+    Public Property U_OPERADOR_WMS As String = ""
+    Public Property U_DOCUMENTO_WMS As String = ""
     Public Property DocumentLines As List(Of FacturaReservaEntregaLineDto)
 End Class
 

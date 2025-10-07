@@ -2097,26 +2097,25 @@ Partial Public Class clsLnTrans_re_det
 
         Try
 
+            Dim vSQL As String = "SELECT     det.IdRecepcionDet, det.IdProductoBodega, ISNULL(det.IdPresentacion, '') AS IdPresentacion, det.No_Linea, det.nombre_producto, det.nombre_presentacion, det.nombre_unidad_medida, det.nombre_producto_estado, det.lote, det.fecha_vence, ISNULL(det.peso, 0) AS peso, 
+                                                      det.observacion, det.costo, ISNULL(det.costo_oc, 0) AS costo_oc, ISNULL(det.costo_estadistico, 0) AS costo_estadistico, re.IdRecepcionEnc, SUM(det.cantidad_recibida) AS CantidadRecibida, det.lic_plate, trans_oc_det.codigo_producto, color.Codigo AS codigo_color, 
+                                                      talla.Codigo AS codigo_talla
+                                    FROM        trans_re_enc AS re INNER JOIN
+                                                      trans_re_det AS det ON re.IdRecepcionEnc = det.IdRecepcionEnc INNER JOIN
+                                                      trans_re_oc AS oc ON re.IdRecepcionEnc = oc.IdRecepcionEnc INNER JOIN
+                                                      trans_oc_det ON det.IdOrdenCompraEnc = trans_oc_det.IdOrdenCompraEnc AND det.IdOrdenCompraDet = trans_oc_det.IdOrdenCompraDet INNER JOIN
+                                                      producto_talla_color ON det.IdProductoTallaColor = producto_talla_color.IdProductoTallaColor INNER JOIN
+                                                      talla ON producto_talla_color.IdTalla = talla.IdTalla INNER JOIN
+                                                      color ON producto_talla_color.IdColor = color.IdColor
+                                    WHERE     (oc.IdOrdenCompraEnc = @IdOrdenCompraEnc) AND (det.lic_plate = @Licencia)
+                                    GROUP BY det.IdProductoBodega, det.IdPresentacion, det.No_Linea, det.nombre_producto, det.nombre_presentacion, det.nombre_unidad_medida, det.nombre_producto_estado, det.lote, det.fecha_vence, det.peso, det.observacion, det.costo, det.costo_oc, det.costo_estadistico, re.IdRecepcionEnc, 
+                                                      det.IdRecepcionDet, det.lic_plate, trans_oc_det.codigo_producto, color.Codigo, talla.Codigo "
+
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
                 lConnection.Open()
 
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-
-                    Dim vSQL As String = "SELECT det.IdRecepcionDet, det.IdProductoBodega, ISNULL(det.IdPresentacion, '') AS IdPresentacion, det.No_Linea, det.nombre_producto, det.nombre_presentacion, 
-                      det.nombre_unidad_medida, det.nombre_producto_estado, det.lote, det.fecha_vence, ISNULL(det.peso, 0) AS peso, det.observacion, det.costo, ISNULL(det.costo_oc, 
-                      0) AS costo_oc, ISNULL(det.costo_estadistico, 0) AS costo_estadistico, re.IdRecepcionEnc, SUM(det.cantidad_recibida) AS CantidadRecibida, ptc.codigosku as codigo_producto,
-                    det.lic_plate, ISNULL(c.Codigo,'') codigo_color, ISNULL(t.Codigo,'') codigo_talla
-                    FROM trans_re_enc AS re INNER JOIN
-                      trans_re_det AS det ON re.IdRecepcionEnc = det.IdRecepcionEnc INNER JOIN
-                      trans_re_oc AS oc ON re.IdRecepcionEnc = oc.IdRecepcionEnc LEFT JOIN
-					  producto_talla_color ptc on ptc.IdProductoTallaColor = det.IdProductoTallaColor LEFT JOIN
-					  talla t on ptc.IdTalla = t.IdTalla LEFT JOIN
-					  color c on ptc.IdColor = c.IdColor
-                    WHERE (oc.IdOrdenCompraEnc = @IdOrdenCompraEnc  AND det.lic_plate = @Licencia)
-                    GROUP BY det.IdProductoBodega, det.IdPresentacion, det.No_Linea, det.nombre_producto, det.nombre_presentacion, det.nombre_unidad_medida, 
-                      det.nombre_producto_estado, det.lote, det.fecha_vence, det.peso, det.observacion, det.costo, det.costo_oc, det.costo_estadistico, re.IdRecepcionEnc, 
-                      det.IdRecepcionDet,ptc.codigosku, det.lic_plate, c.Codigo, t.Codigo  "
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -3074,6 +3073,50 @@ Partial Public Class clsLnTrans_re_det
 
         Catch ex As Exception
             Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_IdOperadorDefecto_By_IdRecepcionEnc(ByVal pIdRecepcionEnc As Integer) As String
+
+        Get_IdOperadorDefecto_By_IdRecepcionEnc = "N/D"
+
+        Try
+
+            Dim vSQL As String = "SELECT top(1)  CONCAT(nombres,' ', op.apellidos) AS Operador
+                                    from trans_re_det rdet
+                                    join operador_bodega opb on  rdet.IdOperadorBodega = opb.IdOperadorBodega
+                                    join operador op on opb.IdOperador = op.IdOperador
+                                    WHERE IdRecepcionEnc = @IdRecepcionEnc"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", pIdRecepcionEnc)
+
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                            Get_IdOperadorDefecto_By_IdRecepcionEnc = lDataTable.Rows(0).Item("Operador").ToString()
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+            End Using
+
+        Catch ex As Exception
+
         End Try
 
     End Function
