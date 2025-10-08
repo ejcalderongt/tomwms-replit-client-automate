@@ -1588,6 +1588,17 @@ Partial Public Class clsLnTrans_re_enc
 
             If pRecEnc.IsNew Then
                 Insertar(pRecEnc, lConnection, lTransaction)
+
+                '#MECR30092025: Se agrego bitacora para logs de recepciones.
+                Dim clsError_wms As New clsBeLog_error_wms_rec
+                clsError_wms.IdBodega = pRecEnc.IdBodega
+                clsError_wms.Fecha = Now
+                clsError_wms.IdUsuarioAgr = pRecEnc.User_agr
+                clsError_wms.MensajeError = "Se creó la recepcion " + pRecEnc.IdRecepcionEnc.ToString() + " satisfactoriamente."
+                clsError_wms.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
+
+                clsLnLog_error_wms_rec.Insertar(clsError_wms, lConnection, lTransaction)
+
             Else
                 Actualizar(pRecEnc, lConnection, lTransaction)
             End If

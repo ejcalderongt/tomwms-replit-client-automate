@@ -4508,10 +4508,6 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
-<<<<<<< HEAD
-=======
-    <Content Include="SAPBOSyncKillios.exe" />
->>>>>>> 6d94bad753b9ad7bdf99a197423f8ab928bd9013
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
