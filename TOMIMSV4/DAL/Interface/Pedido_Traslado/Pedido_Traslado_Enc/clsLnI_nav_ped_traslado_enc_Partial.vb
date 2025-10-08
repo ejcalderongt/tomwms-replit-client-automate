@@ -853,10 +853,15 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                             lConectionInterface,
                                                                             lTransInterface)
 
-                        '#EJC20171107_REF13_0506AM: El MaxId del IdPedidoEnc se genera dentro del insert                            
-                        pBePedidoEnc.Fecha_Pedido = BeINavPedTrasladoEnc.Posting_Date
-                        Dim currentTime As TimeSpan = Now.TimeOfDay
-                        pBePedidoEnc.Fecha_Pedido = pBePedidoEnc.Fecha_Pedido.Add(currentTime)
+                        '#EJC20171107_REF13_0506AM: El MaxId del IdPedidoEnc se genera dentro del insert
+                        Dim fechaBase As Date = BeINavPedTrasladoEnc.Posting_Date
+                        Dim fechaFinal As Date = New DateTime(fechaBase.Year, fechaBase.Month, fechaBase.Day,
+                                                              Now.Hour, Now.Minute, Now.Second)
+
+                        pBePedidoEnc.Fecha_Pedido = fechaFinal
+                        'pBePedidoEnc.Fecha_Pedido = BeINavPedTrasladoEnc.Posting_Date
+                        'Dim currentTime As TimeSpan = Now.TimeOfDay
+                        'pBePedidoEnc.Fecha_Pedido = pBePedidoEnc.Fecha_Pedido.Add(currentTime)
                         pBePedidoEnc.Referencia = BeINavPedTrasladoEnc.No
                         pBePedidoEnc.IdBodega = IdBodegaOrigen
                         pBePedidoEnc.Cliente = New clsBeCliente

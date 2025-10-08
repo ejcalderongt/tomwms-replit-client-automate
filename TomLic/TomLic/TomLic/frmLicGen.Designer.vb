@@ -27,6 +27,8 @@ Partial Class frmLicGen
         Me.TabLic = New DevExpress.XtraBars.Navigation.TabPane()
         Me.TabServer = New DevExpress.XtraBars.Navigation.TabNavigationPage()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.Label11 = New System.Windows.Forms.Label()
+        Me.numUx = New System.Windows.Forms.NumericUpDown()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.txtLlave = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -51,20 +53,20 @@ Partial Class frmLicGen
         Me.Label10 = New System.Windows.Forms.Label()
         Me.Label9 = New System.Windows.Forms.Label()
         Me.txtServ = New System.Windows.Forms.TextBox()
-        Me.Label11 = New System.Windows.Forms.Label()
-        Me.numUx = New System.Windows.Forms.NumericUpDown()
+        Me.chkConUx = New DevExpress.XtraEditors.CheckEdit()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.TabLic, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabLic.SuspendLayout()
         Me.TabServer.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
+        CType(Me.numUx, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.numBO, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.numHH, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabCliente.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.TabAntidoto.SuspendLayout()
         Me.TabActivarServer.SuspendLayout()
-        CType(Me.numUx, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkConUx.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'RibbonControl
@@ -73,7 +75,7 @@ Partial Class frmLicGen
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuGenerarLic})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonControl.MaxItemId = 2
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.OptionsMenuMinWidth = 385
@@ -101,7 +103,7 @@ Partial Class frmLicGen
         'RibbonStatusBar
         '
         Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 590)
-        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
         Me.RibbonStatusBar.Size = New System.Drawing.Size(1116, 30)
@@ -114,7 +116,7 @@ Partial Class frmLicGen
         Me.TabLic.Controls.Add(Me.TabActivarServer)
         Me.TabLic.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TabLic.Location = New System.Drawing.Point(0, 193)
-        Me.TabLic.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.TabLic.Margin = New System.Windows.Forms.Padding(4)
         Me.TabLic.Name = "TabLic"
         Me.TabLic.Pages.AddRange(New DevExpress.XtraBars.Navigation.NavigationPageBase() {Me.TabServer, Me.TabCliente, Me.TabAntidoto, Me.TabActivarServer})
         Me.TabLic.RegularSize = New System.Drawing.Size(1116, 397)
@@ -127,12 +129,13 @@ Partial Class frmLicGen
         '
         Me.TabServer.Caption = "Servidor"
         Me.TabServer.Controls.Add(Me.GroupBox1)
-        Me.TabServer.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.TabServer.Margin = New System.Windows.Forms.Padding(4)
         Me.TabServer.Name = "TabServer"
         Me.TabServer.Size = New System.Drawing.Size(1116, 356)
         '
         'GroupBox1
         '
+        Me.GroupBox1.Controls.Add(Me.chkConUx)
         Me.GroupBox1.Controls.Add(Me.Label11)
         Me.GroupBox1.Controls.Add(Me.numUx)
         Me.GroupBox1.Controls.Add(Me.Label5)
@@ -146,12 +149,32 @@ Partial Class frmLicGen
         Me.GroupBox1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.GroupBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GroupBox1.Location = New System.Drawing.Point(0, 0)
-        Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4)
         Me.GroupBox1.Size = New System.Drawing.Size(1116, 356)
         Me.GroupBox1.TabIndex = 3
         Me.GroupBox1.TabStop = False
+        '
+        'Label11
+        '
+        Me.Label11.AutoSize = True
+        Me.Label11.Location = New System.Drawing.Point(424, 23)
+        Me.Label11.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label11.Name = "Label11"
+        Me.Label11.Size = New System.Drawing.Size(123, 20)
+        Me.Label11.TabIndex = 8
+        Me.Label11.Text = "Ux (portal web)"
+        '
+        'numUx
+        '
+        Me.numUx.Location = New System.Drawing.Point(553, 20)
+        Me.numUx.Margin = New System.Windows.Forms.Padding(4)
+        Me.numUx.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
+        Me.numUx.Name = "numUx"
+        Me.numUx.Size = New System.Drawing.Size(139, 26)
+        Me.numUx.TabIndex = 7
+        Me.numUx.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
         'Label5
         '
@@ -171,7 +194,7 @@ Partial Class frmLicGen
         Me.txtLlave.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtLlave.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.txtLlave.Location = New System.Drawing.Point(4, 204)
-        Me.txtLlave.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtLlave.Margin = New System.Windows.Forms.Padding(4)
         Me.txtLlave.Multiline = True
         Me.txtLlave.Name = "txtLlave"
         Me.txtLlave.ReadOnly = True
@@ -192,7 +215,7 @@ Partial Class frmLicGen
         '
         Me.dtpFecha.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
         Me.dtpFecha.Location = New System.Drawing.Point(552, 131)
-        Me.dtpFecha.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.dtpFecha.Margin = New System.Windows.Forms.Padding(4)
         Me.dtpFecha.Name = "dtpFecha"
         Me.dtpFecha.Size = New System.Drawing.Size(139, 26)
         Me.dtpFecha.TabIndex = 0
@@ -210,7 +233,7 @@ Partial Class frmLicGen
         'numBO
         '
         Me.numBO.Location = New System.Drawing.Point(553, 62)
-        Me.numBO.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.numBO.Margin = New System.Windows.Forms.Padding(4)
         Me.numBO.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.numBO.Name = "numBO"
         Me.numBO.Size = New System.Drawing.Size(139, 26)
@@ -230,7 +253,7 @@ Partial Class frmLicGen
         'numHH
         '
         Me.numHH.Location = New System.Drawing.Point(552, 97)
-        Me.numHH.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.numHH.Margin = New System.Windows.Forms.Padding(4)
         Me.numHH.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.numHH.Name = "numHH"
         Me.numHH.Size = New System.Drawing.Size(140, 26)
@@ -241,7 +264,7 @@ Partial Class frmLicGen
         '
         Me.TabCliente.Caption = "Cliente"
         Me.TabCliente.Controls.Add(Me.GroupBox2)
-        Me.TabCliente.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.TabCliente.Margin = New System.Windows.Forms.Padding(4)
         Me.TabCliente.Name = "TabCliente"
         Me.TabCliente.Size = New System.Drawing.Size(1116, 356)
         '
@@ -254,9 +277,9 @@ Partial Class frmLicGen
         Me.GroupBox2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.GroupBox2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.GroupBox2.Location = New System.Drawing.Point(0, 0)
-        Me.GroupBox2.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.GroupBox2.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.GroupBox2.Padding = New System.Windows.Forms.Padding(4)
         Me.GroupBox2.Size = New System.Drawing.Size(1116, 356)
         Me.GroupBox2.TabIndex = 4
         Me.GroupBox2.TabStop = False
@@ -278,7 +301,7 @@ Partial Class frmLicGen
         Me.txtLic.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtLic.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.txtLic.Location = New System.Drawing.Point(4, 204)
-        Me.txtLic.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtLic.Margin = New System.Windows.Forms.Padding(4)
         Me.txtLic.Multiline = True
         Me.txtLic.Name = "txtLic"
         Me.txtLic.Size = New System.Drawing.Size(1108, 148)
@@ -288,7 +311,7 @@ Partial Class frmLicGen
         '
         Me.txtSolicitudCliente.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtSolicitudCliente.Location = New System.Drawing.Point(94, 76)
-        Me.txtSolicitudCliente.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtSolicitudCliente.Margin = New System.Windows.Forms.Padding(4)
         Me.txtSolicitudCliente.Name = "txtSolicitudCliente"
         Me.txtSolicitudCliente.Size = New System.Drawing.Size(913, 26)
         Me.txtSolicitudCliente.TabIndex = 4
@@ -309,7 +332,7 @@ Partial Class frmLicGen
         Me.TabAntidoto.Controls.Add(Me.txtCon)
         Me.TabAntidoto.Controls.Add(Me.txtSolicitudAntidoto)
         Me.TabAntidoto.Controls.Add(Me.Label6)
-        Me.TabAntidoto.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.TabAntidoto.Margin = New System.Windows.Forms.Padding(4)
         Me.TabAntidoto.Name = "TabAntidoto"
         Me.TabAntidoto.Size = New System.Drawing.Size(1116, 356)
         '
@@ -330,7 +353,7 @@ Partial Class frmLicGen
         Me.txtCon.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtCon.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.txtCon.Location = New System.Drawing.Point(0, 208)
-        Me.txtCon.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtCon.Margin = New System.Windows.Forms.Padding(4)
         Me.txtCon.Multiline = True
         Me.txtCon.Name = "txtCon"
         Me.txtCon.Size = New System.Drawing.Size(1116, 148)
@@ -340,7 +363,7 @@ Partial Class frmLicGen
         '
         Me.txtSolicitudAntidoto.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtSolicitudAntidoto.Location = New System.Drawing.Point(100, 70)
-        Me.txtSolicitudAntidoto.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtSolicitudAntidoto.Margin = New System.Windows.Forms.Padding(4)
         Me.txtSolicitudAntidoto.Name = "txtSolicitudAntidoto"
         Me.txtSolicitudAntidoto.Size = New System.Drawing.Size(913, 23)
         Me.txtSolicitudAntidoto.TabIndex = 6
@@ -361,7 +384,7 @@ Partial Class frmLicGen
         Me.TabActivarServer.Controls.Add(Me.Label10)
         Me.TabActivarServer.Controls.Add(Me.Label9)
         Me.TabActivarServer.Controls.Add(Me.txtServ)
-        Me.TabActivarServer.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.TabActivarServer.Margin = New System.Windows.Forms.Padding(4)
         Me.TabActivarServer.Name = "TabActivarServer"
         Me.TabActivarServer.Size = New System.Drawing.Size(1116, 356)
         '
@@ -369,7 +392,7 @@ Partial Class frmLicGen
         '
         Me.txtSolicitudActivacionServer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtSolicitudActivacionServer.Location = New System.Drawing.Point(91, 71)
-        Me.txtSolicitudActivacionServer.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtSolicitudActivacionServer.Margin = New System.Windows.Forms.Padding(4)
         Me.txtSolicitudActivacionServer.Name = "txtSolicitudActivacionServer"
         Me.txtSolicitudActivacionServer.Size = New System.Drawing.Size(913, 23)
         Me.txtSolicitudActivacionServer.TabIndex = 15
@@ -400,32 +423,21 @@ Partial Class frmLicGen
         Me.txtServ.BackColor = System.Drawing.Color.Linen
         Me.txtServ.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.txtServ.Location = New System.Drawing.Point(0, 208)
-        Me.txtServ.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.txtServ.Margin = New System.Windows.Forms.Padding(4)
         Me.txtServ.Multiline = True
         Me.txtServ.Name = "txtServ"
         Me.txtServ.ReadOnly = True
         Me.txtServ.Size = New System.Drawing.Size(1116, 148)
         Me.txtServ.TabIndex = 12
         '
-        'Label11
+        'chkConUx
         '
-        Me.Label11.AutoSize = True
-        Me.Label11.Location = New System.Drawing.Point(424, 23)
-        Me.Label11.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label11.Name = "Label11"
-        Me.Label11.Size = New System.Drawing.Size(123, 20)
-        Me.Label11.TabIndex = 8
-        Me.Label11.Text = "Ux (portal web)"
-        '
-        'numUx
-        '
-        Me.numUx.Location = New System.Drawing.Point(553, 20)
-        Me.numUx.Margin = New System.Windows.Forms.Padding(4)
-        Me.numUx.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
-        Me.numUx.Name = "numUx"
-        Me.numUx.Size = New System.Drawing.Size(139, 26)
-        Me.numUx.TabIndex = 7
-        Me.numUx.Value = New Decimal(New Integer() {1, 0, 0, 0})
+        Me.chkConUx.Location = New System.Drawing.Point(724, 21)
+        Me.chkConUx.MenuManager = Me.RibbonControl
+        Me.chkConUx.Name = "chkConUx"
+        Me.chkConUx.Properties.Caption = "Con UX"
+        Me.chkConUx.Size = New System.Drawing.Size(94, 24)
+        Me.chkConUx.TabIndex = 9
         '
         'frmLicGen
         '
@@ -435,7 +447,7 @@ Partial Class frmLicGen
         Me.Controls.Add(Me.TabLic)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
-        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "frmLicGen"
         Me.Ribbon = Me.RibbonControl
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -447,6 +459,7 @@ Partial Class frmLicGen
         Me.TabServer.ResumeLayout(False)
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
+        CType(Me.numUx, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.numBO, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.numHH, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabCliente.ResumeLayout(False)
@@ -456,7 +469,7 @@ Partial Class frmLicGen
         Me.TabAntidoto.PerformLayout()
         Me.TabActivarServer.ResumeLayout(False)
         Me.TabActivarServer.PerformLayout()
-        CType(Me.numUx, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkConUx.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout
 
@@ -496,4 +509,5 @@ End Sub
     Friend WithEvents Label10 As Label
     Friend WithEvents Label11 As Label
     Friend WithEvents numUx As NumericUpDown
+    Friend WithEvents chkConUx As DevExpress.XtraEditors.CheckEdit
 End Class

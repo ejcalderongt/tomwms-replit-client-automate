@@ -4498,6 +4498,65 @@ Partial Public Class clsLnTrans_movimientos
 
     End Function
 
+    '#GT06102025: sino existe movimiento segun recepción (datos legacy) validar si existen por lic_plate únicamente
+    Public Shared Function GetSingle_By_LicPlate(ByVal pIdRecepcionEnc As Integer, ByVal pLic_plate As String,
+                                                                          Optional ByVal pConnection As SqlConnection = Nothing,
+                                                                          Optional ByVal pTransaction As SqlTransaction = Nothing) As clsBeTrans_movimientos
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Dim lDTA As New SqlDataAdapter
+        GetSingle_By_LicPlate = Nothing
+
+        Try
+
+            Dim sp As String = "SELECT * FROM Trans_movimientos Where( IdTransaccion=@IdTransaccion and IdTipoTarea=1) "
+
+            If Not String.IsNullOrEmpty(pLic_plate) Then
+                sp += " and barra_pallet =@pLic_plate "
+            End If
+
+            Dim Es_Transaccion_Remota As Boolean = (pConnection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+            If Es_Transaccion_Remota Then
+                lDTA = New SqlDataAdapter(sp, pConnection)
+                lDTA.SelectCommand.Transaction = pTransaction
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                lDTA = New SqlDataAdapter(sp, lConnection)
+            End If
+
+            'lDTA.SelectCommand.Parameters.Add(New SqlParameter("@pIdRecepcionEnc", pIdRecepcionEnc))
+            'lDTA.SelectCommand.Parameters.Add(New SqlParameter("@pIdRecepcionDet", pIdRecepcionDet))
+            lDTA.SelectCommand.Parameters.Add(New SqlParameter("@IdTransaccion", pIdRecepcionEnc))
+
+            If Not String.IsNullOrEmpty(pLic_plate) Then
+                lDTA.SelectCommand.Parameters.Add(New SqlParameter("@pLic_plate", pLic_plate))
+            End If
+
+            Dim dt As New DataTable
+            lDTA.Fill(dt)
+
+            lDTA.Dispose()
+
+            If dt.Rows.Count = 1 Then
+                Dim oBeTrans_movimientos As New clsBeTrans_movimientos
+                Cargar(oBeTrans_movimientos, dt.Rows(0))
+                GetSingle_By_LicPlate = oBeTrans_movimientos
+            End If
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection IsNot Nothing Then lConnection.Dispose()
+        End Try
+
+    End Function
+
     Public Shared Function Get_All_Movimientos_Reporte_By_Rango_Fechas_For_Inv(ByVal pFechaDel As Date,
                                                                                ByVal pFechaAl As Date,
                                                                                ByVal IdBodega As Integer) As DataTable

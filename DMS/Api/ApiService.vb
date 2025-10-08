@@ -13,7 +13,8 @@ Public Class ApiService
     'Dim urlIngreso As String = GetFullUrl("/WMSWEB/api/sync/ingresos/documento-ingreso")
     'Dim urlPedido As String = GetFullUrl("/WMSWEB/api/sync/salidas/documento-salida")
 
-    Dim urlProducto As String = GetFullUrl("/api/Productos/sincronizar")
+    'Dim urlProducto As String = GetFullUrl("/api/Productos/sincronizar")
+    Dim urlProducto As String = GetFullUrl("/api/Productos/list/insert")
     Dim urlIngreso As String = GetFullUrl("/api/sync/ingresos/documento-ingreso")
     Dim urlPedido As String = GetFullUrl("/api/sync/salidas/documento-salida")
 

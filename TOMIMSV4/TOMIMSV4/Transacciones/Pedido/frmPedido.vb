@@ -351,7 +351,7 @@ Public Class frmPedido
             pBePedidoEnc.RoadRazon_Rechazado = ""
             pBePedidoEnc.HoraEntregaDesde = Now
             pBePedidoEnc.HoraEntregaHasta = Now
-            pBePedidoEnc.Observacion = txtObservacion.Text.Trim
+            pBePedidoEnc.Observacion = clsPublic.Quitar_Caracteres_No_Permitidos(txtObservacion.Text.Trim)
             pBePedidoEnc.Enviado_A_ERP = False
             pBePedidoEnc.Activo = True
             '#GT11082023: Se carga vacia porque es el insert del encabezado sin detalle de nada.

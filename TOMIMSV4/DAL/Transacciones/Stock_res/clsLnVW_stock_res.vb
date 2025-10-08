@@ -654,7 +654,7 @@ Public Class clsLnVW_stock_res
                 vSQL += " AND CONVERT(DATE, Fecha_Vence) = CONVERT(DATE, @Fecha_Vence) "
             End If
 
-            vSQL += " Order By NombreUbicacion "
+            vSQL += " Order By Nombre_Completo "
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
