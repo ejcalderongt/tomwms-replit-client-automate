@@ -816,7 +816,10 @@ Public Class SapServiceLayerClient
         Dim BeTransOcDet As clsBeTrans_oc_det = Nothing
         Dim vCantidadEsperada As Double = 0
         Dim vRecibioParcial As Boolean = False
+
         Try
+
+            clsPublic.Actualizar_Progreso(lblprg, "Enviando documento: " & BeTransOCEnc.No_Documento)
 
             BeTransOCTi = clsLnTrans_oc_ti.GetSingle(BeTransOCEnc.IdTipoIngresoOC, lConnection, lTransaction)
 
@@ -825,16 +828,19 @@ Public Class SapServiceLayerClient
                 vCodigoBodegaImportacion = BeINavConfigEnc.Bodega_Prorrateo
             End If
 
+            Dim vOperadorHHWMS As String = clsLnTrans_re_det.Get_IdOperadorDefecto_By_IdRecepcionEnc(IdRecepcionEnc)
+
             ' Armar objeto de entrega
             Dim entrega As New FacturaReservaEntregaDto With {
             .CardCode = oOrderPurchase.CardCode,
             .DocDate = Date.Today,
             .DocDueDate = Date.Today,
             .Comments = oOrderPurchase.Comments & " - Entrega generada desde WMS IdRecepcion: " & IdRecepcionEnc & " IdOcEnc: " & BeTransOCEnc.IdOrdenCompraEnc,
+            .U_OPERADOR_WMS = vOperadorHHWMS,
+            .U_DOCUMENTO_WMS = IdRecepcionEnc,
+            .U_ENVIADO_SAP_WMS = FormatoFechas.tFecha(Now),
             .DocumentLines = New List(Of FacturaReservaEntregaLineDto)()
             }
-
-            Dim vOperadorHHWMS As String = clsLnTrans_re_det.Get_IdOperadorDefecto_By_IdRecepcionEnc(IdRecepcionEnc)
 
             ' Armar objeto de entrega
             Dim entregaProductoFaltante As New FacturaReservaEntregaDto With {
@@ -843,7 +849,8 @@ Public Class SapServiceLayerClient
             .DocDueDate = Date.Today,
             .Comments = oOrderPurchase.Comments & " - Entrega generada desde WMS IdRecepcion: " & IdRecepcionEnc & " IdOcEnc: " & BeTransOCEnc.IdOrdenCompraEnc,
             .U_OPERADOR_WMS = vOperadorHHWMS,
-            .U_DOCUMENTO_WMS = IdRecepcionEnc.ToString(),
+            .U_DOCUMENTO_WMS = IdRecepcionEnc,
+            .U_ENVIADO_SAP_WMS = FormatoFechas.tFecha(Now),
             .DocumentLines = New List(Of FacturaReservaEntregaLineDto)()
             }
 
@@ -932,20 +939,22 @@ Public Class SapServiceLayerClient
 
                             Else
 
+                                Dim vDifFaltante As Double = vCantidadEsperada - ProductoIngreso.Cantidad_Total
+
                                 Dim batchList As New List(Of BatchNumberDto) From {
                                New BatchNumberDto With {
                                                    .BatchNumber = vColor & vTalla,
-                                                   .Quantity = ProductoIngreso.Cantidad_Total
+                                                   .Quantity = ProductoIngreso.Cantidad_Total + vDifFaltante
                                                        }
                                                    }
 
-                                ' Agregar línea a la entrega
+                                ' Agregar línea a la entrega de lo recibido parcialmente
                                 entrega.DocumentLines.Add(New FacturaReservaEntregaLineDto With {
                                 .BaseType = 18, ' Orden de compra
                                 .BaseEntry = oOrderPurchase.DocEntry,
                                 .BaseLine = vNoLineaOCSAP,
                                 .ItemCode = ProductoIngreso.Codigo_producto,
-                                .Quantity = ProductoIngreso.Cantidad_Total,
+                                .Quantity = ProductoIngreso.Cantidad_Total + vDifFaltante,
                                 .WarehouseCode = IIf(vEsImportacion, vCodigoBodegaImportacion, docLine.WarehouseCode),
                                 .U_Color = vColor,
                                 .U_Talla = vTalla,
@@ -999,9 +1008,9 @@ Public Class SapServiceLayerClient
                                                     }
                                                 }
 
-                        ' Agregar línea a la entrega
+                        'Agregar línea a la entrega
                         entregaProductoFaltante.DocumentLines.Add(New FacturaReservaEntregaLineDto With {
-                        .BaseType = 18, ' Orden de compra
+                        .BaseType = 18, 'Orden de compra
                         .BaseEntry = oOrderPurchase.DocEntry,
                         .BaseLine = vNoLineaOCSAP,
                         .ItemCode = docLine.ItemCode,
@@ -1058,11 +1067,11 @@ Public Class SapServiceLayerClient
                         ' Parsear el JSON
                         Dim jsonObj As JObject = JObject.Parse(postContent)
 
-                        ' Capturar los valores
-                        Dim docEntry As Integer = jsonObj("DocEntry")
-                        Dim docNum As Integer = jsonObj("DocNum")
-
                         If postResp.IsSuccessStatusCode Then
+
+                            ' Capturar los valores
+                            Dim docEntry As Integer = jsonObj("DocEntry")
+                            Dim docNum As Integer = jsonObj("DocNum")
 
                             clsPublic.Actualizar_Progreso(lblprg, "✅ Respuesta:")
                             clsPublic.Actualizar_Progreso(lblprg, postContent)
@@ -1086,7 +1095,7 @@ Public Class SapServiceLayerClient
                                 Dim patchContent As New StringContent(patchObj.ToString(), Encoding.UTF8, "application/json")
 
                                 ' Importante: PATCH al documento base (PurchaseOrders) usando el DocEntry del PO original
-                                Dim patchRequest As New HttpRequestMessage(New HttpMethod("PATCH"), $"PurchaseOrders({oOrderPurchase.DocEntry})") _
+                                Dim patchRequest As New HttpRequestMessage(New HttpMethod("PATCH"), $"PurchaseInvoices({BeTransOCEnc.Referencia})") _
                                     With {.Content = patchContent}
 
                                 ' Reutiliza las mismas cookies / headers de sesión que usaste para el POST

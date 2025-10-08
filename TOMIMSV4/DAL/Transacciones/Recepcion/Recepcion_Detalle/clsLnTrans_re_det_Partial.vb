@@ -3091,6 +3091,8 @@ Partial Public Class clsLnTrans_re_det
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
+                lConnection.Open()
+
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
@@ -3112,6 +3114,8 @@ Partial Public Class clsLnTrans_re_det
                     lTransaction.Commit()
 
                 End Using
+
+                lConnection.Close()
 
             End Using
 

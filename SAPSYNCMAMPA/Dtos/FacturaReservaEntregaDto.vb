@@ -6,7 +6,8 @@ Public Class FacturaReservaEntregaDto
     Public Property DocDueDate As String
     Public Property Comments As String
     Public Property U_OPERADOR_WMS As String = ""
-    Public Property U_DOCUMENTO_WMS As String = ""
+    Public Property U_DOCUMENTO_WMS As Integer = 0
+    Public Property U_ENVIADO_SAP_WMS As Integer = 0
     Public Property DocumentLines As List(Of FacturaReservaEntregaLineDto)
 End Class
 
