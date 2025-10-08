@@ -1,4 +1,5 @@
 ﻿Imports System.Data.SqlClient
+Imports System.Globalization
 Imports System.IO
 Imports System.IO.Compression
 Imports System.Net
@@ -16,26 +17,32 @@ Public Class clsSyncSapTrasladosEnvio
     Private Const ENTITY_TARGET_STOCK_TRANSFER As String = "StockTransfers"
     Private Const ENTITY_TARGET_STOCK_TRANSFER_REQUEST As String = "InventoryTransferRequests"
     Private Const BASETYPE_INVENTORY_TRANSFER As Integer = 1250000001 ' OWTQ    
-    Public Shared Async Function Procesar_Solicitud_Traslado_SAP(ByVal lblprg As RichTextBox,
-                                                                 ByVal prg As ProgressBar,
-                                                                 Optional ByVal pNoDocumento As String = "") As Task(Of Boolean)
+    Public Shared Async Function Procesar_Solicitud_Traslado_Prorrateo_SAP(ByVal lblprg As RichTextBox,
+                                                                           ByVal prg As ProgressBar,
+                                                                           Optional ByVal pNoDocumento As String = "") As Task(Of Boolean)
         Dim clsTrans As New clsTransaccion
 
         Try
+
             clsTrans.Begin_Transaction()
 
             BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface,
-                                                      clsTrans.lConnection,
-                                                      clsTrans.lTransaction)
+                                                          clsTrans.lConnection,
+                                                          clsTrans.lTransaction)
 
             Dim sessionCookie As String = ""
             Dim baseUrl As String = BD.Instancia.HANA_SL
             Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega,
-                                                                         clsTrans.lConnection,
-                                                                         clsTrans.lTransaction)
+                                                                            clsTrans.lConnection,
+                                                                            clsTrans.lTransaction)
 
             If BeBodega Is Nothing Then
                 Throw New Exception("ERROR_202311271751: Error no se pudo obtener el objeto de bodega asociado a la configuración de interface: " & BeConfigEnc.Idbodega)
+            End If
+
+            If Not BeBodega.Codigo = BeConfigEnc.Bodega_Prorrateo Then
+                clsPublic.Actualizar_Progreso(lblprg, String.Format("La bodega de origen y de prorrateo no coinciden, no se puede improtar el documento {0} <> {1}", BeBodega.Codigo, BeConfigEnc.Bodega_Prorrateo))
+                Return False
             End If
 
             Await Procesar_Documentos(BeBodega.Codigo,
@@ -68,7 +75,7 @@ Public Class clsSyncSapTrasladosEnvio
 
             clsPublic.Actualizar_Progreso(lblprg, "Conectando a SAP.")
 
-            Dim solicitudes As List(Of clsBeI_nav_ped_traslado_enc) = Get_Traslados_SAP_SL(codigoBodega, clsTrans.lConnection, clsTrans.lTransaction, lblprg, pNoDocumento)
+            Dim solicitudes As List(Of clsBeI_nav_ped_traslado_enc) = Get_Traslados_SAP_Prorrateo_SL(codigoBodega, clsTrans.lConnection, clsTrans.lTransaction, lblprg, pNoDocumento)
             Dim pBePedidoEnc As New clsBeTrans_pe_enc
             Dim PedidoClienteExistenteByCompany As New clsBeTrans_pe_enc
             Dim PedidoClienteExistente As New clsBeTrans_pe_enc
@@ -218,11 +225,11 @@ Public Class clsSyncSapTrasladosEnvio
     End Function
 
     Private Shared Async Function Get_Socio_Negocio_SL(ByVal pCodigo As String,
-                                                   ByVal pCardType As String,
-                                                   ByVal sessionCookie As String,
-                                                   ByVal baseUrl As String,
-                                                   ByVal lConnection As SqlConnection,
-                                                   ByVal lTransaction As SqlTransaction) As Task(Of JObject)
+                                                       ByVal pCardType As String,
+                                                       ByVal sessionCookie As String,
+                                                       ByVal baseUrl As String,
+                                                       ByVal lConnection As SqlConnection,
+                                                       ByVal lTransaction As SqlTransaction) As Task(Of JObject)
 
         Try
             If String.IsNullOrWhiteSpace(pCodigo) Then
@@ -384,21 +391,25 @@ Public Class clsSyncSapTrasladosEnvio
 
     End Function
 
-    Private Shared Function Get_Traslados_SAP_SL(pCodigoBodegaInterface As String,
-                                                 lConnection As SqlConnection,
-                                                 lTransaction As SqlTransaction,
-                                                 lblprg As RichTextBox,
-                                                 Optional pNoDocumentoSAP As String = "") As List(Of clsBeI_nav_ped_traslado_enc)
+    Private Shared Function Get_Traslados_SAP_Prorrateo_SL(pCodigoBodegaInterface As String,
+                                                           lConnection As SqlConnection,
+                                                           lTransaction As SqlTransaction,
+                                                           lblprg As RichTextBox,
+                                                           Optional pNoDocumentoSAP As String = "") As List(Of clsBeI_nav_ped_traslado_enc)
 
         Dim lPedidosCliente As New List(Of clsBeI_nav_ped_traslado_enc)
         Dim BePropietario As clsBePropietarios = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario, lConnection, lTransaction)
+        Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega, lConnection, lTransaction)
+        Dim vEsTransferenciaDirecta As Boolean = False
 
         If BePropietario Is Nothing Then
             Throw New Exception($"#ERROR: No se encontró el propietario con ID {BeConfigEnc.IdPropietario}")
         End If
 
         Try
+
             vHanaService = New SapServiceLayerClient()
+
             Dim loginResponse As LoginResponseDto = vHanaService.LoginAsync().GetAwaiter().GetResult()
 
             If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
@@ -418,10 +429,12 @@ Public Class clsSyncSapTrasladosEnvio
             Dim url As String = $"{BD.Instancia.HANA_SL}InventoryTransferRequests?$filter={Uri.EscapeDataString(filtroFinal)}"
 
             Using handler As New HttpClientHandler()
+
                 handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, sslPolicyErrors) True
                 handler.UseCookies = False
 
                 Using client As New HttpClient(handler)
+
                     client.DefaultRequestHeaders.Add("Cookie", vHanaService.SessionCookie)
                     client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
 
@@ -434,6 +447,10 @@ Public Class clsSyncSapTrasladosEnvio
 
                     Dim json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
                     Dim parsed = JObject.Parse(json)
+
+                    If BeConfigEnc.Bodega_Prorrateo = BeBodega.Codigo Then
+                        vEsTransferenciaDirecta = True
+                    End If
 
                     For Each traslado In parsed("value")
 
@@ -454,7 +471,7 @@ Public Class clsSyncSapTrasladosEnvio
                         .Receipt_Document_Reference = traslado("DocNum").ToString(),
                         .Company_Code = "",
                         .Comments = traslado("Comments").ToString(),
-                        .Document_Type = tTipoDocumentoSalida.Transferencia_Interna_WMS,
+                        .Document_Type = IIf(vEsTransferenciaDirecta, tTipoDocumentoSalida.Transferencia_Directa, tTipoDocumentoSalida.Transferencia_Interna_WMS),
                         .Lineas_Detalle = New List(Of clsBeI_nav_ped_traslado_det)
                     }
 
@@ -512,8 +529,11 @@ Public Class clsSyncSapTrasladosEnvio
         Dim clsTrans As New clsTransaccion()
 
         Using CnnLog As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
+
             Try
+
                 CnnLog.Open()
+
                 clsTrans.Begin_Transaction()
 
                 Dim lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out) = clsLnI_nav_transacciones_out.Get_Lotes_Salida_Pendientes_Envio(pTipo,
@@ -538,10 +558,9 @@ Public Class clsSyncSapTrasladosEnvio
 
                     Dim BePedidoEnc As clsBeTrans_pe_enc = clsLnTrans_pe_enc.GetSingle(PT.Idpedidoenc, clsTrans.lConnection, clsTrans.lTransaction)
 
-                    clsPublic.Actualizar_Progreso(lblprg, $"Procesando Pedido: {PT.Idpedidoenc}-{BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino}")
+                    clsPublic.Actualizar_Progreso(lblprg, $"Procesando Solicitud de traslado: {PT.Idpedidoenc}-{BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino}")
 
-                    Dim yaEnviado As Boolean =
-                    clsLnTrans_pe_enc.Get_Estado_Enviado_A_ERP(PT.No_pedido, clsTrans.lConnection, clsTrans.lTransaction)
+                    Dim yaEnviado As Boolean = clsLnTrans_pe_enc.Get_Estado_Enviado_A_ERP(PT.No_pedido, clsTrans.lConnection, clsTrans.lTransaction)
 
                     If yaEnviado Then
                         clsPublic.Actualizar_Progreso(lblprg, "El pedido ya está marcado como enviado a ERP; se omite su reenvío.")
@@ -551,11 +570,11 @@ Public Class clsSyncSapTrasladosEnvio
                     Dim lTransaccionesSalidaSingle As List(Of clsBeI_nav_transacciones_out) =
                     lTransaccionesSalida.FindAll(Function(x) x.No_pedido = PT.No_pedido AndAlso x.Idpedidoenc = PT.Idpedidoenc)
 
-                    Dim enviadoOk As Boolean = Await Enviar_Traslado_Desde_Solicitud_SAP(PT.No_pedido,
-                                                                                         BePedidoEnc,
-                                                                                         lTransaccionesSalidaSingle,
-                                                                                         clsTrans,
-                                                                                         lblprg).ConfigureAwait(False)
+                    Dim enviadoOk As Boolean = Await Enviar_Traslado_Cedis_Desde_Solicitud_SAP(PT.No_pedido,
+                                                                                               BePedidoEnc,
+                                                                                               lTransaccionesSalidaSingle,
+                                                                                               clsTrans,
+                                                                                               lblprg).ConfigureAwait(False)
 
                     If enviadoOk Then
                         Try
@@ -697,11 +716,11 @@ Public Class clsSyncSapTrasladosEnvio
             End Try
         End Using
     End Function
-    Private Shared Async Function Enviar_Traslado_Desde_Solicitud_SAP(ByVal _DocEntry As Integer,
-                                                                      ByVal BePedidoEnc As clsBeTrans_pe_enc,
-                                                                      ByVal transaccionesOut As List(Of clsBeI_nav_transacciones_out),
-                                                                      ByVal clsTrans As clsTransaccion,
-                                                                      ByVal lblprg As RichTextBox) As Task(Of Boolean)
+    Private Shared Async Function Enviar_Traslado_Cedis_Desde_Solicitud_SAP(ByVal _DocEntry As Integer,
+                                                                            ByVal BePedidoEnc As clsBeTrans_pe_enc,
+                                                                            ByVal transaccionesOut As List(Of clsBeI_nav_transacciones_out),
+                                                                            ByVal clsTrans As clsTransaccion,
+                                                                            ByVal lblprg As RichTextBox) As Task(Of Boolean)
 
 
         ' Progreso básico
@@ -737,11 +756,9 @@ Public Class clsSyncSapTrasladosEnvio
             If BeDespacho.No_pase = 0 Then
 
                 ' 2) Payload StockTransfer
-                Dim payloadStockTransfer = Build_StockTransfer_Payload(_DocEntry,
-                                                                       BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino,
-                                                                       BePedidoEnc.Bodega_Origen,
-                                                                       BePedidoEnc.Bodega_Destino,
-                                                                       transaccionesOut)
+                Dim payloadStockTransfer = Build_StockTransfer_Payload_Cedis(BePedidoEnc,
+                                                                             clsTrans,
+                                                                             transaccionesOut)
 
                 Dim handler As New HttpClientHandler With {
                 .AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate,
@@ -750,9 +767,11 @@ Public Class clsSyncSapTrasladosEnvio
             }
 
                 Using http As New HttpClient(handler) With {.BaseAddress = New Uri(SapServiceLayerClient.baseUrl)}
+
                     Dim json As String = JsonConvert.SerializeObject(payloadStockTransfer, New JsonSerializerSettings With {.NullValueHandling = NullValueHandling.Ignore})
                     Dim content = New StringContent(json, Encoding.UTF8)
                     Dim mediaType = New MediaTypeHeaderValue("application/json")
+
                     mediaType.CharSet = "utf-8"
                     content.Headers.ContentType = mediaType
 
@@ -782,6 +801,8 @@ Public Class clsSyncSapTrasladosEnvio
 
                         If BeDespacho IsNot Nothing Then
                             BeDespacho.No_pase = docNum
+                            '#EJC20251008: No utilice transacción porque en service layer ya se creó el documento.
+                            'Si llegaran a haber interbloqueos debería considerarse agregar.
                             clsLnTrans_despacho_enc.Actualizar_No_Pase(BeDespacho)
                         End If
 
@@ -885,7 +906,7 @@ Public Class clsSyncSapTrasladosEnvio
     End Function
 
     Private Shared Async Function Enviar_Traslado_Desde_Solicitud_SAP_Tiendas(ByVal _DocEntry As Integer,
-                                                                              ByVal BePedidoEnc As clsBeTrans_oc_enc,
+                                                                              ByVal BeTransOcEnc As clsBeTrans_oc_enc,
                                                                               ByVal transaccionesOut As List(Of clsBeI_nav_transacciones_out),
                                                                               ByVal clsTrans As clsTransaccion,
                                                                               ByVal lblprg As RichTextBox) As Task(Of Boolean)
@@ -925,11 +946,8 @@ Public Class clsSyncSapTrasladosEnvio
             If BeTransReOC.No_Erp_Docnum_Entrega = "" Then
 
                 ' 2) Payload StockTransfer
-                Dim payloadStockTransfer = Build_StockTransfer_Payload(BePedidoEnc.Referencia,
-                                                                       BePedidoEnc.No_Documento,
-                                                                       BePedidoEnc.ProveedorBodega.Proveedor.Codigo,
-                                                                       BePedidoEnc.IdBodega,
-                                                                       transaccionesOut)
+                Dim payloadStockTransfer = Build_StockTransfer_Payload_Tiendas(BeTransOcEnc,
+                                                                               transaccionesOut)
 
                 Dim handler As New HttpClientHandler With {
                 .AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate,
@@ -994,11 +1012,24 @@ Public Class clsSyncSapTrasladosEnvio
         End Try
     End Function
 
-    Private Shared Function Build_StockTransfer_Payload(docEntrySolicitud As Integer,
-                                                        docNumSolicitud As String,
-                                                        Fromwarehouse As String,
-                                                        ToWarehouse As String,
-                                                        lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out)) As StockTransferDto
+    Private Shared Function Build_StockTransfer_Payload_Tiendas(BeTransOcEnc As clsBeTrans_oc_enc,
+                                                                lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out)) As StockTransferDto
+
+
+        Dim docEntrySolicitud As Integer = BeTransOcEnc.Referencia
+        Dim docNumSolicitud As String = BeTransOcEnc.No_Documento
+        Dim Fromwarehouse As String = BeTransOcEnc.ProveedorBodega.Proveedor.Codigo
+        Dim ToWarehouse As String = BeTransOcEnc.IdBodega
+
+        Dim BeUsuario = clsLnUsuario.GetSingle(BeTransOcEnc.User_Agr)
+        Dim vUsuarioWMS As String = ""
+
+        If Not BeUsuario Is Nothing Then vUsuarioWMS = BeUsuario.Nombres + " " + BeUsuario.Apellidos
+
+        Dim IdRecepcionEnc As Integer = clsLnTrans_re_oc.Get_IdRecepcionEnc_By_IdOrdenCompraEnc(BeTransOcEnc.IdOrdenCompraEnc).FirstOrDefault
+        Dim vIdOperadorDefecto = clsLnTrans_re_det.Get_IdOperadorDefecto_By_IdRecepcionEnc(IdRecepcionEnc)
+
+        Dim vOperadorWMS As Integer = 0
 
         Dim dto As New StockTransferDto With {
         .FromWarehouse = Fromwarehouse,
@@ -1006,6 +1037,105 @@ Public Class clsSyncSapTrasladosEnvio
         .DocDate = Today,
         .Comments = $"Traslado generado por WMS sobre Solicitud SAP: {docEntrySolicitud} - Ref: {docNumSolicitud} - IdDocumentoWMS: {lTransaccionesSalida.FirstOrDefault.Idordencompra}",
         .JournalMemo = $"WMS Transfer from OWTQ {docNumSolicitud}",
+        .U_ENVIADO_WMS = 2,
+        .U_DOCUMENTO_WMS = BeTransOcEnc.IdOrdenCompraEnc,
+        .U_INICIO_PICK = BeTransOcEnc.Hora_Inicio_Recepcion.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+        .U_FIN_PICK = BeTransOcEnc.Hora_Fin_Recepcion.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+        .U_INICIO_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+        .U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+        .U_Tipo = 1,
+        .U_USR_PICK = vIdOperadorDefecto,
+        .StockTransferLines = New List(Of StockTransferLineDto)()}
+
+        ' Agrupar por Item + Línea + Talla + Color + Lote para construir lotes correctos
+        Dim grupos = lTransaccionesSalida.
+        GroupBy(Function(x) New With {
+            Key .ItemCode = x.Codigo_producto,
+            Key .No_Linea = x.No_linea,
+            Key .Talla = x.Talla,
+            Key .Color = x.Color,
+            Key .Lote = x.Lote
+        }).
+        Select(Function(g) New With {
+            g.Key.ItemCode,
+            g.Key.No_Linea,
+            g.Key.Talla,
+            g.Key.Color,
+            g.Key.Lote,
+            .Qty = g.Sum(Function(r) CDec(r.Cantidad))
+        }).
+        ToList()
+
+        ' Agrupar por Item + Línea para sumar y luego repartir BatchNumbers
+        Dim lineas = grupos.
+        GroupBy(Function(k) New With {Key k.ItemCode, Key k.No_Linea}).
+        Select(Function(g) New With {
+            g.Key.ItemCode,
+            g.Key.No_Linea,
+            .QtyLinea = g.Sum(Function(r) r.Qty),
+            .Batches = g.Select(Function(r) r).ToList()
+        }).ToList()
+
+        Dim i As Integer = 0
+        For Each ln In lineas
+            Dim line As New StockTransferLineDto With {
+            .BaseType = BASETYPE_INVENTORY_TRANSFER,
+            .BaseEntry = docEntrySolicitud,
+            .BaseLine = ln.No_Linea,
+            .ItemCode = ln.ItemCode,
+            .Quantity = Decimal.Round(ln.QtyLinea, 6),
+            .FromWarehouseCode = Fromwarehouse,
+            .WarehouseCode = ToWarehouse,
+            .BatchNumbers = New List(Of BatchNumberDto)()
+        }
+
+            ' UDFs de referencia: se llenan con el primer batch por simplicidad
+            Dim first = ln.Batches.FirstOrDefault()
+            If first IsNot Nothing Then
+                line.U_Color = If(first.Color, String.Empty)
+                line.U_Talla = If(first.Talla, String.Empty)
+            End If
+
+            For Each b In ln.Batches
+                line.BatchNumbers.Add(New BatchNumberDto With {
+                .BatchNumber = BuildBatchNumber(b.Color, b.Talla),
+                .Quantity = Decimal.Round(b.Qty, 6)
+            })
+            Next
+
+            dto.StockTransferLines.Add(line)
+            i += 1
+        Next
+
+        Return dto
+    End Function
+
+    Private Shared Function Build_StockTransfer_Payload_Cedis(BePedidoEnc As clsBeTrans_pe_enc,
+                                                              clsTrans As clsTransaccion,
+                                                              lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out)) As StockTransferDto
+
+
+        Dim docEntrySolicitud As Integer = BePedidoEnc.Referencia
+        Dim docNumSolicitud As String = BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino
+        Dim Fromwarehouse As String = BePedidoEnc.Bodega_Origen
+        Dim ToWarehouse As String = BePedidoEnc.Bodega_Destino
+
+        Dim vOperadorPickingDefecto As String = clsLnTrans_picking_ubic.Get_Operador_Defecto_By_IdPickingEnc(BePedidoEnc.Picking.IdPickingEnc, clsTrans.lConnection, clsTrans.lTransaction)
+
+        Dim dto As New StockTransferDto With {
+        .FromWarehouse = Fromwarehouse,
+        .ToWarehouse = ToWarehouse,
+        .DocDate = Today,
+        .Comments = $"Traslado generado por WMS sobre Solicitud SAP: {docEntrySolicitud} - Ref: {docNumSolicitud} - IdDocumentoWMS: {BePedidoEnc.IdPedidoEnc}",
+        .JournalMemo = $"WMS Transfer from OWTQ {docNumSolicitud}",
+        .U_USR_PICK = vOperadorPickingDefecto,
+        .U_ENVIADO_WMS = 2,
+        .U_DOCUMENTO_WMS = BePedidoEnc.IdPedidoEnc,
+        .U_INICIO_PICK = BePedidoEnc.Picking.Hora_ini.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+        .U_FIN_PICK = BePedidoEnc.Picking.Hora_fin.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+        .U_INICIO_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+        .U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+        .U_Tipo = 1,
         .StockTransferLines = New List(Of StockTransferLineDto)()}
 
         ' Agrupar por Item + Línea + Talla + Color + Lote para construir lotes correctos
@@ -1078,6 +1208,7 @@ Public Class clsSyncSapTrasladosEnvio
 
         Dim vMensaje As String = $"Solicitud Traslado generado por WMS sobre Solicitud SAP: Ref: {docNumSolicitud} IdPedidoEnc:{BePedidoEnc.IdPedidoEnc} Despacho: {BePedidoEnc.No_despacho}"
 
+
         Dim dto As New StockTransferRequestDto With {
         .FromWarehouse = FromWarehouse,
         .DocDate = Today,
@@ -1085,6 +1216,12 @@ Public Class clsSyncSapTrasladosEnvio
         .Comments = vMensaje,
         .JournalMemo = vMensaje,
         .U_ENVIADO_WMS = 2,
+        .U_DOCUMENTO_WMS = BePedidoEnc.IdPedidoEnc,
+        .U_INICIO_PICK = BePedidoEnc.Picking.Hora_ini.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+        .U_FIN_PICK = BePedidoEnc.Picking.Hora_fin.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+        .U_INICIO_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+        .U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+        .U_Tipo = 1,
         .StockTransferLines = New List(Of StockTransferRequestLineDto)()}
 
         ' Agrupar por Item + Línea + Talla + Color + Lote para construir lotes correctos
@@ -1144,6 +1281,7 @@ Public Class clsSyncSapTrasladosEnvio
     <Serializable>
     <JsonObject(MemberSerialization:=MemberSerialization.OptOut)>
     Public Class StockTransferDto
+
         <JsonProperty("DocDate", Order:=1)>
         Public Property DocDate As Date = Today
 
@@ -1158,18 +1296,48 @@ Public Class clsSyncSapTrasladosEnvio
 
         <JsonProperty("JournalMemo", Order:=5)>
         Public Property JournalMemo As String = ""
+        <JsonProperty("U_USR_PICK", Order:=6)>
+        Public Property U_USR_PICK As String = ""
+        <JsonProperty("U_DOCUMENTO_WMS", Order:=7)>
+        Public Property U_DOCUMENTO_WMS As Integer = 0
+        <JsonProperty("U_INICIO_PICK", Order:=8)>
+        Public Property U_INICIO_PICK As DateTime = Now
+        <JsonProperty("U_FIN_PICK", Order:=9)>
+        Public Property U_FIN_PICK As DateTime = Now
+        <JsonProperty("U_ESTADO_PEDIDO", Order:=10)>
+        Public Property U_ESTADO_PEDIDO As Integer = 0
+        <JsonProperty("U_INICIO_ENVIO", Order:=11)>
+        Public Property U_INICIO_ENVIO As DateTime = Now
 
-        <JsonProperty("StockTransferLines", Order:=6)>
+        <JsonProperty("U_FIN_ENVIO", Order:=12)>
+        Public Property U_FIN_ENVIO As DateTime = Now
+
+        <JsonProperty("U_Tipo", Order:=13)>
+        Public Property U_Tipo As String = "" '1Manual, 2Resurtido Auto, 3Pedido Inicial
+
+        <JsonProperty("U_ENVIADO_WMS", Order:=14)>
+        Public Property U_ENVIADO_WMS As Integer = 1
+
+        <JsonProperty("StockTransferLines", Order:=15)>
         Public Property StockTransferLines As List(Of StockTransferLineDto)
+
     End Class
     Private Class StockTransferRequestDto
         Public Property FromWarehouse As String
         Public Property Comments As String
         Public Property JournalMemo As String
-        Public Property StockTransferLines As List(Of StockTransferRequestLineDto)
         Public Property ToWarehouse As String
         Public Property DocDate As Date = Today
         Public Property U_ENVIADO_WMS = 2
+        Public Property U_USR_PICK As String = ""
+        Public Property U_DOCUMENTO_WMS As Integer = 0
+        Public Property U_INICIO_PICK As Date = Now
+        Public Property U_FIN_PICK As Date = Now
+        Public Property U_ESTADO_PEDIDO As Integer = 0
+        Public Property U_INICIO_ENVIO As Date = Now
+        Public Property U_FIN_ENVIO As Date = Now
+        Public Property U_Tipo As String = "" '1Manual, 2Resurtido Auto, 3Pedido Inicial
+        Public Property StockTransferLines As List(Of StockTransferRequestLineDto)
     End Class
 
     <JsonObject(MemberSerialization:=MemberSerialization.OptOut)>

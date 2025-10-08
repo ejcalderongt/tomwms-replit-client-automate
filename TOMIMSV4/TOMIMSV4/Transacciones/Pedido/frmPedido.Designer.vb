@@ -293,29 +293,9 @@ Partial Class frmPedido
         Me.GridView4 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.GrpProducto = New DevExpress.XtraEditors.GroupControl()
         Me.XtraScrollableControl2 = New DevExpress.XtraEditors.XtraScrollableControl()
-        Me.GroupControl4 = New DevExpress.XtraEditors.GroupControl()
-        Me.dtpFechaEntrega = New DevExpress.XtraEditors.DateEdit()
-        Me.cmbRoadVendedorDespacho = New DevExpress.XtraEditors.LookUpEdit()
-        Me.cmbRoadVendedorPedido = New DevExpress.XtraEditors.LookUpEdit()
-        Me.cmbRoadRutaDespacho = New DevExpress.XtraEditors.LookUpEdit()
-        Me.cmbRoadRutaPedido = New DevExpress.XtraEditors.LookUpEdit()
-        Me.dtpHoraEntregaHasta = New System.Windows.Forms.DateTimePicker()
-        Me.txtDireccionEntrega = New System.Windows.Forms.TextBox()
-        Me.dtpHoraEntregaDesde = New System.Windows.Forms.DateTimePicker()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.lblprg = New System.Windows.Forms.RichTextBox()
         Me.lblSociedadSAP = New System.Windows.Forms.Label()
-        Me.grpInfoPicking = New DevExpress.XtraEditors.GroupControl()
-        Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
-        Me.txtObservacion = New System.Windows.Forms.TextBox()
-        Me.grpScanPoliza = New DevExpress.XtraEditors.GroupControl()
-        Me.txtScanPoliza = New DevExpress.XtraEditors.TextEdit()
-        Me.LabelControl2 = New DevExpress.XtraEditors.LabelControl()
-        Me.LabelControl4 = New DevExpress.XtraEditors.LabelControl()
-        Me.txtIdDespacho = New System.Windows.Forms.LinkLabel()
-        Me.lblUltDespacho = New System.Windows.Forms.Label()
-        Me.txtIdPicking = New System.Windows.Forms.LinkLabel()
-        Me.lblNoPicking = New System.Windows.Forms.Label()
         Me.txtSociedadSAP = New System.Windows.Forms.TextBox()
         Me.cmbMuelle = New DevExpress.XtraEditors.GridLookUpEdit()
         Me.GridView12 = New DevExpress.XtraGrid.Views.Grid.GridView()
@@ -354,6 +334,26 @@ Partial Class frmPedido
         Me.lblIdPedidoEnc = New System.Windows.Forms.TextBox()
         Me.cmbTipoPedido = New DevExpress.XtraEditors.LookUpEdit()
         Me.dtpFechaPedido = New DevExpress.XtraEditors.DateEdit()
+        Me.grpInfoPicking = New DevExpress.XtraEditors.GroupControl()
+        Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
+        Me.txtObservacion = New System.Windows.Forms.TextBox()
+        Me.grpScanPoliza = New DevExpress.XtraEditors.GroupControl()
+        Me.txtScanPoliza = New DevExpress.XtraEditors.TextEdit()
+        Me.LabelControl2 = New DevExpress.XtraEditors.LabelControl()
+        Me.LabelControl4 = New DevExpress.XtraEditors.LabelControl()
+        Me.txtIdDespacho = New System.Windows.Forms.LinkLabel()
+        Me.lblUltDespacho = New System.Windows.Forms.Label()
+        Me.txtIdPicking = New System.Windows.Forms.LinkLabel()
+        Me.lblNoPicking = New System.Windows.Forms.Label()
+        Me.GroupControl4 = New DevExpress.XtraEditors.GroupControl()
+        Me.dtpFechaEntrega = New DevExpress.XtraEditors.DateEdit()
+        Me.cmbRoadVendedorDespacho = New DevExpress.XtraEditors.LookUpEdit()
+        Me.cmbRoadVendedorPedido = New DevExpress.XtraEditors.LookUpEdit()
+        Me.cmbRoadRutaDespacho = New DevExpress.XtraEditors.LookUpEdit()
+        Me.cmbRoadRutaPedido = New DevExpress.XtraEditors.LookUpEdit()
+        Me.dtpHoraEntregaHasta = New System.Windows.Forms.DateTimePicker()
+        Me.txtDireccionEntrega = New System.Windows.Forms.TextBox()
+        Me.dtpHoraEntregaDesde = New System.Windows.Forms.DateTimePicker()
         Me.grpDetallePed = New DevExpress.XtraEditors.GroupControl()
         Me.dgrid = New System.Windows.Forms.DataGridView()
         Me.colNo_Linea = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -660,22 +660,7 @@ Partial Class frmPedido
         CType(Me.GrpProducto, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GrpProducto.SuspendLayout()
         Me.XtraScrollableControl2.SuspendLayout()
-        CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl4.SuspendLayout()
-        CType(Me.dtpFechaEntrega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.dtpFechaEntrega.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.cmbRoadVendedorDespacho.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.cmbRoadVendedorPedido.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.cmbRoadRutaDespacho.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.cmbRoadRutaPedido.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox3.SuspendLayout()
-        CType(Me.grpInfoPicking, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.grpInfoPicking.SuspendLayout()
-        CType(Me.GroupControl3, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl3.SuspendLayout()
-        CType(Me.grpScanPoliza, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.grpScanPoliza.SuspendLayout()
-        CType(Me.txtScanPoliza.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView12, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbMotivoDevolucion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -696,6 +681,21 @@ Partial Class frmPedido
         CType(Me.cmbTipoPedido.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dtpFechaPedido.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dtpFechaPedido.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.grpInfoPicking, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpInfoPicking.SuspendLayout()
+        CType(Me.GroupControl3, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.GroupControl3.SuspendLayout()
+        CType(Me.grpScanPoliza, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpScanPoliza.SuspendLayout()
+        CType(Me.txtScanPoliza.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.GroupControl4.SuspendLayout()
+        CType(Me.dtpFechaEntrega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dtpFechaEntrega.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbRoadVendedorDespacho.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbRoadVendedorPedido.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbRoadRutaDespacho.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbRoadRutaPedido.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grpDetallePed, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpDetallePed.SuspendLayout()
         CType(Me.dgrid, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -2290,127 +2290,10 @@ Partial Class frmPedido
         Me.XtraScrollableControl2.Size = New System.Drawing.Size(1669, 756)
         Me.XtraScrollableControl2.TabIndex = 80
         '
-        'GroupControl4
-        '
-        Me.GroupControl4.Controls.Add(Me.dtpFechaEntrega)
-        Me.GroupControl4.Controls.Add(Me.cmbRoadVendedorDespacho)
-        Me.GroupControl4.Controls.Add(Me.cmbRoadVendedorPedido)
-        Me.GroupControl4.Controls.Add(Me.cmbRoadRutaDespacho)
-        Me.GroupControl4.Controls.Add(Me.cmbRoadRutaPedido)
-        Me.GroupControl4.Controls.Add(lblVendedorDespacho)
-        Me.GroupControl4.Controls.Add(Label1)
-        Me.GroupControl4.Controls.Add(lblRutaDespacho)
-        Me.GroupControl4.Controls.Add(Me.dtpHoraEntregaHasta)
-        Me.GroupControl4.Controls.Add(lblRoadVendedor)
-        Me.GroupControl4.Controls.Add(lblRoadRuta)
-        Me.GroupControl4.Controls.Add(Label4)
-        Me.GroupControl4.Controls.Add(Me.txtDireccionEntrega)
-        Me.GroupControl4.Controls.Add(lblFechaPedido)
-        Me.GroupControl4.Controls.Add(Me.dtpHoraEntregaDesde)
-        Me.GroupControl4.Controls.Add(Label2)
-        Me.GroupControl4.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.GroupControl4.Location = New System.Drawing.Point(0, 535)
-        Me.GroupControl4.Margin = New System.Windows.Forms.Padding(4)
-        Me.GroupControl4.Name = "GroupControl4"
-        Me.GroupControl4.Size = New System.Drawing.Size(1669, 221)
-        Me.GroupControl4.TabIndex = 80
-        Me.GroupControl4.Text = "Parámetros Road"
-        '
-        'dtpFechaEntrega
-        '
-        Me.dtpFechaEntrega.EditValue = New Date(2017, 11, 20, 9, 3, 33, 744)
-        Me.dtpFechaEntrega.Location = New System.Drawing.Point(576, 146)
-        Me.dtpFechaEntrega.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.dtpFechaEntrega.MenuManager = Me.RibbonControl
-        Me.dtpFechaEntrega.Name = "dtpFechaEntrega"
-        Me.dtpFechaEntrega.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.dtpFechaEntrega.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.dtpFechaEntrega.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.dtpFechaEntrega.Size = New System.Drawing.Size(159, 22)
-        Me.dtpFechaEntrega.TabIndex = 62
-        '
-        'cmbRoadVendedorDespacho
-        '
-        Me.cmbRoadVendedorDespacho.Location = New System.Drawing.Point(196, 124)
-        Me.cmbRoadVendedorDespacho.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.cmbRoadVendedorDespacho.MenuManager = Me.RibbonControl
-        Me.cmbRoadVendedorDespacho.Name = "cmbRoadVendedorDespacho"
-        Me.cmbRoadVendedorDespacho.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.cmbRoadVendedorDespacho.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbRoadVendedorDespacho.Properties.NullText = ""
-        Me.cmbRoadVendedorDespacho.Size = New System.Drawing.Size(359, 22)
-        Me.cmbRoadVendedorDespacho.TabIndex = 70
-        '
-        'cmbRoadVendedorPedido
-        '
-        Me.cmbRoadVendedorPedido.Location = New System.Drawing.Point(196, 65)
-        Me.cmbRoadVendedorPedido.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.cmbRoadVendedorPedido.MenuManager = Me.RibbonControl
-        Me.cmbRoadVendedorPedido.Name = "cmbRoadVendedorPedido"
-        Me.cmbRoadVendedorPedido.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.cmbRoadVendedorPedido.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbRoadVendedorPedido.Properties.NullText = ""
-        Me.cmbRoadVendedorPedido.Size = New System.Drawing.Size(359, 22)
-        Me.cmbRoadVendedorPedido.TabIndex = 65
-        '
-        'cmbRoadRutaDespacho
-        '
-        Me.cmbRoadRutaDespacho.Location = New System.Drawing.Point(196, 95)
-        Me.cmbRoadRutaDespacho.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.cmbRoadRutaDespacho.MenuManager = Me.RibbonControl
-        Me.cmbRoadRutaDespacho.Name = "cmbRoadRutaDespacho"
-        Me.cmbRoadRutaDespacho.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.cmbRoadRutaDespacho.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbRoadRutaDespacho.Properties.NullText = ""
-        Me.cmbRoadRutaDespacho.Size = New System.Drawing.Size(359, 22)
-        Me.cmbRoadRutaDespacho.TabIndex = 68
-        '
-        'cmbRoadRutaPedido
-        '
-        Me.cmbRoadRutaPedido.Location = New System.Drawing.Point(196, 36)
-        Me.cmbRoadRutaPedido.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.cmbRoadRutaPedido.MenuManager = Me.RibbonControl
-        Me.cmbRoadRutaPedido.Name = "cmbRoadRutaPedido"
-        Me.cmbRoadRutaPedido.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.cmbRoadRutaPedido.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbRoadRutaPedido.Properties.NullText = ""
-        Me.cmbRoadRutaPedido.Size = New System.Drawing.Size(359, 22)
-        Me.cmbRoadRutaPedido.TabIndex = 57
-        '
-        'dtpHoraEntregaHasta
-        '
-        Me.dtpHoraEntregaHasta.Format = System.Windows.Forms.DateTimePickerFormat.Time
-        Me.dtpHoraEntregaHasta.Location = New System.Drawing.Point(884, 146)
-        Me.dtpHoraEntregaHasta.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.dtpHoraEntregaHasta.Name = "dtpHoraEntregaHasta"
-        Me.dtpHoraEntregaHasta.Size = New System.Drawing.Size(112, 23)
-        Me.dtpHoraEntregaHasta.TabIndex = 64
-        '
-        'txtDireccionEntrega
-        '
-        Me.txtDireccionEntrega.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtDireccionEntrega.Location = New System.Drawing.Point(576, 55)
-        Me.txtDireccionEntrega.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.txtDireccionEntrega.Multiline = True
-        Me.txtDireccionEntrega.Name = "txtDireccionEntrega"
-        Me.txtDireccionEntrega.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.txtDireccionEntrega.Size = New System.Drawing.Size(418, 56)
-        Me.txtDireccionEntrega.TabIndex = 71
-        '
-        'dtpHoraEntregaDesde
-        '
-        Me.dtpHoraEntregaDesde.Format = System.Windows.Forms.DateTimePickerFormat.Time
-        Me.dtpHoraEntregaDesde.Location = New System.Drawing.Point(748, 146)
-        Me.dtpHoraEntregaDesde.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.dtpHoraEntregaDesde.Name = "dtpHoraEntregaDesde"
-        Me.dtpHoraEntregaDesde.Size = New System.Drawing.Size(124, 23)
-        Me.dtpHoraEntregaDesde.TabIndex = 63
-        '
         'GroupBox3
         '
         Me.GroupBox3.Controls.Add(Me.lblprg)
         Me.GroupBox3.Controls.Add(Me.lblSociedadSAP)
-        Me.GroupBox3.Controls.Add(Me.grpInfoPicking)
         Me.GroupBox3.Controls.Add(Me.txtSociedadSAP)
         Me.GroupBox3.Controls.Add(Me.cmbMuelle)
         Me.GroupBox3.Controls.Add(Me.txtIdUbicacionMuelle)
@@ -2465,12 +2348,13 @@ Partial Class frmPedido
         Me.GroupBox3.Controls.Add(lblNoPedido)
         Me.GroupBox3.Controls.Add(Me.cmbTipoPedido)
         Me.GroupBox3.Controls.Add(Me.dtpFechaPedido)
+        Me.GroupBox3.Controls.Add(Me.grpInfoPicking)
         Me.GroupBox3.Dock = System.Windows.Forms.DockStyle.Fill
         Me.GroupBox3.Location = New System.Drawing.Point(0, 0)
         Me.GroupBox3.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupBox3.Name = "GroupBox3"
         Me.GroupBox3.Padding = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.GroupBox3.Size = New System.Drawing.Size(1669, 535)
+        Me.GroupBox3.Size = New System.Drawing.Size(1669, 578)
         Me.GroupBox3.TabIndex = 85
         Me.GroupBox3.TabStop = False
         '
@@ -2478,7 +2362,7 @@ Partial Class frmPedido
         '
         Me.lblprg.BackColor = System.Drawing.Color.AliceBlue
         Me.lblprg.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.lblprg.Location = New System.Drawing.Point(4, 470)
+        Me.lblprg.Location = New System.Drawing.Point(4, 513)
         Me.lblprg.Name = "lblprg"
         Me.lblprg.Size = New System.Drawing.Size(1173, 63)
         Me.lblprg.TabIndex = 101
@@ -2494,156 +2378,6 @@ Partial Class frmPedido
         Me.lblSociedadSAP.Size = New System.Drawing.Size(91, 16)
         Me.lblSociedadSAP.TabIndex = 100
         Me.lblSociedadSAP.Text = "Sociedad SAP:"
-        '
-        'grpInfoPicking
-        '
-        Me.grpInfoPicking.Controls.Add(Me.GroupControl3)
-        Me.grpInfoPicking.Controls.Add(Me.grpScanPoliza)
-        Me.grpInfoPicking.Controls.Add(Me.txtIdDespacho)
-        Me.grpInfoPicking.Controls.Add(Me.lblUltDespacho)
-        Me.grpInfoPicking.Controls.Add(Me.txtIdPicking)
-        Me.grpInfoPicking.Controls.Add(Me.lblNoPicking)
-        Me.grpInfoPicking.Dock = System.Windows.Forms.DockStyle.Right
-        Me.grpInfoPicking.Location = New System.Drawing.Point(1177, 18)
-        Me.grpInfoPicking.Margin = New System.Windows.Forms.Padding(6, 2, 6, 2)
-        Me.grpInfoPicking.Name = "grpInfoPicking"
-        Me.grpInfoPicking.Size = New System.Drawing.Size(488, 515)
-        Me.grpInfoPicking.TabIndex = 67
-        Me.grpInfoPicking.Text = "Transacciones Asociadas"
-        '
-        'GroupControl3
-        '
-        Me.GroupControl3.CaptionImageOptions.SvgImage = CType(resources.GetObject("GroupControl3.CaptionImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.GroupControl3.Controls.Add(Me.txtObservacion)
-        Me.GroupControl3.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupControl3.Location = New System.Drawing.Point(2, 324)
-        Me.GroupControl3.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.GroupControl3.Name = "GroupControl3"
-        Me.GroupControl3.Size = New System.Drawing.Size(484, 210)
-        Me.GroupControl3.TabIndex = 26
-        Me.GroupControl3.Text = "Observación"
-        '
-        'txtObservacion
-        '
-        Me.txtObservacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtObservacion.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.txtObservacion.Location = New System.Drawing.Point(2, 41)
-        Me.txtObservacion.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.txtObservacion.MaxLength = 1000
-        Me.txtObservacion.Multiline = True
-        Me.txtObservacion.Name = "txtObservacion"
-        Me.txtObservacion.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.txtObservacion.Size = New System.Drawing.Size(480, 167)
-        Me.txtObservacion.TabIndex = 56
-        '
-        'grpScanPoliza
-        '
-        Me.grpScanPoliza.CaptionImageOptions.Image = CType(resources.GetObject("grpScanPoliza.CaptionImageOptions.Image"), System.Drawing.Image)
-        Me.grpScanPoliza.Controls.Add(Me.txtScanPoliza)
-        Me.grpScanPoliza.Controls.Add(Me.LabelControl2)
-        Me.grpScanPoliza.Controls.Add(Me.LabelControl4)
-        Me.grpScanPoliza.Dock = System.Windows.Forms.DockStyle.Top
-        Me.grpScanPoliza.Location = New System.Drawing.Point(2, 222)
-        Me.grpScanPoliza.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.grpScanPoliza.Name = "grpScanPoliza"
-        Me.grpScanPoliza.Size = New System.Drawing.Size(484, 102)
-        Me.grpScanPoliza.TabIndex = 25
-        Me.grpScanPoliza.Text = "Escanéo de Poliza"
-        '
-        'txtScanPoliza
-        '
-        Me.txtScanPoliza.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.txtScanPoliza.Location = New System.Drawing.Point(2, 67)
-        Me.txtScanPoliza.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.txtScanPoliza.Name = "txtScanPoliza"
-        Me.txtScanPoliza.Properties.Appearance.BackColor = System.Drawing.Color.Silver
-        Me.txtScanPoliza.Properties.Appearance.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtScanPoliza.Properties.Appearance.Options.UseBackColor = True
-        Me.txtScanPoliza.Properties.Appearance.Options.UseFont = True
-        Me.txtScanPoliza.Size = New System.Drawing.Size(480, 32)
-        Me.txtScanPoliza.TabIndex = 1
-        '
-        'LabelControl2
-        '
-        Me.LabelControl2.Appearance.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LabelControl2.Appearance.Image = CType(resources.GetObject("LabelControl2.Appearance.Image"), System.Drawing.Image)
-        Me.LabelControl2.Appearance.Options.UseFont = True
-        Me.LabelControl2.Appearance.Options.UseImage = True
-        Me.LabelControl2.ImageOptions.Image = CType(resources.GetObject("LabelControl2.ImageOptions.Image"), System.Drawing.Image)
-        Me.LabelControl2.Location = New System.Drawing.Point(550, 96)
-        Me.LabelControl2.Margin = New System.Windows.Forms.Padding(6, 10, 6, 10)
-        Me.LabelControl2.Name = "LabelControl2"
-        Me.LabelControl2.Size = New System.Drawing.Size(32, 32)
-        Me.LabelControl2.TabIndex = 2
-        '
-        'LabelControl4
-        '
-        Me.LabelControl4.Appearance.Options.UseFont = True
-        Me.LabelControl4.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None
-        Me.LabelControl4.Dock = System.Windows.Forms.DockStyle.Top
-        Me.LabelControl4.Location = New System.Drawing.Point(2, 33)
-        Me.LabelControl4.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.LabelControl4.Name = "LabelControl4"
-        Me.LabelControl4.Size = New System.Drawing.Size(480, 34)
-        Me.LabelControl4.TabIndex = 0
-        Me.LabelControl4.Text = "Escanée Poliza:"
-        '
-        'txtIdDespacho
-        '
-        Me.txtIdDespacho.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtIdDespacho.Dock = System.Windows.Forms.DockStyle.Top
-        Me.txtIdDespacho.Font = New System.Drawing.Font("Tahoma", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtIdDespacho.LinkColor = System.Drawing.Color.Green
-        Me.txtIdDespacho.Location = New System.Drawing.Point(2, 168)
-        Me.txtIdDespacho.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.txtIdDespacho.Name = "txtIdDespacho"
-        Me.txtIdDespacho.Size = New System.Drawing.Size(484, 54)
-        Me.txtIdDespacho.TabIndex = 24
-        Me.txtIdDespacho.TabStop = True
-        Me.txtIdDespacho.Text = "0"
-        Me.txtIdDespacho.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'lblUltDespacho
-        '
-        Me.lblUltDespacho.BackColor = System.Drawing.Color.SeaGreen
-        Me.lblUltDespacho.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.lblUltDespacho.Dock = System.Windows.Forms.DockStyle.Top
-        Me.lblUltDespacho.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblUltDespacho.Location = New System.Drawing.Point(2, 128)
-        Me.lblUltDespacho.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.lblUltDespacho.Name = "lblUltDespacho"
-        Me.lblUltDespacho.Size = New System.Drawing.Size(484, 40)
-        Me.lblUltDespacho.TabIndex = 14
-        Me.lblUltDespacho.Text = "Ult. Despacho #: "
-        Me.lblUltDespacho.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'txtIdPicking
-        '
-        Me.txtIdPicking.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtIdPicking.Dock = System.Windows.Forms.DockStyle.Top
-        Me.txtIdPicking.Font = New System.Drawing.Font("Tahoma", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtIdPicking.Location = New System.Drawing.Point(2, 64)
-        Me.txtIdPicking.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.txtIdPicking.Name = "txtIdPicking"
-        Me.txtIdPicking.Size = New System.Drawing.Size(484, 64)
-        Me.txtIdPicking.TabIndex = 7
-        Me.txtIdPicking.TabStop = True
-        Me.txtIdPicking.Text = "0"
-        Me.txtIdPicking.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'lblNoPicking
-        '
-        Me.lblNoPicking.BackColor = System.Drawing.Color.SteelBlue
-        Me.lblNoPicking.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.lblNoPicking.Dock = System.Windows.Forms.DockStyle.Top
-        Me.lblNoPicking.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblNoPicking.Location = New System.Drawing.Point(2, 28)
-        Me.lblNoPicking.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Me.lblNoPicking.Name = "lblNoPicking"
-        Me.lblNoPicking.Size = New System.Drawing.Size(484, 36)
-        Me.lblNoPicking.TabIndex = 1
-        Me.lblNoPicking.Text = "Ult. Picking #: "
-        Me.lblNoPicking.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'txtSociedadSAP
         '
@@ -3072,6 +2806,272 @@ Partial Class frmPedido
         Me.dtpFechaPedido.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.dtpFechaPedido.Size = New System.Drawing.Size(316, 22)
         Me.dtpFechaPedido.TabIndex = 35
+        '
+        'grpInfoPicking
+        '
+        Me.grpInfoPicking.Controls.Add(Me.GroupControl3)
+        Me.grpInfoPicking.Controls.Add(Me.grpScanPoliza)
+        Me.grpInfoPicking.Controls.Add(Me.txtIdDespacho)
+        Me.grpInfoPicking.Controls.Add(Me.lblUltDespacho)
+        Me.grpInfoPicking.Controls.Add(Me.txtIdPicking)
+        Me.grpInfoPicking.Controls.Add(Me.lblNoPicking)
+        Me.grpInfoPicking.Dock = System.Windows.Forms.DockStyle.Right
+        Me.grpInfoPicking.Location = New System.Drawing.Point(1177, 18)
+        Me.grpInfoPicking.Margin = New System.Windows.Forms.Padding(6, 2, 6, 2)
+        Me.grpInfoPicking.Name = "grpInfoPicking"
+        Me.grpInfoPicking.Size = New System.Drawing.Size(488, 558)
+        Me.grpInfoPicking.TabIndex = 67
+        Me.grpInfoPicking.Text = "Transacciones Asociadas"
+        '
+        'GroupControl3
+        '
+        Me.GroupControl3.CaptionImageOptions.SvgImage = CType(resources.GetObject("GroupControl3.CaptionImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.GroupControl3.Controls.Add(Me.txtObservacion)
+        Me.GroupControl3.Dock = System.Windows.Forms.DockStyle.Top
+        Me.GroupControl3.Location = New System.Drawing.Point(2, 324)
+        Me.GroupControl3.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.GroupControl3.Name = "GroupControl3"
+        Me.GroupControl3.Size = New System.Drawing.Size(484, 210)
+        Me.GroupControl3.TabIndex = 26
+        Me.GroupControl3.Text = "Observación"
+        '
+        'txtObservacion
+        '
+        Me.txtObservacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtObservacion.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.txtObservacion.Location = New System.Drawing.Point(2, 41)
+        Me.txtObservacion.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.txtObservacion.MaxLength = 1000
+        Me.txtObservacion.Multiline = True
+        Me.txtObservacion.Name = "txtObservacion"
+        Me.txtObservacion.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.txtObservacion.Size = New System.Drawing.Size(480, 167)
+        Me.txtObservacion.TabIndex = 56
+        '
+        'grpScanPoliza
+        '
+        Me.grpScanPoliza.CaptionImageOptions.Image = CType(resources.GetObject("grpScanPoliza.CaptionImageOptions.Image"), System.Drawing.Image)
+        Me.grpScanPoliza.Controls.Add(Me.txtScanPoliza)
+        Me.grpScanPoliza.Controls.Add(Me.LabelControl2)
+        Me.grpScanPoliza.Controls.Add(Me.LabelControl4)
+        Me.grpScanPoliza.Dock = System.Windows.Forms.DockStyle.Top
+        Me.grpScanPoliza.Location = New System.Drawing.Point(2, 222)
+        Me.grpScanPoliza.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.grpScanPoliza.Name = "grpScanPoliza"
+        Me.grpScanPoliza.Size = New System.Drawing.Size(484, 102)
+        Me.grpScanPoliza.TabIndex = 25
+        Me.grpScanPoliza.Text = "Escanéo de Poliza"
+        '
+        'txtScanPoliza
+        '
+        Me.txtScanPoliza.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.txtScanPoliza.Location = New System.Drawing.Point(2, 67)
+        Me.txtScanPoliza.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.txtScanPoliza.Name = "txtScanPoliza"
+        Me.txtScanPoliza.Properties.Appearance.BackColor = System.Drawing.Color.Silver
+        Me.txtScanPoliza.Properties.Appearance.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtScanPoliza.Properties.Appearance.Options.UseBackColor = True
+        Me.txtScanPoliza.Properties.Appearance.Options.UseFont = True
+        Me.txtScanPoliza.Size = New System.Drawing.Size(480, 32)
+        Me.txtScanPoliza.TabIndex = 1
+        '
+        'LabelControl2
+        '
+        Me.LabelControl2.Appearance.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LabelControl2.Appearance.Image = CType(resources.GetObject("LabelControl2.Appearance.Image"), System.Drawing.Image)
+        Me.LabelControl2.Appearance.Options.UseFont = True
+        Me.LabelControl2.Appearance.Options.UseImage = True
+        Me.LabelControl2.ImageOptions.Image = CType(resources.GetObject("LabelControl2.ImageOptions.Image"), System.Drawing.Image)
+        Me.LabelControl2.Location = New System.Drawing.Point(550, 96)
+        Me.LabelControl2.Margin = New System.Windows.Forms.Padding(6, 10, 6, 10)
+        Me.LabelControl2.Name = "LabelControl2"
+        Me.LabelControl2.Size = New System.Drawing.Size(32, 32)
+        Me.LabelControl2.TabIndex = 2
+        '
+        'LabelControl4
+        '
+        Me.LabelControl4.Appearance.Options.UseFont = True
+        Me.LabelControl4.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None
+        Me.LabelControl4.Dock = System.Windows.Forms.DockStyle.Top
+        Me.LabelControl4.Location = New System.Drawing.Point(2, 33)
+        Me.LabelControl4.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.LabelControl4.Name = "LabelControl4"
+        Me.LabelControl4.Size = New System.Drawing.Size(480, 34)
+        Me.LabelControl4.TabIndex = 0
+        Me.LabelControl4.Text = "Escanée Poliza:"
+        '
+        'txtIdDespacho
+        '
+        Me.txtIdDespacho.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtIdDespacho.Dock = System.Windows.Forms.DockStyle.Top
+        Me.txtIdDespacho.Font = New System.Drawing.Font("Tahoma", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtIdDespacho.LinkColor = System.Drawing.Color.Green
+        Me.txtIdDespacho.Location = New System.Drawing.Point(2, 168)
+        Me.txtIdDespacho.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
+        Me.txtIdDespacho.Name = "txtIdDespacho"
+        Me.txtIdDespacho.Size = New System.Drawing.Size(484, 54)
+        Me.txtIdDespacho.TabIndex = 24
+        Me.txtIdDespacho.TabStop = True
+        Me.txtIdDespacho.Text = "0"
+        Me.txtIdDespacho.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'lblUltDespacho
+        '
+        Me.lblUltDespacho.BackColor = System.Drawing.Color.SeaGreen
+        Me.lblUltDespacho.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.lblUltDespacho.Dock = System.Windows.Forms.DockStyle.Top
+        Me.lblUltDespacho.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblUltDespacho.Location = New System.Drawing.Point(2, 128)
+        Me.lblUltDespacho.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
+        Me.lblUltDespacho.Name = "lblUltDespacho"
+        Me.lblUltDespacho.Size = New System.Drawing.Size(484, 40)
+        Me.lblUltDespacho.TabIndex = 14
+        Me.lblUltDespacho.Text = "Ult. Despacho #: "
+        Me.lblUltDespacho.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'txtIdPicking
+        '
+        Me.txtIdPicking.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtIdPicking.Dock = System.Windows.Forms.DockStyle.Top
+        Me.txtIdPicking.Font = New System.Drawing.Font("Tahoma", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtIdPicking.Location = New System.Drawing.Point(2, 64)
+        Me.txtIdPicking.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
+        Me.txtIdPicking.Name = "txtIdPicking"
+        Me.txtIdPicking.Size = New System.Drawing.Size(484, 64)
+        Me.txtIdPicking.TabIndex = 7
+        Me.txtIdPicking.TabStop = True
+        Me.txtIdPicking.Text = "0"
+        Me.txtIdPicking.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'lblNoPicking
+        '
+        Me.lblNoPicking.BackColor = System.Drawing.Color.SteelBlue
+        Me.lblNoPicking.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.lblNoPicking.Dock = System.Windows.Forms.DockStyle.Top
+        Me.lblNoPicking.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblNoPicking.Location = New System.Drawing.Point(2, 28)
+        Me.lblNoPicking.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
+        Me.lblNoPicking.Name = "lblNoPicking"
+        Me.lblNoPicking.Size = New System.Drawing.Size(484, 36)
+        Me.lblNoPicking.TabIndex = 1
+        Me.lblNoPicking.Text = "Ult. Picking #: "
+        Me.lblNoPicking.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'GroupControl4
+        '
+        Me.GroupControl4.Controls.Add(Me.dtpFechaEntrega)
+        Me.GroupControl4.Controls.Add(Me.cmbRoadVendedorDespacho)
+        Me.GroupControl4.Controls.Add(Me.cmbRoadVendedorPedido)
+        Me.GroupControl4.Controls.Add(Me.cmbRoadRutaDespacho)
+        Me.GroupControl4.Controls.Add(Me.cmbRoadRutaPedido)
+        Me.GroupControl4.Controls.Add(lblVendedorDespacho)
+        Me.GroupControl4.Controls.Add(Label1)
+        Me.GroupControl4.Controls.Add(lblRutaDespacho)
+        Me.GroupControl4.Controls.Add(Me.dtpHoraEntregaHasta)
+        Me.GroupControl4.Controls.Add(lblRoadVendedor)
+        Me.GroupControl4.Controls.Add(lblRoadRuta)
+        Me.GroupControl4.Controls.Add(Label4)
+        Me.GroupControl4.Controls.Add(Me.txtDireccionEntrega)
+        Me.GroupControl4.Controls.Add(lblFechaPedido)
+        Me.GroupControl4.Controls.Add(Me.dtpHoraEntregaDesde)
+        Me.GroupControl4.Controls.Add(Label2)
+        Me.GroupControl4.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.GroupControl4.Location = New System.Drawing.Point(0, 578)
+        Me.GroupControl4.Margin = New System.Windows.Forms.Padding(4)
+        Me.GroupControl4.Name = "GroupControl4"
+        Me.GroupControl4.Size = New System.Drawing.Size(1669, 178)
+        Me.GroupControl4.TabIndex = 80
+        Me.GroupControl4.Text = "Parámetros Road"
+        '
+        'dtpFechaEntrega
+        '
+        Me.dtpFechaEntrega.EditValue = New Date(2017, 11, 20, 9, 3, 33, 744)
+        Me.dtpFechaEntrega.Location = New System.Drawing.Point(576, 146)
+        Me.dtpFechaEntrega.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.dtpFechaEntrega.MenuManager = Me.RibbonControl
+        Me.dtpFechaEntrega.Name = "dtpFechaEntrega"
+        Me.dtpFechaEntrega.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.dtpFechaEntrega.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.dtpFechaEntrega.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.dtpFechaEntrega.Size = New System.Drawing.Size(159, 22)
+        Me.dtpFechaEntrega.TabIndex = 62
+        '
+        'cmbRoadVendedorDespacho
+        '
+        Me.cmbRoadVendedorDespacho.Location = New System.Drawing.Point(196, 124)
+        Me.cmbRoadVendedorDespacho.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.cmbRoadVendedorDespacho.MenuManager = Me.RibbonControl
+        Me.cmbRoadVendedorDespacho.Name = "cmbRoadVendedorDespacho"
+        Me.cmbRoadVendedorDespacho.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.cmbRoadVendedorDespacho.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbRoadVendedorDespacho.Properties.NullText = ""
+        Me.cmbRoadVendedorDespacho.Size = New System.Drawing.Size(359, 22)
+        Me.cmbRoadVendedorDespacho.TabIndex = 70
+        '
+        'cmbRoadVendedorPedido
+        '
+        Me.cmbRoadVendedorPedido.Location = New System.Drawing.Point(196, 65)
+        Me.cmbRoadVendedorPedido.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.cmbRoadVendedorPedido.MenuManager = Me.RibbonControl
+        Me.cmbRoadVendedorPedido.Name = "cmbRoadVendedorPedido"
+        Me.cmbRoadVendedorPedido.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.cmbRoadVendedorPedido.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbRoadVendedorPedido.Properties.NullText = ""
+        Me.cmbRoadVendedorPedido.Size = New System.Drawing.Size(359, 22)
+        Me.cmbRoadVendedorPedido.TabIndex = 65
+        '
+        'cmbRoadRutaDespacho
+        '
+        Me.cmbRoadRutaDespacho.Location = New System.Drawing.Point(196, 95)
+        Me.cmbRoadRutaDespacho.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.cmbRoadRutaDespacho.MenuManager = Me.RibbonControl
+        Me.cmbRoadRutaDespacho.Name = "cmbRoadRutaDespacho"
+        Me.cmbRoadRutaDespacho.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.cmbRoadRutaDespacho.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbRoadRutaDespacho.Properties.NullText = ""
+        Me.cmbRoadRutaDespacho.Size = New System.Drawing.Size(359, 22)
+        Me.cmbRoadRutaDespacho.TabIndex = 68
+        '
+        'cmbRoadRutaPedido
+        '
+        Me.cmbRoadRutaPedido.Location = New System.Drawing.Point(196, 36)
+        Me.cmbRoadRutaPedido.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.cmbRoadRutaPedido.MenuManager = Me.RibbonControl
+        Me.cmbRoadRutaPedido.Name = "cmbRoadRutaPedido"
+        Me.cmbRoadRutaPedido.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.cmbRoadRutaPedido.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbRoadRutaPedido.Properties.NullText = ""
+        Me.cmbRoadRutaPedido.Size = New System.Drawing.Size(359, 22)
+        Me.cmbRoadRutaPedido.TabIndex = 57
+        '
+        'dtpHoraEntregaHasta
+        '
+        Me.dtpHoraEntregaHasta.Format = System.Windows.Forms.DateTimePickerFormat.Time
+        Me.dtpHoraEntregaHasta.Location = New System.Drawing.Point(884, 146)
+        Me.dtpHoraEntregaHasta.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.dtpHoraEntregaHasta.Name = "dtpHoraEntregaHasta"
+        Me.dtpHoraEntregaHasta.Size = New System.Drawing.Size(112, 23)
+        Me.dtpHoraEntregaHasta.TabIndex = 64
+        '
+        'txtDireccionEntrega
+        '
+        Me.txtDireccionEntrega.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtDireccionEntrega.Location = New System.Drawing.Point(576, 55)
+        Me.txtDireccionEntrega.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.txtDireccionEntrega.Multiline = True
+        Me.txtDireccionEntrega.Name = "txtDireccionEntrega"
+        Me.txtDireccionEntrega.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.txtDireccionEntrega.Size = New System.Drawing.Size(418, 56)
+        Me.txtDireccionEntrega.TabIndex = 71
+        '
+        'dtpHoraEntregaDesde
+        '
+        Me.dtpHoraEntregaDesde.Format = System.Windows.Forms.DateTimePickerFormat.Time
+        Me.dtpHoraEntregaDesde.Location = New System.Drawing.Point(748, 146)
+        Me.dtpHoraEntregaDesde.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.dtpHoraEntregaDesde.Name = "dtpHoraEntregaDesde"
+        Me.dtpHoraEntregaDesde.Size = New System.Drawing.Size(124, 23)
+        Me.dtpHoraEntregaDesde.TabIndex = 63
         '
         'grpDetallePed
         '
@@ -5269,26 +5269,8 @@ Partial Class frmPedido
         CType(Me.GrpProducto, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GrpProducto.ResumeLayout(False)
         Me.XtraScrollableControl2.ResumeLayout(False)
-        CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.GroupControl4.ResumeLayout(False)
-        Me.GroupControl4.PerformLayout()
-        CType(Me.dtpFechaEntrega.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.dtpFechaEntrega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.cmbRoadVendedorDespacho.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.cmbRoadVendedorPedido.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.cmbRoadRutaDespacho.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.cmbRoadRutaPedido.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox3.ResumeLayout(False)
         Me.GroupBox3.PerformLayout()
-        CType(Me.grpInfoPicking, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.grpInfoPicking.ResumeLayout(False)
-        CType(Me.GroupControl3, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.GroupControl3.ResumeLayout(False)
-        Me.GroupControl3.PerformLayout()
-        CType(Me.grpScanPoliza, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.grpScanPoliza.ResumeLayout(False)
-        Me.grpScanPoliza.PerformLayout()
-        CType(Me.txtScanPoliza.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView12, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbMotivoDevolucion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -5309,6 +5291,24 @@ Partial Class frmPedido
         CType(Me.cmbTipoPedido.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.dtpFechaPedido.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.dtpFechaPedido.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.grpInfoPicking, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpInfoPicking.ResumeLayout(False)
+        CType(Me.GroupControl3, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.GroupControl3.ResumeLayout(False)
+        Me.GroupControl3.PerformLayout()
+        CType(Me.grpScanPoliza, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpScanPoliza.ResumeLayout(False)
+        Me.grpScanPoliza.PerformLayout()
+        CType(Me.txtScanPoliza.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.GroupControl4.ResumeLayout(False)
+        Me.GroupControl4.PerformLayout()
+        CType(Me.dtpFechaEntrega.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dtpFechaEntrega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbRoadVendedorDespacho.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbRoadVendedorPedido.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbRoadRutaDespacho.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbRoadRutaPedido.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.grpDetallePed, System.ComponentModel.ISupportInitialize).EndInit()
         Me.grpDetallePed.ResumeLayout(False)
         CType(Me.dgrid, System.ComponentModel.ISupportInitialize).EndInit()

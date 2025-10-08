@@ -2,7 +2,6 @@
 Imports System.Net.Security
 Imports System.Reflection
 Imports System.Security.Cryptography.X509Certificates
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraBars.Ribbon
 Imports DevExpress.XtraEditors
@@ -183,6 +182,7 @@ Public Class frmEjecucion
 
             End Select
 
+            CheckForIllegalCrossThreadCalls = False
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -824,7 +824,7 @@ Public Class frmEjecucion
         Return True
     End Function
 
-    Private Sub Ejecuta_Interface_Traslados_Envio_SAP_Hana(Optional ByVal Preguntar As Boolean = True,
+    Private Sub Ejecuta_Interface_Traslados_Prorrateo_SH(Optional ByVal Preguntar As Boolean = True,
                                                            Optional ByVal pNoDocumentoSolTraslado As String = "")
 
         Try
@@ -840,7 +840,7 @@ Public Class frmEjecucion
             End If
 
             If Ejecutar Then
-                Dim unused = clsSyncSapTrasladosEnvio.Procesar_Solicitud_Traslado_SAP(lblprg, prg, pNoDocumentoSolTraslado)
+                Dim unused = clsSyncSapTrasladosEnvio.Procesar_Solicitud_Traslado_Prorrateo_SAP(lblprg, prg, pNoDocumentoSolTraslado)
             End If
 
         Catch ex As Exception
@@ -967,7 +967,7 @@ Public Class frmEjecucion
 
                 pPedidoCompra = tmpResult.ToString
 
-                Ejecuta_Interface_Traslados_Envio_SAP_Hana(True, pPedidoCompra)
+                Ejecuta_Interface_Traslados_Prorrateo_SH(True, pPedidoCompra)
 
             End If
 
@@ -1108,7 +1108,7 @@ Public Class frmEjecucion
                 lblprg.Text = ""
                 Await clsSyncSapTrasladosEnvio.Enviar_Traslados_Desde_Solicitud(lblprg,
                                                                                 prg,
-                                                                                tTipoDocumentoSalida.Transferencia_Interna_WMS)
+                                                                                tTipoDocumentoSalida.Transferencia_Directa)
             End If
 
         Catch ex As Exception
@@ -1126,7 +1126,7 @@ Public Class frmEjecucion
 
         Dim args As New XtraInputBoxArgs()
         Dim tmpResult As Object
-        Dim pSolDevolProveedor As String = ""
+        Dim pSolTrasladoTienda As String = ""
 
         mnuImportarSolDevolProv.Enabled = False
 
@@ -1148,9 +1148,9 @@ Public Class frmEjecucion
 
             If Not tmpResult Is Nothing Then
 
-                pSolDevolProveedor = tmpResult.ToString
+                pSolTrasladoTienda = tmpResult.ToString
 
-                Ejecuta_Interface_Sol_Traslado_Tienda_SAP_Hana(True, pSolDevolProveedor)
+                Ejecuta_Interface_Sol_Traslado_Tienda_SAP_Hana(True, pSolTrasladoTienda)
 
             End If
 
@@ -1299,5 +1299,6 @@ Public Class frmEjecucion
         End Try
 
     End Sub
+
 
 End Class
