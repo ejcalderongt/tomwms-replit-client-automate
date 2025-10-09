@@ -2337,10 +2337,10 @@ Partial Class frmPedido
         Me.GroupControl4.Controls.Add(Me.dtpHoraEntregaDesde)
         Me.GroupControl4.Controls.Add(Label2)
         Me.GroupControl4.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupControl4.Location = New System.Drawing.Point(0, 560)
+        Me.GroupControl4.Location = New System.Drawing.Point(0, 448)
         Me.GroupControl4.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl4.Name = "GroupControl4"
-        Me.GroupControl4.Size = New System.Drawing.Size(1141, 304)
+        Me.GroupControl4.Size = New System.Drawing.Size(1013, 304)
         Me.GroupControl4.TabIndex = 80
         Me.GroupControl4.Text = "Parámetros Road"
         '
@@ -2499,7 +2499,7 @@ Partial Class frmPedido
         Me.GroupBox3.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupBox3.Name = "GroupBox3"
         Me.GroupBox3.Padding = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.GroupBox3.Size = New System.Drawing.Size(1141, 448)
+        Me.GroupBox3.Size = New System.Drawing.Size(1013, 448)
         Me.GroupBox3.TabIndex = 85
         Me.GroupBox3.TabStop = False
         '
@@ -2678,7 +2678,7 @@ Partial Class frmPedido
         Me.lblprg.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblprg.Name = "lblprg"
         Me.lblprg.ReadOnly = True
-        Me.lblprg.Size = New System.Drawing.Size(1133, 85)
+        Me.lblprg.Size = New System.Drawing.Size(1005, 85)
         Me.lblprg.TabIndex = 85
         Me.lblprg.Text = ""
         Me.lblprg.Visible = False
@@ -2958,10 +2958,10 @@ Partial Class frmPedido
         Me.grpInfoPicking.Controls.Add(Me.txtIdPicking)
         Me.grpInfoPicking.Controls.Add(Me.lblNoPicking)
         Me.grpInfoPicking.Dock = System.Windows.Forms.DockStyle.Right
-        Me.grpInfoPicking.Location = New System.Drawing.Point(1293, 0)
+        Me.grpInfoPicking.Location = New System.Drawing.Point(1013, 0)
         Me.grpInfoPicking.Margin = New System.Windows.Forms.Padding(6, 2, 6, 2)
         Me.grpInfoPicking.Name = "grpInfoPicking"
-        Me.grpInfoPicking.Size = New System.Drawing.Size(604, 940)
+        Me.grpInfoPicking.Size = New System.Drawing.Size(504, 752)
         Me.grpInfoPicking.TabIndex = 67
         Me.grpInfoPicking.Text = "Transacciones Asociadas"
         '
@@ -2969,10 +2969,11 @@ Partial Class frmPedido
         '
         Me.GroupControl3.CaptionImageOptions.SvgImage = CType(resources.GetObject("GroupControl3.CaptionImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.GroupControl3.Controls.Add(Me.txtObservacion)
-        Me.GroupControl3.Location = New System.Drawing.Point(2, 302)
+        Me.GroupControl3.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.GroupControl3.Location = New System.Drawing.Point(2, 448)
         Me.GroupControl3.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.GroupControl3.Name = "GroupControl3"
-        Me.GroupControl3.Size = New System.Drawing.Size(471, 329)
+        Me.GroupControl3.Size = New System.Drawing.Size(500, 302)
         Me.GroupControl3.TabIndex = 26
         Me.GroupControl3.Text = "Observación"
         '
@@ -2986,7 +2987,7 @@ Partial Class frmPedido
         Me.txtObservacion.Multiline = True
         Me.txtObservacion.Name = "txtObservacion"
         Me.txtObservacion.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.txtObservacion.Size = New System.Drawing.Size(467, 286)
+        Me.txtObservacion.Size = New System.Drawing.Size(496, 259)
         Me.txtObservacion.TabIndex = 56
         '
         'grpScanPoliza
@@ -2999,7 +3000,7 @@ Partial Class frmPedido
         Me.grpScanPoliza.Location = New System.Drawing.Point(2, 306)
         Me.grpScanPoliza.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.grpScanPoliza.Name = "grpScanPoliza"
-        Me.grpScanPoliza.Size = New System.Drawing.Size(600, 635)
+        Me.grpScanPoliza.Size = New System.Drawing.Size(500, 635)
         Me.grpScanPoliza.TabIndex = 25
         Me.grpScanPoliza.Text = "Escaneo de Poliza"
         '
@@ -3013,7 +3014,7 @@ Partial Class frmPedido
         Me.txtScanPoliza.Properties.Appearance.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtScanPoliza.Properties.Appearance.Options.UseBackColor = True
         Me.txtScanPoliza.Properties.Appearance.Options.UseFont = True
-        Me.txtScanPoliza.Size = New System.Drawing.Size(596, 32)
+        Me.txtScanPoliza.Size = New System.Drawing.Size(496, 32)
         Me.txtScanPoliza.TabIndex = 1
         '
         'LabelControl2
@@ -3037,7 +3038,7 @@ Partial Class frmPedido
         Me.LabelControl4.Location = New System.Drawing.Point(2, 33)
         Me.LabelControl4.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.LabelControl4.Name = "LabelControl4"
-        Me.LabelControl4.Size = New System.Drawing.Size(596, 34)
+        Me.LabelControl4.Size = New System.Drawing.Size(496, 34)
         Me.LabelControl4.TabIndex = 0
         Me.LabelControl4.Text = "Escanee Poliza:"
         '
@@ -3050,7 +3051,7 @@ Partial Class frmPedido
         Me.txtIdDespacho.Location = New System.Drawing.Point(2, 227)
         Me.txtIdDespacho.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.txtIdDespacho.Name = "txtIdDespacho"
-        Me.txtIdDespacho.Size = New System.Drawing.Size(600, 79)
+        Me.txtIdDespacho.Size = New System.Drawing.Size(500, 79)
         Me.txtIdDespacho.TabIndex = 24
         Me.txtIdDespacho.TabStop = True
         Me.txtIdDespacho.Text = "0"
@@ -3064,7 +3065,7 @@ Partial Class frmPedido
         Me.lblUltDespacho.Location = New System.Drawing.Point(2, 167)
         Me.lblUltDespacho.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblUltDespacho.Name = "lblUltDespacho"
-        Me.lblUltDespacho.Size = New System.Drawing.Size(600, 60)
+        Me.lblUltDespacho.Size = New System.Drawing.Size(500, 60)
         Me.lblUltDespacho.TabIndex = 14
         Me.lblUltDespacho.Text = "Ult. Despacho #: "
         Me.lblUltDespacho.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -3077,7 +3078,7 @@ Partial Class frmPedido
         Me.txtIdPicking.Location = New System.Drawing.Point(2, 88)
         Me.txtIdPicking.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.txtIdPicking.Name = "txtIdPicking"
-        Me.txtIdPicking.Size = New System.Drawing.Size(600, 79)
+        Me.txtIdPicking.Size = New System.Drawing.Size(500, 79)
         Me.txtIdPicking.TabIndex = 7
         Me.txtIdPicking.TabStop = True
         Me.txtIdPicking.Text = "0"
@@ -3091,7 +3092,7 @@ Partial Class frmPedido
         Me.lblNoPicking.Location = New System.Drawing.Point(2, 28)
         Me.lblNoPicking.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblNoPicking.Name = "lblNoPicking"
-        Me.lblNoPicking.Size = New System.Drawing.Size(600, 60)
+        Me.lblNoPicking.Size = New System.Drawing.Size(500, 60)
         Me.lblNoPicking.TabIndex = 1
         Me.lblNoPicking.Text = "Ult. Picking #: "
         Me.lblNoPicking.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -4901,11 +4902,11 @@ Partial Class frmPedido
         '
         Me.dgridServiciosAsociados.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgridServiciosAsociados.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(6, 2, 6, 2)
-        Me.dgridServiciosAsociados.Location = New System.Drawing.Point(0, 141)
+        Me.dgridServiciosAsociados.Location = New System.Drawing.Point(0, 106)
         Me.dgridServiciosAsociados.MainView = Me.gvDetalleServicios
         Me.dgridServiciosAsociados.Margin = New System.Windows.Forms.Padding(6, 2, 6, 2)
         Me.dgridServiciosAsociados.Name = "dgridServiciosAsociados"
-        Me.dgridServiciosAsociados.Size = New System.Drawing.Size(1928, 680)
+        Me.dgridServiciosAsociados.Size = New System.Drawing.Size(1542, 551)
         Me.dgridServiciosAsociados.TabIndex = 18
         Me.dgridServiciosAsociados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvDetalleServicios})
         '
@@ -4918,7 +4919,7 @@ Partial Class frmPedido
         'cmbAcuerdoComercial
         '
         Me.cmbAcuerdoComercial.Dock = System.Windows.Forms.DockStyle.Top
-        Me.cmbAcuerdoComercial.Location = New System.Drawing.Point(0, 98)
+        Me.cmbAcuerdoComercial.Location = New System.Drawing.Point(0, 78)
         Me.cmbAcuerdoComercial.Margin = New System.Windows.Forms.Padding(6, 2, 6, 2)
         Me.cmbAcuerdoComercial.Name = "cmbAcuerdoComercial"
         Me.cmbAcuerdoComercial.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -4926,7 +4927,7 @@ Partial Class frmPedido
         Me.cmbAcuerdoComercial.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.cmbAcuerdoComercial.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbAcuerdoComercial.Properties.NullText = ""
-        Me.cmbAcuerdoComercial.Size = New System.Drawing.Size(1928, 35)
+        Me.cmbAcuerdoComercial.Size = New System.Drawing.Size(1542, 28)
         Me.cmbAcuerdoComercial.TabIndex = 58
         '
         'lblAcuerdoComercial
@@ -4940,7 +4941,7 @@ Partial Class frmPedido
         Me.lblAcuerdoComercial.Location = New System.Drawing.Point(0, 0)
         Me.lblAcuerdoComercial.Margin = New System.Windows.Forms.Padding(6, 2, 6, 2)
         Me.lblAcuerdoComercial.Name = "lblAcuerdoComercial"
-        Me.lblAcuerdoComercial.Size = New System.Drawing.Size(1928, 78)
+        Me.lblAcuerdoComercial.Size = New System.Drawing.Size(1542, 78)
         Me.lblAcuerdoComercial.TabIndex = 59
         Me.lblAcuerdoComercial.Text = "Acuerdo Comercial:"
         '
@@ -4961,7 +4962,7 @@ Partial Class frmPedido
         Me.dgridStockLiberado.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dgridStockLiberado.MenuManager = Me.RibbonControl
         Me.dgridStockLiberado.Name = "dgridStockLiberado"
-        Me.dgridStockLiberado.Size = New System.Drawing.Size(1928, 821)
+        Me.dgridStockLiberado.Size = New System.Drawing.Size(1542, 657)
         Me.dgridStockLiberado.TabIndex = 1
         Me.dgridStockLiberado.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvLogStockLiberado})
         '
@@ -4991,7 +4992,7 @@ Partial Class frmPedido
         Me.dgridLogMI3.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dgridLogMI3.MenuManager = Me.RibbonControl
         Me.dgridLogMI3.Name = "dgridLogMI3"
-        Me.dgridLogMI3.Size = New System.Drawing.Size(1928, 821)
+        Me.dgridLogMI3.Size = New System.Drawing.Size(1542, 657)
         Me.dgridLogMI3.TabIndex = 1
         Me.dgridLogMI3.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView5})
         '
@@ -5022,7 +5023,7 @@ Partial Class frmPedido
         Me.dgridVerificacion.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dgridVerificacion.MenuManager = Me.RibbonControl
         Me.dgridVerificacion.Name = "dgridVerificacion"
-        Me.dgridVerificacion.Size = New System.Drawing.Size(1928, 821)
+        Me.dgridVerificacion.Size = New System.Drawing.Size(1542, 657)
         Me.dgridVerificacion.TabIndex = 1
         Me.dgridVerificacion.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView9})
         '
@@ -5170,7 +5171,7 @@ Partial Class frmPedido
         Me.dgrdLogReserva.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dgrdLogReserva.MenuManager = Me.RibbonControl
         Me.dgrdLogReserva.Name = "dgrdLogReserva"
-        Me.dgrdLogReserva.Size = New System.Drawing.Size(1928, 821)
+        Me.dgrdLogReserva.Size = New System.Drawing.Size(1542, 657)
         Me.dgrdLogReserva.TabIndex = 2
         Me.dgrdLogReserva.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView10})
         '
@@ -5200,7 +5201,7 @@ Partial Class frmPedido
         Me.dgridExistencias.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dgridExistencias.MenuManager = Me.RibbonControl
         Me.dgridExistencias.Name = "dgridExistencias"
-        Me.dgridExistencias.Size = New System.Drawing.Size(1928, 821)
+        Me.dgridExistencias.Size = New System.Drawing.Size(1542, 657)
         Me.dgridExistencias.TabIndex = 3
         Me.dgridExistencias.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView11})
         '
