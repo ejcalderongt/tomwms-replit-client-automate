@@ -1759,7 +1759,9 @@ Partial Public Class clsLnStock_res
             '#EJC20171018_0715PM: Registrar en tabla stock_res la PC que bloqueó/reservó el stock
             BeStockRes.Host = MaquinaQueSolicita
             vCantidadCompletada = (vCantidadPendiente = 0)
-
+            '#GT08102025: la reserva maneja la fecha del dia del pedido no del ingreso a stock
+            BeStockRes.Fec_agr = pStockRes.Fec_agr
+            BeStockRes.Fec_mod = pStockRes.Fec_mod
             'pStockRes.Cantidad = vCantidadReservada
             lBeStockAReservar.Add(BeStockRes)
 
