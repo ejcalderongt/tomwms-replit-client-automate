@@ -8235,4 +8235,52 @@ Partial Public Class clsLnTrans_picking_ubic
 
     End Function
 
+    Public Shared Function Get_Operador_Defecto_By_IdPickingEnc(ByVal IdPickingEnc As Integer,
+                                                                Optional pConnection As SqlConnection = Nothing,
+                                                                Optional pTransaction As SqlTransaction = Nothing) As String
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Dim cmd As New SqlCommand
+
+        Get_Operador_Defecto_By_IdPickingEnc = ""
+
+        Try
+
+            Const sp As String = "select top(1) concat(op.nombres, ' ', op.apellidos) as Operador from trans_picking_ubic pu
+                                  join operador_bodega ob on pu.IdOperadorBodega_Pickeo = ob.IdOperadorBodega
+                                  join operador op on ob.IdOperador = op.IdOperador Where(IdPickingEnc = @IdPickingEnc) "
+
+            Dim Es_Transaccion_Remota As Boolean = (Not pConnection Is Nothing AndAlso Not pTransaction Is Nothing)
+
+            If Not Es_Transaccion_Remota Then
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+            End If
+
+            cmd = New SqlCommand(sp, IIf(Es_Transaccion_Remota, pConnection, lConnection), IIf(Es_Transaccion_Remota, pTransaction, lTransaction)) _
+                With {.CommandType = CommandType.Text}
+
+            Dim dad As New SqlDataAdapter(cmd)
+
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdPickingEnc", IdPickingEnc))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Get_Operador_Defecto_By_IdPickingEnc = IIf(IsDBNull(dt.Rows(0).Item("Operador")), "", dt.Rows(0).Item("Operador"))
+            End If
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close() : lConnection.Dispose()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
 End Class

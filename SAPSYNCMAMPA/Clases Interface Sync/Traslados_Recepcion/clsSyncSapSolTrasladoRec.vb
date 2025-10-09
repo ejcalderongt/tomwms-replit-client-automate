@@ -21,17 +21,22 @@ Public Class clsSyncSapSolTrasladoRec
             clsTrans.Begin_Transaction()
 
             BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface,
-                                                      clsTrans.lConnection,
-                                                      clsTrans.lTransaction)
+                                                          clsTrans.lConnection,
+                                                          clsTrans.lTransaction)
 
             Dim sessionCookie As String = ""
             Dim baseUrl As String = BD.Instancia.HANA_SL
             Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega,
-                                                                         clsTrans.lConnection,
-                                                                         clsTrans.lTransaction)
+                                                                            clsTrans.lConnection,
+                                                                            clsTrans.lTransaction)
 
             If BeBodega Is Nothing Then
                 Throw New Exception("ERROR_202311271751: Error no se pudo obtener el objeto de bodega asociado a la configuración de interface: " & BeConfigEnc.Idbodega)
+            End If
+
+            If Not BeConfigEnc.Bodega_Prorrateo = "" Then
+                clsPublic.Actualizar_Progreso(lblprg, "La configuración de interface indica que la Bodega: " & BeBodega.Codigo & " tiene una bodega de prorrateo: " & BeConfigEnc.Bodega_Prorrateo & " configurada, No se puede improtar por esta opción.")
+                Return False
             End If
 
             Await Procesar_Documentos(BeBodega.Codigo,

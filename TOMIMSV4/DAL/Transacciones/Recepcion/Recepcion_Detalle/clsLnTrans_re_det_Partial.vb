@@ -2097,19 +2097,65 @@ Partial Public Class clsLnTrans_re_det
 
         Try
 
-            Dim vSQL As String = "SELECT     det.IdRecepcionDet, det.IdProductoBodega, ISNULL(det.IdPresentacion, '') AS IdPresentacion, det.No_Linea, det.nombre_producto, det.nombre_presentacion, det.nombre_unidad_medida, det.nombre_producto_estado, det.lote, det.fecha_vence, ISNULL(det.peso, 0) AS peso, 
-                                                      det.observacion, det.costo, ISNULL(det.costo_oc, 0) AS costo_oc, ISNULL(det.costo_estadistico, 0) AS costo_estadistico, re.IdRecepcionEnc, SUM(det.cantidad_recibida) AS CantidadRecibida, det.lic_plate, trans_oc_det.codigo_producto, color.Codigo AS codigo_color, 
-                                                      talla.Codigo AS codigo_talla
-                                    FROM        trans_re_enc AS re INNER JOIN
-                                                      trans_re_det AS det ON re.IdRecepcionEnc = det.IdRecepcionEnc INNER JOIN
-                                                      trans_re_oc AS oc ON re.IdRecepcionEnc = oc.IdRecepcionEnc INNER JOIN
-                                                      trans_oc_det ON det.IdOrdenCompraEnc = trans_oc_det.IdOrdenCompraEnc AND det.IdOrdenCompraDet = trans_oc_det.IdOrdenCompraDet INNER JOIN
-                                                      producto_talla_color ON det.IdProductoTallaColor = producto_talla_color.IdProductoTallaColor INNER JOIN
-                                                      talla ON producto_talla_color.IdTalla = talla.IdTalla INNER JOIN
-                                                      color ON producto_talla_color.IdColor = color.IdColor
-                                    WHERE     (oc.IdOrdenCompraEnc = @IdOrdenCompraEnc) AND (det.lic_plate = @Licencia)
-                                    GROUP BY det.IdProductoBodega, det.IdPresentacion, det.No_Linea, det.nombre_producto, det.nombre_presentacion, det.nombre_unidad_medida, det.nombre_producto_estado, det.lote, det.fecha_vence, det.peso, det.observacion, det.costo, det.costo_oc, det.costo_estadistico, re.IdRecepcionEnc, 
-                                                      det.IdRecepcionDet, det.lic_plate, trans_oc_det.codigo_producto, color.Codigo, talla.Codigo "
+            Dim vSQL As String = "SELECT 
+                                    0 AS IdRecepcionDet,
+                                    det.IdProductoBodega,
+                                    ISNULL(det.IdPresentacion, '') AS IdPresentacion,
+                                    0 AS No_Linea,
+                                    det.nombre_producto,
+                                    det.nombre_presentacion,
+                                    det.nombre_unidad_medida,
+                                    det.nombre_producto_estado,
+                                    det.lote,
+                                    det.fecha_vence,
+                                    ISNULL(det.peso, 0) AS peso,
+                                    det.observacion,
+                                    det.costo,
+                                    ISNULL(det.costo_oc, 0) AS costo_oc,
+                                    ISNULL(det.costo_estadistico, 0) AS costo_estadistico,
+                                    re.IdRecepcionEnc,
+                                    SUM(det.cantidad_recibida) AS CantidadRecibida,
+                                    det.lic_plate,
+                                    trans_oc_det.codigo_producto,
+                                    color.Codigo AS codigo_color,
+                                    talla.Codigo AS codigo_talla
+                                FROM 
+                                    trans_re_enc AS re
+                                    INNER JOIN trans_re_det AS det 
+                                        ON re.IdRecepcionEnc = det.IdRecepcionEnc
+                                    INNER JOIN trans_re_oc AS oc 
+                                        ON re.IdRecepcionEnc = oc.IdRecepcionEnc
+                                    INNER JOIN trans_oc_det 
+                                        ON det.IdOrdenCompraEnc = trans_oc_det.IdOrdenCompraEnc 
+                                        AND det.IdOrdenCompraDet = trans_oc_det.IdOrdenCompraDet
+                                    INNER JOIN producto_talla_color 
+                                        ON det.IdProductoTallaColor = producto_talla_color.IdProductoTallaColor
+                                    INNER JOIN talla 
+                                        ON producto_talla_color.IdTalla = talla.IdTalla
+                                    INNER JOIN color 
+                                        ON producto_talla_color.IdColor = color.IdColor
+                                WHERE 
+                                    oc.IdOrdenCompraEnc = @IdOrdenCompraEnc
+                                    AND det.lic_plate = @Licencia
+                                GROUP BY 
+                                    det.IdProductoBodega,
+                                    det.IdPresentacion,
+                                    det.nombre_producto,
+                                    det.nombre_presentacion,
+                                    det.nombre_unidad_medida,
+                                    det.nombre_producto_estado,
+                                    det.lote,
+                                    det.fecha_vence,
+                                    det.peso,
+                                    det.observacion,
+                                    det.costo,
+                                    det.costo_oc,
+                                    det.costo_estadistico,
+                                    re.IdRecepcionEnc,
+                                    det.lic_plate,
+                                    trans_oc_det.codigo_producto,
+                                    color.Codigo,
+                                    talla.Codigo "
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
