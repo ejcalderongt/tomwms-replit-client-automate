@@ -3365,10 +3365,42 @@ Public Class frmPicking
     Private Sub mnuDespachado_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuDespachado.ItemClick
 
         Try
-
-            If BePickingEnc.Estado = "Verificado" OrElse BePickingEnc.Estado = "Procesado" Then
+            '#GT02102025: se añade el etado Pendiente
+            If BePickingEnc.Estado = "Verificado" OrElse BePickingEnc.Estado = "Procesado" OrElse BePickingEnc.Estado = "Pendiente" Then
 
                 If XtraMessageBox.Show("¿Modificar picking a estado despachado?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+
+
+
+                    '#GT02102025: validación especial para PENDIENTE,, requiere confirmar que no tenga reserva el pedido y por lo tanto que no sea pedido consolidado
+                    If BePickingEnc.Estado = "Pendiente" Then
+
+                        Dim listaPickingDet = BePickingEnc.ListaPickingDet
+                        Dim EsPickingConsolidado As Boolean = listaPickingDet _
+                                                            .GroupBy(Function(x) x.IdPedidoEnc) _
+                                                            .Any(Function(g) g.Count() > 1)
+
+                        If Not EsPickingConsolidado Then
+
+                            Dim IdPedidoEnc As Integer? = listaPickingDet _
+                                                            .Select(Function(x) x.IdPedidoEnc) _
+                                                            .Distinct() _
+                                                            .SingleOrDefault()
+
+                            Dim stockres As Integer = clsLnTrans_pe_enc.Get_StockRes_By_IdPedido(IdPedidoEnc)
+
+                            If stockres > 0 Then
+                                XtraMessageBox.Show("No se puede cambiar a estado despachado, hay reserva asociada.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                Exit Sub
+                            End If
+
+                        Else
+                            XtraMessageBox.Show("No se puede cambiar a estado despachado, el picking pertenece a un pedido consolidado.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                            Exit Sub
+                        End If
+
+                    End If
+
 
                     BePickingEnc.Estado = "Despachado"
 

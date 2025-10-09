@@ -45,13 +45,13 @@ Partial Public Class clsLnLog_error_wms
 
         Try
 
-            'Dim oBeLog_error_wms As New clsBeLog_error_wms()
-            'oBeLog_error_wms.IdError = MaxID() + 1
-            'oBeLog_error_wms.MensajeError = pMensajeExcepcion
-            'oBeLog_error_wms.Fecha = Now
-            'oBeLog_error_wms.IdEmpresa = 0
-            'oBeLog_error_wms.IdBodega = 0
-            'Insertar(oBeLog_error_wms)
+            Dim oBeLog_error_wms As New clsBeLog_error_wms()
+            oBeLog_error_wms.IdError = MaxID() + 1
+            oBeLog_error_wms.MensajeError = pMensajeExcepcion
+            oBeLog_error_wms.Fecha = Now
+            oBeLog_error_wms.IdEmpresa = 0
+            oBeLog_error_wms.IdBodega = 0
+            Insertar(oBeLog_error_wms)
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
