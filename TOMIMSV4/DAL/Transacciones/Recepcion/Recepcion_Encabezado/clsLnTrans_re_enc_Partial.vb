@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data.Common
+Imports System.Data.SqlClient
 Imports System.Reflection
 Imports DevExpress.XtraEditors
 
@@ -1572,9 +1573,9 @@ Partial Public Class clsLnTrans_re_enc
             Return pRecEnc.IdRecepcionEnc
 
         Catch ex As Exception
+            '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, pListRecDet.FirstOrDefault().User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=pRecEnc.IdRecepcionEnc)
         End Try
 
     End Function
@@ -1587,13 +1588,25 @@ Partial Public Class clsLnTrans_re_enc
 
             If pRecEnc.IsNew Then
                 Insertar(pRecEnc, lConnection, lTransaction)
+
+                '#MECR30092025: Se agrego bitacora para logs de recepciones.
+                Dim clsError_wms As New clsBeLog_error_wms_rec
+                clsError_wms.IdBodega = pRecEnc.IdBodega
+                clsError_wms.Fecha = Now
+                clsError_wms.IdUsuarioAgr = pRecEnc.User_agr
+                clsError_wms.MensajeError = "Se creó la recepcion " + pRecEnc.IdRecepcionEnc.ToString() + " satisfactoriamente."
+                clsError_wms.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
+
+                clsLnLog_error_wms_rec.Insertar(clsError_wms, lConnection, lTransaction)
+
             Else
                 Actualizar(pRecEnc, lConnection, lTransaction)
             End If
 
         Catch ex As Exception
+            '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pRecEnc.IdBodega, pRecEnc.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=IIf(pRecEnc.IsNew, 0, pRecEnc.IdRecepcionEnc))
             Throw ex
         End Try
 
@@ -2605,7 +2618,15 @@ Partial Public Class clsLnTrans_re_enc
 
                                         Dim alerta As String = " lp_vacia en obj IdStockRec:" & pBeStockRec.IdStockRec
                                         Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), alerta)
-                                        clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                        'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pRecEnc.IdRecepcionEnc)
+                                        Dim BeMensajeErrorOC As New clsBeLog_error_wms_rec
+                                        BeMensajeErrorOC.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
+                                        BeMensajeErrorOC.Fecha = Now
+                                        BeMensajeErrorOC.IdEmpresa = pIdEmpresa
+                                        BeMensajeErrorOC.IdBodega = pIdBodega
+                                        BeMensajeErrorOC.IdUsuarioAgr = pIdUsuario
+                                        BeMensajeErrorOC.MensajeError = vMsgError
+                                        clsLnLog_error_wms_rec.Insertar(BeMensajeErrorOC, lConnection, lTransaction)
 
                                     End If
 
@@ -2800,8 +2821,18 @@ Partial Public Class clsLnTrans_re_enc
                         End If
 
                         If Not vGenera_LP And pIdResolucionLp <= 0 Then
+                            '#MECR23092025: Se agrego nueva opcion de log para recepciones.
                             Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion recepcion sin licencia : " & pRecEnc.IdRecepcionEnc
-                            clsLnLog_error_wms.Agregar_Error(vMsgError)
+                            'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pRecEnc.IdRecepcionEnc)
+                            Dim objError As New clsBeLog_error_wms_rec
+                            objError.MensajeError = vMsgError
+                            objError.IdEmpresa = pIdEmpresa
+                            objError.IdBodega = pIdBodega
+                            objError.IdUsuarioAgr = pIdUsuario
+                            objError.Fecha = Now
+                            objError.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
+
+                            clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
                         End If
 
                         Dim vResultInsertEncabezadoRec As Integer = 0
@@ -2839,9 +2870,18 @@ Partial Public Class clsLnTrans_re_enc
                                 '#GT05012024:validar AQUI que la lp si la tuviera en eliminar detalle, no exista antes de hacer la nueva inserción
                                 For Each pRecepcionDet In pListRecDet
                                     If clsLnTrans_re_det.Existe_By_BeRecepcionDet(pRecepcionDet, lConnection, lTransaction) Then
-
+                                        '#MECR23092025: Se agrego nueva opcion de log para recepciones.
                                         Dim vMsgError As String = "ERROR_19122024_HH_GuardarRecepcion: La recepcion " & pRecepcionDet.IdRecepcionEnc & " con linea: " & pRecepcionDet.IdRecepcionDet & " ya existe"
-                                        clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                        'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pRecEnc.IdRecepcionEnc)
+                                        Dim objError As New clsBeLog_error_wms_rec
+                                        objError.MensajeError = vMsgError
+                                        objError.IdEmpresa = pIdEmpresa
+                                        objError.IdBodega = pIdBodega
+                                        objError.IdUsuarioAgr = pIdUsuario
+                                        objError.Fecha = Now
+                                        objError.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
+
+                                        clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
 
                                         Throw New Exception("ERROR_19122024_HH_GuardarRecepcion: La linea de recepcion existe, no se puede guardar nuevamente.")
                                     End If
@@ -3152,9 +3192,10 @@ Partial Public Class clsLnTrans_re_enc
 
 
         Catch ex As Exception
+            '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pStackTrace:=ex.StackTrace, pRecEnc.IdRecepcionEnc)
             Throw New Exception(String.Format("{0} {1}", ex.Message, CadenaResultado))
         Finally
             If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
@@ -3458,8 +3499,9 @@ Partial Public Class clsLnTrans_re_enc
             Reglas_De_Recepcion_Permiten_Ingreso = True
 
         Catch ex As Exception
+            '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pRecEnc.IdBodega, pRecEnc.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=pRecEnc.IdRecepcionEnc)
             Throw ex
         End Try
 
@@ -3495,7 +3537,15 @@ Partial Public Class clsLnTrans_re_enc
                                                     lConnection,
                                                     lTransaction)
 
-                clsLnLog_error_wms.Agregar_Error(pIdEmpresa, pIdBodega, "#240313A: Se cerró la recepción: " & pIdRecepcionEnc & " IdUsuario_BOF: " & pIdUsuario)
+                '#MECR23092025: Se agrego bitacora de logs para recepciones
+                Dim msjAdvertencia As String = "#240313A: Se cerró la recepción: " & pIdRecepcionEnc & " IdUsuario_BOF: " & pIdUsuario
+                Dim objError As New clsBeLog_error_wms_rec
+                objError.MensajeError = msjAdvertencia
+                objError.IdEmpresa = pIdEmpresa
+                objError.IdBodega = pIdBodega
+                objError.IdUsuarioAgr = pIdUsuario
+                objError.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
+                clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
 
                 If Not Registros_Pendientes_Push(pIdRecepcionEnc, lConnection, lTransaction) Then
 
@@ -3510,7 +3560,16 @@ Partial Public Class clsLnTrans_re_enc
 
                             If Not pHabilitarStock Then
 
-                                clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302230102:  Se está finalizando la recepción: " & pIdRecepcionEnc & " con Habilitar_Stock = False, Usuario: " & pIdUsuario)
+                                '#MECR23092025: Se agrego bitacora de logs para recepciones
+                                Dim msjAdvertencia1 As String = "ADVERTENCIA_202302230102:  Se está finalizando la recepción: " & pIdRecepcionEnc & " con Habilitar_Stock = False, Usuario: " & pIdUsuario
+                                'clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia1, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
+                                Dim objError1 As New clsBeLog_error_wms_rec
+                                objError1.MensajeError = msjAdvertencia1
+                                objError1.IdEmpresa = pIdEmpresa
+                                objError1.IdBodega = pIdBodega
+                                objError1.IdUsuarioAgr = pIdUsuario
+                                objError1.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
+                                clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
 
                                 Habilitar_Stock_Desde_StockRec(pIdEmpresa,
                                                                pIdBodega,
@@ -3603,9 +3662,10 @@ Partial Public Class clsLnTrans_re_enc
             lTransaction.Commit()
 
         Catch ex As Exception
+            '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pRecEnc.IdBodega, pRecEnc.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=pRecEnc.IdRecepcionEnc)
             Throw ex
         Finally
             If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
@@ -3691,8 +3751,9 @@ Partial Public Class clsLnTrans_re_enc
             Habilitar_Stock_Desde_StockRec = True
 
         Catch ex As Exception
+            '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pStackTrace:=ex.StackTrace, pIdRecEnc:=listaStockRec.FirstOrDefault().IdRecepcionEnc)
             Throw ex
         End Try
 
@@ -3749,8 +3810,9 @@ Partial Public Class clsLnTrans_re_enc
             End If
 
         Catch ex As Exception
+            '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pStackTrace:=ex.StackTrace, pIdRecEnc:=pIdRecepcionEnc)
             Throw ex
         End Try
 
@@ -3763,10 +3825,9 @@ Partial Public Class clsLnTrans_re_enc
                                                              ByVal BackOrder As Boolean) As Integer
 
         Actualizar_Estado_Pedido_Ingreso = 0
+        Dim BeRecOrdenCompra As New clsBeTrans_re_oc
 
         Try
-
-            Dim BeRecOrdenCompra As New clsBeTrans_re_oc
 
             BeRecOrdenCompra = clsLnTrans_re_oc.Get_Single_By_IdOrdenCompraEnc_And_IdRecepcionEnc(pIdOrdenCompraEnc,
                                                                                                   pIdRecepcionEnc,
@@ -3785,8 +3846,9 @@ Partial Public Class clsLnTrans_re_enc
 
 
         Catch ex As Exception
+            '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, BeRecOrdenCompra.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=pIdRecepcionEnc)
             Throw ex
         End Try
 
@@ -3798,10 +3860,10 @@ Partial Public Class clsLnTrans_re_enc
                                                           ByVal lTransaction As SqlTransaction) As Integer
 
         Actualizar_Hora_Fin_Recepcion = 0
+        Dim BeTransReOC As New clsBeTrans_re_oc
 
         Try
 
-            Dim BeTransReOC As New clsBeTrans_re_oc
             BeTransReOC = clsLnTrans_re_oc.Get_Single_By_IdOrdenCompraEnc_And_IdRecepcionEnc(pIdOrdenCompraEnc,
                                                                                               pIdRecepcionEnc,
                                                                                               lConnection,
@@ -3813,8 +3875,9 @@ Partial Public Class clsLnTrans_re_enc
             End If
 
         Catch ex As Exception
+            '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, BeTransReOC.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=pIdRecepcionEnc)
             Throw ex
         End Try
 
@@ -3976,8 +4039,9 @@ Partial Public Class clsLnTrans_re_enc
             If pBeStockRec IsNot Nothing Then
 
                 '#GT30012025: abusando del log, dejo constancia de la barra recibida
+                '#MECR23092025: se agrego nueva opcion de bitacora de logs en recepciones.
                 Dim Pallet = "Aviso_30012025: HH_RecepcionPallet: " & pBeINavBarraPallet.Codigo_barra
-                clsLnLog_error_wms.Agregar_Error(Pallet)
+                clsLnLog_error_wms_rec.Agregar_Error(Pallet, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
 
 
                 If Reglas_De_Recepcion_Permiten_Ingreso(pRecEnc,
@@ -4049,9 +4113,10 @@ Partial Public Class clsLnTrans_re_enc
                             Dim FilaAfectada = clsLnTrans_re_det.Guarda_Trans_re_det(pBeTransReDet, lConnection, lTransaction)
 
                             '#GT30012025: se debe insertar en cada tabla, no hacerlo conlleva a inconsistencias
+                            '#MECR23092025: se agrego nueva opcion de bitacora de logs en recepciones.
                             If FilaAfectada = 0 Then
                                 Dim mensajeError = "ERROR_30012025: Por una razón desconocida no se registro la recepción de la pallet " & pBeINavBarraPallet.Codigo_barra & " licencia " & pBeTransReDet.Lic_plate
-                                clsLnLog_error_wms.Agregar_Error(mensajeError)
+                                clsLnLog_error_wms_rec.Agregar_Error(mensajeError, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
                                 Throw New Exception("ERROR_30012025: Por una razón desconocida no se insertola recepción de la pallet " & pBeINavBarraPallet.Codigo_barra)
                             End If
 
@@ -4059,9 +4124,10 @@ Partial Public Class clsLnTrans_re_enc
 
                             Dim pFilaAfectada = clsLnStock_rec.Insertar(pBeStockRec, lConnection, lTransaction)
                             '#GT30012025: se debe insertar en cada tabla, no hacerlo conlleva a inconsistencias
+                            '#MECR23092025: Se agrego nueva opcion de bitacora de logs en recepciones.
                             If pFilaAfectada = 0 Then
                                 Dim mensajeError = "ERROR_30012025: Por una razón desconocida no se registro el stock recibido de la pallet " & pBeINavBarraPallet.Codigo_barra & " licencia " & pBeStockRec.Lic_plate
-                                clsLnLog_error_wms.Agregar_Error(mensajeError)
+                                clsLnLog_error_wms_rec.Agregar_Error(mensajeError, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
                                 Throw New Exception("ERROR_30012025: Por una razón desconocida no se insertoel stock recibido de la pallet " & pBeINavBarraPallet.Codigo_barra)
                             End If
 
@@ -4084,8 +4150,9 @@ Partial Public Class clsLnTrans_re_enc
 
                                 Dim pPalletActualizado = clsLnI_nav_barras_pallet.Actualiza_Estado_Barras_Pallet(pBeINavBarraPallet, lConnection, lTransaction)
                                 If pPalletActualizado = 0 Then
+                                    '#MECR23092025: Se agrego nueva opcion de bitacora de logs en recepciones.
                                     Dim mensajeError = "ERROR_30012025: Por una razón desconocida no se actualizó la pallet " & pBeINavBarraPallet.Codigo_barra & " licencia " & pBeStockRec.Lic_plate
-                                    clsLnLog_error_wms.Agregar_Error(mensajeError)
+                                    clsLnLog_error_wms_rec.Agregar_Error(mensajeError, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
                                     Throw New Exception("ERROR_30012025: Por una razón desconocida no se actualizó la pallet " & pBeINavBarraPallet.Codigo_barra)
                                 End If
 
@@ -4120,8 +4187,19 @@ Partial Public Class clsLnTrans_re_enc
 
                         '#GT30012025: se debe insertar en cada tabla, no hacerlo conlleva a inconsistencias
                         If FilasAfectadas = 0 Then
+                            '#MECR23092025: Se agrego nueva opcion de bitacora de logs en recepciones.
                             Dim mensajeError = "ERROR_30012025: Por una razón desconocida no se inserto el movimiento de la pallet recibida" & pBeINavBarraPallet.Codigo_barra
-                            clsLnLog_error_wms.Agregar_Error(mensajeError)
+                            'clsLnLog_error_wms_rec.Agregar_Error(mensajeError, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
+                            Dim objError As New clsBeLog_error_wms_rec
+                            objError.MensajeError = mensajeError
+                            objError.IdEmpresa = pIdEmpresa
+                            objError.IdBodega = pIdBodega
+                            objError.IdUsuarioAgr = pIdUsuario
+                            objError.Fecha = Now
+                            objError.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
+
+                            clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
+
                             Throw New Exception("ERROR_30012025: Por una razón desconocida no se inserto el movimiento de la pallet recibida" & pBeINavBarraPallet.Codigo_barra)
                         End If
 
@@ -4151,8 +4229,19 @@ Partial Public Class clsLnTrans_re_enc
                                                                                            pBeTransReDet,
                                                                                            lConnection, lTransaction) Then
 
+                                '#MECR23092025: Se agrego nueva opcion de bitacora de logs en recepciones.
                                 Dim mensajeError = "ERROR_30012025: Por una razón desconocida no se actualizó la cantidad en oc_det de la pallet recibida " & pBeINavBarraPallet.Codigo_barra
-                                clsLnLog_error_wms.Agregar_Error(mensajeError)
+                                'clsLnLog_error_wms_rec.Agregar_Error(mensajeError, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
+                                Dim objError As New clsBeLog_error_wms_rec
+                                objError.MensajeError = mensajeError
+                                objError.IdEmpresa = pIdEmpresa
+                                objError.IdBodega = pIdBodega
+                                objError.IdUsuarioAgr = pIdUsuario
+                                objError.Fecha = Now
+                                objError.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
+
+                                clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
+
                                 Throw New Exception("ERROR_30012025: Por una razón desconocida no se actualizó la cantidad en oc_det de la pallet recibida " & pBeINavBarraPallet.Codigo_barra)
                             End If
 
@@ -4829,8 +4918,9 @@ Partial Public Class clsLnTrans_re_enc
             End If
 
         Catch ex As Exception
+            '#MECR23092025: Se agrego nueva opcion de bitacora de logs de recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, BeMI3Config.Idempresa, BeMI3Config.Idbodega, BeMI3Config.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=OutBeRecepcionEnc.IdRecepcionEnc)
             Throw ex
         End Try
 
@@ -4884,8 +4974,9 @@ Partial Public Class clsLnTrans_re_enc
             End If
 
         Catch ex As Exception
+            '#MECR23092025: Se agrego nueva bitacora de logs para recepcion.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, 0, pStackTrace:=ex.StackTrace, pIdRecEnc:=pListRecDet.FirstOrDefault().IdRecepcionEnc)
             Throw ex
         End Try
 
@@ -5154,8 +5245,9 @@ Partial Public Class clsLnTrans_re_enc
             clsLnTarea_hh.Actualizar(pObjTareaHH, lConnection, lTransaction)
 
         Catch ex As Exception
+            '#MECR23092025: Se agrego nueva opcion de bitacora de logs en recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pStackTrace:=ex.StackTrace, pIdRecEnc:=pRecEnc.IdRecepcionEnc)
             Throw ex
         End Try
 
@@ -5457,8 +5549,9 @@ Partial Public Class clsLnTrans_re_enc
             End If
 
         Catch ex As Exception
+            '#MECR23092025: Se agrego bitacora de los para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, BeOrdenCompraEnc.IdBodega, BeOrdenCompraEnc.User_Agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=OutBeRecepcionEnc.IdRecepcionEnc)
             Throw ex
         End Try
 
@@ -5630,9 +5723,18 @@ Partial Public Class clsLnTrans_re_enc
                                                                                               lConnection,
                                                                                               lTransaction)
 
+                                    '#MECR23092025: Se agrego bitacora de logs para recepciones.
                                     '#GT02122024: nuevo punto de control
                                     Dim vMsgError As String = "AVISO_20242211_HH resolucion serie : " & BeResolLp.Serie & " y correlativo: " & BeResolLp.Correlativo_Actual
-                                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                    Dim objError As New clsBeLog_error_wms_rec
+                                    objError.MensajeError = vMsgError
+                                    objError.IdEmpresa = pIdEmpresa
+                                    objError.IdBodega = pIdBodega
+                                    objError.IdUsuarioAgr = pIdUsuario
+                                    objError.Fecha = Now
+
+                                    clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
                                 Else
                                     Throw New Exception("ERROR_02122024D_HH_GuardarRecepcion_S: No se obtuvo la resolucion de LP para el producto!.")
                                 End If
@@ -5644,8 +5746,18 @@ Partial Public Class clsLnTrans_re_enc
                                 End If
 
                                 If Not vGenera_LP And pIdResolucionLp <= 0 Then
+                                    '#MECR23092025: Se agrego bitacora de logs para recepciones.
+                                    '#GT02122024: nuevo punto de control
                                     Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S recepcion sin licencia : " & pRecEnc.IdRecepcionEnc
-                                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                    Dim objError As New clsBeLog_error_wms_rec
+                                    objError.MensajeError = vMsgError
+                                    objError.IdEmpresa = pIdEmpresa
+                                    objError.IdBodega = pIdBodega
+                                    objError.IdUsuarioAgr = pIdUsuario
+                                    objError.Fecha = Now
+
+                                    clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
                                 End If
                             End If
 
@@ -5707,8 +5819,18 @@ Partial Public Class clsLnTrans_re_enc
                                                                                                lTransaction)
 
                                 '#GTZ_nuevo control
+                                '#MECR23092025: Se agrego bitacora de logs para recepciones.
+                                '#GT02122024: nuevo punto de control
                                 Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S: re_enc " & BeTransReDet.IdRecepcionEnc & " re_det: " & BeTransReDet.IdRecepcionDet & " lp: " & BeTransReDet.Lic_plate
-                                clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                Dim objError As New clsBeLog_error_wms_rec
+                                objError.MensajeError = vMsgError
+                                objError.IdEmpresa = pIdEmpresa
+                                objError.IdBodega = pIdBodega
+                                objError.IdUsuarioAgr = pIdUsuario
+                                objError.Fecha = Now
+
+                                clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
 
                                 If vResultadoGuardarReDet > 0 Then
                                     CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet
@@ -5754,8 +5876,18 @@ Partial Public Class clsLnTrans_re_enc
                                                                                                                               lTransaction)
 
                                     '#GTZ_nuevo control
+                                    '#MECR23092025: Se agrego bitacora de logs para recepciones.
+                                    '#GT02122024: nuevo punto de control
                                     Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S: update oc_enc: " & BeTransReDet.IdOrdenCompraEnc & " oc_det: " & BeTransReDet.IdOrdenCompraDet & " cantidad: " & BeTransReDet.cantidad_recibida
-                                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                    Dim objError As New clsBeLog_error_wms_rec
+                                    objError.MensajeError = vMsgError
+                                    objError.IdEmpresa = pIdEmpresa
+                                    objError.IdBodega = pIdBodega
+                                    objError.IdUsuarioAgr = pIdUsuario
+                                    objError.Fecha = Now
+
+                                    clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
 
                                     If vResultadoActualizarCantidadRecibidaDI > 0 Then
                                         CadenaResultado += "Actualiza_Cantidad_Recibida_OC " & vResultadoActualizarCantidadRecibidaDI
@@ -5795,10 +5927,18 @@ Partial Public Class clsLnTrans_re_enc
                                                                                          lConnection,
                                                                                          lTransaction)
 
-
-                                    '#GT02122024 nuevo punto de control
+                                    '#MECR23092025: Se agrego bitacora de logs para recepciones.
+                                    '#GT02122024: nuevo punto de control
                                     Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S: stock_rec re_enc: " & pListStockRec(0).IdRecepcionEnc & " oc_det: " & pListStockRec(0).IdRecepcionDet & " lp: " & pListStockRec(0).Lic_plate
-                                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                    Dim objError As New clsBeLog_error_wms_rec
+                                    objError.MensajeError = vMsgError
+                                    objError.IdEmpresa = pIdEmpresa
+                                    objError.IdBodega = pIdBodega
+                                    objError.IdUsuarioAgr = pIdUsuario
+                                    objError.Fecha = Now
+
+                                    clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
 
 
                                     If vResultadoStockRec > 0 Then
@@ -5877,19 +6017,33 @@ Partial Public Class clsLnTrans_re_enc
                                                                                                                                 lTransaction,
                                                                                                                                 pIdOperadorBodega)
 
-
-
-                                            '#GTZ_nuevo punto de control
+                                            '#MECR23092025: Se agrego bitacora de logs para recepciones.
+                                            '#GT02122024: nuevo punto de control
                                             Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S: mov_insert re_enc: " & pBeStockRec.IdRecepcionEnc & " re_det: " & pBeStockRec.IdRecepcionDet & " lp: " & pBeStockRec.Lic_plate
-                                            clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                            Dim objError As New clsBeLog_error_wms_rec
+                                            objError.MensajeError = vMsgError
+                                            objError.IdEmpresa = pIdEmpresa
+                                            objError.IdBodega = pIdBodega
+                                            objError.IdUsuarioAgr = pIdUsuario
+                                            objError.Fecha = Now
 
+                                            clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
 
 
                                             If vResultadoInsertMovimientos > 0 Then
 
+                                                '#MECR23092025: Se agrego bitacora de logs para recepciones.
                                                 CadenaResultado += "Insertar_Movimientos_Recepcion IdMovimiento: " & vResultadoInsertMovimientos
+                                                'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                                Dim objErrorRec As New clsBeLog_error_wms_rec
+                                                objErrorRec.MensajeError = CadenaResultado
+                                                objErrorRec.IdEmpresa = pIdEmpresa
+                                                objErrorRec.IdBodega = pIdBodega
+                                                objErrorRec.IdUsuarioAgr = pIdUsuario
+                                                objErrorRec.Fecha = Now
 
-                                                clsLnLog_error_wms.Agregar_Error(CadenaResultado)
+                                                clsLnLog_error_wms_rec.Insertar(objErrorRec, lConnection, lTransaction)
 
                                                 BeStock.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
 
@@ -5901,12 +6055,18 @@ Partial Public Class clsLnTrans_re_enc
                                                                                             lConnection,
                                                                                             lTransaction)
 
-
                                                 '#GT02122024: nuevo punto de control
+                                                '#MECR23092025: Se agrego bitacora de logs para recepciones.
                                                 Dim vMsgError2 As String = "AVISO_20242211_HH_GuardarRecepcion_S: stock_insert re_enc: " & BeStock.IdRecepcionEnc & " re_det: " & BeStock.IdRecepcionDet & " lic: " & BeStock.Lic_plate & " cantidad: " & BeStock.Cantidad
-                                                clsLnLog_error_wms.Agregar_Error(vMsgError2)
+                                                'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                                Dim objErrorR As New clsBeLog_error_wms_rec
+                                                objErrorR.MensajeError = vMsgError2
+                                                objErrorR.IdEmpresa = pIdEmpresa
+                                                objErrorR.IdBodega = pIdBodega
+                                                objErrorR.IdUsuarioAgr = pIdUsuario
+                                                objErrorR.Fecha = Now
 
-
+                                                clsLnLog_error_wms_rec.Insertar(objErrorR, lConnection, lTransaction)
 
                                                 If vResultadoInsertStock > 0 Then
                                                     '#GT31012023 confirma stock disponible y el idstock para generar historico.
@@ -6011,8 +6171,8 @@ Partial Public Class clsLnTrans_re_enc
                                         BeLoteNum.Cantidad = BeTransReDet.cantidad_recibida
                                         BeLoteNum.FechaIngreso = Now
                                         clsLnTrans_re_det_lote_num.Insertar(BeLoteNum,
-                                                                                lConnection,
-                                                                                lTransaction)
+                                                                            lConnection,
+                                                                            lTransaction)
 
                                     End If
 
@@ -6037,8 +6197,17 @@ Partial Public Class clsLnTrans_re_enc
 
                             Else
                                 '#GTZ_nuevo control
+                                '#MECR23092025: Se agrego bitacora de logs para recepciones.
                                 Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S: no_habilitar_stock re_enc: " & pRecEnc.IdRecepcionEnc
-                                clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                Dim objErrorR As New clsBeLog_error_wms_rec
+                                objErrorR.MensajeError = vMsgError
+                                objErrorR.IdEmpresa = pIdEmpresa
+                                objErrorR.IdBodega = pIdBodega
+                                objErrorR.IdUsuarioAgr = pIdUsuario
+                                objErrorR.Fecha = Now
+
+                                clsLnLog_error_wms_rec.Insertar(objErrorR, lConnection, lTransaction)
                             End If
 
                             'Dim vMsgErrorGuardarStock As String = "AVISO_20242211_HH_GuardarRecepcion_S: timer_GuardarStock " & stopwatch.ElapsedMilliseconds
@@ -6068,8 +6237,11 @@ Partial Public Class clsLnTrans_re_enc
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
+
+            '#MECR23092025: Se agrego bitacora de logs para recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pStackTrace:=ex.StackTrace)
+
             Throw New Exception(String.Format("{0} {1}", ex.Message, CadenaResultado))
         Finally
             If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
@@ -6148,14 +6320,22 @@ Partial Public Class clsLnTrans_re_enc
                                                                          lTransaction2,
                                                                          1) Then
 
-
                         Recepcion_genera_historico = True
 
                     Else
 
+                        '#MECR23092025: Se agrego bitacora de logs para recepciones.
                         Dim message = "No inserte historico para idstock: " & pIdStock & " y user: " & pIdusuario
                         Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), message)
-                        clsLnLog_error_wms.Agregar_Error(vMsgError)
+                        'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdusuario)
+                        Dim objError As New clsBeLog_error_wms_rec
+                        objError.MensajeError = vMsgError
+                        objError.IdEmpresa = pIdEmpresa
+                        objError.IdBodega = pIdBodega
+                        objError.IdUsuarioAgr = pIdusuario
+                        objError.Fecha = Now
+
+                        clsLnLog_error_wms_rec.Insertar(objError, lConnection2, lTransaction2)
 
                     End If
 
@@ -6168,8 +6348,9 @@ Partial Public Class clsLnTrans_re_enc
 
         Catch ex As Exception
             If Not lTransaction2 Is Nothing Then lTransaction2.Rollback()
+            '#MECR23092025: Se agrego bitacora de logs para recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdusuario, pStackTrace:=ex.StackTrace)
             Throw ex
         Finally
             If lConnection2.State = ConnectionState.Open Then lConnection2.Close()
@@ -6219,8 +6400,15 @@ Partial Public Class clsLnTrans_re_enc
 
                         Dim message = "No inserte historico stock_no_dispoible para idstock: " & pIdStock & " y user: " & pIdusuario
                         Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), message)
-                        clsLnLog_error_wms.Agregar_Error(vMsgError)
+                        'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdusuario)
+                        Dim objError As New clsBeLog_error_wms_rec
+                        objError.MensajeError = vMsgError
+                        objError.IdEmpresa = pIdEmpresa
+                        objError.IdBodega = pIdBodega
+                        objError.IdUsuarioAgr = pIdusuario
+                        objError.Fecha = Now
 
+                        clsLnLog_error_wms_rec.Insertar(objError, lconnection2, ltransaction2)
 
                     End If
 
@@ -6232,8 +6420,9 @@ Partial Public Class clsLnTrans_re_enc
 
         Catch ex As Exception
             'If Not ltransaction2 Is Nothing Then ltransaction2.Rollback()
+            '#MECR23092025: Se agrego bitacora de logs para recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdusuario, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -6309,7 +6498,18 @@ ByRef lTransaction As SqlTransaction) As clsBeTrans_re_enc
                                                     lConnection,
                                                     lTransaction)
 
-                clsLnLog_error_wms.Agregar_Error(pIdEmpresa, pIdBodega, "#240313: Se cerró la recepción: " & pIdRecepcionEnc & " IdUsuario_HH: " & pIdUsuario)
+                '#MECR23092025: se agrego bitacora de logs para recepciones.
+                Dim msjAdvertencia As String = "#240313: Se cerró la recepción: " & pIdRecepcionEnc & " IdUsuario_HH: " & pIdUsuario
+                'clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
+                Dim objError As New clsBeLog_error_wms_rec
+                objError.MensajeError = msjAdvertencia
+                objError.IdEmpresa = pIdEmpresa
+                objError.IdBodega = pIdBodega
+                objError.IdUsuarioAgr = pIdUsuario
+                objError.Fecha = Now
+                objError.IdRecepcionEnc = pIdRecepcionEnc
+
+                clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
 
                 BeReEnc = Get_Single_By_IdREcepcionEnc(pIdRecepcionEnc,
                                                        lConnection,
@@ -6429,8 +6629,9 @@ ByRef lTransaction As SqlTransaction) As clsBeTrans_re_enc
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            '#MECR23092025: Se agrego bitacora de logs para recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pStackTrace:=ex.StackTrace, pIdRecEnc:=pIdRecepcionEnc)
             Throw ex
         Finally
             If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
@@ -6670,9 +6871,9 @@ ByRef lTransaction As SqlTransaction) As clsBeTrans_re_enc
 
 
         Catch ex As Exception
-
+            '#MECR23092025: Se agrego bitacora de logs para recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, BeTransReDet.User_agr, pStackTrace:=ex.StackTrace, BeTransReDet.IdRecepcionEnc)
             Throw ex
         End Try
 
@@ -6779,11 +6980,32 @@ ByRef lTransaction As SqlTransaction) As clsBeTrans_re_enc
                             If pBeStockRec.Lic_plate <> BeTransReDet.Lic_plate Then
                                 If BeTransReDet.Lic_plate.Equals("") Then
                                     BeTransReDet.Lic_plate = pBeStockRec.Lic_plate
+
+                                    '#MECR23092025: Se agrego bitacora de logs para recepcion
                                     Dim vMsgError As String = " lp_vacia en obj recepcion_enc:" & BeTransReDet.IdRecepcionEnc & "y recepcion_det:" & BeTransReDet.IdRecepcionDet
-                                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                    'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
+                                    Dim objError As New clsBeLog_error_wms_rec
+                                    objError.MensajeError = vMsgError
+                                    objError.IdEmpresa = pIdEmpresa
+                                    objError.IdBodega = pIdBodega
+                                    objError.IdUsuarioAgr = pIdUsuario
+                                    objError.Fecha = Now
+                                    objError.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
+
+                                    clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
                                 ElseIf pBeStockRec.Lic_plate.Equals("") Then
+                                    '#MECR23092025: Se agrego bitacora de logs para recepcion
                                     Dim vMsgError As String = " lp_vacia en obj StockRec:" & pBeStockRec.IdStockRec
-                                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                    'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
+                                    Dim objError As New clsBeLog_error_wms_rec
+                                    objError.MensajeError = vMsgError
+                                    objError.IdEmpresa = pIdEmpresa
+                                    objError.IdBodega = pIdBodega
+                                    objError.IdUsuarioAgr = pIdUsuario
+                                    objError.Fecha = Now
+                                    objError.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
+
+                                    clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
                                 End If
                             End If
 
@@ -6814,8 +7036,18 @@ ByRef lTransaction As SqlTransaction) As clsBeTrans_re_enc
 
 
                             If BeTransReDet.Lic_plate = "" Then
+                                '#MECR23092025: Se agrego bitacora de logs para recepciones
                                 Dim vMsgError As String = " GT_26072024_GuardarHH_BOF LP vacia en IdRecepcionEnc:" & BeTransReDet.IdRecepcionEnc & " ,IdRecepciondet: " & BeTransReDet.IdRecepcionDet
-                                clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
+                                Dim objError As New clsBeLog_error_wms_rec
+                                objError.MensajeError = vMsgError
+                                objError.IdEmpresa = pIdEmpresa
+                                objError.IdBodega = pIdBodega
+                                objError.IdUsuarioAgr = pIdUsuario
+                                objError.Fecha = Now
+                                objError.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
+
+                                clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
                             End If
 
 
@@ -7131,7 +7363,9 @@ ByRef lTransaction As SqlTransaction) As clsBeTrans_re_enc
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            '#MECR22092025: Se agrego nueva opcion de registro de logs para recepciones.
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pStackTrace:=ex.StackTrace, pIdRecEnc:=pIdRecepcionEnc)
             Throw New Exception(String.Format("{0} {1}", ex.Message, CadenaResultado))
         End Try
 
@@ -7355,8 +7589,9 @@ ByRef lTransaction As SqlTransaction) As clsBeTrans_re_enc
             End If
 
         Catch ex As Exception
+            '#MECR23092025: se agrego bitacora de logs para recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, BeTransReDet.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=BeTransReDet.IdRecepcionEnc)
             Throw ex
         End Try
 
@@ -7543,8 +7778,9 @@ ByRef lTransaction As SqlTransaction) As clsBeTrans_re_enc
             End If
 
         Catch ex As Exception
+            '#MECR23092025: Se agrego bitacora de logs para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, BeRecepcionEnc.IdBodega, BeRecepcionEnc.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=BeRecepcionEnc.IdRecepcionEnc)
             Throw ex
         End Try
 
@@ -7587,7 +7823,7 @@ ByRef lTransaction As SqlTransaction) As clsBeTrans_re_enc
                 lTransaction.Commit()
             End If
         Catch ex As Exception
-            If Not ltransaction Is Nothing Then ltransaction.rollback
+            If Not lTransaction Is Nothing Then lTransaction.Rollback()
             Throw ex
         Finally
             lCommand.Dispose()
@@ -8097,8 +8333,9 @@ ByRef lTransaction As SqlTransaction) As clsBeTrans_re_enc
             End If
 
         Catch ex As Exception
+            '#MECR23092025: se agrego bitacora de logs para recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, BeRecepcionEnc.IdBodega, BeRecepcionEnc.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=BeRecepcionEnc.IdRecepcionEnc)
             Throw ex
         End Try
 
@@ -8132,7 +8369,18 @@ ByRef lTransaction As SqlTransaction) As clsBeTrans_re_enc
                                                     lConnection,
                                                     lTransaction)
 
-                clsLnLog_error_wms.Agregar_Error(pIdEmpresa, pIdBodega, "#240313A: Se cerró la recepción: " & pIdRecepcionEnc & " IdUsuario_BOF: " & pIdUsuario)
+                '#MECR23092025: Se agrego bitacora de logs para recepciones.
+                Dim msjInfo As String = "#240313A: Se cerró la recepción: " & pIdRecepcionEnc & " IdUsuario_BOF: " & pIdUsuario
+                'clsLnLog_error_wms_rec.Agregar_Error(msjInfo, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
+                Dim objError As New clsBeLog_error_wms_rec
+                objError.MensajeError = msjInfo
+                objError.IdEmpresa = pIdEmpresa
+                objError.IdBodega = pIdBodega
+                objError.IdUsuarioAgr = pIdUsuario
+                objError.Fecha = Now
+                objError.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
+
+                clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
 
                 If Not Registros_Pendientes_Push(pIdRecepcionEnc, lConnection, lTransaction) Then
 
@@ -8147,7 +8395,18 @@ ByRef lTransaction As SqlTransaction) As clsBeTrans_re_enc
 
                             If Not pHabilitarStock Then
 
-                                clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302230102:  Se está finalizando la recepción: " & pIdRecepcionEnc & " con Habilitar_Stock = False, Usuario: " & pIdUsuario)
+                                '#MECR23092025: Se agrego bitacora de logs para recepciones
+                                Dim msjAdvertencia As String = "ADVERTENCIA_202302230102:  Se está finalizando la recepción: " & pIdRecepcionEnc & " con Habilitar_Stock = False, Usuario: " & pIdUsuario
+                                'clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
+                                Dim beLog_error As New clsBeLog_error_wms_rec
+                                beLog_error.MensajeError = msjAdvertencia
+                                beLog_error.IdEmpresa = pIdEmpresa
+                                beLog_error.IdBodega = pIdBodega
+                                beLog_error.IdUsuarioAgr = pIdUsuario
+                                beLog_error.Fecha = Now
+                                beLog_error.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
+
+                                clsLnLog_error_wms_rec.Insertar(beLog_error, lConnection, lTransaction)
 
                                 Habilitar_Stock_Desde_StockRec(pIdEmpresa,
                                                                pIdBodega,
@@ -8238,8 +8497,9 @@ ByRef lTransaction As SqlTransaction) As clsBeTrans_re_enc
             End If
 
         Catch ex As Exception
+            '#MECR23092025: Se agrego bitacora de logs para recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pStackTrace:=ex.StackTrace, pIdRecEnc:=pIdRecepcionEnc)
             Throw ex
         End Try
 
