@@ -2240,7 +2240,8 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
                                                          ByRef pListStockResOUT As List(Of clsBeStock_res),
                                                          ByRef lConectionInterface As SqlConnection,
                                                          ByRef CnnLog As SqlConnection,
-                                                         ByRef lTransactionInterface As SqlTransaction) As Boolean
+                                                         ByRef lTransactionInterface As SqlTransaction,
+                                                         Optional ByVal pNoDocumentoExterno As Integer = 0) As Boolean
 
         Inserta_Linea_Detalle_Pedido = False
 
@@ -2425,10 +2426,11 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
                 Else
                     pBeStockRes.IdUbicacionAbastecerCon = 0
                 End If
+            ElseIf pNoDocumentoExterno > 0 Then
+                pBeStockRes.IdUbicacionAbastecerCon = pNoDocumentoExterno
             Else
                 pBeStockRes.IdUbicacionAbastecerCon = 0
             End If
-
 
             Try
                 '#CKFK20221012 Agregué la función que devuelve el stock reservado
@@ -3165,7 +3167,8 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
                                                                             lBeStockResPedido,
                                                                             lConnectionInterface,
                                                                             CnnLog,
-                                                                            lTransInterface) Then
+                                                                            lTransInterface,
+                                                                            pBePedidoEnc.No_Documento_Externo) Then
 
                                             '#EJC2312260941:
                                             'clsPublic.Actualizar_Progreso(lblprg, "No fue posible completar la reserva.")
