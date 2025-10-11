@@ -307,6 +307,7 @@
     <Compile Include="Transacciones\Packing\clsLnTrans_packing_enc_Partial.vb" />
     <Compile Include="Transacciones\Pedido\clsLnTrans_pe_docu_ref.vb" />
     <Compile Include="Transacciones\Pedido\clsLnTrans_pe_docu_ref_det.vb" />
+    <Compile Include="Transacciones\Pedido\clsLnTrans_pe_ref_mi3.vb" />
     <Compile Include="Transacciones\Pedido\Log_Liberacion\clsLnTrans_log_pedido_liberacion_partial.vb" />
     <Compile Include="Transacciones\Pedido\Log_Liberacion\clsLnTrans_log_pedido_liberacion.vb" />
     <Compile Include="Transacciones\Pedido\Log_Reserva\clsLnTrans_pe_det_log_reserva.vb" />

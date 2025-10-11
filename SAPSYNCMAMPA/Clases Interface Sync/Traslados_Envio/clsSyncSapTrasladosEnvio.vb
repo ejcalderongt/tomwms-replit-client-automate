@@ -904,6 +904,7 @@ Public Class clsSyncSapTrasladosEnvio
         Dim vTraslado_Creado As Boolean = False
         Dim vSolicitud_Creada As Boolean = False
         Dim vDebeGenerarSolicitud As Boolean = False
+        Dim BePedidoRef As New clsBeTrans_pe_ref_mi3
 
         Try
 
@@ -957,25 +958,45 @@ Public Class clsSyncSapTrasladosEnvio
                     ' Parsear el JSON
                     Dim jsonObj As JObject = JObject.Parse(body)
 
-                    Dim docEntry As Integer = 0
-                    Dim docNum As Integer = 0
+                    Dim docEntryTransferPrimary As Integer = 0
+                    Dim docNumTransferPrimary As Integer = 0
 
                     If resp.IsSuccessStatusCode Then
                         ' Capturar los valores
-                        docEntry = jsonObj("DocEntry")
-                        docNum = jsonObj("DocNum")
+                        docEntryTransferPrimary = jsonObj("DocEntry")
+                        docNumTransferPrimary = jsonObj("DocNum")
                     End If
 
                     If resp.IsSuccessStatusCode Then
 
                         clsPublic.Actualizar_Progreso(lblprg, "✅ Respuesta:")
-                        clsPublic.Actualizar_Progreso(lblprg, "Se creó la transferencia: " & docNum & " en SAP")
+                        clsPublic.Actualizar_Progreso(lblprg, "Se creó la transferencia: " & docNumTransferPrimary & " en SAP")
 
                         If BeDespacho IsNot Nothing Then
-                            BeDespacho.No_pase = docNum
+                            BeDespacho.No_pase = docNumTransferPrimary
                             '#EJC20251008: No utilice transacción porque en service layer ya se creó el documento.
                             'Si llegaran a haber interbloqueos debería considerarse agregar.
-                            clsLnTrans_despacho_enc.Actualizar_No_Pase(BeDespacho)
+                            clsLnTrans_despacho_enc.Actualizar_No_Pase(BeDespacho, clsTrans.lConnection, clsTrans.lTransaction)
+
+                            Dim docEntrySolicitud As Integer = BePedidoEnc.Referencia
+                            Dim docNumSolicitud As String = BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino
+                            Dim Fromwarehouse As String = BePedidoEnc.Bodega_Origen
+                            Dim ToWarehouse As String = BePedidoEnc.Bodega_Destino
+
+                            BePedidoRef.Idpedidoencrefmi3 = clsLnTrans_pe_ref_mi3.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
+                            BePedidoRef.Idpedidoenc = BePedidoEnc.IdPedidoEnc
+                            BePedidoRef.Iddespachoenc = BeDespacho.IdDespachoEnc
+                            BePedidoRef.Docnumtraslado = docEntryTransferPrimary
+                            BePedidoRef.Docentrytraslado = docNumTransferPrimary
+                            BePedidoRef.Fec_agr = Now
+                            BePedidoRef.Usr_agr = BeConfigEnc.IdUsuario
+                            BePedidoRef.Codigo_bodega_origen = Fromwarehouse
+                            BePedidoRef.Codigo_bodega_destino = ToWarehouse
+                            BePedidoRef.Referencia_documento_origen = docNumSolicitud
+                            BePedidoRef.Referencia_documento_destino = docNumTransferPrimary 'Este es el documento que llega a esa bodega X.
+                            BePedidoRef.Observacion = $"Traslado generado por WMS sobre Solicitud SAP: {docEntrySolicitud} - Ref: {docNumSolicitud} - IdDocumentoWMS: {BePedidoEnc.IdPedidoEnc}"
+                            clsLnTrans_pe_ref_mi3.Insertar(BePedidoRef, clsTrans.lConnection, clsTrans.lTransaction)
+
                         End If
 
                         vTraslado_Creado = True
@@ -1045,8 +1066,14 @@ Public Class clsSyncSapTrasladosEnvio
                             clsPublic.Actualizar_Progreso(lblprg, "Se creó la Solicitud de transferencia: " & docNumTransferRequest & " en SAP")
 
                             If BeDespacho IsNot Nothing Then
+
                                 BeDespacho.No_Documento_Externo = docNumTransferRequest
-                                clsLnTrans_despacho_enc.Actualizar_No_Documento_Externo(BeDespacho)
+                                clsLnTrans_despacho_enc.Actualizar_No_Documento_Externo(BeDespacho, clsTrans.lConnection, clsTrans.lTransaction)
+
+                                BePedidoRef.Docnumentrega = docNumTransferRequest
+                                BePedidoRef.Docentryentrega = docEntryTransferRequest
+                                clsLnTrans_pe_ref_mi3.Actualizar(BePedidoRef, clsTrans.lConnection, clsTrans.lTransaction)
+
                             End If
 
                             vSolicitud_Creada = True
@@ -1564,7 +1591,7 @@ Public Class clsSyncSapTrasladosEnvio
                                                                ToWarehouse As String,
                                                                lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out)) As StockTransferRequestDto
 
-        Dim vMensaje As String = $"Solicitud Traslado generado por WMS sobre Solicitud SAP: Ref: {docNumSolicitud} IdPedidoEnc:{BePedidoEnc.IdPedidoEnc} Despacho: {BePedidoEnc.No_despacho}"
+        Dim vMensaje As String = $"IdPedidoEncWMS:{BePedidoEnc.IdPedidoEnc} Despacho: {BePedidoEnc.No_despacho}"
 
 
         Dim dto As New StockTransferRequestDto With {
