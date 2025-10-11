@@ -1716,7 +1716,13 @@ Partial Public Class clsLnI_nav_ped_compra_enc
             If navPedidoCompraDet.Barcode <> "" Then
                 Dim BeProductoTallaColor As New clsBeProducto_talla_color
                 BeProductoTallaColor = clsLnProducto_talla_color.Get_Single_By_Params(BeProductoBodega.IdProducto, navPedidoCompraDet.Size, navPedidoCompraDet.Color, lConnection, lTransInterface)
-                BePedidoCompraDet.IdProductoTallaColor = BeProductoTallaColor.IdProductoTallaColor
+
+                If BeProductoTallaColor IsNot Nothing Then
+                    BePedidoCompraDet.IdProductoTallaColor = BeProductoTallaColor.IdProductoTallaColor
+                Else
+                    lblprg += "No existe la Talla/Color definidas para el código " & navPedidoCompraDet.No & vbNewLine
+                    Return False
+                End If
             End If
 
             If Asigna_Unidad_De_Medida(BePedidoCompraDet, navPedidoCompraDet, BeUnidadMedidaPedCompra, BeProductoBodega, lConnection, lTransInterface) Then

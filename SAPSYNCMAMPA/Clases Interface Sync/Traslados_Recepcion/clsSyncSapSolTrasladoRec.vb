@@ -34,8 +34,11 @@ Public Class clsSyncSapSolTrasladoRec
                 Throw New Exception("ERROR_202311271751: Error no se pudo obtener el objeto de bodega asociado a la configuración de interface: " & BeConfigEnc.Idbodega)
             End If
 
-            If Not BeConfigEnc.Bodega_Prorrateo = "" Then
-                clsPublic.Actualizar_Progreso(lblprg, "La configuración de interface indica que la Bodega: " & BeBodega.Codigo & " tiene una bodega de prorrateo: " & BeConfigEnc.Bodega_Prorrateo & " configurada, No se puede improtar por esta opción.")
+            If BeConfigEnc.Bodega_Prorrateo <> "" Then
+                Dim mensaje As String = "La configuración de interface indica que la Bodega: " & BeBodega.Codigo & " es de prorrateo, No se puede importar " &
+                            If(pNoDocumento = "", "documentos por esta opción.", "el documento: " & pNoDocumento & " por esta opción.")
+
+                clsPublic.Actualizar_Progreso(lblprg, mensaje)
                 Return False
             End If
 

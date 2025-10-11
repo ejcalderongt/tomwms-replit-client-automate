@@ -2285,6 +2285,10 @@ Public Class frmDespacho
 
                 End If
 
+                If pBePedidoEnc.Detalle Is Nothing Then
+                    pBePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(pBePedidoEnc.IdPedidoEnc)
+                End If
+
                 For Each Obj As clsBeVW_stock_res In pListObjSP
 
                     BePedidoDet = pBePedidoEnc.Detalle.Find(Function(x) x.IdPedidoDet = Obj.IdPedidoDet)

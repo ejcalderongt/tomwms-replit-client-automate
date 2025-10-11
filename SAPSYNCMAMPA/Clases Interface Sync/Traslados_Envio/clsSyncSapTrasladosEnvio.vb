@@ -1,7 +1,5 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Globalization
-Imports System.IO
-Imports System.IO.Compression
 Imports System.Net
 Imports System.Net.Http
 Imports System.Net.Http.Headers
@@ -16,48 +14,68 @@ Public Class clsSyncSapTrasladosEnvio
     Private Shared vHanaService As SapServiceLayerClient
     Private Const ENTITY_TARGET_STOCK_TRANSFER As String = "StockTransfers"
     Private Const ENTITY_TARGET_STOCK_TRANSFER_REQUEST As String = "InventoryTransferRequests"
-    Private Const BASETYPE_INVENTORY_TRANSFER As Integer = 1250000001 ' OWTQ    
-    Public Shared Async Function Procesar_Solicitud_Traslado_Prorrateo_SAP(ByVal lblprg As RichTextBox,
-                                                                           ByVal prg As ProgressBar,
-                                                                           Optional ByVal pNoDocumento As String = "") As Task(Of Boolean)
+    Private Const BASETYPE_INVENTORY_TRANSFER As Integer = 1250000001 ' OWTQ        
+
+    Public Shared Async Function Procesar_Solicitud_Traslado_SAP(ByVal lblprg As RichTextBox,
+                                                                 ByVal prg As ProgressBar,
+                                                                 Optional ByVal pNoDocumento As String = "",
+                                                                 Optional ByVal pEsProrrateo As Boolean = True,
+                                                                 Optional ByVal pEsTrasladoBodegaVirtual As Boolean = False) As Task(Of Boolean)
         Dim clsTrans As New clsTransaccion
+        Dim sw As New Stopwatch()
 
         Try
+            ' Inicia el cronómetro
+            sw.Start()
+
+            clsPublic.Actualizar_Progreso(lblprg, "Iniciando proceso de importación de solicitudes de traslado desde SAP.")
 
             clsTrans.Begin_Transaction()
 
             BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface,
-                                                          clsTrans.lConnection,
-                                                          clsTrans.lTransaction)
+                                                      clsTrans.lConnection,
+                                                      clsTrans.lTransaction)
 
             Dim sessionCookie As String = ""
             Dim baseUrl As String = BD.Instancia.HANA_SL
             Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega,
-                                                                            clsTrans.lConnection,
-                                                                            clsTrans.lTransaction)
+                                                                        clsTrans.lConnection,
+                                                                        clsTrans.lTransaction)
 
             If BeBodega Is Nothing Then
-                Throw New Exception("ERROR_202311271751: Error no se pudo obtener el objeto de bodega asociado a la configuración de interface: " & BeConfigEnc.Idbodega)
+                Throw New Exception("ERROR_202311271751: No se pudo obtener la bodega asociada a la configuración de interface: " & BeConfigEnc.Idbodega)
             End If
 
-            If Not BeBodega.Codigo = BeConfigEnc.Bodega_Prorrateo Then
-                clsPublic.Actualizar_Progreso(lblprg, String.Format("La bodega de origen y de prorrateo no coinciden, no se puede improtar el documento {0} <> {1}", BeBodega.Codigo, BeConfigEnc.Bodega_Prorrateo))
-                Return False
+            If pEsProrrateo Then
+                If BeBodega.Codigo <> BeConfigEnc.Bodega_Prorrateo Then
+                    clsPublic.Actualizar_Progreso(lblprg, $"La bodega de origen y la de prorrateo no coinciden ({BeBodega.Codigo} <> {BeConfigEnc.Bodega_Prorrateo}), no se puede importar el documento.")
+                    Return False
+                End If
             End If
 
             Await Procesar_Documentos(BeBodega.Codigo,
                                       pNoDocumento,
                                       BeConfigEnc,
                                       lblprg,
-                                      clsTrans)
+                                      clsTrans,
+                                      pEsProrrateo,
+                                      pEsTrasladoBodegaVirtual)
 
             clsTrans.Commit_Transaction()
+
+            ' Detiene el cronómetro
+            sw.Stop()
+
+            clsPublic.Actualizar_Progreso(lblprg, $"Fin del proceso de sincronización. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
 
             Return True
 
         Catch ex As Exception
+            sw.Stop()
             clsTrans.RollBack_Transaction()
             clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, pNoDocumento, 1900, 900)
+
+            clsPublic.Actualizar_Progreso(lblprg, $"Error en el proceso. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
             Throw
 
         Finally
@@ -65,11 +83,14 @@ Public Class clsSyncSapTrasladosEnvio
         End Try
     End Function
 
+
     Private Shared Async Function Procesar_Documentos(ByVal codigoBodega As String,
                                                       ByVal pNoDocumento As String,
                                                       ByVal BeConfigEnc As clsBeI_nav_config_enc,
                                                       ByVal lblprg As RichTextBox,
-                                                      ByVal clsTrans As clsTransaccion) As Task(Of Boolean)
+                                                      ByVal clsTrans As clsTransaccion,
+                                                      Optional ByVal pEsProrrateo As Boolean = True,
+                                                      Optional ByVal pEsTrasladoBodegaVirtual As Boolean = False) As Task(Of Boolean)
 
         Try
 
@@ -86,6 +107,14 @@ Public Class clsSyncSapTrasladosEnvio
             End If
 
             For Each solicitud In solicitudes
+
+                '#EJC20251009: En esta opción solo deben importarse documentos cuya bodega de origen sea la de prorrateo.
+                If pEsProrrateo Then
+                    If Not solicitud.Transfer_from_Code = BeConfigEnc.Bodega_Prorrateo Then
+                        clsPublic.Actualizar_Progreso(lblprg, $"La bodega de origen {solicitud.Transfer_from_Code} no coincide con la bodega de prorrateo {BeConfigEnc.Bodega_Prorrateo}, se omite el documento {solicitud.No}.")
+                        Continue For
+                    End If
+                End If
 
                 clsPublic.Actualizar_Progreso(lblprg, $"Procesando solicitud de traslado SAP (OWTQ): {solicitud.Receipt_Document_Reference}/{solicitud.No}{vbNewLine}")
 
@@ -518,30 +547,35 @@ Public Class clsSyncSapTrasladosEnvio
         End Try
     End Function
 
-    Public Shared Async Function Enviar_Traslados_Desde_Solicitud(ByVal lblprg As RichTextBox,
-                                                                  ByVal prg As ProgressBar,
-                                                                  ByVal pTipo As tTipoDocumentoSalida) As Task(Of Boolean)
+    Public Shared Async Function Enviar_Traslados_Salida_Desde_Solicitud_Prorrateo(ByVal lblprg As RichTextBox,
+                                                                                    ByVal prg As ProgressBar,
+                                                                                    ByVal pTipo As tTipoDocumentoSalida) As Task(Of Boolean)
 
         Dim envioExitosoCount As Integer = 0
         Dim huboError As Boolean = False
         Dim totalPedidos As Integer = 0
 
         Dim clsTrans As New clsTransaccion()
+        Dim sw As New Stopwatch()
 
         Using CnnLog As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
-
             Try
+                ' Inicia medición de tiempo
+                sw.Start()
+
+                clsPublic.Actualizar_Progreso(lblprg, "Iniciando proceso de envío de traslados desde solicitud de prorrateo SAP...")
 
                 CnnLog.Open()
-
                 clsTrans.Begin_Transaction()
 
-                Dim lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out) = clsLnI_nav_transacciones_out.Get_Lotes_Salida_Pendientes_Envio(pTipo,
-                                                                                                                                                  clsTrans.lConnection,
-                                                                                                                                                  clsTrans.lTransaction)
+                Dim lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out) =
+                clsLnI_nav_transacciones_out.Get_Lotes_Salida_Pendientes_Envio(pTipo,
+                                                                               clsTrans.lConnection,
+                                                                               clsTrans.lTransaction)
 
                 If lTransaccionesSalida Is Nothing OrElse lTransaccionesSalida.Count = 0 Then
-                    clsPublic.Actualizar_Progreso(lblprg, "MSG_240117: No hay transacciones para enviar.")
+                    sw.Stop()
+                    clsPublic.Actualizar_Progreso(lblprg, $"MSG_240117: No hay transacciones para enviar. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
                     clsTrans.Commit_Transaction()
                     Return False
                 End If
@@ -555,12 +589,13 @@ Public Class clsSyncSapTrasladosEnvio
                 clsPublic.Actualizar_Progreso(lblprg, $"Documentos a enviar: {totalPedidos}")
 
                 For Each PT In ListaPedidosTransf
-
-                    Dim BePedidoEnc As clsBeTrans_pe_enc = clsLnTrans_pe_enc.GetSingle(PT.Idpedidoenc, clsTrans.lConnection, clsTrans.lTransaction)
+                    Dim BePedidoEnc As clsBeTrans_pe_enc =
+                    clsLnTrans_pe_enc.GetSingle(PT.Idpedidoenc, clsTrans.lConnection, clsTrans.lTransaction)
 
                     clsPublic.Actualizar_Progreso(lblprg, $"Procesando Solicitud de traslado: {PT.Idpedidoenc}-{BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino}")
 
-                    Dim yaEnviado As Boolean = clsLnTrans_pe_enc.Get_Estado_Enviado_A_ERP(PT.No_pedido, clsTrans.lConnection, clsTrans.lTransaction)
+                    Dim yaEnviado As Boolean =
+                    clsLnTrans_pe_enc.Get_Estado_Enviado_A_ERP(PT.No_pedido, clsTrans.lConnection, clsTrans.lTransaction)
 
                     If yaEnviado Then
                         clsPublic.Actualizar_Progreso(lblprg, "El pedido ya está marcado como enviado a ERP; se omite su reenvío.")
@@ -596,15 +631,25 @@ Public Class clsSyncSapTrasladosEnvio
 
                 clsTrans.Commit_Transaction()
 
-                ' Resultado final:
-                ' True  → hubo al menos un envío exitoso y no se detectaron errores.
-                ' False → no hubo envíos exitosos o hubo algún error.
+                ' Detiene el cronómetro
+                sw.Stop()
+
                 Dim resultado As Boolean = (envioExitosoCount > 0 AndAlso Not huboError)
+                Dim mensajeFinal As String =
+                If(resultado,
+                   $"Proceso finalizado correctamente. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.",
+                   $"Proceso finalizado con errores. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
+
+                clsPublic.Actualizar_Progreso(lblprg, mensajeFinal)
+
                 Return resultado
 
             Catch ex As Exception
+                sw.Stop()
                 clsTrans.RollBack_Transaction()
+                clsPublic.Actualizar_Progreso(lblprg, $"Error en el proceso de envío. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos. Error: {ex.Message}")
                 Return False
+
             Finally
                 prg.Value = 0
                 prg.Visible = False
@@ -613,33 +658,148 @@ Public Class clsSyncSapTrasladosEnvio
             End Try
         End Using
     End Function
-
-    Public Shared Async Function Enviar_Traslados_Desde_Solicitud_Tiendas(ByVal lblprg As RichTextBox,
-                                                                          ByVal prg As ProgressBar,
-                                                                          ByVal pTipo As tTipoDocumentoIngreso,
-                                                                          ByVal BeConfigEnc As clsBeI_nav_config_enc) As Task(Of Boolean)
+    Public Shared Async Function Enviar_Traslados_Salida_Desde_Solicitud_Tienda(ByVal lblprg As RichTextBox,
+                                                                                ByVal prg As ProgressBar,
+                                                                                ByVal pTipo As tTipoDocumentoSalida) As Task(Of Boolean)
 
         Dim envioExitosoCount As Integer = 0
         Dim huboError As Boolean = False
         Dim totalPedidos As Integer = 0
 
         Dim clsTrans As New clsTransaccion()
+        Dim sw As New Stopwatch()
 
         Using CnnLog As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
 
             Try
 
-                CnnLog.Open() : clsTrans.Begin_Transaction()
+                sw.Start()
 
+                clsPublic.Actualizar_Progreso(lblprg, "Iniciando proceso de envío de traslados desde solicitud de prorrateo SAP...")
 
-                Dim lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out) =
-                    clsLnI_nav_transacciones_out.Get_Lotes_Ingreso_Pendientes_Envio_By_Tipo(pTipo,
-                                                                                            clsTrans.lConnection,
-                                                                                            clsTrans.lTransaction,
-                                                                                            BeConfigEnc.Idbodega)
+                CnnLog.Open()
+                clsTrans.Begin_Transaction()
+
+                Dim lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out) = clsLnI_nav_transacciones_out.Get_Lotes_Salida_Pendientes_Envio(pTipo,
+                                                                                                                                                   clsTrans.lConnection,
+                                                                                                                                                   clsTrans.lTransaction)
 
                 If lTransaccionesSalida Is Nothing OrElse lTransaccionesSalida.Count = 0 Then
-                    clsPublic.Actualizar_Progreso(lblprg, "MSG_240117: No hay transacciones para enviar.")
+                    sw.Stop()
+                    clsPublic.Actualizar_Progreso(lblprg, $"MSG_240117: No hay transacciones para enviar. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
+                    clsTrans.Commit_Transaction()
+                    Return False
+                End If
+
+                Dim ListaPedidosTransf = (From i In lTransaccionesSalida
+                                          Group i By Keys = New With {Key i.No_pedido, Key i.Idpedidoenc} Into Group
+                                          Select New With {Key Keys.No_pedido, Key Keys.Idpedidoenc}).ToList()
+
+                totalPedidos = ListaPedidosTransf.Count
+
+                clsPublic.Actualizar_Progreso(lblprg, $"Documentos a enviar: {totalPedidos}")
+
+                For Each PT In ListaPedidosTransf
+
+                    Dim BePedidoEnc As clsBeTrans_pe_enc = clsLnTrans_pe_enc.GetSingle(PT.Idpedidoenc, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    clsPublic.Actualizar_Progreso(lblprg, $"Procesando Solicitud de traslado: {PT.Idpedidoenc}-{BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino}")
+
+                    Dim yaEnviado As Boolean = clsLnTrans_pe_enc.Get_Estado_Enviado_A_ERP(PT.No_pedido, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    If yaEnviado Then
+                        clsPublic.Actualizar_Progreso(lblprg, "El pedido ya está marcado como enviado a ERP; se omite su reenvío.")
+                        Continue For
+                    End If
+
+                    Dim lTransaccionesSalidaSingle As List(Of clsBeI_nav_transacciones_out) = lTransaccionesSalida.FindAll(Function(x) x.No_pedido = PT.No_pedido _
+                                                                                                                           AndAlso x.Idpedidoenc = PT.Idpedidoenc)
+
+                    Dim enviadoOk As Boolean = Await Enviar_Traslado_Salida_Tienda_Desde_Solicitud_SAP(PT.No_pedido,
+                                                                                                       BePedidoEnc,
+                                                                                                       lTransaccionesSalidaSingle,
+                                                                                                       clsTrans,
+                                                                                                       lblprg).ConfigureAwait(False)
+
+                    If enviadoOk Then
+                        Try
+                            clsPublic.Actualizar_Progreso(lblprg, "Transacciones de salida enviadas correctamente.")
+                            clsLnTrans_pe_enc.Actualizar_Estado_Enviado_A_ERP(PT.Idpedidoenc, True, BeConfigEnc.IdUsuario, clsTrans.lConnection, clsTrans.lTransaction)
+                            envioExitosoCount += 1
+                        Catch ex As Exception
+                            huboError = True
+                            clsPublic.Actualizar_Progreso(lblprg, $"Error al registrar el pedido {PT.No_pedido} en el ERP. Error: {ex.Message}")
+                            clsLnLog_error_wms.Agregar_Error(ex.Message)
+                        End Try
+                    Else
+                        huboError = True
+                        Dim vMsgErr As String = $"No se pudo enviar el pedido {PT.No_pedido} al ERP."
+                        clsPublic.Actualizar_Progreso(lblprg, vMsgErr)
+                        Throw New Exception(vMsgErr)
+                    End If
+                Next
+
+                clsTrans.Commit_Transaction()
+
+                ' Detiene el cronómetro
+                sw.Stop()
+
+                Dim resultado As Boolean = (envioExitosoCount > 0 AndAlso Not huboError)
+                Dim mensajeFinal As String =
+                If(resultado,
+                   $"Proceso finalizado correctamente. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.",
+                   $"Proceso finalizado con errores. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
+
+                clsPublic.Actualizar_Progreso(lblprg, mensajeFinal)
+
+                Return resultado
+
+            Catch ex As Exception
+                sw.Stop()
+                clsTrans.RollBack_Transaction()
+                clsPublic.Actualizar_Progreso(lblprg, $"Error en el proceso de envío. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos. Error: {ex.Message}")
+                Return False
+
+            Finally
+                prg.Value = 0
+                prg.Visible = False
+                If CnnLog.State = ConnectionState.Open Then CnnLog.Close()
+                clsTrans.Close_Conection()
+            End Try
+        End Using
+
+    End Function
+    Public Shared Async Function Enviar_Traslados_Ingreso_Desde_Solicitud_Tiendas(ByVal lblprg As RichTextBox,
+                                                                      ByVal prg As ProgressBar,
+                                                                      ByVal pTipo As tTipoDocumentoIngreso,
+                                                                      ByVal BeConfigEnc As clsBeI_nav_config_enc) As Task(Of Boolean)
+
+        Dim envioExitosoCount As Integer = 0
+        Dim huboError As Boolean = False
+        Dim totalPedidos As Integer = 0
+
+        Dim clsTrans As New clsTransaccion()
+        Dim sw As New Stopwatch()
+
+        Using CnnLog As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
+            Try
+                ' Inicia medición de tiempo
+                sw.Start()
+
+                clsPublic.Actualizar_Progreso(lblprg, "Iniciando proceso de envío de traslados desde solicitudes de tiendas...")
+
+                CnnLog.Open()
+                clsTrans.Begin_Transaction()
+
+                Dim lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out) =
+                clsLnI_nav_transacciones_out.Get_Lotes_Ingreso_Pendientes_Envio_By_Tipo(pTipo,
+                                                                                        clsTrans.lConnection,
+                                                                                        clsTrans.lTransaction,
+                                                                                        BeConfigEnc.Idbodega)
+
+                If lTransaccionesSalida Is Nothing OrElse lTransaccionesSalida.Count = 0 Then
+                    sw.Stop()
+                    clsPublic.Actualizar_Progreso(lblprg, $"MSG_240117: No hay transacciones para enviar. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
                     clsTrans.Commit_Transaction()
                     Return False
                 End If
@@ -654,10 +814,11 @@ Public Class clsSyncSapTrasladosEnvio
 
                 For Each PT In ListaPedidosTransf
 
-                    Dim BeTransOcEnc As clsBeTrans_oc_enc = clsLnTrans_oc_enc.GetSingle(PT.Idordencompra, clsTrans.lConnection, clsTrans.lTransaction)
+                    Dim BeTransOcEnc As clsBeTrans_oc_enc =
+                    clsLnTrans_oc_enc.GetSingle(PT.Idordencompra, clsTrans.lConnection, clsTrans.lTransaction)
 
                     If BeTransOcEnc Is Nothing Then
-                        clsPublic.Actualizar_Progreso(lblprg, "No se encontró el documento base con IdOrdencompraEnc: " & PT.Idordencompra)
+                        clsPublic.Actualizar_Progreso(lblprg, $"No se encontró el documento base con IdOrdencompraEnc: {PT.Idordencompra}")
                         Continue For
                     End If
 
@@ -673,11 +834,11 @@ Public Class clsSyncSapTrasladosEnvio
                     Dim lTransaccionesSalidaSingle As List(Of clsBeI_nav_transacciones_out) =
                     lTransaccionesSalida.FindAll(Function(x) x.No_pedido = PT.No_pedido AndAlso x.Idordencompra = PT.Idordencompra)
 
-                    Dim enviadoOk As Boolean = Await Enviar_Traslado_Desde_Solicitud_SAP_Tiendas(PT.No_pedido,
-                                                                                                 BeTransOcEnc,
-                                                                                                 lTransaccionesSalidaSingle,
-                                                                                                 clsTrans,
-                                                                                                 lblprg).ConfigureAwait(False)
+                    Dim enviadoOk As Boolean = Await Enviar_Traslado_Ingreso_Desde_Solicitud_SAP_Tiendas(PT.No_pedido,
+                                                                                                         BeTransOcEnc,
+                                                                                                         lTransaccionesSalidaSingle,
+                                                                                                         clsTrans,
+                                                                                                         lblprg).ConfigureAwait(False)
 
                     If enviadoOk Then
                         Try
@@ -699,15 +860,25 @@ Public Class clsSyncSapTrasladosEnvio
 
                 clsTrans.Commit_Transaction()
 
-                ' Resultado final:
-                ' True  → hubo al menos un envío exitoso y no se detectaron errores.
-                ' False → no hubo envíos exitosos o hubo algún error.
+                ' Detiene el cronómetro
+                sw.Stop()
+
                 Dim resultado As Boolean = (envioExitosoCount > 0 AndAlso Not huboError)
+                Dim mensajeFinal As String =
+                If(resultado,
+                   $"Proceso finalizado correctamente. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.",
+                   $"Proceso finalizado con errores. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
+
+                clsPublic.Actualizar_Progreso(lblprg, mensajeFinal)
+
                 Return resultado
 
             Catch ex As Exception
+                sw.Stop()
                 clsTrans.RollBack_Transaction()
+                clsPublic.Actualizar_Progreso(lblprg, $"Error en el proceso de envío. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos. Error: {ex.Message}")
                 Return False
+
             Finally
                 prg.Value = 0
                 prg.Visible = False
@@ -716,6 +887,7 @@ Public Class clsSyncSapTrasladosEnvio
             End Try
         End Using
     End Function
+
     Private Shared Async Function Enviar_Traslado_Cedis_Desde_Solicitud_SAP(ByVal _DocEntry As Integer,
                                                                             ByVal BePedidoEnc As clsBeTrans_pe_enc,
                                                                             ByVal transaccionesOut As List(Of clsBeI_nav_transacciones_out),
@@ -904,8 +1076,195 @@ Public Class clsSyncSapTrasladosEnvio
             Return False
         End Try
     End Function
+    Private Shared Async Function Enviar_Traslado_Salida_Tienda_Desde_Solicitud_SAP(ByVal _DocEntry As Integer,
+                                                                                    ByVal BePedidoEnc As clsBeTrans_pe_enc,
+                                                                                    ByVal transaccionesOut As List(Of clsBeI_nav_transacciones_out),
+                                                                                    ByVal clsTrans As clsTransaccion,
+                                                                                    ByVal lblprg As RichTextBox) As Task(Of Boolean)
 
-    Private Shared Async Function Enviar_Traslado_Desde_Solicitud_SAP_Tiendas(ByVal _DocEntry As Integer,
+
+        ' Progreso básico
+        If transaccionesOut Is Nothing OrElse transaccionesOut.Count = 0 Then
+            clsPublic.Actualizar_Progreso(lblprg, "No hay transacciones para procesar.")
+            Return False
+        End If
+
+        Dim vTraslado_Creado As Boolean = False
+        Dim vSolicitud_Creada As Boolean = False
+        Dim vDebeGenerarSolicitud As Boolean = False
+
+        Try
+
+            Dim vHanaService As New SapServiceLayerClient()
+            Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+
+            If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
+                clsPublic.Actualizar_Progreso(lblprg, "No se pudo obtener sesión.")
+                Return False
+            Else
+                clsPublic.Actualizar_Progreso(lblprg, "Conexión correcta.")
+            End If
+
+            Dim vIdDespacho = transaccionesOut.FirstOrDefault.Iddespachoenc
+            Dim BeDespacho As clsBeTrans_despacho_enc = clsLnTrans_despacho_enc.GetSingle(vIdDespacho, clsTrans.lConnection, clsTrans.lTransaction)
+
+            ' 1) POST /StockTransfers
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+            ServicePointManager.Expect100Continue = False
+            ServicePointManager.FindServicePoint(New Uri(SapServiceLayerClient.baseUrl)).ConnectionLeaseTimeout = 0
+
+            If BeDespacho.No_pase = 0 Then
+
+                ' 2) Payload StockTransfer
+                Dim payloadStockTransfer = Build_StockTransfer_Payload_Cedis(BePedidoEnc,
+                                                                             clsTrans,
+                                                                             transaccionesOut)
+
+                Dim handler As New HttpClientHandler With {
+                .AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate,
+                .ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True,
+                .UseCookies = False
+            }
+
+                Using http As New HttpClient(handler) With {.BaseAddress = New Uri(SapServiceLayerClient.baseUrl)}
+
+                    Dim json As String = JsonConvert.SerializeObject(payloadStockTransfer, New JsonSerializerSettings With {.NullValueHandling = NullValueHandling.Ignore})
+                    Dim content = New StringContent(json, Encoding.UTF8)
+                    Dim mediaType = New MediaTypeHeaderValue("application/json")
+
+                    mediaType.CharSet = "utf-8"
+                    content.Headers.ContentType = mediaType
+
+                    Dim req As New HttpRequestMessage(HttpMethod.Post, ENTITY_TARGET_STOCK_TRANSFER) With {.Content = content}
+                    req.Headers.Add("Cookie", vHanaService.SessionCookie)
+                    req.Headers.ConnectionClose = True
+
+                    Dim resp = Await http.SendAsync(req).ConfigureAwait(False)
+                    Dim body = Await resp.Content.ReadAsStringAsync().ConfigureAwait(False)
+
+                    ' Parsear el JSON
+                    Dim jsonObj As JObject = JObject.Parse(body)
+
+                    Dim docEntry As Integer = 0
+                    Dim docNum As Integer = 0
+
+                    If resp.IsSuccessStatusCode Then
+                        ' Capturar los valores
+                        docEntry = jsonObj("DocEntry")
+                        docNum = jsonObj("DocNum")
+                    End If
+
+                    If resp.IsSuccessStatusCode Then
+
+                        clsPublic.Actualizar_Progreso(lblprg, "✅ Respuesta:")
+                        clsPublic.Actualizar_Progreso(lblprg, "Se creó la transferencia: " & docNum & " en SAP")
+
+                        If BeDespacho IsNot Nothing Then
+                            BeDespacho.No_pase = docNum
+                            '#EJC20251008: No utilice transacción porque en service layer ya se creó el documento.
+                            'Si llegaran a haber interbloqueos debería considerarse agregar.
+                            clsLnTrans_despacho_enc.Actualizar_No_Pase(BeDespacho)
+                        End If
+
+                        vTraslado_Creado = True
+
+                    Else
+                        clsPublic.Actualizar_Progreso(lblprg, $"❌ Error SL {resp.StatusCode}:")
+                        clsPublic.Actualizar_Progreso(lblprg, body)
+
+                    End If
+
+                End Using
+
+            End If
+
+            ' 4) Marcar enviados (si aplica)
+            If vTraslado_Creado OrElse BeDespacho.No_Documento_Externo = "" Then
+
+                If Not BePedidoEnc.Bodega_Destino = "" AndAlso BePedidoEnc.Bodega_Destino <> BePedidoEnc.Cliente.Codigo Then
+
+                    vDebeGenerarSolicitud = True
+
+                    Dim vDocNumTraslado As String = BePedidoEnc.No_Documento_Externo
+                    Dim vFromWarehouse As String = BePedidoEnc.Cliente.Codigo
+                    Dim vToWarehouse As String = BePedidoEnc.Bodega_Destino
+
+                    ' 2) Payload StockTransfer
+                    Dim payloadStockTransferRequest = Build_StockTransferRequest_Payload(BePedidoEnc,
+                                                                                         vDocNumTraslado,
+                                                                                         vFromWarehouse,
+                                                                                         vToWarehouse,
+                                                                                         transaccionesOut)
+
+                    Dim handlerSol As New HttpClientHandler With {
+                        .AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate,
+                        .ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True,
+                        .UseCookies = False
+                    }
+
+                    Using http As New HttpClient(handlerSol) With {.BaseAddress = New Uri(SapServiceLayerClient.baseUrl)}
+                        Dim json As String = JsonConvert.SerializeObject(payloadStockTransferRequest, New JsonSerializerSettings With {.NullValueHandling = NullValueHandling.Ignore})
+                        Dim content = New StringContent(json, Encoding.UTF8)
+                        Dim mediaType = New MediaTypeHeaderValue("application/json")
+                        mediaType.CharSet = "utf-8"
+                        content.Headers.ContentType = mediaType
+
+                        Dim req As New HttpRequestMessage(HttpMethod.Post, ENTITY_TARGET_STOCK_TRANSFER_REQUEST) With {.Content = content}
+                        req.Headers.Add("Cookie", vHanaService.SessionCookie)
+                        req.Headers.ConnectionClose = True
+
+                        Dim resp = Await http.SendAsync(req).ConfigureAwait(False)
+                        Dim body = Await resp.Content.ReadAsStringAsync().ConfigureAwait(False)
+
+                        ' Parsear el JSON
+                        Dim jsonObj As JObject = JObject.Parse(body)
+
+                        Dim docEntryTransferRequest As Integer = 0
+                        Dim docNumTransferRequest As Integer = 0
+
+                        If resp.IsSuccessStatusCode Then
+                            docEntryTransferRequest = jsonObj("DocEntry")
+                            docNumTransferRequest = jsonObj("DocNum")
+                        End If
+
+                        If resp.IsSuccessStatusCode Then
+
+                            clsPublic.Actualizar_Progreso(lblprg, "✅ Respuesta:")
+                            clsPublic.Actualizar_Progreso(lblprg, "Se creó la Solicitud de transferencia: " & docNumTransferRequest & " en SAP")
+
+                            If BeDespacho IsNot Nothing Then
+                                BeDespacho.No_Documento_Externo = docNumTransferRequest
+                                clsLnTrans_despacho_enc.Actualizar_No_Documento_Externo(BeDespacho)
+                            End If
+
+                            vSolicitud_Creada = True
+
+                        Else
+                            clsPublic.Actualizar_Progreso(lblprg, $"❌ Error SL {resp.StatusCode}:")
+                            clsPublic.Actualizar_Progreso(lblprg, body)
+                        End If
+
+                    End Using
+
+                End If
+
+                If vTraslado_Creado OrElse (vDebeGenerarSolicitud AndAlso vSolicitud_Creada) Then
+                    Dim marcados = clsLnI_nav_transacciones_out.Actualizar_Bandera_Enviado(transaccionesOut)
+                    If marcados = 0 Then
+                        clsPublic.Actualizar_Progreso(lblprg, "⚠️ Transferencia creada, pero no se marcaron como enviadas en WMS.")
+                    End If
+                End If
+
+            End If
+
+            Return vTraslado_Creado
+
+        Catch ex As Exception
+            clsPublic.Actualizar_Progreso(lblprg, $"❌ Error al crear la transferencia: {ex.Message}")
+            Return False
+        End Try
+    End Function
+    Private Shared Async Function Enviar_Traslado_Ingreso_Desde_Solicitud_SAP_Tiendas(ByVal _DocEntry As Integer,
                                                                               ByVal BeTransOcEnc As clsBeTrans_oc_enc,
                                                                               ByVal transaccionesOut As List(Of clsBeI_nav_transacciones_out),
                                                                               ByVal clsTrans As clsTransaccion,
@@ -1109,7 +1468,6 @@ Public Class clsSyncSapTrasladosEnvio
 
         Return dto
     End Function
-
     Private Shared Function Build_StockTransfer_Payload_Cedis(BePedidoEnc As clsBeTrans_pe_enc,
                                                               clsTrans As clsTransaccion,
                                                               lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out)) As StockTransferDto

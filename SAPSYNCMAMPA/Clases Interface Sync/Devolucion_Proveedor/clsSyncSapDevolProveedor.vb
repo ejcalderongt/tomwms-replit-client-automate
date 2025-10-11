@@ -11,12 +11,18 @@ Imports TOMWMS.clsDataContractDI
 Public Class clsSyncSapDevolProveedor
 
     Private Shared vHanaService As SapServiceLayerClient
+
     Public Shared Async Function Procesar_Solicitud_Devol_Prov_SAP(ByVal lblprg As RichTextBox,
                                                                ByVal prg As ProgressBar,
                                                                Optional ByVal pNoDocumento As String = "") As Task(Of Boolean)
         Dim clsTrans As New clsTransaccion
+        Dim sw As New Stopwatch()
 
         Try
+            ' Inicia cronómetro y anuncia inicio
+            sw.Start()
+            clsPublic.Actualizar_Progreso(lblprg, "Iniciando proceso de sincronización de devoluciones de proveedor desde SAP.")
+
             clsTrans.Begin_Transaction()
 
             BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface,
@@ -26,35 +32,43 @@ Public Class clsSyncSapDevolProveedor
             Dim sessionCookie As String = ""
             Dim baseUrl As String = BD.Instancia.HANA_SL
             Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega,
-                                                                         clsTrans.lConnection,
-                                                                         clsTrans.lTransaction)
+                                                                        clsTrans.lConnection,
+                                                                        clsTrans.lTransaction)
 
             If BeBodega Is Nothing Then
                 Throw New Exception("ERROR_202311271751: Error no se pudo obtener el objeto de bodega asociado a la configuración de interface: " & BeConfigEnc.Idbodega)
             End If
 
             Await Procesar_Documentos(BeBodega.Codigo,
-                                      pNoDocumento,
-                                      BeConfigEnc,
-                                      lblprg,
-                                      clsTrans)
+                                  pNoDocumento,
+                                  BeConfigEnc,
+                                  lblprg,
+                                  clsTrans)
 
             clsTrans.Commit_Transaction()
 
+            ' Éxito: detener cronómetro y reportar tiempo
+            sw.Stop()
+            clsPublic.Actualizar_Progreso(lblprg, $"Proceso completado correctamente. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
             Return True
 
         Catch ex As Exception
+            ' Error: detener cronómetro y reportar tiempo + log
+            If sw.IsRunning Then sw.Stop()
             clsTrans.RollBack_Transaction()
             clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, pNoDocumento, 1900, 900)
-            clsPublic.Actualizar_Progreso(lblprg, ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, $"Error en el proceso: {ex.Message}. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
             Throw
 
         Finally
             clsTrans.Close_Conection()
-            clsPublic.Actualizar_Progreso(lblprg, "Fin del proceso de sincronización de devoluciones de proveedor desde SAP.")
+            ' Mensaje de fin (independiente del resultado)
+            If sw.IsRunning Then sw.Stop()
+            clsPublic.Actualizar_Progreso(lblprg, $"Fin del proceso de sincronización de devoluciones de proveedor desde SAP. Tiempo total: {sw.Elapsed.TotalSeconds:F2} segundos.")
         End Try
 
     End Function
+
     Private Shared Function Get_Devoluciones_Proveedor_SAP_SL(pCodigoBodegaInterface As String,
                                                           lConnection As SqlConnection,
                                                           lTransaction As SqlTransaction,
@@ -274,8 +288,8 @@ Public Class clsSyncSapDevolProveedor
     End Function
 
     Public Shared Sub Enviar_Transacciones_De_Salida(ByRef lblprg As RichTextBox,
-                                                     ByRef prg As ProgressBar,
-                                                     ByVal pTipo As tTipoDocumentoSalida)
+                                                 ByRef prg As ProgressBar,
+                                                 ByVal pTipo As tTipoDocumentoSalida)
 
         Dim lTransaccionesSalida As New List(Of clsBeI_nav_transacciones_out)
         Dim lTransaccionesSalidaSingle As New List(Of clsBeI_nav_transacciones_out)
@@ -286,13 +300,18 @@ Public Class clsSyncSapDevolProveedor
         Dim lTransPtPendienteRegistroEnNav As New List(Of clsBeTrans_pe_enc)
         Dim BePedidoEnc As New clsBeTrans_pe_enc
 
+        Dim sw As New Stopwatch()
+
         Try
+            ' Inicio y anuncio
+            sw.Start()
+            clsPublic.Actualizar_Progreso(lblprg, "Iniciando envío de transacciones de salida...")
 
             CnnLog.Open()
 
             lTransaccionesSalida = clsLnI_nav_transacciones_out.Get_Lotes_Salida_Pendientes_Envio(pTipo)
 
-            If Not lTransaccionesSalida Is Nothing AndAlso lTransaccionesSalida.Count > 0 Then
+            If lTransaccionesSalida IsNot Nothing AndAlso lTransaccionesSalida.Count > 0 Then
 
                 Dim ListaPedidosTransf = (From i In lTransaccionesSalida
                                           Group i By Keys = New With {Key i.No_pedido, Key i.Idpedidoenc} Into Group
@@ -321,11 +340,8 @@ Public Class clsSyncSapDevolProveedor
                                                                      prg) Then
 
                             Try
-
                                 clsPublic.Actualizar_Progreso(lblprg, String.Format("Transacciones de salida enviadas correctamente: {0}", lTransaccionesSalida.Count))
-
                                 clsLnTrans_pe_enc.Actualizar_Estado_Enviado_A_ERP(PT.Idpedidoenc, True, BeConfigEnc.IdUsuario)
-
                             Catch ex As Exception
                                 clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al registrar el pedido:{0} en el ERP. Error: {1}", PT.No_pedido, ex.Message))
                                 clsLnLog_error_wms.Agregar_Error(ex.Message)
@@ -337,14 +353,22 @@ Public Class clsSyncSapDevolProveedor
 
                 Next
 
+                ' Fin OK
+                sw.Stop()
+                clsPublic.Actualizar_Progreso(lblprg, $"Proceso finalizado. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
+
             Else
-
-                clsPublic.Actualizar_Progreso(lblprg, "MSG_240117: No hay transacciones para enviar.")
-
+                ' No hay pendientes
+                sw.Stop()
+                clsPublic.Actualizar_Progreso(lblprg, $"MSG_240117: No hay transacciones para enviar. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
             End If
 
         Catch ex As Exception
-            clsPublic.Actualizar_Progreso(lblprg, String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            If sw.IsRunning Then sw.Stop()
+            clsPublic.Actualizar_Progreso(lblprg, String.Format("{0} {1}. Tiempo transcurrido: {2:F2} segundos.",
+                                                            MethodBase.GetCurrentMethod.Name(),
+                                                            ex.Message,
+                                                            sw.Elapsed.TotalSeconds))
         Finally
             prg.Value = 0
             prg.Visible = False
@@ -352,6 +376,7 @@ Public Class clsSyncSapDevolProveedor
         End Try
 
     End Sub
+
 
 
     <Serializable>
