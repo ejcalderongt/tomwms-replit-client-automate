@@ -3485,14 +3485,24 @@ Partial Public Class clsLnI_nav_transacciones_out
 
         Try
 
-            Dim sp As String = "SELECT * FROM I_nav_transacciones_out 
-                                WHERE tipo_transaccion = 'INGRESO' 
-                                AND enviado = 0 
-                                AND IdTipoDocumento = @IdTipoDocumento 
-                                AND IdBodega = @IdBodega 
-                                AND idrecepcionenc in (SELECT IdRecepcionEnc 
-                                                  FROM trans_re_enc  
-                                                  WHERE estado = 'Cerrado') "
+            '#CKFK20251011 Modifiqué el query para que tome la talla y el color de las tablas maestras
+            Dim sp As String = "SELECT idtransaccion, idempresa, idbodega, o.idpropietario, idpropietariobodega, idordencompra, idrecepcionenc, idpedidoenc, iddespachoenc, 
+                                       idproductobodega, idproducto, idunidadmedida, idpresentacion, idproductoestado, cantidad, peso, lote, fecha_vence, fecha_recepcion, 
+	                                   no_pedido, no_linea, codigo_producto, nombre_producto, codigo_variante, unidad_medida, tipo_transaccion, enviado, 
+	                                   o.fec_agr, o.user_agr, o.fec_mod, o.user_mod, Cantidad_Esperada, lic_plate, uds_lic_plate, cantidad_presentacion, IdTipoDocumento, 
+	                                   es_servicio, codigo_barra, valor_aduana, valor_fob, valor_iva, valor_dai, valor_seguro, valor_flete, peso_neto, peso_bruto, 
+	                                   fecha_despacho, no_documento_salida_ref_devol, IdPedidoEncDevol, IdDespachoDet, IdRecepcionDet, cantidad_enviada, 
+	                                   cantidad_pendiente, auditar, IdProductoTallaColor, t.Codigo Talla, c.Codigo Color
+                                 FROM I_nav_transacciones_out o INNER JOIN
+                                      talla t ON o.Talla = t.Nombre INNER JOIN
+	                                  color c ON o.Color = c.Nombre 
+                                 WHERE tipo_transaccion = 'INGRESO' 
+                                       AND enviado = 0 
+                                       AND IdTipoDocumento = @IdTipoDocumento 
+                                       AND IdBodega = @IdBodega 
+                                       AND idrecepcionenc in (SELECT IdRecepcionEnc 
+                                                              FROM trans_re_enc  
+                                                              WHERE estado = 'Cerrado')"
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             cmd.Parameters.AddWithValue("@idBodega", IdBodegaOrigen)

@@ -854,7 +854,7 @@ Public Class clsSyncSapTrasladosEnvio
                         huboError = True
                         Dim vMsgErr As String = $"No se pudo enviar el pedido {PT.No_pedido} al ERP."
                         clsPublic.Actualizar_Progreso(lblprg, vMsgErr)
-                        Throw New Exception(vMsgErr)
+                        'Throw New Exception(vMsgErr)
                     End If
                 Next
 
