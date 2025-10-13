@@ -1230,7 +1230,7 @@ Public Class frmEjecucion
                 mnuEnvios.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
                 mnuDevolucionVenta.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
                 mnuOrdenesProduccion.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
-                mnuPedidosTransferencia.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
+                mnuPedidosTransferencia.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
                 mnuRecibirPedidosTransfINgreso.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
                 mnuPedidosDeVenta.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
                 mnuEnviarDatos.Visibility = DevExpress.XtraBars.BarItemVisibility.Always

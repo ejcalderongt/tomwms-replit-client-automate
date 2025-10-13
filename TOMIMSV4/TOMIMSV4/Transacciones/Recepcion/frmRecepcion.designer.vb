@@ -716,7 +716,7 @@ Partial Class frmRecepcion
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.RibbonControl.Size = New System.Drawing.Size(1645, 193)
-        Me.RibbonControl.StatusBar = Me.RibbonStatusBar
+        Me.RibbonControl.StatusBar = Me.RibbonStatusBar1
         '
         'cmdGuardar
         '
@@ -898,7 +898,7 @@ Partial Class frmRecepcion
         'RibbonStatusBar1
         '
         Me.RibbonStatusBar1.ItemLinks.Add(Me.lblRegs)
-        Me.RibbonStatusBar1.Location = New System.Drawing.Point(2, 577)
+        Me.RibbonStatusBar1.Location = New System.Drawing.Point(2, 552)
         Me.RibbonStatusBar1.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonStatusBar1.Name = "RibbonStatusBar1"
         Me.RibbonStatusBar1.Ribbon = Me.RibbonControl
@@ -1682,7 +1682,7 @@ Partial Class frmRecepcion
         Me.GrpDetalle.Location = New System.Drawing.Point(0, 0)
         Me.GrpDetalle.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpDetalle.Name = "GrpDetalle"
-        Me.GrpDetalle.Size = New System.Drawing.Size(1643, 642)
+        Me.GrpDetalle.Size = New System.Drawing.Size(1643, 617)
         Me.GrpDetalle.TabIndex = 0
         Me.GrpDetalle.Text = "Lista de Productos"
         '
@@ -1694,7 +1694,7 @@ Partial Class frmRecepcion
         Me.DgridDetalleOC.MainView = Me.gvDetalleDocIngreso
         Me.DgridDetalleOC.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.DgridDetalleOC.Name = "DgridDetalleOC"
-        Me.DgridDetalleOC.Size = New System.Drawing.Size(1639, 612)
+        Me.DgridDetalleOC.Size = New System.Drawing.Size(1639, 587)
         Me.DgridDetalleOC.TabIndex = 20
         Me.DgridDetalleOC.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvDetalleDocIngreso})
         '
@@ -1738,7 +1738,7 @@ Partial Class frmRecepcion
         Me.DgridDetalleRec.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.DgridDetalleRec.EnableHeadersVisualStyles = False
         Me.DgridDetalleRec.GridColor = System.Drawing.Color.Navy
-        Me.DgridDetalleRec.Location = New System.Drawing.Point(2, 59)
+        Me.DgridDetalleRec.Location = New System.Drawing.Point(2, 55)
         Me.DgridDetalleRec.Margin = New System.Windows.Forms.Padding(4)
         Me.DgridDetalleRec.MultiSelect = False
         Me.DgridDetalleRec.Name = "DgridDetalleRec"
@@ -1753,7 +1753,7 @@ Partial Class frmRecepcion
         Me.DgridDetalleRec.RowHeadersVisible = False
         Me.DgridDetalleRec.RowHeadersWidth = 60
         Me.DgridDetalleRec.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.DgridDetalleRec.Size = New System.Drawing.Size(1639, 533)
+        Me.DgridDetalleRec.Size = New System.Drawing.Size(1639, 537)
         Me.DgridDetalleRec.TabIndex = 1
         '
         'No_Linea
@@ -2051,7 +2051,7 @@ Partial Class frmRecepcion
         Me.ToolStrip1.Location = New System.Drawing.Point(2, 28)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStrip1.Size = New System.Drawing.Size(1639, 31)
+        Me.ToolStrip1.Size = New System.Drawing.Size(1639, 27)
         Me.ToolStrip1.TabIndex = 0
         Me.ToolStrip1.Text = "ToolStrip4"
         '
@@ -2060,7 +2060,7 @@ Partial Class frmRecepcion
         Me.cmdAgregarProducto.Image = CType(resources.GetObject("cmdAgregarProducto.Image"), System.Drawing.Image)
         Me.cmdAgregarProducto.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAgregarProducto.Name = "cmdAgregarProducto"
-        Me.cmdAgregarProducto.Size = New System.Drawing.Size(151, 28)
+        Me.cmdAgregarProducto.Size = New System.Drawing.Size(151, 24)
         Me.cmdAgregarProducto.Text = "Agregar Producto"
         '
         'cmdVerParametros
@@ -2068,7 +2068,7 @@ Partial Class frmRecepcion
         Me.cmdVerParametros.Image = CType(resources.GetObject("cmdVerParametros.Image"), System.Drawing.Image)
         Me.cmdVerParametros.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdVerParametros.Name = "cmdVerParametros"
-        Me.cmdVerParametros.Size = New System.Drawing.Size(134, 28)
+        Me.cmdVerParametros.Size = New System.Drawing.Size(134, 24)
         Me.cmdVerParametros.Text = "Ver parámetros"
         '
         'cmdEliminarFila
@@ -2077,7 +2077,7 @@ Partial Class frmRecepcion
         Me.cmdEliminarFila.Image = CType(resources.GetObject("cmdEliminarFila.Image"), System.Drawing.Image)
         Me.cmdEliminarFila.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdEliminarFila.Name = "cmdEliminarFila"
-        Me.cmdEliminarFila.Size = New System.Drawing.Size(118, 28)
+        Me.cmdEliminarFila.Size = New System.Drawing.Size(118, 24)
         Me.cmdEliminarFila.Text = "Eliminar Fila"
         '
         'lblStatus
@@ -2085,7 +2085,7 @@ Partial Class frmRecepcion
         Me.lblStatus.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblStatus.ForeColor = System.Drawing.Color.Firebrick
         Me.lblStatus.Name = "lblStatus"
-        Me.lblStatus.Size = New System.Drawing.Size(15, 28)
+        Me.lblStatus.Size = New System.Drawing.Size(15, 24)
         Me.lblStatus.Text = "-"
         '
         'Panel1
@@ -2161,7 +2161,7 @@ Partial Class frmRecepcion
         Me.GrpImagen.Location = New System.Drawing.Point(0, 0)
         Me.GrpImagen.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpImagen.Name = "GrpImagen"
-        Me.GrpImagen.Size = New System.Drawing.Size(1643, 642)
+        Me.GrpImagen.Size = New System.Drawing.Size(1643, 617)
         Me.GrpImagen.TabIndex = 0
         '
         'GroupControl4
@@ -2172,7 +2172,7 @@ Partial Class frmRecepcion
         Me.GroupControl4.Location = New System.Drawing.Point(2, 28)
         Me.GroupControl4.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl4.Name = "GroupControl4"
-        Me.GroupControl4.Size = New System.Drawing.Size(593, 612)
+        Me.GroupControl4.Size = New System.Drawing.Size(593, 587)
         Me.GroupControl4.TabIndex = 0
         Me.GroupControl4.Text = "Lista de Imágenes"
         '
@@ -2182,12 +2182,12 @@ Partial Class frmRecepcion
         Me.GrdImagen.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
         GridLevelNode1.RelationName = "Level1"
         Me.GrdImagen.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
-        Me.GrdImagen.Location = New System.Drawing.Point(2, 59)
+        Me.GrdImagen.Location = New System.Drawing.Point(2, 55)
         Me.GrdImagen.MainView = Me.GridViewImg
         Me.GrdImagen.Margin = New System.Windows.Forms.Padding(4)
         Me.GrdImagen.MenuManager = Me.RibbonControl
         Me.GrdImagen.Name = "GrdImagen"
-        Me.GrdImagen.Size = New System.Drawing.Size(589, 551)
+        Me.GrdImagen.Size = New System.Drawing.Size(589, 530)
         Me.GrdImagen.TabIndex = 1
         Me.GrdImagen.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridViewImg})
         '
@@ -2206,7 +2206,7 @@ Partial Class frmRecepcion
         Me.ToolStrip.Location = New System.Drawing.Point(2, 28)
         Me.ToolStrip.Name = "ToolStrip"
         Me.ToolStrip.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStrip.Size = New System.Drawing.Size(589, 31)
+        Me.ToolStrip.Size = New System.Drawing.Size(589, 27)
         Me.ToolStrip.TabIndex = 0
         Me.ToolStrip.Text = "ToolStrip4"
         '
@@ -2215,7 +2215,7 @@ Partial Class frmRecepcion
         Me.cmdAdd.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(29, 28)
+        Me.cmdAdd.Size = New System.Drawing.Size(29, 24)
         '
         'cmdDelete
         '
@@ -2223,7 +2223,7 @@ Partial Class frmRecepcion
         Me.cmdDelete.Image = CType(resources.GetObject("cmdDelete.Image"), System.Drawing.Image)
         Me.cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDelete.Name = "cmdDelete"
-        Me.cmdDelete.Size = New System.Drawing.Size(29, 28)
+        Me.cmdDelete.Size = New System.Drawing.Size(29, 24)
         '
         'Panel3
         '
@@ -2233,7 +2233,7 @@ Partial Class frmRecepcion
         Me.Panel3.Location = New System.Drawing.Point(595, 28)
         Me.Panel3.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(1046, 612)
+        Me.Panel3.Size = New System.Drawing.Size(1046, 587)
         Me.Panel3.TabIndex = 94
         '
         'PicImg
@@ -2243,7 +2243,7 @@ Partial Class frmRecepcion
         Me.PicImg.Location = New System.Drawing.Point(0, 27)
         Me.PicImg.Margin = New System.Windows.Forms.Padding(4)
         Me.PicImg.Name = "PicImg"
-        Me.PicImg.Size = New System.Drawing.Size(1046, 585)
+        Me.PicImg.Size = New System.Drawing.Size(1046, 560)
         Me.PicImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.PicImg.TabIndex = 93
         Me.PicImg.TabStop = False
@@ -2268,7 +2268,7 @@ Partial Class frmRecepcion
         Me.GrpOperadorBodega.Location = New System.Drawing.Point(0, 0)
         Me.GrpOperadorBodega.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpOperadorBodega.Name = "GrpOperadorBodega"
-        Me.GrpOperadorBodega.Size = New System.Drawing.Size(1643, 642)
+        Me.GrpOperadorBodega.Size = New System.Drawing.Size(1643, 617)
         Me.GrpOperadorBodega.TabIndex = 0
         Me.GrpOperadorBodega.Tag = ""
         '
@@ -2281,7 +2281,7 @@ Partial Class frmRecepcion
         Me.GroupControl13.Location = New System.Drawing.Point(2, 28)
         Me.GroupControl13.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl13.Name = "GroupControl13"
-        Me.GroupControl13.Size = New System.Drawing.Size(1639, 612)
+        Me.GroupControl13.Size = New System.Drawing.Size(1639, 587)
         Me.GroupControl13.TabIndex = 0
         Me.GroupControl13.Text = "Selección de Operador"
         '
@@ -2290,12 +2290,12 @@ Partial Class frmRecepcion
         Me.DGridOperadores.DataSource = Me.DataBindingSource
         Me.DGridOperadores.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DGridOperadores.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        Me.DGridOperadores.Location = New System.Drawing.Point(2, 59)
+        Me.DGridOperadores.Location = New System.Drawing.Point(2, 55)
         Me.DGridOperadores.MainView = Me.GrdOperadorBobega
         Me.DGridOperadores.Margin = New System.Windows.Forms.Padding(4)
         Me.DGridOperadores.Name = "DGridOperadores"
         Me.DGridOperadores.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemCheckEdit1, Me.RepositoryItemCheckEdit2})
-        Me.DGridOperadores.Size = New System.Drawing.Size(1635, 518)
+        Me.DGridOperadores.Size = New System.Drawing.Size(1635, 497)
         Me.DGridOperadores.TabIndex = 0
         Me.DGridOperadores.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GrdOperadorBobega})
         '
@@ -2391,7 +2391,7 @@ Partial Class frmRecepcion
         Me.ToolStripPR.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripPR.Name = "ToolStripPR"
         Me.ToolStripPR.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStripPR.Size = New System.Drawing.Size(1635, 31)
+        Me.ToolStripPR.Size = New System.Drawing.Size(1635, 27)
         Me.ToolStripPR.TabIndex = 3
         Me.ToolStripPR.Text = "ToolStrip2"
         '
@@ -2400,7 +2400,7 @@ Partial Class frmRecepcion
         Me.cmdMarcarTodosOperador.Image = CType(resources.GetObject("cmdMarcarTodosOperador.Image"), System.Drawing.Image)
         Me.cmdMarcarTodosOperador.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdMarcarTodosOperador.Name = "cmdMarcarTodosOperador"
-        Me.cmdMarcarTodosOperador.Size = New System.Drawing.Size(73, 28)
+        Me.cmdMarcarTodosOperador.Size = New System.Drawing.Size(73, 24)
         Me.cmdMarcarTodosOperador.Text = "Todos"
         '
         'cmdDesmarcarTodosOperador
@@ -2408,7 +2408,7 @@ Partial Class frmRecepcion
         Me.cmdDesmarcarTodosOperador.Image = CType(resources.GetObject("cmdDesmarcarTodosOperador.Image"), System.Drawing.Image)
         Me.cmdDesmarcarTodosOperador.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDesmarcarTodosOperador.Name = "cmdDesmarcarTodosOperador"
-        Me.cmdDesmarcarTodosOperador.Size = New System.Drawing.Size(90, 28)
+        Me.cmdDesmarcarTodosOperador.Size = New System.Drawing.Size(90, 24)
         Me.cmdDesmarcarTodosOperador.Text = "Ninguno"
         '
         'Bar2
@@ -2442,13 +2442,13 @@ Partial Class frmRecepcion
         Me.DockPanel1.Controls.Add(Me.DockPanel1_Container)
         Me.DockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.ID = New System.Guid("3bb47686-189c-4fb8-a839-198f9210017f")
-        Me.DockPanel1.Location = New System.Drawing.Point(0, 699)
+        Me.DockPanel1.Location = New System.Drawing.Point(0, 741)
         Me.DockPanel1.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel1.Name = "DockPanel1"
         Me.DockPanel1.OriginalSize = New System.Drawing.Size(200, 99)
         Me.DockPanel1.SavedDock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.SavedIndex = 0
-        Me.DockPanel1.Size = New System.Drawing.Size(1546, 122)
+        Me.DockPanel1.Size = New System.Drawing.Size(1645, 124)
         Me.DockPanel1.Text = "Bitácora"
         Me.DockPanel1.Visibility = DevExpress.XtraBars.Docking.DockVisibility.AutoHide
         '
@@ -2462,10 +2462,10 @@ Partial Class frmRecepcion
         Me.DockPanel1_Container.Controls.Add(User_agrLabel)
         Me.DockPanel1_Container.Controls.Add(Fec_modLabel)
         Me.DockPanel1_Container.Controls.Add(Me.Fec_modDateEdit)
-        Me.DockPanel1_Container.Location = New System.Drawing.Point(5, 30)
+        Me.DockPanel1_Container.Location = New System.Drawing.Point(4, 34)
         Me.DockPanel1_Container.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel1_Container.Name = "DockPanel1_Container"
-        Me.DockPanel1_Container.Size = New System.Drawing.Size(1536, 87)
+        Me.DockPanel1_Container.Size = New System.Drawing.Size(1637, 86)
         Me.DockPanel1_Container.TabIndex = 0
         '
         'xtrRecepcion
@@ -2725,7 +2725,7 @@ Partial Class frmRecepcion
         Me.tabDetalleOC.Controls.Add(Me.GrpDetalle)
         Me.tabDetalleOC.Margin = New System.Windows.Forms.Padding(4)
         Me.tabDetalleOC.Name = "tabDetalleOC"
-        Me.tabDetalleOC.Size = New System.Drawing.Size(1643, 642)
+        Me.tabDetalleOC.Size = New System.Drawing.Size(1643, 617)
         Me.tabDetalleOC.Text = "Detalle documento de Ingreso"
         '
         'tabDetRec
@@ -2741,7 +2741,7 @@ Partial Class frmRecepcion
         Me.tabImagenes.Controls.Add(Me.GrpImagen)
         Me.tabImagenes.Margin = New System.Windows.Forms.Padding(4)
         Me.tabImagenes.Name = "tabImagenes"
-        Me.tabImagenes.Size = New System.Drawing.Size(1643, 642)
+        Me.tabImagenes.Size = New System.Drawing.Size(1643, 617)
         Me.tabImagenes.Text = "Imagenes"
         '
         'tabDetOp
@@ -2749,7 +2749,7 @@ Partial Class frmRecepcion
         Me.tabDetOp.Controls.Add(Me.GrpOperadorBodega)
         Me.tabDetOp.Margin = New System.Windows.Forms.Padding(4)
         Me.tabDetOp.Name = "tabDetOp"
-        Me.tabDetOp.Size = New System.Drawing.Size(1643, 642)
+        Me.tabDetOp.Size = New System.Drawing.Size(1643, 617)
         Me.tabDetOp.Text = "Detalle de Operadores"
         '
         'tabDetalleRecepcion2
@@ -2757,7 +2757,7 @@ Partial Class frmRecepcion
         Me.tabDetalleRecepcion2.Controls.Add(Me.GroupControl1)
         Me.tabDetalleRecepcion2.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.tabDetalleRecepcion2.Name = "tabDetalleRecepcion2"
-        Me.tabDetalleRecepcion2.Size = New System.Drawing.Size(1643, 642)
+        Me.tabDetalleRecepcion2.Size = New System.Drawing.Size(1643, 617)
         Me.tabDetalleRecepcion2.Text = "Detalle de Recepción"
         '
         'GroupControl1
@@ -2768,7 +2768,7 @@ Partial Class frmRecepcion
         Me.GroupControl1.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl1.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(1643, 642)
+        Me.GroupControl1.Size = New System.Drawing.Size(1643, 617)
         Me.GroupControl1.TabIndex = 1
         Me.GroupControl1.Text = "Lista de Productos"
         '
@@ -2776,11 +2776,11 @@ Partial Class frmRecepcion
         '
         Me.DgridDetalleRec2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DgridDetalleRec2.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        Me.DgridDetalleRec2.Location = New System.Drawing.Point(2, 59)
+        Me.DgridDetalleRec2.Location = New System.Drawing.Point(2, 55)
         Me.DgridDetalleRec2.MainView = Me.gvDetalleRec2
         Me.DgridDetalleRec2.Margin = New System.Windows.Forms.Padding(4)
         Me.DgridDetalleRec2.Name = "DgridDetalleRec2"
-        Me.DgridDetalleRec2.Size = New System.Drawing.Size(1639, 581)
+        Me.DgridDetalleRec2.Size = New System.Drawing.Size(1639, 560)
         Me.DgridDetalleRec2.TabIndex = 19
         Me.DgridDetalleRec2.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvDetalleRec2})
         '
@@ -2807,7 +2807,7 @@ Partial Class frmRecepcion
         Me.ToolStrip2.Location = New System.Drawing.Point(2, 28)
         Me.ToolStrip2.Name = "ToolStrip2"
         Me.ToolStrip2.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStrip2.Size = New System.Drawing.Size(1639, 31)
+        Me.ToolStrip2.Size = New System.Drawing.Size(1639, 27)
         Me.ToolStrip2.TabIndex = 0
         Me.ToolStrip2.Text = "ToolStrip4"
         '
@@ -2815,7 +2815,7 @@ Partial Class frmRecepcion
         '
         Me.ToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ToolStripButton1.Name = "ToolStripButton1"
-        Me.ToolStripButton1.Size = New System.Drawing.Size(131, 28)
+        Me.ToolStripButton1.Size = New System.Drawing.Size(131, 24)
         Me.ToolStripButton1.Text = "Agregar Producto"
         '
         'ToolEliminarFila
@@ -2823,7 +2823,7 @@ Partial Class frmRecepcion
         Me.ToolEliminarFila.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ToolEliminarFila.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ToolEliminarFila.Name = "ToolEliminarFila"
-        Me.ToolEliminarFila.Size = New System.Drawing.Size(98, 28)
+        Me.ToolEliminarFila.Size = New System.Drawing.Size(98, 24)
         Me.ToolEliminarFila.Text = "Eliminar Fila"
         '
         'tmrActualizarDatosRecepcion
