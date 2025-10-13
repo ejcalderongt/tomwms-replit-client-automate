@@ -966,9 +966,10 @@ Public Class frmRecepcion
 
                 chkMostrarCantidadPI.Checked = gBeRecepcionEnc.Mostrar_Cantidad_Esperada
 
-                If Modo = TipoTrans.Editar Then
-                    chkHabilitaStock.Enabled = False
-                End If
+                '#CKFK20251012 Esta validación es la que no aplica, no tiene nada que ver si se está editando o no una recepcion
+                'If Modo = TipoTrans.Editar Then
+                '    chkHabilitaStock.Enabled = False
+                'End If
 
                 txtIdOrdenCompra.Enabled = False
 
@@ -5835,10 +5836,12 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                     If BeTransReTR.UsaHH = 0 Then
                         chkRecepcionManual.Checked = True
-                        chkHabilitaStock.Checked = False
+                        '#CKFK20251012 Quité esta funcionalidad
+                        'chkHabilitaStock.Checked = False
                     Else
                         chkRecepcionManual.Checked = False
-                        chkHabilitaStock.Checked = True
+                        '#CKFK20251012 Quité esta funcionalidad
+                        'chkHabilitaStock.Checked = True
                     End If
 
                     '#CKFK 20210624 Se llama a la función creada por EJC para habilitar o no el stock basado en las reglas del propietario

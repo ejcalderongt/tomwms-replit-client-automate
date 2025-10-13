@@ -182,6 +182,8 @@ Partial Class frmRecepcion
         Me.GrpObservacion = New DevExpress.XtraEditors.GroupControl()
         Me.txtObservacion = New System.Windows.Forms.TextBox()
         Me.GrpAsignacionTransaccion = New DevExpress.XtraEditors.GroupControl()
+        Me.cmbMuelle = New DevExpress.XtraEditors.GridLookUpEdit()
+        Me.GridView12 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.txtNombreEstado = New DevExpress.XtraEditors.TextEdit()
         Me.lnkEstadoPorDefecto = New System.Windows.Forms.LinkLabel()
         Me.txtIdEstadoDefectoRecepcion = New DevExpress.XtraEditors.TextEdit()
@@ -324,8 +326,6 @@ Partial Class frmRecepcion
         Me.ToolStripButton1 = New System.Windows.Forms.ToolStripButton()
         Me.ToolEliminarFila = New System.Windows.Forms.ToolStripButton()
         Me.tmrActualizarDatosRecepcion = New System.Windows.Forms.Timer(Me.components)
-        Me.cmbMuelle = New DevExpress.XtraEditors.GridLookUpEdit()
-        Me.GridView12 = New DevExpress.XtraGrid.Views.Grid.GridView()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
@@ -379,6 +379,8 @@ Partial Class frmRecepcion
         Me.GrpObservacion.SuspendLayout()
         CType(Me.GrpAsignacionTransaccion, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GrpAsignacionTransaccion.SuspendLayout()
+        CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView12, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtNombreEstado.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtIdEstadoDefectoRecepcion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtNombreUbicacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -469,8 +471,6 @@ Partial Class frmRecepcion
         CType(Me.DgridDetalleRec2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gvDetalleRec2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ToolStrip2.SuspendLayout()
-        CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.GridView12, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -716,7 +716,7 @@ Partial Class frmRecepcion
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.RibbonControl.Size = New System.Drawing.Size(1645, 193)
-        Me.RibbonControl.StatusBar = Me.RibbonStatusBar1
+        Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'cmdGuardar
         '
@@ -1266,6 +1266,27 @@ Partial Class frmRecepcion
         Me.GrpAsignacionTransaccion.TabIndex = 3
         Me.GrpAsignacionTransaccion.Text = "Asignación de Transacción"
         '
+        'cmbMuelle
+        '
+        Me.cmbMuelle.Location = New System.Drawing.Point(141, 38)
+        Me.cmbMuelle.Margin = New System.Windows.Forms.Padding(6)
+        Me.cmbMuelle.MenuManager = Me.RibbonControl
+        Me.cmbMuelle.Name = "cmbMuelle"
+        Me.cmbMuelle.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbMuelle.Properties.NullText = ""
+        Me.cmbMuelle.Properties.PopupView = Me.GridView12
+        Me.cmbMuelle.Size = New System.Drawing.Size(329, 22)
+        Me.cmbMuelle.TabIndex = 100
+        '
+        'GridView12
+        '
+        Me.GridView12.DetailHeight = 682
+        Me.GridView12.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
+        Me.GridView12.Name = "GridView12"
+        Me.GridView12.OptionsSelection.EnableAppearanceFocusedCell = False
+        Me.GridView12.OptionsView.ShowAutoFilterRow = True
+        Me.GridView12.OptionsView.ShowGroupPanel = False
+        '
         'txtNombreEstado
         '
         Me.txtNombreEstado.Location = New System.Drawing.Point(230, 106)
@@ -1513,7 +1534,7 @@ Partial Class frmRecepcion
         Me.GrpFactura.Location = New System.Drawing.Point(0, 0)
         Me.GrpFactura.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpFactura.Name = "GrpFactura"
-        Me.GrpFactura.Size = New System.Drawing.Size(491, 325)
+        Me.GrpFactura.Size = New System.Drawing.Size(491, 326)
         Me.GrpFactura.TabIndex = 1
         Me.GrpFactura.Text = "Facturas asociadas"
         '
@@ -1601,7 +1622,7 @@ Partial Class frmRecepcion
         Me.grdListaFactura.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.grdListaFactura.ShowEditingIcon = False
         Me.grdListaFactura.ShowRowErrors = False
-        Me.grdListaFactura.Size = New System.Drawing.Size(487, 295)
+        Me.grdListaFactura.Size = New System.Drawing.Size(487, 296)
         Me.grdListaFactura.TabIndex = 0
         '
         'IdFacturaRecepcion
@@ -1717,7 +1738,7 @@ Partial Class frmRecepcion
         Me.DgridDetalleRec.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.DgridDetalleRec.EnableHeadersVisualStyles = False
         Me.DgridDetalleRec.GridColor = System.Drawing.Color.Navy
-        Me.DgridDetalleRec.Location = New System.Drawing.Point(2, 55)
+        Me.DgridDetalleRec.Location = New System.Drawing.Point(2, 59)
         Me.DgridDetalleRec.Margin = New System.Windows.Forms.Padding(4)
         Me.DgridDetalleRec.MultiSelect = False
         Me.DgridDetalleRec.Name = "DgridDetalleRec"
@@ -1732,7 +1753,7 @@ Partial Class frmRecepcion
         Me.DgridDetalleRec.RowHeadersVisible = False
         Me.DgridDetalleRec.RowHeadersWidth = 60
         Me.DgridDetalleRec.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.DgridDetalleRec.Size = New System.Drawing.Size(1639, 537)
+        Me.DgridDetalleRec.Size = New System.Drawing.Size(1639, 533)
         Me.DgridDetalleRec.TabIndex = 1
         '
         'No_Linea
@@ -2030,7 +2051,7 @@ Partial Class frmRecepcion
         Me.ToolStrip1.Location = New System.Drawing.Point(2, 28)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStrip1.Size = New System.Drawing.Size(1639, 27)
+        Me.ToolStrip1.Size = New System.Drawing.Size(1639, 31)
         Me.ToolStrip1.TabIndex = 0
         Me.ToolStrip1.Text = "ToolStrip4"
         '
@@ -2039,7 +2060,7 @@ Partial Class frmRecepcion
         Me.cmdAgregarProducto.Image = CType(resources.GetObject("cmdAgregarProducto.Image"), System.Drawing.Image)
         Me.cmdAgregarProducto.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAgregarProducto.Name = "cmdAgregarProducto"
-        Me.cmdAgregarProducto.Size = New System.Drawing.Size(151, 24)
+        Me.cmdAgregarProducto.Size = New System.Drawing.Size(151, 28)
         Me.cmdAgregarProducto.Text = "Agregar Producto"
         '
         'cmdVerParametros
@@ -2047,7 +2068,7 @@ Partial Class frmRecepcion
         Me.cmdVerParametros.Image = CType(resources.GetObject("cmdVerParametros.Image"), System.Drawing.Image)
         Me.cmdVerParametros.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdVerParametros.Name = "cmdVerParametros"
-        Me.cmdVerParametros.Size = New System.Drawing.Size(134, 24)
+        Me.cmdVerParametros.Size = New System.Drawing.Size(134, 28)
         Me.cmdVerParametros.Text = "Ver parámetros"
         '
         'cmdEliminarFila
@@ -2056,7 +2077,7 @@ Partial Class frmRecepcion
         Me.cmdEliminarFila.Image = CType(resources.GetObject("cmdEliminarFila.Image"), System.Drawing.Image)
         Me.cmdEliminarFila.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdEliminarFila.Name = "cmdEliminarFila"
-        Me.cmdEliminarFila.Size = New System.Drawing.Size(118, 24)
+        Me.cmdEliminarFila.Size = New System.Drawing.Size(118, 28)
         Me.cmdEliminarFila.Text = "Eliminar Fila"
         '
         'lblStatus
@@ -2064,7 +2085,7 @@ Partial Class frmRecepcion
         Me.lblStatus.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblStatus.ForeColor = System.Drawing.Color.Firebrick
         Me.lblStatus.Name = "lblStatus"
-        Me.lblStatus.Size = New System.Drawing.Size(15, 24)
+        Me.lblStatus.Size = New System.Drawing.Size(15, 28)
         Me.lblStatus.Text = "-"
         '
         'Panel1
@@ -2161,12 +2182,12 @@ Partial Class frmRecepcion
         Me.GrdImagen.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
         GridLevelNode1.RelationName = "Level1"
         Me.GrdImagen.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
-        Me.GrdImagen.Location = New System.Drawing.Point(2, 55)
+        Me.GrdImagen.Location = New System.Drawing.Point(2, 59)
         Me.GrdImagen.MainView = Me.GridViewImg
         Me.GrdImagen.Margin = New System.Windows.Forms.Padding(4)
         Me.GrdImagen.MenuManager = Me.RibbonControl
         Me.GrdImagen.Name = "GrdImagen"
-        Me.GrdImagen.Size = New System.Drawing.Size(589, 555)
+        Me.GrdImagen.Size = New System.Drawing.Size(589, 551)
         Me.GrdImagen.TabIndex = 1
         Me.GrdImagen.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridViewImg})
         '
@@ -2185,7 +2206,7 @@ Partial Class frmRecepcion
         Me.ToolStrip.Location = New System.Drawing.Point(2, 28)
         Me.ToolStrip.Name = "ToolStrip"
         Me.ToolStrip.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStrip.Size = New System.Drawing.Size(589, 27)
+        Me.ToolStrip.Size = New System.Drawing.Size(589, 31)
         Me.ToolStrip.TabIndex = 0
         Me.ToolStrip.Text = "ToolStrip4"
         '
@@ -2194,7 +2215,7 @@ Partial Class frmRecepcion
         Me.cmdAdd.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(29, 24)
+        Me.cmdAdd.Size = New System.Drawing.Size(29, 28)
         '
         'cmdDelete
         '
@@ -2202,7 +2223,7 @@ Partial Class frmRecepcion
         Me.cmdDelete.Image = CType(resources.GetObject("cmdDelete.Image"), System.Drawing.Image)
         Me.cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDelete.Name = "cmdDelete"
-        Me.cmdDelete.Size = New System.Drawing.Size(29, 24)
+        Me.cmdDelete.Size = New System.Drawing.Size(29, 28)
         '
         'Panel3
         '
@@ -2269,12 +2290,12 @@ Partial Class frmRecepcion
         Me.DGridOperadores.DataSource = Me.DataBindingSource
         Me.DGridOperadores.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DGridOperadores.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        Me.DGridOperadores.Location = New System.Drawing.Point(2, 55)
+        Me.DGridOperadores.Location = New System.Drawing.Point(2, 59)
         Me.DGridOperadores.MainView = Me.GrdOperadorBobega
         Me.DGridOperadores.Margin = New System.Windows.Forms.Padding(4)
         Me.DGridOperadores.Name = "DGridOperadores"
         Me.DGridOperadores.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemCheckEdit1, Me.RepositoryItemCheckEdit2})
-        Me.DGridOperadores.Size = New System.Drawing.Size(1635, 522)
+        Me.DGridOperadores.Size = New System.Drawing.Size(1635, 518)
         Me.DGridOperadores.TabIndex = 0
         Me.DGridOperadores.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GrdOperadorBobega})
         '
@@ -2370,7 +2391,7 @@ Partial Class frmRecepcion
         Me.ToolStripPR.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripPR.Name = "ToolStripPR"
         Me.ToolStripPR.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStripPR.Size = New System.Drawing.Size(1635, 27)
+        Me.ToolStripPR.Size = New System.Drawing.Size(1635, 31)
         Me.ToolStripPR.TabIndex = 3
         Me.ToolStripPR.Text = "ToolStrip2"
         '
@@ -2379,7 +2400,7 @@ Partial Class frmRecepcion
         Me.cmdMarcarTodosOperador.Image = CType(resources.GetObject("cmdMarcarTodosOperador.Image"), System.Drawing.Image)
         Me.cmdMarcarTodosOperador.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdMarcarTodosOperador.Name = "cmdMarcarTodosOperador"
-        Me.cmdMarcarTodosOperador.Size = New System.Drawing.Size(73, 24)
+        Me.cmdMarcarTodosOperador.Size = New System.Drawing.Size(73, 28)
         Me.cmdMarcarTodosOperador.Text = "Todos"
         '
         'cmdDesmarcarTodosOperador
@@ -2387,7 +2408,7 @@ Partial Class frmRecepcion
         Me.cmdDesmarcarTodosOperador.Image = CType(resources.GetObject("cmdDesmarcarTodosOperador.Image"), System.Drawing.Image)
         Me.cmdDesmarcarTodosOperador.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDesmarcarTodosOperador.Name = "cmdDesmarcarTodosOperador"
-        Me.cmdDesmarcarTodosOperador.Size = New System.Drawing.Size(90, 24)
+        Me.cmdDesmarcarTodosOperador.Size = New System.Drawing.Size(90, 28)
         Me.cmdDesmarcarTodosOperador.Text = "Ninguno"
         '
         'Bar2
@@ -2553,7 +2574,7 @@ Partial Class frmRecepcion
         '
         Me.SplitContainer1.Panel2.Controls.Add(Me.GrpFactura)
         Me.SplitContainer1.Size = New System.Drawing.Size(491, 642)
-        Me.SplitContainer1.SplitterDistance = 313
+        Me.SplitContainer1.SplitterDistance = 312
         Me.SplitContainer1.TabIndex = 7
         '
         'GroupControl3
@@ -2565,7 +2586,7 @@ Partial Class frmRecepcion
         Me.GroupControl3.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl3.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl3.Name = "GroupControl3"
-        Me.GroupControl3.Size = New System.Drawing.Size(491, 313)
+        Me.GroupControl3.Size = New System.Drawing.Size(491, 312)
         Me.GroupControl3.TabIndex = 6
         Me.GroupControl3.Text = "Datos de Transporte"
         '
@@ -2755,11 +2776,11 @@ Partial Class frmRecepcion
         '
         Me.DgridDetalleRec2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DgridDetalleRec2.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        Me.DgridDetalleRec2.Location = New System.Drawing.Point(2, 55)
+        Me.DgridDetalleRec2.Location = New System.Drawing.Point(2, 59)
         Me.DgridDetalleRec2.MainView = Me.gvDetalleRec2
         Me.DgridDetalleRec2.Margin = New System.Windows.Forms.Padding(4)
         Me.DgridDetalleRec2.Name = "DgridDetalleRec2"
-        Me.DgridDetalleRec2.Size = New System.Drawing.Size(1639, 585)
+        Me.DgridDetalleRec2.Size = New System.Drawing.Size(1639, 581)
         Me.DgridDetalleRec2.TabIndex = 19
         Me.DgridDetalleRec2.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvDetalleRec2})
         '
@@ -2786,7 +2807,7 @@ Partial Class frmRecepcion
         Me.ToolStrip2.Location = New System.Drawing.Point(2, 28)
         Me.ToolStrip2.Name = "ToolStrip2"
         Me.ToolStrip2.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStrip2.Size = New System.Drawing.Size(1639, 27)
+        Me.ToolStrip2.Size = New System.Drawing.Size(1639, 31)
         Me.ToolStrip2.TabIndex = 0
         Me.ToolStrip2.Text = "ToolStrip4"
         '
@@ -2794,7 +2815,7 @@ Partial Class frmRecepcion
         '
         Me.ToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ToolStripButton1.Name = "ToolStripButton1"
-        Me.ToolStripButton1.Size = New System.Drawing.Size(131, 24)
+        Me.ToolStripButton1.Size = New System.Drawing.Size(131, 28)
         Me.ToolStripButton1.Text = "Agregar Producto"
         '
         'ToolEliminarFila
@@ -2802,33 +2823,12 @@ Partial Class frmRecepcion
         Me.ToolEliminarFila.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ToolEliminarFila.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ToolEliminarFila.Name = "ToolEliminarFila"
-        Me.ToolEliminarFila.Size = New System.Drawing.Size(98, 24)
+        Me.ToolEliminarFila.Size = New System.Drawing.Size(98, 28)
         Me.ToolEliminarFila.Text = "Eliminar Fila"
         '
         'tmrActualizarDatosRecepcion
         '
         Me.tmrActualizarDatosRecepcion.Interval = 3000
-        '
-        'cmbMuelle
-        '
-        Me.cmbMuelle.Location = New System.Drawing.Point(141, 38)
-        Me.cmbMuelle.Margin = New System.Windows.Forms.Padding(6)
-        Me.cmbMuelle.MenuManager = Me.RibbonControl
-        Me.cmbMuelle.Name = "cmbMuelle"
-        Me.cmbMuelle.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbMuelle.Properties.NullText = ""
-        Me.cmbMuelle.Properties.PopupView = Me.GridView12
-        Me.cmbMuelle.Size = New System.Drawing.Size(329, 22)
-        Me.cmbMuelle.TabIndex = 100
-        '
-        'GridView12
-        '
-        Me.GridView12.DetailHeight = 682
-        Me.GridView12.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
-        Me.GridView12.Name = "GridView12"
-        Me.GridView12.OptionsSelection.EnableAppearanceFocusedCell = False
-        Me.GridView12.OptionsView.ShowAutoFilterRow = True
-        Me.GridView12.OptionsView.ShowGroupPanel = False
         '
         'frmRecepcion
         '
@@ -2883,6 +2883,8 @@ Partial Class frmRecepcion
         CType(Me.GrpAsignacionTransaccion, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GrpAsignacionTransaccion.ResumeLayout(False)
         Me.GrpAsignacionTransaccion.PerformLayout()
+        CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView12, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtNombreEstado.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtIdEstadoDefectoRecepcion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtNombreUbicacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -2987,8 +2989,6 @@ Partial Class frmRecepcion
         CType(Me.gvDetalleRec2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ToolStrip2.ResumeLayout(False)
         Me.ToolStrip2.PerformLayout()
-        CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.GridView12, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
