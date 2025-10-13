@@ -4594,7 +4594,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     If XtraMessageBox.Show(String.Format("¿Desea eliminar el Producto {0}?", DgridDetalleRec.CurrentRow.Cells("ProductoP").Value) _
                                           , Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
 
-
                         Dim selectedRow As DataGridViewRow = DgridDetalleRec.SelectedRows(0)
 
                         ' Verifica si la fila es una fila nueva no confirmada
@@ -4643,6 +4642,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                             Next
 
                             DgridDetalleRec.Rows.RemoveAt(lIndexF)
+
+                            DgridDetalleRec.Refresh()
 
                         End If
 
@@ -5147,7 +5148,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
         If e.KeyCode = Keys.F3 Then
             cmdVerParametros_Click(Nothing, Nothing)
         ElseIf DgridDetalleRec2.IsFocused AndAlso e.KeyCode = Keys.Delete Then
-            Eliminar_Fila(Nothing)
+            'Eliminar_Fila(Nothing)
+            Eliminar_Fila_Recepcion2(Nothing)
         ElseIf e.KeyCode = Keys.Escape Then
             '#EJC20240326: Validar al salir.
             Dim vMensaje As String = ""
@@ -9345,7 +9347,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                 If vCantPorProducto > 1 Then
 
                                     If XtraMessageBox.Show("¿La línea del documento de ingreso que quiere recepcionar es la " & nolineaSeleccionada & "?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
-                                        Eliminar_Fila(Nothing)
+                                        'Eliminar_Fila(Nothing)
+                                        Eliminar_Fila_Recepcion2(Nothing)
                                         Exit Sub
                                     End If
 
@@ -10273,6 +10276,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     View.SetRowCellValue(e.RowHandle, "IdRecepcionEnc", gBeRecepcionEnc.IdRecepcionEnc)
                     View.SetRowCellValue(e.RowHandle, "IsNewR", False)
 
+                    View.UpdateCurrentRow()
+
                     '#GT10102025: si producto maneja LP, hacer incremento a usuario BOF
                     If BeProducto.Genera_lp Or BeProducto.Presentacion.Genera_lp_auto Then
                         Incrementar_Licencia_BOF(AP.IdBodega,
@@ -10321,6 +10326,10 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 End If
 
                 _filtroCodigoBarra = ""
+
+
+                '#GT13102025: cambio agregado para confirmar que idrecepcionDet se asigna y no se pierda
+                gvDetalleRec2.RefreshData()
 
                 DgridDetalleRec2.BeginInvoke(New MethodInvoker(Sub()
                                                                    gvDetalleRec2.FocusedRowHandle = GridControl.NewItemRowHandle
@@ -11345,12 +11354,14 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
         If pBeTipo_Tarea_HH.UsaHH Then
             XtraMessageBox.Show("El tipo de tarea requiere que la linea se elimine desde la HH.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
         Else
-            EliminarFila(Nothing)
+            '#GT13102025: este botón es del nuevo grid recepcion y debe eliminar datos del nuevo grid no del viejo
+            'EliminarFila(Nothing)
+            Eliminar_Fila_Recepcion2(Nothing)
         End If
 
     End Sub
 
-    Private Sub Eliminar_Fila(e As KeyEventArgs)
+    Private Sub Eliminar_Fila_Recepcion2(e As KeyEventArgs)
 
         Try
 

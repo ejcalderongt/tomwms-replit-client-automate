@@ -448,4 +448,34 @@ Public Class clsLnTrans_movimientos
 
     End Function
 
+    Public Shared Function Eliminar_Recepcion_BOF(ByRef oBeTrans_movimientos As clsBeTrans_movimientos,
+                                                  ByVal pConection As SqlConnection,
+                                                  ByVal pTransaction As SqlTransaction) As Integer
+
+        Try
+
+
+            Dim sp As String = " Delete from Trans_movimientos
+                                 Where (IdRecepcion=@IdRecepcion)
+                                 AND (IdRecepcionDet=@IdRecepcionDet)
+                                 AND (IdTransaccion = @IdTransaccion)
+                                 AND IdTipoTarea=1 "
+
+            Dim cmd As New SqlCommand(sp, pConection, pTransaction) With {.CommandType = CommandType.Text}
+            cmd.Parameters.Add(New SqlParameter("@IDRECEPCION", oBeTrans_movimientos.IdRecepcion))
+            cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONDET", oBeTrans_movimientos.IdRecepcionDet))
+            cmd.Parameters.Add(New SqlParameter("@IDTRANSACCION", oBeTrans_movimientos.IdTransaccion))
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
 End Class
