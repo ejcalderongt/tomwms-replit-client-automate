@@ -2769,18 +2769,35 @@ Public Class frmDespacho
 
                 If DT.Rows.Count > 0 Then
 
-                    Dim Rep As New rptPackingPorBarra
-                    Rep.DataSource = DT
-                    Rep.DataMember = "Result"
-                    Rep.Parameters("Empresa").Value = AP.NomEmpresa
-                    Rep.Parameters("Empresa").Visible = False
-                    Rep.Parameters("Bodega").Value = AP.NomBodega
-                    Rep.Parameters("Bodega").Visible = False
-                    Rep.RequestParameters = False
+                    If AP.Bodega.Control_Talla_Color Then
+                        Dim Rep As New rptPackingTallaColor
+                        Rep.DataSource = DT
+                        Rep.DataMember = "Result"
+                        Rep.Parameters("Empresa").Value = AP.NomEmpresa
+                        Rep.Parameters("Empresa").Visible = False
+                        Rep.Parameters("Bodega").Value = AP.NomBodega
+                        Rep.Parameters("Bodega").Visible = False
+                        Rep.RequestParameters = False
 
-                    Rep.MostrarEncabezadoSoloEnPrimeraPagina = False
+                        Rep.MostrarEncabezadoSoloEnPrimeraPagina = False
 
-                    Rep.ShowPreview()
+                        Rep.ShowPreview()
+                    Else
+                        Dim Rep As New rptPackingPorBarra
+                        Rep.DataSource = DT
+                        Rep.DataMember = "Result"
+                        Rep.Parameters("Empresa").Value = AP.NomEmpresa
+                        Rep.Parameters("Empresa").Visible = False
+                        Rep.Parameters("Bodega").Value = AP.NomBodega
+                        Rep.Parameters("Bodega").Visible = False
+                        Rep.RequestParameters = False
+
+                        Rep.MostrarEncabezadoSoloEnPrimeraPagina = False
+
+                        Rep.ShowPreview()
+                    End If
+
+
 
 
                 End If
