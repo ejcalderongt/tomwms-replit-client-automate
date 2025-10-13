@@ -5791,6 +5791,12 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             clsLnTrans_re_fact.Guarda_facturas_asoc(gBeRecepcionEnc.IdRecepcionEnc,
                                                     pListRecFact)
 
+
+
+            '#GT10102025: recargar facturas, porque luego de guardar en memoria, IsNew afecta al presionar Actualizar o Finalizar
+            gBeRecepcionEnc.DetalleFacturas = clsLnTrans_re_fact.Get_Detalle_Facturas_By_IdRecepcionEnc(gBeRecepcionEnc.IdRecepcionEnc)
+            pListRecFact = gBeRecepcionEnc.DetalleFacturas()
+
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -10264,10 +10270,13 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     View.SetRowCellValue(e.RowHandle, "IdRecepcionEnc", gBeRecepcionEnc.IdRecepcionEnc)
                     View.SetRowCellValue(e.RowHandle, "IsNewR", False)
 
-                    Incrementar_Licencia_BOF(AP.IdBodega,
+                    '#GT10102025: si producto maneja LP, hacer incremento a usuario BOF
+                    If BeProducto.Genera_lp Or BeProducto.Presentacion.Genera_lp_auto Then
+                        Incrementar_Licencia_BOF(AP.IdBodega,
                                              AP.UsuarioAp.IdUsuario,
                                              clsTransaccion.lConnection,
                                              clsTransaccion.lTransaction)
+                    End If
 
                     '#MECR22092025: Se agregó bitacora para registro de detalle recepcionado.
                     Dim msjResultado As String = "Linea registrada: " & gIdMaxIdRecepcionDet & " del producto " & CodigoProducto & " con licencia " & Licencia & " y cantidad recibida " & Cantidad

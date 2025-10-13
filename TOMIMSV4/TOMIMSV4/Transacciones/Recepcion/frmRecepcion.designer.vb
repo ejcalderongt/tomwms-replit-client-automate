@@ -716,7 +716,7 @@ Partial Class frmRecepcion
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.RibbonControl.Size = New System.Drawing.Size(1645, 193)
-        Me.RibbonControl.StatusBar = Me.RibbonStatusBar1
+        Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'cmdGuardar
         '
@@ -898,7 +898,7 @@ Partial Class frmRecepcion
         'RibbonStatusBar1
         '
         Me.RibbonStatusBar1.ItemLinks.Add(Me.lblRegs)
-        Me.RibbonStatusBar1.Location = New System.Drawing.Point(2, 552)
+        Me.RibbonStatusBar1.Location = New System.Drawing.Point(2, 577)
         Me.RibbonStatusBar1.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonStatusBar1.Name = "RibbonStatusBar1"
         Me.RibbonStatusBar1.Ribbon = Me.RibbonControl
@@ -1682,7 +1682,7 @@ Partial Class frmRecepcion
         Me.GrpDetalle.Location = New System.Drawing.Point(0, 0)
         Me.GrpDetalle.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpDetalle.Name = "GrpDetalle"
-        Me.GrpDetalle.Size = New System.Drawing.Size(1643, 617)
+        Me.GrpDetalle.Size = New System.Drawing.Size(1643, 642)
         Me.GrpDetalle.TabIndex = 0
         Me.GrpDetalle.Text = "Lista de Productos"
         '
@@ -1694,7 +1694,7 @@ Partial Class frmRecepcion
         Me.DgridDetalleOC.MainView = Me.gvDetalleDocIngreso
         Me.DgridDetalleOC.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.DgridDetalleOC.Name = "DgridDetalleOC"
-        Me.DgridDetalleOC.Size = New System.Drawing.Size(1639, 587)
+        Me.DgridDetalleOC.Size = New System.Drawing.Size(1639, 612)
         Me.DgridDetalleOC.TabIndex = 20
         Me.DgridDetalleOC.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvDetalleDocIngreso})
         '
@@ -2161,7 +2161,7 @@ Partial Class frmRecepcion
         Me.GrpImagen.Location = New System.Drawing.Point(0, 0)
         Me.GrpImagen.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpImagen.Name = "GrpImagen"
-        Me.GrpImagen.Size = New System.Drawing.Size(1643, 617)
+        Me.GrpImagen.Size = New System.Drawing.Size(1643, 642)
         Me.GrpImagen.TabIndex = 0
         '
         'GroupControl4
@@ -2172,7 +2172,7 @@ Partial Class frmRecepcion
         Me.GroupControl4.Location = New System.Drawing.Point(2, 28)
         Me.GroupControl4.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl4.Name = "GroupControl4"
-        Me.GroupControl4.Size = New System.Drawing.Size(593, 587)
+        Me.GroupControl4.Size = New System.Drawing.Size(593, 612)
         Me.GroupControl4.TabIndex = 0
         Me.GroupControl4.Text = "Lista de Imágenes"
         '
@@ -2187,7 +2187,7 @@ Partial Class frmRecepcion
         Me.GrdImagen.Margin = New System.Windows.Forms.Padding(4)
         Me.GrdImagen.MenuManager = Me.RibbonControl
         Me.GrdImagen.Name = "GrdImagen"
-        Me.GrdImagen.Size = New System.Drawing.Size(589, 530)
+        Me.GrdImagen.Size = New System.Drawing.Size(589, 555)
         Me.GrdImagen.TabIndex = 1
         Me.GrdImagen.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridViewImg})
         '
@@ -2233,7 +2233,7 @@ Partial Class frmRecepcion
         Me.Panel3.Location = New System.Drawing.Point(595, 28)
         Me.Panel3.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(1046, 587)
+        Me.Panel3.Size = New System.Drawing.Size(1046, 612)
         Me.Panel3.TabIndex = 94
         '
         'PicImg
@@ -2243,7 +2243,7 @@ Partial Class frmRecepcion
         Me.PicImg.Location = New System.Drawing.Point(0, 27)
         Me.PicImg.Margin = New System.Windows.Forms.Padding(4)
         Me.PicImg.Name = "PicImg"
-        Me.PicImg.Size = New System.Drawing.Size(1046, 560)
+        Me.PicImg.Size = New System.Drawing.Size(1046, 585)
         Me.PicImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.PicImg.TabIndex = 93
         Me.PicImg.TabStop = False
@@ -2268,7 +2268,7 @@ Partial Class frmRecepcion
         Me.GrpOperadorBodega.Location = New System.Drawing.Point(0, 0)
         Me.GrpOperadorBodega.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpOperadorBodega.Name = "GrpOperadorBodega"
-        Me.GrpOperadorBodega.Size = New System.Drawing.Size(1643, 617)
+        Me.GrpOperadorBodega.Size = New System.Drawing.Size(1643, 642)
         Me.GrpOperadorBodega.TabIndex = 0
         Me.GrpOperadorBodega.Tag = ""
         '
@@ -2281,7 +2281,7 @@ Partial Class frmRecepcion
         Me.GroupControl13.Location = New System.Drawing.Point(2, 28)
         Me.GroupControl13.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl13.Name = "GroupControl13"
-        Me.GroupControl13.Size = New System.Drawing.Size(1639, 587)
+        Me.GroupControl13.Size = New System.Drawing.Size(1639, 612)
         Me.GroupControl13.TabIndex = 0
         Me.GroupControl13.Text = "Selección de Operador"
         '
@@ -2295,7 +2295,7 @@ Partial Class frmRecepcion
         Me.DGridOperadores.Margin = New System.Windows.Forms.Padding(4)
         Me.DGridOperadores.Name = "DGridOperadores"
         Me.DGridOperadores.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemCheckEdit1, Me.RepositoryItemCheckEdit2})
-        Me.DGridOperadores.Size = New System.Drawing.Size(1635, 497)
+        Me.DGridOperadores.Size = New System.Drawing.Size(1635, 522)
         Me.DGridOperadores.TabIndex = 0
         Me.DGridOperadores.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GrdOperadorBobega})
         '
@@ -2725,7 +2725,7 @@ Partial Class frmRecepcion
         Me.tabDetalleOC.Controls.Add(Me.GrpDetalle)
         Me.tabDetalleOC.Margin = New System.Windows.Forms.Padding(4)
         Me.tabDetalleOC.Name = "tabDetalleOC"
-        Me.tabDetalleOC.Size = New System.Drawing.Size(1643, 617)
+        Me.tabDetalleOC.Size = New System.Drawing.Size(1643, 642)
         Me.tabDetalleOC.Text = "Detalle documento de Ingreso"
         '
         'tabDetRec
@@ -2741,7 +2741,7 @@ Partial Class frmRecepcion
         Me.tabImagenes.Controls.Add(Me.GrpImagen)
         Me.tabImagenes.Margin = New System.Windows.Forms.Padding(4)
         Me.tabImagenes.Name = "tabImagenes"
-        Me.tabImagenes.Size = New System.Drawing.Size(1643, 617)
+        Me.tabImagenes.Size = New System.Drawing.Size(1643, 642)
         Me.tabImagenes.Text = "Imagenes"
         '
         'tabDetOp
@@ -2749,7 +2749,7 @@ Partial Class frmRecepcion
         Me.tabDetOp.Controls.Add(Me.GrpOperadorBodega)
         Me.tabDetOp.Margin = New System.Windows.Forms.Padding(4)
         Me.tabDetOp.Name = "tabDetOp"
-        Me.tabDetOp.Size = New System.Drawing.Size(1643, 617)
+        Me.tabDetOp.Size = New System.Drawing.Size(1643, 642)
         Me.tabDetOp.Text = "Detalle de Operadores"
         '
         'tabDetalleRecepcion2
@@ -2757,7 +2757,7 @@ Partial Class frmRecepcion
         Me.tabDetalleRecepcion2.Controls.Add(Me.GroupControl1)
         Me.tabDetalleRecepcion2.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.tabDetalleRecepcion2.Name = "tabDetalleRecepcion2"
-        Me.tabDetalleRecepcion2.Size = New System.Drawing.Size(1643, 617)
+        Me.tabDetalleRecepcion2.Size = New System.Drawing.Size(1643, 642)
         Me.tabDetalleRecepcion2.Text = "Detalle de Recepción"
         '
         'GroupControl1
@@ -2768,7 +2768,7 @@ Partial Class frmRecepcion
         Me.GroupControl1.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl1.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(1643, 617)
+        Me.GroupControl1.Size = New System.Drawing.Size(1643, 642)
         Me.GroupControl1.TabIndex = 1
         Me.GroupControl1.Text = "Lista de Productos"
         '
@@ -2780,7 +2780,7 @@ Partial Class frmRecepcion
         Me.DgridDetalleRec2.MainView = Me.gvDetalleRec2
         Me.DgridDetalleRec2.Margin = New System.Windows.Forms.Padding(4)
         Me.DgridDetalleRec2.Name = "DgridDetalleRec2"
-        Me.DgridDetalleRec2.Size = New System.Drawing.Size(1639, 560)
+        Me.DgridDetalleRec2.Size = New System.Drawing.Size(1639, 585)
         Me.DgridDetalleRec2.TabIndex = 19
         Me.DgridDetalleRec2.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvDetalleRec2})
         '
