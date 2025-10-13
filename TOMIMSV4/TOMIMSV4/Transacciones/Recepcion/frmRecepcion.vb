@@ -6007,10 +6007,10 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                     If BeTransReTR.UsaHH = 0 Then
                         chkRecepcionManual.Checked = True
-                        chkHabilitaStock.Checked = False
+                        'chkHabilitaStock.Checked = False
                     Else
                         chkRecepcionManual.Checked = False
-                        chkHabilitaStock.Checked = True
+                        'chkHabilitaStock.Checked = True
                     End If
 
                     '#CKFK 20210624 Se llama a la función creada por EJC para habilitar o no el stock basado en las reglas del propietario
