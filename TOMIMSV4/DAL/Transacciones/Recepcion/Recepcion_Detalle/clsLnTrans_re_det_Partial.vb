@@ -968,6 +968,15 @@ Partial Public Class clsLnTrans_re_det
                                                                                      IIf(Es_Transaccion_Remota, pConnection, lConnection),
                                                                                      IIf(Es_Transaccion_Remota, pTransaction, lTrans))
 
+            '#GT13102025: Me encontré que se elimina de todo menos trans_movimientos (valido que sea la tarea tipo 1) porque es recepción BOF
+            Dim pTransMovimientos = New clsBeTrans_movimientos()
+            pTransMovimientos.IdRecepcion = pIdRecepcionEnc
+            pTransMovimientos.IdTransaccion = pIdRecepcionEnc
+            pTransMovimientos.IdRecepcionDet = pIdRecepcionDet
+            Dim FilasMovAfectadas = clsLnTrans_movimientos.Eliminar_Recepcion_BOF(pTransMovimientos, IIf(Es_Transaccion_Remota, pConnection, lConnection),
+                                                                                                     IIf(Es_Transaccion_Remota, pTransaction, lTrans))
+
+
             Resultado += String.Format("Eliminé {0} stockrec ", FilasAfectadas)
 
             FilasAfectadas = Delete_Rec_Det_Parametros(pIdRecepcionEnc,

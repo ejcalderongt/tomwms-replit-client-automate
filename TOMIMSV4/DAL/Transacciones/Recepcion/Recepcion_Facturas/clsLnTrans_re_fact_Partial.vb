@@ -1,5 +1,6 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
+Imports System.Windows.Forms.VisualStyles
 
 Partial Public Class clsLnTrans_re_fact
 
@@ -304,5 +305,91 @@ Partial Public Class clsLnTrans_re_fact
         End Try
 
     End Sub
+
+    '#GT10102025: sin transaccion remota porque es para recargar el objeto cuando se esta realizando la recepción.
+    Public Shared Function Get_Detalle_Facturas_By_IdRecepcionEnc(ByVal pIdRecepcionEnc As Integer) As List(Of clsBeTrans_re_fact)
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Dim lReturnList As New List(Of clsBeTrans_re_fact)
+
+        Try
+
+
+            Dim vSQL As String = "SELECT * FROM Trans_re_fact WHERE IdRecepcionEnc=@IdRecepcionEnc"
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", pIdRecepcionEnc)
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                Dim Obj As clsBeTrans_re_fact
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                    For Each lRow As DataRow In lDataTable.Rows
+
+                        Obj = New clsBeTrans_re_fact
+
+                        Cargar(Obj, lRow)
+
+                        Obj.IsNew = False
+
+                        lReturnList.Add(Obj)
+
+                    Next
+
+                End If
+
+                If Not lTransaction Is Nothing Then
+                    lTransaction.Commit()
+                End If
+
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            If Not lTransaction Is Nothing Then
+                lTransaction.Rollback()
+            End If
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Function
+
+    Public Shared Function Existe_By_NoFactura(ByVal pNoFactura As String) As Boolean
+
+        Existe_By_NoFactura = False
+
+        Try
+            Dim sp As String = "SELECT COUNT(1) FROM Trans_re_fact WHERE (NoFactura = @NOFACTURA)"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                Using cmd As New SqlCommand(sp, lConnection)
+                    cmd.CommandType = CommandType.Text
+                    cmd.Parameters.Add(New SqlParameter("@NOFACTURA", pNoFactura))
+
+                    lConnection.Open()
+                    Dim count As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+
+                    If count > 0 Then
+                        Existe_By_NoFactura = True
+                    End If
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception("ObtenerTransReFact: " & ex.Message)
+        End Try
+
+    End Function
 
 End Class

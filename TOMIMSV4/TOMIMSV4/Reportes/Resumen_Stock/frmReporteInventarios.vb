@@ -151,8 +151,9 @@ Public Class frmReporteInventarios
     End Sub
 
     Private Sub cmdActualizar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdActualizar.ItemClick
-
+        cmdActualizar.Enabled = False
         Cargar_Datos()
+        cmdActualizar.Enabled = True
 
     End Sub
 

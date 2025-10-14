@@ -22,7 +22,7 @@ Module m_Global
     Public Property gVersionApp As String = "7.9.0"
 
     Public gVersionBD As String = "1"
-    Public Property gFechaVersion As Date = New Date(2025, 10, 3)
+    Public Property gFechaVersion As Date = New Date(2025, 10, 10)
     Public Property wsTOMHHInstance As TOMHHWSSoapClient
 
     Public gIndiceInstancia As Integer = -1

@@ -985,9 +985,10 @@ Public Class frmRecepcion
 
                 chkMostrarCantidadPI.Checked = gBeRecepcionEnc.Mostrar_Cantidad_Esperada
 
-                If Modo = TipoTrans.Editar Then
-                    chkHabilitaStock.Enabled = False
-                End If
+                '#CKFK20251012 Esta validación es la que no aplica, no tiene nada que ver si se está editando o no una recepcion
+                'If Modo = TipoTrans.Editar Then
+                '    chkHabilitaStock.Enabled = False
+                'End If
 
                 txtIdOrdenCompra.Enabled = False
 
@@ -4593,7 +4594,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     If XtraMessageBox.Show(String.Format("¿Desea eliminar el Producto {0}?", DgridDetalleRec.CurrentRow.Cells("ProductoP").Value) _
                                           , Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
 
-
                         Dim selectedRow As DataGridViewRow = DgridDetalleRec.SelectedRows(0)
 
                         ' Verifica si la fila es una fila nueva no confirmada
@@ -4642,6 +4642,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                             Next
 
                             DgridDetalleRec.Rows.RemoveAt(lIndexF)
+
+                            DgridDetalleRec.Refresh()
 
                         End If
 
@@ -5146,7 +5148,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
         If e.KeyCode = Keys.F3 Then
             cmdVerParametros_Click(Nothing, Nothing)
         ElseIf DgridDetalleRec2.IsFocused AndAlso e.KeyCode = Keys.Delete Then
-            Eliminar_Fila(Nothing)
+            'Eliminar_Fila(Nothing)
+            Eliminar_Fila_Recepcion2(Nothing)
         ElseIf e.KeyCode = Keys.Escape Then
             '#EJC20240326: Validar al salir.
             Dim vMensaje As String = ""
@@ -5791,6 +5794,12 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             clsLnTrans_re_fact.Guarda_facturas_asoc(gBeRecepcionEnc.IdRecepcionEnc,
                                                     pListRecFact)
 
+
+
+            '#GT10102025: recargar facturas, porque luego de guardar en memoria, IsNew afecta al presionar Actualizar o Finalizar
+            gBeRecepcionEnc.DetalleFacturas = clsLnTrans_re_fact.Get_Detalle_Facturas_By_IdRecepcionEnc(gBeRecepcionEnc.IdRecepcionEnc)
+            pListRecFact = gBeRecepcionEnc.DetalleFacturas()
+
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -6001,10 +6010,12 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                     If BeTransReTR.UsaHH = 0 Then
                         chkRecepcionManual.Checked = True
-                        chkHabilitaStock.Checked = False
+                        '#CKFK20251012 Quité esta funcionalidad
+                        'chkHabilitaStock.Checked = False
                     Else
                         chkRecepcionManual.Checked = False
-                        chkHabilitaStock.Checked = True
+                        '#CKFK20251012 Quité esta funcionalidad
+                        'chkHabilitaStock.Checked = True
                     End If
 
                     '#CKFK 20210624 Se llama a la función creada por EJC para habilitar o no el stock basado en las reglas del propietario
@@ -9336,7 +9347,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                 If vCantPorProducto > 1 Then
 
                                     If XtraMessageBox.Show("¿La línea del documento de ingreso que quiere recepcionar es la " & nolineaSeleccionada & "?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
-                                        Eliminar_Fila(Nothing)
+                                        'Eliminar_Fila(Nothing)
+                                        Eliminar_Fila_Recepcion2(Nothing)
                                         Exit Sub
                                     End If
 
@@ -10264,10 +10276,15 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     View.SetRowCellValue(e.RowHandle, "IdRecepcionEnc", gBeRecepcionEnc.IdRecepcionEnc)
                     View.SetRowCellValue(e.RowHandle, "IsNewR", False)
 
-                    Incrementar_Licencia_BOF(AP.IdBodega,
+                    View.UpdateCurrentRow()
+
+                    '#GT10102025: si producto maneja LP, hacer incremento a usuario BOF
+                    If BeProducto.Genera_lp Or BeProducto.Presentacion.Genera_lp_auto Then
+                        Incrementar_Licencia_BOF(AP.IdBodega,
                                              AP.UsuarioAp.IdUsuario,
                                              clsTransaccion.lConnection,
                                              clsTransaccion.lTransaction)
+                    End If
 
                     '#MECR22092025: Se agregó bitacora para registro de detalle recepcionado.
                     Dim msjResultado As String = "Linea registrada: " & gIdMaxIdRecepcionDet & " del producto " & CodigoProducto & " con licencia " & Licencia & " y cantidad recibida " & Cantidad
@@ -10309,6 +10326,10 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 End If
 
                 _filtroCodigoBarra = ""
+
+
+                '#GT13102025: cambio agregado para confirmar que idrecepcionDet se asigna y no se pierda
+                gvDetalleRec2.RefreshData()
 
                 DgridDetalleRec2.BeginInvoke(New MethodInvoker(Sub()
                                                                    gvDetalleRec2.FocusedRowHandle = GridControl.NewItemRowHandle
@@ -11333,12 +11354,14 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
         If pBeTipo_Tarea_HH.UsaHH Then
             XtraMessageBox.Show("El tipo de tarea requiere que la linea se elimine desde la HH.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
         Else
-            EliminarFila(Nothing)
+            '#GT13102025: este botón es del nuevo grid recepcion y debe eliminar datos del nuevo grid no del viejo
+            'EliminarFila(Nothing)
+            Eliminar_Fila_Recepcion2(Nothing)
         End If
 
     End Sub
 
-    Private Sub Eliminar_Fila(e As KeyEventArgs)
+    Private Sub Eliminar_Fila_Recepcion2(e As KeyEventArgs)
 
         Try
 
