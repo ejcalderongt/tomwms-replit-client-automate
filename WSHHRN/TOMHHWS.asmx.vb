@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Net
 Imports System.Reflection
@@ -15422,9 +15423,11 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            ' Si la excepcion es diferente a SQL
+            If Not TypeOf ex Is SqlException Then
+                Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+                clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
+            End If
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
