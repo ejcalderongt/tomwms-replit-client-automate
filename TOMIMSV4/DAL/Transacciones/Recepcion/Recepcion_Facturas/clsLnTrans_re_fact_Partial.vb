@@ -1,5 +1,6 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
+Imports System.Windows.Forms.VisualStyles
 
 Partial Public Class clsLnTrans_re_fact
 
@@ -360,6 +361,33 @@ Partial Public Class clsLnTrans_re_fact
             Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Function
+
+    Public Shared Function Existe_By_NoFactura(ByVal pNoFactura As String) As Boolean
+
+        Existe_By_NoFactura = False
+
+        Try
+            Dim sp As String = "SELECT COUNT(1) FROM Trans_re_fact WHERE (NoFactura = @NOFACTURA)"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                Using cmd As New SqlCommand(sp, lConnection)
+                    cmd.CommandType = CommandType.Text
+                    cmd.Parameters.Add(New SqlParameter("@NOFACTURA", pNoFactura))
+
+                    lConnection.Open()
+                    Dim count As Integer = Convert.ToInt32(cmd.ExecuteScalar())
+
+                    If count > 0 Then
+                        Existe_By_NoFactura = True
+                    End If
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception("ObtenerTransReFact: " & ex.Message)
         End Try
 
     End Function
