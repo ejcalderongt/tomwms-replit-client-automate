@@ -76,12 +76,13 @@ Public Class clsSyncSapSolTrasladoRec
             clsPublic.Actualizar_Progreso(lblprg, "Conectando a SAP.")
 
             Dim lPedidosCompra As List(Of clsBeI_nav_ped_compra_enc) = Get_Solicitudes_Traslado_Rec_SAP_SL(codigoBodega, clsTrans.lConnection, clsTrans.lTransaction, lblprg, pNoDocumento)
+            lPedidosCompra = lPedidosCompra.FindAll(Function(x) x.Location_Code = codigoBodega).ToList
             Dim pBePedidoEnc As New clsBeTrans_pe_enc
             Dim PedidoClienteExistenteByCompany As New clsBeTrans_pe_enc
             Dim PedidoClienteExistente As New clsBeTrans_pe_enc
 
             If lPedidosCompra.Count = 0 Then
-                clsPublic.Actualizar_Progreso(lblprg, "No hay documentos para importar.")
+                clsPublic.Actualizar_Progreso(lblprg, "No hay documentos para importar con código de bodega destino: " & codigoBodega)
                 Return False
             End If
 
@@ -99,11 +100,13 @@ Public Class clsSyncSapSolTrasladoRec
 
                         BeConfigEnc = BeConfigEnc
 
-                        If Await Validar_Proveedor_WMS(BeConfigEnc, BeINavPedCompra.Buy_From_Vendor_No,lblprg,clsTrans, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
+                        If Await Validar_Proveedor_WMS(BeConfigEnc, BeINavPedCompra.Buy_From_Vendor_No, lblprg, clsTrans, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
                             clsPublic.Actualizar_Progreso(lblprg, vbTab & "El proveedor: " & BeINavPedCompra.Buy_From_Vendor_No & " No existía en WMS y fue insertado.")
                         End If
 
                     End If
+
+
 
                     Dim BePedidoCompraEnc As New clsBeTrans_oc_enc
                     Dim vResult As String = ""
@@ -131,10 +134,10 @@ Public Class clsSyncSapSolTrasladoRec
     End Function
 
     Private Shared Function Get_Solicitudes_Traslado_Rec_SAP_SL(pCodigoBodegaInterface As String,
-                                                              lConnection As SqlConnection,
-                                                              lTransaction As SqlTransaction,
-                                                              lblprg As RichTextBox,
-                                                              Optional pNoDocumentoSAP As String = "") As List(Of clsBeI_nav_ped_compra_enc)
+                                                                lConnection As SqlConnection,
+                                                                lTransaction As SqlTransaction,
+                                                                lblprg As RichTextBox,
+                                                                Optional pNoDocumentoSAP As String = "") As List(Of clsBeI_nav_ped_compra_enc)
 
         Dim lSolDevolTiendaRec As New List(Of clsBeI_nav_ped_compra_enc)
         Dim BePropietario As clsBePropietarios = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario, lConnection, lTransaction)
@@ -162,7 +165,8 @@ Public Class clsSyncSapSolTrasladoRec
             Dim filtroEstado As String = "DocumentStatus eq 'bost_Open'"
             Dim filtroEnviado As String = "U_ENVIADO_WMS eq 2"
             Dim filtroDocNum As String = If(Not String.IsNullOrWhiteSpace(pNoDocumentoSAP), $" and DocNum eq {pNoDocumentoSAP}", "")
-            Dim filtroFinal As String = $"{filtroEstado} and {filtroEnviado}{filtroDocNum}"
+            Dim filtroBodega As String = $"{filtroDocNum} and ToWarehouse eq '{pCodigoBodegaInterface}' and (U_Transito eq null or U_Transito eq '') "
+            Dim filtroFinal As String = $"{filtroEstado} and {filtroEnviado}{filtroBodega}"
 
             Dim url As String = $"{BD.Instancia.HANA_SL}InventoryTransferRequests?$filter={Uri.EscapeDataString(filtroFinal)}"
 
@@ -203,6 +207,8 @@ Public Class clsSyncSapSolTrasladoRec
                         Dim datePart As Date = Convert.ToDateTime(enc("DocDate")).Date
                         Dim timeStr As String = enc("DocTime")?.ToString()
                         Dim ts As TimeSpan
+                        Dim U_Transito = enc("U_Transito").Value(Of String)
+
                         If Not String.IsNullOrWhiteSpace(timeStr) AndAlso TimeSpan.TryParseExact(timeStr, "hh\:mm\:ss", CultureInfo.InvariantCulture, ts) Then
                             BeTrasladoRecEnc.Posting_Date = datePart.Add(ts)
                         Else
@@ -215,7 +221,7 @@ Public Class clsSyncSapSolTrasladoRec
                         BeTrasladoRecEnc.Buy_From_Vendor_No = enc("FromWarehouse").ToString()
                         BeTrasladoRecEnc.Buy_From_Vendor_Name = enc("CardName").ToString()
                         BeTrasladoRecEnc.Is_Internal_Transfer = False
-                        BeTrasladoRecEnc.Location_Code = enc("ToWarehouse").ToString()
+                        BeTrasladoRecEnc.Location_Code = IIf(U_Transito IsNot Nothing, U_Transito, enc("ToWarehouse")?.ToString())  'Cliente = Bodega_Virtual - U_Transito enc("ToWarehouse").ToString()
                         BeTrasladoRecEnc.Vendor_Invoice_No = enc("DocNum").ToString()
                         BeTrasladoRecEnc.Posting_Description = enc("JournalMemo").ToString()
                         BeTrasladoRecEnc.Comments = enc("Comments").ToString()
@@ -226,7 +232,7 @@ Public Class clsSyncSapSolTrasladoRec
                         End If
                         BeTrasladoRecEnc.Campaign_No = enc("U_Campania").ToString()
                         BeTrasladoRecEnc.IsImport = enc("U_Estado").ToString() = "3"
-                        BeTrasladoRecEnc.Internal_Transfer_Document_No = ""
+                        BeTrasladoRecEnc.Internal_Transfer_Document_No = enc("U_DOCUMENTO_WMS").ToString()
                         BeTrasladoRecEnc.Document_Type = tTipoDocumentoIngreso.Transferencia_de_Ingreso
 
                         ' Mapeo de líneas

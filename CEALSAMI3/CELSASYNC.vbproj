@@ -262,24 +262,31 @@
   <ItemGroup>
     <EmbeddedResource Include="Formas\frmEjecucion.resx">
       <DependentUpon>frmEjecucion.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\Mantenimientos\frmNavEnt.resx">
       <DependentUpon>frmNavEnt.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\Mantenimientos\frmNavEnt_List.resx">
       <DependentUpon>frmNavEnt_List.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\Principal\frmMenu.resx">
       <DependentUpon>frmMenu.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\Reportes\frmEjecuciones.resx">
       <DependentUpon>frmEjecuciones.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\Reportes\frmRegistroInter.resx">
       <DependentUpon>frmRegistroInter.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\Reportes\frmRegistrosInterface.resx">
       <DependentUpon>frmRegistrosInterface.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">

@@ -18,9 +18,9 @@ Module m_Global
     Public vRutaInterfaceSAP As String = CurDir() & "/SAPBOSync.exe"
     Public vRutaServicio As String = CurDir() & "/WMS_PrintService.exe"
     Public vRutaInterfaceCEALSA As String = CurDir() & "/CEALSASync.exe"
-    Public Property gVersionApp As String = "7.7.8"
+    Public Property gVersionApp As String = "7.7.9"
     Public gVersionBD As String = "1"
-    Public Property gFechaVersion As Date = New Date(2025, 10, 8)
+    Public Property gFechaVersion As Date = New Date(2025, 10, 14)
     Public Property wsTOMHHInstance As TOMHHWSSoapClient
     Public gIndiceInstancia As Integer = -1
     Public Property lConfiguracionAliasCampos As New List(Of clsBeConfiguracion_alias_campos)
