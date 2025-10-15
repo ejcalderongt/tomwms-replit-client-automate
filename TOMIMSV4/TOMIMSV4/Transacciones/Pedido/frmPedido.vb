@@ -9257,7 +9257,7 @@ Public Class frmPedido
     End Function
 
 
-    Private Sub LabelControl2_Click(sender As Object, e As EventArgs) Handles LabelControl2.Click
+    Private Sub LabelControl2_Click(sender As Object, e As EventArgs) 
         LabelControl2.Enabled = False
         Scan_Poliza()
         LabelControl2.Enabled = True
@@ -9341,7 +9341,7 @@ Public Class frmPedido
 
     End Sub
 
-    Private Sub lnkUltDespacho_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles txtIdDespacho.LinkClicked
+    Private Sub lnkUltDespacho_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs)
         Despacho_Link()
     End Sub
 
@@ -10783,7 +10783,7 @@ Public Class frmPedido
 
     End Sub
 
-    Private Sub txtIdDespacho_Click(sender As Object, e As EventArgs) Handles txtIdDespacho.Click
+    Private Sub txtIdDespacho_Click(sender As Object, e As EventArgs) Handles txtIdDespacho.LinkClicked
 
         Despacho_Link()
 

@@ -10314,10 +10314,15 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                             Impresion.ShowDialog()
                             Impresion.Dispose()
                         Else
-                            Dim Impresion As New frmImpresionRecepcion
-                            Impresion.pTransReDet = ObjTransReDet
-                            Impresion.ShowDialog()
-                            Impresion.Dispose()
+
+                            If BeProducto.Genera_lp OrElse BeProducto.Presentacion.Genera_lp_auto Then
+                                Dim Impresion As New frmImpresionRecepcion
+                                Impresion.pTransReDet = ObjTransReDet
+                                Impresion.ShowDialog()
+                                Impresion.Dispose()
+                            End If
+
+
                         End If
                     End If
 
