@@ -3566,7 +3566,6 @@ Partial Public Class clsLnTrans_re_enc
 
                             Dim lMaxS As Integer = clsLnStock.MaxID(lConnection,
                                                                     lTransaction)
-                            lTransaction)
 
                             If listaStockRec IsNot Nothing AndAlso listaStockRec.Count > 0 Then
 

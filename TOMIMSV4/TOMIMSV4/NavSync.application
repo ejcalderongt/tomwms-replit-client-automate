@@ -7,14 +7,14 @@
     <framework targetVersion="4.8" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="NavSync.exe.manifest" size="36638">
+    <dependentAssembly dependencyType="install" codebase="NavSync.exe.manifest" size="8428">
       <assemblyIdentity name="NavSync.exe" version="1.0.0.2" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="amd64" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>hpO9I+3fzS5BX2SFnZ6OqnwbeQvNeA1JbveXh820L/E=</dsig:DigestValue>
+        <dsig:DigestValue>Tt6kjIfhj/IjzastsD8WQ/PfzyUr6nKhEuHW96e68dA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
