@@ -58,7 +58,7 @@ Public Class clsLnTrans_pe_encDMS
 
             If listPE IsNot Nothing AndAlso listPE.Count > 0 Then
 
-                clsHelper.LogMensaje(lblprg, "Cargando nuevos ingresos para sincronizar: " & listPE.Count, clsHelper.TipoMensaje.Exito)
+                clsHelper.LogMensaje(lblprg, "Cargando nuevos pedidos para sincronizar: " & listPE.Count, clsHelper.TipoMensaje.Exito)
 
                 Dim grupos = From r In listPE
                              Group r By r.PropietarioBodega.IdPropietario Into RegistrosProp = Group
@@ -73,7 +73,7 @@ Public Class clsLnTrans_pe_encDMS
                 For Each grupo In grupos
 
                     If propietarioAnterior <> grupo.IdPropietario Then
-                        clsHelper.LogMensaje(lblprg, $"➡ Procesando registros del propietario {grupo.IdPropietario}", clsHelper.TipoMensaje.Info)
+                        clsHelper.LogMensaje(lblprg, $" Procesando registros del propietario {grupo.IdPropietario}", clsHelper.TipoMensaje.Info)
                     End If
 
                     Dim objRespuesta As Object = Await ProcesarPedidos(lblprg, grupo.Lista)
@@ -98,7 +98,7 @@ Public Class clsLnTrans_pe_encDMS
                 Next
 
             Else
-                clsHelper.LogMensaje(lblprg, "Ingresos no encontrados para sincronizar", clsHelper.TipoMensaje.Error_)
+                clsHelper.LogMensaje(lblprg, "Pedidos nuevos no encontrados para sincronizar", clsHelper.TipoMensaje.Error_)
                 Exit Function
             End If
 
@@ -152,7 +152,7 @@ Public Class clsLnTrans_pe_encDMS
                 Else
                     intento += 1
                     clsHelper.LogMensaje(lblprg, "Reintento de envio: " & intento, clsHelper.TipoMensaje.Info)
-                    Await Task.Delay(2000) ' Esperar 2 segundos entre intentos
+                    Await Task.Delay(1000) ' Esperar 2 segundos entre intentos
                 End If
             End While
 
@@ -256,6 +256,10 @@ Public Class clsLnTrans_pe_encDMS
                 localTransaction = True
             End If
 
+            'If Not clsLnDMS_Log_sincronizacion_fallos.Existe_by_Pedido(pPedidoEnc.IdPedidoEnc, lConnection, lTransaction) Then
+
+            'End If
+
             BeLogSyncError = New clsBeDMS_Log_sincronizacion_fallos()
             BeLogSyncError.IdLogFallo = clsLnDMS_Log_sincronizacion_fallos.MaxID(lConnection, lTransaction) + 1
             BeLogSyncError.IdOrdenCompraEnc = 0
@@ -271,7 +275,6 @@ Public Class clsLnTrans_pe_encDMS
             If localTransaction Then
                 lTransaction.Commit()
             End If
-
 
         Catch ex As Exception
             ' Rollback si la transacción es local
@@ -365,6 +368,7 @@ Public Class clsLnTrans_pe_encDMS
                 resultado = "No se encontró detalle, pedido: " & pBePeEnc.IdPedidoEnc
                 clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                 Guadar_Envio_Rechazado(pBePeEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                clsTransaccion.Commit_Transaction()
                 Return ""
             End If
 
@@ -372,6 +376,7 @@ Public Class clsLnTrans_pe_encDMS
                 resultado = "No se encontró detalle asociado a picking_ubic, pedido: " & pBePeEnc.IdPedidoEnc
                 clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                 Guadar_Envio_Rechazado(pBePeEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                clsTransaccion.Commit_Transaction()
                 Return ""
             End If
 
@@ -419,6 +424,7 @@ Public Class clsLnTrans_pe_encDMS
                 resultado = "Por un error desconocido, no se puede asociar el cliente, pedido: " & pBePeEnc.IdPedidoEnc
                 clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                 Guadar_Envio_Rechazado(pBePeEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                clsTransaccion.Commit_Transaction()
                 Return ""
             End If
 
@@ -598,6 +604,7 @@ Public Class clsLnTrans_pe_encDMS
                     resultado = "El muelle asignado no es valido, pedido: " & pBePeEnc.IdPedidoEnc
                     clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                     Guadar_Envio_Rechazado(pBePeEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                    clsTransaccion.Commit_Transaction()
                     Return ""
                 End If
             Else
