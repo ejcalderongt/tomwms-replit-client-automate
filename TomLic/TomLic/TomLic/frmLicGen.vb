@@ -94,7 +94,7 @@ Public Class frmLicGen
             Text,
             MessageBoxButtons.OK,
             MessageBoxIcon.Exclamation)
-            txtSolicitudCliente.focus()
+            txtSolicitudCliente.Focus()
             Exit Sub
         End If
 

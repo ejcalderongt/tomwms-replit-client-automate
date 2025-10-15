@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace WMS.EntityCore.Dtos.Catalogos
 {
-    public class ProductoFamiliaSimpleDto
+    public class ProductoClasificacionMi3Dto
     {
         public int IdPropietario { get; set; }
-        public string? Nombre { get; set; }
-        public string? Codigo { get; set; }
-        public bool? Activo { get; set; }
+        public  string? Nombre { get; set; }
+        public  string? Codigo { get; set; }
+        public bool Activo { get; set; }
+
 
     }
 }

@@ -562,7 +562,8 @@ Public Class SapServiceLayerClient
             '--- Documento ÚNICO de entrega ---
             Dim entrega As New FacturaReservaEntregaDto With {
             .CardCode = oOrderPurchase.CardCode,
-            .U_LOGISTIKA_ID = vIdRecepcionEnc,
+            .U_DOCUMENTO_WMS = vIdRecepcionEnc,
+            .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHora(Now),
             .DocDate = Date.Today,
             .DocDueDate = Date.Today,
             .Comments = $"{oOrderPurchase.Comments} - Entrega generada desde WMS IdRecepcion: {IdRecepcionEnc} IdOcEnc: {BeTransOCEnc.IdOrdenCompraEnc}",
@@ -816,7 +817,13 @@ Public Class SapServiceLayerClient
         Dim BeTransOcDet As clsBeTrans_oc_det = Nothing
         Dim vCantidadEsperada As Double = 0
         Dim vRecibioParcial As Boolean = False
+        Dim vResultEntrega As Boolean = False
+        Dim vResultEntregaFaltante As Boolean = False
+        Dim BeReOc As clsBeTrans_re_oc = Nothing
+
         Try
+
+            clsPublic.Actualizar_Progreso(lblprg, "Enviando documento: " & BeTransOCEnc.No_Documento)
 
             BeTransOCTi = clsLnTrans_oc_ti.GetSingle(BeTransOCEnc.IdTipoIngresoOC, lConnection, lTransaction)
 
@@ -825,12 +832,19 @@ Public Class SapServiceLayerClient
                 vCodigoBodegaImportacion = BeINavConfigEnc.Bodega_Prorrateo
             End If
 
+            BeReOc = clsLnTrans_re_oc.Get_Single_By_IdOrdenCompraEnc_And_IdRecepcionEnc(BeTransOCEnc.IdOrdenCompraEnc, lINavTransaccionesOut.FirstOrDefault.Idrecepcionenc, lConnection, lTransaction)
+
+            Dim vOperadorHHWMS As String = clsLnTrans_re_det.Get_IdOperadorDefecto_By_IdRecepcionEnc(IdRecepcionEnc)
+
             ' Armar objeto de entrega
             Dim entrega As New FacturaReservaEntregaDto With {
             .CardCode = oOrderPurchase.CardCode,
             .DocDate = Date.Today,
             .DocDueDate = Date.Today,
             .Comments = oOrderPurchase.Comments & " - Entrega generada desde WMS IdRecepcion: " & IdRecepcionEnc & " IdOcEnc: " & BeTransOCEnc.IdOrdenCompraEnc,
+            .U_OPERADOR_WMS = vOperadorHHWMS,
+            .U_DOCUMENTO_WMS = IdRecepcionEnc,
+            .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHora(Now),
             .DocumentLines = New List(Of FacturaReservaEntregaLineDto)()
             }
 
@@ -840,6 +854,9 @@ Public Class SapServiceLayerClient
             .DocDate = Date.Today,
             .DocDueDate = Date.Today,
             .Comments = oOrderPurchase.Comments & " - Entrega generada desde WMS IdRecepcion: " & IdRecepcionEnc & " IdOcEnc: " & BeTransOCEnc.IdOrdenCompraEnc,
+            .U_OPERADOR_WMS = vOperadorHHWMS,
+            .U_DOCUMENTO_WMS = IdRecepcionEnc,
+            .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHora(Now),
             .DocumentLines = New List(Of FacturaReservaEntregaLineDto)()
             }
 
@@ -928,20 +945,22 @@ Public Class SapServiceLayerClient
 
                             Else
 
+                                Dim vDifFaltante As Double = vCantidadEsperada - ProductoIngreso.Cantidad_Total
+
                                 Dim batchList As New List(Of BatchNumberDto) From {
                                New BatchNumberDto With {
                                                    .BatchNumber = vColor & vTalla,
-                                                   .Quantity = ProductoIngreso.Cantidad_Total
+                                                   .Quantity = ProductoIngreso.Cantidad_Total + vDifFaltante
                                                        }
                                                    }
 
-                                ' Agregar línea a la entrega
+                                ' Agregar línea a la entrega de lo recibido parcialmente
                                 entrega.DocumentLines.Add(New FacturaReservaEntregaLineDto With {
                                 .BaseType = 18, ' Orden de compra
                                 .BaseEntry = oOrderPurchase.DocEntry,
                                 .BaseLine = vNoLineaOCSAP,
                                 .ItemCode = ProductoIngreso.Codigo_producto,
-                                .Quantity = ProductoIngreso.Cantidad_Total,
+                                .Quantity = ProductoIngreso.Cantidad_Total + vDifFaltante,
                                 .WarehouseCode = IIf(vEsImportacion, vCodigoBodegaImportacion, docLine.WarehouseCode),
                                 .U_Color = vColor,
                                 .U_Talla = vTalla,
@@ -995,9 +1014,9 @@ Public Class SapServiceLayerClient
                                                     }
                                                 }
 
-                        ' Agregar línea a la entrega
+                        'Agregar línea a la entrega
                         entregaProductoFaltante.DocumentLines.Add(New FacturaReservaEntregaLineDto With {
-                        .BaseType = 18, ' Orden de compra
+                        .BaseType = 18, 'Orden de compra
                         .BaseEntry = oOrderPurchase.DocEntry,
                         .BaseLine = vNoLineaOCSAP,
                         .ItemCode = docLine.ItemCode,
@@ -1054,19 +1073,64 @@ Public Class SapServiceLayerClient
                         ' Parsear el JSON
                         Dim jsonObj As JObject = JObject.Parse(postContent)
 
-                        ' Capturar los valores
-                        Dim docEntry As Integer = jsonObj("DocEntry")
-                        Dim docNum As Integer = jsonObj("DocNum")
-
                         If postResp.IsSuccessStatusCode Then
 
+                            vResultEntrega = True
+
+                            ' Capturar los valores
+                            Dim docEntry As Integer = jsonObj("DocEntry")
+                            Dim docNum As Integer = jsonObj("DocNum")
+
                             clsPublic.Actualizar_Progreso(lblprg, "✅ Respuesta:")
-                            clsPublic.Actualizar_Progreso(lblprg, postContent)
+                            clsPublic.Actualizar_Progreso(lblprg, "Se envió la entrega a sap para el IdOrdenCompraEnc: " & BeTransOCEnc.IdOrdenCompraEnc & " NoDocumento: " & docNum & " DocEntry: " & docEntry)
+                            'clsPublic.Actualizar_Progreso(lblprg, postContent)
 
                             clsLnTrans_oc_enc.Actualizar_No_Documento_Recepcion_ERP(docNum, BeTransOCEnc.IdOrdenCompraEnc, lConnection, lTransaction)
                             clsLnTrans_oc_enc.Actualizar_NoMarchamo(docEntry, BeTransOCEnc.IdOrdenCompraEnc, lConnection, lTransaction)
 
+                            BeReOc.No_Erp_Docentry_Entrega = docEntry
+                            BeReOc.No_Erp_Docnum_Entrega = docNum
+                            clsLnTrans_re_oc.Actualizar(BeReOc, lConnection, lTransaction)
+
                             clsLnLog_error_wms.Agregar_Error("Se envió la entrega a sap para el IdOrdenCompraEnc: " & BeTransOCEnc.IdOrdenCompraEnc & " NoDocumento: " & docNum & " DocEntry: " & docEntry)
+
+                            ' ====== PATCH: Actualizar UDF U_DOCUMENTO_WMS del Purchase Order ======
+                            Try
+
+                                Dim vOperadorWMSBof As String = clsLnTrans_oc_enc.Get_Usuario_Defecto_By_IdOrdenCompraEnc(IdRecepcionEnc)
+
+                                ' Construir el cuerpo con solo el UDF que quieres actualizar
+                                Dim patchObj As New JObject From {
+                                {"U_DOCUMENTO_WMS", BeTransOCEnc.IdOrdenCompraEnc.ToString()},
+                                {"U_OPERADOR_WMS", vOperadorWMSBof}
+                                }
+
+                                Dim patchContent As New StringContent(patchObj.ToString(), Encoding.UTF8, "application/json")
+
+                                ' Importante: PATCH al documento base (PurchaseOrders) usando el DocEntry del PO original
+                                Dim patchRequest As New HttpRequestMessage(New HttpMethod("PATCH"), $"PurchaseInvoices({BeTransOCEnc.Referencia})") _
+                                    With {.Content = patchContent}
+
+                                ' Reutiliza las mismas cookies / headers de sesión que usaste para el POST
+                                patchRequest.Headers.Add("Cookie", $"B1SESSION={SessionId}; ROUTEID={RouteId}")
+                                patchRequest.Headers.Host = "hanab1"
+                                patchRequest.Headers.ConnectionClose = True
+
+                                Dim patchResp = Await httpClient.SendAsync(patchRequest)
+                                Dim patchContentResp = Await patchResp.Content.ReadAsStringAsync()
+
+                                If patchResp.IsSuccessStatusCode Then
+                                    clsPublic.Actualizar_Progreso(lblprg, "✅ UDF U_DOCUMENTO_WMS actualizado en la OC.")
+                                Else
+                                    clsPublic.Actualizar_Progreso(lblprg, $"❌ ERROR PATCH OC {patchResp.StatusCode}:")
+                                    clsPublic.Actualizar_Progreso(lblprg, patchContentResp)
+                                End If
+
+                            Catch ex As Exception
+                                clsPublic.Actualizar_Progreso(lblprg, $"❌ EXCEPCIÓN PATCH OC: {ex.Message}")
+                            End Try
+                            ' ====== FIN PATCH ======
+
 
                         Else
                             clsPublic.Actualizar_Progreso(lblprg, $"❌ ERROR {postResp.StatusCode}:")
@@ -1079,7 +1143,7 @@ Public Class SapServiceLayerClient
 
                 End Using
 
-                If vGeneroDocumentoFaltante Then
+                If vGeneroDocumentoFaltante And vResultEntrega Then
 
                     Dim handlerFaltante As New HttpClientHandler With {
                     .AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate,
@@ -1115,15 +1179,22 @@ Public Class SapServiceLayerClient
                             Dim docEntry As Integer = jsonObj("DocEntry")
                             Dim docNum As Integer = jsonObj("DocNum")
 
-
                             If postRespFaltante.IsSuccessStatusCode Then
-                                clsPublic.Actualizar_Progreso(lblprg, "✅ Respuesta:")
-                                clsPublic.Actualizar_Progreso(lblprg, "Se creó la entrega: " & docNum)
 
+                                clsPublic.Actualizar_Progreso(lblprg, "✅ Respuesta:")
+                                clsPublic.Actualizar_Progreso(lblprg, "Se creó la entrega (faltante): " & docNum)
+
+                                '#EJC20251014: Aquí actualizar en la re_oc por favor carolina.
                                 clsLnTrans_oc_enc.Actualizar_No_Documento_Recepcion_ERP(docNum, BeTransOCEnc.IdOrdenCompraEnc, lConnection, lTransaction)
                                 clsLnTrans_oc_enc.Actualizar_NoMarchamo(docEntry, BeTransOCEnc.IdOrdenCompraEnc, lConnection, lTransaction)
 
                                 clsLnLog_error_wms.Agregar_Error("Se envió la entrega a sap para el IdOrdenCompraEnc: " & BeTransOCEnc.IdOrdenCompraEnc & " NoDocumento: " & docNum & " DocEntry: " & docEntry)
+
+                                BeReOc.No_Erp_Docentry_Faltante = docEntry
+                                BeReOc.No_Erp_Docnum_Faltante = docNum
+                                clsLnTrans_re_oc.Actualizar(BeReOc, lConnection, lTransaction)
+
+                                vResultEntregaFaltante = True
 
                             Else
                                 clsPublic.Actualizar_Progreso(lblprg, $"❌ ERROR {postRespFaltante.StatusCode}:")
@@ -1139,6 +1210,8 @@ Public Class SapServiceLayerClient
                 End If
 
             End If
+
+            result = If(vGeneroDocumentoFaltante, (vResultEntrega AndAlso vResultEntregaFaltante), vResultEntrega)
 
             Return result
 

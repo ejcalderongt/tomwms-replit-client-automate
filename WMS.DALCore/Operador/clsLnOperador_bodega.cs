@@ -557,12 +557,15 @@ public class clsLnOperador_bodega
 
             foreach (var entity in entities)
             {
-                bool existe = Existe(entity.IdOperadorBodega, connection, isExternalTx ? tx! : localTx!);
+                if (entity.IdOperadorBodega != 0) {
 
-                if (existe)
-                    Actualizar(config, entity, connection, isExternalTx ? tx : localTx);
-                else
-                    Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                    bool existe = Existe(entity.IdOperadorBodega, connection, isExternalTx ? tx! : localTx!);
+
+                    if (existe)
+                        Actualizar(config, entity, connection, isExternalTx ? tx : localTx);
+                    else
+                        Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                }
             }
 
             if (!isExternalTx)

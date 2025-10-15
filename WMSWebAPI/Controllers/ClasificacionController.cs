@@ -22,7 +22,7 @@ namespace WMSWebAPI.Controllers
 
 
         [HttpPost("list/mi3/insert")]
-        public IActionResult Sincronizar([FromBody] List<ProductoClasificacionSimpleDto> Clasificaciondto, [FromServices] IConfiguration configuration) 
+        public IActionResult Sincronizar([FromBody] List<ProductoClasificacionMi3Dto> Clasificaciondto, [FromServices] IConfiguration configuration) 
         {
             if (Clasificaciondto == null || Clasificaciondto.Count == 0)
                 return BadRequest("La lista de clasificación está vacía.");
@@ -49,6 +49,9 @@ namespace WMSWebAPI.Controllers
                         {
                             foreach (var dto in Clasificaciondto)
                             {
+                                if (string.IsNullOrEmpty(dto.Codigo))
+                                    return StatusCode(500, new { Exito = false, Mensaje = "El código no puede estar vacio." });
+
                                 _syncService.ProcesarClasificacionDesdeDto(dto, connection, transaction);
                                 resultados.Add(new { dto.Codigo, Procesado = true, Mensaje = "Procesado correctamente" });
                             }

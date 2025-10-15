@@ -41,7 +41,7 @@
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>465</ApplicationRevision>
+    <ApplicationRevision>470</ApplicationRevision>
     <ApplicationVersion>4.7.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -1093,6 +1093,12 @@
     </Compile>
     <Compile Include="Reportes\Movimiento\frmMovimientosPoliza.vb">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Reportes\Packing\rptPackingTallaColor.Designer.vb">
+      <DependentUpon>rptPackingTallaColor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Packing\rptPackingTallaColor.vb">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reportes\Packing\rptPackingPorBarra.Designer.vb">
       <DependentUpon>rptPackingPorBarra.vb</DependentUpon>
@@ -3475,6 +3481,9 @@
     <EmbeddedResource Include="Reportes\Movimiento\frmMovimientosPoliza.resx">
       <DependentUpon>frmMovimientosPoliza.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Packing\rptPackingTallaColor.resx">
+      <DependentUpon>rptPackingTallaColor.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Packing\rptPackingPorBarra.resx">
       <DependentUpon>rptPackingPorBarra.vb</DependentUpon>
     </EmbeddedResource>
@@ -4375,6 +4384,9 @@
     <Content Include="Conn - Cumbre.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="ConnMHS.ini">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Conn_GT.ini" />
     <None Include="Conn_Inelac.ini" />
     <None Include="Conn_Killios.ini" />
@@ -4435,7 +4447,6 @@
     <None Include="Mantenimientos\Producto_Estado\frmProducto_EstadoList.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_Talla.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx.bak" />
-    <None Include="SAPBOSyncMampa.exe.config" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho11.wsdl" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho33.xsd">
       <SubType>Designer</SubType>
@@ -4505,7 +4516,6 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
-    <Content Include="SAPBOSyncMampa.exe" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

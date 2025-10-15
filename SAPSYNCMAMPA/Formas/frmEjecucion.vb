@@ -2,7 +2,6 @@
 Imports System.Net.Security
 Imports System.Reflection
 Imports System.Security.Cryptography.X509Certificates
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraBars.Ribbon
 Imports DevExpress.XtraEditors
@@ -183,6 +182,7 @@ Public Class frmEjecucion
 
             End Select
 
+            CheckForIllegalCrossThreadCalls = False
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -824,15 +824,17 @@ Public Class frmEjecucion
         Return True
     End Function
 
-    Private Sub Ejecuta_Interface_Traslados_Envio_SAP_Hana(Optional ByVal Preguntar As Boolean = True,
-                                                           Optional ByVal pNoDocumentoSolTraslado As String = "")
+    Private Async Sub Ejecuta_Interface_Traslados_Sap_Hana(Optional ByVal Preguntar As Boolean = True,
+                                                     Optional ByVal pNoDocumentoSolTraslado As String = "",
+                                                     Optional ByVal pEsProrrateo As Boolean = True,
+                                                     Optional ByVal pEsTrasladoBodegaVirtual As Boolean = False)
 
         Try
 
             Dim Ejecutar As Boolean = False
 
             If Preguntar Then
-                If XtraMessageBox.Show("¿Actualizar traslados de envío?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                If XtraMessageBox.Show("¿Actualizar solicitudes de traslado?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
                     Ejecutar = True
                 End If
             Else
@@ -840,7 +842,7 @@ Public Class frmEjecucion
             End If
 
             If Ejecutar Then
-                Dim unused = clsSyncSapTrasladosEnvio.Procesar_Solicitud_Traslado_SAP(lblprg, prg, pNoDocumentoSolTraslado)
+                Await clsSyncSapTrasladosEnvio.Procesar_Solicitud_Traslado_SAP(lblprg, prg, pNoDocumentoSolTraslado, pEsProrrateo, pEsTrasladoBodegaVirtual)
             End If
 
         Catch ex As Exception
@@ -967,7 +969,7 @@ Public Class frmEjecucion
 
                 pPedidoCompra = tmpResult.ToString
 
-                Ejecuta_Interface_Traslados_Envio_SAP_Hana(True, pPedidoCompra)
+                Ejecuta_Interface_Traslados_Sap_Hana(True, pPedidoCompra, True, False)
 
             End If
 
@@ -1083,11 +1085,11 @@ Public Class frmEjecucion
 
     Private Sub mnuEnviarTrasladosCedis_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarTrasladosCedis.ItemClick
         mnuEnviarTrasladosCedis.Visibility = BarItemVisibility.Never
-        Enviar_Traslado_Desde_Solicitud(True)
+        Enviar_Traslado_Desde_Solicitud_Prorrateo(True)
         mnuEnviarTrasladosCedis.Visibility = BarItemVisibility.Always
     End Sub
 
-    Private Async Sub Enviar_Traslado_Desde_Solicitud(Optional ByVal Preguntar As Boolean = True)
+    Private Async Sub Enviar_Traslado_Desde_Solicitud_Prorrateo(Optional ByVal Preguntar As Boolean = True)
 
         Dim MostrarMensaje As Boolean = False
         procesoEnEjecucion = True
@@ -1106,9 +1108,9 @@ Public Class frmEjecucion
 
             If Ejecutar Then
                 lblprg.Text = ""
-                Await clsSyncSapTrasladosEnvio.Enviar_Traslados_Desde_Solicitud(lblprg,
-                                                                                prg,
-                                                                                tTipoDocumentoSalida.Transferencia_Interna_WMS)
+                Await clsSyncSapTrasladosEnvio.Enviar_Traslados_Salida_Desde_Solicitud_Prorrateo(lblprg,
+                                                                                          prg,
+                                                                                          tTipoDocumentoSalida.Transferencia_Directa)
             End If
 
         Catch ex As Exception
@@ -1126,7 +1128,7 @@ Public Class frmEjecucion
 
         Dim args As New XtraInputBoxArgs()
         Dim tmpResult As Object
-        Dim pSolDevolProveedor As String = ""
+        Dim pSolTrasladoTienda As String = ""
 
         mnuImportarSolDevolProv.Enabled = False
 
@@ -1148,9 +1150,9 @@ Public Class frmEjecucion
 
             If Not tmpResult Is Nothing Then
 
-                pSolDevolProveedor = tmpResult.ToString
+                pSolTrasladoTienda = tmpResult.ToString
 
-                Ejecuta_Interface_Sol_Traslado_Tienda_SAP_Hana(True, pSolDevolProveedor)
+                Ejecuta_Interface_Sol_Traslado_Tienda_SAP_Hana(True, pSolTrasladoTienda)
 
             End If
 
@@ -1200,11 +1202,11 @@ Public Class frmEjecucion
 
     Private Sub mnuEnviarTrasladosTienda_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarTrasladosTienda.ItemClick
         mnuEnviarTrasladosTienda.Visibility = BarItemVisibility.Never
-        Enviar_Traslado_Desde_Solicitud_Tiendas(True)
+        Enviar_Traslado_Ingreso_Desde_Solicitud_Tiendas(True)
         mnuEnviarTrasladosTienda.Visibility = BarItemVisibility.Always
     End Sub
 
-    Private Async Sub Enviar_Traslado_Desde_Solicitud_Tiendas(Optional ByVal Preguntar As Boolean = True)
+    Private Async Sub Enviar_Traslado_Ingreso_Desde_Solicitud_Tiendas(Optional ByVal Preguntar As Boolean = True)
 
         Dim MostrarMensaje As Boolean = False
         procesoEnEjecucion = True
@@ -1214,7 +1216,7 @@ Public Class frmEjecucion
             Dim Ejecutar As Boolean = False
 
             If Preguntar Then
-                If XtraMessageBox.Show("¿Enviar traslados recibidos en tienda a SAP?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                If XtraMessageBox.Show("¿Enviar traslados de puntos de servicio a SAP?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
                     Ejecutar = True
                 End If
             Else
@@ -1227,10 +1229,10 @@ Public Class frmEjecucion
                 Dim BeConfiEnc = clsLnI_nav_config_enc.GetSingle(IdConfiguracion)
 
                 If BeConfiEnc IsNot Nothing Then
-                    Await clsSyncSapTrasladosEnvio.Enviar_Traslados_Desde_Solicitud_Tiendas(lblprg,
-                                                                                            prg,
-                                                                                            tTipoDocumentoIngreso.Transferencia_de_Ingreso,
-                                                                                            BeConfiEnc)
+                    Await clsSyncSapTrasladosEnvio.Enviar_Traslados_Ingreso_Desde_Solicitud_Tiendas(lblprg,
+                                                                                                    prg,
+                                                                                                    tTipoDocumentoIngreso.Transferencia_de_Ingreso,
+                                                                                                    BeConfiEnc)
                 Else
                     clsPublic.Actualizar_Progreso(lblprg, "No está definida la configuración de interface para el identificador: " & IdConfiguracion)
                 End If
@@ -1287,6 +1289,94 @@ Public Class frmEjecucion
                 Else
                     clsPublic.Actualizar_Progreso(lblprg, "No está definida la configuración de interface para el identificador: " & IdConfiguracion)
                 End If
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        Finally
+            procesoEnEjecucion = False
+        End Try
+
+    End Sub
+
+    Private Sub mnuRecibirSolTraTi_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuRecibirSolTraTi.ItemClick
+
+
+        Dim args As New XtraInputBoxArgs()
+        Dim tmpResult As Object
+        Dim pPedidoCompra As String = ""
+
+        mnuRecibirSolTraTi.Enabled = False
+
+        Try
+
+            args.Caption = "Ingrese Traslado"
+            args.Prompt = "Traslado No."
+
+            Dim editor As New TextEdit
+            args.Editor = editor
+
+            args.DefaultButtonIndex = 0
+            args.DefaultResponse = ""
+            AddHandler args.Showing, AddressOf Args_Showing
+
+            tmpResult = XtraInputBox.Show(args)
+
+            lblprg.Text = ""
+
+            If Not tmpResult Is Nothing Then
+
+                pPedidoCompra = tmpResult.ToString
+
+                Ejecuta_Interface_Traslados_Sap_Hana(True, pPedidoCompra, False, True)
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                               Text,
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        Finally
+            mnuRecibirSolTraTi.Enabled = True
+            prg.Visible = False
+        End Try
+
+    End Sub
+
+    Private Sub mnuEnviarSolTraTi_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarSolTraTi.ItemClick
+        Enviar_Traslado_Desde_Solicitud_Tiendas()
+    End Sub
+
+    Private Async Sub Enviar_Traslado_Desde_Solicitud_Tiendas(Optional ByVal Preguntar As Boolean = True)
+
+        Dim MostrarMensaje As Boolean = False
+        procesoEnEjecucion = True
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Generar traslados de stock desde solicitud?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                lblprg.Text = ""
+                Await clsSyncSapTrasladosEnvio.Enviar_Traslados_Salida_Desde_Solicitud_Tienda(lblprg,
+                                                                                              prg,
+                                                                                              tTipoDocumentoSalida.Transferencia_Interna_WMS)
             End If
 
         Catch ex As Exception

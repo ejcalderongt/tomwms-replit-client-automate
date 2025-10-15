@@ -1,6 +1,8 @@
 Imports System.Configuration
+Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
+Imports DevExpress.CodeParser
 
 Partial Public Class clsLnI_nav_ped_compra_enc
 
@@ -922,6 +924,7 @@ Partial Public Class clsLnI_nav_ped_compra_enc
 
                 BeConfigEnc = ObtenerConfiguracionDeBodega(navPedidoCompraEnc, BeConfigEnc, gBeOrdenCompraEnc, IdBodegaDestino, vIdEmpresa, lConnection, lTransInterface)
 
+                '#CKFK20251013 Tengo duda de lo que se hace cuando se actualiza el registro
                 If PedidoCompraExistente IsNot Nothing Then
 
                     lblprg += "El documento ya existe, se actualizará." & vbNewLine
@@ -974,6 +977,9 @@ Partial Public Class clsLnI_nav_ped_compra_enc
 
                 ElseIf navPedidoCompraEnc.Lineas_Detalle.Count > 0 Then
                     Try
+
+                        Dim DetallePickingUbic As New List(Of clsBeTrans_picking_ubic)
+
                         Dim creada = InicializarEncabezadoNuevaOC(navPedidoCompraEnc,
                                                                   BeConfigEnc,
                                                                   BeTipoDocumento,
@@ -987,17 +993,49 @@ Partial Public Class clsLnI_nav_ped_compra_enc
                         InsertoEncabezado = True
                         VContadorBitacoraTOMWMS += 1
 
+                        Dim BeUnidadMedidaPedCompra As New clsBeUnidad_medida
+                        Dim BePresentacion As New clsBeProducto_Presentacion
+                        Dim vCantidadSolicitadaPedido As Double = 0
+
+                        If Not navPedidoCompraEnc.Internal_Transfer_Document_No = "" AndAlso IsNumeric(navPedidoCompraEnc.Internal_Transfer_Document_No) Then
+
+                            '#CKFK20251013 Si la orden de compra viene de un traslado interno en NAV, se copian las ubicaciones de picking a los lotes de la orden de compra
+                            DetallePickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_Despachado_By_IdDespachoEnc(navPedidoCompraEnc.Internal_Transfer_Document_No, lConnection, lTransInterface)
+
+                        End If
+
                         For Each navPedidoCompraDet In navPedidoCompraEnc.Lineas_Detalle
                             Dim BeProductoBodega = BuscarProductoBodega(navPedidoCompraDet, IdBodegaDestino, BeConfigEnc, lConnection, lTransInterface)
                             If BeProductoBodega IsNot Nothing Then
-                                Dim BeUnidadMedidaPedCompra As New clsBeUnidad_medida
-                                Dim BePresentacion As New clsBeProducto_Presentacion
-                                Dim vCantidadSolicitadaPedido As Double = 0
                                 ValidarYCalcularUMBas(navPedidoCompraDet, BeUnidadMedidaPedCompra, BePresentacion, BeProductoBodega, BeConfigEnc, vCantidadSolicitadaPedido, vCantidadEnteraPres, vCantidadDecimalUMBas, lblprg, lConnection, lTransInterface)
-                                InsertarDetalleOrdenCompra(navPedidoCompraEnc, navPedidoCompraDet, BeProductoBodega, BePresentacion, BeConfigEnc, BeUnidadMedidaPedCompra, vCantidadEnteraPres, vCantidadDecimalUMBas, vContadorLineasDetInsertadas, lblprg, BeOcDetLote, LotesExistentes, gBeOrdenCompraEnc, lConnection, lTransInterface)
+                                InsertarDetalleOrdenCompra(navPedidoCompraEnc, navPedidoCompraDet, BeProductoBodega, BePresentacion, BeConfigEnc, BeUnidadMedidaPedCompra, vCantidadEnteraPres, vCantidadDecimalUMBas, vContadorLineasDetInsertadas, lblprg, BeOcDetLote, LotesExistentes, gBeOrdenCompraEnc, DetallePickingUbic, lConnection, lTransInterface)
                             Else
-                                lblprg += $"El código de producto:{navPedidoCompraDet.No} no existe o no está asociado a la bodega:{navPedidoCompraDet.Location_Code}" & vbNewLine
-                                vProductoNoExiste += 1
+                                Dim beProducto As New clsBeProducto
+                                beProducto = clsLnProducto.Get_Single_By_Codigo(navPedidoCompraDet.No, lConnection, lTransInterface)
+                                If beProducto IsNot Nothing Then
+                                    BeProductoBodega = New clsBeProducto_bodega With {
+                                                .IdProductoBodega = clsLnProducto_bodega.MaxID(lConnection, lTransInterface) + 1,
+                                                .IdProducto = beProducto.IdProducto,
+                                                .IdBodega = BeConfigEnc.Idbodega,
+                                                .Activo = True,
+                                                .User_agr = BeConfigEnc.IdUsuario,
+                                                .User_mod = BeConfigEnc.IdUsuario,
+                                                .Fec_agr = Now,
+                                                .Fec_mod = Now
+                                            }
+
+                                    clsLnProducto_bodega.InsertarFromInterface(BeProductoBodega, lConnection, lTransInterface)
+
+                                    lblprg += $"El código de producto:{navPedidoCompraDet.No} no estaba asociado a la bodega y ya lo asociamos:{navPedidoCompraDet.Location_Code}" & vbNewLine
+                                    ValidarYCalcularUMBas(navPedidoCompraDet, BeUnidadMedidaPedCompra, BePresentacion, BeProductoBodega, BeConfigEnc, vCantidadSolicitadaPedido, vCantidadEnteraPres, vCantidadDecimalUMBas, lblprg, lConnection, lTransInterface)
+                                    InsertarDetalleOrdenCompra(navPedidoCompraEnc, navPedidoCompraDet, BeProductoBodega, BePresentacion, BeConfigEnc, BeUnidadMedidaPedCompra, vCantidadEnteraPres, vCantidadDecimalUMBas, vContadorLineasDetInsertadas, lblprg, BeOcDetLote, LotesExistentes, gBeOrdenCompraEnc, DetallePickingUbic, lConnection, lTransInterface)
+
+                                Else
+
+                                    lblprg += $"El código de producto:{navPedidoCompraDet.No} no existe:{navPedidoCompraDet.Location_Code}" & vbNewLine
+                                    vProductoNoExiste += 1
+                                End If
+
                             End If
                         Next
 
@@ -1218,28 +1256,28 @@ Partial Public Class clsLnI_nav_ped_compra_enc
 
             If BeConfigEnc.Equiparar_Productos Then
                 productoBodega = clsLnProducto_bodega.Existe_Codigo_By_IdBodega(navPedidoCompraDet.No,
-                                                                            IdBodegaDestino,
-                                                                            lConnection,
-                                                                            lTransInterface)
+                                                                                IdBodegaDestino,
+                                                                                lConnection,
+                                                                                lTransInterface)
 
                 If productoBodega Is Nothing Then
                     productoBodega = clsLnProducto_bodega.Existe_Parte_By_IdBodega(navPedidoCompraDet.No,
-                                                                               IdBodegaDestino,
-                                                                               lConnection,
-                                                                               lTransInterface)
+                                                                                   IdBodegaDestino,
+                                                                                   lConnection,
+                                                                                   lTransInterface)
 
                     If productoBodega Is Nothing Then
                         productoBodega = clsLnProducto_bodega.Existe_NoSerie_By_IdBodega(navPedidoCompraDet.No,
-                                                                                      IdBodegaDestino,
-                                                                                      lConnection,
-                                                                                      lTransInterface)
+                                                                                          IdBodegaDestino,
+                                                                                          lConnection,
+                                                                                          lTransInterface)
                     End If
                 End If
             Else
                 productoBodega = clsLnProducto_bodega.Existe_Codigo_By_IdBodega(navPedidoCompraDet.No,
-                                                                            IdBodegaDestino,
-                                                                            lConnection,
-                                                                            lTransInterface)
+                                                                                IdBodegaDestino,
+                                                                                lConnection,
+                                                                                lTransInterface)
             End If
 
             Return productoBodega
@@ -1354,6 +1392,7 @@ Partial Public Class clsLnI_nav_ped_compra_enc
 
         Return False
     End Function
+
     Public Shared Function ProcesarLotes(navPedidoCompraEnc As clsBeI_nav_ped_compra_enc,
                                         navPedidoCompraDet As clsBeI_nav_ped_compra_det,
                                         ByRef BeOcDetLote As clsBeTrans_oc_det_lote,
@@ -1368,8 +1407,8 @@ Partial Public Class clsLnI_nav_ped_compra_enc
             End If
 
             For Each Lote In navPedidoCompraEnc.Lineas_Detalle_Lotes.Where(Function(x) x.NoEnc = navPedidoCompraDet.NoEnc AndAlso
-                                                                                 x.Item_No = navPedidoCompraDet.No AndAlso
-                                                                                 x.Source_Prod_Order_Line = navPedidoCompraDet.Line_No)
+                                                                                       x.Item_No = navPedidoCompraDet.No AndAlso
+                                                                                       x.Source_Prod_Order_Line = navPedidoCompraDet.Line_No)
                 Dim LoteExistente = LotesExistentes.Find(Function(x) x.No_linea = Lote.Source_Prod_Order_Line AndAlso x.Lote = Lote.Lot_No)
 
                 BeOcDetLote = New clsBeTrans_oc_det_lote With {
@@ -1655,7 +1694,8 @@ Partial Public Class clsLnI_nav_ped_compra_enc
                                                       ByRef lblprg As String,
                                                       ByRef BeOcDetLote As clsBeTrans_oc_det_lote,
                                                       ByRef LotesExistentes As List(Of clsBeTrans_oc_det_lote),
-                                                      gBeOrdenCompraEnc As clsBeTrans_oc_enc,
+                                                      ByVal gBeOrdenCompraEnc As clsBeTrans_oc_enc,
+                                                      ByVal pDetallePickingUbic As List(Of clsBeTrans_picking_ubic),
                                                       lConnection As SqlConnection,
                                                       lTransInterface As SqlTransaction) As Boolean
         Try
@@ -1691,7 +1731,13 @@ Partial Public Class clsLnI_nav_ped_compra_enc
             If navPedidoCompraDet.Barcode <> "" Then
                 Dim BeProductoTallaColor As New clsBeProducto_talla_color
                 BeProductoTallaColor = clsLnProducto_talla_color.Get_Single_By_Params(BeProductoBodega.IdProducto, navPedidoCompraDet.Size, navPedidoCompraDet.Color, lConnection, lTransInterface)
-                BePedidoCompraDet.IdProductoTallaColor = BeProductoTallaColor.IdProductoTallaColor
+
+                If BeProductoTallaColor IsNot Nothing Then
+                    BePedidoCompraDet.IdProductoTallaColor = BeProductoTallaColor.IdProductoTallaColor
+                Else
+                    lblprg += "No existe la Talla/Color definidas para el código " & navPedidoCompraDet.No & vbNewLine
+                    Return False
+                End If
             End If
 
             If Asigna_Unidad_De_Medida(BePedidoCompraDet, navPedidoCompraDet, BeUnidadMedidaPedCompra, BeProductoBodega, lConnection, lTransInterface) Then
@@ -1709,6 +1755,55 @@ Partial Public Class clsLnI_nav_ped_compra_enc
                     clsLnTrans_oc_det.Insertar(BePedidoCompraDet, lConnection, lTransInterface)
                 End If
 
+                If Not navPedidoCompraEnc.Internal_Transfer_Document_No = "" Then
+
+                    If Not pDetallePickingUbic Is Nothing AndAlso pDetallePickingUbic.Count > 0 Then
+
+                        Dim lMaxIdLoteDet As Integer = clsLnTrans_oc_det_lote.MaxID(lConnection, lTransInterface) + 1
+                        Dim lMaxIdPallet As Integer = clsLnI_nav_barras_pallet.MaxID(lConnection, lTransInterface) + 1
+                        Dim BeTransReDet As New clsBeTrans_re_det
+                        Dim BeINavBarraPallet As New clsBeI_nav_barras_pallet
+                        Dim BeINavBarraPalletOriginal As New clsBeI_nav_barras_pallet
+                        Dim BeStock As New clsBeStock
+                        Dim loteDouble As Double = 0
+                        Dim loteEntero As Integer = 0
+
+                        Dim lFiltroPickingUbic = pDetallePickingUbic.Where(Function(x) x.CodigoProducto = navPedidoCompraDet.No AndAlso x.No_Linea = navPedidoCompraDet.Line_No).ToList()
+
+                        For Each BePickingUbic As clsBeTrans_picking_ubic In lFiltroPickingUbic
+
+                            BeOcDetLote = New clsBeTrans_oc_det_lote
+                            BeOcDetLote.IdOrdenCompraDetLote = lMaxIdLoteDet
+                            BeOcDetLote.IdOrdenCompraEnc = gBeOrdenCompraEnc.IdOrdenCompraEnc
+                            BeOcDetLote.IdOrdenCompraDet = BePedidoCompraDet.IdOrdenCompraDet
+                            BeOcDetLote.Cantidad = BePickingUbic.Cantidad_despachada
+                            BeOcDetLote.No_linea = BePedidoCompraDet.No_Linea
+                            BeOcDetLote.IdProductoBodega = BePedidoCompraDet.IdProductoBodega
+                            BeOcDetLote.Lote = BePickingUbic.Lote
+                            BeOcDetLote.Lic_Plate = BePickingUbic.Lic_plate
+                            BeOcDetLote.Cantidad_recibida = 0
+                            BeOcDetLote.Codigo_producto = BePedidoCompraDet.Codigo_Producto
+                            BeOcDetLote.Fecha_vence = BePickingUbic.Fecha_Vence
+                            BeOcDetLote.IdPresentacion = BePickingUbic.IdPresentacion
+                            BeOcDetLote.Presentacion.IdPresentacion = BePickingUbic.IdPresentacion
+                            BeOcDetLote.IdUnidadMedidaBasica = BePickingUbic.IdUnidadMedida
+                            BeOcDetLote.UnidadMedida.IdUnidadMedida = BePickingUbic.IdUnidadMedida
+                            BeOcDetLote.IdProductoTallaColor = BePickingUbic.IdProductoTallaColor
+                            BeOcDetLote.Talla = BePickingUbic.Codigo_Talla
+                            BeOcDetLote.Color = BePickingUbic.Codigo_Color
+                            BeOcDetLote.Activo = True
+                            BeOcDetLote.User_agr = BePedidoCompraDet.User_agr
+                            BeOcDetLote.User_mod = BePedidoCompraDet.User_mod
+                            clsLnTrans_oc_det_lote.Insertar(BeOcDetLote, lConnection, lTransInterface)
+
+                            lMaxIdLoteDet += 1
+
+                        Next
+
+                    End If
+
+                End If
+
                 vContadorLineasDetInsertadas += 1
 
                 Return True
@@ -1716,6 +1811,7 @@ Partial Public Class clsLnI_nav_ped_compra_enc
             End If
 
             Return False
+
         Catch ex As Exception
             Dim vMsgEx3 As String = String.Format("Error al insertar desde ws a intermedia: {0}{1}{2}", ex.Message, ex.Source, vbNewLine)
             clsLnI_nav_ejecucion_det_error.Inserta_Log(vMsgEx3, navPedidoCompraDet.Description, 0, 0)
@@ -1724,6 +1820,7 @@ Partial Public Class clsLnI_nav_ped_compra_enc
         End Try
 
     End Function
+
     Public Shared Function InsertaProveedor(navPedidoCompraEnc As clsBeI_nav_ped_compra_enc,
                                            gBeOrdenCompraEnc As clsBeTrans_oc_enc,
                                            BeConfigEnc As clsBeI_nav_config_enc,

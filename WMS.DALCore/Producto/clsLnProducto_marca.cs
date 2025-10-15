@@ -4,6 +4,7 @@ using System.Diagnostics;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
 using WMS.EntityCore.Producto.ProductoSimple;
+using WMS.EntityCore.Interface;
 public class clsLnProductoMarca
 {
     private static readonly clsInsert Inserter = new clsInsert();
@@ -386,6 +387,12 @@ public class clsLnProductoMarca
             var Marca = new clsBeProducto_marca();
             bool existe = Existe_By_Codigo(entity.Codigo, ref Marca, connection, isExternalTx ? tx! : localTx!);
 
+            var BeInavConfigEnc = new clsBeI_nav_config_enc();
+            clsLnI_nav_config_enc.GetSingle(config, BeInavConfigEnc, connection, isExternalTx ? tx : localTx);
+
+            if (BeInavConfigEnc == null)
+                throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
+
             if (!existe)
             {
                 if (!string.IsNullOrEmpty(entity.Codigo))
@@ -393,8 +400,8 @@ public class clsLnProductoMarca
                     Marca.IdMarca = MaxId(config, connection, isExternalTx ? tx : localTx) + 1;
                     Marca.Codigo = entity.Codigo;
                     Marca.Nombre = entity.Nombre ?? entity.Codigo;
-                    Marca.User_agr = "1";
-                    Marca.User_mod = "1";
+                    Marca.User_agr = BeInavConfigEnc.IdUsuario.ToString();
+                    Marca.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                     Marca.Fec_agr = DateTime.Now;
                     Marca.Fec_mod = DateTime.Now;
                     Marca.Activo = entity.Activo;
@@ -406,7 +413,7 @@ public class clsLnProductoMarca
             else {
                 Marca.Codigo = entity.Codigo;
                 Marca.Nombre = entity.Nombre ?? entity.Codigo;
-                Marca.User_mod = "1";
+                Marca.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                 Marca.Fec_mod = DateTime.Now;
                 Marca.Activo = entity.Activo;
                 Update(config, Marca, connection, isExternalTx ? tx : localTx);

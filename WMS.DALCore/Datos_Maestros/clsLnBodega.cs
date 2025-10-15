@@ -1046,4 +1046,51 @@ public class clsLnBodega
             }
         }
     }
+
+    public static List<clsBeBodega> GetAll( SqlConnection cn, SqlTransaction? tx = null)
+    {
+
+        SqlTransaction? lTransaction = null;
+        List<clsBeBodega> lreturnList = new List<clsBeBodega>();
+
+        try
+        {
+
+
+            const string sql = @"SELECT  * FROM Bodega WHERE activo=1 ";
+
+            using var cmd = new SqlCommand(sql, cn, tx);
+            using var da = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count >0)
+            {
+                clsBeBodega vBeBodega = new clsBeBodega();
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    vBeBodega = new clsBeBodega();
+                    Cargar(ref vBeBodega, dr);
+                    lreturnList.Add(vBeBodega);
+                }
+            }
+
+            return lreturnList;
+
+        }
+        catch (SqlException ex1)
+        {
+            if (lTransaction is not null)
+                lTransaction.Rollback();
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = null;
+            if (sf != null) { currentMethodName = sf.GetMethod(); }
+            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
+
+            throw new Exception(vMsgError);
+        }
+    }
+
 }

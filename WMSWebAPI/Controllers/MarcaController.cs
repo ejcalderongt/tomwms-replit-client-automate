@@ -21,7 +21,7 @@ namespace WMSWebAPI.Controllers
         }
 
         [HttpPost("list/mi3/insert")]
-        public IActionResult Sincronizar([FromBody] List<ProductoMarcaSimpleDto> MarcaDto, [FromServices] IConfiguration configuration) 
+        public IActionResult Sincronizar([FromBody] List<ProductoMarcaMi3Dto> MarcaDto, [FromServices] IConfiguration configuration) 
         {
             if (MarcaDto == null || MarcaDto.Count == 0)
                 return BadRequest("La lista de marcas está vacía.");
@@ -48,6 +48,9 @@ namespace WMSWebAPI.Controllers
                         {
                             foreach (var dto in MarcaDto)
                             {
+                                if (string.IsNullOrEmpty(dto.Codigo))
+                                    return StatusCode(500, new { Exito = false, Mensaje = "El código no puede estar vacio." });
+
                                 _syncService.ProcesarMarcaDesdeDto(dto, connection, transaction);
                                 resultados.Add(new { dto.Codigo, Procesado = true, Mensaje = "Procesado correctamente" });
                             }

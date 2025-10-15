@@ -39,6 +39,11 @@ Public Class clsLnTrans_packing_enc
                 .Usr_agr = IIf(IsDBNull(dr.Item("usr_agr")), "", dr.Item("usr_agr"))
                 .Fec_mod = IIf(IsDBNull(dr.Item("fec_mod")), New Date(1900, 1, 1), dr.Item("fec_mod"))
                 .Usr_agr = IIf(IsDBNull(dr.Item("usr_mod")), "", dr.Item("usr_mod"))
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                .Codigo_Talla = IIf(IsDBNull(dr.Item("Codigo_Talla")), "", dr.Item("Codigo_Talla"))
+                .Codigo_Color = IIf(IsDBNull(dr.Item("Codigo_Color")), "", dr.Item("Codigo_Color"))
+                .Nombre_Color = IIf(IsDBNull(dr.Item("Nombre_Color")), "", dr.Item("Nombre_Color"))
+                .Nombre_Talla = IIf(IsDBNull(dr.Item("Nombre_Talla")), "", dr.Item("Nombre_Talla"))
 
             End With
 
@@ -78,6 +83,7 @@ Public Class clsLnTrans_packing_enc
             Ins.Add("fec_mod", "@fec_mod", DataType.Parametro)
             Ins.Add("usr_mod", "@usr_mod", DataType.Parametro)
             Ins.Add("usr_agr", "@usr_agr", DataType.Parametro)
+            Ins.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
@@ -113,6 +119,7 @@ Public Class clsLnTrans_packing_enc
             cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeTrans_packing_enc.Fec_mod))
             cmd.Parameters.Add(New SqlParameter("@USR_MOD", oBeTrans_packing_enc.Usr_mod))
             cmd.Parameters.Add(New SqlParameter("@USR_AGR", oBeTrans_packing_enc.Usr_agr))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_packing_enc.IdProductoTallaColor))
 
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()

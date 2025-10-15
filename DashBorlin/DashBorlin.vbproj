@@ -141,6 +141,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Diseñador\frmDashDesigner.resx">
       <DependentUpon>frmDashDesigner.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">

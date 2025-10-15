@@ -316,7 +316,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
     End Function
 
-    Public Shared Function Importar_Pedido_Cliente_A_Tabla_Intermedia(ByRef BePedidoCliente As clsBeI_nav_ped_traslado_enc,
+    Public Shared Function Importar_Traslado_A_Tabla_Intermedia(ByRef BePedidoCliente As clsBeI_nav_ped_traslado_enc,
                                                                       ByRef lblprg As RichTextBox,
                                                                       ByRef lConnection As SqlConnection,
                                                                       ByRef lTransaction As SqlTransaction) As Boolean
@@ -327,7 +327,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
         Dim vContadorLineas As Integer = 0
         Dim BeConfingEnc As New clsBeI_nav_config_enc
 
-        Importar_Pedido_Cliente_A_Tabla_Intermedia = False
+        Importar_Traslado_A_Tabla_Intermedia = False
 
         Try
 
@@ -494,7 +494,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
             End Try
 
-            Importar_Pedido_Cliente_A_Tabla_Intermedia = (vContadorLineas > 0)
+            Importar_Traslado_A_Tabla_Intermedia = (vContadorLineas > 0)
 
         Catch ex As Exception
 
@@ -653,7 +653,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                     Throw New Exception(String.Format("El código de propietario: (0) de la bodega origen: (1) no es válido", BePedidoCliente.Product_Owner_Code, BePedidoCliente.Transfer_from_Code))
                 End If
 
-                If Importar_Pedido_Cliente_A_Tabla_Intermedia(BePedidoCliente,
+                If Importar_Traslado_A_Tabla_Intermedia(BePedidoCliente,
                                                               lblprg,
                                                               lConnection,
                                                               lTransaction) Then
@@ -825,10 +825,15 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                             lConectionInterface,
                                                                             lTransInterface)
 
-                        '#EJC20171107_REF13_0506AM: El MaxId del IdPedidoEnc se genera dentro del insert                            
-                        pBePedidoEnc.Fecha_Pedido = BeINavPedTrasladoEnc.Posting_Date
-                        Dim currentTime As TimeSpan = Now.TimeOfDay
-                        pBePedidoEnc.Fecha_Pedido = pBePedidoEnc.Fecha_Pedido.Add(currentTime)
+                        '#EJC20171107_REF13_0506AM: El MaxId del IdPedidoEnc se genera dentro del insert
+                        Dim fechaBase As Date = BeINavPedTrasladoEnc.Posting_Date
+                        Dim fechaFinal As Date = New DateTime(fechaBase.Year, fechaBase.Month, fechaBase.Day,
+                                      Now.Hour, Now.Minute, Now.Second)
+
+                        pBePedidoEnc.Fecha_Pedido = fechaFinal
+                        'pBePedidoEnc.Fecha_Pedido = BeINavPedTrasladoEnc.Posting_Date
+                        'Dim currentTime As TimeSpan = Now.TimeOfDay
+                        'pBePedidoEnc.Fecha_Pedido = pBePedidoEnc.Fecha_Pedido.Add(currentTime)
                         pBePedidoEnc.Referencia = BeINavPedTrasladoEnc.No
                         pBePedidoEnc.IdBodega = IdBodegaOrigen
                         pBePedidoEnc.Cliente = New clsBeCliente
@@ -3337,7 +3342,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
             vIndicadorDeExcepcion = 3
 
-            If Importar_Pedido_Cliente_A_Tabla_Intermedia(BePedidoCliente, lblprg, lConnection, lTransaction) Then
+            If Importar_Traslado_A_Tabla_Intermedia(BePedidoCliente, lblprg, lConnection, lTransaction) Then
 
                 vIndicadorDeExcepcion = 4
 

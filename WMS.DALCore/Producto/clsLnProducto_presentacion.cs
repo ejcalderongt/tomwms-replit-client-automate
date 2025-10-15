@@ -1,9 +1,11 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Producto;
-using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Interface;
+
 public class clsLnProducto_presentacion
 {
     private static clsInsert Ins = new clsInsert();
@@ -659,4 +661,122 @@ public class clsLnProducto_presentacion
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
     }
+
+    public static bool Existe_By_Codigo(string Codigo, ref clsBeProducto_presentacion pBePresentacion, SqlConnection cn, SqlTransaction? tx = null)
+    {
+        try
+        {
+            const string sql = @"SELECT TOP 1 * FROM producto_presentacion WHERE codigo = @codigo";
+
+            using var cmd = new SqlCommand(sql, cn, tx);
+            cmd.Parameters.AddWithValue("@codigo", Codigo);
+
+            using var da = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count == 1)
+            {
+                Cargar(ref pBePresentacion, dt.Rows[0]);
+                return true;
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
+        }
+    }
+
+    public static void Valida_Atributos(IConfiguration config, clsBeProducto_presentacionMi3 pPresentacionMi3, SqlConnection? conn = null, SqlTransaction? tx = null)
+    {
+        if (pPresentacionMi3.Codigo_presentacion == null)
+            throw new ArgumentNullException(nameof(pPresentacionMi3.Codigo_presentacion), "El código no puede ser nulo.");
+
+        bool isExternalTx = conn != null && tx != null;
+        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
+        SqlTransaction? localTx = null;
+
+        try
+        {
+            if (!isExternalTx)
+            {
+                connection.Open();
+                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
+            }
+
+            var Presentacion = new clsBeProducto_presentacion();
+            bool existe = Existe_By_Codigo(pPresentacionMi3.Codigo_presentacion, ref Presentacion, connection, isExternalTx ? tx! : localTx!);
+
+            var BeInavConfigEnc = new clsBeI_nav_config_enc();
+            clsLnI_nav_config_enc.GetSingle(config, BeInavConfigEnc, connection, isExternalTx ? tx : localTx);
+
+            if (BeInavConfigEnc == null)
+                throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
+
+
+            if (!existe)
+            {
+                if (!string.IsNullOrEmpty(pPresentacionMi3.Codigo_presentacion))
+                {
+                    var BeProducto = new clsBeProducto();
+
+                    var ExisteProducto = clsLnProducto.Existe_By_Codigo(pPresentacionMi3.Codigo_producto,ref BeProducto, connection, isExternalTx ? tx! : localTx!);
+
+                    if (ExisteProducto)
+                    {
+                        Presentacion.IdPresentacion = MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                        Presentacion.IdProducto = BeProducto.IdProducto;
+                        Presentacion.Codigo = pPresentacionMi3.Codigo_presentacion;
+                        Presentacion.Nombre = pPresentacionMi3.Nombre ?? pPresentacionMi3.Codigo_presentacion;
+                        Presentacion.Factor = pPresentacionMi3.Factor;
+                        Presentacion.Activo = pPresentacionMi3.Activo;
+                        Presentacion.EsPallet = pPresentacionMi3.EsPallet;
+                        Presentacion.Genera_lp_auto = pPresentacionMi3.Genera_lp_auto;
+                        Presentacion.User_agr = BeInavConfigEnc.IdUsuario.ToString();
+                        Presentacion.User_mod = BeInavConfigEnc.IdUsuario.ToString();
+                        Presentacion.Fec_agr = DateTime.Now;
+                        Presentacion.Fec_mod = DateTime.Now;
+
+                        Insertar(config, Presentacion, connection, isExternalTx ? tx : localTx);
+                    }
+                    else {
+                        throw new ArgumentNullException(nameof(pPresentacionMi3.Codigo_producto), "El codigo de producto no existe.");
+                    }
+                }
+            }
+            else
+            {
+                Presentacion.Codigo = pPresentacionMi3.Codigo_presentacion;
+                Presentacion.Nombre = pPresentacionMi3.Nombre ?? pPresentacionMi3.Codigo_presentacion;
+                Presentacion.Factor = pPresentacionMi3.Factor;
+                Presentacion.Activo = pPresentacionMi3.Activo;
+                Presentacion.EsPallet = pPresentacionMi3.EsPallet;
+                Presentacion.Genera_lp_auto = pPresentacionMi3.Genera_lp_auto;
+                Presentacion.User_mod = BeInavConfigEnc.IdUsuario.ToString();
+                Presentacion.Fec_mod = DateTime.Now;
+                Actualizar(config, Presentacion, connection, isExternalTx ? tx : localTx);
+            }
+        }
+        catch (SqlException ex)
+        {
+            if (!isExternalTx && localTx is not null)
+                localTx.Rollback();
+
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
+        }
+        finally
+        {
+            if (!isExternalTx)
+            {
+                connection.Close();
+                connection.Dispose();
+                localTx?.Dispose();
+            }
+        }
+    }
+
 }

@@ -14,7 +14,6 @@ Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraPrinting
 Imports DevExpress.XtraReports.UI
 Imports DevExpress.XtraSplashScreen
-Imports System.Linq
 
 Public Class frmPedido
 

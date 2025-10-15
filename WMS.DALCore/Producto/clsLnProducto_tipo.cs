@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Interface;
 public class clsLnProducto_tipo
 {
 
@@ -474,4 +475,106 @@ public class clsLnProducto_tipo
             ? Actualizar(oBe, config, cn, tx)
             : Insertar(oBe, config, cn, tx);
     }
+
+    public static bool Existe_By_Codigo(string Codigo, ref clsBeProducto_tipo pBeProductoTipo, SqlConnection cn, SqlTransaction? tx = null)
+    {
+        try
+        {
+            const string sql = "SELECT TOP 1 * FROM producto_tipo WHERE codigo = @codigo";
+
+            using var cmd = new SqlCommand(sql, cn, tx);
+            cmd.Parameters.AddWithValue("@codigo", Codigo);
+
+            using var da = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            da.Fill(dt);
+
+            if (dt.Rows.Count == 1)
+            {
+                Cargar(ref pBeProductoTipo, dt.Rows[0]);
+                return true;
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
+        }
+    }
+
+    public static void Valida_Atributos(IConfiguration config, clsBeProducto_tipoMi3 entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    {
+        bool isExternalTx = conn != null && tx != null;
+        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
+        SqlTransaction? localTx = null;
+
+        try
+        {
+            if (!isExternalTx)
+            {
+                connection.Open();
+                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
+            }
+
+            var BeProductoTipo = new clsBeProducto_tipo();
+            bool existe = Existe_By_Codigo(entity.Codigo, ref BeProductoTipo, connection, isExternalTx ? tx! : localTx!);
+
+            var BeInavConfigEnc = new clsBeI_nav_config_enc();
+            clsLnI_nav_config_enc.GetSingle(config, BeInavConfigEnc, connection, isExternalTx ? tx : localTx);
+
+            if (BeInavConfigEnc == null)
+                throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
+
+            if (!existe)
+            {
+
+                if (!string.IsNullOrEmpty(entity.Codigo))
+                {
+                    var BeTipoProducto = new clsBeProducto_tipo();
+                    BeTipoProducto.IdTipoProducto= MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                    BeTipoProducto.IdPropietario = entity.IdPropietario;
+                    BeTipoProducto.Codigo = entity.Codigo;
+                    BeTipoProducto.NombreTipoProducto = entity.NombreTipoProducto ?? entity.Codigo;
+                    BeTipoProducto.User_agr = BeInavConfigEnc.IdUsuario.ToString();
+                    BeTipoProducto.User_mod = BeInavConfigEnc.IdUsuario.ToString();
+                    BeTipoProducto.Fec_agr = DateTime.Now;
+                    BeTipoProducto.Fec_mod = DateTime.Now;
+                    BeTipoProducto.Activo = entity.Activo;
+                    Insertar( BeTipoProducto, config, connection, isExternalTx ? tx : localTx);
+                }
+
+            }
+            else
+            {
+                BeProductoTipo.Codigo = entity.Codigo;
+                BeProductoTipo.NombreTipoProducto = entity.NombreTipoProducto ?? entity.Codigo;
+                BeProductoTipo.User_mod = BeInavConfigEnc.IdUsuario.ToString();
+                BeProductoTipo.Fec_mod = DateTime.Now;
+                BeProductoTipo.Activo = entity.Activo;
+                Actualizar( BeProductoTipo, config, connection, isExternalTx ? tx : localTx);
+
+            }
+
+        }
+        catch (SqlException ex)
+        {
+            if (!isExternalTx && localTx is not null)
+                localTx.Rollback();
+
+            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
+        }
+        finally
+        {
+            if (!isExternalTx)
+            {
+                connection.Close();
+                connection.Dispose();
+                localTx?.Dispose();
+            }
+        }
+    }
+
 }

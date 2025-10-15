@@ -6695,7 +6695,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                             dbo.producto_estado.nombre AS nom_estado, pdet.IdEstado, max(pdet.Peso), max(pdet.Precio),pu.IdBodega, 
 		                                    '' AS NombreUbicacion, pu.IdUbicacionTemporal, 
 		                                    pu.IdPedidoEnc, 0 IdOperadorBodega_Pickeo, 0 IdOperadorBodega_Verifico,
-                                            0 IdOperadorBodega_Asignado,pe.bodega_destino Referencia
+                                            0 IdOperadorBodega_Asignado,pe.bodega_destino Referencia, pu.IdProductoTallaColor
                                     FROM    dbo.bodega_sector INNER JOIN
                                             dbo.bodega_area ON dbo.bodega_sector.IdArea = dbo.bodega_area.IdArea AND dbo.bodega_sector.IdBodega = dbo.bodega_area.IdBodega INNER JOIN
                                             dbo.bodega_tramo ON dbo.bodega_sector.IdSector = dbo.bodega_tramo.IdSector AND dbo.bodega_sector.IdBodega = dbo.bodega_tramo.IdBodega INNER JOIN
@@ -6721,7 +6721,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                             pdet.codigo_producto, pdet.nombre_producto, pdet.nom_presentacion, pdet.nom_unid_med, 
                                             dbo.producto_estado.nombre, pdet.IdEstado,pu.IdBodega, 
                                             pu.IdUbicacionTemporal, 
-                                            pu.IdPedidoEnc,pe.bodega_destino"
+                                            pu.IdPedidoEnc,pe.bodega_destino, pu.IdProductoTallaColor "
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -7243,7 +7243,6 @@ Partial Public Class clsLnTrans_picking_ubic
         End Try
 
     End Function
-
 
     Public Shared Function Get_All_PickingUbic_Despachado_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer,
                                                                          ByVal lConnection As SqlConnection,
@@ -8234,5 +8233,133 @@ Partial Public Class clsLnTrans_picking_ubic
         End Try
 
     End Function
+
+    Public Shared Function Get_Operador_Defecto_By_IdPickingEnc(ByVal IdPickingEnc As Integer,
+                                                                Optional pConnection As SqlConnection = Nothing,
+                                                                Optional pTransaction As SqlTransaction = Nothing) As String
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Dim cmd As New SqlCommand
+
+        Get_Operador_Defecto_By_IdPickingEnc = ""
+
+        Try
+
+            Const sp As String = "select top(1) concat(op.nombres, ' ', op.apellidos) as Operador from trans_picking_ubic pu
+                                  join operador_bodega ob on pu.IdOperadorBodega_Pickeo = ob.IdOperadorBodega
+                                  join operador op on ob.IdOperador = op.IdOperador Where(IdPickingEnc = @IdPickingEnc) "
+
+            Dim Es_Transaccion_Remota As Boolean = (Not pConnection Is Nothing AndAlso Not pTransaction Is Nothing)
+
+            If Not Es_Transaccion_Remota Then
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+            End If
+
+            cmd = New SqlCommand(sp, IIf(Es_Transaccion_Remota, pConnection, lConnection), IIf(Es_Transaccion_Remota, pTransaction, lTransaction)) _
+                With {.CommandType = CommandType.Text}
+
+            Dim dad As New SqlDataAdapter(cmd)
+
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdPickingEnc", IdPickingEnc))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Get_Operador_Defecto_By_IdPickingEnc = IIf(IsDBNull(dt.Rows(0).Item("Operador")), "", dt.Rows(0).Item("Operador"))
+            End If
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close() : lConnection.Dispose()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
+
+    Public Shared Function Get_All_PickingUbic_Despachado_By_IdDespachoEnc(ByVal pIdDespachoEnc As Integer,
+                                                                           ByVal lConnection As SqlConnection,
+                                                                           ByVal lTransaction As SqlTransaction) As List(Of clsBeTrans_picking_ubic)
+
+        Get_All_PickingUbic_Despachado_By_IdDespachoEnc = Nothing
+
+        Dim lReturnList As List(Of clsBeTrans_picking_ubic) = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT * FROM VW_PickingUbic_Desp_By_IdDespachoEnc
+                                  WHERE IdDespachoEnc = @IdDespachoEnc "
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.Add(New SqlParameter("@IdDespachoEnc", pIdDespachoEnc))
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                Dim Obj As clsBeTrans_picking_ubic
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                    lReturnList = New List(Of clsBeTrans_picking_ubic)
+
+                    For Each lRow As DataRow In lDataTable.Rows
+
+                        Obj = New clsBeTrans_picking_ubic
+
+                        Cargar_For_Despacho(Obj, lRow)
+
+                        With Obj
+                            .Ubicacion.IdUbicacion = IIf(IsDBNull(lRow.Item("IdUbicacion")), 0, lRow.Item("IdUbicacion"))
+                            .NombreUbicacion = IIf(IsDBNull(lRow.Item("Nombre_Ubicacion")), 0, lRow.Item("Nombre_Ubicacion"))
+                            .IdPedidoDet = IIf(IsDBNull(lRow.Item("IdPedidoDet")), 0, lRow.Item("IdPedidoDet"))
+                            .CodigoProducto = IIf(IsDBNull(lRow.Item("codigo")), "", lRow.Item("codigo"))
+                            .NombreProducto = IIf(IsDBNull(lRow.Item("nombre")), "", lRow.Item("nombre"))
+                            If lDataTable.Columns.Contains("Presentacion") Then
+                                .ProductoPresentacion = IIf(IsDBNull(lRow.Item("Presentacion")), "", lRow.Item("Presentacion"))
+                            End If
+                            If lDataTable.Columns.Contains("UnidadMedida") Then
+                                .ProductoUnidadMedida = IIf(IsDBNull(lRow.Item("UnidadMedida")), "", lRow.Item("UnidadMedida"))
+                            End If
+                            If lDataTable.Columns.Contains("NomEstado") Then
+                                .ProductoEstado = IIf(IsDBNull(lRow.Item("NomEstado")), "", lRow.Item("NomEstado"))
+                            End If
+
+                            .IdProductoBodega = IIf(IsDBNull(lRow.Item("IdProductoBodega")), 0, lRow.Item("IdProductoBodega"))
+                            .IdProductoEstado = IIf(IsDBNull(lRow.Item("IdProductoEstado")), 0, lRow.Item("IdProductoEstado"))
+                            .IdPresentacion = IIf(IsDBNull(lRow.Item("IdPresentacion")), 0, lRow.Item("IdPresentacion"))
+                            .IdUnidadMedida = IIf(IsDBNull(lRow.Item("IdUnidadMedida")), 0, lRow.Item("IdUnidadMedida"))
+                            .IdStock = IIf(IsDBNull(lRow.Item("IdStock")), 0, lRow.Item("IdStock"))
+                            .IdPedidoEnc = IIf(IsDBNull(lRow.Item("IdPedidoEnc")), 0, lRow.Item("IdPedidoEnc"))
+                            .Codigo_Talla = IIf(IsDBNull(lRow.Item("Talla")), 0, lRow.Item("Talla"))
+                            .Codigo_Color = IIf(IsDBNull(lRow.Item("Color")), 0, lRow.Item("Color"))
+                            .No_Linea = IIf(IsDBNull(lRow.Item("No_Linea")), 0, lRow.Item("No_Linea"))
+                            .IsNew = False
+                        End With
+
+                        lReturnList.Add(Obj)
+
+                    Next
+
+                End If
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 
 End Class

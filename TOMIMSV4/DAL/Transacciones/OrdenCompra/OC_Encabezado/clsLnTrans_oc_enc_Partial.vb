@@ -3697,5 +3697,53 @@ Partial Public Class clsLnTrans_oc_enc
 
     End Function
 
+    Public Shared Function Get_Usuario_Defecto_By_IdOrdenCompraEnc(ByVal pIdOrdenCompra As Integer) As String
+
+        Get_Usuario_Defecto_By_IdOrdenCompraEnc = ""
+
+        Try
+
+            Dim vSQL As String = " select CONCAT(usuario.nombres,'',usuario.apellidos) as usuario 
+                                   from trans_oc_enc 
+                                   join usuario on usuario.IdUsuario = trans_oc_enc.User_Agr 
+                                    Where IdOrdenCompraEnc=  @IdOrdenCompraEnc "
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraEnc", pIdOrdenCompra)
+
+                        Dim lDT As New DataTable()
+                        lDTA.Fill(lDT)
+
+                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                            Dim lRow As DataRow = lDT.Rows(0)
+                            Get_Usuario_Defecto_By_IdOrdenCompraEnc = lRow.Item("usuario").ToString()
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        End Try
+
+    End Function
 
 End Class

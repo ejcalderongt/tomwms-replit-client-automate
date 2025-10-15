@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
+using WMS.EntityCore.Producto.ProductoSimple;
 using WMS.EntityCore.Proveedor;
 using WMSWebAPI.Dtos.Catalogos;
 
@@ -15,6 +16,23 @@ namespace WMSWebAPI.Services.Proveedor
         {
             _configuration = configuration;
             _mapper = mapper;
+        }
+
+        public void ProcesarProveedorDto(ProveedorDto dto, SqlConnection conn, SqlTransaction tx)
+        {
+            try
+            {
+                if (dto.Codigo != null)
+                    throw new ArgumentNullException(nameof(dto), "El proveedor no puede estar vacio.");
+
+                var Proveedor = _mapper.Map<clsBeProveedor>(dto);
+                clsLnProveedor.Valida_Atributos(_configuration, Proveedor, conn, tx);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al procesar Proveedor → " + ex.Message, ex);
+            }
         }
 
         public void ProcesarProveedorListDto(List<ProveedorDto> listaDto, SqlConnection conn, SqlTransaction tx)

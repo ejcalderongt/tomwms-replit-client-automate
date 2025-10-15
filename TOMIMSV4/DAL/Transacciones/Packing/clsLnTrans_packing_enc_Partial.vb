@@ -246,9 +246,16 @@ Partial Public Class clsLnTrans_packing_enc
         Dim lReturnList As New List(Of clsBeTrans_packing_enc)
 
         Try
-
-            Const sp As String = "SELECT * FROM Trans_packing_enc " &
-            " Where (idpickingenc = @idpickingenc) AND (iddespachoenc=0) AND (IdPedidoEnc = @IdPedidoEnc) "
+            Const sp As String = "SELECT a.*, 
+                                c.Codigo Codigo_Talla, 
+                                c.Nombre Nombre_Talla, 
+                                d.Codigo Codigo_Color, 
+                                d.Nombre Nombre_Color  
+                                FROM Trans_packing_enc a 
+                                left join producto_talla_color b On b.IdProductoTallaColor = a.IdProductoTallaColor
+                                left join talla c On c.IdTalla = b.IdTalla 
+                                left join color d On d.IdColor = b.IdColor " &
+                                " Where (a.idpickingenc = @idpickingenc) AND (a.iddespachoenc=0) AND (a.IdPedidoEnc = @IdPedidoEnc) "
 
             Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 
