@@ -171,11 +171,11 @@ Public Class frmIngreso_List
             Dim vMsgError As String = ex.Message
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcion.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcion.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -199,11 +199,11 @@ Public Class frmIngreso_List
             Dim vMsgError As String = ex.Message
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcion.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcion.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -342,11 +342,11 @@ Public Class frmIngreso_List
             Dim vMsgError As String = ex.Message
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcion.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcion.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
         End Try
 
     End Sub
@@ -423,11 +423,11 @@ Public Class frmIngreso_List
             Dim vMsgError As String = ex.Message
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcion.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcion.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
         End Try
 
     End Sub
@@ -463,11 +463,11 @@ Public Class frmIngreso_List
             Dim vMsgError As String = ex.Message
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcion.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcion.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -529,11 +529,11 @@ Public Class frmIngreso_List
             Dim vMsgError As String = ex.Message
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcion.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcion.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
         End Try
 
     End Sub

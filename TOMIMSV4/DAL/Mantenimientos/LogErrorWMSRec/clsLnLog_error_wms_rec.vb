@@ -20,10 +20,10 @@ Public Class clsLnLog_error_wms_rec
             If Not oBeLog_error_wms_rec.Referencia_Documento = "" Then Ins.Add("Referencia_Documento", "@Referencia_Documento", DataType.Parametro)
             If Not oBeLog_error_wms_rec.IdEmpresa = 0 Then Ins.Add("idempresa", "@idempresa", DataType.Parametro)
             If Not oBeLog_error_wms_rec.IdBodega = 0 Then Ins.Add("idbodega", "@idbodega", DataType.Parametro)
-            If Not oBeLog_error_wms_rec.IdPedidoEnc = 0 Then Ins.Add("IdPedidoEnc", "@IdPedidoEnc", DataType.Parametro)
-            If Not oBeLog_error_wms_rec.IdPickingEnc = 0 Then Ins.Add("IdPickingEnc", "@IdPickingEnc", DataType.Parametro)
             If Not oBeLog_error_wms_rec.IdRecepcionEnc = 0 Then Ins.Add("IdRecepcionEnc", "@IdRecepcionEnc", DataType.Parametro)
+            If Not oBeLog_error_wms_rec.IdRecepcionDet = 0 Then Ins.Add("IdRecepcionDet", "@IdRecepcionDet", DataType.Parametro)
             If Not oBeLog_error_wms_rec.IdUsuarioAgr = 0 Then Ins.Add("IdUsuarioAgr", "@IdUsuarioAgr", DataType.Parametro)
+            If Not oBeLog_error_wms_rec.RutaError = "" Then Ins.Add("RutaError", "@RutaError", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
@@ -48,10 +48,10 @@ Public Class clsLnLog_error_wms_rec
             If Not oBeLog_error_wms_rec.Referencia_Documento = "" Then cmd.Parameters.Add(New SqlParameter("@Referencia_Documento", oBeLog_error_wms_rec.Referencia_Documento))
             If Not oBeLog_error_wms_rec.IdEmpresa = 0 Then cmd.Parameters.Add(New SqlParameter("@idempresa", oBeLog_error_wms_rec.IdEmpresa))
             If Not oBeLog_error_wms_rec.IdBodega = 0 Then cmd.Parameters.Add(New SqlParameter("@idbodega", oBeLog_error_wms_rec.IdBodega))
-            If Not oBeLog_error_wms_rec.IdPedidoEnc = 0 Then cmd.Parameters.Add(New SqlParameter("@IdPedidoEnc", oBeLog_error_wms_rec.IdPedidoEnc))
-            If Not oBeLog_error_wms_rec.IdPickingEnc = 0 Then cmd.Parameters.Add(New SqlParameter("@IdPickingEnc", oBeLog_error_wms_rec.IdPickingEnc))
             If Not oBeLog_error_wms_rec.IdRecepcionEnc = 0 Then cmd.Parameters.Add(New SqlParameter("@IdRecepcionEnc", oBeLog_error_wms_rec.IdRecepcionEnc))
+            If Not oBeLog_error_wms_rec.IdRecepcionDet = 0 Then cmd.Parameters.Add(New SqlParameter("@IdRecepcionDet", oBeLog_error_wms_rec.IdRecepcionDet))
             If Not oBeLog_error_wms_rec.IdUsuarioAgr = 0 Then cmd.Parameters.Add(New SqlParameter("@IdUsuarioAgr", oBeLog_error_wms_rec.IdUsuarioAgr))
+            If Not oBeLog_error_wms_rec.RutaError = "" Then cmd.Parameters.Add(New SqlParameter("@RutaError", oBeLog_error_wms_rec.RutaError))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

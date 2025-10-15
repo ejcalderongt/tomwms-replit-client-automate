@@ -157,7 +157,7 @@ Public Class frmPedido
         DTStockRes.Columns.Add("Referencia", GetType(String))
     End Sub
 
-    Private Sub frmPedido_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+    Private Sub frmPedido_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
 
         Try
 
@@ -7345,7 +7345,7 @@ Public Class frmPedido
 
     End Sub
 
-    Private Sub frmPedido_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+    Private Sub frmPedido_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
 
         Dim clsTransaccion As New clsTransaccion()
         IsLoading = True
@@ -9263,16 +9263,7 @@ Public Class frmPedido
         LabelControl2.Enabled = True
     End Sub
 
-    Private Sub txtNoPoliza_KeyDown(sender As Object, e As KeyEventArgs) Handles txtNoPoliza.KeyDown
-
-        If e.KeyCode = Keys.Enter Then
-            If chkControlPoliza.Checked Then
-                If txtScanPoliza.Text.Trim <> "" Then
-                    xtrPedido.SelectedTabPageIndex = 2
-                    dgrid.Focus()
-                End If
-            End If
-        End If
+    Private Sub txtNoPoliza_KeyDown(sender As Object, e As KeyEventArgs)
 
     End Sub
 

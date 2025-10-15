@@ -12,6 +12,7 @@ Imports DevExpress.XtraGrid.Columns
 Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraReports.UI
+Imports DevExpress.XtraRichEdit.Fields
 Imports DevExpress.XtraSplashScreen
 
 Public Class frmRecepcion
@@ -302,11 +303,11 @@ Public Class frmRecepcion
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -840,11 +841,11 @@ Public Class frmRecepcion
             Dim vMsgError As String = ex.Message
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -922,11 +923,11 @@ Public Class frmRecepcion
             Dim vMsgError As String = ex.Message
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -1281,11 +1282,11 @@ Public Class frmRecepcion
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
             Throw ex
         End Try
@@ -1319,11 +1320,11 @@ Public Class frmRecepcion
             Dim vMsgError As String = ex.Message
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -1382,11 +1383,11 @@ Public Class frmRecepcion
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -1927,11 +1928,11 @@ Public Class frmRecepcion
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -2644,11 +2645,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -2675,11 +2676,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -2772,11 +2773,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -2804,11 +2805,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -2836,11 +2837,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -3079,11 +3080,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -3185,11 +3186,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -3295,11 +3296,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -3666,11 +3667,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -3940,11 +3941,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -3961,10 +3962,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
                     Dim mensajeAdvertencia As String = "ADVERTENCIA_202302231712: Se actualizó la recepción: " & gBeRecepcionEnc.IdRecepcionEnc & " Por el IdUsuario: " & AP.UsuarioAp.IdUsuario
                     clsLnLog_error_wms_rec.Agregar_Error(mensajeAdvertencia,
-                                                         AP.UsuarioAp.IdEmpresa,
-                                                         AP.IdBodega,
-                                                         AP.UsuarioAp.IdUsuario,
+                                                         pIdEmpresa:=AP.UsuarioAp.IdEmpresa,
+                                                         pIdBodega:=AP.IdBodega,
+                                                         pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
                                                          pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+
                 End If
 
                 SplashScreenManager.CloseForm(False)
@@ -4065,11 +4067,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
             Throw ex
         End Try
@@ -4687,11 +4689,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
             Throw ex
         End Try
@@ -4936,9 +4938,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             Dim msjAdvertencia As String = "ADVERTENCIA_202302231712B: Se finalizó la recepción desde BOF: " & gBeRecepcionEnc.IdRecepcionEnc & " Por el IdUsuario: " & AP.UsuarioAp.IdUsuario
             clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
+                                                 pIdEmpresa:=AP.UsuarioAp.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
                                                  pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
 
             Finaliza_Recepcion = True
@@ -4959,11 +4961,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             Dim vMsgError As String = ex.Message
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -4991,10 +4993,10 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
                 Dim msjAdvertencia As String = "ADVERTENCIA_202302230123: Se realizó recarga del objeto para la recepción: " & gBeRecepcionEnc.IdRecepcionEnc & " el tipo de transacción es: " & gBeRecepcionEnc.IdTipoTransaccion
                 clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                     pIdEmpresa:=AP.UsuarioAp.IdEmpresa,
+                                                     pIdBodega:=AP.IdBodega,
+                                                     pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                     pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
 
                 vRecargoObjetoRecepcion = True
             End If
@@ -5033,10 +5035,10 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                     '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
                                     Dim msjAdvertencia As String = "ADVERTENCIA_202302230139A: Se realizó llamada recursiva del objeto para la recepción: " & gBeRecepcionEnc.IdRecepcionEnc & " el tipo de transacción es: " & gBeRecepcionEnc.IdTipoTransaccion
                                     clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                                         pIdEmpresa:=AP.UsuarioAp.IdEmpresa,
+                                                                         pIdBodega:=AP.IdBodega,
+                                                                         pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                                         pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
 
                                     Finalizar(gBeRecepcionEnc.Detalle)
                                 End If
@@ -6055,11 +6057,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -6217,9 +6219,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                 '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
                                 Dim msjAdvertencia As String = "ADVERTENCIA_202302231712A: Se anuló la recepción: " & gBeRecepcionEnc.IdRecepcionEnc & " Por el IdUsuario: " & AP.UsuarioAp.IdUsuario
                                 clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia,
-                                                                     AP.UsuarioAp.IdEmpresa,
-                                                                     AP.IdBodega,
-                                                                     AP.UsuarioAp.IdUsuario,
+                                                                     pIdEmpresa:=AP.UsuarioAp.IdEmpresa,
+                                                                     pIdBodega:=AP.IdBodega,
+                                                                     pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
                                                                      pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
 
                                 SplashScreenManager.CloseForm(False)
@@ -6299,11 +6301,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -6426,11 +6428,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -6520,11 +6522,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -6567,11 +6569,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -6626,11 +6628,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -6667,11 +6669,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         Finally
             UseWaitCursor = False
@@ -6732,11 +6734,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         Finally
             DesmarcandoOperadores = False
@@ -6794,11 +6796,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -6826,11 +6828,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -7791,11 +7793,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         Finally
             SplashScreenManager.CloseForm(False)
@@ -10288,7 +10290,17 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                     '#MECR22092025: Se agregó bitacora para registro de detalle recepcionado.
                     Dim msjResultado As String = "Linea registrada: " & gIdMaxIdRecepcionDet & " del producto " & CodigoProducto & " con licencia " & Licencia & " y cantidad recibida " & Cantidad
-                    clsLnLog_error_wms_rec.Agregar_Error(msjResultado, AP.UsuarioAp.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                    clsLnLog_error_wms_rec.Agregar_Error(msjResultado,
+                                                         pIdEmpresa:=AP.UsuarioAp.IdEmpresa,
+                                                         pIdBodega:=AP.IdBodega,
+                                                         pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                         pUMBas:=BeProducto.UnidadMedida.Nombre,
+                                                         pVariantCode:=CodigoProducto,
+                                                         pCantidad:=Cantidad,
+                                                         pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                         pIdRecDet:=gIdMaxIdRecepcionDet,
+                                                         pConection:=clsTransaccion.lConnection,
+                                                         pTransaction:=clsTransaccion.lTransaction)
 
                     Grid_Tiene_Error = False
 
@@ -10444,11 +10456,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
             Throw ex
         End Try
@@ -10977,11 +10989,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
             Throw ex
         End Try
@@ -11102,11 +11114,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -12134,11 +12146,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc)
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
+                                                 pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
             Throw ex
         End Try

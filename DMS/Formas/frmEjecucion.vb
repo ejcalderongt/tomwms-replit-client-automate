@@ -69,14 +69,15 @@ Public Class frmEjecucion
                         minutoUltimaEjecucionDMS = minutosDesdeInicio
 
                         Try
-                            If SplashScreenManager.Default IsNot Nothing Then
-                                SplashScreenManager.Default.SetWaitFormDescription("Generando Exportación a portal web...")
-                            End If
 
                             If Not ProcesoEjecutandose Then
+
+                                If SplashScreenManager.Default IsNot Nothing Then
+                                    SplashScreenManager.Default.SetWaitFormDescription("Generando Exportación a portal web...")
+                                End If
+
                                 Await EjecutarSecuenciaAutomaticaAsync()
                             End If
-
 
                         Catch ex As Exception
                             clsLnLog_error_wms.Agregar_Error(ex.Message)
@@ -192,11 +193,13 @@ Public Class frmEjecucion
 
     Private Async Sub cmdProductos_ItemClickAsync(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdProductos.ItemClick
         Try
-            ProcesoEjecutandose = True
-            HabilitarOpciones(False)
+            'ProcesoEjecutandose = True
+            'HabilitarOpciones(False)
+            'Await EjecutarProductosAsync()
+            'HabilitarOpciones(True)
+            'ProcesoEjecutandose = False
+
             Await EjecutarProductosAsync()
-            HabilitarOpciones(True)
-            ProcesoEjecutandose = False
 
         Catch ex As Exception
             clsHelper.LogMensaje(lblprg, "Error en exportación de productos.", clsHelper.TipoMensaje.Error_)
@@ -212,7 +215,6 @@ Public Class frmEjecucion
             HabilitarOpciones(False)
             Await clsLnProductoDMS.Exportacion_ProductosAsync(lblprg, listaPropietarios)
             HabilitarOpciones(True)
-
             ProcesoEjecutandose = False
 
         Catch ex As Exception
@@ -242,9 +244,11 @@ Public Class frmEjecucion
 
     Private Async Function EjecutarSalidasAsync() As Task
         Try
+            ProcesoEjecutandose = True
             HabilitarOpciones(False)
             Await clsLnTrans_pe_encDMS.Exportacion_PedidosAsync(lblprg, listaPropietarios, listaPropietariosBodega)
             HabilitarOpciones(True)
+            ProcesoEjecutandose = False
         Catch ex As Exception
             clsHelper.LogMensaje(lblprg, "Error en exportación de pedidos.", clsHelper.TipoMensaje.Error_)
             MessageBox.Show("Error al llamar a la API: " & ex.Message)
