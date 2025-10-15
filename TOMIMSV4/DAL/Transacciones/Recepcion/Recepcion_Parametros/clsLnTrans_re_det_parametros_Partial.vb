@@ -383,8 +383,10 @@ Partial Public Class clsLnTrans_re_det_parametros
             End If
 
         Catch ex As Exception
+            '#MECR25092025: Se agrego bitacora de logs para recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdRecEnc:=IdRecepcionEnc, pStackTrace:=ex.StackTrace)
+
             Throw ex
         End Try
 
@@ -432,8 +434,9 @@ Partial Public Class clsLnTrans_re_det_parametros
             Guarda_Trans_Re_Det_Parametros = vFilas
 
         Catch ex As Exception
+            '#MECR25092025: Se agrego bitacora de recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdRecEnc:=IdRecepcionEnc, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 

@@ -2130,7 +2130,7 @@ Partial Public Class clsLnBodega
                     pObjBU.Margen_superior = 0
                     pObjBU.Margen_inferior = 0
                     pObjBU.Orientacion_pos = 0
-                    pObjBU.IdIndiceRotacion = 0
+                    pObjBU.IdIndiceRotacion = 1
                     pObjBU.IdTipoRotacion = 0
                     pObjBU.Indice_x = 0
                     clsLnBodega_ubicacion.Insertar(pObjBU,
@@ -2279,7 +2279,7 @@ Partial Public Class clsLnBodega
                     pObjBU.Margen_superior = 0
                     pObjBU.Margen_inferior = 0
                     pObjBU.Orientacion_pos = 0
-                    pObjBU.IdIndiceRotacion = Nothing
+                    pObjBU.IdIndiceRotacion = 1
                     pObjBU.IdTipoRotacion = Nothing
                     pObjBU.Indice_x = 0
                     clsLnBodega_ubicacion.Insertar(pObjBU,
@@ -2352,7 +2352,7 @@ Partial Public Class clsLnBodega
                     pObjBU.Margen_superior = 0
                     pObjBU.Margen_inferior = 0
                     pObjBU.Orientacion_pos = 0
-                    pObjBU.IdIndiceRotacion = Nothing
+                    pObjBU.IdIndiceRotacion = 1
                     pObjBU.IdTipoRotacion = Nothing
                     pObjBU.Indice_x = 0
                     clsLnBodega_ubicacion.Insertar(pObjBU,
