@@ -6,31 +6,6 @@ Imports Newtonsoft.Json
 
 Public Class clsSyncSapAjustes
 
-    Public Class InventoryPayload
-        Public Property DocDate As String
-        Public Property Comments As String
-        Public Property JournalMemo As String
-        Public Property Series As Integer?
-        Public Property Ref2 As Integer?
-        Public Property DocumentLines As List(Of InventoryDocumentLine)
-    End Class
-
-    Public Class InventoryDocumentLine
-        Public Property ItemCode As String
-        Public Property Quantity As Decimal
-        Public Property WarehouseCode As String
-        Public Property U_Color As String = ""
-        Public Property U_Talla As String = ""
-        Public Property U_MotivoDev As String = ""
-        Public Property unitMsr As String = ""
-        Public Property BatchNumbers As List(Of BatchNumber)
-    End Class
-
-    Public Class BatchNumber
-        Public Property BatchNumber As String
-        Public Property Quantity As Decimal
-    End Class
-
     Public Enum InvAdjType
         Receipt ' InventoryGenEntries +
         Issue   ' InventoryGenExits -
@@ -38,126 +13,145 @@ Public Class clsSyncSapAjustes
 
     Private Const ENTITY_TARGET_INV_GEN_EXITS As String = "InventoryGenExits"
     Private Const ENTITY_TARGET_INV_GEN_ENTRIES As String = "InventoryGenEntries"
-
     Public Shared Async Function Enviar_Ajustes_WMS_SAP(ByVal lblprg As RichTextBox) As Task(Of Boolean)
 
-        Dim pResult As String = ""
-        Dim ajustes As List(Of clsBeAjustesMI3) = clsLnI_nav_transacciones_out.Get_Ajustes_Pendientes_Envio_MI3(pResult)
+        Dim sw As New Stopwatch()
+        sw.Start()
+        clsPublic.Actualizar_Progreso(lblprg, "Iniciando envío de ajustes WMS a SAP Service Layer...")
 
-        If ajustes Is Nothing OrElse ajustes.Count = 0 Then
-            clsPublic.Actualizar_Progreso(lblprg, "No hay transacciones para procesar.")
-            Return False
-        End If
+        Try
+            Dim pResult As String = ""
+            Dim ajustes As List(Of clsBeAjustesMI3) = clsLnI_nav_transacciones_out.Get_Ajustes_Pendientes_Envio_MI3(pResult)
 
-        clsPublic.Actualizar_Progreso(lblprg, "Conectando a SAP vía SL.")
+            If ajustes Is Nothing OrElse ajustes.Count = 0 Then
+                sw.Stop()
+                clsPublic.Actualizar_Progreso(lblprg, $"No hay transacciones para procesar. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
+                Return False
+            End If
 
-        Dim vHanaService As New SapServiceLayerClient
-        Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+            clsPublic.Actualizar_Progreso(lblprg, "Conectando a SAP vía SL...")
 
-        If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
-            clsPublic.Actualizar_Progreso(lblprg, "No se pudo obtener sesión.")
-            Return False
-        Else
-            clsPublic.Actualizar_Progreso(lblprg, "Conexión correcta.")
-        End If
+            Dim vHanaService As New SapServiceLayerClient
+            Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync().ConfigureAwait(False)
 
-        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
-        ServicePointManager.Expect100Continue = False
-        ServicePointManager.FindServicePoint(New Uri(SapServiceLayerClient.baseUrl)).ConnectionLeaseTimeout = 0
+            If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
+                sw.Stop()
+                clsPublic.Actualizar_Progreso(lblprg, $"No se pudo obtener sesión. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
+                Return False
+            Else
+                clsPublic.Actualizar_Progreso(lblprg, "Conexión correcta.")
+            End If
 
-        Dim handler As New HttpClientHandler With {
-        .AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate,
-        .ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True,
-        .UseCookies = False
-    }
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+            ServicePointManager.Expect100Continue = False
+            ServicePointManager.FindServicePoint(New Uri(SapServiceLayerClient.baseUrl)).ConnectionLeaseTimeout = 0
 
-        Dim okGlobal As Boolean = False
+            Dim handler As New HttpClientHandler With {
+            .AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate,
+            .ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True,
+            .UseCookies = False
+        }
 
-        Using http As New HttpClient(handler) With {.BaseAddress = New Uri(SapServiceLayerClient.baseUrl)}
+            Dim okGlobal As Boolean = False
 
-            ' Agrupa igual que tu flujo de traslados: por documento y por tipo (entrada/salida)
-            Dim grupos = ajustes.GroupBy(Function(a) New With {
+            Using http As New HttpClient(handler) With {.BaseAddress = New Uri(SapServiceLayerClient.baseUrl)}
+
+                ' Agrupar por documento y tipo (entrada/salida)
+                Dim grupos = ajustes.GroupBy(Function(a) New With {
                                          Key .Doc = a.NoDocumento,
                                          Key .IdAjusteWMS = a.IdAjusteEnc,
                                          Key .Tipo = If(EsSalida(a), InvAdjType.Issue, InvAdjType.Receipt)
                                      })
 
-            For Each g In grupos
+                For Each g In grupos
 
-                Dim EndPoint As String = If(g.Key.Tipo = InvAdjType.Issue, ENTITY_TARGET_INV_GEN_EXITS, ENTITY_TARGET_INV_GEN_ENTRIES)
-                Dim docTxt As String = If(g.Key.Tipo = InvAdjType.Issue, "Salida", "Entrada")
+                    Dim EndPoint As String = If(g.Key.Tipo = InvAdjType.Issue, ENTITY_TARGET_INV_GEN_EXITS, ENTITY_TARGET_INV_GEN_ENTRIES)
+                    Dim docTxt As String = If(g.Key.Tipo = InvAdjType.Issue, "Salida", "Entrada")
 
-                ' ---------- 2) Construcción de payload ----------
-                Dim payload As InventoryPayload = Build_Inventory_Payload(
-                docDate:=Date.Today,
-                comments:=$"WMS Ajuste {g.Key.Doc} ({docTxt}) IdAjusteWMS:({g.Key.IdAjusteWMS}) ",
-                journalMemo:=$"WMS {docTxt} – MI3",
-                series:=Nothing,               ' si aplicara una serie, envíala aquí
-                detalles:=g.ToList()           ' los clsBeAjustesMI3 del grupo
-            )
+                    ' ---------- 2) Construcción de payload ----------
+                    Dim payload As InventoryPayload = Build_Inventory_Payload(
+                    docDate:=Date.Today,
+                    comments:=$"WMS Ajuste {g.Key.Doc} ({docTxt}) IdAjusteWMS:({g.Key.IdAjusteWMS}) ",
+                    journalMemo:=$"WMS {docTxt} – MI3",
+                    series:=Nothing,
+                    detalles:=g.ToList()
+                )
 
-                Dim json As String = JsonConvert.SerializeObject(payload, New JsonSerializerSettings With {.NullValueHandling = NullValueHandling.Ignore})
-                Dim content = New StringContent(json, Encoding.UTF8)
-                Dim mediaType = New MediaTypeHeaderValue("application/json") : mediaType.CharSet = "utf-8"
-                content.Headers.ContentType = mediaType
+                    Dim json As String = JsonConvert.SerializeObject(payload, New JsonSerializerSettings With {.NullValueHandling = NullValueHandling.Ignore})
+                    Dim content = New StringContent(json, Encoding.UTF8)
+                    Dim mediaType = New MediaTypeHeaderValue("application/json") : mediaType.CharSet = "utf-8"
+                    content.Headers.ContentType = mediaType
 
-                ' ---------- 3) POST /InventoryGenEntries|Exits ----------
-                Dim req As New HttpRequestMessage(HttpMethod.Post, endpoint) With {.Content = content}
-                req.Headers.Add("Cookie", vHanaService.SessionCookie)
-                req.Headers.ConnectionClose = True
+                    ' ---------- 3) POST /InventoryGenEntries|Exits ----------
+                    Dim req As New HttpRequestMessage(HttpMethod.Post, EndPoint) With {.Content = content}
+                    req.Headers.Add("Cookie", vHanaService.SessionCookie)
+                    req.Headers.ConnectionClose = True
 
-                clsPublic.Actualizar_Progreso(lblprg, $"Publicando {docTxt} {g.Key.Doc} ({payload.DocumentLines.Count} línea(s)) ...")
+                    clsPublic.Actualizar_Progreso(lblprg, $"Publicando {docTxt} {g.Key.Doc} ({payload.DocumentLines.Count} línea(s)) ...")
 
-                Dim resp = Await http.SendAsync(req).ConfigureAwait(False)
-                Dim body = Await resp.Content.ReadAsStringAsync().ConfigureAwait(False)
+                    Dim resp = Await http.SendAsync(req).ConfigureAwait(False)
+                    Dim body = Await resp.Content.ReadAsStringAsync().ConfigureAwait(False)
 
-                Dim docEntry As Integer = 0
-                Dim docNum As Integer = 0
+                    Dim docEntry As Integer = 0
+                    Dim docNum As Integer = 0
 
-                If resp.IsSuccessStatusCode Then
+                    If resp.IsSuccessStatusCode Then
 
-                    Try
-                        Dim jo = Linq.JObject.Parse(body)
-                        docEntry = jo.Value(Of Integer?)("DocEntry").GetValueOrDefault()
-                        docNum = jo.Value(Of Integer?)("DocNum").GetValueOrDefault()
-                    Catch
-                    End Try
-
-                    clsPublic.Actualizar_Progreso(lblprg, "✅ Respuesta:")
-                    clsPublic.Actualizar_Progreso(lblprg, $"{docTxt} creada: DocNum {docNum} (DocEntry {docEntry})")
-
-                    ' -------- 4) Marcar enviados en WMS --------
-                    For Each aj In g
                         Try
-                            ' Ejemplo:
-                            clsLnTrans_ajuste_det.Actualizar_Estado_Enviado_A_ERP(aj.IdAjusteDet, True)
-                            clsLnTrans_ajuste_enc.Actualizar_Referencia(aj.IdAjusteEnc, docNum)
+                            Dim jo = Linq.JObject.Parse(body)
+                            docEntry = jo.Value(Of Integer?)("DocEntry").GetValueOrDefault()
+                            docNum = jo.Value(Of Integer?)("DocNum").GetValueOrDefault()
                         Catch
                         End Try
-                    Next
 
-                    okGlobal = True
-                Else
-                    ' Manejo de error coherente con tus logs
-                    clsPublic.Actualizar_Progreso(lblprg, $"❌ Error SL {resp.StatusCode}:")
-                    clsPublic.Actualizar_Progreso(lblprg, body)
+                        clsPublic.Actualizar_Progreso(lblprg, "✅ Respuesta:")
+                        clsPublic.Actualizar_Progreso(lblprg, $"{docTxt} creada: DocNum {docNum} (DocEntry {docEntry})")
 
-                    ' log por cada detalle del grupo
-                    For Each aj In g
-                        Try
-                            clsLnI_nav_ejecucion_det_error.Inserta_Log(
-                            $"Error SL {CInt(resp.StatusCode)}: {body}",
-                            aj.IdAjusteEnc, aj.IdAjusteDet, 300)
-                        Catch
-                        End Try
-                    Next
-                End If
+                        ' -------- 4) Marcar enviados en WMS --------
+                        For Each aj In g
+                            Try
+                                clsLnTrans_ajuste_det.Actualizar_Estado_Enviado_A_ERP(aj.IdAjusteDet, True)
+                                clsLnTrans_ajuste_enc.Actualizar_Referencia(aj.IdAjusteEnc, docNum)
+                            Catch
+                            End Try
+                        Next
 
-            Next
-        End Using
+                        okGlobal = True
+                    Else
+                        ' Manejo de error coherente con tus logs
+                        clsPublic.Actualizar_Progreso(lblprg, $"❌ Error SL {resp.StatusCode}:")
+                        clsPublic.Actualizar_Progreso(lblprg, body)
 
-        Return okGlobal
+                        ' log por cada detalle del grupo
+                        For Each aj In g
+                            Try
+                                clsLnI_nav_ejecucion_det_error.Inserta_Log(
+                                $"Error SL {CInt(resp.StatusCode)}: {body}",
+                                aj.IdAjusteEnc, aj.IdAjusteDet, 300)
+                            Catch
+                            End Try
+                        Next
+                    End If
+
+                Next
+            End Using
+
+            sw.Stop()
+            Dim finMsg As String = If(okGlobal,
+                                  $"Proceso finalizado correctamente. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.",
+                                  $"Proceso finalizado sin cambios o con errores. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
+            clsPublic.Actualizar_Progreso(lblprg, finMsg)
+
+            Return okGlobal
+
+        Catch ex As Exception
+            If sw.IsRunning Then sw.Stop()
+            clsPublic.Actualizar_Progreso(lblprg, $"Error en el envío de ajustes: {ex.Message}. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
+            Return False
+        End Try
+
     End Function
+
 
     Private Shared Function Build_Inventory_Payload(ByVal docDate As Date,
                                                     ByVal comments As String,
@@ -239,5 +233,31 @@ Public Class clsSyncSapAjustes
 
         Return False
     End Function
+
+    Public Class InventoryPayload
+        Public Property DocDate As String
+        Public Property Comments As String
+        Public Property JournalMemo As String
+        Public Property Series As Integer?
+        Public Property Ref2 As Integer?
+        Public Property DocumentLines As List(Of InventoryDocumentLine)
+    End Class
+
+    Public Class InventoryDocumentLine
+        Public Property ItemCode As String
+        Public Property Quantity As Decimal
+        Public Property WarehouseCode As String
+        Public Property U_Color As String = ""
+        Public Property U_Talla As String = ""
+        Public Property U_MotivoDev As String = ""
+        Public Property unitMsr As String = ""
+        Public Property BatchNumbers As List(Of BatchNumber)
+    End Class
+
+    Public Class BatchNumber
+        Public Property BatchNumber As String
+        Public Property Quantity As Decimal
+    End Class
+
 
 End Class

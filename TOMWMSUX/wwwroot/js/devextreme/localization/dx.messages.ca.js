@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.messages.ca.js)
-* Version: 25.1.4
-* Build date: Tue Aug 05 2025
+* Version: 25.1.5
+* Build date: Wed Sep 03 2025
 *
 * Copyright (c) 2012 - 2025 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/

@@ -761,7 +761,6 @@ Partial Public Class clsLnTrans_despacho_enc
                                             Dim loteDouble As Double = 0
                                             Dim loteEntero As Integer = 0
 
-
                                             For Each BePickingUbic As clsBeTrans_picking_ubic In lPickingUbicVerificados
 
                                                 For Each BeDespachoDet As clsBeTrans_despacho_det In BeDespachoEnc.ListaDetalle.Where(Function(x) x.IdPickingUbic = BePickingUbic.IdPickingUbic _
@@ -785,6 +784,9 @@ Partial Public Class clsLnTrans_despacho_enc
                                                     BeOcDetLote.Presentacion.IdPresentacion = BePickingUbic.IdPresentacion
                                                     BeOcDetLote.IdUnidadMedidaBasica = BePickingUbic.IdUnidadMedida
                                                     BeOcDetLote.UnidadMedida.IdUnidadMedida = BePickingUbic.IdUnidadMedida
+                                                    BeOcDetLote.IdProductoTallaColor = BePickingUbic.IdProductoTallaColor
+                                                    BeOcDetLote.Talla = BePickingUbic.Codigo_Talla
+                                                    BeOcDetLote.Color = BePickingUbic.Codigo_Color
                                                     BeOcDetLote.Activo = True
                                                     BeOcDetLote.User_agr = BeDespachoEnc.User_agr
                                                     BeOcDetLote.User_mod = BeDespachoEnc.User_mod
