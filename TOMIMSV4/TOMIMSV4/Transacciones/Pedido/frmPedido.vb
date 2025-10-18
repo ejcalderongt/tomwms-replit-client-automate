@@ -157,7 +157,7 @@ Public Class frmPedido
         DTStockRes.Columns.Add("Referencia", GetType(String))
     End Sub
 
-    Private Sub frmPedido_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+    Private Sub frmPedido_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
 
         Try
 
@@ -7345,7 +7345,7 @@ Public Class frmPedido
 
     End Sub
 
-    Private Sub frmPedido_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+    Private Sub frmPedido_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
 
         Dim clsTransaccion As New clsTransaccion()
         IsLoading = True
@@ -9257,22 +9257,13 @@ Public Class frmPedido
     End Function
 
 
-    Private Sub LabelControl2_Click(sender As Object, e As EventArgs) Handles LabelControl2.Click
+    Private Sub LabelControl2_Click(sender As Object, e As EventArgs) 
         LabelControl2.Enabled = False
         Scan_Poliza()
         LabelControl2.Enabled = True
     End Sub
 
-    Private Sub txtNoPoliza_KeyDown(sender As Object, e As KeyEventArgs) Handles txtNoPoliza.KeyDown
-
-        If e.KeyCode = Keys.Enter Then
-            If chkControlPoliza.Checked Then
-                If txtScanPoliza.Text.Trim <> "" Then
-                    xtrPedido.SelectedTabPageIndex = 2
-                    dgrid.Focus()
-                End If
-            End If
-        End If
+    Private Sub txtNoPoliza_KeyDown(sender As Object, e As KeyEventArgs)
 
     End Sub
 
@@ -9341,7 +9332,7 @@ Public Class frmPedido
 
     End Sub
 
-    Private Sub lnkUltDespacho_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles txtIdDespacho.LinkClicked
+    Private Sub lnkUltDespacho_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs)
         Despacho_Link()
     End Sub
 
@@ -10783,7 +10774,7 @@ Public Class frmPedido
 
     End Sub
 
-    Private Sub txtIdDespacho_Click(sender As Object, e As EventArgs) Handles txtIdDespacho.Click
+    Private Sub txtIdDespacho_Click(sender As Object, e As EventArgs) Handles txtIdDespacho.LinkClicked
 
         Despacho_Link()
 
