@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WMS.EntityCore.Pedido
+namespace WMS.EntityCore.Cliente
 {
     public class clsBeCliente_bodega : ICloneable
     {

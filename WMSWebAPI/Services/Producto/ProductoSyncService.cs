@@ -51,7 +51,7 @@ public class ProductoSyncService : IProductoSyncService
         {
             if (dto.Marca != null)
                 if (dto.Marca.IdMarca != 0)
-                    clsLnProductoMarca.InsertOrUpdate(_configuration, _mapper.Map<clsBeProducto_marca>(dto.Marca), conn, tx);
+                    clsLnProducto_Marca.InsertOrUpdate(_configuration, _mapper.Map<clsBeProducto_marca>(dto.Marca), conn, tx);
         }
         catch (Exception ex)
         {

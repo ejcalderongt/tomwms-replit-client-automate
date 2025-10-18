@@ -1,6 +1,7 @@
-﻿using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Reflection;
 using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace AppGlobal
 {
@@ -73,6 +74,6 @@ namespace AppGlobal
             {
                 throw new Exception("Error en Desencriptar: " + ex.Message, ex);
             }
-        }
+        }        
     }
 }

@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Transactions;
 using WMS.EntityCore.Dtos.Productos;
-using WMSWebAPI.Dtos.Catalogos;
 using WMSWebAPI.Services.Producto.Tipo;
-using WMSWebAPI.Services.Producto.Umbas;
 
 namespace WMSWebAPI.Controllers
 {
@@ -85,6 +83,47 @@ namespace WMSWebAPI.Controllers
             }
 
         }
+        // ✅ GET: api/TipoProducto/list/mi3/all
+        [HttpGet("list/mi3/all")]
+        public IActionResult Get_All([FromQuery] string? fields)
+        {
+            try
+            {
+                var tipos = _syncService.Get_All(); // Asume existencia en la capa Ln/Service
+
+                if (tipos == null || tipos.Count == 0)
+                    return NotFound(new { Exito = false, Mensaje = "No se encontraron tipos de producto." });
+
+                // Proyección opcional: ?fields=Codigo,Descripcion
+                if (!string.IsNullOrWhiteSpace(fields))
+                {
+                    var fieldSet = fields.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                         .Select(f => f.Trim().ToLower())
+                                         .ToHashSet();
+
+                    var data = tipos.Select(t =>
+                    {
+                        var dict = new Dictionary<string, object?>();
+                        foreach (var p in t.GetType().GetProperties())
+                        {
+                            if (fieldSet.Contains(p.Name.ToLower()))
+                                dict[p.Name] = p.GetValue(t);
+                        }
+                        return dict;
+                    });
+
+                    return Ok(new { Exito = true, Data = data });
+                }
+
+                return Ok(new { Exito = true, Data = tipos });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener tipos de producto (MI3).");
+                return StatusCode(500, new { Exito = false, Mensaje = "Ocurrió un error al obtener los tipos de producto." });
+            }
+        }
+
 
     }
 }

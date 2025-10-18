@@ -52,6 +52,18 @@ namespace WMSWebAPI.Services.Proveedor
                 throw new Exception("Error al procesar Proveedores → " + ex.Message, ex);
             }
         }
+        // Método en la clase de servicio (SyncProveedorService)
+        public List<clsBeProveedor> Get_All()
+        {
+            try
+            {
+                return clsLnProveedor.GetAll(_configuration);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener proveedores → " + ex.Message, ex);
+            }
+        }
 
     }
 }

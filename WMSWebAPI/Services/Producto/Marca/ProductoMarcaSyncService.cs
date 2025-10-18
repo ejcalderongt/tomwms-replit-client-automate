@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Dtos.Catalogos;
+using WMS.EntityCore.Producto;
 using WMS.EntityCore.Producto.ProductoSimple;
 
 
@@ -23,7 +24,7 @@ namespace WMSWebAPI.Services.Producto.Marca
             {
                 var Marca = _mapper.Map<clsBeProducto_marcaSimple>(dto);
                 if (Marca != null)
-                    clsLnProductoMarca.Valida_Atributos(_configuration, Marca, conn, tx);
+                    clsLnProducto_Marca.Valida_Atributos(_configuration, Marca, conn, tx);
                     
             }
             catch (Exception ex)
@@ -31,5 +32,18 @@ namespace WMSWebAPI.Services.Producto.Marca
                 throw new Exception("Error al procesar Marca → " + ex.Message, ex);
             }
         }
+        //Método en la clase de servicio (ProductoMarcaSyncService)
+        public List<clsBeProducto_marca> Get_All()
+        {
+            try
+            {
+                return clsLnProducto_Marca.GetAll(_configuration);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener marcas → " + ex.Message, ex);
+            }
+        }
+
     }
 }

@@ -31,10 +31,22 @@ public class ProductoMi3SyncService : IProductoMi3SyncService
         }
     }
 
-   
+    // Método en la clase de servicio (ProductoMi3SyncService)
+    public List<clsBeProducto> Get_All()
+    {
+        try
+        {
+            return clsLnProducto.GetAll(_configuration);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error al obtener productos → " + ex.Message, ex);
+        }
+    }
+
 }
 
 
-    
+
 
 

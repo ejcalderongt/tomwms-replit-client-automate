@@ -72,5 +72,44 @@ namespace WMSWebAPI.Controllers
 
 
         }
+        // GET: api/Clasificacion/list/mi3/all
+        [HttpGet("list/mi3/all")]
+        public IActionResult Get_All([FromQuery] string? fields)
+        {
+            try
+            {
+                var clasificaciones = _syncService.Get_All();
+
+                if (clasificaciones == null || clasificaciones.Count == 0)
+                    return NotFound(new { Exito = false, Mensaje = "No se encontraron clasificaciones de producto." });
+
+                if (!string.IsNullOrWhiteSpace(fields))
+                {
+                    var fieldSet = fields.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                         .Select(f => f.Trim().ToLower())
+                                         .ToHashSet();
+
+                    var data = clasificaciones.Select(c =>
+                    {
+                        var dict = new Dictionary<string, object?>();
+                        foreach (var p in c.GetType().GetProperties())
+                        {
+                            if (fieldSet.Contains(p.Name.ToLower()))
+                                dict[p.Name] = p.GetValue(c);
+                        }
+                        return dict;
+                    });
+
+                    return Ok(new { Exito = true, Data = data });
+                }
+
+                return Ok(new { Exito = true, Data = clasificaciones });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Exito = false, Mensaje = "Error al obtener las clasificaciones → " + ex.Message });
+            }
+        }
+
     }
 }

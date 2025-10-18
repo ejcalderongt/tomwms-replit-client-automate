@@ -1078,7 +1078,7 @@ public class clsLnProducto
                 if (!string.IsNullOrEmpty(BeProductoMi3.CodigoMarca)) 
                 {
 
-                    bool ExisteMarca = clsLnProductoMarca.Existe_By_Codigo(BeProductoMi3.CodigoMarca, ref Marca, connection, isExternalTx ? tx! : localTx!);
+                    bool ExisteMarca = clsLnProducto_Marca.Existe_By_Codigo(BeProductoMi3.CodigoMarca, ref Marca, connection, isExternalTx ? tx! : localTx!);
 
                     if (!ExisteMarca)
                     {

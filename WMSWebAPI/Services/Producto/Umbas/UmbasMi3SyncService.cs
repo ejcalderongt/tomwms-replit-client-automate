@@ -34,5 +34,17 @@ namespace WMSWebAPI.Services.Producto.Umbas
                 throw new Exception("Error al procesar UmbasMi3 " + ex.Message);
             }
         }
+        public List<clsBeUnidad_medida> Get_All()
+        {
+            try
+            {
+                return clsLnUnidad_medida.GetAll(_configuration);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al procesar UmbasMi3 " + ex.Message);
+            }
+        }
     }
 }

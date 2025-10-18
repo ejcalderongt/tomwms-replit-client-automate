@@ -69,8 +69,44 @@ namespace WMSWebAPI.Controllers
                     }
                 }
             }
+        }
+        // GET: api/Presentacion/list/mi3/all
+        [HttpGet("list/mi3/all")]
+        public IActionResult Get_All([FromQuery] string? fields)
+        {
+            try
+            {
+                var presentaciones = _presentacionMi3SyncService.Get_All();
 
+                if (presentaciones == null || presentaciones.Count == 0)
+                    return NotFound(new { Exito = false, Mensaje = "No se encontraron presentaciones." });
 
+                if (!string.IsNullOrWhiteSpace(fields))
+                {
+                    var fieldSet = fields.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                         .Select(f => f.Trim().ToLower())
+                                         .ToHashSet();
+
+                    var data = presentaciones.Select(p =>
+                    {
+                        var dict = new Dictionary<string, object?>();
+                        foreach (var prop in p.GetType().GetProperties())
+                        {
+                            if (fieldSet.Contains(prop.Name.ToLower()))
+                                dict[prop.Name] = prop.GetValue(p);
+                        }
+                        return dict;
+                    });
+
+                    return Ok(new { Exito = true, Data = data });
+                }
+
+                return Ok(new { Exito = true, Data = presentaciones });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Exito = false, Mensaje = "Error al obtener presentaciones → " + ex.Message });
+            }
         }
 
     }

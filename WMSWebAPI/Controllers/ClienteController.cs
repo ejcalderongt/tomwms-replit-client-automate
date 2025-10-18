@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Transactions;
-using WMS.EntityCore.Dtos.Catalogos;
 using WMS.EntityCore.Dtos.Clientes;
-using WMSWebAPI.Dtos.Catalogos;
 using WMSWebAPI.Services.Cliente;
 
 namespace WMSWebAPI.Controllers
@@ -83,8 +80,23 @@ namespace WMSWebAPI.Controllers
                 }
             }
         }
+        [HttpGet("list/mi3/all")]
+        public IActionResult Get_All()
+        {
+            try
+            {
+                var clientes = _syncService.Get_All();
 
+                if (clientes == null || clientes.Count == 0)
+                    return NotFound(new { Exito = false, Mensaje = "No se encontraron clientes." });
 
-
+                return Ok(new { Exito = true, Data = clientes });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener la lista de clientes MI3");
+                return StatusCode(500, new { Exito = false, Mensaje = "Ocurrió un error al obtener los clientes." });
+            }
+        }
     }
 }

@@ -25,63 +25,7 @@ namespace WMSWebAPI.Controllers
             _mapper = mapper;
             _syncProveedorService = service;
             _logger = logger;
-        }
-
-        //#GT26092025: no recuerdo si tiene uso o se agregó sin considerar DMS
-        //[HttpPost("list/insert")]
-        //public async Task<IActionResult> Sincronizar([FromBody] List<ProveedorDto> proveedorDto, [FromServices] IConfiguration configuration)
-        //{
-        //    if (proveedorDto == null)
-        //    {
-        //        _logger.LogWarning("proveedorDto recibido es nulo.");
-        //        return BadRequest("El objeto proveedorDto no puede ser nulo.");
-        //    }
-
-        //    string? connectionString = _configuration.GetConnectionString("CST");
-        //    if (string.IsNullOrEmpty(connectionString))
-        //    {
-        //        _logger.LogError("Cadena de conexión 'CST' no configurada.");
-        //        return StatusCode(500, new { Exito = false, Mensaje = "La cadena de conexión no está configurada." });
-        //    }
-
-        //    using (var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions
-        //    {
-        //        IsolationLevel = IsolationLevel.ReadCommitted
-        //    }, TransactionScopeAsyncFlowOption.Enabled))
-        //    {
-        //        using (var connection = new SqlConnection(connectionString))
-        //        {
-        //            await connection.OpenAsync();
-        //            using (var transaction = connection.BeginTransaction())
-        //            {
-        //                try
-        //                {
-                            
-        //                    _syncProveedorService.ProcesarProveedorListDto(proveedorDto, connection, transaction);
-
-        //                    transaction.Commit();
-        //                    scope.Complete();
-
-        //                    _logger.LogInformation("Lista proveedor procesado correctamente.");
-        //                    return Ok(new { Exito = true, Mensaje = "Lista proveedor procesado correctamente." });
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    _logger.LogError(ex, "Error al procesar proveedorDto");
-        //                    transaction.Rollback();
-
-        //                    var showStackTrace = _configuration.GetValue<bool>("MostrarDetallesErrores");
-        //                    return StatusCode(500, new
-        //                    {
-        //                        Exito = false,
-        //                        Mensaje = ex.Message,
-        //                        Detalles = showStackTrace ? ex.ToString() : null
-        //                    });
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+        }        
 
         [HttpPost("list/mi3/insert")]
         public async Task<IActionResult> Sincronizar([FromBody] List<ProveedorDto> proveedorDto, [FromServices] IConfiguration configuration)
@@ -140,6 +84,44 @@ namespace WMSWebAPI.Controllers
                 }
             }
         }
+        // GET: api/Proveedor/list/mi3/all
+        [HttpGet("list/mi3/all")]
+        public IActionResult Get_All([FromQuery] string? fields)
+        {
+            try
+            {
+                var proveedores = _syncProveedorService.Get_All();
 
+                if (proveedores == null || proveedores.Count == 0)
+                    return NotFound(new { Exito = false, Mensaje = "No se encontraron proveedores." });
+
+                if (!string.IsNullOrWhiteSpace(fields))
+                {
+                    var fieldSet = fields.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                         .Select(f => f.Trim().ToLower())
+                                         .ToHashSet();
+
+                    var data = proveedores.Select(p =>
+                    {
+                        var dict = new Dictionary<string, object?>();
+                        foreach (var prop in p.GetType().GetProperties())
+                        {
+                            if (fieldSet.Contains(prop.Name.ToLower()))
+                                dict[prop.Name] = prop.GetValue(p);
+                        }
+                        return dict;
+                    });
+
+                    return Ok(new { Exito = true, Data = data });
+                }
+
+                return Ok(new { Exito = true, Data = proveedores });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener proveedores (MI3).");
+                return StatusCode(500, new { Exito = false, Mensaje = "Error al obtener proveedores → " + ex.Message });
+            }
+        }
     }
 }

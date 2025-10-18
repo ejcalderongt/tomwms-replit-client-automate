@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Dtos.Catalogos;
+using WMS.EntityCore.Producto;
 
 namespace WMSWebAPI.Services.Producto.Clasificacion
 {
@@ -7,6 +8,8 @@ namespace WMSWebAPI.Services.Producto.Clasificacion
     {
 
         void ProcesarClasificacionDesdeDto(ProductoClasificacionMi3Dto dto, SqlConnection connection, SqlTransaction transaction);
+        List<clsBeProducto_clasificacion> Get_All();
+
 
     }
 
