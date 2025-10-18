@@ -2285,6 +2285,10 @@ Public Class frmDespacho
 
                 End If
 
+                If pBePedidoEnc.Detalle Is Nothing Then
+                    pBePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(pBePedidoEnc.IdPedidoEnc)
+                End If
+
                 For Each Obj As clsBeVW_stock_res In pListObjSP
 
                     BePedidoDet = pBePedidoEnc.Detalle.Find(Function(x) x.IdPedidoDet = Obj.IdPedidoDet)
@@ -2765,18 +2769,35 @@ Public Class frmDespacho
 
                 If DT.Rows.Count > 0 Then
 
-                    Dim Rep As New rptPackingPorBarra
-                    Rep.DataSource = DT
-                    Rep.DataMember = "Result"
-                    Rep.Parameters("Empresa").Value = AP.NomEmpresa
-                    Rep.Parameters("Empresa").Visible = False
-                    Rep.Parameters("Bodega").Value = AP.NomBodega
-                    Rep.Parameters("Bodega").Visible = False
-                    Rep.RequestParameters = False
+                    If AP.Bodega.Control_Talla_Color Then
+                        Dim Rep As New rptPackingTallaColor
+                        Rep.DataSource = DT
+                        Rep.DataMember = "Result"
+                        Rep.Parameters("Empresa").Value = AP.NomEmpresa
+                        Rep.Parameters("Empresa").Visible = False
+                        Rep.Parameters("Bodega").Value = AP.NomBodega
+                        Rep.Parameters("Bodega").Visible = False
+                        Rep.RequestParameters = False
 
-                    Rep.MostrarEncabezadoSoloEnPrimeraPagina = False
+                        Rep.MostrarEncabezadoSoloEnPrimeraPagina = False
 
-                    Rep.ShowPreview()
+                        Rep.ShowPreview()
+                    Else
+                        Dim Rep As New rptPackingPorBarra
+                        Rep.DataSource = DT
+                        Rep.DataMember = "Result"
+                        Rep.Parameters("Empresa").Value = AP.NomEmpresa
+                        Rep.Parameters("Empresa").Visible = False
+                        Rep.Parameters("Bodega").Value = AP.NomBodega
+                        Rep.Parameters("Bodega").Visible = False
+                        Rep.RequestParameters = False
+
+                        Rep.MostrarEncabezadoSoloEnPrimeraPagina = False
+
+                        Rep.ShowPreview()
+                    End If
+
+
 
 
                 End If

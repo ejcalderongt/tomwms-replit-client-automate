@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Dtos.Catalogos;
-using WMS.EntityCore.Producto;
 using WMS.EntityCore.Producto.ProductoSimple;
 
 namespace WMSWebAPI.Services.Producto.Clasificacion

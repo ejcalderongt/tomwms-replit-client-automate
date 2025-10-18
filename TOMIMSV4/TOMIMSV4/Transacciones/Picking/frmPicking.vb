@@ -2587,7 +2587,30 @@ Public Class frmPicking
                 End If
 
                 If Modal Then
+
                     DialogResult = DialogResult.OK '#EJC20171021_0437PM: Cerrar forma después de procesar
+
+                    If BePickingEnc.procesado_bof Then
+
+                        Dim vPedidos = BeListPickingDet _
+                                        .Where(Function(x) x IsNot Nothing) _
+                                        .Select(Function(x) x.IdPedidoEnc) _
+                                        .Distinct() _
+                                        .ToList()
+
+                        ' Ejemplo de uso con If como pediste
+                        If vPedidos.Count() = 1 Then
+                            Dim IdPedidoEnc = vPedidos(0)
+                            Dim BePedidoEnc As clsBeTrans_pe_enc = clsLnTrans_pe_enc.GetSingle(IdPedidoEnc)
+                            If XtraMessageBox.Show("¿Generar Despacho?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                                BePedidoEnc.Picking = clsLnTrans_picking_enc.GetSingle(BePickingEnc.IdPickingEnc)
+                                Nuevo_Despacho(BePedidoEnc)
+                            End If
+                        End If
+
+
+                    End If
+
                 Else
                     Close()
                 End If
@@ -4660,5 +4683,56 @@ Public Class frmPicking
         End Try
 
     End Function
+
+    Private Sub Nuevo_Despacho(BePedidoEnc As clsBeTrans_pe_enc)
+
+        Try
+
+            Cierra_Instancia_Previa(frmDespacho)
+
+            With frmDespacho
+                .Modo = frmDespacho.TipoTrans.Nuevo
+                .WindowState = FormWindowState.Maximized
+                .Activate()
+                .Show()
+                .Agregar_Pedido(BePedidoEnc)
+                .InvokeCargarPedido = AddressOf Cargar_Datos
+                .Focus()
+                .BringToFront()
+            End With
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+
+    End Sub
+
+    Public Sub Cierra_Instancia_Previa(ByRef Myform As Form)
+
+        Try
+
+            For Each objForm In My.Application.OpenForms
+                If (Trim(objForm.Name) = Trim(Myform.Name)) Then
+                    Myform.Close()
+                    Exit For
+                End If
+            Next
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
 
 End Class

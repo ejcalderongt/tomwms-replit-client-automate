@@ -313,7 +313,7 @@ Public Class clsSyncSapFacturaReserva
                                                                                                 lTransaction)
 
             If Not ResutlProc Then
-                clsPublic.Actualizar_Progreso(lblprg, "Error al procesar detalle de ingreso.")
+                clsPublic.Actualizar_Progreso(lblprg, "Error al procesar el documento de ingreso, valide el log.")
                 Return False
             End If
 

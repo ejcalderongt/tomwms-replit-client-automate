@@ -796,4 +796,45 @@ Public Class clsLnTalla
 
     End Function
 
+    Public Shared Function Get_Codigo_By_Nombre(ByVal pNombre As String) As String
+
+        Try
+
+            Dim lCodigo As String = ""
+
+            Const sp As String = "select Codigo from talla where Nombre = @Nombre"
+
+            Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+
+                        lCommand.Parameters.AddWithValue("@Nombre", pNombre)
+
+                        Dim lReturnValue As Object = lCommand.ExecuteScalar()
+                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                            lCodigo = CStr(lReturnValue)
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lCodigo
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 End Class

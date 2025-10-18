@@ -597,8 +597,13 @@ public class clsLnTrans_picking_det
 
         try
         {
+
+         
+
+
             foreach (var entity in entities)
             {
+
                 bool existe = Existe(entity.IdPickingDet, entity.IdPickingEnc, connection, isExternalTx ? tx! : localTx!);
 
                 int result = existe
@@ -606,6 +611,7 @@ public class clsLnTrans_picking_det
                     : Insertar(config, entity, connection, isExternalTx ? tx : localTx);
 
                 total += result;
+
             }
 
             if (!isExternalTx)
