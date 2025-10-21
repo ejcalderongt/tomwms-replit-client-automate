@@ -22,8 +22,7 @@ public class ProductoSyncService : IProductoSyncService
         try
         {
             if (dto.Propietario != null) {
-                var Propietario = _mapper.Map<clsBePropietarios>(dto.Propietario);
-                //clsLnPropietario_bodega.InsertOrUpdate(_configuration, propietario_bodega, conn, tx);
+                var Propietario = _mapper.Map<clsBePropietarios>(dto.Propietario);                
                 clsLnPropietarios.InsertOrUpdate(_configuration, Propietario, conn, tx);
                
             }

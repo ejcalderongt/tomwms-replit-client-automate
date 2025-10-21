@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Dtos.Catalogos;
+using WMS.EntityCore.Producto;
 using WMS.EntityCore.Producto.ProductoSimple;
 
 namespace WMSWebAPI.Services.Producto.Clasificacion
@@ -44,6 +45,5 @@ namespace WMSWebAPI.Services.Producto.Clasificacion
                 throw new Exception("Error al obtener clasificaciones → " + ex.Message, ex);
             }
         }
-
     }
 }

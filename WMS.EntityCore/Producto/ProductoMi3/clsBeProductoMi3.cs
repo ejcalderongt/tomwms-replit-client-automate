@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace WMS.EntityCore.Producto
 {
     public class clsBeProductoMi3 : ICloneable
-    {
+    {        
 
         [Column("IdProducto")]
         [DisplayName("IdProducto")]
@@ -51,33 +51,36 @@ namespace WMS.EntityCore.Producto
         [DisplayName("codigo_barra")]
         public string codigo_barra { get; set; } = "";
 
-        //[Column("genera_lote")]
-        //[DisplayName("genera_lote")]
-        //public bool genera_lote { get; set; } = false;
+        [Column("genera_lote")]
+        [DisplayName("genera_lote")]
+        public bool genera_lote { get; set; } = false;
 
-        //[Column("genera_lp_old")]
-        //[DisplayName("genera_lp_old")]
-        //public bool genera_lp_old { get; set; } = false;
+        [Column("genera_lp_old")]
+        [DisplayName("genera_lp_old")]
+        public bool genera_lp_old { get; set; } = false;
 
-        //[Column("control_vencimiento")]
-        //[DisplayName("control_vencimiento")]
-        //public bool control_vencimiento { get; set; } = false;
+        [Column("control_vencimiento")]
+        [DisplayName("control_vencimiento")]
+        public bool control_vencimiento { get; set; } = false;
 
-        //[Column("control_lote")]
-        //[DisplayName("control_lote")]
-        //public bool control_lote { get; set; } = false;
+        [Column("control_lote")]
+        [DisplayName("control_lote")]
+        public bool control_lote { get; set; } = false;
 
         //[Column("fechamanufactura")]
         //[DisplayName("fechamanufactura")]
         //public bool fechamanufactura { get; set; } = false;
 
-        //[Column("control_peso")]
-        //[DisplayName("control_peso")]
-        //public bool control_peso { get; set; } = false;
+        [Column("control_peso")]
+        [DisplayName("control_peso")]
+        public bool control_peso { get; set; } = false;
+
+        [Column("activo")]
+        public bool activo = true;
 
         //[Column("IdTipoEtiqueta")]
         //[DisplayName("IdTipoEtiqueta")]
-        //public int IdTipoEtiqueta { get; set; } = 0;
+        //public int IdTipoEtiqueta { get; set; } = 0;                
 
         public clsBeProductoMi3() { }
 
