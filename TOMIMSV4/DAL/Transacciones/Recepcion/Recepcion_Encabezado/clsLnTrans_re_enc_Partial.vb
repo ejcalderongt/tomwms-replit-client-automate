@@ -5956,9 +5956,9 @@ Partial Public Class clsLnTrans_re_enc
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
-        Dim pListRecDetParam As List(Of clsBeTrans_re_det_parametros)
-        Dim pListStockRecSer As List(Of clsBeStock_se_rec)
-        Dim pListProductoPallet As List(Of clsBeProducto_pallet)
+        Dim pListRecDetParam As New List(Of clsBeTrans_re_det_parametros)
+        Dim pListStockRecSer As New List(Of clsBeStock_se_rec)
+        Dim pListProductoPallet As New List(Of clsBeProducto_pallet)
         'Dim BeTransReDet As clsBeTrans_re_det
         Dim pIdResolucionLp As Integer
         Dim EsCajaMaster As Boolean = False

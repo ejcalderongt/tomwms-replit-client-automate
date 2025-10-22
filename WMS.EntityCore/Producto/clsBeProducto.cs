@@ -1,5 +1,8 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using WMS.EntityCore.Datos_Maestros;
+using WMS.EntityCore.Propietario;
+using WMS.EntityCore.Stock;
 
 namespace WMS.EntityCore.Producto
 {
@@ -240,12 +243,134 @@ namespace WMS.EntityCore.Producto
         [Column("IdTipoManufactura")]
         [DisplayName("IdTipoManufactura")]
         public int IdTipoManufactura { get; set; } = 0;
+        public int IdProductoBodega { get; set; }
 
-        public clsBeProducto() { }
+        public clsBePropietarios Propietario { get; set; } = new clsBePropietarios();
+        public clsBeProducto_presentacion Presentacion { get; set; } = new clsBeProducto_presentacion();
+        public clsBeProducto_clasificacion Clasificacion { get; set; } = new clsBeProducto_clasificacion();
+        public clsBeProducto_familia Familia { get; set; } = new clsBeProducto_familia();
+        public clsBeProducto_marca Marca { get; set; } = new clsBeProducto_marca();
+        public clsBeProducto_tipo TipoProducto { get; set; } = new clsBeProducto_tipo();
+        public clsBeUnidad_medida UnidadMedida { get; set; } = new clsBeUnidad_medida();        
+        public List<clsBeProducto_presentacion> Presentaciones { get; set; } = new List<clsBeProducto_presentacion>();
+        public List<clsBeProducto_codigos_barra> Codigos_Barra { get; set; } = new List<clsBeProducto_codigos_barra>();
+        public List<clsBeProducto_parametros> Parametros { get; set; } = new List<clsBeProducto_parametros>();
+        public bool IsNew { get; set; } = true;
+        public object Tag { get; set; } = new object();
+        public int IdPresentacionOrigen { get; set; } = 0;
+        public int IdPresentacionDestino { get; set; } = 0;
+        public double Factor { get; set; } = 0.0;
+        public double ExistenciaUMBas { get; set; } = 0.0;
+
+        public clsBeIndice_rotacion? Indice_Rotacion { get; set; }
+
+        /// <summary>
+        /// Volumen = Alto * Largo * Ancho. Requiere que dichas propiedades existan en otro partial.
+        /// </summary>
+        public double Volumen => Convert.ToDouble(alto * largo * ancho); // Por qué: propiedad derivada evita inconsistencias.
+
+        /// <summary>
+        /// Parámetro A.
+        /// </summary>
+        public clsBeProducto_parametro_a ParametroA { get; set; } = new clsBeProducto_parametro_a();
+
+        /// <summary>
+        /// Parámetro B.
+        /// </summary>
+        public clsBeProducto_parametro_b ParametroB { get; set; } = new clsBeProducto_parametro_b();
+
+        /// <summary>
+        /// Campos usados para inventario cíclico.
+        /// </summary>
+        public string Lote { get; set; } = string.Empty;
+        public DateTime FechaVence { get; set; } = new DateTime(1900, 1, 1);
+        public double Cantidad { get; set; } = 0.0;
+
+        /// <summary>
+        /// Para evitar sobrecargar el objeto para la HH.
+        /// </summary>
+        public clsBeVW_stock_res Stock { get; set; } = new clsBeVW_stock_res();
 
         public object Clone()
         {
-            return MemberwiseClone();
+            throw new NotImplementedException();
         }
     }
+
+    /// <summary>
+    /// Enum de propiedades de producto (nombres preservados para compatibilidad).
+    /// </summary>
+    public enum ProdPropiedades
+    {
+        IdProducto,
+        IdCamara,
+        IdTipoRotacion,
+        IdPerfilSerializado,
+        IdIndiceRotacion,
+        IdSimbologia,
+        IdArancel,
+        Codigo,
+        Nombre,
+        Codigo_barra,
+        Precio,
+        Existencia_min,
+        Existencia_max,
+        Costo,
+        Peso_referencia,
+        Peso_tolerancia,
+        Temperatura_referencia,
+        Temperatura_tolerancia,
+        Activo,
+        Serializado,
+        Genera_lote,
+        Genera_LP,
+        Control_vencimiento,
+        Control_lote,
+        Peso_recepcion,
+        Peso_despacho,
+        Temperatura_recepcion,
+        Temperatura_despacho,
+        Materia_prima,
+        Kit,
+        Tolerancia,
+        Ciclo_vida,
+        User_agr,
+        Fec_agr,
+        User_mod,
+        Fec_mod,
+        Imagen,
+        NoSerie,
+        NoParte,
+        FechaManufactura,
+        Capturar_Aniada,
+        Control_Peso,
+        Captura_Arancel,
+        Es_Hardware,
+        IdPresentacionOrigen,
+        IdPresentacionDestino,
+        Factor,
+        IdProductoBodega,
+        Propietario,
+        Clasificacion,
+        Familia,
+        Marca,
+        TipoProducto,
+        UnidadMedida,
+        Arancel,
+        Presentaciones,
+        Codigos_Barra,
+        Parametros,
+        IsNew,
+        Alto,
+        Largo,
+        Ancho,
+        IdUnidadMedidaCobro,
+        Dias_Inventario_Promedio,
+        IdProductoParametroA,
+        IdProductoParametroB,
+        ParametroA,
+        ParametroB,
+        IdTipoManufactura
+    }    
+    
 }

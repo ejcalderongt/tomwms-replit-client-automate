@@ -8,8 +8,6 @@ using System.Text;
 using WMSWebAPI.Services;
 using WMSWebAPI.Services.Cliente;
 using WMSWebAPI.Services.Ingresos;
-using WMSWebAPI.Services.LogPortalUx;
-using WMSWebAPI.Services.Producto;
 using WMSWebAPI.Services.Producto.Clasificacion;
 using WMSWebAPI.Services.Producto.Familia;
 using WMSWebAPI.Services.Producto.Marca;
@@ -18,6 +16,7 @@ using WMSWebAPI.Services.Producto.Tipo;
 using WMSWebAPI.Services.Producto.Umbas;
 using WMSWebAPI.Services.Reset_Password;
 using WMSWebAPI.Services.Salidas;
+using WMSWebAPI.Mapping_Profile;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -130,6 +129,15 @@ builder.Services.AddCors(options =>
 
 // ===== App =====
 var app = builder.Build();
+
+// Validación de mapeos al arrancar (diagnóstico detallado)
+using (var scope = app.Services.CreateScope())
+{
+    var logger = scope.ServiceProvider
+                      .GetRequiredService<ILoggerFactory>()
+                      .CreateLogger("AutoMapper");
+    AutoMapperDiagnostics.ValidateAndReport(scope.ServiceProvider, logger);
+}
 
 // Validación de mapeos al arrancar (opcional recomendado)
 using (var scope = app.Services.CreateScope())

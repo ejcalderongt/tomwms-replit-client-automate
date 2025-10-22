@@ -33,5 +33,18 @@ namespace WMSWebAPI.Services.Cliente
                 throw new Exception("Error al procesar Cliente → " + ex.Message, ex);
             }
         }
+        public List<clsBeCliente> Get_All()
+        {
+            try
+            {
+                
+                return clsLnCliente.GetAll(_configuration);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al procesar Cliente → " + ex.Message, ex);
+            }
+        }
     }
 }

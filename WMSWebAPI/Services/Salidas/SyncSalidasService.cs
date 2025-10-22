@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
+using System.Reflection;
 using WMS.EntityCore.Cliente;
 using WMS.EntityCore.Datos_Maestros;
 using WMS.EntityCore.Despacho;
@@ -15,14 +16,12 @@ namespace WMSWebAPI.Services.Salidas
     public class SyncSalidasService : ISyncSalidasService
     {
         private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
-        
+        private readonly IMapper _mapper;        
         public SyncSalidasService(IConfiguration configuration, IMapper mapper)
         {
             _configuration = configuration;
             _mapper = mapper;
         }
-
         public void ProcesarSalidaDesdeDto(SalidaTransDto dto, SqlConnection conn, SqlTransaction tx)
         {
 
@@ -275,7 +274,6 @@ namespace WMSWebAPI.Services.Salidas
 
             return detalles;
         }
-
         public List<clsBeTrans_despacho_enc> ObtenerDespachos(int idPedidoEnc, SqlConnection? connection, SqlTransaction? transaction)
         {
             var detalles = new List<clsBeTrans_despacho_enc>();

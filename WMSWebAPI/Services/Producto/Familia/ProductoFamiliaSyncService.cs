@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Dtos.Catalogos;
+using WMS.EntityCore.Producto;
 using WMS.EntityCore.Producto.ProductoSimple;
 
 namespace WMSWebAPI.Services.Producto.Familia
@@ -31,5 +32,17 @@ namespace WMSWebAPI.Services.Producto.Familia
                 throw new Exception("Error al procesar Familia → " + ex.Message, ex);
             }
         }
+        public List<clsBeProducto_familia> Get_All()
+        {
+            try
+            {
+                return clsLnProducto_familia.GetAll(_configuration);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener familias → " + ex.Message, ex);
+            }
+        }
+
     }
 }

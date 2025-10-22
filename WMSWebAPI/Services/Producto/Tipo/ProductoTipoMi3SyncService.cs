@@ -2,7 +2,6 @@
 using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Dtos.Productos;
 using WMS.EntityCore.Producto;
-using WMSWebAPI.Dtos.Productos;
 
 namespace WMSWebAPI.Services.Producto.Tipo
 {
@@ -26,6 +25,17 @@ namespace WMSWebAPI.Services.Producto.Tipo
 
                 var TipoProductoMi3 = _mapper.Map<clsBeProducto_tipoMi3>(dto);
                 clsLnProducto_tipo.Valida_Atributos(_configuration, TipoProductoMi3, conn, tx);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al procesar TipoProductoMi3 → " + ex.Message, ex);
+            }
+        }
+        public List<clsBeProducto_tipo> Get_All()
+        {
+            try
+            {                             
+                return clsLnProducto_tipo.GetAll(_configuration);
             }
             catch (Exception ex)
             {

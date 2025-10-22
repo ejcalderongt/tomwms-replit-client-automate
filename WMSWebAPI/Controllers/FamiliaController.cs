@@ -70,6 +70,45 @@ namespace WMSWebAPI.Controllers
             }
 
         }
+        //GET: api/Familia/list/mi3/all
+        [HttpGet("list/mi3/all")]
+        public IActionResult Get_All([FromQuery] string? fields)
+        {
+            try
+            {
+                var familias = _syncService.Get_All();
+
+                if (familias == null || familias.Count == 0)
+                    return NotFound(new { Exito = false, Mensaje = "No se encontraron familias de producto." });
+
+                if (!string.IsNullOrWhiteSpace(fields))
+                {
+                    var fieldSet = fields.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                         .Select(f => f.Trim().ToLower())
+                                         .ToHashSet();
+
+                    var data = familias.Select(f =>
+                    {
+                        var dict = new Dictionary<string, object?>();
+                        foreach (var p in f.GetType().GetProperties())
+                        {
+                            if (fieldSet.Contains(p.Name.ToLower()))
+                                dict[p.Name] = p.GetValue(f);
+                        }
+                        return dict;
+                    });
+
+                    return Ok(new { Exito = true, Data = data });
+                }
+
+                return Ok(new { Exito = true, Data = familias });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Exito = false, Mensaje = "Error al obtener familias → " + ex.Message });
+            }
+        }
+
 
     }
 }

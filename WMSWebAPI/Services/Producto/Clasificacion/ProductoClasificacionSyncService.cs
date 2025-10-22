@@ -3,8 +3,6 @@ using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Dtos.Catalogos;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Producto.ProductoSimple;
-using WMSWebAPI.Dtos.Catalogos;
-using WMSWebAPI.Dtos.Productos;
 
 namespace WMSWebAPI.Services.Producto.Clasificacion
 {
@@ -33,6 +31,18 @@ namespace WMSWebAPI.Services.Producto.Clasificacion
             catch (Exception ex)
             {
                 throw new Exception("Error al procesar Clasificación " + ex.Message, ex);
+            }
+        }
+        //En ProductoClasificacionSyncService
+        public List<clsBeProducto_clasificacion> Get_All()
+        {
+            try
+            {
+                return clsLnProducto_clasificacion.GetAll(_configuration);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener clasificaciones → " + ex.Message, ex);
             }
         }
     }

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using System.Dynamic;
 using System.Transactions;
 using WMS.EntityCore.Dtos.Productos;
-using WMSWebAPI.Dtos.Catalogos;
 using WMSWebAPI.Services.Producto.Umbas;
 
 namespace WMSWebAPI.Controllers
@@ -81,6 +81,43 @@ namespace WMSWebAPI.Controllers
             }
 
         }
+        [HttpGet("list/mi3/all")]
+        public IActionResult Get_All([FromQuery] string? fields)
+        {
+            try
+            {
+                var umbas = _umbasMi3SyncService.Get_All(); // Debe devolver la lista (p. ej. List<UnidadMedidaMi3Dto>)
 
+                if (umbas == null || umbas.Count == 0)
+                    return NotFound(new { Exito = false, Mensaje = "No se encontraron unidades de medida (UMBas)." });
+
+                if (!string.IsNullOrWhiteSpace(fields))
+                {
+                    var fieldSet = fields.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                         .Select(f => f.Trim().ToLower())
+                                         .ToHashSet();
+
+                    var proyectado = umbas.Select(item =>
+                    {
+                        IDictionary<string, object?> expando = new ExpandoObject();
+                        foreach (var prop in item.GetType().GetProperties())
+                        {
+                            if (fieldSet.Contains(prop.Name.ToLower()))
+                                expando[prop.Name] = prop.GetValue(item);
+                        }
+                        return expando;
+                    });
+
+                    return Ok(new { Exito = true, Data = proyectado });
+                }
+
+                return Ok(new { Exito = true, Data = umbas });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener UMBas (Get_All).");
+                return StatusCode(500, new { Exito = false, Mensaje = "Ocurrió un error al obtener las UMBas." });
+            }
+        }
     }
 }

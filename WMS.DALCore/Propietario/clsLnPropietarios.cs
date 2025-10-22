@@ -241,7 +241,7 @@ public class clsLnPropietarios
             Upd.Add("codigo", "@codigo", "F");
             Upd.Add("sistema", "@sistema", "F");
             Upd.Add("nit", "@nit", "F");
-            Upd.Add("codigo_acceso", "@codigo_acceso", "F");
+            //Upd.Add("codigo_acceso", "@codigo_acceso", "F");
             //Upd.Add("clave_acceso", "@clave_acceso", "F");
             Upd.Add("idbodegaareasap", "@idbodegaareasap", "F");
             Upd.Add("es_consolidador", "@es_consolidador", "F");

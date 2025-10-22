@@ -35,5 +35,18 @@ namespace WMSWebAPI.Services.Producto.Presentacion
                 throw new Exception("Error al procesar Clasificación → " + ex.Message, ex);
             }
         }
+        // Método en la clase de servicio (PresentacionMi3SyncService)
+        public List<clsBeProducto_presentacion> Get_All()
+        {
+            try
+            {
+                return clsLnProducto_presentacion.GetAll(_configuration);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener presentaciones → " + ex.Message, ex);
+            }
+        }
+
     }
 }

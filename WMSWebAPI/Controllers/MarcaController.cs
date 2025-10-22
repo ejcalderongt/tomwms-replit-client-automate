@@ -70,6 +70,44 @@ namespace WMSWebAPI.Controllers
             }
 
         }
+        // ✅ GET: api/Marca/list/mi3/all
+        [HttpGet("list/mi3/all")]
+        public IActionResult Get_All([FromQuery] string? fields)
+        {
+            try
+            {
+                var marcas = _syncService.Get_All();
+
+                if (marcas == null || marcas.Count == 0)
+                    return NotFound(new { Exito = false, Mensaje = "No se encontraron marcas." });
+
+                if (!string.IsNullOrWhiteSpace(fields))
+                {
+                    var fieldSet = fields.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                         .Select(f => f.Trim().ToLower())
+                                         .ToHashSet();
+
+                    var data = marcas.Select(m =>
+                    {
+                        var dict = new Dictionary<string, object?>();
+                        foreach (var p in m.GetType().GetProperties())
+                        {
+                            if (fieldSet.Contains(p.Name.ToLower()))
+                                dict[p.Name] = p.GetValue(m);
+                        }
+                        return dict;
+                    });
+
+                    return Ok(new { Exito = true, Data = data });
+                }
+
+                return Ok(new { Exito = true, Data = marcas });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Exito = false, Mensaje = "Error al obtener marcas → " + ex.Message });
+            }
+        }
 
     }
 }

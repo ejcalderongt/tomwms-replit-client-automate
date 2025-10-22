@@ -745,14 +745,21 @@ public class clsLnTrans_pe_det
 
         try
         {
+
+          
+
+
+
             foreach (var entity in entities)
             {
+
                 bool existe = Existe(entity.IdPedidoDet, entity.IdPedidoEnc, connection, isExternalTx ? tx! : localTx!);
                 int resultado = existe
                     ? Actualizar(config, entity, connection, isExternalTx ? tx : localTx)
                     : Insertar(config, entity, connection, isExternalTx ? tx : localTx);
 
                 total += resultado;
+
             }
 
             if (!isExternalTx)
@@ -777,6 +784,8 @@ public class clsLnTrans_pe_det
             }
         }
     }
+
+  
     public static bool Existe(int idPedidoDet, int idPedidoEnc, SqlConnection conn, SqlTransaction? tx = null)
     {
         const string sql = @"
