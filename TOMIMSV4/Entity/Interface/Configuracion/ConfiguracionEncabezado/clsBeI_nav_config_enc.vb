@@ -197,6 +197,8 @@ Public Class clsBeI_nav_config_enc
     Public Property Bodega_Prorrateo As String = ""
     Public Property Bodega_Prorrateo1 As String = ""
 
+    Public Property Codigo_Cliente_Virtual As String = ""
+
     Sub New()
     End Sub
 

@@ -455,6 +455,7 @@ Public Class frmAjusteStock
                 BeAjusteDet.Codigo_ajuste = 0
                 BeAjusteDet.Enviado = False
                 BeAjusteDet.lic_plate = Stock.pObjStock.Lic_plate
+                BeAjusteDet.IdProductoTallaColor = Stock.pObjStock.IdProductoTallaColor
 
                 BeAjusteDet.idstockres = IdStockRes
                 BeAjusteDet.idstocklink = 0

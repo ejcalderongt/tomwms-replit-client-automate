@@ -1452,7 +1452,7 @@ Public Class clsSyncSapTrasladosEnvio
         .U_FIN_PICK = BeTransOcEnc.Hora_Fin_Recepcion.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_INICIO_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-        .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHora(Now),
+        .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
         .U_Tipo = 1,
         .U_USR_PICK = vIdOperadorDefecto,
         .StockTransferLines = New List(Of StockTransferLineDto)()}
@@ -1548,7 +1548,7 @@ Public Class clsSyncSapTrasladosEnvio
         .U_FIN_PICK = BePedidoEnc.Picking.Hora_fin.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_INICIO_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-        .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHora(Now),
+        .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
         .U_Tipo = 1,
         .StockTransferLines = New List(Of StockTransferLineDto)()}
 
@@ -1635,7 +1635,7 @@ Public Class clsSyncSapTrasladosEnvio
         .U_FIN_PICK = BePedidoEnc.Picking.Hora_fin.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_INICIO_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
         .U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-        .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHora(Now),
+        .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
         .U_Tipo = 1,
         .StockTransferLines = New List(Of StockTransferRequestLineDto)()}
 
