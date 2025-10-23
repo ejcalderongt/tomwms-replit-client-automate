@@ -59,14 +59,18 @@ public class clsLnCliente_bodega
         cmd.Parameters.Add(new SqlParameter("@activo", oBeCliente_bodega.Activo));
         cmd.Parameters.Add(new SqlParameter("@IdAreaDestino", oBeCliente_bodega.IdAreaDestino));
     }
-
-
-    public static int Insertar(IConfiguration config, clsBeCliente_bodega oBeCliente_bodega, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Insertar(clsBeCliente_bodega oBeCliente_bodega, SqlConnection pConection, SqlTransaction pTransaction)
     {
+        if (oBeCliente_bodega == null)
+            throw new ArgumentNullException(nameof(oBeCliente_bodega));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
 
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
@@ -83,50 +87,22 @@ public class clsLnCliente_bodega
 
             string sp = Ins.SQL();
 
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
+                cmd.CommandType = CommandType.Text;
+
+                BindClienteBodegaParameters(cmd, oBeCliente_bodega);
+
+                rowsAffected = cmd.ExecuteNonQuery();
             }
 
-            BindClienteBodegaParameters(cmd, oBeCliente_bodega);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            cmd.Dispose();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return rowsAffected;
         }
-        catch (SqlException ex1)
+        catch (SqlException ex)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            throw new Exception(vMsgError);
+            string errorMessage = $"Error en Insertar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
 
     public static int Insertar(IConfiguration config, clsBeCliente_bodega beClienteBodega, SqlConnection connection, clsBeCliente_bodega oBeCliente_bodega)
@@ -513,54 +489,36 @@ public class clsLnCliente_bodega
             throw new Exception(vMsgError);
         }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int MaxID(SqlConnection pConection, SqlTransaction pTransaction)
     {
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
 
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
-        int lMax = 0;
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
+
         try
         {
-
-
             const string sp = "Select ISNULL(Max(IdClienteBodega),0) FROM Cliente_bodega";
 
-            bool Es_Transaccion_Remota = pConection is not null && pTransaction is not null;
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
+                cmd.CommandType = CommandType.Text;
+
+                object lreturnValue = cmd.ExecuteScalar();
+
+                if (lreturnValue != DBNull.Value && lreturnValue != null)
+                {
+                    return Convert.ToInt32(lreturnValue);
+                }
+
+                return 0;
             }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
-
-            Object lreturnValue = cmd.ExecuteScalar();
-
-            if (lreturnValue != DBNull.Value && lreturnValue != null)
-            {
-                lMax = Convert.ToInt32(lreturnValue);
-            }
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-            return lMax;
-
         }
-        catch (SqlException ex1)
+        catch (SqlException ex)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            throw new Exception(vMsgError);
+            string errorMessage = $"Error en MaxID - {ex.Message}";
+            throw new Exception(errorMessage, ex);
         }
     }
 

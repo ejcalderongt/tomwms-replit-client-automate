@@ -40,7 +40,7 @@ namespace WMS.EntityCore.Producto
         [Column("fec_mod")]
         [DisplayName("fec_mod")]
         public DateTime Fec_mod { get; set; } = DateTime.Now;
-
+        public clsBeProducto Producto { get; set; } = new clsBeProducto();
         public clsBeProducto_bodega() { }
 
         public object Clone()

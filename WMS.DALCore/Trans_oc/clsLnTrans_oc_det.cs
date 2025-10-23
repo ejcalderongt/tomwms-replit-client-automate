@@ -1,10 +1,13 @@
-using Microsoft.Data.SqlClient;
-using Microsoft.VisualBasic.CompilerServices;
+﻿using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Trans_oc;
 using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Trans_re;
+using WMS.EntityCore.Producto;
+using WMSWebAPI.Be;
+using WMS.DALCore.Trans_oc;
 public class clsLnTrans_oc_det
 {
 
@@ -69,13 +72,18 @@ public class clsLnTrans_oc_det
             throw new Exception(vMsgError);
         }
     }
-
-    public static int Insertar(IConfiguration config, clsBeTrans_oc_det oBeTrans_oc_det, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Insertar(clsBeTrans_oc_det oBeTrans_oc_det, SqlConnection pConection, SqlTransaction pTransaction)
     {
+        if (oBeTrans_oc_det == null)
+            throw new ArgumentNullException(nameof(oBeTrans_oc_det));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
 
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
@@ -121,62 +129,38 @@ public class clsLnTrans_oc_det
 
             string sp = Ins.SQL();
 
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
+                cmd.CommandType = CommandType.Text;
+
+                BindParameters(cmd, oBeTrans_oc_det);
+
+                rowsAffected = cmd.ExecuteNonQuery();
             }
 
-            BindParameters(cmd, oBeTrans_oc_det);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            cmd.Dispose();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
+            return rowsAffected;
         }
-        catch (SqlException ex1)
+        catch (SqlException ex)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-
-            throw new Exception(vMsgError);
+            string errorMessage = $"Error en Insertar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
-
-    public static int Actualizar(IConfiguration config, clsBeTrans_oc_det oBeTrans_oc_det, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Actualizar(clsBeTrans_oc_det oBeTrans_oc_det, SqlConnection pConection, SqlTransaction pTransaction)
     {
+        if (oBeTrans_oc_det == null)
+            throw new ArgumentNullException(nameof(oBeTrans_oc_det));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
 
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
-
             Upd.Init("trans_oc_det");
             Upd.Add("idordencompraenc", "@idordencompraenc", "F");
             Upd.Add("idordencompradet", "@idordencompradet", "F");
@@ -220,50 +204,23 @@ public class clsLnTrans_oc_det
 
             string sp = Upd.SQL();
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
+                cmd.CommandType = CommandType.Text;
+
+                BindParameters(cmd, oBeTrans_oc_det);
+
+                rowsAffected = cmd.ExecuteNonQuery();
             }
 
-            BindParameters(cmd, oBeTrans_oc_det);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
+            return rowsAffected;
         }
-        catch (SqlException ex1)
+        catch (SqlException ex)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-
-            throw new Exception(vMsgError);
+            string errorMessage = $"Error en Actualizar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
-
     public int Eliminar(IConfiguration config, clsBeTrans_oc_det oBeTrans_oc_det, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
 
@@ -320,7 +277,6 @@ public class clsLnTrans_oc_det
             if (lTransaction != null) lTransaction.Dispose();
         }
     }
-
     public static bool GetSingle(IConfiguration config, ref clsBeTrans_oc_det pBeTrans_oc_det)
     {
 
@@ -377,7 +333,6 @@ public class clsLnTrans_oc_det
         return false;
 
     }
-
     public static List<clsBeTrans_oc_det> GetAll(IConfiguration config)
     {
 
@@ -436,7 +391,6 @@ public class clsLnTrans_oc_det
             throw new Exception(vMsgError);
         }
     }
-
     public static int MaxID(IConfiguration config)
     {
 
@@ -485,56 +439,37 @@ public class clsLnTrans_oc_det
             throw new Exception(vMsgError);
         }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int MaxID(SqlConnection? pConnection = null, SqlTransaction? pTransaction = null)
     {
-
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
         int lMax = 0;
+
         try
         {
+            const string sql = "SELECT ISNULL(MAX(IdOrdenCompraEnc), 0) FROM Trans_oc_det";
 
+            bool esTransaccionRemota = pConnection is not null && pTransaction is not null;
 
-            const string sp = "Select ISNULL(Max(IdOrdenCompraEnc),0) FROM Trans_oc_det";
+            SqlCommand? cmd=null;
 
-            bool Es_Transaccion_Remota = pConection is not null && pTransaction is not null;
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-            if (Es_Transaccion_Remota)
+            if (esTransaccionRemota)
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
+                cmd = new SqlCommand(sql, pConnection, pTransaction);
             }
 
-            Object lreturnValue = cmd.ExecuteScalar();
+            object lReturnValue = 0;
+            if (cmd != null)
+                lReturnValue= cmd.ExecuteScalar();
 
-            if (lreturnValue != DBNull.Value && lreturnValue != null)
-            {
-                lMax = int.Parse((String)lreturnValue);
-            }
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
+            if (lReturnValue != null && lReturnValue != DBNull.Value)
+                lMax = Convert.ToInt32(lReturnValue);            
 
             return lMax;
-
         }
         catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-
-            throw new Exception(vMsgError);
-        }
+        {            
+            string vMsgError = $"{MethodBase.GetCurrentMethod()?.Name} SQL Error: {ex1.Message}";
+            throw new Exception(vMsgError, ex1);
+        }       
     }
     public static void BindParameters(SqlCommand cmd, dynamic oBeTrans_oc_det)
     {
@@ -580,51 +515,36 @@ public class clsLnTrans_oc_det
         AddParam("@IdOrdenCompraDetPadre", NullIfZero(oBeTrans_oc_det.IdOrdenCompraDetPadre));
         AddParam("@IdEmbarcador", NullIfZero(oBeTrans_oc_det.IdEmbarcador));
     }
-    public static void InsertarOActualizar(IConfiguration config, List<clsBeTrans_oc_det> entities, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static void InsertarOActualizar(List<clsBeTrans_oc_det> entities, SqlConnection conn, SqlTransaction tx)
     {
-        bool isExternalTx = conn != null && tx != null;
+        if (entities == null)
+            throw new ArgumentNullException(nameof(entities));
 
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
+
+        if (tx == null)
+            throw new ArgumentNullException(nameof(tx));
 
         try
         {
-            if (!isExternalTx)
-            {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
             foreach (var entity in entities)
             {
-                //GT08072025: borrar comentario... se valida no solo el iddet sino tambien la oc asociada.
-                bool existe = Existe(entity.IdOrdenCompraDet, entity.IdOrdenCompraEnc, connection, isExternalTx ? tx! : localTx!);
+                if (entity == null)
+                    continue;
+
+                bool existe = Existe(entity.IdOrdenCompraDet, entity.IdOrdenCompraEnc, conn, tx);
 
                 if (existe)
-                    Actualizar(config, entity, connection, isExternalTx ? tx : localTx);
+                    Actualizar(entity, conn, tx);
                 else
-                    Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                    Insertar(entity, conn, tx);
             }
-
-            if (!isExternalTx)
-                localTx?.Commit();
         }
         catch (SqlException ex)
         {
-            if (!isExternalTx && localTx is not null)
-                localTx.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            var method = System.Reflection.MethodBase.GetCurrentMethod();
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
-        }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
-            }
         }
     }
     public static bool Existe(int IdOrdenCompraDet,int IdOrdenCompraEnc, SqlConnection pConnection, SqlTransaction pTransaction)
@@ -717,4 +637,625 @@ public class clsLnTrans_oc_det
         }
     }
 
+    public static clsBeTrans_oc_det? Exist(
+       int pOCEncabezado,
+       int pNoLinea,
+       SqlConnection pConnection,
+       SqlTransaction pTransaction)
+    {
+        clsBeTrans_oc_det? result = null;
+
+        try
+        {
+            const string sp = @"
+                SELECT * 
+                FROM trans_oc_det 
+                WHERE IdOrdenCompraEnc = @pOCEncabezado 
+                  AND No_Linea = @No_Linea";
+
+            using (var cmd = new SqlCommand(sp, pConnection, pTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.Add(new SqlParameter("@pOCEncabezado", pOCEncabezado));
+                cmd.Parameters.Add(new SqlParameter("@No_Linea", pNoLinea));
+
+                using (var dad = new SqlDataAdapter(cmd))
+                {
+                    var dt = new DataTable();
+                    dad.Fill(dt);
+
+                    if (dt.Rows.Count >= 1)
+                    {
+                        DataRow lRow = dt.Rows[0];
+                        var objUM = new clsBeTrans_oc_det();
+                        Cargar(ref objUM, lRow);
+                        result = objUM;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            string vMsgError = ex.Message;            
+            throw;
+        }
+
+        return result;
+    }
+    public static int MaxID(int pIdOrdenCompraEnc, SqlConnection pConnection, SqlTransaction pTransaction)
+    {
+        try
+        {
+            int lMax = 0;
+            string sql = $"SELECT ISNULL(MAX(IdOrdenCompraDet), 0) FROM trans_oc_det WHERE IdOrdenCompraEnc = {pIdOrdenCompraEnc}";
+
+            using (var cmd = new SqlCommand(sql, pConnection, pTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+
+                object? result = cmd.ExecuteScalar();
+
+                if (result != null && result != DBNull.Value)
+                    lMax = Convert.ToInt32(result);
+            }
+
+            return lMax;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{nameof(MaxID)} → {ex.Message}", ex);
+        }
+    }
+
+    public static int Actualizar_Desde_Interface(ref clsBeTrans_oc_det oBeTrans_oc_det, SqlConnection pConection, SqlTransaction pTransaction)
+    {
+        try
+        {
+            Upd.Init("trans_oc_det");
+            Upd.Add("idordencompradet", "@idordencompradet", "F");
+
+            // EJC_18092016
+            if (oBeTrans_oc_det.Arancel != null)
+            {
+                Ins.Add("idarancel", "@idarancel", "F");
+            }
+
+            Upd.Add("idpresentacion", "@idpresentacion", "F");
+            Upd.Add("idunidadmedidabasica", "@idunidadmedidabasica", "F");
+            Upd.Add("idmotivodevolucion", "@idmotivodevolucion", "F");
+            Upd.Add("no_linea", "@no_linea", "F");
+            Upd.Add("nombre_producto", "@nombre_producto", "F");
+            Upd.Add("nombre_presentacion", "@nombre_presentacion", "F");
+            Upd.Add("nombre_arancel", "@nombre_arancel", "F");
+            Upd.Add("porcentaje_arancel", "@porcentaje_arancel", "F");
+            Upd.Add("nombre_unidad_medida_basica", "@nombre_unidad_medida_basica", "F");
+            Upd.Add("cantidad", "@cantidad", "F");
+            Upd.Add("cantidad_recibida", "@cantidad_recibida", "F");
+            Upd.Add("costo", "@costo", "F");
+            Upd.Add("total_linea", "@total_linea", "F");
+            Upd.Add("peso", "@peso", "F");
+            Upd.Add("peso_recibido", "@peso_recibido", "F");
+            Upd.Add("user_agr", "@user_agr", "F");
+            Upd.Add("fec_agr", "@fec_agr", "F");
+            Upd.Add("user_mod", "@user_mod", "F");
+            Upd.Add("fec_mod", "@fec_mod", "F");
+            Upd.Add("activo", "@activo", "F");
+
+            if (oBeTrans_oc_det.Atributo_variante_1 != null)
+            {
+                Upd.Add("atributo_variante_1", "@atributo_variante_1", "F");
+            }
+
+            Upd.Where("IdOrdenCompraEnc = @IdOrdenCompraEnc " +
+                "AND IdOrdenCompraDet = @IdOrdenCompraDet");
+
+            string sp = Upd.SQL();
+            SqlCommand cmd = new SqlCommand(sp, pConection)
+            {
+                CommandType = CommandType.Text,
+                Transaction = pTransaction
+            };
+
+            cmd.Parameters.Add(new SqlParameter("@IDORDENCOMPRAENC", oBeTrans_oc_det.IdOrdenCompraEnc));
+            cmd.Parameters.Add(new SqlParameter("@IDORDENCOMPRADET", oBeTrans_oc_det.IdOrdenCompraDet));
+            cmd.Parameters.Add(new SqlParameter("@IDPRODUCTOBODEGA", oBeTrans_oc_det.IdProductoBodega));
+
+            // ejc_18092016: object_reference throws when nothing value is in arancel
+            if (oBeTrans_oc_det.Arancel != null)
+            {
+                cmd.Parameters.Add(new SqlParameter("@IDARANCEL", oBeTrans_oc_det.Arancel.IdArancel == 0 ? DBNull.Value : (object)oBeTrans_oc_det.Arancel.IdArancel));
+            }
+
+            cmd.Parameters.Add(new SqlParameter("@IDPRESENTACION", oBeTrans_oc_det.Presentacion.IdPresentacion == 0 ? DBNull.Value : (object)oBeTrans_oc_det.Presentacion.IdPresentacion));
+            cmd.Parameters.Add(new SqlParameter("@IDUNIDADMEDIDABASICA", oBeTrans_oc_det.UnidadMedida.IdUnidadMedida == 0 ? DBNull.Value : (object)oBeTrans_oc_det.UnidadMedida.IdUnidadMedida));
+            cmd.Parameters.Add(new SqlParameter("@IDMOTIVODEVOLUCION", oBeTrans_oc_det.IdMotivoDevolucion == 0 ? DBNull.Value : (object)oBeTrans_oc_det.IdMotivoDevolucion));
+            cmd.Parameters.Add(new SqlParameter("@NO_LINEA", oBeTrans_oc_det.No_Linea == 0 ? oBeTrans_oc_det.No_Linea : oBeTrans_oc_det.No_Linea));
+            cmd.Parameters.Add(new SqlParameter("@NOMBRE_PRODUCTO", oBeTrans_oc_det.Nombre_producto ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@NOMBRE_PRESENTACION", oBeTrans_oc_det.Nombre_presentacion ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@NOMBRE_ARANCEL", oBeTrans_oc_det.Nombre_arancel ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@PORCENTAJE_ARANCEL", oBeTrans_oc_det.Porcentaje_arancel));
+            cmd.Parameters.Add(new SqlParameter("@NOMBRE_UNIDAD_MEDIDA_BASICA", oBeTrans_oc_det.Nombre_unidad_medida_basica ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@CANTIDAD", oBeTrans_oc_det.Cantidad));
+            cmd.Parameters.Add(new SqlParameter("@CANTIDAD_RECIBIDA", oBeTrans_oc_det.Cantidad_recibida));
+            cmd.Parameters.Add(new SqlParameter("@COSTO", oBeTrans_oc_det.Costo));
+            cmd.Parameters.Add(new SqlParameter("@TOTAL_LINEA", oBeTrans_oc_det.Total_linea));
+            cmd.Parameters.Add(new SqlParameter("@PESO", oBeTrans_oc_det.Peso));
+            cmd.Parameters.Add(new SqlParameter("@PESO_RECIBIDO", oBeTrans_oc_det.Peso_recibido));
+            cmd.Parameters.Add(new SqlParameter("@USER_AGR", oBeTrans_oc_det.User_agr));
+            cmd.Parameters.Add(new SqlParameter("@FEC_AGR", oBeTrans_oc_det.Fec_agr));
+            cmd.Parameters.Add(new SqlParameter("@USER_MOD", oBeTrans_oc_det.User_mod));
+            cmd.Parameters.Add(new SqlParameter("@FEC_MOD", oBeTrans_oc_det.Fec_mod));
+            cmd.Parameters.Add(new SqlParameter("@ACTIVO", oBeTrans_oc_det.Activo));
+
+            if (oBeTrans_oc_det.Atributo_variante_1 != null)
+            {
+                cmd.Parameters.Add(new SqlParameter("@ATRIBUTO_VARIANTE_1", oBeTrans_oc_det.Atributo_variante_1));
+            }
+
+            int rowsAffected = cmd.ExecuteNonQuery();
+
+            return rowsAffected;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static clsBeTrans_oc_det? Get_Single_By_IdOrdenCompraEnc_And_Linea(int IdOrdenCompraEnc,
+                                                                        int No_Linea,
+                                                                        int IdProductoBodega,
+                                                                        SqlConnection lConnection,
+                                                                        SqlTransaction lTransaction)
+    {
+        try
+        {
+            const string sp = @"SELECT * FROM Trans_oc_det 
+                            WHERE (IdOrdenCompraEnc = @IdOrdenCompraEnc
+                            AND No_Linea = @NO_LINEA 
+                            AND IdProductoBodega = @IdProductoBodega)";
+
+            SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            SqlDataAdapter dad = new SqlDataAdapter(cmd);
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdOrdenCompraEnc", IdOrdenCompraEnc));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@NO_LINEA", No_Linea));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdProductoBodega", IdProductoBodega));
+
+            DataTable dt = new DataTable();
+            dad.Fill(dt);
+
+            if (dt.Rows.Count > 0)
+            {
+                clsBeTrans_oc_det pBeTrans_oc_det = new clsBeTrans_oc_det();
+                Cargar(ref pBeTrans_oc_det, dt.Rows[0]);
+                return pBeTrans_oc_det;
+            }
+
+            return null;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    public static int Actualiza_Cantidad_Recibida_OC(clsBeTrans_re_oc pRecOrdenCompra,
+                                                    List<clsBeTrans_re_det>? pListRecDet,
+                                                    SqlConnection lConnection,
+                                                    SqlTransaction lTransaction)
+    {
+        int Actualiza_Cantidad_Recibida_OC = 0;
+        clsBeProducto_presentacion? BePresentacion = new clsBeProducto_presentacion();
+        clsBeTrans_oc_det? BeTransOcDet = new clsBeTrans_oc_det();
+
+        try
+        {
+            if (pRecOrdenCompra != null)
+            {
+                double CantidadRecibidaActual = 0;
+
+                if (pListRecDet != null)
+                {
+                    foreach (clsBeTrans_re_det BeTransReDet in pListRecDet)
+                    {
+                        if (pRecOrdenCompra.IdOrdenCompraEnc > 0)
+                        {
+                            CantidadRecibidaActual = clsLnTrans_re_enc.Get_Cantidad_Recibida_Actual_By_IdRecepcionEnc_And_IdRecepcionDet(BeTransReDet.IdRecepcionEnc,
+                                                                                                                                         BeTransReDet.IdRecepcionDet,
+                                                                                                                                         lConnection,
+                                                                                                                                         lTransaction);
+
+                            if (BeTransReDet.IdPresentacion == 0)
+                            {
+                                BeTransReDet.IdPresentacion = -1;
+                            }
+
+                            BeTransOcDet = Get_Detalle_By_IdOrdenCompraEnc(pRecOrdenCompra.IdOrdenCompraEnc,
+                                                                           BeTransReDet.IdProductoBodega,
+                                                                           BeTransReDet.IdPresentacion,
+                                                                           BeTransReDet.No_Linea,
+                                                                           BeTransReDet.IdOrdenCompraDet,
+                                                                           lConnection,
+                                                                           lTransaction);
+
+                            if (BeTransOcDet != null)
+                            {
+                                if (BeTransOcDet.IdOrdenCompraDet > 0)
+                                {                                    
+                                    if (BeTransReDet.IsNew)
+                                    {
+                                        if (BeTransReDet.IdPresentacion == 0 || BeTransReDet.IdPresentacion == -1)
+                                        {
+                                            if (BeTransOcDet.IdPresentacion == 0)
+                                            {
+                                                BeTransOcDet.Cantidad_recibida += BeTransReDet.Cantidad_recibida;
+                                            }
+                                            else
+                                            {
+                                                BePresentacion = clsLnProducto_presentacion.GetSingle(BeTransOcDet.IdPresentacion,
+                                                                                                      lConnection,
+                                                                                                      lTransaction);
+
+                                                if (BePresentacion != null)
+                                                {
+                                                    if (BePresentacion.Factor > 0)
+                                                    {
+                                                        BeTransOcDet.Cantidad_recibida += Math.Round(BeTransReDet.Cantidad_recibida / BePresentacion.Factor, 6);
+                                                    }
+                                                    else
+                                                    {
+                                                        throw new Exception("Error: #20220329_FACT: El factor de la presentación es 0, no se puede actualizar la cantidad recibida del D.I.");
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    throw new Exception("Error: #20220329_MISS_PRES: No se pudo obtener la presentación del documento de ingreso.");
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (BeTransOcDet.IdPresentacion != 0)
+                                            {
+                                                BePresentacion = clsLnProducto_presentacion.GetSingle(BeTransOcDet.IdPresentacion,
+                                                                                                      lConnection,
+                                                                                                      lTransaction);
+
+                                                if (BePresentacion != null)
+                                                {
+                                                    if (BePresentacion.Factor > 0)
+                                                    {
+                                                        BeTransOcDet.Cantidad_recibida += BeTransReDet.Cantidad_recibida;
+                                                    }
+                                                    else
+                                                    {
+                                                        throw new Exception("Error: #20220329_FACT: El factor de la presentación es 0, no se puede actualizar la cantidad recibida del D.I.");
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    throw new Exception("Error: #20220329_MISS_PRES: No se pudo obtener la presentación del documento de ingreso.");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                BeTransOcDet.Cantidad_recibida += Math.Round(BeTransReDet.Cantidad_recibida * BePresentacion.Factor, 6);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        BeTransOcDet.Cantidad_recibida = BeTransOcDet.Cantidad_recibida - CantidadRecibidaActual;
+                                        BeTransOcDet.Cantidad_recibida += BeTransReDet.Cantidad_recibida;
+                                    }
+
+                                    Actualiza_Cantidad_Recibida_OC = Actualizar_Cantidad_Recibida(BeTransOcDet,
+                                                                                                  lConnection,
+                                                                                                  lTransaction);
+                                }
+                            }
+                            else
+                            {
+                                throw new Exception("ERROR_202210051048: No se obtuvo el objeto de detalle del documento de ingreso, no se podrá actualizar la cantidad recibida.");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception)
+        {            
+            throw;
+        }
+
+        return Actualiza_Cantidad_Recibida_OC;
+    }
+
+    public static int Actualizar_Cantidad_Recibida(clsBeTrans_oc_det oBeTrans_oc_det,
+                                                  SqlConnection pConection,
+                                                  SqlTransaction pTransaction)
+    {
+        using (SqlCommand cmd = new SqlCommand())
+        {
+            string sp = @"UPDATE trans_oc_det 
+                     SET cantidad_recibida = @CANTIDAD_RECIBIDA 
+                     WHERE IdOrdenCompraEnc = @IDORDENCOMPRAENC 
+                     AND IdOrdenCompraDet = @IDORDENCOMPRADET";
+
+            cmd.CommandType = CommandType.Text;
+            cmd.CommandText = sp;
+            cmd.Connection = pConection;
+            cmd.Transaction = pTransaction;
+
+            cmd.Parameters.AddWithValue("@IDORDENCOMPRAENC", oBeTrans_oc_det.IdOrdenCompraEnc);
+            cmd.Parameters.AddWithValue("@IDORDENCOMPRADET", oBeTrans_oc_det.IdOrdenCompraDet);
+            cmd.Parameters.AddWithValue("@CANTIDAD_RECIBIDA", oBeTrans_oc_det.Cantidad_recibida);
+
+            return cmd.ExecuteNonQuery();
+        }
+    }
+
+    public static clsBeTrans_oc_det? Get_Detalle_By_IdOrdenCompraEnc(int pIdOrdenCompraEnc,
+                                                               int pIdProductoBodega,
+                                                               int pIdPresentacion,
+                                                               int pNoLinea,
+                                                               int pIdOrdenCompraDet,
+                                                               SqlConnection pConnection,
+                                                               SqlTransaction pTransaction)
+    {
+        clsBeTrans_oc_det? BeTransOCDet = null;
+
+        string vSQL = "";
+
+        if (pIdPresentacion == 0)
+        {
+            vSQL = @"SELECT * FROM trans_oc_det 
+                WHERE IdOrdenCompraenc = @IdOrdenCompraenc 
+                And IdProductoBodega = @IdProductoBodega
+                And IdPresentacion IS NULL
+                And No_Linea = @NoLinea
+                And IdOrdenCompraDet = @IdOrdenCompraDet";
+        }
+        else if (pIdPresentacion == -1)
+        {
+            vSQL = @"SELECT *
+                FROM trans_oc_det 
+                WHERE IdOrdenCompraenc = @IdOrdenCompraenc 
+                And IdProductoBodega = @IdProductoBodega                        
+                And No_Linea = @NoLinea 
+                And IdOrdenCompraDet = @IdOrdenCompraDet";
+        }
+        else
+        {
+            vSQL = @"SELECT *
+                FROM trans_oc_det 
+                WHERE (IdOrdenCompraenc=@IdOrdenCompraenc 
+                And IdProductoBodega=@IdProductoBodega 
+                And IdPresentacion = @IdPresentacion)
+                And No_Linea = @NoLinea
+                And IdOrdenCompraDet = @IdOrdenCompraDet";
+        }
+
+        using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, pConnection))
+        {
+            lDTA.SelectCommand.CommandType = CommandType.Text;
+            lDTA.SelectCommand.Transaction = pTransaction;
+            lDTA.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraenc", pIdOrdenCompraEnc);
+            lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pIdProductoBodega);
+            lDTA.SelectCommand.Parameters.AddWithValue("@NoLinea", pNoLinea);
+            lDTA.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraDet", pIdOrdenCompraDet);
+
+            if (pIdPresentacion != 0 && pIdPresentacion != -1)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPresentacion", pIdPresentacion);
+
+            DataTable lDataTable = new DataTable();
+            lDTA.Fill(lDataTable);
+
+            if (lDataTable != null && lDataTable.Rows.Count > 0)
+            {
+                DataRow lRow = lDataTable.Rows[0];
+                BeTransOCDet = new clsBeTrans_oc_det();
+
+                Cargar(ref BeTransOCDet, lRow);
+
+                if (lRow["IdArancel"] != DBNull.Value && lRow["IdArancel"] != null)
+                    BeTransOCDet.Arancel.IdArancel = Convert.ToInt32(lRow["IdArancel"]);
+
+                if (lRow["IdPresentacion"] != DBNull.Value && lRow["IdPresentacion"] != null)
+                    BeTransOCDet.Presentacion.IdPresentacion = Convert.ToInt32(lRow["IdPresentacion"]);
+
+                if (lRow["IdUnidadMedidaBasica"] != DBNull.Value && lRow["IdUnidadMedidaBasica"] != null)
+                    BeTransOCDet.UnidadMedida.IdUnidadMedida = Convert.ToInt32(lRow["IdUnidadMedidaBasica"]);
+
+                BeTransOCDet.IsNew = false;
+                return BeTransOCDet;
+            }
+            else if (pIdPresentacion != 0 && pIdPresentacion != -1)
+            {
+                BeTransOCDet = Get_Detalle_By_IdOrdenCompraEnc(pIdOrdenCompraEnc, pIdProductoBodega, 0, pNoLinea, pIdOrdenCompraDet, pConnection, pTransaction);
+
+                if (BeTransOCDet == null)
+                {
+                    BeTransOCDet = Get_Detalle_By_IdOrdenCompraEnc(pIdOrdenCompraEnc, pIdProductoBodega, -1, pNoLinea, pIdOrdenCompraDet, pConnection, pTransaction);
+                }
+
+                return BeTransOCDet;
+            }
+        }
+
+        return null;
+    }
+
+    public static List<clsBeTrans_oc_det> Get_Detalle_OC_By_IdOrdenCompraEnc(int pIdOrdenCompraEnc,
+                                                                        SqlConnection lConnection,
+                                                                        SqlTransaction lTransaction)
+    {
+        List<clsBeTrans_oc_det> lReturnList = new List<clsBeTrans_oc_det>();
+
+        try
+        {
+            string vSQL = @"SELECT p.IdProducto, det.IdOrdenCompraEnc, det.IdOrdenCompraDet, det.IdProductoBodega, det.IdArancel, det.IdPresentacion, 
+                               det.IdUnidadMedidaBasica, det.IdMotivoDevolucion, det.No_Linea, det.nombre_producto, det.nombre_presentacion, 
+                               det.nombre_arancel, det.porcentaje_arancel, det.nombre_unidad_medida_basica, det.cantidad, det.cantidad_recibida, 
+                               det.costo, det.total_linea, det.user_agr, det.fec_agr, det.user_mod, det.fec_mod, det.activo, det.peso, 
+                               det.peso_recibido, det.atributo_variante_1,	   
+                               det.codigo_producto,	   
+                               det.valor_aduana, det.valor_fob, det.valor_iva, 
+                               det.valor_dai, det.valor_seguro, det.valor_flete, det.peso_neto, det.peso_bruto, det.IdPropietarioBodega, 
+                               det.nombre_propietario, det.IdOrdenCompraDetPadre, det.IdEmbarcador, det.IdProductoTallaColor
+                        FROM trans_oc_enc as enc  
+                        INNER JOIN trans_oc_det AS det ON enc.IdOrdenCompraEnc = det.IdOrdenCompraEnc 
+                        INNER JOIN producto_bodega AS pb ON det.IdProductoBodega = pb.IdProductoBodega 
+                        INNER JOIN producto AS p ON pb.IdProducto = p.IdProducto  
+                        WHERE det.IdOrdenCompraEnc = @IdOrdenCompraEnc";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraEnc", pIdOrdenCompraEnc);
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable?.Rows.Count > 0)
+                {
+                    foreach (DataRow lRow in lDataTable.Rows)
+                    {
+                        clsBeTrans_oc_det BeTransOcDet = new clsBeTrans_oc_det();
+                        Cargar(ref BeTransOcDet, lRow);
+
+                        if (lRow["IdProducto"] != DBNull.Value)
+                        {
+                            BeTransOcDet.Producto.IdProducto = Convert.ToInt32(lRow["IdProducto"]);
+                            clsLnProducto.Obtener(BeTransOcDet.Producto, lConnection, lTransaction);
+                        }
+
+                        if (BeTransOcDet.Producto.IdClasificacion != 0)
+                        {
+                            var clasificacion = clsLnProducto_clasificacion.GetSingle(BeTransOcDet.Producto.IdClasificacion,
+                                                                                    lConnection,
+                                                                                    lTransaction);
+                            if (clasificacion != null)
+                            {
+                                BeTransOcDet.Producto.Clasificacion = clasificacion;
+                            }
+                        }
+
+                        if (lRow["IdProductoBodega"] != DBNull.Value)
+                        {
+                            BeTransOcDet.IdProductoBodega = Convert.ToInt32(lRow["IdProductoBodega"]);
+                        }
+
+                        if (lRow["IdPresentacion"] != DBNull.Value)
+                        {
+                            BeTransOcDet.Presentacion.IdPresentacion = Convert.ToInt32(lRow["IdPresentacion"]);
+                            clsLnProducto_presentacion.Obtener(BeTransOcDet.Presentacion, lConnection, lTransaction);
+                        }
+
+                        if (lRow["IdUnidadMedidaBasica"] != DBNull.Value)
+                        {
+                            BeTransOcDet.UnidadMedida.IdUnidadMedida = Convert.ToInt32(lRow["IdUnidadMedidaBasica"]);
+                            clsLnUnidad_medida.Obtener(BeTransOcDet.UnidadMedida, lConnection, lTransaction);
+                        }
+
+                        if (lRow["IdMotivoDevolucion"] != DBNull.Value)
+                        {
+                            BeTransOcDet.IdMotivoDevolucion = Convert.ToInt32(lRow["IdMotivoDevolucion"]);
+                        }
+
+                        BeTransOcDet.IsNew = false;
+
+                        if (BeTransOcDet.IdEmbarcador != 0)
+                        {
+                            clsBeTrans_oc_embarcador? pBeTrans_oc_embarcador = clsLnTrans_oc_embarcador.Get_Single_By_IdEmbarcador(BeTransOcDet.IdEmbarcador,
+                                                                                                                                   lConnection,
+                                                                                                                                   lTransaction);
+                            if (pBeTrans_oc_embarcador != null)
+                            {
+                                BeTransOcDet.Nombre_Embarcador = pBeTrans_oc_embarcador.Nombre ?? string.Empty;
+                            }
+                        }
+
+                        if (BeTransOcDet.IdProductoTallaColor != 0)
+                        {
+                            clsBeProducto_talla_color? BeProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransOcDet.IdProductoTallaColor,
+                                                                                                                  lConnection,
+                                                                                                                  lTransaction);
+                            if (BeProductoTallaColor != null)
+                            {
+                                var vTalla = clsLnTalla.GetSingle(BeProductoTallaColor.IdTalla, lConnection, lTransaction);
+                                if (vTalla != null)
+                                    BeTransOcDet.Talla = vTalla;
+
+                                        var vColor = clsLnColor.GetSingle(BeProductoTallaColor.IdColor, lConnection, lTransaction);
+                                if (vColor != null)
+                                    BeTransOcDet.Color = vColor;
+                            }
+                        }
+
+                        if (BeTransOcDet.IdOrdenCompraDetPadre != 0)
+                        {
+                            clsBeTrans_oc_det? ObjPadre = lReturnList.Find(x => x.IdProductoBodega == BeTransOcDet.IdOrdenCompraDetPadre);
+                            if (ObjPadre != null)
+                            {
+                                ObjPadre.lProductosHijosKit.Add(BeTransOcDet);
+                            }
+                        }
+                        else
+                        {
+                            lReturnList.Add(BeTransOcDet);
+                        }
+                    }
+                }
+            }
+
+            return lReturnList;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static string Get_Cod_Variante_Nav(int pIdOrdenCompraEnc,
+                                              int pNo_Linea,
+                                              SqlConnection lConnection,
+                                              SqlTransaction lTransaction)
+    {
+        string result = string.Empty;
+
+        try
+        {
+            string vSQL = @"SELECT atributo_variante_1 FROM trans_oc_det                         
+                        WHERE IdOrdenCompraEnc = @IdOrdenCompraEnc 
+                        AND No_Linea = @No_Linea";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraEnc", pIdOrdenCompraEnc);
+                lDTA.SelectCommand.Parameters.AddWithValue("@No_Linea", pNo_Linea);
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable != null && lDataTable.Rows.Count > 0)
+                {
+                    result = (lDataTable.Rows[0]["atributo_variante_1"] == DBNull.Value) ? string.Empty : Convert.ToString(lDataTable.Rows[0]["atributo_variante_1"]) ?? string.Empty;
+                }
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return result;
+    }
 }

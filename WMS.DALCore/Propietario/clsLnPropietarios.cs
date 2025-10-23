@@ -6,11 +6,12 @@ using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Propietario;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Identity.UI.Services;
 public class clsLnPropietarios
 {
     private static clsInsert Ins = new clsInsert();
     private static clsUpdate Upd = new clsUpdate();
+    public static List<clsBePropietarios> lPropietariosInMemory = new List<clsBePropietarios>();
+
     public static void Cargar(ref clsBePropietarios oBePropietarios, DataRow dr)
     {
         int GetInt(string col) { return dr[col] is DBNull ? 0 : Convert.ToInt32(dr[col]); }
@@ -823,7 +824,6 @@ public class clsLnPropietarios
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = sf?.GetMethod();
             string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-
             throw new Exception(vMsgError);
         }
         finally
@@ -838,5 +838,129 @@ public class clsLnPropietarios
 
         return rowsAffected > 0;
 
+    }
+
+    public static int Get_IdPropietario_By_Codigo(string Codigo_Propietario,
+                                                  SqlConnection lConnection,
+                                                  SqlTransaction lTransaction)
+    {
+        int result = 0;
+
+        try
+        {
+            int idxPropietario = lPropietariosInMemory.FindIndex(x => x.Codigo == Codigo_Propietario);
+
+            if (idxPropietario == -1)
+            {
+                const string sp = @"SELECT IdPropietario FROM propietarios 
+                                    WHERE Codigo = @Codigo";
+
+                using (var cmd = new SqlCommand(sp, lConnection, lTransaction))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.Add(new SqlParameter("@Codigo", Codigo_Propietario));
+
+                    using (var dad = new SqlDataAdapter(cmd))
+                    {
+                        var dt = new DataTable();
+                        dad.Fill(dt);
+
+                        if (dt.Rows.Count == 1)
+                        {
+                            result = dt.Rows[0]["IdPropietario"] == DBNull.Value
+                                ? 0
+                                : Convert.ToInt32(dt.Rows[0]["IdPropietario"]);
+                        }
+                    }
+                }
+            }
+            else
+            {                
+                return lPropietariosInMemory[idxPropietario].IdPropietario;
+            }
+        }        
+        catch (Exception ex)
+        {
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = sf?.GetMethod();
+            string vMsgError = string.Format("{0} {1}", currentMethodName, ex.Message);
+            throw new Exception(vMsgError);
+        }
+
+        return result;
+    }
+
+    public static int Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(int pIdBodega,
+                                                                            int pIdPropietario,
+                                                                            SqlConnection lConnection,
+                                                                            SqlTransaction lTrans)
+    {
+        int result = 0;
+
+        try
+        {
+            string vSQL = @"SELECT IdPropietarioBodega 
+                            FROM propietario_bodega 
+                            WHERE IdPropietario = @IdPropietario 
+                            AND IdBodega = @IdBodega";
+
+            using (var lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTrans;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPropietario", pIdPropietario);
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega);
+
+                var lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    result = Convert.ToInt32(lDT.Rows[0]["IdPropietarioBodega"]);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{nameof(Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario)} {ex.Message}", ex);
+        }
+
+        return result;
+    }
+
+    public static int Get_IdPropietario(int pIdBodega,
+                                        int IdPropietarioBodega,
+                                        SqlConnection lConnection,
+                                        SqlTransaction lTransaction)
+    {
+        try
+        {
+            string vSQL = @"SELECT IdPropietario FROM propietario_bodega 
+                        WHERE IdPropietarioBodega = @IdPropietarioBodega 
+                        AND IdBodega = @IdBodega";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPropietarioBodega", IdPropietarioBodega);
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    return Convert.ToInt32(lDT.Rows[0]["IdPropietario"]);
+                }
+
+                return 0;
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 }

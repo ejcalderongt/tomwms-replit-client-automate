@@ -650,4 +650,103 @@ public class clsLnPropietario_bodega
         }
     }
 
+    public static bool Obtener(clsBePropietario_bodega oBePropietario_bodega,
+                              SqlConnection lConnection,
+                              SqlTransaction lTransaction)
+    {
+        try
+        {
+            const string sp = @"SELECT * FROM Propietario_bodega 
+                           WHERE IdPropietarioBodega = @IdPropietarioBodega";
+
+            using (SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@IDPROPIETARIOBODEGA", oBePropietario_bodega.IdPropietarioBodega);
+
+                using (SqlDataAdapter dad = new SqlDataAdapter(cmd))
+                {
+                    DataTable dt = new DataTable();
+                    dad.Fill(dt);
+
+                    if (dt.Rows.Count == 1)
+                    {
+                        Cargar(ref oBePropietario_bodega, dt.Rows[0]);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }        
+        catch (Exception)
+        {         
+            throw;
+        }
+    }
+
+    public static int GetIdEmpresa_By_IdPropietarioBodega(int pIdPropietarioBodega,
+                                                         SqlConnection lConnection,
+                                                         SqlTransaction lTransaction)
+    {
+        try
+        {
+            string vSQL = @"SELECT p.IdEmpresa 
+                       FROM propietario_bodega AS pb 
+                       INNER JOIN propietarios AS p ON pb.IdPropietario = p.IdPropietario 
+                       WHERE pb.IdPropietarioBodega = @IdPropietarioBodega";
+
+            using (SqlCommand lCommand = new SqlCommand(vSQL, lConnection, lTransaction))
+            {
+                lCommand.CommandType = CommandType.Text;
+                lCommand.Parameters.AddWithValue("@IdPropietarioBodega", pIdPropietarioBodega);
+
+                object lReturnValue = lCommand.ExecuteScalar();
+
+                if (lReturnValue != DBNull.Value && lReturnValue != null)
+                {
+                    return Convert.ToInt32(lReturnValue);
+                }
+            }
+
+            return 0;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static int Get_IdPropietario_By_IdBodega_IdPropietarioBodega(int pIdBodega,
+                                                                        int pIdPropietarioBodega,
+                                                                        SqlConnection lConnection,
+                                                                        SqlTransaction lTransaction)
+    {
+        try
+        {
+            string vSQL = @"SELECT pb.IdPropietario
+                      FROM propietario_bodega AS pb 
+                      INNER JOIN propietarios AS p ON pb.IdPropietario = p.IdPropietario 
+                      WHERE p.activo=1 AND pb.IdBodega=@IdBodega AND pb.IdPropietarioBodega=@IdPropietarioBodega";
+
+            using (SqlCommand lCommand = new SqlCommand(vSQL, lConnection, lTransaction) { CommandType = CommandType.Text })
+            {
+                lCommand.Parameters.AddWithValue("@IdBodega", pIdBodega);
+                lCommand.Parameters.AddWithValue("@IdPropietarioBodega", pIdPropietarioBodega);
+
+                object lReturnValue = lCommand.ExecuteScalar();
+
+                if (lReturnValue != DBNull.Value && lReturnValue != null)
+                {
+                    return Convert.ToInt32(lReturnValue);
+                }
+            }
+
+            return 0;
+        }
+        catch (Exception)
+        {            
+            throw;
+        }
+    }
 }

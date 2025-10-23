@@ -1871,10 +1871,7 @@ Partial Public Class clsLnTrans_re_enc
                                     For Each pBeStockRec As clsBeStock_rec In pListStockRec
 
                                         BeStock = New clsBeStock
-
                                         pBeStockRec.IdBodega = pIdBodega
-
-                                        '#EJC20200207: Para evitar fechas malas de la HH
                                         pBeStockRec.Fecha_Ingreso = Now
                                         pBeStockRec.Fec_agr = Now
                                         pBeStockRec.Fec_mod = Now
@@ -3174,7 +3171,7 @@ Partial Public Class clsLnTrans_re_enc
 
             If Not pRecEnc.OrdenCompraRec Is Nothing Then
 
-                If Not pRecEnc.OrdenCompraRec.OC.IdTipoIngresoOC = clsDataContractDI.tTipoDocumentoIngreso.Ingreso_Inventario_Inicial Then
+                If Not pRecEnc.OrdenCompraRec.OC.IdTipoIngresoOC = tTipoDocumentoIngreso.Ingreso_Inventario_Inicial Then
 
                     Dim vReglaProp As New clsBePropietario_reglas_enc
 

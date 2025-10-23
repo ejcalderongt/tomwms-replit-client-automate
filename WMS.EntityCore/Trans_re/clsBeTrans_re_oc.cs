@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using WMS.EntityCore.Trans_oc;
 
 namespace WMS.EntityCore.Trans_re
 {
@@ -38,6 +39,8 @@ namespace WMS.EntityCore.Trans_re
         [Column("firma_operador")]
         [DisplayName("firma_operador")]
         public byte[] Firma_operador { get; set; } = Array.Empty<byte>();
+        public bool IsNew { get; set; } = false;
+        public clsBeTrans_oc_enc OC { get; set; } = new clsBeTrans_oc_enc();
         public clsBeTrans_re_oc() { }
         public object Clone()
         {

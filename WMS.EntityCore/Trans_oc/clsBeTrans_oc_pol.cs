@@ -200,7 +200,7 @@ namespace WMS.EntityCore.Trans_oc
         [Column("IdBodega")]
         [DisplayName("IdBodega")]
         public int IdBodega { get; set; } = 0;
-
+        public bool IsNew { get; set; } = false;
         public clsBeTrans_oc_pol() { }
 
         public object Clone()

@@ -32,7 +32,8 @@ namespace WMS.EntityCore.Trans_re
         [Column("fec_mod")]
         [DisplayName("fec_mod")]
         public DateTime Fec_mod { get; set; } = DateTime.Now;
-
+        public bool IsNew { get; set; } = false;
+        public bool UsaHH { get; set; } = false;
         public clsBeTrans_re_op() { }
 
         public object Clone()

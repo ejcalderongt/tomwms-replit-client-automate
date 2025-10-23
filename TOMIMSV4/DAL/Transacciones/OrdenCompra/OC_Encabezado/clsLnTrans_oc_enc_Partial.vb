@@ -524,10 +524,9 @@ Partial Public Class clsLnTrans_oc_enc
 
                             If lRow("IdProveedorBodega") IsNot DBNull.Value AndAlso lRow("IdProveedorBodega") IsNot Nothing Then
                                 Obj.ProveedorBodega.IdAsignacion = CType(lRow("IdProveedorBodega"), Integer)
-                                'clsLnProveedor_bodega.Obtener(Obj.ProveedorBodega, lConnection, lTransaction)
                                 Obj.ProveedorBodega.Proveedor.TiemposProveedor = clsLnProveedor_tiempos.Get_All_Tiempos_By_IdProveedor(Obj.ProveedorBodega.IdProveedor,
-                                                                                    lConnection,
-                                                                                    lTransaction)
+                                                                                                                                       lConnection,
+                                                                                                                                       lTransaction)
                             End If
 
                             If lRow("IdTipoIngresoOC") IsNot DBNull.Value AndAlso lRow("IdTipoIngresoOC") IsNot Nothing Then

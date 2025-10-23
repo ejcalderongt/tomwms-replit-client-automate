@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using AppGlobal;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic.CompilerServices;
 using System.Data;
@@ -60,12 +61,18 @@ public class clsLnProveedor
         }
     }
 
-    public static int Insertar(IConfiguration config, clsBeProveedor oBeProveedor, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Insertar(clsBeProveedor oBeProveedor, SqlConnection pConection, SqlTransaction pTransaction)
     {
+        if (oBeProveedor == null)
+            throw new ArgumentNullException(nameof(oBeProveedor));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
 
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
@@ -100,50 +107,22 @@ public class clsLnProveedor
 
             string sp = Ins.SQL();
 
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
+                cmd.CommandType = CommandType.Text;
+
+                Bind(cmd, oBeProveedor);
+
+                rowsAffected = cmd.ExecuteNonQuery();
             }
 
-            Bind(cmd, oBeProveedor);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            cmd.Dispose();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return rowsAffected;
         }
-        catch (SqlException ex1)
+        catch (SqlException ex)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            throw new Exception(vMsgError);
+            string errorMessage = $"Error en Insertar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
 
     public static int Insertar(IConfiguration config, clsBeProveedor oBeProveedor)
@@ -250,16 +229,21 @@ public class clsLnProveedor
         cmd.Parameters.Add(new SqlParameter("@codigo_empresa_erp", oBeProveedor.Codigo_Empresa_ERP));
     }
 
-    public static int Actualizar(IConfiguration config, clsBeProveedor oBeProveedor, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Actualizar(clsBeProveedor oBeProveedor, SqlConnection pConection, SqlTransaction pTransaction)
     {
+        if (oBeProveedor == null)
+            throw new ArgumentNullException(nameof(oBeProveedor));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
 
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
-
             Upd.Init("proveedor");
             Upd.Add("idempresa", "@idempresa", "F");
             Upd.Add("idpropietario", "@idpropietario", "F");
@@ -292,48 +276,22 @@ public class clsLnProveedor
 
             string sp = Upd.SQL();
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
+                cmd.CommandType = CommandType.Text;
+
+                Bind(cmd, oBeProveedor);
+
+                rowsAffected = cmd.ExecuteNonQuery();
             }
 
-            Bind(cmd, oBeProveedor);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return rowsAffected;
         }
-        catch (SqlException ex1)
+        catch (SqlException ex)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            throw new Exception(vMsgError);
+            string errorMessage = $"Error en Actualizar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
 
     public int Eliminar(IConfiguration config, clsBeProveedor oBeProveedor, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
@@ -586,105 +544,72 @@ public class clsLnProveedor
             throw new Exception(vMsgError);
         }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int MaxID(SqlConnection pConection, SqlTransaction pTransaction)
     {
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
 
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
 
-
-        int lMax = 0;
         try
         {
-
-
             const string sp = "Select ISNULL(Max(IdProveedor),0) FROM Proveedor";
 
-            bool Es_Transaccion_Remota = pConection is not null && pTransaction is not null;
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+                cmd.CommandType = CommandType.Text;
 
-            Object lreturnValue = cmd.ExecuteScalar();
+                object lreturnValue = cmd.ExecuteScalar();
 
-            if (lreturnValue != DBNull.Value && lreturnValue != null)
-            {
-                lMax = int.Parse((String)lreturnValue);
-            }
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-            return lMax;
-
-        }
-        catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            throw new Exception(vMsgError);
-        }
-    }
-
-    public static void InsertarOActualizar(IConfiguration config, List<clsBeProveedor> entities, SqlConnection? conn = null, SqlTransaction? tx = null)
-    {
-        bool isExternalTx = conn != null && tx != null;
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
-
-        try
-        {
-            if (!isExternalTx)
-            {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
-            foreach (var entity in entities)
-            {
-                if (entity.IdProveedor != 0)
+                if (lreturnValue != DBNull.Value && lreturnValue != null)
                 {
-                    bool existe = Existe(entity.IdProveedor, connection, isExternalTx ? tx! : localTx!);
-
-                    if (existe)
-                        Actualizar(config, entity, connection, isExternalTx ? tx : localTx);
-                    else
-                        Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                    return Convert.ToInt32(lreturnValue);
                 }
-            }
 
-            if (!isExternalTx)
-                localTx?.Commit();
+                return 0;
+            }
         }
         catch (SqlException ex)
         {
-            if (!isExternalTx && localTx is not null)
-                localTx.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
-            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
+            string errorMessage = $"Error en MaxID - {ex.Message}";
+            throw new Exception(errorMessage, ex);
         }
-        finally
+    }
+
+    public static void InsertarOActualizar(List<clsBeProveedor> entities, SqlConnection conn, SqlTransaction tx)
+    {
+        if (entities == null)
+            throw new ArgumentNullException(nameof(entities));
+
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
+
+        if (tx == null)
+            throw new ArgumentNullException(nameof(tx));
+
+        try
         {
-            if (!isExternalTx)
+            foreach (var entity in entities)
             {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
+                if (entity == null)
+                    continue;
+
+                if (entity.IdProveedor != 0)
+                {
+                    bool existe = Existe(entity.IdProveedor, conn, tx);
+
+                    if (existe)
+                        Actualizar(entity, conn, tx);
+                    else
+                        Insertar(entity, conn, tx);
+                }
             }
+        }
+        catch (SqlException ex)
+        {
+            var method = MethodBase.GetCurrentMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
         }
     }
 
@@ -744,108 +669,271 @@ public class clsLnProveedor
         }
     }
 
-    public static void Valida_Atributos(IConfiguration config, clsBeProveedor pBeProveedor, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static void Valida_Atributos(clsBeProveedor pBeProveedor, SqlConnection conn, SqlTransaction tx)
     {
-        bool isExternalTx = conn != null && tx != null;
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
+        if (pBeProveedor == null)
+            throw new ArgumentNullException(nameof(pBeProveedor));
 
-        try
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
+
+        if (tx == null)
+            throw new ArgumentNullException(nameof(tx));
+
+        var BeProveedor = new clsBeProveedor();
+        var BeProveedor_Bodega = new clsBeProveedor_bodega();
+        bool existe = Existe_By_Codigo(pBeProveedor.Codigo, ref BeProveedor, conn, tx);
+
+        var BeInavConfigEnc = new clsBeI_nav_config_enc();
+        clsLnI_nav_config_enc.GetSingle(BeInavConfigEnc, conn, tx);
+
+        if (BeInavConfigEnc == null)
+            throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
+
+        if (!existe)
         {
-            if (!isExternalTx)
+            if (!string.IsNullOrEmpty(pBeProveedor.Codigo))
             {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
-            var BeProveedor = new clsBeProveedor();
-            var BeProveedor_Bodega = new clsBeProveedor_bodega();
-            bool existe = Existe_By_Codigo(pBeProveedor.Codigo, ref BeProveedor, connection, isExternalTx ? tx! : localTx!);
-
-            var BeInavConfigEnc = new clsBeI_nav_config_enc();
-            clsLnI_nav_config_enc.GetSingle(config, BeInavConfigEnc, connection, isExternalTx ? tx : localTx);
-
-            if (BeInavConfigEnc == null)
-                throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
-
-
-            if (!existe)
-            {
-
-                if (!string.IsNullOrEmpty(pBeProveedor.Codigo))
-                {
-                    BeProveedor.IdPropietario = MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
-                    BeProveedor.Codigo = pBeProveedor.Codigo;
-                    BeProveedor.Nombre = pBeProveedor.Nombre ?? pBeProveedor.Codigo;
-                    BeProveedor.Nit = pBeProveedor.Nit;
-                    BeProveedor.Contacto = pBeProveedor.Contacto;
-                    BeProveedor.User_agr = BeInavConfigEnc.IdUsuario.ToString();
-                    BeProveedor.User_mod = BeInavConfigEnc.IdUsuario.ToString();
-                    BeProveedor.Fec_agr = DateTime.Now;
-                    BeProveedor.Fec_mod = DateTime.Now;
-                    BeProveedor.Activo = pBeProveedor.Activo;
-                    BeProveedor.IdPropietario = pBeProveedor.IdPropietario;
-                    Insertar(config, BeProveedor, connection, isExternalTx ? tx : localTx);
-
-                    var listBeBodega = clsLnBodega.GetAll(connection, isExternalTx ? tx : localTx);
-
-                    if (listBeBodega.Count == 0)
-                        throw new ArgumentNullException(nameof(listBeBodega), "No se encontraron bodegas activas para asociar proveedores");
-
-                    if (listBeBodega.Count > 0)
-                    {
-
-                        foreach (clsBeBodega BeBodega in listBeBodega)
-                        {
-                            BeProveedor_Bodega = new clsBeProveedor_bodega();
-                            BeProveedor_Bodega.IdAsignacion = BeProveedor.IdProveedor;
-                            BeProveedor_Bodega.IdProveedor = clsLnProveedor_bodega.MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
-                            BeProveedor_Bodega.IdBodega = BeBodega.IdBodega;
-                            BeProveedor_Bodega.IdAreaOrigen = 0;
-                            BeProveedor_Bodega.User_agr = BeInavConfigEnc.IdUsuario.ToString();
-                            BeProveedor_Bodega.User_mod = BeInavConfigEnc.IdUsuario.ToString();
-                            BeProveedor_Bodega.Fec_agr = DateTime.Now;
-                            BeProveedor_Bodega.Fec_mod = DateTime.Now;
-                            BeProveedor_Bodega.Activo = true;
-                            clsLnProveedor_bodega.Insertar(config, BeProveedor_Bodega, connection, isExternalTx ? tx : localTx);
-                            
-                        }
-
-                    }
-
-                }
-
-            }
-            else
-            {
-
+                BeProveedor.IdPropietario = MaxID(conn, tx) + 1;
                 BeProveedor.Codigo = pBeProveedor.Codigo;
                 BeProveedor.Nombre = pBeProveedor.Nombre ?? pBeProveedor.Codigo;
+                BeProveedor.Nit = pBeProveedor.Nit;
+                BeProveedor.Contacto = pBeProveedor.Contacto;
+                BeProveedor.User_agr = BeInavConfigEnc.IdUsuario.ToString();
                 BeProveedor.User_mod = BeInavConfigEnc.IdUsuario.ToString();
+                BeProveedor.Fec_agr = DateTime.Now;
                 BeProveedor.Fec_mod = DateTime.Now;
                 BeProveedor.Activo = pBeProveedor.Activo;
-                Actualizar(config, BeProveedor, connection, isExternalTx ? tx : localTx);
+                BeProveedor.IdPropietario = pBeProveedor.IdPropietario;
+                Insertar(BeProveedor, conn, tx);
 
+                var listBeBodega = clsLnBodega.GetAll(conn, tx);
+
+                if (listBeBodega.Count == 0)
+                    throw new ArgumentNullException(nameof(listBeBodega), "No se encontraron bodegas activas para asociar proveedores");
+
+                foreach (clsBeBodega BeBodega in listBeBodega)
+                {
+                    if (BeBodega == null)
+                        continue;
+
+                    BeProveedor_Bodega = new clsBeProveedor_bodega();
+                    BeProveedor_Bodega.IdAsignacion = BeProveedor.IdProveedor;
+                    BeProveedor_Bodega.IdProveedor = clsLnProveedor_bodega.MaxID(conn, tx) + 1;
+                    BeProveedor_Bodega.IdBodega = BeBodega.IdBodega;
+                    BeProveedor_Bodega.IdAreaOrigen = 0;
+                    BeProveedor_Bodega.User_agr = BeInavConfigEnc.IdUsuario.ToString();
+                    BeProveedor_Bodega.User_mod = BeInavConfigEnc.IdUsuario.ToString();
+                    BeProveedor_Bodega.Fec_agr = DateTime.Now;
+                    BeProveedor_Bodega.Fec_mod = DateTime.Now;
+                    BeProveedor_Bodega.Activo = true;
+                    clsLnProveedor_bodega.Insertar(BeProveedor_Bodega, conn, tx);
+                }
             }
-
         }
-        catch (SqlException ex)
+        else
         {
-            if (!isExternalTx && localTx is not null)
-                localTx.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
-            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
-        }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
-            }
+            BeProveedor.Codigo = pBeProveedor.Codigo;
+            BeProveedor.Nombre = pBeProveedor.Nombre ?? pBeProveedor.Codigo;
+            BeProveedor.User_mod = BeInavConfigEnc.IdUsuario.ToString();
+            BeProveedor.Fec_mod = DateTime.Now;
+            BeProveedor.Activo = pBeProveedor.Activo;
+            Actualizar(BeProveedor, conn, tx);
         }
     }
 
+    public static clsBeProveedor_bodega Get_ProveedorBodega_By_Codigo_Proveedor(string pCodigo,
+                                                                                int pIdBodega,
+                                                                                SqlConnection lConection,
+                                                                                SqlTransaction lTransaction)
+    {
+        clsBeProveedor_bodega result = new clsBeProveedor_bodega();
+
+        try
+        {
+            string vSQL = "SELECT TOP 1 * FROM proveedor WHERE Codigo = @Codigo";
+
+            using (var lDTA = new SqlDataAdapter(vSQL, lConection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo);
+
+                var lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+                    var beProveedor = new clsBeProveedor();
+
+                    Cargar(ref beProveedor, lRow);
+
+                    var beProveedorBodega = new clsBeProveedor_bodega
+                    {
+                        IdAsignacion = clsLnProveedor_bodega.MaxID(lConection, lTransaction) + 1,
+                        IdProveedor = beProveedor.IdProveedor,
+                        IdBodega = pIdBodega,
+                        Proveedor = beProveedor
+                    };
+
+                    bool existeAsociacion = clsLnProveedor_bodega.Get_Single_By_IdBodega_And_IdProveedor(ref beProveedorBodega, 
+                                                                                                         lConection, 
+                                                                                                         lTransaction);
+
+                    if (!existeAsociacion)
+                    {
+                        string vMensaje = string.Format(
+                            "El proveedor: {0} existe con identificador: {1}, pero no fue posible obtener la asociación del proveedor con el IdBodega: {2} ",
+                            pCodigo, beProveedorBodega.IdProveedor, pIdBodega);
+
+                        throw new Exception(vMensaje);
+                    }
+
+                    result = beProveedorBodega;
+                }
+            }
+        }
+        catch
+        {
+            throw;
+        }
+
+        return result;
+    }
+
+    public static clsBeProveedor_bodega? Get_ProveedorBodega_By_Codigo_Proveedor(string pCodigo,
+                                                                                int pIdBodega,
+                                                                                ref SqlConnection lConection,
+                                                                                ref SqlTransaction lTransaction)
+    {
+        try
+        {
+            string vSQL = "SELECT TOP 1 * FROM proveedor WHERE Codigo = @Codigo";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+                    clsBeProveedor BeProveedor = new clsBeProveedor();
+
+                    Cargar(ref BeProveedor, lRow);
+
+                    clsBeProveedor_bodega BeProveedorBodega = new clsBeProveedor_bodega();
+                    BeProveedorBodega.IdAsignacion = clsLnProveedor_bodega.MaxID(lConection, lTransaction) + 1;
+                    BeProveedorBodega.IdProveedor = BeProveedor.IdProveedor;
+                    BeProveedorBodega.IdBodega = pIdBodega;
+                    BeProveedorBodega.Proveedor = BeProveedor;
+
+                    if (!clsLnProveedor_bodega.Get_Single_By_IdBodega_And_IdProveedor(ref BeProveedorBodega, lConection, lTransaction))
+                    {
+                        string vMensaje = string.Format("El proveedor: {0} existe con identificador: {1}, pero no fue posible obtener la asociación del proveedor con el IdBodega: {2}",
+                                                       pCodigo, BeProveedorBodega.IdProveedor, pIdBodega);
+                        throw new Exception(vMensaje);
+                    }
+                    else
+                    {
+                        return BeProveedorBodega;
+                    }
+                }
+            }
+
+            return null;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static clsBeProveedor_bodega? Get_ProveedorBodega_By_Codigo_Proveedor(IConfiguration config,
+                                                                                 string pCodigo,
+                                                                                 int pIdBodega,
+                                                                                 clsBeI_nav_config_enc BeConfigEnc,
+                                                                                 SqlConnection lConection,
+                                                                                 SqlTransaction lTransaction)
+    {
+        try
+        {
+            string vSQL = "SELECT TOP 1 * FROM proveedor WHERE Codigo = @Codigo";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+                    clsBeProveedor BeProveedor = new clsBeProveedor();
+
+                    Cargar(ref BeProveedor, lRow);
+
+                    clsBeProveedor_bodega BeProveedorBodega = new clsBeProveedor_bodega();
+                    BeProveedorBodega.IdAsignacion = clsLnProveedor_bodega.MaxID(lConection, lTransaction) + 1;
+                    BeProveedorBodega.IdProveedor = BeProveedor.IdProveedor;
+                    BeProveedorBodega.IdBodega = pIdBodega;
+                    BeProveedorBodega.Proveedor = BeProveedor;
+
+                    clsBeProveedor_bodega BeProveedorBodegaNuevo = new clsBeProveedor_bodega();
+                    clsPublic.CopyObject(BeProveedorBodega, ref BeProveedorBodegaNuevo);
+
+                    if (!clsLnProveedor_bodega.Get_Single_By_IdBodega_And_IdProveedor(ref BeProveedorBodega, lConection, lTransaction))
+                    {
+                        BeProveedorBodega = BeProveedorBodegaNuevo;
+                        BeProveedorBodega.User_agr = BeConfigEnc.User_agr;
+                        BeProveedorBodega.User_mod = BeConfigEnc.User_mod;
+                        BeProveedorBodega.Fec_agr = DateTime.Now;
+                        BeProveedorBodega.Fec_mod = DateTime.Now;
+                        BeProveedorBodega.Activo = true;
+                        clsLnProveedor_bodega.Insertar(BeProveedorBodega,lConection,lTransaction);
+                    }
+
+                    return BeProveedorBodega;
+                }
+            }
+
+            return null;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static bool Existe_Proveedor(string pCodigo, SqlConnection lConnection, SqlTransaction lTransaction)
+    {
+        try
+        {
+            string vSQL = "SELECT TOP 1 * FROM proveedor WHERE Codigo=@Codigo";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                return (lDT != null && lDT.Rows.Count > 0);
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }

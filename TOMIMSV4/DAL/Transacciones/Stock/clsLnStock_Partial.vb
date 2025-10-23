@@ -8031,8 +8031,8 @@ Partial Public Class clsLnStock
     End Function
 
     Public Shared Function Get_All_By_IdProductoBodega(ByVal pIdProductoBodega As Integer,
-                                      ByRef lConnection As SqlConnection,
-                                      ByRef lTransaction As SqlTransaction) As List(Of clsBeVW_stock_res)
+                                                      ByRef lConnection As SqlConnection,
+                                                      ByRef lTransaction As SqlTransaction) As List(Of clsBeVW_stock_res)
 
         Get_All_By_IdProductoBodega = Nothing
 

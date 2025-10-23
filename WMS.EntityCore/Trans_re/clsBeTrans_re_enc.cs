@@ -1,5 +1,8 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using WMS.EntityCore.Datos_Maestros;
+using WMS.EntityCore.Propietario;
+using WMSWebAPI.Be;
 
 namespace WMS.EntityCore.Trans_re
 {
@@ -152,7 +155,44 @@ namespace WMS.EntityCore.Trans_re
         [Column("no_contenedor")]
         [DisplayName("no_contenedor")]
         public string No_contenedor { get; set; } = "";
+        public clsBeTrans_re_oc OrdenCompraRec { get; set; } = new clsBeTrans_re_oc();
+        public List<clsBeTrans_re_det> Detalle { get; set; } = new List<clsBeTrans_re_det>();
+        public List<clsBeTrans_re_det_parametros> DetalleParametros { get; set; } = new List<clsBeTrans_re_det_parametros>();
+        public List<clsBeTrans_re_op> DetalleOperadores { get; set; } = new List<clsBeTrans_re_op>();
+        public List<clsBeTrans_re_img> DetalleImagenes { get; set; } = new List<clsBeTrans_re_img>();
+        public List<clsBeTrans_re_fact> DetalleFacturas { get; set; } = new List<clsBeTrans_re_fact>();
+        public bool IsNew { get; set; } = false;
+        public string Descripcion { get; set; } = "";
+        public string UbicacionRecepcion { get; set; } = "";
+        public string NombrePropietario { get; set; } = "";
+        public string Bodega { get; set; } = "";
+        public string Usuario { get; set; } = "";
+        public clsBePropietario_bodega PropietarioBodega { get; set; } = new clsBePropietario_bodega();
+        public string PropietarioOC { get; set; } = "";
+        public string Proveedor { get; set; } = "";
+        public int NoOrdencompra { get; set; } = 0;
+        public string NoDocumentoOC { get; set; } = "";        
+        public clsBeBodega_muelles Muelle { get; set; } = new clsBeBodega_muelles();
+        public string MuelleRec { get; set; } = "";
+        public string NOFactura { get; set; } = "";
+        public clsBeTarea_hh TareaHH { get; set; } = new clsBeTarea_hh();
+        public int IdPiloto { get; set; } = 0;
+        public int IdVehiculo { get; set; } = 0;
+        public int IdEstado_Defecto_Recepcion { get; set; } = 0;
 
+        public enum pTipoTrans
+        {
+            HCOC00 = 0,
+            HCOD00 = 1,
+            HHSR00 = 2,
+            HSOC00 = 3,
+            HSOD00 = 4,
+            MCOC00 = 5,
+            MCOD00 = 6,
+            MSOC00 = 7,
+            MSOD00 = 8,
+            PICH000 = 9
+        }
         public clsBeTrans_re_enc() { }
 
         public object Clone()

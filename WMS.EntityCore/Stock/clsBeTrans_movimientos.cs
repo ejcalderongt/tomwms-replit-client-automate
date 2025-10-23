@@ -144,6 +144,9 @@ namespace WMS.EntityCore.Stock
         [Column("IdDespachoDet")]
         [DisplayName("IdDespachoDet")]
         public int IdDespachoDet { get; set; } = 0;
+        public int IdProductoTallaColor { get; set; } = 0;
+        public string? Talla { get; set; } = "";
+        public string? Color { get; set; } = "";
 
         public clsBeTrans_movimientos() { }
 

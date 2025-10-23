@@ -682,37 +682,6 @@ Public Class clsLnTalla
         End Try
 
     End Function
-
-    'Public Shared Function Listar_For_Combo() As DataTable
-
-    '    Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
-    '    Dim lTransaction As SqlTransaction = Nothing
-
-    '    Try
-
-    '        Const sp As String = "SELECT IdTalla,Codigo FROM Talla where activo=1 "
-    '        lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-    '        Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-    '        Dim dad As New SqlDataAdapter(cmd)
-    '        Dim dt As New DataTable
-    '        dad.Fill(dt)
-
-    '        lTransaction.Commit()
-
-    '        Return dt
-
-    '    Catch ex As Exception
-    '        If Not lTransaction Is Nothing Then lTransaction.Rollback()
-    '        Throw ex
-    '    Finally
-    '        If lConnection.State = ConnectionState.Open Then lConnection.Close()
-    '        If Not lConnection Is Nothing Then lConnection.Dispose()
-    '        If Not lTransaction Is Nothing Then lTransaction.Dispose()
-    '    End Try
-
-    'End Function
-
-    '#GT25082025: listar tallas para combo con estado activo, no es igual que get_all
     Public Shared Function Listar_For_Combo() As List(Of clsBeTalla)
 
         Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))

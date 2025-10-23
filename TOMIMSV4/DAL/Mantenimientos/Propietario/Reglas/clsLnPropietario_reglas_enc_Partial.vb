@@ -275,8 +275,8 @@ Partial Public Class clsLnPropietario_reglas_enc
     End Function
 
     Public Shared Function Get_All_By_IdPropietario(ByVal pIdPropietario As Integer,
-                                  ByRef lConnection As SqlConnection,
-                                  ByRef lTransaction As SqlTransaction) As List(Of clsBePropietario_reglas_enc)
+                                                    ByRef lConnection As SqlConnection,
+                                                    ByRef lTransaction As SqlTransaction) As List(Of clsBePropietario_reglas_enc)
 
         Dim Lista As New List(Of clsBePropietario_reglas_enc)
 

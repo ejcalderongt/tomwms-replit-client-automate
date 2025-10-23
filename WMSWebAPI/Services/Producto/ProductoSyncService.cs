@@ -22,8 +22,7 @@ public class ProductoSyncService : IProductoSyncService
         try
         {
             if (dto.Propietario != null) {
-                var Propietario = _mapper.Map<clsBePropietarios>(dto.Propietario);
-                //clsLnPropietario_bodega.InsertOrUpdate(_configuration, propietario_bodega, conn, tx);
+                var Propietario = _mapper.Map<clsBePropietarios>(dto.Propietario);                
                 clsLnPropietarios.InsertOrUpdate(_configuration, Propietario, conn, tx);
                
             }
@@ -51,7 +50,7 @@ public class ProductoSyncService : IProductoSyncService
         {
             if (dto.Marca != null)
                 if (dto.Marca.IdMarca != 0)
-                    clsLnProducto_Marca.InsertOrUpdate(_configuration, _mapper.Map<clsBeProducto_marca>(dto.Marca), conn, tx);
+                    clsLnProducto_Marca.InsertOrUpdate(_mapper.Map<clsBeProducto_marca>(dto.Marca), conn, tx);
         }
         catch (Exception ex)
         {
@@ -73,7 +72,7 @@ public class ProductoSyncService : IProductoSyncService
         {
             if (dto.Clasificacion != null)
                 if (dto.Clasificacion.IdClasificacion != 0)
-                    clsLnProducto_clasificacion.InsertOrUpdate(_configuration, _mapper.Map<clsBeProducto_clasificacion>(dto.Clasificacion), conn, tx);
+                    clsLnProducto_clasificacion.InsertOrUpdate(_mapper.Map<clsBeProducto_clasificacion>(dto.Clasificacion), conn, tx);
         }
         catch (Exception ex)
         {
@@ -153,7 +152,7 @@ public class ProductoSyncService : IProductoSyncService
             if (dto.ProductoBodega != null)
             {                
                 var producto_bodega = _mapper.Map<List<clsBeProducto_bodega>>(dto.ProductoBodega);
-                clsLnProducto_bodega.InsertOrUpdate(_configuration, producto_bodega, conn, tx);
+                clsLnProducto_bodega.InsertOrUpdate(producto_bodega, conn, tx);
             }
         }
         catch (Exception ex)

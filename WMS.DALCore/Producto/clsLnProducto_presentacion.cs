@@ -58,20 +58,8 @@ public class clsLnProducto_presentacion
             throw new Exception(msg);
         }
     }
-    public static int Insertar(IConfiguration config, clsBeProducto_presentacion e, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int Insertar(clsBeProducto_presentacion e, SqlConnection conn, SqlTransaction tx)
     {
-        int rowsAffected;
-        bool esTransaccionExterna = conn != null && tx != null;
-
-        using var connection = esTransaccionExterna ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
-
-        if (!esTransaccionExterna)
-        {
-            connection.Open();
-            localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-        }
-
         try
         {
             Ins.Init("producto_presentacion");
@@ -107,27 +95,19 @@ public class clsLnProducto_presentacion
 
             string sql = Ins.SQL();
 
-            using var cmd = new SqlCommand(sql, connection, esTransaccionExterna ? tx : localTx)
+            using var cmd = new SqlCommand(sql, conn, tx)
             {
                 CommandType = CommandType.Text
             };
 
             BindParameters(cmd, e);
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            if (!esTransaccionExterna)
-                localTx?.Commit();
+            int rowsAffected = cmd.ExecuteNonQuery();
+            return rowsAffected;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            if (!esTransaccionExterna)
-                localTx?.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
-            throw new Exception($"{method} {ex.Message}");
+            throw;
         }
-
-        return rowsAffected;
     }
     public static int Insertar(IConfiguration config, clsBeProducto_presentacion e)
     {
@@ -192,14 +172,8 @@ public class clsLnProducto_presentacion
 
         return rowsAffected;
     }
-    public static int Actualizar(IConfiguration config, clsBeProducto_presentacion e, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int Actualizar(clsBeProducto_presentacion e, SqlConnection conn, SqlTransaction tx)
     {
-        int rowsAffected = 0;
-        bool esTransaccionExterna = conn != null && tx != null;
-
-        using var connection = esTransaccionExterna ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
-
         try
         {
             Upd.Init("producto_presentacion");
@@ -236,34 +210,20 @@ public class clsLnProducto_presentacion
 
             string sql = Upd.SQL();
 
-            if (!esTransaccionExterna)
-            {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
-            using var cmd = new SqlCommand(sql, connection, esTransaccionExterna ? tx : localTx)
+            using var cmd = new SqlCommand(sql, conn, tx)
             {
                 CommandType = CommandType.Text
             };
 
             BindParameters(cmd, e);
 
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            if (!esTransaccionExterna)
-                localTx?.Commit();
+            int rowsAffected = cmd.ExecuteNonQuery();
+            return rowsAffected;
         }
-        catch (SqlException ex)
+        catch (Exception)
         {
-            if (!esTransaccionExterna)
-                localTx?.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod()?.Name ?? "Actualizar";
-            throw new Exception($"{method}: {ex.Message}", ex);
+            throw;
         }
-
-        return rowsAffected;
     }
     public static int Eliminar(IConfiguration config, clsBeProducto_presentacion e, SqlConnection? conn = null, SqlTransaction? tx = null)
     {
@@ -487,42 +447,24 @@ public class clsLnProducto_presentacion
             throw new Exception(vMsgError);
         }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int MaxID(SqlConnection pConection, SqlTransaction pTransaction)
     {
         const string sql = "SELECT ISNULL(MAX(IdPresentacion), 0) FROM Producto_presentacion";
-        bool transaccionExterna = pConection != null && pTransaction != null;
-
-        using var connection = transaccionExterna ? pConection! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
 
         try
         {
-            if (!transaccionExterna)
-            {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
-            using var cmd = new SqlCommand(sql, connection, transaccionExterna ? pTransaction! : localTx)
+            using var cmd = new SqlCommand(sql, pConection, pTransaction)
             {
                 CommandType = CommandType.Text
             };
 
             object? result = cmd.ExecuteScalar();
             int max = (result != null && result != DBNull.Value) ? Convert.ToInt32(result) : 0;
-
-            if (!transaccionExterna)
-                localTx?.Commit();
-
             return max;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            if (!transaccionExterna)
-                localTx?.Rollback();
-
-            string method = new StackTrace().GetFrame(0)?.GetMethod()?.Name ?? "MaxID";
-            throw new Exception($"{method}: {ex.Message}", ex);
+            throw;
         }
     }
     private static void BindParameters(SqlCommand cmd, clsBeProducto_presentacion e)
@@ -557,40 +499,23 @@ public class clsLnProducto_presentacion
         cmd.Parameters.AddWithValue("@IdPresentacionPallet", e.IdPresentacionPallet);
         cmd.Parameters.AddWithValue("@codigo", e.Codigo);
     }
-    public static int InsertOrUpdate(IConfiguration config, clsBeProducto_presentacion oBe, SqlConnection? cn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(List<clsBeProducto_presentacion> lista, SqlConnection cn, SqlTransaction tx)
     {
-        bool externa = cn != null && tx != null;
-        var lConn = externa ? cn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTx = null;
-
-        if (!externa)
-        {
-            lConn.Open();
-            lTx = lConn.BeginTransaction();
-        }
-
         try
         {
-            SqlConnection conn = externa ? lConn : lConn;
-            SqlTransaction? tran = externa ? tx : lTx;
-
-            if (Existe(oBe, conn, tran))
-                return Actualizar(config, oBe, conn, tran);
-            else
-                return Insertar(config, oBe, conn, tran);
+            int total = 0;
+            foreach (var oBe in lista)
+            {
+                if (Existe(oBe, cn, tx))
+                    total += Actualizar(oBe, cn, tx);
+                else
+                    total += Insertar(oBe, cn, tx);
+            }
+            return total;
         }
         catch
         {
-            if (!externa) lTx?.Rollback();
             throw;
-        }
-        finally
-        {
-            if (!externa)
-            {
-                lTx?.Commit();
-                lConn.Close();
-            }
         }
     }
     public static bool Existe(clsBeProducto_presentacion oBe, IConfiguration config)
@@ -611,38 +536,18 @@ public class clsLnProducto_presentacion
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
     }
-    public static int InsertOrUpdate(IConfiguration config, List<clsBeProducto_presentacion> lista, SqlConnection? cn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(clsBeProducto_presentacion oBe, SqlConnection cn, SqlTransaction tx)
     {
-        bool externa = cn != null && tx != null;
-        var lConn = externa ? cn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTx = null;
-        if (!externa) { lConn.Open(); lTx = lConn.BeginTransaction(); }
-
         try
         {
-            int total = 0;
-            foreach (var oBe in lista)
-            {
-                if (Existe(oBe, config))
-                    total += Actualizar(config, oBe, lConn, externa ? tx : lTx);
-                else
-                    total += Insertar(config, oBe, lConn, externa ? tx : lTx);
-            }
-
-            if (!externa)
-                lTx?.Commit();
-
-            return total;
+            if (Existe(oBe, cn, tx))
+                return Actualizar(oBe, cn, tx);
+            else
+                return Insertar(oBe, cn, tx);
         }
         catch
         {
-            if (!externa) lTx?.Rollback();
             throw;
-        }
-        finally
-        {
-            if (!externa)
-                lConn.Close();
         }
     }
     public static bool Existe(clsBeProducto_presentacion oBe, SqlConnection cn, SqlTransaction? tx = null)
@@ -690,44 +595,32 @@ public class clsLnProducto_presentacion
         }
     }
 
-    public static void Valida_Atributos(IConfiguration config, clsBeProducto_presentacionMi3 pPresentacionMi3, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static void Valida_Atributos(clsBeProducto_presentacionMi3 pPresentacionMi3, SqlConnection connection, SqlTransaction tx)
     {
         if (pPresentacionMi3.Codigo_presentacion == null)
             throw new ArgumentNullException(nameof(pPresentacionMi3.Codigo_presentacion), "El código no puede ser nulo.");
 
-        bool isExternalTx = conn != null && tx != null;
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
-
         try
         {
-            if (!isExternalTx)
-            {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
             var Presentacion = new clsBeProducto_presentacion();
-            bool existe = Existe_By_Codigo(pPresentacionMi3.Codigo_presentacion, ref Presentacion, connection, isExternalTx ? tx! : localTx!);
+            bool existe = Existe_By_Codigo(pPresentacionMi3.Codigo_presentacion, ref Presentacion, connection, tx);
 
             var BeInavConfigEnc = new clsBeI_nav_config_enc();
-            clsLnI_nav_config_enc.GetSingle(config, BeInavConfigEnc, connection, isExternalTx ? tx : localTx);
+            clsLnI_nav_config_enc.GetSingle(BeInavConfigEnc, connection, tx);
 
             if (BeInavConfigEnc == null)
                 throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
-
 
             if (!existe)
             {
                 if (!string.IsNullOrEmpty(pPresentacionMi3.Codigo_presentacion))
                 {
                     var BeProducto = new clsBeProducto();
-
-                    var ExisteProducto = clsLnProducto.Existe_By_Codigo(pPresentacionMi3.Codigo_producto,ref BeProducto, connection, isExternalTx ? tx! : localTx!);
+                    var ExisteProducto = clsLnProducto.Existe_By_Codigo(pPresentacionMi3.Codigo_producto, ref BeProducto, connection, tx);
 
                     if (ExisteProducto)
                     {
-                        Presentacion.IdPresentacion = MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                        Presentacion.IdPresentacion = MaxID(connection, tx) + 1;
                         Presentacion.IdProducto = BeProducto.IdProducto;
                         Presentacion.Codigo = pPresentacionMi3.Codigo_presentacion;
                         Presentacion.Nombre = pPresentacionMi3.Nombre ?? pPresentacionMi3.Codigo_presentacion;
@@ -740,9 +633,10 @@ public class clsLnProducto_presentacion
                         Presentacion.Fec_agr = DateTime.Now;
                         Presentacion.Fec_mod = DateTime.Now;
 
-                        Insertar(config, Presentacion, connection, isExternalTx ? tx : localTx);
+                        Insertar(Presentacion, connection, tx);
                     }
-                    else {
+                    else
+                    {
                         throw new ArgumentNullException(nameof(pPresentacionMi3.Codigo_producto), "El codigo de producto no existe.");
                     }
                 }
@@ -757,26 +651,238 @@ public class clsLnProducto_presentacion
                 Presentacion.Genera_lp_auto = pPresentacionMi3.Genera_lp_auto;
                 Presentacion.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                 Presentacion.Fec_mod = DateTime.Now;
-                Actualizar(config, Presentacion, connection, isExternalTx ? tx : localTx);
+                Actualizar(Presentacion, connection, tx);
             }
         }
-        catch (SqlException ex)
+        catch (Exception)
         {
-            if (!isExternalTx && localTx is not null)
-                localTx.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
-            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
-        }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
-            }
+            throw;
         }
     }
 
+    public static clsBeProducto_presentacion? Existe_Presentacion_By_Nombre(int pIdProducto,
+                                                                            string? pNombre,
+                                                                            SqlConnection lConnection,
+                                                                            SqlTransaction lTransaction)
+    {
+        if (string.IsNullOrWhiteSpace(pNombre))
+            return null;
+
+        clsBeProducto_presentacion? result = null;
+
+        const string vSQL = @"
+            SELECT * 
+            FROM producto_presentacion 
+            WHERE nombre = @pNombre 
+              AND idproducto = @IdProducto";
+
+        try
+        {
+            using (var cmd = new SqlCommand(vSQL, lConnection, lTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@pNombre", pNombre.Trim());
+                cmd.Parameters.AddWithValue("@IdProducto", pIdProducto);
+
+                using (var adapter = new SqlDataAdapter(cmd))
+                {
+                    var dt = new DataTable();
+                    adapter.Fill(dt);
+
+                    if (dt.Rows.Count > 0)
+                    {
+                        DataRow row = dt.Rows[0];
+                        var obj = new clsBeProducto_presentacion();                        
+                        Cargar(ref obj, row);
+                        result = obj;
+                    }
+                }
+            }
+        }        
+        catch (Exception)
+        {         
+            throw;
+        }
+
+        return result;
+    }
+
+    public static clsBeProducto_presentacion? Existe_Presentacion_By_Codigo(int pIdProducto,
+                                                                            string pCodigo,
+                                                                            SqlConnection lConnection,
+                                                                            SqlTransaction lTransaction)
+    {
+        if (string.IsNullOrWhiteSpace(pCodigo))
+            return null;
+
+        clsBeProducto_presentacion? result = null;
+
+        const string vSQL = @"
+            SELECT * 
+            FROM producto_presentacion 
+            WHERE IdProducto = @pIdProducto 
+              AND codigo = @pCodigo";
+
+        try
+        {
+            using (var cmd = new SqlCommand(vSQL, lConnection, lTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@pIdProducto", pIdProducto);
+                cmd.Parameters.AddWithValue("@pCodigo", pCodigo.Trim());
+
+                using (var adapter = new SqlDataAdapter(cmd))
+                {
+                    var dt = new DataTable();
+                    adapter.Fill(dt);
+
+                    if (dt.Rows.Count > 0)
+                    {
+                        DataRow row = dt.Rows[0];
+                        var obj = new clsBeProducto_presentacion();
+                        Cargar(ref obj, row);
+                        result = obj;
+                    }
+                }
+            }
+        }        
+        catch (Exception)
+        {            
+            throw;
+        }
+
+        return result;
+    }
+
+    public static bool GetSingle(ref clsBeProducto_presentacion pBeProducto_presentacion,
+                                 SqlConnection lConnection,
+                                 SqlTransaction lTransaction)
+    {
+        bool result = false;
+
+        try
+        {
+            const string sp = @"SELECT * FROM Producto_presentacion 
+                            WHERE (IdPresentacion = @IdPresentacion)";
+
+            SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            SqlDataAdapter dad = new SqlDataAdapter(cmd);
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@IDPRESENTACION", pBeProducto_presentacion.IdPresentacion));
+
+            DataTable dt = new DataTable();
+            dad.Fill(dt);
+
+            if (dt.Rows.Count == 1)
+            {
+                pBeProducto_presentacion = new clsBeProducto_presentacion();
+                Cargar(ref pBeProducto_presentacion, dt.Rows[0]);
+                result = true;
+            }
+
+            return result;
+        }
+        catch (Exception)
+        {            
+            throw;
+        }
+    }
+
+    public static clsBeProducto_presentacion? Get_Presentacion_Defecto_By_IdProducto(int pIdProducto,
+                                                                                    SqlConnection lConnection,
+                                                                                    SqlTransaction lTransaction)
+    {
+        string vSQL = "SELECT TOP(1) * FROM producto_presentacion WHERE (IdProducto = @pIdProducto)";
+
+        try
+        {
+            using (SqlDataAdapter lDataAdapter = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDataAdapter.SelectCommand.CommandType = CommandType.Text;
+                lDataAdapter.SelectCommand.Transaction = lTransaction;
+                lDataAdapter.SelectCommand.Parameters.AddWithValue("@pIdProducto", pIdProducto);
+
+                DataTable lDataTable = new DataTable();
+                lDataAdapter.Fill(lDataTable);
+
+                if (lDataTable != null && lDataTable.Rows.Count > 0)
+                {
+                    DataRow lRow = lDataTable.Rows[0];
+                    clsBeProducto_presentacion BeProductoPresentacion = new clsBeProducto_presentacion();
+                    Cargar(ref BeProductoPresentacion, lRow);
+                    return BeProductoPresentacion;
+                }
+            }
+
+            return null;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+    public static clsBeProducto_presentacion? GetSingle(int pIdPresentacion,
+                                                       SqlConnection lConnection,
+                                                       SqlTransaction lTransaction)
+    {
+        string vSQL = "SELECT * FROM producto_presentacion WHERE IdPresentacion=@IdPresentacion";
+
+        using (SqlDataAdapter lDataAdapter = new SqlDataAdapter(vSQL, lConnection))
+        {
+            lDataAdapter.SelectCommand.CommandType = CommandType.Text;
+            lDataAdapter.SelectCommand.Transaction = lTransaction;
+            lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdPresentacion", pIdPresentacion);
+
+            DataTable lDataTable = new DataTable();
+            lDataAdapter.Fill(lDataTable);
+
+            if (lDataTable != null && lDataTable.Rows.Count > 0)
+            {
+                DataRow lRow = lDataTable.Rows[0];
+                clsBeProducto_presentacion Obj = new clsBeProducto_presentacion();
+                Cargar(ref Obj, lRow);
+                return Obj;
+            }
+        }
+
+        return null;
+    }
+
+    public static bool Obtener(clsBeProducto_presentacion oBeProducto_presentacion,
+                              SqlConnection lConnection,
+                              SqlTransaction lTransaction)
+    {
+        try
+        {
+            const string sp = @"SELECT * FROM Producto_presentacion 
+                           WHERE IdPresentacion = @IdPresentacion";
+
+            using (SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@IDPRESENTACION", oBeProducto_presentacion.IdPresentacion);
+
+                using (SqlDataAdapter dad = new SqlDataAdapter(cmd))
+                {
+                    DataTable dt = new DataTable();
+                    dad.Fill(dt);
+
+                    if (dt.Rows.Count == 1)
+                    {
+                        Cargar(ref oBeProducto_presentacion, dt.Rows[0]);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+        catch (Exception)
+        {            
+            throw;
+        }
+    }    
 }

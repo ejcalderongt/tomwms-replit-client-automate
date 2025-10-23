@@ -402,4 +402,39 @@ public class clsLnProducto_estado
             }
         }
     }
+
+    public static bool Obtener(clsBeProducto_estado oBeProducto_estado,
+                              SqlConnection lConnection,
+                              SqlTransaction lTransaction)
+    {
+        try
+        {
+            const string sp = @"SELECT * FROM Producto_estado 
+                       WHERE IdEstado = @IdEstado";
+
+            using (SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@IDESTADO", oBeProducto_estado.IdEstado);
+
+                using (SqlDataAdapter dad = new SqlDataAdapter(cmd))
+                {
+                    DataTable dt = new DataTable();
+                    dad.Fill(dt);
+
+                    if (dt.Rows.Count == 1)
+                    {
+                        Cargar(ref oBeProducto_estado, dt.Rows[0]);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }

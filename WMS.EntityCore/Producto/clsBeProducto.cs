@@ -1,9 +1,11 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using WMS.EntityCore.Propietario;
+using WMSWebAPI.Be;
 
 namespace WMS.EntityCore.Producto
 {
-    public class clsBeProducto : ICloneable
+    public partial class clsBeProducto : ICloneable
     {
         [Column("IdProducto")]
         [DisplayName("IdProducto")]
@@ -240,6 +242,7 @@ namespace WMS.EntityCore.Producto
         [Column("IdTipoManufactura")]
         [DisplayName("IdTipoManufactura")]
         public int IdTipoManufactura { get; set; } = 0;
+        public bool IsNew { get; set; } = false;
 
         public clsBeProducto() { }
 
@@ -248,4 +251,135 @@ namespace WMS.EntityCore.Producto
             return MemberwiseClone();
         }
     }
+    public partial class clsBeProducto : IDisposable
+    {
+        public int IdProductoBodega { get; set; }
+
+        public clsBePropietarios Propietario { get; set; } = new clsBePropietarios();
+        public clsBeProducto_presentacion Presentacion { get; set; } = new clsBeProducto_presentacion();
+        public clsBeProducto_clasificacion Clasificacion { get; set; } = new clsBeProducto_clasificacion();
+        public clsBeProducto_familia Familia { get; set; } = new clsBeProducto_familia();
+        public clsBeProducto_marca Marca { get; set; } = new clsBeProducto_marca();
+        public clsBeProducto_tipo TipoProducto { get; set; } = new clsBeProducto_tipo();
+        public clsBeUnidad_medida UnidadMedida { get; set; } = new clsBeUnidad_medida();        
+        public List<clsBeProducto_presentacion> Presentaciones { get; set; } = new();
+        public List<clsBeProducto_codigos_barra> Codigos_Barra { get; set; } = new();
+        public List<clsBeProducto_parametros> Parametros { get; set; } = new();        
+        public object? Tag { get; set; } = new object();
+        public int IdPresentacionOrigen { get; set; } = 0;
+        public int IdPresentacionDestino { get; set; } = 0;
+        public double Factor { get; set; } = 0.0;
+        public double ExistenciaUMBas { get; set; } = 0;
+        public clsBeIndice_rotacion Indice_Rotacion { get; set; } = new clsBeIndice_rotacion();
+        public double Alto { get; set; } = 0;
+        public double Largo { get; set; } = 0;
+        public double Ancho { get; set; } = 0;
+        public double Volumen => Alto * Largo * Ancho;
+        public clsBeProducto_parametro_a ParametroA { get; set; } = new clsBeProducto_parametro_a();
+        public clsBeProducto_parametro_b ParametroB { get; set; } = new clsBeProducto_parametro_b();
+        public string Lote { get; set; } = string.Empty;
+        public DateTime FechaVence { get; set; } = new DateTime(1900, 1, 1);
+        public double Cantidad { get; set; } = 0;
+        //public clsBeVW_stock_res Stock { get; set; } = new clsBeVW_stock_res();
+
+        // === Enum ===
+        public enum ProdPropiedades
+        {
+            IdProducto,
+            IdCamara,
+            IdTipoRotacion,
+            IdPerfilSerializado,
+            IdIndiceRotacion,
+            IdSimbologia,
+            IdArancel,
+            Codigo,
+            Nombre,
+            Codigo_barra,
+            Precio,
+            Existencia_min,
+            Existencia_max,
+            Costo,
+            Peso_referencia,
+            Peso_tolerancia,
+            Temperatura_referencia,
+            Temperatura_tolerancia,
+            Activo,
+            Serializado,
+            Genera_lote,
+            Genera_LP,
+            Control_vencimiento,
+            Control_lote,
+            Peso_recepcion,
+            Peso_despacho,
+            Temperatura_recepcion,
+            Temperatura_despacho,
+            Materia_prima,
+            Kit,
+            Tolerancia,
+            Ciclo_vida,
+            User_agr,
+            Fec_agr,
+            User_mod,
+            Fec_mod,
+            Imagen,
+            NoSerie,
+            NoParte,
+            FechaManufactura,
+            Capturar_Aniada,
+            Control_Peso,
+            Captura_Arancel,
+            Es_Hardware,
+            IdPresentacionOrigen,
+            IdPresentacionDestino,
+            Factor,
+            IdProductoBodega,
+            Propietario,
+            Clasificacion,
+            Familia,
+            Marca,
+            TipoProducto,
+            UnidadMedida,
+            Arancel,
+            Presentaciones,
+            Codigos_Barra,
+            Parametros,
+            IsNew,
+            Alto,
+            Largo,
+            Ancho,
+            IdUnidadMedidaCobro,
+            Dias_Inventario_Promedio,
+            IdProductoParametroA,
+            IdProductoParametroB,
+            ParametroA,
+            ParametroB,
+            IdTipoManufactura
+        }
+
+        // === Implementación IDisposable ===
+        private bool disposedValue;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // Liberar objetos administrados si es necesario
+                    Presentaciones.Clear();
+                    Codigos_Barra.Clear();
+                    Parametros.Clear();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+    }
+
 }
