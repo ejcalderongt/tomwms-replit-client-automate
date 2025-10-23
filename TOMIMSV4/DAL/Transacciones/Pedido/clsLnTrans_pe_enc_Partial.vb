@@ -6917,4 +6917,59 @@ Partial Public Class clsLnTrans_pe_enc
 
     End Function
 
+    '#GT16102025: cargar el pedido en funcion del despacho por transferencia entre bodegas para cealsa
+    Public Shared Function GetPedido_By_IdDespachoEnc(ByVal pIdDespachoEnc As Integer) As clsBeTrans_pe_enc
+
+        GetPedido_By_IdDespachoEnc = Nothing
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Dim vSQ As String = "SELECT top 1 * FROM trans_pe_enc WHERE (no_despacho=@pIdDespachoEnc) "
+
+            Using lDTA As New SqlDataAdapter(vSQ, lConnection)
+
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Parameters.AddWithValue("@pIdDespachoEnc", pIdDespachoEnc)
+
+                Dim lDT As New DataTable()
+                lDTA.Fill(lDT)
+
+                Dim vPedidoEnc As New clsBeTrans_pe_enc()
+
+                If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                    Dim lRow As DataRow = lDT.Rows(0)
+                    vPedidoEnc = New clsBeTrans_pe_enc()
+
+                    Cargar(vPedidoEnc, lRow)
+
+                    If vPedidoEnc.TipoPedido.IdTipoPedido > 0 Then
+                        clsLnTrans_pe_tipo.Obtener(vPedidoEnc.TipoPedido, lConnection, lTransaction)
+                    End If
+
+                    GetPedido_By_IdDespachoEnc = vPedidoEnc
+
+                End If
+
+            End Using
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection IsNot Nothing Then lConnection.Dispose()
+        End Try
+
+    End Function
+
 End Class
