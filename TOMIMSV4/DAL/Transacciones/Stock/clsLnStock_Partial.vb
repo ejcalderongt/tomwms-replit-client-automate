@@ -5985,6 +5985,7 @@ Partial Public Class clsLnStock
                     'vSQL += " ORDER BY fecha_vence, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.idubicacion,bodega_ubicacion.idbodega),cantidad "
                     vSQL += " ORDER BY" &
                         " stock.fecha_vence ASC," &
+                        " fecha_ingreso ASC, " &
                         " CASE" &
                         " WHEN stock.cantidad = @CantidadSolicitada THEN 0" &
                         " WHEN stock.cantidad > @CantidadSolicitada THEN 1" &

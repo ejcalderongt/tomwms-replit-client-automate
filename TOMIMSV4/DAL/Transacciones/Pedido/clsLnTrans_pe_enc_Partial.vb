@@ -982,8 +982,10 @@ Partial Public Class clsLnTrans_pe_enc
             End Using
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pUsrAgr:=pUserMod, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -1032,8 +1034,10 @@ Partial Public Class clsLnTrans_pe_enc
             End Using
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pUsrAgr:=pUserMod, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -1645,8 +1649,17 @@ Partial Public Class clsLnTrans_pe_enc
 
             '#EJC202207181029: Agregar aquí en el log que se eliminó una línea del pedido.
             If Not pPickingEnc Is Nothing Then
+                '#MECR15102025: Se agrego bitacora de logs para pedidos
                 Dim vIdEmpresa As Integer = clsLnBodega.Get_IdEmpresa_By_IdBodega(pPickingEnc.IdBodega, lConnection, lTransaction)
-                clsLnLog_error_wms.Agregar_Error("PED_DEL_DET: Se eliminó el Idpedido: " & IdPedidoEnc & " con IdDetalle: " & IdPedidoDet & " con empresa: " & vIdEmpresa & " bodega: " & pPickingEnc.IdBodega)
+                'clsLnLog_error_wms.Agregar_Error("PED_DEL_DET: Se eliminó el Idpedido: " & IdPedidoEnc & " con IdDetalle: " & IdPedidoDet & " con empresa: " & vIdEmpresa & " bodega: " & pPickingEnc.IdBodega)
+                Dim vMsgDelete As String = "PED_DEL_DET: Se eliminó el Idpedido: " & IdPedidoEnc & " con IdDetalle: " & IdPedidoDet & " con empresa: " & vIdEmpresa & " bodega: " & pPickingEnc.IdBodega
+                clsLnLog_error_wms_pe.Agregar_Error(vMsgDelete,
+                                                    pIdEmpresa:=vIdEmpresa,
+                                                    pIdBodega:=pPickingEnc.IdBodega,
+                                                    pIdPedidoEnc:=IdPedidoEnc,
+                                                    pCodigoProducto:=IdPedidoDet,
+                                                    pConection:=lConnection,
+                                                    pTransaction:=lTransaction)
 
             End If
 
@@ -1851,8 +1864,10 @@ Partial Public Class clsLnTrans_pe_enc
             End If
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pIdPedidoEnc:=IdPedidoEnc, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -1890,8 +1905,10 @@ Partial Public Class clsLnTrans_pe_enc
             End If
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -1924,8 +1941,10 @@ Partial Public Class clsLnTrans_pe_enc
             End If
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pIdPedidoEnc:=pBeTrans_pe_enc.IdPedidoEnc, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -1961,8 +1980,10 @@ Partial Public Class clsLnTrans_pe_enc
             Return lReturnList
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -2655,8 +2676,10 @@ Partial Public Class clsLnTrans_pe_enc
             End Using
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pUsrAgr:=pUserMod, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -2692,8 +2715,10 @@ Partial Public Class clsLnTrans_pe_enc
             End Using
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pUsrAgr:=pUserMod, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -2734,8 +2759,10 @@ Partial Public Class clsLnTrans_pe_enc
             End Using
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -2791,8 +2818,10 @@ Partial Public Class clsLnTrans_pe_enc
             End Using
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -2914,17 +2943,25 @@ Partial Public Class clsLnTrans_pe_enc
                 clsLnTrans_pe_pol.Anular_poliza(pBePedidoEnc.ObjPoliza, lConnection, lTransaction)
             End If
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             '#EJC202303032014: Log mejorado
-            Dim BeLogErrorWMS As New clsBeLog_error_wms
-            BeLogErrorWMS.IdError = clsLnLog_error_wms.MaxID() + 1
-            BeLogErrorWMS.IdEmpresa = vIdEmpresa
-            BeLogErrorWMS.IdBodega = pBePedidoEnc.IdBodega
-            BeLogErrorWMS.Fecha = Now
-            BeLogErrorWMS.MensajeError = "PED_DEL: Se eliminó el IdPedido: " & pBePedidoEnc.IdPedidoEnc & " con referencia: " & pBePedidoEnc.Referencia
-            BeLogErrorWMS.IdPedidoEnc = pBePedidoEnc.IdPedidoEnc
-            BeLogErrorWMS.IdPickingEnc = pBePedidoEnc.IdPickingEnc
-            BeLogErrorWMS.IdUsuarioAgr = pIdUsuario
-            clsLnLog_error_wms.Insertar(BeLogErrorWMS)
+            'Dim BeLogErrorWMS As New clsBeLog_error_wms
+            'BeLogErrorWMS.IdError = clsLnLog_error_wms.MaxID() + 1
+            'BeLogErrorWMS.IdEmpresa = vIdEmpresa
+            'BeLogErrorWMS.IdBodega = pBePedidoEnc.IdBodega
+            'BeLogErrorWMS.Fecha = Now
+            'BeLogErrorWMS.MensajeError = "PED_DEL: Se eliminó el IdPedido: " & pBePedidoEnc.IdPedidoEnc & " con referencia: " & pBePedidoEnc.Referencia
+            'BeLogErrorWMS.IdPedidoEnc = pBePedidoEnc.IdPedidoEnc
+            'BeLogErrorWMS.IdPickingEnc = pBePedidoEnc.IdPickingEnc
+            'BeLogErrorWMS.IdUsuarioAgr = pIdUsuario
+            'clsLnLog_error_wms.Insertar(BeLogErrorWMS)
+
+            Dim msgError As String = "PED_DEL: Se eliminó el IdPedido: " & pBePedidoEnc.IdPedidoEnc & " con referencia: " & pBePedidoEnc.Referencia
+            clsLnLog_error_wms_pe.Agregar_Error(msgError,
+                                                pUsrAgr:=pIdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pConection:=lConnection,
+                                                pTransaction:=lTransaction)
 
             lTransaction.Commit()
 
@@ -3123,8 +3160,10 @@ Partial Public Class clsLnTrans_pe_enc
             Get_Hoja_Verificacion = dt
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pIdBodega:=pIdBodega, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -3410,8 +3449,11 @@ Partial Public Class clsLnTrans_pe_enc
             End If
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pIdBodega:=IdBodega, pIdPedidoEnc:=IdPedidoEnc, pStackTrace:=ex.StackTrace)
+
             Throw ex
         End Try
 
@@ -3855,8 +3897,10 @@ Partial Public Class clsLnTrans_pe_enc
             End If
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -3896,8 +3940,10 @@ Partial Public Class clsLnTrans_pe_enc
             Return lReturn
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -4297,8 +4343,10 @@ Partial Public Class clsLnTrans_pe_enc
             End Using
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -4967,8 +5015,10 @@ Partial Public Class clsLnTrans_pe_enc
             End Using
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -5164,8 +5214,10 @@ Partial Public Class clsLnTrans_pe_enc
             End Using
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -5425,8 +5477,10 @@ Partial Public Class clsLnTrans_pe_enc
             End Using
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -5833,8 +5887,10 @@ Partial Public Class clsLnTrans_pe_enc
             End Using
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pIdPedidoEnc:=pIdPickingEnc, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -6323,7 +6379,10 @@ Partial Public Class clsLnTrans_pe_enc
 
             End If
 
-            clsLnLog_error_wms.Agregar_Error(1, 1, "Se eliminó el picking para el pedido", pIdPedidoEnc, pIdPickingEnc, 0, pUsuario)
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
+            'clsLnLog_error_wms.Agregar_Error(1, 1, "Se eliminó el picking para el pedido", pIdPedidoEnc, pIdPickingEnc, 0, pUsuario)
+            Dim vMsgDelete As String = $"Se eliminó el picking: {pIdPickingEnc} para el pedido: {pIdPedidoEnc}"
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgDelete, pIdPedidoEnc:=pIdPedidoEnc, pConection:=lConnection, pTransaction:=lTransaction)
 
             Return True
 
@@ -6396,8 +6455,10 @@ Partial Public Class clsLnTrans_pe_enc
             End Using
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw
         End Try
 
@@ -6461,8 +6522,10 @@ Partial Public Class clsLnTrans_pe_enc
             End If
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pIdPedidoEnc:=pBeTrans_pe_enc.IdPedidoEnc, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
