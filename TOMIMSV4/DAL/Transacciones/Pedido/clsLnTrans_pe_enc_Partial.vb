@@ -6173,7 +6173,7 @@ Partial Public Class clsLnTrans_pe_enc
     End Function
 
     '#GT01072025: metodo para obtener pedido con transacción.
-    Public Shared Function Get_Single_By_IdPedidoEnc(IdPedidoEnc As Integer, pConexion As SqlConnection, pTransaccion As SqlTransaction) As clsBeTrans_pe_enc
+    Public Shared Function Get_Single_By_IdPedidoEnc(ByVal IdPedidoEnc As Integer, ByRef pConexion As SqlConnection, ByRef pTransaccion As SqlTransaction) As clsBeTrans_pe_enc
         Get_Single_By_IdPedidoEnc = New clsBeTrans_pe_enc
         Dim lDTA As New SqlDataAdapter
         Try
@@ -6181,10 +6181,11 @@ Partial Public Class clsLnTrans_pe_enc
             Dim vSQ As String = "SELECT * FROM trans_pe_enc WHERE (activo=1 and anulado=0 and estado='Despachado' and IdPedidoEnc = @pIePedidoEnc)  "
 
 
-            pConexion.Open() : pTransaccion = pConexion.BeginTransaction(IsolationLevel.ReadUncommitted)
+            'pConexion.Open() : pTransaccion = pConexion.BeginTransaction(IsolationLevel.ReadUncommitted)
             lDTA = New SqlDataAdapter(vSQ, pConexion)
 
             lDTA.SelectCommand.CommandType = CommandType.Text
+            lDTA.SelectCommand.Transaction = pTransaccion
             lDTA.SelectCommand.Parameters.AddWithValue("@pIePedidoEnc", IdPedidoEnc)
 
             Dim lDT As New DataTable()
@@ -6259,7 +6260,6 @@ Partial Public Class clsLnTrans_pe_enc
             Else
                 Get_Single_By_IdPedidoEnc = Nothing
             End If
-
 
 
         Catch ex As Exception
