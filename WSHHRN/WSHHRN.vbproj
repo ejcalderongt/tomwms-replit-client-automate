@@ -134,6 +134,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="My Project\PublishProfiles\WCFTOM4_mio.pubxml" />
+    <None Include="My Project\PublishProfiles\WCFTOM4_PRD.pubxml" />
+    <None Include="My Project\PublishProfiles\WCFTOM4_QA.pubxml" />
     <None Include="My Project\PublishProfiles\WCFTOM4_QAS_B1.pubxml" />
     <None Include="My Project\PublishProfiles\WSTOMHH_QAP.pubxml" />
     <None Include="My Project\PublishProfiles\WSTOMHH_QAS.pubxml" />
@@ -247,14 +249,11 @@
     </None>
     <None Include="My Project\PublishProfiles\NuevoWS.pubxml" />
     <None Include="My Project\PublishProfiles\PrograNLocal.pubxml" />
-    <None Include="My Project\PublishProfiles\QAS.pubxml" />
-    <None Include="My Project\PublishProfiles\WCFTOM4.pubxml" />
     <None Include="My Project\PublishProfiles\WCFTOM4_INV.pubxml" />
     <None Include="My Project\PublishProfiles\wsAmazon.pubxml" />
     <None Include="My Project\PublishProfiles\WSByBLocalPRD.pubxml" />
     <None Include="My Project\PublishProfiles\WSByBLocal_QA.pubxml" />
     <None Include="My Project\PublishProfiles\wsCarlos.pubxml" />
-    <None Include="My Project\PublishProfiles\wsCarolina.pubxml" />
     <None Include="My Project\PublishProfiles\wsJPCasa.pubxml" />
     <None Include="My Project\PublishProfiles\wsJPtrabajo.pubxml" />
     <None Include="My Project\PublishProfiles\WSWMSHH.pubxml" />
