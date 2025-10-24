@@ -391,8 +391,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -411,7 +418,13 @@ Public Class frmPedido
                 '#EJC20220718:Dejar log de eliminación de pedido.
                 Dim vIdEmpresa As Integer = clsLnBodega.Get_IdEmpresa_By_IdBodega(pBePedidoEnc.IdBodega)
 
-                clsLnLog_error_wms.Agregar_Error(vIdEmpresa, pBePedidoEnc.IdBodega, "PED_DEL: Se eliminó el IdPedido con det: " & pBePedidoEnc.IdPedidoEnc & " con referencia: " & pBePedidoEnc.Referencia)
+                'clsLnLog_error_wms.Agregar_Error(vIdEmpresa, pBePedidoEnc.IdBodega, "PED_DEL: Se eliminó el IdPedido con det: " & pBePedidoEnc.IdPedidoEnc & " con referencia: " & pBePedidoEnc.Referencia)
+                Dim vMsgDelete As String = "PED_DEL: Se eliminó el IdPedido con det: " & pBePedidoEnc.IdPedidoEnc & " con referencia: " & pBePedidoEnc.Referencia
+                clsLnLog_error_wms_pe.Agregar_Error(vMsgDelete,
+                                                    pIdEmpresa:=AP.IdEmpresa,
+                                                    pIdBodega:=AP.IdBodega,
+                                                    pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                    pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
 
             End If
 
@@ -436,8 +449,13 @@ Public Class frmPedido
             '#EJC20220718:Dejar log de eliminación de pedido.
             Dim vIdEmpresa As Integer = clsLnBodega.Get_IdEmpresa_By_IdBodega(pBePedidoEnc.IdBodega)
 
-            clsLnLog_error_wms.Agregar_Error(vIdEmpresa, pBePedidoEnc.IdBodega, "PED_DEL: Se eliminó sin det, el IdPedido: " & pBePedidoEnc.IdPedidoEnc & " con referencia: " & pBePedidoEnc.Referencia)
-
+            'clsLnLog_error_wms.Agregar_Error(vIdEmpresa, pBePedidoEnc.IdBodega, "PED_DEL: Se eliminó sin det, el IdPedido: " & pBePedidoEnc.IdPedidoEnc & " con referencia: " & pBePedidoEnc.Referencia)
+            Dim msgEliminacion As String = "PED_DEL: Se eliminó sin det, el IdPedido: " & pBePedidoEnc.IdPedidoEnc & " con referencia: " & pBePedidoEnc.Referencia
+            clsLnLog_error_wms_pe.Agregar_Error(msgEliminacion,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -631,9 +649,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
         End Try
 
     End Sub
@@ -685,8 +709,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
         End Try
 
     End Sub
@@ -806,8 +837,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         Finally
             clsTransaccion.Close_Conection()
@@ -3016,8 +3054,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -3143,8 +3188,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -3177,8 +3229,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -3264,8 +3323,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -4001,8 +4067,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -4176,8 +4249,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -4467,8 +4547,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -5221,8 +5308,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -5271,7 +5365,14 @@ Public Class frmPedido
                                             End If
                                         End If
 
-                                        clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231703A: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " Anuló el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
+                                        '#MECR15102025: Se agrego bitacora de logs para pedidos
+                                        'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231703A: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " Anuló el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
+                                        Dim msgAdvertencia As String = "ADVERTENCIA_202302231703A: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " Anuló el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc
+                                        clsLnLog_error_wms_pe.Agregar_Error(msgAdvertencia,
+                                                                            pIdEmpresa:=AP.IdEmpresa,
+                                                                            pIdBodega:=AP.IdBodega,
+                                                                            pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                                            pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
 
                                         SplashScreenManager.CloseForm(False)
 
@@ -5335,7 +5436,14 @@ Public Class frmPedido
 
                     PedidoGuardadoPorUsuario = Guardar_Pedido()
 
-                    clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231703: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " actualizó el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
+                    '#MECR15102025: Se agrego bitacora de logs para pedidos
+                    'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231703: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " actualizó el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
+                    Dim msgAdvertencia As String = "ADVERTENCIA_202302231703: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " actualizó el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc
+                    clsLnLog_error_wms_pe.Agregar_Error(msgAdvertencia,
+                                                        pIdEmpresa:=AP.IdEmpresa,
+                                                        pIdBodega:=AP.IdBodega,
+                                                        pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                        pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
 
                     SplashScreenManager.CloseForm(False)
 
@@ -5372,9 +5480,14 @@ Public Class frmPedido
                                     pBePedidoEnc.Detalle = pBePedidoDetList
                                 End If
 
-
-                                clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302271656A: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " actualizó el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
-
+                                '#MECR15102025: Se agrego bitacora de logs para pedidos
+                                'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302271656A: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " actualizó el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
+                                Dim msgAdvertencia1 As String = "ADVERTENCIA_202302271656A: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " actualizó el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc
+                                clsLnLog_error_wms_pe.Agregar_Error(msgAdvertencia1,
+                                                                    pIdEmpresa:=AP.IdEmpresa,
+                                                                    pIdBodega:=AP.IdBodega,
+                                                                    pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                                    pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
 
                                 XtraMessageBox.Show(String.Format("Se actualizó el pedido#:{0}  y el picking#:{1} asociado", pBePedidoEnc.IdPedidoEnc, pBePedidoEnc.IdPickingEnc), Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
 
@@ -5491,8 +5604,15 @@ Public Class frmPedido
             Return c
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -5520,8 +5640,15 @@ Public Class frmPedido
             End If
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -5545,8 +5672,15 @@ Public Class frmPedido
             Return c
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -5570,8 +5704,15 @@ Public Class frmPedido
             Return c
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -5651,8 +5792,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -5755,8 +5903,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -5807,8 +5962,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -5859,8 +6021,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -5935,8 +6104,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -6671,8 +6847,14 @@ Public Class frmPedido
                                                                                             cmbBodega.EditValue,
                                                                                             clsDataContractDI.tOpcionLiberaStock.Pedido)) Then
 
+                                    '#MECR15102025: Se agrego bitacora de logs para pedidos
                                     Dim vMsgError As String = "No se pudo liberar_Producto_No_Pickeado para el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc & " - " & pBePedidoEnc.Referencia
-                                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                    clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                                        pIdEmpresa:=AP.IdEmpresa,
+                                                                        pIdBodega:=AP.IdBodega,
+                                                                        pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                                        pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
 
                                     XtraMessageBox.Show("No se pudo liberar el producto del picking, valide que la línea:" & vNoLinea & " del código:" & vCodigoProducto & " no tenga despacho asociado.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
 
@@ -6792,9 +6974,16 @@ Public Class frmPedido
             ' Mostrar un mensaje de error en caso de excepción
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             ' Registrar el error en el log
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
         End Try
 
     End Sub
@@ -6872,9 +7061,17 @@ Public Class frmPedido
             ' Mostrar un mensaje de error en caso de excepción
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             ' Registrar el error en el log
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
+
         Finally
             cTrans.Close_Conection()
         End Try
@@ -6923,8 +7120,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -6974,8 +7178,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -7027,8 +7238,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -7063,8 +7281,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -7088,8 +7313,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -7112,8 +7344,14 @@ Public Class frmPedido
 
                     If clsLnTrans_pe_enc.Actualizar_Estado(pBePedidoEnc) > 0 Then
 
+                        '#MECR15102025: Se agrego bitacora de logs para pedidos
                         Dim vMsgError As String = "Se actualizó a estado pickeado el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc & " - " & pBePedidoEnc.Referencia
-                        clsLnLog_error_wms.Agregar_Error(vMsgError)
+                        'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                        clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                            pIdEmpresa:=AP.IdEmpresa,
+                                                            pIdBodega:=AP.IdBodega,
+                                                            pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                            pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
 
                         Cargar_Datos()
 
@@ -7196,8 +7434,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -7223,8 +7468,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -7282,8 +7534,15 @@ Public Class frmPedido
             End If
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
         End Try
 
     End Sub
@@ -7585,7 +7844,17 @@ Public Class frmPedido
 
                         If Inserta_Encabezado(clsTransaccion.lConnection, clsTransaccion.lTransaction) Then
                             pBePedidoEnc.IsNew = False
-                            clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302271656: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " guardó el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
+
+                            '#MECR15102025: Se agrego bitacora de logs para pedidos
+                            'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302271656: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " guardó el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
+                            Dim msgAdvertencia As String = "ADVERTENCIA_202302271656: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " guardó el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc
+                            clsLnLog_error_wms_pe.Agregar_Error(msgAdvertencia,
+                                                                pIdEmpresa:=AP.IdEmpresa,
+                                                                pIdBodega:=AP.IdBodega,
+                                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                                pConection:=clsTransaccion.lConnection,
+                                                                pTransaction:=clsTransaccion.lTransaction)
                         End If
 
                         txtNoDocumento.Text = pBePedidoEnc.No_documento
@@ -7799,8 +8068,15 @@ Public Class frmPedido
 
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
             If ex.Message.Contains("No hay documentos definidos para la bodega " & AP.IdBodega) Then
                 Close()
@@ -8267,16 +8543,22 @@ Public Class frmPedido
 
             Else
 
+                '#MECR15102025: Se agrego bitacora de logs para pedidos
                 '#EJC202308211833:Loguear la barra escaneada para que no se pierda.
-                clsLnLog_error_wms.Agregar_Error(AP.IdEmpresa,
-                                                 cmbBodega.EditValue,
-                                                 "SCAN_POL " & barra_poliza,
-                                                 pBePedidoEnc.IdPedidoEnc,
-                                                 pBePedidoEnc.IdPickingEnc,
-                                                 0,
-                                                 AP.UsuarioAp.IdUsuario)
+                'clsLnLog_error_wms.Agregar_Error(AP.IdEmpresa,
+                '                                 cmbBodega.EditValue,
+                '                                 "SCAN_POL " & barra_poliza,
+                '                                 pBePedidoEnc.IdPedidoEnc,
+                '                                 pBePedidoEnc.IdPickingEnc,
+                '                                 0,
+                '                                 AP.UsuarioAp.IdUsuario)
 
-
+                Dim msgAdvertencia As String = "SCAN_POL " & barra_poliza
+                clsLnLog_error_wms_pe.Agregar_Error(msgAdvertencia,
+                                                    pIdEmpresa:=AP.IdEmpresa,
+                                                    pIdBodega:=AP.IdBodega,
+                                                    pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                    pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
 
                 Dim Nuevo_Formato_Duca = Formato_Nuevo_Duca(barra_poliza)
 
@@ -8291,8 +8573,14 @@ Public Class frmPedido
                     If Not pPolizaExiste Is Nothing Then
 
                         If XtraMessageBox.Show("¿La póliza de salida " & pPolizaExiste.numero_orden & " ya existe en otro documento, desea asociar de todas formas?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
+                            '#MECR15102025: Se agrego bitacora de logs para pedidos
                             Dim pLog = "ADVERTENCIA_PEDIDO_31082023: El usuario" & AP.UsuarioAp.IdUsuario & " esta asociando la póliza registrada " & pPolizaExiste.numero_orden & " al pedido " & pBePedidoEnc.IdPedidoEnc
-                            clsLnLog_error_wms.Agregar_Error(pLog)
+                            'clsLnLog_error_wms.Agregar_Error(pLog)
+                            clsLnLog_error_wms_pe.Agregar_Error(pLog,
+                                                                pIdEmpresa:=AP.IdEmpresa,
+                                                                pIdBodega:=AP.IdBodega,
+                                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
                         Else
                             txtScanPoliza.Text = ""
                             encabezado_duca = Nothing
@@ -8340,8 +8628,14 @@ Public Class frmPedido
                     If Not pPolizaExiste Is Nothing Then
 
                         If XtraMessageBox.Show("¿La póliza de salida " & pPolizaExiste.numero_orden & " ya existe en otro documento, desea asociar de todas formas?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
+                            '#MECR15102025: Se agrego bitacora de logs para pedidos
                             Dim pLog = "ADVERTENCIA_PEDIDO_31082023: El usuario" & AP.UsuarioAp.IdUsuario & " esta asociando la póliza registrada " & pPolizaExiste.numero_orden & " al pedido " & pBePedidoEnc.IdPedidoEnc
-                            clsLnLog_error_wms.Agregar_Error(pLog)
+                            'clsLnLog_error_wms.Agregar_Error(pLog)
+                            clsLnLog_error_wms_pe.Agregar_Error(pLog,
+                                                                pIdEmpresa:=AP.IdEmpresa,
+                                                                pIdBodega:=AP.IdBodega,
+                                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
                         Else
                             txtScanPoliza.Text = ""
                             encabezado_duca = Nothing
@@ -8622,8 +8916,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -8659,8 +8960,15 @@ Public Class frmPedido
             End If
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
         End Try
 
     End Sub
@@ -8700,8 +9008,15 @@ Public Class frmPedido
             End If
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
         End Try
 
     End Sub
@@ -9158,8 +9473,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -9249,15 +9571,22 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
     End Function
 
 
-    Private Sub LabelControl2_Click(sender As Object, e As EventArgs) Handles LabelControl2.Click
+    Private Sub LabelControl2_Click(sender As Object, e As EventArgs) 
         LabelControl2.Enabled = False
         Scan_Poliza()
         LabelControl2.Enabled = True
@@ -9311,8 +9640,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -9332,7 +9668,7 @@ Public Class frmPedido
 
     End Sub
 
-    Private Sub lnkUltDespacho_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles txtIdDespacho.LinkClicked
+    Private Sub lnkUltDespacho_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs)
         Despacho_Link()
     End Sub
 
@@ -9560,8 +9896,14 @@ Public Class frmPedido
 
                 Cargar_Datos()
 
+                '#MECR15102025: Se agrego bitacora de logs para pedidos
                 Dim vMsgError As String = "Se actualizó a despachado manualmente el pedido: " & pBePedidoEnc.IdPedidoEnc & " - " & pBePedidoEnc.Referencia
-                clsLnLog_error_wms.Agregar_Error(vMsgError)
+                'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                    pIdEmpresa:=AP.IdEmpresa,
+                                                    pIdBodega:=AP.IdBodega,
+                                                    pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                    pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
 
                 XtraMessageBox.Show("Se actualizó el pedido a despachado", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
 
@@ -9570,8 +9912,16 @@ Public Class frmPedido
             End If
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
+
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
             Text,
             MessageBoxButtons.OK,
@@ -9867,8 +10217,14 @@ Public Class frmPedido
 
                 If vResult <> 0 Then
 
+                    '#MECR15102025: Se agrego bitacora de logs para pedidos
                     Dim vMsgError As String = "El usuario: " & AP.UsuarioAp.Nombres & " Eliminó el pedido: " & pBePedidoEnc.Referencia & " de la tabla intermedia"
-                    clsLnLog_error_wms.Agregar_Error(AP.IdEmpresa, cmbBodega.EditValue, vMsgError)
+                    'clsLnLog_error_wms.Agregar_Error(AP.IdEmpresa, cmbBodega.EditValue, vMsgError)
+                    clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                        pIdEmpresa:=AP.IdEmpresa,
+                                                        pIdBodega:=AP.IdBodega,
+                                                        pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                        pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
 
                     XtraMessageBox.Show("Se eliminó el pedido de la tabla intermedia", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
 
@@ -9885,8 +10241,15 @@ Public Class frmPedido
 
         Catch ex As Exception
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
                         Text,
@@ -9983,7 +10346,14 @@ Public Class frmPedido
                                                                                                                        AP.Bodega.Eliminar_Documento_Salida,
                                                                                                                        AP.UsuarioAp.IdUsuario) Then
 
+                                                        '#MECR15102025: Se agrego bitacora de logs para pedidos
                                                         'clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231703B: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " Eliminó el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
+                                                        Dim msgAdvertencia As String = "ADVERTENCIA_202302231703B: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " Eliminó el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc
+                                                        clsLnLog_error_wms_pe.Agregar_Error(msgAdvertencia,
+                                                                                            pIdEmpresa:=AP.IdEmpresa,
+                                                                                            pIdBodega:=AP.IdBodega,
+                                                                                            pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                                                            pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
 
                                                         SplashScreenManager.CloseForm(False)
 
@@ -10236,8 +10606,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -10330,8 +10707,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
         End Try
 
     End Sub
@@ -10362,8 +10746,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -10426,8 +10817,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -10523,8 +10921,15 @@ Public Class frmPedido
            MessageBoxButtons.OK,
            MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
         End Try
 
     End Sub
@@ -10774,7 +11179,7 @@ Public Class frmPedido
 
     End Sub
 
-    Private Sub txtIdDespacho_Click(sender As Object, e As EventArgs) Handles txtIdDespacho.Click
+    Private Sub txtIdDespacho_Click(sender As Object, e As EventArgs) Handles txtIdDespacho.LinkClicked
 
         Despacho_Link()
 
@@ -10999,8 +11404,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -11337,8 +11749,15 @@ Public Class frmPedido
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -11372,8 +11791,15 @@ Public Class frmPedido
                                MessageBoxButtons.OK,
                                MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -11431,8 +11857,15 @@ Public Class frmPedido
                                MessageBoxButtons.OK,
                                MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -11781,8 +12214,16 @@ Public Class frmPedido
         MessageBoxButtons.OK,
         MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
+
         End Try
     End Function
 
