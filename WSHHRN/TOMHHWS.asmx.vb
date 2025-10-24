@@ -17154,27 +17154,19 @@ Public Class TOMHHWS
 
     '#MA20251015 Migracion de xml a json
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
-    Public Sub Get_Producto_Talla_Color_JSON(IdProductoTallaColor As Integer)
-
-        'As List(Of clsBeProducto_talla_color)
-        'Get_Producto_Talla_Color = Nothing
-        Dim curContext As HttpContext = HttpContext.Current
+    Public Sub Get_Producto_Talla_Color_JSON()
 
         Try
-            Dim listaProductos As List(Of clsBeProducto_talla_color)
-            listaProductos = clsLnProducto_talla_color.Get_All()
+            Dim ltallacolor As List(Of clsBeProducto_talla_color)
+            ltallacolor = clsLnProducto_talla_color.Get_All()
 
-            Dim jsonResponse As String = JsonConvert.SerializeObject(New With {.productos_talla_color = listaProductos},
-           New JsonSerializerSettings With {
-               .NullValueHandling = NullValueHandling.Include,
-               .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-               .Formatting = Formatting.None
-           })
+            HttpContext.Current.Response.AddHeader("Access-Control-Allow-Methods", "GET")
+            Dim strserialize As String = JsonConvert.SerializeObject(ltallacolor)
+            Dim currrentContext As HttpContext = HttpContext.Current
+            currrentContext.Response.ContentType = "application/json"
+            currrentContext.Response.Write(strserialize)
+            currrentContext.Response.Flush()
 
-            curContext.Response.Clear()
-            curContext.Response.ContentType = "application/json"
-            curContext.Response.Write(jsonResponse)
-            curContext.ApplicationInstance.CompleteRequest()
         Catch ex As Exception
 
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
@@ -17190,6 +17182,8 @@ Public Class TOMHHWS
                     Throw New Exception(Mensaje)
                 Else
                     Dim errorJson As String = JsonConvert.SerializeObject(New With {.Error = True, .Mensaje = ex.Message})
+                    Dim curContext As HttpContext = HttpContext.Current
+
                     curContext.Response.Clear()
                     curContext.Response.StatusCode = 500
                     curContext.Response.ContentType = "application/json"
