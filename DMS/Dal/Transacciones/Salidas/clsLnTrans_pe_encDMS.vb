@@ -132,8 +132,13 @@ Public Class clsLnTrans_pe_encDMS
             Dim intento As Integer = 0
             Const maxIntentos As Integer = 2
 
+            clsHelper.LogMensaje(lblprg, "Pedido: " & pPeEnc.IdPedidoEnc, clsHelper.TipoMensaje.Info)
             clsHelper.LogMensaje(lblprg, "Iterando Registro: " & Contador & "/" & registros, clsHelper.TipoMensaje.Info)
-            'clsHelper.LogMensaje(lblprg, "Pedido: " & pPeEnc.IdPedidoEnc, clsHelper.TipoMensaje.Info)
+
+            If pPeEnc.IdPedidoEnc = 861 Then
+                Debug.WriteLine("aqui")
+            End If
+
             Dim JsonPE = Crear_Json(lblprg, pPeEnc)
 
             If String.IsNullOrEmpty(JsonPE) Then
@@ -362,6 +367,62 @@ Public Class clsLnTrans_pe_encDMS
 
             If pBePeEnc.TipoPedido.Control_Poliza Then
                 pBePeEnc.ObjPoliza = clsLnTrans_pe_pol.GetSingleId(pBePeEnc.IdPedidoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                If pBePeEnc.ObjPoliza Is Nothing Then
+
+                    pBePeEnc.ObjPoliza =
+                                        New clsBeTrans_pe_pol With {
+                                        .IdOrdenPedidoPol = 0,
+                                        .IdOrdenPedidoEnc = 0,
+                                        .Bl_No = "",
+                                        .NoPoliza = "",
+                                        .Pto_Descarga = "",
+                                        .Viaje_no = "",
+                                        .Buque_no = "",
+                                        .Remitente = "",
+                                        .Fecha_abordaje = New Date(1900, 1, 1),
+                                        .Destino = "",
+                                        .Dir_destino = "",
+                                        .Descripcion = "",
+                                        .Po_number = "",
+                                        .Cantidad = 0,
+                                        .Piezas = 0,
+                                        .Total_kgs = 0D,
+                                        .Cbm = 0D,
+                                        .Dua = "",
+                                        .Fecha_poliza = New Date(1900, 1, 1),
+                                        .Pais_procede = "",
+                                        .Tipo_cambio = 0D,
+                                        .Total_valoraduana = 0D,
+                                        .Total_lineas = 0,
+                                        .Total_bultos = 0,
+                                        .Total_bultos_Peso = 0D,
+                                        .Total_usd = 0D,
+                                        .Total_flete = 0D,
+                                        .Total_seguro = 0D,
+                                        .User_agr = "",
+                                        .Fec_agr = New Date(1900, 1, 1),
+                                        .User_mod = "",
+                                        .Fec_mod = New Date(1900, 1, 1),
+                                        .clave_aduana = "",
+                                        .nit_imp_exp = "",
+                                        .clase = "",
+                                        .mod_transporte = "",
+                                        .total_liquidar = 0D,
+                                        .total_general = 0D,
+                                        .codigo_poliza = "",
+                                        .ticket = "",
+                                        .numero_orden = "",
+                                        .fecha_aceptacion = New Date(1900, 1, 1),
+                                        .fecha_llegada = New Date(1900, 1, 1),
+                                        .total_otros = 0D,
+                                        .IdRegimen = 0,
+                                        .Total_bultos_Peso_Neto = 0D,
+                                        .activo = False
+                                        }
+
+                End If
+
             End If
 
             If pBePeEnc.Detalle Is Nothing OrElse pBePeEnc.Detalle.Count = 0 Then
@@ -705,7 +766,8 @@ Public Class clsLnTrans_pe_encDMS
                                                  .detalle = pBePeEnc.Detalle,
                                                  .poliza = If(pBePeEnc.TipoPedido.Control_Poliza,
                                                               New List(Of clsBeTrans_pe_pol) From {pBePeEnc.ObjPoliza},
-                                                              New List(Of clsBeTrans_pe_pol) From {New clsBeTrans_pe_pol With {
+                                                              New List(Of clsBeTrans_pe_pol) From {
+                                                                          New clsBeTrans_pe_pol With {
                                                                                                                             .IdOrdenPedidoPol = 0,
                                                                                                                             .IdOrdenPedidoEnc = 0,
                                                                                                                             .Bl_No = "",
