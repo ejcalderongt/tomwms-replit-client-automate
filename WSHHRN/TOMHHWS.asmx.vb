@@ -17305,7 +17305,7 @@ Public Class TOMHHWS
             Dim listaDetalles As List(Of clsBeTrans_re_det)
             listaDetalles = clsLnTrans_re_det.Get_Detalle_Rec_By_IdCompra_Licencia(pIdOrdenCompra, pLicencia)
 
-            Dim jsonResponse As String = JsonConvert.SerializeObject(New With {.detalle_recepcion = listaDetalles},
+            Dim jsonResponse As String = JsonConvert.SerializeObject(listaDetalles,
             New JsonSerializerSettings With {
                 .NullValueHandling = NullValueHandling.Include,
                 .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
