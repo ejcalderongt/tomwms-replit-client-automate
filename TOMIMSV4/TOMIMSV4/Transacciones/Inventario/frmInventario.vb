@@ -3631,6 +3631,8 @@ Public Class frmInventario
 
                                 End If
 
+                            Else
+                                XtraMessageBox.Show("Debe seleccionar un registro para asignar al operador.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                             End If
 
                         Next
@@ -7655,6 +7657,9 @@ Public Class frmInventario
 
                     End If
 
+
+                Else
+                    XtraMessageBox.Show("Debe seleccionar un registro para asignar al operador.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 End If
 
                 cantReg += 1

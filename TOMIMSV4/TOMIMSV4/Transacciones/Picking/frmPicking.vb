@@ -3376,9 +3376,15 @@ Public Class frmPicking
                     If BePickingEnc.Estado = "Pendiente" Then
 
                         Dim listaPickingDet = BePickingEnc.ListaPickingDet
+                        'Dim EsPickingConsolidado As Boolean = listaPickingDet _
+                        '                                    .GroupBy(Function(x) x.IdPedidoEnc) _
+                        '                                    .Any(Function(g) g.Count() > 1)
+
                         Dim EsPickingConsolidado As Boolean = listaPickingDet _
-                                                            .GroupBy(Function(x) x.IdPedidoEnc) _
-                                                            .Any(Function(g) g.Count() > 1)
+                                                               .Select(Function(x) x.IdPedidoEnc) _
+                                                               .Distinct() _
+                                                               .Count() > 1
+
 
                         If Not EsPickingConsolidado Then
 
