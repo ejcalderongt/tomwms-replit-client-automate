@@ -105,12 +105,12 @@ namespace WMSWebAPI.Dtos.Catalogos
         public DateTime? FechaVence { get; set; }
         public double? Cantidad { get; set; } = 0;
         public clsBeVW_stock_res? Stock { get; set; }
-        public bool genera_lote { get; set; } = false;
-        public bool genera_lp_old { get; set; } = false;
-        public bool control_vencimiento { get; set; } = false;
-        public bool control_lote { get; set; } = false;
-        public bool control_peso { get; set; } = false;
-        public bool activo { get; set; } = true;
+        //public bool genera_lote { get; set; } = false;
+        //public bool genera_lp_old { get; set; } = false;
+        //public bool control_vencimiento { get; set; } = false;
+        //public bool control_lote { get; set; } = false;
+        //public bool control_peso { get; set; } = false;
+        //public bool activo { get; set; } = true;
     }    
 
     public class IndiceRotacionDto
