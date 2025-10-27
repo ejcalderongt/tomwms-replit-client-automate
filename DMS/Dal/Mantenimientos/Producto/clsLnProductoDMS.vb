@@ -473,18 +473,20 @@ Public Class clsLnProductoDMS
             End If
 
             '#GT08102025: validar que no exista un registro previo para no duplicar el mismo error
-            If Not clsLnDMS_Log_sincronizacion_fallos.Existe_by_Producto(pProducto) Then
-                BeLogSyncError.IdLogFallo = clsLnDMS_Log_sincronizacion_fallos.MaxID(lConnection, lTransaction) + 1
-                BeLogSyncError.IdOrdenCompraEnc = 0
-                BeLogSyncError.IdPedidoEnc = 0
-                BeLogSyncError.Estado = "Error"
-                BeLogSyncError.Mensaje_error = pMensaje
-                BeLogSyncError.Fec_agr = Now
-                BeLogSyncError.Fec_mod = Now
-                BeLogSyncError.IdProducto = pProducto.IdProducto
-                BeLogSyncError.IdPropietario = pProducto.IdPropietario
-                clsLnDMS_Log_sincronizacion_fallos.Insertar(BeLogSyncError, lConnection, lTransaction)
-            End If
+            'If Not clsLnDMS_Log_sincronizacion_fallos.Existe_by_Producto(pProducto) Then
+            '    BeLogSyncError.IdLogFallo = clsLnDMS_Log_sincronizacion_fallos.MaxID(lConnection, lTransaction) + 1
+            '    BeLogSyncError.IdOrdenCompraEnc = 0
+            '    BeLogSyncError.IdPedidoEnc = 0
+            '    BeLogSyncError.Estado = "Error"
+            '    BeLogSyncError.Mensaje_error = pMensaje
+            '    BeLogSyncError.Fec_agr = Now
+            '    BeLogSyncError.Fec_mod = Now
+            '    BeLogSyncError.IdProducto = pProducto.IdProducto
+            '    BeLogSyncError.IdPropietario = pProducto.IdPropietario
+            '    clsLnDMS_Log_sincronizacion_fallos.Insertar(BeLogSyncError, lConnection, lTransaction)
+            'End If
+
+            clsLnDMS_Log_sincronizacion_fallos.Insertar(BeLogSyncError, lConnection, lTransaction)
 
             ' Confirmar si se inició transacción local
             If localTransaction Then
@@ -500,7 +502,7 @@ Public Class clsLnProductoDMS
                     ' Ignorar errores de rollback
                 End Try
             End If
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
+            'Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
 
         Finally
             ' Cierre solo si es local
