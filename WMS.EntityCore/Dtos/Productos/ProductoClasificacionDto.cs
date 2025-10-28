@@ -11,6 +11,8 @@
         public string? User_Mod { get; set; }
         public DateTime Fec_Mod { get; set; }
         public string? Codigo { get; set; }
+        public int IdPropietario { get; set; } = 0;
         public PropietarioDto Propietario { get; set; } = new();
+
     }
 }

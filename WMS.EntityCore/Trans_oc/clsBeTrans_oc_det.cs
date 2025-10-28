@@ -163,17 +163,16 @@ namespace WMS.EntityCore.Trans_oc
         public bool ExisteEnRecepcion { get; set; }
         public decimal FactorPresentacion { get; set; }
         public clsBeArancel Arancel { get; set; } = new clsBeArancel();
-        public clsBeProducto Producto { get; set; } = new clsBeProducto();        
+        public clsBeProducto Producto { get; set; } = new clsBeProducto();
         public clsBeUnidad_medida UnidadMedida { get; set; } = new clsBeUnidad_medida();
         public int RowIndex { get; set; } = 0;
-        public List<clsBeTrans_oc_det> lProductosHijosKit { get; set; } = new List<clsBeTrans_oc_det>();        
+        public List<clsBeTrans_oc_det> lProductosHijosKit { get; set; } = new List<clsBeTrans_oc_det>();
         public string Nombre_Propietario { get; set; } = "";
         public clsBeTalla Talla { get; set; } = new clsBeTalla();
         public clsBeColor Color { get; set; } = new clsBeColor();
-        public int IdProductoTallaColor { get; set; } = 0;        
+        public int IdProductoTallaColor { get; set; } = 0;
         public string Nombre_Embarcador { get; set; } = "";
-        public string Nombre_Clasificacion { get; set; } = "";        
-
+        public string Nombre_Clasificacion { get; set; } = "";
         public clsBeTrans_oc_det() { }
 
         public object Clone()

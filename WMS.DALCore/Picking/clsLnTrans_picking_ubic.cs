@@ -814,8 +814,8 @@ public class clsLnTrans_picking_ubic
     }
 
     public static List<clsBeTrans_picking_ubic>? Get_All_PickingUbic_Despachado_By_IdDespachoEnc(int pIdDespachoEnc,
-                                                                                           SqlConnection lConnection,
-                                                                                           SqlTransaction lTransaction)
+                                                                                                 SqlConnection lConnection,
+                                                                                                 SqlTransaction lTransaction)
     {
         List<clsBeTrans_picking_ubic>? lReturnList = null;
 

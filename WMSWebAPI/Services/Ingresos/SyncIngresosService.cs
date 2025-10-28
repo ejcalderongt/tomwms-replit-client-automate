@@ -235,7 +235,8 @@ namespace WMSWebAPI.Services.Ingresos
                 bool ok = clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(config, 
                                                                                ref beINavPedCompraEnc,
                                                                                ref bePedidoCompraEnc,
-                                                                               ref vResult);
+                                                                               ref vResult,
+                                                                               null);
 
                 if (!ok)
                     throw new Exception(string.IsNullOrWhiteSpace(vResult)

@@ -762,7 +762,6 @@ public class clsLnProducto
             throw new Exception(vMsgError, ex);
         }
     }
-
     public static bool Existe_By_Codigo(string Codigo, ref clsBeProducto pBeProducto, SqlConnection cn, SqlTransaction? tx = null)
     {
         try
@@ -790,7 +789,6 @@ public class clsLnProducto
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
     }
-
     public static bool Existe_By_Codigo(string pCodigo, SqlConnection pConnection, SqlTransaction pTransaction)
     {
         try
@@ -817,19 +815,36 @@ public class clsLnProducto
 
             throw new Exception(vMsgError, ex);
         }
-    }    
-
-    public static void Valida_Atributos(clsBeProductoMi3 BeProductoMi3, SqlConnection connection, SqlTransaction tx)
+    }
+    public static int Procesar_Producto(IConfiguration config,
+                                       clsBeProductoMi3 BeProductoMi3,
+                                       SqlConnection? conn = null,
+                                       SqlTransaction? tx = null)
     {
+        if (config is null) throw new ArgumentNullException(nameof(config));
+        if (BeProductoMi3 is null) throw new ArgumentNullException(nameof(BeProductoMi3));
+        if (string.IsNullOrWhiteSpace(BeProductoMi3.codigo))
+            throw new ArgumentException("El código de producto es obligatorio.", nameof(BeProductoMi3));
+
+        var isExternalTx = conn is not null && tx is not null;
+        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
+        SqlTransaction? localTx = null;
+        int idProductoResult = 0;
+
         try
         {
-            bool existe = Existe_By_Codigo(BeProductoMi3.codigo, connection, tx);
+            if (!isExternalTx)
+            {
+                connection.Open();
+                localTx = connection.BeginTransaction(IsolationLevel.ReadCommitted);
+            }
 
-            var BeInavConfigEnc = new clsBeI_nav_config_enc();
-            clsLnI_nav_config_enc.GetSingle(BeInavConfigEnc, connection, tx);
+            var effectiveTx = isExternalTx ? tx! : localTx!;
+
+            bool existe = Existe_By_Codigo(BeProductoMi3.codigo, connection, effectiveTx);
 
             var beInavConfigEnc = new clsBeI_nav_config_enc();
-            clsLnI_nav_config_enc.GetSingle(config, beInavConfigEnc, connection, effectiveTx);
+            clsLnI_nav_config_enc.GetSingle(beInavConfigEnc, connection, effectiveTx);
             if (beInavConfigEnc is null || beInavConfigEnc.IdUsuario <= 0)
                 throw new ArgumentNullException(nameof(beInavConfigEnc),
                     "No se encuentra la configuración de interfaz para definir propiedades de auditoría.");
@@ -839,117 +854,204 @@ public class clsLnProducto
 
             if (!existe)
             {
+                var clasificacion = new clsBeProducto_clasificacion();
+                var familia = new clsBeProducto_familia();
+                var marca = new clsBeProducto_marca();
+                var tipoProducto = new clsBeProducto_tipo();
+                var umBas = new clsBeUnidad_medida();
+
                 if (!string.IsNullOrWhiteSpace(BeProductoMi3.CodigoClasificacion))
                 {
                     bool ok = clsLnProducto_clasificacion.Existe_By_Codigo(BeProductoMi3.CodigoClasificacion, ref clasificacion, connection, effectiveTx);
                     if (!ok) throw new Exception($"No existe la Clasificación con código: '{BeProductoMi3.CodigoClasificacion}'");
                 }
 
-                if (!string.IsNullOrEmpty(BeProductoMi3.CodigoClasificacion))
+                if (!string.IsNullOrWhiteSpace(BeProductoMi3.CodigoFamilia))
                 {
-                    bool ExisteClasificacion = clsLnProducto_clasificacion.Existe_By_Codigo(BeProductoMi3.CodigoClasificacion, ref Clasificacion, connection, tx);
-
-                    if (!ExisteClasificacion)
-                    {
-                        throw new Exception("Error al procesar código de clasificación en ProductoMi3");
-                    }
+                    bool ok = clsLnProducto_familia.Existe_By_Codigo(BeProductoMi3.CodigoFamilia, ref familia, connection, effectiveTx);
+                    if (!ok) throw new Exception($"No existe la Familia con código: '{BeProductoMi3.CodigoFamilia}'");
                 }
 
-                if (!string.IsNullOrEmpty(BeProductoMi3.CodigoFamilia))
+                if (!string.IsNullOrWhiteSpace(BeProductoMi3.CodigoMarca))
                 {
-                    bool ExisteFamilia = clsLnProducto_familia.Existe_By_Codigo(BeProductoMi3.CodigoFamilia, ref Familia, connection, tx);
-
-                    if (!ExisteFamilia)
-                    {
-                        throw new Exception("Error al procesar código de Familia en ProductoMi3");
-                    }
+                    bool ok = clsLnProducto_Marca.Existe_By_Codigo(BeProductoMi3.CodigoMarca, ref marca, connection, effectiveTx);
+                    if (!ok) throw new Exception($"No existe la Marca con código: '{BeProductoMi3.CodigoMarca}'");
                 }
 
-                if (!string.IsNullOrEmpty(BeProductoMi3.CodigoMarca))
+                if (!string.IsNullOrWhiteSpace(BeProductoMi3.CodigoTipoProducto))
                 {
-                    bool ExisteMarca = clsLnProducto_Marca.Existe_By_Codigo(BeProductoMi3.CodigoMarca, ref Marca, connection, tx);
-
-                    if (!ExisteMarca)
-                    {
-                        throw new Exception("Error al procesar código de Marca en ProductoMi3");
-                    }
+                    bool ok = clsLnProducto_tipo.Existe_By_Codigo(BeProductoMi3.CodigoTipoProducto, ref tipoProducto, connection, effectiveTx);
+                    if (!ok) throw new Exception($"No existe el Tipo de Producto con código: '{BeProductoMi3.CodigoTipoProducto}'");
                 }
 
-                if (!string.IsNullOrEmpty(BeProductoMi3.CodigoTipoProducto))
+                if (!string.IsNullOrWhiteSpace(BeProductoMi3.CodigoUmBas))
                 {
-                    bool ExisteTipo = clsLnProducto_tipo.Existe_By_Codigo(BeProductoMi3.CodigoTipoProducto, ref TipoProducto, connection, tx);
-
-                    if (!ExisteTipo)
-                    {
-                        throw new Exception("Error al procesar código de TipoProducto en ProductoMi3");
-                    }
+                    bool ok = clsLnUnidad_medida.Existe_By_Codigo(BeProductoMi3.CodigoUmBas, ref umBas, connection, effectiveTx);
+                    if (!ok) throw new Exception($"No existe la Unidad de Medida Básica con código: '{BeProductoMi3.CodigoUmBas}'");
                 }
 
-                if (!string.IsNullOrEmpty(BeProductoMi3.CodigoUmBas))
+                var pProducto = new clsBeProducto
                 {
-                    bool ExisteUmbas = clsLnUnidad_medida.Existe_By_Codigo(BeProductoMi3.CodigoUmBas, ref Umbas, connection, tx);
+                    IdProducto = MaxID(connection, effectiveTx) + 1,
+                    nombre = BeProductoMi3.nombre,
+                    IdPropietario = BeProductoMi3.IdPropietario,
+                    IdClasificacion = clasificacion?.IdClasificacion ?? 0,
+                    IdFamilia = familia?.IdFamilia ?? 0,
+                    IdMarca = marca?.IdMarca ?? 0,
+                    IdTipoProducto = tipoProducto?.IdTipoProducto ?? 0,
+                    IdUnidadMedidaBasica = umBas?.IdUnidadMedida ?? 0,
+                    codigo = BeProductoMi3.codigo,
+                    codigo_barra = BeProductoMi3.codigo_barra,
+                    activo = true,
+                    genera_lp_old = BeProductoMi3.genera_lp_old,
+                    control_lote = BeProductoMi3.control_lote,
+                    control_peso = BeProductoMi3.control_peso,
+                    control_vencimiento = BeProductoMi3.control_vencimiento,
+                    IdTipoRotacion = BeProductoMi3.IdTipoRotacion,
+                    IdTipoEtiqueta = 0,
+                    user_agr = userId,
+                    user_mod = userId,
+                    fec_agr = now,
+                    fec_mod = now
+                };
 
-                    if (!ExisteUmbas)
-                    {
-                        throw new Exception("Error al procesar código de Umbas en ProductoMi3");
-                    }
-                }
+                Insertar(pProducto, connection, effectiveTx);
+                idProductoResult = pProducto.IdProducto;
 
-                var pProducto = new clsBeProducto();
-                pProducto.IdProducto = MaxID(connection, tx) + 1;
-                pProducto.nombre = BeProductoMi3.nombre;
-                pProducto.IdPropietario = BeProductoMi3.IdPropietario;
-                pProducto.IdClasificacion = Clasificacion.IdClasificacion;
-                pProducto.IdFamilia = Familia.IdFamilia;
-                pProducto.IdMarca = Marca.IdMarca;
-                pProducto.IdTipoProducto = TipoProducto.IdTipoProducto;
-                pProducto.IdUnidadMedidaBasica = Umbas.IdUnidadMedida;
-                pProducto.codigo = BeProductoMi3.codigo;
-                pProducto.nombre = BeProductoMi3.nombre;
-                pProducto.codigo_barra = BeProductoMi3.codigo_barra;
-                pProducto.activo = true;
-                pProducto.genera_lp_old = false;
-                pProducto.control_lote = false;
-                pProducto.control_peso = false;
-                pProducto.control_vencimiento = false;
-                pProducto.IdTipoRotacion = BeProductoMi3.IdTipoRotacion;
-                pProducto.IdTipoEtiqueta = 0;
-                pProducto.user_agr = BeInavConfigEnc.IdUsuario.ToString();
-                pProducto.user_mod = BeInavConfigEnc.IdUsuario.ToString();
-                pProducto.fec_agr = DateTime.Now;
-                pProducto.fec_mod = DateTime.Now;
+                var listBeBodega = clsLnBodega.GetAll(connection, effectiveTx);
+                if (listBeBodega is null || listBeBodega.Count == 0)
+                    throw new ArgumentNullException(nameof(listBeBodega),
+                        "No se encontraron bodegas activas para asociar el producto.");
 
-                Insertar(pProducto, connection, tx);
-
-                var listBeBodega = clsLnBodega.GetAll(connection, tx);
-
-                if (listBeBodega.Count == 0)
-                    throw new ArgumentNullException(nameof(listBeBodega), "No se encontraron bodegas activas para asociar productos.");
-
-                if (listBeBodega.Count > 0)
+                int nextIdProductoBodega = clsLnProducto_bodega.MaxID(connection, effectiveTx) + 1;
+                foreach (clsBeBodega beBodega in listBeBodega)
                 {
-                    ProductoBodega = new clsBeProducto_bodega();
-
-                    foreach (clsBeBodega BeBodega in listBeBodega)
+                    var productoBodega = new clsBeProducto_bodega
                     {
-                        ProductoBodega.IdProductoBodega = clsLnProducto_bodega.MaxID(connection, tx) + 1;
-                        ProductoBodega.IdProducto = pProducto.IdProducto;
-                        ProductoBodega.IdBodega = BeBodega.IdBodega;
-                        ProductoBodega.Activo = true;
-                        ProductoBodega.Sistema = false;
-                        ProductoBodega.Fec_agr = DateTime.Now;
-                        ProductoBodega.Fec_mod = DateTime.Now;
-                        ProductoBodega.User_agr = BeInavConfigEnc.IdUsuario.ToString();
-                        ProductoBodega.User_mod = BeInavConfigEnc.IdUsuario.ToString();
+                        IdProductoBodega = nextIdProductoBodega++,
+                        IdProducto = pProducto.IdProducto,
+                        IdBodega = beBodega.IdBodega,
+                        Activo = true,
+                        Sistema = false,
+                        Fec_agr = now,
+                        Fec_mod = now,
+                        User_agr = userId,
+                        User_mod = userId
+                    };
 
-                        clsLnProducto_bodega.Insertar(ProductoBodega, connection, tx);
-                    }
+                    clsLnProducto_bodega.Insertar(productoBodega, connection, effectiveTx);
                 }
             }
+            else
+            {
+                // --- UPDATE PATH ---
+                // Cargar producto actual por código
+                var productoActual = Get_By_Codigo(BeProductoMi3.codigo, connection, effectiveTx);
+                if (productoActual is null || productoActual.IdProducto <= 0)
+                    throw new Exception($"No se pudo cargar el producto existente con código: '{BeProductoMi3.codigo}'");
+
+                // Resolver entidades relacionadas solo si vienen nuevos códigos; si no, conservar.
+                int idClasificacion = productoActual.IdClasificacion;
+                int idFamilia = productoActual.IdFamilia;
+                int idMarca = productoActual.IdMarca;
+                int idTipoProducto = productoActual.IdTipoProducto;
+                int idUnidadMedidaBasica = productoActual.IdUnidadMedidaBasica;
+
+                if (!string.IsNullOrWhiteSpace(BeProductoMi3.CodigoClasificacion))
+                {
+                    var clasificacion = new clsBeProducto_clasificacion();
+                    bool ok = clsLnProducto_clasificacion.Existe_By_Codigo(BeProductoMi3.CodigoClasificacion, ref clasificacion, connection, effectiveTx);
+                    if (!ok) throw new Exception($"No existe la Clasificación con código: '{BeProductoMi3.CodigoClasificacion}'");
+                    idClasificacion = clasificacion.IdClasificacion;
+                }
+
+                if (!string.IsNullOrWhiteSpace(BeProductoMi3.CodigoFamilia))
+                {
+                    var familia = new clsBeProducto_familia();
+                    bool ok = clsLnProducto_familia.Existe_By_Codigo(BeProductoMi3.CodigoFamilia, ref familia, connection, effectiveTx);
+                    if (!ok) throw new Exception($"No existe la Familia con código: '{BeProductoMi3.CodigoFamilia}'");
+                    idFamilia = familia.IdFamilia;
+                }
+
+                if (!string.IsNullOrWhiteSpace(BeProductoMi3.CodigoMarca))
+                {
+                    var marca = new clsBeProducto_marca();
+                    bool ok = clsLnProducto_Marca.Existe_By_Codigo(BeProductoMi3.CodigoMarca, ref marca, connection, effectiveTx);
+                    if (!ok) throw new Exception($"No existe la Marca con código: '{BeProductoMi3.CodigoMarca}'");
+                    idMarca = marca.IdMarca;
+                }
+
+                if (!string.IsNullOrWhiteSpace(BeProductoMi3.CodigoTipoProducto))
+                {
+                    var tipo = new clsBeProducto_tipo();
+                    bool ok = clsLnProducto_tipo.Existe_By_Codigo(BeProductoMi3.CodigoTipoProducto, ref tipo, connection, effectiveTx);
+                    if (!ok) throw new Exception($"No existe el Tipo de Producto con código: '{BeProductoMi3.CodigoTipoProducto}'");
+                    idTipoProducto = tipo.IdTipoProducto;
+                }
+
+                if (!string.IsNullOrWhiteSpace(BeProductoMi3.CodigoUmBas))
+                {
+                    var umBas = new clsBeUnidad_medida();
+                    bool ok = clsLnUnidad_medida.Existe_By_Codigo(BeProductoMi3.CodigoUmBas, ref umBas, connection, effectiveTx);
+                    if (!ok) throw new Exception($"No existe la Unidad de Medida Básica con código: '{BeProductoMi3.CodigoUmBas}'");
+                    idUnidadMedidaBasica = umBas.IdUnidadMedida;
+                }
+
+                // Construir objeto a actualizar
+                var pProducto = new clsBeProducto
+                {
+                    IdProducto = productoActual.IdProducto,
+                    codigo = productoActual.codigo,                  // no se cambia la PK lógica
+                    nombre = string.IsNullOrWhiteSpace(BeProductoMi3.nombre) ? productoActual.nombre : BeProductoMi3.nombre,
+                    codigo_barra = string.IsNullOrWhiteSpace(BeProductoMi3.codigo_barra) ? productoActual.codigo_barra : BeProductoMi3.codigo_barra,
+                    IdPropietario = BeProductoMi3.IdPropietario != 0 ? BeProductoMi3.IdPropietario : productoActual.IdPropietario,
+                    IdClasificacion = idClasificacion,
+                    IdFamilia = idFamilia,
+                    IdMarca = idMarca,
+                    IdTipoProducto = idTipoProducto,
+                    IdUnidadMedidaBasica = idUnidadMedidaBasica,
+                    IdTipoRotacion = BeProductoMi3.IdTipoRotacion != 0 ? BeProductoMi3.IdTipoRotacion : productoActual.IdTipoRotacion,
+                    IdTipoEtiqueta = productoActual.IdTipoEtiqueta, // conservar si no hay cambio explícito
+                    activo = BeProductoMi3.activo,                  // conservar estado actual
+                    genera_lp_old = BeProductoMi3.genera_lp_old,
+                    control_lote = BeProductoMi3.control_lote,
+                    control_peso = BeProductoMi3.control_peso,
+                    control_vencimiento = BeProductoMi3.control_vencimiento,
+                    user_agr = productoActual.user_agr,
+                    fec_agr = productoActual.fec_agr,
+                    user_mod = userId,
+                    fec_mod = now
+                };
+
+                // Actualizar
+                Actualizar(pProducto, connection, effectiveTx);
+
+                idProductoResult = productoActual.IdProducto;
+            }
+
+            if (!isExternalTx) localTx?.Commit();
+
+            return idProductoResult;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw;
+            if (!isExternalTx && localTx is not null)
+            {
+                try { localTx.Rollback(); } catch { throw new Exception(ex.Message); /* evitar ocultar la excepción original */ }
+            }
+            throw new Exception(ex.Message);
+        }
+        finally
+        {
+            if (!isExternalTx)
+            {
+                try { localTx?.Dispose(); } catch { }
+                if (connection.State != ConnectionState.Closed)
+                {
+                    try { connection.Close(); } catch { }
+                }
+                connection.Dispose();
+            }
         }
     }
 
@@ -1208,5 +1310,43 @@ public class clsLnProducto
         }
 
         return result;
+    }
+    public static clsBeProducto? Get_By_Codigo(string codigo,
+                                              SqlConnection connection,
+                                              SqlTransaction? transaction)
+    {
+        if (string.IsNullOrWhiteSpace(codigo))
+            throw new ArgumentException("El código es obligatorio.", nameof(codigo));
+        if (connection is null)
+            throw new ArgumentNullException(nameof(connection));
+
+        const string sql = @"SELECT *
+                             FROM VW_ProductoSI
+                             WHERE codigo = @Codigo; ";
+
+        using var cmd = new SqlCommand(sql, connection)
+        {
+            CommandType = CommandType.Text,
+            Transaction = transaction
+        };
+
+        // Por qué: evitar AddWithValue mejora inferencia de tipos y planes.
+        var pCodigo = cmd.Parameters.Add("@Codigo", SqlDbType.VarChar, 50);
+        pCodigo.Value = codigo;
+
+        using var da = new SqlDataAdapter(cmd);
+        var dt = new DataTable();
+        da.Fill(dt);
+
+        if (dt.Rows.Count == 0)
+            return null;
+
+        var row = dt.Rows[0];
+        var be = new clsBeProducto();
+
+        Cargar(ref be, row);
+
+        be.IsNew = false;
+        return be;
     }
 }

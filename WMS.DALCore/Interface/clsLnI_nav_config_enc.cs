@@ -1025,4 +1025,9 @@ public class clsLnI_nav_config_enc
             throw;
         }
     }
+
+    internal static void GetSingle(IConfiguration config, clsBeI_nav_config_enc beInavConfigEnc, SqlConnection connection, SqlTransaction effectiveTx)
+    {
+        throw new NotImplementedException();
+    }
 }

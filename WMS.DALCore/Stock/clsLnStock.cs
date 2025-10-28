@@ -847,7 +847,8 @@ public class clsLnStock
                             }
                             else
                             {
-                                throw new Exception("20200329_0939: No se pudo obtener la presentación para: " + BePres.IdPresentacion);
+                                if (BePres != null)
+                                    throw new Exception("20200329_0939: No se pudo obtener la presentación para: " + BePres.IdPresentacion);
                             }
                         }
                         else

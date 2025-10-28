@@ -1,7 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Producto;
 using WMSWebAPI.Dtos.Catalogos;
-using WMSWebAPI.Dtos.Productos;
 
 namespace WMSWebAPI.Services
 {

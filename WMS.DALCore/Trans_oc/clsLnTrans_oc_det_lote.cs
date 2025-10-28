@@ -56,12 +56,9 @@ public class clsLnTrans_oc_det_lote
         }
     }
 
-    public static int Insertar(IConfiguration config, clsBeTrans_oc_det_lote oBeTrans_oc_det_lote, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Insertar(clsBeTrans_oc_det_lote oBeTrans_oc_det_lote, SqlConnection pConection, SqlTransaction pTransaction)
     {
-
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
@@ -90,70 +87,42 @@ public class clsLnTrans_oc_det_lote
 
             string sp = Ins.SQL();
 
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
+            SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction);
+            cmd.CommandType = CommandType.Text;
 
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
-
-            cmd.Parameters.Add(new SqlParameter("@IdOrdenCompraEnc", oBeTrans_oc_det_lote.IdOrdenCompraEnc));
-            cmd.Parameters.Add(new SqlParameter("@IdOrdenCompraDet", oBeTrans_oc_det_lote.IdOrdenCompraDet));
-            cmd.Parameters.Add(new SqlParameter("@IdOrdenCompraDetLote", oBeTrans_oc_det_lote.IdOrdenCompraDetLote));
-            cmd.Parameters.Add(new SqlParameter("@IdProductoBodega", oBeTrans_oc_det_lote.IdProductoBodega));
+            cmd.Parameters.Add(new SqlParameter("@idordencompraenc", oBeTrans_oc_det_lote.IdOrdenCompraEnc));
+            cmd.Parameters.Add(new SqlParameter("@idordencompradet", oBeTrans_oc_det_lote.IdOrdenCompraDet));
+            cmd.Parameters.Add(new SqlParameter("@idordencompradetlote", oBeTrans_oc_det_lote.IdOrdenCompraDetLote));
+            cmd.Parameters.Add(new SqlParameter("@idproductobodega", oBeTrans_oc_det_lote.IdProductoBodega));
             cmd.Parameters.Add(new SqlParameter("@no_linea", oBeTrans_oc_det_lote.No_linea));
             cmd.Parameters.Add(new SqlParameter("@codigo_producto", oBeTrans_oc_det_lote.Codigo_producto));
             cmd.Parameters.Add(new SqlParameter("@cantidad", oBeTrans_oc_det_lote.Cantidad));
             cmd.Parameters.Add(new SqlParameter("@cantidad_recibida", oBeTrans_oc_det_lote.Cantidad_recibida));
-            cmd.Parameters.Add(new SqlParameter("@lote", oBeTrans_oc_det_lote.Lote));
-            cmd.Parameters.Add(new SqlParameter("@fecha_vence", oBeTrans_oc_det_lote.Fecha_vence));
-            cmd.Parameters.Add(new SqlParameter("@lic_plate", oBeTrans_oc_det_lote.Lic_plate));
-            cmd.Parameters.Add(new SqlParameter("@Ubicacion", oBeTrans_oc_det_lote.Ubicacion));
-            cmd.Parameters.Add(new SqlParameter("@IdPresentacion", oBeTrans_oc_det_lote.IdPresentacion));
-            cmd.Parameters.Add(new SqlParameter("@IdUnidadMedidaBasica", oBeTrans_oc_det_lote.IdUnidadMedidaBasica));
+            cmd.Parameters.Add(new SqlParameter("@lote", oBeTrans_oc_det_lote.Lote ?? (object)DBNull.Value));
+            cmd.Parameters.AddWithValue("@fecha_vence", oBeTrans_oc_det_lote.Fecha_vence == DateTime.MinValue ? DBNull.Value : oBeTrans_oc_det_lote.Fecha_vence);
+            cmd.Parameters.Add(new SqlParameter("@lic_plate", oBeTrans_oc_det_lote.Lic_plate ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@ubicacion", oBeTrans_oc_det_lote.Ubicacion ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@idpresentacion", oBeTrans_oc_det_lote.IdPresentacion));
+            cmd.Parameters.Add(new SqlParameter("@idunidadmedidabasica", oBeTrans_oc_det_lote.IdUnidadMedidaBasica));
             cmd.Parameters.Add(new SqlParameter("@user_agr", oBeTrans_oc_det_lote.User_agr));
             cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeTrans_oc_det_lote.Fec_agr));
             cmd.Parameters.Add(new SqlParameter("@user_mod", oBeTrans_oc_det_lote.User_mod));
             cmd.Parameters.Add(new SqlParameter("@fec_mod", oBeTrans_oc_det_lote.Fec_mod));
             cmd.Parameters.Add(new SqlParameter("@reclasificar", oBeTrans_oc_det_lote.Reclasificar));
             cmd.Parameters.Add(new SqlParameter("@activo", oBeTrans_oc_det_lote.Activo));
-            cmd.Parameters.Add(new SqlParameter("@no_documento", oBeTrans_oc_det_lote.No_documento));
+            cmd.Parameters.Add(new SqlParameter("@no_documento", oBeTrans_oc_det_lote.No_documento ?? (object)DBNull.Value));
 
             rowsAffected = cmd.ExecuteNonQuery();
-
-            cmd.Dispose();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+            MethodBase? currentMethodName = sf?.GetMethod();
+            string vMsgError = $"{currentMethodName?.Name} {ex1.Message}";
+            throw new Exception(vMsgError, ex1);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
-        }
+
         return rowsAffected;
     }
 
@@ -245,16 +214,12 @@ public class clsLnTrans_oc_det_lote
         return rowsAffected;
     }
 
-    public static int Actualizar(IConfiguration config, clsBeTrans_oc_det_lote oBeTrans_oc_det_lote, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Actualizar(clsBeTrans_oc_det_lote oBeTrans_oc_det_lote, SqlConnection pConection, SqlTransaction pTransaction)
     {
-
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
-
             Upd.Init("trans_oc_det_lote");
             Upd.Add("idordencompraenc", "@idordencompraenc", "F");
             Upd.Add("idordencompradet", "@idordencompradet", "F");
@@ -281,68 +246,42 @@ public class clsLnTrans_oc_det_lote
 
             string sp = Upd.SQL();
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
+            SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction);
+            cmd.CommandType = CommandType.Text;
 
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
-
-            cmd.Parameters.Add(new SqlParameter("@IdOrdenCompraEnc", oBeTrans_oc_det_lote.IdOrdenCompraEnc));
-            cmd.Parameters.Add(new SqlParameter("@IdOrdenCompraDet", oBeTrans_oc_det_lote.IdOrdenCompraDet));
-            cmd.Parameters.Add(new SqlParameter("@IdOrdenCompraDetLote", oBeTrans_oc_det_lote.IdOrdenCompraDetLote));
-            cmd.Parameters.Add(new SqlParameter("@IdProductoBodega", oBeTrans_oc_det_lote.IdProductoBodega));
+            cmd.Parameters.Add(new SqlParameter("@idordencompraenc", oBeTrans_oc_det_lote.IdOrdenCompraEnc));
+            cmd.Parameters.Add(new SqlParameter("@idordencompradet", oBeTrans_oc_det_lote.IdOrdenCompraDet));
+            cmd.Parameters.Add(new SqlParameter("@idordencompradetlote", oBeTrans_oc_det_lote.IdOrdenCompraDetLote));
+            cmd.Parameters.Add(new SqlParameter("@idproductobodega", oBeTrans_oc_det_lote.IdProductoBodega));
             cmd.Parameters.Add(new SqlParameter("@no_linea", oBeTrans_oc_det_lote.No_linea));
             cmd.Parameters.Add(new SqlParameter("@codigo_producto", oBeTrans_oc_det_lote.Codigo_producto));
             cmd.Parameters.Add(new SqlParameter("@cantidad", oBeTrans_oc_det_lote.Cantidad));
             cmd.Parameters.Add(new SqlParameter("@cantidad_recibida", oBeTrans_oc_det_lote.Cantidad_recibida));
-            cmd.Parameters.Add(new SqlParameter("@lote", oBeTrans_oc_det_lote.Lote));
-            cmd.Parameters.Add(new SqlParameter("@fecha_vence", oBeTrans_oc_det_lote.Fecha_vence));
-            cmd.Parameters.Add(new SqlParameter("@lic_plate", oBeTrans_oc_det_lote.Lic_plate));
-            cmd.Parameters.Add(new SqlParameter("@Ubicacion", oBeTrans_oc_det_lote.Ubicacion));
-            cmd.Parameters.Add(new SqlParameter("@IdPresentacion", oBeTrans_oc_det_lote.IdPresentacion));
-            cmd.Parameters.Add(new SqlParameter("@IdUnidadMedidaBasica", oBeTrans_oc_det_lote.IdUnidadMedidaBasica));
+            cmd.Parameters.Add(new SqlParameter("@lote", oBeTrans_oc_det_lote.Lote ?? (object)DBNull.Value));
+            cmd.Parameters.AddWithValue("@fecha_vence", oBeTrans_oc_det_lote.Fecha_vence == DateTime.MinValue ? DBNull.Value : oBeTrans_oc_det_lote.Fecha_vence);
+            cmd.Parameters.Add(new SqlParameter("@lic_plate", oBeTrans_oc_det_lote.Lic_plate ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@ubicacion", oBeTrans_oc_det_lote.Ubicacion ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@idpresentacion", oBeTrans_oc_det_lote.IdPresentacion));
+            cmd.Parameters.Add(new SqlParameter("@idunidadmedidabasica", oBeTrans_oc_det_lote.IdUnidadMedidaBasica));
             cmd.Parameters.Add(new SqlParameter("@user_agr", oBeTrans_oc_det_lote.User_agr));
             cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeTrans_oc_det_lote.Fec_agr));
             cmd.Parameters.Add(new SqlParameter("@user_mod", oBeTrans_oc_det_lote.User_mod));
             cmd.Parameters.Add(new SqlParameter("@fec_mod", oBeTrans_oc_det_lote.Fec_mod));
             cmd.Parameters.Add(new SqlParameter("@reclasificar", oBeTrans_oc_det_lote.Reclasificar));
             cmd.Parameters.Add(new SqlParameter("@activo", oBeTrans_oc_det_lote.Activo));
-            cmd.Parameters.Add(new SqlParameter("@no_documento", oBeTrans_oc_det_lote.No_documento));
+            cmd.Parameters.Add(new SqlParameter("@no_documento", oBeTrans_oc_det_lote.No_documento ?? (object)DBNull.Value));
 
             rowsAffected = cmd.ExecuteNonQuery();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+            MethodBase? currentMethodName = sf?.GetMethod();
+            string vMsgError = $"{currentMethodName?.Name} {ex1.Message}";
+            throw new Exception(vMsgError, ex1);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
-        }
+
         return rowsAffected;
     }
 
@@ -624,55 +563,33 @@ public class clsLnTrans_oc_det_lote
             throw new Exception(vMsgError);
         }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int MaxID(SqlConnection pConection, SqlTransaction pTransaction)
     {
-
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
         int lMax = 0;
+
         try
         {
-
-
             const string sp = "Select ISNULL(Max(IdOrdenCompraDetLote),0) FROM Trans_oc_det_lote";
 
-            bool Es_Transaccion_Remota = pConection is not null && pTransaction is not null;
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-            if (Es_Transaccion_Remota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+            var cmd = new SqlCommand(sp, pConection, pTransaction);
+            cmd.CommandType = CommandType.Text;
 
-            Object lreturnValue = cmd.ExecuteScalar();
+            object lreturnValue = cmd.ExecuteScalar();
 
             if (lreturnValue != DBNull.Value && lreturnValue != null)
             {
-                lMax = int.Parse((String)lreturnValue);
+                lMax = Convert.ToInt32(lreturnValue);
             }
 
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
             return lMax;
-
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+            MethodBase? currentMethodName = sf?.GetMethod();
+            string vMsgError = $"{currentMethodName?.Name} {ex1.Message}";
+            throw new Exception(vMsgError, ex1);
         }
     }
 

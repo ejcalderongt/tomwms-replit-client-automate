@@ -13,5 +13,7 @@
         public string? User_Agr { get; set; }
         public DateTime? Fec_Agr { get; set; }
         public byte[]? Firma_Operador { get; set; } = Array.Empty<byte>();
+        public bool IsNew { get; set; } = true;
+        public OrdenCompraEncDto OC { get; set; } = new OrdenCompraEncDto();
     }
 }

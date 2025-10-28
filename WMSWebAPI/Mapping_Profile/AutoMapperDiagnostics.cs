@@ -80,7 +80,7 @@ namespace WMSWebAPI.Mapping_Profile
             return Array.Empty<string>();
         }
 
-        private static System.Collections.Generic.IEnumerable<object?> TryGetEnumerable(object obj, string propName)
+        private static IEnumerable<object?> TryGetEnumerable(object obj, string propName)
         {
             var val = obj.GetType().GetProperty(propName, BindingFlags.Public | BindingFlags.Instance)
                          ?.GetValue(obj) as System.Collections.IEnumerable;

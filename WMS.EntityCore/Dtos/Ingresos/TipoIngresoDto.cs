@@ -24,5 +24,6 @@
         public bool Permitir_excedente_lotes { get; set; }
         public bool Permitir_vencido_ingreso { get; set; }
         public bool Es_importacion { get; set; }
+        public int IdProductoEstado { get; set; } = 0;
     }
 }

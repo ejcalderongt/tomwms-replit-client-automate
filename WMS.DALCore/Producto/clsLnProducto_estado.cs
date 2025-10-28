@@ -33,35 +33,21 @@ public class clsLnProducto_estado
         cmd.Parameters.AddWithValue("@IdEstado", IdEstado);
         return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
     }
-    public static int InsertOrUpdate(IConfiguration config, clsBeProducto_estado e, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(clsBeProducto_estado e, SqlConnection conn, SqlTransaction tx)
     {
-        bool externa = conn != null && tx != null;
-        var lConn = externa ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTx = null;
-        if (!externa) { lConn.Open(); lTx = lConn.BeginTransaction(); }
-
         try
         {
-            if (Existe(e.IdEstado, lConn, externa ? tx! : lTx!))
-                return Actualizar(config, e, lConn, externa ? tx : lTx);
+            if (Existe(e.IdEstado, conn, tx))
+                return Actualizar(e, conn, tx);
             else
-                return Insertar(config, e, lConn, externa ? tx : lTx);
+                return Insertar(e, conn, tx);
         }
         catch (Exception)
         {
-            if (!externa && lTx != null) lTx.Rollback();
             throw;
         }
-        finally
-        {
-            if (!externa)
-            {
-                lTx?.Commit();
-                lConn.Close();
-            }
-        }
     }
-    public static int Insertar(IConfiguration config, clsBeProducto_estado e, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int Insertar(clsBeProducto_estado e, SqlConnection conn, SqlTransaction tx)
     {
         Ins.Init("producto_estado");
         Ins.Add("idestado", "@idestado", "F");
@@ -81,43 +67,21 @@ public class clsLnProducto_estado
         Ins.Add("tolerancia_dias_vencimiento", "@tolerancia_dias_vencimiento", "F");
 
         string sql = Ins.SQL();
-        bool externa = conn != null && tx != null;
-
-        using var localConn = externa ? null : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
 
         try
         {
-            if (!externa)
-            {
-                localConn!.Open();
-                localTx = localConn.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
-            using var cmd = new SqlCommand(sql, externa ? conn! : localConn!, externa ? tx! : localTx!);
+            using var cmd = new SqlCommand(sql, conn, tx);
             CrearComando(cmd, e);
             int result = cmd.ExecuteNonQuery();
-
-            if (!externa)
-                localTx?.Commit();
-
             return result;
         }
         catch (Exception ex)
         {
-            if (!externa)
-                localTx?.Rollback();
-
             var method = new StackTrace().GetFrame(0)?.GetMethod();
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
-        finally
-        {
-            if (!externa && localConn?.State == ConnectionState.Open)
-                localConn.Close();
-        }
     }
-    public static int Actualizar(IConfiguration config, clsBeProducto_estado e, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int Actualizar(clsBeProducto_estado e, SqlConnection conn, SqlTransaction tx)
     {
         Upd.Init("producto_estado");
         Upd.Add("idpropietario", "@idpropietario", "F");
@@ -137,40 +101,18 @@ public class clsLnProducto_estado
         Upd.Where("IdEstado = @IdEstado");
 
         string sql = Upd.SQL();
-        bool externa = conn != null && tx != null;
-
-        using var localConn = externa ? null : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
 
         try
         {
-            if (!externa)
-            {
-                localConn!.Open();
-                localTx = localConn.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
-            using var cmd = new SqlCommand(sql, externa ? conn! : localConn!, externa ? tx! : localTx!);
+            using var cmd = new SqlCommand(sql, conn, tx);
             CrearComando(cmd, e);
             int result = cmd.ExecuteNonQuery();
-
-            if (!externa)
-                localTx?.Commit();
-
             return result;
         }
         catch (Exception ex)
         {
-            if (!externa)
-                localTx?.Rollback();
-
             var method = new StackTrace().GetFrame(0)?.GetMethod();
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
-        }
-        finally
-        {
-            if (!externa && localConn?.State == ConnectionState.Open)
-                localConn.Close();
         }
     }
     public static bool GetSingle(IConfiguration config, ref clsBeProducto_estado be)
@@ -358,48 +300,25 @@ public class clsLnProducto_estado
             if (!externa) lConn.Close();
         }
     }
-    public static int InsertOrUpdate(IConfiguration config, List<clsBeProducto_estado> estados, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(List<clsBeProducto_estado> estados, SqlConnection conn, SqlTransaction tx)
     {
-        bool externa = conn != null && tx != null;
-        var lConn = externa ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTx = null;
         int total = 0;
 
         try
         {
-            if (!externa)
-            {
-                lConn.Open();
-                lTx = lConn.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
             foreach (var e in estados)
             {
-                if (Existe(e.IdEstado, lConn, externa ? tx! : lTx!))
-                    total += Actualizar(config, e, lConn, externa ? tx : lTx);
+                if (Existe(e.IdEstado, conn, tx))
+                    total += Actualizar(e, conn, tx);
                 else
-                    total += Insertar(config, e, lConn, externa ? tx : lTx);
+                    total += Insertar(e, conn, tx);
             }
-
-            if (!externa)
-                lTx?.Commit();
 
             return total;
         }
         catch (Exception)
         {
-            if (!externa && lTx != null)
-                lTx.Rollback();
             throw;
-        }
-        finally
-        {
-            if (!externa)
-            {
-                lConn.Close();
-                lConn.Dispose();
-                lTx?.Dispose();
-            }
         }
     }
 

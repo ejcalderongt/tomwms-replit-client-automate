@@ -1,4 +1,9 @@
-﻿namespace WMSWebAPI.Dtos.Pedido
+﻿using WMSWebAPI.Dtos.Catalogos;
+using WMSWebAPI.Dtos.Picking;
+using WMSWebAPI.Dtos.Productos;
+using WMSWebAPI.Dtos.Stock;
+
+namespace WMSWebAPI.Dtos.Pedido
 {
     public class TransPeDetDto
     {
@@ -46,5 +51,22 @@
         public double Valor_flete { get; set; } = 0;
         public double Total_linea { get; set; } = 0;
         public int IdCliente { get; set; } = 0;
+        public bool IsNew { get; set; } = true;
+        public ProductoDto Producto { get; set; } = new ProductoDto();
+        public ProductoPresentacionDto Presentacion { get; set; } = new ProductoPresentacionDto();
+        public UnidadMedidaDto UnidadMedida { get; set; } = new UnidadMedidaDto();
+        public List<StockResDto> ListaStockRes { get; set; } = new List<StockResDto>();
+        public List<PickingUbicDto> ListaPickingUbic { get; set; } = new List<PickingUbicDto>();
+        public string NombreProducto { get; set; } = string.Empty;
+        public string ProductoPresentacion { get; set; } = string.Empty;
+        public string ProductoUnidadMedida { get; set; } = string.Empty;
+        public string ProductoEstado { get; set; } = string.Empty;
+        public string BodegaUbicacion { get; set; } = string.Empty;
+        public decimal CantidadFisica { get; set; } = 0;
+        public decimal Factor { get; set; } = 0;
+        public decimal CantidadReservada { get; set; } = 0;
+        public decimal PesoReservado { get; set; } = 0;
+        public DateTime FechaIngreso { get; set; } = new DateTime(1900, 1, 1);
+        public DateTime FechaVence { get; set; } = new DateTime(1900, 1, 1);
     }
 }

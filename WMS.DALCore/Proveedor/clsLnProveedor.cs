@@ -936,4 +936,65 @@ public class clsLnProveedor
             throw;
         }
     }
+
+    public static clsBeProveedor_bodega? Get_ProveedorBodega_By_Codigo_Proveedor(string pCodigo,
+                                                                                int pIdBodega,
+                                                                                clsBeI_nav_config_enc BeConfigEnc,
+                                                                                SqlConnection lConection,
+                                                                                SqlTransaction lTransaction)
+    {
+        clsBeProveedor_bodega? result = null;
+
+        try
+        {
+            string vSQL = "SELECT TOP 1 * FROM proveedor WHERE Codigo=@Codigo ";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+                    clsBeProveedor BeProveedor = new clsBeProveedor();
+
+                    Cargar(ref BeProveedor, lRow);
+
+                    clsBeProveedor_bodega BeProveedorBodega = new clsBeProveedor_bodega();
+                    BeProveedorBodega.IdAsignacion = clsLnProveedor_bodega.MaxID(lConection, lTransaction) + 1;
+                    BeProveedorBodega.IdProveedor = BeProveedor.IdProveedor;
+                    BeProveedorBodega.IdBodega = pIdBodega;
+                    BeProveedorBodega.Proveedor = BeProveedor;
+
+                    clsBeProveedor_bodega BeProveedorBodegaNuevo = new clsBeProveedor_bodega();
+
+                    clsPublic.CopyObject(BeProveedorBodega, ref BeProveedorBodegaNuevo);
+
+                    if (!clsLnProveedor_bodega.Get_Single_By_IdBodega_And_IdProveedor(ref BeProveedorBodega, lConection, lTransaction))
+                    {
+                        BeProveedorBodega = BeProveedorBodegaNuevo;
+                        BeProveedorBodega.User_agr = BeConfigEnc.User_agr;
+                        BeProveedorBodega.User_mod = BeConfigEnc.User_mod;
+                        BeProveedorBodega.Fec_agr = DateTime.Now;
+                        BeProveedorBodega.Fec_mod = DateTime.Now;
+                        BeProveedorBodega.Activo = true;
+                        clsLnProveedor_bodega.Insertar(BeProveedorBodega, lConection, lTransaction);
+                    }
+
+                    result = BeProveedorBodega;
+                }
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return result;
+    }
 }

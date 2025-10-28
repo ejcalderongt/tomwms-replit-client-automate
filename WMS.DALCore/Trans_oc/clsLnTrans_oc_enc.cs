@@ -520,55 +520,33 @@ public class clsLnTrans_oc_enc
             throw new Exception(vMsgError);
         }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int MaxID(SqlConnection pConection, SqlTransaction pTransaction)
     {
-
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
         int lMax = 0;
+
         try
         {
-
-
             const string sp = "Select ISNULL(Max(IdOrdenCompraEnc),0) FROM Trans_oc_enc";
 
-            bool Es_Transaccion_Remota = pConection is not null && pTransaction is not null;
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-            if (Es_Transaccion_Remota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+            var cmd = new SqlCommand(sp, pConection, pTransaction);
+            cmd.CommandType = CommandType.Text;
 
-            Object lreturnValue = cmd.ExecuteScalar();
+            object lreturnValue = cmd.ExecuteScalar();
 
             if (lreturnValue != DBNull.Value && lreturnValue != null)
             {
-                lMax = int.Parse((String)lreturnValue);
+                lMax = Convert.ToInt32(lreturnValue);
             }
 
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
             return lMax;
-
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-
-            throw new Exception(vMsgError);
+            MethodBase? currentMethodName = sf?.GetMethod();
+            string vMsgError = $"{currentMethodName?.Name} {ex1.Message}";
+            throw new Exception(vMsgError, ex1);
         }
     }
     public static void BindParameters(SqlCommand cmd, dynamic oBeTrans_oc_enc)
