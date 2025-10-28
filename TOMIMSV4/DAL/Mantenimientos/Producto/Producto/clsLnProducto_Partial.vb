@@ -840,6 +840,7 @@ Partial Public Class clsLnProducto
 
             Dim vSQL As String = "SELECT
                         convert(bit,0) as Seleccionar,
+                        propietarios.nombre_comercial as Propietario,
                         producto.codigo AS Codigo, 
                         producto.codigo_barra AS Codigo_Barra,
                         producto.nombre AS Nombre,                            
@@ -858,7 +859,8 @@ Partial Public Class clsLnProducto
                         tipo_rotacion ON producto.IdTipoRotacion = tipo_rotacion.IdTipoRotacion LEFT OUTER JOIN
                         indice_rotacion ON producto.IdIndiceRotacion = indice_rotacion.IdIndiceRotacion LEFT OUTER JOIN
                         producto_familia ON producto.IdFamilia = producto_familia.IdFamilia LEFT OUTER JOIN
-                        producto_clasificacion ON producto.IdClasificacion = producto_clasificacion.IdClasificacion 
+                        producto_clasificacion ON producto.IdClasificacion = producto_clasificacion.IdClasificacion INNER JOIN
+						propietarios on producto.IdPropietario = propietarios.IdPropietario
                         WHERE 1 > 0 "
 
             If pIdBodega <> 0 Then
@@ -884,7 +886,9 @@ Partial Public Class clsLnProducto
                 lDTA.SelectCommand.CommandType = CommandType.Text
                 lDTA.SelectCommand.Transaction = lTransaction
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdPropietario", pIdPropietario)
+                If pIdPropietario > 0 Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdPropietario", pIdPropietario)
+                End If
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdInventarioEnc", pIdInventarioEnc)
 
                 Dim lDataTable As New DataTable

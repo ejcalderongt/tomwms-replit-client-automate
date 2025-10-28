@@ -5828,7 +5828,7 @@ Partial Public Class clsLnTrans_re_enc
 
                                     '#MECR23092025: Se agrego bitacora de logs para recepciones.
                                     '#GT02122024: nuevo punto de control
-                                    Dim vMsgError As String = "AVISO_20242211_HH resolucion serie : " & BeResolLp.Serie & " y correlativo: " & BeResolLp.Correlativo_Actual
+                                    Dim vMsgError As String = "AVISO_20242211_HH: Guardar_Recepcion_s resolucion serie " & BeResolLp.Serie & " y correlativo " & BeResolLp.Correlativo_Actual
                                     'clsLnLog_error_wms.Agregar_Error(vMsgError)
                                     clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                                          pIdEmpresa:=pIdEmpresa,
@@ -5851,7 +5851,7 @@ Partial Public Class clsLnTrans_re_enc
                                 If Not vGenera_LP And pIdResolucionLp <= 0 Then
                                     '#MECR23092025: Se agrego bitacora de logs para recepciones.
                                     '#GT02122024: nuevo punto de control
-                                    Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S recepcion sin licencia : " & pRecEnc.IdRecepcionEnc
+                                    Dim vMsgError As String = "AVISO_20242211_HH: GuardarRecepcion_S recepcion sin licencia: " & pRecEnc.IdRecepcionEnc
                                     'clsLnLog_error_wms.Agregar_Error(vMsgError)
                                     clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                                          pIdEmpresa:=pIdEmpresa,
@@ -5908,7 +5908,7 @@ Partial Public Class clsLnTrans_re_enc
 
                                 '#GTZ_nuevo control
                                 '#MECR23092025: Se agrego bitacora de logs para recepciones.
-                                Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S: se registra re_enc " & BeTransReDet.IdRecepcionEnc & " re_det: " & BeTransReDet.IdRecepcionDet & " lp: " & BeTransReDet.Lic_plate
+                                Dim vMsgError As String = "AVISO_20242211_HH: GuardarRecepcion_S se registra re_enc " & BeTransReDet.IdRecepcionEnc & " re_det: " & BeTransReDet.IdRecepcionDet & " lp: " & BeTransReDet.Lic_plate
                                 'clsLnLog_error_wms.Agregar_Error(vMsgError)
                                 clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                                      pIdEmpresa:=pIdEmpresa,
@@ -5956,7 +5956,7 @@ Partial Public Class clsLnTrans_re_enc
 
                                     '#GTZ_nuevo control
                                     '#MECR23092025: Se agrego bitacora de logs para recepciones.
-                                    Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S: se actualiza oc_enc: " & BeTransReDet.IdOrdenCompraEnc & " oc_det: " & BeTransReDet.IdOrdenCompraDet & " cantidad: " & BeTransReDet.cantidad_recibida
+                                    Dim vMsgError As String = "AVISO_20242211_HH: GuardarRecepcion_S se actualiza oc_enc: " & BeTransReDet.IdOrdenCompraEnc & " oc_det: " & BeTransReDet.IdOrdenCompraDet & " cantidad: " & BeTransReDet.cantidad_recibida
                                     'clsLnLog_error_wms.Agregar_Error(vMsgError)
                                     clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                                          pIdEmpresa:=pIdEmpresa,
@@ -5999,7 +5999,7 @@ Partial Public Class clsLnTrans_re_enc
                                                                                          lTransaction)
 
                                     '#MECR23092025: Se agrego bitacora de logs para recepciones.
-                                    Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S: stock_rec re_enc: " & pListStockRec(0).IdRecepcionEnc & " oc_det: " & pListStockRec(0).IdRecepcionDet & " lp: " & pListStockRec(0).Lic_plate
+                                    Dim vMsgError As String = "AVISO_20242211_HH: GuardarRecepcion_S guardar stock_rec con re_enc: " & pListStockRec(0).IdRecepcionEnc & " oc_det: " & pListStockRec(0).IdRecepcionDet & " lp: " & pListStockRec(0).Lic_plate
                                     'clsLnLog_error_wms.Agregar_Error(vMsgError)
                                     clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                                          pIdEmpresa:=pIdEmpresa,
@@ -6067,7 +6067,7 @@ Partial Public Class clsLnTrans_re_enc
                                             clsPublic.CopyObject(pBeStockRec, BeStock)
 
                                             If vGenera_LP AndAlso String.IsNullOrEmpty(pBeStockRec.Lic_plate) Then
-                                                Throw New Exception("ERROR_02122024_1955_HH_GuardarRecepcion_S: No se puede registrar el movimiento sin licencia.")
+                                                Throw New Exception("ERROR_02122024_1955_HH: GuardarRecepcion_S No se puede registrar el movimiento sin licencia.")
                                             End If
 
                                             '#GT21102025: retorna el idmovimiento, ya no solo si inserto o no con 1/0
@@ -6081,7 +6081,7 @@ Partial Public Class clsLnTrans_re_enc
 
                                             '#MECR23092025: Se agrego bitacora de logs para recepciones.
                                             '#GT02122024: nuevo punto de control
-                                            Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S: mov_insert re_enc: " & pBeStockRec.IdRecepcionEnc & " re_det: " & pBeStockRec.IdRecepcionDet & " lp: " & pBeStockRec.Lic_plate
+                                            Dim vMsgError As String = "AVISO_20242211_HH: GuardarRecepcion_S guarda movimiento con re_enc " & pBeStockRec.IdRecepcionEnc & " re_det: " & pBeStockRec.IdRecepcionDet & " lp: " & pBeStockRec.Lic_plate
                                             'clsLnLog_error_wms.Agregar_Error(vMsgError)
                                             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                                                  pIdEmpresa:=pIdEmpresa,
@@ -6116,7 +6116,7 @@ Partial Public Class clsLnTrans_re_enc
 
                                                 '#GT02122024: nuevo punto de control
                                                 '#MECR23092025: Se agrego bitacora de logs para recepciones.
-                                                Dim vMsgError2 As String = "AVISO_20242211_HH_GuardarRecepcion_S: stock_insert re_enc: " & BeStock.IdRecepcionEnc & " re_det: " & BeStock.IdRecepcionDet & " lic: " & BeStock.Lic_plate & " cantidad: " & BeStock.Cantidad
+                                                Dim vMsgError2 As String = "AVISO_20242211_HH: GuardarRecepcion_S guarda stock con re_enc: " & BeStock.IdRecepcionEnc & " re_det: " & BeStock.IdRecepcionDet & " lic: " & BeStock.Lic_plate & " cantidad: " & BeStock.Cantidad
                                                 'clsLnLog_error_wms.Agregar_Error(vMsgError)
                                                 clsLnLog_error_wms_rec.Agregar_Error(vMsgError2,
                                                                                      pIdEmpresa:=pIdEmpresa,
@@ -6256,7 +6256,7 @@ Partial Public Class clsLnTrans_re_enc
                             Else
                                 '#GTZ_nuevo control
                                 '#MECR23092025: Se agrego bitacora de logs para recepciones.
-                                Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S: no_habilitar_stock re_enc: " & pRecEnc.IdRecepcionEnc
+                                Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S: no_habilitar_stock en re_enc: " & pRecEnc.IdRecepcionEnc
                                 'clsLnLog_error_wms.Agregar_Error(vMsgError)
                                 clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                                      pIdEmpresa:=pIdEmpresa,

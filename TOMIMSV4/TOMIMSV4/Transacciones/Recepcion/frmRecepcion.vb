@@ -7990,6 +7990,10 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     '#EJC202405122223 Agregado por número de contenedor en Cumbre
                     grpDatosFiscalSAT.Visible = (txtNoContenedor.Text.Trim <> "" OrElse Control_Poliza)
 
+                    '#GT23102025: habilitar_stock no disponible en modo edición
+                    chkHabilitaStock.Enabled = False
+                    chkRecepcionManual.Enabled = False
+
             End Select
 
             'If BeTransOcEnc.No_Ticket_TMS <> "0") OrElse BeTransOcEnc.No_Ticket_TMS <> "" Then
