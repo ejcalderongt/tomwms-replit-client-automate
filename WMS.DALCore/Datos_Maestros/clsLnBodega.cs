@@ -105,8 +105,7 @@ public class clsLnBodega
             oBeBodega.Ordenar_picking_descendente = GetBool("ordenar_picking_descendente");
             oBeBodega.Permitir_Reemplazo_Picking_Misma_Licencia = GetBool("Permitir_Reemplazo_Picking_Misma_Licencia");
             oBeBodega.Dias_limite_retroactivo = GetInt("dias_limite_retroactivo");            
-            oBeBodega.Filtrar_pedidos_usuario = GetBool("filtrar_pedidos_usuario");
-            oBeBodega.Liberar_stock_depachos_parciales = GetBool("liberar_stock_depachos_parciales");
+            oBeBodega.Filtrar_pedidos_usuario = GetBool("filtrar_pedidos_usuario");            
             oBeBodega.Liberar_stock_despachos_parciales = GetBool("liberar_stock_despachos_parciales");
             oBeBodega.Homologar_lote_vencimiento = GetBool("homologar_lote_vencimiento");
             oBeBodega.Escanear_licencia_picking = GetBool("escanear_licencia_picking");
@@ -118,13 +117,8 @@ public class clsLnBodega
             oBeBodega.Despacho_automatico_hh = GetBool("despacho_automatico_hh");
         }
         catch (Exception ex)
-        {
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = sf?.GetMethod();
-            string vMsgError = string.Format("{{0}} {{1}}", currentMethodName, ex.Message);
-            
-            throw new Exception(vMsgError);
+        {            
+            throw new Exception(ex.Message);
         }
     }
 

@@ -1091,12 +1091,6 @@ Entity
  </summary>
  <returns>A new object that is a copy of this instance.</returns>
 </member>
-<member name="T:TOMWMS.clsBeI_nav_ped_traslado_det">
- <summary>
- Class clsBeI_nav_ped_traslado_det.
- </summary>
- <seealso cref="T:System.ICloneable" />
-</member>
 <member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.NoEnc">
  <summary>
  Gets or sets the no enc.

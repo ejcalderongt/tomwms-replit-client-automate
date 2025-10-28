@@ -1819,14 +1819,17 @@ Public Class TOMHHWS
 
     End Function
 
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Get_Estados_By_IdPropietario(ByVal pIdPropietario As Integer) As List(Of clsBeProducto_estado)
+    '#MA20251014 Migracion de xml a json
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Function Get_Estados_By_IdPropietario_JSON(ByVal pIdPropietario As Integer) As List(Of clsBeProducto_estado)
+        Dim responseObj As New Dictionary(Of String, Object)
 
-        Get_Estados_By_IdPropietario = Nothing
+        'Get_Estados_By_IdPropietario = Nothing
 
         Try
 
-            Return clsLnProducto_estado.Get_Estados_By_IdPropietario_For_HH(pIdPropietario)
+            Dim resultado As List(Of clsBeProducto_estado) = clsLnProducto_estado.Get_Estados_By_IdPropietario_For_HH(pIdPropietario)
+            responseObj("data") = resultado
 
         Catch ex As Exception
 
@@ -1841,25 +1844,23 @@ Public Class TOMHHWS
 
                 If mArch.Tipo = "WM" Then
                     Throw New Exception(Mensaje)
-                Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
+
                 End If
 
             End If
-
         End Try
+        Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+        Dim jsonResult As String = serializer.Serialize(responseObj)
+        Dim statusCode As Integer = If(responseObj.ContainsKey("error"), 500, 200)
 
+        With HttpContext.Current.Response
+            .Clear()
+            .StatusCode = statusCode
+            .ContentType = "application/json"
+            .Output.Write(jsonResult)
+            .End()
+        End With
+        Return Nothing
     End Function
 
     <WebMethod(), SoapHeader("mArch")>
@@ -2332,15 +2333,37 @@ Public Class TOMHHWS
 
     End Function
 
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Get_BeProducto_By_Codigo_For_HH(ByVal pCodigo As String, ByVal IdBodega As Integer) As clsBeProducto
 
+    '#MA20250210 migracion de xml a Json
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Get_BeProducto_By_Codigo_For_HH_JSON(ByVal pCodigo As String, ByVal IdBodega As Integer)
+        Dim curContext As HttpContext = HttpContext.Current
 
-        Get_BeProducto_By_Codigo_For_HH = Nothing
+        ' Get_BeProducto_By_Codigo_For_HH = Nothing
 
         Try
 
-            Return clsLnProducto.Get_BeProducto_By_Codigo(pCodigo, IdBodega)
+            ' Return clsLnProducto.Get_BeProducto_By_Codigo(pCodigo, IdBodega)
+
+            Dim producto As clsBeProducto = clsLnProducto.Get_BeProducto_By_Codigo(pCodigo, IdBodega)
+
+            If producto.UnidadMedida IsNot Nothing Then
+            End If
+
+            If producto.Stock IsNot Nothing AndAlso producto.Stock.BePresentacionProductoEnStock IsNot Nothing Then
+                If producto.Stock.BePresentacionProductoEnStock.MedidasPorTarima IsNot Nothing AndAlso producto.Stock.BePresentacionProductoEnStock.MedidasPorTarima.Count = 0 Then
+                    producto.Stock.BePresentacionProductoEnStock.MedidasPorTarima = Nothing
+                End If
+            End If
+
+            ' Serializamos el producto a JSON incluyendo nulls
+            Dim json As String = JsonConvert.SerializeObject(producto, New JsonSerializerSettings With {
+            .NullValueHandling = NullValueHandling.Include
+        })
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(json)
+            curContext.ApplicationInstance.CompleteRequest()
 
         Catch ex As Exception
 
@@ -2355,26 +2378,21 @@ Public Class TOMHHWS
 
                 If mArch.Tipo = "WM" Then
                     Throw New Exception(Mensaje)
-                Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
+
                 End If
-
             End If
-
+            Dim errorJson As String = JsonConvert.SerializeObject(New With {
+                    .Error = True,
+                    .Mensaje = ex.Message
+           })
+            curContext.Response.Clear()
+            curContext.Response.StatusCode = 500
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(errorJson)
+            curContext.ApplicationInstance.CompleteRequest()
         End Try
 
-    End Function
+    End Sub
 
 
     <WebMethod(), SoapHeader("mArch")>
@@ -5309,14 +5327,40 @@ Public Class TOMHHWS
 
     End Function
 
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Get_Ubicacion_By_Codigo_Barra_And_IdBodega(ByVal pBarra As String, ByVal pIdBodega As Integer) As clsBeBodega_ubicacion
+    '#MA20250210 migracion de xml a Json
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Function Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON(ByVal pBarra As String,
+                                                          ByVal pIdBodega As Integer) As clsBeBodega_ubicacion
 
-        Get_Ubicacion_By_Codigo_Barra_And_IdBodega = Nothing
+        ' Get_Ubicacion_By_Codigo_Barra_And_IdBodega = Nothing
+        Dim curContext As HttpContext = HttpContext.Current
 
         Try
+            Dim ubicacion As clsBeBodega_ubicacion = clsLnBodega_ubicacion.Get_Ubicacion_By_Codigo_Barra_And_IdBodega(pBarra, pIdBodega)
 
-            Return clsLnBodega_ubicacion.Get_Ubicacion_By_Codigo_Barra_And_IdBodega(pBarra, pIdBodega)
+            If ubicacion Is Nothing Then
+                Throw New Exception("No se encontró ninguna ubicación con el código de barra especificado.")
+            End If
+
+            If ubicacion.Tramo Is Nothing Then ubicacion.Tramo = New clsBeBodega_tramo() With {.Descripcion = ""}
+            If ubicacion.Sector Is Nothing Then ubicacion.Sector = New clsBeBodega_sector() With {.Descripcion = "", .IdBodega = 0}
+
+            If String.IsNullOrEmpty(ubicacion.Descripcion) Then ubicacion.Descripcion = ""
+            If ubicacion.Ancho = 0 Then ubicacion.Ancho = 0
+            If ubicacion.Largo = 0 Then ubicacion.Largo = 0
+            If ubicacion.Alto = 0 Then ubicacion.Alto = 0
+
+
+            Dim BeUbicacion As String = JsonConvert.SerializeObject(New With {.ubicacion = ubicacion},
+                                                              New JsonSerializerSettings With {
+                                                                  .NullValueHandling = NullValueHandling.Include,
+                                                                  .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                                                                  .Formatting = Formatting.None
+                                                              })
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(BeUbicacion)
+            curContext.ApplicationInstance.CompleteRequest()
 
         Catch ex As Exception
 
@@ -5331,23 +5375,15 @@ Public Class TOMHHWS
 
                 If mArch.Tipo = "WM" Then
                     Throw New Exception(Mensaje)
-                Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
                 End If
 
             End If
-
+            Dim errorJson As String = JsonConvert.SerializeObject(New With {.Error = True, .Mensaje = ex.Message})
+            curContext.Response.Clear()
+            curContext.Response.StatusCode = 500
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(errorJson)
+            curContext.ApplicationInstance.CompleteRequest()
         End Try
 
     End Function
@@ -5792,14 +5828,22 @@ Public Class TOMHHWS
     ''' </summary>
     ''' <param name="pIdBodega"></param>
     ''' <returns></returns>
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Get_IdUbicacion_Recepcion_By_IdBodega(ByVal pIdBodega As Integer) As Integer
 
-        Get_IdUbicacion_Recepcion_By_IdBodega = 0
+    '#MA20251410 migracion de xml a json
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Get_IdUbicacion_Recepcion_By_IdBodega_Json(ByVal pIdBodega As Integer)
+
+        ' Get_IdUbicacion_Recepcion_By_IdBodega = 0
 
         Try
+            Dim idUbicacion As Integer = clsLnBodega.Get_IdUbicacion_Recepcion_By_IdBodega(pIdBodega)
+            Dim result = New With {.ubicacion = idUbicacion}
+            Dim strserialize As String = JsonConvert.SerializeObject(result)
 
-            Return clsLnBodega.Get_IdUbicacion_Recepcion_By_IdBodega(pIdBodega)
+            Dim currrentContext As HttpContext = HttpContext.Current
+            currrentContext.Response.ContentType = "application/json"
+            currrentContext.Response.Write(strserialize)
+            currrentContext.Response.Flush()
 
         Catch ex As Exception
 
@@ -5811,39 +5855,53 @@ Public Class TOMHHWS
             WriteErrorToEventLog(Mensaje)
 
             If mArch IsNot Nothing Then
-
                 If mArch.Tipo = "WM" Then
                     Throw New Exception(Mensaje)
                 Else
+                    Dim result = New With {.error = Mensaje}
+                    Dim strserialize As String = JsonConvert.SerializeObject(result)
+
                     Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
+                    currrentContext.Response.Clear()
+                    currrentContext.Response.StatusCode = 500
+                    currrentContext.Response.ContentType = "application/json"
+                    currrentContext.Response.Write(strserialize)
+                    currrentContext.Response.End()
                 End If
-
             End If
-
         End Try
 
-    End Function
+    End Sub
 
-    <WebMethod(), SoapHeader("mArch")>
+    '#MA20251010 migracion de xml a json
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Function Get_Productos_By_IdUbicacion(ByVal pIdUbicacion As Integer,
                                                  ByVal pIdProductoBodega As Integer) As List(Of clsBeVW_stock_res)
 
-        Get_Productos_By_IdUbicacion = Nothing
+        Dim curContext As HttpContext = HttpContext.Current
+        'Get_Productos_By_IdUbicacion = Nothing
 
         Try
 
-            Return clsLnStock.Get_Productos_By_IdUbicacion(pIdUbicacion, pIdProductoBodega)
+            Dim productos As List(Of clsBeVW_stock_res) = clsLnStock.Get_Productos_By_IdUbicacion(pIdUbicacion, pIdProductoBodega)
+
+            Dim BeUbicacionId As String = JsonConvert.SerializeObject(productos)
+            Dim ObjProducto As JArray = JArray.Parse(BeUbicacionId)
+
+            For Each producto As JObject In ObjProducto
+                SerializarJson(producto, "Stock.BePresentacionProductoEnStock.MedidasPorTarima")
+                SerializarJson(producto, "Stock.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking")
+            Next
+
+            ' Serializar la lista a JSON
+            Dim json As String = JsonConvert.SerializeObject(ObjProducto, New JsonSerializerSettings With {
+            .NullValueHandling = NullValueHandling.Include
+        })
+
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(json)
+            curContext.ApplicationInstance.CompleteRequest()
 
         Catch ex As Exception
 
@@ -5855,23 +5913,31 @@ Public Class TOMHHWS
             WriteErrorToEventLog(Mensaje)
 
             If mArch IsNot Nothing Then
-
                 If mArch.Tipo = "WM" Then
                     Throw New Exception(Mensaje)
                 Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
-                End If
+                    Dim errorJson As String = JsonConvert.SerializeObject(New With {
+                .Error = True,
+                .Mensaje = Mensaje
+            })
+                    curContext.Response.Clear()
+                curContext.Response.StatusCode = 500
+                curContext.Response.ContentType = "application/json"
+                curContext.Response.Write(errorJson)
+                curContext.ApplicationInstance.CompleteRequest()
+            End If
+            Else
+            Dim errorJson As String = JsonConvert.SerializeObject(New With {
+            .Error = True,
+            .Mensaje = Mensaje
+        })
+
+            curContext.Response.Clear()
+            curContext.Response.StatusCode = 500
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(errorJson)
+            curContext.ApplicationInstance.CompleteRequest()
+
 
             End If
 
@@ -5880,20 +5946,50 @@ Public Class TOMHHWS
     End Function
 
     '#AT24032023 cambio de anderly
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Get_Productos_By_IdUbicacion_Existencias(ByVal pIdUbicacion As Integer,
+    '#MA17092025 xml a json Marcela Alvarez
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Get_Productos_By_IdUbicacion_Existencias_JSON(ByVal pIdUbicacion As Integer,
                                                          ByVal pIdProductoBodega As Integer,
                                                          ByVal pFechaVence As Date,
                                                          ByVal pLote As String,
                                                          ByVal pIdPresentacion As Integer,
-                                                         ByVal pLicencia As String) As List(Of clsBeVW_stock_res)
+                                                         ByVal pLicencia As String)
 
-        Get_Productos_By_IdUbicacion_Existencias = Nothing
+        Dim curContext As HttpContext = HttpContext.Current
+
+        ' Get_Productos_By_IdUbicacion_Existencias = Nothing
 
         Try
+            Dim productos As List(Of clsBeVW_stock_res) = clsLnStock.Get_Productos_By_IdUbicacion_Existencia(
+            pIdUbicacion,
+            pIdProductoBodega,
+            pFechaVence,
+            pLote,
+            pIdPresentacion,
+            pLicencia
+        )
 
-            Return clsLnStock.Get_Productos_By_IdUbicacion_Existencia(pIdUbicacion, pIdProductoBodega, pFechaVence, pLote,
-                                                                      pIdPresentacion, pLicencia)
+            For Each prod In productos
+                If prod.BePresentacionProductoEnStock IsNot Nothing AndAlso prod.BePresentacionProductoEnStock IsNot Nothing Then
+
+                    If prod.BePresentacionProductoEnStock.MedidasPorTarima IsNot Nothing AndAlso prod.BePresentacionProductoEnStock.MedidasPorTarima.Count = 0 Then
+                        prod.BePresentacionProductoEnStock.MedidasPorTarima = Nothing
+                    End If
+                End If
+
+                If prod.BePresentacionProductoEnStock IsNot Nothing AndAlso prod.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking IsNot Nothing Then
+                    prod.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking = Nothing
+                End If
+            Next
+
+            Dim json As String = JsonConvert.SerializeObject(productos, New JsonSerializerSettings With {
+            .NullValueHandling = NullValueHandling.Include
+        })
+
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(json)
+            curContext.ApplicationInstance.CompleteRequest()
 
         Catch ex As Exception
 
@@ -5909,25 +6005,21 @@ Public Class TOMHHWS
                 If mArch.Tipo = "WM" Then
                     Throw New Exception(Mensaje)
                 Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
                 End If
 
             End If
+            Dim errorJson As String = JsonConvert.SerializeObject(New With {
+            .Error = True,
+            .Mensaje = ex.Message
+        })
 
+            curContext.Response.Clear()
+            curContext.Response.StatusCode = 500
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(errorJson)
+            curContext.ApplicationInstance.CompleteRequest()
         End Try
-
-    End Function
+    End Sub
 
 
     '#AT20221025 Obtener producto por stockres_ci
@@ -5974,23 +6066,45 @@ Public Class TOMHHWS
 
     End Function
 
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Get_Productos_By_IdUbicacion_And_LicPlate(ByVal pIdUbicacion As Integer,
+    '#MA20251410 migracion de xml a json'
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Get_Productos_By_IdUbicacion_And_LicPlate_JSON(ByVal pIdUbicacion As Integer,
                                                               ByVal pIdBodega As Integer,
                                                               ByVal pIdProductoBodega As Integer,
                                                               ByVal pLicPlate As String,
-                                                              ByVal pIdPresentacion As Integer
-                                                              ) As List(Of clsBeVW_stock_res)
+                                                              ByVal pIdPresentacion As Integer)
 
-        Get_Productos_By_IdUbicacion_And_LicPlate = Nothing
+        Dim curContext As HttpContext = HttpContext.Current
+
+        'Get_Productos_By_IdUbicacion_And_LicPlate = Nothing
 
         Try
+            Dim productos As List(Of clsBeVW_stock_res) = clsLnStock.Get_Productos_By_IdUbicacion_And_LicPlate(
+            pIdUbicacion,
+            pIdBodega,
+            pIdProductoBodega,
+            pLicPlate,
+            pIdPresentacion)
 
-            Return clsLnStock.Get_Productos_By_IdUbicacion_And_LicPlate(pIdUbicacion,
-                                                                        pIdBodega,
-                                                                        pIdProductoBodega,
-                                                                        pLicPlate,
-                                                                        pIdPresentacion)
+            For Each prod In productos
+                If prod.BePresentacionProductoEnStock IsNot Nothing AndAlso prod.BePresentacionProductoEnStock IsNot Nothing Then
+                    If prod.BePresentacionProductoEnStock.MedidasPorTarima IsNot Nothing AndAlso prod.BePresentacionProductoEnStock.MedidasPorTarima.Count = 0 Then
+                        prod.BePresentacionProductoEnStock.MedidasPorTarima = Nothing
+                    End If
+                End If
+
+                If prod.BePresentacionProductoEnStock IsNot Nothing AndAlso prod.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking IsNot Nothing Then
+                    prod.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking = Nothing
+                End If
+            Next
+
+            Dim json As String = JsonConvert.SerializeObject(productos, New JsonSerializerSettings With {
+            .NullValueHandling = NullValueHandling.Include})
+
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(json)
+            curContext.ApplicationInstance.CompleteRequest()
 
         Catch ex As Exception
 
@@ -6005,26 +6119,21 @@ Public Class TOMHHWS
 
                 If mArch.Tipo = "WM" Then
                     Throw New Exception(Mensaje)
-                Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
                 End If
 
             End If
+            Dim errorJson As String = JsonConvert.SerializeObject(New With {
+           .Error = True,
+           .Mensaje = ex.Message})
 
+            curContext.Response.Clear()
+            curContext.Response.StatusCode = 500
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(errorJson)
+            curContext.ApplicationInstance.CompleteRequest()
         End Try
 
-    End Function
+    End Sub
 
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_Stock_Por_Producto_Ubicacion(ByVal pidProducto As Integer,
@@ -10078,17 +10187,41 @@ Public Class TOMHHWS
 
     End Function
 
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Get_Stock_By_Lic_Plate(ByVal pLicensePlate As String,
-                                           ByVal pIdBodega As Integer) As List(Of clsBeProducto)
+    '#MA20251410
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Get_Stock_By_Lic_Plate_JSON(ByVal pLicensePlate As String,
+                                      ByVal pIdBodega As Integer)
 
-        Get_Stock_By_Lic_Plate = Nothing
-
+        'Get_Stock_By_Lic_Plate = Nothing
+        Dim curContext As HttpContext = HttpContext.Current
         Try
 
-            Return clsLnStock.Get_Stock_By_LicensePlate(pLicensePlate,
-                                                        pIdBodega)
+            'Return clsLnStock.Get_Stock_By_LicensePlate(pLicensePlate,
+            'pIdBodega)
 
+            Dim productos As List(Of clsBeProducto) = clsLnStock.Get_Stock_By_LicensePlate(pLicensePlate, pIdBodega)
+
+            Dim stockprodu As String = JsonConvert.SerializeObject(productos)
+            Dim ObjProducto As JArray = JArray.Parse(stockprodu)
+
+            For Each producto As JObject In ObjProducto
+                SerializarJson(producto, "Presentacion.MedidasPorTarima")
+                SerializarJson(producto, "Presentacion.RellenadoPorUbicacionDePicking")
+                SerializarJson(producto, "Presentaciones")
+                SerializarJson(producto, "Parametros")
+                SerializarJson(producto, "Stock.BePresentacionProductoEnStock.MedidasPorTarima")
+                SerializarJson(producto, "Stock.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking")
+            Next
+
+            'Dim responseObj As New With {.items = productos}
+            Dim json As String = JsonConvert.SerializeObject(ObjProducto, New JsonSerializerSettings With {
+            .NullValueHandling = NullValueHandling.Include
+            })
+
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(json)
+            curContext.ApplicationInstance.CompleteRequest()
         Catch ex As Exception
 
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
@@ -10102,26 +10235,22 @@ Public Class TOMHHWS
 
                 If mArch.Tipo = "WM" Then
                     Throw New Exception(Mensaje)
-                Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
                 End If
 
             End If
+            Dim errorJson As String = JsonConvert.SerializeObject(New With {
+            .Error = True,
+            .Mensaje = ex.Message
+        })
 
+            curContext.Response.Clear()
+            curContext.Response.StatusCode = 500
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(errorJson)
+            curContext.ApplicationInstance.CompleteRequest()
         End Try
 
-    End Function
+    End Sub
 
     '<WebMethod(), SoapHeader("mArch")>
     'Public Function Get_Stock_By_Lic_Plate_And_IdUbicacion(ByVal pLicensePlate As String,
@@ -10970,28 +11099,48 @@ Public Class TOMHHWS
 
     End Sub
 
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function ml_get_ubicacion_sugerida(ByVal pIdProducto As Integer,
-                                              ByVal pIdBodega As Integer,
-                                              ByVal pIdProductoBodega As Integer,
-                                              ByVal pLote As String,
-                                              ByVal pFechaVence As Date,
-                                              ByVal pIdProductoEstado As Integer,
-                                              ByVal pIdUmBas As Integer,
-                                              ByVal pIdPresentacion As Integer) As List(Of clsLnTransUbicSugerida2.USUbicStrucStage5)
+    '#MA20250210 migracion de xml a Json
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub ml_get_ubicacion_sugerida_JSON(ByVal pIdProducto As Integer,
+                                          ByVal pIdBodega As Integer,
+                                          ByVal pIdProductoBodega As Integer,
+                                          ByVal pLote As String,
+                                          ByVal pFechaVence As Date,
+                                          ByVal pIdProductoEstado As Integer,
+                                          ByVal pIdUmBas As Integer,
+                                          ByVal pIdPresentacion As Integer)
 
-        ml_get_ubicacion_sugerida = Nothing
+        ' ml_get_ubicacion_sugerida = Nothing
+        Dim curContext As HttpContext = HttpContext.Current
 
         Try
 
-            Return clsLnTransUbicSugerida2.Get_Ubicaciones_Sugeridas(pIdProducto,
-                                                                     pIdBodega,
-                                                                     pIdProductoBodega,
-                                                                     pLote,
-                                                                     pFechaVence,
-                                                                     pIdProductoEstado,
-                                                                     pIdUmBas,
-                                                                     pIdPresentacion)
+            Dim listaUbicaciones As List(Of clsLnTransUbicSugerida2.USUbicStrucStage5) =
+            clsLnTransUbicSugerida2.Get_Ubicaciones_Sugeridas(pIdProducto,
+                                                              pIdBodega,
+                                                              pIdProductoBodega,
+                                                              pLote,
+                                                              pFechaVence,
+                                                              pIdProductoEstado,
+                                                              pIdUmBas,
+                                                              pIdPresentacion)
+
+            If listaUbicaciones Is Nothing Then
+                listaUbicaciones = New List(Of clsLnTransUbicSugerida2.USUbicStrucStage5)()
+            End If
+
+            Dim json As String = JsonConvert.SerializeObject(New With {
+            .items = listaUbicaciones
+        }, New JsonSerializerSettings With {
+            .NullValueHandling = NullValueHandling.Include,
+            .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            .Formatting = Formatting.None
+        })
+
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(json)
+            curContext.ApplicationInstance.CompleteRequest()
 
         Catch ex As Exception
 
@@ -11006,26 +11155,22 @@ Public Class TOMHHWS
 
                 If mArch.Tipo = "WM" Then
                     Throw New Exception(Mensaje)
-                Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
                 End If
 
             End If
+            Dim errorJson As String = JsonConvert.SerializeObject(New With {
+            .Error = True,
+            .Mensaje = ex.Message
+        })
 
+            curContext.Response.Clear()
+            curContext.Response.StatusCode = 500
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(errorJson)
+            curContext.ApplicationInstance.CompleteRequest()
         End Try
 
-    End Function
+    End Sub
 
     '#CKFK 20200505 Creé función para actualizar la cantidad en las verificaciones de la aplicación de Android
     '#AT20241206 Agregue el parametro pIdPedidoEnc
@@ -11642,17 +11787,24 @@ Public Class TOMHHWS
         End Try
 
     End Function
+    '#MA20251410 migracion de xml a json
+    <WebMethod(), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True)>
+    Public Sub Existe_Lp_By_Licencia_And_IdBodega_JSON(ByVal pLic_Plate As String, ByVal pIdBodega As Integer)
+        Dim curContext As HttpContext = HttpContext.Current
 
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Existe_Lp_By_Licencia_And_IdBodega(ByVal pLic_Plate As String, ByVal pIdBodega As Integer) As Boolean
-
-        Existe_Lp_By_Licencia_And_IdBodega = False
+        ' Existe_Lp_By_Licencia_And_IdBodega = False
 
         Try
 
             'Existe_Lp_By_Licencia_And_IdBodega = clsLnStock_rec.Existe_Lp_In_Stock(pLic_Plate)
             '#CKFK20220618 Modifiqué la funcion que se llama para que si se haga esta consulta por licencia
-            Existe_Lp_By_Licencia_And_IdBodega = clsLnStock.Existe_Lp_In_Stock_By_IdBodega(pLic_Plate, pIdBodega)
+            Dim Existe As Boolean = clsLnStock.Existe_Lp_In_Stock_By_IdBodega(pLic_Plate, pIdBodega)
+            Dim json As String = Newtonsoft.Json.JsonConvert.SerializeObject(New With {.Existe = Existe})
+
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(json)
+            curContext.ApplicationInstance.CompleteRequest()
 
         Catch ex As Exception
 
@@ -11667,26 +11819,19 @@ Public Class TOMHHWS
 
                 If mArch.Tipo = "WM" Then
                     Throw New Exception(Mensaje)
-                Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
+
                 End If
 
             End If
-
+            Dim errorJson As String = String.Format("{{""Error"":true,""Mensaje"":""{0}""}}", ex.Message.Replace("""", "'"))
+            curContext.Response.Clear()
+            curContext.Response.StatusCode = 500
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(errorJson)
+            curContext.ApplicationInstance.CompleteRequest()
         End Try
 
-    End Function
+    End Sub
 
     '#AT20250129 Agregué el parámetro pIdUbicStock en Get_Ubicacion_LP
     <WebMethod(), SoapHeader("mArch")>
@@ -11779,14 +11924,31 @@ Public Class TOMHHWS
 
     End Function
 
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Es_Pallet_No_Estandar(ByVal pStock As clsBeStock) As Boolean
+    '#MA20251410 migracion de xml a json
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=False, XmlSerializeString:=False)>
+    Public Function Es_Pallet_No_Estandar_JSON(ByVal pStock As clsBeStock) As Boolean
 
-        Es_Pallet_No_Estandar = False
+        Dim curContext As HttpContext = HttpContext.Current
+
+        ' Es_Pallet_No_Estandar = False
 
         Try
 
-            Es_Pallet_No_Estandar = clsLnStock.Es_Pallet_No_Estandar(pStock)
+            Dim esNoEstandar As Boolean = clsLnStock.Es_Pallet_No_Estandar(pStock)
+
+            Dim responseObj As New With {
+            .Error = False,
+            .Resultado = esNoEstandar
+        }
+
+            Dim json As String = JsonConvert.SerializeObject(responseObj, New JsonSerializerSettings With {
+            .NullValueHandling = NullValueHandling.Ignore
+        })
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(json)
+            curContext.ApplicationInstance.CompleteRequest()
+
 
         Catch ex As Exception
 
@@ -11801,23 +11963,19 @@ Public Class TOMHHWS
 
                 If mArch.Tipo = "WM" Then
                     Throw New Exception(Mensaje)
-                Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
                 End If
 
             End If
+            Dim errorJson As String = JsonConvert.SerializeObject(New With {
+            .Error = True,
+            .Mensaje = ex.Message
+        })
 
+            curContext.Response.Clear()
+            curContext.Response.StatusCode = 500
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(errorJson)
+            curContext.ApplicationInstance.CompleteRequest()
         End Try
 
     End Function
@@ -12057,16 +12215,32 @@ Public Class TOMHHWS
 
     End Function
 
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Ubicacion_Es_Valida(ByVal pIdProducto As Integer,
-                                        ByVal pIdUbicacion As Integer,
-                                        ByVal pIdBodega As Integer) As Boolean
 
-        Ubicacion_Es_Valida = True
+    '#MA20250210 migracion de xml a Json
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Ubicacion_Es_Valida_JSON(ByVal pIdProducto As Integer,
+                                    ByVal pIdUbicacion As Integer,
+                                    ByVal pIdBodega As Integer)
+
+        ' Ubicacion_Es_Valida = True
+
+        Dim curContext As HttpContext = HttpContext.Current
 
         Try
 
-            Return clsLnTrans_ubicsug.Ubicacion_Es_Valida(pIdProducto, pIdUbicacion, pIdBodega)
+            Dim esvalida As Boolean = clsLnTrans_ubicsug.Ubicacion_Es_Valida(pIdProducto, pIdUbicacion, pIdBodega)
+
+            Dim json As String = JsonConvert.SerializeObject(New With {
+            .UbicacionValida = esvalida
+        },
+        New JsonSerializerSettings With {
+            .NullValueHandling = NullValueHandling.Include
+        })
+
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(json)
+            curContext.ApplicationInstance.CompleteRequest()
 
         Catch ex As Exception
 
@@ -12080,26 +12254,21 @@ Public Class TOMHHWS
 
                 If mArch.Tipo = "WM" Then
                     Throw New Exception(Mensaje)
-                Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
                 End If
-
             End If
+            Dim errorJson As String = JsonConvert.SerializeObject(New With {
+           .Error = True,
+           .Mensaje = ex.Message
+       })
 
+            curContext.Response.Clear()
+            curContext.Response.StatusCode = 500
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(errorJson)
+            curContext.ApplicationInstance.CompleteRequest()
         End Try
 
-    End Function
+    End Sub
 
     Public Shared Property CredencialesConexion As New NetworkCredential With
                 {.Domain = "byb",
@@ -16086,11 +16255,43 @@ Public Class TOMHHWS
 
     End Sub
 
+    Private Sub SerializarJson(ByVal raiz As JObject, ByVal ruta As String)
+        Try
+            If raiz Is Nothing OrElse String.IsNullOrWhiteSpace(ruta) Then Exit Sub
+
+            Dim partes As String() = ruta.Split("."c)
+            Dim objetoPadre As JObject = raiz
+
+            For i As Integer = 0 To partes.Length - 2
+                Dim siguiente As JToken = objetoPadre(partes(i))
+                If siguiente Is Nothing OrElse siguiente.Type <> JTokenType.Object Then
+                    Exit Sub
+                End If
+                objetoPadre = CType(siguiente, JObject)
+            Next
+
+            Dim claveFinal As String = partes(partes.Length - 1)
+            Dim valorActual As JToken = objetoPadre(claveFinal)
+            If valorActual Is Nothing Then Exit Sub
+
+            If valorActual.Type = JTokenType.Object Then
+                Dim obj = CType(valorActual, JObject)
+                If obj("items") IsNot Nothing Then Exit Sub
+            End If
+
+            Dim nuevaEstructura As New JObject()
+            nuevaEstructura("items") = valorActual
+            objetoPadre(claveFinal) = nuevaEstructura
+
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    '#MA 20251014 Migracion de xml a json
     <WebMethod, SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
-    Public Function Get_Ubicacion_Sugerida(ByVal Licencia As String) As String
+    Public Function Get_Ubicacion_Sugerida_JSON(ByVal Licencia As String) As String
 
-        Get_Ubicacion_Sugerida = Nothing
-
+        Dim responseObj As New Dictionary(Of String, Object)
         Try
 
             ' Sugerir ubicaciones para el pallet
@@ -16099,6 +16300,14 @@ Public Class TOMHHWS
 
             Dim vIdUbicacion As Integer = 0
 
+            If ubicacionesSugeridas Is Nothing Then
+                clsLnLog_error_wms.Agregar_Error("Sugerir_Ubicaciones devolvió Nothing")
+            Else
+                clsLnLog_error_wms.Agregar_Error("Cantidad de ubicaciones encontradas: " & ubicacionesSugeridas.Count)
+            End If
+
+            responseObj("data") = ubicacionesSugeridas
+
             If Not ubicacionesSugeridas Is Nothing Then
                 If ubicacionesSugeridas.Count > 0 Then
                     vIdUbicacion = ubicacionesSugeridas.Take(1).FirstOrDefault.IdUbicacion
@@ -16106,14 +16315,14 @@ Public Class TOMHHWS
             End If
 
             ' Serializar a JSON y establecer encabezados de respuesta
-            Dim jsonResult As String = JsonConvert.SerializeObject(vIdUbicacion)
+            ' Dim jsonResult As String = JsonConvert.SerializeObject(vIdUbicacion)
 
-            HttpContext.Current.Response.Clear()
-            HttpContext.Current.Response.ContentType = "application/json; charset=utf-8"
-            HttpContext.Current.Response.Write(jsonResult)
+            ' HttpContext.Current.Response.Clear()
+            ' HttpContext.Current.Response.ContentType = "application/json; charset=utf-8"
+            'HttpContext.Current.Response.Write(jsonResult)
             'HttpContext.Current.Response.End()
 
-            Return jsonResult
+            ' Return jsonResult
 
         Catch ex As Exception
 
@@ -16130,25 +16339,22 @@ Public Class TOMHHWS
                     If Not Mensaje.Contains("Subproceso anulado") Then
                         Throw New Exception(Mensaje)
                     End If
-                Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
                 End If
-
             End If
-
         End Try
+        Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+        Dim jsonResult As String = serializer.Serialize(responseObj)
+        Dim statusCode As Integer = If(responseObj.ContainsKey("error"), 500, 200)
 
+        With HttpContext.Current.Response
+            .Clear()
+            .StatusCode = statusCode
+            .ContentType = "application/json"
+            .Output.Write(jsonResult)
+            .End()
+        End With
+
+        Return jsonResult
     End Function
 
     ''' <summary>
@@ -16946,14 +17152,20 @@ Public Class TOMHHWS
 
     End Function
 
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Get_Producto_Talla_Color(IdProductoTallaColor As Integer) As List(Of clsBeProducto_talla_color)
-        Get_Producto_Talla_Color = Nothing
+    '#MA20251015 Migracion de xml a json
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Get_Producto_Talla_Color_JSON()
 
         Try
-            Get_Producto_Talla_Color = clsLnProducto_talla_color.Get_All()
+            Dim ltallacolor As List(Of clsBeProducto_talla_color)
+            ltallacolor = clsLnProducto_talla_color.Get_All()
 
-            Return Get_Producto_Talla_Color
+            HttpContext.Current.Response.AddHeader("Access-Control-Allow-Methods", "GET")
+            Dim strserialize As String = JsonConvert.SerializeObject(ltallacolor)
+            Dim currrentContext As HttpContext = HttpContext.Current
+            currrentContext.Response.ContentType = "application/json"
+            currrentContext.Response.Write(strserialize)
+            currrentContext.Response.Flush()
 
         Catch ex As Exception
 
@@ -16969,25 +17181,21 @@ Public Class TOMHHWS
                 If mArch.Tipo = "WM" Then
                     Throw New Exception(Mensaje)
                 Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
+                    Dim errorJson As String = JsonConvert.SerializeObject(New With {.Error = True, .Mensaje = ex.Message})
+                    Dim curContext As HttpContext = HttpContext.Current
+
+                    curContext.Response.Clear()
+                    curContext.Response.StatusCode = 500
+                    curContext.Response.ContentType = "application/json"
+                    curContext.Response.Write(errorJson)
+                    curContext.ApplicationInstance.CompleteRequest()
                 End If
 
             End If
 
         End Try
 
-    End Function
+    End Sub
 
     <WebMethod, SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Get_Colores()
@@ -17085,16 +17293,29 @@ Public Class TOMHHWS
 
     End Sub
 
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Get_Detalle_Rec_By_IdCompra_Licencia(pIdOrdenCompra As Integer,
-                                                         pLicencia As String) As List(Of clsBeTrans_re_det)
-        Get_Detalle_Rec_By_IdCompra_Licencia = Nothing
+    '#MA20201510 Migracion de xml a json
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Get_Detalle_Rec_By_IdCompra_Licencia_JSON(ByVal pIdOrdenCompra As Integer,
+                                                      ByVal pLicencia As String)
+
+        Dim curContext As HttpContext = HttpContext.Current
+        'Get_Detalle_Rec_By_IdCompra_Licencia = Nothing
 
         Try
-            Get_Detalle_Rec_By_IdCompra_Licencia = clsLnTrans_re_det.Get_Detalle_Rec_By_IdCompra_Licencia(pIdOrdenCompra,
-                                                                                                          pLicencia)
+            Dim listaDetalles As List(Of clsBeTrans_re_det)
+            listaDetalles = clsLnTrans_re_det.Get_Detalle_Rec_By_IdCompra_Licencia(pIdOrdenCompra, pLicencia)
 
-            Return Get_Detalle_Rec_By_IdCompra_Licencia
+            Dim jsonResponse As String = JsonConvert.SerializeObject(New With {.detalle_recepcion = listaDetalles},
+            New JsonSerializerSettings With {
+                .NullValueHandling = NullValueHandling.Include,
+                .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                .Formatting = Formatting.None
+            })
+
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(jsonResponse)
+            curContext.ApplicationInstance.CompleteRequest()
 
         Catch ex As Exception
 
@@ -17110,25 +17331,19 @@ Public Class TOMHHWS
                 If mArch.Tipo = "WM" Then
                     Throw New Exception(Mensaje)
                 Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
+                    Dim errorJson As String = JsonConvert.SerializeObject(New With {.Error = True, .Mensaje = ex.Message})
+                    curContext.Response.Clear()
+                    curContext.Response.StatusCode = 500
+                    curContext.Response.ContentType = "application/json"
+                    curContext.Response.Write(errorJson)
+                    curContext.ApplicationInstance.CompleteRequest()
                 End If
 
             End If
 
         End Try
 
-    End Function
+    End Sub
 
     <WebMethod, SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Get_Producto_Talla_Color_By_Id(pIdProductoTallaColor As Integer)

@@ -1,7 +1,14 @@
-﻿namespace WMSWebAPI.Dtos.Catalogos
+﻿using WMS.EntityCore.Datos_Maestros;
+using WMS.EntityCore.Producto;
+using WMS.EntityCore.Stock;
+using WMSWebAPI.Dtos.Productos;
+using WMSWebAPI.Dtos.Stock;
+
+namespace WMSWebAPI.Dtos.Catalogos
 {
     public class ProductoDto
     {
+        // === EXISTENTES ===
         public int IdProducto { get; set; }
         public int IdPropietario { get; set; }
         public int? IdClasificacion { get; set; }
@@ -61,5 +68,54 @@
         public int? IDPRODUCTOPARAMETROB { get; set; }
         public int? IdTipoManufactura { get; set; }
         public byte[]? imagen { get; set; } = Array.Empty<byte>();
-    }
+        
+        public int IdProductoBodega { get; set; }
+
+        // Objetos relacionados (anidados)
+        public PropietarioDto? Propietario { get; set; }
+        public ProductoPresentacionDto? Presentacion { get; set; }
+        public ProductoClasificacionDto? Clasificacion { get; set; }
+        public ProductoFamiliaDto? Familia { get; set; }
+        public ProductoMarcaDto? Marca { get; set; }
+        public ProductoTipoDto? TipoProducto { get; set; }
+        public UnidadMedidaDto? UnidadMedida { get; set; }
+
+        // Colecciones relacionadas
+        public List<ProductoPresentacionDto> Presentaciones { get; set; } = new();
+        public List<clsBeProducto_codigos_barra> Codigos_Barra { get; set; } = new();
+        public List<clsBeProducto_parametros> Parametros { get; set; } = new();
+
+        // Estado/meta
+        public bool IsNew { get; set; } = true;
+        public object? Tag { get; set; }
+
+        // Presentaciones origen/destino
+        public int IdPresentacionOrigen { get; set; } = 0;
+        public int IdPresentacionDestino { get; set; } = 0;
+        public double Factor { get; set; } = 0;
+        public double ExistenciaUMBas { get; set; } = 0;
+
+        // Indice de rotación complejo + parámetros A/B
+        public clsBeIndice_rotacion? Indice_Rotacion { get; set; }
+        public ProductoParametroADto? ParametroA { get; set; }
+        public ProductoParametroBDto? ParametroB { get; set; }
+
+        // Campos para inventario cíclico
+        public string? Lote { get; set; } = "";
+        public DateTime? FechaVence { get; set; }
+        public double? Cantidad { get; set; } = 0;
+        public clsBeVW_stock_res? Stock { get; set; }
+        public bool genera_lote { get; set; } = false;
+        public bool genera_lp_old { get; set; } = false;
+        public bool control_vencimiento { get; set; } = false;
+        public bool control_lote { get; set; } = false;
+        public bool control_peso { get; set; } = false;
+        public bool activo { get; set; } = true;
+    }    
+
+    public class IndiceRotacionDto
+    {
+        public int IdIndiceRotacion { get; set; }
+        public string? Nombre { get; set; }
+    }    
 }

@@ -7,8 +7,7 @@ namespace WMSWebAPI.Services
 {
     public interface IProductoMi3SyncService
     {
-        void ProcesarProductoSingleDto(ProductoMi3Dto dto, SqlConnection connection, SqlTransaction transaction);
-        // Firma para la interfaz IProductoMi3SyncService
+        int ProcesarProductoSingleDto(ProductoMi3Dto dto, SqlConnection connection, SqlTransaction transaction);        
         List<clsBeProducto> Get_All();
 
     }

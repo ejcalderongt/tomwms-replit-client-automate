@@ -563,7 +563,7 @@ Public Class SapServiceLayerClient
             Dim entrega As New FacturaReservaEntregaDto With {
             .CardCode = oOrderPurchase.CardCode,
             .U_DOCUMENTO_WMS = vIdRecepcionEnc,
-            .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHora(Now),
+            .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
             .DocDate = Date.Today,
             .DocDueDate = Date.Today,
             .Comments = $"{oOrderPurchase.Comments} - Entrega generada desde WMS IdRecepcion: {IdRecepcionEnc} IdOcEnc: {BeTransOCEnc.IdOrdenCompraEnc}",
@@ -844,7 +844,7 @@ Public Class SapServiceLayerClient
             .Comments = oOrderPurchase.Comments & " - Entrega generada desde WMS IdRecepcion: " & IdRecepcionEnc & " IdOcEnc: " & BeTransOCEnc.IdOrdenCompraEnc,
             .U_OPERADOR_WMS = vOperadorHHWMS,
             .U_DOCUMENTO_WMS = IdRecepcionEnc,
-            .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHora(Now),
+            .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
             .DocumentLines = New List(Of FacturaReservaEntregaLineDto)()
             }
 
@@ -856,7 +856,7 @@ Public Class SapServiceLayerClient
             .Comments = oOrderPurchase.Comments & " - Entrega generada desde WMS IdRecepcion: " & IdRecepcionEnc & " IdOcEnc: " & BeTransOCEnc.IdOrdenCompraEnc,
             .U_OPERADOR_WMS = vOperadorHHWMS,
             .U_DOCUMENTO_WMS = IdRecepcionEnc,
-            .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHora(Now),
+            .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
             .DocumentLines = New List(Of FacturaReservaEntregaLineDto)()
             }
 

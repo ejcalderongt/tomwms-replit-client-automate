@@ -817,7 +817,7 @@ public class clsLnProducto
 
             throw new Exception(vMsgError, ex);
         }
-    }
+    }    
 
     public static void Valida_Atributos(clsBeProductoMi3 BeProductoMi3, SqlConnection connection, SqlTransaction tx)
     {
@@ -828,17 +828,22 @@ public class clsLnProducto
             var BeInavConfigEnc = new clsBeI_nav_config_enc();
             clsLnI_nav_config_enc.GetSingle(BeInavConfigEnc, connection, tx);
 
-            if (BeInavConfigEnc == null)
-                throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
+            var beInavConfigEnc = new clsBeI_nav_config_enc();
+            clsLnI_nav_config_enc.GetSingle(config, beInavConfigEnc, connection, effectiveTx);
+            if (beInavConfigEnc is null || beInavConfigEnc.IdUsuario <= 0)
+                throw new ArgumentNullException(nameof(beInavConfigEnc),
+                    "No se encuentra la configuración de interfaz para definir propiedades de auditoría.");
+
+            var now = DateTime.Now;
+            var userId = beInavConfigEnc.IdUsuario.ToString();
 
             if (!existe)
             {
-                var Clasificacion = new clsBeProducto_clasificacion();
-                var Familia = new clsBeProducto_familia();
-                var Marca = new clsBeProducto_marca();
-                var TipoProducto = new clsBeProducto_tipo();
-                var Umbas = new clsBeUnidad_medida();
-                var ProductoBodega = new clsBeProducto_bodega();
+                if (!string.IsNullOrWhiteSpace(BeProductoMi3.CodigoClasificacion))
+                {
+                    bool ok = clsLnProducto_clasificacion.Existe_By_Codigo(BeProductoMi3.CodigoClasificacion, ref clasificacion, connection, effectiveTx);
+                    if (!ok) throw new Exception($"No existe la Clasificación con código: '{BeProductoMi3.CodigoClasificacion}'");
+                }
 
                 if (!string.IsNullOrEmpty(BeProductoMi3.CodigoClasificacion))
                 {

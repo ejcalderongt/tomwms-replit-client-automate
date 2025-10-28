@@ -16,14 +16,23 @@ public class ProductoMi3SyncService : IProductoMi3SyncService
         _configuration = configuration;
         _mapper = mapper;
     }
-
-    public void ProcesarProductoSingleDto(ProductoMi3Dto dto, SqlConnection conn, SqlTransaction tx)
+    public int ProcesarProductoSingleDto(ProductoMi3Dto dto, SqlConnection conn, SqlTransaction tx)
     {
+        if (dto == null) throw new ArgumentNullException(nameof(dto));
+        if (conn == null) throw new ArgumentNullException(nameof(conn));
+        if (tx == null) throw new ArgumentNullException(nameof(tx));
+
         try
         {
-            var producto = _mapper.Map<clsBeProductoMi3>(dto);
-            if (producto != null)
-                clsLnProducto.Valida_Atributos(_configuration, producto, conn, tx);
+            var be = _mapper.Map<clsBeProductoMi3>(dto);
+            if (be == null) throw new InvalidOperationException("No fue posible mapear el DTO a clsBeProductoMi3.");
+            
+            int idProducto = clsLnProducto.Procesar_Producto(_configuration, be, conn, tx);
+
+            if (idProducto <= 0)
+                throw new InvalidOperationException($"No se obtuvo IdProducto para el código '{be.codigo}'.");
+
+            return idProducto;
         }
         catch (Exception ex)
         {
@@ -31,7 +40,6 @@ public class ProductoMi3SyncService : IProductoMi3SyncService
         }
     }
 
-    // Método en la clase de servicio (ProductoMi3SyncService)
     public List<clsBeProducto> Get_All()
     {
         try
