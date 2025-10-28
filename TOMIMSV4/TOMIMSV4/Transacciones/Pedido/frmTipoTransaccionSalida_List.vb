@@ -135,8 +135,13 @@ Public Class frmTipoTransaccionSalida_List
             e.Graph.DrawString(reportHeader, Color.Black, rec, DevExpress.XtraPrinting.BorderSide.None)
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario)
             Throw ex
         End Try
 
@@ -166,8 +171,14 @@ Public Class frmTipoTransaccionSalida_List
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pStackTrace:=ex.StackTrace)
 
         End Try
 

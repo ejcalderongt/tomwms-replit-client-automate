@@ -132,8 +132,9 @@ Public Class clsLnTrans_pe_encDMS
             Dim intento As Integer = 0
             Const maxIntentos As Integer = 2
 
+            clsHelper.LogMensaje(lblprg, "Pedido: " & pPeEnc.IdPedidoEnc, clsHelper.TipoMensaje.Info)
             clsHelper.LogMensaje(lblprg, "Iterando Registro: " & Contador & "/" & registros, clsHelper.TipoMensaje.Info)
-            'clsHelper.LogMensaje(lblprg, "Pedido: " & pPeEnc.IdPedidoEnc, clsHelper.TipoMensaje.Info)
+
             Dim JsonPE = Crear_Json(lblprg, pPeEnc)
 
             If String.IsNullOrEmpty(JsonPE) Then
