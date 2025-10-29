@@ -2093,7 +2093,7 @@ Partial Public Class clsLnTrans_re_det
     Public Shared Function Get_Detalle_Rec_By_IdCompra_Licencia(pIdOrdenCompraEnc As Integer,
                                                                 pLicencia As String) As List(Of clsBeTrans_re_det)
 
-        Dim lReturnList As New List(Of clsBeTrans_re_det)
+        Dim lReturnList As List(Of clsBeTrans_re_det) = Nothing
 
         Try
 
@@ -2128,11 +2128,11 @@ Partial Public Class clsLnTrans_re_det
                                     INNER JOIN trans_oc_det 
                                         ON det.IdOrdenCompraEnc = trans_oc_det.IdOrdenCompraEnc 
                                         AND det.IdOrdenCompraDet = trans_oc_det.IdOrdenCompraDet
-                                    INNER JOIN producto_talla_color 
+                                    LEFT JOIN producto_talla_color 
                                         ON det.IdProductoTallaColor = producto_talla_color.IdProductoTallaColor
-                                    INNER JOIN talla 
+                                    LEFT JOIN talla 
                                         ON producto_talla_color.IdTalla = talla.IdTalla
-                                    INNER JOIN color 
+                                    LEFT JOIN color 
                                         ON producto_talla_color.IdColor = color.IdColor
                                 WHERE 
                                     oc.IdOrdenCompraEnc = @IdOrdenCompraEnc
@@ -2176,6 +2176,8 @@ Partial Public Class clsLnTrans_re_det
                         Dim Obj As clsBeTrans_re_det
 
                         If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                            lReturnList = New List(Of clsBeTrans_re_det)
 
                             For Each lRow As DataRow In lDataTable.Rows
 
