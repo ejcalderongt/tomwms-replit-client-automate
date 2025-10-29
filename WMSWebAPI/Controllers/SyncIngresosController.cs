@@ -121,6 +121,7 @@ namespace WMSWebAPI.Controllers
                 return StatusCode(500, new { Exito = false, Mensaje = ex.Message });
             }
         }
+        
         [HttpPost("mi3/insert")]
         public IActionResult Insert([FromBody] clsBeI_nav_ped_compra_enc beINavPedCompraEnc)
         {
