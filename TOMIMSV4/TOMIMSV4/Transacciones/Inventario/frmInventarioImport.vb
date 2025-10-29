@@ -562,6 +562,7 @@ Public Class frmInventarioImport
         Dim vCodigo_Area_SAP As String = ""
         Dim Color As String = ""
         Dim Talla As String = ""
+        Dim IdProductoTallaColor As Integer = 0
 
         Cursor.Current = Cursors.WaitCursor
 
@@ -618,6 +619,7 @@ Public Class frmInventarioImport
                 vCodigo_Area_SAP = IIf(IsDBNull(grdData.Rows(ii).Cells("ColCodigo_Area").Value), "", grdData.Rows(ii).Cells("ColCodigo_Area").Value)
                 Color = IIf(IsDBNull(grdData.Rows(ii).Cells("ColColor").Value), "", grdData.Rows(ii).Cells("ColColor").Value)
                 Talla = IIf(IsDBNull(grdData.Rows(ii).Cells("ColTalla").Value), "", grdData.Rows(ii).Cells("ColTalla").Value)
+                IdProductoTallaColor = IIf(IsDBNull(grdData.Rows(ii).Cells("ColIdProductoTallaColor").Value), "", grdData.Rows(ii).Cells("ColIdProductoTallaColor").Value)
 
                 If sFechaVence <> "" Then
                     vFechaVence = CDate(sFechaVence)
@@ -656,8 +658,9 @@ Public Class frmInventarioImport
                 BeTrans_inv_stock_prod.Parametro_b = vParametro_b
                 BeTrans_inv_stock_prod.TipoTeoricoImportacion = TipoTeoricoImportacion
                 BeTrans_inv_stock_prod.Codigo_Area = vCodigo_Area_SAP
-                BeTrans_inv_stock_prod.Talla = Talla
-                BeTrans_inv_stock_prod.Color = Color
+                BeTrans_inv_stock_prod.Codigo_Talla = Talla
+                BeTrans_inv_stock_prod.Codigo_Color = Color
+                BeTrans_inv_stock_prod.IdProductoTallaColor = IdProductoTallaColor
 
                 '#AT20251015 Campos para MAMPA
                 lInventarioTeorico.Add(BeTrans_inv_stock_prod)
@@ -897,6 +900,7 @@ Public Class frmInventarioImport
                     grdData.Item("ColCodigo_Area", i).Value = ProdInv("Codigo_Area")
                     grdData.Item("ColTalla", i).Value = ProdInv("Talla")
                     grdData.Item("ColColor", i).Value = ProdInv("Color")
+                    grdData.Item("ColIdProductoTallaColor", i).Value = ProdInv("IdProductoTallaColor")
 
                     prg.Value = i
 

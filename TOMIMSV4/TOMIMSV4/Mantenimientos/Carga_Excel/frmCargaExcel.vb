@@ -1964,6 +1964,7 @@ Public Class frmCargaExcel
         lInvenarioTeorico.Columns.Add("Codigo_Area", GetType(String))
         lInvenarioTeorico.Columns.Add("Talla", GetType(String))
         lInvenarioTeorico.Columns.Add("Color", GetType(String))
+        lInvenarioTeorico.Columns.Add("IdProductoTallaColor", GetType(Integer))
 
     End Sub
 
@@ -1992,6 +1993,7 @@ Public Class frmCargaExcel
         Dim Codigo_Area_SAP As String = ""
         Dim Color As String = ""
         Dim Talla As String = ""
+        Dim IdProductoTallaColor As Integer
 
         Try
 
@@ -2165,8 +2167,42 @@ Public Class frmCargaExcel
                 vParametro_b = IIf(pDT(i)(13) Is DBNull.Value, "", Convert.ToString(pDT(i)(13)))
                 Codigo_Area_SAP = IIf(pDT(i)(14) Is DBNull.Value, "", Convert.ToString(pDT(i)(14)))
 
-                Talla = IIf(pDT(i)(15) Is DBNull.Value, "", Convert.ToString(pDT(i)(15)))
-                Color = IIf(pDT(i)(16) Is DBNull.Value, "", Convert.ToString(pDT(i)(16)))
+                If AP.Bodega.Control_Talla_Color Then
+                    Talla = IIf(pDT(i)(15) Is DBNull.Value, "", Convert.ToString(pDT(i)(15)))
+                    Color = IIf(pDT(i)(16) Is DBNull.Value, "", Convert.ToString(pDT(i)(16)))
+
+                    Dim BeTalla = clsLnTalla.GetSingleCodigo(Talla)
+                    Dim BeColor = clsLnColor.GetSingle_By_CodigoColor(Color)
+                    Dim BeProducto = clsLnProducto.Get_Single_By_Codigo_And_Codigo_Barra(vCodigoProducto)
+
+                    If BeTalla IsNot Nothing AndAlso BeColor IsNot Nothing Then
+                        Dim TallaColor = clsLnProducto_talla_color.Get_Single_By_IdColor_IdTalla(BeProducto.IdProducto,
+                                                                                                 BeTalla.IdTalla,
+                                                                                                 BeColor.IdColor)
+
+                        If TallaColor IsNot Nothing Then
+                            IdProductoTallaColor = TallaColor.IdProductoTallaColor
+                        Else
+                            Dim BeTallaColorNuevo As New clsBeProducto_talla_color
+
+                            BeTallaColorNuevo.IdProductoTallaColor = clsLnProducto_talla_color.MaxID() + 1
+                            BeTallaColorNuevo.IdProducto = BeProducto.IdProducto
+                            BeTallaColorNuevo.IdTalla = BeTalla.IdTalla
+                            BeTallaColorNuevo.IdColor = BeColor.IdColor
+                            BeTallaColorNuevo.IdCampaña = 63
+                            BeTallaColorNuevo.CodigoSKU = BeProducto.Codigo + "" + BeTalla.Codigo + "" + BeColor.Codigo
+                            BeTallaColorNuevo.User_agr = AP.UsuarioAp.IdUsuario
+                            BeTallaColorNuevo.User_mod = AP.UsuarioAp.IdUsuario
+                            BeTallaColorNuevo.Fec_agr = Date.Today
+                            BeTallaColorNuevo.Fec_mod = Date.Today
+
+                            If clsLnProducto_talla_color.Insertar(BeTallaColorNuevo) > 0 Then
+                                IdProductoTallaColor = BeTallaColorNuevo.IdProductoTallaColor
+                            End If
+
+                        End If
+                    End If
+                End If
 
                 If Not errorCampos Then
 
@@ -2188,7 +2224,8 @@ Public Class frmCargaExcel
                                                vParametro_b,
                                                Codigo_Area_SAP,
                                                Talla,
-                                               Color)
+                                               Color,
+                                               IdProductoTallaColor)
 
                 End If
 

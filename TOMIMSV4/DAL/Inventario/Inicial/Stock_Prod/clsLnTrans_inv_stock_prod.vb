@@ -63,8 +63,9 @@ Public Class clsLnTrans_inv_stock_prod
             Ins.Add("idubicacion", "@idubicacion", DataType.Parametro)
             Ins.Add("Lic_plate", "@License_plate", DataType.Parametro)
             Ins.Add("codigo_area", "@codigo_area", DataType.Parametro)
-            Ins.Add("talla", "@talla", DataType.Parametro)
-            Ins.Add("color", "@color", DataType.Parametro)
+            Ins.Add("codigo_talla", "@talla", DataType.Parametro)
+            Ins.Add("codigo_color", "@color", DataType.Parametro)
+            Ins.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
             Ins.Add("TipoTeoricoImportacion", "@TipoTeoricoImportacion", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
@@ -95,8 +96,9 @@ Public Class clsLnTrans_inv_stock_prod
             cmd.Parameters.Add(New SqlParameter("@LICENSE_PLATE", oBeTrans_inv_stock_prod.License_plate))
             cmd.Parameters.Add(New SqlParameter("@TIPOTEORICOIMPORTACION", oBeTrans_inv_stock_prod.TipoTeoricoImportacion))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_AREA", oBeTrans_inv_stock_prod.Codigo_Area))
-            cmd.Parameters.Add(New SqlParameter("@TALLA", oBeTrans_inv_stock_prod.Talla))
-            cmd.Parameters.Add(New SqlParameter("@COLOR", oBeTrans_inv_stock_prod.Color))
+            cmd.Parameters.Add(New SqlParameter("@TALLA", oBeTrans_inv_stock_prod.Codigo_Talla))
+            cmd.Parameters.Add(New SqlParameter("@COLOR", oBeTrans_inv_stock_prod.Codigo_Color))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_inv_stock_prod.IdProductoTallaColor))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
