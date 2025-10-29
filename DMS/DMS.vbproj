@@ -215,7 +215,6 @@
     <Content Include="dms.ico" />
     <None Include="DMS_1_TemporaryKey.pfx" />
     <None Include="DMS_2_TemporaryKey.pfx" />
-    <None Include="DMS_TemporaryKey.pfx" />
     <None Include="My Project\app.manifest" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
