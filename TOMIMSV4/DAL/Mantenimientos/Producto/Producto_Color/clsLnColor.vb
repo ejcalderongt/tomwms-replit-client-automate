@@ -734,4 +734,49 @@ Public Class clsLnColor
 
     End Function
 
+    Public Shared Function GetSingle_By_CodigoColor(pCodigoColor As String) As clsBeColor
+
+        GetSingle_By_CodigoColor = Nothing
+
+        Try
+
+            Const sp As String = "SELECT * FROM Color Where (Codigo = @CodigoColor) "
+
+            Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(sp, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.Add(New SqlParameter("@CodigoColor", pCodigoColor))
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+
+                        Dim vBeColor As New clsBeColor
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                            Cargar(vBeColor, lDataTable.Rows(0))
+                            GetSingle_By_CodigoColor = vBeColor
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
 End Class
