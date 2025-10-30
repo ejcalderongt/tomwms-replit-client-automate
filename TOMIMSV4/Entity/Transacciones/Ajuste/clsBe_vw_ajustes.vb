@@ -32,6 +32,7 @@ Public Class clsBe_vw_ajustes
     Public Property Nombre_Centro_Costo As String = ""
     Public Property Talla As String = ""
     Public Property Color As String = ""
+    Public Property Usr_Agr As String = ""
 
     Sub New()
     End Sub

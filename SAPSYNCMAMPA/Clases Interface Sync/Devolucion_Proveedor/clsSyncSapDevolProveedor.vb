@@ -1,4 +1,5 @@
 ﻿Imports System.Data.SqlClient
+Imports System.Globalization
 Imports System.Net
 Imports System.Net.Http
 Imports System.Net.Http.Headers
@@ -7,6 +8,7 @@ Imports System.Text
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 Imports TOMWMS.clsDataContractDI
+Imports TOMWMS.clsSyncSapTrasladosEnvio
 
 Public Class clsSyncSapDevolProveedor
 
@@ -377,14 +379,21 @@ Public Class clsSyncSapDevolProveedor
 
     End Sub
 
-
-
     <Serializable>
     Private Class GoodsReturnDto
         Public Property CardCode As String
         Public Property DocDate As Date
         Public Property DocDueDate As Date
-        Public Property Comments As String
+        Public Property Comments As String = ""
+        Public Property U_USR_PICK As String = ""
+        Public Property U_DOCUMENTO_WMS As Integer = 0
+        Public Property U_INICIO_PICK As DateTime = Now
+        Public Property U_FIN_PICK As DateTime = Now
+        Public Property U_ESTADO_PEDIDO As Integer = 0
+        Public Property U_INICIO_ENVIO As DateTime = Now
+        Public Property U_FIN_ENVIO As DateTime = Now
+        Public Property U_ENVIADO_WMS As Integer = 1
+        Public Property U_ENVIADO_SAP_WMS As String = ""
         Public Property DocumentLines As List(Of GoodsReturnLineDto)
     End Class
 
@@ -455,11 +464,21 @@ Public Class clsSyncSapDevolProveedor
             ' -------------------------
             Dim docEntrySolicitud As Integer = CInt(no_pedido)
 
+            Dim vOperadorPickingDefecto As String = clsLnTrans_picking_ubic.Get_Operador_Defecto_By_IdPickingEnc(bePedidoEnc.Picking.IdPickingEnc)
+
             Dim devolucion As New GoodsReturnDto With {
                 .CardCode = If(bePedidoEnc IsNot Nothing AndAlso bePedidoEnc.Cliente IsNot Nothing, bePedidoEnc.Cliente.Codigo, Nothing),
                 .DocDate = Date.Today,
                 .DocDueDate = Date.Today,
                 .Comments = $"Devolución generada por WMS sobre Solicitud SAP: {no_pedido} - Pedido WMS: {If(bePedidoEnc IsNot Nothing, bePedidoEnc.IdPedidoEnc.ToString(), "")}",
+                .U_USR_PICK = vOperadorPickingDefecto,
+                .U_ENVIADO_WMS = 2,
+                .U_DOCUMENTO_WMS = bePedidoEnc.IdPedidoEnc,
+                .U_INICIO_PICK = bePedidoEnc.Picking.Hora_ini.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                .U_FIN_PICK = bePedidoEnc.Picking.Hora_fin.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                .U_INICIO_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                .U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                .U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now),
                 .DocumentLines = New List(Of GoodsReturnLineDto)()
             }
 
@@ -577,9 +596,18 @@ Public Class clsSyncSapDevolProveedor
                 Dim body = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult()
 
                 If resp.IsSuccessStatusCode Then
+
+                    Dim docEntryTransferPrimary As Integer = 0
+                    Dim docNumTransferPrimary As Integer = 0
+                    ' Parsear el JSON
+                    Dim jsonObj As JObject = JObject.Parse(body)
+
+                    ' Capturar los valores
+                    docEntryTransferPrimary = jsonObj("DocEntry")
+                    docNumTransferPrimary = jsonObj("DocNum")
+
                     creado = True
-                    clsPublic.Actualizar_Progreso(lblprg, "✅ Devolución creada en SAP B1 (GoodsReturns):")
-                    clsPublic.Actualizar_Progreso(lblprg, body)
+                    clsPublic.Actualizar_Progreso(lblprg, $"✅ Devolución creada en SAP B1 DocNum {docNumTransferPrimary}")
                 Else
                     clsPublic.Actualizar_Progreso(lblprg, $"❌ Error SL {resp.StatusCode}:")
                     clsPublic.Actualizar_Progreso(lblprg, body)

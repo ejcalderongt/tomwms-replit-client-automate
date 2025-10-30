@@ -1109,8 +1109,8 @@ Public Class frmEjecucion
             If Ejecutar Then
                 lblprg.Text = ""
                 Await clsSyncSapTrasladosEnvio.Enviar_Traslados_Salida_Desde_Solicitud_Prorrateo(lblprg,
-                                                                                          prg,
-                                                                                          tTipoDocumentoSalida.Transferencia_Directa)
+                                                                                                 prg,
+                                                                                                 tTipoDocumentoSalida.Transferencia_Directa)
             End If
 
         Catch ex As Exception
@@ -1388,6 +1388,61 @@ Public Class frmEjecucion
             procesoEnEjecucion = False
         End Try
 
+    End Sub
+
+    Private Sub GetToken_ItemClick(sender As Object, e As ItemClickEventArgs) Handles GetToken.ItemClick
+        Dim vHanaService As SapServiceLayerClient
+
+        vHanaService = New SapServiceLayerClient()
+        Dim loginResponse As LoginResponseDto = vHanaService.LoginAsync().GetAwaiter().GetResult()
+
+        If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
+            clsPublic.Actualizar_Progreso(lblprg, "No se pudo obtener sesión.")
+        Else
+            clsPublic.Actualizar_Progreso(lblprg, "Conexión correcta. Token: " & vHanaService.SessionCookie)
+            Debug.WriteLine(vHanaService.SessionCookie)
+        End If
+
+    End Sub
+
+    Private Sub mnuProductosI_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuProductosI.ItemClick
+
+    End Sub
+
+
+    Public Async Sub Ejecuta_Interface_Centros_Costo(Optional ByVal Preguntar As Boolean = True)
+
+        Try
+
+            prg.Visible = True
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Actualizar registros?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                Await clsSyncSapCentrosCosto.Importar_Centros_Costo_Desde_SAP(lblprg, prg)
+            End If
+
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+            prg.Visible = False
+
+        End Try
+
+    End Sub
+
+    Private Sub mnuCentroCosto_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuCentroCosto.ItemClick
+        Ejecuta_Interface_Centros_Costo(True)
     End Sub
 
 End Class

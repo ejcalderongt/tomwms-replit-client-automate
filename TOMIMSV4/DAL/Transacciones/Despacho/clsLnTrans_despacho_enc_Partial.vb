@@ -727,6 +727,12 @@ Partial Public Class clsLnTrans_despacho_enc
                                     BePedidoCompraDet.User_agr = BePedidoCompraEnc.User_Agr
                                     BePedidoCompraDet.User_mod = BePedidoCompraEnc.User_Agr
                                     BePedidoCompraDet.Atributo_variante_1 = BePedidoDet.Atributo_Variante_1
+
+                                    '#CKFK20251027 Agregué la talla y color
+                                    BePedidoCompraDet.Talla.Codigo = BePedidoDet.Talla
+                                    BePedidoCompraDet.Color.Codigo = BePedidoDet.Color
+                                    BePedidoCompraDet.IdProductoTallaColor = BePedidoDet.IdProductoTallaColor
+
                                     BePedidoCompraEnc.DetalleOC.Add(BePedidoCompraDet)
 
                                     clsLnTrans_oc_det.Insertar(BePedidoCompraDet, lConnection, lTransaction)
@@ -2364,6 +2370,11 @@ Partial Public Class clsLnTrans_despacho_enc
                                             BeTransReDet.Observacion = "Transferencia_Interna_WMS_20220504"
                                             BeTransReDet.Atributo_Variante_1 = ""
                                             BeTransReDet.Pallet_No_Estandar = 0
+
+                                            '#CKFK20251027 Agregué talla y color
+                                            BeTransReDet.IdProductoTallaColor = BePickingUbic.IdProductoTallaColor
+                                            BeTransReDet.Talla.Codigo = BePickingUbic.Codigo_Talla
+                                            BeTransReDet.Color.Codigo = BePickingUbic.Codigo_Color
 
                                             clsLnTrans_re_det.Insertar(BeTransReDet, lConnection, lTransaction)
 

@@ -398,6 +398,8 @@ Partial Class frmBodega
         Me.tabUbicacionesDefecto = New DevExpress.XtraTab.XtraTabPage()
         Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
+        Me.Label82 = New System.Windows.Forms.Label()
+        Me.nudRangoDiasDocumentos = New System.Windows.Forms.NumericUpDown()
         Me.chkControlTallaColor = New DevExpress.XtraEditors.CheckEdit()
         Me.chkrestringir_vencimiento_en_reemplazo = New DevExpress.XtraEditors.CheckEdit()
         Me.chkrestringir_lote_en_reemplazo = New DevExpress.XtraEditors.CheckEdit()
@@ -507,8 +509,6 @@ Partial Class frmBodega
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.NumericUpDown1 = New System.Windows.Forms.NumericUpDown()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
-        Me.Label82 = New System.Windows.Forms.Label()
-        Me.nudRangoDiasDocumentos = New System.Windows.Forms.NumericUpDown()
         User_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
@@ -826,6 +826,7 @@ Partial Class frmBodega
         CType(Me.GroupControl3, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl3.SuspendLayout()
         Me.GroupBox5.SuspendLayout()
+        CType(Me.nudRangoDiasDocumentos, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkControlTallaColor.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkrestringir_vencimiento_en_reemplazo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkrestringir_lote_en_reemplazo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -914,7 +915,6 @@ Partial Class frmBodega
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.nudRangoDiasDocumentos, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -2227,7 +2227,7 @@ Partial Class frmBodega
         'lblRutaCDN
         '
         Me.lblRutaCDN.AutoSize = True
-        Me.lblRutaCDN.Location = New System.Drawing.Point(681, 381)
+        Me.lblRutaCDN.Location = New System.Drawing.Point(684, 28)
         Me.lblRutaCDN.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblRutaCDN.Name = "lblRutaCDN"
         Me.lblRutaCDN.Size = New System.Drawing.Size(66, 16)
@@ -3310,7 +3310,7 @@ Partial Class frmBodega
         '
         Me.cmdRutaCDN.AutoSize = True
         Me.cmdRutaCDN.ImageOptions.SvgImageSize = New System.Drawing.Size(15, 15)
-        Me.cmdRutaCDN.Location = New System.Drawing.Point(1231, 375)
+        Me.cmdRutaCDN.Location = New System.Drawing.Point(1234, 22)
         Me.cmdRutaCDN.Name = "cmdRutaCDN"
         Me.cmdRutaCDN.Size = New System.Drawing.Size(19, 27)
         Me.cmdRutaCDN.TabIndex = 50
@@ -3318,7 +3318,7 @@ Partial Class frmBodega
         '
         'txtRutaCDN
         '
-        Me.txtRutaCDN.Location = New System.Drawing.Point(755, 378)
+        Me.txtRutaCDN.Location = New System.Drawing.Point(758, 25)
         Me.txtRutaCDN.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtRutaCDN.Name = "txtRutaCDN"
         Me.txtRutaCDN.Size = New System.Drawing.Size(472, 22)
@@ -3334,7 +3334,7 @@ Partial Class frmBodega
         Me.GrpTIpoTransaccion.Controls.Add(Me.txtDescripcionTR)
         Me.GrpTIpoTransaccion.Controls.Add(Me.lnkTipoT)
         Me.GrpTIpoTransaccion.Controls.Add(Me.txtIdTipoTR)
-        Me.GrpTIpoTransaccion.Location = New System.Drawing.Point(200, 444)
+        Me.GrpTIpoTransaccion.Location = New System.Drawing.Point(687, 64)
         Me.GrpTIpoTransaccion.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.GrpTIpoTransaccion.Name = "GrpTIpoTransaccion"
         Me.GrpTIpoTransaccion.Size = New System.Drawing.Size(691, 120)
@@ -4699,6 +4699,26 @@ Partial Class frmBodega
         Me.GroupBox5.TabStop = False
         Me.GroupBox5.Text = "Operacion Mixta"
         '
+        'Label82
+        '
+        Me.Label82.AutoSize = True
+        Me.Label82.Location = New System.Drawing.Point(9, 312)
+        Me.Label82.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label82.Name = "Label82"
+        Me.Label82.Size = New System.Drawing.Size(143, 16)
+        Me.Label82.TabIndex = 122
+        Me.Label82.Text = "Rango días documentos"
+        '
+        'nudRangoDiasDocumentos
+        '
+        Me.nudRangoDiasDocumentos.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.nudRangoDiasDocumentos.Location = New System.Drawing.Point(290, 307)
+        Me.nudRangoDiasDocumentos.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.nudRangoDiasDocumentos.Maximum = New Decimal(New Integer() {365, 0, 0, 0})
+        Me.nudRangoDiasDocumentos.Name = "nudRangoDiasDocumentos"
+        Me.nudRangoDiasDocumentos.Size = New System.Drawing.Size(49, 23)
+        Me.nudRangoDiasDocumentos.TabIndex = 123
+        '
         'chkControlTallaColor
         '
         Me.chkControlTallaColor.Location = New System.Drawing.Point(317, 278)
@@ -5913,29 +5933,9 @@ Partial Class frmBodega
         Me.NumericUpDown1.Maximum = New Decimal(New Integer() {3, 0, 0, 0})
         Me.NumericUpDown1.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDown1.Name = "NumericUpDown1"
-        Me.NumericUpDown1.Size = New System.Drawing.Size(98, 22)
+        Me.NumericUpDown1.Size = New System.Drawing.Size(98, 20)
         Me.NumericUpDown1.TabIndex = 26
         Me.NumericUpDown1.Value = New Decimal(New Integer() {1, 0, 0, 0})
-        '
-        'Label82
-        '
-        Me.Label82.AutoSize = True
-        Me.Label82.Location = New System.Drawing.Point(9, 312)
-        Me.Label82.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label82.Name = "Label82"
-        Me.Label82.Size = New System.Drawing.Size(143, 16)
-        Me.Label82.TabIndex = 122
-        Me.Label82.Text = "Rango días documentos"
-        '
-        'nudRangoDiasDocumentos
-        '
-        Me.nudRangoDiasDocumentos.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.nudRangoDiasDocumentos.Location = New System.Drawing.Point(290, 307)
-        Me.nudRangoDiasDocumentos.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.nudRangoDiasDocumentos.Maximum = New Decimal(New Integer() {365, 0, 0, 0})
-        Me.nudRangoDiasDocumentos.Name = "nudRangoDiasDocumentos"
-        Me.nudRangoDiasDocumentos.Size = New System.Drawing.Size(49, 23)
-        Me.nudRangoDiasDocumentos.TabIndex = 123
         '
         'frmBodega
         '
@@ -6175,6 +6175,7 @@ Partial Class frmBodega
         Me.GroupControl3.ResumeLayout(False)
         Me.GroupBox5.ResumeLayout(False)
         Me.GroupBox5.PerformLayout()
+        CType(Me.nudRangoDiasDocumentos, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkControlTallaColor.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkrestringir_vencimiento_en_reemplazo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkrestringir_lote_en_reemplazo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6269,7 +6270,6 @@ Partial Class frmBodega
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.nudRangoDiasDocumentos, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
