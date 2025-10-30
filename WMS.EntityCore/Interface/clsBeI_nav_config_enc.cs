@@ -267,7 +267,7 @@ namespace WMS.EntityCore.Interface
         public string Bodega_prorrateo1 { get; set; } = "";
         public bool Interface_SAP { get; set; } = false;
         public bool Equiparar_Productos { get; set; } = false;
-        public bool Crear_Recepcion_De_Compra_NAV { get; set; } = false;
+        //public bool Crear_Recepcion_De_Compra_NAV { get; set; } = false;
 
         public clsBeI_nav_config_enc() { }
 

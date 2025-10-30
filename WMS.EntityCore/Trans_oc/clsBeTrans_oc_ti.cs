@@ -92,7 +92,7 @@ namespace WMS.EntityCore.Trans_oc
         [Column("es_importacion")]
         [DisplayName("es_importacion")]
         public bool Es_importacion { get; set; } = false;
-        public bool Genera_Tarea_Ingreso { get; set; } = false;
+        //public bool Genera_Tarea_Ingreso { get; set; } = false;
         public int IdProductoEstado { get; set; } = 0;
 
         public clsBeTrans_oc_ti() { }

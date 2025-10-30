@@ -1090,7 +1090,7 @@ public class clsLnI_nav_ped_compra_enc
             clsBeTrans_re_enc? OutBeRecepcionEnc = new clsBeTrans_re_enc();
 
             if (lConnection != null && lTransInterface != null) {
-                if (BeConfigEnc.Crear_Recepcion_De_Compra_NAV || BeTipoDocumento.Genera_Tarea_Ingreso)
+                if (BeConfigEnc.Crear_recepcion_de_compra_nav || BeTipoDocumento.Genera_tarea_ingreso)
                 {
                     if (BeConfigEnc.Interface_SAP && BePedidoEnc != null)
                     {
@@ -1114,11 +1114,19 @@ public class clsLnI_nav_ped_compra_enc
                                                                                     lTransInterface);
                     }
 
-                    if (OutBeRecepcionEnc !=null)
-                    lblprg += Environment.NewLine + "\t" + string.Format("Se creó la tarea de recepción: {0} para el documento de ingreso: {1} {2}",
-                                                                          OutBeRecepcionEnc.IdRecepcionEnc,
-                                                                          navPedidoCompraEnc.No,
-                                                                          Environment.NewLine);
+                    if (OutBeRecepcionEnc != null)
+                        lblprg += Environment.NewLine + "\t" + string.Format("Se creó la tarea de recepción: {0} para el documento de ingreso: {1} {2}",
+                                                                              OutBeRecepcionEnc.IdRecepcionEnc,
+                                                                              navPedidoCompraEnc.No,
+                                                                              Environment.NewLine);
+                }
+                else {
+
+                    lblprg += Environment.NewLine + "\t" + string.Format("La parametrización no habilita la tarea de recepción: {0} para el documento de ingreso: {1} {2}",
+                                                                              OutBeRecepcionEnc.IdRecepcionEnc,
+                                                                              navPedidoCompraEnc.No,
+                                                                              Environment.NewLine);
+
                 }
             }            
         }
@@ -1582,6 +1590,9 @@ public class clsLnI_nav_ped_compra_enc
     {
         try
         {
+
+            if (BeUnidadMedidaPedCompra == null) throw new Exception("Error: El objeto Unidad de Medida esta vacio.");
+
             if (!clsLnProducto.Existe(navPedidoCompraDet.No,
                                       BeUnidadMedidaPedCompra.IdUnidadMedida,
                                       lConnection,
@@ -1825,7 +1836,7 @@ public class clsLnI_nav_ped_compra_enc
                 if (navPedidoCompraEnc.Is_Internal_Transfer)
                 {
                     gBeOrdenCompraEnc.IdTipoIngresoOC = (int)clsDataContractDI.tTipoDocumentoIngreso.Transferencia;
-                    BeTipoDocumento.Genera_Tarea_Ingreso = true;
+                    BeTipoDocumento.Genera_tarea_ingreso = true;
                 }
                 else
                 {
@@ -1839,7 +1850,7 @@ public class clsLnI_nav_ped_compra_enc
                 BeTipoDocumento = clsLnTrans_oc_ti.GetSingle(gBeOrdenCompraEnc.IdTipoIngresoOC, 
                                                              lConnection, 
                                                              lTransInterface
-                ) ?? new clsBeTrans_oc_ti { Genera_Tarea_Ingreso = false };
+                ) ?? new clsBeTrans_oc_ti { Genera_tarea_ingreso = false };
             }
 
             return BeTipoDocumento;
