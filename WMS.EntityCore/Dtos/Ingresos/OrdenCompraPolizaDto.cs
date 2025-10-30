@@ -51,5 +51,6 @@
         public string? Codigo_Barra { get; set; }
         public bool Activo { get; set; }
         public int? IdBodega { get; set; }
+        public bool IsNew { get; set; } = true;
     }
 }

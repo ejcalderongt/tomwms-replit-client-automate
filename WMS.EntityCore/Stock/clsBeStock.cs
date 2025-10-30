@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using WMS.EntityCore.Producto;
 
 namespace WMS.EntityCore.Stock
 {
@@ -148,7 +149,20 @@ namespace WMS.EntityCore.Stock
         [Column("IdPedidoDet")]
         [DisplayName("IdPedidoDet")]
         public int IdPedidoDet { get; set; } = 0;
-
+        public bool IsNew { get; set; } = true;
+        public bool ProductoValidado { get; set; }
+        public string UbicacionAnterior { get; set; } = "";
+        public clsBeProducto_presentacion Presentacion { get; set; } = new clsBeProducto_presentacion();
+        public clsBeProducto_estado ProductoEstado { get; set; } = new clsBeProducto_estado();
+        public List<clsBeStock_parametro> Parametros { get; set; } = new List<clsBeStock_parametro>();
+        public clsBeProducto Producto { get; set; } = new clsBeProducto();
+        public int IdStockOrigen { get; set; } = 0;
+        public bool IsReportStockEnFecha { get; set; } = false;
+        public bool UbicacionPicking { get; set; } = false;
+        public int UbicacionNivel { get; set; } = 0;
+        public bool Pallet_Completo { get; set; } = false;
+        public string Talla { get; set; } = string.Empty;
+        public string Color { get; set; } = string.Empty;
         public clsBeStock() { }
 
         public object Clone()

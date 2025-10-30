@@ -2,6 +2,10 @@
 
 namespace WMS.EntityCore.Stock
 {
+    using System;
+    using WMS.EntityCore.Producto;
+    using WMSWebAPI.Be;
+
     [Serializable]
     public class clsBeVW_stock_res : ICloneable
     {

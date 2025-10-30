@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using WMS.EntityCore.Producto;
 
 namespace WMS.EntityCore.Stock
 {
@@ -152,6 +153,16 @@ namespace WMS.EntityCore.Stock
         [Column("pallet_no_estandar")]
         [DisplayName("pallet_no_estandar")]
         public bool Pallet_no_estandar { get; set; } = false;
+        public bool IsNew { get; set; } = true;
+        public bool ProductoValidado { get; set; }
+        public clsBeProducto_presentacion Presentacion { get; set; } = new clsBeProducto_presentacion();
+        public clsBeProducto_estado ProductoEstado { get; set; } = new clsBeProducto_estado();
+        public double CantidadEnStock { get; set; } = 0;
+        public double PesoEnStock { get; set; } = 0;
+        public double Cantidad_Nav { get; set; } = 0;
+        public int IdProductoTallaColor { get; set; } = 0;
+        public string? Talla { get; set; }
+        public string? Color { get; set; }
 
         public clsBeStock_rec() { }
 

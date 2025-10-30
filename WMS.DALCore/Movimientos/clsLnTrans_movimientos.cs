@@ -5,6 +5,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic.CompilerServices;
 using WMS.EntityCore.Stock;
 using Microsoft.Extensions.Configuration;
+using WMS.EntityCore;
 public class clsLnTrans_movimientos
 {
 
@@ -67,12 +68,18 @@ public class clsLnTrans_movimientos
         }
     }
 
-    public static int Insertar(IConfiguration config, clsBeTrans_movimientos oBeTrans_movimientos, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Insertar(clsBeTrans_movimientos oBeTrans_movimientos, SqlConnection pConection, SqlTransaction pTransaction)
     {
+        if (oBeTrans_movimientos == null)
+            throw new ArgumentNullException(nameof(oBeTrans_movimientos));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
 
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
@@ -112,54 +119,28 @@ public class clsLnTrans_movimientos
             Ins.Add("idpedidodet", "@idpedidodet", "F");
             Ins.Add("iddespachoenc", "@iddespachoenc", "F");
             Ins.Add("iddespachodet", "@iddespachodet", "F");
+            Ins.Add("idproductotallacolor", "@idproductotallacolor", "F");
+            Ins.Add("talla", "@talla", "F");
+            Ins.Add("color", "@color", "F");
 
             string sp = Ins.SQL();
 
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
+                cmd.CommandType = CommandType.Text;
+
+                BindMovimientoParameters(cmd, oBeTrans_movimientos);
+
+                rowsAffected = cmd.ExecuteNonQuery();
             }
 
-            BindMovimientoParameters(cmd, oBeTrans_movimientos);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            cmd.Dispose();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return rowsAffected;
         }
-        catch (SqlException ex1)
+        catch (SqlException ex)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+            string errorMessage = $"Error en Insertar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
 
     public static int Insertar(IConfiguration config, clsBeTrans_movimientos oBeTrans_movimientos)
@@ -244,16 +225,21 @@ public class clsLnTrans_movimientos
         return rowsAffected;
     }
 
-    public static int Actualizar(IConfiguration config, clsBeTrans_movimientos oBeTrans_movimientos, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Actualizar(clsBeTrans_movimientos oBeTrans_movimientos, SqlConnection pConection, SqlTransaction pTransaction)
     {
+        if (oBeTrans_movimientos == null)
+            throw new ArgumentNullException(nameof(oBeTrans_movimientos));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
 
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
-
             Upd.Init("trans_movimientos");
             Upd.Add("idmovimiento", "@idmovimiento", "F");
             Upd.Add("idempresa", "@idempresa", "F");
@@ -290,6 +276,11 @@ public class clsLnTrans_movimientos
             Upd.Add("idpedidodet", "@idpedidodet", "F");
             Upd.Add("iddespachoenc", "@iddespachoenc", "F");
             Upd.Add("iddespachodet", "@iddespachodet", "F");
+            // Agregar nuevos campos si es necesario
+            Upd.Add("idproductotallacolor", "@idproductotallacolor", "F");
+            Upd.Add("talla", "@talla", "F");
+            Upd.Add("color", "@color", "F");
+
             Upd.Where("IdMovimiento = @IdMovimiento" +
                 " AND IdEmpresa = @IdEmpresa" +
                 " AND IdBodegaOrigen = @IdBodegaOrigen" +
@@ -297,49 +288,22 @@ public class clsLnTrans_movimientos
 
             string sp = Upd.SQL();
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
+                cmd.CommandType = CommandType.Text;
+
+                BindMovimientoParameters(cmd, oBeTrans_movimientos);
+
+                rowsAffected = cmd.ExecuteNonQuery();
             }
 
-            BindMovimientoParameters(cmd, oBeTrans_movimientos);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return rowsAffected;
         }
-        catch (SqlException ex1)
+        catch (SqlException ex)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+            string errorMessage = $"Error en Actualizar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
 
     public int Eliminar(IConfiguration config, clsBeTrans_movimientos oBeTrans_movimientos, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
@@ -606,56 +570,22 @@ public class clsLnTrans_movimientos
             throw new Exception(vMsgError);
         }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int MaxID(SqlConnection pConection, SqlTransaction pTransaction)
     {
+        const string sp = "Select ISNULL(Max(IdMovimiento),0) FROM Trans_movimientos";
 
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
-        int lMax = 0;
-        try
+        using (SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction))
         {
-
-
-            const string sp = "Select ISNULL(Max(IdMovimiento),0) FROM Trans_movimientos";
-
-            bool Es_Transaccion_Remota = pConection is not null && pTransaction is not null;
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-            if (Es_Transaccion_Remota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
-
-            Object lreturnValue = cmd.ExecuteScalar();
+            cmd.CommandType = CommandType.Text;
+            object lreturnValue = cmd.ExecuteScalar();
 
             if (lreturnValue != DBNull.Value && lreturnValue != null)
             {
-                lMax = int.Parse((String)lreturnValue);
+                return Convert.ToInt32(lreturnValue);
             }
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-            return lMax;
-
         }
-        catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
-        }
+
+        return 0;
     }
     public static void BindMovimientoParameters(SqlCommand cmd, clsBeTrans_movimientos oBeTrans_movimientos)
     {
@@ -674,7 +604,6 @@ public class clsLnTrans_movimientos
         cmd.Parameters.AddWithValue("@IdTipoTarea", oBeTrans_movimientos.IdTipoTarea == 0 ? DBNull.Value : oBeTrans_movimientos.IdTipoTarea);
         cmd.Parameters.AddWithValue("@IdBodegaDestino", oBeTrans_movimientos.IdBodegaDestino == 0 ? DBNull.Value : oBeTrans_movimientos.IdBodegaDestino);
         cmd.Parameters.AddWithValue("@IdRecepcion", oBeTrans_movimientos.IdRecepcion == 0 ? DBNull.Value : oBeTrans_movimientos.IdRecepcion);
-
         cmd.Parameters.AddWithValue("@cantidad", oBeTrans_movimientos.Cantidad);
         cmd.Parameters.AddWithValue("@serie", string.IsNullOrEmpty(oBeTrans_movimientos.Serie) ? DBNull.Value : oBeTrans_movimientos.Serie);
         cmd.Parameters.AddWithValue("@peso", oBeTrans_movimientos.Peso);
@@ -689,58 +618,39 @@ public class clsLnTrans_movimientos
         cmd.Parameters.AddWithValue("@cantidad_hist", oBeTrans_movimientos.Cantidad_hist);
         cmd.Parameters.AddWithValue("@peso_hist", oBeTrans_movimientos.Peso_hist);
         cmd.Parameters.AddWithValue("@lic_plate", string.IsNullOrEmpty(oBeTrans_movimientos.Lic_plate) ? DBNull.Value : oBeTrans_movimientos.Lic_plate);
-
         cmd.Parameters.AddWithValue("@IdOperadorBodega", oBeTrans_movimientos.IdOperadorBodega == 0 ? DBNull.Value : oBeTrans_movimientos.IdOperadorBodega);
         cmd.Parameters.AddWithValue("@IdRecepcionDet", oBeTrans_movimientos.IdRecepcionDet == 0 ? DBNull.Value : oBeTrans_movimientos.IdRecepcionDet);
         cmd.Parameters.AddWithValue("@IdPedidoEnc", oBeTrans_movimientos.IdPedidoEnc == 0 ? DBNull.Value : oBeTrans_movimientos.IdPedidoEnc);
         cmd.Parameters.AddWithValue("@IdPedidoDet", oBeTrans_movimientos.IdPedidoDet == 0 ? DBNull.Value : oBeTrans_movimientos.IdPedidoDet);
         cmd.Parameters.AddWithValue("@IdDespachoEnc", oBeTrans_movimientos.IdDespachoEnc == 0 ? DBNull.Value : oBeTrans_movimientos.IdDespachoEnc);
         cmd.Parameters.AddWithValue("@IdDespachoDet", oBeTrans_movimientos.IdDespachoDet == 0 ? DBNull.Value : oBeTrans_movimientos.IdDespachoDet);
+        cmd.Parameters.AddWithValue("@idproductotallacolor", oBeTrans_movimientos.IdProductoTallaColor == 0 ? DBNull.Value : oBeTrans_movimientos.IdProductoTallaColor);
+        cmd.Parameters.AddWithValue("@talla", string.IsNullOrEmpty(oBeTrans_movimientos.Talla) ? DBNull.Value : oBeTrans_movimientos.Talla);
+        cmd.Parameters.AddWithValue("@color", string.IsNullOrEmpty(oBeTrans_movimientos.Color) ? DBNull.Value : oBeTrans_movimientos.Color);
     }
-    public static void InsertarOActualizar(IConfiguration config, List<clsBeTrans_movimientos> entities, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static void InsertarOActualizar(List<clsBeTrans_movimientos> entities, SqlConnection? conn = null, SqlTransaction? tx = null)
     {
         bool isExternalTx = conn != null && tx != null;
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
+
+        if (!isExternalTx)
+            throw new InvalidOperationException("Se requiere una conexión y transacción externa cuando no se usa IConfiguration");
 
         try
         {
-            if (!isExternalTx)
-            {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
             foreach (var entity in entities)
             {
-
-                bool existe = Existe(entity.IdMovimiento, connection, isExternalTx ? tx! : localTx!);
+                bool existe = Existe(entity.IdMovimiento, conn!, tx!);
 
                 if (existe)
-                    Actualizar(config, entity, connection, isExternalTx ? tx : localTx);
+                    Actualizar(entity, conn!, tx!);
                 else
-                    Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                    Insertar(entity, conn!, tx!);
             }
-
-            if (!isExternalTx)
-                localTx?.Commit();
         }
         catch (SqlException ex)
         {
-            if (!isExternalTx && localTx is not null)
-                localTx.Rollback();
-
             var method = new StackTrace().GetFrame(0)?.GetMethod();
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
-        }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
-            }
         }
     }
     public static bool Existe(int idMovimiento, SqlConnection conn, SqlTransaction tx)
@@ -752,4 +662,60 @@ public class clsLnTrans_movimientos
         return count > 0;
     }
 
+    public static int Insertar_Movimientos_Recepcion(int pIdEmpresa,
+                                                    int pIdBodega,
+                                                    int pIdUsuario,
+                                                    clsBeStock_rec BeStockRec,
+                                                    SqlConnection lConnection,
+                                                    SqlTransaction lTransaction,
+                                                    int IdOperadorBodega = 0)
+    {
+        try
+        {
+            clsBeTrans_movimientos BeTransMovimiento = new clsBeTrans_movimientos();            
+            BeTransMovimiento.IdEmpresa = pIdEmpresa;
+            BeTransMovimiento.IdBodegaOrigen = pIdBodega;
+            BeTransMovimiento.IdTransaccion = BeStockRec.IdRecepcionEnc;
+            BeTransMovimiento.IdPropietarioBodega = BeStockRec.IdPropietarioBodega;
+            BeTransMovimiento.IdProductoBodega = BeStockRec.IdProductoBodega;
+            BeTransMovimiento.IdUbicacionOrigen = BeStockRec.IdUbicacion;
+            BeTransMovimiento.IdUbicacionDestino = BeStockRec.IdUbicacion;
+            BeTransMovimiento.IdPresentacion = BeStockRec.Presentacion?.IdPresentacion ?? 0;
+            BeTransMovimiento.IdEstadoOrigen = BeStockRec.ProductoEstado?.IdEstado ?? 0;
+            BeTransMovimiento.IdEstadoDestino = BeStockRec.ProductoEstado?.IdEstado ?? 0;
+            BeTransMovimiento.IdUnidadMedida = BeStockRec.IdUnidadMedida;
+            BeTransMovimiento.IdTipoTarea = (int)clsDataContractDI.tTipoTarea.RECE;
+            BeTransMovimiento.IdBodegaDestino = pIdBodega;
+            BeTransMovimiento.IdRecepcion = BeStockRec.IdRecepcionEnc;
+            BeTransMovimiento.IdRecepcionDet = BeStockRec.IdRecepcionDet;
+            BeTransMovimiento.Cantidad = BeStockRec.Cantidad;
+            BeTransMovimiento.Serie = BeStockRec.Serial ?? string.Empty;
+            BeTransMovimiento.Peso = BeStockRec.Peso;
+            BeTransMovimiento.Lote = BeStockRec.Lote ?? string.Empty;
+            BeTransMovimiento.Barra_pallet = BeStockRec.Lic_plate ?? string.Empty;
+            BeTransMovimiento.Fecha_vence = BeStockRec.Fecha_vence;
+            BeTransMovimiento.Fecha_agr = DateTime.Now;
+            BeTransMovimiento.Usuario_agr = pIdUsuario.ToString();
+            BeTransMovimiento.IdOperadorBodega = IdOperadorBodega;
+            BeTransMovimiento.IdProductoTallaColor = BeStockRec.IdProductoTallaColor;
+            BeTransMovimiento.Talla = BeStockRec.Talla ?? string.Empty;
+            BeTransMovimiento.Color = BeStockRec.Color ?? string.Empty;
+
+            clsLnStock.Get_Existencia_By_IdProductoBodega(ref BeStockRec,
+                                                          lConnection,
+                                                          lTransaction);
+
+            BeTransMovimiento.Cantidad_hist = BeStockRec.CantidadEnStock;
+            BeTransMovimiento.Peso_hist = BeStockRec.PesoEnStock;
+            BeTransMovimiento.IdMovimiento = MaxID(lConnection, lTransaction) + 1;
+
+            Insertar(BeTransMovimiento, lConnection, lTransaction);
+
+            return BeTransMovimiento.IdMovimiento;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }

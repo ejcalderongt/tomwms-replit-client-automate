@@ -2,9 +2,12 @@ using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using Microsoft.Data.SqlClient;
-using Microsoft.VisualBasic.CompilerServices;
 using WMS.EntityCore.Stock;
 using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Producto;
+using WMS.DALCore.Stock;
+using WMS.EntityCore.Trans_re;
+using AppGlobal;
 public class clsLnStock
 {
 
@@ -69,13 +72,18 @@ public class clsLnStock
         }
     }
 
-    public static int Insertar(IConfiguration config, clsBeStock oBeStock, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Insertar(clsBeStock oBeStock, SqlConnection pConection, SqlTransaction pTransaction)
     {
+        if (oBeStock == null)
+            throw new ArgumentNullException(nameof(oBeStock));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
 
         int rowsAffected = 0;
-        
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
@@ -119,51 +127,22 @@ public class clsLnStock
 
             string sp = Ins.SQL();
 
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
+                cmd.CommandType = CommandType.Text;
+
+                BindStockParameters(cmd, oBeStock);
+
+                rowsAffected = cmd.ExecuteNonQuery();
             }
 
-            BindStockParameters(cmd, oBeStock);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            cmd.Dispose();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return rowsAffected;
         }
-        catch (SqlException ex1)
+        catch (SqlException ex)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+            string errorMessage = $"Error en Insertar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
 
     public static int Insertar(IConfiguration config, clsBeStock oBeStock)
@@ -249,16 +228,21 @@ public class clsLnStock
         return rowsAffected;
     }
 
-    public static int Actualizar(IConfiguration config, clsBeStock oBeStock, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Actualizar(clsBeStock oBeStock, SqlConnection pConection, SqlTransaction pTransaction)
     {
+        if (oBeStock == null)
+            throw new ArgumentNullException(nameof(oBeStock));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
 
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
-
             Upd.Init("stock");
             Upd.Add("idbodega", "@idbodega", "F");
             Upd.Add("idstock", "@idstock", "F");
@@ -300,49 +284,22 @@ public class clsLnStock
 
             string sp = Upd.SQL();
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
+                cmd.CommandType = CommandType.Text;
+
+                BindStockParameters(cmd, oBeStock);
+
+                rowsAffected = cmd.ExecuteNonQuery();
             }
 
-            BindStockParameters(cmd, oBeStock);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return rowsAffected;
         }
-        catch (SqlException ex1)
+        catch (SqlException ex)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+            string errorMessage = $"Error en Actualizar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
 
     public int Eliminar(IConfiguration config, clsBeStock oBeStock, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
@@ -603,56 +560,22 @@ public class clsLnStock
             throw new Exception(vMsgError);
         }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int MaxID(SqlConnection pConection, SqlTransaction pTransaction)
     {
+        const string sp = "Select ISNULL(Max(IdStock),0) FROM Stock";
 
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
-        int lMax = 0;
-        try
+        using (SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction))
         {
-
-
-            const string sp = "Select ISNULL(Max(IdStock),0) FROM Stock";
-
-            bool Es_Transaccion_Remota = pConection is not null && pTransaction is not null;
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-            if (Es_Transaccion_Remota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
-
-            Object lreturnValue = cmd.ExecuteScalar();
+            cmd.CommandType = CommandType.Text;
+            object lreturnValue = cmd.ExecuteScalar();
 
             if (lreturnValue != DBNull.Value && lreturnValue != null)
             {
-                lMax = int.Parse((String)lreturnValue);
+                return Convert.ToInt32(lreturnValue);
             }
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-            return lMax;
-
         }
-        catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
-        }
+
+        return 0;
     }
     public static void BindStockParameters(SqlCommand cmd, clsBeStock oBeStock)
     {
@@ -699,53 +622,38 @@ public class clsLnStock
         cmd.Parameters.AddWithValue("@IdPedidoDet", oBeStock.IdPedidoDet == 0 ? DBNull.Value : oBeStock.IdPedidoDet);
     }
 
-    public static void InsertarOActualizar(IConfiguration config, List<clsBeStock> entities, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static void InsertarOActualizar(List<clsBeStock> entities, SqlConnection conn, SqlTransaction tx)
     {
-        bool isExternalTx = conn != null && tx != null;
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
+        if (entities == null)
+            throw new ArgumentNullException(nameof(entities));
+
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
+
+        if (tx == null)
+            throw new ArgumentNullException(nameof(tx));
 
         try
         {
-            if (!isExternalTx)
-            {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
             foreach (var entity in entities)
             {
-             
+                if (entity == null)
+                    continue;
+
                 if (entity.IdStock != 0)
                 {
-                    bool existe = Existe(entity.IdStock, connection, isExternalTx ? tx! : localTx!);
+                    bool existe = Existe(entity.IdStock, conn, tx);
 
                     if (existe)
-                        Actualizar(config, entity, connection, isExternalTx ? tx : localTx);
+                        Actualizar(entity, conn, tx);
                     else
-                        Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                        Insertar(entity, conn, tx);
                 }
             }
-
-            if (!isExternalTx)
-                localTx?.Commit();
         }
-        catch (SqlException ex)
-        {
-            if (!isExternalTx && localTx is not null)
-                localTx.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
-            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
-        }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
-            }
+        catch (SqlException)
+        {            
+            throw;
         }
     }
     public static bool Existe(int idStock, SqlConnection conn, SqlTransaction tx)
@@ -757,4 +665,285 @@ public class clsLnStock
         return count > 0;
     }
 
+    public static void Get_Existencia_By_IdProductoBodega(ref clsBeStock_rec BeStockRec,
+                                                         SqlConnection pConnection,
+                                                         SqlTransaction pTransaction)
+    {
+        try
+        {
+            string Lote;
+            int Aniada;
+            DateTime Fecha_Vence;
+            List<clsBeVW_stock_res> lStockConFiltro;
+
+            lStockConFiltro = Get_All_By_IdProductoBodega(BeStockRec.IdProductoBodega,
+                                                          pConnection,
+                                                          pTransaction);
+
+            if (lStockConFiltro == null)
+            {             
+                BeStockRec.CantidadEnStock = 0;
+                BeStockRec.PesoEnStock = 0;
+            }
+            else
+            {
+                clsBeProducto? BeProducto = clsLnProducto.Get_Single_Producto_Bodega(BeStockRec.IdProductoBodega,
+                                                                                     pConnection,
+                                                                                     pTransaction);
+
+                if (BeProducto !=null)
+                {
+                    if (BeProducto.control_lote)
+                    {
+                        Lote = string.Format("'{0}'", BeStockRec.Lote);
+                        Lote = BeStockRec.Lote;
+                        lStockConFiltro = lStockConFiltro.FindAll(x => x.Lote == Lote);
+                    }
+                    else
+                    {
+                        Lote = "";
+                    }
+
+                    if (lStockConFiltro.Count > 0)
+                    {
+                        if (BeProducto.capturar_aniada)
+                        {
+                            Aniada = BeStockRec.Añada;
+                            lStockConFiltro = lStockConFiltro.FindAll(x => x.Añada == Aniada);
+                        }
+                        else
+                        {
+                            Aniada = 0;
+                        }
+                    }
+
+                    if (lStockConFiltro.Count > 0)
+                    {
+                        if (BeProducto.control_vencimiento)
+                        {
+                            Fecha_Vence = BeStockRec.Fecha_vence.Date;
+                            lStockConFiltro = lStockConFiltro.FindAll(x => x.Fecha_Vence == Fecha_Vence);
+                        }
+                    }
+
+                    int vIdPresentacion = BeStockRec.Presentacion.IdPresentacion;
+                    lStockConFiltro = lStockConFiltro.FindAll(x => x.IdPresentacion == vIdPresentacion);
+
+                    int vIdUnidadMedida = BeStockRec.IdUnidadMedida;
+                    lStockConFiltro = lStockConFiltro.FindAll(x => x.IdUnidadMedida == vIdUnidadMedida);
+
+                    int vIdEstado = BeStockRec.ProductoEstado.IdEstado;
+                    lStockConFiltro = lStockConFiltro.FindAll(x => x.IdProductoEstado == vIdEstado);
+
+                    BeStockRec.CantidadEnStock = lStockConFiltro.Sum(x => x.CantidadUmBas);
+                    BeStockRec.PesoEnStock = lStockConFiltro.Sum(x => x.Peso);
+                }                
+            }
+        }
+        catch (SqlException)
+        {
+            throw;
+        }
+    }
+
+    public static List<clsBeVW_stock_res> Get_All_By_IdProductoBodega(int pIdProductoBodega,
+                                                                      SqlConnection lConnection,
+                                                                      SqlTransaction lTransaction)
+    {
+        List<clsBeVW_stock_res> lReturnList = new List<clsBeVW_stock_res>();
+
+        try
+        {
+            string vSQL = "Select * from VW_Stock_Res where VW_Stock_Res.IdProductoBodega = @IdProductoBodega";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pIdProductoBodega);
+                lDTA.SelectCommand.Transaction = lTransaction;
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable != null && lDataTable.Rows.Count > 0)
+                {
+                    foreach (DataRow lRow in lDataTable.Rows)
+                    {
+                        clsBeVW_stock_res Obj = new clsBeVW_stock_res();
+                        clsLnVW_stock_res.Cargar(ref Obj, lRow);
+                        lReturnList.Add(Obj);
+                    }
+                    return lReturnList;
+                }
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+        return lReturnList;
+    }
+
+    public static bool Insertar_Stock_Recepcion(List<clsBeTrans_re_det> pListBeTransReDet,
+                                                int pIdUsuario,
+                                                int pIdEmpresa,
+                                                int pIdBodega,
+                                                SqlConnection lConnection,
+                                                SqlTransaction lTransaction)
+    {
+        bool Insertar_Stock_Recepcion = false;
+
+        try
+        {
+            if (pListBeTransReDet != null)
+            {
+                int lMaxS = MaxID(lConnection, lTransaction);
+                clsBeStock BeStock;
+                clsBeStock_rec BeStockRec;
+                clsBeVW_stock_res? BeVWStockRec;                
+                bool vExisteEnReDet = false;
+
+                foreach (clsBeTrans_re_det BeTransReDet in pListBeTransReDet)
+                {
+                    BeStock = new clsBeStock();
+
+                    vExisteEnReDet = clsLnTrans_re_det.Existe_By_IdRecepcionEnc_And_IdRecepcionDet(BeTransReDet, lConnection, lTransaction);
+
+                    if (!vExisteEnReDet)
+                    {
+                        clsPublic.CopyObject(BeTransReDet, ref BeStock);
+
+                        lMaxS += 1;
+
+                        BeStock.IdBodega = pIdBodega;
+                        BeStock.IdStock = lMaxS;
+                        BeStock.IdPropietarioBodega = BeTransReDet.IdPropietarioBodega;
+                        BeStock.IdProductoBodega = BeTransReDet.IdProductoBodega;
+                        BeStock.ProductoEstado = new clsBeProducto_estado();
+                        BeStock.Presentacion = new clsBeProducto_presentacion();
+                        BeStock.ProductoEstado.IdEstado = BeTransReDet.ProductoEstado.IdEstado;
+                        BeStock.Presentacion.IdPresentacion = BeTransReDet.Presentacion.IdPresentacion;
+                        BeStock.IdUnidadMedida = BeTransReDet.UnidadMedida.IdUnidadMedida;
+                        BeStock.IdUbicacion = BeTransReDet.IdUbicacion;
+                        BeStock.IdUbicacion_anterior = BeTransReDet.IdUbicacion;
+                        BeStock.IdRecepcionEnc = BeTransReDet.IdRecepcionEnc;
+                        BeStock.IdRecepcionDet = BeTransReDet.IdRecepcionDet;
+
+                        if (BeTransReDet.Presentacion.IdPresentacion != 0)
+                        {
+                            clsBeProducto_presentacion BePres = new clsBeProducto_presentacion { IdPresentacion = BeTransReDet.Presentacion.IdPresentacion };
+                            clsLnProducto_presentacion.GetSingle(ref BePres, lConnection, lTransaction);
+
+                            if (BePres != null)
+                            {
+                                if (BePres.EsPallet)
+                                {
+                                    BeStock.Cantidad = Math.Round(BeTransReDet.Cantidad_recibida * BePres.Factor * BePres.CajasPorCama * BePres.CamasPorTarima, 6);
+                                }
+                                else
+                                {
+                                    BeStock.Cantidad = Math.Round(BeTransReDet.Cantidad_recibida * BePres.Factor, 6);
+                                }
+                            }
+                            else
+                            {
+                                if (BePres != null)
+                                    throw new Exception("20200329_0939: No se pudo obtener la presentación para: " + BePres.IdPresentacion);
+                            }
+                        }
+                        else
+                        {
+                            BeStock.Cantidad = BeTransReDet.Cantidad_recibida;
+                        }
+
+                        BeStock.Fecha_ingreso = BeTransReDet.Fecha_ingreso;
+                        BeStock.Fecha_vence = BeTransReDet.Fecha_vence;
+                        BeStock.Fecha_manufactura = new DateTime(1900, 1, 1);
+                        BeStock.User_agr = pIdUsuario.ToString();
+                        BeStock.Fec_agr = DateTime.Now;
+                        BeStock.User_mod = pIdUsuario.ToString();
+                        BeStock.Fec_mod = DateTime.Now;
+                        BeStock.Activo = true;
+
+                        BeVWStockRec = Get_Single_By_BeRecepcionDet(BeTransReDet,
+                                                                    pIdBodega,
+                                                                    lConnection,
+                                                                    lTransaction);
+
+                        if (BeVWStockRec != null)
+                        {
+                            throw new Exception("ERROR_202302222350: EL sistema detectó una condición no válida para la finalización de la tarea, el stock podría duplicarse, para prevenir esto no se finalizará la recepción. Reporte este error a desarrollo, lamentamos el inconveniente, Gracias.");
+                        }
+
+                        Insertar(BeStock, lConnection, lTransaction);
+
+                        BeStockRec = new clsBeStock_rec();
+                        clsPublic.CopyObject(BeStock, ref BeStockRec);
+
+                        clsLnTrans_movimientos.Insertar_Movimientos_Recepcion(pIdEmpresa,
+                                                                              pIdBodega,
+                                                                              pIdUsuario,
+                                                                              BeStockRec,
+                                                                              lConnection,
+                                                                              lTransaction);
+                    }
+                }
+
+                Insertar_Stock_Recepcion = true;
+            }
+
+            return Insertar_Stock_Recepcion;
+        }
+        catch (Exception)
+        {         
+            throw;
+        }
+    }
+
+    public static clsBeVW_stock_res? Get_Single_By_BeRecepcionDet(clsBeTrans_re_det pBeRecepcionDet,
+                                                                  int pIdBodega,
+                                                                  SqlConnection lConnection,
+                                                                  SqlTransaction lTransaction)
+    {
+        clsBeVW_stock_res? result = null;
+
+        try
+        {
+            string vSQL = "SELECT * FROM VW_Stock_Res " +
+                          "WHERE IdBodega = @IdBodega " +
+                          "AND IdRecepcionEnc = @IdRecepcionEnc " +
+                          "AND IdRecepcionDet = @IdRecepcionDet " +
+                          "AND IdProductoBodega = @IdProductoBodega ";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega);
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", pBeRecepcionDet.IdRecepcionEnc);
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionDet", pBeRecepcionDet.IdRecepcionDet);
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pBeRecepcionDet.IdProductoBodega);
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable != null && lDataTable.Rows.Count > 0)
+                {
+                    DataRow lRow = lDataTable.Rows[0];
+                    if (lRow != null)
+                    {
+                        clsBeVW_stock_res BeVWStockRes = new clsBeVW_stock_res();
+                        clsLnVW_stock_res.Cargar(ref BeVWStockRes, lRow);
+                        result = BeVWStockRes;
+                    }
+                }
+            }
+
+            return result;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }

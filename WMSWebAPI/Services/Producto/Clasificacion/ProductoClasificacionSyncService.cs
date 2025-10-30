@@ -24,7 +24,7 @@ namespace WMSWebAPI.Services.Producto.Clasificacion
                 if (dto.Codigo != null)
                 {
                     var Clasificacion = _mapper.Map<clsBeProducto_clasificacionSimple>(dto);
-                    clsLnProducto_clasificacion.Valida_Atributos(_configuration, Clasificacion, conn, tx);
+                    clsLnProducto_clasificacion.Valida_Atributos(Clasificacion, conn, tx);
                 }
 
             }

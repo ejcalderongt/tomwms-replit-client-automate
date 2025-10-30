@@ -1,4 +1,6 @@
-﻿namespace WMSWebAPI.Dtos.Stock
+﻿using WMSWebAPI.Dtos.Catalogos;
+
+namespace WMSWebAPI.Dtos.Stock
 {
     public class StockRecDto
     {
@@ -39,5 +41,16 @@
         public bool Impreso { get; set; }
         public int IdBodega { get; set; }
         public bool Pallet_no_estandar { get; set; }
+        public bool IsNew { get; set; } = true;
+        public bool ProductoValidado { get; set; }
+        public ProductoPresentacionDto Presentacion { get; set; } = new ProductoPresentacionDto();
+        public ProductoEstadoDto ProductoEstado { get; set; } = new ProductoEstadoDto();
+        public decimal CantidadEnStock { get; set; }
+        public decimal PesoEnStock { get; set; }
+        public decimal Cantidad_Nav { get; set; }
+        public int IdProductoTallaColor { get; set; }
+        public string Talla { get; set; } = string.Empty;
+        public string Color { get; set; } = string.Empty;
+
     }
 }

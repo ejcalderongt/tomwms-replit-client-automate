@@ -1,5 +1,9 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using WMS.EntityCore.I_nav_Ped_Compra;
+using WMS.EntityCore.Propietario;
+using WMS.EntityCore.Proveedor;
+using WMSWebAPI.Be;
 
 namespace WMS.EntityCore.Trans_oc
 {
@@ -168,6 +172,23 @@ namespace WMS.EntityCore.Trans_oc
         [Column("Codigo_Empresa_ERP")]
         [DisplayName("Codigo_Empresa_ERP")]
         public string Codigo_Empresa_ERP { get; set; } = "";
+
+        public int IdCampaña { get; set; } = 0;
+        public string Usr_Documento { get; set; } = "";
+        public string Comentarios { get; set; } = "";
+        public List<clsBeTrans_oc_det> DetalleOC { get; set; } = new List<clsBeTrans_oc_det>();
+        public List<clsBeTrans_oc_det_lote> DetalleLotes { get; set; } = new List<clsBeTrans_oc_det_lote>();
+        public List<clsBeI_nav_barras_pallet> DetallePallets { get; set; } = new List<clsBeI_nav_barras_pallet>();
+        public clsBeTrans_oc_pol? ObjPoliza { get; set; } = new clsBeTrans_oc_pol();
+        public List<clsBeTrans_oc_imagen> ListaImg { get; set; } = new List<clsBeTrans_oc_imagen>();
+        public clsBePropietario_bodega PropietarioBodega { get; set; } = new clsBePropietario_bodega();
+        public clsBeProveedor_bodega ProveedorBodega { get; set; } = new clsBeProveedor_bodega();
+        public clsBeTrans_oc_estado? EstadoOC { get; set; } = new clsBeTrans_oc_estado();
+        public bool IsNew { get; set; }
+        public bool EsDevolucion { get; set; }
+        public clsBeTrans_oc_ti? TipoIngreso { get; set; } = new clsBeTrans_oc_ti();
+        public bool ExisteRecepcionNoFinalizada { get; set; }
+        public string No_Documento_Recepcion_ERP { get; set; } = "";
 
         public clsBeTrans_oc_enc() { }
 

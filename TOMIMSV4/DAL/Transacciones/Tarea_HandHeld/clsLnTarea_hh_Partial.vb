@@ -125,7 +125,7 @@ Partial Public Class clsLnTarea_hh
     Public Shared Function GetSingle(ByVal pIdTipoTarea As Integer,
                                      ByVal pIdTransaccion As Integer,
                                      ByRef lTransaction As SqlTransaction,
-                                      ByRef lConnection As SqlConnection) As clsBeTarea_hh
+                                     ByRef lConnection As SqlConnection) As clsBeTarea_hh
 
         GetSingle = Nothing
 

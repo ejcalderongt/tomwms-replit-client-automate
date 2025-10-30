@@ -26,7 +26,7 @@ namespace WMSWebAPI.Services.Proveedor
                     throw new ArgumentNullException(nameof(dto), "El proveedor no puede estar vacio.");
 
                 var Proveedor = _mapper.Map<clsBeProveedor>(dto);
-                clsLnProveedor.Valida_Atributos(_configuration, Proveedor, conn, tx);
+                clsLnProveedor.Valida_Atributos(Proveedor, conn, tx);
 
             }
             catch (Exception ex)
@@ -44,7 +44,7 @@ namespace WMSWebAPI.Services.Proveedor
 
                 var proveedorList = _mapper.Map<List<clsBeProveedor>>(listaDto);
                 if (proveedorList != null)
-                    clsLnProveedor.InsertarOActualizar(_configuration, proveedorList, conn, tx);
+                    clsLnProveedor.InsertarOActualizar(proveedorList, conn, tx);
                     
             }
             catch (Exception ex)

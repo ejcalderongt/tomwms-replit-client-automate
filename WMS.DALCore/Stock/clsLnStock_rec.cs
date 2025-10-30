@@ -251,101 +251,57 @@ public class clsLnStock_rec
         return rowsAffected;
     }
 
-    public static int Actualizar(IConfiguration config, clsBeStock_rec oBeStock_rec, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Insertar(clsBeStock_rec oBeStock_rec,
+                          SqlConnection pConection,
+                          SqlTransaction pTransaction)
     {
+        Ins.Init("stock_rec");
+        Ins.Add("idstockrec", "@idstockrec", "F");
+        Ins.Add("idpropietariobodega", "@idpropietariobodega", "F");
+        Ins.Add("idproductobodega", "@idproductobodega", "F");
+        Ins.Add("idproductoestado", "@idproductoestado", "F");
+        Ins.Add("idpresentacion", "@idpresentacion", "F");
+        Ins.Add("idunidadmedida", "@idunidadmedida", "F");
+        Ins.Add("idubicacion", "@idubicacion", "F");
+        Ins.Add("idubicacion_anterior", "@idubicacion_anterior", "F");
+        Ins.Add("idrecepcionenc", "@idrecepcionenc", "F");
+        Ins.Add("idrecepciondet", "@idrecepciondet", "F");
+        Ins.Add("idpedidoenc", "@idpedidoenc", "F");
+        Ins.Add("idpickingenc", "@idpickingenc", "F");
+        Ins.Add("iddespachoenc", "@iddespachoenc", "F");
+        Ins.Add("lote", "@lote", "F");
+        Ins.Add("lic_plate", "@lic_plate", "F");
+        Ins.Add("serial", "@serial", "F");
+        Ins.Add("cantidad", "@cantidad", "F");
+        Ins.Add("fecha_ingreso", "@fecha_ingreso", "F");
+        Ins.Add("fecha_vence", "@fecha_vence", "F");
+        Ins.Add("uds_lic_plate", "@uds_lic_plate", "F");
+        Ins.Add("no_bulto", "@no_bulto", "F");
+        Ins.Add("fecha_manufactura", "@fecha_manufactura", "F");
+        Ins.Add("añada", "@añada", "F");
+        Ins.Add("user_agr", "@user_agr", "F");
+        Ins.Add("fec_agr", "@fec_agr", "F");
+        Ins.Add("user_mod", "@user_mod", "F");
+        Ins.Add("fec_mod", "@fec_mod", "F");
+        Ins.Add("activo", "@activo", "F");
+        Ins.Add("peso", "@peso", "F");
+        Ins.Add("temperatura", "@temperatura", "F");
+        Ins.Add("regularizado", "@regularizado", "F");
+        Ins.Add("fecha_regularizacion", "@fecha_regularizacion", "F");
+        Ins.Add("no_linea", "@no_linea", "F");
+        Ins.Add("atributo_variante_1", "@atributo_variante_1", "F");
+        Ins.Add("impreso", "@impreso", "F");
+        Ins.Add("idbodega", "@idbodega", "F");
+        Ins.Add("pallet_no_estandar", "@pallet_no_estandar", "F");
 
-        int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
+        string sp = Ins.SQL();
 
-        try
+        using (SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction))
         {
-
-            Upd.Init("stock_rec");
-            Upd.Add("idstockrec", "@idstockrec", "F");
-            Upd.Add("idpropietariobodega", "@idpropietariobodega", "F");
-            Upd.Add("idproductobodega", "@idproductobodega", "F");
-            Upd.Add("idproductoestado", "@idproductoestado", "F");
-            Upd.Add("idpresentacion", "@idpresentacion", "F");
-            Upd.Add("idunidadmedida", "@idunidadmedida", "F");
-            Upd.Add("idubicacion", "@idubicacion", "F");
-            Upd.Add("idubicacion_anterior", "@idubicacion_anterior", "F");
-            Upd.Add("idrecepcionenc", "@idrecepcionenc", "F");
-            Upd.Add("idrecepciondet", "@idrecepciondet", "F");
-            Upd.Add("idpedidoenc", "@idpedidoenc", "F");
-            Upd.Add("idpickingenc", "@idpickingenc", "F");
-            Upd.Add("iddespachoenc", "@iddespachoenc", "F");
-            Upd.Add("lote", "@lote", "F");
-            Upd.Add("lic_plate", "@lic_plate", "F");
-            Upd.Add("serial", "@serial", "F");
-            Upd.Add("cantidad", "@cantidad", "F");
-            Upd.Add("fecha_ingreso", "@fecha_ingreso", "F");
-            Upd.Add("fecha_vence", "@fecha_vence", "F");
-            Upd.Add("uds_lic_plate", "@uds_lic_plate", "F");
-            Upd.Add("no_bulto", "@no_bulto", "F");
-            Upd.Add("fecha_manufactura", "@fecha_manufactura", "F");
-            Upd.Add("añada", "@añada", "F");
-            Upd.Add("user_agr", "@user_agr", "F");
-            Upd.Add("fec_agr", "@fec_agr", "F");
-            Upd.Add("user_mod", "@user_mod", "F");
-            Upd.Add("fec_mod", "@fec_mod", "F");
-            Upd.Add("activo", "@activo", "F");
-            Upd.Add("peso", "@peso", "F");
-            Upd.Add("temperatura", "@temperatura", "F");
-            Upd.Add("regularizado", "@regularizado", "F");
-            Upd.Add("fecha_regularizacion", "@fecha_regularizacion", "F");
-            Upd.Add("no_linea", "@no_linea", "F");
-            Upd.Add("atributo_variante_1", "@atributo_variante_1", "F");
-            Upd.Add("impreso", "@impreso", "F");
-            Upd.Add("idbodega", "@idbodega", "F");
-            Upd.Add("pallet_no_estandar", "@pallet_no_estandar", "F");
-            Upd.Where("IdStockRec = @IdStockRec");
-
-            string sp = Upd.SQL();
-
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
-
+            cmd.CommandType = CommandType.Text;
             Bind(cmd, oBeStock_rec);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return cmd.ExecuteNonQuery();
         }
-        catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-
-            throw new Exception(vMsgError);
-        }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
 
     public int Eliminar(IConfiguration config, clsBeStock_rec oBeStock_rec, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
@@ -699,51 +655,18 @@ public class clsLnStock_rec
         cmd.Parameters.Add(new SqlParameter("@IdBodega", oBeStock_rec.IdBodega == 0 ? DBNull.Value : oBeStock_rec.IdBodega));
         cmd.Parameters.Add(new SqlParameter("@pallet_no_estandar", oBeStock_rec.Pallet_no_estandar));
     }
-    public static void InsertarOActualizar(IConfiguration config, List<clsBeStock_rec> entities, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static void InsertarOActualizar(List<clsBeStock_rec> entities, SqlConnection conn, SqlTransaction tx)
     {
-        bool isExternalTx = conn != null && tx != null;
-
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
-
-        try
+        foreach (var entity in entities)
         {
-            if (!isExternalTx)
+            if (entity.IdStockRec != 0)
             {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
+                bool existe = Existe(entity.IdStockRec, conn, tx);
 
-            foreach (var entity in entities)
-            {
-                if (entity.IdStockRec != 0) {
-                    bool existe = Existe(entity.IdStockRec, connection, isExternalTx ? tx! : localTx!);
-
-                    if (existe)
-                        Actualizar(config, entity, connection, isExternalTx ? tx : localTx);
-                    else
-                        Insertar(config, entity, connection, isExternalTx ? tx : localTx);
-                }
-            }
-
-            if (!isExternalTx)
-                localTx?.Commit();
-        }
-        catch (SqlException ex)
-        {
-            if (!isExternalTx && localTx is not null)
-                localTx.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
-            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
-        }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
+                if (existe)
+                    Actualizar(entity, conn, tx);
+                else
+                    Insertar(entity, conn, tx);
             }
         }
     }
@@ -754,5 +677,230 @@ public class clsLnStock_rec
 
         var count = Convert.ToInt32(cmd.ExecuteScalar());
         return count > 0;
+    }
+
+    public static int MaxID(SqlConnection pConnection, SqlTransaction pTransaction)
+    {
+        try
+        {
+            int lMax = 0;
+            const string SP = "SELECT ISNULL(MAX(IdStockRec), 0) FROM stock_rec";
+
+            using (SqlCommand lCommand = new SqlCommand(SP, pConnection))
+            {
+                lCommand.CommandType = CommandType.Text;
+                lCommand.Transaction = pTransaction;
+                object lReturnValue = lCommand.ExecuteScalar();
+
+                if (lReturnValue != DBNull.Value && lReturnValue != null)
+                {
+                    lMax = Convert.ToInt32(lReturnValue);
+                }
+            }
+
+            return lMax;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    public static int Guarda_Stock_Rec(int IdRecepcionEnc,
+                                      int IdBodega,
+                                      List<clsBeStock_rec>? pListStockRec,
+                                      SqlConnection lConnection,
+                                      SqlTransaction lTransaction)
+        {
+        int Guarda_Stock_Rec = 0;
+        int vRegistros = 0;
+        int vIdUbicacion = 0;
+
+        try
+        {
+            if (pListStockRec != null && pListStockRec.Count > 0)
+            {
+                foreach (clsBeStock_rec BeStockRec in pListStockRec.Where(x => x.Cantidad > 0))
+                {
+                    if (BeStockRec.IdUbicacion == 0)
+                    {
+                        throw new Exception("Error_202303231204: El IdUbicación es 0 para el objeto de stock.");
+                    }
+
+                    if (BeStockRec.IsNew)
+                    {
+                        BeStockRec.IdBodega = IdBodega;
+                        BeStockRec.IdStockRec = MaxID(lConnection, lTransaction) + 1;
+                        BeStockRec.IdRecepcionEnc = IdRecepcionEnc;
+                        BeStockRec.Fecha_ingreso = DateTime.Now;
+                        BeStockRec.Fec_agr = DateTime.Now;
+                        BeStockRec.Fec_mod = DateTime.Now;
+
+                        vIdUbicacion = clsLnBodega_ubicacion.Exists(BeStockRec.IdUbicacion.ToString(),
+                                                                    BeStockRec.IdBodega,
+                                                                    lConnection,
+                                                                    lTransaction);
+
+                        if (vIdUbicacion == 0)
+                        {
+                            throw new Exception($"ERROR_202302231645A: El IdUbicación: {BeStockRec.IdUbicacion} con el que se intentó insertar el stock para la recepción: {BeStockRec.IdRecepcionEnc} no existe. IdProductoBodega: {BeStockRec.IdProductoBodega} IdOperador: {BeStockRec.User_agr}");
+                        }
+
+                        if (BeStockRec.IdProductoEstado == 0)
+                        {
+                            throw new Exception($"ERROR_20240825CKFK: El IdProductoEstado: con el que se intentó insertar el stock para la recepción: {BeStockRec.IdRecepcionEnc} no existe. IdProductoBodega: {BeStockRec.IdProductoBodega} IdOperador: {BeStockRec.User_agr}");
+                        }
+
+                        vRegistros += Insertar(BeStockRec, lConnection, lTransaction);
+                        BeStockRec.IsNew = false;
+                    }
+                    else
+                    {
+                        BeStockRec.Fec_mod = DateTime.Now;
+
+                        vIdUbicacion = clsLnBodega_ubicacion.Exists(BeStockRec.IdUbicacion.ToString(),
+                                                                    BeStockRec.IdBodega,
+                                                                    lConnection,
+                                                                    lTransaction);
+
+                        if (vIdUbicacion == 0)
+                        {
+                            throw new Exception($"ERROR_202302231645UPD: El IdUbicación con el que se intentó insertar el stock para la recepción: {BeStockRec.IdRecepcionEnc} no existe. IdProductoBodega: {BeStockRec.IdProductoBodega} IdOperador: {BeStockRec.User_agr}");
+                        }
+
+                        vRegistros += Actualizar(BeStockRec, lConnection, lTransaction);
+                    }
+                }
+
+                Guarda_Stock_Rec = vRegistros;
+            }
+        }
+        catch (Exception ex)
+        {            
+            throw new Exception(ex.Message);
+        }
+
+        return Guarda_Stock_Rec;
+    }
+    public static int Actualizar(clsBeStock_rec oBeStock_rec,
+                                SqlConnection pConection,
+                                SqlTransaction pTransaction)
+    {
+        Upd.Init("stock_rec");
+        Upd.Add("idstockrec", "@idstockrec", "F");
+        Upd.Add("idpropietariobodega", "@idpropietariobodega", "F");
+        Upd.Add("idproductobodega", "@idproductobodega", "F");
+        Upd.Add("idproductoestado", "@idproductoestado", "F");
+        Upd.Add("idpresentacion", "@idpresentacion", "F");
+        Upd.Add("idunidadmedida", "@idunidadmedida", "F");
+        Upd.Add("idubicacion", "@idubicacion", "F");
+        Upd.Add("idubicacion_anterior", "@idubicacion_anterior", "F");
+        Upd.Add("idrecepcionenc", "@idrecepcionenc", "F");
+        Upd.Add("idrecepciondet", "@idrecepciondet", "F");
+        Upd.Add("idpedidoenc", "@idpedidoenc", "F");
+        Upd.Add("idpickingenc", "@idpickingenc", "F");
+        Upd.Add("iddespachoenc", "@iddespachoenc", "F");
+        Upd.Add("lote", "@lote", "F");
+        Upd.Add("lic_plate", "@lic_plate", "F");
+        Upd.Add("serial", "@serial", "F");
+        Upd.Add("cantidad", "@cantidad", "F");
+        Upd.Add("fecha_ingreso", "@fecha_ingreso", "F");
+        Upd.Add("fecha_vence", "@fecha_vence", "F");
+        Upd.Add("uds_lic_plate", "@uds_lic_plate", "F");
+        Upd.Add("no_bulto", "@no_bulto", "F");
+        Upd.Add("fecha_manufactura", "@fecha_manufactura", "F");
+        Upd.Add("añada", "@añada", "F");
+        Upd.Add("user_agr", "@user_agr", "F");
+        Upd.Add("fec_agr", "@fec_agr", "F");
+        Upd.Add("user_mod", "@user_mod", "F");
+        Upd.Add("fec_mod", "@fec_mod", "F");
+        Upd.Add("activo", "@activo", "F");
+        Upd.Add("peso", "@peso", "F");
+        Upd.Add("temperatura", "@temperatura", "F");
+        Upd.Add("regularizado", "@regularizado", "F");
+        Upd.Add("fecha_regularizacion", "@fecha_regularizacion", "F");
+        Upd.Add("no_linea", "@no_linea", "F");
+        Upd.Add("atributo_variante_1", "@atributo_variante_1", "F");
+        Upd.Add("impreso", "@impreso", "F");
+        Upd.Add("idbodega", "@idbodega", "F");
+        Upd.Add("pallet_no_estandar", "@pallet_no_estandar", "F");
+        Upd.Where("IdStockRec = @IdStockRec");
+
+        string sp = Upd.SQL();
+
+        using (SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction))
+        {
+            cmd.CommandType = CommandType.Text;
+            Bind(cmd, oBeStock_rec);
+            return cmd.ExecuteNonQuery();
+        }
+    }
+
+    public static List<clsBeStock_rec> Get_All_By_IdRecepcionEnc(int pIdRecepcionEnc,
+                                                                SqlConnection lConnection,
+                                                                SqlTransaction lTransaction)
+    {
+        List<clsBeStock_rec> lReturnList = new List<clsBeStock_rec>();
+
+        try
+        {
+            string vSQL = "SELECT * FROM stock_rec WHERE IdRecepcionEnc = @IdRecepcionEnc";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", pIdRecepcionEnc);
+                lDTA.SelectCommand.Transaction = lTransaction;
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable != null && lDataTable.Rows.Count > 0)
+                {
+                    foreach (DataRow lRow in lDataTable.Rows)
+                    {
+                        clsBeStock_rec Obj = new clsBeStock_rec();
+                        Cargar(ref Obj, lRow);
+
+                        if (lRow["IdProductoEstado"] != DBNull.Value && lRow["IdProductoEstado"] != null)
+                        {
+                            Obj.ProductoEstado.IdEstado = Convert.ToInt32(lRow["IdProductoEstado"]);
+                            Obj.IdProductoEstado = Convert.ToInt32(lRow["IdProductoEstado"]);
+                        }
+
+                        if (lRow["IdPresentacion"] != DBNull.Value && lRow["IdPresentacion"] != null)
+                        {
+                            Obj.Presentacion.IdPresentacion = Convert.ToInt32(lRow["IdPresentacion"]);
+                        }
+
+                        lReturnList.Add(Obj);
+                    }
+                }
+            }
+
+            return lReturnList;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    public static void Actualiza_Stock_Rec(List<clsBeStock_rec>? pListStockRec,
+                                           SqlConnection lConnection,
+                                           SqlTransaction lTransaction)
+    {
+        try
+        {
+            if (pListStockRec !=null)
+                foreach (clsBeStock_rec sr in pListStockRec)
+                {
+                    Actualizar(sr, lConnection, lTransaction);
+                }
+        }
+        catch (Exception)
+        {            
+            throw;
+        }
     }
 }

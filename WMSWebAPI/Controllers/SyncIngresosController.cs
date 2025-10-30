@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Transactions;
+using WMSWebAPI.Be;
 using WMSWebAPI.Dtos.Ingresos;
 using WMSWebAPI.Services.Ingresos;
 
@@ -118,6 +119,32 @@ namespace WMSWebAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { Exito = false, Mensaje = ex.Message });
+            }
+        }
+        
+        [HttpPost("mi3/insert")]
+        public IActionResult Insert([FromBody] clsBeI_nav_ped_compra_enc beINavPedCompraEnc)
+        {
+            if (beINavPedCompraEnc == null)
+                return BadRequest("El payload no puede ser nulo.");
+
+            try
+            {
+                int result = _service.Insert(_configuration, beINavPedCompraEnc);
+
+                // Convención: 1 = OK, 0 = error (en nuestro flujo, los errores lanzan excepción)
+                return Ok(result); // devolverá 1 si todo bien
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PedidoCompra/mi3/insert");
+                var showStackTrace = _configuration.GetValue<bool>("MostrarDetallesErrores");
+                return StatusCode(500, new
+                {
+                    Exito = false,
+                    Mensaje = ex.Message,
+                    Detalles = showStackTrace ? ex.ToString() : null
+                });
             }
         }
     }

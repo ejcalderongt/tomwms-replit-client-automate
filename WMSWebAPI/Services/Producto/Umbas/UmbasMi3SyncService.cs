@@ -25,7 +25,7 @@ namespace WMSWebAPI.Services.Producto.Umbas
                     throw new ArgumentNullException(nameof(dto), "La UmbasMi3 no puede estar vacio.");
 
                 var UmbasMi3 = _mapper.Map<clsBeUnidad_medidaMi3>(dto);
-                clsLnUnidad_medida.Valida_Atributos(_configuration, UmbasMi3, conn, tx);
+                clsLnUnidad_medida.Valida_Atributos(UmbasMi3, conn, tx);
                 
 
             }

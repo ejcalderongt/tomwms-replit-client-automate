@@ -1,5 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using WMS.EntityCore.Trans_re;
+using WMSWebAPI.Be;
 
 namespace WMS.EntityCore.Propietario
 {
@@ -40,7 +42,11 @@ namespace WMS.EntityCore.Propietario
         [Column("activo")]
         [DisplayName("activo")]
         public bool Activo { get; set; } = false;
-
+        public bool IsNew { get; set; }
+        public clsBeReglas_RecepcionRes Regla { get; set; } = new clsBeReglas_RecepcionRes();
+        public string Propietario { get; set; } = "";
+        public clsBeMensaje_regla Mensaje { get; set; } = new clsBeMensaje_regla();
+        public List<clsBePropietario_reglas_det> ReglasDet { get; set; } = new List<clsBePropietario_reglas_det>();
         public clsBePropietario_reglas_enc() { }
 
         public object Clone()

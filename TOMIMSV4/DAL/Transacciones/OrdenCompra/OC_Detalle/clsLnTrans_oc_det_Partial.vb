@@ -54,8 +54,8 @@ Partial Public Class clsLnTrans_oc_det
 
                         If (BeTransOcDet.Producto.IdClasificacion <> 0) Then
                             BeTransOcDet.Producto.Clasificacion = clsLnProducto_clasificacion.GetSingle(BeTransOcDet.Producto.IdClasificacion,
-                                                                                               lConnection,
-                                                                                               lTransaction)
+                                                                                                       lConnection,
+                                                                                                       lTransaction)
                         End If
 
                         If lRow("IdProductoBodega") IsNot DBNull.Value AndAlso lRow("IdProductoBodega") IsNot Nothing Then

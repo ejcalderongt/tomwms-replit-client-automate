@@ -631,4 +631,36 @@ public class clsLnBodega_muelles
         }
     }
 
+    public static int Get_IdMuelle_Default_By_IdBodega(int IdBodega,
+                                                   SqlConnection lConnection,
+                                                   SqlTransaction lTransaction)
+    {
+        try
+        {
+            const string sp = @"SELECT TOP(1) IdMuelle FROM Bodega_muelles 
+                            WHERE (IdBodega = @IdBodega)";
+
+            SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            SqlDataAdapter dad = new SqlDataAdapter(cmd);
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@IDBODEGA", IdBodega));
+
+            DataTable dt = new DataTable();
+            dad.Fill(dt);
+
+            if (dt.Rows.Count == 1)
+            {
+                return Convert.ToInt32(dt.Rows[0]["IdMuelle"]);
+            }
+
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
 }

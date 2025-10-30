@@ -17299,23 +17299,26 @@ Public Class TOMHHWS
                                                       ByVal pLicencia As String)
 
         Dim curContext As HttpContext = HttpContext.Current
-        'Get_Detalle_Rec_By_IdCompra_Licencia = Nothing
+        'Get_Detalle_Rec_By_IdCompra_Licencia_ = Nothing
 
         Try
             Dim listaDetalles As List(Of clsBeTrans_re_det)
             listaDetalles = clsLnTrans_re_det.Get_Detalle_Rec_By_IdCompra_Licencia(pIdOrdenCompra, pLicencia)
 
-            Dim jsonResponse As String = JsonConvert.SerializeObject(New With {.detalle_recepcion = listaDetalles},
+            Dim jsonResponse As String = JsonConvert.SerializeObject(listaDetalles,
             New JsonSerializerSettings With {
                 .NullValueHandling = NullValueHandling.Include,
                 .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 .Formatting = Formatting.None
             })
 
+            Dim jsonModificado As String = jsonResponse.Replace("[]", "null")
+
             curContext.Response.Clear()
             curContext.Response.ContentType = "application/json"
-            curContext.Response.Write(jsonResponse)
+            curContext.Response.Write(jsonModificado)
             curContext.ApplicationInstance.CompleteRequest()
+
 
         Catch ex As Exception
 

@@ -28,6 +28,7 @@ namespace WMS.EntityCore.Trans_re
         [Column("observacion")]
         [DisplayName("observacion")]
         public string Observacion { get; set; } = "";
+        public bool IsNew { get; set; } = true;
 
         public clsBeTrans_re_img() { }
 

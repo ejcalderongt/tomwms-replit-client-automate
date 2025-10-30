@@ -24,7 +24,7 @@ namespace WMSWebAPI.Services.Producto.Marca
             {
                 var Marca = _mapper.Map<clsBeProducto_marcaSimple>(dto);
                 if (Marca != null)
-                    clsLnProducto_Marca.Valida_Atributos(_configuration, Marca, conn, tx);
+                    clsLnProducto_Marca.Valida_Atributos(Marca, conn, tx);
                     
             }
             catch (Exception ex)

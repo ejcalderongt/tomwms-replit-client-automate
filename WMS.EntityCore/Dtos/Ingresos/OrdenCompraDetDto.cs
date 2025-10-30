@@ -1,4 +1,6 @@
-﻿using WMSWebAPI.Dtos.Catalogos;
+﻿using WMSWebAPI.Be;
+using WMSWebAPI.Dtos.Catalogos;
+using WMSWebAPI.Dtos.Productos;
 
 namespace WMSWebAPI.Dtos.Ingresos
 {
@@ -43,5 +45,19 @@ namespace WMSWebAPI.Dtos.Ingresos
         public int? IdOrdenCompraDetPadre { get; set; }
         public int? IdEmbarcador { get; set; }
         public ProductoBodegaDto ProductoBodega { get; set; } = new ProductoBodegaDto();
+        public ProductoPresentacionDto Presentacion { get; set; } = new ProductoPresentacionDto();
+        public bool IsNew { get; set; } = true;
+        public bool ExisteEnRecepcion { get; set; }
+        public decimal FactorPresentacion { get; set; }        
+        public ProductoDto Producto { get; set; } = new ProductoDto();
+        public UnidadMedidaDto UnidadMedida { get; set; } = new UnidadMedidaDto();
+        public int RowIndex { get; set; }        
+        public int IdProductoTallaColor { get; set; }
+        public string Nombre_Embarcador { get; set; } = string.Empty;
+        public string Nombre_Clasificacion { get; set; } = string.Empty;
+        public clsBeArancel Arancel { get; set; } = new clsBeArancel();
+        public clsBeTalla Talla { get; set; } = new clsBeTalla();
+        public clsBeColor Color { get; set; } = new clsBeColor();
+        public List<OrdenCompraDetDto> lProductosHijosKit { get; set; } = new List<OrdenCompraDetDto>();
     }
 }

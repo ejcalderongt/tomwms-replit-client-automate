@@ -88,6 +88,7 @@ Partial Class frmInventarioImport
         Me.ColColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColTalla = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colError = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColIdProductoTallaColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemCheckEdit1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemCheckEdit2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -330,7 +331,7 @@ Partial Class frmInventarioImport
         Me.grdData.AllowUserToResizeRows = False
         Me.grdData.BackgroundColor = System.Drawing.Color.White
         Me.grdData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grdData.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colEstado, Me.colId, Me.colCodigo, Me.colPresentacion, Me.colCantidad, Me.colPeso, Me.colUnidadMedida, Me.colIdProducto, Me.colIdPresentacion, Me.ColIdUnidadMedida, Me.ColLote, Me.colFechaVence, Me.ColUbicacion, Me.colIdPropietarioBodega, Me.colnombre_propietario, Me.ColLp, Me.ColCodVariante, Me.colCosto, Me.colPrecio, Me.colParametro_a, Me.colParametro_b, Me.ColCodigo_Area, Me.ColColor, Me.ColTalla, Me.colError})
+        Me.grdData.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colEstado, Me.colId, Me.colCodigo, Me.colPresentacion, Me.colCantidad, Me.colPeso, Me.colUnidadMedida, Me.colIdProducto, Me.colIdPresentacion, Me.ColIdUnidadMedida, Me.ColLote, Me.colFechaVence, Me.ColUbicacion, Me.colIdPropietarioBodega, Me.colnombre_propietario, Me.ColLp, Me.ColCodVariante, Me.colCosto, Me.colPrecio, Me.colParametro_a, Me.colParametro_b, Me.ColCodigo_Area, Me.ColColor, Me.ColTalla, Me.colError, Me.ColIdProductoTallaColor})
         Me.grdData.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.grdData.Location = New System.Drawing.Point(2, -125)
         Me.grdData.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
@@ -559,6 +560,12 @@ Partial Class frmInventarioImport
         Me.colError.ReadOnly = True
         Me.colError.Width = 125
         '
+        'ColIdProductoTallaColor
+        '
+        Me.ColIdProductoTallaColor.HeaderText = "IdProductoTallaColor"
+        Me.ColIdProductoTallaColor.Name = "ColIdProductoTallaColor"
+        Me.ColIdProductoTallaColor.Visible = False
+        '
         'frmInventarioImport
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -641,4 +648,5 @@ End Sub
     Friend WithEvents ColColor As DataGridViewTextBoxColumn
     Friend WithEvents ColTalla As DataGridViewTextBoxColumn
     Friend WithEvents colError As DataGridViewTextBoxColumn
+    Friend WithEvents ColIdProductoTallaColor As DataGridViewTextBoxColumn
 End Class

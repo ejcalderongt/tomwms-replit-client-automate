@@ -1,11 +1,11 @@
 ﻿using Microsoft.Data.SqlClient;
-using WMSWebAPI.Dtos.Productos;
+using WMSWebAPI.Dtos.Catalogos;
 
 namespace WMSWebAPI.Services
 {
     public interface IProductoSyncService
     {
-        void ProcesarProductoDesdeDto(ProductoTransDto dto, SqlConnection connection, SqlTransaction transaction);
+        void ProcesarProductoDesdeDto(ProductoDto dto, SqlConnection connection, SqlTransaction transaction);
     }
 
 }

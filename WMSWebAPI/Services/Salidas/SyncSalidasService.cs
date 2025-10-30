@@ -50,7 +50,7 @@ namespace WMSWebAPI.Services.Salidas
                 if (dto.Cliente != null  && dto.Cliente.Any())
                 {
                     var clientes = _mapper.Map<List<clsBeCliente>>(dto.Cliente);
-                    clsLnCliente.InsertarOActualizar(_configuration, clientes, conn, tx);
+                    clsLnCliente.InsertarOActualizar(clientes, conn, tx);
                 }
 
             }
@@ -91,7 +91,7 @@ namespace WMSWebAPI.Services.Salidas
                 if (dto.Operadores != null && dto.Operadores.Any())
                 {
                     var operador_list = _mapper.Map<List<clsBeOperador>>(dto.Operadores);
-                    clsLnOperador.InsertarOActualizar(_configuration, operador_list, conn, tx);
+                    clsLnOperador.InsertarOActualizar(operador_list, conn, tx);
                 }
             }
             catch (Exception ex)
@@ -104,7 +104,7 @@ namespace WMSWebAPI.Services.Salidas
                 if (dto.OperadorBodega != null && dto.OperadorBodega.Any())
                 {
                     var operador_bodega_list = _mapper.Map<List<clsBeOperador_bodega>>(dto.OperadorBodega);
-                    clsLnOperador_bodega.InsertarOActualizar(_configuration, operador_bodega_list, conn, tx);
+                    clsLnOperador_bodega.InsertarOActualizar(operador_bodega_list, conn, tx);
                 }
             }
             catch (Exception ex) 

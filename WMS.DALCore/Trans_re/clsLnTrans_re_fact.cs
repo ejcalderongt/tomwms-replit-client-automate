@@ -112,131 +112,57 @@ public class clsLnTrans_re_fact
         return rowsAffected;
     }
 
-    public static int Insertar(IConfiguration config, clsBeTrans_re_fact oBeTrans_re_fact)
+    public static int Insertar(clsBeTrans_re_fact oBeTrans_re_fact,
+                              SqlConnection pConection,
+                              SqlTransaction pTransaction)
     {
+        Ins.Init("trans_re_fact");
+        Ins.Add("idfacturarecepcion", "@idfacturarecepcion", "F");
+        Ins.Add("idrecepcionenc", "@idrecepcionenc", "F");
+        Ins.Add("orden", "@orden", "F");
+        Ins.Add("nofactura", "@nofactura", "F");
+        Ins.Add("observacion", "@observacion", "F");
+        Ins.Add("fec_agr", "@fec_agr", "F");
+        Ins.Add("user_agr", "@user_agr", "F");
+        Ins.Add("fec_mod", "@fec_mod", "F");
+        Ins.Add("user_mod", "@user_mod", "F");
+        Ins.Add("completa", "@completa", "F");
 
-        int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
+        string sp = Ins.SQL();
 
-        try
+        using (SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction))
         {
-            Ins.Init("trans_re_fact");
-            Ins.Add("idfacturarecepcion", "@idfacturarecepcion", "F");
-            Ins.Add("idrecepcionenc", "@idrecepcionenc", "F");
-            Ins.Add("orden", "@orden", "F");
-            Ins.Add("nofactura", "@nofactura", "F");
-            Ins.Add("observacion", "@observacion", "F");
-            Ins.Add("fec_agr", "@fec_agr", "F");
-            Ins.Add("user_agr", "@user_agr", "F");
-            Ins.Add("fec_mod", "@fec_mod", "F");
-            Ins.Add("user_mod", "@user_mod", "F");
-            Ins.Add("completa", "@completa", "F");
-
-            string sp = Ins.SQL();
-
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
-
-            lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            cmd = new SqlCommand(sp, lConnection, lTransaction);
-
+            cmd.CommandType = CommandType.Text;
             Bind(cmd, oBeTrans_re_fact);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            if (lTransaction != null)
-                lTransaction.Commit();
-
+            return cmd.ExecuteNonQuery();
         }
-        catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-
-            throw new Exception(vMsgError);
-        }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
 
-    public static int Actualizar(IConfiguration config, clsBeTrans_re_fact oBeTrans_re_fact, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Actualizar(clsBeTrans_re_fact oBeTrans_re_fact,
+                            SqlConnection pConection,
+                            SqlTransaction pTransaction)
     {
+        Upd.Init("trans_re_fact");
+        Upd.Add("idfacturarecepcion", "@idfacturarecepcion", "F");
+        Upd.Add("idrecepcionenc", "@idrecepcionenc", "F");
+        Upd.Add("orden", "@orden", "F");
+        Upd.Add("nofactura", "@nofactura", "F");
+        Upd.Add("observacion", "@observacion", "F");
+        Upd.Add("fec_agr", "@fec_agr", "F");
+        Upd.Add("user_agr", "@user_agr", "F");
+        Upd.Add("fec_mod", "@fec_mod", "F");
+        Upd.Add("user_mod", "@user_mod", "F");
+        Upd.Add("completa", "@completa", "F");
+        Upd.Where("IdFacturaRecepcion = @IdFacturaRecepcion");
 
-        int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
+        string sp = Upd.SQL();
 
-        try
+        using (SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction))
         {
-
-            Upd.Init("trans_re_fact");
-            Upd.Add("idfacturarecepcion", "@idfacturarecepcion", "F");
-            Upd.Add("idrecepcionenc", "@idrecepcionenc", "F");
-            Upd.Add("orden", "@orden", "F");
-            Upd.Add("nofactura", "@nofactura", "F");
-            Upd.Add("observacion", "@observacion", "F");
-            Upd.Add("fec_agr", "@fec_agr", "F");
-            Upd.Add("user_agr", "@user_agr", "F");
-            Upd.Add("fec_mod", "@fec_mod", "F");
-            Upd.Add("user_mod", "@user_mod", "F");
-            Upd.Add("completa", "@completa", "F");
-            Upd.Where("IdFacturaRecepcion = @IdFacturaRecepcion");
-
-            string sp = Upd.SQL();
-
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
-
+            cmd.CommandType = CommandType.Text;
             Bind(cmd, oBeTrans_re_fact);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return cmd.ExecuteNonQuery();
         }
-        catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-
-            throw new Exception(vMsgError);
-        }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
 
     public int Eliminar(IConfiguration config, clsBeTrans_re_fact oBeTrans_re_fact, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
@@ -498,56 +424,22 @@ public class clsLnTrans_re_fact
             throw new Exception(vMsgError);
         }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int MaxID(SqlConnection pConection, SqlTransaction pTransaction)
     {
+        const string sp = "Select ISNULL(Max(IdFacturaRecepcion),0) FROM Trans_re_fact";
 
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
-        int lMax = 0;
-        try
+        using (SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction))
         {
-
-
-            const string sp = "Select ISNULL(Max(IdFacturaRecepcion),0) FROM Trans_re_fact";
-
-            bool Es_Transaccion_Remota = pConection is not null && pTransaction is not null;
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-            if (Es_Transaccion_Remota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
-
-            Object lreturnValue = cmd.ExecuteScalar();
+            cmd.CommandType = CommandType.Text;
+            object lreturnValue = cmd.ExecuteScalar();
 
             if (lreturnValue != DBNull.Value && lreturnValue != null)
             {
-                lMax = int.Parse((String)lreturnValue);
+                return Convert.ToInt32(lreturnValue);
             }
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-            return lMax;
-
         }
-        catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
 
-            throw new Exception(vMsgError);
-        }
+        return 0;
     }
     public static void Bind(SqlCommand cmd, clsBeTrans_re_fact oBeTrans_re_fact)
     {
@@ -563,4 +455,76 @@ public class clsLnTrans_re_fact
         cmd.Parameters.Add(new SqlParameter("@Completa", oBeTrans_re_fact.Completa));
     }
 
+    public static void Guarda_facturas_asoc(int IdRecepcionEnc,
+                                           List<clsBeTrans_re_fact>? pListRecFact,
+                                           SqlConnection lConnection,
+                                           SqlTransaction lTransaction)
+    {
+        try
+        {
+            if (pListRecFact != null)
+            {
+                int lMaxIdF = MaxID(lConnection, lTransaction);
+
+                foreach (clsBeTrans_re_fact ObjF in pListRecFact)
+                {
+                    if (ObjF.IsNew)
+                    {
+                        lMaxIdF += 1;
+                        ObjF.IdFacturaRecepcion = lMaxIdF;
+                        ObjF.IdRecepcionEnc = IdRecepcionEnc;
+                        Insertar(ObjF, lConnection, lTransaction);
+                    }
+                    else
+                    {
+                        Actualizar(ObjF, lConnection, lTransaction);
+                    }
+                }
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static List<clsBeTrans_re_fact> Get_Detalle_Facturas_By_IdRecepcionEnc(int pIdRecepcionEnc,
+                                                                                 SqlConnection lConnection,
+                                                                                 SqlTransaction lTransaction)
+    {
+        List<clsBeTrans_re_fact> lReturnList = new List<clsBeTrans_re_fact>();
+
+        try
+        {
+            string vSQL = @"SELECT * FROM Trans_re_fact 
+                       WHERE IdRecepcionEnc = @IdRecepcionEnc";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", pIdRecepcionEnc);
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable?.Rows.Count > 0)
+                {
+                    foreach (DataRow lRow in lDataTable.Rows)
+                    {
+                        clsBeTrans_re_fact Obj = new clsBeTrans_re_fact();
+                        Cargar(ref Obj, lRow);
+                        Obj.IsNew = false;
+                        lReturnList.Add(Obj);
+                    }
+                }
+            }
+
+            return lReturnList;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }

@@ -47,8 +47,17 @@ public class clsLnProducto_bodega
             throw new Exception($"{MethodBase.GetCurrentMethod()} {ex.Message}");
         }
     }
-    public static int Insertar(IConfiguration config, clsBeProducto_bodega p, SqlConnection? extConn = null, SqlTransaction? extTran = null)
+    public static int Insertar(clsBeProducto_bodega p, SqlConnection conn, SqlTransaction tran)
     {
+        if (p == null)
+            throw new ArgumentNullException(nameof(p));
+
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
+
+        if (tran == null)
+            throw new ArgumentNullException(nameof(tran));
+
         Ins.Init("producto_bodega");
         Ins.Add("idproductobodega", "@idproductobodega", "F");
         Ins.Add("idproducto", "@idproducto", "F");
@@ -61,31 +70,28 @@ public class clsLnProducto_bodega
         Ins.Add("fec_mod", "@fec_mod", "F");
 
         string sql = Ins.SQL();
-        bool remoto = extConn != null && extTran != null;
-        int rows = 0;
-
-        var conn = remoto ? extConn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? tran = null;
 
         try
         {
-            if (!remoto) conn.Open();
-            tran ??= remoto ? extTran! : conn.BeginTransaction(IsolationLevel.ReadUncommitted);
-
             using var cmd = CrearComando(sql, conn, tran, p);
-            rows = cmd.ExecuteNonQuery();
-
-            if (!remoto) tran.Commit();
+            return cmd.ExecuteNonQuery();
         }
         catch (SqlException ex)
         {
-            if (!remoto) tran?.Rollback();
             throw new Exception($"{MethodBase.GetCurrentMethod()} {ex.Message}");
         }
-        return rows;
     }
-    public static int Actualizar(IConfiguration config, clsBeProducto_bodega p, SqlConnection? extConn = null, SqlTransaction? extTran = null)
+    public static int Actualizar(clsBeProducto_bodega p, SqlConnection conn, SqlTransaction tran)
     {
+        if (p == null)
+            throw new ArgumentNullException(nameof(p));
+
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
+
+        if (tran == null)
+            throw new ArgumentNullException(nameof(tran));
+
         Upd.Init("producto_bodega");
         Upd.Add("idproductobodega", "@idproductobodega", "F");
         Upd.Add("idproducto", "@idproducto", "F");
@@ -99,28 +105,16 @@ public class clsLnProducto_bodega
         Upd.Where("IdProductoBodega = @IdProductoBodega");
 
         string sql = Upd.SQL();
-        bool remoto = extConn != null && extTran != null;
-        int rows = 0;
-
-        var conn = remoto ? extConn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? tran = null;
 
         try
         {
-            if (!remoto) conn.Open();
-            tran ??= remoto ? extTran! : conn.BeginTransaction(IsolationLevel.ReadUncommitted);
-
             using var cmd = CrearComando(sql, conn, tran, p);
-            rows = cmd.ExecuteNonQuery();
-
-            if (!remoto) tran.Commit();
+            return cmd.ExecuteNonQuery();
         }
         catch (SqlException ex)
         {
-            if (!remoto) tran?.Rollback();
             throw new Exception($"{MethodBase.GetCurrentMethod()} {ex.Message}");
         }
-        return rows;
     }
     public static bool GetSingle(IConfiguration config, ref clsBeProducto_bodega p)
     {
@@ -214,85 +208,60 @@ public class clsLnProducto_bodega
             throw new Exception(vMsgError, ex);
         }
     }
-    public static int InsertOrUpdate(IConfiguration config, List<clsBeProducto_bodega> entities, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(List<clsBeProducto_bodega> entities, SqlConnection conn, SqlTransaction tx)
     {
-        if (entities == null || entities.Count == 0)
+        if (entities == null)
+            throw new ArgumentNullException(nameof(entities));
+
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
+
+        if (tx == null)
+            throw new ArgumentNullException(nameof(tx));
+
+        if (entities.Count == 0)
             return 0;
 
-        bool isExternalTx = conn != null && tx != null;
-
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
         int affected = 0;
 
         try
         {
-            if (!isExternalTx)
-            {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
             foreach (var entity in entities)
             {
+                if (entity == null)
+                    continue;
+
                 if (entity.IdProducto != 0)
                 {
-                    bool existe = Existe(entity.IdProductoBodega, connection, isExternalTx ? tx! : localTx!);
+                    bool existe = Existe(entity.IdProductoBodega, conn, tx);
 
                     affected += existe
-                        ? Actualizar(config, entity, connection, isExternalTx ? tx : localTx)
-                        : Insertar(config, entity, connection, isExternalTx ? tx : localTx);
-                }                
+                        ? Actualizar(entity, conn, tx)
+                        : Insertar(entity, conn, tx);
+                }
             }
-
-            if (!isExternalTx && localTx != null)
-                localTx.Commit();
 
             return affected;
         }
         catch (SqlException ex)
         {
-            if (!isExternalTx && localTx is not null)
-                localTx.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            var method = System.Reflection.MethodBase.GetCurrentMethod();
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
         }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
-            }
-        }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int MaxID(SqlConnection conn, SqlTransaction tx)
     {
         const string sql = "SELECT ISNULL(MAX(IdProductoBodega), 0) FROM Producto_bodega";
-        bool externa = conn != null && tx != null;
-
-        var lConn = externa ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTx = null;
-
-        if (!externa) { lConn.Open(); lTx = lConn.BeginTransaction(); }
 
         try
         {
-            using var cmd = new SqlCommand(sql, lConn, externa ? tx! : lTx!);
+            using var cmd = new SqlCommand(sql, conn, tx);
             var result = cmd.ExecuteScalar();
-            if (!externa) lTx?.Commit();
             return Convert.ToInt32(result);
         }
         catch
         {
-            if (!externa) lTx?.Rollback();
             throw;
-        }
-        finally
-        {
-            if (!externa) lConn.Close();
         }
     }
     public static List<clsBeProducto_bodega> GetAll(IConfiguration configuration)
@@ -317,54 +286,237 @@ public class clsLnProducto_bodega
         transaction.Commit();
         return resultList;
     }
-    public static int InsertarOActualizar(IConfiguration config, List<clsBeProducto_bodega> entities, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int InsertarOActualizar(List<clsBeProducto_bodega> entities, SqlConnection conn, SqlTransaction tx)
     {
-        bool isExternalTx = conn != null && tx != null;
-        int total = 0;
+        if (entities == null)
+            throw new ArgumentNullException(nameof(entities));
 
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
+
+        if (tx == null)
+            throw new ArgumentNullException(nameof(tx));
+
+        int total = 0;
 
         try
         {
-            if (!isExternalTx)
-            {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
             foreach (var entity in entities)
             {
-                bool existe = Existe(entity.IdProductoBodega, connection, isExternalTx ? tx! : localTx!);
+                if (entity == null)
+                    continue;
+
+                bool existe = Existe(entity.IdProductoBodega, conn, tx);
 
                 int result = existe
-                    ? Actualizar(config, entity, connection, isExternalTx ? tx : localTx)
-                    : Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                    ? Actualizar(entity, conn, tx)
+                    : Insertar(entity, conn, tx);
 
                 total += result;
             }
-
-            if (!isExternalTx && localTx is not null)
-                localTx.Commit();
 
             return total;
         }
         catch (SqlException ex)
         {
-            if (!isExternalTx && localTx is not null)
-                localTx.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            var method = System.Reflection.MethodBase.GetCurrentMethod();
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
         }
-        finally
+    }
+
+    public static clsBeProducto_bodega? Existe_Codigo_By_IdBodega(string pCodigo,
+                                                                  int pIdBodega,
+                                                                  SqlConnection lConnection,
+                                                                  SqlTransaction lTransaction)
+    {
+        clsBeProducto_bodega? resultado = null;
+
+        try
         {
-            if (!isExternalTx)
+            string vSQL = @"
+                SELECT * 
+                FROM producto_bodega pb 
+                INNER JOIN producto p ON pb.IdProducto = p.IdProducto 
+                WHERE p.Codigo = @Codigo AND pb.IdBodega = @IdBodega";
+
+            using (var lDTA = new SqlDataAdapter(vSQL, lConnection))
             {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo);
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega);
+                lDTA.SelectCommand.Transaction = lTransaction;
+
+                var lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+
+                    var objPB = new clsBeProducto_bodega();
+                    var objP = new clsBeProducto();
+
+                    Cargar(ref objPB, lRow);
+
+                    objP.IdProducto = objPB.IdProducto;
+                    objP = clsLnProducto.GetSingle(objP.IdProducto, lConnection, lTransaction);
+
+                    if (objP != null) // Ensure objP is not null before assignment
+                    {
+                        objPB.Producto = objP;
+                    }
+
+                    resultado = objPB;
+                }
             }
         }
+        catch
+        {
+            throw;
+        }
+
+        return resultado;
+    }
+
+    public static clsBeProducto_bodega? Existe_Parte_By_IdBodega(
+        string pCodigo,
+        int pIdBodega,
+        SqlConnection lConnection,
+        SqlTransaction lTransaction)
+    {
+        clsBeProducto_bodega? resultado = null;
+
+        try
+        {
+            string vSQL = @"
+                SELECT * 
+                FROM producto_bodega pb 
+                INNER JOIN producto p ON pb.IdProducto = p.IdProducto 
+                WHERE p.noparte = @Codigo AND pb.IdBodega = @IdBodega";
+
+            using (var lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo);
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega);
+                lDTA.SelectCommand.Transaction = lTransaction;
+
+                var lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+                    var objPB = new clsBeProducto_bodega();
+                    var objP = new clsBeProducto();
+
+                    Cargar(ref objPB, lRow);
+
+                    objP.IdProducto = objPB.IdProducto;
+                    objP = clsLnProducto.GetSingle(objP.IdProducto, lConnection, lTransaction);
+
+                    if (objP != null)                    
+                        objPB.Producto = objP;                    
+
+                    resultado = objPB;
+                }
+            }
+        }
+        catch
+        {
+            throw;
+        }
+
+        return resultado;
+    }
+
+    public static clsBeProducto_bodega? Existe_NoSerie_By_IdBodega(
+        string pCodigo,
+        int pIdBodega,
+        SqlConnection lConnection,
+        SqlTransaction lTransaction)
+    {
+        clsBeProducto_bodega? resultado = null;
+
+        try
+        {
+            string vSQL = @"
+                SELECT * 
+                FROM producto_bodega pb 
+                INNER JOIN producto p ON pb.IdProducto = p.IdProducto 
+                WHERE p.noserie = @Codigo AND pb.IdBodega = @IdBodega";
+
+            using (var lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo);
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega);
+                lDTA.SelectCommand.Transaction = lTransaction;
+
+                var lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+                    var objPB = new clsBeProducto_bodega();
+                    var objP = new clsBeProducto();
+
+                    Cargar(ref objPB, lRow);
+
+                    objP.IdProducto = objPB.IdProducto;
+                    objP = clsLnProducto.GetSingle(objP.IdProducto, lConnection, lTransaction);
+                    if (objP != null)
+                        objPB.Producto = objP;
+                    resultado = objPB;
+                }
+            }
+        }
+        catch
+        {
+            throw;
+        }
+
+        return resultado;
+    }
+
+    public static clsBeProducto? Get_Producto_By_IdProductoBodega(int pIdProductoBodega,
+                                                                  SqlConnection lConnection,
+                                                                  SqlTransaction lTransaction)
+    {
+        clsBeProducto? result = null;
+
+        try
+        {
+            string vSQL = "SELECT IdProducto FROM producto_bodega WHERE IdProductoBodega = @IdProductoBodega";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pIdProductoBodega);
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable != null && lDataTable.Rows.Count > 0)
+                {
+                    int idProducto = Convert.ToInt32(lDataTable.Rows[0]["IdProducto"]);
+                    clsBeProducto? BeProducto = clsLnProducto.GetSingle(idProducto, lConnection, lTransaction);
+
+                    if (BeProducto != null)
+                    {
+                        BeProducto.IdProductoBodega = pIdProductoBodega;
+                        result = BeProducto;
+                    }
+                }
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return result;
     }
 }

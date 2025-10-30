@@ -4,8 +4,6 @@
     Public Property IsNew As Boolean = False
 
     Public Detalle As List(Of clsBeTrans_pe_det) = Nothing
-
-    '#EJC20171021_0450PM: Obtener el picking (Activo) asociado al pedido.
     Public Property Picking As New clsBeTrans_picking_enc
     Public Property PropietarioBodega As New clsBePropietario_bodega
     Public Property Cliente As New clsBeCliente

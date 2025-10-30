@@ -74,14 +74,9 @@ public class clsLnTrans_picking_ubic
             oBeTrans_picking_ubic.IdUbicacionTemporal = GetInt("IdUbicacionTemporal");
             oBeTrans_picking_ubic.IdOperadorBodega_Asignado = GetInt("IdOperadorBodega_Asignado");
         }
-        catch (Exception ex)
-        {
-            var st = new System.Diagnostics.StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = sf?.GetMethod();
-            string vMsgError = string.Format("{{0}} {{1}}", currentMethodName, ex.Message);
-            
-            throw new Exception(vMsgError);
+        catch (Exception)
+        {            
+            throw;
         }
     }
 
@@ -176,17 +171,11 @@ public class clsLnTrans_picking_ubic
 
 
         }
-        catch (SqlException ex1)
+        catch (SqlException)
         {
             if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+                lTransaction.Rollback();            
+            throw;
         }
         finally
         {
@@ -275,17 +264,11 @@ public class clsLnTrans_picking_ubic
                 lTransaction.Commit();
 
         }
-        catch (SqlException ex1)
+        catch (SqlException)
         {
             if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+                lTransaction.Rollback();            
+            throw;
         }
         finally
         {
@@ -830,4 +813,132 @@ public class clsLnTrans_picking_ubic
         return count > 0;
     }
 
+    public static List<clsBeTrans_picking_ubic>? Get_All_PickingUbic_Despachado_By_IdDespachoEnc(int pIdDespachoEnc,
+                                                                                                 SqlConnection lConnection,
+                                                                                                 SqlTransaction lTransaction)
+    {
+        List<clsBeTrans_picking_ubic>? lReturnList = null;
+
+        try
+        {
+            string vSQL = @"SELECT * FROM VW_PickingUbic_Desp_By_IdDespachoEnc
+                        WHERE IdDespachoEnc = @IdDespachoEnc";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.Add(new SqlParameter("@IdDespachoEnc", pIdDespachoEnc));
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable != null && lDataTable.Rows.Count > 0)
+                {
+                    lReturnList = new List<clsBeTrans_picking_ubic>();
+
+                    foreach (DataRow lRow in lDataTable.Rows)
+                    {
+                        clsBeTrans_picking_ubic Obj = new clsBeTrans_picking_ubic();
+
+                        Cargar_For_Despacho(ref Obj, lRow);
+
+                        Obj.Ubicacion.IdUbicacion = lRow["IdUbicacion"] == DBNull.Value ? 0 : Convert.ToInt32(lRow["IdUbicacion"]);                        
+                        Obj.IdPedidoDet = lRow["IdPedidoDet"] == DBNull.Value ? 0 : Convert.ToInt32(lRow["IdPedidoDet"]);
+                        Obj.NombreUbicacion = lRow["Nombre_Ubicacion"] == DBNull.Value ? "" : Convert.ToString(lRow["Nombre_Ubicacion"]) ?? "";
+                        Obj.CodigoProducto = lRow["codigo"] == DBNull.Value ? "" : Convert.ToString(lRow["codigo"]) ?? "";
+                        Obj.NombreProducto = lRow["nombre"] == DBNull.Value ? "" : Convert.ToString(lRow["nombre"]) ?? "";
+
+                        if (lDataTable.Columns.Contains("Presentacion"))
+                        {
+                            Obj.ProductoPresentacion = lRow["Presentacion"] == DBNull.Value ? "" : Convert.ToString(lRow["Presentacion"]) ?? "";
+                        }
+
+                        if (lDataTable.Columns.Contains("UnidadMedida"))
+                        {
+                            Obj.ProductoUnidadMedida = lRow["UnidadMedida"] == DBNull.Value ? "" : Convert.ToString(lRow["UnidadMedida"]) ?? "";
+                        }
+
+                        if (lDataTable.Columns.Contains("NomEstado"))
+                        {
+                            Obj.ProductoEstado = lRow["NomEstado"] == DBNull.Value ? "" : Convert.ToString(lRow["NomEstado"]) ?? "";
+                        }
+
+                        Obj.IdProductoBodega = lRow["IdProductoBodega"] == DBNull.Value ? 0 : Convert.ToInt32(lRow["IdProductoBodega"]);
+                        Obj.IdProductoEstado = lRow["IdProductoEstado"] == DBNull.Value ? 0 : Convert.ToInt32(lRow["IdProductoEstado"]);
+                        Obj.IdPresentacion = lRow["IdPresentacion"] == DBNull.Value ? 0 : Convert.ToInt32(lRow["IdPresentacion"]);
+                        Obj.IdUnidadMedida = lRow["IdUnidadMedida"] == DBNull.Value ? 0 : Convert.ToInt32(lRow["IdUnidadMedida"]);
+                        Obj.IdStock = lRow["IdStock"] == DBNull.Value ? 0 : Convert.ToInt32(lRow["IdStock"]);
+                        Obj.IdPedidoEnc = lRow["IdPedidoEnc"] == DBNull.Value ? 0 : Convert.ToInt32(lRow["IdPedidoEnc"]);
+                        Obj.Codigo_Talla = lRow["Talla"] == DBNull.Value ? "" : Convert.ToString(lRow["Talla"]) ?? "";
+                        Obj.Codigo_Color = lRow["Color"] == DBNull.Value ? "" : Convert.ToString(lRow["Color"]) ?? "";
+                        Obj.No_Linea = lRow["No_Linea"] == DBNull.Value ? 0 : Convert.ToInt32(lRow["No_Linea"]);
+                        Obj.IsNew = false;
+
+                        lReturnList.Add(Obj);
+                    }
+                }
+            }
+
+            return lReturnList;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static void Cargar_For_Despacho(ref clsBeTrans_picking_ubic oBeTrans_picking_ubic, DataRow dr)
+    {
+        try
+        {
+            oBeTrans_picking_ubic.IdPickingEnc = dr["IdPickingEnc"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdPickingEnc"]);
+            oBeTrans_picking_ubic.IdPickingUbic = dr["IdPickingUbic"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdPickingUbic"]);
+            oBeTrans_picking_ubic.IdPickingDet = dr["IdPickingDet"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdPickingDet"]);
+            oBeTrans_picking_ubic.IdPedidoDet = dr["IdPedidoDet"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdPedidoDet"]); // #CKFK 20180331 Agregué el IdPedidoDet en el cargar porque se estaba quedando con valor 0
+            oBeTrans_picking_ubic.IdUbicacion = dr["IdUbicacion"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdUbicacion"]);
+            oBeTrans_picking_ubic.IdStock = dr["IdStock"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdStock"]);
+            oBeTrans_picking_ubic.IdPropietarioBodega = dr["IdPropietarioBodega"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdPropietarioBodega"]);
+            oBeTrans_picking_ubic.IdProductoBodega = dr["IdProductoBodega"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdProductoBodega"]);
+            oBeTrans_picking_ubic.IdProductoEstado = dr["IdProductoEstado"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdProductoEstado"]);
+            oBeTrans_picking_ubic.IdPresentacion = dr["IdPresentacion"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdPresentacion"]);
+            oBeTrans_picking_ubic.IdUnidadMedida = dr["IdUnidadMedida"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdUnidadMedida"]);
+            oBeTrans_picking_ubic.IdUbicacionAnterior = dr["IdUbicacionAnterior"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdUbicacionAnterior"]);
+            oBeTrans_picking_ubic.IdRecepcion = dr["IdRecepcion"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdRecepcion"]);            
+            oBeTrans_picking_ubic.Fecha_vence = dr["fecha_vence"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(dr["fecha_vence"]);
+            oBeTrans_picking_ubic.Fecha_minima = dr["fecha_minima"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(dr["fecha_minima"]);
+            oBeTrans_picking_ubic.Lote = dr["lote"] == DBNull.Value ? "" : Convert.ToString(dr["lote"]) ?? "";
+            oBeTrans_picking_ubic.Serial = dr["serial"] == DBNull.Value ? "" : Convert.ToString(dr["serial"]) ?? "";
+            oBeTrans_picking_ubic.Lic_plate = dr["lic_plate"] == DBNull.Value ? "" : Convert.ToString(dr["lic_plate"]) ?? "";
+            oBeTrans_picking_ubic.Acepto = dr["acepto"] != DBNull.Value && Convert.ToBoolean(dr["acepto"]);
+            oBeTrans_picking_ubic.Peso_solicitado = dr["peso_solicitado"] == DBNull.Value ? 0.0 : Convert.ToDouble(dr["peso_solicitado"]);
+            oBeTrans_picking_ubic.Peso_recibido = dr["peso_recibido"] == DBNull.Value ? 0.0 : Convert.ToDouble(dr["peso_recibido"]);
+            oBeTrans_picking_ubic.Peso_verificado = dr["peso_verificado"] == DBNull.Value ? 0.0 : Convert.ToDouble(dr["peso_verificado"]);
+            oBeTrans_picking_ubic.Peso_despachado = dr["peso_despachado"] == DBNull.Value ? 0.0 : Convert.ToDouble(dr["peso_despachado"]);
+            oBeTrans_picking_ubic.Cantidad_solicitada = dr["cantidad_solicitada"] == DBNull.Value ? 0.0 : Convert.ToDouble(dr["cantidad_solicitada"]);
+            oBeTrans_picking_ubic.Cantidad_recibida = dr["cantidad_recibida"] == DBNull.Value ? 0.0 : Convert.ToDouble(dr["cantidad_recibida"]);
+            oBeTrans_picking_ubic.Cantidad_verificada = dr["cantidad_verificada"] == DBNull.Value ? 0.0 : Convert.ToDouble(dr["cantidad_verificada"]);
+            oBeTrans_picking_ubic.Encontrado = dr["encontrado"] != DBNull.Value && Convert.ToBoolean(dr["encontrado"]);
+            oBeTrans_picking_ubic.Dañado_verificacion = dr["dañado_verificacion"] != DBNull.Value && Convert.ToBoolean(dr["dañado_verificacion"]);
+            oBeTrans_picking_ubic.Fecha_real_vence = dr["fecha_real_vence"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(dr["fecha_real_vence"]);            
+            oBeTrans_picking_ubic.Fecha_picking = dr["fecha_picking"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(dr["fecha_picking"]);
+            oBeTrans_picking_ubic.Fecha_verificado = dr["fecha_verificado"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(dr["fecha_verificado"]);
+            oBeTrans_picking_ubic.Fecha_packing = dr["fecha_packing"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(dr["fecha_packing"]);
+            oBeTrans_picking_ubic.Fecha_despachado = dr["fecha_despachado"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(dr["fecha_despachado"]);
+            oBeTrans_picking_ubic.Cantidad_despachada = dr["cantidad_despachada"] == DBNull.Value ? 0.0 : Convert.ToDouble(dr["cantidad_despachada"]);            
+            oBeTrans_picking_ubic.Fec_agr = dr["fec_agr"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(dr["fec_agr"]);            
+            oBeTrans_picking_ubic.Fec_mod = dr["fec_mod"] == DBNull.Value ? DateTime.Now : Convert.ToDateTime(dr["fec_mod"]);
+            oBeTrans_picking_ubic.Activo = dr["activo"] != DBNull.Value && Convert.ToBoolean(dr["activo"]);
+            oBeTrans_picking_ubic.Dañado_picking = dr["dañado_picking"] != DBNull.Value && Convert.ToBoolean(dr["dañado_picking"]);
+            oBeTrans_picking_ubic.IdUbicacionTemporal = dr["IdUbicacionTemporal"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdUbicacionTemporal"]);
+            oBeTrans_picking_ubic.IdProductoTallaColor = dr["IdProductoTallaColor"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdProductoTallaColor"]);
+            oBeTrans_picking_ubic.No_packing = dr["no_packing"] == DBNull.Value ? "" : Convert.ToString(dr["no_packing"]) ?? "";
+            oBeTrans_picking_ubic.User_agr = dr["user_agr"] == DBNull.Value ? "" : Convert.ToString(dr["user_agr"]) ?? "";
+            oBeTrans_picking_ubic.User_mod = dr["user_mod"] == DBNull.Value ? "" : Convert.ToString(dr["user_mod"]) ?? "";
+        }        
+        catch (Exception)
+        {         
+            throw;
+        }
+    }
 }

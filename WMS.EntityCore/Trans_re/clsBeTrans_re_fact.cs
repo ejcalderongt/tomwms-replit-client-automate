@@ -44,6 +44,7 @@ namespace WMS.EntityCore.Trans_re
         [Column("Completa")]
         [DisplayName("Completa")]
         public bool Completa { get; set; } = false;
+        public bool IsNew { get; set; } = true;
 
         public clsBeTrans_re_fact() { }
 

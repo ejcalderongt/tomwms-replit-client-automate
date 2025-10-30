@@ -1,5 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using WMS.EntityCore.Producto;
+using WMSWebAPI.Be;
 
 namespace WMS.EntityCore.Trans_re
 {
@@ -148,6 +150,28 @@ namespace WMS.EntityCore.Trans_re
         [Column("IdJornadaSistema")]
         [DisplayName("IdJornadaSistema")]
         public int IdJornadaSistema { get; set; } = 0;
+        public clsBeProducto Producto { get; set; } = new clsBeProducto();
+        public clsBeProducto_presentacion Presentacion { get; set; } = new clsBeProducto_presentacion();
+        public clsBeProducto_estado ProductoEstado { get; set; } = new clsBeProducto_estado();
+        public clsBeUnidad_medida UnidadMedida { get; set; } = new clsBeUnidad_medida();
+        public clsBeMotivo_devolucion MotivoDevolucion { get; set; } = new clsBeMotivo_devolucion();
+        public bool IsNew { get; set; } = true;
+        public bool Control_Peso { get; set; }
+        public int IdPropietarioBodega { get; set; }
+        public int IdUbicacion { get; set; }
+        public int IdUbicacionAnterior { get; set; }
+        public DateTime Fecha_Rec { get; set; }
+        public DateTime Fecha_tarea { get; set; }
+        public DateTime Hora_ini { get; set; }
+        public DateTime Hora_Fin { get; set; }
+        public string Estado_Rec { get; set; } = "";
+        public string UbicacionCompleta { get; set; } = "";
+        public double Uds_lic_plate { get; set; } = 0;
+        public string Host { get; set; } = "";
+        public clsBeTalla Talla { get; set; } = new clsBeTalla();
+        public clsBeColor Color { get; set; } = new clsBeColor();
+        public int IdProductoTallaColor { get; set; } = 0;
+
         public clsBeTrans_re_det() { }
         public object Clone()
         {

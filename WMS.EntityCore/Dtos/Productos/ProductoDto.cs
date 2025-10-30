@@ -2,7 +2,6 @@
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Stock;
 using WMSWebAPI.Dtos.Productos;
-using WMSWebAPI.Dtos.Stock;
 
 namespace WMSWebAPI.Dtos.Catalogos
 {
@@ -70,21 +69,7 @@ namespace WMSWebAPI.Dtos.Catalogos
         public byte[]? imagen { get; set; } = Array.Empty<byte>();
         
         public int IdProductoBodega { get; set; }
-
-        // Objetos relacionados (anidados)
-        public PropietarioDto? Propietario { get; set; }
-        public ProductoPresentacionDto? Presentacion { get; set; }
-        public ProductoClasificacionDto? Clasificacion { get; set; }
-        public ProductoFamiliaDto? Familia { get; set; }
-        public ProductoMarcaDto? Marca { get; set; }
-        public ProductoTipoDto? TipoProducto { get; set; }
-        public UnidadMedidaDto? UnidadMedida { get; set; }
-
-        // Colecciones relacionadas
-        public List<ProductoPresentacionDto> Presentaciones { get; set; } = new();
-        public List<clsBeProducto_codigos_barra> Codigos_Barra { get; set; } = new();
-        public List<clsBeProducto_parametros> Parametros { get; set; } = new();
-
+        
         // Estado/meta
         public bool IsNew { get; set; } = true;
         public object? Tag { get; set; }
@@ -96,9 +81,7 @@ namespace WMSWebAPI.Dtos.Catalogos
         public double ExistenciaUMBas { get; set; } = 0;
 
         // Indice de rotación complejo + parámetros A/B
-        public clsBeIndice_rotacion? Indice_Rotacion { get; set; }
-        public ProductoParametroADto? ParametroA { get; set; }
-        public ProductoParametroBDto? ParametroB { get; set; }
+        public clsBeIndice_rotacion? Indice_Rotacion { get; set; }        
 
         // Campos para inventario cíclico
         public string? Lote { get; set; } = "";
@@ -111,6 +94,21 @@ namespace WMSWebAPI.Dtos.Catalogos
         public bool control_lote { get; set; } = false;
         public bool control_peso { get; set; } = false;
         public bool activo { get; set; } = true;
+        public PropietarioDto Propietario { get; set; } = new PropietarioDto();
+        public ProductoPresentacionDto Presentacion { get; set; } = new ProductoPresentacionDto();
+        public ProductoClasificacionDto Clasificacion { get; set; } = new ProductoClasificacionDto();
+        public ProductoFamiliaDto Familia { get; set; } = new ProductoFamiliaDto();
+        public ProductoMarcaDto Marca { get; set; } = new ProductoMarcaDto();
+        public ProductoTipoDto TipoProducto { get; set; } = new ProductoTipoDto();
+        public UnidadMedidaDto UnidadMedida { get; set; } = new UnidadMedidaDto();
+        public List<ProductoPresentacionDto> Presentaciones { get; set; } = new List<ProductoPresentacionDto>();
+        public List<clsBeProducto_codigos_barra> Codigos_Barra { get; set; } = new List<clsBeProducto_codigos_barra>();
+        public List<clsBeProducto_parametros> Parametros { get; set; } = new List<clsBeProducto_parametros>();
+        public clsBeProducto_parametro_a ParametroA { get; set; }= new clsBeProducto_parametro_a();
+        public clsBeProducto_parametro_b ParametroB { get; set; } = new clsBeProducto_parametro_b();
+        public List<PropietarioBodegaDto>? PropietarioBodega { get; set; }
+        public List<ProductoBodegaDto>? ProductoBodega { get; set; }
+        public List<ProductoEstadoDto>? ProductoEstado { get; set; }
     }    
 
     public class IndiceRotacionDto

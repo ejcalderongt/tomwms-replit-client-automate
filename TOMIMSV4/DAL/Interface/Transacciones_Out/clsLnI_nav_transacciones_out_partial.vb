@@ -1,6 +1,5 @@
 Imports System.Data.SqlClient
 Imports System.Reflection
-Imports DevExpress.DirectX.NativeInterop.Direct2D
 Imports TOMWMS.clsDataContractDI
 
 Partial Public Class clsLnI_nav_transacciones_out

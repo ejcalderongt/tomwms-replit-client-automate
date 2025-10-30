@@ -39,12 +39,9 @@ public class clsLnPropietario_bodega
             throw new Exception(vMsgError);
         }
     }
-    public static int Insertar(IConfiguration config, clsBePropietario_bodega oBePropietario_bodega, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Insertar(clsBePropietario_bodega oBePropietario_bodega, SqlConnection pConection, SqlTransaction pTransaction)
     {
-
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
@@ -60,51 +57,19 @@ public class clsLnPropietario_bodega
 
             string sp = Ins.SQL();
 
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
+                cmd.CommandType = CommandType.Text;
+                Bind(cmd, oBePropietario_bodega);
+                rowsAffected = cmd.ExecuteNonQuery();
             }
 
-            Bind(cmd, oBePropietario_bodega);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            cmd.Dispose();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return rowsAffected;
         }
-        catch (SqlException ex1)
+        catch (Exception)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-
-            throw new Exception(vMsgError);
+           throw;
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
     public static int Insertar(IConfiguration config, clsBePropietario_bodega oBePropietario_bodega)
     {
@@ -160,16 +125,12 @@ public class clsLnPropietario_bodega
         }
         return rowsAffected;
     }
-    public static int Actualizar(IConfiguration config, clsBePropietario_bodega oBePropietario_bodega, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Actualizar(clsBePropietario_bodega oBePropietario_bodega, SqlConnection pConection, SqlTransaction pTransaction)
     {
-
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
-
             Upd.Init("propietario_bodega");
             Upd.Add("idpropietariobodega", "@idpropietariobodega", "F");
             Upd.Add("idpropietario", "@idpropietario", "F");
@@ -183,49 +144,19 @@ public class clsLnPropietario_bodega
 
             string sp = Upd.SQL();
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction))
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
+                cmd.CommandType = CommandType.Text;
+                Bind(cmd, oBePropietario_bodega);
+                rowsAffected = cmd.ExecuteNonQuery();
             }
 
-            Bind(cmd, oBePropietario_bodega);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return rowsAffected;
         }
-        catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-
-            throw new Exception(vMsgError);
+        catch (Exception)
+        {            
+            throw;
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
     public int Eliminar(IConfiguration config, clsBePropietario_bodega oBePropietario_bodega, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
@@ -543,111 +474,153 @@ public class clsLnPropietario_bodega
         cmd.Parameters.Add(new SqlParameter("@fec_mod", o.Fec_mod));
         cmd.Parameters.Add(new SqlParameter("@activo", o.Activo));
     }
-    public static int InsertOrUpdate(IConfiguration config, clsBePropietario_bodega be, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(clsBePropietario_bodega be, SqlConnection conn, SqlTransaction tx)
     {
-        bool externa = conn != null && tx != null;
-        var lConn = externa ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTx = null;
-        if (!externa) { lConn.Open(); lTx = lConn.BeginTransaction(); }
-
         try
         {
-            if (Existe(config, be.IdPropietarioBodega, lConn, externa ? tx! : lTx!))
-                return Actualizar(config, be, lConn, externa ? tx : lTx);
+            if (Existe(be.IdPropietarioBodega, conn, tx))
+                return Actualizar(be, conn, tx);
             else
-                return Insertar(config, be, lConn, externa ? tx : lTx);
+                return Insertar(be, conn, tx);
         }
         catch
         {
-            if (!externa) lTx?.Rollback();
             throw;
         }
-        finally
-        {
-            if (!externa)
-            {
-                lTx?.Commit();
-                lConn.Close();
-            }
-        }
     }
-    public static bool Existe(IConfiguration config, int idPropietarioBodega, SqlConnection? connection = null, SqlTransaction? transaction = null)
+    public static bool Existe(int idPropietarioBodega, SqlConnection connection, SqlTransaction transaction)
     {
         bool exists = false;
-        bool isLocal = connection == null;
 
-        SqlConnection conn = connection ?? new SqlConnection(config.GetConnectionString("CST"));
-        SqlCommand cmd = new SqlCommand("SELECT COUNT(idPropietarioBodega) FROM propietario_bodega WHERE idPropietarioBodega = @idPropietarioBodega", conn);
-        cmd.Parameters.AddWithValue("@idPropietarioBodega", idPropietarioBodega);
-
-        if (transaction != null)
-            cmd.Transaction = transaction;
-
-        try
+        using (SqlCommand cmd = new SqlCommand("SELECT COUNT(idPropietarioBodega) FROM propietario_bodega WHERE idPropietarioBodega = @idPropietarioBodega", connection, transaction))
         {
-            if (isLocal && conn.State != ConnectionState.Open)
-                conn.Open();
-
+            cmd.Parameters.AddWithValue("@idPropietarioBodega", idPropietarioBodega);
             exists = Convert.ToInt32(cmd.ExecuteScalar()) > 0;
-        }
-        finally
-        {
-            if (isLocal && conn.State == ConnectionState.Open)
-            {
-                conn.Close();
-                conn.Dispose();
-            }
         }
 
         return exists;
     }
 
     //#GT20062025: metodo para manejar listas, el otro metodo recibe solo un objeto.
-    public static int InsertOrUpdate(IConfiguration config, List<clsBePropietario_bodega> be, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(List<clsBePropietario_bodega> be, SqlConnection conn, SqlTransaction tx)
     {
-
-        bool externa = conn != null && tx != null;
-        var lConn = externa ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTx = null;
         int total = 0;
-        if (!externa) { lConn.Open(); lTx = lConn.BeginTransaction(); }
 
         try
         {
-            if (!externa)
-            {
-                lConn.Open();
-                lTx = lConn.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
             foreach (var e in be)
             {
-                if (Existe(config, e.IdPropietarioBodega, lConn, externa ? tx! : lTx!))
-                    total += Actualizar(config, e, lConn, externa ? tx : lTx);
+                if (Existe(e.IdPropietarioBodega, conn, tx))
+                    total += Actualizar(e, conn, tx);
                 else
-                    total += Insertar(config, e, lConn, externa ? tx : lTx);
+                    total += Insertar(e, conn, tx);
             }
-
-            if (!externa)
-                lTx?.Commit();
 
             return total;
         }
         catch (Exception)
         {
-            if (!externa && lTx != null)
-                lTx.Rollback();
             throw;
-        }
-        finally
-        {
-            if (!externa)
-            {
-                lConn.Close();
-                lConn.Dispose();
-                lTx?.Dispose();
-            }
         }
     }
 
+    public static bool Obtener(clsBePropietario_bodega oBePropietario_bodega,
+                              SqlConnection lConnection,
+                              SqlTransaction lTransaction)
+    {
+        try
+        {
+            const string sp = @"SELECT * FROM Propietario_bodega 
+                           WHERE IdPropietarioBodega = @IdPropietarioBodega";
+
+            using (SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@IDPROPIETARIOBODEGA", oBePropietario_bodega.IdPropietarioBodega);
+
+                using (SqlDataAdapter dad = new SqlDataAdapter(cmd))
+                {
+                    DataTable dt = new DataTable();
+                    dad.Fill(dt);
+
+                    if (dt.Rows.Count == 1)
+                    {
+                        Cargar(ref oBePropietario_bodega, dt.Rows[0]);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }        
+        catch (Exception)
+        {         
+            throw;
+        }
+    }
+
+    public static int GetIdEmpresa_By_IdPropietarioBodega(int pIdPropietarioBodega,
+                                                         SqlConnection lConnection,
+                                                         SqlTransaction lTransaction)
+    {
+        try
+        {
+            string vSQL = @"SELECT p.IdEmpresa 
+                       FROM propietario_bodega AS pb 
+                       INNER JOIN propietarios AS p ON pb.IdPropietario = p.IdPropietario 
+                       WHERE pb.IdPropietarioBodega = @IdPropietarioBodega";
+
+            using (SqlCommand lCommand = new SqlCommand(vSQL, lConnection, lTransaction))
+            {
+                lCommand.CommandType = CommandType.Text;
+                lCommand.Parameters.AddWithValue("@IdPropietarioBodega", pIdPropietarioBodega);
+
+                object lReturnValue = lCommand.ExecuteScalar();
+
+                if (lReturnValue != DBNull.Value && lReturnValue != null)
+                {
+                    return Convert.ToInt32(lReturnValue);
+                }
+            }
+
+            return 0;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static int Get_IdPropietario_By_IdBodega_IdPropietarioBodega(int pIdBodega,
+                                                                        int pIdPropietarioBodega,
+                                                                        SqlConnection lConnection,
+                                                                        SqlTransaction lTransaction)
+    {
+        try
+        {
+            string vSQL = @"SELECT pb.IdPropietario
+                      FROM propietario_bodega AS pb 
+                      INNER JOIN propietarios AS p ON pb.IdPropietario = p.IdPropietario 
+                      WHERE p.activo=1 AND pb.IdBodega=@IdBodega AND pb.IdPropietarioBodega=@IdPropietarioBodega";
+
+            using (SqlCommand lCommand = new SqlCommand(vSQL, lConnection, lTransaction) { CommandType = CommandType.Text })
+            {
+                lCommand.Parameters.AddWithValue("@IdBodega", pIdBodega);
+                lCommand.Parameters.AddWithValue("@IdPropietarioBodega", pIdPropietarioBodega);
+
+                object lReturnValue = lCommand.ExecuteScalar();
+
+                if (lReturnValue != DBNull.Value && lReturnValue != null)
+                {
+                    return Convert.ToInt32(lReturnValue);
+                }
+            }
+
+            return 0;
+        }
+        catch (Exception)
+        {            
+            throw;
+        }
+    }
 }

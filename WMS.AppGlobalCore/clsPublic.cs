@@ -74,6 +74,45 @@ namespace AppGlobal
             {
                 throw new Exception("Error en Desencriptar: " + ex.Message, ex);
             }
-        }        
+        }
+
+        public static void Split_Decimal(decimal Numero,
+                                        ref decimal ParteEntera,
+                                        ref decimal ParteDecimal)
+        {
+            try
+            {
+                ParteEntera = Math.Truncate(Numero);
+                ParteDecimal = Numero - ParteEntera;
+            }
+            catch (Exception)
+            {                
+                throw;
+            }
+        }
+
+        public static void CopyObject<wcf>(object ObjOrigen, ref wcf ObjDestino)
+        {
+            try
+            {
+                if (ObjOrigen == null || ObjDestino == null) return;
+
+                Type TipoFuente = ObjOrigen.GetType();
+                Type TipoDestino = ObjDestino.GetType();
+
+                foreach (PropertyInfo p in TipoFuente.GetProperties())
+                {
+                    PropertyInfo? ObjPI = TipoDestino.GetProperty(p.Name); // Use nullable PropertyInfo
+                    if (ObjPI != null)
+                    {
+                        ObjPI.SetValue(ObjDestino, p.GetValue(ObjOrigen, null), null);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

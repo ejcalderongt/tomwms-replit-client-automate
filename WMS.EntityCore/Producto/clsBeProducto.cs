@@ -6,7 +6,7 @@ using WMS.EntityCore.Stock;
 
 namespace WMS.EntityCore.Producto
 {
-    public class clsBeProducto : ICloneable
+    public partial class clsBeProducto : ICloneable
     {
         [Column("IdProducto")]
         [DisplayName("IdProducto")]
@@ -296,81 +296,4 @@ namespace WMS.EntityCore.Producto
             throw new NotImplementedException();
         }
     }
-
-    /// <summary>
-    /// Enum de propiedades de producto (nombres preservados para compatibilidad).
-    /// </summary>
-    public enum ProdPropiedades
-    {
-        IdProducto,
-        IdCamara,
-        IdTipoRotacion,
-        IdPerfilSerializado,
-        IdIndiceRotacion,
-        IdSimbologia,
-        IdArancel,
-        Codigo,
-        Nombre,
-        Codigo_barra,
-        Precio,
-        Existencia_min,
-        Existencia_max,
-        Costo,
-        Peso_referencia,
-        Peso_tolerancia,
-        Temperatura_referencia,
-        Temperatura_tolerancia,
-        Activo,
-        Serializado,
-        Genera_lote,
-        Genera_LP,
-        Control_vencimiento,
-        Control_lote,
-        Peso_recepcion,
-        Peso_despacho,
-        Temperatura_recepcion,
-        Temperatura_despacho,
-        Materia_prima,
-        Kit,
-        Tolerancia,
-        Ciclo_vida,
-        User_agr,
-        Fec_agr,
-        User_mod,
-        Fec_mod,
-        Imagen,
-        NoSerie,
-        NoParte,
-        FechaManufactura,
-        Capturar_Aniada,
-        Control_Peso,
-        Captura_Arancel,
-        Es_Hardware,
-        IdPresentacionOrigen,
-        IdPresentacionDestino,
-        Factor,
-        IdProductoBodega,
-        Propietario,
-        Clasificacion,
-        Familia,
-        Marca,
-        TipoProducto,
-        UnidadMedida,
-        Arancel,
-        Presentaciones,
-        Codigos_Barra,
-        Parametros,
-        IsNew,
-        Alto,
-        Largo,
-        Ancho,
-        IdUnidadMedidaCobro,
-        Dias_Inventario_Promedio,
-        IdProductoParametroA,
-        IdProductoParametroB,
-        ParametroA,
-        ParametroB,
-        IdTipoManufactura
-    }    
-    
 }

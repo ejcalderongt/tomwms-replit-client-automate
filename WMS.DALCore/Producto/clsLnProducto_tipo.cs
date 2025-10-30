@@ -40,13 +40,8 @@ public class clsLnProducto_tipo
             throw new Exception(vMsgError);
         }
     }
-
-    public static int Insertar(clsBeProducto_tipo oBeProducto_tipo, IConfiguration config, SqlConnection? cn = null, SqlTransaction? tx = null)
+    public static int Insertar(clsBeProducto_tipo oBeProducto_tipo, SqlConnection cn, SqlTransaction tx)
     {
-        SqlConnection? cnLocal = null;
-        SqlTransaction? txLocal = null;
-        bool remota = cn != null && tx != null;
-
         try
         {
             Ins.Init("producto_tipo");
@@ -62,42 +57,16 @@ public class clsLnProducto_tipo
 
             string sql = Ins.SQL();
 
-            if (!remota)
-            {
-                cnLocal = new SqlConnection(config.GetConnectionString("CST"));
-                cnLocal.Open();
-                txLocal = cnLocal.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
-            using var cmd = new SqlCommand(sql, remota ? cn! : cnLocal!, remota ? tx! : txLocal!);
+            using var cmd = new SqlCommand(sql, cn, tx);
             Bind(cmd, oBeProducto_tipo);
             int result = cmd.ExecuteNonQuery();
-
-            if (!remota)
-                txLocal!.Commit();
-
             return result;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            if (!remota && txLocal is not null)
-                txLocal.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
-            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
-        }
-        finally
-        {
-            if (!remota)
-            {
-                txLocal?.Dispose();
-                if (cnLocal?.State == ConnectionState.Open)
-                    cnLocal.Close();
-                cnLocal?.Dispose();
-            }
+            throw;
         }
     }
-
     public static int Insertar(IConfiguration config, clsBeProducto_tipo oBeProducto_tipo)
     {
 
@@ -147,34 +116,33 @@ public class clsLnProducto_tipo
             if (lTransaction != null) lTransaction.Dispose();
         }
     }
-
-    public static int Actualizar(clsBeProducto_tipo oBeProducto_tipo, IConfiguration config, SqlConnection? cn = null, SqlTransaction? tx = null)
+    public static int Actualizar(clsBeProducto_tipo oBeProducto_tipo, SqlConnection cn, SqlTransaction tx)
     {
-        Upd.Init("producto_tipo");
-        Upd.Add("idtipoproducto", "@idtipoproducto", "F");
-        Upd.Add("idpropietario", "@idpropietario", "F");
-        Upd.Add("nombretipoproducto", "@nombretipoproducto", "F");
-        Upd.Add("activo", "@activo", "F");
-        Upd.Add("user_agr", "@user_agr", "F");
-        Upd.Add("fec_agr", "@fec_agr", "F");
-        Upd.Add("user_mod", "@user_mod", "F");
-        Upd.Add("fec_mod", "@fec_mod", "F");
-        Upd.Add("codigo", "@codigo", "F");
-        Upd.Where("IdTipoProducto = @IdTipoProducto");
+        try
+        {
+            Upd.Init("producto_tipo");
+            Upd.Add("idtipoproducto", "@idtipoproducto", "F");
+            Upd.Add("idpropietario", "@idpropietario", "F");
+            Upd.Add("nombretipoproducto", "@nombretipoproducto", "F");
+            Upd.Add("activo", "@activo", "F");
+            Upd.Add("user_agr", "@user_agr", "F");
+            Upd.Add("fec_agr", "@fec_agr", "F");
+            Upd.Add("user_mod", "@user_mod", "F");
+            Upd.Add("fec_mod", "@fec_mod", "F");
+            Upd.Add("codigo", "@codigo", "F");
+            Upd.Where("IdTipoProducto = @IdTipoProducto");
 
-        string sql = Upd.SQL();
-        bool remota = cn != null && tx != null;
+            string sql = Upd.SQL();
 
-        using var cnLocal = remota ? null : new SqlConnection(config.GetConnectionString("CST"));
-        if (!remota) cnLocal!.Open();
-        using var txLocal = remota ? null : cnLocal!.BeginTransaction();
-
-        using var cmd = new SqlCommand(sql, remota ? cn! : cnLocal!, remota ? tx! : txLocal!);
-        Bind(cmd, oBeProducto_tipo);
-        int result = cmd.ExecuteNonQuery();
-        if (!remota) txLocal!.Commit();
-
-        return result;
+            using var cmd = new SqlCommand(sql, cn, tx);
+            Bind(cmd, oBeProducto_tipo);
+            int result = cmd.ExecuteNonQuery();
+            return result;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
     public int Eliminar(IConfiguration config, clsBeProducto_tipo oBeProducto_tipo, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
@@ -231,7 +199,6 @@ public class clsLnProducto_tipo
             if (lTransaction != null) lTransaction.Dispose();
         }
     }
-
     public DataTable Listar(IConfiguration config)
     {
 
@@ -271,7 +238,6 @@ public class clsLnProducto_tipo
             if (lTransaction != null) lTransaction.Dispose();
         }
     }
-
     public static bool GetSingle(IConfiguration config, ref clsBeProducto_tipo pBeProducto_tipo)
     {
 
@@ -326,7 +292,6 @@ public class clsLnProducto_tipo
         return false;
 
     }
-
     public static List<clsBeProducto_tipo> GetAll(IConfiguration config)
     {
 
@@ -385,7 +350,6 @@ public class clsLnProducto_tipo
             throw new Exception(vMsgError);
         }
     }
-
     public static int MaxID(IConfiguration config)
     {
         const string sql = "SELECT ISNULL(MAX(IdTipoProducto), 0) FROM producto_tipo";
@@ -409,33 +373,19 @@ public class clsLnProducto_tipo
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? cn = null, SqlTransaction? tx = null)
+    public static int MaxID(SqlConnection cn, SqlTransaction tx)
     {
         const string sql = "SELECT ISNULL(MAX(IdTipoProducto), 0) FROM producto_tipo";
-        bool remota = cn != null && tx != null;
-
-        using var cnLocal = remota ? null : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? txLocal = null;
 
         try
         {
-            if (!remota)
-            {
-                cnLocal!.Open();
-                txLocal = cnLocal.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
-            using var cmd = new SqlCommand(sql, remota ? cn! : cnLocal!, remota ? tx! : txLocal!);
+            using var cmd = new SqlCommand(sql, cn, tx);
             int result = Convert.ToInt32(cmd.ExecuteScalar());
-
-            if (!remota) txLocal?.Commit();
             return result;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            if (!remota) txLocal?.Rollback();
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
-            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
+            throw;
         }
     }
     public static void Bind(SqlCommand cmd, clsBeProducto_tipo e)
@@ -450,32 +400,27 @@ public class clsLnProducto_tipo
         cmd.Parameters.AddWithValue("@fec_mod", e.Fec_mod);
         cmd.Parameters.AddWithValue("@codigo", e.Codigo);
     }
-    public static bool Existe(clsBeProducto_tipo oBe, IConfiguration config)
+    public static bool Existe(clsBeProducto_tipo oBe, SqlConnection cn, SqlTransaction tx)
     {
         const string sql = "SELECT COUNT(1) FROM producto_tipo WHERE IdTipoProducto = @IdTipoProducto";
 
         try
         {
-            using var cn = new SqlConnection(config.GetConnectionString("CST"));
-            using var cmd = new SqlCommand(sql, cn);
+            using var cmd = new SqlCommand(sql, cn, tx);
             cmd.Parameters.AddWithValue("@IdTipoProducto", oBe.IdTipoProducto);
-
-            cn.Open();
             return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
-            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
+            throw;
         }
     }
-    public static int InsertOrUpdate(IConfiguration config, clsBeProducto_tipo oBe, SqlConnection? cn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(clsBeProducto_tipo oBe, SqlConnection cn, SqlTransaction tx)
     {
-        return Existe(oBe, config)
-            ? Actualizar(oBe, config, cn, tx)
-            : Insertar(oBe, config, cn, tx);
+        return Existe(oBe, cn, tx)
+            ? Actualizar(oBe, cn, tx)
+            : Insertar(oBe, cn, tx);
     }
-
     public static bool Existe_By_Codigo(string Codigo, ref clsBeProducto_tipo pBeProductoTipo, SqlConnection cn, SqlTransaction? tx = null)
     {
         try
@@ -503,37 +448,25 @@ public class clsLnProducto_tipo
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
     }
-
-    public static void Valida_Atributos(IConfiguration config, clsBeProducto_tipoMi3 entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static void Valida_Atributos(clsBeProducto_tipoMi3 entity, SqlConnection connection, SqlTransaction tx)
     {
-        bool isExternalTx = conn != null && tx != null;
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
-
         try
         {
-            if (!isExternalTx)
-            {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
             var BeProductoTipo = new clsBeProducto_tipo();
-            bool existe = Existe_By_Codigo(entity.Codigo, ref BeProductoTipo, connection, isExternalTx ? tx! : localTx!);
+            bool existe = Existe_By_Codigo(entity.Codigo, ref BeProductoTipo, connection, tx);
 
             var BeInavConfigEnc = new clsBeI_nav_config_enc();
-            clsLnI_nav_config_enc.GetSingle(config, BeInavConfigEnc, connection, isExternalTx ? tx : localTx);
+            clsLnI_nav_config_enc.GetSingle(BeInavConfigEnc, connection, tx);
 
             if (BeInavConfigEnc == null)
                 throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
 
             if (!existe)
             {
-
                 if (!string.IsNullOrEmpty(entity.Codigo))
                 {
                     var BeTipoProducto = new clsBeProducto_tipo();
-                    BeTipoProducto.IdTipoProducto= MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                    BeTipoProducto.IdTipoProducto = MaxID(connection, tx) + 1;
                     BeTipoProducto.IdPropietario = entity.IdPropietario;
                     BeTipoProducto.Codigo = entity.Codigo;
                     BeTipoProducto.NombreTipoProducto = entity.NombreTipoProducto ?? entity.Codigo;
@@ -542,9 +475,8 @@ public class clsLnProducto_tipo
                     BeTipoProducto.Fec_agr = DateTime.Now;
                     BeTipoProducto.Fec_mod = DateTime.Now;
                     BeTipoProducto.Activo = entity.Activo;
-                    Insertar( BeTipoProducto, config, connection, isExternalTx ? tx : localTx);
+                    Insertar(BeTipoProducto, connection, tx);
                 }
-
             }
             else
             {
@@ -553,27 +485,12 @@ public class clsLnProducto_tipo
                 BeProductoTipo.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                 BeProductoTipo.Fec_mod = DateTime.Now;
                 BeProductoTipo.Activo = entity.Activo;
-                Actualizar( BeProductoTipo, config, connection, isExternalTx ? tx : localTx);
-
+                Actualizar(BeProductoTipo, connection, tx);
             }
-
         }
-        catch (SqlException ex)
+        catch (Exception)
         {
-            if (!isExternalTx && localTx is not null)
-                localTx.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
-            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
-        }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
-            }
+            throw;
         }
     }
 

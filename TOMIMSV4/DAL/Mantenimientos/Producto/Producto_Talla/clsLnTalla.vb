@@ -682,37 +682,6 @@ Public Class clsLnTalla
         End Try
 
     End Function
-
-    'Public Shared Function Listar_For_Combo() As DataTable
-
-    '    Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
-    '    Dim lTransaction As SqlTransaction = Nothing
-
-    '    Try
-
-    '        Const sp As String = "SELECT IdTalla,Codigo FROM Talla where activo=1 "
-    '        lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-    '        Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-    '        Dim dad As New SqlDataAdapter(cmd)
-    '        Dim dt As New DataTable
-    '        dad.Fill(dt)
-
-    '        lTransaction.Commit()
-
-    '        Return dt
-
-    '    Catch ex As Exception
-    '        If Not lTransaction Is Nothing Then lTransaction.Rollback()
-    '        Throw ex
-    '    Finally
-    '        If lConnection.State = ConnectionState.Open Then lConnection.Close()
-    '        If Not lConnection Is Nothing Then lConnection.Dispose()
-    '        If Not lTransaction Is Nothing Then lTransaction.Dispose()
-    '    End Try
-
-    'End Function
-
-    '#GT25082025: listar tallas para combo con estado activo, no es igual que get_all
     Public Shared Function Listar_For_Combo() As List(Of clsBeTalla)
 
         Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
@@ -830,6 +799,56 @@ Public Class clsLnTalla
             End Using
 
             Return lCodigo
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function GetSingleCodigo(CodigoTalla As String) As clsBeTalla
+
+        GetSingleCodigo = Nothing
+
+        Try
+
+            Const sp As String = "SELECT * FROM Talla" &
+            " Where (Codigo = @CodigoTalla)"
+
+
+            Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(sp, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+
+                        lDTA.SelectCommand.Parameters.AddWithValue("@CodigoTalla", CodigoTalla)
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+
+                        Dim vBeTalla As New clsBeTalla
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                            Cargar(vBeTalla, lDataTable.Rows(0))
+
+                            GetSingleCodigo = vBeTalla
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
 
         Catch ex As Exception
             Throw ex

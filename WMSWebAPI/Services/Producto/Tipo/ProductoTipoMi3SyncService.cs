@@ -24,7 +24,7 @@ namespace WMSWebAPI.Services.Producto.Tipo
                     throw new ArgumentNullException(nameof(dto), "El TipoProductoMi3 no puede estar vacio.");
 
                 var TipoProductoMi3 = _mapper.Map<clsBeProducto_tipoMi3>(dto);
-                clsLnProducto_tipo.Valida_Atributos(_configuration, TipoProductoMi3, conn, tx);
+                clsLnProducto_tipo.Valida_Atributos(TipoProductoMi3, conn, tx);
             }
             catch (Exception ex)
             {
