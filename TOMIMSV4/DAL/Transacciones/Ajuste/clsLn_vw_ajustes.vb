@@ -40,6 +40,7 @@ Public Class clsLn_vw_ajustes
                 .Nombre_Centro_Costo = IIf(IsDBNull(dr.Item("Nombre_Centro_Costo")), 0, dr.Item("Nombre_Centro_Costo"))
                 .Talla = IIf(IsDBNull(dr.Item("Talla")), "", dr.Item("Talla"))
                 .Color = IIf(IsDBNull(dr.Item("Color")), "", dr.Item("Color"))
+                .Usr_Agr = IIf(IsDBNull(dr.Item("Usr_Agr")), "", dr.Item("Usr_Agr"))
             End With
 
         Catch ex As Exception

@@ -1,4 +1,5 @@
-﻿Imports System.Net
+﻿Imports System.Globalization
+Imports System.Net
 Imports System.Net.Http
 Imports System.Net.Http.Headers
 Imports System.Text
@@ -60,6 +61,7 @@ Public Class clsSyncSapAjustes
                 Dim grupos = ajustes.GroupBy(Function(a) New With {
                                          Key .Doc = a.NoDocumento,
                                          Key .IdAjusteWMS = a.IdAjusteEnc,
+                                         Key .Usr_Agr = a.Usr_Agr,
                                          Key .Tipo = If(EsSalida(a), InvAdjType.Issue, InvAdjType.Receipt)
                                      })
 
@@ -76,6 +78,15 @@ Public Class clsSyncSapAjustes
                     series:=Nothing,
                     detalles:=g.ToList()
                 )
+
+                    '#CKFK20251028 Agregamos los campos UDFs necesarios
+                    payload.U_ENVIADO_WMS = 1
+                    payload.U_MOTIVO_WMS = "1"
+                    payload.U_OPERADOR_WMS = g.Key.Usr_Agr
+                    payload.U_DOCUMENTO_WMS = g.Key.IdAjusteWMS
+                    payload.U_INICIO_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)
+                    payload.U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)
+                    payload.U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now)
 
                     Dim json As String = JsonConvert.SerializeObject(payload, New JsonSerializerSettings With {.NullValueHandling = NullValueHandling.Ignore})
                     Dim content = New StringContent(json, Encoding.UTF8)
@@ -240,6 +251,16 @@ Public Class clsSyncSapAjustes
         Public Property JournalMemo As String
         Public Property Series As Integer?
         Public Property Ref2 As Integer?
+        Public Property U_MOTIVO_WMS As String = ""
+        Public Property U_OPERADOR_WMS As String = ""
+        Public Property U_DOCUMENTO_WMS As Integer = 0
+        Public Property U_INICIO_PICK As DateTime = Now
+        Public Property U_FIN_PICK As DateTime = Now
+        Public Property U_ESTADO_PEDIDO As Integer = 0
+        Public Property U_INICIO_ENVIO As DateTime = Now
+        Public Property U_FIN_ENVIO As DateTime = Now
+        Public Property U_ENVIADO_WMS As Integer = 1
+        Public Property U_ENVIADO_SAP_WMS As String = ""
         Public Property DocumentLines As List(Of InventoryDocumentLine)
     End Class
 

@@ -26,4 +26,5 @@
     Public Property Codigo_Centro_Costo As String = ""
     Public Property Talla As String = ""
     Public Property Color As String = ""
+    Public Property Usr_Agr As String = ""
 End Class

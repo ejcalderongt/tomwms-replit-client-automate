@@ -5253,4 +5253,12 @@ Public Class frmMenu
 
     End Sub
 
+    Private Sub frmMenu_Closing(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles Me.Closing
+        If XtraMessageBox.Show("¿Está seguro de salir de la aplicación?",
+                       Text,
+                       MessageBoxButtons.YesNo,
+                       MessageBoxIcon.Question) = DialogResult.No Then
+            e.Cancel = True
+        End If
+    End Sub
 End Class

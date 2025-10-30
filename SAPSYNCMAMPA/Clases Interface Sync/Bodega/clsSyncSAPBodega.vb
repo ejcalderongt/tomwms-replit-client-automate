@@ -15,7 +15,6 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
                                                                                prg As ProgressBar,
                                                                                cnnLog As SqlConnection) As Task(Of Boolean)
 
-
         Dim Cnn As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
         Dim lTrans As SqlTransaction = Nothing
 
@@ -111,6 +110,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
         End Try
 
     End Function
+
     Private Shared Function Get_Bodegas_SAP() As List(Of clsBeI_nav_bodega)
 
         Get_Bodegas_SAP = Nothing
@@ -142,6 +142,7 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
         End Try
 
     End Function
+
     Public Shared Async Function Insertar_Bodegas_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(ByVal lblprg As RichTextBox,
                                                                                         prg As ProgressBar,
                                                                                         Optional ByVal ForzarEjecucion As Boolean = False,
@@ -342,8 +343,8 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
             ' Log de error con la conexión que está fuera del Using no es posible; se asume logger global o dentro de bloques previos.
             Return False
         End Try
-    End Function
 
+    End Function
 
     Public Shared Async Function Get_Bodegas_SAP(sessionCookie As String, baseUrl As String) As Task(Of List(Of clsBeI_nav_bodega))
 
@@ -446,4 +447,5 @@ Public Class clsSyncSAPBodega : Inherits clsInterfaceBase
         End Try
 
     End Function
+
 End Class
