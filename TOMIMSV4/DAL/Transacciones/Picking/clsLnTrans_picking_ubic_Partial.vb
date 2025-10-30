@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data.Common
+Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnTrans_picking_ubic
@@ -58,8 +59,17 @@ Partial Public Class clsLnTrans_picking_ubic
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdPedidoDet:=oBeTrans_picking_ubic.IdPedidoDet,
+                                                  pIdPedidoEnc:=oBeTrans_picking_ubic.IdPedidoEnc,
+                                                  pIdPickingEnc:=oBeTrans_picking_ubic.IdPickingEnc,
+                                                  pIdPickingDet:=oBeTrans_picking_ubic.IdPickingDet,
+                                                  pIdPickingUbic:=oBeTrans_picking_ubic.IdPickingUbic,
+                                                  pCodigoProducto:=oBeTrans_picking_ubic.CodigoProducto,
+                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -3804,8 +3814,10 @@ Partial Public Class clsLnTrans_picking_ubic
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pIdPickingDet:=IdPickingDet, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -4724,7 +4736,10 @@ Partial Public Class clsLnTrans_picking_ubic
             Console.WriteLine("Registros insertados: " & registrosInsertados)
 
         Catch ex As Exception
-            clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}  Result {2} ", MethodBase.GetCurrentMethod.Name(), ex.Message, vResult))
+            '#MECR23102025: Se agrego bitacora para logs de picking
+            'clsLnLog_error_wms.Agregar_Error(String.Format("{0} {1}  Result {2} ", MethodBase.GetCurrentMethod.Name(), ex.Message, vResult))
+            Dim vMsgError As String = String.Format("{0} {1}  Result {2} ", MethodBase.GetCurrentMethod.Name(), ex.Message, vResult)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pIdPickingEnc:=IdPickingEnc, pStackTrace:=ex.StackTrace)
             Throw New Exception(String.Format("{0} {1}  Result {2} ", MethodBase.GetCurrentMethod.Name(), ex.Message, vResult))
         End Try
 
@@ -4906,8 +4921,10 @@ Partial Public Class clsLnTrans_picking_ubic
             Insertar_PickingUbic = True
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pIdPickingDet:=pIdPickingDet, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -5183,8 +5200,16 @@ Partial Public Class clsLnTrans_picking_ubic
             Return True
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdPickingEnc:=IdPickingEnc,
+                                                  pIdPickingDet:=IdPickingDet,
+                                                  pIdEmpresa:=IdEmpresa,
+                                                  pIdBodega:=IdBodega,
+                                                  pUserAgr:=UsuarioHH,
+                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -5968,8 +5993,10 @@ Partial Public Class clsLnTrans_picking_ubic
             End If
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pIdPickingUbic:=IdPickingUbic, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -6257,8 +6284,20 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                      pPeso,
                                                                      clsTrans.lConnection,
                                                                      clsTrans.lTransaction)
+
+                '#MECR23102025: Se agrego bitacora para logs de picking
                 resultado += " Codigo " & vBePickingUbic.CodigoProducto & " Pedido parámetro " & pIdPedidoEnc
-                clsLnLog_error_wms.Agregar_Error(resultado)
+                'clsLnLog_error_wms.Agregar_Error(resultado)
+                clsLnLog_error_wms_pick.Agregar_Error(resultado,
+                                                      pIdPedidoDet:=vBePickingUbic.IdPedidoDet,
+                                                      pIdPedidoEnc:=vBePickingUbic.IdPedidoEnc,
+                                                      pIdPickingEnc:=vBePickingUbic.IdPickingEnc,
+                                                      pIdPickingDet:=vBePickingUbic.IdPickingDet,
+                                                      pIdPickingUbic:=vBePickingUbic.IdPickingUbic,
+                                                      pCodigoProducto:=vBePickingUbic.CodigoProducto,
+                                                      pConection:=clsTrans.lConnection,
+                                                      pTransaction:=clsTrans.lTransaction)
+
                 If (Math.Round(pCantidad - CantPendiente, 6) = 0) Then
                     Exit For
                 Else

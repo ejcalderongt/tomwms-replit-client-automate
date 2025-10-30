@@ -1,3 +1,4 @@
+Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
 
@@ -101,8 +102,17 @@ Public Class clsLnTrans_picking_ubic
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdPedidoDet:=oBeTrans_picking_ubic.IdPedidoDet,
+                                                  pIdPedidoEnc:=oBeTrans_picking_ubic.IdPedidoEnc,
+                                                  pIdPickingEnc:=oBeTrans_picking_ubic.IdPickingEnc,
+                                                  pIdPickingDet:=oBeTrans_picking_ubic.IdPickingDet,
+                                                  pIdPickingUbic:=oBeTrans_picking_ubic.IdPickingUbic,
+                                                  pCodigoProducto:=oBeTrans_picking_ubic.CodigoProducto,
+                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 

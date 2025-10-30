@@ -71,7 +71,7 @@ Public Class clsLnLog_error_wms_pe
             Return rowsAffected
 
         Catch ex As Exception
-            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
             Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
