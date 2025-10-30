@@ -148,13 +148,6 @@ Entity
  PICH000. Ingreso sin referencia verificado con HH. Permite realizar la impresión de etiquetas para pre-ingreso
  </summary>
 </member>
-<member name="T:TOMWMS.clsBeProveedor_tiempos">
- <summary>
- Class clsBeProveedor_tiempos.
- </summary>
- <seealso cref="T:System.ICloneable" />
- <seealso cref="T:System.IDisposable" />
-</member>
 <member name="P:TOMWMS.clsBeProveedor_tiempos.IdTiempoProveedor">
  <summary>
  Gets or sets the identifier tiempo proveedor.

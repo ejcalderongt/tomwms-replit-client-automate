@@ -216,7 +216,7 @@ namespace WMSWebAPI.Services.Ingresos
                 throw new Exception($"Error al obtener el detalle de la orden de compra: {ex.Message}", ex);
             }
         }
-        public int Insert(IConfiguration config, clsBeI_nav_ped_compra_enc beINavPedCompraEnc)
+        public int Insert(clsBeI_nav_ped_compra_enc beINavPedCompraEnc)
         {
             try
             {
@@ -225,14 +225,14 @@ namespace WMSWebAPI.Services.Ingresos
                     throw new Exception("Error de validación de datos.");
 
                 // 2) Insert a tabla intermedia
-                if (clsLnI_nav_ped_compra_enc.Insert_Single_Pedido_From_ERP(config, beINavPedCompraEnc) <= 0)
+                if (clsLnI_nav_ped_compra_enc.Insert_Single_Pedido_From_ERP(_configuration, beINavPedCompraEnc) <= 0)
                     throw new Exception("No se pudo insertar el pedido en la tabla intermedia.");
 
                 // 3) Procesar MI3
                 var bePedidoCompraEnc = new clsBeTrans_oc_enc();
                 string vResult = string.Empty;
 
-                bool ok = clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(config, 
+                bool ok = clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(_configuration, 
                                                                                ref beINavPedCompraEnc,
                                                                                ref bePedidoCompraEnc,
                                                                                ref vResult,
