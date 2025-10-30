@@ -795,11 +795,6 @@ Public Class clsLnTrans_oc_encDMS
                         Return ""
                     End If
 
-
-                    If pOCEnc.IdOrdenCompraEnc = 296 Then
-                        Debug.Write("aqui")
-                    End If
-
                     '********************** Stock_Rec, Stock y movimientos con las propiedades ***********************************
                     For Each re_det As clsBeTrans_re_det In pTrans_re_enc.Detalle
 

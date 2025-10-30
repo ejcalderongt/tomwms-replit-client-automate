@@ -153,7 +153,13 @@ Public Class clsLnTrans_movimientos
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            Return rowsAffected
+            'Return rowsAffected
+
+            If rowsAffected = 1 Then
+                Return 1
+            Else
+                Return 0
+            End If
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
