@@ -12,6 +12,6 @@ namespace WMSWebAPI.Services.Ingresos
         List<clsBeVWOrdenCompra> ObtenerDocumentosDeIngreso(bool activo, DateTime fechaInicio, DateTime fechaFin, int idBodega, int idPropietario);
         List<clsBeTrans_oc_det> ObtenerDetalleOrdenCompra(int IdOrdenCompraEnc);
         List<ReEncWebResponseDto> ObtenerDetalleRecepcion(int IdOrdenCompraEnc);
-        public int Insert(IConfiguration config, clsBeI_nav_ped_compra_enc beINavPedCompraEnc);
+        public int Insert(clsBeI_nav_ped_compra_enc beINavPedCompraEnc);
     }
 }

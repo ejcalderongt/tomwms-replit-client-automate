@@ -494,7 +494,7 @@ public class clsLnTarea_hh
             {
                 if (pObjTareaHH.IsNew && pObjTareaHH.CreaTarea)
                 {
-                    pObjTareaHH.IdTareahh = MaxID(lConnection, lTransaction);
+                    pObjTareaHH.IdTareahh = MaxID(lConnection, lTransaction)+1;
                     Insertar(pObjTareaHH, lConnection, lTransaction);
                 }
                 else

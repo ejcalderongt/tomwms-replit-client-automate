@@ -31,7 +31,7 @@ public class clsLnTrans_oc_ti
             oBeTrans_oc_ti.Control_poliza = GetBool("control_poliza");
             oBeTrans_oc_ti.Requerir_documento_ref = GetBool("requerir_documento_ref");
             oBeTrans_oc_ti.Es_poliza_consolidada = GetBool("es_poliza_consolidada");
-            oBeTrans_oc_ti.Genera_tarea_ingreso = GetBool("genera_tarea_ingreso");
+            oBeTrans_oc_ti.Genera_tarea_ingreso= GetBool("genera_tarea_ingreso");
             oBeTrans_oc_ti.Requerir_proveedor_es_bodega_wms = GetBool("requerir_proveedor_es_bodega_wms");
             oBeTrans_oc_ti.Requerir_documento_ref_wms = GetBool("requerir_documento_ref_wms");
             oBeTrans_oc_ti.Requerir_ubic_rec_ingreso = GetBool("requerir_ubic_rec_ingreso");
