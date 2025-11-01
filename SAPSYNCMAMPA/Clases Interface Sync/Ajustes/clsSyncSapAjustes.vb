@@ -62,7 +62,10 @@ Public Class clsSyncSapAjustes
                                          Key .Doc = a.NoDocumento,
                                          Key .IdAjusteWMS = a.IdAjusteEnc,
                                          Key .Usr_Agr = a.Usr_Agr,
-                                         Key .Tipo = If(EsSalida(a), InvAdjType.Issue, InvAdjType.Receipt)
+                                         Key .Tipo = If(EsSalida(a), InvAdjType.Issue, InvAdjType.Receipt),
+                                         Key .CentroCostoErp = a.Centro_Costo_Erp,
+                                         Key .CentroCostoDirErp = a.Centro_Costo_Dir_Erp,
+                                         Key .CentroCostoDepErp = a.Centro_Costo_Dep_Erp
                                      })
 
                 For Each g In grupos
@@ -76,6 +79,9 @@ Public Class clsSyncSapAjustes
                     comments:=$"WMS Ajuste {g.Key.Doc} ({docTxt}) IdAjusteWMS:({g.Key.IdAjusteWMS}) ",
                     journalMemo:=$"WMS {docTxt} – MI3",
                     series:=Nothing,
+                    centroCostoErp:=clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(g.Key.CentroCostoErp),
+                    centroCostoDirErp:=clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(g.Key.CentroCostoDirErp),
+                    centroCostoDepErp:=clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(g.Key.CentroCostoDepErp),
                     detalles:=g.ToList()
                 )
 
@@ -163,11 +169,13 @@ Public Class clsSyncSapAjustes
 
     End Function
 
-
     Private Shared Function Build_Inventory_Payload(ByVal docDate As Date,
                                                     ByVal comments As String,
                                                     ByVal journalMemo As String,
                                                     ByVal series As Integer?,
+                                                    ByVal centroCostoErp As String,
+                                                    ByVal centroCostoDirErp As String,
+                                                    ByVal centroCostoDepErp As String,
                                                     ByVal detalles As List(Of clsBeAjustesMI3)) As InventoryPayload
 
         Dim payload As New InventoryPayload With {
@@ -203,8 +211,11 @@ Public Class clsSyncSapAjustes
             .U_Color = color,
             .U_Talla = talla,
             .U_MotivoDev = If(d.Motivo_Ajuste, String.Empty),
-            .unitMsr = If(d.UMBas, String.Empty)
-        }
+            .unitMsr = If(d.UMBas, String.Empty),
+            .CostingCode = centroCostoErp,
+            .CostingCode2 = centroCostoDirErp,
+            .CostingCode3 = centroCostoDepErp
+             }
 
             ' BatchNumbers desde Color&Talla
             If Not String.IsNullOrWhiteSpace(lote) Then
@@ -272,6 +283,9 @@ Public Class clsSyncSapAjustes
         Public Property U_Talla As String = ""
         Public Property U_MotivoDev As String = ""
         Public Property unitMsr As String = ""
+        Public Property CostingCode As String = ""
+        Public Property CostingCode2 As String = ""
+        Public Property CostingCode3 As String = ""
         Public Property BatchNumbers As List(Of BatchNumber)
     End Class
 

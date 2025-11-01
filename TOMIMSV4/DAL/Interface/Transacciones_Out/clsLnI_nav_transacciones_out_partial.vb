@@ -2542,6 +2542,9 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Seccion = AjDet.Seccion
                                         BeAjusteMI3.IdCentroCosto = AjEnc.IdCentroCosto
                                         BeAjusteMI3.Codigo_Centro_Costo = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(AjEnc.IdCentroCosto)
+                                        BeAjusteMI3.Centro_Costo_Erp = AjEnc.Centro_Costo_Erp
+                                        BeAjusteMI3.Centro_Costo_Dep_Erp = AjEnc.Centro_Costo_Dep_Erp
+                                        BeAjusteMI3.Centro_Costo_Dir_Erp = AjEnc.Centro_Costo_Dir_Erp
                                         lAjustesMI3.Add(BeAjusteMI3)
 
                                         clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste negativo para: " & AjDet.Codigo_Producto & " " & AjDet.Nombre_Producto)
@@ -2584,6 +2587,9 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Seccion = AjDet.Seccion
                                         BeAjusteMI3.IdCentroCosto = AjEnc.IdCentroCosto
                                         BeAjusteMI3.Codigo_Centro_Costo = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(AjEnc.IdCentroCosto)
+                                        BeAjusteMI3.Centro_Costo_Erp = AjEnc.Centro_Costo_Erp
+                                        BeAjusteMI3.Centro_Costo_Dep_Erp = AjEnc.Centro_Costo_Dep_Erp
+                                        BeAjusteMI3.Centro_Costo_Dir_Erp = AjEnc.Centro_Costo_Dir_Erp
                                         lAjustesMI3.Add(BeAjusteMI3)
 
                                         clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste positivo para: " & AjDet.Codigo_Producto & " " & AjDet.Nombre_Producto)
@@ -2800,6 +2806,10 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Centro_Costo = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(AjEnc.IdCentroCosto, lConnection, lTransaction)
                                         BeAjusteMI3.Talla = AjDet.Talla
                                         BeAjusteMI3.Color = AjDet.Color
+                                        BeAjusteMI3.Centro_Costo_Erp = AjEnc.Centro_Costo_Erp
+                                        BeAjusteMI3.Centro_Costo_Dep_Erp = AjEnc.Centro_Costo_Dep_Erp
+                                        BeAjusteMI3.Centro_Costo_Dir_Erp = AjEnc.Centro_Costo_Dir_Erp
+
                                         lAjustesMI3.Add(BeAjusteMI3)
 
                                         clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste negativo para: " & AjDet.Codigo_Producto & " " & AjDet.Nombre_Producto)
@@ -2844,6 +2854,9 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Codigo_Centro_Costo = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(AjEnc.IdCentroCosto, lConnection, lTransaction)
                                         BeAjusteMI3.Talla = AjDet.Talla
                                         BeAjusteMI3.Color = AjDet.Color
+                                        BeAjusteMI3.Centro_Costo_Erp = AjEnc.Centro_Costo_Erp
+                                        BeAjusteMI3.Centro_Costo_Dep_Erp = AjEnc.Centro_Costo_Dep_Erp
+                                        BeAjusteMI3.Centro_Costo_Dir_Erp = AjEnc.Centro_Costo_Dir_Erp
                                         lAjustesMI3.Add(BeAjusteMI3)
 
                                         clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste positivo para: " & AjDet.Codigo_Producto & " " & AjDet.Nombre_Producto)

@@ -171,6 +171,9 @@ Partial Class frmBodega
         Dim lbldespachoauto As System.Windows.Forms.Label
         Dim lblLimpiarCampos As System.Windows.Forms.Label
         Dim lblControlTallaColor As System.Windows.Forms.Label
+        Dim Label83 As System.Windows.Forms.Label
+        Dim Label84 As System.Windows.Forms.Label
+        Dim Label85 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBodega))
         Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim Code128Generator1 As DevExpress.XtraPrinting.BarCode.Code128Generator = New DevExpress.XtraPrinting.BarCode.Code128Generator()
@@ -278,6 +281,10 @@ Partial Class frmBodega
         Me.tabDatos = New DevExpress.XtraTab.XtraTabPage()
         Me.grpDatosGen = New DevExpress.XtraEditors.GroupControl()
         Me.XtraScrollableControl = New DevExpress.XtraEditors.XtraScrollableControl()
+        Me.gcCentroCosto = New DevExpress.XtraEditors.GroupControl()
+        Me.cmbCentroCostoDepERP = New DevExpress.XtraEditors.LookUpEdit()
+        Me.cmbCentroCostoDirERP = New DevExpress.XtraEditors.LookUpEdit()
+        Me.cmbCentroCostoERP = New DevExpress.XtraEditors.LookUpEdit()
         Me.cmdRutaCDN = New DevExpress.XtraEditors.SimpleButton()
         Me.txtRutaCDN = New DevExpress.XtraEditors.TextEdit()
         Me.GrpTIpoTransaccion = New DevExpress.XtraEditors.GroupControl()
@@ -411,6 +418,10 @@ Partial Class frmBodega
         Me.chkinferir_origen_en_cambio_ubic = New DevExpress.XtraEditors.CheckEdit()
         Me.chkValidarDisponibilidadEnUbicacionDestino = New DevExpress.XtraEditors.CheckEdit()
         Me.GroupBox4 = New System.Windows.Forms.GroupBox()
+        Me.chkAdvertirMpqUmbas = New DevExpress.XtraEditors.CheckEdit()
+        Me.Label87 = New System.Windows.Forms.Label()
+        Me.chkAgrupar_sin_lic_veri_no_cons = New DevExpress.XtraEditors.CheckEdit()
+        Me.Label86 = New System.Windows.Forms.Label()
         Me.chkVerificacion_Consolidada = New DevExpress.XtraEditors.CheckEdit()
         Me.chkControlBanderasCliente = New DevExpress.XtraEditors.CheckEdit()
         Me.chkDespacharProductoVencido = New DevExpress.XtraEditors.CheckEdit()
@@ -626,6 +637,9 @@ Partial Class frmBodega
         lbldespachoauto = New System.Windows.Forms.Label()
         lblLimpiarCampos = New System.Windows.Forms.Label()
         lblControlTallaColor = New System.Windows.Forms.Label()
+        Label83 = New System.Windows.Forms.Label()
+        Label84 = New System.Windows.Forms.Label()
+        Label85 = New System.Windows.Forms.Label()
         CType(Me.User_agrTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.User_modTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Fec_agrTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -704,6 +718,11 @@ Partial Class frmBodega
         CType(Me.grpDatosGen, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpDatosGen.SuspendLayout()
         Me.XtraScrollableControl.SuspendLayout()
+        CType(Me.gcCentroCosto, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.gcCentroCosto.SuspendLayout()
+        CType(Me.cmbCentroCostoDepERP.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbCentroCostoDirERP.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbCentroCostoERP.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtRutaCDN.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GrpTIpoTransaccion, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GrpTIpoTransaccion.SuspendLayout()
@@ -838,6 +857,8 @@ Partial Class frmBodega
         CType(Me.chkinferir_origen_en_cambio_ubic.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkValidarDisponibilidadEnUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox4.SuspendLayout()
+        CType(Me.chkAdvertirMpqUmbas.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkAgrupar_sin_lic_veri_no_cons.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkVerificacion_Consolidada.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkControlBanderasCliente.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkDespacharProductoVencido.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -2200,6 +2221,36 @@ Partial Class frmBodega
         lblControlTallaColor.TabIndex = 117
         lblControlTallaColor.Text = "Control Talla/Color"
         '
+        'Label83
+        '
+        Label83.AutoSize = True
+        Label83.Location = New System.Drawing.Point(7, 80)
+        Label83.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label83.Name = "Label83"
+        Label83.Size = New System.Drawing.Size(64, 16)
+        Label83.TabIndex = 47
+        Label83.Text = "Dirección:"
+        '
+        'Label84
+        '
+        Label84.AutoSize = True
+        Label84.Location = New System.Drawing.Point(7, 45)
+        Label84.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label84.Name = "Label84"
+        Label84.Size = New System.Drawing.Size(86, 16)
+        Label84.TabIndex = 49
+        Label84.Text = "Centro Costo:"
+        '
+        'Label85
+        '
+        Label85.AutoSize = True
+        Label85.Location = New System.Drawing.Point(7, 115)
+        Label85.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label85.Name = "Label85"
+        Label85.Size = New System.Drawing.Size(93, 16)
+        Label85.TabIndex = 51
+        Label85.Text = "Departamento:"
+        '
         'Label80
         '
         Me.Label80.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
@@ -3268,6 +3319,7 @@ Partial Class frmBodega
         '
         'XtraScrollableControl
         '
+        Me.XtraScrollableControl.Controls.Add(Me.gcCentroCosto)
         Me.XtraScrollableControl.Controls.Add(Me.cmdRutaCDN)
         Me.XtraScrollableControl.Controls.Add(Me.txtRutaCDN)
         Me.XtraScrollableControl.Controls.Add(Me.lblRutaCDN)
@@ -3306,6 +3358,51 @@ Partial Class frmBodega
         Me.XtraScrollableControl.Size = New System.Drawing.Size(1780, 681)
         Me.XtraScrollableControl.TabIndex = 0
         '
+        'gcCentroCosto
+        '
+        Me.gcCentroCosto.Controls.Add(Me.cmbCentroCostoDepERP)
+        Me.gcCentroCosto.Controls.Add(Me.cmbCentroCostoDirERP)
+        Me.gcCentroCosto.Controls.Add(Me.cmbCentroCostoERP)
+        Me.gcCentroCosto.Controls.Add(Label83)
+        Me.gcCentroCosto.Controls.Add(Label84)
+        Me.gcCentroCosto.Controls.Add(Label85)
+        Me.gcCentroCosto.Location = New System.Drawing.Point(687, 170)
+        Me.gcCentroCosto.Name = "gcCentroCosto"
+        Me.gcCentroCosto.Size = New System.Drawing.Size(566, 144)
+        Me.gcCentroCosto.TabIndex = 56
+        Me.gcCentroCosto.Text = "Centro Costo"
+        Me.gcCentroCosto.Visible = False
+        '
+        'cmbCentroCostoDepERP
+        '
+        Me.cmbCentroCostoDepERP.Location = New System.Drawing.Point(102, 109)
+        Me.cmbCentroCostoDepERP.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.cmbCentroCostoDepERP.Name = "cmbCentroCostoDepERP"
+        Me.cmbCentroCostoDepERP.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbCentroCostoDepERP.Properties.NullText = ""
+        Me.cmbCentroCostoDepERP.Size = New System.Drawing.Size(458, 22)
+        Me.cmbCentroCostoDepERP.TabIndex = 54
+        '
+        'cmbCentroCostoDirERP
+        '
+        Me.cmbCentroCostoDirERP.Location = New System.Drawing.Point(102, 74)
+        Me.cmbCentroCostoDirERP.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.cmbCentroCostoDirERP.Name = "cmbCentroCostoDirERP"
+        Me.cmbCentroCostoDirERP.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbCentroCostoDirERP.Properties.NullText = ""
+        Me.cmbCentroCostoDirERP.Size = New System.Drawing.Size(458, 22)
+        Me.cmbCentroCostoDirERP.TabIndex = 53
+        '
+        'cmbCentroCostoERP
+        '
+        Me.cmbCentroCostoERP.Location = New System.Drawing.Point(102, 42)
+        Me.cmbCentroCostoERP.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.cmbCentroCostoERP.Name = "cmbCentroCostoERP"
+        Me.cmbCentroCostoERP.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbCentroCostoERP.Properties.NullText = ""
+        Me.cmbCentroCostoERP.Size = New System.Drawing.Size(458, 22)
+        Me.cmbCentroCostoERP.TabIndex = 52
+        '
         'cmdRutaCDN
         '
         Me.cmdRutaCDN.AutoSize = True
@@ -3337,7 +3434,7 @@ Partial Class frmBodega
         Me.GrpTIpoTransaccion.Location = New System.Drawing.Point(687, 64)
         Me.GrpTIpoTransaccion.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.GrpTIpoTransaccion.Name = "GrpTIpoTransaccion"
-        Me.GrpTIpoTransaccion.Size = New System.Drawing.Size(691, 120)
+        Me.GrpTIpoTransaccion.Size = New System.Drawing.Size(566, 98)
         Me.GrpTIpoTransaccion.TabIndex = 24
         Me.GrpTIpoTransaccion.Text = "Tipo Ingreso por Defecto"
         '
@@ -3345,17 +3442,17 @@ Partial Class frmBodega
         '
         Me.txtNombreDocumentoSalida.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtNombreDocumentoSalida.Location = New System.Drawing.Point(300, 78)
+        Me.txtNombreDocumentoSalida.Location = New System.Drawing.Point(236, 71)
         Me.txtNombreDocumentoSalida.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtNombreDocumentoSalida.Name = "txtNombreDocumentoSalida"
         Me.txtNombreDocumentoSalida.Properties.ReadOnly = True
-        Me.txtNombreDocumentoSalida.Size = New System.Drawing.Size(365, 22)
+        Me.txtNombreDocumentoSalida.Size = New System.Drawing.Size(324, 22)
         Me.txtNombreDocumentoSalida.TabIndex = 5
         '
         'lnkTipoSalida
         '
         Me.lnkTipoSalida.AutoSize = True
-        Me.lnkTipoSalida.Location = New System.Drawing.Point(20, 82)
+        Me.lnkTipoSalida.Location = New System.Drawing.Point(7, 73)
         Me.lnkTipoSalida.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lnkTipoSalida.Name = "lnkTipoSalida"
         Me.lnkTipoSalida.Size = New System.Drawing.Size(71, 16)
@@ -3365,7 +3462,7 @@ Partial Class frmBodega
         '
         'txtIdTipoDocumentoSalida
         '
-        Me.txtIdTipoDocumentoSalida.Location = New System.Drawing.Point(156, 78)
+        Me.txtIdTipoDocumentoSalida.Location = New System.Drawing.Point(92, 71)
         Me.txtIdTipoDocumentoSalida.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtIdTipoDocumentoSalida.Name = "txtIdTipoDocumentoSalida"
         Me.txtIdTipoDocumentoSalida.Size = New System.Drawing.Size(135, 22)
@@ -3375,17 +3472,17 @@ Partial Class frmBodega
         '
         Me.txtDescripcionTR.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtDescripcionTR.Location = New System.Drawing.Point(300, 40)
+        Me.txtDescripcionTR.Location = New System.Drawing.Point(236, 33)
         Me.txtDescripcionTR.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtDescripcionTR.Name = "txtDescripcionTR"
         Me.txtDescripcionTR.Properties.ReadOnly = True
-        Me.txtDescripcionTR.Size = New System.Drawing.Size(365, 22)
+        Me.txtDescripcionTR.Size = New System.Drawing.Size(324, 22)
         Me.txtDescripcionTR.TabIndex = 2
         '
         'lnkTipoT
         '
         Me.lnkTipoT.AutoSize = True
-        Me.lnkTipoT.Location = New System.Drawing.Point(20, 45)
+        Me.lnkTipoT.Location = New System.Drawing.Point(7, 36)
         Me.lnkTipoT.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lnkTipoT.Name = "lnkTipoT"
         Me.lnkTipoT.Size = New System.Drawing.Size(79, 16)
@@ -3395,7 +3492,7 @@ Partial Class frmBodega
         '
         'txtIdTipoTR
         '
-        Me.txtIdTipoTR.Location = New System.Drawing.Point(156, 40)
+        Me.txtIdTipoTR.Location = New System.Drawing.Point(92, 33)
         Me.txtIdTipoTR.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtIdTipoTR.Name = "txtIdTipoTR"
         Me.txtIdTipoTR.Size = New System.Drawing.Size(135, 22)
@@ -4824,6 +4921,10 @@ Partial Class frmBodega
         '
         'GroupBox4
         '
+        Me.GroupBox4.Controls.Add(Me.chkAdvertirMpqUmbas)
+        Me.GroupBox4.Controls.Add(Me.Label87)
+        Me.GroupBox4.Controls.Add(Me.chkAgrupar_sin_lic_veri_no_cons)
+        Me.GroupBox4.Controls.Add(Me.Label86)
         Me.GroupBox4.Controls.Add(Me.chkVerificacion_Consolidada)
         Me.GroupBox4.Controls.Add(Me.Label80)
         Me.GroupBox4.Controls.Add(lblControlBanderasClientePedido)
@@ -4850,6 +4951,48 @@ Partial Class frmBodega
         Me.GroupBox4.TabIndex = 123
         Me.GroupBox4.TabStop = False
         Me.GroupBox4.Text = "Salidas"
+        '
+        'chkAdvertirMpqUmbas
+        '
+        Me.chkAdvertirMpqUmbas.Location = New System.Drawing.Point(688, 110)
+        Me.chkAdvertirMpqUmbas.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.chkAdvertirMpqUmbas.Name = "chkAdvertirMpqUmbas"
+        Me.chkAdvertirMpqUmbas.Properties.Caption = ""
+        Me.chkAdvertirMpqUmbas.Size = New System.Drawing.Size(23, 24)
+        Me.chkAdvertirMpqUmbas.TabIndex = 125
+        '
+        'Label87
+        '
+        Me.Label87.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label87.AutoSize = True
+        Me.Label87.Location = New System.Drawing.Point(383, 119)
+        Me.Label87.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label87.Name = "Label87"
+        Me.Label87.Size = New System.Drawing.Size(144, 16)
+        Me.Label87.TabIndex = 124
+        Me.Label87.Text = "Advertir MPQ UM Básica"
+        '
+        'chkAgrupar_sin_lic_veri_no_cons
+        '
+        Me.chkAgrupar_sin_lic_veri_no_cons.Location = New System.Drawing.Point(688, 77)
+        Me.chkAgrupar_sin_lic_veri_no_cons.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.chkAgrupar_sin_lic_veri_no_cons.Name = "chkAgrupar_sin_lic_veri_no_cons"
+        Me.chkAgrupar_sin_lic_veri_no_cons.Properties.Caption = ""
+        Me.chkAgrupar_sin_lic_veri_no_cons.Size = New System.Drawing.Size(23, 24)
+        Me.chkAgrupar_sin_lic_veri_no_cons.TabIndex = 123
+        '
+        'Label86
+        '
+        Me.Label86.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label86.AutoSize = True
+        Me.Label86.Location = New System.Drawing.Point(383, 86)
+        Me.Label86.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label86.Name = "Label86"
+        Me.Label86.Size = New System.Drawing.Size(281, 16)
+        Me.Label86.TabIndex = 122
+        Me.Label86.Text = "Agrupar sin licencia en verificación consolidada:"
         '
         'chkVerificacion_Consolidada
         '
@@ -5933,7 +6076,7 @@ Partial Class frmBodega
         Me.NumericUpDown1.Maximum = New Decimal(New Integer() {3, 0, 0, 0})
         Me.NumericUpDown1.Minimum = New Decimal(New Integer() {1, 0, 0, 0})
         Me.NumericUpDown1.Name = "NumericUpDown1"
-        Me.NumericUpDown1.Size = New System.Drawing.Size(98, 20)
+        Me.NumericUpDown1.Size = New System.Drawing.Size(98, 22)
         Me.NumericUpDown1.TabIndex = 26
         Me.NumericUpDown1.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
@@ -6037,6 +6180,12 @@ Partial Class frmBodega
         Me.grpDatosGen.ResumeLayout(False)
         Me.XtraScrollableControl.ResumeLayout(False)
         Me.XtraScrollableControl.PerformLayout()
+        CType(Me.gcCentroCosto, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.gcCentroCosto.ResumeLayout(False)
+        Me.gcCentroCosto.PerformLayout()
+        CType(Me.cmbCentroCostoDepERP.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbCentroCostoDirERP.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbCentroCostoERP.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtRutaCDN.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GrpTIpoTransaccion, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GrpTIpoTransaccion.ResumeLayout(False)
@@ -6188,6 +6337,8 @@ Partial Class frmBodega
         CType(Me.chkValidarDisponibilidadEnUbicacionDestino.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox4.ResumeLayout(False)
         Me.GroupBox4.PerformLayout()
+        CType(Me.chkAdvertirMpqUmbas.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkAgrupar_sin_lic_veri_no_cons.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkVerificacion_Consolidada.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkControlBanderasCliente.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkDespacharProductoVencido.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6609,4 +6760,12 @@ Partial Class frmBodega
     Friend WithEvents chkControlTallaColor As DevExpress.XtraEditors.CheckEdit
     Friend WithEvents Label82 As Label
     Friend WithEvents nudRangoDiasDocumentos As NumericUpDown
+    Friend WithEvents gcCentroCosto As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents cmbCentroCostoDepERP As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents cmbCentroCostoDirERP As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents cmbCentroCostoERP As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents chkAgrupar_sin_lic_veri_no_cons As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents Label86 As Label
+    Friend WithEvents chkAdvertirMpqUmbas As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents Label87 As Label
 End Class
