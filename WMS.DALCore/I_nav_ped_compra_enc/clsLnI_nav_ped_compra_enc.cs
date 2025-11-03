@@ -902,6 +902,7 @@ public class clsLnI_nav_ped_compra_enc
                     try
                     {
                      
+                        //tipo 2 es producto, tipo 1 es servicio, y se omite
                         if ((Det.Type?.ToString()) == "2")
                         {
                             if (Det.Location_Code != null)
