@@ -45,16 +45,15 @@ Partial Class frmAjusteStock
         Dim Label8 As System.Windows.Forms.Label
         Dim lblPropietario As System.Windows.Forms.Label
         Dim lblSerie As System.Windows.Forms.Label
-        Dim Label6 As System.Windows.Forms.Label
         Dim Label9 As System.Windows.Forms.Label
+        Dim Label10 As System.Windows.Forms.Label
+        Dim Label11 As System.Windows.Forms.Label
+        Dim Label12 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmAjusteStock))
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim Label10 As System.Windows.Forms.Label
-        Dim Label11 As System.Windows.Forms.Label
-        Dim Label12 As System.Windows.Forms.Label
         Me.GridView2 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.hideContainerBottom = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.GridView5 = New DevExpress.XtraGrid.Views.Grid.GridView()
@@ -84,6 +83,10 @@ Partial Class frmAjusteStock
         Me.txtReferencia = New System.Windows.Forms.TextBox()
         Me.GridView6 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.GroupControl2 = New DevExpress.XtraEditors.GroupControl()
+        Me.gcCentroCosto = New DevExpress.XtraEditors.GroupControl()
+        Me.txtCentroCostoDepERP = New DevExpress.XtraEditors.TextEdit()
+        Me.txtCentroCostoERP = New DevExpress.XtraEditors.TextEdit()
+        Me.txtCentroCostoDirERP = New DevExpress.XtraEditors.TextEdit()
         Me.cmbTipoAjuste = New DevExpress.XtraEditors.LookUpEdit()
         Me.lcmbCentroCosto = New DevExpress.XtraEditors.LookUpEdit()
         Me.txtSerie = New DevExpress.XtraEditors.TextEdit()
@@ -129,9 +132,7 @@ Partial Class frmAjusteStock
         Me.PanelControl1 = New DevExpress.XtraEditors.PanelControl()
         Me.grdDocsAsociados = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.TextEdit3 = New DevExpress.XtraEditors.TextEdit()
-        Me.TextEdit4 = New DevExpress.XtraEditors.TextEdit()
-        Me.TextEdit5 = New DevExpress.XtraEditors.TextEdit()
+        Me.Label6 = New System.Windows.Forms.Label()
         Label1 = New System.Windows.Forms.Label()
         Label3 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
@@ -147,7 +148,6 @@ Partial Class frmAjusteStock
         Label8 = New System.Windows.Forms.Label()
         lblPropietario = New System.Windows.Forms.Label()
         lblSerie = New System.Windows.Forms.Label()
-        Label6 = New System.Windows.Forms.Label()
         Label9 = New System.Windows.Forms.Label()
         Label10 = New System.Windows.Forms.Label()
         Label11 = New System.Windows.Forms.Label()
@@ -170,6 +170,11 @@ Partial Class frmAjusteStock
         CType(Me.GridView6, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl2.SuspendLayout()
+        CType(Me.gcCentroCosto, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.gcCentroCosto.SuspendLayout()
+        CType(Me.txtCentroCostoDepERP.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtCentroCostoERP.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtCentroCostoDirERP.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbTipoAjuste.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.lcmbCentroCosto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtSerie.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -200,9 +205,6 @@ Partial Class frmAjusteStock
         Me.PanelControl1.SuspendLayout()
         CType(Me.grdDocsAsociados, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.TextEdit3.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.TextEdit4.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.TextEdit5.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label1
@@ -210,7 +212,7 @@ Partial Class frmAjusteStock
         Label1.AutoSize = True
         Label1.Location = New System.Drawing.Point(261, 25)
         Label1.Name = "Label1"
-        Label1.Size = New System.Drawing.Size(86, 15)
+        Label1.Size = New System.Drawing.Size(96, 16)
         Label1.TabIndex = 2
         Label1.Text = "Fecha Agregó:"
         '
@@ -219,7 +221,7 @@ Partial Class frmAjusteStock
         Label3.AutoSize = True
         Label3.Location = New System.Drawing.Point(536, 25)
         Label3.Name = "Label3"
-        Label3.Size = New System.Drawing.Size(103, 15)
+        Label3.Size = New System.Drawing.Size(111, 16)
         Label3.TabIndex = 4
         Label3.Text = "Usuario Modificó:"
         '
@@ -228,7 +230,7 @@ Partial Class frmAjusteStock
         Label4.AutoSize = True
         Label4.Location = New System.Drawing.Point(14, 21)
         Label4.Name = "Label4"
-        Label4.Size = New System.Drawing.Size(95, 15)
+        Label4.Size = New System.Drawing.Size(105, 16)
         Label4.TabIndex = 0
         Label4.Text = "Usuario Agregó:"
         '
@@ -237,7 +239,7 @@ Partial Class frmAjusteStock
         Label5.AutoSize = True
         Label5.Location = New System.Drawing.Point(787, 25)
         Label5.Name = "Label5"
-        Label5.Size = New System.Drawing.Size(94, 15)
+        Label5.Size = New System.Drawing.Size(102, 16)
         Label5.TabIndex = 5
         Label5.Text = "Fecha Modificó:"
         '
@@ -350,16 +352,6 @@ Partial Class frmAjusteStock
         lblSerie.TabIndex = 40
         lblSerie.Text = "Serie:"
         '
-        'Label6
-        '
-        Label6.AutoSize = True
-        Label6.Location = New System.Drawing.Point(930, 76)
-        Label6.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label6.Name = "Label6"
-        Label6.Size = New System.Drawing.Size(102, 16)
-        Label6.TabIndex = 44
-        Label6.Text = "Centro de costo:"
-        '
         'Label9
         '
         Label9.AutoSize = True
@@ -369,6 +361,36 @@ Partial Class frmAjusteStock
         Label9.Size = New System.Drawing.Size(77, 16)
         Label9.TabIndex = 46
         Label9.Text = "Tipo Ajuste:"
+        '
+        'Label10
+        '
+        Label10.AutoSize = True
+        Label10.Location = New System.Drawing.Point(668, 17)
+        Label10.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label10.Name = "Label10"
+        Label10.Size = New System.Drawing.Size(93, 16)
+        Label10.TabIndex = 51
+        Label10.Text = "Departamento:"
+        '
+        'Label11
+        '
+        Label11.AutoSize = True
+        Label11.Location = New System.Drawing.Point(6, 17)
+        Label11.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label11.Name = "Label11"
+        Label11.Size = New System.Drawing.Size(86, 16)
+        Label11.TabIndex = 49
+        Label11.Text = "Centro Costo:"
+        '
+        'Label12
+        '
+        Label12.AutoSize = True
+        Label12.Location = New System.Drawing.Point(331, 17)
+        Label12.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Label12.Name = "Label12"
+        Label12.Size = New System.Drawing.Size(64, 16)
+        Label12.TabIndex = 47
+        Label12.Text = "Dirección:"
         '
         'GridView2
         '
@@ -547,7 +569,7 @@ Partial Class frmAjusteStock
         Me.ToolStripP.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAdd, Me.mnuAjustePositivo, Me.mnuDel, Me.mnuDividir})
         Me.ToolStripP.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripP.Name = "ToolStripP"
-        Me.ToolStripP.Size = New System.Drawing.Size(1478, 27)
+        Me.ToolStripP.Size = New System.Drawing.Size(1478, 31)
         Me.ToolStripP.TabIndex = 2
         Me.ToolStripP.Text = "ToolStrip1"
         '
@@ -556,7 +578,7 @@ Partial Class frmAjusteStock
         Me.cmdAdd.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(76, 24)
+        Me.cmdAdd.Size = New System.Drawing.Size(76, 28)
         Me.cmdAdd.Text = "Nuevo"
         '
         'mnuAjustePositivo
@@ -564,7 +586,7 @@ Partial Class frmAjusteStock
         Me.mnuAjustePositivo.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.mnuAjustePositivo.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuAjustePositivo.Name = "mnuAjustePositivo"
-        Me.mnuAjustePositivo.Size = New System.Drawing.Size(129, 24)
+        Me.mnuAjustePositivo.Size = New System.Drawing.Size(129, 28)
         Me.mnuAjustePositivo.Text = "Ajuste Positivo"
         '
         'mnuDel
@@ -572,7 +594,7 @@ Partial Class frmAjusteStock
         Me.mnuDel.Image = Global.TOMWMS.My.Resources.Resources.desactivar
         Me.mnuDel.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuDel.Name = "mnuDel"
-        Me.mnuDel.Size = New System.Drawing.Size(87, 24)
+        Me.mnuDel.Size = New System.Drawing.Size(87, 28)
         Me.mnuDel.Text = "Eliminar"
         '
         'mnuDividir
@@ -580,7 +602,7 @@ Partial Class frmAjusteStock
         Me.mnuDividir.Image = Global.TOMWMS.My.Resources.Resources.ubic03
         Me.mnuDividir.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuDividir.Name = "mnuDividir"
-        Me.mnuDividir.Size = New System.Drawing.Size(77, 24)
+        Me.mnuDividir.Size = New System.Drawing.Size(77, 28)
         Me.mnuDividir.Text = "Dividir"
         '
         'dtpFecha
@@ -613,15 +635,10 @@ Partial Class frmAjusteStock
         '
         'GroupControl2
         '
-        Me.GroupControl2.Controls.Add(Me.TextEdit5)
-        Me.GroupControl2.Controls.Add(Me.TextEdit4)
-        Me.GroupControl2.Controls.Add(Me.TextEdit3)
-        Me.GroupControl2.Controls.Add(Label10)
-        Me.GroupControl2.Controls.Add(Label11)
-        Me.GroupControl2.Controls.Add(Label12)
+        Me.GroupControl2.Controls.Add(Me.Label6)
+        Me.GroupControl2.Controls.Add(Me.gcCentroCosto)
         Me.GroupControl2.Controls.Add(Label9)
         Me.GroupControl2.Controls.Add(Me.cmbTipoAjuste)
-        Me.GroupControl2.Controls.Add(Label6)
         Me.GroupControl2.Controls.Add(Me.lcmbCentroCosto)
         Me.GroupControl2.Controls.Add(Me.txtSerie)
         Me.GroupControl2.Controls.Add(lblSerie)
@@ -642,8 +659,77 @@ Partial Class frmAjusteStock
         Me.GroupControl2.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl2.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl2.Name = "GroupControl2"
-        Me.GroupControl2.Size = New System.Drawing.Size(1482, 142)
+        Me.GroupControl2.Size = New System.Drawing.Size(1482, 167)
         Me.GroupControl2.TabIndex = 30
+        '
+        'gcCentroCosto
+        '
+        Me.gcCentroCosto.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder
+        Me.gcCentroCosto.Controls.Add(Me.txtCentroCostoDepERP)
+        Me.gcCentroCosto.Controls.Add(Me.txtCentroCostoERP)
+        Me.gcCentroCosto.Controls.Add(Label12)
+        Me.gcCentroCosto.Controls.Add(Me.txtCentroCostoDirERP)
+        Me.gcCentroCosto.Controls.Add(Label11)
+        Me.gcCentroCosto.Controls.Add(Label10)
+        Me.gcCentroCosto.Location = New System.Drawing.Point(1, 102)
+        Me.gcCentroCosto.Name = "gcCentroCosto"
+        Me.gcCentroCosto.Size = New System.Drawing.Size(921, 50)
+        Me.gcCentroCosto.TabIndex = 55
+        Me.gcCentroCosto.Text = "GroupControl1"
+        '
+        'txtCentroCostoDepERP
+        '
+        Me.txtCentroCostoDepERP.Location = New System.Drawing.Point(761, 14)
+        Me.txtCentroCostoDepERP.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtCentroCostoDepERP.MenuManager = Me.RibbonControl
+        Me.txtCentroCostoDepERP.Name = "txtCentroCostoDepERP"
+        Me.txtCentroCostoDepERP.Properties.Appearance.BackColor = System.Drawing.Color.Lavender
+        Me.txtCentroCostoDepERP.Properties.Appearance.Options.UseBackColor = True
+        Me.txtCentroCostoDepERP.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.txtCentroCostoDepERP.Properties.MaskSettings.Set("mask", "n0")
+        Me.txtCentroCostoDepERP.Properties.ReadOnly = True
+        Me.txtCentroCostoDepERP.Size = New System.Drawing.Size(156, 22)
+        Me.txtCentroCostoDepERP.TabIndex = 52
+        Me.txtCentroCostoDepERP.ToolTip = "Valor de serie para ajuste tomado a partir de la bodega seleccionada, el valor aq" &
+    "uí mostrado proviene del campo referencia en el mantenimiento de cliente."
+        Me.txtCentroCostoDepERP.ToolTipIconType = DevExpress.Utils.ToolTipIconType.Information
+        Me.txtCentroCostoDepERP.ToolTipTitle = "Bodega.Serie"
+        '
+        'txtCentroCostoERP
+        '
+        Me.txtCentroCostoERP.Location = New System.Drawing.Point(93, 14)
+        Me.txtCentroCostoERP.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtCentroCostoERP.MenuManager = Me.RibbonControl
+        Me.txtCentroCostoERP.Name = "txtCentroCostoERP"
+        Me.txtCentroCostoERP.Properties.Appearance.BackColor = System.Drawing.Color.Lavender
+        Me.txtCentroCostoERP.Properties.Appearance.Options.UseBackColor = True
+        Me.txtCentroCostoERP.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.txtCentroCostoERP.Properties.MaskSettings.Set("mask", "n0")
+        Me.txtCentroCostoERP.Properties.ReadOnly = True
+        Me.txtCentroCostoERP.Size = New System.Drawing.Size(230, 22)
+        Me.txtCentroCostoERP.TabIndex = 54
+        Me.txtCentroCostoERP.ToolTip = "Valor de serie para ajuste tomado a partir de la bodega seleccionada, el valor aq" &
+    "uí mostrado proviene del campo referencia en el mantenimiento de cliente."
+        Me.txtCentroCostoERP.ToolTipIconType = DevExpress.Utils.ToolTipIconType.Information
+        Me.txtCentroCostoERP.ToolTipTitle = "Bodega.Serie"
+        '
+        'txtCentroCostoDirERP
+        '
+        Me.txtCentroCostoDirERP.Location = New System.Drawing.Point(413, 14)
+        Me.txtCentroCostoDirERP.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtCentroCostoDirERP.MenuManager = Me.RibbonControl
+        Me.txtCentroCostoDirERP.Name = "txtCentroCostoDirERP"
+        Me.txtCentroCostoDirERP.Properties.Appearance.BackColor = System.Drawing.Color.Lavender
+        Me.txtCentroCostoDirERP.Properties.Appearance.Options.UseBackColor = True
+        Me.txtCentroCostoDirERP.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.txtCentroCostoDirERP.Properties.MaskSettings.Set("mask", "n0")
+        Me.txtCentroCostoDirERP.Properties.ReadOnly = True
+        Me.txtCentroCostoDirERP.Size = New System.Drawing.Size(243, 22)
+        Me.txtCentroCostoDirERP.TabIndex = 53
+        Me.txtCentroCostoDirERP.ToolTip = "Valor de serie para ajuste tomado a partir de la bodega seleccionada, el valor aq" &
+    "uí mostrado proviene del campo referencia en el mantenimiento de cliente."
+        Me.txtCentroCostoDirERP.ToolTipIconType = DevExpress.Utils.ToolTipIconType.Information
+        Me.txtCentroCostoDirERP.ToolTipTitle = "Bodega.Serie"
         '
         'cmbTipoAjuste
         '
@@ -759,7 +845,7 @@ Partial Class frmAjusteStock
         Me.GroupControl4.Controls.Add(Me.dgrid)
         Me.GroupControl4.Controls.Add(Me.ToolStripP)
         Me.GroupControl4.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupControl4.Location = New System.Drawing.Point(0, 142)
+        Me.GroupControl4.Location = New System.Drawing.Point(0, 167)
         Me.GroupControl4.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl4.Name = "GroupControl4"
         Me.GroupControl4.Size = New System.Drawing.Size(1482, 412)
@@ -786,7 +872,7 @@ Partial Class frmAjusteStock
         Me.dgrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.dgrid.EnableHeadersVisualStyles = False
         Me.dgrid.GridColor = System.Drawing.Color.Navy
-        Me.dgrid.Location = New System.Drawing.Point(2, 55)
+        Me.dgrid.Location = New System.Drawing.Point(2, 59)
         Me.dgrid.Margin = New System.Windows.Forms.Padding(4)
         Me.dgrid.MultiSelect = False
         Me.dgrid.Name = "dgrid"
@@ -1133,95 +1219,14 @@ Partial Class frmAjusteStock
         Me.GridView1.OptionsBehavior.ReadOnly = True
         Me.GridView1.OptionsFind.AlwaysVisible = True
         '
-        'TextEdit3
+        'Label6
         '
-        Me.TextEdit3.Location = New System.Drawing.Point(763, 107)
-        Me.TextEdit3.Margin = New System.Windows.Forms.Padding(4)
-        Me.TextEdit3.MenuManager = Me.RibbonControl
-        Me.TextEdit3.Name = "TextEdit3"
-        Me.TextEdit3.Properties.Appearance.BackColor = System.Drawing.Color.Lavender
-        Me.TextEdit3.Properties.Appearance.Options.UseBackColor = True
-        Me.TextEdit3.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.TextEdit3.Properties.MaskSettings.Set("mask", "n0")
-        Me.TextEdit3.Properties.ReadOnly = True
-        Me.TextEdit3.Size = New System.Drawing.Size(156, 22)
-        Me.TextEdit3.TabIndex = 52
-        Me.TextEdit3.ToolTip = "Valor de serie para ajuste tomado a partir de la bodega seleccionada, el valor aq" &
-    "uí mostrado proviene del campo referencia en el mantenimiento de cliente."
-        Me.TextEdit3.ToolTipIconType = DevExpress.Utils.ToolTipIconType.Information
-        Me.TextEdit3.ToolTipTitle = "Bodega.Serie"
-        Me.TextEdit3.Visible = False
-        '
-        'Label10
-        '
-        Label10.AutoSize = True
-        Label10.Location = New System.Drawing.Point(670, 110)
-        Label10.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label10.Name = "Label10"
-        Label10.Size = New System.Drawing.Size(93, 16)
-        Label10.TabIndex = 51
-        Label10.Text = "Departamento:"
-        Label10.Visible = False
-        '
-        'Label11
-        '
-        Label11.AutoSize = True
-        Label11.Location = New System.Drawing.Point(8, 110)
-        Label11.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label11.Name = "Label11"
-        Label11.Size = New System.Drawing.Size(86, 16)
-        Label11.TabIndex = 49
-        Label11.Text = "Centro Costo:"
-        Label11.Visible = False
-        '
-        'Label12
-        '
-        Label12.AutoSize = True
-        Label12.Location = New System.Drawing.Point(333, 110)
-        Label12.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Label12.Name = "Label12"
-        Label12.Size = New System.Drawing.Size(64, 16)
-        Label12.TabIndex = 47
-        Label12.Text = "Dirección:"
-        Label12.Visible = False
-        '
-        'TextEdit4
-        '
-        Me.TextEdit4.Location = New System.Drawing.Point(415, 107)
-        Me.TextEdit4.Margin = New System.Windows.Forms.Padding(4)
-        Me.TextEdit4.MenuManager = Me.RibbonControl
-        Me.TextEdit4.Name = "TextEdit4"
-        Me.TextEdit4.Properties.Appearance.BackColor = System.Drawing.Color.Lavender
-        Me.TextEdit4.Properties.Appearance.Options.UseBackColor = True
-        Me.TextEdit4.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.TextEdit4.Properties.MaskSettings.Set("mask", "n0")
-        Me.TextEdit4.Properties.ReadOnly = True
-        Me.TextEdit4.Size = New System.Drawing.Size(243, 22)
-        Me.TextEdit4.TabIndex = 53
-        Me.TextEdit4.ToolTip = "Valor de serie para ajuste tomado a partir de la bodega seleccionada, el valor aq" &
-    "uí mostrado proviene del campo referencia en el mantenimiento de cliente."
-        Me.TextEdit4.ToolTipIconType = DevExpress.Utils.ToolTipIconType.Information
-        Me.TextEdit4.ToolTipTitle = "Bodega.Serie"
-        Me.TextEdit4.Visible = False
-        '
-        'TextEdit5
-        '
-        Me.TextEdit5.Location = New System.Drawing.Point(95, 107)
-        Me.TextEdit5.Margin = New System.Windows.Forms.Padding(4)
-        Me.TextEdit5.MenuManager = Me.RibbonControl
-        Me.TextEdit5.Name = "TextEdit5"
-        Me.TextEdit5.Properties.Appearance.BackColor = System.Drawing.Color.Lavender
-        Me.TextEdit5.Properties.Appearance.Options.UseBackColor = True
-        Me.TextEdit5.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.TextEdit5.Properties.MaskSettings.Set("mask", "n0")
-        Me.TextEdit5.Properties.ReadOnly = True
-        Me.TextEdit5.Size = New System.Drawing.Size(230, 22)
-        Me.TextEdit5.TabIndex = 54
-        Me.TextEdit5.ToolTip = "Valor de serie para ajuste tomado a partir de la bodega seleccionada, el valor aq" &
-    "uí mostrado proviene del campo referencia en el mantenimiento de cliente."
-        Me.TextEdit5.ToolTipIconType = DevExpress.Utils.ToolTipIconType.Information
-        Me.TextEdit5.ToolTipTitle = "Bodega.Serie"
-        Me.TextEdit5.Visible = False
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(933, 76)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(86, 16)
+        Me.Label6.TabIndex = 56
+        Me.Label6.Text = "Centro Costo:"
         '
         'frmAjusteStock
         '
@@ -1261,6 +1266,12 @@ Partial Class frmAjusteStock
         CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl2.ResumeLayout(False)
         Me.GroupControl2.PerformLayout()
+        CType(Me.gcCentroCosto, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.gcCentroCosto.ResumeLayout(False)
+        Me.gcCentroCosto.PerformLayout()
+        CType(Me.txtCentroCostoDepERP.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtCentroCostoERP.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtCentroCostoDirERP.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbTipoAjuste.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.lcmbCentroCosto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtSerie.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -1293,9 +1304,6 @@ Partial Class frmAjusteStock
         Me.PanelControl1.ResumeLayout(False)
         CType(Me.grdDocsAsociados, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.TextEdit3.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.TextEdit4.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.TextEdit5.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1379,7 +1387,9 @@ Partial Class frmAjusteStock
     Friend WithEvents colTalla As DataGridViewTextBoxColumn
     Friend WithEvents colColor As DataGridViewTextBoxColumn
     Friend WithEvents colIdProductoTallaColor As DataGridViewTextBoxColumn
-    Friend WithEvents TextEdit3 As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents TextEdit5 As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents TextEdit4 As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents txtCentroCostoDepERP As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents txtCentroCostoERP As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents txtCentroCostoDirERP As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents gcCentroCosto As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents Label6 As Label
 End Class

@@ -644,7 +644,7 @@ Public Class clsLnCentro_costo
 
     End Function
 
-    Public Shared Function Get_Codigo_By_IdCentroCosto(ByVal IdCentroCosto) As String
+    Public Shared Function Get_Codigo_By_IdCentroCosto(ByVal IdCentroCosto As Integer) As String
 
         Get_Codigo_By_IdCentroCosto = ""
 
@@ -787,6 +787,85 @@ Public Class clsLnCentro_costo
                     Dim dr As DataRow = lDataTable.Rows(0)
                     Get_Codigo_By_IdCentroCosto = IIf(IsDBNull(dr.Item("codigo")), "", dr.Item("codigo"))
                 End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function GetAllForCombo(ByVal pReferencia As Integer) As Object
+
+        Try
+
+            Const sp As String = "SELECT IdCentroCosto, Codigo
+                                  FROM centro_costo 
+                                  WHERE activo=1 and referencia = @referencia"
+
+            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            cmd.Parameters.Add(New SqlParameter("@referencia", pReferencia))
+
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+
+            dad.Fill(dt)
+
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            lConnection.Dispose()
+            cmd.Dispose()
+
+            Return dt
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_IdCentroCosto_By_Codigo(ByVal Codigo As String) As String
+
+        Get_IdCentroCosto_By_Codigo = ""
+
+        Try
+
+            Const sp As String = "SELECT IdCentroCosto FROM Centro_costo " &
+            " Where(Codigo = @Codigo) "
+
+
+            Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(sp, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", Codigo)
+
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+
+                        Dim vBeCentro_costo As New clsBeCentro_costo
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                            Dim dr As DataRow = lDataTable.Rows(0)
+                            Get_IdCentroCosto_By_Codigo = IIf(IsDBNull(dr.Item("IdCentroCosto")), "", dr.Item("IdCentroCosto"))
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
 
             End Using
 

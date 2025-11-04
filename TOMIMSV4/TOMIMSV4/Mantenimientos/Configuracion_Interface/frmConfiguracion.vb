@@ -180,6 +180,10 @@ Public Class frmConfiguracion
                 BeConfigEnc.Bodega_Prorrateo = txtCodigoBodegaProrrateo.Text
                 BeConfigEnc.Bodega_Prorrateo1 = txtCodigoBodegaProrrateo1.Text
 
+                BeConfigEnc.Centro_Costo_Dep_Erp = nuCentroCostoDepERP.Value
+                BeConfigEnc.Centro_Costo_Dir_Erp = nuCentroCostoDirERP.Value
+                BeConfigEnc.Centro_Costo_Erp = nuCentroCostoERP.Value
+
                 '#EJC20171107_REF21_1127PM: clsLnI_nav_config_enc.Actualizar con transaccionalidad y encabezado de configuración
                 If clsLnI_nav_config_enc.Actualizar(BeConfigEnc, lDet, pBeINavConfigEnt) Then
 
@@ -268,6 +272,10 @@ Public Class frmConfiguracion
                 BeConfigEnc.Bodega_Facturacion = txtCodigoBodegaFacturacion.Text
                 BeConfigEnc.Bodega_Prorrateo = txtCodigoBodegaProrrateo.Text
                 BeConfigEnc.Bodega_Prorrateo1 = txtCodigoBodegaProrrateo1.Text
+
+                BeConfigEnc.Centro_Costo_Dep_Erp = nuCentroCostoDepERP.Value
+                BeConfigEnc.Centro_Costo_Dir_Erp = nuCentroCostoDirERP.Value
+                BeConfigEnc.Centro_Costo_Erp = nuCentroCostoERP.Value
 
                 '#EJC20171107_REF21_1127PM: clsLnI_nav_config_enc.Actualizar con transaccionalidad y encabezado de configuración
                 '#GT12012023_2000: agregue el guardar, porque el Actualizar no agrega nuevos registros.
@@ -874,6 +882,10 @@ Public Class frmConfiguracion
 
                     chkInferirBonificacionPedidoSAP.Checked = BeConfigEnc.Inferir_Bonificacion_Pedido_SAP
                     chkRechazarBonificacionIncompleta.Checked = BeConfigEnc.Rechazar_Bonificacion_Incompleta
+
+                    nuCentroCostoDepERP.Value = BeConfigEnc.Centro_Costo_Dep_Erp
+                    nuCentroCostoDirERP.Value = BeConfigEnc.Centro_Costo_Dir_Erp
+                    nuCentroCostoERP.Value = BeConfigEnc.Centro_Costo_Erp
 
                     mnuGuardar.Enabled = False
 

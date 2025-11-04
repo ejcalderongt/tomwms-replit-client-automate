@@ -21,6 +21,14 @@ Public Class clsBeTrans_ajuste_enc
     ''' </summary>
     ''' <returns></returns>
     Public Property Auditado As Boolean = False
+    ''' <summary>
+    ''' #CKFK20251030 Agregamos estos tres campos para la integración con ERP 
+    ''' ya que  centro de costo maneja centro de costo dirección y departamento
+    ''' </summary>
+    ''' <returns></returns>
+    Public Property Centro_Costo_Erp As String = ""
+    Public Property Centro_Costo_Dir_Erp As String = ""
+    Public Property Centro_Costo_Dep_Erp As String = ""
 
     Sub New()
     End Sub
