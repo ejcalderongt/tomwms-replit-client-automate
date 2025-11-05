@@ -325,6 +325,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Dset_Regla_Vence.xsd</DependentUpon>
     </Compile>
+    <Compile Include="IA\AiClient.vb" />
+    <Compile Include="IA\frmIA_Chat.Designer.vb">
+      <DependentUpon>frmIA_Chat.vb</DependentUpon>
+    </Compile>
+    <Compile Include="IA\frmIA_Chat.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="IA\PromptEngine.vb" />
     <Compile Include="Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.Designer.vb">
       <DependentUpon>frmAcuerdoComercial.vb</DependentUpon>
     </Compile>
@@ -3104,6 +3112,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="IA\frmIA_Chat.resx">
+      <DependentUpon>frmIA_Chat.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.resx">
       <DependentUpon>frmAcuerdoComercial.vb</DependentUpon>
     </EmbeddedResource>
@@ -4414,6 +4425,9 @@
     <None Include="Dset_Regla_Vence.xss">
       <DependentUpon>Dset_Regla_Vence.xsd</DependentUpon>
     </None>
+    <None Include="IA\prompts.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Mantenimientos\Motivo_Correccion\DsMotivoCorreccionPoliza.xsc">
       <DependentUpon>DsMotivoCorreccionPoliza.xsd</DependentUpon>
     </None>
@@ -5516,7 +5530,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-
   <ItemGroup>
     <Analyzer Include="C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll" Visible="false" Condition="Exists('C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll')" />
   </ItemGroup>

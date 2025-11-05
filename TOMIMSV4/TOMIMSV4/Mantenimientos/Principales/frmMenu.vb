@@ -5367,6 +5367,27 @@ Public Class frmMenu
         End Try
     End Sub
 
+    Private Sub cmdIA_ItemClick_1(sender As Object, e As ItemClickEventArgs) Handles cmdIA.ItemClick
+        If Not permiteMenu(e.Link) Then Return
+
+        Try
+
+            With frmIA_Chat
+                .MdiParent = Me
+                .Show()
+                .Focus()
+            End With
+
+            SplashScreenManager.CloseForm(False)
+
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+    End Sub
+
 
     'Public Sub Task_DMS()
 
