@@ -6566,6 +6566,9 @@ Public Class frmPedido
 
                     End If
 
+                    '#GT31102025: bloquear propietario cuando reserva stock, para evitar que cambie y tomen stock de otro distinto.
+                    lcmbPropietario.Enabled = False
+
                 End If
 
             End If
@@ -9416,9 +9419,6 @@ Public Class frmPedido
         End If
 
         Set_Tipo_Pedido()
-
-        '#GT28052024: llenar grid con servicios del acuerdo comercial segun propietario de combo
-        'Llena_Servicios_By_Propietario()
 
     End Sub
 

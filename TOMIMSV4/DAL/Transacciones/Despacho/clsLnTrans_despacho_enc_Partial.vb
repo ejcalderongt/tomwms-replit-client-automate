@@ -746,8 +746,8 @@ Partial Public Class clsLnTrans_despacho_enc
                                         BePedidoCompraDet.Cantidad_recibida = 0
                                     End If
 
-                                    BePedidoCompraDet.Costo = 0
-                                    BePedidoCompraDet.Total_linea = 0
+                                    BePedidoCompraDet.Costo = BePedidoDet.Costo
+                                    BePedidoCompraDet.Total_linea = BePedidoDet.Total_linea
                                     BePedidoCompraDet.No_Linea = BePedidoDet.No_linea
                                     BePedidoCompraDet.Activo = True
                                     BePedidoCompraDet.Porcentaje_arancel = 0

@@ -2966,7 +2966,6 @@ Partial Class frmPedido
         '
         'GroupControl3
         '
-        Me.GroupControl3.CaptionImageOptions.SvgImage = CType(resources.GetObject("GroupControl3.CaptionImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.GroupControl3.Controls.Add(Me.txtObservacion)
         Me.GroupControl3.Dock = System.Windows.Forms.DockStyle.Fill
         Me.GroupControl3.Location = New System.Drawing.Point(2, 269)
@@ -2980,18 +2979,17 @@ Partial Class frmPedido
         '
         Me.txtObservacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtObservacion.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.txtObservacion.Location = New System.Drawing.Point(2, 33)
+        Me.txtObservacion.Location = New System.Drawing.Point(2, 23)
         Me.txtObservacion.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.txtObservacion.MaxLength = 1000
         Me.txtObservacion.Multiline = True
         Me.txtObservacion.Name = "txtObservacion"
         Me.txtObservacion.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.txtObservacion.Size = New System.Drawing.Size(322, 201)
+        Me.txtObservacion.Size = New System.Drawing.Size(322, 211)
         Me.txtObservacion.TabIndex = 56
         '
         'grpScanPoliza
         '
-        Me.grpScanPoliza.CaptionImageOptions.Image = CType(resources.GetObject("grpScanPoliza.CaptionImageOptions.Image"), System.Drawing.Image)
         Me.grpScanPoliza.Controls.Add(Me.GroupBox5)
         Me.grpScanPoliza.Controls.Add(Me.LabelControl2)
         Me.grpScanPoliza.Dock = System.Windows.Forms.DockStyle.Top
@@ -3007,9 +3005,9 @@ Partial Class frmPedido
         Me.GroupBox5.Controls.Add(Me.txtScanPoliza)
         Me.GroupBox5.Controls.Add(Me.LabelControl4)
         Me.GroupBox5.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupBox5.Location = New System.Drawing.Point(2, 33)
+        Me.GroupBox5.Location = New System.Drawing.Point(2, 23)
         Me.GroupBox5.Name = "GroupBox5"
-        Me.GroupBox5.Size = New System.Drawing.Size(322, 105)
+        Me.GroupBox5.Size = New System.Drawing.Size(322, 115)
         Me.GroupBox5.TabIndex = 3
         Me.GroupBox5.TabStop = False
         '
@@ -3039,14 +3037,12 @@ Partial Class frmPedido
         'LabelControl2
         '
         Me.LabelControl2.Appearance.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LabelControl2.Appearance.Image = CType(resources.GetObject("LabelControl2.Appearance.Image"), System.Drawing.Image)
         Me.LabelControl2.Appearance.Options.UseFont = True
         Me.LabelControl2.Appearance.Options.UseImage = True
-        Me.LabelControl2.ImageOptions.Image = CType(resources.GetObject("LabelControl2.ImageOptions.Image"), System.Drawing.Image)
         Me.LabelControl2.Location = New System.Drawing.Point(471, 78)
         Me.LabelControl2.Margin = New System.Windows.Forms.Padding(5, 8, 5, 8)
         Me.LabelControl2.Name = "LabelControl2"
-        Me.LabelControl2.Size = New System.Drawing.Size(32, 32)
+        Me.LabelControl2.Size = New System.Drawing.Size(0, 15)
         Me.LabelControl2.TabIndex = 2
         '
         'txtIdDespacho

@@ -24712,9 +24712,9 @@
     </member>
     <member name="P:DevExpress.XtraPrinting.TextExportOptionsBase.Separator">
       <summary>
-        <para>Gets or sets the symbol(s) to separate text elements when a document is exported to a Text-based file.</para>
+        <para>Specifies the symbol(s) to separate text elements when a document is exported as a Text-based file.</para>
       </summary>
-      <value>A <see cref="T:System.String"/> containing the symbol(s) which will be used to separate text elements in the created Text-based file.</value>
+      <value>A <see cref="T:System.String"/> that contains the symbol(s) to separate text elements in the Text-based file.</value>
     </member>
     <member name="P:DevExpress.XtraPrinting.TextExportOptionsBase.TextExportMode">
       <summary>

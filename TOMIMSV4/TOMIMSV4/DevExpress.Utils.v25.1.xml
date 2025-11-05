@@ -9058,7 +9058,7 @@ The <see cref="F:DevExpress.Utils.DefaultBoolean.Default">DefaultBoolean.Default
     </member>
     <member name="P:DevExpress.Utils.Layout.TablePanel.Rows">
       <summary>
-        <para>Provides access to the collection of the panel’s rows (<see cref="T:DevExpress.Utils.Layout.TablePanelRow"/>).</para>
+        <para>Gets a collection of rows.</para>
       </summary>
       <value>A collection of <see cref="T:DevExpress.Utils.Layout.TablePanelRow"/> objects.</value>
     </member>
@@ -10609,7 +10609,7 @@ The <see cref="F:DevExpress.Utils.DefaultBoolean.Default">DefaultBoolean.Default
     </member>
     <member name="T:DevExpress.Utils.SvgImageCollection">
       <summary>
-        <para>Stores <see href="https://docs.devexpress.com/WindowsForms/117631/devexpress-icon-library/how-to-draw-and-use-svg-images">vector images</see> added by you and provides these images to DevExpress controls.</para>
+        <para>A collection of vector (SVG) images used in WinForms applications.</para>
       </summary>
     </member>
     <member name="M:DevExpress.Utils.SvgImageCollection.#ctor">
