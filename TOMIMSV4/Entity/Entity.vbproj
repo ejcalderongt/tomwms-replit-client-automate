@@ -196,6 +196,9 @@
     <Compile Include="FixTheBug\clsBeTablas_relacionadas_placas.vb" />
     <Compile Include="FixTheBug\clsBeTmp_trans_pe_pol.vb" />
     <Compile Include="FixTheBug\clsBeVW_Pedidos_Revision.vb" />
+    <Compile Include="IA\ChatMsg.vb" />
+    <Compile Include="IA\PromptTemplate.vb" />
+    <Compile Include="IA\TemplateVar.vb" />
     <Compile Include="Interface\Barras_Pallet\clsBeI_nav_barras_pallet.vb" />
     <Compile Include="Interface\Cealsa\Acuerdo_Det\clsBeCEALSA_detacuerdoscomerciales.vb" />
     <Compile Include="Interface\Cealsa\Acuerdo_Det\clsBeI_nav_acuerdo_det.vb" />
