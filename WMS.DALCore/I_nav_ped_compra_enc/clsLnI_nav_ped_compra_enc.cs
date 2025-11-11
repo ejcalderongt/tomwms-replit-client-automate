@@ -55,6 +55,7 @@ public class clsLnI_nav_ped_compra_enc
             oBeI_nav_ped_compra_enc.Fec_agr = GetDate("fec_agr");
             oBeI_nav_ped_compra_enc.IsImport = GetBool("IsImport");
             oBeI_nav_ped_compra_enc.Company_Code = GetString("Company_Code");
+            oBeI_nav_ped_compra_enc.No_Document_Wms = GetInt("No_Document_Wms");
         }
         catch (Exception ex)
         {
@@ -97,6 +98,7 @@ public class clsLnI_nav_ped_compra_enc
             Ins.Add("fec_agr", "@fec_agr", "F");
             Ins.Add("isimport", "@isimport", "F");
             Ins.Add("company_code", "@company_code", "F");
+            Ins.Add("No_Document_Wms", "@No_Document_Wms", "F");
 
             string sp = Ins.SQL();
 
@@ -135,7 +137,8 @@ public class clsLnI_nav_ped_compra_enc
             cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeI_nav_ped_compra_enc.Fec_agr));
             cmd.Parameters.Add(new SqlParameter("@IsImport", oBeI_nav_ped_compra_enc.IsImport));
             cmd.Parameters.Add(new SqlParameter("@Company_Code", oBeI_nav_ped_compra_enc.Company_Code));
-
+            cmd.Parameters.Add(new SqlParameter("@No_Document_Wms", oBeI_nav_ped_compra_enc.No_Document_Wms));
+            
             rowsAffected = cmd.ExecuteNonQuery();
 
             cmd.Dispose();
@@ -198,6 +201,9 @@ public class clsLnI_nav_ped_compra_enc
             Upd.Add("fec_agr", "@fec_agr", "F");
             Upd.Add("isimport", "@isimport", "F");
             Upd.Add("company_code", "@company_code", "F");
+            Upd.Add("No_Document_Wms", "@No_Document_Wms", "F");
+
+
             Upd.Where("No = @No" +
                 " AND Document_Type = @Document_Type");
 
@@ -238,7 +244,8 @@ public class clsLnI_nav_ped_compra_enc
             cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeI_nav_ped_compra_enc.Fec_agr));
             cmd.Parameters.Add(new SqlParameter("@IsImport", oBeI_nav_ped_compra_enc.IsImport));
             cmd.Parameters.Add(new SqlParameter("@Company_Code", oBeI_nav_ped_compra_enc.Company_Code));
-
+            cmd.Parameters.Add(new SqlParameter("@No_Document_Wms", oBeI_nav_ped_compra_enc.No_Document_Wms));
+            
             rowsAffected = cmd.ExecuteNonQuery();
 
             if (!Es_Transaccion_Remota)
@@ -401,6 +408,7 @@ public class clsLnI_nav_ped_compra_enc
             dad.SelectCommand.Parameters.Add(new SqlParameter("@fec_agr", pBeI_nav_ped_compra_enc.Fec_agr));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@IsImport", pBeI_nav_ped_compra_enc.IsImport));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@Company_Code", pBeI_nav_ped_compra_enc.Company_Code));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@No_Document_Wms", pBeI_nav_ped_compra_enc.No_Document_Wms));
 
             DataTable dt = new DataTable();
             dad.Fill(dt);
@@ -902,6 +910,7 @@ public class clsLnI_nav_ped_compra_enc
                     try
                     {
                      
+                        //tipo 2 es producto, tipo 1 es servicio, y se omite
                         if ((Det.Type?.ToString()) == "2")
                         {
                             if (Det.Location_Code != null)
@@ -1548,6 +1557,26 @@ public class clsLnI_nav_ped_compra_enc
             BePedidoCompraDet.User_agr = BeConfigEnc.IdUsuario.ToString();
             BePedidoCompraDet.User_mod = BeConfigEnc.IdUsuario.ToString();
             BePedidoCompraDet.Atributo_variante_1 = navPedidoCompraDet.Variant_Code;
+
+
+            if (!string.IsNullOrEmpty(navPedidoCompraDet.Barcode))
+            {
+                clsBeProducto_talla_color? BeProductoTallaColor = new clsBeProducto_talla_color();
+                if (BeProductoBodega != null && BeProductoBodega.IdProducto > 0) {
+                    BeProductoTallaColor = clsLnProducto_talla_color.Get_Single_By_Params(BeProductoBodega.IdProducto, navPedidoCompraDet.Size, navPedidoCompraDet.Color, lConnection, lTransInterface);
+                    if (BeProductoTallaColor != null)
+                    {
+                        BePedidoCompraDet.IdProductoTallaColor = BeProductoTallaColor.IdProductoTallaColor;
+                    }
+                    else
+                    {
+                        lblprg += "No existe la Talla/Color definidas para el código " + navPedidoCompraDet.No + Environment.NewLine;
+                        return false;
+                    }
+                }
+            }
+
+
 
             if (BeProductoBodega !=null)
             if (Asigna_Unidad_De_Medida(BePedidoCompraDet,

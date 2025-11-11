@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
 using WMS.EntityCore.Operador;
+using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Proveedor;
 using WMS.EntityCore.Stock;
@@ -227,6 +228,13 @@ namespace WMSWebAPI.Services.Ingresos
                 // 2) Insert a tabla intermedia
                 if (clsLnI_nav_ped_compra_enc.Insert_Single_Pedido_From_ERP(_configuration, beINavPedCompraEnc) <= 0)
                     throw new Exception("No se pudo insertar el pedido en la tabla intermedia.");
+
+                // 2.5) obtener Pedido de NavCompra
+                //clsBeTrans_pe_enc? pPedido = new clsBeTrans_pe_enc();
+                //pPedido.IdPedidoEnc = beINavPedCompraEnc.No_Document_Wms;
+                //if (!clsLnTrans_pe_enc.GetSingle(_configuration, ref pPedido)){
+                //    pPedido = null;
+                //}
 
                 // 3) Procesar MI3
                 var bePedidoCompraEnc = new clsBeTrans_oc_enc();
