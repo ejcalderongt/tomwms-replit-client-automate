@@ -136,14 +136,20 @@ Public Class frmPedido_List
 
             Dim Dt As New DataTable
 
-            Dt = clsLnTrans_pe_enc.GetAll(chkActivos.Checked,
-                                          dtpFechaDel.Value,
-                                          dtpFechaAl.Value,
-                                          chkAnulados.Checked,
-                                          AP.IdBodega,
-                                          chkDespachados.Checked,
-                                          chkSinExistencias.Checked,
-                                          chkSinExistenciasERP.Checked)
+            If chkTemporales.Checked Then
+                Dt = clsLnTrans_pe_enc.GetAll_Tmp(AP.IdBodega,
+                                                  dtpFechaDel.Value,
+                                                  dtpFechaAl.Value)
+            Else
+                Dt = clsLnTrans_pe_enc.GetAll(chkActivos.Checked,
+                                              dtpFechaDel.Value,
+                                              dtpFechaAl.Value,
+                                              chkAnulados.Checked,
+                                              AP.IdBodega,
+                                              chkDespachados.Checked,
+                                              chkSinExistencias.Checked,
+                                              chkSinExistenciasERP.Checked)
+            End If
 
             DgridPedido.DataSource = Dt
 
@@ -1457,6 +1463,10 @@ Public Class frmPedido_List
     End Sub
 
     Private Sub chkSinExistenciasERP_CheckedChanged(sender As Object, e As ItemClickEventArgs) Handles chkSinExistenciasERP.CheckedChanged
+        Listar_Pedidos()
+    End Sub
+
+    Private Sub chkTemporales_CheckedChanged(sender As Object, e As ItemClickEventArgs) Handles chkTemporales.CheckedChanged
         Listar_Pedidos()
     End Sub
 End Class
