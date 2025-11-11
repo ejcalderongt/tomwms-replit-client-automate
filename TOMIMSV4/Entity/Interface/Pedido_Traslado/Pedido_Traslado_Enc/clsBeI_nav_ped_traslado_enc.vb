@@ -24,6 +24,7 @@ Public Class clsBeI_nav_ped_traslado_enc
     Public Property Comments As String = ""
     Public Property Company_Code As String = ""
     Public Property IsExport As Boolean = False
+    Public Property Transportation_Guide As String = ""
     Sub New()
     End Sub
     Sub New(ByRef No As String, ByVal Posting_Date As Date, ByVal Receipt_Date As Date, ByVal Shipment_Date As Date, ByVal Status As Boolean, ByVal Transfer_from_Code As String, ByVal Transfer_from_Contact As String, ByVal Transfer_from_Name As String, ByVal Transfer_to_Code As String, ByVal Transfer_to_Contact As String, ByVal Transfer_to_Name As String, ByVal transfer_to_CodeField As String)

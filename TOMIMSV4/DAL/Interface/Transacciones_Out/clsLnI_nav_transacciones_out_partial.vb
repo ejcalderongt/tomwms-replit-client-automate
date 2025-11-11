@@ -2731,9 +2731,11 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                         clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.Idajusteenc)
 
-                        Dim vCodigoBodega As String = clsLnBodega.Get_Codigo_By_IdBodega(AjEnc.IdBodega,
-                                                                                         lConnection,
-                                                                                         lTransaction)
+                        Dim BeBodega As New clsBeBodega
+                        BeBodega.IdBodega = AjEnc.IdBodega
+                        clsLnBodega.GetSingle(BeBodega, lConnection, lTransaction)
+
+                        Dim vCodigoBodega As String = BeBodega.Codigo
                         Dim vCodigoBodegaERP As String = ""
 
                         For Each AjDet In lVistaAjustesPendientesEnvio
@@ -2746,6 +2748,12 @@ Partial Public Class clsLnI_nav_transacciones_out
                                 clsPublic.Actualizar_Progreso(lblprg, "#EJC20200219_2214: No se encontró cliente/Serie para IdBodega: " & AjEnc.IdBodega)
                                 vSerieBodega = ""
                                 vCodigoBodegaERP = ""
+
+                                If BeBodega.Interface_SAP Then
+                                    vCodigoBodegaERP = BeBodega.Codigo
+                                Else
+
+                                End If
                             Else
                                 vSerieBodega = BeCliente.Referencia
                                 vCodigoBodegaERP = BeCliente.Codigo

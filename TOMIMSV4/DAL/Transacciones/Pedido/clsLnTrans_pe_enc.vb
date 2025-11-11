@@ -85,6 +85,7 @@ Public Class clsLnTrans_pe_enc
                 .IdMotivoDevolucion = IIf(IsDBNull(dr.Item("IdMotivoDevolucion")), 0, dr.Item("IdMotivoDevolucion"))
                 .Codigo_Empresa_ERP = IIf(IsDBNull(dr.Item("Codigo_Empresa_ERP")), "", dr.Item("Codigo_Empresa_ERP"))
                 .EsExportacion = IIf(IsDBNull(dr.Item("EsExportacion")), False, dr.Item("EsExportacion"))
+                .Guia_Transporte = IIf(IsDBNull(dr.Item("Guia_Transporte")), "", dr.Item("Guia_Transporte"))
 
             End With
 
@@ -173,6 +174,7 @@ Public Class clsLnTrans_pe_enc
             Ins.Add("bodega_destino", "@bodega_destino", DataType.Parametro)
             Ins.Add("Codigo_Empresa_Erp", "@Codigo_Empresa_Erp", DataType.Parametro)
             Ins.Add("EsExportacion", "@EsExportacion", DataType.Parametro)
+            Ins.Add("Guia_Transporte", "@Guia_Transporte", DataType.Parametro)
 
             If Not oBeTrans_pe_enc.IdMotivoDevolucion = 0 Then Ins.Add("IdMotivoDevolucion", "@IdMotivoDevolucion", DataType.Parametro)
 
@@ -257,6 +259,7 @@ Public Class clsLnTrans_pe_enc
             cmd.Parameters.Add(New SqlParameter("@BODEGA_DESTINO", oBeTrans_pe_enc.Bodega_Destino))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_EMPRESA_ERP", oBeTrans_pe_enc.Codigo_Empresa_ERP))
             cmd.Parameters.Add(New SqlParameter("@ESEXPORTACION", oBeTrans_pe_enc.EsExportacion))
+            cmd.Parameters.Add(New SqlParameter("@GUIA_TRANSPORTE", oBeTrans_pe_enc.Guia_Transporte))
 
             If Not oBeTrans_pe_enc.IdMotivoDevolucion = 0 Then cmd.Parameters.Add(New SqlParameter("@IDMOTIVODEVOLUCION", oBeTrans_pe_enc.IdMotivoDevolucion))
 
@@ -357,6 +360,7 @@ Public Class clsLnTrans_pe_enc
             Upd.Add("codigo_empresa_erp", "@codigo_empresa_erp", DataType.Parametro)
             If Not oBeTrans_pe_enc.IdMotivoDevolucion = 0 Then Upd.Add("IdMotivoDevolucion", "@IdMotivoDevolucion", DataType.Parametro)
             Upd.Add("EsExportacion", "@EsExportacion", DataType.Parametro)
+            Upd.Add("Guia_Transporte", "@Guia_Transporte", DataType.Parametro)
             Upd.Where("IdPedidoEnc = @IdPedidoEnc")
 
             Dim sp As String = Upd.SQL()
@@ -441,6 +445,7 @@ Public Class clsLnTrans_pe_enc
             cmd.Parameters.Add(New SqlParameter("@CODIGO_EMPRESA_ERP", oBeTrans_pe_enc.Codigo_Empresa_ERP))
             If Not oBeTrans_pe_enc.IdMotivoDevolucion = 0 Then cmd.Parameters.Add(New SqlParameter("@IDMOTIVODEVOLUCION", oBeTrans_pe_enc.IdMotivoDevolucion))
             cmd.Parameters.Add(New SqlParameter("@ESEXPORTACION", oBeTrans_pe_enc.EsExportacion))
+            cmd.Parameters.Add(New SqlParameter("@GUIA_TRANSPORTE", oBeTrans_pe_enc.Guia_Transporte))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

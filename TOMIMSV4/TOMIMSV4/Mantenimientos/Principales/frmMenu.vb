@@ -1671,10 +1671,7 @@ Public Class frmMenu
 
             If AP.IdConfiguracionInterface <> 0 Then
 
-                '#EJC20250903: Se cambia el parametro de instancia por el IdConfiguracionInterface  
-                Dim gIndiceInstancia As Integer = clsLnI_nav_config_enc.Get_IdConfiguracion(AP.IdBodega, AP.IdEmpresa)
-
-                Ejecutar_Interface(" -" & gIndiceInstancia & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-0-0" & "-" & clsBD.Instancia.NombreInstancia, Me)
+                Ejecutar_Interface(" -" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-0-0" & "-" & clsBD.Instancia.NombreInstancia, Me)
 
             Else
 

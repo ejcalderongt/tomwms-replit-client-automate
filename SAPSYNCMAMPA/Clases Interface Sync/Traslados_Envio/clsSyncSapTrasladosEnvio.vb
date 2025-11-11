@@ -4,6 +4,7 @@ Imports System.Net
 Imports System.Net.Http
 Imports System.Net.Http.Headers
 Imports System.Reflection
+Imports System.Runtime.InteropServices.WindowsRuntime
 Imports System.Text
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
@@ -362,13 +363,18 @@ Public Class clsSyncSapTrasladosEnvio
 
 
             Dim jsonCliente As JObject = Await Get_Socio_Negocio_SL(pCodigo, pTipo.ToUpper(), sessionCookie, baseUrl, lConnection, lTransaction)
-            Dim cliente As clsBeCliente = ConstruirClienteDesdeServiceLayer(jsonCliente, lConnection, lTransaction)
 
-            clsLnCliente.Insertar(cliente, lConnection, lTransaction)
-            InsertarClienteEnBodegas(cliente, lConnection, lTransaction)
-            Await MarcarClienteComoEnviadoSAPAsync(sessionCookie, baseUrl, pCodigo)
+            If jsonCliente IsNot Nothing Then
+                Dim cliente As clsBeCliente = ConstruirClienteDesdeServiceLayer(jsonCliente, lConnection, lTransaction)
 
-            Return True
+                clsLnCliente.Insertar(cliente, lConnection, lTransaction)
+                InsertarClienteEnBodegas(cliente, lConnection, lTransaction)
+                Await MarcarClienteComoEnviadoSAPAsync(sessionCookie, baseUrl, pCodigo)
+
+                Return True
+            Else
+                Return False
+            End If
 
         Catch ex As Exception
             Throw New Exception("No se pudo insertar el cliente nuevo proveniente de SAP: " & ex.Message)
@@ -658,6 +664,7 @@ Public Class clsSyncSapTrasladosEnvio
             End Try
         End Using
     End Function
+
     Public Shared Async Function Enviar_Traslados_Salida_Desde_Solicitud_Tienda(ByVal lblprg As RichTextBox,
                                                                                 ByVal prg As ProgressBar,
                                                                                 ByVal pTipo As tTipoDocumentoSalida) As Task(Of Boolean)
@@ -769,6 +776,7 @@ Public Class clsSyncSapTrasladosEnvio
         End Using
 
     End Function
+
     Public Shared Async Function Enviar_Traslados_Ingreso_Desde_Solicitud_Tiendas(ByVal lblprg As RichTextBox,
                                                                       ByVal prg As ProgressBar,
                                                                       ByVal pTipo As tTipoDocumentoIngreso,
@@ -1103,6 +1111,7 @@ Public Class clsSyncSapTrasladosEnvio
             Return False
         End Try
     End Function
+
     Private Shared Async Function Enviar_Traslado_Salida_Tienda_Desde_Solicitud_SAP(ByVal _DocEntry As Integer,
                                                                                     ByVal BePedidoEnc As clsBeTrans_pe_enc,
                                                                                     ByVal transaccionesOut As List(Of clsBeI_nav_transacciones_out),
@@ -1314,6 +1323,7 @@ Public Class clsSyncSapTrasladosEnvio
             Return False
         End Try
     End Function
+
     Private Shared Async Function Enviar_Traslado_Ingreso_Desde_Solicitud_SAP_Tiendas(ByVal _DocEntry As Integer,
                                                                                       ByVal BeTransOcEnc As clsBeTrans_oc_enc,
                                                                                       ByVal transaccionesOut As List(Of clsBeI_nav_transacciones_out),
@@ -1519,6 +1529,7 @@ Public Class clsSyncSapTrasladosEnvio
 
         Return dto
     End Function
+
     Private Shared Function Build_StockTransfer_Payload_Cedis(BePedidoEnc As clsBeTrans_pe_enc,
                                                               clsTrans As clsTransaccion,
                                                               lTransaccionesSalida As List(Of clsBeI_nav_transacciones_out)) As StockTransferDto
@@ -1614,6 +1625,7 @@ Public Class clsSyncSapTrasladosEnvio
 
         Return dto
     End Function
+
     Private Shared Function Build_StockTransferRequest_Payload(BePedidoEnc As clsBeTrans_pe_enc,
                                                                docNumSolicitud As String,
                                                                FromWarehouse As String,
@@ -1689,6 +1701,7 @@ Public Class clsSyncSapTrasladosEnvio
 
         Return dto
     End Function
+
     Private Shared Function BuildBatchNumber(color As String, talla As String) As String
         Return $"{color.Trim()}{talla.Trim()}"
     End Function

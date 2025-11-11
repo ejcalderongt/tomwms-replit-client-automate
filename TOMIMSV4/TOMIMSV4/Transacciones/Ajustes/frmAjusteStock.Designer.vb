@@ -83,6 +83,7 @@ Partial Class frmAjusteStock
         Me.txtReferencia = New System.Windows.Forms.TextBox()
         Me.GridView6 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.GroupControl2 = New DevExpress.XtraEditors.GroupControl()
+        Me.Label6 = New System.Windows.Forms.Label()
         Me.gcCentroCosto = New DevExpress.XtraEditors.GroupControl()
         Me.txtCentroCostoDepERP = New DevExpress.XtraEditors.TextEdit()
         Me.txtCentroCostoERP = New DevExpress.XtraEditors.TextEdit()
@@ -132,7 +133,6 @@ Partial Class frmAjusteStock
         Me.PanelControl1 = New DevExpress.XtraEditors.PanelControl()
         Me.grdDocsAsociados = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.Label6 = New System.Windows.Forms.Label()
         Label1 = New System.Windows.Forms.Label()
         Label3 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
@@ -661,6 +661,15 @@ Partial Class frmAjusteStock
         Me.GroupControl2.Name = "GroupControl2"
         Me.GroupControl2.Size = New System.Drawing.Size(1482, 167)
         Me.GroupControl2.TabIndex = 30
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(933, 76)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(86, 16)
+        Me.Label6.TabIndex = 56
+        Me.Label6.Text = "Centro Costo:"
         '
         'gcCentroCosto
         '
@@ -1218,15 +1227,6 @@ Partial Class frmAjusteStock
         Me.GridView1.Name = "GridView1"
         Me.GridView1.OptionsBehavior.ReadOnly = True
         Me.GridView1.OptionsFind.AlwaysVisible = True
-        '
-        'Label6
-        '
-        Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(933, 76)
-        Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(86, 16)
-        Me.Label6.TabIndex = 56
-        Me.Label6.Text = "Centro Costo:"
         '
         'frmAjusteStock
         '
