@@ -50,8 +50,8 @@ Partial Class frmPropietario
         Dim lblCodigoAcceso As System.Windows.Forms.Label
         Dim lblClaveAcceso As System.Windows.Forms.Label
         Dim lblConfirmarClaveAcceso As System.Windows.Forms.Label
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPropietario))
         Dim Label16 As System.Windows.Forms.Label
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPropietario))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuActualizar = New DevExpress.XtraBars.BarButtonItem()
@@ -63,6 +63,7 @@ Partial Class frmPropietario
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
         Me.GroupControl2 = New DevExpress.XtraEditors.GroupControl()
+        Me.chkActivarUX = New DevExpress.XtraEditors.CheckEdit()
         Me.txtConfirmarClave = New DevExpress.XtraEditors.TextEdit()
         Me.txtClaveAcceso = New DevExpress.XtraEditors.TextEdit()
         Me.txtCodigoAcceso = New DevExpress.XtraEditors.TextEdit()
@@ -160,7 +161,7 @@ Partial Class frmPropietario
         Me.dgridMovimientos = New DevExpress.XtraGrid.GridControl()
         Me.gviewMovimientos = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.GridView14 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.chkActivarUX = New DevExpress.XtraEditors.CheckEdit()
+        Me.cmdAlertas = New DevExpress.XtraEditors.SimpleButton()
         IdEmpresaLabel = New System.Windows.Forms.Label()
         Label12 = New System.Windows.Forms.Label()
         ImagenLabel = New System.Windows.Forms.Label()
@@ -197,6 +198,7 @@ Partial Class frmPropietario
         Me.GroupControl1.SuspendLayout()
         CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl2.SuspendLayout()
+        CType(Me.chkActivarUX.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtConfirmarClave.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtClaveAcceso.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCodigoAcceso.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -290,7 +292,6 @@ Partial Class frmPropietario
         CType(Me.dgridMovimientos, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gviewMovimientos, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView14, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.chkActivarUX.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'IdEmpresaLabel
@@ -511,7 +512,7 @@ Partial Class frmPropietario
         Label10.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Label10.AutoSize = True
         Label10.BackColor = System.Drawing.Color.Transparent
-        Label10.Location = New System.Drawing.Point(514, 31)
+        Label10.Location = New System.Drawing.Point(850, 31)
         Label10.Name = "Label10"
         Label10.Size = New System.Drawing.Size(52, 16)
         Label10.TabIndex = 0
@@ -637,6 +638,18 @@ Partial Class frmPropietario
         lblConfirmarClaveAcceso.TabIndex = 16
         lblConfirmarClaveAcceso.Text = "Confirmar Clave:"
         '
+        'Label16
+        '
+        Label16.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label16.AutoSize = True
+        Label16.Location = New System.Drawing.Point(35, 44)
+        Label16.Name = "Label16"
+        Label16.Size = New System.Drawing.Size(71, 16)
+        Label16.TabIndex = 89
+        Label16.Text = "Activar UX:"
+        '
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
@@ -746,7 +759,7 @@ Partial Class frmPropietario
         Me.GroupControl1.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(1343, 607)
+        Me.GroupControl1.Size = New System.Drawing.Size(1679, 759)
         Me.GroupControl1.TabIndex = 0
         '
         'GroupControl2
@@ -764,6 +777,16 @@ Partial Class frmPropietario
         Me.GroupControl2.Size = New System.Drawing.Size(440, 207)
         Me.GroupControl2.TabIndex = 88
         Me.GroupControl2.Text = "WMSUX"
+        '
+        'chkActivarUX
+        '
+        Me.chkActivarUX.Location = New System.Drawing.Point(143, 40)
+        Me.chkActivarUX.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.chkActivarUX.MenuManager = Me.RibbonControl
+        Me.chkActivarUX.Name = "chkActivarUX"
+        Me.chkActivarUX.Properties.Caption = ""
+        Me.chkActivarUX.Size = New System.Drawing.Size(41, 24)
+        Me.chkActivarUX.TabIndex = 90
         '
         'txtConfirmarClave
         '
@@ -1304,7 +1327,7 @@ Partial Class frmPropietario
         Me.GroupControl5.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl5.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl5.Name = "GroupControl5"
-        Me.GroupControl5.Size = New System.Drawing.Size(1343, 607)
+        Me.GroupControl5.Size = New System.Drawing.Size(1679, 759)
         Me.GroupControl5.TabIndex = 0
         '
         'GroupControl7
@@ -1318,7 +1341,7 @@ Partial Class frmPropietario
         Me.GroupControl7.Location = New System.Drawing.Point(730, 28)
         Me.GroupControl7.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl7.Name = "GroupControl7"
-        Me.GroupControl7.Size = New System.Drawing.Size(607, 577)
+        Me.GroupControl7.Size = New System.Drawing.Size(943, 729)
         Me.GroupControl7.TabIndex = 2
         Me.GroupControl7.Text = "Destinatarios"
         '
@@ -1326,7 +1349,7 @@ Partial Class frmPropietario
         '
         Me.chkActivoD.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.chkActivoD.EditValue = True
-        Me.chkActivoD.Location = New System.Drawing.Point(574, 27)
+        Me.chkActivoD.Location = New System.Drawing.Point(910, 27)
         Me.chkActivoD.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.chkActivoD.MenuManager = Me.RibbonControl
         Me.chkActivoD.Name = "chkActivoD"
@@ -1346,7 +1369,7 @@ Partial Class frmPropietario
         Me.GridDestinatario.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GridDestinatario.MenuManager = Me.RibbonControl
         Me.GridDestinatario.Name = "GridDestinatario"
-        Me.GridDestinatario.Size = New System.Drawing.Size(605, 515)
+        Me.GridDestinatario.Size = New System.Drawing.Size(941, 667)
         Me.GridDestinatario.TabIndex = 2
         Me.GridDestinatario.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.ViewDestinatario, Me.GridView6})
         '
@@ -1366,12 +1389,13 @@ Partial Class frmPropietario
         '
         Me.Panel1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.Panel1.Controls.Add(Me.cmdAlertas)
         Me.Panel1.Controls.Add(Me.cmdAgregar)
         Me.Panel1.Controls.Add(Me.cmdEliminar)
         Me.Panel1.Location = New System.Drawing.Point(667, 28)
         Me.Panel1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(56, 579)
+        Me.Panel1.Size = New System.Drawing.Size(56, 731)
         Me.Panel1.TabIndex = 1
         '
         'cmdAgregar
@@ -1383,12 +1407,13 @@ Partial Class frmPropietario
         Me.cmdAgregar.Name = "cmdAgregar"
         Me.cmdAgregar.Size = New System.Drawing.Size(48, 48)
         Me.cmdAgregar.TabIndex = 0
+        Me.cmdAgregar.ToolTip = "Envío de mensajes por excepción"
         '
         'cmdEliminar
         '
         Me.cmdEliminar.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdEliminar.ImageOptions.SvgImage = CType(resources.GetObject("cmdEliminar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdEliminar.Location = New System.Drawing.Point(5, 59)
+        Me.cmdEliminar.Location = New System.Drawing.Point(5, 147)
         Me.cmdEliminar.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.cmdEliminar.Name = "cmdEliminar"
         Me.cmdEliminar.Size = New System.Drawing.Size(48, 48)
@@ -1404,7 +1429,7 @@ Partial Class frmPropietario
         Me.GroupControl6.Location = New System.Drawing.Point(2, 28)
         Me.GroupControl6.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl6.Name = "GroupControl6"
-        Me.GroupControl6.Size = New System.Drawing.Size(658, 583)
+        Me.GroupControl6.Size = New System.Drawing.Size(658, 735)
         Me.GroupControl6.TabIndex = 0
         Me.GroupControl6.Text = "Mensajes"
         '
@@ -1432,7 +1457,7 @@ Partial Class frmPropietario
         Me.GridMensaje.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GridMensaje.MenuManager = Me.RibbonControl
         Me.GridMensaje.Name = "GridMensaje"
-        Me.GridMensaje.Size = New System.Drawing.Size(653, 530)
+        Me.GridMensaje.Size = New System.Drawing.Size(653, 682)
         Me.GridMensaje.TabIndex = 2
         Me.GridMensaje.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.ViewMensaje, Me.GridView3})
         '
@@ -1472,13 +1497,13 @@ Partial Class frmPropietario
         Me.DockPanel1.Controls.Add(Me.DockPanel1_Container)
         Me.DockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.ID = New System.Guid("6d41e5f7-f2b1-4761-8391-fc0ad59630be")
-        Me.DockPanel1.Location = New System.Drawing.Point(0, 0)
+        Me.DockPanel1.Location = New System.Drawing.Point(0, 709)
         Me.DockPanel1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.DockPanel1.Name = "DockPanel1"
         Me.DockPanel1.OriginalSize = New System.Drawing.Size(200, 97)
         Me.DockPanel1.SavedDock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.SavedIndex = 0
-        Me.DockPanel1.Size = New System.Drawing.Size(953, 119)
+        Me.DockPanel1.Size = New System.Drawing.Size(1345, 121)
         Me.DockPanel1.Text = "Bitácora"
         Me.DockPanel1.Visibility = DevExpress.XtraBars.Docking.DockVisibility.AutoHide
         '
@@ -1492,10 +1517,10 @@ Partial Class frmPropietario
         Me.DockPanel1_Container.Controls.Add(User_agrLabel)
         Me.DockPanel1_Container.Controls.Add(Fec_modLabel)
         Me.DockPanel1_Container.Controls.Add(Me.Fec_modDateEdit)
-        Me.DockPanel1_Container.Location = New System.Drawing.Point(3, 31)
+        Me.DockPanel1_Container.Location = New System.Drawing.Point(4, 34)
         Me.DockPanel1_Container.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.DockPanel1_Container.Name = "DockPanel1_Container"
-        Me.DockPanel1_Container.Size = New System.Drawing.Size(946, 85)
+        Me.DockPanel1_Container.Size = New System.Drawing.Size(1337, 83)
         Me.DockPanel1_Container.TabIndex = 0
         '
         'xtraPropietario
@@ -1718,27 +1743,16 @@ Partial Class frmPropietario
         Me.GridView14.GridControl = Me.dgridMovimientos
         Me.GridView14.Name = "GridView14"
         '
-        'Label16
+        'cmdAlertas
         '
-        Label16.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Label16.AutoSize = True
-        Label16.Location = New System.Drawing.Point(35, 44)
-        Label16.Name = "Label16"
-        Label16.Size = New System.Drawing.Size(71, 16)
-        Label16.TabIndex = 89
-        Label16.Text = "Activar UX:"
-        '
-        'chkActivarUX
-        '
-        Me.chkActivarUX.Location = New System.Drawing.Point(143, 40)
-        Me.chkActivarUX.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.chkActivarUX.MenuManager = Me.RibbonControl
-        Me.chkActivarUX.Name = "chkActivarUX"
-        Me.chkActivarUX.Properties.Caption = ""
-        Me.chkActivarUX.Size = New System.Drawing.Size(41, 24)
-        Me.chkActivarUX.TabIndex = 90
+        Me.cmdAlertas.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdAlertas.ImageOptions.SvgImage = CType(resources.GetObject("SimpleButton1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdAlertas.Location = New System.Drawing.Point(3, 79)
+        Me.cmdAlertas.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.cmdAlertas.Name = "cmdAlertas"
+        Me.cmdAlertas.Size = New System.Drawing.Size(48, 48)
+        Me.cmdAlertas.TabIndex = 2
+        Me.cmdAlertas.ToolTip = "Envío de mensajes por proceso"
         '
         'frmPropietario
         '
@@ -1764,6 +1778,7 @@ Partial Class frmPropietario
         CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl2.ResumeLayout(False)
         Me.GroupControl2.PerformLayout()
+        CType(Me.chkActivarUX.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtConfirmarClave.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtClaveAcceso.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCodigoAcceso.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -1863,7 +1878,6 @@ Partial Class frmPropietario
         CType(Me.dgridMovimientos, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.gviewMovimientos, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView14, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.chkActivarUX.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1978,4 +1992,5 @@ Partial Class frmPropietario
     Friend WithEvents txtClaveAcceso As DevExpress.XtraEditors.TextEdit
     Friend WithEvents txtCodigoAcceso As DevExpress.XtraEditors.TextEdit
     Friend WithEvents chkActivarUX As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents cmdAlertas As DevExpress.XtraEditors.SimpleButton
 End Class
