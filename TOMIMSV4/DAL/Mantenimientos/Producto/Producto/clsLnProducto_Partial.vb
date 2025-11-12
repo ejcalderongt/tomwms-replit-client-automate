@@ -9971,8 +9971,6 @@ Partial Public Class clsLnProducto
         End Try
 
     End Function
-
-
     '#GT21112024: buscar producto por propietario, bodega y sin stock porque se requiere desde ajustes stock
     Public Shared Function Get_All_Lista_Producto_SinStock(ByVal pIdPropietario As Integer, ByVal pIdPropietarioBodega As Integer, ByVal pIdBodega As Integer, ByVal pActivo As Boolean) As DataTable
 
@@ -10000,7 +9998,7 @@ Partial Public Class clsLnProducto
                                            wp.Producto as Nombre,
                                            --wp.IndiceRotacion,
                                            --wp.Kit as Es_Producto_Kit,
-                                           wp.genera_lp,
+                                           wp.genera_lp_old,
                                            wp.Control_Vencimiento,
                                            wp.Control_Lote
                                            --wp.producto_parametro_nombreA as [Parámetro A],
@@ -10027,7 +10025,7 @@ Partial Public Class clsLnProducto
                         vSQL += String.Format(" AND wp.IdPropietario={0}", pIdPropietario)
                     End If
 
-                    vSQL += " ORDER BY Código"
+                    'vSQL += " ORDER BY Código"
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 

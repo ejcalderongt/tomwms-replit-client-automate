@@ -317,9 +317,9 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
     End Function
 
     Public Shared Function Importar_Traslado_A_Tabla_Intermedia(ByRef BePedidoCliente As clsBeI_nav_ped_traslado_enc,
-                                                                      ByRef lblprg As RichTextBox,
-                                                                      ByRef lConnection As SqlConnection,
-                                                                      ByRef lTransaction As SqlTransaction) As Boolean
+                                                                ByRef lblprg As RichTextBox,
+                                                                ByRef lConnection As SqlConnection,
+                                                                ByRef lTransaction As SqlTransaction) As Boolean
 
         Dim IdNavConfigDet As Integer = 102 'Pedidos de clientes
         Dim BeNavEjecucionEnc As New clsBeI_nav_ejecucion_enc
@@ -955,6 +955,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                         pBePedidoEnc.RoadDirEntrega = BeINavPedTrasladoEnc.Address
                         pBePedidoEnc.Observacion = BeINavPedTrasladoEnc.Comments
                         pBePedidoEnc.EsExportacion = BeINavPedTrasladoEnc.IsExport
+                        pBePedidoEnc.Guia_Transporte = BeINavPedTrasladoEnc.Transportation_Guide
 
                         clsLnTrans_pe_enc.Inserta_Encabezado(pBePedidoEnc,
                                                              lConectionInterface,
@@ -3358,7 +3359,13 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                 Else
                     vIndicadorDeExcepcion = 5
 
-                    Dim BePedidoEnc As clsBeTrans_pe_enc = Imp_Ped_Trans_Env_Desde_Tab_Inter_A_WMS(BePedidoCliente, vIdBodegaOrigen, vIdPropitarioBodegaOrigen, BeConfigEnc, lConnection, lTransaction, lblprg)
+                    Dim BePedidoEnc As clsBeTrans_pe_enc = Imp_Ped_Trans_Env_Desde_Tab_Inter_A_WMS(BePedidoCliente,
+                                                                                                   vIdBodegaOrigen,
+                                                                                                   vIdPropitarioBodegaOrigen,
+                                                                                                   BeConfigEnc,
+                                                                                                   lConnection,
+                                                                                                   lTransaction,
+                                                                                                   lblprg)
 
                     If BePedidoEnc IsNot Nothing Then
                         Importar_Pedido_Cliente_A_Tabla_Intermedia_If = BePedidoEnc

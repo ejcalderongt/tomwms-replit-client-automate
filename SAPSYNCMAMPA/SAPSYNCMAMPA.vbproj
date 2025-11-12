@@ -222,12 +222,15 @@
     <Compile Include="Ajuste de inventario\clsSyncAjusteInventario.vb" />
     <Compile Include="Clases Interface Sync\Ajustes\clsSyncSapAjustes.vb" />
     <Compile Include="Clases Interface Sync\Campaña\clsSyncSAPCampaña.vb" />
+    <Compile Include="Clases Interface Sync\Centros_Costo\clsSyncSapCentrosCosto.vb" />
     <Compile Include="Clases Interface Sync\Devolucion_Proveedor\clsSyncSapDevolProveedor.vb" />
+    <Compile Include="Clases Interface Sync\Factura_Deudor_Cliente\clsSyncSapFacturaDeudor.vb" />
     <Compile Include="Clases Interface Sync\Factura_Reserva\FacturaReservaMapper.vb" />
+    <Compile Include="Clases Interface Sync\Factura_Reserva_Cliente\clsSyncSapFacturaReservaCliente.vb" />
     <Compile Include="Clases Interface Sync\Traslados_Envio\clsSyncSapTrasladosEnvio.vb" />
     <Compile Include="Clases Interface Sync\Traslados_Recepcion\clsSyncSapSolTrasladoRec.vb" />
-    <Compile Include="Clases Interface Sync\Ventas\clsSyncVentasSap.vb" />
-    <Compile Include="Clases Interface Sync\Ventas\dto_TransacWMS.vb" />
+    <Compile Include="Clases Interface Sync\Transacciones_WMS\clsSyncTransacWMS.vb" />
+    <Compile Include="Clases Interface Sync\Transacciones_WMS\dto_TransacWMS.vb" />
     <Compile Include="Clases\SapServiceBase.vb" />
     <Compile Include="Dtos\BusinessPartnerDto.vb" />
     <Compile Include="Dtos\LoginResponseDto.vb" />
@@ -485,7 +488,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-
   <ItemGroup>
     <Analyzer Include="C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll" Visible="false" Condition="Exists('C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll')" />
   </ItemGroup>

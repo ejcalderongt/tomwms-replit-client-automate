@@ -810,8 +810,6 @@ Public Class frmEjecucion
 
     End Sub
 
-
-
     Private Sub frmEjecucion_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls Or
@@ -1109,8 +1107,8 @@ Public Class frmEjecucion
             If Ejecutar Then
                 lblprg.Text = ""
                 Await clsSyncSapTrasladosEnvio.Enviar_Traslados_Salida_Desde_Solicitud_Prorrateo(lblprg,
-                                                                                          prg,
-                                                                                          tTipoDocumentoSalida.Transferencia_Directa)
+                                                                                                 prg,
+                                                                                                 tTipoDocumentoSalida.Transferencia_Directa)
             End If
 
         Catch ex As Exception
@@ -1388,6 +1386,278 @@ Public Class frmEjecucion
             procesoEnEjecucion = False
         End Try
 
+    End Sub
+
+    Private Sub GetToken_ItemClick(sender As Object, e As ItemClickEventArgs) Handles GetToken.ItemClick
+        Dim vHanaService As SapServiceLayerClient
+
+        vHanaService = New SapServiceLayerClient()
+        Dim loginResponse As LoginResponseDto = vHanaService.LoginAsync().GetAwaiter().GetResult()
+
+        If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
+            clsPublic.Actualizar_Progreso(lblprg, "No se pudo obtener sesión.")
+        Else
+            clsPublic.Actualizar_Progreso(lblprg, "Conexión correcta. Token: " & vHanaService.SessionCookie)
+            Debug.WriteLine(vHanaService.SessionCookie)
+        End If
+
+    End Sub
+
+    Private Sub mnuProductosI_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuProductosI.ItemClick
+
+    End Sub
+
+
+    Public Async Sub Ejecuta_Interface_Centros_Costo(Optional ByVal Preguntar As Boolean = True)
+
+        Try
+
+            prg.Visible = True
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Actualizar registros?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                Await clsSyncSapCentrosCosto.Importar_Centros_Costo_Desde_SAP(lblprg, prg)
+            End If
+
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+            prg.Visible = False
+
+        End Try
+
+    End Sub
+
+    Private Sub mnuCentroCosto_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuCentroCosto.ItemClick
+        Ejecuta_Interface_Centros_Costo(True)
+    End Sub
+
+    Private Sub mnuRecibirFactReservaCliente_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuRecibirFactReservaCliente.ItemClick
+
+        Dim args As New XtraInputBoxArgs()
+        Dim tmpResult As Object
+        Dim pFacturaReserva As String = ""
+
+        Try
+
+            args.Caption = "Ingrese Factura de Reserva Cliente"
+            args.Prompt = "Factura No."
+
+            Dim editor As New TextEdit
+            args.Editor = editor
+
+            args.DefaultButtonIndex = 0
+            args.DefaultResponse = ""
+            AddHandler args.Showing, AddressOf Args_Showing
+
+            tmpResult = XtraInputBox.Show(args)
+
+            lblprg.Text = ""
+
+            If Not tmpResult Is Nothing Then
+
+                pFacturaReserva = tmpResult.ToString
+
+                Ejecuta_Interface_Facturas_Reserva_Cliente_SAP_Hana(True, pFacturaReserva)
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                               Text,
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
+    Private Sub mnuRecibirFactDeudor_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuRecibirFactDeudor.ItemClick
+
+        Dim args As New XtraInputBoxArgs()
+        Dim tmpResult As Object
+        Dim pFacturaDeudor As String = ""
+
+        Try
+
+            args.Caption = "Ingrese Factura de Deudor"
+            args.Prompt = "Factura No."
+
+            Dim editor As New TextEdit
+            args.Editor = editor
+
+            args.DefaultButtonIndex = 0
+            args.DefaultResponse = ""
+            AddHandler args.Showing, AddressOf Args_Showing
+
+            tmpResult = XtraInputBox.Show(args)
+
+            lblprg.Text = ""
+
+            If Not tmpResult Is Nothing Then
+
+                pFacturaDeudor = tmpResult.ToString
+
+                Ejecuta_Interface_Facturas_Deudor_Cliente_SAP_Hana(True, pFacturaDeudor)
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                               Text,
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
+    Private Sub Ejecuta_Interface_Facturas_Deudor_Cliente_SAP_Hana(Optional ByVal Preguntar As Boolean = True,
+                                                                   Optional ByVal pNoDocumentoCompraSAP As String = "")
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Actualizar Facturas de Deudor?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                '#CKFK20251101: Llamado al método para procesar las facturas de deudor cliente
+                Dim unused = clsSyncSapFacturaDeudor.Procesar_Facturas_de_Deudor_SAP(lblprg, prg, pNoDocumentoCompraSAP)
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        End Try
+
+    End Sub
+
+    Private Sub Ejecuta_Interface_Facturas_Reserva_Cliente_SAP_Hana(Optional ByVal Preguntar As Boolean = True,
+                                                                    Optional ByVal pNoDocumentoCompraSAP As String = "")
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Actualizar Facturas de Reserva Cliente?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                '#CKFK20251101: Llamado al método para procesar las facturas de reserva de cliente
+                Dim unused = clsSyncSapFacturaReservaCliente.Procesar_Facturas_de_Reserva_Cliente_SAP(lblprg, prg, pNoDocumentoCompraSAP)
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        End Try
+
+    End Sub
+
+    Private Sub mnuEnviarFactDeudor_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarFactDeudor.ItemClick
+        '#CKFK20251105: Llamado al método para enviar las facturas de deudor cliente a SAP
+        'Solo se enviarán los campos de usuario
+
+    End Sub
+
+    Private Sub mnuEnviarFactReservaCliente_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarFactReservaCliente.ItemClick
+        Enviar_Facturas_Reserva_Cliente(True)
+    End Sub
+
+    Private Sub Enviar_Facturas_Reserva_Cliente(Optional ByVal Preguntar As Boolean = True)
+
+        Dim MostrarMensaje As Boolean = False
+        procesoEnEjecucion = True
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Enviar facturas de reserva de cliente?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                Dim unused = clsSyncSapFacturaReservaCliente.Enviar_Factura_Reserva_ClienteAsync(BeConfigEnc.Idbodega,
+                                                                                                 lblprg, prg)
+            End If
+
+        Catch ex As Exception
+            clsPublic.Actualizar_Progreso(lblprg, ex.Message)
+        Finally
+            procesoEnEjecucion = False
+        End Try
+
+    End Sub
+
+    Private Sub mnuSincronizarTienda_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuSincronizarTienda.ItemClick
+        Try
+
+            Dim Ejecutar As Boolean = False
+            Dim Preguntar As Boolean = True
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Actualizar transacciones de TMK y tiendas virtuales?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                '#CKFK20251101: Llamado al método para procesar las facturas de reserva de cliente
+                'Dim unused = clsSyncTransacWMS.Procesar_Pedido_de_Cliente_SAP(lblprg, prg) 'Ajustes
+                'Dim unused1 = clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_SAP(lblprg, prg) 'Devoluciones de cliente
+                Dim unused2 = clsSyncTransacWMS.Procesar_Pedido_de_Cliente_SAP(lblprg, prg) 'Pedidos de cliente
+                'Dim unused3 = clsSyncTransacWMS.Procesar_Pedido_de_Cliente_SAP(lblprg, prg) 'Anulaciones de notas de crédito
+                'Dim unused4 = clsSyncTransacWMS.Procesar_Pedido_de_Cliente_SAP(lblprg, prg) 'Anulaciones de pedidos de cliente
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        End Try
     End Sub
 
 End Class

@@ -221,6 +221,7 @@ Partial Class frmPedido
         Dim Label16 As System.Windows.Forms.Label
         Dim lblManufacturaLigera As System.Windows.Forms.Label
         Dim Label44 As System.Windows.Forms.Label
+        Dim Label45 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPedido))
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
@@ -294,6 +295,7 @@ Partial Class frmPedido
         Me.GrpProducto = New DevExpress.XtraEditors.GroupControl()
         Me.XtraScrollableControl2 = New DevExpress.XtraEditors.XtraScrollableControl()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.txtGuiaTransporte = New DevExpress.XtraEditors.TextEdit()
         Me.lblprg = New System.Windows.Forms.RichTextBox()
         Me.lblSociedadSAP = New System.Windows.Forms.Label()
         Me.txtSociedadSAP = New System.Windows.Forms.TextBox()
@@ -652,6 +654,7 @@ Partial Class frmPedido
         Label16 = New System.Windows.Forms.Label()
         lblManufacturaLigera = New System.Windows.Forms.Label()
         Label44 = New System.Windows.Forms.Label()
+        Label45 = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -661,6 +664,7 @@ Partial Class frmPedido
         Me.GrpProducto.SuspendLayout()
         Me.XtraScrollableControl2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
+        CType(Me.txtGuiaTransporte.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView12, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbMotivoDevolucion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1875,6 +1879,16 @@ Partial Class frmPedido
         Label44.TabIndex = 94
         Label44.Text = "Referencia 2 /DocNum:"
         '
+        'Label45
+        '
+        Label45.AutoSize = True
+        Label45.Location = New System.Drawing.Point(12, 412)
+        Label45.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
+        Label45.Name = "Label45"
+        Label45.Size = New System.Drawing.Size(118, 16)
+        Label45.TabIndex = 103
+        Label45.Text = "Guía de transporte:"
+        '
         'RibbonStatusBar
         '
         Me.RibbonStatusBar.ItemLinks.Add(Me.BarButtonItem4)
@@ -2292,6 +2306,8 @@ Partial Class frmPedido
         '
         'GroupBox3
         '
+        Me.GroupBox3.Controls.Add(Label45)
+        Me.GroupBox3.Controls.Add(Me.txtGuiaTransporte)
         Me.GroupBox3.Controls.Add(Me.lblprg)
         Me.GroupBox3.Controls.Add(Me.lblSociedadSAP)
         Me.GroupBox3.Controls.Add(Me.txtSociedadSAP)
@@ -2357,6 +2373,16 @@ Partial Class frmPedido
         Me.GroupBox3.Size = New System.Drawing.Size(1669, 578)
         Me.GroupBox3.TabIndex = 85
         Me.GroupBox3.TabStop = False
+        '
+        'txtGuiaTransporte
+        '
+        Me.txtGuiaTransporte.Location = New System.Drawing.Point(183, 409)
+        Me.txtGuiaTransporte.Margin = New System.Windows.Forms.Padding(6)
+        Me.txtGuiaTransporte.MenuManager = Me.RibbonControl
+        Me.txtGuiaTransporte.Name = "txtGuiaTransporte"
+        Me.txtGuiaTransporte.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.txtGuiaTransporte.Size = New System.Drawing.Size(316, 22)
+        Me.txtGuiaTransporte.TabIndex = 102
         '
         'lblprg
         '
@@ -5271,6 +5297,7 @@ Partial Class frmPedido
         Me.XtraScrollableControl2.ResumeLayout(False)
         Me.GroupBox3.ResumeLayout(False)
         Me.GroupBox3.PerformLayout()
+        CType(Me.txtGuiaTransporte.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView12, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbMotivoDevolucion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -5809,4 +5836,5 @@ Partial Class frmPedido
     Friend WithEvents colIdProductoBodega As DataGridViewTextBoxColumn
     Friend WithEvents colIdPedidoDet As DataGridViewTextBoxColumn
     Friend WithEvents IdCliente As DataGridViewComboBoxColumn
+    Friend WithEvents txtGuiaTransporte As DevExpress.XtraEditors.TextEdit
 End Class

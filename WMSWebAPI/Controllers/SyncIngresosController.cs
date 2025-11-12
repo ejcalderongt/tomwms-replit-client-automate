@@ -130,7 +130,7 @@ namespace WMSWebAPI.Controllers
 
             try
             {
-                int result = _service.Insert(_configuration, beINavPedCompraEnc);
+                int result = _service.Insert(beINavPedCompraEnc);
 
                 // Convención: 1 = OK, 0 = error (en nuestro flujo, los errores lanzan excepción)
                 return Ok(result); // devolverá 1 si todo bien

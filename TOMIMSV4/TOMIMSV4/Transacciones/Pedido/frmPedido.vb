@@ -375,6 +375,7 @@ Public Class frmPedido
             pBePedidoEnc.HoraEntregaDesde = Now
             pBePedidoEnc.HoraEntregaHasta = Now
             pBePedidoEnc.Observacion = txtObservacion.Text.Trim
+            pBePedidoEnc.Guia_Transporte = txtGuiaTransporte.Text.Trim
             pBePedidoEnc.Enviado_A_ERP = False
             pBePedidoEnc.Activo = True
             '#GT11082023: Se carga vacia porque es el insert del encabezado sin detalle de nada.
@@ -558,6 +559,7 @@ Public Class frmPedido
                 txtDiasVencimiento.Value = pBePedidoEnc.Dias_cliente
 
                 txtObservacion.Text = pBePedidoEnc.Observacion
+                txtGuiaTransporte.Text = pBePedidoEnc.Guia_Transporte
 
                 cmbTipoPedido.EditValue = pBePedidoEnc.IdTipoPedido
                 cmbTipoPedido.Enabled = False
@@ -793,6 +795,7 @@ Public Class frmPedido
             txtIdPicking.Text = pBePedidoEnc.IdPickingEnc
 
             txtObservacion.Text = pBePedidoEnc.Observacion
+            txtGuiaTransporte.Text = pBePedidoEnc.Guia_Transporte
 
             '#EJC20220510: Fix
             PedidoGuardadoPorUsuario = True
@@ -1566,6 +1569,7 @@ Public Class frmPedido
 
             pBePedidoEnc.Ubicacion = txtDireccionEntrega.Text
             pBePedidoEnc.Observacion = txtObservacion.Text.Trim
+            pBePedidoEnc.Guia_Transporte = txtGuiaTransporte.Text.Trim
 
             If pBePedidoEnc.Estado.ToUpper <> "NUEVO" Then
                 pBePedidoEnc.Estado = pBePedidoEnc.Estado
