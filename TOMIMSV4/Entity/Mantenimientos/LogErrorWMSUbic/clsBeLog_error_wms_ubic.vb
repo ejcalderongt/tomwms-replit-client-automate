@@ -19,7 +19,7 @@
     Public Property Cantidad() As Double = 0
     Public Property Licencia() As String = String.Empty
     Public Property IdOperador() As Integer = 0
-    Public Property usr_agr() As Integer = 0
+    Public Property user_agr() As Integer = 0
     Public Property fec_agr() As Date = New Date(1900, 1, 1)
 
     Sub New()

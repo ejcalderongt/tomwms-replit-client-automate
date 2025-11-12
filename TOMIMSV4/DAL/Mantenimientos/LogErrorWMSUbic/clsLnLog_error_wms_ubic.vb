@@ -37,7 +37,7 @@ Public Class clsLnLog_error_wms_ubic
             If oBe.Cantidad <> 0 Then Ins.Add("cantidad", "@cantidad", DataType.Parametro)
             If oBe.Licencia <> "" Then Ins.Add("licencia", "@licencia", DataType.Parametro)
             If oBe.IdOperador <> 0 Then Ins.Add("idoperador", "@idoperador", DataType.Parametro)
-            If oBe.usr_agr <> 0 Then Ins.Add("usr_agr", "@usr_agr", DataType.Parametro)
+            If oBe.user_agr <> 0 Then Ins.Add("user_agr", "@user_agr", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As SqlCommand
@@ -76,7 +76,7 @@ Public Class clsLnLog_error_wms_ubic
             If oBe.Cantidad <> 0 Then cmd.Parameters.Add(New SqlParameter("@cantidad", oBe.Cantidad))
             If oBe.Licencia <> "" Then cmd.Parameters.Add(New SqlParameter("@licencia", oBe.Licencia))
             If oBe.IdOperador <> 0 Then cmd.Parameters.Add(New SqlParameter("@idoperador", oBe.IdOperador))
-            If oBe.usr_agr <> 0 Then cmd.Parameters.Add(New SqlParameter("@usr_agr", oBe.usr_agr))
+            If oBe.user_agr <> 0 Then cmd.Parameters.Add(New SqlParameter("@user_agr", oBe.user_agr))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
             cmd.Dispose()
