@@ -14,7 +14,7 @@ Public Class clsLnLog_error_wms_ubic
 
             ' Requeridos (mínimos)
             Ins.Add("mensajeerror", "@mensajeerror", DataType.Parametro)
-            Ins.Add("fechaagr", "@fechaagr", DataType.Parametro)
+            Ins.Add("fec_agr", "@fec_agr", DataType.Parametro)
 
             ' Opcionales (solo si tienen valor)
             If oBe.IdEmpresa <> 0 Then Ins.Add("idempresa", "@idempresa", DataType.Parametro)
@@ -37,7 +37,7 @@ Public Class clsLnLog_error_wms_ubic
             If oBe.Cantidad <> 0 Then Ins.Add("cantidad", "@cantidad", DataType.Parametro)
             If oBe.Licencia <> "" Then Ins.Add("licencia", "@licencia", DataType.Parametro)
             If oBe.IdOperador <> 0 Then Ins.Add("idoperador", "@idoperador", DataType.Parametro)
-            If oBe.UsrAgr <> 0 Then Ins.Add("usragr", "@usragr", DataType.Parametro)
+            If oBe.usuario_agr <> 0 Then Ins.Add("usuario_agr", "@usuario_agr", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As SqlCommand
@@ -53,7 +53,7 @@ Public Class clsLnLog_error_wms_ubic
 
             ' Parámetros requeridos
             cmd.Parameters.Add(New SqlParameter("@mensajeerror", oBe.MensajeError))
-            cmd.Parameters.Add(New SqlParameter("@fechaagr", oBe.FechaAgr))
+            cmd.Parameters.Add(New SqlParameter("@fec_agr", oBe.fec_agr))
 
             ' Parámetros opcionales
             If oBe.IdEmpresa <> 0 Then cmd.Parameters.Add(New SqlParameter("@idempresa", oBe.IdEmpresa))
@@ -76,7 +76,7 @@ Public Class clsLnLog_error_wms_ubic
             If oBe.Cantidad <> 0 Then cmd.Parameters.Add(New SqlParameter("@cantidad", oBe.Cantidad))
             If oBe.Licencia <> "" Then cmd.Parameters.Add(New SqlParameter("@licencia", oBe.Licencia))
             If oBe.IdOperador <> 0 Then cmd.Parameters.Add(New SqlParameter("@idoperador", oBe.IdOperador))
-            If oBe.UsrAgr <> 0 Then cmd.Parameters.Add(New SqlParameter("@usragr", oBe.UsrAgr))
+            If oBe.usuario_agr <> 0 Then cmd.Parameters.Add(New SqlParameter("@usuario_agr", oBe.usuario_agr))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
             cmd.Dispose()
