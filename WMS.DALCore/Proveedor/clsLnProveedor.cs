@@ -1,12 +1,10 @@
 ﻿using AppGlobal;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Microsoft.VisualBasic.CompilerServices;
 using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Datos_Maestros;
-using WMS.EntityCore.Interface;
 using WMS.EntityCore.Proveedor;
 public class clsLnProveedor
 {
@@ -60,7 +58,6 @@ public class clsLnProveedor
             throw new Exception(vMsgError);
         }
     }
-
     public static int Insertar(clsBeProveedor oBeProveedor, SqlConnection pConection, SqlTransaction pTransaction)
     {
         if (oBeProveedor == null)
@@ -124,7 +121,6 @@ public class clsLnProveedor
             throw new Exception(errorMessage, ex);
         }
     }
-
     public static int Insertar(IConfiguration config, clsBeProveedor oBeProveedor)
     {
 
@@ -197,7 +193,6 @@ public class clsLnProveedor
         }
         return rowsAffected;
     }
-
     public static void Bind(SqlCommand cmd, clsBeProveedor oBeProveedor)
     {
         cmd.Parameters.Add(new SqlParameter("@idempresa", oBeProveedor.IdEmpresa == 0 ? DBNull.Value : oBeProveedor.IdEmpresa));
@@ -228,7 +223,6 @@ public class clsLnProveedor
         cmd.Parameters.Add(new SqlParameter("@idpais", oBeProveedor.IdPais));
         cmd.Parameters.Add(new SqlParameter("@codigo_empresa_erp", oBeProveedor.Codigo_Empresa_ERP));
     }
-
     public static int Actualizar(clsBeProveedor oBeProveedor, SqlConnection pConection, SqlTransaction pTransaction)
     {
         if (oBeProveedor == null)
@@ -293,7 +287,6 @@ public class clsLnProveedor
             throw new Exception(errorMessage, ex);
         }
     }
-
     public int Eliminar(IConfiguration config, clsBeProveedor oBeProveedor, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
 
@@ -348,7 +341,6 @@ public class clsLnProveedor
             if (lTransaction != null) lTransaction.Dispose();
         }
     }
-
     public DataTable Listar(IConfiguration config)
     {
 
@@ -387,7 +379,6 @@ public class clsLnProveedor
             if (lTransaction != null) lTransaction.Dispose();
         }
     }
-
     public static bool GetSingle(IConfiguration config, ref clsBeProveedor pBeProveedor)
     {
 
@@ -438,7 +429,6 @@ public class clsLnProveedor
         return false;
 
     }
-
     public static List<clsBeProveedor> GetAll(IConfiguration config)
     {
 
@@ -496,7 +486,6 @@ public class clsLnProveedor
             throw new Exception(vMsgError);
         }
     }
-
     public static int MaxID(IConfiguration config)
     {
 
@@ -576,7 +565,6 @@ public class clsLnProveedor
             throw new Exception(errorMessage, ex);
         }
     }
-
     public static void InsertarOActualizar(List<clsBeProveedor> entities, SqlConnection conn, SqlTransaction tx)
     {
         if (entities == null)
@@ -612,7 +600,6 @@ public class clsLnProveedor
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
         }
     }
-
     public static bool Existe(int IdProveedor, SqlConnection conn, SqlTransaction tx)
     {
         try
@@ -640,7 +627,6 @@ public class clsLnProveedor
             throw new Exception(vMsgError, ex);
         }
     }
-
     public static bool Existe_By_Codigo(string Codigo, ref clsBeProveedor pBeProveedor, SqlConnection cn, SqlTransaction? tx = null)
     {
         try
@@ -668,7 +654,6 @@ public class clsLnProveedor
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
     }
-
     public static void Valida_Atributos(clsBeProveedor pBeProveedor, SqlConnection conn, SqlTransaction tx)
     {
         if (pBeProveedor == null)
@@ -741,7 +726,6 @@ public class clsLnProveedor
             Actualizar(BeProveedor, conn, tx);
         }
     }
-
     public static clsBeProveedor_bodega Get_ProveedorBodega_By_Codigo_Proveedor(string pCodigo,
                                                                                 int pIdBodega,
                                                                                 SqlConnection lConection,

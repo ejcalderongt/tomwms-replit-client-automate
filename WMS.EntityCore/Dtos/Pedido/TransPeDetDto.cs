@@ -68,5 +68,8 @@ namespace WMSWebAPI.Dtos.Pedido
         public decimal PesoReservado { get; set; } = 0;
         public DateTime FechaIngreso { get; set; } = new DateTime(1900, 1, 1);
         public DateTime FechaVence { get; set; } = new DateTime(1900, 1, 1);
+        public string Talla { get; set; } = string.Empty;
+        public string Color { get; set; } = string.Empty;
+        public int IdProductoTallaColor { get; set; } = 0;
     }
 }

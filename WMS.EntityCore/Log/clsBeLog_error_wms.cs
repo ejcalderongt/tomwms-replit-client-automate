@@ -56,7 +56,7 @@ namespace WMS.EntityCore.Log
 
         [Column("Variant_Code")]
         [DisplayName("Variant_Code")]
-        public string Variant_Code { get; set; } = "";
+        public string? Variant_Code { get; set; } = "";
 
         [Column("Cantidad")]
         [DisplayName("Cantidad")]

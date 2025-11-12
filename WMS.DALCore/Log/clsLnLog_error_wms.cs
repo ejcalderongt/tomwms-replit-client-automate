@@ -36,22 +36,15 @@ public class clsLnLog_error_wms
             oBeLog_error_wms.Cantidad = getDouble("Cantidad");
             oBeLog_error_wms.Referencia_Documento = GetString("Referencia_Documento");
         }
-        catch (Exception ex)
-        {
-            var st = new System.Diagnostics.StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = sf?.GetMethod();
-            string vMsgError = string.Format("{{0}} {{1}}", currentMethodName, ex.Message);
-            throw new Exception(vMsgError);
+        catch (Exception)
+        {        
+            throw;
         }
     }
 
-    public static int Insertar(IConfiguration config, clsBeLog_error_wms oBeLog_error_wms, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Insertar(clsBeLog_error_wms oBeLog_error_wms, SqlConnection pConection, SqlTransaction pTransaction)
     {
-
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
@@ -74,48 +67,24 @@ public class clsLnLog_error_wms
 
             string sp = Ins.SQL();
 
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction)
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+                CommandType = CommandType.Text
+            };
 
             BindLogParameters(cmd, oBeLog_error_wms);
 
             rowsAffected = cmd.ExecuteNonQuery();
-
-            cmd.Dispose();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
         }
-        catch (SqlException ex1)
+        catch (Exception ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
+            MethodBase? currentMethodName = sf?.GetMethod();
             string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
             throw new Exception(vMsgError);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
-        }
+
         return rowsAffected;
     }
 
@@ -540,29 +509,18 @@ public class clsLnLog_error_wms
             throw new Exception(vMsgError);
         }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int MaxID(SqlConnection pConection, SqlTransaction pTransaction)
     {
-
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
         int lMax = 0;
 
         try
         {
+            const string sp = "SELECT ISNULL(Max(IdError),0) FROM Log_error_wms";
 
-            const string sp = "Select ISNULL(Max(IdError),0) FROM Log_error_wms";
-
-            bool Es_Transaccion_Remota = pConection is not null && pTransaction is not null;
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-            if (Es_Transaccion_Remota)
+            using SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction)
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+                CommandType = CommandType.Text
+            };
 
             var lreturnValue = cmd.ExecuteScalar();
 
@@ -571,21 +529,13 @@ public class clsLnLog_error_wms
                 lMax = (int)lreturnValue;
             }
 
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
             return lMax;
-
         }
-        catch (SqlException ex1)
+        catch (Exception ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
+            MethodBase? currentMethodName = sf?.GetMethod();
             string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
             throw new Exception(vMsgError);
         }
@@ -604,7 +554,7 @@ public class clsLnLog_error_wms
             if (lConnection.State == ConnectionState.Open)
             {
                 var oBeLog_error_wms = new clsBeLog_error_wms();
-                oBeLog_error_wms.IdError = MaxID(config, lConnection, lTransaction) + 1;
+                oBeLog_error_wms.IdError = MaxID(lConnection, lTransaction) + 1;
 
                 if (!string.IsNullOrEmpty(pMensajeExcepcion) && pMensajeExcepcion.Length > 2000)
                 {
@@ -616,7 +566,7 @@ public class clsLnLog_error_wms
                 oBeLog_error_wms.IdEmpresa = 0;
                 oBeLog_error_wms.IdBodega = 0;
 
-                Insertar(config, oBeLog_error_wms, lConnection, lTransaction);
+                Insertar(oBeLog_error_wms, lConnection, lTransaction);
             }
 
             if (lTransaction?.Connection != null)
@@ -651,5 +601,73 @@ public class clsLnLog_error_wms
         }
     }
 
+    public static int Eliminar_By_Referencia_Documento(string pReferenciaDocumento,
+                                                      SqlConnection pConection,
+                                                      SqlTransaction pTransaction)
+    {
+        try
+        {
+            const string sp = "DELETE FROM Log_error_wms WHERE (Referencia_Documento = @Referencia_Documento)";
 
+            using SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            cmd.Parameters.Add(new SqlParameter("@REFERENCIA_DOCUMENTO", pReferenciaDocumento ?? (object)DBNull.Value));
+
+            int rowsAffected = cmd.ExecuteNonQuery();
+            return rowsAffected;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static List<clsBeLog_error_wms> Get_All_By_Referencia_Documento(IConfiguration config, string pReferenciaDocumento)
+    {
+        List<clsBeLog_error_wms> lReturnList = new List<clsBeLog_error_wms>();        
+        
+        try
+        {
+            const string sp = "SELECT * FROM LOG_ERROR_WMS WHERE REFERENCIA_DOCUMENTO = @REFERENCIA_DOCUMENTO";
+
+            using (SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST")))
+            {
+                lConnection.Open();
+
+                using (SqlTransaction lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    using (SqlDataAdapter lDTA = new SqlDataAdapter(sp, lConnection))
+                    {
+                        lDTA.SelectCommand.CommandType = CommandType.Text;
+                        lDTA.SelectCommand.Transaction = lTransaction;
+                        lDTA.SelectCommand.Parameters.AddWithValue("@REFERENCIA_DOCUMENTO", pReferenciaDocumento);
+                        DataTable lDataTable = new DataTable();
+                        lDTA.Fill(lDataTable);
+
+                        clsBeLog_error_wms vBeLog_error_wms = new clsBeLog_error_wms();
+
+                        foreach (DataRow dr in lDataTable.Rows)
+                        {
+                            vBeLog_error_wms = new clsBeLog_error_wms();
+                            Cargar(ref vBeLog_error_wms, dr);
+                            lReturnList.Add(vBeLog_error_wms);
+                        }
+                    }
+
+                    lTransaction.Commit();
+                }
+
+                lConnection.Close();
+            }
+
+            return lReturnList;
+        }
+        catch (Exception)
+        {            
+            throw;
+        }
+    }
 }

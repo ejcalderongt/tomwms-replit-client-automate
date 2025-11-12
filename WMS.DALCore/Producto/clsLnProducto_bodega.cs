@@ -519,4 +519,106 @@ public class clsLnProducto_bodega
 
         return result;
     }
+
+    public static clsBeProducto_bodega? Existe(string pCodigo, int pIdBodega, SqlConnection lConnection, SqlTransaction lTransaction)
+    {
+        try
+        {
+            string vSQL = @"SELECT * from producto_bodega pb Inner Join producto p 
+                       ON pb.IdProducto = p.IdProducto 
+                       WHERE p.codigo = @Codigo AND pb.IdBodega = @IdBodega";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo);
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+                    clsBeProducto_bodega BeProductoBodega = new clsBeProducto_bodega();
+                    clsBeProducto? ObjP = new clsBeProducto();
+                    Cargar(ref BeProductoBodega, lRow);
+                    ObjP.IdProducto = BeProductoBodega.IdProducto;
+                    ObjP = clsLnProducto.GetSingle(ObjP.IdProducto, lConnection, lTransaction);
+                    if (ObjP !=null)
+                    BeProductoBodega.Producto = ObjP;
+                    return BeProductoBodega;
+                }
+            }
+
+            return null;
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
+    public static int Get_IdBodega_By_IdProductoBodega(int pIdProductoBodega, SqlConnection pConnection, SqlTransaction pTransaction)
+    {
+        int result = 0;
+
+        try
+        {
+            string vSQL = "SELECT IdBodega FROM producto_bodega WHERE IdProductoBodega=@IdProductoBodega";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, pConnection))
+            {
+                lDTA.SelectCommand.Transaction = pTransaction;
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pIdProductoBodega);
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable != null && lDataTable.Rows.Count > 0)
+                {
+                    result = Convert.ToInt32(lDataTable.Rows[0]["IdBodega"]);
+                }
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return result;
+    }
+
+    public static int Get_IdProducto_By_IdProductoBodega(int pIdProductoBodega, SqlConnection lConnection, SqlTransaction lTransaction)
+    {
+        int result = 0;
+
+        try
+        {
+            string vSQL = "SELECT IdProducto FROM producto_bodega WHERE IdProductoBodega=@IdProductoBodega";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pIdProductoBodega);
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable != null && lDataTable.Rows.Count > 0)
+                {
+                    result = Convert.ToInt32(lDataTable.Rows[0]["IdProducto"]);
+                }
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return result;
+    }
 }

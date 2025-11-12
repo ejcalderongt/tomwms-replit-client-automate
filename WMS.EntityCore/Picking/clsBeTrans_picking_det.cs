@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using WMS.EntityCore.Producto;
 
 namespace WMS.EntityCore.Picking
 {
@@ -64,7 +65,37 @@ namespace WMS.EntityCore.Picking
         [Column("nombre")]
         [DisplayName("nombre")]
         public string Nombre { get; set; } = "";
-
+        public bool IsNew { get; set; } = false;
+        public string Bodega { get; set; } = "";
+        public string Cliente { get; set; } = "";
+        public string Propietario { get; set; } = "";
+        public DateTime FechaPedido { get; set; }
+        public int No_Documento { get; set; }
+        public int IdMuelle { get; set; }
+        public DateTime Hora_Inicio { get; set; }
+        public DateTime Hora_fin { get; set; }
+        public string Estado { get; set; } = "";        
+        public string UbicacionPicking { get; set; } = "";        
+        public string Referencia { get; set; } = "";        
+        public string NombreProducto { get; set; } = "";
+        public DateTime Fecha_Ingreso { get; set; }
+        public DateTime Fecha_Vence { get; set; }
+        public string Presetacion { get; set; } = "";
+        public double Factorx { get; set; }
+        public double CantidadReservada { get; set; }
+        public double Cantidad_Pickeada { get; set; }
+        public double Cantidad_Verificada { get; set; }
+        public double Cantidad_Stock { get; set; }
+        public int IdUbicacion { get; set; }
+        public string UMBas { get; set; } = "";
+        public string Lic_Plate { get; set; } = "";
+        public string Lote { get; set; } = "";
+        public clsBeProducto Producto { get; set; } = new clsBeProducto();
+        public clsBeProducto_presentacion Presentacion { get; set; } = new clsBeProducto_presentacion();
+        public clsBeProducto_estado ProductoEstado { get; set; } = new clsBeProducto_estado();
+        public clsBeUnidad_medida UnidadMedida { get; set; } = new clsBeUnidad_medida();
+        public List<clsBeTrans_picking_det_parametros> ListaDetalleParametro { get; set; } = new List<clsBeTrans_picking_det_parametros>();
+        public string Bono { get; set; } = "";
         public clsBeTrans_picking_det() { }
 
         public object Clone()

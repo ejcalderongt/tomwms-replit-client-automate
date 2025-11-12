@@ -144,6 +144,15 @@ namespace WMSWebAPI.Be
         [Column("pallet_no_estandar")]
         [DisplayName("pallet_no_estandar")]
         public bool Pallet_no_estandar { get; set; } = false;
+        public string Atributo_Variante_1 { get; set; } = "";
+        public bool Control_Ultimo_Lote { get; set; } = false;
+        public string? Ultimo_Lote { get; set; } = "";
+        public string Codigo_Producto { get; set; } = "";
+        public string No_Pedido { get; set; } = "";
+        public int IdUbicacionAbastecerCon { get; set; } = 0;
+        public string Talla { get; set; } = "";
+        public string Color { get; set; } = "";
+        public int IdProductoTallaColor { get; set; } = 0;
 
         public clsBeStock_res() { }
 

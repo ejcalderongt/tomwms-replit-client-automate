@@ -2,10 +2,8 @@
 using System.Diagnostics;
 using System.Reflection;
 using Microsoft.Data.SqlClient;
-using Microsoft.VisualBasic.CompilerServices;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
-using WMS.EntityCore.Interface;
 public class clsLnUnidad_medida
 {
 

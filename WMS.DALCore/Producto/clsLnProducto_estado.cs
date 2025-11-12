@@ -3,6 +3,7 @@ using System.Data;
 using System.Diagnostics;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
+using System.Reflection;
 public class clsLnProducto_estado
 {
     private static readonly clsInsert Ins = new clsInsert();
@@ -354,6 +355,79 @@ public class clsLnProducto_estado
         catch (Exception)
         {
             throw;
+        }
+    }
+
+    public static int Get_IdEstado_By_Codigo_Area(string pCodigo, SqlConnection lConnection, SqlTransaction lTransaction)
+    {
+        try
+        {
+            int rIdEstado = 0;
+
+            const string sp = @"SELECT pe.IdEstado
+                          FROM producto_estado pe
+                          WHERE pe.codigo_bodega_erp = @codigo_bodega_erp AND pe.activo = 1 AND 
+                                pe.utilizable = 1 AND pe.dañado = 0";
+
+            using (SqlCommand lCommand = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text })
+            {
+                lCommand.Parameters.AddWithValue("@codigo_bodega_erp", pCodigo);
+
+                object lReturnValue = lCommand.ExecuteScalar();
+
+                if (lReturnValue != DBNull.Value && lReturnValue != null)
+                {
+                    rIdEstado = Convert.ToInt32(lReturnValue);
+                }
+            }
+
+            return rIdEstado;
+        }        
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static List<clsBeProducto_estado> Existe_IdEstado_By_IdPropietario(int pIdPropietario,
+                                                                         int pIdEstado,
+                                                                         SqlConnection lConnection,
+                                                                         SqlTransaction lTransaction)
+    {
+        try
+        {
+            List<clsBeProducto_estado> lProductosEstado = new List<clsBeProducto_estado>();
+            clsBeProducto_estado vBeProductoEstado = new clsBeProducto_estado();
+
+            DataTable DT = new DataTable();
+
+            string sp = @"SELECT * FROM VW_Producto_Estado_Ubic_Bodega 
+                    WHERE activo = 1 
+                    AND IdPropietario = @IdPropietario                                
+                    AND IdEstado = @IdEstado";
+
+            using (SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text })
+            using (SqlDataAdapter dad = new SqlDataAdapter(cmd))
+            {
+                dad.SelectCommand.Parameters.AddWithValue("@IdPropietario", pIdPropietario);
+                dad.SelectCommand.Parameters.AddWithValue("@IdEstado", pIdEstado);
+                dad.Fill(DT);
+            }
+
+            foreach (DataRow pe in DT.Rows)
+            {
+                vBeProductoEstado = new clsBeProducto_estado();
+                Cargar(ref vBeProductoEstado, pe);
+                lProductosEstado.Add(vBeProductoEstado);
+            }
+
+            DT.Dispose();
+
+            return lProductosEstado;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
         }
     }
 }

@@ -1327,8 +1327,8 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                     Else
 
                                         vContador_Lineas_Detalle_Pedido_Insertadas_Tabla = clsLnTrans_pe_det.Get_Count_Lines_By_IdPedidoEnc(pBePedidoEnc.IdPedidoEnc,
-                                                                                                                                      lConectionInterface,
-                                                                                                                                      lTransInterface)
+                                                                                                                                            lConectionInterface,
+                                                                                                                                            lTransInterface)
 
                                         '#CKFK20240808 Agregué otra validación para el caso en que el pedido si tenga líneas creadas
 

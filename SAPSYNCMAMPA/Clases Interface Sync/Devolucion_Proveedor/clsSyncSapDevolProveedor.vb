@@ -410,9 +410,6 @@ Public Class clsSyncSapDevolProveedor
     Private Const ENTITY_TARGET As String = "PurchaseReturns"         ' Entidad a crear en Service Layer
     Private Const BASETYPE_GOODS_RETURN_REQUEST As Integer = 234000032 ' BaseType de Solicitud Devolución
 
-    Private ReadOnly JsonSettings As New JsonSerializerSettings With {
-        .NullValueHandling = NullValueHandling.Ignore
-    }
     Private Shared Function Crear_Devolucion_Desde_Solicitud_Aprobada(no_pedido As String,
                                                                        lTransaccionesSalidaSingle As List(Of clsBeI_nav_transacciones_out),
                                                                        bePedidoEnc As clsBeTrans_pe_enc,

@@ -81,5 +81,7 @@ namespace WMSWebAPI.Dtos.Pedido
         public ClienteDto Cliente { get; set; } = new ClienteDto();
         public TransPeTipoDto TipoPedido { get; set; } = new TransPeTipoDto();
         public TransPePolDto ObjPoliza { get; set; } = new TransPePolDto();
+        public string Codigo_Empresa_ERP { get; set; } = string.Empty;
+        public bool EsExportacion { get; set; } = false;
     }
 }

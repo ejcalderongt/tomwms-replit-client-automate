@@ -5,9 +5,9 @@ namespace WMS.EntityCore.Pedido
     public class clsBeI_nav_ped_traslado_enc : ICloneable
     {
         public string No { get; set; } = string.Empty;
-        public DateTime? Posting_Date { get; set; } = DateTime.Now;
+        public DateTime Posting_Date { get; set; } = new DateTime(1900,1,1);
         public DateTime? Receipt_Date { get; set; } = DateTime.Now;
-        public DateTime? Shipment_Date { get; set; } = DateTime.Now;
+        public DateTime Shipment_Date { get; set; } = new DateTime(1900,1,1);
         public int Status { get; set; }
         public string Transfer_from_Code { get; set; } = string.Empty;
         public string Transfer_from_Contact { get; set; } = string.Empty;

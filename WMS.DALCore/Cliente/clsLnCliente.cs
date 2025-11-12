@@ -1,12 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using Microsoft.VisualBasic.CompilerServices;
 using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Cliente;
 using WMS.EntityCore.Datos_Maestros;
-using WMS.EntityCore.Interface;
 
 public class clsLnCliente
 {
@@ -809,5 +807,10 @@ public class clsLnCliente
         }
 
         return IdUbicacionVirtual;
+    }
+
+    internal static clsBeCliente Get_Single_By_Codigo(string vCodigoCliente, SqlConnection lConectionInterface, SqlTransaction lTransInterface)
+    {
+        throw new NotImplementedException();
     }
 }

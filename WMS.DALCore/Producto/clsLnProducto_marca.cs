@@ -4,7 +4,6 @@ using System.Diagnostics;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
 using WMS.EntityCore.Producto.ProductoSimple;
-using WMS.EntityCore.Interface;
 public class clsLnProducto_Marca
 {
     private static readonly clsInsert Inserter = new clsInsert();

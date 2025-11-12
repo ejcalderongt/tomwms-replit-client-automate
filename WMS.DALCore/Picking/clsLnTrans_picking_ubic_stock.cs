@@ -71,12 +71,11 @@ public class clsLnTrans_picking_ubic_stock
         }
     }
 
-    public static int Insertar(IConfiguration config, clsBeTrans_picking_ubic_stock oBeTrans_picking_ubic_stock, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Insertar(clsBeTrans_picking_ubic_stock oBeTrans_picking_ubic_stock, SqlConnection pConection, SqlTransaction pTransaction)
     {
-
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
+        bool Es_Transaccion_Remota = pTransaction != null;
+        SqlTransaction? localTx = null;
 
         try
         {
@@ -123,19 +122,14 @@ public class clsLnTrans_picking_ubic_stock
 
             string sp = Ins.SQL();
 
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            if (!Es_Transaccion_Remota)
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
+                localTx = pConection.BeginTransaction(IsolationLevel.ReadUncommitted);
             }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+
+            SqlCommand cmd = Es_Transaccion_Remota
+                ? new SqlCommand(sp, pConection, pTransaction)
+                : new SqlCommand(sp, pConection, localTx);
 
             Bind(cmd, oBeTrans_picking_ubic_stock);
 
@@ -144,28 +138,27 @@ public class clsLnTrans_picking_ubic_stock
             cmd.Dispose();
 
             if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+                localTx?.Commit();
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
+            if (!Es_Transaccion_Remota)
+                localTx?.Rollback();
+
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
             if (sf != null) { currentMethodName = sf.GetMethod(); }
             string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
+
             throw new Exception(vMsgError);
         }
         finally
         {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
+            if (!Es_Transaccion_Remota)
+            {
+                localTx?.Dispose();
+            }
         }
         return rowsAffected;
     }
@@ -256,16 +249,14 @@ public class clsLnTrans_picking_ubic_stock
         return rowsAffected;
     }
 
-    public static int Actualizar(IConfiguration config, clsBeTrans_picking_ubic_stock oBeTrans_picking_ubic_stock, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Actualizar(clsBeTrans_picking_ubic_stock oBeTrans_picking_ubic_stock, SqlConnection pConection, SqlTransaction pTransaction)
     {
-
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
+        bool Es_Transaccion_Remota = pTransaction != null;
+        SqlTransaction? localTx = null;
 
         try
         {
-
             Upd.Init("trans_picking_ubic_stock");
             Upd.Add("idpickingubicstock", "@idpickingubicstock", "F");
             Upd.Add("idbodega", "@idbodega", "F");
@@ -310,47 +301,41 @@ public class clsLnTrans_picking_ubic_stock
 
             string sp = Upd.SQL();
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            if (!Es_Transaccion_Remota)
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
+                localTx = pConection.BeginTransaction(IsolationLevel.ReadUncommitted);
             }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+
+            SqlCommand cmd = Es_Transaccion_Remota
+                ? new SqlCommand(sp, pConection, pTransaction)
+                : new SqlCommand(sp, pConection, localTx);
 
             Bind(cmd, oBeTrans_picking_ubic_stock);
 
             rowsAffected = cmd.ExecuteNonQuery();
 
             if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+                localTx?.Commit();
         }
         catch (SqlException ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
+            if (!Es_Transaccion_Remota)
+                localTx?.Rollback();
+
             var st = new StackTrace();
             var sf = st.GetFrame(0);
             MethodBase? currentMethodName = null;
             if (sf != null) { currentMethodName = sf.GetMethod(); }
             string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
+
             throw new Exception(vMsgError);
         }
         finally
         {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
+            if (!Es_Transaccion_Remota)
+            {
+                localTx?.Dispose();
+            }
         }
         return rowsAffected;
     }
@@ -706,47 +691,28 @@ public class clsLnTrans_picking_ubic_stock
         cmd.Parameters.Add(new SqlParameter("@IdOperadorBodega_Asignado", o.IdOperadorBodega_Asignado != 0 ? o.IdOperadorBodega_Asignado : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@cantidad_pickeada", o.Cantidad_pickeada != 0 ? o.Cantidad_pickeada : DBNull.Value));
     }
-    public static int InsertOrUpdate(IConfiguration config, List<clsBeTrans_picking_ubic_stock> entities, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(List<clsBeTrans_picking_ubic_stock> entities, SqlConnection conn, SqlTransaction tx)
     {
-        bool isExternalTx = conn != null && tx != null;
         int total = 0;
-
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
-        if (!isExternalTx) { connection.Open(); localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted); }
 
         try
         {
             foreach (var entity in entities)
             {
-                bool existe = Existe(entity.IdPickingUbicStock, entity.IdPickingUbic, connection, isExternalTx ? tx! : localTx!);
+                bool existe = Existe(entity.IdPickingUbicStock, entity.IdPickingUbic, conn, tx);
 
                 int result = existe
-                    ? Actualizar(config, entity, connection, isExternalTx ? tx : localTx)
-                    : Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                    ? Actualizar(entity, conn, tx)
+                    : Insertar(entity, conn, tx);
 
                 total += result;
             }
-
-            if (!isExternalTx)
-                localTx?.Commit();
 
             return total;
         }
         catch
         {
-            if (!isExternalTx)
-                localTx?.Rollback();
             throw;
-        }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
-            }
         }
     }
     public static bool Existe(int idPickingUbicStock, int idPickingUbic, SqlConnection conn, SqlTransaction? tx = null)
