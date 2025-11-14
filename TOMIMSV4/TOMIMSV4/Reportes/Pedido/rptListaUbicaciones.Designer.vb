@@ -466,8 +466,8 @@ Partial Public Class rptListaUbicaciones
         '
         Me.SqlDataSource1.ConnectionName = "localhost_IMS4MB_CLC_QA_Connection"
         MsSqlConnectionParameters1.AuthorizationType = DevExpress.DataAccess.ConnectionParameters.MsSqlAuthorizationType.SqlServer
-        MsSqlConnectionParameters1.DatabaseName = "IMS4MB_CLC_QA"
-        MsSqlConnectionParameters1.ServerName = "PROGRA12\SQL2019"
+        MsSqlConnectionParameters1.DatabaseName = "IMS4MB_BYB_PRD"
+        MsSqlConnectionParameters1.ServerName = "PROGRA14\SQL2022"
         Me.SqlDataSource1.ConnectionParameters = MsSqlConnectionParameters1
         Me.SqlDataSource1.Name = "SqlDataSource1"
         ColumnExpression1.ColumnName = "IdCliente"

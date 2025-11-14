@@ -1,7 +1,8 @@
 ﻿Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Reflection
-Imports System.Threading
+Imports DevExpress.XtraReports
+Imports DevExpress.XtraReports.Configuration
 Imports System.Threading.Tasks
 Imports DevExpress.Data
 Imports DevExpress.Utils
@@ -5550,6 +5551,10 @@ Public Class frmPedido
             pDatatable = clsLnTrans_picking_ubic.Get_Ubicacion_Picking_By_IdPicking_And_IdPedidoEnc(0, pBePedidoEnc.IdPedidoEnc)
             'Rep.DataSource = clsLnTrans_picking_ubic.Get_Ubicacion_Picking_By_IdPicking_And_IdPedidoEnc(0, pBePedidoEnc.IdPedidoEnc)
 
+            ' Habilitar scripts para todos los reportes
+            ' Para Devexpress 25.1
+
+
             If pDatatable IsNot Nothing AndAlso pDatatable.Rows.Count > 0 Then
 
                 Rep.DataSource = pDatatable
@@ -5564,9 +5569,8 @@ Public Class frmPedido
                 'Rep.Parameters("No_Pedido_ERP").Visible = False
                 'Rep.Parameters("Direcion_Entrega").Value = txtDireccionEntrega.Text
                 'Rep.Parameters("Direcion_Entrega").Visible = False
-
-                'Rep.RequestParameters = False
-
+                Rep.ScriptsSource = ""
+                Rep.RequestParameters = False
                 Rep.ShowPreview()
             End If
 
@@ -12239,4 +12243,7 @@ Public Class frmPedido
         Return Date.TryParseExact(Fecha_Aceptacion, "dd/MM/yyyy", Nothing, Globalization.DateTimeStyles.None, fecha)
     End Function
 
+    Private Sub frmPedido_Load(sender As Object, e As EventArgs) Handles Me.Load
+
+    End Sub
 End Class
