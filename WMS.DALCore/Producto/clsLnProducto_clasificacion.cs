@@ -5,7 +5,6 @@ using System.Reflection;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
 using WMS.EntityCore.Producto.ProductoSimple;
-using WMS.EntityCore.Interface;
 public class clsLnProducto_clasificacion
 {
     private static clsInsert Ins = new clsInsert();
@@ -46,8 +45,17 @@ public class clsLnProducto_clasificacion
         o.Fec_mod = dr.Field<DateTime>("fec_mod");
         o.Codigo = dr.Field<string>("codigo") ?? "";
     }
-    public static int Insertar(IConfiguration config, clsBeProducto_clasificacion p, SqlConnection? extConn = null, SqlTransaction? extTran = null)
+    public static int Insertar(clsBeProducto_clasificacion p, SqlConnection conn, SqlTransaction tran)
     {
+        if (p == null)
+            throw new ArgumentNullException(nameof(p));
+
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
+
+        if (tran == null)
+            throw new ArgumentNullException(nameof(tran));
+
         Ins.Init("producto_clasificacion");
         Ins.Add("idclasificacion", "@idclasificacion", "F");
         Ins.Add("idpropietario", "@idpropietario", "F");
@@ -61,31 +69,28 @@ public class clsLnProducto_clasificacion
         Ins.Add("codigo", "@codigo", "F");
 
         string sql = Ins.SQL();
-        bool remoto = extConn != null && extTran != null;
-        int rows = 0;
-
-        var conn = remoto ? extConn! : new SqlConnection(GetConnectionString(config));
-        SqlTransaction? tran = null;
 
         try
         {
-            if (!remoto) conn.Open();
-            tran ??= remoto ? extTran! : conn.BeginTransaction(IsolationLevel.ReadUncommitted);
-
             using var cmd = CrearComando(sql, conn, tran, p);
-            rows = cmd.ExecuteNonQuery();
-
-            if (!remoto) tran.Commit();
+            return cmd.ExecuteNonQuery();
         }
         catch (SqlException ex)
         {
-            if (!remoto) tran?.Rollback();
             throw new Exception($"{MethodBase.GetCurrentMethod()} {ex.Message}");
         }
-        return rows;
     }
-    public static int Actualizar(IConfiguration config, clsBeProducto_clasificacion p, SqlConnection? extConn = null, SqlTransaction? extTran = null)
+    public static int Actualizar(clsBeProducto_clasificacion p, SqlConnection conn, SqlTransaction tran)
     {
+        if (p == null)
+            throw new ArgumentNullException(nameof(p));
+
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
+
+        if (tran == null)
+            throw new ArgumentNullException(nameof(tran));
+
         Upd.Init("producto_clasificacion");
         Upd.Add("idclasificacion", "@idclasificacion", "F");
         Upd.Add("idpropietario", "@idpropietario", "F");
@@ -100,28 +105,16 @@ public class clsLnProducto_clasificacion
         Upd.Where("IdClasificacion = @IdClasificacion");
 
         string sql = Upd.SQL();
-        bool remoto = extConn != null && extTran != null;
-        int rows = 0;
-
-        var conn = remoto ? extConn! : new SqlConnection(GetConnectionString(config));
-        SqlTransaction? tran = null;
 
         try
         {
-            if (!remoto) conn.Open();
-            tran ??= remoto ? extTran! : conn.BeginTransaction(IsolationLevel.ReadUncommitted);
-
             using var cmd = CrearComando(sql, conn, tran, p);
-            rows = cmd.ExecuteNonQuery();
-
-            if (!remoto) tran.Commit();
+            return cmd.ExecuteNonQuery();
         }
         catch (SqlException ex)
         {
-            if (!remoto) tran?.Rollback();
             throw new Exception($"{MethodBase.GetCurrentMethod()} {ex.Message}");
         }
-        return rows;
     }
     public static bool GetSingle(IConfiguration config, ref clsBeProducto_clasificacion p)
     {
@@ -248,69 +241,50 @@ public class clsLnProducto_clasificacion
             throw new Exception(vMsgError, ex);
         }
     }
-    public static int InsertarOActualizar(IConfiguration config, clsBeProducto_clasificacion entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int InsertarOActualizar(clsBeProducto_clasificacion entity, SqlConnection conn, SqlTransaction tx)
     {
-        bool isExternalTx = conn != null && tx != null;
+        if (entity == null)
+            throw new ArgumentNullException(nameof(entity));
 
-        using var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
+
+        if (tx == null)
+            throw new ArgumentNullException(nameof(tx));
 
         try
         {
-            if (!isExternalTx)
-            {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
-            bool existe = ExisteClasificacion(entity.IdClasificacion, connection, isExternalTx ? tx! : localTx!);
+            bool existe = ExisteClasificacion(entity.IdClasificacion, conn, tx);
 
             return existe
-                ? Actualizar(config, entity, connection, isExternalTx ? tx : localTx)
-                : Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                ? Actualizar(entity, conn, tx)
+                : Insertar(entity, conn, tx);
         }
         catch (SqlException ex)
         {
-            if (!isExternalTx && localTx is not null)
-                localTx.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            var method = System.Reflection.MethodBase.GetCurrentMethod();
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
         }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
-            }
-        }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int MaxID(SqlConnection conn, SqlTransaction tx)
     {
-        const string sql = "SELECT ISNULL(MAX(IdClasificacion), 0) FROM Producto_clasificacion";
-        bool externa = conn != null && tx != null;
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
 
-        var lConn = externa ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTx = null;
-        if (!externa) { lConn.Open(); lTx = lConn.BeginTransaction(); }
+        if (tx == null)
+            throw new ArgumentNullException(nameof(tx));
+
+        const string sql = "SELECT ISNULL(MAX(IdClasificacion), 0) FROM Producto_clasificacion";
 
         try
         {
-            using var cmd = new SqlCommand(sql, lConn, externa ? tx! : lTx!);
+            using var cmd = new SqlCommand(sql, conn, tx);
             var result = cmd.ExecuteScalar();
-            if (!externa) lTx?.Commit();
             return Convert.ToInt32(result);
         }
         catch
         {
-            if (!externa) lTx?.Rollback();
             throw;
-        }
-        finally
-        {
-            if (!externa) lConn.Close();
         }
     }
     public static List<clsBeProducto_clasificacion> GetAll(IConfiguration configuration)
@@ -352,32 +326,27 @@ public class clsLnProducto_clasificacion
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
     }
-    public static int InsertOrUpdate(IConfiguration config, clsBeProducto_clasificacion oBe, SqlConnection? cn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(clsBeProducto_clasificacion oBe, SqlConnection cn, SqlTransaction tx)
     {
-        bool externa = cn != null && tx != null;
-        var lConn = externa ? cn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTx = null;
-        if (!externa) { lConn.Open(); lTx = lConn.BeginTransaction(); }
+        if (oBe == null)
+            throw new ArgumentNullException(nameof(oBe));
+
+        if (cn == null)
+            throw new ArgumentNullException(nameof(cn));
+
+        if (tx == null)
+            throw new ArgumentNullException(nameof(tx));
 
         try
         {
-            if (Existe(oBe, lConn, externa ? tx : lTx))
-                return Actualizar(config, oBe, lConn, externa ? tx : lTx);
+            if (Existe(oBe, cn, tx))
+                return Actualizar(oBe, cn, tx);
             else
-                return Insertar(config, oBe, lConn, externa ? tx : lTx);
+                return Insertar(oBe, cn, tx);
         }
         catch
         {
-            if (!externa) lTx?.Rollback();
             throw;
-        }
-        finally
-        {
-            if (!externa)
-            {
-                lTx?.Commit();
-                lConn.Close();
-            }
         }
     }
 
@@ -409,77 +378,87 @@ public class clsLnProducto_clasificacion
         }
     }
 
-    public static void Valida_Atributos(IConfiguration config, clsBeProducto_clasificacionSimple entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static void Valida_Atributos(clsBeProducto_clasificacionSimple entity, SqlConnection conn, SqlTransaction tx)
     {
+        if (entity == null)
+            throw new ArgumentNullException(nameof(entity));
+
         if (entity.Codigo == null)
             throw new ArgumentNullException(nameof(entity.Codigo), "El código no puede ser nulo.");
 
-        bool isExternalTx = conn != null && tx != null;
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
 
-        try
+        if (tx == null)
+            throw new ArgumentNullException(nameof(tx));
+
+        var Clasificacion = new clsBeProducto_clasificacion();
+        bool existe = Existe_By_Codigo(entity.Codigo, ref Clasificacion, conn, tx);
+
+        var BeInavConfigEnc = new clsBeI_nav_config_enc();
+        clsLnI_nav_config_enc.GetSingle(BeInavConfigEnc, conn, tx);
+
+        if (BeInavConfigEnc == null)
+            throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
+
+        if (!existe)
         {
-            if (!isExternalTx)
+            if (!string.IsNullOrEmpty(entity.Codigo))
             {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
-            var Clasificacion = new clsBeProducto_clasificacion();
-            bool existe = Existe_By_Codigo(entity.Codigo, ref Clasificacion, connection, isExternalTx ? tx! : localTx!);
-
-            var BeInavConfigEnc = new clsBeI_nav_config_enc();
-            clsLnI_nav_config_enc.GetSingle(config, BeInavConfigEnc, connection, isExternalTx ? tx : localTx);
-
-            if (BeInavConfigEnc == null)
-                throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
-
-
-            if (!existe)
-            {
-                if (!string.IsNullOrEmpty(entity.Codigo))
-                {
-                    Clasificacion.IdClasificacion = MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
-                    Clasificacion.Codigo = entity.Codigo;
-                    Clasificacion.Nombre = entity.Nombre ?? entity.Codigo;
-                    Clasificacion.User_agr = BeInavConfigEnc.IdUsuario.ToString();
-                    Clasificacion.User_mod = BeInavConfigEnc.IdUsuario.ToString();
-                    Clasificacion.Fec_agr = DateTime.Now;
-                    Clasificacion.Fec_mod = DateTime.Now;
-                    Clasificacion.Activo = entity.Activo;
-                    Clasificacion.IdPropietario = entity.IdPropietario;
-                    Insertar(config, Clasificacion, connection, isExternalTx ? tx : localTx);
-
-                }
-            }
-            else
-            {
+                Clasificacion.IdClasificacion = MaxID(conn, tx) + 1;
                 Clasificacion.Codigo = entity.Codigo;
                 Clasificacion.Nombre = entity.Nombre ?? entity.Codigo;
+                Clasificacion.User_agr = BeInavConfigEnc.IdUsuario.ToString();
                 Clasificacion.User_mod = BeInavConfigEnc.IdUsuario.ToString();
+                Clasificacion.Fec_agr = DateTime.Now;
                 Clasificacion.Fec_mod = DateTime.Now;
                 Clasificacion.Activo = entity.Activo;
-                Actualizar(config, Clasificacion, connection, isExternalTx ? tx : localTx);
+                Clasificacion.IdPropietario = entity.IdPropietario;
+                Insertar(Clasificacion, conn, tx);
             }
         }
-        catch (SqlException ex)
+        else
         {
-            if (!isExternalTx && localTx is not null)
-                localTx.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
-            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
-        }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
-            }
+            Clasificacion.Codigo = entity.Codigo;
+            Clasificacion.Nombre = entity.Nombre ?? entity.Codigo;
+            Clasificacion.User_mod = BeInavConfigEnc.IdUsuario.ToString();
+            Clasificacion.Fec_mod = DateTime.Now;
+            Clasificacion.Activo = entity.Activo;
+            Actualizar(Clasificacion, conn, tx);
         }
     }
 
+    public static clsBeProducto_clasificacion? GetSingle(int pIdClasificacion,
+                                                        SqlConnection lConnection,
+                                                        SqlTransaction lTransaction)
+    {
+        try
+        {
+            string vSQL = @"SELECT TOP 1 * FROM producto_clasificacion 
+                       WHERE IdClasificacion = @IdClasificacion";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdClasificacion", pIdClasificacion);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT?.Rows.Count > 0)
+                {
+                    clsBeProducto_clasificacion Obj = new clsBeProducto_clasificacion();
+                    Cargar(ref Obj, lDT.Rows[0]);
+                    return Obj;
+                }
+            }
+
+            return null;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }

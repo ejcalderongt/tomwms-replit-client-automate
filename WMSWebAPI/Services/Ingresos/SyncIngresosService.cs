@@ -2,11 +2,13 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
 using WMS.EntityCore.Operador;
+using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Proveedor;
 using WMS.EntityCore.Stock;
 using WMS.EntityCore.Trans_oc;
 using WMS.EntityCore.Trans_re;
+using WMSWebAPI.Be;
 using WMSWebAPI.Dtos.Ingresos;
 using WMSWebAPI.Dtos.WebResponseDto;
 
@@ -23,7 +25,6 @@ namespace WMSWebAPI.Services.Ingresos
             _configuration = configuration;
             _mapper = mapper;
         }
-
         public void ProcesarDocumentosIngreso(List<OrdenCompraDto> listaDto, SqlConnection conn, SqlTransaction tx)
         {
             try
@@ -124,50 +125,50 @@ namespace WMSWebAPI.Services.Ingresos
                     var proveedores_bodega_list = _mapper.Map<List<clsBeProveedor_bodega>>(dto.ProveedoresBodega);
 
                     if (proveedores_list != null && proveedores_list.Count > 0)
-                        clsLnProveedor.InsertarOActualizar(_configuration, proveedores_list, conn, tx);
+                        clsLnProveedor.InsertarOActualizar(proveedores_list, conn, tx);
 
                     if (proveedores_bodega_list != null && proveedores_bodega_list.Count > 0)
-                        clsLnProveedor_bodega.InsertarOActualizar(_configuration, proveedores_bodega_list, conn, tx);
+                        clsLnProveedor_bodega.InsertarOActualizar(proveedores_bodega_list, conn, tx);
 
 
                     if (ops_list != null && ops_list.Count > 0)
-                        clsLnOperador.InsertarOActualizar(_configuration, ops_list, conn, tx);
+                        clsLnOperador.InsertarOActualizar(ops_list, conn, tx);
 
                     if (ops_bodega_list != null && ops_bodega_list.Count > 0)
-                        clsLnOperador_bodega.InsertarOActualizar(_configuration, ops_bodega_list, conn, tx);
+                        clsLnOperador_bodega.InsertarOActualizar(ops_bodega_list, conn, tx);
 
                     if (producto_bodega_list != null && producto_bodega_list.Count > 0)
-                        clsLnProducto_bodega.InsertarOActualizar(_configuration, producto_bodega_list, conn, tx);
+                        clsLnProducto_bodega.InsertarOActualizar(producto_bodega_list, conn, tx);
 
                     if (oc_enc != null)
-                        clsLnTrans_oc_enc.InsertarOActualizar(_configuration, oc_enc, conn, tx);
+                        clsLnTrans_oc_enc.InsertarOActualizar(oc_enc, conn, tx);
 
                     if (oc_det_list != null)
-                        clsLnTrans_oc_det.InsertarOActualizar(_configuration, oc_det_list, conn, tx);
+                        clsLnTrans_oc_det.InsertarOActualizar(oc_det_list, conn, tx);
 
                     if (re_enc_list != null)
-                        clsLnTrans_re_enc.InsertarOActualizar(_configuration, re_enc_list, conn, tx);
+                        clsLnTrans_re_enc.InsertarOActualizar(re_enc_list, conn, tx);
 
                     if (re_det_list != null)
-                        clsLnTrans_re_det.InsertarOActualizar(_configuration, re_det_list, conn, tx);
+                        clsLnTrans_re_det.InsertarOActualizar(re_det_list, conn, tx);
 
                     if (re_oc_list != null && re_oc_list.Count > 0)
-                        clsLnTrans_re_oc.InsertarOActualizar(_configuration, re_oc_list, conn, tx);
+                        clsLnTrans_re_oc.InsertarOActualizar(re_oc_list, conn, tx);
 
                     if (ops_rec_list != null && ops_rec_list.Count > 0)
-                        clsLnTrans_re_op.InsertarOActualizar(_configuration, ops_rec_list, conn, tx);
+                        clsLnTrans_re_op.InsertarOActualizar(ops_rec_list, conn, tx);
 
                     if (re_tr_list != null && re_tr_list.Count > 0)
-                        clsLnTrans_re_tr.InsertarOActualizar(_configuration, re_tr_list, conn, tx);
+                        clsLnTrans_re_tr.InsertarOActualizar(re_tr_list, conn, tx);
 
                     if (re_stock_rec_list != null && re_stock_rec_list.Count > 0)
-                        clsLnStock_rec.InsertarOActualizar(_configuration, re_stock_rec_list, conn, tx);
+                        clsLnStock_rec.InsertarOActualizar(re_stock_rec_list, conn, tx);
 
                     if(stock_list!=null && stock_list.Count > 0)
-                        clsLnStock.InsertarOActualizar(_configuration, stock_list, conn, tx);
+                        clsLnStock.InsertarOActualizar(stock_list, conn, tx);
 
                     if (re_movimientos_list != null && re_movimientos_list.Count > 0)
-                        clsLnTrans_movimientos.InsertarOActualizar(_configuration, re_movimientos_list, conn, tx);
+                        clsLnTrans_movimientos.InsertarOActualizar(re_movimientos_list, conn, tx);
 
                 }
             }
@@ -176,7 +177,6 @@ namespace WMSWebAPI.Services.Ingresos
                 throw new Exception("Error al procesar las órdenes de compra → " + ex.Message, ex);
             }
         }
-
         public List<clsBeVWOrdenCompra> ObtenerDocumentosDeIngreso(bool activo, DateTime fechaInicio, DateTime fechaFin, int idBodega, int idPropietario)
         {
             try
@@ -215,6 +215,47 @@ namespace WMSWebAPI.Services.Ingresos
             catch (Exception ex)
             {
                 throw new Exception($"Error al obtener el detalle de la orden de compra: {ex.Message}", ex);
+            }
+        }
+        public int Insert(clsBeI_nav_ped_compra_enc beINavPedCompraEnc)
+        {
+            try
+            {
+                // 1) Validación
+                if (!clsLnI_nav_ped_compra_enc.Datos_Validos(beINavPedCompraEnc))
+                    throw new Exception("Error de validación de datos.");
+
+                // 2) Insert a tabla intermedia
+                if (clsLnI_nav_ped_compra_enc.Insert_Single_Pedido_From_ERP(_configuration, beINavPedCompraEnc) <= 0)
+                    throw new Exception("No se pudo insertar el pedido en la tabla intermedia.");
+
+                // 2.5) obtener Pedido de NavCompra
+                //clsBeTrans_pe_enc? pPedido = new clsBeTrans_pe_enc();
+                //pPedido.IdPedidoEnc = beINavPedCompraEnc.No_Document_Wms;
+                //if (!clsLnTrans_pe_enc.GetSingle(_configuration, ref pPedido)){
+                //    pPedido = null;
+                //}
+
+                // 3) Procesar MI3
+                var bePedidoCompraEnc = new clsBeTrans_oc_enc();
+                string vResult = string.Empty;
+
+                bool ok = clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(_configuration, 
+                                                                               ref beINavPedCompraEnc,
+                                                                               ref bePedidoCompraEnc,
+                                                                               ref vResult,
+                                                                               null);
+
+                if (!ok)
+                    throw new Exception(string.IsNullOrWhiteSpace(vResult)
+                        ? "Error al procesar el pedido en MI3."
+                        : vResult);
+
+                return 1;
+            }            
+            catch (Exception)
+            {
+                throw; // propaga para que el controller lo maneje y responda 500 + mensaje
             }
         }
     }

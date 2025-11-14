@@ -148,13 +148,6 @@ Entity
  PICH000. Ingreso sin referencia verificado con HH. Permite realizar la impresión de etiquetas para pre-ingreso
  </summary>
 </member>
-<member name="T:TOMWMS.clsBeProveedor_tiempos">
- <summary>
- Class clsBeProveedor_tiempos.
- </summary>
- <seealso cref="T:System.ICloneable" />
- <seealso cref="T:System.IDisposable" />
-</member>
 <member name="P:TOMWMS.clsBeProveedor_tiempos.IdTiempoProveedor">
  <summary>
  Gets or sets the identifier tiempo proveedor.
@@ -322,6 +315,20 @@ Entity
 <member name="P:TOMWMS.clsBeAjustesMI3.Codigo_Bodega_ERP">
  <summary>
  Código de bodega de ERP (Proviene de cliente)
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeAjustesMI3.Centro_Costo_Erp">
+ <summary>
+ #CKFK20251030 Agregamos estos tres campos para la integración con ERP 
+ ya que  centro de costo maneja centro de costo dirección y departamento
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBe_vw_ajustes.Centro_Costo_Erp">
+ <summary>
+ #CKFK20251030 Agregamos estos tres campos para la integración con ERP 
+ ya que  centro de costo maneja centro de costo dirección y departamento
  </summary>
  <returns></returns>
 </member>
@@ -573,6 +580,13 @@ Entity
 <member name="P:TOMWMS.clsBeI_nav_config_enc.Rechazar_Bonificacion_Incompleta">
  <summary>
  #EJC202409041701: Determina si la bonificación incompleta se debe rechazar o no.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeI_nav_config_enc.Centro_Costo_Erp">
+ <summary>
+ #CKFK20251030 Agregamos estos tres campos para la integración con ERP 
+ ya que  centro de costo maneja centro de costo dirección y departamento
  </summary>
  <returns></returns>
 </member>
@@ -1091,12 +1105,6 @@ Entity
  </summary>
  <returns>A new object that is a copy of this instance.</returns>
 </member>
-<member name="T:TOMWMS.clsBeI_nav_ped_traslado_det">
- <summary>
- Class clsBeI_nav_ped_traslado_det.
- </summary>
- <seealso cref="T:System.ICloneable" />
-</member>
 <member name="P:TOMWMS.clsBeI_nav_ped_traslado_det.NoEnc">
  <summary>
  Gets or sets the no enc.
@@ -1423,6 +1431,13 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBeTrans_ajuste_enc.Auditado">
 #EJC20240719: Auditado, determina si el ajuste ya se validó previo a ser enviado a ERP.<summary>
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_enc.Centro_Costo_Erp">
+ <summary>
+ #CKFK20251030 Agregamos estos tres campos para la integración con ERP 
+ ya que  centro de costo maneja centro de costo dirección y departamento
  </summary>
  <returns></returns>
 </member>
@@ -2207,6 +2222,13 @@ Entity
  <summary>
  #EJC20240904:Se agrega el campo despacho_automático para poder saber si en la verificación, al finalizar, 
  se debe ejecutar el proceso de despacho de forma automática y con valores predeterminados.
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeBodega.Centro_Costo_Erp">
+ <summary>
+ #CKFK20251030 Agregamos estos tres campos para la integración con ERP 
+ ya que  centro de costo maneja centro de costo dirección y departamento
  </summary>
  <returns></returns>
 </member>

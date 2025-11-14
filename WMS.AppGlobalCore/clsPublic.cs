@@ -74,6 +74,59 @@ namespace AppGlobal
             {
                 throw new Exception("Error en Desencriptar: " + ex.Message, ex);
             }
-        }        
+        }
+
+        public static void Split_Decimal(double Numero,
+                                        ref double ParteEntera,
+                                        ref double ParteDecimal)
+        {
+            try
+            {
+                ParteEntera = Math.Truncate(Numero);
+                ParteDecimal = Numero - ParteEntera;
+            }
+            catch (Exception)
+            {                
+                throw;
+            }
+        }
+
+        public static void CopyObject<wcf>(object ObjOrigen, ref wcf ObjDestino)
+        {
+            try
+            {
+                if (ObjOrigen == null || ObjDestino == null) return;
+
+                Type TipoFuente = ObjOrigen.GetType();
+                Type TipoDestino = ObjDestino.GetType();
+
+                foreach (PropertyInfo p in TipoFuente.GetProperties())
+                {
+                    PropertyInfo? ObjPI = TipoDestino.GetProperty(p.Name); // Use nullable PropertyInfo
+                    if (ObjPI != null)
+                    {
+                        ObjPI.SetValue(ObjDestino, p.GetValue(ObjOrigen, null), null);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public static bool Abs(double pValor, bool pPermitirDecimales)
+        {
+            // Si el valor absoluto de pValor no es igual a su parte entera, entonces es un número decimal
+            if (Math.Abs(pValor) != Math.Truncate(Math.Abs(pValor)))
+            {
+                if (!pPermitirDecimales)
+                {
+                    throw new Exception("Error_202303101448S: El valor a insertar en stock sería un valor decimal no válido, se prevendrá continuar para evitar inconvenientes en reserva.");
+                }
+                return false;
+            }
+            return true;
+        }
     }
 }

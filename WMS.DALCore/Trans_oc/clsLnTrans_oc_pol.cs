@@ -665,4 +665,40 @@ public class clsLnTrans_oc_pol
         AddParam("@activo", oBeTrans_oc_pol.Activo);
         AddParam("@IdBodega", NullIfZero(oBeTrans_oc_pol.IdBodega));
     }
+
+    public static clsBeTrans_oc_pol? GetSingle(int pIdOrdenCompra,
+                                              SqlConnection lConnection,
+                                              SqlTransaction lTransaction)
+    {
+        try
+        {
+            string vSQL = "SELECT TOP 1 * FROM Trans_oc_pol WHERE IdOrdenCompraEnc = @IdOrdenCompraEnc AND activo = 1";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraEnc", pIdOrdenCompra);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+                    clsBeTrans_oc_pol Obj = new clsBeTrans_oc_pol();
+                    Cargar(ref Obj, lRow);
+                    Obj.IsNew = false;
+
+                    return Obj;
+                }
+            }
+
+            return null;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }

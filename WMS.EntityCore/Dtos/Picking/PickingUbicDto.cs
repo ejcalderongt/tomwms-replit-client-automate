@@ -1,4 +1,6 @@
-﻿namespace WMSWebAPI.Dtos.Picking
+﻿using WMSWebAPI.Be;
+
+namespace WMSWebAPI.Dtos.Picking
 {
     public class PickingUbicDto
     {
@@ -54,5 +56,30 @@
         public bool No_encontrado { get; set; } = false;
         public int IdUbicacionTemporal { get; set; } = 0;
         public int IdOperadorBodega_Asignado { get; set; } = 0;
+        public int IdProductoTallaColor { get; set; }
+        public bool IsNew { get; set; } = true;
+        public string NombreUbicacion { get; set; } = string.Empty;
+        public string NombreUbicacionTemporal { get; set; } = string.Empty;
+        public string CodigoProducto { get; set; } = string.Empty;
+        public string NombreProducto { get; set; } = string.Empty;
+        public string ProductoPresentacion { get; set; } = string.Empty;
+        public string ProductoUnidadMedida { get; set; } = string.Empty;
+        public string ProductoEstado { get; set; } = string.Empty;
+        public clsBeBodega_ubicacion Ubicacion { get; set; } = new clsBeBodega_ubicacion();
+        public decimal CantidadDañada { get; set; }
+        public string Tarima { get; set; } = string.Empty;
+        public string NombreArea { get; set; } = string.Empty;
+        public string NombreClasificacion { get; set; } = string.Empty;
+        public string Referencia { get; set; } = string.Empty;
+        public string Codigo_Talla { get; set; } = string.Empty;
+        public string Nombre_Talla { get; set; } = string.Empty;
+        public string Codigo_Color { get; set; } = string.Empty;
+        public string Nombre_Color { get; set; } = string.Empty;
+        public string CodigoSKU { get; set; } = string.Empty;
+        public string No_Linea { get; set; } = string.Empty;
+        public int IdProducto { get; set; } = 0;
+        public string Producto { get; set; } = string.Empty;
+        public string Presentacion { get; set; } = string.Empty;
+        public string UnidadMedida { get; set; } = string.Empty;
     }
 }

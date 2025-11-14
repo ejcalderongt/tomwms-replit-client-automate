@@ -1,10 +1,13 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using WMSWebAPI.Be;
 
 namespace WMS.EntityCore.Picking
 {
     public class clsBeTrans_picking_ubic : ICloneable
     {
+        public int IdProducto=0;
+
         [Column("IdPickingUbic")]
         [DisplayName("IdPickingUbic")]
         public int IdPickingUbic { get; set; } = 0;
@@ -212,9 +215,29 @@ namespace WMS.EntityCore.Picking
         [Column("IdOperadorBodega_Asignado")]
         [DisplayName("IdOperadorBodega_Asignado")]
         public int IdOperadorBodega_Asignado { get; set; } = 0;
-
-        public clsBeTrans_picking_ubic() { }
-
+        public int IdProductoTallaColor { get; set; } = 0;
+        public bool IsNew { get; set; }
+        public string NombreUbicacion { get; set; } = "";
+        public string NombreUbicacionTemporal { get; set; } = "";       
+        public string CodigoProducto { get; set; } = "";
+        public string NombreProducto { get; set; } = "";
+        public string ProductoPresentacion { get; set; } = "";
+        public string ProductoUnidadMedida { get; set; } = "";
+        public string ProductoEstado { get; set; } = "";
+        public clsBeBodega_ubicacion Ubicacion { get; set; } = new clsBeBodega_ubicacion();        
+        public double CantidadDañada { get; set; } = 0;
+        public string Lic_plate_Reemplazo { get; set; } = "";
+        public double Tarima { get; set; } = 0;
+        public string NombreArea { get; set; } = "";
+        public string NombreClasificacion { get; set; } = "";        
+        public string Referencia { get; set; } = "";
+        public string Codigo_Talla { get; set; } = "";
+        public string Nombre_Talla { get; set; } = "";
+        public string Codigo_Color { get; set; } = "";
+        public string Nombre_Color { get; set; } = "";
+        public string CodigoSKU { get; set; } = "";
+        public int No_Linea { get; set; } = 0;
+        public clsBeTrans_picking_ubic() { }        
         public object Clone()
         {
             return MemberwiseClone();

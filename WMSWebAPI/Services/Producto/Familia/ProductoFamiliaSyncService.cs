@@ -23,7 +23,7 @@ namespace WMSWebAPI.Services.Producto.Familia
                 if (dto.Codigo != null)
                 {
                     var Familia = _mapper.Map<clsBeProducto_familiaSimple>(dto);
-                    clsLnProducto_familia.Valida_Atributos(_configuration, Familia, conn, tx);
+                    clsLnProducto_familia.Valida_Atributos(Familia, conn, tx);
                 }
 
             }

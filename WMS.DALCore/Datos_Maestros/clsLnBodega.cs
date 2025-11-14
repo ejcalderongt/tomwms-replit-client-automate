@@ -115,6 +115,7 @@ public class clsLnBodega
             oBeBodega.Restringir_areas_sap = GetBool("restringir_areas_sap");
             oBeBodega.Control_pallet_mixto = GetBool("control_pallet_mixto");
             oBeBodega.Despacho_automatico_hh = GetBool("despacho_automatico_hh");
+            oBeBodega.Control_Talla_Color= GetBool("Control_Talla_Color");
         }
         catch (Exception ex)
         {            
@@ -1087,4 +1088,266 @@ public class clsLnBodega
         }
     }
 
+    public static bool Exists_By_Codigo(string pCodigo, SqlConnection lConnection, SqlTransaction lTransaction)
+    {
+        try
+        {
+            bool lExists = false;
+            string vSQL = "SELECT COUNT(1) FROM bodega WHERE Codigo = @Codigo";
+
+            using (var lCommand = new SqlCommand(vSQL, lConnection, lTransaction))
+            {
+                lCommand.CommandType = CommandType.Text;
+                lCommand.Parameters.AddWithValue("@Codigo", pCodigo);
+
+                object lReturnValue = lCommand.ExecuteScalar();
+
+                if (lReturnValue != DBNull.Value && lReturnValue != null)
+                {
+                    lExists = Convert.ToInt32(lReturnValue) > 0;
+                }
+            }
+
+            return lExists;
+        }
+        catch (Exception ex)
+        {
+            if (lTransaction is not null)
+                lTransaction.Rollback();
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = null;
+            if (sf != null) { currentMethodName = sf.GetMethod(); }
+            string vMsgError = string.Format("{0} {1}", currentMethodName, ex.Message);
+            throw new Exception(vMsgError);
+        }
+    }
+
+    public static int Get_IdBodega_By_Codigo(string pCodigo, SqlConnection lConnection, SqlTransaction lTransaction)
+    {
+        int idBodega = 0;
+
+        try
+        {
+            string vSQL = "SELECT IdBodega FROM bodega WHERE Codigo = @Codigo";
+
+            using (var lCommand = new SqlCommand(vSQL, lConnection, lTransaction))
+            {
+                lCommand.CommandType = CommandType.Text;
+                lCommand.Parameters.AddWithValue("@Codigo", pCodigo);
+
+                object lReturnValue = lCommand.ExecuteScalar();
+
+                if (lReturnValue != DBNull.Value && lReturnValue != null)
+                {
+                    idBodega = Convert.ToInt32(lReturnValue);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            if (lTransaction is not null)
+                lTransaction.Rollback();
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = null;
+            if (sf != null) { currentMethodName = sf.GetMethod(); }
+            string vMsgError = string.Format("{0} {1}", currentMethodName, ex.Message);
+            throw new Exception(vMsgError);
+        }
+
+        return idBodega;
+    }
+
+    public static bool Exists_By_IdBodega(int pIdBodega, SqlConnection lConnection, SqlTransaction lTransaction)
+    {
+        try
+        {
+            bool lExists = false;
+
+            string vSQL = "SELECT COUNT(1) FROM bodega WHERE IdBodega = @IdBodega";
+
+            using (var lCommand = new SqlCommand(vSQL, lConnection, lTransaction))
+            {
+                lCommand.CommandType = CommandType.Text;
+                lCommand.Parameters.AddWithValue("@IdBodega", pIdBodega);
+
+                object lReturnValue = lCommand.ExecuteScalar();
+
+                if (lReturnValue != DBNull.Value && lReturnValue != null)
+                {
+                    lExists = Convert.ToInt32(lReturnValue) > 0;
+                }
+            }
+
+            return lExists;
+        }
+        catch (Exception ex)
+        {
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = null;
+            if (sf != null) { currentMethodName = sf.GetMethod(); }
+            string vMsgError = string.Format("{0} {1}", currentMethodName, ex.Message);
+            throw new Exception(vMsgError);
+        }
+    }
+
+    public static int Get_IdEmpresa_By_IdBodega(int pIdBodega, SqlConnection lConnection, SqlTransaction lTransaction)
+    {
+        int result = 0;
+
+        try
+        {
+            string vSQL = "SELECT IdEmpresa FROM bodega WHERE IdBodega = @IdBodega";
+
+            using (var lCommand = new SqlCommand(vSQL, lConnection, lTransaction))
+            {
+                lCommand.CommandType = CommandType.Text;
+                lCommand.Parameters.AddWithValue("@IdBodega", pIdBodega);
+
+                object lReturnValue = lCommand.ExecuteScalar();
+
+                if (lReturnValue != DBNull.Value && lReturnValue != null)
+                {
+                    result = Convert.ToInt32(lReturnValue);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = null;
+            if (sf != null) { currentMethodName = sf.GetMethod(); }
+            string vMsgError = string.Format("{0} {1}", currentMethodName, ex.Message);
+            throw new Exception(vMsgError);
+        }
+
+        return result;
+    }
+
+    public static int Get_IdUbicacion_Recepcion_By_IdBodega(int pIdBodega,
+                                                            SqlConnection lConnection,
+                                                            SqlTransaction lTransaction)
+    {
+        try
+        {
+            string vSQL = "SELECT ubic_recepcion FROM bodega WHERE IdBodega = @IdBodega";
+
+            using (SqlCommand lCommand = new SqlCommand(vSQL, lConnection, lTransaction)
+            {
+                CommandType = CommandType.Text
+            })
+            {
+                lCommand.Parameters.AddWithValue("@IdBodega", pIdBodega);
+
+                object lReturnValue = lCommand.ExecuteScalar();
+                
+                if (lReturnValue != DBNull.Value && lReturnValue != null)
+                {
+                    if (int.TryParse(lReturnValue.ToString(), out int result))
+                    {
+                        return result;
+                    }
+                    else
+                    {
+                        throw new Exception($"La ubicación por defecto para recepción no está definida para la bodega código: {pIdBodega}");
+                    }
+                }
+
+                return 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    public static clsBeBodega? GetSingle_By_Codigo(string pCodigo, SqlConnection lConnection, SqlTransaction lTransaction)
+    {
+        try
+        {
+            const string sp = @"SELECT * FROM Bodega 
+                           Where(Codigo = @Codigo)";
+
+            SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
+            SqlDataAdapter dad = new SqlDataAdapter(cmd);
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@Codigo", pCodigo));
+
+            DataTable dt = new DataTable();
+            dad.Fill(dt);
+
+            if (dt.Rows.Count == 1)
+            {
+                clsBeBodega pBeBodega = new clsBeBodega();
+                Cargar(ref pBeBodega, dt.Rows[0]);
+                return pBeBodega;
+            }
+
+            return null;
+        }
+        catch (Exception)
+        {            
+            throw;
+        }
+    }
+
+    public static clsBeBodega? GetSingle_By_Idbodega(int pIdBodega, SqlConnection lConnection, SqlTransaction? lTransaction)
+    {
+        try
+        {
+            const string sp = @"SELECT * FROM Bodega 
+                           Where(IdBodega = @IdBodega)";
+
+            SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
+            SqlDataAdapter dad = new SqlDataAdapter(cmd);
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@IDBODEGA", pIdBodega));
+
+            DataTable dt = new DataTable();
+            dad.Fill(dt);
+
+            if (dt.Rows.Count == 1)
+            {
+                clsBeBodega pBeBodega = new clsBeBodega();
+                Cargar(ref pBeBodega, dt.Rows[0]);
+                return pBeBodega;
+            }
+
+            return null;
+        }
+        catch (Exception)
+        {            
+            throw;
+        }
+    }
+
+    public static bool Get_Permitir_Decimales(int pIdBodega, SqlConnection pConnection, SqlTransaction pTransaction)
+    {
+        bool result = false;
+
+        try
+        {
+            string vSQL = "SELECT permitir_decimales FROM bodega WHERE IdBodega=@IdBodega";
+
+            using (var lCommand = new SqlCommand(vSQL, pConnection, pTransaction) { CommandType = CommandType.Text })
+            {
+                lCommand.Parameters.AddWithValue("@IdBodega", pIdBodega);
+
+                var lReturnValue = lCommand.ExecuteScalar();
+
+                if (lReturnValue != DBNull.Value && lReturnValue != null)
+                {
+                    result = Convert.ToBoolean(lReturnValue);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+
+        return result;
+    }
 }

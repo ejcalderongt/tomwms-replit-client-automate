@@ -1,5 +1,8 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using WMS.EntityCore.Cliente;
+using WMS.EntityCore.Picking;
+using WMS.EntityCore.Propietario;
 
 namespace WMS.EntityCore.Pedido
 {
@@ -276,6 +279,16 @@ namespace WMS.EntityCore.Pedido
         [Column("IdMotivoDevolucion")]
         [DisplayName("IdMotivoDevolucion")]
         public int IdMotivoDevolucion { get; set; } = 0;
+        public bool IsNew { get; set; } = false;
+        public List<clsBeTrans_pe_det> Detalle { get; set; } = new List<clsBeTrans_pe_det>();
+        public clsBeTrans_picking_enc Picking { get; set; } = new clsBeTrans_picking_enc();
+        public clsBePropietario_bodega PropietarioBodega { get; set; } = new clsBePropietario_bodega();
+        public clsBeCliente Cliente { get; set; } = new clsBeCliente();
+        public clsBeTrans_pe_tipo TipoPedido { get; set; } = new clsBeTrans_pe_tipo();
+        public bool Control_Ultimo_Lote { get; set; } = false;        
+        public clsBeTrans_pe_pol ObjPoliza { get; set; } = new clsBeTrans_pe_pol();
+        public string Codigo_Empresa_ERP { get; set; } = "";
+        public bool EsExportacion { get; set; } = false;
 
         public clsBeTrans_pe_enc() { }
 

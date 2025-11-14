@@ -3,7 +3,7 @@
     public class ProductoMarcaDto
     {
         public int IdMarca { get; set; }
-        public int IdPropietario { get; set; }
+        public int IdPropietario { get; set; } = 0;
         public string? Nombre { get; set; }
         public bool? Activo { get; set; }
         public string? User_Agr { get; set; }

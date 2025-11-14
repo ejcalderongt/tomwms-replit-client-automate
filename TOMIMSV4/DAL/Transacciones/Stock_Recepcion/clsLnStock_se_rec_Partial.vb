@@ -90,8 +90,8 @@ Partial Public Class clsLnStock_se_rec
     End Function
 
     Public Shared Function GetAllSerieByIdStockRec(ByVal pIdStockRec As Integer,
-                                     ByRef lConnection As SqlConnection,
-                                     ByRef lTransaction As SqlTransaction) As List(Of clsBeStock_se_rec)
+                                                   ByRef lConnection As SqlConnection,
+                                                   ByRef lTransaction As SqlTransaction) As List(Of clsBeStock_se_rec)
 
         Dim lReturnList As New List(Of clsBeStock_se_rec)
 
@@ -140,11 +140,6 @@ Partial Public Class clsLnStock_se_rec
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
-                '#HS20171024_1120am: Quité String.Format.
-                'vSQL = String.Format(" SELECT * FROM stock_se_rec " & _
-                '                                   " WHERE IdStockRec IN " & _
-                '                                   " (SELECT IdStockRec FROM stock_rec " & _
-                '                                   " WHERE IdRecepcionEnc = {0} AND IdRecepcionDet = {1})", pIdRecepcionEnc, pIdRecepcionDet)
                 Dim vSQL As String = "SELECT * FROM stock_se_rec " &
                                                    " WHERE IdStockRec IN " &
                                                    " (SELECT IdStockRec FROM stock_rec " &

@@ -4,7 +4,6 @@ using System.Data;
 using System.Diagnostics;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Producto.ProductoSimple;
-using WMS.EntityCore.Interface;
 public class clsLnProducto_familia
 {
     private static readonly clsInsert ins = new clsInsert();
@@ -22,7 +21,6 @@ public class clsLnProducto_familia
         be.Fec_mod = dr.Field<DateTime?>("fec_mod") ?? DateTime.Now;
         be.Codigo = dr.Field<string>("codigo") ?? "";
     }
-
     public static bool Existe(int id, SqlConnection conn, SqlTransaction tx)
     {
         const string sql = "SELECT COUNT(1) FROM Producto_familia WHERE IdFamilia = @Id";
@@ -38,35 +36,21 @@ public class clsLnProducto_familia
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
     }
-    public static int InsertOrUpdate(IConfiguration config, clsBeProducto_familia be, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(clsBeProducto_familia be, SqlConnection conn, SqlTransaction tx)
     {
-        bool externa = conn != null && tx != null;
-        var lConn = externa ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTx = null;
-        if (!externa) { lConn.Open(); lTx = lConn.BeginTransaction(); }
-
         try
         {
-            if (Existe(be.IdFamilia, lConn, externa ? tx! : lTx!))
-                return Actualizar(config, be, lConn, externa ? tx : lTx);
+            if (Existe(be.IdFamilia, conn, tx))
+                return Actualizar(be, conn, tx);
             else
-                return Insertar(config, be, lConn, externa ? tx : lTx);
+                return Insertar(be, conn, tx);
         }
         catch
         {
-            if (!externa) lTx?.Rollback();
             throw;
         }
-        finally
-        {
-            if (!externa)
-            {
-                lTx?.Commit();
-                lConn.Close();
-            }
-        }
     }
-    public static int Insertar(IConfiguration config, clsBeProducto_familia be, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int Insertar(clsBeProducto_familia be, SqlConnection conn, SqlTransaction tx)
     {
         ins.Init("producto_familia");
         ins.Add("idfamilia", "@idfamilia", "F");
@@ -80,42 +64,20 @@ public class clsLnProducto_familia
         ins.Add("codigo", "@codigo", "F");
 
         string sql = ins.SQL();
-        bool externa = conn != null && tx != null;
-
-        var lConn = externa ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTx = null;
-        if (!externa)
-        {
-            lConn.Open();
-            lTx = lConn.BeginTransaction(IsolationLevel.ReadUncommitted);
-        }
 
         try
         {
-            using var cmd = new SqlCommand(sql, lConn, externa ? tx! : lTx!);
+            using var cmd = new SqlCommand(sql, conn, tx);
             Bind(cmd, be);
             int result = cmd.ExecuteNonQuery();
-
-            if (!externa)
-                lTx?.Commit();
-
             return result;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            if (!externa)
-                lTx?.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
-            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
-        }
-        finally
-        {
-            if (!externa && lConn.State == ConnectionState.Open)
-                lConn.Close();
+            throw;
         }
     }
-    public static int Actualizar(IConfiguration config, clsBeProducto_familia be, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int Actualizar(clsBeProducto_familia be, SqlConnection conn, SqlTransaction tx)
     {
         upd.Init("producto_familia");
         upd.Add("idpropietario", "@idpropietario", "F");
@@ -129,39 +91,17 @@ public class clsLnProducto_familia
         upd.Where("IdFamilia = @IdFamilia");
 
         string sql = upd.SQL();
-        bool externa = conn != null && tx != null;
-
-        var lConn = externa ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTx = null;
-        if (!externa)
-        {
-            lConn.Open();
-            lTx = lConn.BeginTransaction(IsolationLevel.ReadUncommitted);
-        }
 
         try
         {
-            using var cmd = new SqlCommand(sql, lConn, externa ? tx! : lTx!);
+            using var cmd = new SqlCommand(sql, conn, tx);
             Bind(cmd, be);
             int result = cmd.ExecuteNonQuery();
-
-            if (!externa)
-                lTx?.Commit();
-
             return result;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            if (!externa)
-                lTx?.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
-            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
-        }
-        finally
-        {
-            if (!externa && lConn.State == ConnectionState.Open)
-                lConn.Close();
+            throw;
         }
     }
     public static bool GetSingle(IConfiguration config, ref clsBeProducto_familia be)
@@ -254,30 +194,19 @@ public class clsLnProducto_familia
 
         return dt;
     }
-    public static int MaxID(IConfiguration config, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int MaxID(SqlConnection conn, SqlTransaction tx)
     {
         const string sql = "SELECT ISNULL(MAX(IdFamilia), 0) FROM Producto_familia";
-        bool externa = conn != null && tx != null;
-        var lConn = externa ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTx = null;
-
-        if (!externa) { lConn.Open(); lTx = lConn.BeginTransaction(); }
 
         try
         {
-            using var cmd = new SqlCommand(sql, lConn, externa ? tx! : lTx!);
+            using var cmd = new SqlCommand(sql, conn, tx);
             var result = cmd.ExecuteScalar();
-            if (!externa) lTx?.Commit();
             return Convert.ToInt32(result);
         }
         catch
         {
-            if (!externa) lTx?.Rollback();
             throw;
-        }
-        finally
-        {
-            if (!externa) lConn.Close();
         }
     }
     private static void Bind(SqlCommand cmd, clsBeProducto_familia e)
@@ -292,7 +221,6 @@ public class clsLnProducto_familia
         cmd.Parameters.AddWithValue("@fec_mod", e.Fec_mod);
         cmd.Parameters.AddWithValue("@codigo", e.Codigo);
     }
-
     public static bool Existe_By_Codigo(string Codigo, ref clsBeProducto_familia pBeFamilia ,SqlConnection cn, SqlTransaction? tx = null)
     {
         try
@@ -320,25 +248,15 @@ public class clsLnProducto_familia
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
     }
-    public static void Valida_Atributos(IConfiguration config, clsBeProducto_familiaSimple entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static void Valida_Atributos(clsBeProducto_familiaSimple entity, SqlConnection connection, SqlTransaction tx)
     {
-        bool isExternalTx = conn != null && tx != null;
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
-
         try
         {
-            if (!isExternalTx)
-            {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
             var Familia = new clsBeProducto_familia();
-            bool existe = Existe_By_Codigo(entity.Codigo, ref Familia ,connection, isExternalTx ? tx! : localTx!);
+            bool existe = Existe_By_Codigo(entity.Codigo, ref Familia, connection, tx);
 
             var BeInavConfigEnc = new clsBeI_nav_config_enc();
-            clsLnI_nav_config_enc.GetSingle(config, BeInavConfigEnc, connection, isExternalTx ? tx : localTx);
+            clsLnI_nav_config_enc.GetSingle(BeInavConfigEnc, connection, tx);
 
             if (BeInavConfigEnc == null)
                 throw new ArgumentNullException(nameof(BeInavConfigEnc), "No se encuentra interface para definir propiedades de auditoria.");
@@ -347,48 +265,31 @@ public class clsLnProducto_familia
             {
                 if (!string.IsNullOrEmpty(entity.Codigo))
                 {
-                    Familia.IdFamilia = MaxID(config, connection, isExternalTx ? tx : localTx) + 1;
+                    Familia.IdFamilia = MaxID(connection, tx) + 1;
                     Familia.Codigo = entity.Codigo;
                     Familia.Nombre = entity.Nombre ?? entity.Codigo;
                     Familia.User_agr = BeInavConfigEnc.IdUsuario.ToString();
                     Familia.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                     Familia.Fec_agr = DateTime.Now;
-                    Familia.Fec_agr = DateTime.Now;
+                    Familia.Fec_mod = DateTime.Now;
                     Familia.Activo = entity.Activo;
                     Familia.IdPropietario = entity.IdPropietario;
-                    Insertar(config, Familia, connection, isExternalTx ? tx : localTx);
+                    Insertar(Familia, connection, tx);
                 }
-
             }
             else
             {
                 Familia.Codigo = entity.Codigo;
                 Familia.Nombre = entity.Nombre ?? entity.Codigo;
                 Familia.User_mod = BeInavConfigEnc.IdUsuario.ToString();
-                Familia.Fec_agr = DateTime.Now;
+                Familia.Fec_mod = DateTime.Now;
                 Familia.Activo = entity.Activo;
-                Actualizar(config, Familia, connection, isExternalTx ? tx : localTx);
+                Actualizar(Familia, connection, tx);
             }
-
         }
-        catch (SqlException ex)
+        catch (Exception)
         {
-            if (!isExternalTx && localTx is not null)
-                localTx.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
-            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
-        }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
-            }
+            throw;
         }
     }
-
-
 }

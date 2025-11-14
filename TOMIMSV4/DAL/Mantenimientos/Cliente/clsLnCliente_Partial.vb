@@ -1,6 +1,8 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data.Common
+Imports System.Data.SqlClient
 Imports System.Reflection
 Imports System.Threading.Tasks
+Imports DevExpress.Data.Linq.Helpers
 
 Partial Public Class clsLnCliente
     Implements IDisposable
@@ -2594,6 +2596,35 @@ Partial Public Class clsLnCliente
                 End Using
 
                 lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_IdCliente_By_Codigo(ByVal pCodigo As Integer,
+                                                   ByRef pConnection As SqlConnection,
+                                                   ByRef pTransaction As SqlTransaction) As Integer
+
+        Get_IdCliente_By_Codigo = 0
+
+        Try
+
+            Dim vSQL As String = "SELECT IdCliente FROM cliente WHERE codigo=@codigo"
+
+            Using lCommand As New SqlCommand(vSQL, pConnection)
+
+                lCommand.CommandType = CommandType.Text
+                lCommand.Transaction = pTransaction
+
+                Dim lReturnValue As Object = lCommand.ExecuteScalar()
+
+                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                    Get_IdCliente_By_Codigo = CInt(lReturnValue)
+                End If
 
             End Using
 

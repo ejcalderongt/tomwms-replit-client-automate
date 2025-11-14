@@ -5,6 +5,8 @@ using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic.CompilerServices;
 using WMS.EntityCore.Picking;
 using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Pedido;
+using WMS.EntityCore.Producto;
 public class clsLnTrans_picking_det
 {
 
@@ -48,11 +50,9 @@ public class clsLnTrans_picking_det
         }
     }
 
-    public static int Insertar(IConfiguration config, clsBeTrans_picking_det oBeTrans_picking_det, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
-    {        
+    public static int Insertar(clsBeTrans_picking_det oBeTrans_picking_det, SqlConnection pConection, SqlTransaction pTransaction)
+    {
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
@@ -75,50 +75,17 @@ public class clsLnTrans_picking_det
 
             string sp = Ins.SQL();
 
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text })
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
+                Bind(cmd, oBeTrans_picking_det);
+                rowsAffected = cmd.ExecuteNonQuery();
             }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
-
-            Bind(cmd, oBeTrans_picking_det);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            cmd.Dispose();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
         }
-        catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+        catch (SqlException)
+        {          
+            throw;
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
-        }
+
         return rowsAffected;
     }
 
@@ -184,16 +151,12 @@ public class clsLnTrans_picking_det
         return rowsAffected;
     }
 
-    public static int Actualizar(IConfiguration config, clsBeTrans_picking_det oBeTrans_picking_det, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Actualizar(clsBeTrans_picking_det oBeTrans_picking_det, SqlConnection pConection, SqlTransaction pTransaction)
     {
-
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
-
             Upd.Init("trans_picking_det");
             Upd.Add("idpickingdet", "@idpickingdet", "F");
             Upd.Add("idpickingenc", "@idpickingenc", "F");
@@ -214,48 +177,17 @@ public class clsLnTrans_picking_det
 
             string sp = Upd.SQL();
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text })
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
+                Bind(cmd, oBeTrans_picking_det);
+                rowsAffected = cmd.ExecuteNonQuery();
             }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
-
-            Bind(cmd, oBeTrans_picking_det);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
         }
-        catch (SqlException ex1)
+        catch (SqlException)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+            throw;
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
-        }
+
         return rowsAffected;
     }
 
@@ -517,55 +449,29 @@ public class clsLnTrans_picking_det
             throw new Exception(vMsgError);
         }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int MaxID(SqlConnection pConection, SqlTransaction pTransaction)
     {
-
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
         int lMax = 0;
+
         try
         {
-
-
             const string sp = "Select ISNULL(Max(IdPickingDet),0) FROM Trans_picking_det";
 
-            bool Es_Transaccion_Remota = pConection is not null && pTransaction is not null;
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text })
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+                object lreturnValue = cmd.ExecuteScalar();
 
-            Object lreturnValue = cmd.ExecuteScalar();
-
-            if (lreturnValue != DBNull.Value && lreturnValue != null)
-            {
-                lMax = int.Parse((String)lreturnValue);
+                if (lreturnValue != DBNull.Value && lreturnValue != null)
+                {
+                    lMax = Convert.ToInt32(lreturnValue);
+                }
             }
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
 
             return lMax;
-
         }
-        catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+        catch (SqlException)
+        {            
+            throw;
         }
     }
     public static void Bind(SqlCommand cmd, clsBeTrans_picking_det o)
@@ -586,52 +492,27 @@ public class clsLnTrans_picking_det
         cmd.Parameters.Add(new SqlParameter("@codigo", !string.IsNullOrWhiteSpace(o.Codigo) ? o.Codigo : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@nombre", !string.IsNullOrWhiteSpace(o.Nombre) ? o.Nombre : DBNull.Value));
     }
-    public static int InsertOrUpdate(IConfiguration config, List<clsBeTrans_picking_det> entities, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(List<clsBeTrans_picking_det> entities, SqlConnection conn, SqlTransaction tx)
     {
-        bool isExternalTx = conn != null && tx != null;
         int total = 0;
-
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
-        if (!isExternalTx) { connection.Open(); localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted); }
 
         try
         {
-
-         
-
-
             foreach (var entity in entities)
             {
-
-                bool existe = Existe(entity.IdPickingDet, entity.IdPickingEnc, connection, isExternalTx ? tx! : localTx!);
-
+                bool existe = Existe(entity.IdPickingDet, entity.IdPickingEnc, conn, tx);
                 int result = existe
-                    ? Actualizar(config, entity, connection, isExternalTx ? tx : localTx)
-                    : Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                    ? Actualizar(entity, conn, tx)
+                    : Insertar(entity, conn, tx);
 
                 total += result;
-
             }
-
-            if (!isExternalTx)
-                localTx?.Commit();
 
             return total;
         }
         catch
         {
-            if (!isExternalTx) localTx?.Rollback();
             throw;
-        }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
-            }
         }
     }
     public static bool Existe(int idPickingDet, int idPickingEnc, SqlConnection conn, SqlTransaction? tx = null)
@@ -647,5 +528,93 @@ public class clsLnTrans_picking_det
         int count = Convert.ToInt32(cmd.ExecuteScalar());
 
         return count > 0;
+    }
+
+    public static clsBeTrans_picking_det? GetSingle(int IdPedidoDet, SqlConnection lConnection, SqlTransaction lTransaction)
+    {
+        try
+        {
+            string vSQL = "SELECT * FROM Trans_picking_det WHERE IdPedidoDet = @IdPedidoDet";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoDet", IdPedidoDet);
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable != null && lDataTable.Rows.Count > 0)
+                {
+                    clsBeTrans_picking_det Obj = new clsBeTrans_picking_det();
+                    Cargar(ref Obj, lDataTable.Rows[0]);
+                    Obj.IsNew = false;
+
+                    return Obj;
+                }
+            }
+
+            return null;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static bool Insertar_PickingDet(clsBeTrans_pe_det pBePedidoDet,
+                                           int pIdPickingEnc,
+                                           out int pIdPickingDet,
+                                           SqlConnection lConnection,
+                                           SqlTransaction lTransaction)
+    {
+        pIdPickingDet = 0;
+        bool result = false;
+
+        try
+        {
+            clsBeTrans_picking_det? ObjBePickingDet = new clsBeTrans_picking_det();
+            clsBeProducto? ObjProducto = clsLnProducto.GetSingle(pBePedidoDet.Producto.IdProducto, lConnection, lTransaction);
+
+            if (ObjProducto != null)
+            {
+                pIdPickingDet = MaxID(lConnection, lTransaction) + 1;
+
+                ObjBePickingDet.IdPickingEnc = pIdPickingEnc;
+                ObjBePickingDet.IdPickingDet = pIdPickingDet;
+                ObjBePickingDet.IdPedidoEnc = pBePedidoDet.IdPedidoEnc;
+                ObjBePickingDet.IdPedidoDet = pBePedidoDet.IdPedidoDet;
+                ObjBePickingDet.Cantidad = pBePedidoDet.Cantidad;
+                ObjBePickingDet.User_agr = pBePedidoDet.User_agr;
+                ObjBePickingDet.Fec_agr = DateTime.Now;
+                ObjBePickingDet.User_mod = pBePedidoDet.User_agr;
+                ObjBePickingDet.Fec_mod = DateTime.Now;
+                ObjBePickingDet.Activo = true;
+                ObjBePickingDet.IsNew = true;
+                ObjBePickingDet.Producto.codigo = ObjProducto.codigo;
+                ObjBePickingDet.Codigo = ObjProducto.codigo;
+                ObjBePickingDet.NombreProducto = pBePedidoDet.Producto.nombre;
+                ObjBePickingDet.Producto.nombre = pBePedidoDet.Producto.nombre;
+                ObjBePickingDet.Presentacion.IdPresentacion = pBePedidoDet.IdPresentacion;
+                ObjBePickingDet.Presentacion.Nombre = pBePedidoDet.Nom_presentacion;
+                ObjBePickingDet.UnidadMedida.IdUnidadMedida = pBePedidoDet.IdUnidadMedidaBasica;
+                ObjBePickingDet.UnidadMedida.Nombre = pBePedidoDet.Nom_unid_med;
+                ObjBePickingDet.ProductoEstado.IdEstado = pBePedidoDet.IdEstado;
+                ObjBePickingDet.ProductoEstado.Nombre = pBePedidoDet.Nom_estado;
+                ObjBePickingDet.Cantidad = pBePedidoDet.Cantidad;
+                ObjBePickingDet.Cantidad_recibida = 0;
+                ObjBePickingDet.Cliente_dias = 0;
+
+                Insertar(ObjBePickingDet, lConnection, lTransaction);
+                result = true;
+            }
+        }
+        catch (Exception)
+        {            
+            throw;
+        }
+
+        return result;
     }
 }

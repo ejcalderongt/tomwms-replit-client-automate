@@ -38,70 +38,26 @@ public class clsLnTrans_re_img
         }
     }
 
-    public static int Insertar(IConfiguration config, clsBeTrans_re_img oBeTrans_re_img, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Insertar(clsBeTrans_re_img oBeTrans_re_img,
+                              SqlConnection pConection,
+                              SqlTransaction pTransaction)
     {
+        Ins.Init("trans_re_img");
+        Ins.Add("idimagen", "@idimagen", "F");
+        Ins.Add("idrecepcionenc", "@idrecepcionenc", "F");
+        Ins.Add("imagen", "@imagen", "F");
+        Ins.Add("user_agr", "@user_agr", "F");
+        Ins.Add("fec_agr", "@fec_agr", "F");
+        Ins.Add("observacion", "@observacion", "F");
 
-        int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
+        string sp = Ins.SQL();
 
-        try
+        using (SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction))
         {
-            Ins.Init("trans_re_img");
-            Ins.Add("idimagen", "@idimagen", "F");
-            Ins.Add("idrecepcionenc", "@idrecepcionenc", "F");
-            Ins.Add("imagen", "@imagen", "F");
-            Ins.Add("user_agr", "@user_agr", "F");
-            Ins.Add("fec_agr", "@fec_agr", "F");
-            Ins.Add("observacion", "@observacion", "F");
-
-            string sp = Ins.SQL();
-
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
-
+            cmd.CommandType = CommandType.Text;
             Bind(cmd, oBeTrans_re_img);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            cmd.Dispose();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return cmd.ExecuteNonQuery();
         }
-        catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-
-            throw new Exception(vMsgError);
-        }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
 
     public static int Insertar(IConfiguration config, clsBeTrans_re_img oBeTrans_re_img)
@@ -157,70 +113,27 @@ public class clsLnTrans_re_img
         return rowsAffected;
     }
 
-    public static int Actualizar(IConfiguration config, clsBeTrans_re_img oBeTrans_re_img, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Actualizar(clsBeTrans_re_img oBeTrans_re_img,
+                            SqlConnection pConection,
+                            SqlTransaction pTransaction)
     {
+        Upd.Init("trans_re_img");
+        Upd.Add("idimagen", "@idimagen", "F");
+        Upd.Add("idrecepcionenc", "@idrecepcionenc", "F");
+        Upd.Add("imagen", "@imagen", "F");
+        Upd.Add("user_agr", "@user_agr", "F");
+        Upd.Add("fec_agr", "@fec_agr", "F");
+        Upd.Add("observacion", "@observacion", "F");
+        Upd.Where("IdImagen = @IdImagen AND IdRecepcionEnc = @IdRecepcionEnc");
 
-        int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
+        string sp = Upd.SQL();
 
-        try
+        using (SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction))
         {
-
-            Upd.Init("trans_re_img");
-            Upd.Add("idimagen", "@idimagen", "F");
-            Upd.Add("idrecepcionenc", "@idrecepcionenc", "F");
-            Upd.Add("imagen", "@imagen", "F");
-            Upd.Add("user_agr", "@user_agr", "F");
-            Upd.Add("fec_agr", "@fec_agr", "F");
-            Upd.Add("observacion", "@observacion", "F");
-            Upd.Where("IdImagen = @IdImagen AND IdRecepcionEnc = @IdRecepcionEnc");
-
-            string sp = Upd.SQL();
-
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
-
+            cmd.CommandType = CommandType.Text;
             Bind(cmd, oBeTrans_re_img);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return cmd.ExecuteNonQuery();
         }
-        catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-
-            throw new Exception(vMsgError);
-        }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
 
     public int Eliminar(IConfiguration config, clsBeTrans_re_img oBeTrans_re_img, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
@@ -526,4 +439,72 @@ public class clsLnTrans_re_img
         cmd.Parameters.Add(new SqlParameter("@observacion", oBeTrans_re_img.Observacion));
     }
 
+    public static void Guarda_Trans_Re_Img(int IdRecepcionEnc,
+                                          List<clsBeTrans_re_img>? pListRecImg,
+                                          SqlConnection lConnection,
+                                          SqlTransaction lTransaction)
+    {
+        try
+        {
+            if (pListRecImg != null)
+            {
+                foreach (clsBeTrans_re_img Obj in pListRecImg)
+                {
+                    if (Obj.IsNew)
+                    {
+                        Obj.IdRecepcionEnc = IdRecepcionEnc;
+                        Insertar(Obj, lConnection, lTransaction);
+                    }
+                    else
+                    {
+                        Actualizar(Obj, lConnection, lTransaction);
+                    }
+                }
+            }
+        }
+        catch (Exception)
+        {            
+            throw;
+        }
+    }
+
+    public static List<clsBeTrans_re_img> Get_Detalle_Imagenes_By_IdRecepcionEnc(int pIdRecepcionEnc,
+                                                                                SqlConnection lConnection,
+                                                                                SqlTransaction lTransaction)
+    {
+        List<clsBeTrans_re_img> lReturnList = new List<clsBeTrans_re_img>();
+
+        try
+        {
+            string vSQL = @"SELECT * FROM Trans_re_img 
+                       WHERE IdRecepcionEnc = @IdRecepcionEnc";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", pIdRecepcionEnc);
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable?.Rows.Count > 0)
+                {
+                    foreach (DataRow lRow in lDataTable.Rows)
+                    {
+                        clsBeTrans_re_img Obj = new clsBeTrans_re_img();
+                        Cargar(ref Obj, lRow);
+                        Obj.IsNew = false;
+                        lReturnList.Add(Obj);
+                    }
+                }
+            }
+
+            return lReturnList;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }

@@ -2614,7 +2614,7 @@ Partial Public Class clsLnTrans_inv_enc
                                      SUM(t.Stock) AS Stock, 
                                      SUM(t.Inventario) - SUM(t.Stock) AS Dif, t.lote AS Lote, t.fecha_vence AS Fecha_Vence,t.ubicacion,
                                      t.UMBas,t.Presentacion, t.factor,IIF(t.factor>0,t.factor*SUM(t.Inventario),sum(t.Inventario)) as Inv_UM,
-                                     IIF(t.factor>0,t.factor*SUM(t.Stock),sum(t.Stock)) as Stock_UM, t.Licencia
+                                     IIF(t.factor>0,t.factor*SUM(t.Stock),sum(t.Stock)) as Stock_UM, t.Licencia, t.Codigo_Talla, t.Codigo_Color
                                      FROM (
                                      SELECT idinventarioenc AS IdInventario,producto.codigo,producto.IdProducto,  
                                      producto.nombre AS Producto,
@@ -2628,7 +2628,7 @@ Partial Public Class clsLnTrans_inv_enc
                 vSQL += " dbo.Nombre_Completo_Ubicacion(" & vIdUbicacionRecepcion & "," & pIdBodega & ") as ubicacion, "
             End If
 
-            vSQL += "unidad_medida.Nombre UMBas, producto_presentacion.factor, trans_inv_detalle.Lic_Plate AS Licencia
+            vSQL += "unidad_medida.Nombre UMBas, producto_presentacion.factor, trans_inv_detalle.Lic_Plate AS Licencia, '' Codigo_Talla, '' Codigo_Color
                      FROM trans_inv_detalle
                         INNER JOIN
                         producto ON trans_inv_detalle.idproducto = producto.IdProducto INNER JOIN
@@ -2653,7 +2653,7 @@ Partial Public Class clsLnTrans_inv_enc
                         ISNULL(producto_presentacion.nombre,'') AS Presentacion,producto_presentacion.IdPresentacion ,
                         0 AS Detalle,SUM(cant) AS Stock,0 AS Peso, trans_inv_stock_prod.Lote, trans_inv_stock_prod.Fecha_Vence,
 	                    dbo.Nombre_Completo_Ubicacion(trans_inv_stock_prod.idubicacion,trans_inv_stock_prod.idbodega)  as ubicacion,
-	                    unidad_medida.Nombre UMBas, producto_presentacion.factor, Lic_Plate AS Licencia
+	                    unidad_medida.Nombre UMBas, producto_presentacion.factor, Lic_Plate AS Licencia, Codigo_Talla, Codigo_Color
                         FROM trans_inv_stock_prod INNER JOIN 
                         producto ON trans_inv_stock_prod.idproducto = producto.IdProducto INNER JOIN
 	                    unidad_medida ON producto.IdUnidadMedidaBasica = producto.IdUnidadMedidaBasica AND 
@@ -2664,8 +2664,9 @@ Partial Public Class clsLnTrans_inv_enc
                         GROUP BY idinventario,producto.codigo,  
                         producto.nombre,producto_presentacion.nombre,producto_presentacion.IdPresentacion,producto.IdProducto,
                         trans_inv_stock_prod.Lote, trans_inv_stock_prod.Fecha_Vence, trans_inv_stock_prod.idubicacion,
-                        trans_inv_stock_prod.idbodega,unidad_medida.Nombre, producto_presentacion.factor,trans_inv_stock_prod.Lic_Plate) AS T                                     
-                        GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.ubicacion, t.UMBas, t.Presentacion,t.factor, t.Licencia
+                        trans_inv_stock_prod.idbodega,unidad_medida.Nombre, producto_presentacion.factor,trans_inv_stock_prod.Lic_Plate, 
+                        trans_inv_stock_prod.codigo_talla, trans_inv_stock_prod.codigo_color) AS T                                     
+                        GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.ubicacion, t.UMBas, t.Presentacion,t.factor, t.Licencia, t.Codigo_Talla, t.Codigo_Color
                         ORDER BY T.codigo "
 
             Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)

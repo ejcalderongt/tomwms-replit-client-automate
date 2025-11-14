@@ -992,7 +992,7 @@ Partial Class frmCliente
         Me.GrpCliente.Location = New System.Drawing.Point(0, 0)
         Me.GrpCliente.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.GrpCliente.Name = "GrpCliente"
-        Me.GrpCliente.Size = New System.Drawing.Size(1552, 603)
+        Me.GrpCliente.Size = New System.Drawing.Size(1697, 603)
         Me.GrpCliente.TabIndex = 0
         '
         'cmbBodegaAreaSAP
@@ -1453,7 +1453,7 @@ Partial Class frmCliente
         Me.GrpClienteBodega.Location = New System.Drawing.Point(0, 0)
         Me.GrpClienteBodega.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.GrpClienteBodega.Name = "GrpClienteBodega"
-        Me.GrpClienteBodega.Size = New System.Drawing.Size(1552, 603)
+        Me.GrpClienteBodega.Size = New System.Drawing.Size(1697, 603)
         Me.GrpClienteBodega.TabIndex = 0
         '
         'GroupControl3
@@ -1463,7 +1463,7 @@ Partial Class frmCliente
         Me.GroupControl3.Location = New System.Drawing.Point(2, 28)
         Me.GroupControl3.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.GroupControl3.Name = "GroupControl3"
-        Me.GroupControl3.Size = New System.Drawing.Size(1548, 573)
+        Me.GroupControl3.Size = New System.Drawing.Size(1693, 573)
         Me.GroupControl3.TabIndex = 0
         Me.GroupControl3.Text = "Selección de Bodega"
         '
@@ -1478,7 +1478,7 @@ Partial Class frmCliente
         Me.Grid.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.Grid.Name = "Grid"
         Me.Grid.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemCheckEdit1, Me.RepositoryItemCheckEdit2, Me.AreaBodegaGridLookUpEdit})
-        Me.Grid.Size = New System.Drawing.Size(1544, 543)
+        Me.Grid.Size = New System.Drawing.Size(1689, 543)
         Me.Grid.TabIndex = 0
         Me.Grid.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gridView1})
         '
@@ -1594,7 +1594,7 @@ Partial Class frmCliente
         '
         Me.GroupControl1.Controls.Add(Me.dgridDirecciones)
         Me.GroupControl1.Dock = System.Windows.Forms.DockStyle.Right
-        Me.GroupControl1.Location = New System.Drawing.Point(862, 0)
+        Me.GroupControl1.Location = New System.Drawing.Point(1007, 0)
         Me.GroupControl1.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.GroupControl1.Name = "GroupControl1"
         Me.GroupControl1.Size = New System.Drawing.Size(690, 603)
@@ -1890,7 +1890,7 @@ Partial Class frmCliente
         Me.datosCliente.Controls.Add(Me.GrpCliente)
         Me.datosCliente.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.datosCliente.Name = "datosCliente"
-        Me.datosCliente.Size = New System.Drawing.Size(1552, 603)
+        Me.datosCliente.Size = New System.Drawing.Size(1697, 603)
         Me.datosCliente.Text = "Datos Cliente"
         '
         'tiempoaceptacion
@@ -1907,7 +1907,7 @@ Partial Class frmCliente
         Me.clienteBodega.Controls.Add(Me.GrpClienteBodega)
         Me.clienteBodega.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.clienteBodega.Name = "clienteBodega"
-        Me.clienteBodega.Size = New System.Drawing.Size(1552, 603)
+        Me.clienteBodega.Size = New System.Drawing.Size(1697, 603)
         Me.clienteBodega.Text = "Cliente Bodega"
         '
         'DireccionesEntrega
@@ -1918,7 +1918,7 @@ Partial Class frmCliente
         Me.DireccionesEntrega.Controls.Add(Me.GroupControl1)
         Me.DireccionesEntrega.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
         Me.DireccionesEntrega.Name = "DireccionesEntrega"
-        Me.DireccionesEntrega.Size = New System.Drawing.Size(1552, 603)
+        Me.DireccionesEntrega.Size = New System.Drawing.Size(1697, 603)
         Me.DireccionesEntrega.Text = "Direcciones de Entrega"
         '
         'ToolStripPR
@@ -1927,7 +1927,7 @@ Partial Class frmCliente
         Me.ToolStripPR.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdNewPR, Me.cmdDesactivarPresentacion})
         Me.ToolStripPR.Location = New System.Drawing.Point(0, 0)
         Me.ToolStripPR.Name = "ToolStripPR"
-        Me.ToolStripPR.Size = New System.Drawing.Size(862, 27)
+        Me.ToolStripPR.Size = New System.Drawing.Size(1007, 27)
         Me.ToolStripPR.TabIndex = 3
         Me.ToolStripPR.Text = "ToolStrip2"
         '

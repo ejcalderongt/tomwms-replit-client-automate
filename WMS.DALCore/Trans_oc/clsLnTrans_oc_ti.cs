@@ -31,7 +31,7 @@ public class clsLnTrans_oc_ti
             oBeTrans_oc_ti.Control_poliza = GetBool("control_poliza");
             oBeTrans_oc_ti.Requerir_documento_ref = GetBool("requerir_documento_ref");
             oBeTrans_oc_ti.Es_poliza_consolidada = GetBool("es_poliza_consolidada");
-            oBeTrans_oc_ti.Genera_tarea_ingreso = GetBool("genera_tarea_ingreso");
+            oBeTrans_oc_ti.Genera_tarea_ingreso= GetBool("genera_tarea_ingreso");
             oBeTrans_oc_ti.Requerir_proveedor_es_bodega_wms = GetBool("requerir_proveedor_es_bodega_wms");
             oBeTrans_oc_ti.Requerir_documento_ref_wms = GetBool("requerir_documento_ref_wms");
             oBeTrans_oc_ti.Requerir_ubic_rec_ingreso = GetBool("requerir_ubic_rec_ingreso");
@@ -42,6 +42,7 @@ public class clsLnTrans_oc_ti
             oBeTrans_oc_ti.Permitir_excedente_lotes = GetBool("permitir_excedente_lotes");
             oBeTrans_oc_ti.Permitir_vencido_ingreso = GetBool("permitir_vencido_ingreso");
             oBeTrans_oc_ti.Es_importacion = GetBool("es_importacion");
+            oBeTrans_oc_ti.IdProductoEstado = GetInt("idproductoestado");
         }
         catch (Exception ex)
         {
@@ -624,4 +625,39 @@ public class clsLnTrans_oc_ti
         AddParam("@es_importacion", oBeTrans_oc_ti.Es_importacion);
     }
 
+    public static clsBeTrans_oc_ti? GetSingle(int pIdTipoIngresoOC,
+                                             SqlConnection lConnection,
+                                             SqlTransaction lTransaction)
+    {
+        clsBeTrans_oc_ti? result = null;
+
+        try
+        {
+            string vSQL = "SELECT TOP 1 * FROM trans_oc_ti WHERE IdTipoIngresoOC = @IdTipoIngresoOC";
+
+            using (var lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdTipoIngresoOC", pIdTipoIngresoOC);
+
+                var lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+                    var obj = new clsBeTrans_oc_ti();                    
+                    Cargar(ref obj, lRow);
+                    result = obj;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{nameof(GetSingle)} {ex.Message}", ex);
+        }
+
+        return result;
+    }
 }

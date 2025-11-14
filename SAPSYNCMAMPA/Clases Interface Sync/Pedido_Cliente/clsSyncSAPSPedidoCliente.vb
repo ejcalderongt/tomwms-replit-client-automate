@@ -304,6 +304,65 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
         Return resultadoFinal
     End Function
 
+    Public Shared Function Marcar_Pedido_Cliente_Sincronizado_SAP(ByVal pNoDocumento As String,
+                                                                   ByVal EstadoEnvio As Estado_Enviado_SAP,
+                                                                   ByVal lblprg As RichTextBox) As Boolean
+
+        Marcar_Pedido_Cliente_Sincronizado_SAP = False
+
+        Try
+
+            clsPublic.Actualizar_Progreso(lblprg, $"Actualizando el estado enviado = {EstadoEnvio} para permitir importación nuevamente en pedido de cliente: {pNoDocumento}")
+
+            Dim updateQuery As String = $"UPDATE ORDR 
+                                        SET ""U_EnviadoWMS"" = '{CInt(EstadoEnvio)}'
+                                        WHERE ""DocEntry"" = '{pNoDocumento}'"
+
+            Dim filasAfectadas As Integer = HanaHelper.Xcute(updateQuery)
+
+            If filasAfectadas > 0 Then
+                clsPublic.Actualizar_Progreso(lblprg, "Se actualizó el estado del documento.")
+                Marcar_Pedido_Cliente_Sincronizado_SAP = True
+            Else
+                clsPublic.Actualizar_Progreso(lblprg, "No se encontró ningún documento con el DocEntry proporcionado.")
+            End If
+
+        Catch ex As Exception
+            Throw New Exception($"{MethodBase.GetCurrentMethod.Name()} {ex.Message}")
+        End Try
+
+    End Function
+
+    Public Function Cerrar_Lineas_Documento_Salida(ByVal _Docentry As Integer,
+                                                ByRef lblprg As RichTextBox) As Boolean
+
+        Cerrar_Lineas_Documento_Salida = False
+
+        Try
+            clsPublic.Actualizar_Progreso(lblprg, $"Cerrando documento de traslado SAP con DocEntry = {_Docentry}...")
+
+            Dim updateQuery As String = $"
+            UPDATE WTQ1
+            SET ""LineStatus"" = 'C'
+            WHERE ""DocEntry"" = {_Docentry}"
+
+            Dim filasAfectadas As Integer = HanaHelper.Xcute(updateQuery)
+
+            If filasAfectadas > 0 Then
+                clsPublic.Actualizar_Progreso(lblprg, "Documento de traslado cerrado exitosamente.")
+                Cerrar_Lineas_Documento_Salida = True
+            Else
+                clsPublic.Actualizar_Progreso(lblprg, $"No se encontró el documento SAP con DocEntry: {_Docentry}")
+            End If
+
+        Catch errMsg As Exception
+            clsLnI_nav_ejecucion_det_error.Inserta_Log($"Error al cerrar líneas de traslado en SAP HANA: {MethodBase.GetCurrentMethod.Name()} {errMsg.Message}",
+                                                  "", BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet)
+            clsPublic.Actualizar_Progreso(lblprg, $"Error al cerrar líneas de traslado SAP: {vbNewLine}{errMsg.Message}{vbNewLine}")
+            Throw New Exception($"{MethodBase.GetCurrentMethod.Name()} {errMsg.Message}")
+        End Try
+
+    End Function
 
     Public Shared Sub Enviar_Transacciones_De_Salida(ByRef lblprg As RichTextBox,
                                                      ByRef prg As Windows.Forms.ProgressBar)
@@ -380,66 +439,6 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
         End Try
 
     End Sub
-
-    Public Shared Function Marcar_Pedido_Cliente_Sincronizado_SAP(ByVal pNoDocumento As String,
-                                                                   ByVal EstadoEnvio As Estado_Enviado_SAP,
-                                                                   ByVal lblprg As RichTextBox) As Boolean
-
-        Marcar_Pedido_Cliente_Sincronizado_SAP = False
-
-        Try
-
-            clsPublic.Actualizar_Progreso(lblprg, $"Actualizando el estado enviado = {EstadoEnvio} para permitir importación nuevamente en pedido de cliente: {pNoDocumento}")
-
-            Dim updateQuery As String = $"UPDATE ORDR 
-                                        SET ""U_EnviadoWMS"" = '{CInt(EstadoEnvio)}'
-                                        WHERE ""DocEntry"" = '{pNoDocumento}'"
-
-            Dim filasAfectadas As Integer = HanaHelper.Xcute(updateQuery)
-
-            If filasAfectadas > 0 Then
-                clsPublic.Actualizar_Progreso(lblprg, "Se actualizó el estado del documento.")
-                Marcar_Pedido_Cliente_Sincronizado_SAP = True
-            Else
-                clsPublic.Actualizar_Progreso(lblprg, "No se encontró ningún documento con el DocEntry proporcionado.")
-            End If
-
-        Catch ex As Exception
-            Throw New Exception($"{MethodBase.GetCurrentMethod.Name()} {ex.Message}")
-        End Try
-
-    End Function
-
-    Public Function Cerrar_Lineas_Documento_Salida(ByVal _Docentry As Integer,
-                                                ByRef lblprg As RichTextBox) As Boolean
-
-        Cerrar_Lineas_Documento_Salida = False
-
-        Try
-            clsPublic.Actualizar_Progreso(lblprg, $"Cerrando documento de traslado SAP con DocEntry = {_Docentry}...")
-
-            Dim updateQuery As String = $"
-            UPDATE WTQ1
-            SET ""LineStatus"" = 'C'
-            WHERE ""DocEntry"" = {_Docentry}"
-
-            Dim filasAfectadas As Integer = HanaHelper.Xcute(updateQuery)
-
-            If filasAfectadas > 0 Then
-                clsPublic.Actualizar_Progreso(lblprg, "Documento de traslado cerrado exitosamente.")
-                Cerrar_Lineas_Documento_Salida = True
-            Else
-                clsPublic.Actualizar_Progreso(lblprg, $"No se encontró el documento SAP con DocEntry: {_Docentry}")
-            End If
-
-        Catch errMsg As Exception
-            clsLnI_nav_ejecucion_det_error.Inserta_Log($"Error al cerrar líneas de traslado en SAP HANA: {MethodBase.GetCurrentMethod.Name()} {errMsg.Message}",
-                                                  "", BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet)
-            clsPublic.Actualizar_Progreso(lblprg, $"Error al cerrar líneas de traslado SAP: {vbNewLine}{errMsg.Message}{vbNewLine}")
-            Throw New Exception($"{MethodBase.GetCurrentMethod.Name()} {errMsg.Message}")
-        End Try
-
-    End Function
 
     Public Shared Function Enviar_Entrega_Mercancia_OV_SAP2(ByVal _Docentry As Integer,
                                                             ByVal lINavTransaccionesOut As List(Of clsBeI_nav_transacciones_out),

@@ -1,8 +1,6 @@
 ﻿Imports System.Data.SqlClient
 
 Partial Public Class clsLnTrans_oc_imagen
-
-
     Public Shared Function GetByOrdenCompra(ByVal pIdOrdenCompraEnc) As List(Of clsBeTrans_oc_imagen)
 
         Dim lReturnList As New List(Of clsBeTrans_oc_imagen)
@@ -50,10 +48,9 @@ Partial Public Class clsLnTrans_oc_imagen
         End Try
 
     End Function
-
     Public Shared Function Get_Imagenes_By_IdOrdenCompraEnc(ByVal pIdOrdenCompraEnc As Integer,
-                                     ByRef lConnection As SqlConnection,
-                                     ByRef lTransaction As SqlTransaction) As List(Of clsBeTrans_oc_imagen)
+                                                            ByRef lConnection As SqlConnection,
+                                                            ByRef lTransaction As SqlTransaction) As List(Of clsBeTrans_oc_imagen)
 
         Dim lReturnList As New List(Of clsBeTrans_oc_imagen)
 
@@ -94,7 +91,6 @@ Partial Public Class clsLnTrans_oc_imagen
         End Try
 
     End Function
-
     Public Shared Function MaxID(ByVal pIdOrdenCompraEnc As Integer) As Integer
 
         Try
@@ -124,15 +120,12 @@ Partial Public Class clsLnTrans_oc_imagen
         End Try
 
     End Function
-
-
     Public Shared Sub Delete(ByVal pIdOrdenCompraEnc As Integer, ByVal pIdOrdenCompraImg As Integer)
 
         Dim vSQL As String = "DELETE FROM trans_oc_imagen WHERE IdOrdenCompraEnc=@IdOrdenCompraEnc AND IdOrdenCompraImg=@IdOrdenCompraImg"
 
         Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
-            '#HS 07112017 Quité query dentro de SqlCommand.
             Using lCommand As New SqlCommand(vSQL, lConnection)
 
                 lCommand.CommandType = CommandType.Text

@@ -3,6 +3,7 @@ using System.Data;
 using System.Diagnostics;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
+using System.Reflection;
 public class clsLnProducto_estado
 {
     private static readonly clsInsert Ins = new clsInsert();
@@ -33,35 +34,21 @@ public class clsLnProducto_estado
         cmd.Parameters.AddWithValue("@IdEstado", IdEstado);
         return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
     }
-    public static int InsertOrUpdate(IConfiguration config, clsBeProducto_estado e, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(clsBeProducto_estado e, SqlConnection conn, SqlTransaction tx)
     {
-        bool externa = conn != null && tx != null;
-        var lConn = externa ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTx = null;
-        if (!externa) { lConn.Open(); lTx = lConn.BeginTransaction(); }
-
         try
         {
-            if (Existe(e.IdEstado, lConn, externa ? tx! : lTx!))
-                return Actualizar(config, e, lConn, externa ? tx : lTx);
+            if (Existe(e.IdEstado, conn, tx))
+                return Actualizar(e, conn, tx);
             else
-                return Insertar(config, e, lConn, externa ? tx : lTx);
+                return Insertar(e, conn, tx);
         }
         catch (Exception)
         {
-            if (!externa && lTx != null) lTx.Rollback();
             throw;
         }
-        finally
-        {
-            if (!externa)
-            {
-                lTx?.Commit();
-                lConn.Close();
-            }
-        }
     }
-    public static int Insertar(IConfiguration config, clsBeProducto_estado e, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int Insertar(clsBeProducto_estado e, SqlConnection conn, SqlTransaction tx)
     {
         Ins.Init("producto_estado");
         Ins.Add("idestado", "@idestado", "F");
@@ -81,43 +68,21 @@ public class clsLnProducto_estado
         Ins.Add("tolerancia_dias_vencimiento", "@tolerancia_dias_vencimiento", "F");
 
         string sql = Ins.SQL();
-        bool externa = conn != null && tx != null;
-
-        using var localConn = externa ? null : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
 
         try
         {
-            if (!externa)
-            {
-                localConn!.Open();
-                localTx = localConn.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
-            using var cmd = new SqlCommand(sql, externa ? conn! : localConn!, externa ? tx! : localTx!);
+            using var cmd = new SqlCommand(sql, conn, tx);
             CrearComando(cmd, e);
             int result = cmd.ExecuteNonQuery();
-
-            if (!externa)
-                localTx?.Commit();
-
             return result;
         }
         catch (Exception ex)
         {
-            if (!externa)
-                localTx?.Rollback();
-
             var method = new StackTrace().GetFrame(0)?.GetMethod();
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
         }
-        finally
-        {
-            if (!externa && localConn?.State == ConnectionState.Open)
-                localConn.Close();
-        }
     }
-    public static int Actualizar(IConfiguration config, clsBeProducto_estado e, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int Actualizar(clsBeProducto_estado e, SqlConnection conn, SqlTransaction tx)
     {
         Upd.Init("producto_estado");
         Upd.Add("idpropietario", "@idpropietario", "F");
@@ -137,40 +102,18 @@ public class clsLnProducto_estado
         Upd.Where("IdEstado = @IdEstado");
 
         string sql = Upd.SQL();
-        bool externa = conn != null && tx != null;
-
-        using var localConn = externa ? null : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
 
         try
         {
-            if (!externa)
-            {
-                localConn!.Open();
-                localTx = localConn.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
-            using var cmd = new SqlCommand(sql, externa ? conn! : localConn!, externa ? tx! : localTx!);
+            using var cmd = new SqlCommand(sql, conn, tx);
             CrearComando(cmd, e);
             int result = cmd.ExecuteNonQuery();
-
-            if (!externa)
-                localTx?.Commit();
-
             return result;
         }
         catch (Exception ex)
         {
-            if (!externa)
-                localTx?.Rollback();
-
             var method = new StackTrace().GetFrame(0)?.GetMethod();
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name} → {ex.Message}", ex);
-        }
-        finally
-        {
-            if (!externa && localConn?.State == ConnectionState.Open)
-                localConn.Close();
         }
     }
     public static bool GetSingle(IConfiguration config, ref clsBeProducto_estado be)
@@ -358,48 +301,133 @@ public class clsLnProducto_estado
             if (!externa) lConn.Close();
         }
     }
-    public static int InsertOrUpdate(IConfiguration config, List<clsBeProducto_estado> estados, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(List<clsBeProducto_estado> estados, SqlConnection conn, SqlTransaction tx)
     {
-        bool externa = conn != null && tx != null;
-        var lConn = externa ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTx = null;
         int total = 0;
 
         try
         {
-            if (!externa)
-            {
-                lConn.Open();
-                lTx = lConn.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
             foreach (var e in estados)
             {
-                if (Existe(e.IdEstado, lConn, externa ? tx! : lTx!))
-                    total += Actualizar(config, e, lConn, externa ? tx : lTx);
+                if (Existe(e.IdEstado, conn, tx))
+                    total += Actualizar(e, conn, tx);
                 else
-                    total += Insertar(config, e, lConn, externa ? tx : lTx);
+                    total += Insertar(e, conn, tx);
             }
-
-            if (!externa)
-                lTx?.Commit();
 
             return total;
         }
         catch (Exception)
         {
-            if (!externa && lTx != null)
-                lTx.Rollback();
             throw;
         }
-        finally
+    }
+
+    public static bool Obtener(clsBeProducto_estado oBeProducto_estado,
+                              SqlConnection lConnection,
+                              SqlTransaction lTransaction)
+    {
+        try
         {
-            if (!externa)
+            const string sp = @"SELECT * FROM Producto_estado 
+                       WHERE IdEstado = @IdEstado";
+
+            using (SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction))
             {
-                lConn.Close();
-                lConn.Dispose();
-                lTx?.Dispose();
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@IDESTADO", oBeProducto_estado.IdEstado);
+
+                using (SqlDataAdapter dad = new SqlDataAdapter(cmd))
+                {
+                    DataTable dt = new DataTable();
+                    dad.Fill(dt);
+
+                    if (dt.Rows.Count == 1)
+                    {
+                        Cargar(ref oBeProducto_estado, dt.Rows[0]);
+                        return true;
+                    }
+                }
             }
+
+            return false;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static int Get_IdEstado_By_Codigo_Area(string pCodigo, SqlConnection lConnection, SqlTransaction lTransaction)
+    {
+        try
+        {
+            int rIdEstado = 0;
+
+            const string sp = @"SELECT pe.IdEstado
+                          FROM producto_estado pe
+                          WHERE pe.codigo_bodega_erp = @codigo_bodega_erp AND pe.activo = 1 AND 
+                                pe.utilizable = 1 AND pe.dañado = 0";
+
+            using (SqlCommand lCommand = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text })
+            {
+                lCommand.Parameters.AddWithValue("@codigo_bodega_erp", pCodigo);
+
+                object lReturnValue = lCommand.ExecuteScalar();
+
+                if (lReturnValue != DBNull.Value && lReturnValue != null)
+                {
+                    rIdEstado = Convert.ToInt32(lReturnValue);
+                }
+            }
+
+            return rIdEstado;
+        }        
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static List<clsBeProducto_estado> Existe_IdEstado_By_IdPropietario(int pIdPropietario,
+                                                                         int pIdEstado,
+                                                                         SqlConnection lConnection,
+                                                                         SqlTransaction lTransaction)
+    {
+        try
+        {
+            List<clsBeProducto_estado> lProductosEstado = new List<clsBeProducto_estado>();
+            clsBeProducto_estado vBeProductoEstado = new clsBeProducto_estado();
+
+            DataTable DT = new DataTable();
+
+            string sp = @"SELECT * FROM VW_Producto_Estado_Ubic_Bodega 
+                    WHERE activo = 1 
+                    AND IdPropietario = @IdPropietario                                
+                    AND IdEstado = @IdEstado";
+
+            using (SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text })
+            using (SqlDataAdapter dad = new SqlDataAdapter(cmd))
+            {
+                dad.SelectCommand.Parameters.AddWithValue("@IdPropietario", pIdPropietario);
+                dad.SelectCommand.Parameters.AddWithValue("@IdEstado", pIdEstado);
+                dad.Fill(DT);
+            }
+
+            foreach (DataRow pe in DT.Rows)
+            {
+                vBeProductoEstado = new clsBeProducto_estado();
+                Cargar(ref vBeProductoEstado, pe);
+                lProductosEstado.Add(vBeProductoEstado);
+            }
+
+            DT.Dispose();
+
+            return lProductosEstado;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
         }
     }
 }

@@ -29,7 +29,9 @@ Public Class clsBeTrans_inv_stock_prod
     Public Property Parametro_b As String = ""
     Public Property TipoTeoricoImportacion As Integer = 0
     Public Property Codigo_Area As String = ""
-
+    Public Property Codigo_Color As String = ""
+    Public Property Codigo_Talla As String = ""
+    Public Property IdProductoTallaColor As Integer = 0
     Sub New()
     End Sub
     Sub New(ByRef idinventario As Integer, ByVal idProducto As Integer, ByVal idPresentacion As Integer, ByVal cant As Double, ByVal peso As Double, ByVal idUnidadMedida As Integer)

@@ -1,4 +1,8 @@
-﻿namespace WMSWebAPI.Dtos.Ingresos
+﻿using WMSWebAPI.Be;
+using WMSWebAPI.Dtos.Bodega;
+using WMSWebAPI.Dtos.Catalogos;
+
+namespace WMSWebAPI.Dtos.Ingresos
 {
     public class RecepcionEncDto
     {
@@ -39,5 +43,26 @@
         public string? Carta_Cupo { get; set; }
         public int? IdEstado_Defecto_Recepcion { get; set; }
         public string? No_Contenedor { get; set; }
+        public RecepcionOcDto OrdenCompraRec { get; set; } = new RecepcionOcDto();
+        public List<RecepcionDetDto> Detalle { get; set; } = new List<RecepcionDetDto>();
+        public List<clsBeTrans_re_det_parametros> DetalleParametros { get; set; } = new List<clsBeTrans_re_det_parametros>();
+        public List<RecepcionOperadorDto> DetalleOperadores { get; set; } = new List<RecepcionOperadorDto>();
+        public List<RecepcionImagenDto> DetalleImagenes { get; set; } = new List<RecepcionImagenDto>();
+        public List<RecepcionFacturaDto> DetalleFacturas { get; set; } = new List<RecepcionFacturaDto>();
+        public bool IsNew { get; set; } = true;
+        public string Descripcion { get; set; } = string.Empty;
+        public string UbicacionRecepcion { get; set; } = string.Empty;
+        public string NombrePropietario { get; set; } = string.Empty;
+        public BodegaDto Bodega { get; set; } = new BodegaDto();
+        public string Usuario { get; set; } = string.Empty;
+        public PropietarioBodegaDto PropietarioBodega { get; set; } = new PropietarioBodegaDto();
+        public PropietarioDto PropietarioOC { get; set; } = new PropietarioDto();
+        public ProveedorDto Proveedor { get; set; } = new ProveedorDto();
+        public string NoOrdencompra { get; set; } = string.Empty;
+        public string NoDocumentoOC { get; set; } = string.Empty;
+        public string Muelle { get; set; } = string.Empty;
+        public string MuelleRec { get; set; } = string.Empty;
+        public string NOFactura { get; set; } = string.Empty;
+        public bool TareaHH { get; set; } 
     }
 }

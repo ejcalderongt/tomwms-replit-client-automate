@@ -5,6 +5,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic.CompilerServices;
 using WMS.EntityCore.Operador;
 using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Trans_re;
 public class clsLnOperador_bodega
 {
 
@@ -37,12 +38,18 @@ public class clsLnOperador_bodega
             throw new Exception(vMsgError);
         }
     }
-    public static int Insertar(IConfiguration config, clsBeOperador_bodega oBeOperador_bodega, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Insertar(clsBeOperador_bodega oBeOperador_bodega, SqlConnection pConection, SqlTransaction pTransaction)
     {
+        if (oBeOperador_bodega == null)
+            throw new ArgumentNullException(nameof(oBeOperador_bodega));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
 
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
@@ -58,51 +65,22 @@ public class clsLnOperador_bodega
 
             string sp = Ins.SQL();
 
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
+                cmd.CommandType = CommandType.Text;
+
+                Bind(cmd, oBeOperador_bodega);
+
+                rowsAffected = cmd.ExecuteNonQuery();
             }
 
-            Bind(cmd, oBeOperador_bodega);
-
-             rowsAffected = cmd.ExecuteNonQuery();
-
-            cmd.Dispose();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return rowsAffected;
         }
-        catch (SqlException ex1)
+        catch (SqlException ex)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+            string errorMessage = $"Error en Insertar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
     public static int Insertar(IConfiguration config, clsBeOperador_bodega oBeOperador_bodega)
     {
@@ -158,16 +136,21 @@ public class clsLnOperador_bodega
         }
         return rowsAffected;
     }
-    public static int Actualizar(IConfiguration config, clsBeOperador_bodega oBeOperador_bodega, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Actualizar(clsBeOperador_bodega oBeOperador_bodega, SqlConnection pConection, SqlTransaction pTransaction)
     {
+        if (oBeOperador_bodega == null)
+            throw new ArgumentNullException(nameof(oBeOperador_bodega));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
 
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
-
             Upd.Init("operador_bodega");
             Upd.Add("idoperadorbodega", "@idoperadorbodega", "F");
             Upd.Add("idoperador", "@idoperador", "F");
@@ -181,49 +164,22 @@ public class clsLnOperador_bodega
 
             string sp = Upd.SQL();
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
+                cmd.CommandType = CommandType.Text;
+
+                Bind(cmd, oBeOperador_bodega);
+
+                rowsAffected = cmd.ExecuteNonQuery();
             }
 
-            Bind(cmd, oBeOperador_bodega);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return rowsAffected;
         }
-        catch (SqlException ex1)
+        catch (SqlException ex)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+            string errorMessage = $"Error en Actualizar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
     public int Eliminar(IConfiguration config, clsBeOperador_bodega oBeOperador_bodega, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
@@ -541,52 +497,39 @@ public class clsLnOperador_bodega
         cmd.Parameters.Add(new SqlParameter("@user_mod", oBeOperador_bodega.User_mod));
         cmd.Parameters.Add(new SqlParameter("@fec_mod", oBeOperador_bodega.Fec_mod));
     }
-    public static void InsertarOActualizar(IConfiguration config, List<clsBeOperador_bodega> entities, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static void InsertarOActualizar(List<clsBeOperador_bodega> entities, SqlConnection conn, SqlTransaction tx)
     {
-        bool isExternalTx = conn != null && tx != null;
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
+        if (entities == null)
+            throw new ArgumentNullException(nameof(entities));
+
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
+
+        if (tx == null)
+            throw new ArgumentNullException(nameof(tx));
 
         try
         {
-            if (!isExternalTx)
-            {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
             foreach (var entity in entities)
             {
-                if (entity.IdOperadorBodega != 0) {
+                if (entity == null)
+                    continue;
 
-                    bool existe = Existe(entity.IdOperadorBodega, connection, isExternalTx ? tx! : localTx!);
+                if (entity.IdOperadorBodega != 0)
+                {
+                    bool existe = Existe(entity.IdOperadorBodega, conn, tx);
 
                     if (existe)
-                        Actualizar(config, entity, connection, isExternalTx ? tx : localTx);
+                        Actualizar(entity, conn, tx);
                     else
-                        Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                        Insertar(entity, conn, tx);
                 }
             }
-
-            if (!isExternalTx)
-                localTx?.Commit();
         }
         catch (SqlException ex)
         {
-            if (!isExternalTx && localTx is not null)
-                localTx.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
+            var method = System.Reflection.MethodBase.GetCurrentMethod();
             throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
-        }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
-            }
         }
     }
     public static bool Existe(int idOperadorBodega, SqlConnection conn, SqlTransaction tx)
@@ -614,6 +557,46 @@ public class clsLnOperador_bodega
             string vMsgError = string.Format("{0} {1}", currentMethodName?.Name ?? "UnknownMethod", ex.Message);
 
             throw new Exception(vMsgError, ex);
+        }
+    }
+
+    public static List<clsBeOperador_bodega> Get_All_By_IdBodega(int Idbodega,
+                                                                SqlConnection lConnection,
+                                                                SqlTransaction lTransaction)
+    {
+        try
+        {
+            List<clsBeOperador_bodega> lReturnList = new List<clsBeOperador_bodega>();
+
+            string vSQL = "SELECT * FROM operador_bodega WHERE Idbodega = @Idbodega";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Parameters.AddWithValue("@Idbodega", Idbodega);
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable != null && lDataTable.Rows.Count > 0)
+                {
+                    foreach (DataRow lRow in lDataTable.Rows)
+                    {
+                        clsBeOperador_bodega Obj = new clsBeOperador_bodega();
+                        Cargar(ref Obj, lRow);
+                        lReturnList.Add(Obj);
+                    }
+
+                    return lReturnList;
+                }
+
+                return lReturnList;
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
         }
     }
 }

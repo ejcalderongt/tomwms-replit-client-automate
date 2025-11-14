@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Cliente;
-using WMS.EntityCore.Dtos.Catalogos;
 using WMS.EntityCore.Dtos.Clientes;
-using WMS.EntityCore.Producto.ProductoSimple;
 
 namespace WMSWebAPI.Services.Cliente
 {
@@ -24,7 +22,7 @@ namespace WMSWebAPI.Services.Cliente
                 if (dto.codigo != null)
                 {
                     var ClienteMi3 = _mapper.Map<clsBeClientesMi3>(dto);
-                    clsLnCliente.Valida_Atributos(_configuration, ClienteMi3, conn, tx);
+                    clsLnCliente.Valida_Atributos(ClienteMi3, conn, tx);
                 }
 
             }

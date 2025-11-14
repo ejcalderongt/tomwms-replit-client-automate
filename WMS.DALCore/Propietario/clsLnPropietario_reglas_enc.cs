@@ -556,4 +556,41 @@ public class clsLnPropietario_reglas_enc
         cmd.Parameters.Add(new SqlParameter("@activo", oBe.Activo));
     }
 
+    public static List<clsBePropietario_reglas_enc> Get_All_By_IdPropietario(int pIdPropietario, SqlConnection lConnection, SqlTransaction lTransaction)
+    {
+        List<clsBePropietario_reglas_enc> Lista = new List<clsBePropietario_reglas_enc>();
+
+        try
+        {
+            string vSQL = "SELECT * FROM Propietario_reglas_enc WHERE IdPropietario=@IdPropietario AND Activo = 1";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPropietario", pIdPropietario);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    clsBePropietario_reglas_enc Obj;
+
+                    foreach (DataRow lRow in lDT.Rows)
+                    {
+                        Obj = new clsBePropietario_reglas_enc();
+                        Cargar(ref Obj, lRow);
+                        Lista.Add(Obj);
+                    }
+                }
+            }
+
+            return Lista;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("PropietarioReglasEnc_GetAllHH: " + ex.Message);
+        }
+    }
 }

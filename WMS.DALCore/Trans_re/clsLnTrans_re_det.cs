@@ -6,6 +6,8 @@ using System.Reflection;
 using WMS.EntityCore.Trans_re;
 using WMSWebAPI.Dtos.WebResponseDto;
 using Microsoft.Extensions.Configuration;
+using WMS.EntityCore.Producto;
+using WMS.EntityCore.Propietario;
 public class clsLnTrans_re_det
 {
 
@@ -58,23 +60,17 @@ public class clsLnTrans_re_det
             oBeTrans_re_det.IdOrdenCompraEnc = GetInt("IdOrdenCompraEnc");
             oBeTrans_re_det.IdOrdenCompraDet = GetInt("IdOrdenCompraDet");
             oBeTrans_re_det.IdJornadaSistema = GetInt("IdJornadaSistema");
+            oBeTrans_re_det.IdProductoTallaColor = GetInt("IdProductoTallaColor");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = sf?.GetMethod();
-            string vMsgError = string.Format("{{0}} {{1}}", currentMethodName, ex.Message);
-            throw new Exception(vMsgError);
+            throw;
         }
     }
 
-    public static int Insertar(IConfiguration config, clsBeTrans_re_det oBeTrans_re_det, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Insertar(clsBeTrans_re_det oBeTrans_re_det, SqlConnection pConection, SqlTransaction pTransaction)
     {
-
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
@@ -117,52 +113,18 @@ public class clsLnTrans_re_det
             Ins.Add("idjornadasistema", "@idjornadasistema", "F");
 
             string sp = Ins.SQL();
-
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+            var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
 
             Bind(cmd, oBeTrans_re_det);
-
             rowsAffected = cmd.ExecuteNonQuery();
-
             cmd.Dispose();
 
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return rowsAffected;
         }
-        catch (SqlException ex1)
+        catch (Exception ex)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-
-            throw new Exception(vMsgError);
+            throw new Exception(ex.Message);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
 
     public static int Insertar(IConfiguration config, clsBeTrans_re_det oBeTrans_re_det)
@@ -247,16 +209,12 @@ public class clsLnTrans_re_det
         return rowsAffected;
     }
 
-    public static int Actualizar(IConfiguration config, clsBeTrans_re_det oBeTrans_re_det, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Actualizar(clsBeTrans_re_det oBeTrans_re_det, SqlConnection pConection, SqlTransaction pTransaction)
     {
-
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
-
             Upd.Init("trans_re_det");
             Upd.Add("idrecepciondet", "@idrecepciondet", "F");
             Upd.Add("idrecepcionenc", "@idrecepcionenc", "F");
@@ -297,50 +255,17 @@ public class clsLnTrans_re_det
             Upd.Where("IdRecepcionDet = @IdRecepcionDet AND IdRecepcionEnc = @IdRecepcionEnc");
 
             string sp = Upd.SQL();
-
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+            var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
 
             Bind(cmd, oBeTrans_re_det);
-
             rowsAffected = cmd.ExecuteNonQuery();
 
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
+            return rowsAffected;
         }
-        catch (SqlException ex1)
+        catch (Exception ex)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-
-            throw new Exception(vMsgError);
+            throw new Exception(ex.Message);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
-        }
-        return rowsAffected;
     }
 
     public int Eliminar(IConfiguration config, clsBeTrans_re_det oBeTrans_re_det, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
@@ -535,10 +460,10 @@ public class clsLnTrans_re_det
                 {
                     using (SqlCommand lCommand = new SqlCommand(sp, lConnection) { CommandType = CommandType.Text })
                     {
-                        Object lreturnValue = lCommand.ExecuteScalar();
+                        var lreturnValue = lCommand.ExecuteScalar();
                         if (lreturnValue != DBNull.Value && lreturnValue != null)
                         {
-                            lMax = int.Parse((String)lreturnValue);
+                            lMax = int.Parse((string)lreturnValue);
                         }
                     }
                     lTransaction.Commit();
@@ -658,50 +583,23 @@ public class clsLnTrans_re_det
         cmd.Parameters.Add(new SqlParameter("@IdJornadaSistema", NullIfZero(o.IdJornadaSistema)));
     }
 
-    public static void InsertarOActualizar(IConfiguration config, List<clsBeTrans_re_det> entities, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static void InsertarOActualizar(List<clsBeTrans_re_det> entities, SqlConnection conn, SqlTransaction tx)
     {
-        bool isExternalTx = conn != null && tx != null;
-
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
-
         try
         {
-            if (!isExternalTx)
-            {
-                connection.Open();
-                localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted);
-            }
-
             foreach (var entity in entities)
             {
-                bool existe = Existe(entity.IdRecepcionDet, entity.IdRecepcionEnc, connection, isExternalTx ? tx! : localTx!);
+                bool existe = Existe(entity.IdRecepcionDet, entity.IdRecepcionEnc, conn, tx);
 
                 if (existe)
-                    Actualizar(config, entity, connection, isExternalTx ? tx : localTx);
+                    Actualizar(entity, conn, tx);
                 else
-                    Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                    Insertar(entity, conn, tx);
             }
-
-            if (!isExternalTx)
-                localTx?.Commit();
         }
-        catch (SqlException ex)
+        catch (Exception ex)
         {
-            if (!isExternalTx && localTx is not null)
-                localTx.Rollback();
-
-            var method = new StackTrace().GetFrame(0)?.GetMethod();
-            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
-        }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
-            }
+            throw new Exception(ex.Message);
         }
     }
 
@@ -883,6 +781,299 @@ public class clsLnTrans_re_det
             MethodBase? currentMethodName = sf?.GetMethod();
             string vMsgError = string.Format("{0} {1}", currentMethodName, ex.Message);
             throw new Exception(vMsgError);
+        }
+    }
+
+    public static int MaxID(int pIdRecepcionEnc,
+                            SqlConnection lConnection,
+                            SqlTransaction lTransaction)
+    {
+        try
+        {
+            int lMax = 0;
+
+            const string sp = @"SELECT ISNULL(MAX(IdRecepcionDet), 0) 
+                           FROM trans_re_det 
+                           WHERE IdRecepcionEnc = @IdRecepcionEnc";
+
+            using (SqlCommand lCommand = new SqlCommand(sp, lConnection, lTransaction))
+            {
+                lCommand.CommandType = CommandType.Text;
+                lCommand.Parameters.AddWithValue("@IdRecepcionEnc", pIdRecepcionEnc);
+
+                object lReturnValue = lCommand.ExecuteScalar();
+
+                if (lReturnValue != DBNull.Value && lReturnValue != null)
+                {
+                    lMax = Convert.ToInt32(lReturnValue);
+                }
+            }
+
+            return lMax;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static List<clsBeTrans_re_det> Get_All_By_IdRecepcionEnc(int pIdRecepcionEnc,
+                                                                   SqlConnection lConnection,
+                                                                   SqlTransaction lTransaction)
+    {
+        List<clsBeTrans_re_det> lReturnList = new List<clsBeTrans_re_det>();
+
+        try
+        {
+            string vSQL = @"SELECT p.IdProducto, p.Control_Peso, det.* 
+                       FROM trans_re_det AS det 
+                       INNER JOIN producto_bodega AS pb ON det.IdProductoBodega = pb.IdProductoBodega 
+                       INNER JOIN producto AS p ON pb.IdProducto = p.IdProducto 
+                       WHERE IdRecepcionEnc = @IdRecepcionEnc";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", pIdRecepcionEnc);
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable != null && lDataTable.Rows.Count > 0)
+                {
+                    foreach (DataRow lRow in lDataTable.Rows)
+                    {
+                        clsBeTrans_re_det Obj = new clsBeTrans_re_det();
+
+                        Cargar(ref Obj, lRow);
+
+                        Obj.Producto.IdProducto = Convert.ToInt32(lRow["IdProducto"]);
+
+                        if (lRow["IdPresentacion"] != DBNull.Value && lRow["IdPresentacion"] != null)
+                        {
+                            Obj.Presentacion.IdPresentacion = Convert.ToInt32(lRow["IdPresentacion"]);
+                        }
+
+                        if (lRow["IdUnidadMedida"] != DBNull.Value && lRow["IdUnidadMedida"] != null)
+                        {
+                            Obj.UnidadMedida.IdUnidadMedida = Convert.ToInt32(lRow["IdUnidadMedida"]);
+                        }
+
+                        if (lRow["IdProductoEstado"] != DBNull.Value && lRow["IdProductoEstado"] != null)
+                        {
+                            Obj.ProductoEstado.IdEstado = Convert.ToInt32(lRow["IdProductoEstado"]);
+                        }
+
+                        if (lRow["IdMotivoDevolucion"] != DBNull.Value && lRow["IdMotivoDevolucion"] != null)
+                        {
+                            Obj.MotivoDevolucion.IdMotivoDevolucion = Convert.ToInt32(lRow["IdMotivoDevolucion"]);
+                        }
+
+                        Obj.IsNew = false;
+
+                        lReturnList.Add(Obj);
+                    }
+                }
+            }
+
+            return lReturnList;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static void Guarda_Trans_re_det(List<clsBeTrans_re_det>? pListRecDet,
+                                          bool Comparar_Detalle_Actual,
+                                          clsBeTrans_re_enc pRecEnc,
+                                          SqlConnection lConnection,
+                                          SqlTransaction lTransaction)
+    {
+        try
+        {
+            if (pListRecDet != null)
+            {
+                List<clsBeTrans_re_det> pListRecDetActual = new List<clsBeTrans_re_det>();
+
+                if (Comparar_Detalle_Actual)
+                {
+                    pListRecDetActual = Get_All_By_IdRecepcionEnc(pRecEnc.IdRecepcionEnc, lConnection, lTransaction);
+
+                    foreach (clsBeTrans_re_det BeRecDet in pListRecDet)
+                    {
+                        if (BeRecDet.IsNew)
+                        {
+                            Insertar(BeRecDet, lConnection, lTransaction);
+                        }
+                        else
+                        {
+                            if (pListRecDetActual.Count > 0)
+                            {                                
+                                clsBeTrans_re_det ? BeRecDetActual = pListRecDetActual.Find(x => x.IdRecepcionDet == BeRecDet.IdRecepcionDet &&
+                                                               x.IdRecepcionEnc == BeRecDet.IdRecepcionEnc);
+
+                                if (BeRecDetActual != null)
+                                {
+                                    if (BeRecDet.IdProductoEstado != BeRecDetActual.IdProductoEstado)
+                                    {
+                                        throw new Exception($"No se puede modificar el estado del producto recibido: {BeRecDet.Nombre_producto_estado} <> {BeRecDetActual.Nombre_producto_estado}");
+                                    }
+                                    else if (BeRecDet.Lote != BeRecDetActual.Lote)
+                                    {
+                                        throw new Exception($"No se puede modificar el lote del producto recibido: {BeRecDet.Lote} <> {BeRecDetActual.Lote}");
+                                    }
+                                    else if (BeRecDet.Producto.control_vencimiento && BeRecDet.Fecha_vence.Date != BeRecDetActual.Fecha_vence.Date)
+                                    {
+                                        throw new Exception($"No se puede modificar la fecha-vence del producto recibido: {BeRecDet.Fecha_vence} <> {BeRecDetActual.Fecha_vence}");
+                                    }
+                                    else
+                                    {
+                                        Actualizar(BeRecDet, lConnection, lTransaction);
+                                    }
+                                }                                                                                             
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    public static List<clsBeTrans_re_det> Get_Detalle_By_IdRecepcionEnc(int pIdRecepcionEnc,
+                                                                       int pIdBodega,
+                                                                       SqlConnection lConnection,
+                                                                       SqlTransaction lTransaction)
+    {
+        List<clsBeTrans_re_det> lReturnList = new List<clsBeTrans_re_det>();
+
+        try
+        {
+            string vSQL = @"SELECT * FROM VW_Get_Detalle_By_IdRecepcionEnc 
+                       WHERE IdRecepcionEnc = @IdRecepcionEnc AND IdBodega = @IdBodega";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", pIdRecepcionEnc);
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega);
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable?.Rows.Count > 0)
+                {
+                    foreach (DataRow lRow in lDataTable.Rows)
+                    {
+                        clsBeTrans_re_det BeTransReDet = new clsBeTrans_re_det();
+                        Cargar(ref BeTransReDet, lRow);
+
+                        if (lRow["IdProducto"] != DBNull.Value)
+                        {
+                            BeTransReDet.Producto.IdProducto = Convert.ToInt32(lRow["IdProducto"]);
+                            clsLnProducto.Obtener(BeTransReDet.Producto, lConnection, lTransaction);
+                        }
+
+                        if (lRow["IdPropietarioBodega"] != DBNull.Value)
+                        {
+                            BeTransReDet.IdPropietarioBodega = Convert.ToInt32(lRow["IdPropietarioBodega"]);
+                        }
+
+                        if (lRow["IdPresentacion"] != DBNull.Value)
+                        {
+                            BeTransReDet.Presentacion.IdPresentacion = Convert.ToInt32(lRow["IdPresentacion"]);
+                            clsLnProducto_presentacion.Obtener(BeTransReDet.Presentacion, lConnection, lTransaction);
+                        }
+
+                        if (lRow["IdUnidadMedida"] != DBNull.Value)
+                        {
+                            BeTransReDet.UnidadMedida.IdUnidadMedida = Convert.ToInt32(lRow["IdUnidadMedida"]);
+                            clsLnUnidad_medida.Obtener(BeTransReDet.UnidadMedida, lConnection, lTransaction);
+                        }
+
+                        if (lRow["IdProductoEstado"] != DBNull.Value)
+                        {
+                            BeTransReDet.ProductoEstado.IdEstado = Convert.ToInt32(lRow["IdProductoEstado"]);
+                            clsLnProducto_estado.Obtener(BeTransReDet.ProductoEstado, lConnection, lTransaction);
+                        }
+
+                        if (lRow["IdMotivoDevolucion"] != DBNull.Value)
+                        {
+                            BeTransReDet.MotivoDevolucion.IdMotivoDevolucion = Convert.ToInt32(lRow["IdMotivoDevolucion"]);
+                            if (BeTransReDet.MotivoDevolucion.IdMotivoDevolucion != 0)
+                            {
+                                clsLnMotivo_devolucion.Obtener(BeTransReDet.MotivoDevolucion, lConnection, lTransaction);
+                            }
+                        }
+
+                        if (lRow["IdUbicacionRecepcion"] != DBNull.Value)
+                        {
+                            BeTransReDet.IdUbicacion = Convert.ToInt32(lRow["IdUbicacionRecepcion"]);
+                            BeTransReDet.IdUbicacionAnterior = Convert.ToInt32(lRow["IdUbicacionRecepcion"]);
+                        }
+
+                        BeTransReDet.IsNew = false;
+                        lReturnList.Add(BeTransReDet);
+                    }
+                }
+            }
+
+            return lReturnList;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static bool Existe_By_IdRecepcionEnc_And_IdRecepcionDet(clsBeTrans_re_det oBeTrans_re_det,
+                                                                   SqlConnection pConection,
+                                                                   SqlTransaction pTransaction)
+    {
+        bool Existe_By_IdRecepcionEnc_And_IdRecepcionDet = false;
+
+        try
+        {
+            string sp = "SELECT * FROM Trans_re_det " +
+                        "WHERE(IdRecepcionDet = @IdRecepcionDet) " +
+                        "AND (IdRecepcionEnc = @IdRecepcionEnc) ";
+
+            if (!string.IsNullOrEmpty(oBeTrans_re_det.Lic_plate?.Trim()))
+            {
+                sp += " AND LIC_PLATE = @LIC_PLATE ";
+            }
+
+            using (SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text })
+            using (SqlDataAdapter dad = new SqlDataAdapter(cmd))
+            {
+                cmd.Parameters.Add(new SqlParameter("@IDRECEPCIONDET", oBeTrans_re_det.IdRecepcionDet));
+                cmd.Parameters.Add(new SqlParameter("@IDRECEPCIONENC", oBeTrans_re_det.IdRecepcionEnc));
+
+                if (!string.IsNullOrEmpty(oBeTrans_re_det.Lic_plate?.Trim()))
+                {
+                    cmd.Parameters.Add(new SqlParameter("@LIC_PLATE", oBeTrans_re_det.Lic_plate));
+                }
+
+                DataTable dt = new DataTable();
+                dad.Fill(dt);
+
+                if (dt.Rows.Count > 0)
+                {
+                    Existe_By_IdRecepcionEnc_And_IdRecepcionDet = true;
+                }
+            }
+
+            return Existe_By_IdRecepcionEnc_And_IdRecepcionDet;
+        }
+        catch (Exception)
+        {
+            throw;
         }
     }
 }

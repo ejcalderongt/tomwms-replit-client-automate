@@ -113,7 +113,8 @@ namespace WMS.EntityCore.Proveedor
         [Column("Codigo_Empresa_ERP")]
         [DisplayName("Codigo_Empresa_ERP")]
         public string Codigo_Empresa_ERP { get; set; } = "";
-
+        public bool IsNew { get; set; } = true;
+        public List<clsBeProveedor_tiempos>? TiemposProveedor { get; set; } = new List<clsBeProveedor_tiempos>();
         public clsBeProveedor() { }
 
         public object Clone()

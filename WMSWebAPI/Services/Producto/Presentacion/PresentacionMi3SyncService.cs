@@ -26,7 +26,7 @@ namespace WMSWebAPI.Services.Producto.Presentacion
                 if (dto.Codigo_presentacion != null)
                 {
                     var PresentacionMi3 = _mapper.Map<clsBeProducto_presentacionMi3>(dto);
-                    clsLnProducto_presentacion.Valida_Atributos(_configuration, PresentacionMi3, conn, tx);
+                    clsLnProducto_presentacion.Valida_Atributos(PresentacionMi3, conn, tx);
                 }
 
             }

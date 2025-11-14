@@ -1,8 +1,6 @@
 Imports System.Configuration
-Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
-Imports DevExpress.CodeParser
 
 Partial Public Class clsLnI_nav_ped_compra_enc
 
@@ -1652,8 +1650,8 @@ Partial Public Class clsLnI_nav_ped_compra_enc
             ' Evaluar si se requiere conversión a UM básica
             If BeConfigEnc.Convertir_decimales_a_umbas = 1 AndAlso BeConfigEnc.Interface_SAP Then
                 BePresentacion = clsLnProducto_presentacion.Get_Presentacion_Defecto_By_IdProducto(BeProductoBodega.IdProducto,
-                                                                                               lConnection,
-                                                                                               lTransInterface)
+                                                                                                   lConnection,
+                                                                                                   lTransInterface)
 
                 If BePresentacion IsNot Nothing Then
                     If BePresentacion.Factor <= 0 Then
@@ -1661,8 +1659,8 @@ Partial Public Class clsLnI_nav_ped_compra_enc
                     End If
 
                     clsPublic.Split_Decimal(navPedidoCompraDet.Quantity / BePresentacion.Factor,
-                                        vCantidadEnteraPres,
-                                        vCantidadDecimalUMBas)
+                                            vCantidadEnteraPres,
+                                            vCantidadDecimalUMBas)
 
                     vCantidadDecimalUMBas = Math.Round(vCantidadDecimalUMBas * BePresentacion.Factor)
                     vCantidadEnteraPres = vCantidadEnteraPres * BePresentacion.Factor

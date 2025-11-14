@@ -3,7 +3,6 @@ using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Propietario;
 using WMSWebAPI.Dtos.Catalogos;
-using WMSWebAPI.Dtos.Productos;
 using WMSWebAPI.Services;
 public class ProductoSyncService : IProductoSyncService
 {
@@ -17,7 +16,7 @@ public class ProductoSyncService : IProductoSyncService
     }
 
 
-    public void ProcesarProductoDesdeDto(ProductoTransDto dto, SqlConnection conn, SqlTransaction tx)
+    public void ProcesarProductoDesdeDto(ProductoDto dto, SqlConnection conn, SqlTransaction tx)
     {
         try
         {
@@ -38,7 +37,7 @@ public class ProductoSyncService : IProductoSyncService
             if (dto.PropietarioBodega != null)
             {
                 var propietario_bodega = _mapper.Map<List<clsBePropietario_bodega>>(dto.PropietarioBodega);
-                clsLnPropietario_bodega.InsertOrUpdate(_configuration, propietario_bodega, conn, tx);    
+                clsLnPropietario_bodega.InsertOrUpdate(propietario_bodega, conn, tx);    
             }
         }
         catch (Exception ex)
@@ -50,7 +49,7 @@ public class ProductoSyncService : IProductoSyncService
         {
             if (dto.Marca != null)
                 if (dto.Marca.IdMarca != 0)
-                    clsLnProducto_Marca.InsertOrUpdate(_configuration, _mapper.Map<clsBeProducto_marca>(dto.Marca), conn, tx);
+                    clsLnProducto_Marca.InsertOrUpdate(_mapper.Map<clsBeProducto_marca>(dto.Marca), conn, tx);
         }
         catch (Exception ex)
         {
@@ -61,7 +60,7 @@ public class ProductoSyncService : IProductoSyncService
         {
             if (dto.TipoProducto != null)
                 if (dto.TipoProducto.IdTipoProducto != 0)
-                    clsLnProducto_tipo.InsertOrUpdate(_configuration, _mapper.Map<clsBeProducto_tipo>(dto.TipoProducto), conn, tx);
+                    clsLnProducto_tipo.InsertOrUpdate(_mapper.Map<clsBeProducto_tipo>(dto.TipoProducto), conn, tx);
         }
         catch (Exception ex)
         {
@@ -72,7 +71,7 @@ public class ProductoSyncService : IProductoSyncService
         {
             if (dto.Clasificacion != null)
                 if (dto.Clasificacion.IdClasificacion != 0)
-                    clsLnProducto_clasificacion.InsertOrUpdate(_configuration, _mapper.Map<clsBeProducto_clasificacion>(dto.Clasificacion), conn, tx);
+                    clsLnProducto_clasificacion.InsertOrUpdate(_mapper.Map<clsBeProducto_clasificacion>(dto.Clasificacion), conn, tx);
         }
         catch (Exception ex)
         {
@@ -83,7 +82,7 @@ public class ProductoSyncService : IProductoSyncService
         {
             if (dto.Familia != null)
                 if (dto.Familia.IdFamilia != 0)
-                    clsLnProducto_familia.InsertOrUpdate(_configuration, _mapper.Map<clsBeProducto_familia>(dto.Familia), conn, tx);
+                    clsLnProducto_familia.InsertOrUpdate(_mapper.Map<clsBeProducto_familia>(dto.Familia), conn, tx);
         }
         catch (Exception ex)
         {
@@ -112,24 +111,24 @@ public class ProductoSyncService : IProductoSyncService
             throw new Exception("Error al procesar ParametroB → " + ex.Message, ex);
         }
 
-        //try
-        //{
-        //    if (dto.Presentaciones != null)
-        //    {
-        //        var presentaciones = _mapper.Map<List<clsBeProducto_presentacion>>(dto.Presentaciones);
-        //        clsLnProducto_presentacion.InsertOrUpdate(_configuration, presentaciones, conn, tx);
-        //    }
-        //}
-        //catch (Exception ex)
-        //{
-        //    throw new Exception("Error al procesar Presentaciones → " + ex.Message, ex);
-        //}        
+        try
+        {
+            if (dto.Presentaciones != null)
+            {
+                var presentaciones = _mapper.Map<List<clsBeProducto_presentacion>>(dto.Presentaciones);
+                clsLnProducto_presentacion.InsertOrUpdate(presentaciones, conn, tx);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Error al procesar Presentaciones → " + ex.Message, ex);
+        }
         try
         {
             if (dto.ProductoEstado != null)
             {
                 var producto_estado = _mapper.Map<List<clsBeProducto_estado>>(dto.ProductoEstado);
-                clsLnProducto_estado.InsertOrUpdate(_configuration, producto_estado, conn, tx);
+                clsLnProducto_estado.InsertOrUpdate(producto_estado, conn, tx);
             }
         }
         catch (Exception ex)
@@ -141,7 +140,7 @@ public class ProductoSyncService : IProductoSyncService
             var producto = _mapper.Map<clsBeProducto>(dto);
             if (producto != null)
                 if(producto.IdProducto != 0)                
-                    clsLnProducto.InsertOrUpdate(_configuration, producto, conn, tx);
+                    clsLnProducto.InsertOrUpdate(producto, conn, tx);
         }
         catch (Exception ex)
         {
@@ -152,7 +151,7 @@ public class ProductoSyncService : IProductoSyncService
             if (dto.ProductoBodega != null)
             {                
                 var producto_bodega = _mapper.Map<List<clsBeProducto_bodega>>(dto.ProductoBodega);
-                clsLnProducto_bodega.InsertOrUpdate(_configuration, producto_bodega, conn, tx);
+                clsLnProducto_bodega.InsertOrUpdate(producto_bodega, conn, tx);
             }
         }
         catch (Exception ex)
@@ -163,7 +162,7 @@ public class ProductoSyncService : IProductoSyncService
         {
             var unidad_medida = _mapper.Map<List<clsBeUnidad_medida>>(dto.UnidadMedida);
             if (unidad_medida != null)
-                clsLnUnidad_medida.InsertOrUpdate(_configuration, unidad_medida, conn, tx);
+                clsLnUnidad_medida.InsertOrUpdate(unidad_medida, conn, tx);
         }
         catch (Exception ex)
         {
@@ -176,7 +175,7 @@ public class ProductoSyncService : IProductoSyncService
         {
             var producto = _mapper.Map<clsBeProducto>(dto);
             if (producto != null)
-                clsLnProducto.InsertOrUpdate(_configuration, producto, conn, tx);
+                clsLnProducto.InsertOrUpdate(producto, conn, tx);
         }
         catch (Exception ex)
         {

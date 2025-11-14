@@ -111,4 +111,16 @@
         End Try
     End Function
 
+    Public Shared Function tFechaHoraSAP(ByVal pFecha As Date) As String
+        tFechaHoraSAP = ""
+        Try
+            If IsDate(pFecha) Then
+                tFechaHoraSAP = pFecha.ToString("dd/MM/yyyy HH:mm:ss")
+            End If
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+
+    End Function
+
 End Class

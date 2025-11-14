@@ -1,4 +1,8 @@
-﻿namespace WMSWebAPI.Dtos.Pedido
+﻿using WMSWebAPI.Dtos.Catalogos;
+using WMSWebAPI.Dtos.Datos_Maestros;
+using WMSWebAPI.Dtos.Picking;
+
+namespace WMSWebAPI.Dtos.Pedido
 {
     public class TransPeEncDto
     {
@@ -70,5 +74,14 @@
         public string Bodega_origen { get; set; } = string.Empty;
         public string Bodega_destino { get; set; } = string.Empty;
         public int IdMotivoDevolucion { get; set; } = 0;
+        public bool IsNew { get; set; } = true;
+        public List<TransPeDetDto> Detalle { get; set; } = new List<TransPeDetDto>();
+        public List<PickingDto> Picking { get; set; } = new List<PickingDto>();
+        public PropietarioBodegaDto PropietarioBodega { get; set; } = new PropietarioBodegaDto();
+        public ClienteDto Cliente { get; set; } = new ClienteDto();
+        public TransPeTipoDto TipoPedido { get; set; } = new TransPeTipoDto();
+        public TransPePolDto ObjPoliza { get; set; } = new TransPePolDto();
+        public string Codigo_Empresa_ERP { get; set; } = string.Empty;
+        public bool EsExportacion { get; set; } = false;
     }
 }

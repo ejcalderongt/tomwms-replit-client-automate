@@ -1,4 +1,7 @@
-﻿namespace WMSWebAPI.Dtos.Ingresos
+﻿using WMSWebAPI.Dtos.Catalogos;
+using WMSWebAPI.Dtos.Productos;
+
+namespace WMSWebAPI.Dtos.Ingresos
 {
     public class RecepcionDetDto
     {
@@ -38,5 +41,26 @@
         public int? IdOrdenCompraEnc { get; set; }
         public int? IdOrdenCompraDet { get; set; }
         public int? IdJornadaSistema { get; set; }
+        public ProductoDto Producto { get; set; } = new ProductoDto();
+        public ProductoPresentacionDto Presentacion { get; set; } = new ProductoPresentacionDto();
+        public ProductoEstadoDto ProductoEstado { get; set; } = new ProductoEstadoDto();
+        public UnidadMedidaDto UnidadMedida { get; set; } = new UnidadMedidaDto();
+        public string MotivoDevolucion { get; set; } = string.Empty;
+        public bool IsNew { get; set; } = true;
+        public bool Control_Peso { get; set; }
+        public int IdPropietarioBodega { get; set; }
+        public int IdUbicacion { get; set; }
+        public int IdUbicacionAnterior { get; set; }
+        public DateTime Fecha_Rec { get; set; }
+        public DateTime Fecha_tarea { get; set; }
+        public DateTime Hora_ini { get; set; }
+        public DateTime Hora_Fin { get; set; }
+        public string Estado_Rec { get; set; } = string.Empty;
+        public string UbicacionCompleta { get; set; } = string.Empty;
+        public decimal Uds_lic_plate { get; set; }
+        public string Host { get; set; } = string.Empty;
+        public string Talla { get; set; } = string.Empty;
+        public string Color { get; set; } = string.Empty;
+        public int IdProductoTallaColor { get; set; }
     }
 }

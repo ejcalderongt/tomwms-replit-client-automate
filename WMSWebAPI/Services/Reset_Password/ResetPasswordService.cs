@@ -58,12 +58,7 @@ namespace WMSWebAPI.Services.Reset_Password
                     var senderName = _configuration.GetValue<string>("SmtpSettings:DisplayName");
                     var senderPassword = _configuration["SmtpSettings:Password"];
 
-                    //var smtpServer = "smtp.ethereal.email";
-                    //var smtpPort = 587;
-                    //var enableSsl = true;
-                    //var senderEmail = "noemy.botsford@ethereal.email";
-                    //var senderName = "Soporte Portal UX";
-                    //var senderPassword = "NVmw2tj6ydPs86NY8w";
+                    if (senderEmail!=null)                    
 
                     using (var smtp = new SmtpClient(smtpServer, smtpPort))
                     {

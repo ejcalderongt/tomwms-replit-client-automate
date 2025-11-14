@@ -32,6 +32,15 @@ Public Class clsBe_vw_ajustes
     Public Property Nombre_Centro_Costo As String = ""
     Public Property Talla As String = ""
     Public Property Color As String = ""
+    Public Property User_Agr As String = ""
+    ''' <summary>
+    ''' #CKFK20251030 Agregamos estos tres campos para la integración con ERP 
+    ''' ya que  centro de costo maneja centro de costo dirección y departamento
+    ''' </summary>
+    ''' <returns></returns>
+    Public Property Centro_Costo_Erp As String = ""
+    Public Property Centro_Costo_Dir_Erp As String = ""
+    Public Property Centro_Costo_Dep_Erp As String = ""
 
     Sub New()
     End Sub

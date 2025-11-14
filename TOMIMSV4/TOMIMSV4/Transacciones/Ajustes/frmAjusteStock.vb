@@ -115,6 +115,10 @@ Public Class frmAjusteStock
             pBeTransAjustEnc.User_mod = AP.UsuarioAp.IdUsuario
             pBeTransAjustEnc.IdBodega = AP.IdBodega
             pBeTransAjustEnc.IdPropietarioBodega = cmbPropietarioBodega.EditValue
+            pBeTransAjustEnc.Centro_Costo_Erp = clsLnCentro_costo.Get_IdCentroCosto_By_Codigo(txtCentroCostoERP.Text)
+            pBeTransAjustEnc.Centro_Costo_Dep_Erp = clsLnCentro_costo.Get_IdCentroCosto_By_Codigo(txtCentroCostoDepERP.Text)
+            pBeTransAjustEnc.Centro_Costo_Dir_Erp = clsLnCentro_costo.Get_IdCentroCosto_By_Codigo(txtCentroCostoDirERP.Text)
+            pBeTransAjustEnc.IdCentroCosto = lcmbCentroCosto.EditValue
 
             clsLnTrans_ajuste_enc.Insertar(pBeTransAjustEnc)
 
@@ -158,6 +162,10 @@ Public Class frmAjusteStock
 
             cmbProductoFamilia.EditValue = pBeTransAjustEnc.IdProductoFamilia
             lcmbCentroCosto.EditValue = pBeTransAjustEnc.IdCentroCosto
+
+            txtCentroCostoERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(pBeTransAjustEnc.Centro_Costo_Erp)
+            txtCentroCostoDirERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(pBeTransAjustEnc.Centro_Costo_Dir_Erp)
+            txtCentroCostoDepERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(pBeTransAjustEnc.Centro_Costo_Dep_Erp)
 
             '#CKFK20220704 Cambié el clsLnTrans_ajuste_det.Get_All porque primero cargaba todos los ajustes para devolver el seleccionado
             lBeTransAjusteDet = clsLnTrans_ajuste_det.Get_By_IdAjusteEnc(pBeTransAjustEnc.Idajusteenc)
@@ -455,6 +463,7 @@ Public Class frmAjusteStock
                 BeAjusteDet.Codigo_ajuste = 0
                 BeAjusteDet.Enviado = False
                 BeAjusteDet.lic_plate = Stock.pObjStock.Lic_plate
+                BeAjusteDet.IdProductoTallaColor = Stock.pObjStock.IdProductoTallaColor
 
                 BeAjusteDet.idstockres = IdStockRes
                 BeAjusteDet.idstocklink = 0
@@ -3986,10 +3995,31 @@ Public Class frmAjusteStock
             'En encabezado guardar la bodega de WMS. 
             IMS.Listar_Clientes_By_IdEmpresa(cmbBodegaERP, AP.IdEmpresa)
 
-            IMS.Listar_Centro_Costo_By_IdEmpresa(lcmbCentroCosto, AP.IdEmpresa)
-
             '#GT28082025: si bodega controla talla/color mostrar columnas de lo contrario, ocultarlas.
             BeBodega = AP.Bodega
+
+            If BeBodega.Centro_Costo_Dep_Erp = "" AndAlso BeBodega.Centro_Costo_Dir_Erp = "" AndAlso BeBodega.Centro_Costo_Erp = "" Then
+
+                gcCentroCosto.Visible = False
+                lcmbCentroCosto.Visible = True
+                Label6.Visible = True
+
+                IMS.Listar_Centro_Costo_By_IdEmpresa(lcmbCentroCosto, AP.IdEmpresa)
+                txtCentroCostoERP.Text = ""
+                txtCentroCostoDirERP.Text = ""
+                txtCentroCostoDepERP.Text = ""
+
+            Else
+
+                gcCentroCosto.Visible = True
+                lcmbCentroCosto.Visible = False
+                Label6.Visible = False
+
+                txtCentroCostoERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(BeBodega.Centro_Costo_Erp)
+                txtCentroCostoDirERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(BeBodega.Centro_Costo_Dir_Erp)
+                txtCentroCostoDepERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(BeBodega.Centro_Costo_Dep_Erp)
+
+            End If
 
             'GT22042022_1034: Carga los tipos de ajuste activos para el combo del encabezado.
             IMS.Listar_Tipo_Ajuste_Activo(cmbTipoAjuste, BeBodega.Control_Talla_Color)

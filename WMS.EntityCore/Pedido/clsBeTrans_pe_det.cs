@@ -1,5 +1,8 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using WMS.EntityCore.Picking;
+using WMS.EntityCore.Producto;
+using WMSWebAPI.Be;
 
 namespace WMS.EntityCore.Pedido
 {
@@ -180,9 +183,29 @@ namespace WMS.EntityCore.Pedido
         [Column("IdCliente")]
         [DisplayName("IdCliente")]
         public int IdCliente { get; set; } = 0;
+        public bool IsNew { get; set; } = false;
+        public clsBeProducto Producto { get; set; } = new clsBeProducto();
+        public clsBeProducto_presentacion Presentacion { get; set; } = new clsBeProducto_presentacion();
+        public clsBeUnidad_medida UnidadMedida { get; set; } = new clsBeUnidad_medida();
+        public List<clsBeStock_res> ListaStockRes { get; set; } = new List<clsBeStock_res>();
+        public List<clsBeTrans_picking_ubic>? ListaPickingUbic { get; set; } = new List<clsBeTrans_picking_ubic>();
+        public string Codigo_Producto { get; set; } = string.Empty;
+        public string NombreProducto { get; set; } = string.Empty;
+        public string ProductoPresentacion { get; set; } = string.Empty;
+        public string ProductoUnidadMedida { get; set; } = string.Empty;
+        public string ProductoEstado { get; set; } = string.Empty;
+        public string BodegaUbicacion { get; set; } = string.Empty;
+        public double CantidadFisica { get; set; } = 0.0;
+        public double Factor { get; set; } = 0.0;
+        public double CantidadReservada { get; set; } = 0.0;
+        public double PesoReservado { get; set; } = 0.0;
+        public DateTime FechaIngreso { get; set; } = DateTime.MinValue;
+        public DateTime FechaVence { get; set; } = DateTime.MinValue;
+        public string Talla { get; set; } = "";
+        public string Color { get; set; } = "";
+        public int IdProductoTallaColor { get; set; } = 0;
 
         public clsBeTrans_pe_det() { }
-
         public object Clone()
         {
             return MemberwiseClone();

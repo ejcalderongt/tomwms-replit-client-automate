@@ -105,7 +105,10 @@ Public Class clsDataContractDI
         ''' </summary>
         <EnumMember>
         Traslado_Por_Estados_SAP = 13
+        <EnumMember>
+        Factura_Deudor = 14
 
+        Factura_Reserva_Cliente = 15
     End Enum
 
     <DataContract(Name:="IdTipoRubroERP")>

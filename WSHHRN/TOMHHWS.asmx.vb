@@ -8756,6 +8756,80 @@ Public Class TOMHHWS
     End Function
 
     <WebMethod(), SoapHeader("mArch")>
+    Public Function Guardar_Picking_Cm(ByVal pListaPicking As List(Of clsBeTrans_picking_ubic),
+                                       ByVal IdBodega As Integer,
+                                       ByVal pIdOperador As Integer,
+                                       ByVal host As String, TipoLista As Integer) As String
+
+        Guardar_Picking_Cm = False
+        Dim vResult As String = "Inicio picking"
+
+        Try
+            If TipoLista = 2 Then
+                For Each ObjUbic As clsBeTrans_picking_ubic In pListaPicking
+
+                    Dim BeStockRes = clsLnStock_res.GetSingle_By_IdStockRes(IdBodega, ObjUbic.IdStockRes)
+                    ObjUbic.Cantidad_Recibida = ObjUbic.Cantidad_Solicitada
+                    ObjUbic.IdOperadorBodega_Pickeo = pIdOperador
+                    ObjUbic.Acepto = True
+                    ObjUbic.Encontrado = True
+                    ObjUbic.Fecha_picking = Now
+                    ObjUbic.Fec_mod = Now
+
+                    clsLnTrans_picking_ubic.Actualizar_Picking(ObjUbic,
+                                                               BeStockRes,
+                                                               IdBodega,
+                                                               ObjUbic.Cantidad_Solicitada,
+                                                               host)
+                Next
+
+                vResult = " terminó la actualizacion"
+            Else
+                clsLnTrans_picking_ubic.Actualiza_Picking_Consolidado_Cm(pListaPicking(0),
+                                                                        pIdOperador,
+                                                                        host)
+
+                vResult = " terminó la actualizacion"
+            End If
+
+            Return String.Format("Res:{0}", vResult)
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
+
+    <WebMethod(), SoapHeader("mArch")>
     Public Function Actualizar_Picking_Con_Reemplazo_De_Pallet(ByVal oBeTrans_picking_ubic As clsBeTrans_picking_ubic,
                                                               ByVal BeStockRes As clsBeStock_res,
                                                               ByVal oBeTrans_picking_det As clsBeTrans_picking_det,
@@ -17154,27 +17228,19 @@ Public Class TOMHHWS
 
     '#MA20251015 Migracion de xml a json
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
-    Public Sub Get_Producto_Talla_Color_JSON(IdProductoTallaColor As Integer)
-
-        'As List(Of clsBeProducto_talla_color)
-        'Get_Producto_Talla_Color = Nothing
-        Dim curContext As HttpContext = HttpContext.Current
+    Public Sub Get_Producto_Talla_Color_JSON()
 
         Try
-            Dim listaProductos As List(Of clsBeProducto_talla_color)
-            listaProductos = clsLnProducto_talla_color.Get_All()
+            Dim ltallacolor As List(Of clsBeProducto_talla_color)
+            ltallacolor = clsLnProducto_talla_color.Get_All()
 
-            Dim jsonResponse As String = JsonConvert.SerializeObject(New With {.productos_talla_color = listaProductos},
-           New JsonSerializerSettings With {
-               .NullValueHandling = NullValueHandling.Include,
-               .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-               .Formatting = Formatting.None
-           })
+            HttpContext.Current.Response.AddHeader("Access-Control-Allow-Methods", "GET")
+            Dim strserialize As String = JsonConvert.SerializeObject(ltallacolor)
+            Dim currrentContext As HttpContext = HttpContext.Current
+            currrentContext.Response.ContentType = "application/json"
+            currrentContext.Response.Write(strserialize)
+            currrentContext.Response.Flush()
 
-            curContext.Response.Clear()
-            curContext.Response.ContentType = "application/json"
-            curContext.Response.Write(jsonResponse)
-            curContext.ApplicationInstance.CompleteRequest()
         Catch ex As Exception
 
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
@@ -17190,6 +17256,8 @@ Public Class TOMHHWS
                     Throw New Exception(Mensaje)
                 Else
                     Dim errorJson As String = JsonConvert.SerializeObject(New With {.Error = True, .Mensaje = ex.Message})
+                    Dim curContext As HttpContext = HttpContext.Current
+
                     curContext.Response.Clear()
                     curContext.Response.StatusCode = 500
                     curContext.Response.ContentType = "application/json"
@@ -17305,23 +17373,26 @@ Public Class TOMHHWS
                                                       ByVal pLicencia As String)
 
         Dim curContext As HttpContext = HttpContext.Current
-        'Get_Detalle_Rec_By_IdCompra_Licencia = Nothing
+        'Get_Detalle_Rec_By_IdCompra_Licencia_ = Nothing
 
         Try
             Dim listaDetalles As List(Of clsBeTrans_re_det)
             listaDetalles = clsLnTrans_re_det.Get_Detalle_Rec_By_IdCompra_Licencia(pIdOrdenCompra, pLicencia)
 
-            Dim jsonResponse As String = JsonConvert.SerializeObject(New With {.detalle_recepcion = listaDetalles},
+            Dim jsonResponse As String = JsonConvert.SerializeObject(listaDetalles,
             New JsonSerializerSettings With {
                 .NullValueHandling = NullValueHandling.Include,
                 .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 .Formatting = Formatting.None
             })
 
+            Dim jsonModificado As String = jsonResponse.Replace("[]", "null")
+
             curContext.Response.Clear()
             curContext.Response.ContentType = "application/json"
-            curContext.Response.Write(jsonResponse)
+            curContext.Response.Write(jsonModificado)
             curContext.ApplicationInstance.CompleteRequest()
+
 
         Catch ex As Exception
 

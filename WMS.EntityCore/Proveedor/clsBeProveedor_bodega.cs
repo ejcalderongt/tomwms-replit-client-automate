@@ -41,6 +41,7 @@ namespace WMS.EntityCore.Proveedor
         [Column("IdAreaOrigen")]
         [DisplayName("IdAreaOrigen")]
         public int IdAreaOrigen { get; set; } = 0;
+        public clsBeProveedor Proveedor { get; set; } = new clsBeProveedor();
 
         public clsBeProveedor_bodega() { }
 
