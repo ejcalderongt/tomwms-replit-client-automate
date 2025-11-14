@@ -1553,4 +1553,28 @@ Public Class frmPropietario
 
     End Sub
 
+    Private Sub cmdAlertas_Click(sender As Object, e As EventArgs) Handles cmdAlertas.Click
+        Try
+
+            Dim Add As New frmPropietarioReglasMensajes
+            Add.pBePropietario = pBePropietario
+            Add.ShowDialog()
+
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+    End Sub
+
+    Private Sub GrpEmpresaTB_Paint(sender As Object, e As PaintEventArgs) Handles GrpEmpresaTB.Paint
+
+    End Sub
 End Class

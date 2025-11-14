@@ -125,6 +125,7 @@ Partial Class frmPropietario
         Me.ViewDestinatario = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.GridView6 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.cmdAlertas = New DevExpress.XtraEditors.SimpleButton()
         Me.cmdAgregar = New DevExpress.XtraEditors.SimpleButton()
         Me.cmdEliminar = New DevExpress.XtraEditors.SimpleButton()
         Me.GroupControl6 = New DevExpress.XtraEditors.GroupControl()
@@ -161,7 +162,6 @@ Partial Class frmPropietario
         Me.dgridMovimientos = New DevExpress.XtraGrid.GridControl()
         Me.gviewMovimientos = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.GridView14 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.cmdAlertas = New DevExpress.XtraEditors.SimpleButton()
         IdEmpresaLabel = New System.Windows.Forms.Label()
         Label12 = New System.Windows.Forms.Label()
         ImagenLabel = New System.Windows.Forms.Label()
@@ -1398,6 +1398,17 @@ Partial Class frmPropietario
         Me.Panel1.Size = New System.Drawing.Size(56, 731)
         Me.Panel1.TabIndex = 1
         '
+        'cmdAlertas
+        '
+        Me.cmdAlertas.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdAlertas.ImageOptions.SvgImage = CType(resources.GetObject("cmdAlertas.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdAlertas.Location = New System.Drawing.Point(3, 79)
+        Me.cmdAlertas.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.cmdAlertas.Name = "cmdAlertas"
+        Me.cmdAlertas.Size = New System.Drawing.Size(48, 48)
+        Me.cmdAlertas.TabIndex = 2
+        Me.cmdAlertas.ToolTip = "Envío de mensajes por proceso"
+        '
         'cmdAgregar
         '
         Me.cmdAgregar.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -1742,17 +1753,6 @@ Partial Class frmPropietario
         '
         Me.GridView14.GridControl = Me.dgridMovimientos
         Me.GridView14.Name = "GridView14"
-        '
-        'cmdAlertas
-        '
-        Me.cmdAlertas.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmdAlertas.ImageOptions.SvgImage = CType(resources.GetObject("SimpleButton1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdAlertas.Location = New System.Drawing.Point(3, 79)
-        Me.cmdAlertas.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.cmdAlertas.Name = "cmdAlertas"
-        Me.cmdAlertas.Size = New System.Drawing.Size(48, 48)
-        Me.cmdAlertas.TabIndex = 2
-        Me.cmdAlertas.ToolTip = "Envío de mensajes por proceso"
         '
         'frmPropietario
         '
