@@ -12,7 +12,7 @@ namespace WMSWebAPI.Mapping_Profile
 
             try
             {
-                cfg.AssertConfigurationIsValid();
+                cfg.AssertConfigurationIsValid();   
                 logger.LogInformation("AutoMapper configuration is valid.");
             }
             catch (AutoMapperConfigurationException ex)
