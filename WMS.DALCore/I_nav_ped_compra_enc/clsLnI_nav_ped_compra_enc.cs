@@ -1098,7 +1098,7 @@ public class clsLnI_nav_ped_compra_enc
             clsBeTrans_re_enc? OutBeRecepcionEnc = new clsBeTrans_re_enc();
 
             if (lConnection != null && lTransInterface != null) {
-                if (BeConfigEnc.Crear_recepcion_de_compra_nav || BeTipoDocumento.Genera_tarea_ingreso)
+                if (BeConfigEnc.Crear_Recepcion_De_Compra_NAV || BeTipoDocumento.Genera_tarea_ingreso)
                 {
                     if (BeConfigEnc.Interface_SAP && BePedidoEnc != null)
                     {

@@ -76,13 +76,8 @@ public class clsBeI_nav_config_enc : ICloneable
         No = 0,
         Si = 1
     }
-
-        [Column("bodega_prorrateo1")]
-        [DisplayName("bodega_prorrateo1")]
-        public string Bodega_prorrateo1 { get; set; } = "";
-        public bool Interface_SAP { get; set; } = false;
-        public bool Equiparar_Productos { get; set; } = false;
-        //public bool Crear_Recepcion_De_Compra_NAV { get; set; } = false;
+        
+        public string Bodega_prorrateo1 { get; set; } = "";        
     public enum tDespacharExistenciaParcial
     {
         No = 0,
