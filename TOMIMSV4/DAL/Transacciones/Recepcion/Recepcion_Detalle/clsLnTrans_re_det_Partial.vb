@@ -1,5 +1,7 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data.Common
+Imports System.Data.SqlClient
 Imports System.Reflection
+Imports DevExpress.Utils.Drawing.Helpers
 
 Partial Public Class clsLnTrans_re_det
 
@@ -621,7 +623,7 @@ Partial Public Class clsLnTrans_re_det
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             '#MECR22092025: Se agrego nueva opcion de registro de logs para recepciones.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, 0, pStackTrace:=ex.StackTrace, pIdRecEnc:=pIdRecepcionEnc)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdRecEnc:=pIdRecepcionEnc, pIdRecDet:=pIdRecepcionDet)
             Throw ex
         End Try
 
@@ -652,7 +654,7 @@ Partial Public Class clsLnTrans_re_det
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             '#MECR22092025: Se agrego nueva opcion de registro de logs para recepciones
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, 0, pStackTrace:=ex.StackTrace, pIdRecEnc:=pIdRecepcionEnc)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdRecEnc:=pIdRecepcionEnc, pIdRecDet:=pIdRecepcionDet)
             Throw ex
         End Try
 
@@ -684,7 +686,7 @@ Partial Public Class clsLnTrans_re_det
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'MECR22092025: Se agrego nueva opcion de registro de logs para recepciones.
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, 0, pStackTrace:=ex.StackTrace, pIdRecEnc:=pIdRecepcionEnc)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdRecEnc:=pIdRecepcionEnc, pIdRecDet:=pIdRecepcionDet)
             Throw ex
         End Try
 
@@ -795,7 +797,11 @@ Partial Public Class clsLnTrans_re_det
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             '#MECR22092025: se agrego nueva opcion para registro de logs en recepciones
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, beTransReDet.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=pIdRecepcionEnc)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pIdUsuarioAgr:=beTransReDet.User_agr,
+                                                 pStackTrace:=ex.StackTrace,
+                                                 pIdRecEnc:=pIdRecepcionEnc,
+                                                 pIdRecDet:=pIdRecepcionDet)
             Throw ex
         End Try
 
@@ -910,7 +916,11 @@ Partial Public Class clsLnTrans_re_det
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             '#MECR22092025: Se agrego nueva opcion de registro de logs para recepciones
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, beTransReDet.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=pIdRecepcionEnc)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pIdUsuarioAgr:=beTransReDet.User_agr,
+                                                 pStackTrace:=ex.StackTrace,
+                                                 pIdRecEnc:=pIdRecepcionEnc,
+                                                 pIdRecDet:=pIdRecepcionDet)
             Throw ex
         End Try
 
@@ -958,6 +968,15 @@ Partial Public Class clsLnTrans_re_det
                                                                                      IIf(Es_Transaccion_Remota, pConnection, lConnection),
                                                                                      IIf(Es_Transaccion_Remota, pTransaction, lTrans))
 
+            '#GT13102025: Me encontré que se elimina de todo menos trans_movimientos (valido que sea la tarea tipo 1) porque es recepción BOF
+            Dim pTransMovimientos = New clsBeTrans_movimientos()
+            pTransMovimientos.IdRecepcion = pIdRecepcionEnc
+            pTransMovimientos.IdTransaccion = pIdRecepcionEnc
+            pTransMovimientos.IdRecepcionDet = pIdRecepcionDet
+            Dim FilasMovAfectadas = clsLnTrans_movimientos.Eliminar_Recepcion_BOF(pTransMovimientos, IIf(Es_Transaccion_Remota, pConnection, lConnection),
+                                                                                                     IIf(Es_Transaccion_Remota, pTransaction, lTrans))
+
+
             Resultado += String.Format("Eliminé {0} stockrec ", FilasAfectadas)
 
             FilasAfectadas = Delete_Rec_Det_Parametros(pIdRecepcionEnc,
@@ -989,11 +1008,12 @@ Partial Public Class clsLnTrans_re_det
             '#MECR22092025: Se agrego nueva opcion de registro de logs para recepciones
             If FilasAfectadas > 0 Then
                 Dim mensajeEliminacion As String = "Registro eliminado: " & pIdRecepcionDet & " de la recepcion No. " & pIdRecepcionEnc
-                Dim objError As New clsBeLog_error_wms_rec
-                objError.MensajeError = mensajeEliminacion
-                objError.IdRecepcionEnc = pIdRecepcionEnc
-
-                clsLnLog_error_wms_rec.Insertar(objError, IIf(Es_Transaccion_Remota, pConnection, lConnection), IIf(Es_Transaccion_Remota, pTransaction, lTrans))
+                clsLnLog_error_wms_rec.Agregar_Error(mensajeEliminacion,
+                                                     pIdRecEnc:=pIdRecepcionEnc,
+                                                     pIdRecDet:=pIdRecepcionDet,
+                                                     pConection:=If(Es_Transaccion_Remota, pConnection, lConnection),
+                                                     pTransaction:=If(Es_Transaccion_Remota, pTransaction, lTrans)
+)
             End If
 
             Resultado += String.Format("Eliminé {0} detalles de la recepción ", FilasAfectadas)
@@ -1127,17 +1147,17 @@ Partial Public Class clsLnTrans_re_det
             '#EJC202404270040: Log Error WMS. al eliminar línea de recepción BOF.
             '#GT16102024: Se agrega al log del error, el host desde donde se elimina la linea.
             '#MECR22092025: Se agrego nuevo log para recepciones.
-            Dim BeMensajeError As New clsBeLog_error_wms_rec
-            BeMensajeError.Item_No = pRecDet.Codigo_Producto
-            BeMensajeError.Fecha = Now
-            BeMensajeError.IdRecepcionEnc = pRecDet.IdRecepcionEnc
-            BeMensajeError.IdBodega = pRecEnc.IdBodega
-            BeMensajeError.Line_No = pRecDet.No_Linea
-            BeMensajeError.Cantidad = pRecDet.cantidad_recibida
-            BeMensajeError.IdUsuarioAgr = pRecEnc.User_agr
-            BeMensajeError.MensajeError = " #EJC240427: Se eliminó el producto " & pRecDet.Codigo_Producto & " Licencia: " & pRecDet.Lic_plate & " Cantidad: " & pRecDet.cantidad_recibida & " Usuario: " & pRecEnc.User_agr & " host: " & pIdHost
-            BeMensajeError.Referencia_Documento = pRecEnc.NoOrdencompra
-            clsLnLog_error_wms_rec.Insertar(BeMensajeError)
+            Dim msg As String = " #EJC240427: Se eliminó el producto " & pRecDet.Codigo_Producto & " Licencia: " & pRecDet.Lic_plate & " Cantidad: " & pRecDet.cantidad_recibida & " Usuario: " & pRecEnc.User_agr & " host: " & pIdHost
+            clsLnLog_error_wms_rec.Agregar_Error(msg,
+                                                 pNumeroLinea:=pRecDet.No_Linea,
+                                                 pUMBas:=pRecDet.UnidadMedida.Nombre,
+                                                 pVariantCode:=pRecDet.Codigo_Producto,
+                                                 pCantidad:=pRecDet.cantidad_recibida,
+                                                 pReferenciaDocumento:=pIdHost.ToString(),
+                                                 pIdRecEnc:=pIdRecepcionEnc,
+                                                 pIdRecDet:=pIdRecepcionDet,
+                                                 pConection:=If(Es_Transaccion_Remota, pConnection, lConnection),
+                                                 pTransaction:=If(Es_Transaccion_Remota, pTransaction, lTrans))
 
             If Not Es_Transaccion_Remota Then
 
@@ -1161,7 +1181,14 @@ Partial Public Class clsLnTrans_re_det
 
             '#MECR22092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1} {3}", MethodBase.GetCurrentMethod.Name(), ex.Message, pIdHost)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pRecEnc.IdBodega, pRecEnc.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=pRecEnc.IdRecepcionEnc)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pNumeroLinea:=pRecDet.No_Linea,
+                                                 pUMBas:=pRecDet.UnidadMedida.Nombre,
+                                                 pVariantCode:=pRecDet.Codigo_Producto,
+                                                 pCantidad:=pRecDet.cantidad_recibida,
+                                                 pReferenciaDocumento:=pIdHost.ToString(),
+                                                 pIdRecEnc:=pIdRecepcionEnc,
+                                                 pIdRecDet:=pIdRecepcionDet)
 
             'Throw New Exception(String.Format("{0} {1} {2}", MethodBase.GetCurrentMethod().Name, ex.Message, Resultado))
             Throw New Exception(String.Format("{0} {1}", ex.Message, Resultado))
@@ -1809,11 +1836,10 @@ Partial Public Class clsLnTrans_re_det
             '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 0,
-                                                 0,
-                                                 pListRecDet.FirstOrDefault().IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace,
-                                                 pIdRecEnc:=pListRecDet.FirstOrDefault().IdRecepcionEnc)
+                                                 pIdUsuarioAgr:=pListRecDet.FirstOrDefault().User_agr,
+                                                 pIdRecEnc:=pListRecDet.FirstOrDefault().IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
+
             Throw ex
         End Try
 
@@ -1851,7 +1877,18 @@ Partial Public Class clsLnTrans_re_det
 
                             '#MECR23092025: Se agrego nueva opcion de log para recepciones.
                             Dim msjInsercion As String = "Registro insertado: " & BeRecDet.IdRecepcionDet & " del producto: " & BeRecDet.Codigo_Producto & " en la recepción: " & pRecEnc.IdRecepcionEnc
-                            clsLnLog_error_wms_rec.Agregar_Error(msjInsercion, 0, pRecEnc.IdBodega, BeRecDet.User_agr, pIdRecEnc:=pRecEnc.IdRecepcionEnc)
+                            'clsLnLog_error_wms_rec.Agregar_Error(msjInsercion, 0, pRecEnc.IdBodega, BeRecDet.User_agr, pIdRecEnc:=pRecEnc.IdRecepcionEnc)
+                            clsLnLog_error_wms_rec.Agregar_Error(msjInsercion,
+                                                                 pIdBodega:=pRecEnc.IdBodega,
+                                                                 pIdUsuarioAgr:=BeRecDet.User_agr,
+                                                                 pNumeroLinea:=BeRecDet.No_Linea,
+                                                                 pUMBas:=BeRecDet.UnidadMedida.Nombre,
+                                                                 pVariantCode:=BeRecDet.Codigo_Producto,
+                                                                 pCantidad:=BeRecDet.cantidad_recibida,
+                                                                 pIdRecEnc:=pRecEnc.IdRecepcionEnc,
+                                                                 pIdRecDet:=BeRecDet.IdRecepcionDet,
+                                                                 pConection:=lConnection,
+                                                                 pTransaction:=lTransaction)
                         Else
 
                             If pListRecDetActual.Count > 0 Then
@@ -1873,12 +1910,17 @@ Partial Public Class clsLnTrans_re_det
                                         '#MECR23092025: Se agrego nueva opcion de log para recepciones.
                                         Dim msjActualizacion As String = "Registro actualizado: " & BeRecDet.IdRecepcionDet & " del producto: " & BeRecDet.Codigo_Producto & " en la recepción: " & pRecEnc.IdRecepcionEnc
                                         'clsLnLog_error_wms_rec.Agregar_Error(msjActualizacion, 0, pRecEnc.IdBodega, BeRecDet.User_agr, pIdRecEnc:=pRecEnc.IdRecepcionEnc)
-                                        Dim objError As New clsBeLog_error_wms_rec
-                                        objError.MensajeError = msjActualizacion
-                                        objError.IdBodega = pRecEnc.IdBodega
-                                        objError.IdUsuarioAgr = BeRecDet.User_agr
-                                        objError.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
-                                        clsLnLog_error_wms_rec.Insertar(objError, lConnection, lTransaction)
+                                        clsLnLog_error_wms_rec.Agregar_Error(msjActualizacion,
+                                                                             pIdBodega:=pRecEnc.IdBodega,
+                                                                             pIdUsuarioAgr:=BeRecDet.User_agr,
+                                                                             pNumeroLinea:=BeRecDet.No_Linea,
+                                                                             pUMBas:=BeRecDet.UnidadMedida.Nombre,
+                                                                             pVariantCode:=BeRecDet.Codigo_Producto,
+                                                                             pCantidad:=BeRecDet.cantidad_recibida,
+                                                                             pIdRecEnc:=pRecEnc.IdRecepcionEnc,
+                                                                             pIdRecDet:=BeRecDet.IdRecepcionDet,
+                                                                             pConection:=lConnection,
+                                                                             pTransaction:=lTransaction)
                                     End If
 
                                 End If
@@ -1899,7 +1941,7 @@ Partial Public Class clsLnTrans_re_det
         Catch ex As Exception
             '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pRecEnc.IdBodega, pRecEnc.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=pRecEnc.IdRecepcionEnc)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdBodega:=pRecEnc.IdBodega, pIdRecEnc:=pRecEnc.IdRecepcionEnc)
             Throw ex
         End Try
 
@@ -1923,7 +1965,11 @@ Partial Public Class clsLnTrans_re_det
         Catch ex As Exception
             '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, pBeTransReDet.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=pBeTransReDet.IdRecepcionEnc)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pIdUsuarioAgr:=pBeTransReDet.User_agr,
+                                                 pStackTrace:=ex.StackTrace,
+                                                 pIdRecEnc:=pBeTransReDet.IdRecepcionEnc,
+                                                 pIdRecDet:=pBeTransReDet.IdRecepcionDet)
             Throw ex
         End Try
 
@@ -1955,7 +2001,10 @@ Partial Public Class clsLnTrans_re_det
         Catch ex As Exception
             '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, pListRecDet.FirstOrDefault().User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=pListRecDet.FirstOrDefault().IdRecepcionEnc)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pIdUsuarioAgr:=pListRecDet.FirstOrDefault().User_agr,
+                                                 pStackTrace:=ex.StackTrace,
+                                                 pIdRecEnc:=pListRecDet.FirstOrDefault().IdRecepcionEnc)
             Throw ex
         End Try
 
@@ -2377,7 +2426,10 @@ Partial Public Class clsLnTrans_re_det
         Catch ex As Exception
             '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, pListRecDet.FirstOrDefault().User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=pListRecDet.FirstOrDefault().IdRecepcionEnc)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pIdUsuarioAgr:=pListRecDet.FirstOrDefault().User_agr,
+                                                 pStackTrace:=ex.StackTrace,
+                                                 pIdRecEnc:=pListRecDet.FirstOrDefault().IdRecepcionEnc)
             Throw ex
         End Try
 
@@ -2409,7 +2461,10 @@ Partial Public Class clsLnTrans_re_det
         Catch ex As Exception
             '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, pBeRecepcionDet.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=pBeRecepcionDet.IdRecepcionEnc)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pIdUsuarioAgr:=pBeRecepcionDet.User_agr,
+                                                 pStackTrace:=ex.StackTrace,
+                                                 pIdRecEnc:=pBeRecepcionDet.IdRecepcionEnc)
             Throw ex
         End Try
 
@@ -2441,7 +2496,15 @@ Partial Public Class clsLnTrans_re_det
                 If BeTransReDet.Lic_plate.Equals("") Then
                     '#MECR23092025: Se agrego nueva opcion de log para recepciones.
                     Dim vMsgError As String = "AVISO_02122024: insert rec_det lp_vacia IdRecepcionEnc:" & BeTransReDet.IdRecepcionEnc & " y IdRecepcionDet:" & BeTransReDet.IdRecepcionDet
-                    clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, BeTransReDet.User_agr, pIdRecEnc:=BeTransReDet.IdRecepcionEnc)
+                    clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                         pIdUsuarioAgr:=BeTransReDet.User_agr,
+                                                         pIdRecEnc:=BeTransReDet.IdRecepcionEnc,
+                                                         pNumeroLinea:=BeTransReDet.No_Linea,
+                                                         pUMBas:=BeTransReDet.UnidadMedida.Nombre,
+                                                         pVariantCode:=BeTransReDet.Codigo_Producto,
+                                                         pCantidad:=BeTransReDet.cantidad_recibida,
+                                                         pConection:=lConnection,
+                                                         pTransaction:=lTransaction)
                 End If
 
             Else
@@ -2451,7 +2514,15 @@ Partial Public Class clsLnTrans_re_det
                 If BeTransReDet.Lic_plate.Equals("") Then
                     '#MECR23092025: Se agrego nueva opcion de log para recepciones.
                     Dim vMsgError As String = "AVISO_02122024: update rec_det lp_vacia IdRecepcionEnc:" & BeTransReDet.IdRecepcionEnc & " y IdRecepcionDet:" & BeTransReDet.IdRecepcionDet
-                    clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, BeTransReDet.User_agr, pIdRecEnc:=BeTransReDet.IdRecepcionEnc)
+                    clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                         pIdUsuarioAgr:=BeTransReDet.User_agr,
+                                                         pIdRecEnc:=BeTransReDet.IdRecepcionEnc,
+                                                         pNumeroLinea:=BeTransReDet.No_Linea,
+                                                         pUMBas:=BeTransReDet.UnidadMedida.Nombre,
+                                                         pVariantCode:=BeTransReDet.Codigo_Producto,
+                                                         pCantidad:=BeTransReDet.cantidad_recibida,
+                                                         pConection:=lConnection,
+                                                         pTransaction:=lTransaction)
                 End If
 
             End If
@@ -2461,7 +2532,16 @@ Partial Public Class clsLnTrans_re_det
         Catch ex As Exception
             '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, BeTransReDet.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=BeTransReDet.IdRecepcionEnc)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                         pIdUsuarioAgr:=BeTransReDet.User_agr,
+                                                         pIdRecEnc:=BeTransReDet.IdRecepcionEnc,
+                                                         pNumeroLinea:=BeTransReDet.No_Linea,
+                                                         pUMBas:=BeTransReDet.UnidadMedida.Nombre,
+                                                         pVariantCode:=BeTransReDet.Codigo_Producto,
+                                                         pCantidad:=BeTransReDet.cantidad_recibida,
+                                                         pStackTrace:=ex.StackTrace,
+                                                         pConection:=lConnection,
+                                                         pTransaction:=lTransaction)
             Throw ex
         End Try
 
@@ -2492,7 +2572,11 @@ Partial Public Class clsLnTrans_re_det
         Catch ex As Exception
             '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, BeRecDet.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=BeRecDet.IdRecepcionEnc)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pIdUsuarioAgr:=BeRecDet.User_agr,
+                                                 pStackTrace:=ex.StackTrace,
+                                                 pIdRecEnc:=BeRecDet.IdRecepcionEnc,
+                                                 pIdRecDet:=BeRecDet.IdRecepcionDet)
             Throw ex
         End Try
 
@@ -2769,16 +2853,20 @@ Partial Public Class clsLnTrans_re_det
                     Resultado += String.Format(" Actualicé {0} orden de compra detalle lote ", FilasAfectadas)
                     Actualiza_Detalle_OC(IdOrdenCompraEnc, pIdRecepcionEnc, pIdRecepcionDet, lConnection, lTrans)
                     '#GT19122024: actualizo la OC por eliminar un detalle.
+
                     '#MECR23092025: Se agrego nueva opcion de log para recepciones.
-                    Dim BeMensajeErrorOC As New clsBeLog_error_wms_rec
-                    'BeMensajeErrorOC.IdError = clsLnLog_error_wms.MaxID() + 1
-                    BeMensajeErrorOC.IdRecepcionEnc = pIdRecepcionEnc
-                    BeMensajeErrorOC.Line_No = pIdRecepcionDet
-                    BeMensajeErrorOC.Fecha = Now
-                    BeMensajeErrorOC.IdBodega = pRecEnc.IdBodega
-                    BeMensajeErrorOC.Cantidad = pRecDet.cantidad_recibida
-                    BeMensajeErrorOC.MensajeError = "AVISO19122024A_HH_EliminarRecepcion: Se actualiza OC " & IdOrdenCompraEnc & " con recepcion det " & pIdRecepcionDet & " cantidad " & pRecDet.cantidad_recibida
-                    clsLnLog_error_wms_rec.Insertar(BeMensajeErrorOC, lConnection, lTrans)
+                    Dim msgAdvertencia As String = "AVISO19122024A_HH_EliminarRecepcion: Se actualiza OC " & IdOrdenCompraEnc & " con recepcion det " & pIdRecepcionDet & " cantidad " & pRecDet.cantidad_recibida
+                    clsLnLog_error_wms_rec.Agregar_Error(msgAdvertencia,
+                                                         pNumeroLinea:=pRecDet.No_Linea,
+                                                         pUMBas:=pRecDet.UnidadMedida.Nombre,
+                                                         pVariantCode:=pRecDet.Codigo_Producto,
+                                                         pCantidad:=pRecDet.cantidad_recibida,
+                                                         pReferenciaDocumento:=pIdHost.ToString(),
+                                                         pIdRecEnc:=pIdRecepcionEnc,
+                                                         pIdRecDet:=pIdRecepcionDet,
+                                                         pConection:=lConnection,
+                                                         pTransaction:=lTrans)
+
                     Resultado += String.Format(" Actualicé {0} orden de compra detalle ", FilasAfectadas)
                 Else
                     Resultado += " No actualicé el detalle de la OC."
@@ -2792,14 +2880,17 @@ Partial Public Class clsLnTrans_re_det
                     '#GT19122024: eliminar la linea de recepcion
                     Dim vMsgError As String = "AVISO19122024B_HH_EliminarRecepcion: Se elimina recepcion " & pIdRecepcionEnc & " linea detalle " & pIdRecepcionDet & " cantidad " & pRecDet.cantidad_recibida & " y licencia " & pRecDet.Lic_plate
                     'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pRecEnc.IdBodega, pRecEnc.User_agr, pIdRecEnc:=pIdRecepcionEnc)
-                    Dim BeMensajeErrorOC As New clsBeLog_error_wms_rec
-                    BeMensajeErrorOC.IdRecepcionEnc = pIdRecepcionEnc
-                    BeMensajeErrorOC.Line_No = pIdRecepcionDet
-                    BeMensajeErrorOC.Fecha = Now
-                    BeMensajeErrorOC.IdBodega = pRecEnc.IdBodega
-                    BeMensajeErrorOC.Cantidad = pRecDet.cantidad_recibida
-                    BeMensajeErrorOC.MensajeError = vMsgError
-                    clsLnLog_error_wms_rec.Insertar(BeMensajeErrorOC, lConnection, lTrans)
+                    clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                         pNumeroLinea:=pRecDet.No_Linea,
+                                                         pUMBas:=pRecDet.UnidadMedida.Nombre,
+                                                         pVariantCode:=pRecDet.Codigo_Producto,
+                                                         pCantidad:=pRecDet.cantidad_recibida,
+                                                         pReferenciaDocumento:=pIdHost.ToString(),
+                                                         pIdRecEnc:=pIdRecepcionEnc,
+                                                         pIdRecDet:=pIdRecepcionDet,
+                                                         pConection:=lConnection,
+                                                         pTransaction:=lTrans)
+
                 Else
                     Throw New Exception("ERROR19122024B_HH_EliminarRecepcion: No se puede eliminar la linea seleccionada de la recepciòn.")
                 End If
@@ -2817,14 +2908,17 @@ Partial Public Class clsLnTrans_re_det
                         '#MECR23092025: Se agrego nueva opcion de log para recepciones.
                         Dim vMsgError As String = "AVISO19122024C_HH_EliminarRecepcion: No se pudo eliminar registro de i_nav_transacciones_out, recepcion " & pIdRecepcionEnc & " recepcion detalle " & pIdRecepcionDet & " producto " & pRecDet.IdProductoBodega & " y licencia " & pRecDet.Lic_plate
                         'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pRecEnc.IdBodega, pRecEnc.User_agr, pIdRecEnc:=pIdRecepcionEnc)
-                        Dim BeMensajeErrorOC As New clsBeLog_error_wms_rec
-                        BeMensajeErrorOC.IdRecepcionEnc = pIdRecepcionEnc
-                        BeMensajeErrorOC.Line_No = pIdRecepcionDet
-                        BeMensajeErrorOC.Fecha = Now
-                        BeMensajeErrorOC.IdBodega = pRecEnc.IdBodega
-                        BeMensajeErrorOC.Cantidad = pRecDet.cantidad_recibida
-                        BeMensajeErrorOC.MensajeError = vMsgError
-                        clsLnLog_error_wms_rec.Insertar(BeMensajeErrorOC, lConnection, lTrans)
+                        clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                             pNumeroLinea:=pRecDet.No_Linea,
+                                                             pUMBas:=pRecDet.UnidadMedida.Nombre,
+                                                             pVariantCode:=pRecDet.Codigo_Producto,
+                                                             pCantidad:=pRecDet.cantidad_recibida,
+                                                             pReferenciaDocumento:=pIdHost.ToString(),
+                                                             pIdRecEnc:=pIdRecepcionEnc,
+                                                             pIdRecDet:=pIdRecepcionDet,
+                                                             pConection:=lConnection,
+                                                             pTransaction:=lTrans)
+
                         Throw New Exception("ERROR19122024B_HH_EliminarRecepcion: No se pudo eliminar el registro de i_nav_transacciones_out")
                     Else
                         Resultado += String.Format(" Eliminé {0} registros de la i_nav_transacciones_out ", FilasAfectadas)
@@ -2834,18 +2928,18 @@ Partial Public Class clsLnTrans_re_det
 
                 '#EJC202404270040: Log Error WMS. al eliminar línea de recepción BOF.
                 '#GT16102024: Se agrega al log del error, el host desde donde se elimina la linea.
-                Dim BeMensajeError As New clsBeLog_error_wms_rec
-                'BeMensajeError.IdError = clsLnLog_error_wms.MaxID() + 1
-                BeMensajeError.Item_No = pRecDet.Codigo_Producto
-                BeMensajeError.Fecha = Now
-                BeMensajeError.IdRecepcionEnc = pRecDet.IdRecepcionEnc
-                BeMensajeError.IdBodega = pRecEnc.IdBodega
-                BeMensajeError.Line_No = pRecDet.No_Linea
-                BeMensajeError.Cantidad = pRecDet.cantidad_recibida
-                BeMensajeError.IdUsuarioAgr = pRecEnc.User_agr
-                BeMensajeError.MensajeError = "EJC240427_HH_EliminarRecepcion: Se eliminó el producto " & pRecDet.Codigo_Producto & " Licencia: " & pRecDet.Lic_plate & " Cantidad: " & pRecDet.cantidad_recibida & " Usuario: " & pRecEnc.User_agr & " host: " & pIdHost
-                BeMensajeError.Referencia_Documento = pRecEnc.NoOrdencompra
-                clsLnLog_error_wms_rec.Insertar(BeMensajeError, lConnection, lTrans)
+                Dim msgFinal As String = "EJC240427_HH_EliminarRecepcion: Se eliminó el producto " & pRecDet.Codigo_Producto & " Licencia: " & pRecDet.Lic_plate & " Cantidad: " & pRecDet.cantidad_recibida & " Usuario: " & pRecEnc.User_agr & " host: " & pIdHost
+                clsLnLog_error_wms_rec.Agregar_Error(msgFinal,
+                                                     pNumeroLinea:=pRecDet.No_Linea,
+                                                     pUMBas:=pRecDet.UnidadMedida.Nombre,
+                                                     pVariantCode:=pRecDet.Codigo_Producto,
+                                                     pCantidad:=pRecDet.cantidad_recibida,
+                                                     pReferenciaDocumento:=pIdHost.ToString(),
+                                                     pIdRecEnc:=pIdRecepcionEnc,
+                                                     pIdRecDet:=pIdRecepcionDet,
+                                                     pConection:=lConnection,
+                                                     pTransaction:=lTrans)
+
 
             Else
                 Throw New Exception("ERROR_DE_PROCESO_20241205_HH: La recepción " & pIdRecepcionEnc & " fue previamente finalizada.")
@@ -2859,7 +2953,12 @@ Partial Public Class clsLnTrans_re_det
             If lTrans IsNot Nothing Then lTrans.Rollback()
             '#MECR23092025: Se agrego nueva opcion de log para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pRecEnc.IdBodega, pRecEnc.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=pIdRecepcionEnc)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pReferenciaDocumento:=pIdHost.ToString(),
+                                                 pStackTrace:=ex.StackTrace,
+                                                 pIdRecEnc:=pIdRecepcionEnc,
+                                                 pIdRecDet:=pIdRecepcionDet)
+
             Throw ex
         Finally
             If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()

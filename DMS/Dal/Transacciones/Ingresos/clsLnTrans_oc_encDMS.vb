@@ -93,7 +93,7 @@ Public Class clsLnTrans_oc_encDMS
                 Next
 
             Else
-                clsHelper.LogMensaje(lblprg, "Ingresos no encontrados para sincronizar", clsHelper.TipoMensaje.Error_)
+                clsHelper.LogMensaje(lblprg, "Ingresos nuevos no encontrados para sincronizar", clsHelper.TipoMensaje.Error_)
                 Exit Function
             End If
 
@@ -111,12 +111,12 @@ Public Class clsLnTrans_oc_encDMS
 
     Private Shared listaIdsEnviados As New List(Of Integer)
     Public Shared Async Function ProcesarIngresos(ByVal lblprg As RichTextBox, ByVal ingresos As List(Of clsBeTrans_oc_enc)) As Task(Of Object)
-        ' Inicializar variables
+
         Dim Contador As Integer = 0
         Dim resultado As String = ""
         Dim pRegistrosExitosos As Integer = 0
         Dim pRegistrosFallidos As Integer = 0
-        Dim api As New ApiService() ' Suponiendo que tienes un servicio para enviar los datos a la nube
+        Dim api As New ApiService()
         Dim registros As Integer = ingresos.Count
 
         ' Iterar sobre los registros de ingresos
@@ -126,10 +126,7 @@ Public Class clsLnTrans_oc_encDMS
             Dim intento As Integer = 0
             Const maxIntentos As Integer = 2 ' Maximo número de intentos
 
-            'pOC.IdOrdenCompraEnc = 12526
-
             clsHelper.LogMensaje(lblprg, "Iterando Registro: " & Contador & "/" & registros, clsHelper.TipoMensaje.Info)
-            'clsHelper.LogMensaje(lblprg, "Ingreso: " & pOC.IdOrdenCompraEnc, clsHelper.TipoMensaje.Info)
             Dim JsonOC = Crear_Json(lblprg, pOC)
 
             If String.IsNullOrEmpty(JsonOC) Then
@@ -148,7 +145,7 @@ Public Class clsLnTrans_oc_encDMS
                 Else
                     intento += 1
                     clsHelper.LogMensaje(lblprg, "Reintento de envio: " & intento, clsHelper.TipoMensaje.Info)
-                    Await Task.Delay(2000) ' Esperar 2 segundos entre intentos
+                    Await Task.Delay(1000) ' Esperar 2 segundos entre intentos
                 End If
             End While
 
@@ -187,6 +184,10 @@ Public Class clsLnTrans_oc_encDMS
                 localTransaction = True
             End If
 
+            '#GT08102025: evita duplicar el registro para el mismo ingreso
+            'If Not clsLnDMS_Log_sincronizacion_fallos.Existe_by_Ingreso(pOrdenCompra.IdOrdenCompraEnc, lConnection, lTransaction) Then
+
+            'End If
 
             BeLogSyncError = New clsBeDMS_Log_sincronizacion_fallos()
             BeLogSyncError.IdLogFallo = clsLnDMS_Log_sincronizacion_fallos.MaxID(lConnection, lTransaction) + 1
@@ -197,7 +198,6 @@ Public Class clsLnTrans_oc_encDMS
             BeLogSyncError.Mensaje_error = pMensaje
             BeLogSyncError.Fec_agr = Now
             BeLogSyncError.IdProducto = 0
-
             clsLnDMS_Log_sincronizacion_fallos.Insertar(BeLogSyncError, lConnection, lTransaction)
 
             If localTransaction Then
@@ -802,8 +802,7 @@ Public Class clsLnTrans_oc_encDMS
                         pStock_Rec = New clsBeStock_rec()
                         pStock = New clsBeStock()
 
-
-                        If re_det.IdOrdenCompraEnc = 3868 Then
+                        If re_det.IdRecepcionEnc = 282 AndAlso re_det.IdRecepcionDet = 5 Then
                             Debug.Write("aqui")
                         End If
 

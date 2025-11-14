@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data.Common
+Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnTrans_pe_det
@@ -1154,8 +1155,22 @@ Partial Public Class clsLnTrans_pe_det
                                                                                             lTransaction)
 
                 If BeConfigEnc Is Nothing Then
+                    '#MECR15102025: Se agrego bitacora de logs para pedidos
                     Dim vMsgError As String = "No se obtuvo la configuración de interface Operador_logistico = true IdBodega: " & pIdBodega & " IdPropietario: " & pIdPropietario
-                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                    clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                        pIdEmpresa:=pIdEmpresa,
+                                                        pIdBodega:=pIdBodega,
+                                                        pUsrAgr:=pBePedidoDet?.User_agr,
+                                                        pIdPedidoEnc:=pBePedidoDet?.IdPedidoEnc,
+                                                        pCodigoProducto:=pBePedidoDet?.Codigo_Producto,
+                                                        pCantidad:=pBePedidoDet?.Cantidad,
+                                                        pIdUMBas:=pBePedidoDet?.IdUnidadMedidaBasica,
+                                                        pIdEstado:=pBePedidoDet?.IdEstado,
+                                                        pNoLinea:=pBePedidoDet?.No_linea,
+                                                        pIdPresentacion:=pBePedidoDet?.IdPresentacion,
+                                                        pConection:=lConnection,
+                                                        pTransaction:=lTransaction)
                 End If
 
             Else
@@ -1165,8 +1180,22 @@ Partial Public Class clsLnTrans_pe_det
                                                                                          lTransaction)
 
                 If BeConfigEnc Is Nothing Then
+                    '#MECR15102025: Se agrego bitacora de logs para pedidos
                     Dim vMsgError As String = "No se obtuvo la configuración de interface Operador_logistico = false IdEmpresa: " & pIdEmpresa & " IdPropietario: " & pIdPropietario
-                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                    clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                        pIdEmpresa:=pIdEmpresa,
+                                                        pIdBodega:=pIdBodega,
+                                                        pUsrAgr:=pBePedidoDet?.User_agr,
+                                                        pIdPedidoEnc:=pBePedidoDet?.IdPedidoEnc,
+                                                        pCodigoProducto:=pBePedidoDet?.Codigo_Producto,
+                                                        pCantidad:=pBePedidoDet?.Cantidad,
+                                                        pIdUMBas:=pBePedidoDet?.IdUnidadMedidaBasica,
+                                                        pIdEstado:=pBePedidoDet?.IdEstado,
+                                                        pNoLinea:=pBePedidoDet?.No_linea,
+                                                        pIdPresentacion:=pBePedidoDet?.IdPresentacion,
+                                                        pConection:=lConnection,
+                                                        pTransaction:=lTransaction)
                 End If
 
             End If
@@ -2519,8 +2548,20 @@ Partial Public Class clsLnTrans_pe_det
             Actualiza_Picking_Existente = True
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pStackTrace:=ex.StackTrace,
+                                                pIdBodega:=BeTransPickingEnc?.IdBodega,
+                                                pUsrAgr:=pBePedidoDet?.User_agr,
+                                                pIdPedidoEnc:=pBePedidoDet?.IdPedidoEnc,
+                                                pCodigoProducto:=pBePedidoDet?.Codigo_Producto,
+                                                pCantidad:=pBePedidoDet?.Cantidad,
+                                                pIdUMBas:=pBePedidoDet?.IdUnidadMedidaBasica,
+                                                pIdEstado:=pBePedidoDet?.IdEstado,
+                                                pNoLinea:=pBePedidoDet?.No_linea,
+                                                pIdPresentacion:=pBePedidoDet?.IdPresentacion)
             Throw ex
         End Try
 
@@ -2587,8 +2628,19 @@ Partial Public Class clsLnTrans_pe_det
             Actualiza_Picking_Existente = True
 
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                pStackTrace:=ex.StackTrace,
+                                                pUsrAgr:=pBePedidoDet?.User_agr,
+                                                pIdPedidoEnc:=pBePedidoDet?.IdPedidoEnc,
+                                                pCodigoProducto:=pBePedidoDet?.Codigo_Producto,
+                                                pCantidad:=pBePedidoDet?.Cantidad,
+                                                pIdUMBas:=pBePedidoDet?.IdUnidadMedidaBasica,
+                                                pIdEstado:=pBePedidoDet?.IdEstado,
+                                                pNoLinea:=pBePedidoDet?.No_linea,
+                                                pIdPresentacion:=pBePedidoDet?.IdPresentacion)
             Throw ex
         End Try
 
@@ -3502,8 +3554,10 @@ Partial Public Class clsLnTrans_pe_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -3548,8 +3602,10 @@ Partial Public Class clsLnTrans_pe_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -3841,8 +3897,22 @@ Partial Public Class clsLnTrans_pe_det
                                                                                             lTransaction)
 
                 If BeConfigEnc Is Nothing Then
+                    '#MECR15102025: Se agrego bitacora de logs para pedidos
                     Dim vMsgError As String = "No se obtuvo la configuración de interface Operador_logistico = true IdBodega: " & pIdBodega & " IdPropietario: " & pIdPropietario
-                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                    clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                        pIdEmpresa:=pIdEmpresa,
+                                                        pIdBodega:=pIdBodega,
+                                                        pUsrAgr:=pBePedidoDet?.User_agr,
+                                                        pIdPedidoEnc:=pBePedidoDet?.IdPedidoEnc,
+                                                        pCodigoProducto:=pBePedidoDet?.Codigo_Producto,
+                                                        pCantidad:=pBePedidoDet?.Cantidad,
+                                                        pIdUMBas:=pBePedidoDet?.IdUnidadMedidaBasica,
+                                                        pIdEstado:=pBePedidoDet?.IdEstado,
+                                                        pNoLinea:=pBePedidoDet?.No_linea,
+                                                        pIdPresentacion:=pBePedidoDet?.IdPresentacion,
+                                                        pConection:=lConnection,
+                                                        pTransaction:=lTransaction)
                 End If
 
             Else
@@ -3852,8 +3922,22 @@ Partial Public Class clsLnTrans_pe_det
                                                                                          lTransaction)
 
                 If BeConfigEnc Is Nothing Then
+                    '#MECR15102025: Se agrego bitacora de logs para pedidos
                     Dim vMsgError As String = "No se obtuvo la configuración de interface Operador_logistico = false IdEmpresa: " & pIdEmpresa & " IdPropietario: " & pIdPropietario
-                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                    clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                        pIdEmpresa:=pIdEmpresa,
+                                                        pIdBodega:=pIdBodega,
+                                                        pUsrAgr:=pBePedidoDet?.User_agr,
+                                                        pIdPedidoEnc:=pBePedidoDet?.IdPedidoEnc,
+                                                        pCodigoProducto:=pBePedidoDet?.Codigo_Producto,
+                                                        pCantidad:=pBePedidoDet?.Cantidad,
+                                                        pIdUMBas:=pBePedidoDet?.IdUnidadMedidaBasica,
+                                                        pIdEstado:=pBePedidoDet?.IdEstado,
+                                                        pNoLinea:=pBePedidoDet?.No_linea,
+                                                        pIdPresentacion:=pBePedidoDet?.IdPresentacion,
+                                                        pConection:=lConnection,
+                                                        pTransaction:=lTransaction)
                 End If
 
             End If
@@ -3870,6 +3954,8 @@ Partial Public Class clsLnTrans_pe_det
                 pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1
                 pBeStockResSol.IdPedidoDet = pBePedidoDet.IdPedidoDet
                 ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
+
+
 
             Else
                 '#EJC20171023_0222PM: No me gusta esta chapusería pero se agregó por cuando modifican una línea existente en el pedido.

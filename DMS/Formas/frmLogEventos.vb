@@ -12,8 +12,15 @@ Public Class frmLogEventos
             Dim lista As New DataTable
             lista = clsLnDMS_Log_sincronizacion_fallos.Listar_By_Error()
 
+
             If lista IsNot Nothing AndAlso lista.Rows.Count > 0 Then
                 Dgrid.DataSource = lista
+
+                ' Ajustar automáticamente el tamaño de las columnas al encabezado
+                If GridView1.Columns.Count > 0 Then
+                    GridView1.BestFitColumns() ' Ajusta ancho según encabezado y contenido
+                End If
+
                 'lblRegs.Caption = String.Format("Registros: {0}", GridView1.RowCount)
             End If
 

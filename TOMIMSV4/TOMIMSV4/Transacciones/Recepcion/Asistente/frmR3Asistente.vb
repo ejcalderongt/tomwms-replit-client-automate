@@ -93,9 +93,9 @@ Public Class frmR3Asistente
             Dim vMsgError As String = ex.Message
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
                                                  pStackTrace:=ex.StackTrace)
 
         End Try
@@ -134,9 +134,9 @@ Public Class frmR3Asistente
             Dim vMsgError As String = ex.Message
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
@@ -183,9 +183,9 @@ Public Class frmR3Asistente
             Dim vMsgError As String = ex.Message
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
@@ -230,9 +230,9 @@ Public Class frmR3Asistente
             Dim vMsgError As String = ex.Message
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
                                                  pStackTrace:=ex.StackTrace)
 
         End Try

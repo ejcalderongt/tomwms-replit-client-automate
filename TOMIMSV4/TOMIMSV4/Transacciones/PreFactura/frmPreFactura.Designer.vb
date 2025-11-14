@@ -354,6 +354,7 @@ Partial Class frmPreFactura
         'chkVarianteCobro
         '
         Me.chkVarianteCobro.Caption = "Calcular con variante"
+        Me.chkVarianteCobro.Hint = "Aplica si el cobro es por unidad (mt2, mt3 o posición)"
         Me.chkVarianteCobro.Id = 12
         Me.chkVarianteCobro.Name = "chkVarianteCobro"
         '
@@ -1092,7 +1093,7 @@ Partial Class frmPreFactura
         Me.XtraTabPage2.Controls.Add(Me.dgriDetallePreCuenta)
         Me.XtraTabPage2.Margin = New System.Windows.Forms.Padding(5, 2, 5, 2)
         Me.XtraTabPage2.Name = "XtraTabPage2"
-        Me.XtraTabPage2.Size = New System.Drawing.Size(1592, 0)
+        Me.XtraTabPage2.Size = New System.Drawing.Size(1592, 262)
         Me.XtraTabPage2.Text = "Detalle de precuenta"
         '
         'dgriDetallePreCuenta
@@ -1103,7 +1104,7 @@ Partial Class frmPreFactura
         Me.dgriDetallePreCuenta.MainView = Me.gvdetalleprecuenta
         Me.dgriDetallePreCuenta.Margin = New System.Windows.Forms.Padding(5, 2, 5, 2)
         Me.dgriDetallePreCuenta.Name = "dgriDetallePreCuenta"
-        Me.dgriDetallePreCuenta.Size = New System.Drawing.Size(1592, 0)
+        Me.dgriDetallePreCuenta.Size = New System.Drawing.Size(1592, 262)
         Me.dgriDetallePreCuenta.TabIndex = 33
         Me.dgriDetallePreCuenta.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvdetalleprecuenta})
         '

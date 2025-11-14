@@ -44,9 +44,9 @@ Public Class frmFactura
             Dim vMsgError As String = ex.Message
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 AP.UsuarioAp.IdEmpresa,
-                                                 AP.IdBodega,
-                                                 AP.UsuarioAp.IdUsuario,
+                                                 pIdEmpresa:=AP.IdEmpresa,
+                                                 pIdBodega:=AP.IdBodega,
+                                                 pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
                                                  pStackTrace:=ex.StackTrace)
         End Try
 
@@ -80,13 +80,35 @@ Public Class frmFactura
                 pListObjF(pIndex).User_mod = AP.UsuarioAp.IdUsuario
                 pListObjF(pIndex).Fec_mod = Now
 
-                Dim find As Integer = -1
-                find = pListObjF.FindIndex(Function(b) b.NoFactura = txtFactura.Text.Trim)
-                If find > -1 Then
-                    Throw New Exception(String.Format("El número de factura {0} ya fue ingresada.", txtFactura.Text.Trim))
-                End If
 
-                pListObjF(pIndex).NoFactura = txtFactura.Text.Trim
+                Dim pNoFactura = txtFactura.Text.Trim()
+
+                If Not clsLnTrans_re_fact.Existe_By_NoFactura(pNoFactura) Then
+                    Dim find As Integer = -1
+                    find = pListObjF.FindIndex(Function(b) b.NoFactura = txtFactura.Text.Trim)
+                    If find > -1 Then
+
+                        Dim msgError = String.Format("El número de factura {0} ya fue ingresado en la lista.", txtFactura.Text.Trim)
+
+                        XtraMessageBox.Show(msgError,
+                        "Aviso",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning)
+
+                    End If
+
+                    pListObjF(pIndex).NoFactura = txtFactura.Text.Trim
+
+                Else
+
+                    Dim msgError = String.Format("El número de factura {0} ya fue ingresado en otra recepción.", txtFactura.Text.Trim)
+
+                    XtraMessageBox.Show(msgError,
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning)
+
+                End If
 
             Else
 
@@ -97,7 +119,13 @@ Public Class frmFactura
                     Dim find As Integer = -1
                     find = pListObjF.FindIndex(Function(b) b.NoFactura = txtFactura.Text.Trim)
                     If find > -1 Then
-                        Throw New Exception(String.Format("El número de factura {0} ya fue ingresada.", txtFactura.Text.Trim))
+                        'Throw New Exception(String.Format("El número de factura {0} ya fue ingresada.", txtFactura.Text.Trim))
+                        Dim msgError = String.Format("El número de factura {0} ya fue ingresado en la lista.", txtFactura.Text.Trim)
+
+                        XtraMessageBox.Show(msgError,
+                        "Aviso",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning)
                     End If
 
                     ObjF.Orden = pListObjF.Max(Function(b) b.Orden) + 1
@@ -105,23 +133,36 @@ Public Class frmFactura
                     ObjF.Orden = 1
                 End If
 
-                ObjF.NoFactura = txtFactura.Text.Trim
-                ObjF.Observacion = txtObservacion.Text.Trim
-                ObjF.Completa = chkCompleta.Checked
+                Dim pNoFactura = txtFactura.Text.Trim()
 
-                ObjF.User_agr = AP.UsuarioAp.IdUsuario
-                ObjF.Fec_agr = Now
-                ObjF.User_mod = AP.UsuarioAp.IdUsuario
-                ObjF.Fec_mod = Now
+                If Not clsLnTrans_re_fact.Existe_By_NoFactura(pNoFactura) Then
 
-                ObjF.Completa = chkCompleta.Checked
-                ObjF.IsNew = True
+                    ObjF.NoFactura = txtFactura.Text.Trim
+                    ObjF.Observacion = txtObservacion.Text.Trim
+                    ObjF.Completa = chkCompleta.Checked
 
-                pListObjF.Add(ObjF)
+                    ObjF.User_agr = AP.UsuarioAp.IdUsuario
+                    ObjF.Fec_agr = Now
+                    ObjF.User_mod = AP.UsuarioAp.IdUsuario
+                    ObjF.Fec_mod = Now
+
+                    ObjF.Completa = chkCompleta.Checked
+                    ObjF.IsNew = True
+
+                    pListObjF.Add(ObjF)
+                Else
+
+                    Dim msgError = String.Format("El número de factura {0} ya fue ingresado en otra recepción.", txtFactura.Text.Trim)
+
+                    XtraMessageBox.Show(msgError,
+                    "Aviso",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning)
+                End If
 
             End If
 
-            Limpiar()
+                Limpiar()
 
         Catch ex As Exception
             Me.Cursor = Cursors.Default

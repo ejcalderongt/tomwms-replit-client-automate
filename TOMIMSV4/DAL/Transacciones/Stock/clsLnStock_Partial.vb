@@ -1688,6 +1688,23 @@ Partial Public Class clsLnStock
 
                     Else
                         '#CKFK20221017 Modifiqué la vista VW_Stock_Resumen por la VW_Stock_Res
+                        '                  vSQL = "SELECT 
+                        '                  Isnull( cast(movimiento as nvarchar(50)),'Error') IMovimiento,
+                        '                  Isnull( cast(IdStock as nvarchar(50)),'Error') IdStock,
+                        '                  codigo as Código,
+                        'nombre as Producto,
+                        'Disponible_UMBas,
+                        'UnidadMedida,
+                        'Presentacion as Presentación,
+                        'NomEstado as Estado,
+                        'Fecha_Ingreso,Fecha_Vence,IdUbicacion,
+                        'Ubicacion_Tramo as Rack,
+                        'Nombre_Completo as UbicacionCompleta,IdRecepcionEnc,
+                        'MotivoDevolucion,codigo_poliza,numero_poliza,
+                        '                  Referencia,No_Docto AS No_Docto_Rec
+                        'from [VW_Stock_CLC] 
+                        'WHERE IdBodega=@IdBodega and IdPropietarioBodega=@IdPropietarioBodega "
+
                         vSQL = "SELECT codigo as Código,
 						nombre as Producto,
 						Disponible_UMBas,
@@ -1701,7 +1718,7 @@ Partial Public Class clsLnStock
                         Referencia,No_Docto AS No_Docto_Rec
 						from VW_Stock_Res 
 						WHERE IdBodega=@IdBodega and IdPropietarioBodega=@IdPropietarioBodega 
-						and disponible_umbas > 0 "
+						and disponible_umbas > 0"
 
                         If Not ConFechas Then
                             vSQL += String.Format(" AND cast(Fecha_Ingreso AS DATE) BETWEEN {0} AND {1}", FormatoFechas.fFecha(pFechaDel), FormatoFechas.fFecha(pFechaAl))
@@ -5971,6 +5988,7 @@ Partial Public Class clsLnStock
                     Else
                         vSQL += " ORDER BY" &
                         " stock.fecha_vence ASC," &
+                        " fecha_ingreso ASC, " &
                         " bodega_ubicacion.ubicacion_picking desc, " &
                         " CASE" &
                         " WHEN stock.cantidad = @CantidadSolicitada THEN 0" &

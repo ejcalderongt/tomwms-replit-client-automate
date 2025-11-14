@@ -898,7 +898,7 @@ Partial Class frmRecepcion
         'RibbonStatusBar1
         '
         Me.RibbonStatusBar1.ItemLinks.Add(Me.lblRegs)
-        Me.RibbonStatusBar1.Location = New System.Drawing.Point(2, 552)
+        Me.RibbonStatusBar1.Location = New System.Drawing.Point(2, 577)
         Me.RibbonStatusBar1.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonStatusBar1.Name = "RibbonStatusBar1"
         Me.RibbonStatusBar1.Ribbon = Me.RibbonControl
@@ -993,7 +993,7 @@ Partial Class frmRecepcion
         Me.GrpTarea.Location = New System.Drawing.Point(0, 316)
         Me.GrpTarea.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpTarea.Name = "GrpTarea"
-        Me.GrpTarea.Size = New System.Drawing.Size(644, 162)
+        Me.GrpTarea.Size = New System.Drawing.Size(806, 162)
         Me.GrpTarea.TabIndex = 5
         Me.GrpTarea.Text = "Fecha Tarea"
         '
@@ -1005,7 +1005,7 @@ Partial Class frmRecepcion
         Me.GroupControl10.Controls.Add(Me.dtmHoraIhh)
         Me.GroupControl10.Dock = System.Windows.Forms.DockStyle.Right
         Me.GroupControl10.Enabled = False
-        Me.GroupControl10.Location = New System.Drawing.Point(408, 56)
+        Me.GroupControl10.Location = New System.Drawing.Point(570, 56)
         Me.GroupControl10.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl10.Name = "GroupControl10"
         Me.GroupControl10.Size = New System.Drawing.Size(234, 104)
@@ -1082,7 +1082,7 @@ Partial Class frmRecepcion
         Me.dtmFechaTarea.Properties.Appearance.Options.UseFont = True
         Me.dtmFechaTarea.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.dtmFechaTarea.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.dtmFechaTarea.Size = New System.Drawing.Size(640, 28)
+        Me.dtmFechaTarea.Size = New System.Drawing.Size(802, 28)
         Me.dtmFechaTarea.TabIndex = 0
         '
         'GrpTransaccion
@@ -1107,7 +1107,7 @@ Partial Class frmRecepcion
         Me.GrpTransaccion.Location = New System.Drawing.Point(0, 0)
         Me.GrpTransaccion.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpTransaccion.Name = "GrpTransaccion"
-        Me.GrpTransaccion.Size = New System.Drawing.Size(504, 281)
+        Me.GrpTransaccion.Size = New System.Drawing.Size(630, 281)
         Me.GrpTransaccion.TabIndex = 0
         Me.GrpTransaccion.Text = "Transacción"
         '
@@ -1233,7 +1233,7 @@ Partial Class frmRecepcion
         Me.GrpObservacion.Location = New System.Drawing.Point(0, 425)
         Me.GrpObservacion.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpObservacion.Name = "GrpObservacion"
-        Me.GrpObservacion.Size = New System.Drawing.Size(504, 255)
+        Me.GrpObservacion.Size = New System.Drawing.Size(630, 255)
         Me.GrpObservacion.TabIndex = 4
         Me.GrpObservacion.Text = "Observación"
         '
@@ -1245,7 +1245,7 @@ Partial Class frmRecepcion
         Me.txtObservacion.MaxLength = 100
         Me.txtObservacion.Multiline = True
         Me.txtObservacion.Name = "txtObservacion"
-        Me.txtObservacion.Size = New System.Drawing.Size(500, 225)
+        Me.txtObservacion.Size = New System.Drawing.Size(626, 225)
         Me.txtObservacion.TabIndex = 0
         '
         'GrpAsignacionTransaccion
@@ -1262,7 +1262,7 @@ Partial Class frmRecepcion
         Me.GrpAsignacionTransaccion.Location = New System.Drawing.Point(0, 281)
         Me.GrpAsignacionTransaccion.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpAsignacionTransaccion.Name = "GrpAsignacionTransaccion"
-        Me.GrpAsignacionTransaccion.Size = New System.Drawing.Size(504, 144)
+        Me.GrpAsignacionTransaccion.Size = New System.Drawing.Size(630, 144)
         Me.GrpAsignacionTransaccion.TabIndex = 3
         Me.GrpAsignacionTransaccion.Text = "Asignación de Transacción"
         '
@@ -1377,7 +1377,7 @@ Partial Class frmRecepcion
         Me.GrpParametrosIngreso.Location = New System.Drawing.Point(0, 76)
         Me.GrpParametrosIngreso.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpParametrosIngreso.Name = "GrpParametrosIngreso"
-        Me.GrpParametrosIngreso.Size = New System.Drawing.Size(644, 240)
+        Me.GrpParametrosIngreso.Size = New System.Drawing.Size(806, 240)
         Me.GrpParametrosIngreso.TabIndex = 2
         Me.GrpParametrosIngreso.Text = "Parametros de Ingreso"
         '
@@ -1534,7 +1534,7 @@ Partial Class frmRecepcion
         Me.GrpFactura.Location = New System.Drawing.Point(0, 0)
         Me.GrpFactura.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpFactura.Name = "GrpFactura"
-        Me.GrpFactura.Size = New System.Drawing.Size(491, 326)
+        Me.GrpFactura.Size = New System.Drawing.Size(491, 409)
         Me.GrpFactura.TabIndex = 1
         Me.GrpFactura.Text = "Facturas asociadas"
         '
@@ -1622,7 +1622,7 @@ Partial Class frmRecepcion
         Me.grdListaFactura.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.grdListaFactura.ShowEditingIcon = False
         Me.grdListaFactura.ShowRowErrors = False
-        Me.grdListaFactura.Size = New System.Drawing.Size(487, 296)
+        Me.grdListaFactura.Size = New System.Drawing.Size(487, 379)
         Me.grdListaFactura.TabIndex = 0
         '
         'IdFacturaRecepcion
@@ -1682,7 +1682,7 @@ Partial Class frmRecepcion
         Me.GrpDetalle.Location = New System.Drawing.Point(0, 0)
         Me.GrpDetalle.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpDetalle.Name = "GrpDetalle"
-        Me.GrpDetalle.Size = New System.Drawing.Size(1643, 617)
+        Me.GrpDetalle.Size = New System.Drawing.Size(1643, 642)
         Me.GrpDetalle.TabIndex = 0
         Me.GrpDetalle.Text = "Lista de Productos"
         '
@@ -1694,7 +1694,7 @@ Partial Class frmRecepcion
         Me.DgridDetalleOC.MainView = Me.gvDetalleDocIngreso
         Me.DgridDetalleOC.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.DgridDetalleOC.Name = "DgridDetalleOC"
-        Me.DgridDetalleOC.Size = New System.Drawing.Size(1639, 587)
+        Me.DgridDetalleOC.Size = New System.Drawing.Size(1639, 612)
         Me.DgridDetalleOC.TabIndex = 20
         Me.DgridDetalleOC.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvDetalleDocIngreso})
         '
@@ -1753,7 +1753,7 @@ Partial Class frmRecepcion
         Me.DgridDetalleRec.RowHeadersVisible = False
         Me.DgridDetalleRec.RowHeadersWidth = 60
         Me.DgridDetalleRec.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.DgridDetalleRec.Size = New System.Drawing.Size(1639, 537)
+        Me.DgridDetalleRec.Size = New System.Drawing.Size(1639, 525)
         Me.DgridDetalleRec.TabIndex = 1
         '
         'No_Linea
@@ -2095,10 +2095,10 @@ Partial Class frmRecepcion
         Me.Panel1.Controls.Add(Me.lblCantidadR)
         Me.Panel1.Controls.Add(Me.lblCostoR)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel1.Location = New System.Drawing.Point(2, 592)
+        Me.Panel1.Location = New System.Drawing.Point(2, 580)
         Me.Panel1.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(1639, 48)
+        Me.Panel1.Size = New System.Drawing.Size(1639, 60)
         Me.Panel1.TabIndex = 2
         '
         'lblPesoR
@@ -2161,7 +2161,7 @@ Partial Class frmRecepcion
         Me.GrpImagen.Location = New System.Drawing.Point(0, 0)
         Me.GrpImagen.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpImagen.Name = "GrpImagen"
-        Me.GrpImagen.Size = New System.Drawing.Size(1643, 617)
+        Me.GrpImagen.Size = New System.Drawing.Size(1643, 642)
         Me.GrpImagen.TabIndex = 0
         '
         'GroupControl4
@@ -2172,7 +2172,7 @@ Partial Class frmRecepcion
         Me.GroupControl4.Location = New System.Drawing.Point(2, 28)
         Me.GroupControl4.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl4.Name = "GroupControl4"
-        Me.GroupControl4.Size = New System.Drawing.Size(593, 587)
+        Me.GroupControl4.Size = New System.Drawing.Size(593, 612)
         Me.GroupControl4.TabIndex = 0
         Me.GroupControl4.Text = "Lista de Imágenes"
         '
@@ -2187,7 +2187,7 @@ Partial Class frmRecepcion
         Me.GrdImagen.Margin = New System.Windows.Forms.Padding(4)
         Me.GrdImagen.MenuManager = Me.RibbonControl
         Me.GrdImagen.Name = "GrdImagen"
-        Me.GrdImagen.Size = New System.Drawing.Size(589, 530)
+        Me.GrdImagen.Size = New System.Drawing.Size(589, 555)
         Me.GrdImagen.TabIndex = 1
         Me.GrdImagen.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridViewImg})
         '
@@ -2233,7 +2233,7 @@ Partial Class frmRecepcion
         Me.Panel3.Location = New System.Drawing.Point(595, 28)
         Me.Panel3.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.Panel3.Name = "Panel3"
-        Me.Panel3.Size = New System.Drawing.Size(1046, 587)
+        Me.Panel3.Size = New System.Drawing.Size(1046, 612)
         Me.Panel3.TabIndex = 94
         '
         'PicImg
@@ -2243,7 +2243,7 @@ Partial Class frmRecepcion
         Me.PicImg.Location = New System.Drawing.Point(0, 27)
         Me.PicImg.Margin = New System.Windows.Forms.Padding(4)
         Me.PicImg.Name = "PicImg"
-        Me.PicImg.Size = New System.Drawing.Size(1046, 560)
+        Me.PicImg.Size = New System.Drawing.Size(1046, 585)
         Me.PicImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
         Me.PicImg.TabIndex = 93
         Me.PicImg.TabStop = False
@@ -2268,7 +2268,7 @@ Partial Class frmRecepcion
         Me.GrpOperadorBodega.Location = New System.Drawing.Point(0, 0)
         Me.GrpOperadorBodega.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpOperadorBodega.Name = "GrpOperadorBodega"
-        Me.GrpOperadorBodega.Size = New System.Drawing.Size(1643, 617)
+        Me.GrpOperadorBodega.Size = New System.Drawing.Size(1643, 642)
         Me.GrpOperadorBodega.TabIndex = 0
         Me.GrpOperadorBodega.Tag = ""
         '
@@ -2281,7 +2281,7 @@ Partial Class frmRecepcion
         Me.GroupControl13.Location = New System.Drawing.Point(2, 28)
         Me.GroupControl13.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl13.Name = "GroupControl13"
-        Me.GroupControl13.Size = New System.Drawing.Size(1639, 587)
+        Me.GroupControl13.Size = New System.Drawing.Size(1639, 612)
         Me.GroupControl13.TabIndex = 0
         Me.GroupControl13.Text = "Selección de Operador"
         '
@@ -2295,7 +2295,7 @@ Partial Class frmRecepcion
         Me.DGridOperadores.Margin = New System.Windows.Forms.Padding(4)
         Me.DGridOperadores.Name = "DGridOperadores"
         Me.DGridOperadores.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemCheckEdit1, Me.RepositoryItemCheckEdit2})
-        Me.DGridOperadores.Size = New System.Drawing.Size(1635, 497)
+        Me.DGridOperadores.Size = New System.Drawing.Size(1635, 522)
         Me.DGridOperadores.TabIndex = 0
         Me.DGridOperadores.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GrdOperadorBobega})
         '
@@ -2506,8 +2506,8 @@ Partial Class frmRecepcion
         Me.SplitContainer2.Panel2.Controls.Add(Me.GrpTarea)
         Me.SplitContainer2.Panel2.Controls.Add(Me.GrpParametrosIngreso)
         Me.SplitContainer2.Panel2.Controls.Add(Me.GrpTIpoTransaccion)
-        Me.SplitContainer2.Size = New System.Drawing.Size(1152, 642)
-        Me.SplitContainer2.SplitterDistance = 504
+        Me.SplitContainer2.Size = New System.Drawing.Size(1440, 803)
+        Me.SplitContainer2.SplitterDistance = 630
         Me.SplitContainer2.TabIndex = 6
         '
         'GrpTIpoTransaccion
@@ -2524,7 +2524,7 @@ Partial Class frmRecepcion
         Me.GrpTIpoTransaccion.Location = New System.Drawing.Point(0, 0)
         Me.GrpTIpoTransaccion.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpTIpoTransaccion.Name = "GrpTIpoTransaccion"
-        Me.GrpTIpoTransaccion.Size = New System.Drawing.Size(644, 76)
+        Me.GrpTIpoTransaccion.Size = New System.Drawing.Size(806, 76)
         Me.GrpTIpoTransaccion.TabIndex = 1
         Me.GrpTIpoTransaccion.Text = "Tipo Transacción"
         '
@@ -2561,7 +2561,7 @@ Partial Class frmRecepcion
         'SplitContainer1
         '
         Me.SplitContainer1.Dock = System.Windows.Forms.DockStyle.Right
-        Me.SplitContainer1.Location = New System.Drawing.Point(1152, 0)
+        Me.SplitContainer1.Location = New System.Drawing.Point(1563, 0)
         Me.SplitContainer1.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.SplitContainer1.Name = "SplitContainer1"
         Me.SplitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal
@@ -2573,8 +2573,8 @@ Partial Class frmRecepcion
         'SplitContainer1.Panel2
         '
         Me.SplitContainer1.Panel2.Controls.Add(Me.GrpFactura)
-        Me.SplitContainer1.Size = New System.Drawing.Size(491, 642)
-        Me.SplitContainer1.SplitterDistance = 312
+        Me.SplitContainer1.Size = New System.Drawing.Size(491, 803)
+        Me.SplitContainer1.SplitterDistance = 390
         Me.SplitContainer1.TabIndex = 7
         '
         'GroupControl3
@@ -2586,7 +2586,7 @@ Partial Class frmRecepcion
         Me.GroupControl3.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl3.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl3.Name = "GroupControl3"
-        Me.GroupControl3.Size = New System.Drawing.Size(491, 312)
+        Me.GroupControl3.Size = New System.Drawing.Size(491, 390)
         Me.GroupControl3.TabIndex = 6
         Me.GroupControl3.Text = "Datos de Transporte"
         '
@@ -2725,7 +2725,7 @@ Partial Class frmRecepcion
         Me.tabDetalleOC.Controls.Add(Me.GrpDetalle)
         Me.tabDetalleOC.Margin = New System.Windows.Forms.Padding(4)
         Me.tabDetalleOC.Name = "tabDetalleOC"
-        Me.tabDetalleOC.Size = New System.Drawing.Size(1643, 617)
+        Me.tabDetalleOC.Size = New System.Drawing.Size(1643, 642)
         Me.tabDetalleOC.Text = "Detalle documento de Ingreso"
         '
         'tabDetRec
@@ -2741,7 +2741,7 @@ Partial Class frmRecepcion
         Me.tabImagenes.Controls.Add(Me.GrpImagen)
         Me.tabImagenes.Margin = New System.Windows.Forms.Padding(4)
         Me.tabImagenes.Name = "tabImagenes"
-        Me.tabImagenes.Size = New System.Drawing.Size(1643, 617)
+        Me.tabImagenes.Size = New System.Drawing.Size(1643, 642)
         Me.tabImagenes.Text = "Imagenes"
         '
         'tabDetOp
@@ -2749,7 +2749,7 @@ Partial Class frmRecepcion
         Me.tabDetOp.Controls.Add(Me.GrpOperadorBodega)
         Me.tabDetOp.Margin = New System.Windows.Forms.Padding(4)
         Me.tabDetOp.Name = "tabDetOp"
-        Me.tabDetOp.Size = New System.Drawing.Size(1643, 617)
+        Me.tabDetOp.Size = New System.Drawing.Size(1643, 642)
         Me.tabDetOp.Text = "Detalle de Operadores"
         '
         'tabDetalleRecepcion2
@@ -2757,7 +2757,7 @@ Partial Class frmRecepcion
         Me.tabDetalleRecepcion2.Controls.Add(Me.GroupControl1)
         Me.tabDetalleRecepcion2.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.tabDetalleRecepcion2.Name = "tabDetalleRecepcion2"
-        Me.tabDetalleRecepcion2.Size = New System.Drawing.Size(1643, 617)
+        Me.tabDetalleRecepcion2.Size = New System.Drawing.Size(1643, 642)
         Me.tabDetalleRecepcion2.Text = "Detalle de Recepción"
         '
         'GroupControl1
@@ -2768,7 +2768,7 @@ Partial Class frmRecepcion
         Me.GroupControl1.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl1.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(1643, 617)
+        Me.GroupControl1.Size = New System.Drawing.Size(1643, 642)
         Me.GroupControl1.TabIndex = 1
         Me.GroupControl1.Text = "Lista de Productos"
         '
@@ -2780,7 +2780,7 @@ Partial Class frmRecepcion
         Me.DgridDetalleRec2.MainView = Me.gvDetalleRec2
         Me.DgridDetalleRec2.Margin = New System.Windows.Forms.Padding(4)
         Me.DgridDetalleRec2.Name = "DgridDetalleRec2"
-        Me.DgridDetalleRec2.Size = New System.Drawing.Size(1639, 560)
+        Me.DgridDetalleRec2.Size = New System.Drawing.Size(1639, 585)
         Me.DgridDetalleRec2.TabIndex = 19
         Me.DgridDetalleRec2.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvDetalleRec2})
         '
@@ -2821,9 +2821,10 @@ Partial Class frmRecepcion
         'ToolEliminarFila
         '
         Me.ToolEliminarFila.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ToolEliminarFila.Image = Global.TOMWMS.My.Resources.Resources.Delete_16
         Me.ToolEliminarFila.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ToolEliminarFila.Name = "ToolEliminarFila"
-        Me.ToolEliminarFila.Size = New System.Drawing.Size(98, 24)
+        Me.ToolEliminarFila.Size = New System.Drawing.Size(118, 24)
         Me.ToolEliminarFila.Text = "Eliminar Fila"
         '
         'tmrActualizarDatosRecepcion

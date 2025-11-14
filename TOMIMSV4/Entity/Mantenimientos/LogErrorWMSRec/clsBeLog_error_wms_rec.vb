@@ -7,9 +7,8 @@
     Public Property Fecha() As Date = New Date(1900, 1, 1)
     Public Property MensajeError() As String = String.Empty
     Public Property RutaError() As String = String.Empty
-    Public Property IdPedidoEnc As Integer = 0
-    Public Property IdPickingEnc As Integer = 0
     Public Property IdRecepcionEnc As Integer = 0
+    Public Property IdRecepcionDet As Integer = 0
     Public Property IdUsuarioAgr As Integer = 0
     Public Property Line_No As Integer = 0
     Public Property Item_No As String = String.Empty
