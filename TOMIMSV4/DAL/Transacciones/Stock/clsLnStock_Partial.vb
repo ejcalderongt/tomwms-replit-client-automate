@@ -5983,15 +5983,20 @@ Partial Public Class clsLnStock
                     vSQL += " ORDER BY fecha_ingreso desc,bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,bodega_ubicacion.IdTramo,indice_x,nivel,orientacion_pos,cantidad"
                 Case 3 'FEFO
                     'vSQL += " ORDER BY fecha_vence, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.idubicacion,bodega_ubicacion.idbodega),cantidad "
-                    vSQL += " ORDER BY" &
+                    If Not BeBodega.Priorizar_Cantidad_Superior Then
+                        vSQL += " ORDER BY fecha_vence, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.idubicacion,bodega_ubicacion.idbodega),cantidad "
+                    Else
+                        vSQL += " ORDER BY" &
                         " stock.fecha_vence ASC," &
                         " fecha_ingreso ASC, " &
+                        " bodega_ubicacion.ubicacion_picking desc, " &
                         " CASE" &
                         " WHEN stock.cantidad = @CantidadSolicitada THEN 0" &
                         " WHEN stock.cantidad > @CantidadSolicitada THEN 1" &
                         " ELSE 2 END," &
                         " stock.cantidad ASC," &
                         " dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) "
+                    End If
                 Case 4 'UPSR (Ubicación prioritaria sobre rotación)
                     vSQL += " ORDER BY indice_x,bodega_tramo.es_rack,bodega_ubicacion.IdTramo,nivel,orientacion_pos,cantidad"
                 Case Else 'Default
