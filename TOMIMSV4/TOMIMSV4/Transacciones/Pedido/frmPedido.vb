@@ -1,8 +1,7 @@
 ﻿Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Reflection
-Imports DevExpress.XtraReports
-Imports DevExpress.XtraReports.Configuration
+Imports System.Threading
 Imports System.Threading.Tasks
 Imports DevExpress.Data
 Imports DevExpress.Utils
@@ -219,16 +218,8 @@ Public Class frmPedido
 
             End If
 
-            If Not Me.IsHandleCreated OrElse Me.IsDisposed Then Exit Sub
-
-            If SplashScreenManager.Default IsNot Nothing Then
-                Try : SplashScreenManager.CloseForm(False) : Catch : End Try
-            End If
-
-            ' No invoques más delegates si el formulario está cerrando
-            If Me.Disposing OrElse Me.IsDisposed Then Exit Sub
-            If InvokeListarPedidos IsNot Nothing Then
-                InvokeListarPedidos.Invoke()
+            If Not InvokeListarPedidos Is Nothing Then
+                InvokeListarPedidos.Invoke
             End If
 
         Catch ex As Exception
@@ -3135,11 +3126,10 @@ Public Class frmPedido
 
                     txtIdCliente.EditValue = pBeCliente.IdCliente
 
-                    Rep.RequestParameters = False
-                    Rep.ScriptsSource = ""
+                End If
 
-                    CliList.Close()
-                    CliList.Dispose()
+                CliList.Close()
+                CliList.Dispose()
 
             Else
 
@@ -5560,10 +5550,6 @@ Public Class frmPedido
             pDatatable = clsLnTrans_picking_ubic.Get_Ubicacion_Picking_By_IdPicking_And_IdPedidoEnc(0, pBePedidoEnc.IdPedidoEnc)
             'Rep.DataSource = clsLnTrans_picking_ubic.Get_Ubicacion_Picking_By_IdPicking_And_IdPedidoEnc(0, pBePedidoEnc.IdPedidoEnc)
 
-            ' Habilitar scripts para todos los reportes
-            ' Para Devexpress 25.1
-
-
             If pDatatable IsNot Nothing AndAlso pDatatable.Rows.Count > 0 Then
 
                 Rep.DataSource = pDatatable
@@ -5574,7 +5560,6 @@ Public Class frmPedido
                 Rep.Parameters("Tipo_Documento").Visible = False
                 Rep.Parameters("Observacion").Value = txtObservacion.Text
                 Rep.Parameters("Observacion").Visible = False
-
                 'Rep.Parameters("No_Pedido_ERP").Value = txtReferencia.Text
                 'Rep.Parameters("No_Pedido_ERP").Visible = False
                 'Rep.Parameters("Direcion_Entrega").Value = txtDireccionEntrega.Text
@@ -9601,7 +9586,7 @@ Public Class frmPedido
     End Function
 
 
-    Private Sub LabelControl2_Click(sender As Object, e As EventArgs)
+    Private Sub LabelControl2_Click(sender As Object, e As EventArgs) 
         LabelControl2.Enabled = False
         Scan_Poliza()
         LabelControl2.Enabled = True
@@ -10786,12 +10771,11 @@ Public Class frmPedido
             Dim printLink As New PrintableComponentLink()
             ' Aumentar el margen superior en 100 píxeles
             'printLink.Margins.Top += 80
-            Dim vTop As Integer = printLink.Margins.Top + 80
 
             '#MECR12092025: Se agrego formato y margenes al diseño.
             printLink.PaperKind = System.Drawing.Printing.PaperKind.Letter
             printLink.Landscape = False
-            printLink.Margins = New System.Drawing.Printing.Margins(30, 30, vTop, 40)
+            printLink.Margins = New System.Drawing.Printing.Margins(30, 30, 80, 40)
 
             AddHandler printLink.CreateMarginalHeaderArea, AddressOf PrintableComponentLinkHojaVeri_CreateReportHeaderArea
 
@@ -12255,7 +12239,4 @@ Public Class frmPedido
         Return Date.TryParseExact(Fecha_Aceptacion, "dd/MM/yyyy", Nothing, Globalization.DateTimeStyles.None, fecha)
     End Function
 
-    Private Sub frmPedido_Load(sender As Object, e As EventArgs) Handles Me.Load
-
-    End Sub
 End Class
