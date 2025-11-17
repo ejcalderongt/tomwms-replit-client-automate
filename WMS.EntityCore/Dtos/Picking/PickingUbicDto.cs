@@ -77,5 +77,9 @@ namespace WMSWebAPI.Dtos.Picking
         public string Nombre_Color { get; set; } = string.Empty;
         public string CodigoSKU { get; set; } = string.Empty;
         public string No_Linea { get; set; } = string.Empty;
+        public int IdProducto { get; set; } = 0;
+        public string Producto { get; set; } = string.Empty;
+        public string Presentacion { get; set; } = string.Empty;
+        public string UnidadMedida { get; set; } = string.Empty;
     }
 }

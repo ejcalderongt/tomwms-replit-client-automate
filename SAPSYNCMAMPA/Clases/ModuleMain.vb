@@ -18,7 +18,7 @@ Module ModuleMain
             Application.EnableVisualStyles()
             Application.SetCompatibleTextRenderingDefault(False)
 
-            'Args = New String() {"20-2-0-1-1-0-LA_CUMBRE_LOCAL_QA"}
+            'Args = New String() {" -1-0-1-0-0-MAMPA_QA_HANNA"}
 
             'No vienen parámetros
             If Args.Length = 0 Then

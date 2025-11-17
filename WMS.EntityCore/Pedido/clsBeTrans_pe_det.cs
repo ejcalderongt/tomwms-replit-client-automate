@@ -188,7 +188,7 @@ namespace WMS.EntityCore.Pedido
         public clsBeProducto_presentacion Presentacion { get; set; } = new clsBeProducto_presentacion();
         public clsBeUnidad_medida UnidadMedida { get; set; } = new clsBeUnidad_medida();
         public List<clsBeStock_res> ListaStockRes { get; set; } = new List<clsBeStock_res>();
-        public List<clsBeTrans_picking_ubic> ListaPickingUbic { get; set; } = new List<clsBeTrans_picking_ubic>();
+        public List<clsBeTrans_picking_ubic>? ListaPickingUbic { get; set; } = new List<clsBeTrans_picking_ubic>();
         public string Codigo_Producto { get; set; } = string.Empty;
         public string NombreProducto { get; set; } = string.Empty;
         public string ProductoPresentacion { get; set; } = string.Empty;
@@ -201,6 +201,10 @@ namespace WMS.EntityCore.Pedido
         public double PesoReservado { get; set; } = 0.0;
         public DateTime FechaIngreso { get; set; } = DateTime.MinValue;
         public DateTime FechaVence { get; set; } = DateTime.MinValue;
+        public string Talla { get; set; } = "";
+        public string Color { get; set; } = "";
+        public int IdProductoTallaColor { get; set; } = 0;
+
         public clsBeTrans_pe_det() { }
         public object Clone()
         {

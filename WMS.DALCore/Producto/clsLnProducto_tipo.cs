@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
-using WMS.EntityCore.Interface;
 public class clsLnProducto_tipo
 {
 

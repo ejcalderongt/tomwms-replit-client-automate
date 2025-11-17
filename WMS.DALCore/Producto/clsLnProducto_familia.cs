@@ -4,7 +4,6 @@ using System.Data;
 using System.Diagnostics;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Producto.ProductoSimple;
-using WMS.EntityCore.Interface;
 public class clsLnProducto_familia
 {
     private static readonly clsInsert ins = new clsInsert();

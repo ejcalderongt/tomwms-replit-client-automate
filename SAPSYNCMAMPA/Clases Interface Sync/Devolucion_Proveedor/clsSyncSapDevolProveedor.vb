@@ -13,10 +13,9 @@ Imports TOMWMS.clsSyncSapTrasladosEnvio
 Public Class clsSyncSapDevolProveedor
 
     Private Shared vHanaService As SapServiceLayerClient
-
     Public Shared Async Function Procesar_Solicitud_Devol_Prov_SAP(ByVal lblprg As RichTextBox,
-                                                               ByVal prg As ProgressBar,
-                                                               Optional ByVal pNoDocumento As String = "") As Task(Of Boolean)
+                                                                   ByVal prg As ProgressBar,
+                                                                   Optional ByVal pNoDocumento As String = "") As Task(Of Boolean)
         Dim clsTrans As New clsTransaccion
         Dim sw As New Stopwatch()
 
@@ -72,10 +71,10 @@ Public Class clsSyncSapDevolProveedor
     End Function
 
     Private Shared Function Get_Devoluciones_Proveedor_SAP_SL(pCodigoBodegaInterface As String,
-                                                          lConnection As SqlConnection,
-                                                          lTransaction As SqlTransaction,
-                                                          lblprg As RichTextBox,
-                                                          Optional pNoDocumentoSAP As String = "") As List(Of clsBeI_nav_ped_traslado_enc)
+                                                              lConnection As SqlConnection,
+                                                              lTransaction As SqlTransaction,
+                                                              lblprg As RichTextBox,
+                                                              Optional pNoDocumentoSAP As String = "") As List(Of clsBeI_nav_ped_traslado_enc)
 
         Dim lDevolucionesProveedor As New List(Of clsBeI_nav_ped_traslado_enc)
         Dim BePropietario As clsBePropietarios = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario, lConnection, lTransaction)
@@ -193,6 +192,7 @@ Public Class clsSyncSapDevolProveedor
             Throw New Exception("(SL) Get_Devoluciones_Proveedor_SAP_SL: " & ex.Message, ex)
         End Try
     End Function
+
     Private Shared Async Function Procesar_Documentos(ByVal codigoBodega As String,
                                                     ByVal pNoDocumento As String,
                                                     ByVal BeConfigEnc As clsBeI_nav_config_enc,
@@ -246,6 +246,7 @@ Public Class clsSyncSapDevolProveedor
         End Try
 
     End Function
+
     Private Shared Async Function Marcar_Devolucion_Proveedor_Sincronizada_SLAsync(docEntry As String,
                                                                                sessionCookie As String,
                                                                                baseUrl As String) As Task(Of Boolean)
@@ -379,6 +380,7 @@ Public Class clsSyncSapDevolProveedor
 
     End Sub
 
+
     <Serializable>
     Private Class GoodsReturnDto
         Public Property CardCode As String
@@ -419,14 +421,11 @@ Public Class clsSyncSapDevolProveedor
     Private Const ENTITY_TARGET As String = "PurchaseReturns"         ' Entidad a crear en Service Layer
     Private Const BASETYPE_GOODS_RETURN_REQUEST As Integer = 234000032 ' BaseType de Solicitud Devolución
 
-    Private ReadOnly JsonSettings As New JsonSerializerSettings With {
-        .NullValueHandling = NullValueHandling.Ignore
-    }
     Private Shared Function Crear_Devolucion_Desde_Solicitud_Aprobada(no_pedido As String,
-                                                                       lTransaccionesSalidaSingle As List(Of clsBeI_nav_transacciones_out),
-                                                                       bePedidoEnc As clsBeTrans_pe_enc,
-                                                                       lblprg As RichTextBox,
-                                                                       prg As ProgressBar) As Boolean
+                                                                      lTransaccionesSalidaSingle As List(Of clsBeI_nav_transacciones_out),
+                                                                      bePedidoEnc As clsBeTrans_pe_enc,
+                                                                      lblprg As RichTextBox,
+                                                                      prg As ProgressBar) As Boolean
         Try
             If String.IsNullOrWhiteSpace(no_pedido) Then Throw New Exception("El parámetro no_pedido está vacío.")
             If lTransaccionesSalidaSingle Is Nothing OrElse lTransaccionesSalidaSingle.Count = 0 Then
@@ -632,6 +631,5 @@ Public Class clsSyncSapDevolProveedor
         End Try
 
     End Function
-
 
 End Class

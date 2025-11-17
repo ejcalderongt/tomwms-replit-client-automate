@@ -5,7 +5,6 @@ using System.Reflection;
 using WMS.EntityCore.Trans_re;
 using Microsoft.Extensions.Configuration;
 using WMS.EntityCore.Trans_oc;
-using WMS.EntityCore.Interface;
 using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Stock;
 using WMSWebAPI.Be;

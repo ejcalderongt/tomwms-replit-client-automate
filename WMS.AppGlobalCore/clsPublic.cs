@@ -76,9 +76,9 @@ namespace AppGlobal
             }
         }
 
-        public static void Split_Decimal(decimal Numero,
-                                        ref decimal ParteEntera,
-                                        ref decimal ParteDecimal)
+        public static void Split_Decimal(double Numero,
+                                        ref double ParteEntera,
+                                        ref double ParteDecimal)
         {
             try
             {
@@ -113,6 +113,20 @@ namespace AppGlobal
             {
                 throw;
             }
+        }
+
+        public static bool Abs(double pValor, bool pPermitirDecimales)
+        {
+            // Si el valor absoluto de pValor no es igual a su parte entera, entonces es un número decimal
+            if (Math.Abs(pValor) != Math.Truncate(Math.Abs(pValor)))
+            {
+                if (!pPermitirDecimales)
+                {
+                    throw new Exception("Error_202303101448S: El valor a insertar en stock sería un valor decimal no válido, se prevendrá continuar para evitar inconvenientes en reserva.");
+                }
+                return false;
+            }
+            return true;
         }
     }
 }

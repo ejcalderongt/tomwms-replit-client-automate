@@ -30,5 +30,7 @@
         public string BodegaOrigen { get; set; } = string.Empty;
         public string BodegaDestino { get; set; } = string.Empty;
         public int IdPrioridadPicking { get; set; } = 0;
+        public string Codigo_Empresa_ERP { get; set; } = "";
+        public bool EsExportacion { get; set; } = false;
     }
 }

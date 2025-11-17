@@ -602,4 +602,38 @@ public class clsLnEmpresa
             throw;
         }
     }
+
+    public static clsBeEmpresa? GetSingle_By_IdBodega(int pIdBodega,
+                                                     SqlConnection lConnection,
+                                                     SqlTransaction lTransaction)
+    {
+        try
+        {
+            const string sp = "SELECT Empresa.* " +
+                             "FROM Bodega INNER JOIN Empresa ON Bodega.IdEmpresa = Empresa.IdEmpresa " +
+                             "WHERE (IdBodega = @IdBodega)";
+
+            using SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text };
+            using SqlDataAdapter dad = new SqlDataAdapter(cmd);
+            {
+                dad.SelectCommand.Parameters.Add(new SqlParameter("@IdBodega", pIdBodega));
+
+                DataTable dt = new DataTable();
+                dad.Fill(dt);
+
+                if (dt.Rows.Count > 0)
+                {
+                    clsBeEmpresa BeEmpresa = new clsBeEmpresa();
+                    Cargar(ref BeEmpresa, dt.Rows[0]);
+                    return BeEmpresa;
+                }
+
+                return null;
+            }
+        }
+        catch (Exception)
+        {            
+            throw;
+        }
+    }
 }

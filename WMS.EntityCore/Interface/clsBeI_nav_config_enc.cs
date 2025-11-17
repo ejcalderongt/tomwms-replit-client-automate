@@ -1,279 +1,107 @@
 using System;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
+using WMS.EntityCore;
 
-namespace WMS.EntityCore.Interface
+public class clsBeI_nav_config_enc : ICloneable
 {
-    public class clsBeI_nav_config_enc : ICloneable
+    public int Idnavconfigenc { get; set; } = 0;
+    public int Idempresa { get; set; } = 0;
+    public int Idbodega { get; set; } = 0;
+    public int IdPropietario { get; set; } = 0;
+    public int IdUsuario { get; set; } = 0;
+    public string Nombre { get; set; } = "";
+    public DateTime Fec_agr { get; set; } = DateTime.Now;
+    public string User_agr { get; set; } = "";
+    public DateTime Fec_mod { get; set; } = DateTime.Now;
+    public string User_mod { get; set; } = "";
+    public int IdProductoEstado { get; set; } = 0;
+    public tRechazarPedidoIncompleto Rechazar_pedido_incompleto { get; set; } = tRechazarPedidoIncompleto.No;
+    public int Despachar_existencia_parcial { get; set; } = (int)tDespacharExistenciaParcial.No;
+    public int Convertir_decimales_a_umbas { get; set; } = 0;
+    public bool Generar_pedido_ingreso_bodega_destino { get; set; } = false;
+    public bool Generar_Recepcion_Auto_Bodega_Destino { get; set; } = false;
+    public string Codigo_proveedor_produccion { get; set; } = "";
+    public int IdFamilia { get; set; } = 0;
+    public int Idclasificacion { get; set; } = 0;
+    public int IdMarca { get; set; } = 0;
+    public int IdTipoProducto { get; set; } = 0;
+    public bool Control_lote { get; set; } = false;
+    public bool Control_vencimiento { get; set; } = false;
+    public bool Genera_lp { get; set; } = false;
+    public string Nombre_ejecutable { get; set; } = "";
+    public clsDataContractDI.tTipoDocumentoIngreso IdTipoDocumentoTransferenciasIngreso { get; set; } = clsDataContractDI.tTipoDocumentoIngreso.Transferencia;
+    public bool Crear_Recepcion_De_Transferencia_NAV { get; set; } = false;
+    public bool Crear_Recepcion_De_Compra_NAV { get; set; } = false;
+    public bool Control_peso { get; set; } = false;
+    public int IdAcuerdoEnc { get; set; } = 0;
+    public int IdTipoEtiqueta { get; set; } = 1;
+    public bool Push_Ingreso_NAV_Desde_HH { get; set; } = false;
+    public bool equiparar_cliente_con_propietario_en_doc_salida { get; set; } = false;
+    public bool Ejecutar_En_Despacho_Automaticamente { get; set; } = true;
+    public bool Reservar_UMBas_Primero { get; set; } = false;
+    public bool Implosion_Automatica { get; set; } = false;
+    public bool Explosion_Automatica { get; set; } = false;
+    public bool Explosion_Automatica_Desde_Ubicacion_Picking { get; set; } = true;
+    public int Explosion_Automatica_Nivel_Max { get; set; } = 1;
+    public bool Interface_SAP { get; set; } = false;
+    public bool Valida_Solo_Codigo { get; set; } = false;
+    public string Bodega_Faltante { get; set; } = "";
+    public int IdTipoRotacion { get; set; } = (int) clsDataContractDI.tTipoRotacion.FEFO;
+    public bool Conservar_Zona_Picking_Clavaud { get; set; } = false;
+    public bool Excluir_Ubicaciones_Reabasto { get; set; } = false;
+    public bool considerar_paletizado_en_reabasto { get; set; } = false;
+    public bool Considerar_Disponibilidad_Ubicacion_Reabasto { get; set; } = false;
+    public int Dias_Vida_Defecto_Perecederos { get; set; } = 0;
+    public string Codigo_Bodega_ERP_NC { get; set; } = "15";
+    public string Lote_Defecto_Entrada_NC { get; set; } = "L9999";
+    public DateTime Vence_Defecto_NC { get; set; } = new DateTime(1900, 1, 1);
+    public int IdProductoEstado_NC { get; set; } = 0;
+    public bool SAP_Control_Draft_Ajustes { get; set; } = false;
+    public bool SAP_Control_Draft_Traslados { get; set; } = false;
+    public int IdIndiceRotacion { get; set; } = 0;
+    public int Rango_Dias_Importacion { get; set; } = 0;
+    public bool Inferir_Bonificacion_Pedido_SAP { get; set; } = false;
+    public bool Rechazar_Bonificacion_Incompleta { get; set; } = false;
+    public bool Equiparar_Productos { get; set; } = false;
+    public string Bodega_Facturacion { get; set; } = "";
+    public bool Excluir_Recepcion_Picking { get; set; } = false;
+    public string Bodega_Prorrateo { get; set; } = "";
+    public string Bodega_Prorrateo1 { get; set; } = "";
+    public string Codigo_Cliente_Virtual { get; set; } = "";
+    public bool Recepcion_genera_historico { get; set; } = false;
+    public string Lote_defecto_entrada_mercancia_sap { get; set; } = "";
+    public DateTime Fecha_vence_defecto { get; set; } = new DateTime(1900, 1, 1);
+
+    public enum tRechazarPedidoIncompleto
     {
-        [Column("idnavconfigenc")]
-        [DisplayName("idnavconfigenc")]
-        public int Idnavconfigenc { get; set; } = 0;
-
-        [Column("idempresa")]
-        [DisplayName("idempresa")]
-        public int Idempresa { get; set; } = 0;
-
-        [Column("idbodega")]
-        [DisplayName("idbodega")]
-        public int Idbodega { get; set; } = 0;
-
-        [Column("idPropietario")]
-        [DisplayName("idPropietario")]
-        public int IdPropietario { get; set; } = 0;
-
-        [Column("idUsuario")]
-        [DisplayName("idUsuario")]
-        public int IdUsuario { get; set; } = 0;
-
-        [Column("nombre")]
-        [DisplayName("nombre")]
-        public string Nombre { get; set; } = "";
-
-        [Column("fec_agr")]
-        [DisplayName("fec_agr")]
-        public DateTime Fec_agr { get; set; } = DateTime.Now;
-
-        [Column("user_agr")]
-        [DisplayName("user_agr")]
-        public string User_agr { get; set; } = "";
-
-        [Column("fec_mod")]
-        [DisplayName("fec_mod")]
-        public DateTime Fec_mod { get; set; } = DateTime.Now;
-
-        [Column("user_mod")]
-        [DisplayName("user_mod")]
-        public string User_mod { get; set; } = "";
-
-        [Column("IdProductoEstado")]
-        [DisplayName("IdProductoEstado")]
-        public int IdProductoEstado { get; set; } = 0;
-
-        [Column("rechazar_pedido_incompleto")]
-        [DisplayName("rechazar_pedido_incompleto")]
-        public int Rechazar_pedido_incompleto { get; set; } = 0;
-
-        [Column("despachar_existencia_parcial")]
-        [DisplayName("despachar_existencia_parcial")]
-        public int Despachar_existencia_parcial { get; set; } = 0;
-
-        [Column("convertir_decimales_a_umbas")]
-        [DisplayName("convertir_decimales_a_umbas")]
-        public int Convertir_decimales_a_umbas { get; set; } = 0;
-
-        [Column("generar_pedido_ingreso_bodega_destino")]
-        [DisplayName("generar_pedido_ingreso_bodega_destino")]
-        public bool Generar_pedido_ingreso_bodega_destino { get; set; } = false;
-
-        [Column("generar_recepcion_auto_bodega_destino")]
-        [DisplayName("generar_recepcion_auto_bodega_destino")]
-        public bool Generar_recepcion_auto_bodega_destino { get; set; } = false;
-
-        [Column("codigo_proveedor_produccion")]
-        [DisplayName("codigo_proveedor_produccion")]
-        public string Codigo_proveedor_produccion { get; set; } = "";
-
-        [Column("idFamilia")]
-        [DisplayName("idFamilia")]
-        public int IdFamilia { get; set; } = 0;
-
-        [Column("idclasificacion")]
-        [DisplayName("idclasificacion")]
-        public int Idclasificacion { get; set; } = 0;
-
-        [Column("idMarca")]
-        [DisplayName("idMarca")]
-        public int IdMarca { get; set; } = 0;
-
-        [Column("idTipoProducto")]
-        [DisplayName("idTipoProducto")]
-        public int IdTipoProducto { get; set; } = 0;
-
-        [Column("control_lote")]
-        [DisplayName("control_lote")]
-        public bool Control_lote { get; set; } = false;
-
-        [Column("control_vencimiento")]
-        [DisplayName("control_vencimiento")]
-        public bool Control_vencimiento { get; set; } = false;
-
-        [Column("genera_lp")]
-        [DisplayName("genera_lp")]
-        public bool Genera_lp { get; set; } = false;
-
-        [Column("nombre_ejecutable")]
-        [DisplayName("nombre_ejecutable")]
-        public string Nombre_ejecutable { get; set; } = "";
-
-        [Column("IdTipoDocumentoTransferenciasIngreso")]
-        [DisplayName("IdTipoDocumentoTransferenciasIngreso")]
-        public int IdTipoDocumentoTransferenciasIngreso { get; set; } = 0;
-
-        [Column("crear_recepcion_de_transferencia_nav")]
-        [DisplayName("crear_recepcion_de_transferencia_nav")]
-        public bool Crear_recepcion_de_transferencia_nav { get; set; } = false;
-
-        [Column("control_peso")]
-        [DisplayName("control_peso")]
-        public bool Control_peso { get; set; } = false;
-
-        [Column("crear_recepcion_de_compra_nav")]
-        [DisplayName("crear_recepcion_de_compra_nav")]
-        public bool Crear_recepcion_de_compra_nav { get; set; } = false;
-
-        [Column("IdAcuerdoEnc")]
-        [DisplayName("IdAcuerdoEnc")]
-        public int IdAcuerdoEnc { get; set; } = 0;
-
-        [Column("IdTipoEtiqueta")]
-        [DisplayName("IdTipoEtiqueta")]
-        public int IdTipoEtiqueta { get; set; } = 0;
-
-        [Column("equiparar_cliente_con_propietario_en_doc_salida")]
-        [DisplayName("equiparar_cliente_con_propietario_en_doc_salida")]
-        public bool Equiparar_cliente_con_propietario_en_doc_salida { get; set; } = false;
-
-        [Column("push_ingreso_nav_desde_hh")]
-        [DisplayName("push_ingreso_nav_desde_hh")]
-        public bool Push_ingreso_nav_desde_hh { get; set; } = false;
-
-        [Column("reservar_umbas_primero")]
-        [DisplayName("reservar_umbas_primero")]
-        public bool Reservar_umbas_primero { get; set; } = false;
-
-        [Column("implosion_automatica")]
-        [DisplayName("implosion_automatica")]
-        public bool Implosion_automatica { get; set; } = false;
-
-        [Column("explosion_automatica")]
-        [DisplayName("explosion_automatica")]
-        public bool Explosion_automatica { get; set; } = false;
-
-        [Column("Ejecutar_En_Despacho_Automaticamente")]
-        [DisplayName("Ejecutar_En_Despacho_Automaticamente")]
-        public bool Ejecutar_En_Despacho_Automaticamente { get; set; } = false;
-
-        [Column("IdTipoRotacion")]
-        [DisplayName("IdTipoRotacion")]
-        public int IdTipoRotacion { get; set; } = 0;
-
-        [Column("explosion_automatica_desde_ubicacion_picking")]
-        [DisplayName("explosion_automatica_desde_ubicacion_picking")]
-        public bool Explosion_automatica_desde_ubicacion_picking { get; set; } = false;
-
-        [Column("explosion_automatica_nivel_max")]
-        [DisplayName("explosion_automatica_nivel_max")]
-        public int Explosion_automatica_nivel_max { get; set; } = 0;
-
-        [Column("conservar_zona_picking_clavaud")]
-        [DisplayName("conservar_zona_picking_clavaud")]
-        public bool Conservar_zona_picking_clavaud { get; set; } = false;
-
-        [Column("recepcion_genera_historico")]
-        [DisplayName("recepcion_genera_historico")]
-        public bool Recepcion_genera_historico { get; set; } = false;
-
-        [Column("excluir_ubicaciones_reabasto")]
-        [DisplayName("excluir_ubicaciones_reabasto")]
-        public bool Excluir_ubicaciones_reabasto { get; set; } = false;
-
-        [Column("considerar_disponibilidad_ubicacion_reabasto")]
-        [DisplayName("considerar_disponibilidad_ubicacion_reabasto")]
-        public bool Considerar_disponibilidad_ubicacion_reabasto { get; set; } = false;
-
-        [Column("considerar_paletizado_en_reabasto")]
-        [DisplayName("considerar_paletizado_en_reabasto")]
-        public bool Considerar_paletizado_en_reabasto { get; set; } = false;
-
-        [Column("dias_vida_defecto_perecederos")]
-        [DisplayName("dias_vida_defecto_perecederos")]
-        public int Dias_vida_defecto_perecederos { get; set; } = 0;
-
-        [Column("codigo_bodega_erp_nc")]
-        [DisplayName("codigo_bodega_erp_nc")]
-        public string Codigo_bodega_erp_nc { get; set; } = "";
-
-        [Column("lote_defecto_entrada_nc")]
-        [DisplayName("lote_defecto_entrada_nc")]
-        public string Lote_defecto_entrada_nc { get; set; } = "";
-
-        [Column("vence_defecto_nc")]
-        [DisplayName("vence_defecto_nc")]
-        public DateTime Vence_defecto_nc { get; set; } = DateTime.Now;
-
-        [Column("IdProductoEstado_NC")]
-        [DisplayName("IdProductoEstado_NC")]
-        public int IdProductoEstado_NC { get; set; } = 0;
-
-        [Column("lote_defecto_entrada_mercancia_sap")]
-        [DisplayName("lote_defecto_entrada_mercancia_sap")]
-        public string Lote_defecto_entrada_mercancia_sap { get; set; } = "";
-
-        [Column("fecha_vence_defecto")]
-        [DisplayName("fecha_vence_defecto")]
-        public DateTime Fecha_vence_defecto { get; set; } = DateTime.Now;
-
-        [Column("interface_sap")]
-        [DisplayName("interface_sap")]
-        public bool Interface_sap { get; set; } = false;
-
-        [Column("sap_control_draft_ajustes")]
-        [DisplayName("sap_control_draft_ajustes")]
-        public bool Sap_control_draft_ajustes { get; set; } = false;
-
-        [Column("sap_control_draft_traslados")]
-        [DisplayName("sap_control_draft_traslados")]
-        public bool Sap_control_draft_traslados { get; set; } = false;
-
-        [Column("inferir_bonificacion_pedido_sap")]
-        [DisplayName("inferir_bonificacion_pedido_sap")]
-        public bool Inferir_bonificacion_pedido_sap { get; set; } = false;
-
-        [Column("rechazar_bonificacion_incompleta")]
-        [DisplayName("rechazar_bonificacion_incompleta")]
-        public bool Rechazar_bonificacion_incompleta { get; set; } = false;
-
-        [Column("IdIndiceRotacion")]
-        [DisplayName("IdIndiceRotacion")]
-        public int IdIndiceRotacion { get; set; } = 0;
-
-        [Column("rango_dias_importacion")]
-        [DisplayName("rango_dias_importacion")]
-        public int Rango_dias_importacion { get; set; } = 0;
-
-        [Column("equiparar_productos")]
-        [DisplayName("equiparar_productos")]
-        public bool Equiparar_productos { get; set; } = false;
-
-        [Column("bodega_facturacion")]
-        [DisplayName("bodega_facturacion")]
-        public string Bodega_facturacion { get; set; } = "";
-
-        [Column("valida_solo_codigo")]
-        [DisplayName("valida_solo_codigo")]
-        public bool Valida_solo_codigo { get; set; } = false;
-
-        [Column("excluir_recepcion_picking")]
-        [DisplayName("excluir_recepcion_picking")]
-        public bool Excluir_recepcion_picking { get; set; } = false;
-
-        [Column("bodega_prorrateo")]
-        [DisplayName("bodega_prorrateo")]
-        public string Bodega_prorrateo { get; set; } = "";
-
-        [Column("bodega_prorrateo1")]
-        [DisplayName("bodega_prorrateo1")]
-        public string Bodega_prorrateo1 { get; set; } = "";
-        public bool Interface_SAP { get; set; } = false;
-        public bool Equiparar_Productos { get; set; } = false;
-        //public bool Crear_Recepcion_De_Compra_NAV { get; set; } = false;
-
-        public clsBeI_nav_config_enc() { }
-
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
+        No = 0,
+        Si = 1
+    }
+        
+        public string Bodega_prorrateo1 { get; set; } = "";        
+    public enum tDespacharExistenciaParcial
+    {
+        No = 0,
+        Si = 1
+    }
+
+    public clsBeI_nav_config_enc() { }
+
+    public clsBeI_nav_config_enc(ref int idnavconfigenc, int idempresa, int idbodega, int idPropietario, int idUsuario, string nombre, DateTime fec_agr, string user_agr, DateTime fec_mod, string user_mod)
+    {
+        this.Idnavconfigenc = idnavconfigenc;
+        this.Idempresa = idempresa;
+        this.Idbodega = idbodega;
+        this.IdPropietario = idPropietario;
+        this.IdUsuario = idUsuario;
+        this.Nombre = nombre;
+        this.Fec_agr = fec_agr;
+        this.User_agr = user_agr;
+        this.Fec_mod = fec_mod;
+        this.User_mod = user_mod;
+    }
+
+    public object Clone()
+    {
+        return this.MemberwiseClone();
     }
 }

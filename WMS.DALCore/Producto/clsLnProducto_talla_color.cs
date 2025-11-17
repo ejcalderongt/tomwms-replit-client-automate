@@ -492,4 +492,77 @@ public class clsLnProducto_talla_color
             throw;
         }
     }
+
+    public static clsBeProducto_talla_color? Get_Single_By_IdProducto(int IdProducto, string Talla, string Color, SqlConnection lConnection, SqlTransaction lTransaction)
+    {
+        try
+        {
+            const string sp = @"select * from producto_talla_color p
+                          join talla t on p.IdTalla = t.IdTalla
+                          join color c on p.IdColor = c.IdColor
+                          Where(p.IdProducto = @IdProducto AND t.Codigo = @CodigoTalla AND c.Codigo = @CodigoColor)";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(sp, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdProducto", IdProducto);
+                lDTA.SelectCommand.Parameters.AddWithValue("@CodigoTalla", Talla);
+                lDTA.SelectCommand.Parameters.AddWithValue("@CodigoColor", Color);
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable != null && lDataTable.Rows.Count > 0)
+                {
+                    clsBeProducto_talla_color vBeProducto_talla_color = new clsBeProducto_talla_color();
+                    Cargar(ref vBeProducto_talla_color, lDataTable.Rows[0]);
+                    return vBeProducto_talla_color;
+                }
+            }
+
+            return null;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static clsBeProducto_talla_color? Get_Single_By_IdProductoBodega(int IdProductoBodega, string Talla, string Color, SqlConnection lConnection, SqlTransaction lTransaction)
+    {
+        try
+        {
+            const string sp = @"select * from producto_talla_color p
+                          join talla t on p.IdTalla = t.IdTalla
+                          join color c on p.IdColor = c.IdColor
+                          join producto_bodega pb on pb.IdProducto = p.IdProducto
+                          Where(pb.IdProductoBodega = @IdProductoBodega AND t.Codigo = @CodigoTalla AND c.Codigo = @CodigoColor)";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(sp, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", IdProductoBodega);
+                lDTA.SelectCommand.Parameters.AddWithValue("@CodigoTalla", Talla);
+                lDTA.SelectCommand.Parameters.AddWithValue("@CodigoColor", Color);
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable != null && lDataTable.Rows.Count > 0)
+                {
+                    clsBeProducto_talla_color vBeProducto_talla_color = new clsBeProducto_talla_color();
+                    Cargar(ref vBeProducto_talla_color, lDataTable.Rows[0]);
+                    return vBeProducto_talla_color;
+                }
+            }
+
+            return null;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }

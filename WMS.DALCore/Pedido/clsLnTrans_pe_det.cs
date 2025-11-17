@@ -1,10 +1,12 @@
-using System.Data;
-using System.Diagnostics;
-using System.Reflection;
+锘縰sing System.Reflection;
 using Microsoft.Data.SqlClient;
-using Microsoft.VisualBasic.CompilerServices;
 using WMS.EntityCore.Pedido;
 using Microsoft.Extensions.Configuration;
+using WMSWebAPI.Be;
+using WMS.DALCore.I_nav_ped_traslado_det;
+using WMS.EntityCore.Picking;
+using WMS.DALCore.Picking;
+using WMS.StockReservation.Compatibility;
 public class clsLnTrans_pe_det
 {
 
@@ -65,6 +67,7 @@ public class clsLnTrans_pe_det
             oBeTrans_pe_det.Valor_flete = GetDouble("valor_flete");
             oBeTrans_pe_det.Total_linea = GetDouble("Total_linea");
             oBeTrans_pe_det.IdCliente = GetInt("IdCliente");
+            oBeTrans_pe_det.IdProductoTallaColor= GetInt("IdProductoTallaColor");
         }
         catch (Exception ex)
         {
@@ -77,12 +80,9 @@ public class clsLnTrans_pe_det
         }
     }
 
-    public static int Insertar(IConfiguration config, clsBeTrans_pe_det oBeTrans_pe_det, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Insertar(clsBeTrans_pe_det oBeTrans_pe_det, SqlConnection pConection, SqlTransaction pTransaction)
     {
-
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
@@ -134,50 +134,19 @@ public class clsLnTrans_pe_det
 
             string sp = Ins.SQL();
 
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+            var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
 
             Bind(cmd, oBeTrans_pe_det);
 
             rowsAffected = cmd.ExecuteNonQuery();
 
             cmd.Dispose();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
         }
-        catch (SqlException ex1)
+        catch (SqlException)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+            throw;
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
-        }
+
         return rowsAffected;
     }
 
@@ -272,16 +241,12 @@ public class clsLnTrans_pe_det
         return rowsAffected;
     }
 
-    public static int Actualizar(IConfiguration config, clsBeTrans_pe_det oBeTrans_pe_det, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Actualizar(clsBeTrans_pe_det oBeTrans_pe_det, SqlConnection pConection, SqlTransaction pTransaction)
     {
-
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
-
             Upd.Init("trans_pe_det");
             Upd.Add("idpedidodet", "@idpedidodet", "F");
             Upd.Add("idpedidoenc", "@idpedidoenc", "F");
@@ -331,48 +296,19 @@ public class clsLnTrans_pe_det
 
             string sp = Upd.SQL();
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+            var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
 
             Bind(cmd, oBeTrans_pe_det);
 
             rowsAffected = cmd.ExecuteNonQuery();
 
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
+            cmd.Dispose();
+        }
+        catch (SqlException)
+        {          
+            throw;
+        }
 
-
-        }
-        catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
-        }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
-        }
         return rowsAffected;
     }
 
@@ -635,55 +571,30 @@ public class clsLnTrans_pe_det
             throw new Exception(vMsgError);
         }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int MaxID(SqlConnection pConection, SqlTransaction pTransaction)
     {
-
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
         int lMax = 0;
+
         try
         {
-
-
             const string sp = "Select ISNULL(Max(IdPedidoDet),0) FROM Trans_pe_det";
 
-            bool Es_Transaccion_Remota = pConection is not null && pTransaction is not null;
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-            if (Es_Transaccion_Remota)
-            {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+            SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction);
+            cmd.CommandType = CommandType.Text;
 
-            Object lreturnValue = cmd.ExecuteScalar();
+            object lreturnValue = cmd.ExecuteScalar();
 
             if (lreturnValue != DBNull.Value && lreturnValue != null)
             {
-                lMax = int.Parse((String)lreturnValue);
+                lMax = Convert.ToInt32(lreturnValue);
             }
 
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
             return lMax;
-
         }
         catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+        {            
+
+            throw new Exception(ex1.Message);
         }
     }
     public static void Bind(SqlCommand cmd, clsBeTrans_pe_det o)
@@ -707,7 +618,7 @@ public class clsLnTrans_pe_det
         cmd.Parameters.Add(new SqlParameter("@nom_estado", !string.IsNullOrWhiteSpace(o.Nom_estado) ? o.Nom_estado : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@user_agr", !string.IsNullOrWhiteSpace(o.User_agr) ? o.User_agr : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@fec_agr", o.Fec_agr != DateTime.MinValue ? o.Fec_agr : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@fecha_especifica", o.Fecha_especifica)); // bool, se env韆 directamente
+        cmd.Parameters.Add(new SqlParameter("@fecha_especifica", o.Fecha_especifica)); // bool, se env铆a directamente
         cmd.Parameters.Add(new SqlParameter("@RoadDes", o.RoadDes != 0 ? o.RoadDes : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@RoadDesMon", o.RoadDesMon != 0 ? o.RoadDesMon : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@RoadTotal", o.RoadTotal != 0 ? o.RoadTotal : DBNull.Value));
@@ -734,58 +645,31 @@ public class clsLnTrans_pe_det
         cmd.Parameters.Add(new SqlParameter("@IdCliente", o.IdCliente != 0 ? o.IdCliente : DBNull.Value));
     }
 
-    public static int InsertOrUpdate(IConfiguration config, List<clsBeTrans_pe_det> entities, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(List<clsBeTrans_pe_det> entities, SqlConnection conn, SqlTransaction tx)
     {
-        bool isExternalTx = conn != null && tx != null;
         int total = 0;
-
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
-        if (!isExternalTx) { connection.Open(); localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted); }
 
         try
         {
-
-          
-
-
-
             foreach (var entity in entities)
             {
-
-                bool existe = Existe(entity.IdPedidoDet, entity.IdPedidoEnc, connection, isExternalTx ? tx! : localTx!);
+                bool existe = Existe(entity.IdPedidoDet, entity.IdPedidoEnc, conn, tx);
                 int resultado = existe
-                    ? Actualizar(config, entity, connection, isExternalTx ? tx : localTx)
-                    : Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                    ? Actualizar(entity, conn, tx)
+                    : Insertar(entity, conn, tx);
 
                 total += resultado;
-
             }
-
-            if (!isExternalTx)
-                localTx?.Commit();
 
             return total;
         }
         catch
         {
-            if (!isExternalTx)
-                localTx?.Rollback();
-
             throw;
-        }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
-            }
         }
     }
 
-  
+
     public static bool Existe(int idPedidoDet, int idPedidoEnc, SqlConnection conn, SqlTransaction? tx = null)
     {
         const string sql = @"
@@ -859,6 +743,560 @@ public class clsLnTrans_pe_det
             string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
 
             throw new Exception(vMsgError);
+        }
+    }
+    public static int Eliminar_Detalle_By_IdPedidoDet(int pIdPedidoEnc,
+                                                     int pIdPedidoDet,
+                                                     SqlConnection pConection,
+                                                     SqlTransaction pTransaction)
+    {
+        try
+        {
+            const string sp = "DELETE FROM Trans_pe_det WHERE (IdPedidoDet = @IdPedidoDet AND IdPedidoEnc = @IdPedidoEnc)";
+
+            using SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            cmd.Parameters.Add(new SqlParameter("@IDPEDIDODET", pIdPedidoDet));
+            cmd.Parameters.Add(new SqlParameter("@IDPEDIDOENC", pIdPedidoEnc));
+
+            int rowsAffected = cmd.ExecuteNonQuery();
+            return rowsAffected;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static bool Existe(int pIdPedidoEnc,
+                             int pNoLinea,
+                             ref clsBeTrans_pe_det pBeTrans_pe_det,
+                             string CodigoProducto,
+                             SqlConnection lConnection,
+                             SqlTransaction lTransaction)
+    {
+        bool result = false;
+
+        try
+        {
+            string vSQL = "SELECT * FROM trans_pe_det " +
+                         "WHERE (IdPedidoEnc = @IdPedidoEnc " +
+                         "AND No_Linea = @No_Linea " +
+                         "AND codigo_producto = @codigo_producto)";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc);
+                lDTA.SelectCommand.Parameters.AddWithValue("@No_Linea", pNoLinea);
+                lDTA.SelectCommand.Parameters.AddWithValue("@codigo_producto", CodigoProducto ?? (object)DBNull.Value);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    pBeTrans_pe_det = new clsBeTrans_pe_det();
+
+                    if (lDT.Rows.Count == 1)
+                    {
+                        Cargar(ref pBeTrans_pe_det, lDT.Rows[0]);
+                    }
+
+                    result = true;
+                }
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return result;
+    }
+    public static int Get_Count_Lines_By_IdPedidoEnc(int pIdPedidoEnc,
+                                                     SqlConnection lConnection,
+                                                     SqlTransaction lTransaction)
+    {
+        try
+        {
+            int lCount = 0;
+            const string sp = "SELECT COUNT(IdPedidoDet) AS cant FROM trans_pe_det WHERE IdPedidoEnc = @IdPedidoEnc";
+
+            using (SqlCommand lCommand = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text })
+            {
+                lCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc);
+
+                object lReturnValue = lCommand.ExecuteScalar();
+
+                if (lReturnValue != DBNull.Value && lReturnValue != null)
+                {
+                    lCount = Convert.ToInt32(lReturnValue);
+                }
+            }
+
+            return lCount;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static int Eliminar_Detalle_By_IdPedidoEnc(int pIdPedidoEnc,
+                                                     SqlConnection pConection,
+                                                     SqlTransaction pTransaction)
+    {
+        try
+        {
+            const string sp = "DELETE FROM Trans_pe_det WHERE (IdPedidoEnc = @IdPedidoEnc)";
+
+            using SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            cmd.Parameters.Add(new SqlParameter("@IDPEDIDOENC", pIdPedidoEnc));
+
+            int rowsAffected = cmd.ExecuteNonQuery();
+            return rowsAffected;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static bool Reservar_Stock_Por_Linea_Interface(double vDiasVencimientoCliente,
+                                                          ref clsBeI_nav_ped_traslado_det pBeTrasladoDet,
+                                                          ref clsBeTrans_pe_det pBePedidoDet,
+                                                          ref clsBeStock_res pBeStockRes,
+                                                          string MaquinaQueSolicita,
+                                                          clsBeI_nav_config_enc pBeConfigEnc,
+                                                          int IdPropietarioBodega,
+                                                          ref List<clsBeStock_res> pListStockResOUT,
+                                                          ref object plblprg,
+                                                          SqlConnection lConnection,
+                                                          SqlTransaction lTransaction)
+    {
+        bool result = false;
+
+        lTransaction.Save("Init_Stock");
+
+        try
+        {
+            int ResultadoInsert = 0;
+            clsBeI_nav_ped_traslado_det pBeTrasladoTemp = new clsBeI_nav_ped_traslado_det();
+
+            pBeTrasladoTemp.Item_No = pBeTrasladoDet.No;
+            pBeTrasladoTemp.Line_No = pBeTrasladoDet.Line_No;
+            pBeTrasladoTemp.NoEnc = pBeTrasladoDet.NoEnc;
+            clsLnI_nav_ped_traslado_det.GetSingle(pBeTrasladoTemp,lConnection, lTransaction);
+
+            if (pBePedidoDet.IsNew)
+            {
+                pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1;
+                pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet;
+
+                if (pBeTrasladoDet.Variant_Code != pBeTrasladoTemp.Variant_Code && pBeTrasladoTemp.Unit_of_Measure_Code != pBePedidoDet.Nom_presentacion)
+                {
+                    if (pBeTrasladoDet != null)
+                    {
+                        if (pBePedidoDet.IdPresentacion != 0)
+                        {
+                            pBePedidoDet.Cantidad = Math.Ceiling(Math.Round(pBeTrasladoDet.Quantity * pBePedidoDet.Factor, 2));
+                            pBePedidoDet.Nom_presentacion = "";
+                            pBePedidoDet.IdPresentacion = 0;
+                        }
+                    }
+                }
+
+                ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction);
+            }
+            else
+            {
+                if (!Existe(pBePedidoDet.IdPedidoDet, pBePedidoDet.IdPedidoEnc, lConnection, lTransaction))
+                {
+                    pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1;
+                    pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet;
+                    ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction);
+                }
+                else
+                {
+                    pBePedidoDet.ListaStockRes = clsLnStock_res.Get_All_By_IdPedidoDet(pBePedidoDet.IdPedidoDet,
+                                                                                       pBePedidoDet.IdPedidoEnc,
+                                                                                       lConnection, lTransaction);
+                    pBePedidoDet.ListaPickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoDet(pBePedidoDet.IdPedidoDet,
+                                                                                                               pBePedidoDet.IdPedidoEnc,
+                                                                                                               lConnection,
+                                                                                                               lTransaction);
+                    ResultadoInsert = Actualizar(pBePedidoDet, lConnection, lTransaction);
+                }
+            }
+            
+            if (pBePedidoDet.ListaStockRes != null && pBePedidoDet.ListaStockRes.Count > 0 && pBeTrasladoDet !=null)
+            {
+                double vCantidadReservada = 0;
+                double vDifPedidoVrsReservado = 0;
+                int vIdPickingEnc = 0;
+
+                foreach (var Sr in pBePedidoDet.ListaStockRes)
+                {
+                    vCantidadReservada = clsLnStock_res.Get_Cantidad_Reservada_By_IdStock(Sr.IdStock,
+                                                                                          lConnection,
+                                                                                          lTransaction);
+                    vDifPedidoVrsReservado = pBePedidoDet.Cantidad - vCantidadReservada;
+
+                    switch (vDifPedidoVrsReservado)
+                    {
+                        case > 0:
+                            pBeStockRes.Cantidad -= vCantidadReservada;
+
+                            double Qty_received = 0;
+
+                            if (StockReservationFacade.Reserva_Stock_From_MI3(ref pBeStockRes,
+                                                                              vDiasVencimientoCliente,
+                                                                              MaquinaQueSolicita,
+                                                                              pBeConfigEnc,
+                                                                              ref Qty_received,
+                                                                              IdPropietarioBodega,
+                                                                              ref pListStockResOUT,
+                                                                              lConnection,
+                                                                              lTransaction,
+                                                                              pBeTrasladoDet.Line_No,
+                                                                              false,
+                                                                              pBeTrasladoDet))
+                            {
+                                pBeTrasladoDet.Qty_to_Receive = Qty_received;
+                                var firstPicking = pBePedidoDet.ListaPickingUbic?.FirstOrDefault();
+                                if (firstPicking != null)
+                                {
+                                    vIdPickingEnc = firstPicking.IdPickingEnc;
+
+                                    if (Actualiza_Picking_Existente(pBeStockRes,
+                                                                   pBePedidoDet,
+                                                                   vIdPickingEnc,
+                                                                   lConnection,
+                                                                   lTransaction))
+                                    {
+                                        result = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                result = false;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                double Qty_received2 = 0;
+                if (pBeTrasladoDet != null)      
+
+                if (StockReservationFacade.Reserva_Stock_From_MI3(ref pBeStockRes,
+                                                                     vDiasVencimientoCliente,
+                                                                     MaquinaQueSolicita,
+                                                                     pBeConfigEnc,
+                                                                     ref Qty_received2,
+                                                                     IdPropietarioBodega,
+                                                                     ref pListStockResOUT,
+                                                                     lConnection,
+                                                                     lTransaction,
+                                                                     pBeTrasladoDet.Line_No,
+                                                                     false,
+                                                                     pBeTrasladoDet))
+                    {
+                        result = true;
+                        pBeTrasladoDet.Qty_to_Receive = Qty_received2;
+                    }
+                    else
+                    {
+                        result = false;
+                    }
+            }
+        }
+        catch (Exception)
+        {
+            if (lTransaction != null) lTransaction.Rollback("Init_Stock");
+            throw;
+        }
+
+        return result;
+    }
+
+    public static bool Actualiza_Picking_Existente(clsBeStock_res SR,
+                                                   clsBeTrans_pe_det pBePedidoDet,
+                                                   int pIdPickingEnc,
+                                                   SqlConnection lConnection,
+                                                   SqlTransaction lTransaction)
+    {
+        bool result = false;
+
+        try
+        {
+            bool vDetalleActualizadoCorrectamente = false;
+            clsBeTrans_picking_ubic? BePickingUbicActual;
+            clsBeTrans_picking_det? BePickingDetActual = new clsBeTrans_picking_det();
+            int vIdPickingEnc = pIdPickingEnc;
+            int vIdPickingDet;
+            int vIdStock = SR.IdStock;
+            int vIdPedidoDet = pBePedidoDet.IdPedidoDet;
+
+            if (vIdPickingEnc > 0)
+            {
+                BePickingUbicActual = pBePedidoDet.ListaPickingUbic?
+                    .Find(x => x.IdStock == vIdStock && x.IdPedidoDet == vIdPedidoDet);
+
+                if (BePickingUbicActual != null)
+                {
+                    BePickingUbicActual.Cantidad_solicitada = pBePedidoDet.Cantidad;
+
+                    if (clsLnTrans_picking_ubic.Actualizar(BePickingUbicActual, lConnection, lTransaction) > 0)
+                    {
+                        BePickingDetActual = clsLnTrans_picking_det.GetSingle(pBePedidoDet.IdPedidoDet, lConnection, lTransaction);
+
+                        if (BePickingDetActual != null)
+                        {
+                            BePickingDetActual.Cantidad = pBePedidoDet.Cantidad;
+
+                            if (clsLnTrans_picking_det.Actualizar(BePickingDetActual, lConnection, lTransaction) > 0)
+                            {
+                                vDetalleActualizadoCorrectamente = true;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (clsLnTrans_picking_det.Insertar_PickingDet(pBePedidoDet, vIdPickingEnc, out vIdPickingDet, lConnection, lTransaction))
+                    {
+                        if (clsLnTrans_picking_ubic.Insertar_PickingUbic(SR, vIdPickingDet, lConnection, lTransaction))
+                        {
+                            if (clsLnTrans_picking_det_parametros.Insertar_Parametros_Stock_Para_Picking(SR.IdStock, vIdPickingDet, lConnection, lTransaction))
+                            {
+                                vDetalleActualizadoCorrectamente = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            result = vDetalleActualizadoCorrectamente;
+        }
+        catch (Exception)
+        {            
+            throw;
+        }
+
+        return result;
+    }
+
+    public static bool Reservar_Stock_Por_Linea_Interface(double vDiasVencimientoCliente,
+                                                          ref clsBeI_nav_ped_traslado_det pBeTrasladoDet,
+                                                          ref clsBeTrans_pe_det pBePedidoDet,
+                                                          ref clsBeStock_res pBeStockRes,
+                                                          string MaquinaQueSolicita,
+                                                          clsBeI_nav_config_enc pBeConfigEnc,
+                                                          int IdPropietarioBodega,
+                                                          SqlConnection lConnection,
+                                                          SqlTransaction lTransaction)
+    {
+        bool result = false;
+
+        lTransaction.Save("Init_Stock");
+
+        try
+        {
+            int ResultadoInsert = 0;
+
+            if (pBePedidoDet.IsNew)
+            {
+                pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1;
+                pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet;
+                ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction);
+            }
+            else
+            {
+                if (!Existe(pBePedidoDet.IdPedidoDet, pBePedidoDet.IdPedidoEnc, lConnection, lTransaction))
+                {
+                    pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1;
+                    pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet;
+                    ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction);
+                }
+                else
+                {
+                    pBePedidoDet.ListaStockRes = clsLnStock_res.Get_All_By_IdPedidoDet(pBePedidoDet.IdPedidoDet,
+                                                                                       pBePedidoDet.IdPedidoEnc,
+                                                                                       lConnection,
+                                                                                       lTransaction);
+
+                    pBePedidoDet.ListaPickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoDet(pBePedidoDet.IdPedidoDet,
+                                                                                                               pBePedidoDet.IdPedidoEnc,
+                                                                                                               lConnection,
+                                                                                                               lTransaction);
+                    ResultadoInsert = Actualizar(pBePedidoDet,
+                                                 lConnection,
+                                                 lTransaction);
+                }
+            }
+
+            if (pBePedidoDet.ListaStockRes != null && pBePedidoDet.ListaStockRes.Count > 0)
+            {
+                double vCantidadReservadaEnUMDocumento = 0;
+                double vDifPedidoVrsReservado = 0;
+                int vIdPickingEnc = 0;
+                List<clsBeStock_res> pListStockResOUT = new List<clsBeStock_res>();
+
+                foreach (var Sr in pBePedidoDet.ListaStockRes)
+                {
+                    vCantidadReservadaEnUMDocumento = clsLnStock_res.Get_Cantidad_ReservadaEnUMDocumento_By_IdStock(Sr.IdStock,
+                                                                                                                    lConnection,
+                                                                                                                    lTransaction);
+
+                    // El pedido, puede venir en dos variantes:
+                    // 1. Variante 1: El pedido viene en UMBas.
+                    // 2. Variante 2: El pedido viene en Presentaci贸n.
+                    //
+                    // Caso de uso #1: El pedido viene en umBas, el objeto pBeStockRes.Idpresentacion = 0.
+                    // Caso de uso #2: El pedido viene en Presentaci贸n, el objeto pBeStockRes.Idpresentacion <> 0.
+
+                    vDifPedidoVrsReservado = pBePedidoDet.Cantidad - vCantidadReservadaEnUMDocumento;
+
+                    switch (vDifPedidoVrsReservado)
+                    {
+                        case > 0: // Se aument贸 la cantidad en el pedido, 'Por lo tanto se debe aumentar la cantidad en picking.
+                            pBeStockRes.Cantidad -= vCantidadReservadaEnUMDocumento;
+
+                            double Qty_received = 0;
+
+                            if (StockReservationFacade.Reserva_Stock_From_MI3(ref pBeStockRes,
+                                                                             vDiasVencimientoCliente,
+                                                                             MaquinaQueSolicita,
+                                                                             pBeConfigEnc,
+                                                                             ref Qty_received,
+                                                                             IdPropietarioBodega,
+                                                                             ref pListStockResOUT,
+                                                                             lConnection,
+                                                                             lTransaction))
+                            {
+                                
+                                pBeTrasladoDet.Qty_to_Receive = Qty_received;
+
+                                if (pBePedidoDet.ListaPickingUbic?.FirstOrDefault() is clsBeTrans_picking_ubic firstPickingUbic)
+                                {
+                                    vIdPickingEnc = firstPickingUbic.IdPickingEnc;
+
+                                    if (Actualiza_Picking_Existente(pBeStockRes,
+                                                                   pBePedidoDet,
+                                                                   vIdPickingEnc,
+                                                                   lConnection,
+                                                                   lTransaction))
+                                    {
+                                        result = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                result = false;
+                            }
+                            break;
+
+                        case < 0: // Se disminuy贸 la cantidad en el pedido
+                            //foreach (var Pu in pBePedidoDet.ListaPickingUbic.Where(x => (x.Cantidad_verificada - x.Cantidad_despachada) > 0))
+                            //{
+                            //    Debug.Print(Pu.IdPickingUbic.ToString());
+                            //}
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                List<clsBeStock_res> pListStockResOUT = new List<clsBeStock_res>();
+
+                double Qty_received = 0;
+
+                if (StockReservationFacade.Reserva_Stock_From_MI3(ref pBeStockRes,
+                                                                vDiasVencimientoCliente,
+                                                                MaquinaQueSolicita,
+                                                                pBeConfigEnc,
+                                                                ref Qty_received,
+                                                                IdPropietarioBodega,
+                                                                ref pListStockResOUT,
+                                                                lConnection,
+                                                                lTransaction,
+                                                                0,
+                                                                false,
+                                                                pBeTrasladoDet))
+                {
+                    result = true;
+                    Qty_received = pBeTrasladoDet.Qty_to_Receive;
+                }
+                else
+                {
+                    result = false;
+                }
+            }
+        }
+        catch (Exception)
+        {
+            if (lTransaction != null) lTransaction.Rollback("Init_Stock");
+            throw;
+        }
+
+        return result;
+    }
+
+    public static int Get_Count_Lines_By_IdPedidoEnc(int pIdPedidoEnc, IConfiguration config)
+    {
+        try
+        {
+            int lCount = 0;
+
+            using (var lConnection = new SqlConnection(config.GetConnectionString("CST")))
+            {
+                lConnection.Open();
+
+                using (var ltransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    const string sp = "SELECT count(IdPedidoDet) cant FROM trans_pe_det WHERE IdPedidoEnc=@IdPedidoEnc";
+
+                    using (var lCommand = new SqlCommand(sp, lConnection, ltransaction) { CommandType = CommandType.Text })
+                    {
+                        lCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc);
+
+                        var lReturnValue = lCommand.ExecuteScalar();
+
+                        if (lReturnValue != DBNull.Value && lReturnValue != null)
+                        {
+                            lCount = Convert.ToInt32(lReturnValue);
+                        }
+                    }
+
+                    ltransaction.Commit();
+                }
+
+                lConnection.Close();
+            }
+
+            return lCount;
+        }       
+        catch (Exception)
+        {
+            throw;
         }
     }
 }

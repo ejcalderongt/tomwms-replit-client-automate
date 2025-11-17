@@ -69,6 +69,7 @@ Public Class clsBeTrans_pe_enc
     Public Property IdMotivoDevolucion As Integer = 0
     Public Property Codigo_Empresa_ERP As String = ""
     Public Property EsExportacion As Boolean = False
+    Public Property Guia_Transporte As String = ""
 
     '#GT20052025: campo en bd, pero no existe en clase ni en git
     Public Property IdMotivoAnulacionBodega As Integer = 0

@@ -4,6 +4,7 @@
     using Microsoft.Data.SqlClient;
     using Microsoft.Extensions.Configuration;
     using System;
+    using System.Collections.Generic;
     using System.Data;  
     using WMS.EntityCore.Stock;
 
@@ -312,6 +313,43 @@
             }
             catch (Exception)
             {                
+                throw;
+            }
+        }
+
+        public static List<clsBeStock_parametro>? Get_All_By_IdStock(int pIdStock, SqlConnection lConnection, SqlTransaction lTransaction)
+        {
+            try
+            {
+                string sp = @"SELECT * FROM Stock_parametro 
+                     Where(IdStock = @IdStock)";
+
+                using (SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction) { CommandType = CommandType.Text })
+                using (SqlDataAdapter dad = new SqlDataAdapter(cmd))
+                {
+                    cmd.Parameters.Add(new SqlParameter("@IDSTOCK", pIdStock));
+                    DataTable dt = new DataTable();
+                    dad.Fill(dt);
+
+                    List<clsBeStock_parametro> listStockParam = new List<clsBeStock_parametro>();
+
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            clsBeStock_parametro oStockParam = new clsBeStock_parametro();
+                            Cargar(ref oStockParam, dr);
+                            listStockParam.Add(oStockParam);
+                        }
+
+                        return listStockParam;
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception)
+            {
                 throw;
             }
         }

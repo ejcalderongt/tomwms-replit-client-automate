@@ -286,7 +286,10 @@ namespace WMS.EntityCore.Pedido
         public clsBeCliente Cliente { get; set; } = new clsBeCliente();
         public clsBeTrans_pe_tipo TipoPedido { get; set; } = new clsBeTrans_pe_tipo();
         public bool Control_Ultimo_Lote { get; set; } = false;        
-        public clsBeTrans_pe_pol ObjPoliza { get; set; } = new clsBeTrans_pe_pol();        
+        public clsBeTrans_pe_pol ObjPoliza { get; set; } = new clsBeTrans_pe_pol();
+        public string Codigo_Empresa_ERP { get; set; } = "";
+        public bool EsExportacion { get; set; } = false;
+
         public clsBeTrans_pe_enc() { }
 
         public object Clone()

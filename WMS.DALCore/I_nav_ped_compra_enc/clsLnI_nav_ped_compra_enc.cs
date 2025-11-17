@@ -8,7 +8,6 @@ using Microsoft.VisualBasic.CompilerServices;
 using WMS.DALCore.I_nav_barras_pallet;
 using WMS.EntityCore;
 using WMS.EntityCore.I_nav_Ped_Compra;
-using WMS.EntityCore.Interface;
 using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Picking;
 using WMS.EntityCore.Producto;
@@ -1099,7 +1098,7 @@ public class clsLnI_nav_ped_compra_enc
             clsBeTrans_re_enc? OutBeRecepcionEnc = new clsBeTrans_re_enc();
 
             if (lConnection != null && lTransInterface != null) {
-                if (BeConfigEnc.Crear_recepcion_de_compra_nav || BeTipoDocumento.Genera_tarea_ingreso)
+                if (BeConfigEnc.Crear_Recepcion_De_Compra_NAV || BeTipoDocumento.Genera_tarea_ingreso)
                 {
                     if (BeConfigEnc.Interface_SAP && BePedidoEnc != null)
                     {
@@ -1372,10 +1371,10 @@ public class clsLnI_nav_ped_compra_enc
                         throw new Exception("ERROR_202210251745: El factor es 0 para la presentación NO se puede inferir la conversión.");
                     }
 
-                    decimal v1 = Convert.ToDecimal(vCantidadEnteraPres);
-                    decimal v2 = Convert.ToDecimal(vCantidadDecimalUMBas);
+                    double v1 = Convert.ToDouble(vCantidadEnteraPres);
+                    double v2 = Convert.ToDouble(vCantidadDecimalUMBas);
 
-                    clsPublic.Split_Decimal(Convert.ToDecimal(navPedidoCompraDet.Quantity / BePresentacion.Factor),
+                    clsPublic.Split_Decimal(Convert.ToDouble(navPedidoCompraDet.Quantity / BePresentacion.Factor),
                                             ref v1,
                                             ref v2);
 

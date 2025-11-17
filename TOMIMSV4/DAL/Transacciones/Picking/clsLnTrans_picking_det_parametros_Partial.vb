@@ -224,9 +224,9 @@ Partial Public Class clsLnTrans_picking_det_parametros
     End Sub
 
     Public Shared Function Insertar_Parametros_Stock_Para_Picking(ByVal pIdStock As Integer,
-                                                  ByVal pIdPickingDet As Integer,
-                                                 ByRef lConnection As SqlConnection,
-                                                 ByRef lTransaction As SqlTransaction) As Boolean
+                                                                  ByVal pIdPickingDet As Integer,
+                                                                  ByRef lConnection As SqlConnection,
+                                                                  ByRef lTransaction As SqlTransaction) As Boolean
 
         Insertar_Parametros_Stock_Para_Picking = False
 
