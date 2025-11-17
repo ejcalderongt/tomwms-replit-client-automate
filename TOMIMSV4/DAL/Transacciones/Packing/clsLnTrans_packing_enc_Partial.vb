@@ -1,4 +1,6 @@
 ﻿Imports System.Data.SqlClient
+Imports DevExpress.Utils.Drawing.Helpers
+Imports DevExpress.XtraReports.Web.ReportDesigner.DataContracts
 
 Partial Public Class clsLnTrans_packing_enc
 
@@ -33,11 +35,49 @@ Partial Public Class clsLnTrans_packing_enc
 
                         If BeTransPackingEnc.Idpackingenc <> 0 Then
                             cnt = Actualizar_Cantidad_Packing(BeTransPackingEnc, lConnection, lTransaction)
+
+                            '#MECR13112025: Se agrego bitacora de packing
+                            Dim vMsg As String = "Se actualizó el empaque: " + BeTransPackingEnc.Idpackingenc.ToString()
+                            clsLnLog_error_wms_pack.Agregar_Error(vMsg,
+                                                                  pIdOperador:=BeTransPackingEnc.Idoperadorbodega,
+                                                                  pIdBodega:=BeTransPackingEnc.Idbodega,
+                                                                  pIdPedidoEnc:=BeTransPackingEnc.IdPedidoEnc,
+                                                                  pIdPickingEnc:=BeTransPackingEnc.Idpickingenc,
+                                                                  pIdDespachoEnc:=BeTransPackingEnc.IdDespachoEnc,
+                                                                  pIdProductoBodega:=BeTransPackingEnc.Idproductobodega,
+                                                                  pIdProductoEstado:=BeTransPackingEnc.Idproductoestado,
+                                                                  pIdPresentacion:=BeTransPackingEnc.Idpresentacion,
+                                                                  pIdUnidadMedida:=BeTransPackingEnc.Idunidadmedida,
+                                                                  pLic_Plate:=BeTransPackingEnc.Lic_plate,
+                                                                  pCantidad_Bultos_Packing:=BeTransPackingEnc.Cantidad_bultos_packing,
+                                                                  pUsuario_agr:=BeTransPackingEnc.Usr_mod,
+                                                                  pConection:=lConnection,
+                                                                  pTransaction:=lTransaction)
                         Else
                             BeTransPackingEnc.Idpackingenc = vMaxIdPackingEnc
                             Insertar(BeTransPackingEnc, lConnection, lTransaction)
                             vMaxIdPackingEnc += 1
                             cnt = cnt + 1
+
+                            '#MECR13112025: Se agrego bitacora de packing
+                            Dim vMsg As String = "Se creó el empaque: " + BeTransPackingEnc.Idpackingenc.ToString() + " por el operador: " + BeTransPackingEnc.Idoperadorbodega.ToString() +
+                                " licencia: " + BeTransPackingEnc.Lic_plate
+
+                            clsLnLog_error_wms_pack.Agregar_Error(vMsg,
+                                                                  pIdOperador:=BeTransPackingEnc.Idoperadorbodega,
+                                                                  pIdBodega:=BeTransPackingEnc.Idbodega,
+                                                                  pIdPedidoEnc:=BeTransPackingEnc.IdPedidoEnc,
+                                                                  pIdPickingEnc:=BeTransPackingEnc.Idpickingenc,
+                                                                  pIdDespachoEnc:=BeTransPackingEnc.IdDespachoEnc,
+                                                                  pIdProductoBodega:=BeTransPackingEnc.Idproductobodega,
+                                                                  pIdProductoEstado:=BeTransPackingEnc.Idproductoestado,
+                                                                  pIdPresentacion:=BeTransPackingEnc.Idpresentacion,
+                                                                  pIdUnidadMedida:=BeTransPackingEnc.Idunidadmedida,
+                                                                  pLic_Plate:=BeTransPackingEnc.Lic_plate,
+                                                                  pCantidad_Bultos_Packing:=BeTransPackingEnc.Cantidad_bultos_packing,
+                                                                  pUsuario_agr:=BeTransPackingEnc.Usr_mod,
+                                                                  pConection:=lConnection,
+                                                                  pTransaction:=lTransaction)
                         End If
 
                         'Cantidad Empacada sin tomar en cuenta la licencia del packing
@@ -611,10 +651,29 @@ Partial Public Class clsLnTrans_packing_enc
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             If Eliminar(pBePacking.Idpackingenc, lConnection, lTransaction) > 0 Then
+                '#MECR12112025: Se agrego bitacora de packing
                 'NoLinea es Licencia Packing
-                clsLnLog_error_wms.Agregar_Error("Se elimino la licencia: " & pBePacking.Lic_plate & " IdPickingEnc " & pBePacking.Idpickingenc &
-                                                 " IdPedido " & pBePacking.IdPedidoEnc & " de la licencia packing " & pBePacking.No_linea &
-                                                 " por el IdOperadorBodega " & pIdOperadorBodega)
+                'clsLnLog_error_wms.Agregar_Error("Se elimino la licencia: " & pBePacking.Lic_plate & " IdPickingEnc " & pBePacking.Idpickingenc &
+                '                                 " IdPedido " & pBePacking.IdPedidoEnc & " de la licencia packing " & pBePacking.No_linea &
+                '                                 " por el IdOperadorBodega " & pIdOperadorBodega)
+                Dim vMsg As String = "Se elimino la licencia: " & pBePacking.Lic_plate & " IdPickingEnc " & pBePacking.Idpickingenc &
+                    " IdPedido " & pBePacking.IdPedidoEnc & " de la licencia packing " & pBePacking.No_linea & " por el IdOperadorBodega " & pIdOperadorBodega
+
+                clsLnLog_error_wms_pack.Agregar_Error(vMsg,
+                                                      pIdOperador:=pIdOperadorBodega,
+                                                      pIdBodega:=pBePacking.Idbodega,
+                                                      pIdPedidoEnc:=pBePacking.IdPedidoEnc,
+                                                      pIdPickingEnc:=pBePacking.Idpickingenc,
+                                                      pIdDespachoEnc:=pBePacking.IdDespachoEnc,
+                                                      pIdProductoBodega:=pBePacking.Idproductobodega,
+                                                      pIdProductoEstado:=pBePacking.Idproductoestado,
+                                                      pIdPresentacion:=pBePacking.Idpresentacion,
+                                                      pIdUnidadMedida:=pBePacking.Idunidadmedida,
+                                                      pLic_Plate:=pBePacking.Lic_plate,
+                                                      pCantidad_Bultos_Packing:=pBePacking.Cantidad_bultos_packing,
+                                                      pUsuario_agr:=pBePacking.Usr_mod,
+                                                      pConection:=lConnection,
+                                                      pTransaction:=lTransaction)
 
                 Eliminar_Linea_Packing = True
             End If
