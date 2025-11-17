@@ -24,7 +24,7 @@
     <TargetFrameworkProfile />
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PublishUrl>C:\WMS_GEN_101122\</PublishUrl>
+    <PublishUrl>C:\inetpub\wwwroot\WMS\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -34,14 +34,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\gsclcwms\WMS_GEN_101122\</InstallUrl>
-    <UpdateUrl>\\gsclcwms\WMS_GEN_101122\</UpdateUrl>
+    <InstallUrl>\\192.168.125.28\WMS\</InstallUrl>
+    <UpdateUrl>\\192.168.125.28\WMS\</UpdateUrl>
     <ProductName>WMS</ProductName>
     <PublisherName>DTSolutions</PublisherName>
     <SuiteName>WMS</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>55</ApplicationRevision>
+    <ApplicationRevision>57</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
