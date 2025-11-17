@@ -637,10 +637,10 @@
     <Compile Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Mantenimientos\Propietarios\Propietarios_Reglas_Mensajes\frmPropietarioReglasMensajes.Designer.vb">
+    <Compile Include="Mantenimientos\Propietarios_Reglas_Mensajes\frmPropietarioReglasMensajes.Designer.vb">
       <DependentUpon>frmPropietarioReglasMensajes.vb</DependentUpon>
     </Compile>
-    <Compile Include="Mantenimientos\Propietarios\Propietarios_Reglas_Mensajes\frmPropietarioReglasMensajes.vb">
+    <Compile Include="Mantenimientos\Propietarios_Reglas_Mensajes\frmPropietarioReglasMensajes.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Regimen_Fiscal\frmRegimenFiscal.Designer.vb">
@@ -3261,7 +3261,7 @@
     <EmbeddedResource Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx">
       <DependentUpon>frmProducto_TallaList.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Mantenimientos\Propietarios\Propietarios_Reglas_Mensajes\frmPropietarioReglasMensajes.resx">
+    <EmbeddedResource Include="Mantenimientos\Propietarios_Reglas_Mensajes\frmPropietarioReglasMensajes.resx">
       <DependentUpon>frmPropietarioReglasMensajes.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Regimen_Fiscal\frmRegimenFiscal.resx">

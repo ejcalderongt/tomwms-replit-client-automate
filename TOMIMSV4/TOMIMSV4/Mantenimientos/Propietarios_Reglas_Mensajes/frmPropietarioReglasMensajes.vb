@@ -4,6 +4,8 @@ Public Class frmPropietarioReglasMensajes
 
     Public pBePropietario As clsBePropietarios
     Private Registros As New System.ComponentModel.BindingList(Of RegistroSeleccion)()
+    Private pObjEnc As New clsBePropietario_reglas_enc
+    Private pListObjR As New List(Of clsBePropietario_reglas_det)
 
     Public Class Proceso
         Public Property IdProceso As Integer
@@ -21,14 +23,17 @@ Public Class frmPropietarioReglasMensajes
     End Class
 
     Public Class RegistroSeleccion
-        Public Property IdProceso As Integer
-        Public Property ProcesoDescripcion As String
+        Public Property IdProceso As Integer = 0
+        Public Property ProcesoDescripcion As String = ""
 
-        Public Property IdMensajeProceso As Integer
-        Public Property MensajeNombre As String
+        Public Property IdMensajeProceso As Integer = 0
+        Public Property MensajeNombre As String = ""
 
-        Public Property IdDestinatario As Integer
-        Public Property DestinatarioDescripcion As String
+        Public Property IdDestinatario As Integer = 0
+        Public Property DestinatarioDescripcion As String = ""
+
+        Public Property IsNew As Boolean = False
+
     End Class
 
 
@@ -55,26 +60,21 @@ Public Class frmPropietarioReglasMensajes
 
 
     Private Sub Cargar_Procesos()
-        Dim fuente = ListaProcesos.Where(Function(p) p.Activo).ToList()
+
+        Dim fuente = clsLnReglas_recepcion.GetAll_By_Proceso(True)
 
         With cmbProceso.Properties
             .DataSource = fuente
             .DisplayMember = "Descripcion"          ' lo visible en el editor
-            .ValueMember = "IdProceso"              ' lo que se guarda (EditValue)
+            .ValueMember = "IdReglaRecepcion"              ' lo que se guarda (EditValue)
             .NullText = "Seleccione o escriba para buscar..."
             .DropDownRows = Math.Min(10, fuente.Count)
 
             ' Limpiar y definir SOLO las columnas visibles en el desplegable
             .Columns.Clear()
-            .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Tipo", "Tipo"))
+            .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("TipoRegla", "TipoRegla"))
             .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Descripcion", "Descripción"))
 
-            ' (Opcional) agregar columnas ocultas si quisieras mantenerlas para otros usos:
-            ' .Columns.Add(New LookUpColumnInfo("IdProceso", "Id") With {.Visible = False})
-            ' .Columns.Add(New LookUpColumnInfo("Nombre", "Nombre") With {.Visible = False})
-            ' .Columns.Add(New LookUpColumnInfo("Activo", "Activo") With {.Visible = False})
-
-            ' Permitir escribir y filtrar por contiene
             .TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard
             .ImmediatePopup = True
             .PopupFilterMode = DevExpress.XtraEditors.PopupFilterMode.Contains
@@ -91,21 +91,22 @@ Public Class frmPropietarioReglasMensajes
     End Sub
 
     Private Sub ConfigurarLookupMensajes()
+
         With cmbMensaje.Properties
             .DataSource = Nothing
             .DisplayMember = "Nombre"              ' visible en el editor
-            .ValueMember = "IdMensajeProceso"      ' valor interno
+            .ValueMember = "IdMensajeRegla"      ' valor interno
             .NullText = "Seleccione un mensaje..."
             .DropDownRows = 10
 
             ' Limpiar y definir columnas visibles
             .Columns.Clear()
-            .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("IdMensajeProceso", "ID"))
+            .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("IdMensajeRegla", "ID"))
             .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Nombre", "Mensaje"))
 
             ' (Ocultas pero presentes en el origen)
-            .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("IdProceso", "Proceso") With {.Visible = False})
-            .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Activo", "Activo") With {.Visible = False})
+            '.Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("IdProceso", "Proceso") With {.Visible = False})
+            '.Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Activo", "Activo") With {.Visible = False})
 
             ' Permitir escritura y filtrado por texto
             .TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard
@@ -113,8 +114,6 @@ Public Class frmPropietarioReglasMensajes
             .PopupFilterMode = DevExpress.XtraEditors.PopupFilterMode.Contains
             .SearchMode = DevExpress.XtraEditors.Controls.SearchMode.AutoComplete
             .AutoSearchColumnIndex = 1  ' búsqueda incremental por "Nombre"
-
-            ' Ajuste automático del tamaño al contenido
             .BestFitMode = DevExpress.XtraEditors.Controls.BestFitMode.BestFitResizePopup
             .ShowHeader = True
         End With
@@ -197,14 +196,19 @@ Public Class frmPropietarioReglasMensajes
     End Sub
 
     Private Sub RefrescarMensajes()
+
         Dim idSel = IdProcesoSeleccionado()
-        Dim fuenteFiltrada As List(Of MensajeDeProceso) =
-        If(idSel = 0,
-           New List(Of MensajeDeProceso),
-           ListaMensajes.Where(Function(m) m.IdProceso = idSel AndAlso m.Activo).ToList())
+
+
+        'Dim fuenteFiltrada As List(Of MensajeDeProceso) =
+        'If(idSel = 0,
+        '   New List(Of MensajeDeProceso),
+        '   ListaMensajes.Where(Function(m) m.IdProceso = idSel AndAlso m.Activo).ToList())
+
+        Dim Mensaje_por_Proceeso = clsLnMensaje_regla.GetAll_By_IdProceso(idSel)
 
         With cmbMensaje.Properties
-            .DataSource = fuenteFiltrada
+            .DataSource = Mensaje_por_Proceeso
             .NullText = If(idSel = 0, "Seleccione primero un proceso...", "Seleccione o escriba para buscar...")
         End With
 
@@ -221,7 +225,6 @@ Public Class frmPropietarioReglasMensajes
             XtraMessageBox.Show("Seleccione Proceso, Mensaje y Destinatario.", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return
         End If
-
 
         ' Tomar IDs
         Dim idProc As Integer = CInt(cmbProceso.EditValue)
@@ -249,10 +252,116 @@ Public Class frmPropietarioReglasMensajes
             .IdMensajeProceso = idMsg,
             .MensajeNombre = msgNombre,
             .IdDestinatario = idDest,
-            .DestinatarioDescripcion = destDesc
+            .DestinatarioDescripcion = destDesc,
+            .IsNew = True
         })
 
         gvMensajes.BestFitColumns()
 
     End Sub
+
+    Private Sub mnuGuardar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuGuardar.ItemClick
+        mnuGuardar.Enabled = False
+        If Datos_Correctos() Then
+            If XtraMessageBox.Show("¿Guardar Regla?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                If Guardar() Then
+                    XtraMessageBox.Show("Se guardó el registro", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    Close()
+                End If
+            End If
+        End If
+        mnuGuardar.Enabled = True
+    End Sub
+
+    Private Function Datos_Correctos()
+
+        Datos_Correctos = False
+
+        Try
+
+            If cmbProceso.EditValue <= 0 Then
+                XtraMessageBox.Show("Seleccione Proceso", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            ElseIf cmbMensaje.EditValue <= 0 Then
+                XtraMessageBox.Show("Seleccione Mensaje", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            ElseIf Registros Is Nothing OrElse Registros.Count = 0 Then
+                XtraMessageBox.Show("Ingrese reglas con un destinatario asociado", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Else
+                Datos_Correctos = True
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Function
+
+
+    Private Function Guardar() As Boolean
+
+        Guardar = False
+
+        Try
+
+            '#GT14112025: se puede manejar mas de una regla en el mismo grid
+            Dim pListPropietario_Reglas_Enc = New List(Of clsBePropietario_reglas_enc)()
+            Dim listaFinal As List(Of RegistroSeleccion) = Registros.ToList()
+
+            If listaFinal.Count > 0 Then
+
+                For Each r As RegistroSeleccion In listaFinal
+
+                    pObjEnc = New clsBePropietario_reglas_enc()
+                    Dim pObjDet = New clsBePropietario_reglas_det()
+
+                    pObjEnc.IdPropietario = pBePropietario.IdPropietario
+                    pObjEnc.IdReglaRecepcion = r.IdProceso
+                    pObjEnc.IdMensajeRegla = r.IdMensajeProceso
+                    pObjEnc.User_agr = AP.UsuarioAp.IdUsuario
+                    pObjEnc.Fec_agr = Now
+                    pObjEnc.User_mod = AP.UsuarioAp.IdUsuario
+                    pObjEnc.Fec_mod = Now
+                    pObjEnc.Activo = True
+                    pObjEnc.IsNew = r.IsNew
+
+                    pObjDet.IdDestinatarioPropietario = r.IdDestinatario
+                    pObjDet.User_agr = AP.UsuarioAp.IdUsuario
+                    pObjDet.Fec_agr = Now
+                    pObjDet.User_mod = AP.UsuarioAp.IdUsuario
+                    pObjDet.Fec_mod = Now
+                    pObjDet.Activo = True
+                    pObjDet.IsNew = r.IsNew
+
+                    pObjEnc.ReglasDet.Add(pObjDet)
+                    pListPropietario_Reglas_Enc.Add(pObjEnc)
+
+                Next
+
+            End If
+
+            clsLnPropietario_reglas_enc.Guarda_Procesos(pListPropietario_Reglas_Enc)
+
+            Return True
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Function
+
 End Class

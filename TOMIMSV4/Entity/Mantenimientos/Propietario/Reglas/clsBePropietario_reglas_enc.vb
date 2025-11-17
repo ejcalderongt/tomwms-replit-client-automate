@@ -12,6 +12,8 @@ Public Class clsBePropietario_reglas_enc
     Public Property Fec_mod() As Date = Date.Now
     Public Property Activo() As Boolean = False
 
+    Public Property TipoRegla() As String = ""
+
     Sub New()
     End Sub
 
