@@ -24,7 +24,7 @@
     <TargetFrameworkProfile />
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PublishUrl>C:\inetpub\wwwroot\WMS_QAS\</PublishUrl>
+    <PublishUrl>C:\WMS\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -41,7 +41,7 @@
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>481</ApplicationRevision>
+    <ApplicationRevision>482</ApplicationRevision>
     <ApplicationVersion>4.7.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -288,6 +288,7 @@
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Clases_AP\clsBD.vb" />
     <Compile Include="Clases_AP\clsTabla.vb" />
+    <Compile Include="Clases_AP\CryptoHelper.vb" />
     <Compile Include="Clases_AP\TOMWMSSystemInfo.vb" />
     <Compile Include="Clases_AP\m_Global.vb" />
     <Compile Include="Clases_AP\RawPrinterHelper.vb" />

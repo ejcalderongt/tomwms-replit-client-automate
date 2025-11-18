@@ -1346,6 +1346,16 @@ Public Class frmBodega
 
         Try
 
+            '#GT18112025: guardar smpt
+            'se hace aqui porque no guarda en la bd, sino en un archivo de configuración.
+            _smtpConfig.Servidor = txtServidor.Text.Trim()
+            _smtpConfig.Puerto = Integer.Parse(txtPuerto.Text.Trim())
+            _smtpConfig.Usuario = txtUsuario.Text.Trim()
+            _smtpConfig.Password = CryptoHelper.Encriptar(txtPassword.Text)  ' guardamos encriptada
+            _smtpConfig.UsarSsl = chkSsl.Checked
+            _smtpConfig.RemitentePorDefecto = txtUsuario.Text.Trim() 'el remitente es la misma cuenta del usuario
+            ConfigManager.Guardar(_smtpConfig)
+
             If cmbPais.EditValue <> 0 Then
                 pBeBodega.IdPais = cmbPais.EditValue
             End If
@@ -1617,6 +1627,18 @@ Public Class frmBodega
         Try
 
             If Datos_Correctos() Then
+
+
+                '#GT18112025: guardar smpt
+                'se hace aqui porque no guarda en la bd, sino en un archivo de configuración.
+                _smtpConfig.Servidor = txtServidor.Text.Trim()
+                _smtpConfig.Puerto = Integer.Parse(txtPuerto.Text.Trim())
+                _smtpConfig.Usuario = txtUsuario.Text.Trim()
+                _smtpConfig.Password = CryptoHelper.Encriptar(txtPassword.Text)  ' guardamos encriptada
+                _smtpConfig.UsarSsl = chkSsl.Checked
+                _smtpConfig.RemitentePorDefecto = txtUsuario.Text.Trim() 'el remitente es la misma cuenta del usuario
+                ConfigManager.Guardar(_smtpConfig)
+
 
                 If cmbPais.EditValue <> 0 Then
                     pBeBodega.IdPais = cmbPais.EditValue
@@ -4975,11 +4997,48 @@ Public Class frmBodega
 
             End If
 
+            Cargar_Smpt()
+
         Catch ex As Exception
 
         End Try
 
     End Sub
+
+    Private _smtpConfig As Smtp_Configuracion
+    Private Sub Cargar_Smpt()
+        Try
+            '#GT18112025; cargar configuracion smtp
+            gpSmtp.Visible = True
+            _smtpConfig = ConfigManager.Cargar()
+            txtServidor.Text = _smtpConfig.Servidor
+            txtPuerto.Text = _smtpConfig.Puerto.ToString()
+            txtUsuario.Text = _smtpConfig.Usuario
+            '' Mostramos la contraseña desencriptada
+            txtPassword.Text = CryptoHelper.Desencriptar(_smtpConfig.Password)
+            chkSsl.Checked = _smtpConfig.UsarSsl
+            'txtRemitente.Text = _smtpConfig.RemitentePorDefecto
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Private Sub gpSmtp_CustomButtonClick(sender As Object, e As DevExpress.XtraBars.Docking2010.BaseButtonEventArgs) Handles gpSmtp.CustomButtonClick
+        ' Opcional: si tienes más de un botón, puedes distinguirlos por Caption o Tag
+        Dim caption = e.Button.Properties.Caption
+
+        If caption = "Limpiar" Then
+            ConfigManager.RestablecerAValoresDefault()
+
+            ' Volver a cargar el objeto en memoria
+            _smtpConfig = ConfigManager.Cargar()
+
+            ' Actualizar los controles en el formulario
+            Cargar_Smpt()
+
+        End If
+    End Sub
+
 
     Private Sub cmdHabilitarReemplazo_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdHabilitarReemplazo.ItemClick
 
