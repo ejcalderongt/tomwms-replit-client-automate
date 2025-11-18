@@ -4,8 +4,21 @@ Public Class frmPropietarioReglasMensajes
 
     Public pBePropietario As clsBePropietarios
     Private Registros As New System.ComponentModel.BindingList(Of RegistroSeleccion)()
-    Private pObjEnc As New clsBePropietario_reglas_enc
-    Private pListObjR As New List(Of clsBePropietario_reglas_det)
+    Public pRegla_Enc As New clsBePropietario_reglas_enc
+    Public pListReglas_Detalle As New List(Of clsBePropietario_reglas_det)
+    Public pIdReglaPropietarioEnc As Integer
+
+    Public Enum TipoTrans
+        Nuevo = 1
+        Editar = 2
+    End Enum
+
+    Public Property Modo As TipoTrans
+
+    Public Sub New(ByVal pModo As TipoTrans)
+        Modo = pModo
+        InitializeComponent()
+    End Sub
 
     Public Class Proceso
         Public Property IdProceso As Integer
@@ -36,6 +49,67 @@ Public Class frmPropietarioReglasMensajes
 
     End Class
 
+    Private Sub frmPropietarioReglasMensajes_Load(sender As Object, e As EventArgs) Handles Me.Load
+
+        Try
+            Cargar_Procesos()
+            ConfigurarLookupMensajes()
+            Cargar_Destinatarios()
+            GridMensajes.DataSource = Registros
+
+            Select Case Modo
+                Case TipoTrans.Nuevo
+                    pRegla_Enc = New clsBePropietario_reglas_enc()
+                    pListReglas_Detalle = New List(Of clsBePropietario_reglas_det)()
+
+                Case TipoTrans.Editar
+
+                    pRegla_Enc = clsLnPropietario_reglas_enc.GetSingle(pIdReglaPropietarioEnc)
+                    lblCodigo.Text = pRegla_Enc.IdReglaPropietarioEnc
+
+                    pListReglas_Detalle = clsLnPropietario_reglas_det.Get_All_By_IdReglaPropietarioEnc(pRegla_Enc.IdReglaPropietarioEnc).ToList
+
+                    cmbProceso.EditValue = pRegla_Enc.IdReglaRecepcion
+                    cmbMensaje.EditValue = pRegla_Enc.IdMensajeRegla
+
+                    cmbDestinatario.EditValue = pListReglas_Detalle(0).IdDestinatarioPropietario
+
+                    'pObjEnc = clsLnPropietario_reglas_enc.GetSingle(pIdReglaPropietarioEnc)
+
+                    'lblCodigo.Text = pObjEnc.IdReglaPropietarioEnc
+
+                    'If pObjEnc.IdReglaPropietarioEnc > 0 Then
+                    '    txtIdRegla.Text = pObjEnc.IdReglaRecepcion
+                    '    txtNombreRegla.Text = pObjEnc.Regla.Nombre
+                    'End If
+
+                    'If pObjEnc.IdMensajeRegla > 0 Then
+                    '    txtIdMensaje.Text = pObjEnc.IdMensajeRegla
+                    '    txtNombreMensaje.Text = pObjEnc.Mensaje.Nombre
+                    'End If
+
+                    'chkActivo.Checked = pObjEnc.Activo
+
+                    'User_agrTextEdit.Text = pObjEnc.User_agr
+                    'Fec_agrDateEdit.Text = pObjEnc.Fec_agr
+                    'User_modTextEdit.Text = pObjEnc.User_mod
+                    'Fec_modDateEdit.Text = pObjEnc.Fec_mod
+
+                    'mnuGuardar.Enabled = False
+                    'mnuActualizar.Enabled = True
+                    'mnuEliminar.Enabled = True
+
+                    'pListObjR = clsLnPropietario_reglas_det.Get_All_By_IdReglaPropietarioEnc(pObjEnc.IdReglaPropietarioEnc).ToList
+                    'Cargar_Destinatarios()
+
+
+            End Select
+
+        Catch ex As Exception
+
+        End Try
+
+    End Sub
 
 
     Dim ListaProcesos As New List(Of Proceso) From {
@@ -165,18 +239,8 @@ Public Class frmPropietarioReglasMensajes
         End Try
     End Sub
 
-    Private Sub frmPropietarioReglasMensajes_Shown(sender As Object, e As EventArgs) Handles Me.Shown
-        Try
-            Cargar_Procesos()
-            ConfigurarLookupMensajes()
-            Cargar_Destinatarios()
 
-            GridMensajes.DataSource = Registros
 
-        Catch ex As Exception
-
-        End Try
-    End Sub
 
     Private Sub cmbProceso_KeyDown(sender As Object, e As KeyEventArgs) Handles cmbProceso.KeyDown
         If e.KeyCode = Keys.Enter Then
@@ -198,13 +262,6 @@ Public Class frmPropietarioReglasMensajes
     Private Sub RefrescarMensajes()
 
         Dim idSel = IdProcesoSeleccionado()
-
-
-        'Dim fuenteFiltrada As List(Of MensajeDeProceso) =
-        'If(idSel = 0,
-        '   New List(Of MensajeDeProceso),
-        '   ListaMensajes.Where(Function(m) m.IdProceso = idSel AndAlso m.Activo).ToList())
-
         Dim Mensaje_por_Proceeso = clsLnMensaje_regla.GetAll_By_IdProceso(idSel)
 
         With cmbMensaje.Properties
@@ -318,18 +375,18 @@ Public Class frmPropietarioReglasMensajes
 
                 For Each r As RegistroSeleccion In listaFinal
 
-                    pObjEnc = New clsBePropietario_reglas_enc()
+                    pRegla_Enc = New clsBePropietario_reglas_enc()
                     Dim pObjDet = New clsBePropietario_reglas_det()
 
-                    pObjEnc.IdPropietario = pBePropietario.IdPropietario
-                    pObjEnc.IdReglaRecepcion = r.IdProceso
-                    pObjEnc.IdMensajeRegla = r.IdMensajeProceso
-                    pObjEnc.User_agr = AP.UsuarioAp.IdUsuario
-                    pObjEnc.Fec_agr = Now
-                    pObjEnc.User_mod = AP.UsuarioAp.IdUsuario
-                    pObjEnc.Fec_mod = Now
-                    pObjEnc.Activo = True
-                    pObjEnc.IsNew = r.IsNew
+                    pRegla_Enc.IdPropietario = pBePropietario.IdPropietario
+                    pRegla_Enc.IdReglaRecepcion = r.IdProceso
+                    pRegla_Enc.IdMensajeRegla = r.IdMensajeProceso
+                    pRegla_Enc.User_agr = AP.UsuarioAp.IdUsuario
+                    pRegla_Enc.Fec_agr = Now
+                    pRegla_Enc.User_mod = AP.UsuarioAp.IdUsuario
+                    pRegla_Enc.Fec_mod = Now
+                    pRegla_Enc.Activo = True
+                    pRegla_Enc.IsNew = r.IsNew
 
                     pObjDet.IdDestinatarioPropietario = r.IdDestinatario
                     pObjDet.User_agr = AP.UsuarioAp.IdUsuario
@@ -339,8 +396,8 @@ Public Class frmPropietarioReglasMensajes
                     pObjDet.Activo = True
                     pObjDet.IsNew = r.IsNew
 
-                    pObjEnc.ReglasDet.Add(pObjDet)
-                    pListPropietario_Reglas_Enc.Add(pObjEnc)
+                    pRegla_Enc.ReglasDet.Add(pObjDet)
+                    pListPropietario_Reglas_Enc.Add(pRegla_Enc)
 
                 Next
 
@@ -363,5 +420,52 @@ Public Class frmPropietarioReglasMensajes
         End Try
 
     End Function
+
+    Private Sub lnkMensaje_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnkMensaje.LinkClicked
+
+
+        Try
+
+            If cmbProceso.EditValue > 0 Then
+                Dim Mensaje As New frmMensajeRegla_List()
+                Mensaje.Modo = frmMensajeRegla_List.pModo.Seleccion
+                Mensaje.IdReglaRecepcion = cmbProceso.EditValue
+                Mensaje.ShowDialog()
+
+                If Mensaje.pObjMensaje IsNot Nothing AndAlso Mensaje.pObjMensaje.IdMensajeRegla > 0 Then
+
+                    RefrescarMensajes()
+                    cmbMensaje.EditValue = Mensaje.pObjMensaje.IdMensajeRegla
+                End If
+            Else
+                XtraMessageBox.Show("Debe seleccionar un proceso")
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+    End Sub
+
+    Private Sub lnkDestinatario_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnkDestinatario.LinkClicked
+
+        Try
+
+            Dim pDestinatario As New frmPropietarioDestinatario
+            pDestinatario.Show()
+
+        Catch ex As Exception
+
+        End Try
+
+    End Sub
+
 
 End Class

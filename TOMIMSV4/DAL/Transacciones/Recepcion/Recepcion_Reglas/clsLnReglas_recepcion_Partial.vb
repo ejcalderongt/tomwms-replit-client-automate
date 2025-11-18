@@ -176,4 +176,5 @@ Partial Public Class clsLnReglas_recepcion
 
     End Function
 
+
 End Class

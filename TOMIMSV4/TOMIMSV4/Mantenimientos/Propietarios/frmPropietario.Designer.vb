@@ -759,7 +759,7 @@ Partial Class frmPropietario
         Me.GroupControl1.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(1679, 759)
+        Me.GroupControl1.Size = New System.Drawing.Size(1343, 607)
         Me.GroupControl1.TabIndex = 0
         '
         'GroupControl2
@@ -1575,7 +1575,7 @@ Partial Class frmPropietario
         Me.Reglas.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Reglas.Name = "Reglas"
         Me.Reglas.Size = New System.Drawing.Size(1343, 607)
-        Me.Reglas.Text = "Reglas"
+        Me.Reglas.Text = "Mensajes"
         '
         'tabUM
         '
@@ -1594,7 +1594,7 @@ Partial Class frmPropietario
         Me.dgridUM.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridUM.MenuManager = Me.RibbonControl
         Me.dgridUM.Name = "dgridUM"
-        Me.dgridUM.Size = New System.Drawing.Size(1343, 607)
+        Me.dgridUM.Size = New System.Drawing.Size(1679, 759)
         Me.dgridUM.TabIndex = 3
         Me.dgridUM.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView2, Me.GridView5})
         '
@@ -1629,7 +1629,7 @@ Partial Class frmPropietario
         Me.dgridEstados.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridEstados.MenuManager = Me.RibbonControl
         Me.dgridEstados.Name = "dgridEstados"
-        Me.dgridEstados.Size = New System.Drawing.Size(1343, 607)
+        Me.dgridEstados.Size = New System.Drawing.Size(1679, 759)
         Me.dgridEstados.TabIndex = 4
         Me.dgridEstados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvEstados, Me.GridView8})
         '
@@ -1664,7 +1664,7 @@ Partial Class frmPropietario
         Me.dgridProductos.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridProductos.MenuManager = Me.RibbonControl
         Me.dgridProductos.Name = "dgridProductos"
-        Me.dgridProductos.Size = New System.Drawing.Size(1343, 607)
+        Me.dgridProductos.Size = New System.Drawing.Size(1679, 759)
         Me.dgridProductos.TabIndex = 5
         Me.dgridProductos.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView9, Me.GridView10})
         '
@@ -1699,7 +1699,7 @@ Partial Class frmPropietario
         Me.dgridStock.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridStock.MenuManager = Me.RibbonControl
         Me.dgridStock.Name = "dgridStock"
-        Me.dgridStock.Size = New System.Drawing.Size(1343, 607)
+        Me.dgridStock.Size = New System.Drawing.Size(1679, 759)
         Me.dgridStock.TabIndex = 6
         Me.dgridStock.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.grdvStock, Me.GridView12})
         '
@@ -1735,7 +1735,7 @@ Partial Class frmPropietario
         Me.dgridMovimientos.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridMovimientos.MenuManager = Me.RibbonControl
         Me.dgridMovimientos.Name = "dgridMovimientos"
-        Me.dgridMovimientos.Size = New System.Drawing.Size(1343, 607)
+        Me.dgridMovimientos.Size = New System.Drawing.Size(1679, 759)
         Me.dgridMovimientos.TabIndex = 7
         Me.dgridMovimientos.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gviewMovimientos, Me.GridView14})
         '

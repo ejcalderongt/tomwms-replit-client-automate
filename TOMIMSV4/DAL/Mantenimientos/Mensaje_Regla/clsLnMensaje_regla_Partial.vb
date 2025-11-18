@@ -2,7 +2,7 @@
 
 Partial Public Class clsLnMensaje_regla
 
-    Public Shared Function GetAll(ByVal pActivo As Boolean) As List(Of clsBeMensaje_regla)
+    Public Shared Function GetAll(ByVal pActivo As Boolean, Optional IdReglaRecepcion As Integer = 0) As List(Of clsBeMensaje_regla)
 
         Dim lReturnList As New List(Of clsBeMensaje_regla)
 
@@ -18,6 +18,11 @@ Partial Public Class clsLnMensaje_regla
                 Else
                     vSQL += " AND activo=0 "
                 End If
+
+                If IdReglaRecepcion > 0 Then
+                    vSQL += " AND IdReglaRecepcion= " & IdReglaRecepcion
+                End If
+
 
 
                 Using lDTA As New SqlDataAdapter(vSQL, lConnection)

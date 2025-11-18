@@ -59,11 +59,11 @@ Partial Class frmMensajeRegla
         Me.GroupControl1.SuspendLayout()
         CType(Me.txtNombre.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkActivo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.Fec_agrDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Fec_agrDateEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.Fec_agrDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.User_agrTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.Fec_modDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Fec_modDateEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.Fec_modDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.User_modTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dkMensajeRegla, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.hideContainerBottom.SuspendLayout()
@@ -79,7 +79,7 @@ Partial Class frmMensajeRegla
         Label12.AutoSize = True
         Label12.Location = New System.Drawing.Point(26, 44)
         Label12.Name = "Label12"
-        Label12.Size = New System.Drawing.Size(74, 17)
+        Label12.Size = New System.Drawing.Size(69, 16)
         Label12.TabIndex = 0
         Label12.Text = "Correlativo"
         '
@@ -88,7 +88,7 @@ Partial Class frmMensajeRegla
         Label3.AutoSize = True
         Label3.Location = New System.Drawing.Point(26, 78)
         Label3.Name = "Label3"
-        Label3.Size = New System.Drawing.Size(62, 17)
+        Label3.Size = New System.Drawing.Size(57, 16)
         Label3.TabIndex = 2
         Label3.Text = "Nombre:"
         '
@@ -99,7 +99,7 @@ Partial Class frmMensajeRegla
         Label37.AutoSize = True
         Label37.Location = New System.Drawing.Point(26, 110)
         Label37.Name = "Label37"
-        Label37.Size = New System.Drawing.Size(51, 17)
+        Label37.Size = New System.Drawing.Size(46, 16)
         Label37.TabIndex = 4
         Label37.Text = "Activo:"
         '
@@ -108,7 +108,7 @@ Partial Class frmMensajeRegla
         Fec_agrLabel.AutoSize = True
         Fec_agrLabel.Location = New System.Drawing.Point(41, 49)
         Fec_agrLabel.Name = "Fec_agrLabel"
-        Fec_agrLabel.Size = New System.Drawing.Size(97, 17)
+        Fec_agrLabel.Size = New System.Drawing.Size(91, 16)
         Fec_agrLabel.TabIndex = 4
         Fec_agrLabel.Text = "Fecha Agregó:"
         '
@@ -117,7 +117,7 @@ Partial Class frmMensajeRegla
         User_agrLabel.AutoSize = True
         User_agrLabel.Location = New System.Drawing.Point(41, 17)
         User_agrLabel.Name = "User_agrLabel"
-        User_agrLabel.Size = New System.Drawing.Size(106, 17)
+        User_agrLabel.Size = New System.Drawing.Size(100, 16)
         User_agrLabel.TabIndex = 0
         User_agrLabel.Text = "Usuario Agregó:"
         '
@@ -129,7 +129,7 @@ Partial Class frmMensajeRegla
         Fec_modLabel.AutoSize = True
         Fec_modLabel.Location = New System.Drawing.Point(517, 49)
         Fec_modLabel.Name = "Fec_modLabel"
-        Fec_modLabel.Size = New System.Drawing.Size(102, 17)
+        Fec_modLabel.Size = New System.Drawing.Size(97, 16)
         Fec_modLabel.TabIndex = 6
         Fec_modLabel.Text = "Fecha Modificó:"
         '
@@ -138,14 +138,14 @@ Partial Class frmMensajeRegla
         User_modLabel.AutoSize = True
         User_modLabel.Location = New System.Drawing.Point(517, 17)
         User_modLabel.Name = "User_modLabel"
-        User_modLabel.Size = New System.Drawing.Size(111, 17)
+        User_modLabel.Size = New System.Drawing.Size(106, 16)
         User_modLabel.TabIndex = 2
         User_modLabel.Text = "Usuario Modificó:"
         '
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuGuardar, Me.mnuActualizar, Me.mnuEliminar, Me.RibbonControl.SearchEditItem})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuGuardar, Me.mnuActualizar, Me.mnuEliminar})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonControl.MaxItemId = 5
@@ -317,13 +317,13 @@ Partial Class frmMensajeRegla
         Me.DockPanel1.Controls.Add(Me.DockPanel1_Container)
         Me.DockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.ID = New System.Guid("23bb4776-20b1-44da-a0b7-182c69867375")
-        Me.DockPanel1.Location = New System.Drawing.Point(0, 0)
+        Me.DockPanel1.Location = New System.Drawing.Point(0, 307)
         Me.DockPanel1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.DockPanel1.Name = "DockPanel1"
         Me.DockPanel1.OriginalSize = New System.Drawing.Size(200, 95)
         Me.DockPanel1.SavedDock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.SavedIndex = 0
-        Me.DockPanel1.Size = New System.Drawing.Size(953, 117)
+        Me.DockPanel1.Size = New System.Drawing.Size(953, 119)
         Me.DockPanel1.Text = "Bitácora"
         Me.DockPanel1.Visibility = DevExpress.XtraBars.Docking.DockVisibility.AutoHide
         '
@@ -337,10 +337,10 @@ Partial Class frmMensajeRegla
         Me.DockPanel1_Container.Controls.Add(User_agrLabel)
         Me.DockPanel1_Container.Controls.Add(Fec_modLabel)
         Me.DockPanel1_Container.Controls.Add(Me.Fec_modDateEdit)
-        Me.DockPanel1_Container.Location = New System.Drawing.Point(5, 28)
+        Me.DockPanel1_Container.Location = New System.Drawing.Point(4, 34)
         Me.DockPanel1_Container.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.DockPanel1_Container.Name = "DockPanel1_Container"
-        Me.DockPanel1_Container.Size = New System.Drawing.Size(944, 84)
+        Me.DockPanel1_Container.Size = New System.Drawing.Size(945, 81)
         Me.DockPanel1_Container.TabIndex = 0
         '
         'frmMensajeRegla

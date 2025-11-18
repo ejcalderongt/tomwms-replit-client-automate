@@ -85,7 +85,7 @@ Partial Class frmPropietarioReglasMensajes
         '
         Me.mnuGuardar.Caption = "Guardar"
         Me.mnuGuardar.Id = 1
-        Me.mnuGuardar.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuGuardar.ImageOptions.SvgImage = CType(resources.GetObject("mnuGuardar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.mnuGuardar.Name = "mnuGuardar"
         '
         'BarButtonItem2
@@ -228,6 +228,7 @@ Partial Class frmPropietarioReglasMensajes
         Me.lnkRegla.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lnkRegla.AutoSize = True
+        Me.lnkRegla.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
         Me.lnkRegla.Location = New System.Drawing.Point(50, 102)
         Me.lnkRegla.Name = "lnkRegla"
         Me.lnkRegla.Size = New System.Drawing.Size(52, 16)
@@ -298,8 +299,10 @@ Partial Class frmPropietarioReglasMensajes
         Me.Controls.Add(Me.RibbonControl)
         Me.Name = "frmPropietarioReglasMensajes"
         Me.Ribbon = Me.RibbonControl
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.StatusBar = Me.RibbonStatusBar
-        Me.Text = "Propietario Reglas por Proceso"
+        Me.Text = "Propietario: Mensajes por Proceso"
+        Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GroupControl8, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl8.ResumeLayout(False)
