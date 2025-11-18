@@ -1368,9 +1368,9 @@ Public Class frmPedido
 
             If dgrid.IsCurrentRowDirty Then
 
-                XtraMessageBox.Show("Un valor se ha modificado en el grid y no se han " &
-                       " confirmado los cambios, presione enter en la celda " &
-                       " que está modificando antes de guardar el registro",
+                XtraMessageBox.Show(" Un valor se ha modificado en el grid y no se han " &
+                                    " confirmado los cambios, presione enter en la celda " &
+                                    " que está modificando antes de guardar el registro",
                                     Text,
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Error)
@@ -7754,6 +7754,16 @@ Public Class frmPedido
                                                     clsTransaccion.lConnection,
                                                     clsTransaccion.lTransaction)
 
+                IMS.Llena_Empresas_Transporte(cmbEmpresaTransporte,
+                                              cmbBodega.EditValue,
+                                              clsTransaccion.lConnection,
+                                              clsTransaccion.lTransaction)
+
+                IMS.Llena_Pilotos(cmbPiloto,
+                                  cmbEmpresaTransporte.EditValue,
+                                  clsTransaccion.lConnection,
+                                  clsTransaccion.lTransaction)
+
                 'GT 090820211654: agregue esto para filtrar el tipo de doc según la bodega (fiscal o general)
                 BeBodega = clsLnBodega.GetSingle_By_Idbodega(cmbBodega.EditValue,
                                                              clsTransaccion.lConnection,
@@ -7795,8 +7805,6 @@ Public Class frmPedido
                 End If
 
                 IsLoading = True
-
-
 
                 '#EJC20210409:Servicios CEALSA.
                 If AP.Bodega.Control_Tarifa_Servicios Then

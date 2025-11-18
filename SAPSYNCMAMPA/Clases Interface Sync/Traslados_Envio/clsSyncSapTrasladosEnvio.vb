@@ -1438,7 +1438,7 @@ Public Class clsSyncSapTrasladosEnvio
         Dim docEntrySolicitud As Integer = BeTransOcEnc.Referencia
         Dim docNumSolicitud As String = BeTransOcEnc.No_Documento
         Dim Fromwarehouse As String = BeTransOcEnc.ProveedorBodega.Proveedor.Codigo
-        Dim ToWarehouse As String = BeTransOcEnc.IdBodega
+        Dim ToWarehouse As String = clsLnBodega.Get_Codigo_By_IdBodega(BeTransOcEnc.IdBodega)
 
         Dim BeUsuario = clsLnUsuario.GetSingle(BeTransOcEnc.User_Agr)
         Dim vUsuarioWMS As String = ""

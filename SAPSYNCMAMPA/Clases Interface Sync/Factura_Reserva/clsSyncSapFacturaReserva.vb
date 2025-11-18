@@ -119,6 +119,7 @@ Public Class clsSyncSapFacturaReserva
         End Try
 
     End Function
+
     Public Shared Async Function Inserta_Proveedor_Desde_SAP(ByVal pCodigo As String,
                                                              SessionCookie As String,
                                                              BaseUrl As String) As Task(Of Boolean)
@@ -198,6 +199,7 @@ Public Class clsSyncSapFacturaReserva
         End Try
 
     End Function
+
     Public Shared Async Function Insertar_Facturas_Reserva_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lblprg As RichTextBox,
                                                                                                 prg As System.Windows.Forms.ProgressBar,
                                                                                                 Optional ByVal ForzarEjecucion As Boolean = False,
@@ -341,6 +343,7 @@ Public Class clsSyncSapFacturaReserva
         End Try
 
     End Function
+
     Private Shared Function Detalle_Tiene_Diferencia_Vrs_OC(ByVal pObjOC As clsBeTrans_oc_enc,
                                                             ByVal pListObjOrdeCompraDet As List(Of clsBeTrans_oc_det),
                                                             ByVal gBeRecepcion As clsBeTrans_re_enc,
@@ -467,6 +470,7 @@ Public Class clsSyncSapFacturaReserva
         End Try
 
     End Function
+
     Public Shared Async Sub Enviar_Facturas_Reserva_Prov_Ingreso(ByVal lblprg As RichTextBox,
                                                                  ByVal prg As Forms.ProgressBar)
 
@@ -611,6 +615,7 @@ Public Class clsSyncSapFacturaReserva
         End Try
 
     End Sub
+
     Private Shared Function Configuracion_Interface_Correcta(ByVal BeINavConfigEnc As clsBeI_nav_config_enc) As Boolean
 
         Configuracion_Interface_Correcta = False
@@ -657,6 +662,7 @@ Public Class clsSyncSapFacturaReserva
         End Try
 
     End Function
+
     Private Shared Function Get_Objetos_Documento_Ingreso(ByVal IdOrdenCompraEnc As Integer,
                                                           ByVal IdRecepcionEnc As Integer,
                                                           ByVal IdBodega As Integer,
@@ -703,6 +709,7 @@ Public Class clsSyncSapFacturaReserva
         End Try
 
     End Function
+
     Public Shared Async Function Get_Factura_Reserva_SAP_Hana_SL(docNum As Integer?,
                                                                 codBodega As String,
                                                                 sessionCookie As String,
@@ -721,16 +728,6 @@ Public Class clsSyncSapFacturaReserva
         End If
 
         Dim requestUrl As String = $"PurchaseInvoices?$filter={Uri.EscapeDataString(filtro)}"
-
-        'Dim campos As String = String.Join(","c, {"DocEntry", "DocNum", "Series",
-        '                                          "CardCode", "CardName",
-        '                                          "JournalMemo", "Comments", "NumAtCard",
-        '                                          "U_Campania", "U_Estado",
-        '                                          "SalesPersonCode",
-        '                                          "DocDate", "DocTime",
-        '                                          "DocumentLines"})
-
-        'Dim requestUrl As String = $"PurchaseInvoices?$select={campos}&$filter={Uri.EscapeDataString(filtro)}"
         Dim resultados As New List(Of clsBeI_nav_ped_compra_enc)()
 
         Try
@@ -862,6 +859,7 @@ Public Class clsSyncSapFacturaReserva
             Return CStr(salesEmployeeName)
         End Using
     End Function
+
     Public Shared Async Function Marcar_PI_Sincronizado_SLAsync(docEntry As String, sessionCookie As String, baseUrl As String) As Task(Of Boolean)
 
         Try
@@ -903,6 +901,7 @@ Public Class clsSyncSapFacturaReserva
         End Try
 
     End Function
+
     Private Shared Async Function Get_Campaña_Sap_Hana_By_IdCampaña(campañaId As Integer,
                                                                     sessionCookie As String,
                                                                     baseUrl As String) As Task(Of DataRow)
@@ -969,12 +968,6 @@ Public Class clsSyncSapFacturaReserva
         End If
     End Sub
 
-    ' ' TODO: override finalizer only if 'Dispose(disposing As Boolean)' has code to free unmanaged resources
-    ' Protected Overrides Sub Finalize()
-    '     ' Do not change this code. Put cleanup code in 'Dispose(disposing As Boolean)' method
-    '     Dispose(disposing:=False)
-    '     MyBase.Finalize()
-    ' End Sub
     Public Sub Dispose() Implements IDisposable.Dispose
         ' Do not change this code. Put cleanup code in 'Dispose(disposing As Boolean)' method
         Dispose(disposing:=True)
