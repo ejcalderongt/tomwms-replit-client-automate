@@ -1,4 +1,5 @@
 ﻿Imports System.Data.SqlClient
+Imports System.Reflection
 
 Partial Public Class clsLnEmpresa_transporte_bodega
 
@@ -68,6 +69,37 @@ Partial Public Class clsLnEmpresa_transporte_bodega
         End Using
 
         Return lReturnList
+
+    End Function
+
+    Public Shared Function Get_All_By_IdBodega(ByVal pIdBodega As Integer,
+                                               ByVal pConnection As SqlConnection,
+                                               ByVal pTransaction As SqlTransaction) As DataTable
+
+        Dim lDataTable As New DataTable
+
+        Try
+
+            Dim vSQL As String = "SELECT e.IdEmpresaTransporte,Nombre
+                                  FROM empresa_transporte_bodega b inner join empresa_transporte e On e.IdEmpresaTransporte = b.IdEmpresaTransporte
+                                  WHERE b.IdBodega=@IdBodega "
+
+            Using lDTA As New SqlDataAdapter(vSQL, pConnection)
+
+                lDTA.SelectCommand.Transaction = pTransaction
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                lDTA.Fill(lDataTable)
+
+            End Using
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        End Try
+
+        Return lDataTable
 
     End Function
 

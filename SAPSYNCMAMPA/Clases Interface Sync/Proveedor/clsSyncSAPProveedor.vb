@@ -504,7 +504,7 @@ Public Class clsSyncSAPProveedor
             If String.IsNullOrWhiteSpace(codigo) Then Return Nothing
 
             ' Filtro OData para proveedores activos
-            Dim filtro = $"CardType eq 'S' and CardCode eq '{codigo}' and validFor eq 'Y'"
+            Dim filtro = $"CardType eq 'cCustomer' and CardCode eq '{codigo}' and Valid eq 'tYES'"
             Dim requestUrl As String = $"BusinessPartners?$filter={Uri.EscapeDataString(filtro)}"
 
             Using handler As New HttpClientHandler()

@@ -1860,6 +1860,7 @@ Partial Public Class clsLnI_nav_ped_compra_enc
             Throw New Exception("Error en InsertarProveedorDefecto: " & ex.Message)
         End Try
     End Function
+
     Public Shared Sub Generar_Tarea_Recepcion(gBeOrdenCompraEnc As clsBeTrans_oc_enc,
                                               BeConfigEnc As clsBeI_nav_config_enc,
                                               BeTipoDocumento As clsBeTrans_oc_ti,
@@ -1881,6 +1882,14 @@ Partial Public Class clsLnI_nav_ped_compra_enc
                                                                                            BePedidoEnc,
                                                                                            lConnection,
                                                                                            lTransInterface)
+                ElseIf BeConfigEnc.Interface_SAP AndAlso BeTipoDocumento.IdTipoIngresoOC = clsDataContractDI.tTipoDocumentoIngreso.Ingreso_nota_credito Then
+                    clsLnTrans_re_enc.Generar_Tarea_Recepcion_By_OrdenCompraEnc_Doc_Devolucion(gBeOrdenCompraEnc,
+                                                                                               lblprg,
+                                                                                               True,
+                                                                                               BeConfigEnc,
+                                                                                               OutBeRecepcionEnc,
+                                                                                               lConnection,
+                                                                                               lTransInterface)
                 Else
                     clsLnTrans_re_enc.Generar_Tarea_Recepcion_By_OrdenCompraEnc(gBeOrdenCompraEnc,
                                                                                 lblprg,
