@@ -1278,6 +1278,7 @@ Public Class frmBodega
             txtRutaCDN.Text = pBeBodega.Ruta_CDN
 
             chkControlTallaColor.Checked = pBeBodega.Control_Talla_Color
+            chkControlGondola.Checked = pBeBodega.Control_Gondola
 
             nudRangoDiasDocumentos.Value = pBeBodega.Rango_Dias_Documentos
 
@@ -1516,6 +1517,7 @@ Public Class frmBodega
             pBeBodega.Centro_Costo_Dep_Erp = cmbCentroCostoDepERP.EditValue
 
             pBeBodega.Control_Talla_Color = chkControlTallaColor.Checked
+            pBeBodega.Control_Gondola = chkControlGondola.Checked
 
             Guardar = clsLnBodega.Insertar(pBeBodega) > 0
 
@@ -1732,6 +1734,7 @@ Public Class frmBodega
                 pBeBodega.Centro_Costo_Erp = cmbCentroCostoERP.EditValue
                 pBeBodega.Centro_Costo_Dir_Erp = cmbCentroCostoDirERP.EditValue
                 pBeBodega.Centro_Costo_Dep_Erp = cmbCentroCostoDepERP.EditValue
+                pBeBodega.Control_Gondola = chkControlGondola.Checked
                 Actualizar = clsLnBodega.Actualizar(pBeBodega) > 0
 
             End If
