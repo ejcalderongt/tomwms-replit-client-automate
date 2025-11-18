@@ -120,4 +120,44 @@ Partial Public Class clsLnMensaje_regla
 
     End Function
 
+    '#GT14112025: cargar mensajes por proceso, no aplica para las reglas de recepción
+    Public Shared Function GetAll_By_IdProceso(ByVal IdReglaRecepcion As Integer) As List(Of clsBeMensaje_regla)
+
+        GetAll_By_IdProceso = Nothing
+
+        Try
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                Dim vSQL As String = "SELECT * FROM mensaje_regla WHERE IdReglaRecepcion=" & IdReglaRecepcion
+
+                Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                    lDTA.SelectCommand.CommandType = CommandType.Text
+
+                    Dim lDataTable As New DataTable
+                    lDTA.Fill(lDataTable)
+
+                    If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                        GetAll_By_IdProceso = New List(Of clsBeMensaje_regla)
+
+                        For Each lRow As DataRow In lDataTable.Rows
+                            Dim Obj As New clsBeMensaje_regla
+                            Cargar(Obj, lRow)
+                            GetAll_By_IdProceso.Add(Obj)
+                        Next
+
+                    End If
+
+                End Using
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+
 End Class

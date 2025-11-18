@@ -341,36 +341,22 @@ Public Class frmCargaExcel
 
             'Loop through the Worksheet rows.
             Dim firstRow As Boolean = True
-            Dim startRow As Integer = 6
-            Dim currentRow As Integer = 0
-
             For Each row As IXLRow In documento1.RowsUsed
-
-                currentRow += 1
-                ' Omitir filas anteriores a la que queremos iniciar
-                If currentRow < startRow Then Continue For
-
-                ' Si es la primera fila procesada, se toman los encabezados
-                If firstRow AndAlso currentRow = startRow Then
+                'Use the first row to add columns to DataTable.
+                If firstRow Then
                     For Each cell As IXLCell In row.Cells
-                        DT.Columns.Add(cell.Value.ToString().Trim())
+                        DT.Columns.Add(cell.Value.ToString())
                     Next
                     firstRow = False
-                    Continue For  ' Pasar a la siguiente fila (ya tenemos columnas)
+                Else
+                    'Add rows to DataTable.
+                    DT.Rows.Add()
+                    Dim i As Integer = 0
+                    For Each cell As IXLCell In row.Cells(False)
+                        DT.Rows(DT.Rows.Count - 1)(i) = cell.Value.ToString()
+                        i += 1
+                    Next
                 End If
-
-                ' Agregar nueva fila al DataTable
-                DT.Rows.Add()
-                Dim i As Integer = 0
-
-                ' Llenar las celdas de la fila
-                For Each cell As IXLCell In row.Cells(False)
-                    If i < DT.Columns.Count Then
-                        DT.Rows(DT.Rows.Count - 1)(i) = cell.Value.ToString().Trim()
-                    End If
-                    i += 1
-                Next
-
             Next
 
             lblPrg.Text = ""

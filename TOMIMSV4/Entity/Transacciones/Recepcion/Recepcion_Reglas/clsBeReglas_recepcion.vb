@@ -13,6 +13,8 @@ Public Class clsBeReglas_recepcion
     Public Property User_mod() As String = ""
     Public Property Fec_mod() As Date = Date.Now
     Public Property Activo() As Boolean = False
+    Public Property Es_Proceso() As Boolean = False
+    Public Property TipoRegla() As String = ""
 
     Sub New()
     End Sub

@@ -368,6 +368,8 @@ Public Class frmInventario
         DTInventarioConteo.Columns.Add("FechaVence", GetType(Date))
         DTInventarioConteo.Columns.Add("IdProducto", GetType(Integer))
         DTInventarioConteo.Columns.Add("Idinventariodet", GetType(Integer))
+        DTInventarioConteo.Columns.Add("Codigo Talla", GetType(String))
+        DTInventarioConteo.Columns.Add("Codigo Color", GetType(String))
 
     End Sub
 
@@ -399,6 +401,8 @@ Public Class frmInventario
         DTInventarioVerifica.Columns.Add("IdInventarioRes", GetType(Integer))
         DTInventarioVerifica.Columns.Add("Ubicacion", GetType(String))
         DTInventarioVerifica.Columns.Add("Licencia", GetType(String))
+        DTInventarioVerifica.Columns.Add("Código Talla", GetType(String))
+        DTInventarioVerifica.Columns.Add("Código Color", GetType(String))
 
     End Sub
 
@@ -419,6 +423,8 @@ Public Class frmInventario
         DTC.Columns.Add("EstadoConteo", GetType(String))
         DTC.Columns.Add("EstadoVerifica", GetType(String))
         DTC.Columns.Add("Ubicacion", GetType(String))
+        DTC.Columns.Add("Código Talla", GetType(String))
+        DTC.Columns.Add("Código Color", GetType(String))
 
     End Sub
 
@@ -797,6 +803,8 @@ Public Class frmInventario
                 gBeAgregar.Codigo = Ob.Codigo
                 gBeAgregar.UMBas = Ob.UMBas
                 gBeAgregar.UbicacionCompleta = Ob.UbicacionCompleta
+                gBeAgregar.Codigo_Talla = Ob.Codigo_Talla
+                gBeAgregar.Codigo_Color = Ob.Codigo_Color
                 'clsLnTrans_inv_enc.InsertarComparacionInventario(gBeAgregar)
                 glistaInv.Add(gBeAgregar)
 
@@ -854,7 +862,9 @@ Public Class frmInventario
                                  vDif,
                                  BeTransInvEnc.EstadoDetalle,
                                  BeTransInvEnc.EstadoResumen,
-                                 BeTransInvEnc.UbicacionCompleta)
+                                 BeTransInvEnc.UbicacionCompleta,
+                                 BeTransInvEnc.Codigo_Talla,
+                                 BeTransInvEnc.Codigo_Color)
                     Else
                         DTC.Rows.Add(BeTransInvEnc.Idinventarioenc,
                                  BeTransInvEnc.IdTramo,
@@ -868,7 +878,10 @@ Public Class frmInventario
                                  BeTransInvEnc.Resumen,
                                  vDif,
                                  BeTransInvEnc.EstadoDetalle,
-                                 BeTransInvEnc.EstadoResumen)
+                                 BeTransInvEnc.EstadoResumen,
+                                 "",
+                                 BeTransInvEnc.Codigo_Talla,
+                                 BeTransInvEnc.Codigo_Color)
                     End If
 
 
@@ -1189,7 +1202,9 @@ Public Class frmInventario
                                                 BeConteoDetalle.Licencia,
                                                 BeConteoDetalle.FechaVence,
                                                 BeConteoDetalle.IdProducto,
-                                                BeConteoDetalle.IdInventarioDet)
+                                                BeConteoDetalle.IdInventarioDet,
+                                                BeConteoDetalle.Codigo_Talla,
+                                                BeConteoDetalle.Codigo_Color)
 
                 Next
 
@@ -1275,7 +1290,9 @@ Public Class frmInventario
                                                   BeTrans_inv_enc.IdProducto,
                                                   BeTrans_inv_enc.IdInventarioRes,
                                                   BeTrans_inv_enc.UbicacionCompleta,
-                                                  BeTrans_inv_enc.Licencia)
+                                                  BeTrans_inv_enc.Licencia,
+                                                  BeTrans_inv_enc.Codigo_Talla,
+                                                  BeTrans_inv_enc.Codigo_Color)
 
                 Next
 
@@ -2461,6 +2478,7 @@ Public Class frmInventario
                     .Peso = st.Peso
                     .Temperatura = 0
                     .Atributo_Variante_1 = st.Codigo_variante
+                    .IdProductoTallaColor = st.IdProductoTallaColor
 
 
                 End With
@@ -2498,6 +2516,7 @@ Public Class frmInventario
                 mov.IdEstadoOrigen = item.IdProductoEstado
                 mov.IdEstadoDestino = item.IdProductoEstado
                 mov.IdUnidadMedida = item.IdUnidadMedida
+                mov.IdProductoTallaColor = item.IdProductoTallaColor
                 mov.IdTipoTarea = 6
                 mov.IdBodegaDestino = AP.IdBodega
                 mov.IdRecepcion = 0

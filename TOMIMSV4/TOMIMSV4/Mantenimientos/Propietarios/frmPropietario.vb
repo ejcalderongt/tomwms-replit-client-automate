@@ -279,11 +279,13 @@ Public Class frmPropietario
             DT.Columns.Add("Regla", GetType(String))
             DT.Columns.Add("Propietario", GetType(String))
             DT.Columns.Add("Mensaje", GetType(String))
+            '#GT14112025: nueva columna para diferenciar sobre que aplica la regla
+            DT.Columns.Add("TipoRegla", GetType(String))
 
             If pListObjRE IsNot Nothing AndAlso pListObjRE.Count > 0 Then
 
                 For Each r As clsBePropietario_reglas_enc In pListObjRE.FindAll(Function(b) b.Activo = chkActivoM.Checked)
-                    DT.Rows.Add(r.IdReglaPropietarioEnc, r.Regla.Nombre, r.Propietario, r.Mensaje.Nombre)
+                    DT.Rows.Add(r.IdReglaPropietarioEnc, r.Regla.Nombre, r.Propietario, r.Mensaje.Nombre, r.TipoRegla)
                 Next
 
             End If
@@ -292,6 +294,7 @@ Public Class frmPropietario
             ViewMensaje.Columns("Propietario").Visible = False
             ViewMensaje.Columns(0).GroupIndex = 0
             ViewMensaje.OptionsBehavior.AutoExpandAllGroups = True
+            ViewMensaje.BestFitColumns()
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -1553,4 +1556,28 @@ Public Class frmPropietario
 
     End Sub
 
+    Private Sub cmdAlertas_Click(sender As Object, e As EventArgs) Handles cmdAlertas.Click
+        Try
+
+            Dim Add As New frmPropietarioReglasMensajes
+            Add.pBePropietario = pBePropietario
+            Add.ShowDialog()
+
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+    End Sub
+
+    Private Sub GrpEmpresaTB_Paint(sender As Object, e As PaintEventArgs) Handles GrpEmpresaTB.Paint
+
+    End Sub
 End Class
