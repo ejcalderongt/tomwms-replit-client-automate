@@ -385,6 +385,7 @@
     <Compile Include="TOM\clsPublic.vb" />
     <Compile Include="TOM\clsStockEx.vb" />
     <Compile Include="TOM\clsUpdate.vb" />
+    <Compile Include="TOM\CryptoHelper.vb" />
     <Compile Include="TOM\WMSTipoDato.vb" />
     <Compile Include="TOM\FormatoFechas.vb" />
     <Compile Include="TOM\SHA.vb" />
