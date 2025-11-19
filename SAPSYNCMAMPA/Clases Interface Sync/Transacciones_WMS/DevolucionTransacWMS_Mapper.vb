@@ -35,7 +35,7 @@ Public Class DevolucionTransacWMS_Mapper
         If String.IsNullOrEmpty(be.Vendor_Invoice_No) Then
             be.Vendor_Invoice_No = be.No.ToString()
         End If
-        be.Campaign_No = ""
+        be.Campaign_No = "0"
         be.IsImport = False
         be.Internal_Transfer_Document_No = "" 'No. Factura de Proveedor.
         be.Document_Type = 17

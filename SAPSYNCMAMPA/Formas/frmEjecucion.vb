@@ -1629,7 +1629,7 @@ Public Class frmEjecucion
 
     End Sub
 
-    Private Sub mnuSincronizarTienda_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuSincronizarTienda.ItemClick
+    Private Async Function mnuSincronizarTienda_ItemClickAsync(sender As Object, e As ItemClickEventArgs) As Task Handles mnuSincronizarTienda.ItemClick
         Try
 
             Dim Ejecutar As Boolean = False
@@ -1645,12 +1645,15 @@ Public Class frmEjecucion
 
             If Ejecutar Then
                 lblprg.Clear()
+                'Dim unused = Await ProcesarTodoAsync()
+
                 '#CKFK20251101: Llamado al método para procesar las facturas de reserva de cliente
                 'Dim unused = clsSyncTransacWMS.Procesar_Ajustes_SAP(lblprg, prg) 'Ajustes
                 Dim unused1 = clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_SAP(lblprg, prg) 'Devoluciones de cliente
                 'Dim unused2 = clsSyncTransacWMS.Procesar_Pedido_de_Cliente_SAP(lblprg, prg) 'Pedidos de cliente
                 'Dim unused3 = clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_Anulada_SAP(lblprg, prg) 'Anulaciones de notas de crédito
                 'Dim unused4 = clsSyncTransacWMS.Procesar_Pedido_de_Cliente_Anulado_SAP(lblprg, prg) 'Anulaciones de pedidos de cliente
+
             End If
 
         Catch ex As Exception
@@ -1659,6 +1662,24 @@ Public Class frmEjecucion
             clsPublic.Actualizar_Progreso(lblprg, vMensaje)
 
         End Try
-    End Sub
+    End Function
+
+    Private Async Function ProcesarTodoAsync() As Task
+        ' Ajustes
+        'Await clsSyncTransacWMS.Procesar_Ajustes_SAP(lblprg, prg)
+
+        ' Devoluciones de cliente
+        Await clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_SAP(lblprg, prg)
+
+        ' Pedidos de cliente
+        'Await clsSyncTransacWMS.Procesar_Pedido_de_Cliente_SAP(lblprg, prg)
+
+        ' Anulación NC
+        'Await clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_Anulada_SAP(lblprg, prg)
+
+        ' Anulación pedido
+        'Await clsSyncTransacWMS.Procesar_Pedido_de_Cliente_Anulado_SAP(lblprg, prg)
+    End Function
+
 
 End Class
