@@ -357,5 +357,6 @@ Public Class clsBeBodegaBase
     Public Property Liberar_Stock_Despachos_Parciales As Boolean = False
     Public Property Control_Talla_Color As Boolean = False
     Public Property Control_Gondola As Boolean = False
+    Public Property Packing_Consolidado_Guia As Boolean = False
 
 End Class

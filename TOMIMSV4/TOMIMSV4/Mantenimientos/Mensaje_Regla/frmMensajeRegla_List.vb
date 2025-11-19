@@ -7,6 +7,7 @@ Public Class frmMensajeRegla_List
     Public Property Modo As pModo
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
     Public pObjMensaje As clsBeMensaje_regla
+    Public IdReglaRecepcion As Integer
 
     Enum pModo
         Lista = 1
@@ -21,7 +22,7 @@ Public Class frmMensajeRegla_List
             DT.Columns.Add("Código", GetType(Integer))
             DT.Columns.Add("Nombre", GetType(String))
 
-            Dim l As List(Of clsBeMensaje_regla) = clsLnMensaje_regla.GetAll(chkActivos.Checked)
+            Dim l As List(Of clsBeMensaje_regla) = clsLnMensaje_regla.GetAll(chkActivos.Checked, IdReglaRecepcion)
 
             For Each Obj As clsBeMensaje_regla In l
                 DT.Rows.Add(Obj.IdMensajeRegla, Obj.Nombre)
@@ -73,6 +74,7 @@ Public Class frmMensajeRegla_List
                 .mnuActualizar.Enabled = .OpcionesMenu.Modificar
                 .mnuEliminar.Enabled = .OpcionesMenu.Eliminar
                 .InvokeListarMensajes = AddressOf ListarMensajes
+                .IdReglaRecepcion = IdReglaRecepcion
                 .WindowState = FormWindowState.Normal
                 .Show()
                 .Focus()

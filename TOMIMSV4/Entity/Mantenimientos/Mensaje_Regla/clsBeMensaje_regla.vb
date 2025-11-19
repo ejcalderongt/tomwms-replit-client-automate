@@ -8,6 +8,7 @@ Public Class clsBeMensaje_regla
     Private mFec_mod As Date = Date.Now
     Private mUser_mod As String = ""
     Private mActivo As Boolean = False
+    Private mIdReglaRecepcion As Integer = 0
 
     Public Property IdMensajeRegla() As Integer
         Get
@@ -69,6 +70,15 @@ Public Class clsBeMensaje_regla
         End Get
         Set(ByVal Value As Boolean)
             mActivo = Value
+        End Set
+    End Property
+
+    Public Property IdReglaRecepcion() As Integer
+        Get
+            Return mIdReglaRecepcion
+        End Get
+        Set(ByVal Value As Integer)
+            mIdReglaRecepcion = Value
         End Set
     End Property
 

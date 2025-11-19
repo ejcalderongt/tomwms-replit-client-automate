@@ -10,6 +10,7 @@ Public Class clsLnPropietario_reglas_det
                 .IdReglaPropietarioDet = IIf(IsDBNull(dr.Item("IdReglaPropietarioDet")), 0, dr.Item("IdReglaPropietarioDet"))
                 .IdReglaPropietarioEnc = IIf(IsDBNull(dr.Item("IdReglaPropietarioEnc")), 0, dr.Item("IdReglaPropietarioEnc"))
                 .IdDestinatarioPropietario = IIf(IsDBNull(dr.Item("IdDestinatarioPropietario")), 0, dr.Item("IdDestinatarioPropietario"))
+                .NombreDestinatario = IIf(IsDBNull(dr.Item("Nombre")), "", dr.Item("Nombre"))
                 .User_agr = IIf(IsDBNull(dr.Item("user_agr")), "", dr.Item("user_agr"))
                 .Fec_agr = IIf(IsDBNull(dr.Item("fec_agr")), Date.Now, dr.Item("fec_agr"))
                 .User_mod = IIf(IsDBNull(dr.Item("user_mod")), "", dr.Item("user_mod"))

@@ -113,7 +113,8 @@ Public Class clsLnBodega
                 .Centro_Costo_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Erp")), "", dr.Item("Centro_Costo_Erp"))
                 .Centro_Costo_Dir_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Dir_Erp")), "", dr.Item("Centro_Costo_Dir_Erp"))
                 .Centro_Costo_Dep_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Dep_Erp")), "", dr.Item("Centro_Costo_Dep_Erp"))
-                .Control_Gondola = IIf(IsDBNull(dr.Item("control_gondola")), "", dr.Item("control_gondola"))
+                .Control_Gondola = IIf(IsDBNull(dr.Item("control_gondola")), False, dr.Item("control_gondola"))
+                .Packing_Consolidado_Guia = IIf(IsDBNull(dr.Item("packing_consolidado_guia")), False, dr.Item("packing_consolidado_guia"))
 
             End With
 

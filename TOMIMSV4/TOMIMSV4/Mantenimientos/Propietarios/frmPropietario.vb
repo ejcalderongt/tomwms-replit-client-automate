@@ -2,6 +2,7 @@
 Imports System.IO
 Imports System.Reflection
 Imports DevExpress.Data
+Imports DevExpress.Xpf.Bars
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Repository
 Imports DevExpress.XtraGrid
@@ -969,9 +970,6 @@ Public Class frmPropietario
     Private Sub Cargar_Destinatarios()
 
         Try
-            'If pGuardo = False Then
-
-            'End If
 
             Limpiar()
 
@@ -1274,19 +1272,51 @@ Public Class frmPropietario
         Try
 
             If ViewMensaje.RowCount > 0 Then
-
                 Dim Dr As DataRowView = ViewMensaje.GetFocusedRow
-                Dim i As Integer = ViewMensaje.FocusedRowHandle
-                Dim Edit As New frmPropietarioReglaRecepcion(frmPropietarioReglaRecepcion.TipoTrans.Editar)
-                Edit.pIdReglaPropietarioEnc = CInt(Dr.Item("Código"))
-                Edit.pNombrePropietario = Nombre_comercialTextEdit.Text.Trim
-                Edit.pIdPropietario = pBePropietario.IdPropietario
-                Edit.ShowDialog()
-                pListObjRE = clsLnPropietario_reglas_enc.Get_All_By_IdPropietario(pBePropietario.IdPropietario).ToList
-                Listar_Reglas()
-                pListObjRD = clsLnPropietario_reglas_det.GetAll().ToList
-                GetDatos()
-                ViewMensaje.FocusedRowHandle = i
+
+                Dim Es_Proceso As Boolean
+
+                Dim pReglaEnc = clsLnPropietario_reglas_enc.GetSingle(CInt(Dr.Item("Código")))
+                If pReglaEnc IsNot Nothing Then
+                    Dim regla_recepcion = New clsBeReglas_recepcion()
+                    regla_recepcion.IdReglaRecepcion = pReglaEnc.IdReglaRecepcion
+
+                    If clsLnReglas_recepcion.GetSingle(regla_recepcion) Then
+                        Es_Proceso = regla_recepcion.Es_Proceso
+                    End If
+                End If
+
+
+                If Es_Proceso Then
+
+                    Dim i As Integer = ViewMensaje.FocusedRowHandle
+                    Dim FrmPropietarioProcesos As New frmPropietarioReglasMensajes(frmPropietarioReglasMensajes.TipoTrans.Editar)
+                    FrmPropietarioProcesos.pIdReglaPropietarioEnc = CInt(Dr.Item("Código"))
+                    'Edit.pNombrePropietario = Nombre_comercialTextEdit.Text.Trim
+                    FrmPropietarioProcesos.pBePropietario = pBePropietario
+                    FrmPropietarioProcesos.ShowDialog()
+                    pListObjRE = clsLnPropietario_reglas_enc.Get_All_By_IdPropietario(pBePropietario.IdPropietario).ToList
+                    'Listar_Reglas()
+                    'pListObjRD = clsLnPropietario_reglas_det.GetAll().ToList
+                    'GetDatos()
+                    ViewMensaje.FocusedRowHandle = i
+
+                Else
+
+                    Dim i As Integer = ViewMensaje.FocusedRowHandle
+                    Dim Edit As New frmPropietarioReglaRecepcion(frmPropietarioReglaRecepcion.TipoTrans.Editar)
+                    Edit.pIdReglaPropietarioEnc = CInt(Dr.Item("Código"))
+                    Edit.pNombrePropietario = Nombre_comercialTextEdit.Text.Trim
+                    Edit.pIdPropietario = pBePropietario.IdPropietario
+                    Edit.ShowDialog()
+                    pListObjRE = clsLnPropietario_reglas_enc.Get_All_By_IdPropietario(pBePropietario.IdPropietario).ToList
+                    Listar_Reglas()
+                    pListObjRD = clsLnPropietario_reglas_det.GetAll().ToList
+                    GetDatos()
+                    ViewMensaje.FocusedRowHandle = i
+
+                End If
+
             End If
 
         Catch ex As Exception
@@ -1559,7 +1589,8 @@ Public Class frmPropietario
     Private Sub cmdAlertas_Click(sender As Object, e As EventArgs) Handles cmdAlertas.Click
         Try
 
-            Dim Add As New frmPropietarioReglasMensajes
+            Dim Add As New frmPropietarioReglasMensajes(frmPropietarioReglasMensajes.TipoTrans.Nuevo)
+            Add.pIdReglaPropietarioEnc = 0
             Add.pBePropietario = pBePropietario
             Add.ShowDialog()
 
