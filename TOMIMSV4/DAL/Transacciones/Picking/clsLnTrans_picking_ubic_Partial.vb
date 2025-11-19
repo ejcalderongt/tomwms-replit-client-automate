@@ -8226,7 +8226,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                   pdet.IdProductoBodega, 
                                   pdet.codigo_producto, pdet.nombre_producto,pdet.nom_presentacion, pdet.nom_unid_med,pdet.nom_estado,
                                   pdet.IdEstado, pdet.Peso, pdet.Precio, sr.IdStockRes, sr.IdStock,
-	                              dbo.Nombre_Completo_Ubicacion(pu.IdUbicacion,penc.IdBodega) AS nom_ubicacion
+	                              dbo.Nombre_Completo_Ubicacion(pu.IdUbicacion,penc.IdBodega) AS nom_ubicacion, pu.No_Linea
                                   FROM trans_picking_ubic pu  
                                       INNER JOIN trans_picking_det AS pkdet ON pkdet.IdPickingDet = pu.IdPickingDet 
                                       INNER JOIN trans_pe_det As pdet On pdet.IdPedidoDet = pkdet.IdPedidoDet  

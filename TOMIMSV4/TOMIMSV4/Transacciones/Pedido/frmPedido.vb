@@ -6754,10 +6754,10 @@ Public Class frmPedido
                     valores.Add(BeVW_stock_res.IdProductoTallaColor)
                     valores.Add(BeVW_stock_res.Codigo_Talla)
                     valores.Add(BeVW_stock_res.Codigo_Color)
+                    valores.Add(BeVW_stock_res.Codigo_Producto & BeVW_stock_res.Codigo_Talla & BeVW_stock_res.Codigo_Color)
                 End If
 
                 DTStockRes.Rows.Add(valores.ToArray())
-
 
             Next
 

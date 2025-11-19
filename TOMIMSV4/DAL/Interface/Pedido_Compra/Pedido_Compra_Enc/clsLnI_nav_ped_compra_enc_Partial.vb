@@ -928,7 +928,7 @@ Partial Public Class clsLnI_nav_ped_compra_enc
                     lblprg += "El documento ya existe, se actualizará." & vbNewLine
 
                     gBeOrdenCompraEnc.Activo = True
-                    gBeOrdenCompraEnc.IdCampaña = navPedidoCompraEnc.Campaign_No
+                    gBeOrdenCompraEnc.IdCampaña = Val(navPedidoCompraEnc.Campaign_No)
 
                     '#CKFK20250815 Se actualizan los siguientes campos en la orden de compra
                     gBeOrdenCompraEnc.Serie = navPedidoCompraEnc.Series
