@@ -27,10 +27,9 @@ namespace WMS.StockReservation.Core.Services
                 return;
             }
 
-            context.Bodega = bodega; // <- ya no hay CS8601
-
-            // --- Cargar Producto (mismo patrón) ---
-            var product = clsLnProducto.Get_Single_By_IdProducto(
+            context.Bodega = bodega;
+        
+            var product = clsLnProducto.Get_Single_By_IdProductoBodega(
                 context.ProductId,
                 context.Connection,
                 context.Transaction);

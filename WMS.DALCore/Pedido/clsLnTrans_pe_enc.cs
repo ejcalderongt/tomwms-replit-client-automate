@@ -1021,7 +1021,7 @@ public class clsLnTrans_pe_enc
 
         try
         {
-            pPedido.IdPedidoEnc = MaxID(lConnection, lTransaction);
+            pPedido.IdPedidoEnc = MaxID(lConnection, lTransaction)+1;
             string correlativo = pPedido.IdPedidoEnc.ToString().PadLeft(7, '0');
             pPedido.No_documento = int.Parse(correlativo);
             int ResultadoInsert = Insertar(pPedido, lConnection, lTransaction);

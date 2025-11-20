@@ -5,14 +5,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Transactions;
 using WMS.EntityCore.Log;
 using WMS.EntityCore.Propietario;
-using WMSWebAPI.Dtos.Log_portal_ux;
 using WMSWebAPI.Dtos.Login;
 using WMSWebAPI.Dtos.Reset_Password;
-using WMSWebAPI.Services.Ingresos;
-using WMSWebAPI.Services.LogPortalUx;
 using WMSWebAPI.Services.Reset_Password;
 
 

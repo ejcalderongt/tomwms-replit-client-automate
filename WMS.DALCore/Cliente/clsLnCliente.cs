@@ -809,8 +809,42 @@ public class clsLnCliente
         return IdUbicacionVirtual;
     }
 
-    internal static clsBeCliente Get_Single_By_Codigo(string vCodigoCliente, SqlConnection lConectionInterface, SqlTransaction lTransInterface)
+    public static clsBeCliente? Get_Single_By_Codigo(string Codigo, SqlConnection pConection, SqlTransaction pTransaction)
     {
-        throw new NotImplementedException();
+        clsBeCliente? result = null;
+
+        try
+        {
+            const string sp = "SELECT * FROM cliente " +
+                             " WHERE (codigo = @Codigo) ";
+
+            SqlCommand cmd = new SqlCommand(sp, pConection)
+            {
+                CommandType = CommandType.Text,
+                Transaction = pTransaction
+            };
+            SqlDataAdapter dad = new SqlDataAdapter(cmd);
+
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@Codigo", Codigo));
+
+            DataTable dt = new DataTable();
+            dad.Fill(dt);
+
+            if (dt.Rows.Count >= 1)
+            {
+                DataRow lRow = dt.Rows[0];
+                clsBeCliente ObjUM = new clsBeCliente();
+
+                Cargar(ref ObjUM, lRow);
+
+                result = ObjUM;
+            }
+
+            return result;
+        }
+        catch (Exception)
+        {            
+            throw;
+        }
     }
 }

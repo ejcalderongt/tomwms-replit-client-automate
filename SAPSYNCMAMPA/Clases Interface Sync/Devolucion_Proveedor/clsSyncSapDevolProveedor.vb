@@ -218,7 +218,7 @@ Public Class clsSyncSapDevolProveedor
                 clsPublic.Actualizar_Progreso(lblprg, $"Procesando solicitud de traslado SAP (OWTQ): {solicitud.Receipt_Document_Reference}/{solicitud.No}{vbNewLine}")
 
                 '#MECR 202508080524: Verifica si el proveedor ya existe como cliente en WMS.
-                If Await clsSyncSapTrasladosEnvio.Validar_Cliente_WMS(solicitud.Transfer_to_Code, "S", lblprg, clsTrans, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
+                If Await Validar_Cliente_WMS(solicitud.Transfer_to_Code, "S", lblprg, clsTrans, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
 
                     Dim origenEsWMS As Boolean = clsLnBodega_area.Existe_Codigo_By_IdBodega(solicitud.Transfer_to_Code, BeConfigEnc.Idbodega, clsTrans.lConnection, clsTrans.lTransaction)
                     Dim destinoEsWMS As Boolean = clsLnBodega_area.Existe_Codigo_By_IdBodega(solicitud.Transfer_to_Code, BeConfigEnc.Idbodega, clsTrans.lConnection, clsTrans.lTransaction)
