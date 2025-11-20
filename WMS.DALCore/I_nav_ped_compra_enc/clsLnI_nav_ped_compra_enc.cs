@@ -97,7 +97,7 @@ public class clsLnI_nav_ped_compra_enc
             Ins.Add("fec_agr", "@fec_agr", "F");
             Ins.Add("isimport", "@isimport", "F");
             Ins.Add("company_code", "@company_code", "F");
-            Ins.Add("No_Document_Wms", "@No_Document_Wms", "F");
+            //Ins.Add("No_Document_Wms", "@No_Document_Wms", "F");
 
             string sp = Ins.SQL();
 
@@ -136,8 +136,8 @@ public class clsLnI_nav_ped_compra_enc
             cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeI_nav_ped_compra_enc.Fec_agr));
             cmd.Parameters.Add(new SqlParameter("@IsImport", oBeI_nav_ped_compra_enc.IsImport));
             cmd.Parameters.Add(new SqlParameter("@Company_Code", oBeI_nav_ped_compra_enc.Company_Code));
-            cmd.Parameters.Add(new SqlParameter("@No_Document_Wms", oBeI_nav_ped_compra_enc.No_Document_Wms));
-            
+            //cmd.Parameters.Add(new SqlParameter("@No_Document_Wms", oBeI_nav_ped_compra_enc.No_Document_Wms));
+
             rowsAffected = cmd.ExecuteNonQuery();
 
             cmd.Dispose();

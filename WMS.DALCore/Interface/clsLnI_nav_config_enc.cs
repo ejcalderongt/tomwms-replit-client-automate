@@ -33,7 +33,16 @@ public class clsLnI_nav_config_enc
             oBeI_nav_config_enc.Fec_mod = GetDate("fec_mod");
             oBeI_nav_config_enc.User_mod = GetString("user_mod");
             oBeI_nav_config_enc.IdProductoEstado = GetInt("IdProductoEstado");
-            oBeI_nav_config_enc.Rechazar_pedido_incompleto = (tRechazarPedidoIncompleto)int.Parse("rechazar_pedido_incompleto");
+            
+            if (Enum.TryParse<tRechazarPedidoIncompleto>(("rechazar_pedido_incompleto"), true, out var result))
+            {
+                oBeI_nav_config_enc.Rechazar_pedido_incompleto = result;
+            }
+            else
+            {
+                oBeI_nav_config_enc.Rechazar_pedido_incompleto = tRechazarPedidoIncompleto.No;
+            }
+
             oBeI_nav_config_enc.Despachar_existencia_parcial = GetInt("despachar_existencia_parcial");
             oBeI_nav_config_enc.Convertir_decimales_a_umbas = GetInt("convertir_decimales_a_umbas");
             oBeI_nav_config_enc.Generar_pedido_ingreso_bodega_destino = GetBool("generar_pedido_ingreso_bodega_destino");
@@ -88,14 +97,9 @@ public class clsLnI_nav_config_enc
             oBeI_nav_config_enc.Bodega_Prorrateo = GetString("bodega_prorrateo");
             oBeI_nav_config_enc.Bodega_Prorrateo1 = GetString("bodega_prorrateo1");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            var st = new System.Diagnostics.StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = sf?.GetMethod();
-            string vMsgError = string.Format("{{0}} {{1}}", currentMethodName, ex.Message);
-
-            throw new Exception(vMsgError);
+            throw;
         }
     }
 

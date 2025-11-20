@@ -29,19 +29,18 @@ namespace WMS.StockReservation.Compatibility
         /// <param name="pTarea_Reabasto">Indica si es tarea de reabasto (opcional)</param>
         /// <param name="pBeTrasladoDet">Detalle de traslado (opcional)</param>
         /// <returns>True si se crearon reservas exitosamente</returns>
-        public static bool Reserva_Stock_From_MI3(
-            ref clsBeStock_res pStockResSolicitud,
-            double DiasVencimiento,
-            string MaquinaQueSolicita,
-            clsBeI_nav_config_enc pBeConfigEnc,
-            ref double pCantidadDisponibleStock,
-            int pIdPropietarioBodega,
-            ref List<clsBeStock_res> pListStockResOUT,
-            SqlConnection lConnection,
-            SqlTransaction ltransaction,
-            int No_Linea = 0,
-            bool pTarea_Reabasto = false,
-            clsBeI_nav_ped_traslado_det pBeTrasladoDet = null)
+        public static bool Reserva_Stock_From_MI3(ref clsBeStock_res pStockResSolicitud,
+                                                  double DiasVencimiento,
+                                                  string MaquinaQueSolicita,
+                                                  clsBeI_nav_config_enc pBeConfigEnc,
+                                                  ref double pCantidadDisponibleStock,
+                                                  int pIdPropietarioBodega,
+                                                  ref List<clsBeStock_res> pListStockResOUT,
+                                                  SqlConnection lConnection,
+                                                  SqlTransaction ltransaction,
+                                                  int No_Linea = 0,
+                                                  bool pTarea_Reabasto = false,
+                                                  clsBeI_nav_ped_traslado_det? pBeTrasladoDet = null)
         {
             try
             {
@@ -51,7 +50,7 @@ namespace WMS.StockReservation.Compatibility
                 if (lConnection == null)
                     throw new ArgumentNullException(nameof(lConnection));
 
-                // ⚠️ MAPEO DE PARÁMETROS LEGACY A REQUEST:
+                // MAPEO DE PARÁMETROS LEGACY A REQUEST:
                 // Asignar IdPropietarioBodega al request (usado en consulta de stock)
                 if (pIdPropietarioBodega > 0)
                 {
@@ -64,7 +63,7 @@ namespace WMS.StockReservation.Compatibility
                 // Llamar al pipeline interno refactorizado con DiasVencimiento
                 var reservations = Reserva_Stock_Internal(
                     oBeStockResRequest: pStockResSolicitud,
-                    IdProducto: idProductoBodega,
+                    IdProductoBodega: idProductoBodega,
                     oBeConfigEnc: pBeConfigEnc,
                     cnnSql: lConnection,
                     trSql: ltransaction,
@@ -146,7 +145,7 @@ namespace WMS.StockReservation.Compatibility
         /// </summary>
         private static List<clsBeStock_res> Reserva_Stock_Internal(
             clsBeStock_res oBeStockResRequest,
-            int IdProducto,
+            int IdProductoBodega,
             clsBeI_nav_config_enc oBeConfigEnc,
             SqlConnection cnnSql,
             SqlTransaction? trSql,
@@ -171,11 +170,13 @@ namespace WMS.StockReservation.Compatibility
                 var factory = new ServiceFactory();
                 var pipeline = factory.CreateReservationPipeline();
 
+                oBeStockResRequest.IdBodega = oBeConfigEnc.Idbodega;
+
                 // Construir contexto de reserva
                 var context = new ReservationContext
                 {
                     Request = oBeStockResRequest,
-                    ProductId = IdProducto,
+                    ProductId = IdProductoBodega,
                     Configuration = oBeConfigEnc,
                     Connection = cnnSql,
                     Transaction = trSql,
@@ -185,7 +186,7 @@ namespace WMS.StockReservation.Compatibility
                     EsDevolucion = EsDevolucion,
                     LineNumber = LineNumber,
                     MachineName = MachineName ?? Environment.MachineName,
-                    DiasVencimiento = DiasVencimiento
+                    DiasVencimiento = DiasVencimiento,                  
                 };
 
                 // Ejecutar pipeline de reserva
@@ -207,7 +208,7 @@ namespace WMS.StockReservation.Compatibility
             {
                 // Re-lanzar con contexto adicional
                 throw new Exception(
-                    $"Error ejecutando Reserva_Stock_From_MI3 para producto {IdProducto}: {ex.Message}",
+                    $"Error ejecutando Reserva_Stock_From_MI3 para producto {IdProductoBodega}: {ex.Message}",
                     ex);
             }
         }

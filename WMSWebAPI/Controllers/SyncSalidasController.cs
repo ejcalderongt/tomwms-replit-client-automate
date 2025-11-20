@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Transactions;
-using WMS.EntityCore.Pedido;
 using WMSWebAPI.Dtos.Pedido;
 using WMSWebAPI.Dtos.Salidas;
 using WMSWebAPI.Services.Salidas;
+using WMS.EntityCore.Dtos.Pedido;
 
 namespace WMSWebAPI.Controllers
 {
@@ -95,7 +95,7 @@ namespace WMSWebAPI.Controllers
         }
 
         [HttpGet("{IdPedidoEnc}/detalle-pe")]
-        public IActionResult GetDetallePedido(int IdPedidoEnc,[FromServices] ILogger<SyncSalidasController> _logger)
+        public IActionResult GetDetallePedido(int IdPedidoEnc, [FromServices] ILogger<SyncSalidasController> _logger)
         {
             try
             {
@@ -114,7 +114,7 @@ namespace WMSWebAPI.Controllers
         {
             try
             {
-                var despachos = _salidaService.ObtenerDespachos(IdOrdenSalidaEnc,null,null);
+                var despachos = _salidaService.ObtenerDespachos(IdOrdenSalidaEnc, null, null);
                 return Ok(despachos);
             }
             catch (Exception ex)
@@ -122,16 +122,28 @@ namespace WMSWebAPI.Controllers
                 return StatusCode(500, new { Exito = false, Mensaje = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Inserta un documento de traslado/pedido desde MI3.
+        /// ACTUALIZADO: Ahora usa NavPedTrasladoRequestDto para mapear el JSON correctamente
+        /// ANTES de llamar a Datos_Validos(), replicando el patrón de integración SAP HANA.
+        /// </summary>
         [HttpPost("mi3/insertar")]
-        public async Task<IActionResult> PostMi3Documento([FromBody] clsBeI_nav_ped_traslado_enc documento,
-                                                 [FromServices] IConfiguration configuration,
-                                                 [FromServices] ILogger<SyncSalidasController> _logger)
+        public IActionResult PostMi3Documento([FromBody] NavPedTrasladoRequestDto request,
+                                              [FromServices] IConfiguration configuration,
+                                              [FromServices] ILogger<SyncSalidasController> _logger)
         {
-            if (documento == null)
+            // Validar que el request y el documento interno no sean nulos
+            if (request == null || request.beINavPedCompraEnc == null)
             {
-                _logger.LogWarning("Documento clsBeI_nav_ped_traslado_enc es nulo.");
-                return BadRequest("Debe proporcionar un documento válido.");
+                _logger.LogWarning("Request o documento clsBeI_nav_ped_traslado_enc es nulo.");
+                return BadRequest("Debe proporcionar un documento válido con la estructura { beINavPedCompraEnc: {...} }");
             }
+
+            // MAPEO EXPLÍCITO: Extraer el documento del wrapper DTO
+            // Esto asegura que documento.Lineas_Detalle ya esté poblado desde el JSON
+            // ANTES de llamar a Datos_Validos() (replica patrón SAP HANA)
+            var documento = request.beINavPedCompraEnc;
 
             string? connectionString = configuration.GetConnectionString("CST");
             if (string.IsNullOrWhiteSpace(connectionString))
@@ -140,35 +152,24 @@ namespace WMSWebAPI.Controllers
                 return StatusCode(500, new { Exito = false, Mensaje = "La cadena de conexión no está configurada." });
             }
 
-            using var scope = new TransactionScope(TransactionScopeOption.Required, new TransactionOptions
-            {
-                IsolationLevel = IsolationLevel.ReadCommitted
-            }, TransactionScopeAsyncFlowOption.Enabled);
-
-            using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync();
-
-            using var transaction = connection.BeginTransaction();
-
             try
             {
                 string resultado = string.Empty;
-                var salidaService = _salidaService as SyncSalidasService; // Asumiendo que ISyncSalidasService implementa IPedidoCliente
+                var salidaService = _salidaService as SyncSalidasService;
 
                 if (salidaService == null)
                 {
-                    throw new InvalidOperationException("El servicio no implementa la interfaz IPedidoCliente");
+                    throw new InvalidOperationException("El servicio no implementa la interfaz requerida");
                 }
 
+                // AHORA documento.Lineas_Detalle ya está poblado desde el JSON deserializado
+                // La validación Datos_Validos() dentro de Insert_salida_mi3 pasará correctamente
                 int lineasProcesadas = salidaService.Insert_salida_mi3(ref documento, ref resultado);
 
                 if (!string.IsNullOrEmpty(resultado) && !resultado.Contains("éxito"))
                 {
                     throw new Exception(resultado);
                 }
-
-                transaction.Commit();
-                scope.Complete();
 
                 _logger.LogInformation("Documento MI3 procesado correctamente. Líneas procesadas: {LineasProcesadas}", lineasProcesadas);
 
@@ -183,7 +184,6 @@ namespace WMSWebAPI.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al procesar documento MI3.");
-                transaction.Rollback();
 
                 var showStackTrace = configuration.GetValue<bool>("MostrarDetallesErrores");
                 return StatusCode(500, new
