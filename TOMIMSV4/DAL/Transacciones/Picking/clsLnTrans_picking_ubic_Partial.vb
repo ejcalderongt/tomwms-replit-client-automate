@@ -3949,6 +3949,7 @@ Partial Public Class clsLnTrans_picking_ubic
                             vBePickingUbic.IdOperadorBodega_Pickeo = Usuario
                             vBePickingUbic.Fec_mod = Now
                             vBePickingUbic.Fecha_picking = Now
+                            vBePickingUbic.IdProductoTallaColor = PickingUbic.IdProductoTallaColor
 
                             PickingUbic.Cantidad_Recibida = vBePickingUbic.Cantidad_Recibida
                             PickingUbic.Peso_recibido = vBePickingUbic.Peso_recibido
@@ -4102,6 +4103,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                 BeNuevoStockPickeado.IdStock = clsLnStock.MaxID(If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, ltransaction)) + 1
                                 BeNuevoStockPickeado.ProductoEstado.IdEstado = BeStockOriginal.IdProductoEstado
                                 BeNuevoStockPickeado.Presentacion.IdPresentacion = BeStockOriginal.IdPresentacion
+                                BeNuevoStockPickeado.IdProductoTallaColor = PickingUbic.IdProductoTallaColor
                                 clsLnStock.Insertar(BeNuevoStockPickeado, If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, ltransaction))
 
                                 ' Actualizar stock original
@@ -4126,6 +4128,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                 BeStockResNuevo.Fec_agr = Now
                                 BeStockResNuevo.User_agr = Usuario
                                 BeStockResNuevo.Estado = If(BePickingEnc.verifica_auto, "VERIFICADO", "PICKEADO")
+                                BeStockResNuevo.IdProductoTallaColor = PickingUbic.IdProductoTallaColor
                                 clsLnStock_res.Insertar(BeStockResNuevo, If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, ltransaction))
 
                                 If vCantidadARestarStockUmBas > BeStockResActual.Cantidad Then
@@ -4186,6 +4189,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                 BeNuevoTransPickingUbic.Peso_recibido = IIf(UsarPeso = 0, PesoPend, UsarPeso)
                                 BeNuevoTransPickingUbic.IdStock = BePickingUbicStock.IdStock
                                 BeNuevoTransPickingUbic.IdStockRes = BeStockResNuevo.IdStockRes
+                                BeNuevoTransPickingUbic.IdProductoTallaColor = PickingUbic.IdProductoTallaColor
                                 Insertar(BeNuevoTransPickingUbic, lConnection, ltransaction)
 
                                 vBePickingUbic.Cantidad_Solicitada = vBePickingUbic.Cantidad_Solicitada - IIf(vBePickingUbic.IdPresentacion > 0, vCantidadARestarStockPres, vCantidadARestarStockUmBas)

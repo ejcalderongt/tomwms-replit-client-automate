@@ -290,18 +290,18 @@ namespace WMSWebAPI.Services.Salidas
 
             return detalles;
         }
-        public int Insert_salida_mi3(ref clsBeI_nav_ped_traslado_enc BeINavPedCompraEnc, ref string Resultado)
+        public int Insert_salida_mi3(ref clsBeI_nav_ped_traslado_enc BeInavPedSalida, ref string Resultado)
         {
             int Insert = 0;
 
             try
             {
-                if (Datos_Validos(_configuration, BeINavPedCompraEnc))
+                if (Datos_Validos(_configuration, BeInavPedSalida))
                 {
                     clsBeTrans_pe_enc? BePedidoEnc = new clsBeTrans_pe_enc();
                     int cantLineas = 0;
 
-                    BePedidoEnc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(BeINavPedCompraEnc, ref Resultado,_configuration);
+                    BePedidoEnc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(BeInavPedSalida, ref Resultado,_configuration);
 
                     if (BePedidoEnc != null)
                         cantLineas = clsLnTrans_pe_det.Get_Count_Lines_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc, _configuration);
@@ -322,11 +322,11 @@ namespace WMSWebAPI.Services.Salidas
 
             try
             {
-                if (BeINavPedClienteEnc.Lineas_Detalle == null)
+                if (BeINavPedClienteEnc.lineas_Detalle == null)
                 {
                     throw new Exception("No se proporcionó el detalle del documento");
                 }
-                else if (BeINavPedClienteEnc.Lineas_Detalle.Count == 0)
+                else if (BeINavPedClienteEnc.lineas_Detalle.Count == 0)
                 {
                     throw new Exception("No se proporcionó el detalle del documento");
                 }

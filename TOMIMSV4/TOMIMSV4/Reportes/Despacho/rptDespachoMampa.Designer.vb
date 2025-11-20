@@ -38,6 +38,8 @@ Partial Public Class rptDespachoMampa
         Me.XrTableCell33 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell36 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell37 = New DevExpress.XtraReports.UI.XRTableCell()
+        Me.XrTableCell21 = New DevExpress.XtraReports.UI.XRTableCell()
+        Me.XrTableCell22 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.TopMargin = New DevExpress.XtraReports.UI.TopMarginBand()
         Me.BottomMargin = New DevExpress.XtraReports.UI.BottomMarginBand()
         Me.XrPageInfo1 = New DevExpress.XtraReports.UI.XRPageInfo()
@@ -69,6 +71,8 @@ Partial Public Class rptDespachoMampa
         Me.XrTableCell20 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell23 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell24 = New DevExpress.XtraReports.UI.XRTableCell()
+        Me.XrTableCell6 = New DevExpress.XtraReports.UI.XRTableCell()
+        Me.XrTableCell15 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableRow3 = New DevExpress.XtraReports.UI.XRTableRow()
         Me.XrTableCell12 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell13 = New DevExpress.XtraReports.UI.XRTableCell()
@@ -143,10 +147,6 @@ Partial Public Class rptDespachoMampa
         Me.Empresa = New DevExpress.XtraReports.Parameters.Parameter()
         Me.ReportHeader = New DevExpress.XtraReports.UI.ReportHeaderBand()
         Me.XrLogo = New DevExpress.XtraReports.UI.XRPictureBox()
-        Me.XrTableCell6 = New DevExpress.XtraReports.UI.XRTableCell()
-        Me.XrTableCell15 = New DevExpress.XtraReports.UI.XRTableCell()
-        Me.XrTableCell21 = New DevExpress.XtraReports.UI.XRTableCell()
-        Me.XrTableCell22 = New DevExpress.XtraReports.UI.XRTableCell()
         CType(Me.XrTable3, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.XrTable1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.XrTable2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -237,6 +237,28 @@ Partial Public Class rptDespachoMampa
         Me.XrTableCell37.TextFormatString = "{0:#.00}"
         Me.XrTableCell37.Weight = 861918.56552095R
         '
+        'XrTableCell21
+        '
+        Me.XrTableCell21.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Talla]")})
+        Me.XrTableCell21.Multiline = True
+        Me.XrTableCell21.Name = "XrTableCell21"
+        Me.XrTableCell21.StyleName = "DetailData3"
+        Me.XrTableCell21.StylePriority.UseTextAlignment = False
+        Me.XrTableCell21.Text = "XrTableCell21"
+        Me.XrTableCell21.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight
+        Me.XrTableCell21.Weight = 861918.56552095R
+        '
+        'XrTableCell22
+        '
+        Me.XrTableCell22.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Color]")})
+        Me.XrTableCell22.Multiline = True
+        Me.XrTableCell22.Name = "XrTableCell22"
+        Me.XrTableCell22.StyleName = "DetailData3"
+        Me.XrTableCell22.StylePriority.UseTextAlignment = False
+        Me.XrTableCell22.Text = "XrTableCell22"
+        Me.XrTableCell22.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight
+        Me.XrTableCell22.Weight = 861918.56552095R
+        '
         'TopMargin
         '
         Me.TopMargin.HeightF = 1.041667!
@@ -306,7 +328,7 @@ Partial Public Class rptDespachoMampa
         Me.GroupHeaderBand1.Controls.AddRange(New DevExpress.XtraReports.UI.XRControl() {Me.XrTable1})
         Me.GroupHeaderBand1.GroupFields.AddRange(New DevExpress.XtraReports.UI.GroupField() {New DevExpress.XtraReports.UI.GroupField("No_Referencia", DevExpress.XtraReports.UI.XRColumnSortOrder.Ascending), New DevExpress.XtraReports.UI.GroupField("Nombre_Cliente", DevExpress.XtraReports.UI.XRColumnSortOrder.Ascending), New DevExpress.XtraReports.UI.GroupField("Codigo_Cliente", DevExpress.XtraReports.UI.XRColumnSortOrder.Ascending), New DevExpress.XtraReports.UI.GroupField("IdPedidoEnc", DevExpress.XtraReports.UI.XRColumnSortOrder.Ascending)})
         Me.GroupHeaderBand1.GroupUnion = DevExpress.XtraReports.UI.GroupUnion.WithFirstDetail
-        Me.GroupHeaderBand1.HeightF = 54.16667!
+        Me.GroupHeaderBand1.HeightF = 58.04148!
         Me.GroupHeaderBand1.Level = 1
         Me.GroupHeaderBand1.Name = "GroupHeaderBand1"
         '
@@ -482,6 +504,26 @@ Partial Public Class rptDespachoMampa
         Me.XrTableCell24.Text = "Peso"
         Me.XrTableCell24.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight
         Me.XrTableCell24.Weight = 861919.4777879063R
+        '
+        'XrTableCell6
+        '
+        Me.XrTableCell6.Multiline = True
+        Me.XrTableCell6.Name = "XrTableCell6"
+        Me.XrTableCell6.StyleName = "DetailCaption3"
+        Me.XrTableCell6.StylePriority.UseTextAlignment = False
+        Me.XrTableCell6.Text = "Talla"
+        Me.XrTableCell6.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight
+        Me.XrTableCell6.Weight = 861919.4777879063R
+        '
+        'XrTableCell15
+        '
+        Me.XrTableCell15.Multiline = True
+        Me.XrTableCell15.Name = "XrTableCell15"
+        Me.XrTableCell15.StyleName = "DetailCaption3"
+        Me.XrTableCell15.StylePriority.UseTextAlignment = False
+        Me.XrTableCell15.Text = "Color"
+        Me.XrTableCell15.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight
+        Me.XrTableCell15.Weight = 861919.4777879063R
         '
         'XrTableRow3
         '
@@ -1148,48 +1190,6 @@ Partial Public Class rptDespachoMampa
         Me.XrLogo.Name = "XrLogo"
         Me.XrLogo.SizeF = New System.Drawing.SizeF(197.3107!, 100.0!)
         Me.XrLogo.Sizing = DevExpress.XtraPrinting.ImageSizeMode.StretchImage
-        '
-        'XrTableCell6
-        '
-        Me.XrTableCell6.Multiline = True
-        Me.XrTableCell6.Name = "XrTableCell6"
-        Me.XrTableCell6.StyleName = "DetailCaption3"
-        Me.XrTableCell6.StylePriority.UseTextAlignment = False
-        Me.XrTableCell6.Text = "Talla"
-        Me.XrTableCell6.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight
-        Me.XrTableCell6.Weight = 861919.4777879063R
-        '
-        'XrTableCell15
-        '
-        Me.XrTableCell15.Multiline = True
-        Me.XrTableCell15.Name = "XrTableCell15"
-        Me.XrTableCell15.StyleName = "DetailCaption3"
-        Me.XrTableCell15.StylePriority.UseTextAlignment = False
-        Me.XrTableCell15.Text = "Color"
-        Me.XrTableCell15.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight
-        Me.XrTableCell15.Weight = 861919.4777879063R
-        '
-        'XrTableCell21
-        '
-        Me.XrTableCell21.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Talla]")})
-        Me.XrTableCell21.Multiline = True
-        Me.XrTableCell21.Name = "XrTableCell21"
-        Me.XrTableCell21.StyleName = "DetailData3"
-        Me.XrTableCell21.StylePriority.UseTextAlignment = False
-        Me.XrTableCell21.Text = "XrTableCell21"
-        Me.XrTableCell21.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight
-        Me.XrTableCell21.Weight = 861918.56552095R
-        '
-        'XrTableCell22
-        '
-        Me.XrTableCell22.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Color]")})
-        Me.XrTableCell22.Multiline = True
-        Me.XrTableCell22.Name = "XrTableCell22"
-        Me.XrTableCell22.StyleName = "DetailData3"
-        Me.XrTableCell22.StylePriority.UseTextAlignment = False
-        Me.XrTableCell22.Text = "XrTableCell22"
-        Me.XrTableCell22.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight
-        Me.XrTableCell22.Weight = 861918.56552095R
         '
         'rptDespachoMampa
         '

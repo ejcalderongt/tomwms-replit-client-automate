@@ -63,8 +63,9 @@ namespace WMS.DALCore
                         }
 
                         // Obtener propietario
-                        vIdPropietario = clsLnPropietarios.Get_IdPropietario_By_Codigo(
-                            BePedidoCliente.Product_Owner_Code, LocalConnection, LocalTransaction);
+                        vIdPropietario = clsLnPropietarios.Get_IdPropietario_By_Codigo(BePedidoCliente.Product_Owner_Code, 
+                                                                                       LocalConnection, 
+                                                                                       LocalTransaction);
 
                         if (vIdPropietario == 0)
                         {
@@ -151,7 +152,7 @@ namespace WMS.DALCore
             clsBeTrans_pe_enc? pBePedidoEnc = null;
             List<clsBeLog_error_wms> lLogErrorWMS = new List<clsBeLog_error_wms>();
             clsBeTrans_pe_enc? PedidoClienteExistente = null;
-            clsBeCliente BeCliente = new clsBeCliente();
+            clsBeCliente? BeCliente = new clsBeCliente();
             int vContador = 0;
             List<clsBeCliente_tiempos> pClienteTiemposList = new List<clsBeCliente_tiempos>();
             clsBeProducto? BeProducto = new clsBeProducto();
@@ -176,9 +177,9 @@ namespace WMS.DALCore
             {
                 VContadorBitacoraTOMWMS = 0;
 
-                if (BeINavPedTrasladoEnc.Status > 0)
+                if (BeINavPedTrasladoEnc.Status == 0)
                 {
-                    if (BeINavPedTrasladoEnc.Lineas_Detalle.Count > 0)
+                    if (BeINavPedTrasladoEnc.lineas_Detalle.Count > 0)
                     {
                         pBePedidoEnc = new clsBeTrans_pe_enc()
                         {
@@ -224,7 +225,9 @@ namespace WMS.DALCore
 
                         if (BeCliente == null)
                         {
-                            BeCliente = clsLnCliente.Get_Single_By_Codigo(BeINavPedTrasladoEnc.Transfer_to_Code,
+                            var tocode = BeINavPedTrasladoEnc.Transfer_to_Code;
+
+                            BeCliente = clsLnCliente.Get_Single_By_Codigo(tocode,
                                                                           lConectionInterface,
                                                                           lTransInterface);
 
@@ -405,7 +408,7 @@ namespace WMS.DALCore
                             clsBeTrans_pe_det? refBePedidoDet = new clsBeTrans_pe_det();
                             clsBeTrans_pe_det? refBePedidoDetAnt = new clsBeTrans_pe_det();
 
-                            foreach (clsBeI_nav_ped_traslado_det PDet in BeINavPedTrasladoEnc.Lineas_Detalle)
+                            foreach (clsBeI_nav_ped_traslado_det PDet in BeINavPedTrasladoEnc.lineas_Detalle)
                             {
                                 vCodigoProducto = PDet.Item_No;
                                 BeProducto = new clsBeProducto();
@@ -755,7 +758,7 @@ namespace WMS.DALCore
                                         throw;
                                     }
                                 }
-                                else if (vContador_Lineas_Detalle_Pedido_Insertadas == BeINavPedTrasladoEnc.Lineas_Detalle.Count || vCantStockRes > 0)
+                                else if (vContador_Lineas_Detalle_Pedido_Insertadas == BeINavPedTrasladoEnc.lineas_Detalle.Count || vCantStockRes > 0)
                                 {
                                     result = pBePedidoEnc;
                                 }
@@ -763,7 +766,7 @@ namespace WMS.DALCore
                                 {
                                     if ((int)BeConfigEnc.Rechazar_pedido_incompleto==1)
                                     {
-                                        string vMensajeError20230301 = string.Format("vContador_Lineas_Detalle_Pedido_Insertadas: " + vContador_Lineas_Detalle_Pedido_Insertadas + " BeINavPedTrasladoEnc.Lineas_Detalle.Count: " + BeINavPedTrasladoEnc.Lineas_Detalle.Count);
+                                        string vMensajeError20230301 = string.Format("vContador_Lineas_Detalle_Pedido_Insertadas: " + vContador_Lineas_Detalle_Pedido_Insertadas + " BeINavPedTrasladoEnc.Lineas_Detalle.Count: " + BeINavPedTrasladoEnc.lineas_Detalle.Count);
                                         throw new Exception(vMensajeError20230301);
                                     }
                                     else
@@ -1297,9 +1300,9 @@ namespace WMS.DALCore
                     vContador += 1;
                     lTransaction.Save("Encabezado");
 
-                    if (BePedidoCliente.Lineas_Detalle != null)
+                    if (BePedidoCliente.lineas_Detalle != null)
                     {
-                        foreach (clsBeI_nav_ped_traslado_det BeI_Nav_PedidoTrasladoDet in BePedidoCliente.Lineas_Detalle)
+                        foreach (clsBeI_nav_ped_traslado_det BeI_Nav_PedidoTrasladoDet in BePedidoCliente.lineas_Detalle)
                         {
                             try
                             {

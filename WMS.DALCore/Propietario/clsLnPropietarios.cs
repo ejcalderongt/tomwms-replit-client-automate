@@ -858,7 +858,7 @@ public class clsLnPropietarios
                 using (var cmd = new SqlCommand(sp, lConnection, lTransaction))
                 {
                     cmd.CommandType = CommandType.Text;
-                    cmd.Parameters.Add(new SqlParameter("@Codigo", Codigo_Propietario));
+                    cmd.Parameters.AddWithValue("@Codigo", int.Parse(Codigo_Propietario));
 
                     using (var dad = new SqlDataAdapter(cmd))
                     {

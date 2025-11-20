@@ -211,7 +211,7 @@ Partial Public Class rptPackingTallaColor
         Me.XrLabel10.Borders = DevExpress.XtraPrinting.BorderSide.None
         Me.XrLabel10.BorderWidth = 1.0!
         Me.XrLabel10.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[no_linea]")})
-        Me.XrLabel10.Font = New DevExpress.Drawing.DXFont("Arial", 7.8!, DevExpress.Drawing.DXFontStyle.Regular, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
+        Me.XrLabel10.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!)
         Me.XrLabel10.LocationFloat = New DevExpress.Utils.PointFloat(0!, 0!)
         Me.XrLabel10.Multiline = True
         Me.XrLabel10.Name = "XrLabel10"
@@ -243,8 +243,10 @@ Partial Public Class rptPackingTallaColor
         'tableCell19
         '
         Me.tableCell19.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[codigo]")})
+        Me.tableCell19.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!)
         Me.tableCell19.Name = "tableCell19"
         Me.tableCell19.StyleName = "DetailData1"
+        Me.tableCell19.StylePriority.UseFont = False
         Me.tableCell19.StylePriority.UseTextAlignment = False
         Me.tableCell19.Text = "Codigo"
         Me.tableCell19.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
@@ -254,17 +256,21 @@ Partial Public Class rptPackingTallaColor
         '
         Me.tableCell21.Borders = DevExpress.XtraPrinting.BorderSide.None
         Me.tableCell21.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[nombre]")})
+        Me.tableCell21.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!)
         Me.tableCell21.Name = "tableCell21"
         Me.tableCell21.StyleName = "DetailData1"
         Me.tableCell21.StylePriority.UseBorders = False
+        Me.tableCell21.StylePriority.UseFont = False
         Me.tableCell21.Text = "Producto"
         Me.tableCell21.Weight = 0.40022139425352893R
         '
         'tableCell23
         '
         Me.tableCell23.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[umbas]")})
+        Me.tableCell23.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!)
         Me.tableCell23.Name = "tableCell23"
         Me.tableCell23.StyleName = "DetailData1"
+        Me.tableCell23.StylePriority.UseFont = False
         Me.tableCell23.StylePriority.UseTextAlignment = False
         Me.tableCell23.Text = "Umbas"
         Me.tableCell23.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
@@ -273,8 +279,10 @@ Partial Public Class rptPackingTallaColor
         'tableCell24
         '
         Me.tableCell24.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[presentacion]")})
+        Me.tableCell24.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!)
         Me.tableCell24.Name = "tableCell24"
         Me.tableCell24.StyleName = "DetailData1"
+        Me.tableCell24.StylePriority.UseFont = False
         Me.tableCell24.StylePriority.UseTextAlignment = False
         Me.tableCell24.Text = "Presentación"
         Me.tableCell24.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
@@ -283,8 +291,10 @@ Partial Public Class rptPackingTallaColor
         'tableCell27
         '
         Me.tableCell27.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[cantidad_bultos_packing]")})
+        Me.tableCell27.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!)
         Me.tableCell27.Name = "tableCell27"
         Me.tableCell27.StyleName = "DetailData1"
+        Me.tableCell27.StylePriority.UseFont = False
         Me.tableCell27.StylePriority.UseTextAlignment = False
         Me.tableCell27.Text = "Bultos"
         Me.tableCell27.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
@@ -294,8 +304,10 @@ Partial Public Class rptPackingTallaColor
         'XrTableCell4
         '
         Me.XrTableCell4.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[codigo_talla]")})
+        Me.XrTableCell4.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!)
         Me.XrTableCell4.Name = "XrTableCell4"
         Me.XrTableCell4.StyleName = "DetailData1"
+        Me.XrTableCell4.StylePriority.UseFont = False
         Me.XrTableCell4.StylePriority.UseTextAlignment = False
         Me.XrTableCell4.Text = "Talla"
         Me.XrTableCell4.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
@@ -304,8 +316,10 @@ Partial Public Class rptPackingTallaColor
         'XrTableCell5
         '
         Me.XrTableCell5.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[codigo_color]")})
+        Me.XrTableCell5.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!)
         Me.XrTableCell5.Name = "XrTableCell5"
         Me.XrTableCell5.StyleName = "DetailData1"
+        Me.XrTableCell5.StylePriority.UseFont = False
         Me.XrTableCell5.StylePriority.UseTextAlignment = False
         Me.XrTableCell5.Text = "Color"
         Me.XrTableCell5.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
@@ -400,12 +414,14 @@ Partial Public Class rptPackingTallaColor
         Me.XrLabel9.Borders = DevExpress.XtraPrinting.BorderSide.None
         Me.XrLabel9.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "?Empresa")})
         Me.XrLabel9.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!)
+        Me.XrLabel9.ForeColor = System.Drawing.Color.Black
         Me.XrLabel9.LocationFloat = New DevExpress.Utils.PointFloat(102.3107!, 46.14581!)
         Me.XrLabel9.Name = "XrLabel9"
         Me.XrLabel9.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
         Me.XrLabel9.SizeF = New System.Drawing.SizeF(120.8732!, 23.00001!)
         Me.XrLabel9.StylePriority.UseBorders = False
         Me.XrLabel9.StylePriority.UseFont = False
+        Me.XrLabel9.StylePriority.UseForeColor = False
         '
         'XrLabel8
         '
@@ -743,11 +759,13 @@ Partial Public Class rptPackingTallaColor
             Or DevExpress.XtraPrinting.BorderSide.Right) _
             Or DevExpress.XtraPrinting.BorderSide.Bottom), DevExpress.XtraPrinting.BorderSide)
         Me.XrTableCell1.CanGrow = False
+        Me.XrTableCell1.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.XrTableCell1.ForeColor = System.Drawing.Color.Black
         Me.XrTableCell1.Name = "XrTableCell1"
         Me.XrTableCell1.StylePriority.UseBackColor = False
         Me.XrTableCell1.StylePriority.UseBorderColor = False
         Me.XrTableCell1.StylePriority.UseBorders = False
+        Me.XrTableCell1.StylePriority.UseFont = False
         Me.XrTableCell1.StylePriority.UseForeColor = False
         Me.XrTableCell1.Text = "Tarima"
         Me.XrTableCell1.Weight = 1439561.0659408187R
@@ -759,11 +777,13 @@ Partial Public Class rptPackingTallaColor
         Me.XrTableCell16.Borders = CType((((DevExpress.XtraPrinting.BorderSide.Left Or DevExpress.XtraPrinting.BorderSide.Top) _
             Or DevExpress.XtraPrinting.BorderSide.Right) _
             Or DevExpress.XtraPrinting.BorderSide.Bottom), DevExpress.XtraPrinting.BorderSide)
+        Me.XrTableCell16.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.XrTableCell16.ForeColor = System.Drawing.Color.Black
         Me.XrTableCell16.Name = "XrTableCell16"
         Me.XrTableCell16.StylePriority.UseBackColor = False
         Me.XrTableCell16.StylePriority.UseBorderColor = False
         Me.XrTableCell16.StylePriority.UseBorders = False
+        Me.XrTableCell16.StylePriority.UseFont = False
         Me.XrTableCell16.StylePriority.UseForeColor = False
         Me.XrTableCell16.Text = "Código"
         Me.XrTableCell16.Weight = 2063893.2206743048R
@@ -775,11 +795,13 @@ Partial Public Class rptPackingTallaColor
         Me.XrTableCell17.Borders = CType((((DevExpress.XtraPrinting.BorderSide.Left Or DevExpress.XtraPrinting.BorderSide.Top) _
             Or DevExpress.XtraPrinting.BorderSide.Right) _
             Or DevExpress.XtraPrinting.BorderSide.Bottom), DevExpress.XtraPrinting.BorderSide)
+        Me.XrTableCell17.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.XrTableCell17.ForeColor = System.Drawing.Color.Black
         Me.XrTableCell17.Name = "XrTableCell17"
         Me.XrTableCell17.StylePriority.UseBackColor = False
         Me.XrTableCell17.StylePriority.UseBorderColor = False
         Me.XrTableCell17.StylePriority.UseBorders = False
+        Me.XrTableCell17.StylePriority.UseFont = False
         Me.XrTableCell17.StylePriority.UseForeColor = False
         Me.XrTableCell17.Text = "Nombre"
         Me.XrTableCell17.Weight = 5729233.1224316834R
@@ -791,11 +813,13 @@ Partial Public Class rptPackingTallaColor
         Me.XrTableCell18.Borders = CType((((DevExpress.XtraPrinting.BorderSide.Left Or DevExpress.XtraPrinting.BorderSide.Top) _
             Or DevExpress.XtraPrinting.BorderSide.Right) _
             Or DevExpress.XtraPrinting.BorderSide.Bottom), DevExpress.XtraPrinting.BorderSide)
+        Me.XrTableCell18.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.XrTableCell18.ForeColor = System.Drawing.Color.Black
         Me.XrTableCell18.Name = "XrTableCell18"
         Me.XrTableCell18.StylePriority.UseBackColor = False
         Me.XrTableCell18.StylePriority.UseBorderColor = False
         Me.XrTableCell18.StylePriority.UseBorders = False
+        Me.XrTableCell18.StylePriority.UseFont = False
         Me.XrTableCell18.StylePriority.UseForeColor = False
         Me.XrTableCell18.StylePriority.UseTextAlignment = False
         Me.XrTableCell18.Text = "UM"
@@ -809,11 +833,13 @@ Partial Public Class rptPackingTallaColor
         Me.XrTableCell19.Borders = CType((((DevExpress.XtraPrinting.BorderSide.Left Or DevExpress.XtraPrinting.BorderSide.Top) _
             Or DevExpress.XtraPrinting.BorderSide.Right) _
             Or DevExpress.XtraPrinting.BorderSide.Bottom), DevExpress.XtraPrinting.BorderSide)
+        Me.XrTableCell19.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.XrTableCell19.ForeColor = System.Drawing.Color.Black
         Me.XrTableCell19.Name = "XrTableCell19"
         Me.XrTableCell19.StylePriority.UseBackColor = False
         Me.XrTableCell19.StylePriority.UseBorderColor = False
         Me.XrTableCell19.StylePriority.UseBorders = False
+        Me.XrTableCell19.StylePriority.UseFont = False
         Me.XrTableCell19.StylePriority.UseForeColor = False
         Me.XrTableCell19.StylePriority.UseTextAlignment = False
         Me.XrTableCell19.Text = "Presentación"
@@ -827,11 +853,13 @@ Partial Public Class rptPackingTallaColor
         Me.XrTableCell21.Borders = CType((((DevExpress.XtraPrinting.BorderSide.Left Or DevExpress.XtraPrinting.BorderSide.Top) _
             Or DevExpress.XtraPrinting.BorderSide.Right) _
             Or DevExpress.XtraPrinting.BorderSide.Bottom), DevExpress.XtraPrinting.BorderSide)
+        Me.XrTableCell21.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.XrTableCell21.ForeColor = System.Drawing.Color.Black
         Me.XrTableCell21.Name = "XrTableCell21"
         Me.XrTableCell21.StylePriority.UseBackColor = False
         Me.XrTableCell21.StylePriority.UseBorderColor = False
         Me.XrTableCell21.StylePriority.UseBorders = False
+        Me.XrTableCell21.StylePriority.UseFont = False
         Me.XrTableCell21.StylePriority.UseForeColor = False
         Me.XrTableCell21.StylePriority.UseTextAlignment = False
         Me.XrTableCell21.Text = "Cantidad"
@@ -845,12 +873,14 @@ Partial Public Class rptPackingTallaColor
         Me.XrTableCell2.Borders = CType((((DevExpress.XtraPrinting.BorderSide.Left Or DevExpress.XtraPrinting.BorderSide.Top) _
             Or DevExpress.XtraPrinting.BorderSide.Right) _
             Or DevExpress.XtraPrinting.BorderSide.Bottom), DevExpress.XtraPrinting.BorderSide)
+        Me.XrTableCell2.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.XrTableCell2.ForeColor = System.Drawing.Color.Black
         Me.XrTableCell2.Multiline = True
         Me.XrTableCell2.Name = "XrTableCell2"
         Me.XrTableCell2.StylePriority.UseBackColor = False
         Me.XrTableCell2.StylePriority.UseBorderColor = False
         Me.XrTableCell2.StylePriority.UseBorders = False
+        Me.XrTableCell2.StylePriority.UseFont = False
         Me.XrTableCell2.StylePriority.UseForeColor = False
         Me.XrTableCell2.StylePriority.UseTextAlignment = False
         Me.XrTableCell2.Text = "Talla" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10)
@@ -864,12 +894,14 @@ Partial Public Class rptPackingTallaColor
         Me.XrTableCell3.Borders = CType((((DevExpress.XtraPrinting.BorderSide.Left Or DevExpress.XtraPrinting.BorderSide.Top) _
             Or DevExpress.XtraPrinting.BorderSide.Right) _
             Or DevExpress.XtraPrinting.BorderSide.Bottom), DevExpress.XtraPrinting.BorderSide)
+        Me.XrTableCell3.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.XrTableCell3.ForeColor = System.Drawing.Color.Black
         Me.XrTableCell3.Multiline = True
         Me.XrTableCell3.Name = "XrTableCell3"
         Me.XrTableCell3.StylePriority.UseBackColor = False
         Me.XrTableCell3.StylePriority.UseBorderColor = False
         Me.XrTableCell3.StylePriority.UseBorders = False
+        Me.XrTableCell3.StylePriority.UseFont = False
         Me.XrTableCell3.StylePriority.UseForeColor = False
         Me.XrTableCell3.StylePriority.UseTextAlignment = False
         Me.XrTableCell3.Text = "Color"
@@ -917,7 +949,7 @@ Partial Public Class rptPackingTallaColor
         Me.XrLabel16.Borders = CType((((DevExpress.XtraPrinting.BorderSide.Left Or DevExpress.XtraPrinting.BorderSide.Top) _
             Or DevExpress.XtraPrinting.BorderSide.Right) _
             Or DevExpress.XtraPrinting.BorderSide.Bottom), DevExpress.XtraPrinting.BorderSide)
-        Me.XrLabel16.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.0!, DevExpress.Drawing.DXFontStyle.Bold)
+        Me.XrLabel16.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.0!)
         Me.XrLabel16.ForeColor = System.Drawing.Color.Black
         Me.XrLabel16.LocationFloat = New DevExpress.Utils.PointFloat(615.7536!, 0!)
         Me.XrLabel16.Name = "XrLabel16"
@@ -1097,12 +1129,14 @@ Partial Public Class rptPackingTallaColor
         '
         Me.XrLabel25.BorderColor = System.Drawing.Color.Transparent
         Me.XrLabel25.Borders = DevExpress.XtraPrinting.BorderSide.None
+        Me.XrLabel25.Font = New DevExpress.Drawing.DXFont("Tahoma", 9.0!)
         Me.XrLabel25.LocationFloat = New DevExpress.Utils.PointFloat(0!, 10.0!)
         Me.XrLabel25.Name = "XrLabel25"
         Me.XrLabel25.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
         Me.XrLabel25.SizeF = New System.Drawing.SizeF(86.0!, 16.0!)
         Me.XrLabel25.StylePriority.UseBorderColor = False
         Me.XrLabel25.StylePriority.UseBorders = False
+        Me.XrLabel25.StylePriority.UseFont = False
         Me.XrLabel25.Text = "Total tarimas:"
         '
         'XrLabel36
@@ -1125,23 +1159,27 @@ Partial Public Class rptPackingTallaColor
         '
         Me.XrLabel37.BorderColor = System.Drawing.Color.Transparent
         Me.XrLabel37.Borders = DevExpress.XtraPrinting.BorderSide.None
+        Me.XrLabel37.Font = New DevExpress.Drawing.DXFont("Tahoma", 9.0!)
         Me.XrLabel37.LocationFloat = New DevExpress.Utils.PointFloat(256.8404!, 10.0!)
         Me.XrLabel37.Name = "XrLabel37"
         Me.XrLabel37.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
         Me.XrLabel37.SizeF = New System.Drawing.SizeF(99.59576!, 16.0!)
         Me.XrLabel37.StylePriority.UseBorderColor = False
         Me.XrLabel37.StylePriority.UseBorders = False
+        Me.XrLabel37.StylePriority.UseFont = False
         Me.XrLabel37.Text = "Total productos:"
         '
         'XrLabel39
         '
         Me.XrLabel39.Borders = DevExpress.XtraPrinting.BorderSide.None
         Me.XrLabel39.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumDCount([no_linea])")})
+        Me.XrLabel39.Font = New DevExpress.Drawing.DXFont("Tahoma", 9.0!)
         Me.XrLabel39.LocationFloat = New DevExpress.Utils.PointFloat(86.0!, 10.0!)
         Me.XrLabel39.Name = "XrLabel39"
         Me.XrLabel39.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
         Me.XrLabel39.SizeF = New System.Drawing.SizeF(76.83334!, 16.0!)
         Me.XrLabel39.StylePriority.UseBorders = False
+        Me.XrLabel39.StylePriority.UseFont = False
         Me.XrLabel39.StylePriority.UseTextAlignment = False
         XrSummary2.Running = DevExpress.XtraReports.UI.SummaryRunning.Group
         Me.XrLabel39.Summary = XrSummary2
@@ -1182,12 +1220,14 @@ Partial Public Class rptPackingTallaColor
         '
         Me.XrLabel33.BorderColor = System.Drawing.Color.Transparent
         Me.XrLabel33.Borders = DevExpress.XtraPrinting.BorderSide.None
+        Me.XrLabel33.Font = New DevExpress.Drawing.DXFont("Tahoma", 9.0!)
         Me.XrLabel33.LocationFloat = New DevExpress.Utils.PointFloat(642.5415!, 10.0!)
         Me.XrLabel33.Name = "XrLabel33"
         Me.XrLabel33.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
         Me.XrLabel33.SizeF = New System.Drawing.SizeF(45.42908!, 16.0!)
         Me.XrLabel33.StylePriority.UseBorderColor = False
         Me.XrLabel33.StylePriority.UseBorders = False
+        Me.XrLabel33.StylePriority.UseFont = False
         Me.XrLabel33.Text = "Total:"
         '
         'rptPackingTallaColor
