@@ -4103,6 +4103,7 @@ Partial Public Class clsLnTrans_picking_ubic
                                 BeNuevoStockPickeado.IdStock = clsLnStock.MaxID(If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, ltransaction)) + 1
                                 BeNuevoStockPickeado.ProductoEstado.IdEstado = BeStockOriginal.IdProductoEstado
                                 BeNuevoStockPickeado.Presentacion.IdPresentacion = BeStockOriginal.IdPresentacion
+                                BeNuevoStockPickeado.IdProductoTallaColor = PickingUbic.IdProductoTallaColor
                                 clsLnStock.Insertar(BeNuevoStockPickeado, If(Es_Transaccion_Remota, pConnection, lConnection), If(Es_Transaccion_Remota, pTransaction, ltransaction))
 
                                 ' Actualizar stock original
