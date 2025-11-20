@@ -174,7 +174,7 @@ Public Class clsLnTrans_pe_enc
             Ins.Add("bodega_destino", "@bodega_destino", DataType.Parametro)
             Ins.Add("Codigo_Empresa_Erp", "@Codigo_Empresa_Erp", DataType.Parametro)
             Ins.Add("EsExportacion", "@EsExportacion", DataType.Parametro)
-            Ins.Add("Guia_Transporte", "@Guia_Transporte", DataType.Parametro)
+            If Not oBeTrans_pe_enc.Guia_Transporte Is Nothing Then Ins.Add("Guia_Transporte", "@Guia_Transporte", DataType.Parametro)
             Ins.Add("IdEmpresaTransporte", "@IdEmpresaTransporte", DataType.Parametro)
             Ins.Add("IdPiloto", "@IdPiloto", DataType.Parametro)
 
@@ -261,7 +261,7 @@ Public Class clsLnTrans_pe_enc
             cmd.Parameters.Add(New SqlParameter("@BODEGA_DESTINO", oBeTrans_pe_enc.Bodega_Destino))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_EMPRESA_ERP", oBeTrans_pe_enc.Codigo_Empresa_ERP))
             cmd.Parameters.Add(New SqlParameter("@ESEXPORTACION", oBeTrans_pe_enc.EsExportacion))
-            cmd.Parameters.Add(New SqlParameter("@GUIA_TRANSPORTE", oBeTrans_pe_enc.Guia_Transporte))
+            If Not oBeTrans_pe_enc.Guia_Transporte Is Nothing Then cmd.Parameters.Add(New SqlParameter("@GUIA_TRANSPORTE", oBeTrans_pe_enc.Guia_Transporte))
             cmd.Parameters.Add(New SqlParameter("@IDEMPRESATRANSPORTE", oBeTrans_pe_enc.IdEmpresaTransporte))
             cmd.Parameters.Add(New SqlParameter("@IDPILOTO", oBeTrans_pe_enc.IdPiloto))
 
