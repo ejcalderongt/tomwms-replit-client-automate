@@ -481,8 +481,13 @@ Partial Public Class clsLnTrans_packing_enc
 
         Try
 
-            Const sp As String = "SELECT * FROM Trans_packing_enc " &
-            " Where (idpickingenc = @idpickingenc) AND (iddespachoenc=0) "
+            Const sp As String = "SELECT p.*, ISNULL(c.Codigo,'') Codigo_Color, ISNULL(c.Nombre,'') Nombre_Color, 
+                                         ISNULL(t.Codigo,'') Codigo_Talla, ISNULL(t.Nombre,'') Nombre_Talla
+                                  FROM Trans_packing_enc p LEFT JOIN 
+                                       producto_talla_color ptc ON p.IdProductoTallaColor = ptc.IdProductoTallaColor LEFT JOIN
+	                                   talla t ON ptc.IdTalla = t.IdTalla LEFT JOIN
+	                                   color c ON ptc.IdColor = c.IdColor
+                                  WHERE (idpickingenc = @idpickingenc) AND (iddespachoenc=0) "
 
             Using lDTA As New SqlDataAdapter(sp, lConnection)
 

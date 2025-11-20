@@ -76,6 +76,8 @@ public class clsBeI_nav_config_enc : ICloneable
         No = 0,
         Si = 1
     }
+        
+        public string Bodega_prorrateo1 { get; set; } = "";        
     public enum tDespacharExistenciaParcial
     {
         No = 0,

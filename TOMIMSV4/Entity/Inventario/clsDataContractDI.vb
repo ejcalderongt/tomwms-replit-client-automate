@@ -71,6 +71,8 @@ Public Class clsDataContractDI
         Ingreso_Por_NC_Anulada = 15
         <EnumMember>
         Factura_Reserva_Proveedor = 16
+        <EnumMember>
+        Ingreso_nota_credito = 17
     End Enum
 
     <DataContract(Name:="IdTipoDocumentoSalida")>

@@ -4720,7 +4720,6 @@ Partial Public Class clsLnTrans_re_enc
 
                 BeRecepcionEnc.OrdenCompraRec = OrdenCompraReOc
 
-
                 Dim pListOperadorRecepcion As New List(Of clsBeTrans_re_op)
                 Dim pListOperadorBodega As New List(Of clsBeOperador_bodega)
 
@@ -8816,6 +8815,283 @@ ByRef lTransaction As SqlTransaction) As clsBeTrans_re_enc
             End Using
 
         Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Generar_Tarea_Recepcion_By_OrdenCompraEnc_Doc_Devolucion(ByRef BeOrdenCompraEnc As clsBeTrans_oc_enc,
+                                                                                    ByRef Resultado As String,
+                                                                                    ByVal CrearRecepcionPorDefecto As Boolean,
+                                                                                    ByVal BeMI3Config As clsBeI_nav_config_enc,
+                                                                                    ByRef OutBeRecepcionEnc As clsBeTrans_re_enc,
+                                                                                    ByRef lConnection As SqlConnection,
+                                                                                    ByRef lTransaction As SqlTransaction) As Integer
+
+
+        Generar_Tarea_Recepcion_By_OrdenCompraEnc_Doc_Devolucion = 0
+        OutBeRecepcionEnc = Nothing
+
+        Dim RegistrosAfectados As Integer = 0
+        Dim lblResult As New RichTextBox
+        Dim OrdenCompraReOc As New clsBeTrans_re_oc
+        Dim BeTareaHH As New clsBeTarea_hh
+        Dim BeRecepcionEnc As New clsBeTrans_re_enc
+        Dim IdBodegaDestino As Integer = 0
+        Dim IdPropietario As Integer = 0
+        Dim TiempoMedioIngresoMinutos As Double
+        Dim lBeRecDet As New List(Of clsBeTrans_re_det)
+        Dim lBeStockRec As New List(Of clsBeStock_rec)
+        Dim BeProductoEstado As New clsBeProducto_estado
+
+        Try
+
+            If Not clsLnTrans_re_oc.Existe_Documento_By_IdOrdenCompraEnc(BeOrdenCompraEnc.IdOrdenCompraEnc, lConnection, lTransaction) Then
+
+                IdBodegaDestino = BeOrdenCompraEnc.IdBodega
+                BeProductoEstado = clsLnProducto_estado.GetSingleByIdEstado(BeMI3Config.IdProductoEstado_NC, lConnection, lTransaction)
+
+                BeRecepcionEnc.IsNew = True
+                BeRecepcionEnc.IdRecepcionEnc = MaxID(lConnection, lTransaction) + 1
+                BeRecepcionEnc.PropietarioBodega = New clsBePropietario_bodega
+                BeRecepcionEnc.PropietarioBodega.IdBodega = BeOrdenCompraEnc.IdBodega
+                '#EJC20210715: IdBodega se comparte a la tarea de recepción en generación automática de tarea..
+                BeRecepcionEnc.IdBodega = BeOrdenCompraEnc.IdBodega
+                BeRecepcionEnc.PropietarioBodega.IdPropietarioBodega = BeOrdenCompraEnc.IdPropietarioBodega
+                BeRecepcionEnc.User_agr = BeMI3Config.IdUsuario
+                BeRecepcionEnc.Fec_agr = Now
+                BeRecepcionEnc.Activo = True
+                BeRecepcionEnc.Estado = "Nuevo"
+
+                BeRecepcionEnc.OrdenCompraRec = New clsBeTrans_re_oc
+                BeRecepcionEnc.OrdenCompraRec.IsNew = True
+                '#EJC20200120: Lo hace más tarde en el guardar...
+                'BeRecepcionEnc.OrdenCompraRec.IdRecepcionOc = clsLnTrans_re_oc.MaxID(BeOrdenCompraEnc.IdOrdenCompraEnc, lConnection, lTransaction) + 1
+                BeRecepcionEnc.OrdenCompraRec.IdRecepcionEnc = BeRecepcionEnc.IdRecepcionEnc
+
+                If BeRecepcionEnc.PropietarioBodega Is Nothing OrElse BeRecepcionEnc.PropietarioBodega.IdPropietarioBodega <= 0 Then
+                    Throw New Exception("Propietario no válido al crear la recepción")
+                End If
+
+                'Ingreso con referenci a orden de compra para procesar en HH
+                BeRecepcionEnc.IdTipoTransaccion = "HCOC00"
+
+                BeRecepcionEnc.IdMuelle = clsLnBodega_muelles.Get_IdMuelle_Default_By_IdBodega(IdBodegaDestino, lConnection, lTransaction)
+
+                If BeRecepcionEnc.IdMuelle = 0 Then
+                    Throw New Exception("No existe ningún muelle por defecto para el IdBodegaDestino: " & IdBodegaDestino)
+                End If
+
+                BeRecepcionEnc.IdUbicacionRecepcion = clsLnBodega.Get_IdUbicacion_Recepcion_By_IdBodega(IdBodegaDestino, lConnection, lTransaction)
+
+                If BeRecepcionEnc.IdUbicacionRecepcion = 0 Then
+                    Throw New Exception("No está configurada la ubicación por defecto para recepción para el IdBodegaDestino: " & IdBodegaDestino)
+                End If
+
+                TiempoMedioIngresoMinutos = clsLnTarea_hh.Get_Tiempo_Medio_Tarea_Ingreso_Minutos(lConnection, lTransaction)
+
+                BeRecepcionEnc.Fecha_recepcion = Now.Date
+                BeRecepcionEnc.Hora_ini_pc = Now
+                BeRecepcionEnc.Hora_fin_pc = Now.AddMinutes(TiempoMedioIngresoMinutos)
+                BeRecepcionEnc.Muestra_precio = False
+                BeRecepcionEnc.Fec_mod = Now
+                BeRecepcionEnc.User_mod = BeMI3Config.IdUsuario
+                BeRecepcionEnc.Fecha_tarea = Now
+                BeRecepcionEnc.Tomar_fotos = False
+                BeRecepcionEnc.Escanear_rec_ubic = False
+                BeRecepcionEnc.Para_por_codigo = False
+                BeRecepcionEnc.Observacion = "FROMMI3"
+                BeRecepcionEnc.IdPiloto = 0
+                BeRecepcionEnc.IdVehiculo = 0
+                BeRecepcionEnc.Habilitar_Stock = False
+                BeRecepcionEnc.IdBodega = IdBodegaDestino
+
+                OrdenCompraReOc.IdRecepcionEnc = BeRecepcionEnc.IdRecepcionEnc
+                OrdenCompraReOc.IdOrdenCompraEnc = BeOrdenCompraEnc.IdOrdenCompraEnc
+                OrdenCompraReOc.IsNew = True
+                OrdenCompraReOc.No_docto = BeOrdenCompraEnc.Referencia
+                OrdenCompraReOc.OC = BeOrdenCompraEnc
+                OrdenCompraReOc.Recepcion_ciega = False
+                OrdenCompraReOc.Recepcion_manual = False
+                OrdenCompraReOc.User_agr = BeMI3Config.IdUsuario
+
+                BeRecepcionEnc.OrdenCompraRec = OrdenCompraReOc
+
+                Dim pListOperadorRecepcion As New List(Of clsBeTrans_re_op)
+                Dim pListOperadorBodega As New List(Of clsBeOperador_bodega)
+
+                '#EJC20190711: Broadcast a todos los operadores de la bodega con la tarea.
+                pListOperadorBodega = clsLnOperador_bodega.Get_All_By_IdBodega(IdBodegaDestino, lConnection, lTransaction)
+
+                If Not pListOperadorBodega Is Nothing Then
+
+                    Dim BeTransReOp As New clsBeTrans_re_op()
+
+                    For Each Op In pListOperadorBodega
+
+                        BeTransReOp = New clsBeTrans_re_op()
+                        BeTransReOp.IdOperadorBodega = Op.IdOperadorBodega
+                        BeTransReOp.User_agr = BeMI3Config.IdUsuario
+                        BeTransReOp.Fec_agr = Now
+                        BeTransReOp.User_mod = BeMI3Config.IdUsuario
+                        BeTransReOp.Fec_mod = Now
+                        BeTransReOp.IsNew = True
+                        BeTransReOp.UsaHH = True
+                        pListOperadorRecepcion.Add(BeTransReOp)
+
+                    Next
+
+                End If
+
+                BeTareaHH = New clsBeTarea_hh
+                BeTareaHH.IdPropietario = clsLnPropietarios.Get_IdPropietario(IdBodegaDestino, BeOrdenCompraEnc.IdPropietarioBodega)
+                BeTareaHH.IdBodega = IdBodegaDestino
+                BeTareaHH.IdMuelle = BeRecepcionEnc.IdMuelle
+                BeTareaHH.IdEstado = 1
+                BeTareaHH.IdPrioridad = 1
+                BeTareaHH.IdTipoTarea = 1
+                BeTareaHH.IdTransaccion = BeRecepcionEnc.IdRecepcionEnc
+                BeTareaHH.Tipo = 0
+                BeTareaHH.FechaInicio = Now
+                BeTareaHH.FechaFin = Now.AddHours(2)
+                BeTareaHH.DiaCompleto = False
+                BeTareaHH.Descripcion = ""
+                BeTareaHH.CreaTarea = True
+                BeTareaHH.IsNew = True
+
+                Select Case BeRecepcionEnc.IdTipoTransaccion.ToString()
+                    Case "HSOC00"
+                        BeTareaHH.Asunto = "Ingreso sin Orden de Compra "
+                    Case "HSOD00"
+                        BeTareaHH.Asunto = "Ingreso de Devolución sin referencia"
+                    Case "HCOC00"
+                        BeTareaHH.Asunto = "Ingreso con Orden de Compra"
+                    Case "HCOD00"
+                        BeTareaHH.Asunto = "Devolución de Pedido"
+                    Case "HHSR00"
+                        BeTareaHH.Asunto = "Ingreso sin referencia"
+                    Case "PICH000"
+                        BeTareaHH.Asunto = "Pre-ingreso con HH"
+                    Case Else
+                        Exit Select
+                End Select
+
+                Dim i As Integer = 0
+
+                BeOrdenCompraEnc.DetalleOC = clsLnTrans_oc_det.Get_All_By_IdOrdenCompraEnc(BeOrdenCompraEnc.IdOrdenCompraEnc, lConnection, lTransaction)
+
+                '#EJC20190719: Se verifica si en la lista de pedidos del despacho hay pedidos para sucursales WMS.
+                For Each BeOCDet As clsBeTrans_oc_det In BeOrdenCompraEnc.DetalleOC
+
+                    Dim BeTransReDet As New clsBeTrans_re_det
+                    Dim BeINavBarraPallet As New clsBeI_nav_barras_pallet
+                    Dim BeINavBarraPalletOriginal As New clsBeI_nav_barras_pallet
+                    Dim BeStock As New clsBeStock
+                    Dim BeStockRec As New clsBeStock_rec
+                    i += 1
+                    BeTransReDet = New clsBeTrans_re_det()
+                    BeTransReDet.IdRecepcionEnc = BeRecepcionEnc.IdRecepcionEnc
+                    BeTransReDet.IdRecepcionDet = clsLnTrans_re_det.MaxID(BeRecepcionEnc.IdRecepcionEnc, lConnection, lTransaction) + i
+                    BeTransReDet.IdProductoBodega = BeOCDet.IdProductoBodega
+                    BeTransReDet.IdPresentacion = BeOCDet.IdPresentacion
+                    BeTransReDet.IdUnidadMedida = BeOCDet.IdUnidadMedidaBasica
+                    BeTransReDet.UnidadMedida.IdUnidadMedida = BeOCDet.IdUnidadMedidaBasica
+                    BeTransReDet.IdProductoEstado = BeProductoEstado.IdEstado
+                    BeTransReDet.ProductoEstado.IdEstado = BeProductoEstado.IdEstado
+                    BeTransReDet.IdOperadorBodega = 1 'corregir después.
+                    BeTransReDet.No_Linea = BeOCDet.No_Linea
+                    BeTransReDet.cantidad_recibida = BeOCDet.Cantidad
+                    BeTransReDet.Nombre_producto = BeOCDet.Nombre_producto
+                    BeTransReDet.Nombre_presentacion = BeOCDet.Nombre_presentacion
+                    BeTransReDet.Nombre_unidad_medida = BeOCDet.Nombre_unidad_medida_basica
+                    BeTransReDet.Nombre_producto_estado = BeProductoEstado.Nombre
+                    BeTransReDet.Lote = BeOCDet.Talla.Codigo & " " & BeOCDet.Color.Codigo
+                    BeTransReDet.Fecha_vence = New Date(1900, 1, 1)
+                    BeTransReDet.Fecha_ingreso = Now
+                    BeTransReDet.Peso = 0
+                    BeTransReDet.peso_unitario = 0
+                    BeTransReDet.User_agr = OrdenCompraReOc.User_agr
+                    BeTransReDet.Fec_agr = Now
+                    BeTransReDet.Observacion = "Nota de crédito: " & BeOrdenCompraEnc.No_Documento
+                    BeTransReDet.Codigo_Producto = BeOCDet.Codigo_Producto
+                    BeTransReDet.Lic_plate = ""
+                    BeTransReDet.Pallet_No_Estandar = False
+                    BeTransReDet.IdOrdenCompraEnc = BeOrdenCompraEnc.IdOrdenCompraEnc
+                    BeTransReDet.IdOrdenCompraDet = BeOCDet.IdOrdenCompraDet
+                    BeTransReDet.IdJornadaSistema = 0
+                    lBeRecDet.Add(BeTransReDet)
+
+                    BeStockRec.IdStockRec = clsLnStock_rec.MaxID(lConnection, lTransaction)
+                    BeStockRec.IdPropietarioBodega = BeOrdenCompraEnc.IdPropietarioBodega
+                    BeStockRec.IdProductoBodega = BeOCDet.IdProductoBodega
+                    BeStockRec.IdProductoEstado = BeTransReDet.IdProductoEstado
+                    BeStockRec.ProductoEstado.IdEstado = BeTransReDet.IdProductoEstado
+                    BeStockRec.IdPresentacion = BeOCDet.IdPresentacion
+                    BeStockRec.IdUnidadMedida = BeOCDet.IdUnidadMedidaBasica
+                    BeStockRec.IdUbicacion = clsLnBodega.Get_IdUbicacion_Recepcion_By_IdBodega(BeOrdenCompraEnc.IdBodega,
+                                                                                                       lConnection,
+                                                                                                       lTransaction)
+                    BeStockRec.IdUbicacion_anterior = 0
+                    BeStockRec.IdRecepcionEnc = BeRecepcionEnc.IdRecepcionEnc
+                    BeStockRec.IdRecepcionDet = BeTransReDet.IdRecepcionDet
+                    BeStockRec.Lote = BeTransReDet.Lote
+                    BeStockRec.Lic_plate = BeTransReDet.Lic_plate
+                    BeStockRec.Serial = ""
+                    BeStockRec.Cantidad = BeTransReDet.cantidad_recibida
+                    BeStockRec.Fecha_Ingreso = Now
+                    BeStockRec.Fecha_vence = BeTransReDet.Fecha_vence
+                    BeStockRec.User_agr = BeOrdenCompraEnc.User_Agr
+                    BeStockRec.Fec_agr = Now
+                    BeStockRec.User_mod = BeOrdenCompraEnc.User_Agr
+                    BeStockRec.Fec_mod = Now
+                    BeStockRec.Activo = 1
+                    BeStockRec.Peso = BeTransReDet.Peso
+                    BeStockRec.No_linea = BeTransReDet.No_Linea
+                    BeStockRec.Atributo_Variante_1 = BeTransReDet.Atributo_Variante_1
+                    BeStockRec.IdBodega = BeRecepcionEnc.IdBodega
+                    BeStockRec.Pallet_No_Estandar = False
+                    lBeStockRec.Add(BeStockRec)
+
+                Next
+
+                Guardar(BeOrdenCompraEnc.IdBodega,
+                        BeTareaHH,
+                        BeRecepcionEnc,
+                        BeRecepcionEnc.OrdenCompraRec,
+                        lBeRecDet,
+                        Nothing,
+                        pListOperadorRecepcion,
+                        Nothing,
+                        Nothing,
+                        Nothing,
+                        lBeStockRec,
+                        Nothing,
+                        lConnection,
+                        lTransaction)
+
+                Dim vIdEmpresa As Integer = clsLnBodega.Get_IdEmpresa_By_IdBodega(BeRecepcionEnc.IdBodega, lConnection, lTransaction)
+
+                Finalizar_Recepcion(BeRecepcionEnc,
+                                    False,
+                                    BeOrdenCompraEnc.IdOrdenCompraEnc,
+                                    BeRecepcionEnc.IdRecepcionEnc,
+                                    vIdEmpresa,
+                                    BeRecepcionEnc.IdBodega,
+                                    BeRecepcionEnc.User_agr,
+                                    lBeRecDet,
+                                    False,
+                                    lConnection,
+                                    lTransaction)
+
+                Generar_Tarea_Recepcion_By_OrdenCompraEnc_Doc_Devolucion = 1
+
+                OutBeRecepcionEnc = BeRecepcionEnc
+
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 

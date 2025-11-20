@@ -3364,4 +3364,73 @@ Public Class IMS
         End Try
 
     End Function
+
+    Public Shared Sub Llena_Empresas_Transporte(ByRef cmbEmpresaTransporte As LookUpEdit,
+                                                ByVal pIdBodega As Integer,
+                                                ByVal pConnection As SqlConnection,
+                                                ByVal pTransaction As SqlTransaction)
+
+        Try
+
+            cmbEmpresaTransporte.Properties.DataSource = Nothing
+
+            Dim dt As New DataTable
+
+            dt = clsLnEmpresa_transporte_bodega.Get_All_By_IdBodega(pIdBodega, pConnection, pTransaction)
+
+            If dt.Rows.Count > 0 Then
+                cmbEmpresaTransporte.Properties.ValueMember = "IdEmpresaTransporte"
+                cmbEmpresaTransporte.Properties.DisplayMember = "Nombre"
+                cmbEmpresaTransporte.Properties.DataSource = dt
+                cmbEmpresaTransporte.ItemIndex = 0
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            "Llena_Empresas_Transporte",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
+    Public Shared Sub Llena_Pilotos(ByRef cmbPiloto As LookUpEdit,
+                                    ByVal pIdEmpresaTransporte As Integer,
+                                    ByVal pConnection As SqlConnection,
+                                    ByVal pTransaction As SqlTransaction)
+
+        Try
+
+            cmbPiloto.Properties.DataSource = Nothing
+
+            Dim dt As New DataTable
+
+            dt = clsLnEmpresa_transporte_pilotos.Get_All_By_IdEmpresaTransporte(pIdEmpresaTransporte, pConnection, pTransaction)
+
+            If dt.Rows.Count > 0 Then
+                cmbPiloto.Properties.ValueMember = "IdPiloto"
+                cmbPiloto.Properties.DisplayMember = "Nombre"
+                cmbPiloto.Properties.DataSource = dt
+                cmbPiloto.ItemIndex = 0
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            "Llena_Pilotos",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
 End Class

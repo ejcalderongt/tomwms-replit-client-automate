@@ -480,6 +480,9 @@ Partial Public Class clsLnTrans_pe_enc
                     vPedidoEnc.Enviado_A_ERP = IIf(IsDBNull(lRow("Enviado_A_ERP")), False, lRow("Enviado_A_ERP"))
                     vPedidoEnc.IdPickingEnc = IIf(IsDBNull(lRow("IdPickingEnc")), 0, lRow("IdPickingEnc"))
                     vPedidoEnc.Bodega_Destino = IIf(IsDBNull(lRow("Bodega_Destino")), "", lRow("Bodega_Destino"))
+                    vPedidoEnc.Guia_Transporte = IIf(IsDBNull(lRow("Guia_Transporte")), "", lRow("Guia_Transporte"))
+                    vPedidoEnc.IdEmpresaTransporte = IIf(IsDBNull(lRow("IdEmpresaTransporte")), 0, lRow("IdEmpresaTransporte"))
+                    vPedidoEnc.IdPiloto = IIf(IsDBNull(lRow("IdPiloto")), 0, lRow("IdPiloto"))
 
                     If vPedidoEnc.IdPickingEnc <> 0 Then
                         vPedidoEnc.Picking.IdPickingEnc = vPedidoEnc.IdPickingEnc

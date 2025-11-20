@@ -124,6 +124,9 @@ Public Class clsLnTrans_picking_ubic
                     .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
                 End If
 
+                If dr.Table.Columns.Contains("No_Linea") Then
+                    .No_Linea = IIf(IsDBNull(dr.Item("No_Linea")), 0, dr.Item("No_Linea"))
+                End If
 
             End With
 

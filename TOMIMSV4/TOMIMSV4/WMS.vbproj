@@ -41,7 +41,7 @@
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>481</ApplicationRevision>
+    <ApplicationRevision>485</ApplicationRevision>
     <ApplicationVersion>4.7.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -635,6 +635,12 @@
       <DependentUpon>frmProducto_TallaList.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Propietarios_Reglas_Mensajes\frmPropietarioReglasMensajes.Designer.vb">
+      <DependentUpon>frmPropietarioReglasMensajes.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Propietarios_Reglas_Mensajes\frmPropietarioReglasMensajes.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Regimen_Fiscal\frmRegimenFiscal.Designer.vb">
@@ -3255,6 +3261,9 @@
     <EmbeddedResource Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx">
       <DependentUpon>frmProducto_TallaList.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Propietarios_Reglas_Mensajes\frmPropietarioReglasMensajes.resx">
+      <DependentUpon>frmPropietarioReglasMensajes.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Regimen_Fiscal\frmRegimenFiscal.resx">
       <DependentUpon>frmRegimenFiscal.vb</DependentUpon>
       <SubType>Designer</SubType>
@@ -4512,7 +4521,6 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
-    <Content Include="SAPBOSyncMampa.exe" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
