@@ -15,6 +15,7 @@ Public Class clsLnLog_error_wms_pack
             ' Requeridos (mínimos que siempre enviamos)
             Ins.Add("mensajeerror", "@mensajeerror", DataType.Parametro)
             Ins.Add("fec_agr", "@fec_agr", DataType.Parametro)
+            Ins.Add("esimplosion", "@esimplosion", DataType.Parametro)
 
             ' Opcionales (solo si tienen valor)
             If oBe.RutaError <> "" Then Ins.Add("rutaerror", "@rutaerror", DataType.Parametro)
@@ -49,6 +50,7 @@ Public Class clsLnLog_error_wms_pack
             ' Parámetros requeridos
             cmd.Parameters.Add(New SqlParameter("@mensajeerror", oBe.MensajeError))
             cmd.Parameters.Add(New SqlParameter("@fec_agr", oBe.Fec_agr))
+            cmd.Parameters.Add(New SqlParameter("@esimplosion", oBe.EsImplosion))
 
             ' Parámetros opcionales
             If oBe.RutaError <> "" Then cmd.Parameters.Add(New SqlParameter("@rutaerror", oBe.RutaError))

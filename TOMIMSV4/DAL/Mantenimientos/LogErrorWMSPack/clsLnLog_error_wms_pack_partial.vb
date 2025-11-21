@@ -20,6 +20,7 @@ Partial Public Class clsLnLog_error_wms_pack
                                     Optional ByVal pCantidad_Bultos_Packing As Integer = 0,
                                     Optional ByVal pIdOperador As Integer = 0,
                                     Optional ByVal pUsuario_agr As String = "",
+                                    Optional ByVal pEsImplosion As Boolean = False,
                                     Optional ByVal pConection As SqlConnection = Nothing,
                                     Optional ByVal pTransaction As SqlTransaction = Nothing)
 
@@ -47,6 +48,7 @@ Partial Public Class clsLnLog_error_wms_pack
             oBe.IdOperador = pIdOperador
             oBe.User_agr = pUsuario_agr
             oBe.Fec_agr = Now
+            oBe.EsImplosion = pEsImplosion
 
             Insertar(oBe, pConection, pTransaction)
 
