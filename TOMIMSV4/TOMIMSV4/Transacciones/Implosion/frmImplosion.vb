@@ -519,7 +519,24 @@ Public Class frmImplosion
                     pUbicHHDet.HoraInicio = New DateTime(1900, 1, 1, 0, 0, 0)
                     pUbicHHDet.HoraFin = New DateTime(1900, 1, 1, 0, 0, 0)
                     pUbicHHDet.Realizado = False
-                    pUbicHHDet.Cantidad = pObjStockMov.Cantidad
+
+                    If Stock.IdPresentacion <> 0 Then
+
+                        Dim BePresentacion As New clsBeProducto_Presentacion
+                        BePresentacion = clsLnProducto_presentacion.GetSingle(Stock.IdPresentacion)
+
+                        If Not BePresentacion Is Nothing Then
+                            If BePresentacion.Factor = 0 Then
+                                Throw New Exception("ERR20220202_1458: El factor de la presentación es 0. esto crearía un movimiento no válido para el sistema, valide el factor de la presentación. Identificador de presentación: " & Stock.IdPresentacion)
+                            Else
+                                pUbicHHDet.Cantidad = Math.Round(Stock.CantidadUmBas / BePresentacion.Factor, 6)
+                            End If
+                        Else
+                            Throw New Exception("ERR20220202_1458: No se encontró el objeto de presentación para el identificador: " & Stock.IdPresentacion)
+                        End If
+
+                    End If
+
                     pUbicHHDet.Activo = 1
                     pUbicHHDet.IdBodega = AP.IdBodega
                     pListUbicHHDet.Add(pUbicHHDet)
@@ -552,25 +569,27 @@ Public Class frmImplosion
                     mov.Fecha_agr = Now
                     mov.Usuario_agr = AP.IdRol
                     mov.Cantidad_hist = Stock.CantidadUmBas
+                    mov.Cantidad = Stock.CantidadUmBas
                     mov.Peso_hist = Stock.Peso
 
-                    If Stock.IdPresentacion <> 0 Then
+                    '#CKFK20251117 Puse esto en comentario porque lo correcto es que se quede en unidad de medida básica
+                    'If Stock.IdPresentacion <> 0 Then
 
-                        Dim BePresentacion As New clsBeProducto_Presentacion
-                        BePresentacion = clsLnProducto_presentacion.GetSingle(Stock.IdPresentacion)
+                    '    Dim BePresentacion As New clsBeProducto_Presentacion
+                    '    BePresentacion = clsLnProducto_presentacion.GetSingle(Stock.IdPresentacion)
 
-                        If Not BePresentacion Is Nothing Then
-                            If BePresentacion.Factor = 0 Then
-                                Throw New Exception("ERR20220202_1458: El factor de la presentación es 0. esto crearía un movimiento no válido para el sistema, valide el factor de la presentación. Identificador de presentación: " & mov.IdPresentacion)
-                            Else
-                                mov.Cantidad = Math.Round(mov.Cantidad * BePresentacion.Factor, 6)
-                                mov.Cantidad_hist = Math.Round(mov.Cantidad_hist * BePresentacion.Factor, 6)
-                            End If
-                        Else
-                            Throw New Exception("ERR20220202_1458: No se encontró el objeto de presentación para el identificador: " & mov.IdPresentacion)
-                        End If
+                    '    If Not BePresentacion Is Nothing Then
+                    '        If BePresentacion.Factor = 0 Then
+                    '            Throw New Exception("ERR20220202_1458: El factor de la presentación es 0. esto crearía un movimiento no válido para el sistema, valide el factor de la presentación. Identificador de presentación: " & mov.IdPresentacion)
+                    '        Else
+                    '            mov.Cantidad = Math.Round(mov.Cantidad / BePresentacion.Factor, 6)
+                    '            mov.Cantidad_hist = Math.Round(mov.Cantidad_hist / BePresentacion.Factor, 6)
+                    '        End If
+                    '    Else
+                    '        Throw New Exception("ERR20220202_1458: No se encontró el objeto de presentación para el identificador: " & mov.IdPresentacion)
+                    '    End If
 
-                    End If
+                    'End If
 
                     pListMovimiento.Add(mov)
 
@@ -589,6 +608,7 @@ Public Class frmImplosion
     Private Sub mnuTomarSeleccionados_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuTomarSeleccionados.ItemClick
 
         Try
+
 
             Procesar_Registros()
 

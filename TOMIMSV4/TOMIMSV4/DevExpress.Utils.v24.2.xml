@@ -223,21 +223,21 @@
     </member>
     <member name="P:DevExpress.DocumentView.Controls.DocumentViewerBase.PageBorderColor">
       <summary>
-        <para>Specifies the color used to draw borders around all pages in the <see cref="T:DevExpress.XtraPrinting.Preview.DocumentViewer"/>.</para>
+        <para>Specifies the color used to draw borders around all pages in <see cref="T:DevExpress.XtraPrinting.Preview.DocumentViewer"/>.</para>
       </summary>
       <value>A <see cref="T:System.Drawing.Color"/> structure that specifies the color of page borders.</value>
     </member>
     <member name="P:DevExpress.DocumentView.Controls.DocumentViewerBase.PageBorderVisibility">
       <summary>
-        <para>Specifies whether or not borders should be painted around all and selected document pages in the <see cref="T:DevExpress.XtraPrinting.Preview.DocumentViewer"/>.</para>
+        <para>Specifies whether borders should be painted on all document pages or selected pages in the <see cref="T:DevExpress.XtraPrinting.Preview.DocumentViewer"/>.</para>
       </summary>
-      <value>A <see cref="T:DevExpress.DocumentView.PageBorderVisibility"/> enumeration value, that specifies the visibility of page borders.</value>
+      <value>The <see cref="T:DevExpress.DocumentView.PageBorderVisibility"/> enumeration value, which specifies page border visibility.</value>
     </member>
     <member name="P:DevExpress.DocumentView.Controls.DocumentViewerBase.PageBorderWidth">
       <summary>
         <para>Specifies the width of the borders around all pages in the <see cref="T:DevExpress.XtraPrinting.Preview.DocumentViewer"/>.</para>
       </summary>
-      <value>An integer value, specifying the width of the page borders.</value>
+      <value>An integer value that specifies the width of the page borders.</value>
     </member>
     <member name="P:DevExpress.DocumentView.Controls.DocumentViewerBase.PopupForm">
       <summary>
@@ -272,15 +272,15 @@
     </member>
     <member name="P:DevExpress.DocumentView.Controls.DocumentViewerBase.SelectedPageBorderColor">
       <summary>
-        <para>Specifies the color of borders around the currently selected page in the <see cref="T:DevExpress.XtraPrinting.Preview.DocumentViewer"/>.</para>
+        <para>Specifies the color of borders around the selected page in <see cref="T:DevExpress.XtraPrinting.Preview.DocumentViewer"/>.</para>
       </summary>
       <value>A <see cref="T:System.Drawing.Color"/> structure, specifying the border color of the selected page.</value>
     </member>
     <member name="P:DevExpress.DocumentView.Controls.DocumentViewerBase.SelectedPageBorderWidth">
       <summary>
-        <para>Specifies the width of the borders around the currently selected page in the <see cref="T:DevExpress.XtraPrinting.Preview.DocumentViewer"/>.</para>
+        <para>Specifies the width of the borders around the currently selected page in <see cref="T:DevExpress.XtraPrinting.Preview.DocumentViewer"/>.</para>
       </summary>
-      <value>An integer value, specifying the width of the selected page’s borders.</value>
+      <value>An integer value that specifies the width of the selected page’s borders.</value>
     </member>
     <member name="E:DevExpress.DocumentView.Controls.DocumentViewerBase.SelectedPageChanged">
       <summary>
@@ -9046,7 +9046,7 @@ The <see cref="F:DevExpress.Utils.DefaultBoolean.Default">DefaultBoolean.Default
     </member>
     <member name="P:DevExpress.Utils.Layout.TablePanel.Rows">
       <summary>
-        <para>Provides access to the collection of the panel’s rows (<see cref="T:DevExpress.Utils.Layout.TablePanelRow"/>).</para>
+        <para>Gets a collection of rows.</para>
       </summary>
       <value>A collection of <see cref="T:DevExpress.Utils.Layout.TablePanelRow"/> objects.</value>
     </member>
@@ -10597,7 +10597,7 @@ The <see cref="F:DevExpress.Utils.DefaultBoolean.Default">DefaultBoolean.Default
     </member>
     <member name="T:DevExpress.Utils.SvgImageCollection">
       <summary>
-        <para>Stores <see href="https://docs.devexpress.com/WindowsForms/117631/devexpress-icon-library/how-to-draw-and-use-svg-images">vector images</see> added by you and provides these images to DevExpress controls.</para>
+        <para>A collection of vector (SVG) images used in WinForms applications.</para>
       </summary>
     </member>
     <member name="M:DevExpress.Utils.SvgImageCollection.#ctor">
