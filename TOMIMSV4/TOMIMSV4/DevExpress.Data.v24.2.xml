@@ -9820,6 +9820,16 @@
       <param name="rules">An array of access rules.</param>
       <returns>true, if the specified rule collection is registered successfully. Otherwise, false.</returns>
     </member>
+    <member name="T:DevExpress.Security.Resources.AccessSettings.UriValidatedEventArgs">
+      <summary>
+        <para>Contains data for the <see cref="E:DevExpress.Security.Resources.AccessSettings.UriValidated"/> event.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.Security.Resources.AccessSettings.UriValidatedEventArgs.#ctor(System.String,System.Uri,System.Object)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.Security.Resources.AccessSettings.UriValidatedEventArgs"/> class with specified settings.</para>
+      </summary>
+    </member>
     <member name="T:DevExpress.Security.Resources.CustomAccessRule">
       <summary>
         <para>A rule that uses a custom logic to determine whether to allow or deny access to a URL/file directory.</para>

@@ -197,7 +197,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.XrLabel12.LocationFloat = New DevExpress.Utils.PointFloat(431.8732!, 57.19437!)
         Me.XrLabel12.Multiline = True
         Me.XrLabel12.Name = "XrLabel12"
-        Me.XrLabel12.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
+        Me.XrLabel12.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel12.SizeF = New System.Drawing.SizeF(135.0001!, 23.0!)
         Me.XrLabel12.Text = "XrLabel12"
         '
@@ -207,7 +207,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.XrLabel11.LocationFloat = New DevExpress.Utils.PointFloat(431.8732!, 34.19434!)
         Me.XrLabel11.Multiline = True
         Me.XrLabel11.Name = "XrLabel11"
-        Me.XrLabel11.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
+        Me.XrLabel11.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel11.SizeF = New System.Drawing.SizeF(135.0!, 23.0!)
         Me.XrLabel11.Text = "XrLabel11"
         '
@@ -216,7 +216,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.XrLabel24.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel24.LocationFloat = New DevExpress.Utils.PointFloat(345.1667!, 33.00685!)
         Me.XrLabel24.Name = "XrLabel24"
-        Me.XrLabel24.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
+        Me.XrLabel24.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel24.SizeF = New System.Drawing.SizeF(86.70654!, 23.00001!)
         Me.XrLabel24.StylePriority.UseFont = False
         Me.XrLabel24.Text = "Empresa:"
@@ -226,7 +226,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.XrLabel27.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel27.LocationFloat = New DevExpress.Utils.PointFloat(345.1667!, 57.19434!)
         Me.XrLabel27.Name = "XrLabel27"
-        Me.XrLabel27.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
+        Me.XrLabel27.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel27.SizeF = New System.Drawing.SizeF(86.70654!, 23.00001!)
         Me.XrLabel27.StylePriority.UseFont = False
         Me.XrLabel27.Text = "Bodega:"
@@ -236,7 +236,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.XrLabel10.LocationFloat = New DevExpress.Utils.PointFloat(10.0!, 126.1944!)
         Me.XrLabel10.Multiline = True
         Me.XrLabel10.Name = "XrLabel10"
-        Me.XrLabel10.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
+        Me.XrLabel10.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel10.SizeF = New System.Drawing.SizeF(100.0!, 23.0!)
         Me.XrLabel10.Text = "Operador:"
         '
@@ -246,7 +246,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.XrLabel9.LocationFloat = New DevExpress.Utils.PointFloat(110.0!, 126.1944!)
         Me.XrLabel9.Multiline = True
         Me.XrLabel9.Name = "XrLabel9"
-        Me.XrLabel9.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
+        Me.XrLabel9.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel9.SizeF = New System.Drawing.SizeF(197.085!, 23.00001!)
         Me.XrLabel9.Text = "XrLabel9"
         '
@@ -255,7 +255,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.XrLabel8.LocationFloat = New DevExpress.Utils.PointFloat(10.0!, 103.1944!)
         Me.XrLabel8.Multiline = True
         Me.XrLabel8.Name = "XrLabel8"
-        Me.XrLabel8.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
+        Me.XrLabel8.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel8.SizeF = New System.Drawing.SizeF(100.0!, 23.0!)
         Me.XrLabel8.Text = "Propietario:"
         '
@@ -265,7 +265,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.XrLabel7.LocationFloat = New DevExpress.Utils.PointFloat(110.0!, 103.1944!)
         Me.XrLabel7.Multiline = True
         Me.XrLabel7.Name = "XrLabel7"
-        Me.XrLabel7.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
+        Me.XrLabel7.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel7.SizeF = New System.Drawing.SizeF(196.7286!, 23.00001!)
         Me.XrLabel7.Text = "XrLabel7"
         '
@@ -274,7 +274,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.XrLabel6.LocationFloat = New DevExpress.Utils.PointFloat(10.0!, 80.19434!)
         Me.XrLabel6.Multiline = True
         Me.XrLabel6.Name = "XrLabel6"
-        Me.XrLabel6.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
+        Me.XrLabel6.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel6.SizeF = New System.Drawing.SizeF(100.0!, 23.0!)
         Me.XrLabel6.Text = "Usuario BOF:"
         '
@@ -284,7 +284,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.XrLabel5.LocationFloat = New DevExpress.Utils.PointFloat(110.0!, 80.19434!)
         Me.XrLabel5.Multiline = True
         Me.XrLabel5.Name = "XrLabel5"
-        Me.XrLabel5.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
+        Me.XrLabel5.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel5.SizeF = New System.Drawing.SizeF(196.7286!, 23.0!)
         Me.XrLabel5.Text = "XrLabel5"
         '
@@ -293,7 +293,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.XrLabel4.LocationFloat = New DevExpress.Utils.PointFloat(10.0!, 57.19434!)
         Me.XrLabel4.Multiline = True
         Me.XrLabel4.Name = "XrLabel4"
-        Me.XrLabel4.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
+        Me.XrLabel4.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel4.SizeF = New System.Drawing.SizeF(100.0!, 23.0!)
         Me.XrLabel4.Text = "Fecha:"
         '
@@ -303,7 +303,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.XrLabel3.LocationFloat = New DevExpress.Utils.PointFloat(110.0!, 57.19434!)
         Me.XrLabel3.Multiline = True
         Me.XrLabel3.Name = "XrLabel3"
-        Me.XrLabel3.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
+        Me.XrLabel3.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel3.SizeF = New System.Drawing.SizeF(196.7286!, 23.0!)
         Me.XrLabel3.Text = "XrLabel3"
         Me.XrLabel3.TextFormatString = "{0:d}"
@@ -313,7 +313,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.XrLabel2.LocationFloat = New DevExpress.Utils.PointFloat(9.643605!, 34.19434!)
         Me.XrLabel2.Multiline = True
         Me.XrLabel2.Name = "XrLabel2"
-        Me.XrLabel2.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
+        Me.XrLabel2.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel2.SizeF = New System.Drawing.SizeF(100.0!, 23.0!)
         Me.XrLabel2.Text = "IdTransacción:"
         '
@@ -323,7 +323,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.XrLabel1.LocationFloat = New DevExpress.Utils.PointFloat(110.0!, 34.19434!)
         Me.XrLabel1.Multiline = True
         Me.XrLabel1.Name = "XrLabel1"
-        Me.XrLabel1.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 2.0!, 0!, 0!, 100.0!)
+        Me.XrLabel1.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel1.SizeF = New System.Drawing.SizeF(196.7286!, 23.0!)
         Me.XrLabel1.StylePriority.UseTextAlignment = False
         Me.XrLabel1.Text = "XrLabel1"
@@ -700,7 +700,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.Title.Font = New DevExpress.Drawing.DXFont("Arial", 14.25!)
         Me.Title.ForeColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(70, Byte), Integer), CType(CType(80, Byte), Integer))
         Me.Title.Name = "Title"
-        Me.Title.Padding = New DevExpress.XtraPrinting.PaddingInfo(6.0!, 6.0!, 0!, 0!, 100.0!)
+        Me.Title.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
         '
         'DetailCaption1
         '
@@ -711,7 +711,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.DetailCaption1.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.DetailCaption1.ForeColor = System.Drawing.Color.White
         Me.DetailCaption1.Name = "DetailCaption1"
-        Me.DetailCaption1.Padding = New DevExpress.XtraPrinting.PaddingInfo(6.0!, 6.0!, 0!, 0!, 100.0!)
+        Me.DetailCaption1.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
         Me.DetailCaption1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'DetailData1
@@ -722,7 +722,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.DetailData1.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!)
         Me.DetailData1.ForeColor = System.Drawing.Color.Black
         Me.DetailData1.Name = "DetailData1"
-        Me.DetailData1.Padding = New DevExpress.XtraPrinting.PaddingInfo(6.0!, 6.0!, 0!, 0!, 100.0!)
+        Me.DetailData1.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
         Me.DetailData1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'DetailData3_Odd
@@ -734,7 +734,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.DetailData3_Odd.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!)
         Me.DetailData3_Odd.ForeColor = System.Drawing.Color.Black
         Me.DetailData3_Odd.Name = "DetailData3_Odd"
-        Me.DetailData3_Odd.Padding = New DevExpress.XtraPrinting.PaddingInfo(6.0!, 6.0!, 0!, 0!, 100.0!)
+        Me.DetailData3_Odd.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
         Me.DetailData3_Odd.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'GrandTotalCaption1
@@ -743,7 +743,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.GrandTotalCaption1.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.GrandTotalCaption1.ForeColor = System.Drawing.Color.FromArgb(CType(CType(147, Byte), Integer), CType(CType(147, Byte), Integer), CType(CType(147, Byte), Integer))
         Me.GrandTotalCaption1.Name = "GrandTotalCaption1"
-        Me.GrandTotalCaption1.Padding = New DevExpress.XtraPrinting.PaddingInfo(6.0!, 2.0!, 0!, 0!, 100.0!)
+        Me.GrandTotalCaption1.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 2, 0, 0, 100.0!)
         Me.GrandTotalCaption1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'GrandTotalData1
@@ -752,7 +752,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.GrandTotalData1.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.GrandTotalData1.ForeColor = System.Drawing.Color.FromArgb(CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer))
         Me.GrandTotalData1.Name = "GrandTotalData1"
-        Me.GrandTotalData1.Padding = New DevExpress.XtraPrinting.PaddingInfo(2.0!, 6.0!, 0!, 0!, 100.0!)
+        Me.GrandTotalData1.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 6, 0, 0, 100.0!)
         Me.GrandTotalData1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'GrandTotalBackground1
@@ -768,7 +768,7 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.PageInfo.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.PageInfo.ForeColor = System.Drawing.Color.FromArgb(CType(CType(64, Byte), Integer), CType(CType(70, Byte), Integer), CType(CType(80, Byte), Integer))
         Me.PageInfo.Name = "PageInfo"
-        Me.PageInfo.Padding = New DevExpress.XtraPrinting.PaddingInfo(6.0!, 6.0!, 0!, 0!, 100.0!)
+        Me.PageInfo.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
         '
         'Empresa
         '

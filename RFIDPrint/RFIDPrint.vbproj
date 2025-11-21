@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DevExpress.Win" Version="25.1.4" />
-    <PackageReference Include="DevExpress.Win.Design" Version="25.1.4" />
+    <PackageReference Include="DevExpress.Win" Version="24.2.12" />
+    <PackageReference Include="DevExpress.Win.Design" Version="24.2.12" />
     <PackageReference Include="Zebra.Printer.SDK" Version="3.0.3337" />
   </ItemGroup>
 

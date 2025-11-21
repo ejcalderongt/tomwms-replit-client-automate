@@ -1099,6 +1099,7 @@ Public Class frmInventario
                                 SplashScreenManager.CloseForm(False)
                                 XtraMessageBox.Show("El inventario tiene conteos, no se puede anular.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                             End If
+
                         End If
                     End If
 
