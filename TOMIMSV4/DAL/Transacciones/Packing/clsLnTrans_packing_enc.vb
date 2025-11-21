@@ -44,6 +44,7 @@ Public Class clsLnTrans_packing_enc
                 .Codigo_Color = IIf(IsDBNull(dr.Item("Codigo_Color")), "", dr.Item("Codigo_Color"))
                 .Nombre_Color = IIf(IsDBNull(dr.Item("Nombre_Color")), "", dr.Item("Nombre_Color"))
                 .Nombre_Talla = IIf(IsDBNull(dr.Item("Nombre_Talla")), "", dr.Item("Nombre_Talla"))
+                .Guia_Transporte = IIf(IsDBNull(dr.Item("Guia_Transporte")), "", dr.Item("Guia_Transporte"))
 
             End With
 
@@ -83,6 +84,7 @@ Public Class clsLnTrans_packing_enc
             Ins.Add("fec_mod", "@fec_mod", DataType.Parametro)
             Ins.Add("usr_mod", "@usr_mod", DataType.Parametro)
             Ins.Add("usr_agr", "@usr_agr", DataType.Parametro)
+            Ins.Add("guia_transporte", "@guia_transporte", DataType.Parametro)
             Ins.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
@@ -120,6 +122,7 @@ Public Class clsLnTrans_packing_enc
             cmd.Parameters.Add(New SqlParameter("@USR_MOD", oBeTrans_packing_enc.Usr_mod))
             cmd.Parameters.Add(New SqlParameter("@USR_AGR", oBeTrans_packing_enc.Usr_agr))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_packing_enc.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@GUIA_TRANSPORTE", oBeTrans_packing_enc.Guia_Transporte))
 
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
