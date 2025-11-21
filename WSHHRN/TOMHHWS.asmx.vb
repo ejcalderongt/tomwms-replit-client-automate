@@ -17533,4 +17533,62 @@ Public Class TOMHHWS
         End Try
 
     End Function
+
+    '#AT20251120 Packing consolidado MAMPA
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Get_Picking_Para_Emapaque_Consolidado()
+
+        Try
+            Dim lista = clsLnTarea_hh.Get_All_Picking_Para_Empaque_Consolidado()
+            Dim jArray As New JArray()
+
+            For Each item In lista
+                Dim jObj As JObject = JObject.FromObject(item)
+
+                SerializarJson(jObj, "ListaPickingDet")
+                SerializarJson(jObj, "ListaPickingUbic")
+
+                jArray.Add(jObj)
+            Next
+
+            Dim json As String = JsonConvert.SerializeObject(jArray,
+                New JsonSerializerSettings With {.NullValueHandling = NullValueHandling.Include}
+            )
+
+            Dim curContext As HttpContext = HttpContext.Current
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(json)
+            curContext.ApplicationInstance.CompleteRequest()
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim errorJson As String = JsonConvert.SerializeObject(New With {.Error = True, .Mensaje = ex.Message})
+                    Dim curContext As HttpContext = HttpContext.Current
+
+                    curContext.Response.Clear()
+                    curContext.Response.StatusCode = 500
+                    curContext.Response.ContentType = "application/json"
+                    curContext.Response.Write(errorJson)
+                    curContext.ApplicationInstance.CompleteRequest()
+                End If
+
+            End If
+
+        End Try
+
+    End Sub
+
 End Class
