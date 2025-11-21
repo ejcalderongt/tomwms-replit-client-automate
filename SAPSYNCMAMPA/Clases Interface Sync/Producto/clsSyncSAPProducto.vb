@@ -3,6 +3,7 @@ Imports System.Net
 Imports System.Net.Http
 Imports System.Net.Http.Headers
 Imports System.Reflection
+Imports System.Text
 Imports Newtonsoft.Json.Linq
 Imports Sap.Data.Hana
 
@@ -36,7 +37,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
             clsPublic.Actualizar_Progreso(lblprg, "Sesión iniciada correctamente.")
 
             Dim lfichaProductos As New List(Of clsBeI_nav_producto)
-            lfichaProductos = Await Get_Productos_SAP_SL(vHanaService.SessionCookie, SapServiceLayerClient.baseUrl)
+            lfichaProductos = Await Get_Productos_SAP_SL(vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, lblprg)
 
             clsPublic.Actualizar_Progreso(lblprg, "Consultando bodegas en SAP (OWHS).")
 
@@ -453,7 +454,14 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
                     InsertarProductoNuevo(producto, lConnection, lTransaction, lblprg)
                 End If
 
-                productosProcesados += 1
+                Dim marcadoOk As Boolean = Marcar_Producto_Sincronizado_SL(productoSAP.No, lblprg)
+
+                If Not marcadoOk Then
+                    ' Aquí puedes decidir si lo cuentas como error
+                    productosConError += 1
+                Else
+                    productosProcesados += 1
+                End If
 
                 If vMostrarProgreso Then
                     prg.Value += 1
@@ -501,9 +509,9 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
     End Sub
 
     Private Shared Async Function Confirmar_Y_Llenar_Intermedia(preguntar As Boolean,
-                                                          lblprg As RichTextBox,
-                                                          prg As ProgressBar,
-                                                          cnnLog As SqlConnection) As Task(Of Boolean)
+                                                                lblprg As RichTextBox,
+                                                                prg As ProgressBar,
+                                                                cnnLog As SqlConnection) As Task(Of Boolean)
         If Not preguntar Then
             Return Await Importar_Productos_Desde_SAP_A_TablaIntermediaAsync(lblprg, prg, cnnLog)
         End If
@@ -766,10 +774,10 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
     End Sub
 
     Private Shared Function ActualizarProductoExistente(producto As clsBeProducto,
-                                                              productoExistente As clsBeProducto,
-                                                              cnn As SqlConnection,
-                                                              tran As SqlTransaction,
-                                                              lbl As RichTextBox) As Boolean
+                                                        productoExistente As clsBeProducto,
+                                                        cnn As SqlConnection,
+                                                        tran As SqlTransaction,
+                                                        lbl As RichTextBox) As Boolean
         Try
             ' Preparar producto para actualización
             PrepararProductoParaActualizacion(producto, productoExistente)
@@ -781,8 +789,8 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
                 ' Gestionar relación con bodega
                 GestionarProductoBodegaAsync(producto, cnn, tran, lbl)
 
-                ' Actualizar contadores y sincronización
-                ActualizarContadoresYSincronizacion(producto.Codigo)
+                '' Actualizar contadores y sincronización
+                'Dim usado = Marcar_Producto_Sincronizad0_SLAsync(producto.Codigo, lbl)
 
                 clsPublic.Actualizar_Progreso(lbl, $"Producto {producto.Codigo} actualizado correctamente")
                 Return True
@@ -875,7 +883,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
 
             VContadorBitacoraTOMWMS += 1
 
-            Marcar_Producto_Sincronizado_SAP(producto.Codigo)
+            'Marcar_Producto_Sincronizad0_SLAsync(producto.Codigo, lbl)
 
             InsertarProductoNuevo = producto.IdProducto
 
@@ -886,7 +894,8 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
 
     End Function
 
-    Public Shared Function Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lConnection As SqlConnection, lTransaction As SqlTransaction) As Integer
+    Public Shared Function Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lConnection As SqlConnection,
+                                                                                    lTransaction As SqlTransaction) As Integer
 
         Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS = 0
 
@@ -896,7 +905,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
 
             If productos.Count > 0 Then
                 If ProcesarProductosDesdeSAP(productos, Nothing, Nothing, lConnection, lTransaction) Then
-                    Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS = True
+                    Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS = 1
                 End If
             End If
 
@@ -954,35 +963,34 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
     End Function
 
     Public Shared Async Function Get_Productos_SAP_SL(sessionCookie As String,
-                                                  baseUrl As String,
-                                                  Optional codigo As String = "") As Task(Of List(Of clsBeI_nav_producto))
+                                                      baseUrl As String,
+                                                      lbl As RichTextBox,
+                                                      Optional codigo As String = "") As Task(Of List(Of clsBeI_nav_producto))
 
         Dim productos As New List(Of clsBeI_nav_producto)
 
         Try
-            ' Rango de fechas equivalente al query HANA
             Dim fechaHasta As Date = Date.Today
             Dim fechaDesde As Date = fechaHasta.AddDays(-BeConfigEnc.Rango_Dias_Importacion)
 
             Dim fechaDesdeStr As String = fechaDesde.ToString("yyyy-MM-dd")
             Dim fechaHastaStr As String = fechaHasta.ToString("yyyy-MM-dd")
 
-            ' Filtro equivalente:
-            ' WHERE (UpdateDate BETWEEN fechaDesde AND fechaHasta OR U_ENVIADO_WMS = 2)
-            '   AND U_Grupo <> '19'
-            '   AND InvntryUom <> '' AND InvntryUom IS NOT NULL
             Dim filtro As New Text.StringBuilder()
 
-            'filtro.AppendFormat("(U_Grupo eq '19' and U_ENVIADO_WMS eq 2)")
-            filtro.AppendFormat("U_Grupo eq '19'")
+            filtro.Append("U_Grupo ne '19' and " &
+                      "U_ENVIADO_WMS eq null and " &
+                      "Valid eq 'tYES' and " &
+                      "InventoryUOM ne '' ")
+
             If Not String.IsNullOrWhiteSpace(codigo) Then
-                ' Escapar comillas simples por seguridad
                 Dim codEscapado = codigo.Replace("'", "''")
                 filtro.AppendFormat(" and ItemCode eq '{0}'", codEscapado)
             End If
 
-            ' Construimos la URL OData SIN $select para obtener todos los campos
-            Dim requestUrl As String = $"Items?$filter={Uri.EscapeDataString(filtro.ToString())}"
+            Dim filterEncoded = Uri.EscapeDataString(filtro.ToString())
+            Dim pageSize As Integer = 100
+            Dim skip As Integer = 0
 
             Using handler As New HttpClientHandler()
                 handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
@@ -991,82 +999,110 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
 
                 Using client As New HttpClient(handler)
                     client.DefaultRequestHeaders.ConnectionClose = True
+                    client.DefaultRequestHeaders.Add("Cookie", sessionCookie)
+                    client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
 
-                    Using request As New HttpRequestMessage(HttpMethod.Get, baseUrl & requestUrl)
-                        request.Headers.ConnectionClose = True
-                        request.Headers.Add("Cookie", sessionCookie)
-                        request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+                    Dim hayMas As Boolean = True
 
-                        Dim response As HttpResponseMessage = Await client.SendAsync(request).ConfigureAwait(False)
+                    While hayMas
+                        Dim requestUrl As String =
+                        $"{baseUrl}Items?$filter={filterEncoded}&$top={pageSize}&$skip={skip}"
 
-                        If Not response.IsSuccessStatusCode Then
-                            Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
-                            Throw New Exception($"Error al obtener productos desde Service Layer. Código: {response.StatusCode}, Detalle: {errContent}")
-                        End If
+                        Using request As New HttpRequestMessage(HttpMethod.Get, requestUrl)
+                            request.Headers.ConnectionClose = True
 
-                        Dim jsonResponse = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
-                        Dim obj = JObject.Parse(jsonResponse)
-                        Dim rows = obj("value")
+                            Dim response As HttpResponseMessage = Await client.SendAsync(request).ConfigureAwait(False)
 
-                        If rows Is Nothing OrElse Not rows.HasValues Then
-                            Return productos ' Lista vacía
-                        End If
+                            If Not response.IsSuccessStatusCode Then
+                                Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                                Throw New Exception($"Error al obtener productos desde Service Layer. Código: {response.StatusCode}, Detalle: {errContent}")
+                            End If
 
-                        For Each row In rows
-                            Dim prod As New clsBeI_nav_producto()
+                            Dim jsonResponse = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                            Dim obj = JObject.Parse(jsonResponse)
+                            Dim rows = obj("value")
 
-                            ' Mapeo de campos principales (ahora tenemos acceso a todos los campos)
-                            prod.No = SafeGetString(row, "ItemCode")
-                            prod.Item_Tracking_Code = SafeGetString(row, "CodeBars")
-                            prod.Description = SafeGetString(row, "ItemName")
-                            prod.Description_2 = SafeGetString(row, "CodeBars") ' CodigoBarra
+                            If rows Is Nothing OrElse Not rows.HasValues Then
+                                ' Ya no hay más páginas
+                                hayMas = False
+                                Exit While
+                            End If
 
-                            ' Campos UDF (User Defined Fields)
-                            prod.Item_Category_Code = SafeGetString(row, "U_Division")
-                            prod.Product_Group_Code = SafeGetString(row, "U_Fabricante")
-                            prod.Gen_Prod_Posting_Group = SafeGetString(row, "U_Marca")
-                            prod.Product_Class_Code = SafeGetString(row, "U_Grupo")
+                            Dim filasPagina As Integer = rows.Count()
 
-                            ' Unidad de medida
-                            prod.Base_Unit_Of_Measure = SafeGetString(row, "InvntryUom")
+                            For Each row In rows
+                                Dim prod As New clsBeI_nav_producto()
 
-                            '' Campos de control de sincronización
-                            'prod.U_ENVIADO_WMS = SafeGetInteger(row, "U_ENVIADO_WMS")
-                            'prod.UpdateDate = SafeGetDateTime(row, "UpdateDate")
-                            'prod.CreateDate = SafeGetDateTime(row, "CreateDate")
+                                prod.No = SafeGetString(row, "ItemCode")
 
-                            '' Campos adicionales que ahora están disponibles sin $select
-                            'prod.Peso = SafeGetDecimal(row, "InventoryWeight")
-                            'prod.Control_lote = SafeGetString(row, "PrcmntMtd")
-                            'prod.Grupo_planificacion_compras = SafeGetString(row, "PrcrmntMtd")
-                            'prod.Grupo_articulos = SafeGetInteger(row, "ItmsGrpCod")
-                            'prod.Tipo_articulo = SafeGetString(row, "ItemType")
-                            'prod.Frozen = SafeGetString(row, "Frozen")
-                            'prod.Valid = SafeGetString(row, "Valid")
+                                If lbl IsNot Nothing Then
+                                    clsPublic.Actualizar_Progreso(lbl, $"Producto encontrado: {prod.No}")
+                                End If
 
-                            '' Campos que podrían ser útiles
-                            'prod.ManBtchNum = SafeGetString(row, "ManBtchNum")
-                            'prod.PurchaseUnit = SafeGetString(row, "PurchaseUnit")
-                            'prod.SalesUnit = SafeGetString(row, "SalesUnit")
+                                prod.Item_Tracking_Code = SafeGetString(row, "BarCode")
+                                prod.Description = SafeGetString(row, "ItemName")
+                                prod.Description_2 = SafeGetString(row, "BarCode")
 
-                            ' Valores por defecto
-                            prod.Inventory = 0D
-                            prod.Unit_Cost = 0D
-                            prod.BatchControl = (SafeGetString(row, "ManBtchNum") = "tYES")
+                                prod.Item_Category_Code = SafeGetString(row, "U_Division")
+                                prod.Product_Group_Code = SafeGetString(row, "U_Fabricante")
+                                prod.Gen_Prod_Posting_Group = SafeGetString(row, "U_Marca")
+                                prod.Product_Class_Code = SafeGetString(row, "U_Grupo")
 
-                            ' Nombres pendientes de tablas de usuario (como antes)
-                            prod.Item_Category_Name = String.Empty
-                            prod.Producto_Group_Name = String.Empty
-                            prod.Gen_Prod_Posting_Name = String.Empty
-                            prod.Product_Class_Name = String.Empty
+                                prod.Base_Unit_Of_Measure = SafeGetString(row, "InventoryUOM")
 
-                            productos.Add(prod)
-                        Next
+                                prod.Inventory = 0D
+                                prod.Unit_Cost = 0D
+                                prod.BatchControl = (SafeGetString(row, "ManageBatchNumbers") = "tYES")
 
-                        Return productos
-                    End Using
+                                prod.Item_Category_Name = String.Empty
+                                prod.Producto_Group_Name = String.Empty
+                                prod.Gen_Prod_Posting_Name = String.Empty
+                                prod.Product_Class_Name = String.Empty
+
+                                Dim inventoryUom As String = SafeGetString(row, "InventoryUOM")
+                                Dim salesUnit As String = SafeGetString(row, "SalesUnit")
+                                Dim purchaseUnit As String = SafeGetString(row, "PurchaseUnit")
+
+                                Dim uomGroupEntry As Integer = SafeGetInteger(row, "UoMGroupEntry")
+                                Dim inventoryUomEntry As Integer = SafeGetInteger(row, "InventoryUoMEntry")
+                                Dim defaultSalesUomEntry As Integer = SafeGetInteger(row, "DefaultSalesUoMEntry")
+                                Dim defaultPurchasingUomEntry As Integer = SafeGetInteger(row, "DefaultPurchasingUoMEntry")
+
+                                If String.IsNullOrWhiteSpace(inventoryUom) _
+                                   OrElse String.IsNullOrWhiteSpace(salesUnit) _
+                                   OrElse String.IsNullOrWhiteSpace(purchaseUnit) _
+                                   OrElse inventoryUomEntry <= 0 _
+                                   OrElse defaultSalesUomEntry <= 0 _
+                                   OrElse defaultPurchasingUomEntry <= 0 Then
+
+                                    clsLnI_nav_ejecucion_det_error.Inserta_Log(
+                                    "Producto rechazado por falta de Unidades de Medida (TN04020)",
+                                    prod.No,
+                                    BeNavEjecucionEnc.IdEjecucionEnc,
+                                    BeConfigDet.Idnavconfigdet)
+
+                                    'Continue For
+                                End If
+
+                                If Not clsLnProducto.Existe_Codigo(prod.No) Then
+                                    productos.Add(prod)
+
+                                    If lbl IsNot Nothing Then
+                                        clsPublic.Actualizar_Progreso(lbl, $"Producto agregado: {prod.No}")
+                                    End If
+
+                                End If
+
+                            Next
+
+                            ' Avanzar al siguiente bloque
+                            skip += filasPagina
+                        End Using
+                    End While
                 End Using
             End Using
+
+            Return productos
 
         Catch ex As Exception
             Throw New Exception("Error en Get_Productos_SAP_SL: " & ex.Message, ex)
@@ -1091,6 +1127,64 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
     Private Shared Function SafeGetDateTime(token As JToken, propertyName As String) As DateTime
         Dim value = token?.Value(Of DateTime?)(propertyName)
         Return If(value.HasValue, value.Value, DateTime.MinValue)
+    End Function
+
+    Private Shared Function Marcar_Producto_Sincronizado_SL(ItemCode As String,
+                                                            lbl As RichTextBox) As Boolean
+
+        Try
+            If String.IsNullOrWhiteSpace(ItemCode) Then Return False
+
+            Dim vHanaService As SapServiceLayerClient
+
+            vHanaService = New SapServiceLayerClient()
+            Dim loginResponse As LoginResponseDto = vHanaService.LoginAsync().GetAwaiter().GetResult()
+
+            If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
+                clsPublic.Actualizar_Progreso(lbl, "No se pudo obtener sesión.")
+            Else
+                clsPublic.Actualizar_Progreso(lbl, "Conexión correcta. Token: " & vHanaService.SessionCookie)
+                Debug.WriteLine(vHanaService.SessionCookie)
+            End If
+
+            Dim baseUrl As String = SapServiceLayerClient.baseUrl
+            Dim sessionCookie As String = vHanaService.SessionCookie
+
+            Dim requestUrl As String = $"Items('{ItemCode}')"
+            Dim payload As String = "{""U_ENVIADO_WMS"": 1}"
+
+            Dim httpPatch As New HttpMethod("PATCH")
+
+            Using handler As New HttpClientHandler()
+                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
+                handler.UseCookies = False
+
+                Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.ConnectionClose = True
+
+                    Using request As New HttpRequestMessage(httpPatch, baseUrl & requestUrl)
+                        request.Headers.ConnectionClose = True
+                        request.Headers.Add("Cookie", sessionCookie)
+                        request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+                        request.Content = New StringContent(payload, Encoding.UTF8, "application/json")
+
+                        Dim response = client.SendAsync(request).Result
+
+                        If response.IsSuccessStatusCode Then
+                            Return True
+                        Else
+                            Dim errContent = response.Content.ReadAsStringAsync().Result
+                            Throw New Exception($"Error al actualizar productos. Código: {response.StatusCode}, Detalle: {errContent}")
+                        End If
+                    End Using
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception($"(SL) {MethodBase.GetCurrentMethod().Name} {ex.Message}", ex)
+        End Try
+
     End Function
 
 End Class

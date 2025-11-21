@@ -15011,7 +15011,7 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.False.</value>
     </member>
     <member name="P:DevExpress.XtraEditors.DateEdit.SelectedRanges">
       <summary>
-        <para>Gets or sets the selected date ranges (DateRange objects). Each DateRange object identifies dates that are EQUAL OR GREATER THAN the DateRange.StartDate and LESS THAN the DateRange.EndDate. Thus the last date is excluded from the range.</para>
+        <para>Gets or sets selected date ranges.</para>
       </summary>
       <value>A collection of selected date ranges.</value>
     </member>
@@ -19484,9 +19484,15 @@ The FormatConditionAutomaticType.Default value is equivalent to FormatConditionA
     </member>
     <member name="M:DevExpress.XtraEditors.LookUpEdit.GetSelectedDataRow">
       <summary>
-        <para>Returns a data source row corresponding to the currently selected edit value.</para>
+        <para>Returns the data source record that matches the currently selected item.</para>
       </summary>
-      <returns>An object that represents a data source row corresponding to the currently selected edit value.</returns>
+      <returns>The data source record that corresponds to the currently selected item. null (Nothing in Visual Basic) if the LookUpEdit.EditValue property is null or unassigned.</returns>
+    </member>
+    <member name="M:DevExpress.XtraEditors.LookUpEdit.GetSelectedDataRows">
+      <summary>
+        <para>Returns data source records associated with the current selection.</para>
+      </summary>
+      <returns>Data source records associated with the current selection.</returns>
     </member>
     <member name="P:DevExpress.XtraEditors.LookUpEdit.IsDisplayTextValid">
       <summary>
@@ -19507,7 +19513,7 @@ The FormatConditionAutomaticType.Default value is equivalent to FormatConditionA
     </member>
     <member name="E:DevExpress.XtraEditors.LookUpEdit.PopupFilter">
       <summary>
-        <para>Allows you to explicitly set the expression to filter lookup items.</para>
+        <para>Allows you to specify a custom filter expression for the LookUpEdit popup list.</para>
       </summary>
     </member>
     <member name="P:DevExpress.XtraEditors.LookUpEdit.Properties">
@@ -19566,9 +19572,9 @@ The FormatConditionAutomaticType.Default value is equivalent to FormatConditionA
     </member>
     <member name="M:DevExpress.XtraEditors.LookUpEditBase.GetSelectedDataRow">
       <summary>
-        <para>When implemented by a class, this method returns a data source row corresponding to the currently selected edit value.</para>
+        <para>When implemented by a class, returns a data source record that corresponds to the currently selected item.</para>
       </summary>
-      <returns>An object that represents a data source row corresponding to the currently selected edit value.</returns>
+      <returns>The data source record that corresponds to the currently selected item.</returns>
     </member>
     <member name="E:DevExpress.XtraEditors.LookUpEditBase.ProcessNewValue">
       <summary>
@@ -23329,6 +23335,12 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
         <para>Initializes a new instance of the <see cref="T:DevExpress.XtraEditors.Repository.RepositoryItemBreadCrumbEdit"/> class with the default settings.</para>
       </summary>
     </member>
+    <member name="P:DevExpress.XtraEditors.Repository.RepositoryItemBreadCrumbEdit.AdvancedModeOptions">
+      <summary>
+        <para>Gets Advanced Mode options.</para>
+      </summary>
+      <value>Advanced Mode options.</value>
+    </member>
     <member name="P:DevExpress.XtraEditors.Repository.RepositoryItemBreadCrumbEdit.AllowEdit">
       <summary>
         <para>Gets or sets whether the <see cref="T:DevExpress.XtraEditors.BreadCrumbEdit"/> can enter the <see href="https://docs.devexpress.com/WindowsForms/115768/controls-and-libraries/editors-and-simple-controls/breadcrumb-edit-control/breadcrumb-modes">Edit mode</see>. If this setting is disabled, the control operates solely in <see href="https://docs.devexpress.com/WindowsForms/115768/controls-and-libraries/editors-and-simple-controls/breadcrumb-edit-control/breadcrumb-modes">Select mode</see>.</para>
@@ -26788,6 +26800,12 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
       </summary>
       <value>true if users can enter tabs in a memo editor using the TAB key; false if pressing the TAB key moves focus to another control.</value>
     </member>
+    <member name="P:DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit.AdvancedModeOptions">
+      <summary>
+        <para>Gets Advanced Mode options.</para>
+      </summary>
+      <value>Advanced Mode options.</value>
+    </member>
     <member name="M:DevExpress.XtraEditors.Repository.RepositoryItemMemoEdit.Assign(DevExpress.XtraEditors.Repository.RepositoryItem)">
       <summary>
         <para>Copies the settings of a repository item.</para>
@@ -26884,6 +26902,12 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
         <para>Gets or sets a value specifying whether a user can insert tab characters into the editor’s text.</para>
       </summary>
       <value>true if tab characters typed within the dropdown window are accepted and processed by an extended memo editor; otherwise, false.</value>
+    </member>
+    <member name="P:DevExpress.XtraEditors.Repository.RepositoryItemMemoExEdit.AdvancedModeOptions">
+      <summary>
+        <para>Gets Advanced Mode options.</para>
+      </summary>
+      <value>Advanced Mode options.</value>
     </member>
     <member name="M:DevExpress.XtraEditors.Repository.RepositoryItemMemoExEdit.Assign(DevExpress.XtraEditors.Repository.RepositoryItem)">
       <summary>
@@ -27843,15 +27867,15 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
     </member>
     <member name="P:DevExpress.XtraEditors.Repository.RepositoryItemProgressBar.Maximum">
       <summary>
-        <para>Gets or sets the control’s maximum value.</para>
+        <para>Gets or sets the maximum value of the progress range.</para>
       </summary>
-      <value>An integer value representing the maximum value.</value>
+      <value>The maximum value.</value>
     </member>
     <member name="P:DevExpress.XtraEditors.Repository.RepositoryItemProgressBar.Minimum">
       <summary>
-        <para>Gets or sets the control’s minimum value.</para>
+        <para>Gets or sets the minimum value of the progress range.</para>
       </summary>
-      <value>An integer value representing the minimum value.</value>
+      <value>The minimum value.</value>
     </member>
     <member name="P:DevExpress.XtraEditors.Repository.RepositoryItemProgressBar.PercentView">
       <summary>
@@ -28587,6 +28611,12 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
       <summary>
         <para>Creates a new <see cref="T:DevExpress.XtraEditors.Repository.RepositoryItemTextEdit"/> object with default settings.</para>
       </summary>
+    </member>
+    <member name="P:DevExpress.XtraEditors.Repository.RepositoryItemTextEdit.AdvancedModeOptions">
+      <summary>
+        <para>Gets Advanced Mode options.</para>
+      </summary>
+      <value>Advanced Mode options.</value>
     </member>
     <member name="P:DevExpress.XtraEditors.Repository.RepositoryItemTextEdit.AllowContextImageChangeAnimation">
       <summary>
@@ -29384,9 +29414,9 @@ The default value is <see cref="F:DevExpress.Utils.DefaultBoolean.Default">Defau
     </member>
     <member name="P:DevExpress.XtraEditors.Repository.RepositoryItemTokenEdit.AutoHeightMode">
       <summary>
-        <para>Gets or sets the <see cref="T:DevExpress.XtraEditors.TokenEdit"/> control’s auto-hide mode.</para>
+        <para>Specifies how the TokenEdit adjusts its height to fit its content.</para>
       </summary>
-      <value>A DevExpress.XtraEditors.TokenEditAutoHeightMode enumerator value that specifies the <see cref="T:DevExpress.XtraEditors.TokenEdit"/> control’s auto-hide mode.</value>
+      <value>Specifies the auto-hide mode.</value>
     </member>
     <member name="E:DevExpress.XtraEditors.Repository.RepositoryItemTokenEdit.BeforePopup">
       <summary>
@@ -31337,7 +31367,7 @@ The default value is <see cref="F:DevExpress.Utils.DefaultBoolean.Default">Defau
     </member>
     <member name="M:DevExpress.XtraEditors.TextEdit.CloseAutoCompletePopup">
       <summary>
-        <para>Hides a drop-down list with auto-complete suggestions.</para>
+        <para>Hides a drop-down list with autocomplete suggestions.</para>
       </summary>
     </member>
     <member name="M:DevExpress.XtraEditors.TextEdit.Copy">
@@ -31538,7 +31568,7 @@ The default value is <see cref="F:DevExpress.Utils.DefaultBoolean.Default">Defau
     </member>
     <member name="M:DevExpress.XtraEditors.TextEdit.ShowAutoCompletePopup">
       <summary>
-        <para>Invokes a drop-down list with auto-complete suggestions.</para>
+        <para>Invokes a drop-down list with autocomplete suggestions.</para>
       </summary>
     </member>
     <member name="E:DevExpress.XtraEditors.TextEdit.Spin">
@@ -31599,13 +31629,13 @@ The default value is <see cref="F:DevExpress.Utils.DefaultBoolean.Default">Defau
     </member>
     <member name="P:DevExpress.XtraEditors.TextEditAdvancedModeOptions.AutoCompleteCustomSource">
       <summary>
-        <para>Gets or sets a custom collection of auto-complete suggestions. This property is in effect in <see cref="P:DevExpress.XtraEditors.Repository.RepositoryItemTextEdit.UseAdvancedMode">advanced mode</see> when the <see cref="P:DevExpress.XtraEditors.TextEditAdvancedModeOptions.AutoCompleteSource">AutoCompleteSource</see> option is set to CustomSource.</para>
+        <para>Gets or sets a custom collection of autocomplete suggestions. This property is in effect in <see cref="P:DevExpress.XtraEditors.Repository.RepositoryItemTextEdit.UseAdvancedMode">advanced mode</see> when the <see cref="P:DevExpress.XtraEditors.TextEditAdvancedModeOptions.AutoCompleteSource">AutoCompleteSource</see> option is set to CustomSource.</para>
       </summary>
       <value>The TextEdit’s custom string collection source.</value>
     </member>
     <member name="P:DevExpress.XtraEditors.TextEditAdvancedModeOptions.AutoCompleteMode">
       <summary>
-        <para>Gets or sets text auto-completion mode. This property is in effect if the <see cref="P:DevExpress.XtraEditors.Repository.RepositoryItemTextEdit.UseAdvancedMode">RepositoryItemTextEdit.UseAdvancedMode</see> option is enabled.</para>
+        <para>Gets or sets text autocompletion mode. This property is in effect if the <see cref="P:DevExpress.XtraEditors.Repository.RepositoryItemTextEdit.UseAdvancedMode">RepositoryItemTextEdit.UseAdvancedMode</see> option is enabled.</para>
       </summary>
       <value>The text completion behavior of the TextEdit.</value>
     </member>
@@ -34511,7 +34541,7 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
     </member>
     <member name="P:DevExpress.XtraEditors.TokenEdit.AutoSizeInLayoutControl">
       <summary>
-        <para>This member supports the internal infrastructure, and is not intended to be used directly from your code.</para>
+        <para>This member supports the internal infrastructure, and is not intended to be used directly from your code. Use the <see cref="P:DevExpress.XtraEditors.Repository.RepositoryItemTokenEdit.AutoHeightMode"/> property instead.</para>
       </summary>
     </member>
     <member name="E:DevExpress.XtraEditors.TokenEdit.BeforePopup">
@@ -35953,9 +35983,9 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
     </member>
     <member name="P:DevExpress.XtraEditors.XtraMessageBox.Icons">
       <summary>
-        <para>Provides access to custom <see cref="T:DevExpress.XtraEditors.XtraMessageBox"/> icons.</para>
+        <para>Allows you to specify custom <see cref="T:DevExpress.XtraEditors.XtraMessageBox"/> icons using predefined icon names.</para>
       </summary>
-      <value>A <see cref="T:System.Collections.Generic.Dictionary`2"/>&lt;<see cref="T:System.Windows.Forms.MessageBoxIcon"/>,<see cref="T:System.Drawing.Icon"/>,&gt; object that stores custom <see cref="T:DevExpress.XtraEditors.XtraMessageBox"/> icons.</value>
+      <value>A <see cref="T:System.Collections.Generic.Dictionary`2"/>&lt;<see cref="T:System.Windows.Forms.MessageBoxIcon"/>,<see cref="T:System.Drawing.Icon"/>,&gt; object that stores predefined <see cref="T:DevExpress.XtraEditors.XtraMessageBox"/> icons.</value>
     </member>
     <member name="M:DevExpress.XtraEditors.XtraMessageBox.MessageBoxButtonsToDialogResults(System.Windows.Forms.MessageBoxButtons)">
       <summary>
@@ -36116,7 +36146,7 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
     </member>
     <member name="M:DevExpress.XtraEditors.XtraMessageBox.Show(DevExpress.LookAndFeel.UserLookAndFeel,System.Windows.Forms.IWin32Window,System.String,System.String,System.Windows.Forms.DialogResult[],System.Drawing.Icon,System.Int32,System.Windows.Forms.MessageBoxIcon)">
       <summary>
-        <para>Displays the XtraMessageBox with the specified look and feel settings, owner, text, caption, buttons, icon, default button and plays the sound that corresponds to the specified system-alert level.</para>
+        <para>Displays the XtraMessageBox with the specified look and feel settings, owner, text, caption, buttons, icon, default button, and plays the sound that corresponds to the specified system-alert level.</para>
       </summary>
       <param name="lookAndFeel">A <see cref="T:DevExpress.LookAndFeel.UserLookAndFeel"/> object whose properties specify the look and feel of the message box.</param>
       <param name="owner">An object that serves as a dialog box’s top-level window and owner.</param>
@@ -36302,7 +36332,7 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
     </member>
     <member name="M:DevExpress.XtraEditors.XtraMessageBox.Show(System.String,System.String,System.Windows.Forms.MessageBoxButtons)">
       <summary>
-        <para>Displays the XtraMessageBox with the specified text, caption and buttons.</para>
+        <para>Displays the XtraMessageBox with the specified text, caption, and buttons.</para>
       </summary>
       <param name="text">A string value that specifies the text to display in the message box.</param>
       <param name="caption">A string value that specifies the message box’s caption.</param>
@@ -36431,7 +36461,7 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
     </member>
     <member name="M:DevExpress.XtraEditors.XtraMessageBox.Show(System.Windows.Forms.IWin32Window,System.String,System.String,System.Windows.Forms.MessageBoxButtons)">
       <summary>
-        <para>Displays the XtraMessageBox with the specified owner, text, caption and buttons.</para>
+        <para>Displays the XtraMessageBox with the specified owner, text, caption, and buttons.</para>
       </summary>
       <param name="owner">An object that serves as a dialog box’s top-level window and owner.</param>
       <param name="text">A string value that specifies the text to display in the message box.</param>
@@ -39710,7 +39740,7 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
     </member>
     <member name="T:DevExpress.XtraTab.XtraTabPage">
       <summary>
-        <para>Represents a single tab page.</para>
+        <para>A tab page.</para>
       </summary>
     </member>
     <member name="M:DevExpress.XtraTab.XtraTabPage.#ctor">
