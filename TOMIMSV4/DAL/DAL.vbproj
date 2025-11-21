@@ -210,6 +210,8 @@
     <Compile Include="Mantenimientos\I_Nav_Tarifa_Tipo_Transaccion\clsLnTarifa_tipo_transaccion_det.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSOC\clsLnLog_error_wms_oc.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSOC\clsLnLog_error_wms_oc_partial.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack_partial.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSPed\clsLnLog_error_wms_pe.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSPed\clsLnLog_error_wms_pe_partial.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSPick\clsLnLog_error_wms_pick.vb" />
