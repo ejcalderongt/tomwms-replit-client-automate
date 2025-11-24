@@ -41,7 +41,7 @@
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>485</ApplicationRevision>
+    <ApplicationRevision>489</ApplicationRevision>
     <ApplicationVersion>4.7.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -165,473 +165,59 @@
     <Reference Include="CrystalDecisions.ReportSource, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="CrystalDecisions.Shared, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="CrystalDecisions.Windows.Forms, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="DevExpress.AIIntegration.Azure.TextAnalytics.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.AIIntegration.Azure.TextAnalytics.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.AIIntegration.Azure.Translation.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.AIIntegration.Azure.Translation.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.AIIntegration.Desktop.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.AIIntegration.Desktop.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.AIIntegration.OpenAI.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.AIIntegration.OpenAI.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.AIIntegration.Reporting.Common.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.AIIntegration.Reporting.Common.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.AIIntegration.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.AIIntegration.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.AIIntegration.Web.Reporting.Common.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.AIIntegration.Web.Reporting.Common.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.AIIntegration.Web.Reporting.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.AIIntegration.Web.Reporting.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.AIIntegration.WinForms.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.AIIntegration.WinForms.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.AIIntegration.Wpf.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.AIIntegration.Wpf.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.BonusSkins.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.BonusSkins.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Charts.Designer.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Charts.Designer.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Charts.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Charts.v24.2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.CodeConverter.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.CodeConverter.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.CodeParser.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.CodeParser.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Dashboard.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Dashboard.v24.2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Dashboard.v24.2.Web, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Dashboard.v24.2.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Dashboard.v24.2.Web.Mvc, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Dashboard.v24.2.Web.Mvc.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Dashboard.v24.2.Web.Mvc5, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Dashboard.v24.2.Web.Mvc5.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Dashboard.v24.2.Web.WebForms, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Dashboard.v24.2.Web.WebForms.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Dashboard.v24.2.Win, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Dashboard.v24.2.Win.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Dashboard.v24.2.Wpf, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Dashboard.v24.2.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Data.Desktop.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Data.Desktop.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Data.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="DevExpress.DataAccess.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.DataAccess.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.DataAccess.v24.2.UI, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.DataAccess.v24.2.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.DataVisualization.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.DataVisualization.v24.2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.DemoData.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.DemoData.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.DemoReports.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=4c3bc44151be4b47, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.DemoReports.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.DevAV.v24.2.Data, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.DevAV.v24.2.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.DevAV.v24.2.Reports, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.DevAV.v24.2.Reports.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Diagram.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Diagram.v24.2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Dialogs.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Dialogs.v24.2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Docs.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Docs.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Drawing.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Drawing.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Drawing.v24.2.Skia, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Drawing.v24.2.Skia.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.EasyTest.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.EasyTest.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.AuditTrail.Xpo.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.AuditTrail.Xpo.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Chart.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Chart.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Chart.Web.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Chart.Web.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Chart.Win.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Chart.Win.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.CloneObject.Xpo.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.CloneObject.Xpo.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.ConditionalAppearance.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.ConditionalAppearance.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Dashboards.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Dashboards.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Dashboards.Web.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Dashboards.Web.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Dashboards.Win.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Dashboards.Win.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.EasyTest.SeleniumWebAdapter.v24.2, Version=24.2.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.EasyTest.SeleniumWebAdapter.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.EasyTest.WebAdapter.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.EasyTest.WebAdapter.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.EasyTest.WinAdapter.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.EasyTest.WinAdapter.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.EF6.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.EF6.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.FileAttachment.Web.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.FileAttachment.Web.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.FileAttachment.Win.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.FileAttachment.Win.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.HtmlPropertyEditor.Web.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.HtmlPropertyEditor.Web.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.HtmlPropertyEditor.Win.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.HtmlPropertyEditor.Win.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Kpi.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Kpi.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Maps.Web.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Maps.Web.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Notifications.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Notifications.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Notifications.Web.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Notifications.Web.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Notifications.Win.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Notifications.Win.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Objects.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Objects.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Office.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Office.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Office.Web.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Office.Web.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Office.Win.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Office.Win.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.PivotChart.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.PivotChart.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.PivotChart.Web.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.PivotChart.Web.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.PivotChart.Win.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.PivotChart.Win.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.PivotGrid.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.PivotGrid.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.PivotGrid.Web.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.PivotGrid.Web.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.PivotGrid.Win.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.PivotGrid.Win.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Reports.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Reports.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Reports.Web.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Reports.Web.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.Reports.Win.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.Reports.Win.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.ReportsV2.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.ReportsV2.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.ReportsV2.Web.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.ReportsV2.Web.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.ExpressApp.ReportsV2.Win.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.ExpressApp.ReportsV2.Win.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Images.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Images.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Map.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Office.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Printing.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.Printing.v24.2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.RichEdit.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.Utils.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="DevExpress.XtraBars.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="DevExpress.XtraCharts.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraCharts.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraCharts.v24.2.Extensions, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraCharts.v24.2.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraCharts.v24.2.UI, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraCharts.v24.2.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraCharts.v24.2.Web, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraCharts.v24.2.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraCharts.v24.2.Wizard, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraCharts.v24.2.Wizard.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraDiagram.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraDiagram.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraDialogs.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraDialogs.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraEditors.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraEditors.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraGantt.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraGantt.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraGauges.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraGauges.v24.2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraGauges.v24.2.Presets, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraGauges.v24.2.Presets.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraGauges.v24.2.Win, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraGauges.v24.2.Win.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraGrid.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="DevExpress.XtraLayout.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraLayout.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraMap.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraMap.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraNavBar.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraNavBar.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraPdfViewer.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraPdfViewer.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraPivotGrid.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraPivotGrid.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraPrinting.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraPrinting.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraReports.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraReports.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraReports.v24.2.CodeCompletion, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraReports.v24.2.CodeCompletion.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraReports.v24.2.Design.Tool, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraReports.v24.2.Design.Tool.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraReports.v24.2.Extensions, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraReports.v24.2.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraReports.v24.2.Service, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraReports.v24.2.Service.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraReports.v24.2.Web, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraReports.v24.2.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraReports.v24.2.Web.Azure, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraReports.v24.2.Web.Azure.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraReports.v24.2.Web.WebForms, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraReports.v24.2.Web.WebForms.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraRichEdit.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraRichEdit.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraScheduler.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraScheduler.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraScheduler.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraScheduler.v24.2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraScheduler.v24.2.Core.Desktop, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraScheduler.v24.2.Core.Desktop.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraSpellChecker.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraSpellChecker.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraSpreadsheet.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraSpreadsheet.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraTreeList.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraTreeList.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraTreeMap.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraTreeMap.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraTreeMap.v24.2.UI, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraTreeMap.v24.2.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraVerticalGrid.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraVerticalGrid.v24.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraWizard.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files\DevExpress 24.2\Components\Bin\Framework\DevExpress.XtraWizard.v24.2.dll</HintPath>
-    </Reference>
+    <Reference Include="DevExpress.BonusSkins.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Charts.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.CodeParser.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Dashboard.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Dashboard.v24.2.Win, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Drawing.v24.2">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.Data.v24.2">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DevExpress.DataAccess.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.DataAccess.v24.2.UI, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Images.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Map.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Office.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Pdf.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.PivotGrid.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Printing.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.RichEdit.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.RichEdit.v24.2.Export, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Snap.v24.2.Extensions, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Sparkline.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v24.2.UI, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Mvvm.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.CodeView.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.Desktop.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpf.Core.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpo.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraBars.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraCharts.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraCharts.v24.2.UI, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraCharts.v24.2.Wizard, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGauges.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGauges.v24.2.Presets, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGauges.v24.2.Win, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGrid.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraLayout.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraMap.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraNavBar.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPivotGrid.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPrinting.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraReports.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraReports.v24.2.Extensions, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraRichEdit.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraScheduler.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraScheduler.v24.2.Core.Desktop, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraScheduler.v24.2.Core, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraScheduler.v24.2.Extensions, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraTreeList.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraVerticalGrid.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
@@ -3752,6 +3338,7 @@
       <DependentUpon>frmZonaPicking_List.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
@@ -4935,6 +4522,7 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
+    <Content Include="SAPBOSyncMampa.exe" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

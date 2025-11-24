@@ -947,45 +947,63 @@ Public Class SapServiceLayerClient
 
                                 Dim vDifFaltante As Double = vCantidadEsperada - ProductoIngreso.Cantidad_Total
 
+                                '#CKFK20251119 quité aquí .Quantity = ProductoIngreso.Cantidad_Total + vDifFaltante
                                 Dim batchList As New List(Of BatchNumberDto) From {
                                New BatchNumberDto With {
                                                    .BatchNumber = vColor & vTalla,
-                                                   .Quantity = ProductoIngreso.Cantidad_Total + vDifFaltante
+                                                   .Quantity = ProductoIngreso.Cantidad_Total
                                                        }
                                                    }
 
+                                '#CKFK20251119 quité aquí .Quantity = ProductoIngreso.Cantidad_Total + vDifFaltante
                                 ' Agregar línea a la entrega de lo recibido parcialmente
                                 entrega.DocumentLines.Add(New FacturaReservaEntregaLineDto With {
                                 .BaseType = 18, ' Orden de compra
                                 .BaseEntry = oOrderPurchase.DocEntry,
                                 .BaseLine = vNoLineaOCSAP,
                                 .ItemCode = ProductoIngreso.Codigo_producto,
-                                .Quantity = ProductoIngreso.Cantidad_Total + vDifFaltante,
+                                .Quantity = ProductoIngreso.Cantidad_Total,
                                 .WarehouseCode = IIf(vEsImportacion, vCodigoBodegaImportacion, docLine.WarehouseCode),
                                 .U_Color = vColor,
                                 .U_Talla = vTalla,
                                 .BatchNumbers = batchList
                             })
 
-                                Dim batchListParcial As New List(Of BatchNumberDto) From {
-                               New BatchNumberDto With {
-                                                   .BatchNumber = vColor & vTalla,
-                                                   .Quantity = vCantidadEsperada - ProductoIngreso.Cantidad_Total
-                                                       }
-                                                   }
+                                If BeTransOCEnc.IdEstadoOC = clsDataContractDI.tEstadoOC.CERRADA Then
 
-                                ' Agregar línea a la entrega
-                                entregaProductoFaltante.DocumentLines.Add(New FacturaReservaEntregaLineDto With {
-                                .BaseType = 18, ' Orden de compra
-                                .BaseEntry = oOrderPurchase.DocEntry,
-                                .BaseLine = vNoLineaOCSAP,
-                                .ItemCode = ProductoIngreso.Codigo_producto,
-                                .Quantity = vCantidadEsperada - ProductoIngreso.Cantidad_Total,
-                                .WarehouseCode = BeINavConfigEnc.Bodega_Faltante,
-                                .U_Color = vColor,
-                                .U_Talla = vTalla,
-                                .BatchNumbers = batchListParcial
-                            })
+                                    Dim batchListParcial As New List(Of BatchNumberDto) From {
+                                      New BatchNumberDto With {
+                                                          .BatchNumber = vColor & vTalla,
+                                                          .Quantity = vCantidadEsperada - ProductoIngreso.Cantidad_Total
+                                                              }
+                                                          }
+
+                                    ' Agregar línea a la entrega
+                                    entregaProductoFaltante.DocumentLines.Add(New FacturaReservaEntregaLineDto With {
+                                            .BaseType = 18, ' Orden de compra
+                                            .BaseEntry = oOrderPurchase.DocEntry,
+                                            .BaseLine = vNoLineaOCSAP,
+                                            .ItemCode = ProductoIngreso.Codigo_producto,
+                                            .Quantity = vCantidadEsperada - ProductoIngreso.Cantidad_Total,
+                                            .WarehouseCode = BeINavConfigEnc.Bodega_Faltante,
+                                            .U_Color = vColor,
+                                            .U_Talla = vTalla,
+                                            .BatchNumbers = batchListParcial
+                                        })
+                                End If
+
+                                ' Marcar líneas a actualizar
+                                Dim Sublista = lINavTransaccionesOut.FindAll(Function(x) x.No_pedido = oOrderPurchase.DocEntry _
+                                                                      AndAlso x.No_linea = vNoLineaOCSAP _
+                                                                      AndAlso x.Codigo_producto = vCodigoProductoSAP _
+                                                                      AndAlso x.Enviado = False)
+                                If Sublista IsNot Nothing AndAlso Sublista.Count > 0 Then
+                                    Lista_A_Actualizar.AddRange(Sublista)
+                                End If
+
+                                vCodigoAnterior = ProductoIngreso.Codigo_producto
+                                vNoLineaAnterior = ProductoIngreso.No_linea
+                                vAgregarEntrega = True
 
                                 vRecibioParcial = True
 
@@ -1088,6 +1106,9 @@ Public Class SapServiceLayerClient
                             clsLnTrans_oc_enc.Actualizar_No_Documento_Recepcion_ERP(docNum, BeTransOCEnc.IdOrdenCompraEnc, lConnection, lTransaction)
                             clsLnTrans_oc_enc.Actualizar_NoMarchamo(docEntry, BeTransOCEnc.IdOrdenCompraEnc, lConnection, lTransaction)
 
+                            '#CKFK20251119: Actualizar las transacciones enviadas a entregas faltantes
+                            clsLnI_nav_transacciones_out.Actualizar_Bandera_Enviado(Lista_A_Actualizar, lConnection, lTransaction)
+
                             BeReOc.No_Erp_Docentry_Entrega = docEntry
                             BeReOc.No_Erp_Docnum_Entrega = docNum
                             clsLnTrans_re_oc.Actualizar(BeReOc, lConnection, lTransaction)
@@ -1187,6 +1208,9 @@ Public Class SapServiceLayerClient
                                 '#EJC20251014: Aquí actualizar en la re_oc por favor carolina.
                                 clsLnTrans_oc_enc.Actualizar_No_Documento_Recepcion_ERP(docNum, BeTransOCEnc.IdOrdenCompraEnc, lConnection, lTransaction)
                                 clsLnTrans_oc_enc.Actualizar_NoMarchamo(docEntry, BeTransOCEnc.IdOrdenCompraEnc, lConnection, lTransaction)
+
+                                '#CKFK20251119: Actualizar las transacciones enviadas a entregas faltantes
+                                clsLnI_nav_transacciones_out.Actualizar_Bandera_Enviado(Lista_A_Actualizar, lConnection, lTransaction)
 
                                 clsLnLog_error_wms.Agregar_Error("Se envió la entrega a sap para el IdOrdenCompraEnc: " & BeTransOCEnc.IdOrdenCompraEnc & " NoDocumento: " & docNum & " DocEntry: " & docEntry)
 

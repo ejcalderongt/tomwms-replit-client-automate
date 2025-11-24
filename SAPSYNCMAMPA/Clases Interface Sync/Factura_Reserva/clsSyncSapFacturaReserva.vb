@@ -550,7 +550,8 @@ Public Class clsSyncSapFacturaReserva
 
                                         If Not Enviado_A_Erp Then
 
-                                            lTransaccionesIngresoSingle = lTransaccionesIngreso.FindAll(Function(x) x.No_pedido = DocumentoIngreso.No_pedido)
+                                            lTransaccionesIngresoSingle = lTransaccionesIngreso.FindAll(Function(x) x.No_pedido = DocumentoIngreso.No_pedido AndAlso
+                                                                                                                    x.Idrecepcionenc = BeReOC.IdRecepcionEnc)
 
                                             If Await Enviar_Entrada_Mercancia_OC_SAP(BeConfigEnc,
                                                                                      DocumentoIngreso.No_pedido,

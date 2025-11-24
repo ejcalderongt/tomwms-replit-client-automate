@@ -7,8 +7,6 @@ Imports Newtonsoft.Json.Linq
 Public Class clsSyncSapCentrosCosto : Inherits clsInterfaceBase
 
     Private Shared fichaCentrosCosto As List(Of clsBeCentro_costo)
-    Shared VContadorBitacoraTOMWMS As Integer = 0
-    Shared VContadorBitacoraIntermedia As Integer = 0
 
     Public Shared Async Function Get_Centros_Costo_SAP(sessionCookie As String,
                                                        baseUrl As String) As Task(Of List(Of clsBeCentro_costo))
@@ -126,8 +124,6 @@ Public Class clsSyncSapCentrosCosto : Inherits clsInterfaceBase
                         centro.IdCentroCosto = clsLnCentro_costo.MaxID(Cnn, lTrans) + 1
                         clsLnCentro_costo.Insertar(centro, Cnn, lTrans)
                     End If
-
-                    VContadorBitacoraIntermedia += 1
 
                     prg.Value = vContador
 

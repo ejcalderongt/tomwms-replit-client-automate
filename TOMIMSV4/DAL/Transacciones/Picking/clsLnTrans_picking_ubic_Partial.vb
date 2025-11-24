@@ -8527,5 +8527,4 @@ Partial Public Class clsLnTrans_picking_ubic
 
     End Function
 
-
 End Class

@@ -1408,6 +1408,10 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                         vContador_Lineas_Detalle_Pedido_Insertadas,
                                                                         BeINavPedTrasladoEnc.Lineas_Detalle.Count))
 
+                    If vContador_Lineas_Detalle_Pedido_Insertadas = BeINavPedTrasladoEnc.Lineas_Detalle.Count Then
+                        Imp_Ped_Trans_Env_Desde_Tab_Inter_A_WMS = pBePedidoEnc
+                    End If
+
                 End If
             End If
 
@@ -3368,7 +3372,11 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                                                    lblprg)
 
                     If BePedidoEnc IsNot Nothing Then
+
                         Importar_Pedido_Cliente_A_Tabla_Intermedia_If = BePedidoEnc
+                        '#EJC20251911: Terminar de afinar el método.
+                        Nuevo_Picking(BePedidoEnc, lConnection, lTransaction)
+
                     End If
 
                     'Resultado = lblprg.Text
@@ -3428,4 +3436,335 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
         End Try
 
     End Function
+
+    Private Shared Function Nuevo_Picking(pBePedidoEnc As clsBeTrans_pe_enc, lConnection As SqlConnection, lTransaction As SqlTransaction) As Boolean
+
+        Nuevo_Picking = False
+
+        Dim lPayload As New List(Of clsBePickingOnProcess)
+
+        Try
+            Dim pBeCliente = clsLnCliente.GetSingle(pBePedidoEnc.Cliente.IdCliente)
+            If pBeCliente Is Nothing Then
+                Throw New Exception($"Cliente no encontrado: {pBePedidoEnc.Cliente.IdCliente}")
+            End If
+
+            Dim pBePropietarioBodega = clsLnPropietario_bodega.Get_Single_With_Propietario_By_IdPropietarioBodega(
+            pBePedidoEnc.PropietarioBodega.IdPropietarioBodega)
+
+            ' Procesar cada detalle del pedido
+            For Each BePedidoDet As clsBeTrans_pe_det In pBePedidoEnc.Detalle
+                BePedidoDet.ListaStockRes = clsLnTrans_pe_det.Get_All_Stock_Res_By_IdPedidoDet(
+                BePedidoDet.IdPedidoDet, BePedidoDet.IdPedidoEnc)
+
+                Dim singlePayload = SetProductoPicking(BePedidoDet, pBePedidoEnc)
+
+                If singlePayload IsNot Nothing Then
+                    lPayload.AddRange(singlePayload)
+                End If
+
+                Application.DoEvents()
+            Next
+
+            ' Separar las listas usando LINQ
+            Dim listaPickingDet = lPayload.Where(Function(p) p.PickingDet IsNot Nothing) _
+                                     .Select(Function(p) p.PickingDet) _
+                                     .ToList()
+
+            Dim listaPickingUbic = lPayload.Where(Function(p) p.PickingUbic IsNot Nothing) _
+                                      .SelectMany(Function(p) p.PickingUbic) _
+                                      .ToList()
+
+            ' Llamar a Guardar_Picking
+            If Guardar_Picking(pBePedidoEnc, listaPickingDet, listaPickingUbic, lConnection, lTransaction) Then
+                Nuevo_Picking = True
+            End If
+
+        Catch ex As Exception
+            Dim errorMsg = $"Error en Nuevo_Picking para pedido {pBePedidoEnc?.IdPedidoEnc}: {ex.Message}"
+            clsLnLog_error_wms.Agregar_Error(errorMsg)
+            Throw New Exception(errorMsg, ex)
+        End Try
+
+        Return Nuevo_Picking
+    End Function
+
+    Public Class clsBePickingOnProcess
+        Public Property PickingDet As clsBeTrans_picking_det
+        Public Property PickingUbic As List(Of clsBeTrans_picking_ubic)
+
+        Public Sub New()
+            PickingUbic = New List(Of clsBeTrans_picking_ubic)()
+        End Sub
+
+        Public Sub New(pickingDet As clsBeTrans_picking_det, ubicaciones As List(Of clsBeTrans_picking_ubic))
+            Me.PickingDet = pickingDet
+            Me.PickingUbic = If(ubicaciones, New List(Of clsBeTrans_picking_ubic)())
+        End Sub
+    End Class
+
+    Public Shared Function SetProductoPicking(ByVal pBeTransPeDet As clsBeTrans_pe_det,
+                                       ByVal PedidoEnc As clsBeTrans_pe_enc) As clsBePickingOnProcess
+
+        If PedidoEnc Is Nothing Then
+            Throw New ArgumentNullException(NameOf(PedidoEnc), "El encabezado del pedido no puede ser nulo")
+        End If
+
+        If pBeTransPeDet Is Nothing Then
+            Throw New ArgumentNullException(NameOf(pBeTransPeDet), "El detalle del pedido no puede ser nulo")
+        End If
+
+        Dim resultados As New clsBePickingOnProcess
+        Dim bePickingDet As clsBeTrans_picking_det = Nothing
+        Dim pListPickingUbic As New List(Of clsBeTrans_picking_ubic)()
+
+        Try
+            ' 1. Inicializar objeto picking detalle
+            bePickingDet = InicializarPickingDetalle(pBeTransPeDet, PedidoEnc)
+
+            ' 2. Obtener y validar producto
+            Dim producto As clsBeProducto = ObtenerProductoValidado(pBeTransPeDet)
+
+            ' 3. Configurar información del producto en el picking
+            ConfigurarProductoEnPicking(bePickingDet, pBeTransPeDet, producto)
+
+            ' 4. Procesar stock reservado
+            If pBeTransPeDet.ListaStockRes?.Count > 0 Then
+                pListPickingUbic = ProcesarStockReservado(pBeTransPeDet, bePickingDet, PedidoEnc)
+            Else
+                Throw New Exception($"No hay stock reservado para la línea {pBeTransPeDet.No_linea} - Producto: {pBeTransPeDet.Codigo_Producto}")
+            End If
+
+            ' 5. Crear resultado
+            resultados.PickingDet = bePickingDet
+            resultados.PickingUbic = pListPickingUbic
+
+            Return resultados
+
+        Catch ex As Exception
+            Dim metodoActual = MethodBase.GetCurrentMethod().Name
+            Dim mensajeError = $"{metodoActual}: {ex.Message}"
+            clsLnLog_error_wms.Agregar_Error(mensajeError)
+            Throw New Exception(mensajeError, ex)
+        End Try
+    End Function
+
+    ' Métodos auxiliares para modularizar la funcionalidad
+    Private Shared Function InicializarPickingDetalle(pBeTransPeDet As clsBeTrans_pe_det, PedidoEnc As clsBeTrans_pe_enc) As clsBeTrans_picking_det
+        Return New clsBeTrans_picking_det With {
+        .IdPedidoEnc = pBeTransPeDet.IdPedidoEnc,
+        .IdPedidoDet = pBeTransPeDet.IdPedidoDet,
+        .Cantidad = pBeTransPeDet.Cantidad,
+        .Cantidad_recibida = 0,
+        .User_agr = PedidoEnc.User_agr,
+        .Fec_agr = DateTime.Now,
+        .User_mod = PedidoEnc.User_agr,
+        .Fec_mod = DateTime.Now,
+        .Activo = True,
+        .IsNew = True,
+        .Cliente_dias = 0,
+        .Presentacion = New clsBeProducto_Presentacion(),
+        .UnidadMedida = New clsBeUnidad_medida(),
+        .ProductoEstado = New clsBeProducto_estado(),
+        .Producto = New clsBeProducto()
+    }
+    End Function
+
+    Private Shared Function ObtenerProductoValidado(pBeTransPeDet As clsBeTrans_pe_det) As clsBeProducto
+        Dim producto As clsBeProducto = pBeTransPeDet.Producto
+
+        ' Si el producto es nulo o no tiene ID válido, intentar obtenerlo
+        If producto Is Nothing OrElse producto.IdProducto = 0 Then
+            If pBeTransPeDet.IdProductoBodega <> 0 Then
+                producto = clsLnProducto.Get_Single_By_IdProductoBodega(pBeTransPeDet.IdProductoBodega)
+            End If
+
+            If producto Is Nothing OrElse producto.IdProducto = 0 Then
+                Throw New Exception($"No se encontró el producto para la línea {pBeTransPeDet.No_linea} - Código: {pBeTransPeDet.Codigo_Producto}")
+            End If
+
+            ' Actualizar referencia en el detalle
+            pBeTransPeDet.Producto = producto
+        End If
+
+        Return producto
+    End Function
+
+    Private Shared Sub ConfigurarProductoEnPicking(bePickingDet As clsBeTrans_picking_det,
+                                       pBeTransPeDet As clsBeTrans_pe_det,
+                                       producto As clsBeProducto)
+
+        ' Obtener datos completos del producto
+        Dim productoCompleto = clsLnProducto.Get_Single_By_IdProducto(producto.IdProducto)
+        If productoCompleto Is Nothing Then
+            Throw New Exception($"No se pudo obtener información completa del producto ID: {producto.IdProducto}")
+        End If
+
+        ' Configurar propiedades del picking
+        bePickingDet.Producto.Codigo = productoCompleto.Codigo
+        bePickingDet.Producto.Nombre = productoCompleto.Nombre
+        bePickingDet.Codigo = productoCompleto.Codigo
+        bePickingDet.NombreProducto = productoCompleto.Nombre
+        bePickingDet.Presentacion.IdPresentacion = pBeTransPeDet.IdPresentacion
+        bePickingDet.Presentacion.Nombre = pBeTransPeDet.Nom_presentacion
+        bePickingDet.UnidadMedida.IdUnidadMedida = pBeTransPeDet.IdUnidadMedidaBasica
+        bePickingDet.UnidadMedida.Nombre = pBeTransPeDet.Nom_unid_med
+        bePickingDet.ProductoEstado.IdEstado = pBeTransPeDet.IdEstado
+        bePickingDet.ProductoEstado.Nombre = pBeTransPeDet.Nom_estado
+    End Sub
+
+    Private Shared Function ProcesarStockReservado(pBeTransPeDet As clsBeTrans_pe_det,
+                                                  bePickingDet As clsBeTrans_picking_det,
+                                                  PedidoEnc As clsBeTrans_pe_enc) As List(Of clsBeTrans_picking_ubic)
+
+        Dim ubicaciones As New List(Of clsBeTrans_picking_ubic)()
+        Dim presentacionCache As New Dictionary(Of Integer, clsBeProducto_Presentacion)()
+
+        For Each stockRes In pBeTransPeDet.ListaStockRes
+            ValidarStockReservado(stockRes)
+
+            Dim ubicacion = CrearPickingUbicacion(stockRes, bePickingDet, PedidoEnc, presentacionCache)
+            ubicaciones.Add(ubicacion)
+        Next
+
+        Return ubicaciones
+    End Function
+
+    Private Shared Sub ValidarStockReservado(stockRes As clsBeStock_res)
+        If stockRes.Cantidad = 0 Then
+            Throw New Exception(
+            $"Stock inconsistente - IdStock: {stockRes.IdStock} reporta cantidad: {stockRes.Cantidad}. " &
+            "Se ha restringido el picking de este documento por seguridad.")
+        End If
+    End Sub
+
+    Private Shared Function CrearPickingUbicacion(stockRes As clsBeStock_res,
+                                                 bePickingDet As clsBeTrans_picking_det,
+                                                 PedidoEnc As clsBeTrans_pe_enc,
+                                                 presentacionCache As Dictionary(Of Integer, clsBeProducto_Presentacion)) As clsBeTrans_picking_ubic
+
+        Dim ubicacion = New clsBeTrans_picking_ubic With {
+        .IdPedidoEnc = stockRes.IdPedido,
+        .IdPedidoDet = stockRes.IdPedidoDet,
+        .IdStockRes = stockRes.IdStockRes,
+        .IdPickingDet = bePickingDet.IdPickingDet,
+        .IdStock = stockRes.IdStock,
+        .IdPropietarioBodega = stockRes.IdPropietarioBodega,
+        .IdProductoBodega = stockRes.IdProductoBodega,
+        .IdProductoEstado = stockRes.IdProductoEstado,
+        .IdPresentacion = stockRes.IdPresentacion,
+        .IdUnidadMedida = stockRes.IdUnidadMedida,
+        .IdUbicacionAnterior = If(stockRes.Ubicacion_ant IsNot Nothing, Convert.ToInt32(stockRes.Ubicacion_ant), 0),
+        .IdRecepcion = stockRes.IdRecepcion,
+        .IdUbicacion = stockRes.IdUbicacion,
+        .Lote = stockRes.Lote,
+        .Fecha_Vence = stockRes.Fecha_vence,
+        .Serial = stockRes.Serial,
+        .Lic_plate = stockRes.Lic_plate,
+        .Peso_solicitado = stockRes.Peso,
+        .IdBodega = PedidoEnc.IdBodega,
+        .Cantidad_Recibida = 0.0,
+        .Fecha_real_vence = stockRes.Fecha_vence,
+        .User_agr = PedidoEnc.User_agr,
+        .Fec_agr = DateTime.Now,
+        .User_mod = PedidoEnc.User_agr,
+        .Fec_mod = DateTime.Now,
+        .Activo = True,
+        .IsNew = True,
+        .IdProductoTallaColor = stockRes.IdProductoTallaColor
+    }
+
+        ' Calcular cantidad solicitada considerando presentación
+        ubicacion.Cantidad_Solicitada = CalcularCantidadConPresentacion(stockRes, presentacionCache)
+
+        Return ubicacion
+    End Function
+
+    Private Shared Function CalcularCantidadConPresentacion(stockRes As clsBeStock_res,
+                                                            presentacionCache As Dictionary(Of Integer, clsBeProducto_Presentacion)) As Decimal
+
+        If stockRes.IdPresentacion = 0 Then
+            Return stockRes.Cantidad
+        End If
+
+        ' Usar cache para evitar consultas repetidas
+        If Not presentacionCache.ContainsKey(stockRes.IdPresentacion) Then
+            Dim presentacion = clsLnProducto_presentacion.GetSingle(stockRes.IdPresentacion)
+            If presentacion Is Nothing Then
+                Throw New Exception($"No se encontró la presentación ID: {stockRes.IdPresentacion}")
+            End If
+            presentacionCache(stockRes.IdPresentacion) = presentacion
+        End If
+
+        Dim factor = presentacionCache(stockRes.IdPresentacion).Factor
+        If factor = 0 Then factor = 1
+
+        Return stockRes.Cantidad / factor
+    End Function
+
+    Private Shared Function Guardar_Picking(ByVal BePedidoEnc As clsBeTrans_pe_enc,
+                                             ByVal BeListPickingDet As List(Of clsBeTrans_picking_det),
+                                             pListBePickingUbic As List(Of clsBeTrans_picking_ubic),
+                                             lConnection As SqlConnection,
+                                             lTransaction As SqlTransaction) As Boolean
+
+        Dim vContinuar As Boolean = False
+        Dim BePickingEnc As New clsBeTrans_picking_enc
+
+        Guardar_Picking = False
+
+        Try
+
+            BePickingEnc.IdBodega = BePedidoEnc.IdBodega
+            BePickingEnc.IdPropietarioBodega = BePedidoEnc.IdPropietarioBodega
+            BePickingEnc.IdUbicacionPicking = 1 ' buscar ubicacion picking por defecto  
+            BePickingEnc.Fecha_picking = Now
+            BePickingEnc.Hora_ini = BePedidoEnc.Hora_ini
+            BePickingEnc.Hora_fin = BePedidoEnc.Hora_fin
+            BePickingEnc.Estado = "Cerrado"
+            BePickingEnc.User_mod = BePedidoEnc.User_agr
+            BePickingEnc.Fec_mod = Now
+            BePickingEnc.Detalle_operador = False
+            BePickingEnc.Activo = True
+            BePickingEnc.verifica_auto = True
+            BePickingEnc.procesado_bof = True
+            BePickingEnc.Requiere_Preparacion = False
+            BePickingEnc.Fotografia_Verificacion = False
+            BePickingEnc.Estado_Preparacion = "N/A"
+            BePickingEnc.Fecha_Inicio_Preparacion = New Date(1900, 1, 1)
+            BePickingEnc.Fecha_Fin_Preparacion = New Date(1900, 1, 1)
+            BePickingEnc.Tipo_Preparacion = ""
+            BePickingEnc.Referencia = BePedidoEnc.Referencia
+            BePickingEnc.IdBodegaMuelle = 1 'buscar muelle por defecto-
+            BePickingEnc.IdPrioridadPicking = 0
+
+            If Not pListBePickingUbic.Count = 0 Then
+
+                Dim BeListOp As New List(Of clsBeTrans_picking_op)
+                Dim BeOp As New clsBeTrans_picking_op
+                BeOp = clsLnTrans_picking_op.Get_BeOperador_Defecto_By_IdPickingEnc(BePickingEnc.IdBodega,
+                                                                                    lConnection,
+                                                                                    lTransaction)
+
+
+                Guardar_Picking = clsLnTrans_picking_enc.Guardar(BePickingEnc,
+                                                                 Nothing,
+                                                                 BeListPickingDet,
+                                                                 Nothing,
+                                                                 BeListOp,
+                                                                 pListBePickingUbic)
+
+
+            Else
+                Throw New Exception("Al parecer el picking no tiene líneas, no se podrá guardar la transacción.")
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
 End Class
