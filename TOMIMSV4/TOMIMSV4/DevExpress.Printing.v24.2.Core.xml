@@ -19442,12 +19442,6 @@
         <para>Initializes a new instance of the <see cref="T:DevExpress.XtraPrinting.HtmlExportOptionsBase"/> class with the default settings.</para>
       </summary>
     </member>
-    <member name="P:DevExpress.XtraPrinting.HtmlExportOptionsBase.AllowURLsWithJSContent">
-      <summary>
-        <para>Gets or sets whether the JavaScript code can be placed in URLs in the resulting HTML document.</para>
-      </summary>
-      <value>true, to allow inserting the JavaScript code to URLs; otherwise, false.</value>
-    </member>
     <member name="M:DevExpress.XtraPrinting.HtmlExportOptionsBase.Assign(DevExpress.XtraPrinting.ExportOptionsBase)">
       <summary>
         <para>Copies all the settings from the <see cref="T:DevExpress.XtraPrinting.HtmlExportOptionsBase"/> object passed as a parameter.</para>
@@ -22444,6 +22438,12 @@
         <para>Specifies the hash algorithm to be used in a PDF document.</para>
       </summary>
       <value>The hash algorithm to be used in a PDF document.</value>
+    </member>
+    <member name="P:DevExpress.XtraPrinting.PdfSignatureOptions.ImageSource">
+      <summary>
+        <para>Gets or sets an image to display in the visual signature field of a digitally signed PDF document.</para>
+      </summary>
+      <value>An image displayed in the visual signature field.</value>
     </member>
     <member name="P:DevExpress.XtraPrinting.PdfSignatureOptions.Location">
       <summary>
