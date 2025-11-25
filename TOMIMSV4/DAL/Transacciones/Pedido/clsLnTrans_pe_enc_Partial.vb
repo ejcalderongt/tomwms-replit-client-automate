@@ -7035,4 +7035,49 @@ Partial Public Class clsLnTrans_pe_enc
 
     End Function
 
+    Public Shared Function GetAll_Tmp(ByVal pIdBodega As Integer,
+                                      ByVal pFechaDel As Date,
+                                      ByVal pFechaAl As Date) As DataTable
+
+        Dim lTable As New DataTable("Result")
+
+        Try
+
+            Dim vSQL As String = " SELECT * FROM VW_PEDIDOS_LIST_TMP WHERE IDBODEGA = @IDBODEGA AND UBICACION='TMP' "
+
+            vSQL += " AND cast(Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) &
+                   " AND " & FormatoFechas.fFecha(pFechaAl)
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDataAdapter.SelectCommand.Transaction = lTransaction
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                        lDataAdapter.SelectCommand.CommandType = CommandType.Text
+                        lDataAdapter.Fill(lTable)
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lTable
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 End Class

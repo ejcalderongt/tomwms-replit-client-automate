@@ -124,8 +124,14 @@ Public Class frmPicking_List
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR24102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -268,8 +274,14 @@ Public Class frmPicking_List
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR24102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -290,8 +302,14 @@ Public Class frmPicking_List
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR24102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -320,8 +338,14 @@ Public Class frmPicking_List
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR24102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -362,8 +386,14 @@ Public Class frmPicking_List
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR24102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -389,8 +419,14 @@ Public Class frmPicking_List
                               MessageBoxButtons.OK,
                               MessageBoxIcon.Error)
 
+            '#MECR24102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pStackTrace:=ex.StackTrace)
 
         End Try
 
@@ -468,8 +504,14 @@ Public Class frmPicking_List
             End Try
 
         Catch ex As Exception
+            '#MECR24102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pUserAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pStackTrace:=ex.StackTrace)
         End Try
 
     End Sub

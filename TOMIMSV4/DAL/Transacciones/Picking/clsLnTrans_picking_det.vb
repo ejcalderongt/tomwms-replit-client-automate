@@ -28,8 +28,15 @@ Public Class clsLnTrans_picking_det
         Catch ex1 As SQLException
             Throw ex1
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdPedidoDet:=oBeTrans_picking_det.IdPedidoDet,
+                                                  pIdPedidoEnc:=oBeTrans_picking_det.IdPedidoEnc,
+                                                  pIdPickingEnc:=oBeTrans_picking_det.IdPickingEnc,
+                                                  pIdPickingDet:=oBeTrans_picking_det.IdPickingDet,
+                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
     End Sub
@@ -443,8 +450,10 @@ Public Class clsLnTrans_picking_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -563,7 +572,7 @@ Public Class clsLnTrans_picking_det
 
         Try
 
-            Const sp As String = "SELECT * FROM Trans_picking_det" & _
+            Const sp As String = "SELECT * FROM Trans_picking_det" &
             " Where(IdPickingDet = @IdPickingDet)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -583,8 +592,15 @@ Public Class clsLnTrans_picking_det
         Catch ex1 As SQLException
             Throw ex1
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdPedidoDet:=pBeTrans_picking_det.IdPedidoDet,
+                                                  pIdPedidoEnc:=pBeTrans_picking_det.IdPedidoEnc,
+                                                  pIdPickingEnc:=pBeTrans_picking_det.IdPickingEnc,
+                                                  pIdPickingDet:=pBeTrans_picking_det.IdPickingDet,
+                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -614,8 +630,10 @@ Public Class clsLnTrans_picking_det
         Catch ex1 As SQLException
             Throw ex1
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 

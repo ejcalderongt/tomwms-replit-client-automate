@@ -251,6 +251,7 @@
     <Compile Include="Mantenimientos\I_Nav_Tarifa_Tipo_Transaccion\clsBeTarifa_tipo_transaccion_det.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSOC\clsBeLog_error_wms_oc.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSPe\clsBeLog_error_wms_pe.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSPick\clsBeLog_error_wms_pick.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSRec\clsBeLog_error_wms_rec.vb" />
     <Compile Include="Mantenimientos\LogErrorWMS\clsBeLog_error_wms.vb" />
     <Compile Include="Mantenimientos\Manufactura\Manufactura_Tipo\clsBeTrans_manufactura_tipo.vb" />
