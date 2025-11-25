@@ -2272,6 +2272,7 @@ Public Class frmPreFactura
                                         Dim BeOrdenCompraEnc As New clsBeTrans_oc_enc()
                                         Dim BePedidoEnc As New clsBeTrans_pe_enc()
                                         Dim pPosicionesOcupadas As Integer = 0
+                                        Dim fechaAnterior As Date? = Nothing
 
                                         '#GT20112024: validar si requerimos tipo cambio antes de realizar cualquier cálculo.
                                         If clsDataContractDI.tTipoMonedaPrefacturacion.Dolar = pAcuerdoComercial.Cod_moneda Then
@@ -2296,10 +2297,13 @@ Public Class frmPreFactura
                                             BeOrdenCompraEnc = New clsBeTrans_oc_enc()
                                             BePedidoEnc = New clsBeTrans_pe_enc()
 
+
+                                            pPosicionesOcupadas = 0
+                                            fechaAnterior = Nothing
+
                                             If DTListaIngresos IsNot Nothing AndAlso DTListaIngresos.Rows.Count > 0 Then
 
                                                 pBeProducto = Nothing
-                                                'BeOrdenCompraEnc = Nothing
 
                                                 For i As Integer = 0 To DTListaIngresos.Rows.Count - 1
                                                     Dim vNumero_orden = DTListaIngresos.Rows(i)(0).ToString()
@@ -2311,6 +2315,12 @@ Public Class frmPreFactura
                                                     Dim vCodigo_Producto As String = ""
                                                     If chkAgruparPorProducto.Checked Then
                                                         vCodigo_Producto = DTListaIngresos.Rows(i)(5).ToString()
+                                                    End If
+
+                                                    '#GT23102025: Resetar las posiciones contadas si cambiamos de día, para que la cantidad no aumente exponencialmente.
+                                                    If fechaAnterior Is Nothing OrElse vFecha <> fechaAnterior.Value Then
+                                                        pPosicionesOcupadas = 0   'Reiniciar al cambiar de día
+                                                        fechaAnterior = vFecha    'Actualizar la referencia
                                                     End If
 
                                                     '#GT16102025: validar si el ingreso es por transferencia, para que el primer día sea cobro 0
@@ -2477,8 +2487,16 @@ Public Class frmPreFactura
                                                     End If
 
                                                     '#GT16102025: si es transferencia, y generó ingreso auto por transfer y es el día uno de cobro
-                                                    If BePedidoEnc.IdTipoPedido = 1 AndAlso BePedidoEnc.TipoPedido.Generar_pedido_ingreso_bodega_destino AndAlso i = 0 Then
-                                                        vCobroAlmacenajeDiario = 0
+                                                    If BePedidoEnc.IdTipoPedido = 1 AndAlso BePedidoEnc.TipoPedido.Generar_pedido_ingreso_bodega_destino Then
+                                                        Dim firstRow As DataRow
+                                                        Dim result() As DataRow = DTListaIngresos.Select("IdOrdenCompraEnc = '" + vIdOrdenCompraEnc.ToString() + "'")
+                                                        firstRow = result.FirstOrDefault()
+                                                        Dim tmpFecha = CDate(firstRow.Item("fecha"))
+
+                                                        If tmpFecha = DTListaIngresos(i).Item("fecha") Then
+                                                            vCobroAlmacenajeDiario = 0
+                                                        End If
+
                                                     End If
 
                                                     vCobro_por_linea += vCobroAlmacenajeDiario
@@ -2562,9 +2580,17 @@ Public Class frmPreFactura
 
                                             Dim tasa As Double = Math.Round(pAcuerdoPrimario.Porcentaje / 100, pDecimalesEnCobro)
                                             vCobroAlmacenajeDiario = 0
+                                            BeOrdenCompraEnc = New clsBeTrans_oc_enc()
+                                            BePedidoEnc = New clsBeTrans_pe_enc()
+
+                                            '#GT23102025: Resetar las posiciones contadas si cambiamos de día, para que la cantidad no aumente exponencialmente.
+                                            pPosicionesOcupadas = 0
+                                            fechaAnterior = Nothing
 
                                             If DTListaIngresos IsNot Nothing AndAlso DTListaIngresos.Rows.Count > 0 Then
+
                                                 For i As Integer = 0 To DTListaIngresos.Rows.Count - 1
+
                                                     Dim vNumero_orden = DTListaIngresos.Rows(i)(0).ToString()
                                                     Dim vIdOrdenCompraEnc = CInt(DTListaIngresos.Rows(i)(1).ToString())
                                                     Dim vFecha = CDate(DTListaIngresos.Rows(i)(2).ToString())
@@ -2573,6 +2599,21 @@ Public Class frmPreFactura
                                                     Dim vCodigo_Producto As String = ""
                                                     If chkAgruparPorProducto.Checked Then
                                                         vCodigo_Producto = DTListaIngresos.Rows(i)(5).ToString()
+                                                    End If
+
+
+                                                    If fechaAnterior Is Nothing OrElse vFecha <> fechaAnterior.Value Then
+                                                        pPosicionesOcupadas = 0   'Reiniciar al cambiar de día
+                                                        fechaAnterior = vFecha    'Actualizar la referencia
+                                                    End If
+
+                                                    '#GT16102025: solo hacer la consulta una vez, para no sobrecargar el proceso.
+                                                    If BeOrdenCompraEnc.IdOrdenCompraEnc <> vIdOrdenCompraEnc Then
+                                                        BeOrdenCompraEnc = clsLnTrans_oc_enc.Get_Single_By_IdOrdenCompraEnc(vIdOrdenCompraEnc)
+                                                        If BeOrdenCompraEnc IsNot Nothing Then
+                                                            BePedidoEnc = New clsBeTrans_pe_enc()
+                                                            BePedidoEnc = clsLnTrans_pe_enc.GetPedido_By_IdDespachoEnc(BeOrdenCompraEnc.IdDespachoEnc)
+                                                        End If
                                                     End If
 
                                                     If vUsarMonedaDolar Then
@@ -2597,13 +2638,26 @@ Public Class frmPreFactura
                                                         End If
                                                     End If
 
+                                                    '#GT16102025: si es transferencia, y generó ingreso auto por transfer y es el día uno de cobro
+                                                    If BePedidoEnc.IdTipoPedido = 1 AndAlso BePedidoEnc.TipoPedido.Generar_pedido_ingreso_bodega_destino Then
+                                                        Dim firstRow As DataRow
+                                                        Dim result() As DataRow = DTListaIngresos.Select("IdOrdenCompraEnc = '" + vIdOrdenCompraEnc.ToString() + "'")
+                                                        firstRow = result.FirstOrDefault()
+                                                        Dim tmpFecha = CDate(firstRow.Item("fecha"))
+
+                                                        If tmpFecha = DTListaIngresos(i).Item("fecha") Then
+                                                            vCobroAlmacenajeDiario = 0
+                                                        End If
+
+                                                    End If
+
                                                     vCobro_por_linea += vCobroAlmacenajeDiario
                                                     DTGridDetallePreCuenta.Rows.Add(vIdOrdenCompraEnc,
                                                                                     vNumero_orden,
                                                                                     vCodigo_Producto,
                                                                                     vNombreProducto,
                                                                                     vFecha,
-                                                                                    vUnidades,
+                                                                                    IIf(pPosicionesOcupadas > 0, pPosicionesOcupadas, vUnidades),
                                                                                     vValor_Total,
                                                                                     vCobroAlmacenajeDiario)
                                                 Next
@@ -2936,23 +2990,15 @@ Public Class frmPreFactura
 
                                     lPolizasOC = New List(Of clsBeTrans_oc_pol)
                                     ListaTranOcEncReferencias = New List(Of clsBeTrans_oc_enc)
-                                    '#GT16102025: cargar la oc y pe y determinar si es transferencia, para no cobrar el primer día obtenido de la lista.
                                     Dim BeOrdenCompraEnc As New clsBeTrans_oc_enc()
                                     Dim BePedidoEnc As New clsBeTrans_pe_enc()
 
-
                                     For i As Integer = 0 To DTListaIngresos.Rows.Count - 1
-
-
 
                                         Dim vNumero_orden = DTListaIngresos.Rows(i)(0).ToString()
                                         Debug.WriteLine("numero_orden" & vNumero_orden)
                                         Dim vIdOrdenCompraEnc = DTListaIngresos.Rows(i)(1).ToString()
                                         Debug.WriteLine("OrdenCompra" & vIdOrdenCompraEnc)
-
-                                        'If vIdOrdenCompraEnc = 1214 Then
-                                        '    Debug.WriteLine("aqui va")
-                                        'End If
 
                                         If Not String.IsNullOrEmpty(vNumero_orden) Then
                                             Dim pListaPolizas As New List(Of clsBeTrans_oc_pol)
@@ -3022,7 +3068,6 @@ Public Class frmPreFactura
                                             BeOrdenCompraEnc = New clsBeTrans_oc_enc()
                                             BePedidoEnc = New clsBeTrans_pe_enc()
                                             Dim pPosicionesOcupadas As Integer = 0
-                                            '#GT23102025: Resetar las posiciones contadas si cambiamos de día, para que la cantidad no aumente exponencialmente.
                                             Dim fechaAnterior As Date? = Nothing
 
 
@@ -3035,16 +3080,16 @@ Public Class frmPreFactura
                                                     Dim vFecha = CDate(DTListaIngresos.Rows(i)(2).ToString())
                                                     Dim vUnidades = CDbl(DTListaIngresos.Rows(i)(3).ToString())
                                                     Dim vValor_Total = Math.Round(CDbl(DTListaIngresos.Rows(i)(4).ToString()), 4)
+
                                                     If chkAgruparPorProducto.Checked Then
                                                         vCodigo_Producto = DTListaIngresos.Rows(i)(5).ToString()
                                                     End If
 
-
+                                                    '#GT23102025: Resetar las posiciones contadas si cambiamos de día, para que la cantidad no aumente exponencialmente.
                                                     If fechaAnterior Is Nothing OrElse vFecha <> fechaAnterior.Value Then
                                                         pPosicionesOcupadas = 0   'Reiniciar al cambiar de día
                                                         fechaAnterior = vFecha    'Actualizar la referencia
                                                     End If
-
 
                                                     '#GT16102025: validar si el ingreso es por transferencia, para que el primer día sea cobro 0
                                                     If vIdOrdenCompraEnc = 15221 Then
@@ -3295,6 +3340,8 @@ Public Class frmPreFactura
                                             SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por valor...")
                                             Dim tasa As Double = pAcuerdoPrimario.Porcentaje / 100
                                             vCobroAlmacenajeDiario = 0
+                                            Dim pPosicionesOcupadas As Integer = 0
+                                            Dim fechaAnterior As Date? = Nothing
 
                                             If DTListaIngresos IsNot Nothing AndAlso DTListaIngresos.Rows.Count > 0 Then
                                                 For i As Integer = 0 To DTListaIngresos.Rows.Count - 1
@@ -3308,6 +3355,19 @@ Public Class frmPreFactura
                                                         vCodigo_Producto = DTListaIngresos.Rows(i)(5).ToString()
                                                     End If
 
+                                                    '#GT23102025: Resetar las posiciones contadas si cambiamos de día, para que la cantidad no aumente exponencialmente.
+                                                    If fechaAnterior Is Nothing OrElse vFecha <> fechaAnterior.Value Then
+                                                        pPosicionesOcupadas = 0   'Reiniciar al cambiar de día
+                                                        fechaAnterior = vFecha    'Actualizar la referencia
+                                                    End If
+
+                                                    '#GT07112025: validar si es transferencia automatica, para validar si cobrar 0 el primer día en la bodega destino.
+                                                    If BeOrdenCompraEnc.IdOrdenCompraEnc <> vIdOrdenCompraEnc Then
+                                                        BeOrdenCompraEnc = clsLnTrans_oc_enc.Get_Single_By_IdOrdenCompraEnc(vIdOrdenCompraEnc)
+                                                        If BeOrdenCompraEnc IsNot Nothing Then
+                                                            BePedidoEnc = clsLnTrans_pe_enc.GetPedido_By_IdDespachoEnc(BeOrdenCompraEnc.IdDespachoEnc)
+                                                        End If
+                                                    End If
 
                                                     If vUsarMonedaDolar Then
                                                         Dim tmpCobro = Math.Round(vValor_Total * tasa, pDecimalesEnCobro)
@@ -3329,6 +3389,19 @@ Public Class frmPreFactura
                                                         If pBeProducto IsNot Nothing Then
                                                             vNombreProducto = pBeProducto.Nombre
                                                         End If
+                                                    End If
+
+                                                    '#GT16102025: si es transferencia, y generó ingreso auto por transfer y es el día uno de cobro
+                                                    If BePedidoEnc.IdTipoPedido = 1 AndAlso BePedidoEnc.TipoPedido.Generar_pedido_ingreso_bodega_destino Then
+                                                        Dim firstRow As DataRow
+                                                        Dim result() As DataRow = DTListaIngresos.Select("IdOrdenCompraEnc = '" + vIdOrdenCompraEnc.ToString() + "'")
+                                                        firstRow = result.FirstOrDefault()
+                                                        Dim tmpFecha = CDate(firstRow.Item("fecha"))
+
+                                                        If tmpFecha = DTListaIngresos(i).Item("fecha") Then
+                                                            vCobroAlmacenajeDiario = 0
+                                                        End If
+
                                                     End If
 
                                                     vCobro_por_linea += vCobroAlmacenajeDiario

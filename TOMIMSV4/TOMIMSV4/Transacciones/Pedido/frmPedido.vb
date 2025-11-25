@@ -2512,7 +2512,14 @@ Public Class frmPedido
 
                         nombre = pBeProducto.Nombre
                         umbas_nombre = pBeProducto.UnidadMedida.Nombre
-                        vPrecio = pBeProducto.Precio
+
+                        '#GT05112025: si el producto no esta costeado, validar si lo esta en su ingreso
+                        If pBeProducto.Precio > 0 Then
+                            vPrecio = pBeProducto.Precio
+                        Else
+                            vPrecio = ObjStockEspec.Costo
+                        End If
+
 
                         dgrid.Item("ColPeso", IndiceFila).ReadOnly = Not pBeProducto.Control_peso
                         dgrid.Item("ColIdProducto", IndiceFila).Value = pBeProducto.IdProducto

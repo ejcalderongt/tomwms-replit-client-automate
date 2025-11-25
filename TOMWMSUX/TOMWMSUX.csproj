@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DevExtreme.AspNet.Data" Version="5.1.0" />
-    <PackageReference Include="DevExtreme.AspNet.Core" Version="25.1.5" />
+    <PackageReference Include="DevExtreme.AspNet.Core" Version="24.2.12" />
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>

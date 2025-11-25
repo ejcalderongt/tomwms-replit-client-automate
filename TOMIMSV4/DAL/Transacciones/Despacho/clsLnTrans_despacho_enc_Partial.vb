@@ -746,8 +746,20 @@ Partial Public Class clsLnTrans_despacho_enc
                                         BePedidoCompraDet.Cantidad_recibida = 0
                                     End If
 
-                                    BePedidoCompraDet.Costo = BePedidoDet.Costo
-                                    BePedidoCompraDet.Total_linea = BePedidoDet.Total_linea
+                                    '#GT05112025: si el costo esta vacio, revisar precio
+                                    If BePedidoDet.Costo > 0 Then
+                                        BePedidoCompraDet.Costo = BePedidoDet.Costo
+                                    Else
+                                        BePedidoCompraDet.Costo = BePedidoDet.Precio
+                                    End If
+
+                                    '#GT05112025: si hay costo, mostrar el total de la linea, si es 0, no afecta
+                                    If BePedidoCompraDet.Total_linea = 0 Then
+                                        BePedidoCompraDet.Total_linea = BePedidoCompraDet.Costo * BePedidoCompraDet.Cantidad
+                                    End If
+
+                                    'BePedidoCompraDet.Total_linea = BePedidoDet.Total_linea
+
                                     BePedidoCompraDet.No_Linea = BePedidoDet.No_linea
                                     BePedidoCompraDet.Activo = True
                                     BePedidoCompraDet.Porcentaje_arancel = 0
