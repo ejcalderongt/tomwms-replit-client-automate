@@ -205,9 +205,10 @@ Partial Public Class clsLnTrans_picking_op
 
     End Sub
 
-    Public Shared Function Get_BeOperador_Defecto_By_IdPickingEnc(ByVal IdPickingEnc As Integer,
-                                                                    Optional pConnection As SqlConnection = Nothing,
-                                                                    Optional pTransaction As SqlTransaction = Nothing) As clsBeTrans_picking_op
+    Public Shared Function Get_BeOperador_Defecto_By_IdPickingEnc(ByVal pIdBodega As Integer,
+                                                                  ByVal pIdPickingEnc As Integer,
+                                                                  Optional pConnection As SqlConnection = Nothing,
+                                                                  Optional pTransaction As SqlTransaction = Nothing) As clsBeTrans_picking_op
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -217,9 +218,12 @@ Partial Public Class clsLnTrans_picking_op
 
         Try
 
-            Const sp As String = "select top(1) concat(op.nombres, ' ', op.apellidos) as Operador from trans_picking_ubic pu
-                                  join operador_bodega ob on pu.IdOperadorBodega_Pickeo = ob.IdOperadorBodega
-                                  join operador op on ob.IdOperador = op.IdOperador Where(IdPickingEnc = @IdPickingEnc) "
+            Const sp As String = "SELECT top 1 (SELECT ISNULL(max(IdOperadorPicking),0) +1 
+                                                FROM trans_picking_op)IdOperadorPicking, @IdPickingEnc IdPickingEnc,
+			                             IdOperadorBodega,'MI3' user_agr, GETDATE()fec_agr, 'MI3' user_mod, GETDATE() fec_mod 
+                                  FROM operador_bodega ob INNER JOIN 
+                                       operador op on ob.IdOperador = op.IdOperador  
+                                  WHERE op.pickea = 1 and ob.IdBodega = @IdBodega "
 
             Dim Es_Transaccion_Remota As Boolean = (Not pConnection Is Nothing AndAlso Not pTransaction Is Nothing)
 
@@ -232,7 +236,8 @@ Partial Public Class clsLnTrans_picking_op
 
             Dim dad As New SqlDataAdapter(cmd)
 
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdPickingEnc", IdPickingEnc))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdBodega", pIdBodega))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdPickingEnc", pIdPickingEnc))
 
             Dim dt As New DataTable
             dad.Fill(dt)
@@ -240,6 +245,7 @@ Partial Public Class clsLnTrans_picking_op
             If dt.Rows.Count = 1 Then
                 Dim BeOp As New clsBeTrans_picking_op
                 Cargar(BeOp, dt.Rows(0))
+                Get_BeOperador_Defecto_By_IdPickingEnc = BeOp
             End If
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()

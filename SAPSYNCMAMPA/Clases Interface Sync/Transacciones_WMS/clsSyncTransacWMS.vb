@@ -16,13 +16,11 @@ Public Class clsSyncTransacWMS
 #Region "Ventas"
 
     Private Shared Function Get_Ventas_TMK(pCodigoBodegaInterface As String,
-                                           lConnection As SqlConnection,
-                                           lTransaction As SqlTransaction,
                                            lblprg As RichTextBox) As List(Of clsBeI_nav_ped_traslado_enc)
 
         Dim lPedidosCliente As New List(Of clsBeI_nav_ped_traslado_enc)
-        Dim BePropietario As clsBePropietarios = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario, lConnection, lTransaction)
-        Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega, lConnection, lTransaction)
+        Dim BePropietario As clsBePropietarios = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario)
+        Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega)
         Dim vEsTransferenciaDirecta As Boolean = False
 
         If BePropietario Is Nothing Then
@@ -45,7 +43,7 @@ Public Class clsSyncTransacWMS
             clsPublic.Actualizar_Progreso(lblprg, "Obteniendo documento(s).")
 
             Dim filtroEnviado As String = "U_Procesado_WMS eq null"
-            Dim filtroVentas As String = "( U_Document_Type eq '3')"
+            Dim filtroVentas As String = "( U_NoEnc eq '3670298')" ' "( U_Document_Type eq '3')"
             Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas} "
 
             Dim url As String = $"{BD.Instancia.HANA_SL}TRANSAC_WMS?$filter={Uri.EscapeDataString(filtroFinal)}"
@@ -86,8 +84,8 @@ Public Class clsSyncTransacWMS
     End Function
 
     Public Shared Function ProcesarTransaccionesWMSCompleto(jsonResponse As String,
-                                                             pCodigoBodegaInterface As String,
-                                                             BePropietario As clsBePropietarios) As List(Of clsBeI_nav_ped_traslado_enc)
+                                                            pCodigoBodegaInterface As String,
+                                                            BePropietario As clsBePropietarios) As List(Of clsBeI_nav_ped_traslado_enc)
         Try
             ' 1. Deserializar JSON
             Dim response As TRANSAC_WMS_Response = JsonConvert.DeserializeObject(Of TRANSAC_WMS_Response)(jsonResponse)
@@ -104,30 +102,31 @@ Public Class clsSyncTransacWMS
                 .Serie = primerRegistro.U_Serie,
                 .CompanyCode = primerRegistro.U_Company_Code,
                 .PostingDate = primerRegistro.U_Posting_Date,
+                .CreateDate = primerRegistro.CreateDate,
                 .TransferFromCode = primerRegistro.U_Transfer_from_Code,
                 .TransferFromContact = primerRegistro.U_Transfer_from_Contact,
                 .TransferToCode = primerRegistro.U_Transfer_to_Code,
                 .TransferToName = primerRegistro.U_Transfer_to_Name,
                 .ReceipDocumentReference = primerRegistro.U_Receip_Document_Reference,
                 .DocumentType = primerRegistro.U_Document_Type,
-                .DocEntry = primerRegistro.DocEntry,
                 .LineasDetalle = New List(Of PedidoTrasladoDetalle)()
             }
 
                 ' Agregar líneas
                 For Each transaccion In grupo
                     encabezado.LineasDetalle.Add(New PedidoTrasladoDetalle With {
-                    .LineNo = transaccion.U_Line_No,
-                    .ItemNo = transaccion.U_Item_No,
-                    .Descripcion = transaccion.U_Descripcion,
-                    .UnitOfMeasureCode = transaccion.U_Unit_of_Mesasure_Code,
-                    .QtyToShip = transaccion.U_Qty_to_Ship,
-                    .QtyWMS = transaccion.U_Qty_WMS,
-                    .Color = transaccion.U_Color,
-                    .Size = transaccion.U_Size,
-                    .ProcesadoWMS = transaccion.U_Procesado_WMS,
-                    .ProcessResult = transaccion.U_Process_Result
-                })
+                .LineNo = transaccion.U_Line_No,
+                .ItemNo = transaccion.U_Item_No,
+                .Descripcion = transaccion.U_Descripcion,
+                .UnitOfMeasureCode = transaccion.U_Unit_of_Mesasure_Code,
+                .QtyToShip = transaccion.U_Qty_to_Ship,
+                .QtyWMS = transaccion.U_Qty_WMS,
+                .Color = transaccion.U_Color,
+                .Size = transaccion.U_Size,
+                .ProcesadoWMS = transaccion.U_Procesado_WMS,
+                .ProcessResult = transaccion.U_Process_Result,
+                .DocEntry = transaccion.DocEntry
+            })
                 Next
 
                 ' Ordenar líneas
@@ -144,15 +143,15 @@ Public Class clsSyncTransacWMS
     End Function
 
     Public Shared Function MapearAClasesNegocio(transaccionesAgrupadas As List(Of PedidoTrasladoEncabezado),
-                                         pCodigoBodegaInterface As String,
-                                         BePropietario As Object) As List(Of clsBeI_nav_ped_traslado_enc)
+                                                pCodigoBodegaInterface As String,
+                                                BePropietario As Object) As List(Of clsBeI_nav_ped_traslado_enc)
 
         Dim lPedidosCliente As New List(Of clsBeI_nav_ped_traslado_enc)()
 
         For Each pedido In transaccionesAgrupadas
             ' Parsear fechas de forma segura
             Dim postingDate As Date
-            If Not Date.TryParse(pedido.PostingDate, postingDate) Then
+            If Not Date.TryParse(pedido.CreateDate, postingDate) Then
                 postingDate = Date.Now
             End If
 
@@ -176,7 +175,6 @@ Public Class clsSyncTransacWMS
             .Transportation_Guide = pedido.ReceipDocumentReference,
             .External_Document_No = pedido.ExternalDocumentNo,
             .Transfer_to_Name = pedido.TransferToName,
-            .DocEntry = pedido.DocEntry,
             .Lineas_Detalle = New List(Of clsBeI_nav_ped_traslado_det)()
         }
 
@@ -201,7 +199,8 @@ Public Class clsSyncTransacWMS
                 .Color = detalle.Color,
                 .Size = detalle.Size,
                 .Variant_Code = Nothing,
-                .Process_Result = detalle.ProcessResult
+                .Process_Result = detalle.ProcessResult,
+                .DocEntry = detalle.DocEntry
             }
 
                 beFacturaDeudor.Lineas_Detalle.Add(beDet)
@@ -223,6 +222,7 @@ Public Class clsSyncTransacWMS
         Public Property Serie As String
         Public Property CompanyCode As String
         Public Property PostingDate As String
+        Public Property CreateDate As String
         Public Property TransferFromCode As String
         Public Property TransferFromContact As String
         Public Property TransferToCode As String
@@ -230,7 +230,6 @@ Public Class clsSyncTransacWMS
         Public Property ReceipDocumentReference As String
         Public Property DocumentType As String
         Public Property LineasDetalle As List(Of PedidoTrasladoDetalle)
-        Public DocEntry As Integer = 0
         Public Sub New()
             LineasDetalle = New List(Of PedidoTrasladoDetalle)()
         End Sub
@@ -247,6 +246,8 @@ Public Class clsSyncTransacWMS
         Public Property Size As String
         Public Property ProcesadoWMS As String
         Public Property ProcessResult As String
+
+        Public DocEntry As Integer = 0
     End Class
 
 
@@ -286,7 +287,6 @@ Public Class clsSyncTransacWMS
     Public Shared Async Function Procesar_Pedido_de_Cliente_SAP(ByVal lblprg As RichTextBox,
                                                                 ByVal prg As System.Windows.Forms.ProgressBar,
                                                                 Optional ByVal pNoDocumento As String = "") As Task(Of Boolean)
-        Dim clsTrans As New clsTransaccion
         Dim sw As New Stopwatch()
 
         Try
@@ -294,17 +294,12 @@ Public Class clsSyncTransacWMS
             sw.Start()
             clsPublic.Actualizar_Progreso(lblprg, "Iniciando proceso de sincronización de pedidos de cliente desde SAP.")
 
-            clsTrans.Begin_Transaction()
 
-            BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface,
-                                                      clsTrans.lConnection,
-                                                      clsTrans.lTransaction)
+            BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface)
 
             Dim sessionCookie As String = ""
             Dim baseUrl As String = BD.Instancia.HANA_SL
-            Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega,
-                                                                        clsTrans.lConnection,
-                                                                        clsTrans.lTransaction)
+            Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega)
 
             If BeBodega Is Nothing Then
                 Throw New Exception("ERROR_202311271751: Error no se pudo obtener el objeto de bodega asociado a la configuración de interface: " & BeConfigEnc.Idbodega)
@@ -313,10 +308,7 @@ Public Class clsSyncTransacWMS
             Await Procesar_Documentos(BeBodega.Codigo,
                                       pNoDocumento,
                                       BeConfigEnc,
-                                      lblprg,
-                                      clsTrans)
-
-            clsTrans.Commit_Transaction()
+                                      lblprg)
 
             ' Éxito: detener cronómetro y reportar tiempo
             sw.Stop()
@@ -326,14 +318,10 @@ Public Class clsSyncTransacWMS
         Catch ex As Exception
             ' Error: detener cronómetro y reportar tiempo + log
             If sw.IsRunning Then sw.Stop()
-            clsTrans.RollBack_Transaction()
             clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, pNoDocumento, 1900, 900)
             clsPublic.Actualizar_Progreso(lblprg, $"Error en el proceso: {ex.Message}. Tiempo transcurrido: {sw.Elapsed.TotalSeconds:F2} segundos.")
             Throw
-
         Finally
-            clsTrans.Close_Conection()
-            ' Mensaje de fin (independiente del resultado)
             If sw.IsRunning Then sw.Stop()
             clsPublic.Actualizar_Progreso(lblprg, $"Fin del proceso de sincronización de los pedidos de cliente desde SAP. Tiempo total: {sw.Elapsed.TotalSeconds:F2} segundos.")
         End Try
@@ -343,14 +331,13 @@ Public Class clsSyncTransacWMS
     Private Shared Async Function Procesar_Documentos(ByVal codigoBodega As String,
                                                       ByVal pNoDocumento As String,
                                                       ByVal BeConfigEnc As clsBeI_nav_config_enc,
-                                                      ByVal lblprg As RichTextBox,
-                                                      ByVal clsTrans As clsTransaccion) As Task(Of Boolean)
+                                                      ByVal lblprg As RichTextBox) As Task(Of Boolean)
 
         Try
 
             clsPublic.Actualizar_Progreso(lblprg, "Conectando a SAP.")
 
-            Dim facturas As List(Of clsBeI_nav_ped_traslado_enc) = Get_Ventas_TMK(codigoBodega, clsTrans.lConnection, clsTrans.lTransaction, lblprg)
+            Dim facturas As List(Of clsBeI_nav_ped_traslado_enc) = Get_Ventas_TMK(codigoBodega, lblprg)
             Dim pBePedidoEnc As New clsBeTrans_pe_enc
             Dim PedidoClienteExistenteByCompany As New clsBeTrans_pe_enc
             Dim PedidoClienteExistente As New clsBeTrans_pe_enc
@@ -360,22 +347,41 @@ Public Class clsSyncTransacWMS
                 Return False
             End If
 
-            For Each factura In facturas
+            For Each factura In facturas.FindAll(Function(x) x.No = "3670298")
 
                 clsPublic.Actualizar_Progreso(lblprg, $"Procesando pedido de cliente de SAP (@Transac_WMS): {factura.Receipt_Document_Reference}/{factura.No}{vbNewLine}")
 
-                '#MECR 202508080524: Verifica si el proveedor ya existe como cliente en WMS.
-                If Await clsSyncSapTrasladosEnvio.Validar_Cliente_WMS(factura.Transfer_to_Code, "C", lblprg, clsTrans, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
+                Dim clsTrans As New clsTransaccion
+                clsTrans.Begin_Transaction()
 
-                    Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(factura, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
+                Try
 
-                    Dim trasladoSincronizado As Boolean = Marcar_Pedido_Cliente_Sincronizado_SLAsync(factura.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL).GetAwaiter().GetResult()
+                    '#MECR 202508080524: Verifica si el proveedor ya existe como cliente en WMS.
+                    If Await clsSyncSapTrasladosEnvio.Validar_Cliente_WMS(factura.Transfer_to_Code, "C", lblprg, clsTrans, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
 
-                    If pedidoEnc IsNot Nothing AndAlso trasladoSincronizado Then
-                        Return True
+                        Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(factura, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
+
+                        Dim listaDocEntryDistintos As List(Of Integer) = factura.Lineas_Detalle.Select(Function(x) x.DocEntry) _
+                                                                                               .Distinct() _
+                                                                                               .ToList()
+
+                        Dim trasladoSincronizado As Boolean = Marcar_Transac_Wms_Por_DocEntries_SLAsync(listaDocEntryDistintos, vHanaService.SessionCookie, BD.Instancia.HANA_SL).GetAwaiter().GetResult()
+
+                        If pedidoEnc IsNot Nothing AndAlso trasladoSincronizado Then
+                            clsPublic.Actualizar_Progreso(lblprg, "Documento procesado mágicamente :) !")
+                            Return True
+                        End If
+
                     End If
 
-                End If
+                    clsTrans.Commit_Transaction()
+
+                Catch ex As Exception
+                    clsTrans.RollBack_Transaction()
+                    clsPublic.Actualizar_Progreso(lblprg, ex.Message)
+                Finally
+                    clsTrans.Close_Conection()
+                End Try
 
             Next
 
@@ -805,8 +811,8 @@ Public Class clsSyncTransacWMS
     End Function
 
     Private Shared Async Function Marcar_Transac_Wms_Por_DocEntries_SLAsync(docEntries As List(Of Integer),
-                                                                        sessionCookie As String,
-                                                                        baseUrl As String) As Task(Of Boolean)
+                                                                            sessionCookie As String,
+                                                                            baseUrl As String) As Task(Of Boolean)
         Try
             If docEntries Is Nothing OrElse docEntries.Count = 0 Then Return False
 

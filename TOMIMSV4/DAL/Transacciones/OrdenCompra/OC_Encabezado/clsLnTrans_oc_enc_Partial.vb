@@ -1255,7 +1255,7 @@ Partial Public Class clsLnTrans_oc_enc
                             pProducto_Talla_color.IdCampaña = 0
                             pProducto_Talla_color.User_agr = 1
                             pProducto_Talla_color.User_mod = 1
-                            pProducto_Talla_color.CodigoSKU = Detalle.Codigo_Producto + "" + Detalle.Talla.Codigo + "" + Detalle.Color.Codigo
+                            pProducto_Talla_color.CodigoSKU = Detalle.Codigo_Producto + Detalle.Color.Codigo + Detalle.Talla.Codigo
 
                             clsLnProducto_talla_color.Insertar(pProducto_Talla_color, lConnection, lTransaction)
 

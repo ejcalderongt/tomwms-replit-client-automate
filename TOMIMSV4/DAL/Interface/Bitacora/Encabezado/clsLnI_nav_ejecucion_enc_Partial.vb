@@ -285,4 +285,30 @@ Partial Public Class clsLnI_nav_ejecucion_enc
 
     End Function
 
+    Public Shared Function MaxID(ByVal pConnection As SqlConnection,
+                                 ByVal pTransaction As SqlTransaction) As Integer
+
+        Try
+
+            Dim lMax As Integer = 0
+
+            Dim vSQL As String = "SELECT ISNULL(Max(idejecucionenc),0) FROM i_nav_ejecucion_enc"
+
+            Using lCommand As New SqlCommand(vSQL, pConnection, pTransaction) With {.CommandType = CommandType.Text}
+
+                Dim lReturnValue As Object = lCommand.ExecuteScalar()
+
+                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                    lMax = CInt(lReturnValue) + 1
+                End If
+
+            End Using
+
+            Return lMax
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
 End Class
