@@ -8448,7 +8448,6 @@ Partial Public Class clsLnTrans_picking_ubic
 
     End Function
 
-
     Public Shared Function Get_All_PickingUbic_Despachado_By_IdDespachoEnc(ByVal pIdDespachoEnc As Integer,
                                                                            ByVal lConnection As SqlConnection,
                                                                            ByVal lTransaction As SqlTransaction) As List(Of clsBeTrans_picking_ubic)
@@ -8509,6 +8508,95 @@ Partial Public Class clsLnTrans_picking_ubic
                             .Codigo_Color = IIf(IsDBNull(lRow.Item("Color")), 0, lRow.Item("Color"))
                             .No_Linea = IIf(IsDBNull(lRow.Item("No_Linea")), 0, lRow.Item("No_Linea"))
                             .IsNew = False
+                        End With
+
+                        lReturnList.Add(Obj)
+
+                    Next
+
+                End If
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_All_PickingUbic_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer,
+                                                              ByVal pIdBodega As Integer,
+                                                              ByVal pConnection As SqlConnection,
+                                                              ByVal pTransaction As SqlTransaction) As List(Of clsBeTrans_picking_ubic)
+
+        Get_All_PickingUbic_By_IdPedidoEnc = Nothing
+
+        Dim lReturnList As List(Of clsBeTrans_picking_ubic) = Nothing
+        Dim BeBodega As New clsBeBodega
+
+        Try
+
+            Dim vSQL As String = " SELECT * FROM VW_PickingUbic_By_IdPedidoDet 
+                                   WHERE IdPedidoEnc = @IdPedidoEnc AND  
+                                         dañado_picking = 0 AND dañado_verificacion = 0 AND no_encontrado = 0 "
+
+            BeBodega = clsLnBodega.GetSingle_By_Idbodega(pIdBodega, pConnection, pTransaction)
+
+            If Not BeBodega Is Nothing Then
+                '#CKFK20221205 Agregué el ordenamiento por tramo
+                If BeBodega.Ordenar_Por_Nombre_Completo Then
+                    vSQL += " ORDER BY Nombre_Ubicacion "
+                    If BeBodega.Ordenar_Picking_Descendente Then
+                        vSQL += " desc "
+                    End If
+                Else
+                    vSQL += " ORDER BY IdPedidoEnc "
+                End If
+            End If
+
+            Using lDTA As New SqlDataAdapter(vSQL, pConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = pTransaction
+                lDTA.SelectCommand.Parameters.Add(New SqlParameter("@IdPedidoEnc", pIdPedidoEnc))
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                Dim Obj As clsBeTrans_picking_ubic
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                    lReturnList = New List(Of clsBeTrans_picking_ubic)
+
+                    For Each lRow As DataRow In lDataTable.Rows
+
+                        Obj = New clsBeTrans_picking_ubic
+
+                        Cargar(Obj, lRow)
+
+                        With Obj
+
+                            .Ubicacion.IdUbicacion = IIf(IsDBNull(lRow.Item("IdUbicacion")), 0, lRow.Item("IdUbicacion"))
+                            .NombreUbicacion = IIf(IsDBNull(lRow.Item("Nombre_Ubicacion")), 0, lRow.Item("Nombre_Ubicacion"))
+                            .IdPickingEnc = IIf(IsDBNull(lRow.Item("IdPickingEnc")), 0, lRow.Item("IdPickingEnc"))
+                            .IdPedidoDet = IIf(IsDBNull(lRow.Item("IdPedidoDet")), 0, lRow.Item("IdPedidoDet"))
+                            .CodigoProducto = IIf(IsDBNull(lRow.Item("codigo_producto")), "", lRow.Item("codigo_producto"))
+                            .NombreProducto = IIf(IsDBNull(lRow.Item("nombre_producto")), "", lRow.Item("nombre_producto"))
+                            .ProductoPresentacion = IIf(IsDBNull(lRow.Item("nom_presentacion")), "", lRow.Item("nom_presentacion"))
+                            .ProductoUnidadMedida = IIf(IsDBNull(lRow.Item("nom_unid_med")), "", lRow.Item("nom_unid_med"))
+                            .ProductoEstado = IIf(IsDBNull(lRow.Item("nom_estado")), "", lRow.Item("nom_estado"))
+                            .IdProductoBodega = IIf(IsDBNull(lRow.Item("IdProductoBodega")), 0, lRow.Item("IdProductoBodega"))
+                            .IdProductoEstado = IIf(IsDBNull(lRow.Item("IdProductoEstado")), 0, lRow.Item("IdProductoEstado"))
+                            .IdPresentacion = IIf(IsDBNull(lRow.Item("IdPresentacion")), 0, lRow.Item("IdPresentacion"))
+                            .IdUnidadMedida = IIf(IsDBNull(lRow.Item("IdUnidadMedidaBasica")), 0, lRow.Item("IdUnidadMedidaBasica"))
+                            .IdStockRes = IIf(IsDBNull(lRow.Item("IdStockRes")), 0, lRow.Item("IdStockRes"))
+                            .IdStock = IIf(IsDBNull(lRow.Item("IdStock")), 0, lRow.Item("IdStock"))
+                            .IdPedidoEnc = IIf(IsDBNull(lRow.Item("IdPedidoEnc")), 0, lRow.Item("IdPedidoEnc"))
+                            .IsNew = False
+
                         End With
 
                         lReturnList.Add(Obj)
