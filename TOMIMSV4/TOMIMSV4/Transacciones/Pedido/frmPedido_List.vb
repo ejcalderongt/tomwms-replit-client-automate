@@ -2,7 +2,10 @@
 Imports System.Reflection
 Imports DevExpress.Data
 Imports DevExpress.Utils
+Imports DevExpress.Xpf.Core.ConditionalFormatting.Native
+Imports DevExpress.Xpf.Ribbon
 Imports DevExpress.XtraBars
+Imports DevExpress.XtraBars.Ribbon
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Views.Base
@@ -15,11 +18,13 @@ Public Class frmPedido_List
     Public pBePedidoEnc As clsBeTrans_pe_enc
 
     Public Property Modo As pModo
-
     Public Property vNombreArchivoLayOutGrid As String = "frmPedido_List.vb"
     Public Property vNombreArchivoLayOutGridDetalle As String = ""
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
     Public Call_Bind_Listar_Pedidos As New MethodInvoker(AddressOf Listar_Pedidos)
+    Public Property verificar_con_imagen = False
+    Private Property verificar_bof = False
+
     Public Sub New()
         InitializeComponent()
     End Sub
@@ -27,6 +32,7 @@ Public Class frmPedido_List
     Enum pModo
         Lista = 1
         Seleccion = 2
+        verificacion = 3
     End Enum
 
     Private Sub frmPedido_List_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
@@ -59,8 +65,6 @@ Public Class frmPedido_List
 
             vNombreArchivoLayOutGridDetalle = "grdPedidoListDetalle.xml"
 
-            Listar_Pedidos()
-
             If clsLnMenu_rol.Permiso_Funcionalidad("3.2.1.2", AP.IdRol) Then
                 mnuEliminarPedido.Visibility = BarItemVisibility.Always
                 ' mnuEliminarPedido.Enabled = True
@@ -68,6 +72,17 @@ Public Class frmPedido_List
                 mnuEliminarPedido.Visibility = BarItemVisibility.Never
                 ' mnuEliminarPedido.Enabled = False
             End If
+
+            Select Case Modo
+                Case pModo.verificacion
+                    SetRibbonEnabled(RibbonControl, False)
+                    verificar_bof = True
+                Case pModo.Lista
+                    SetRibbonEnabled(RibbonControl, True)
+                    verificar_bof = False
+            End Select
+
+            Listar_Pedidos()
 
         Catch ex As Exception
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
@@ -81,6 +96,25 @@ Public Class frmPedido_List
         End Try
 
     End Sub
+
+    Public Sub SetRibbonEnabled(ribbon As RibbonControl, enabled As Boolean)
+
+        Try
+            For Each item As BarItem In ribbon.Items
+                ' Si quieres excluir algunos items especiales, lo puedes filtrar aquí
+                item.Enabled = enabled
+            Next
+
+            If enabled Then
+                mnuEliminarPedido.Visibility = BarItemVisibility.Always
+            Else
+                mnuEliminarPedido.Visibility = BarItemVisibility.Never
+            End If
+
+        Finally
+        End Try
+    End Sub
+
 
     Private Sub frmPedido_List_Closed(sender As Object, e As EventArgs) Handles Me.Closed
 
@@ -122,14 +156,25 @@ Public Class frmPedido_List
 
             Dim Dt As New DataTable
 
-            Dt = clsLnTrans_pe_enc.GetAll(chkActivos.Checked,
-                                          dtpFechaDel.Value,
-                                          dtpFechaAl.Value,
-                                          chkAnulados.Checked,
-                                          AP.IdBodega,
-                                          chkDespachados.Checked,
-                                          chkSinExistencias.Checked,
-                                          chkSinExistenciasERP.Checked)
+            If verificar_bof Then
+
+                Dt = clsLnTrans_pe_enc.GetAll_By_VerificacionBOF(chkActivos.Checked,
+                                                                 dtpFechaDel.Value,
+                                                                 dtpFechaAl.Value,
+                                                                 AP.IdBodega)
+
+            Else
+
+                Dt = clsLnTrans_pe_enc.GetAll(chkActivos.Checked,
+                                       dtpFechaDel.Value,
+                                       dtpFechaAl.Value,
+                                       chkAnulados.Checked,
+                                       AP.IdBodega,
+                                       chkDespachados.Checked,
+                                       chkSinExistencias.Checked,
+                                       chkSinExistenciasERP.Checked)
+
+            End If
 
             DgridPedido.DataSource = Dt
 
@@ -162,6 +207,7 @@ Public Class frmPedido_List
                     gviewEncabezadoPedido.Columns("referencia").Caption = "Referencia"
                     gviewEncabezadoPedido.Columns("IdBodega").Visible = False
                     'gviewEncabezadoPedido.Columns("IdPrioridadPicking").Visible = False
+                    gviewEncabezadoPedido.Columns("verificar_con_imagen").Visible = False
                 End If
 
             Catch ex As Exception

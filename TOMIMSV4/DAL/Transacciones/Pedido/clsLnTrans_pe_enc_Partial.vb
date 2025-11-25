@@ -847,6 +847,7 @@ Partial Public Class clsLnTrans_pe_enc
                                   Optional ByVal pSinExistenciasWMS As Boolean = False,
                                   Optional ByVal pSinExistenciasERP As Boolean = False) As DataTable
 
+
         Dim lTable As New DataTable("Result")
 
         Try
@@ -857,7 +858,7 @@ Partial Public Class clsLnTrans_pe_enc
                 vSQL += " AND Activo=1"
             Else
                 vSQL += " AND Activo=0"
-            End If
+                End If
 
             If pAnulado And pDespachado Then
                 vSQL += " AND (Estado = 'Anulado' Or Estado = 'Despachado') "
@@ -885,6 +886,7 @@ Partial Public Class clsLnTrans_pe_enc
                                   i_nav_ped_traslado_enc enc on enc.No = det.NoEnc 
                                   WHERE det.Process_Result <> 'Ok' )) "
             End If
+
 
             vSQL += " AND cast(Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) &
                    " AND " & FormatoFechas.fFecha(pFechaAl)
@@ -6241,5 +6243,63 @@ Partial Public Class clsLnTrans_pe_enc
         End Try
 
     End Function
+
+    '#GT25112025: cargar lista de pedidos pickeados exclusivo para verificacion_bof
+    Public Shared Function GetAll_By_VerificacionBOF(ByVal pActivo As Boolean,
+                                                     ByVal pFechaDel As Date,
+                                                     ByVal pFechaAl As Date,
+                                                     ByVal IdBodega As Integer) As DataTable
+
+
+
+
+        Dim lTable As New DataTable("Result")
+
+        Try
+
+            Dim vSQL As String = " SELECT * FROM VW_PEDIDOS_LIST WHERE IDBODEGA = @IDBODEGA and verificar_con_imagen=1 "
+
+            If pActivo = True Then
+                vSQL += " AND Activo=1"
+            Else
+                vSQL += " AND Activo=0"
+            End If
+
+
+            vSQL += " AND cast(Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) &
+                   " AND " & FormatoFechas.fFecha(pFechaAl)
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDataAdapter.SelectCommand.Transaction = lTransaction
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdBodega", IdBodega)
+
+                        lDataAdapter.SelectCommand.CommandType = CommandType.Text
+                        lDataAdapter.Fill(lTable)
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lTable
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 
 End Class
