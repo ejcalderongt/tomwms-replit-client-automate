@@ -352,37 +352,77 @@ Public Class frmPedido_List
                         pBePedidoEnc.ObjPoliza = Nothing
                     End If
 
-                    If Modo = pModo.Lista Then
 
-                        Cierra_Instancia_Previa(frmPedido)
+                    Select Case Modo
 
-                        clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231702: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " abrió el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
+                        Case pModo.Lista
 
-                        With frmPedido
-                            .Modo = frmPedido.TipoTrans.Editar
-                            .pBePedidoEnc = pBePedidoEnc
-                            .InvokeListarPedidos = AddressOf Listar_Pedidos
-                            .MdiParent = MdiParent
-                            .WindowState = FormWindowState.Normal
-                            .Text = "Pedido " & pBePedidoEnc.IdPedidoEnc & " - " & pBePedidoEnc.Referencia
+                            Cierra_Instancia_Previa(frmPedido)
 
-                            If OpcionesMenu IsNot Nothing Then
-                                .OpcionesMenu = OpcionesMenu
-                                .mnuGuardar.Enabled = .OpcionesMenu.Modificar
-                                .cmdActualizar.Enabled = .OpcionesMenu.Modificar
-                                .cmdEliminar.Enabled = .OpcionesMenu.Eliminar
-                            End If
+                            clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231702: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " abrió el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
 
-                            .Show()
-                            .Focus()
-                        End With
+                            With frmPedido
+                                .Modo = frmPedido.TipoTrans.Editar
+                                .pBePedidoEnc = pBePedidoEnc
+                                .InvokeListarPedidos = AddressOf Listar_Pedidos
+                                .MdiParent = MdiParent
+                                .WindowState = FormWindowState.Normal
+                                .Text = "Pedido " & pBePedidoEnc.IdPedidoEnc & " - " & pBePedidoEnc.Referencia
 
-                        gviewEncabezadoPedido.FocusedRowHandle = lSelectionIndex
+                                If OpcionesMenu IsNot Nothing Then
+                                    .OpcionesMenu = OpcionesMenu
+                                    .mnuGuardar.Enabled = .OpcionesMenu.Modificar
+                                    .cmdActualizar.Enabled = .OpcionesMenu.Modificar
+                                    .cmdEliminar.Enabled = .OpcionesMenu.Eliminar
+                                End If
 
-                    ElseIf Modo = pModo.Seleccion Then
-                        'Hide()
-                        DialogResult = DialogResult.OK
-                    End If
+                                .Show()
+                                .Focus()
+                            End With
+
+                            gviewEncabezadoPedido.FocusedRowHandle = lSelectionIndex
+
+                        Case pModo.verificacion
+
+                            Cierra_Instancia_Previa(frmVerificacionBOF)
+                            clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_20251126: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " verifica bof con el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
+
+                            With frmVerificacionBOF
+                                '.Modo = frmPedido.TipoTrans.Editar
+                                .pBePedidoEnc = pBePedidoEnc
+                                '.InvokeListarPedidos = AddressOf Listar_Pedidos
+
+                                ' --- IMPORTANTE para fullscreen real del monitor ---
+                                ' Si está como hijo MDI, solo ocupará el contenedor MDI, no el monitor completo.
+                                .MdiParent = Nothing
+
+                                ' Fullscreen real (monitor completo)
+                                .StartPosition = FormStartPosition.Manual
+                                Dim scr = Screen.FromControl(Me)   ' Me = formulario que invoca
+                                .FormBorderStyle = FormBorderStyle.None
+                                .WindowState = FormWindowState.Normal
+                                .Bounds = Screen.FromControl(Me).Bounds  ' mismo monitor que el padre
+
+                                .Text = "Pedido " & pBePedidoEnc.IdPedidoEnc & " - " & pBePedidoEnc.Referencia
+
+                                'If OpcionesMenu IsNot Nothing Then
+                                '    .OpcionesMenu = OpcionesMenu
+                                '    .mnuGuardar.Enabled = .OpcionesMenu.Modificar
+                                '    .cmdActualizar.Enabled = .OpcionesMenu.Modificar
+                                '    .cmdEliminar.Enabled = .OpcionesMenu.Eliminar
+                                'End If
+
+                                ' Modal: el usuario no puede cambiar a otra funcionalidad hasta cerrar aquí
+                                .ShowDialog(Me)
+                                .Focus()
+                            End With
+
+                            gviewEncabezadoPedido.FocusedRowHandle = lSelectionIndex
+
+                        Case pModo.Seleccion
+                            DialogResult = DialogResult.OK
+
+                    End Select
 
                 End If
 

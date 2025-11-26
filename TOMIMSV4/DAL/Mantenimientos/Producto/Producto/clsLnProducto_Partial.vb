@@ -3912,9 +3912,14 @@ Partial Public Class clsLnProducto
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
 
+                    'Dim vSQL As String = "SELECT * FROM VW_ProductoSI  " &
+                    '                 " WHERE IdBodega = @IdBodega " &
+                    '                 " And ((codigo =@Codigo) Or (codigo_barra=@Codigo) Or (codigo_barra_pcb =@Codigo) Or (codigo_barra_presentacion =@Codigo)) "
+
+
                     Dim vSQL As String = "SELECT * FROM VW_ProductoSI  " &
                                      " WHERE IdBodega = @IdBodega " &
-                                     " And ((codigo =@Codigo) Or (codigo_barra=@Codigo) Or (codigo_barra_pcb =@Codigo) Or (codigo_barra_presentacion =@Codigo)) "
+                                     " And ((codigo =@Codigo) Or (codigo_barra=@Codigo)) "
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
