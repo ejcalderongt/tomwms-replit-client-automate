@@ -3360,7 +3360,6 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                 If BeConfigEnc Is Nothing Then
                     Dim vMsgEx As String = "ERROR_202310311436: No existe la configuración asociada a la bodega: " & vIdBodegaOrigen & " en la tabla i_nav_config_enc configure los parámetros por defecto para la interfaz"
                     clsPublic.Actualizar_Progreso(lblprg, vMsgEx)
-                    'Resultado = lblprg.Text
                     Throw New Exception(vMsgEx)
                 Else
                     vIndicadorDeExcepcion = 5
@@ -3374,8 +3373,6 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                                                    lblprg)
 
                     If BePedidoEnc IsNot Nothing Then
-
-                        Importar_Pedido_Cliente_A_Tabla_Intermedia_If = BePedidoEnc
 
                         BePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc, lConnection, lTransaction)
                         '#EJC20251911: Terminar de afinar el método.
@@ -3428,14 +3425,15 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                      lConnection,
                                                                      lTransaction)
 
+                            Importar_Pedido_Cliente_A_Tabla_Intermedia_If = BePedidoEnc
+
                         End If
 
                     End If
 
-                    'Resultado = lblprg.Text
                 End If
             Else
-                'Resultado = lblprg.Text
+
             End If
 
             If Not Es_Transaccion_Remota Then

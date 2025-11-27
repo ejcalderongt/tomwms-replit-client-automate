@@ -616,7 +616,6 @@ Public Class clsLnCampaña
             Const sp As String = "SELECT * FROM Campaña " &
             " Where(IdCampaña = @IdCampaña)"
 
-
             Using lDTA As New SqlDataAdapter(sp, lConnection)
 
                 lDTA.SelectCommand.CommandType = CommandType.Text
