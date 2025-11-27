@@ -5258,4 +5258,27 @@ Public Class frmMenu
             e.Cancel = True
         End If
     End Sub
+
+    Private Sub mnuVerificacionBOF_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuVerificacionBOF.ItemClick
+        If Not permiteMenu(e.Link) Then Return
+        Try
+
+            With frmPedido_List
+                .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
+                .Modo = frmPedido_List.pModo.verificacion
+                .WindowState = FormWindowState.Maximized
+                .Show()
+                .Focus()
+            End With
+
+            SplashScreenManager.CloseForm(False)
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("La Bodega {0} de la Empresa {1} no  tiene definida configuración para interface", AP.NomBodega, AP.NomEmpresa),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+    End Sub
 End Class
