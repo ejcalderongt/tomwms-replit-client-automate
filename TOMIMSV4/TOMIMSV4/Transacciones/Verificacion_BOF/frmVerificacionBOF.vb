@@ -54,6 +54,9 @@ Public Class frmVerificacionBOF
     Private Cliente_Detalle_Control_Calidad As Integer
     Private BeBodega As New clsBeBodega()
     Private BeConfigBodega As New clsBeI_nav_config_enc()
+    '#GT27112025: patron para mejorar consulta de imagenes
+    Private vRutaCDN As String = ""
+    Private _listaRutasPng As List(Of String)
 
     Private Sub frmVerificacionBOF_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
@@ -63,7 +66,17 @@ Public Class frmVerificacionBOF
 
             clsTransaccion.Begin_Transaction()
 
-            BeBodega = clsLnBodega.GetSingle_By_Idbodega(pBePedidoEnc.IdBodega)
+            vRutaCDN = clsLnBodega.GetRutaCDN_By_Idbodega(AP.IdBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+            If String.IsNullOrEmpty(vRutaCDN) Then
+                XtraMessageBox.Show("No esta definida la ruta hacia la galeria de imagenes")
+            End If
+
+
+            Dim archivosPng() As String = Directory.GetFiles(vRutaCDN, "*.png")
+            _listaRutasPng = archivosPng.ToList()
+
+            BeBodega = clsLnBodega.GetSingle_By_Idbodega(pBePedidoEnc.IdBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormCaption("Cargando datos...")
@@ -93,143 +106,9 @@ Public Class frmVerificacionBOF
 
                 pBePedidoEnc.IsNew = False
 
-                'lblIdPedidoEnc.Text = pBePedidoEnc.IdPedidoEnc
-
-                'cmbBodega.EditValue = pBePedidoEnc.IdBodega
-                'cmbBodega.Enabled = False
-
-                'If cmbBodega.EditValue <> 0 Then
-                '    IMS.Listar_Propietarios_By_IdBodega(lcmbPropietario,
-                '                                        cmbBodega.EditValue,
-                '                                        lConnection,
-                '                                        lTransaction,
-                '                                        True)
-                'End If
-
-                'cmbMuelle.EditValue = pBePedidoEnc.IdMuelle
-                'cmbMuelle.Enabled = False
-
-                'If pBePedidoEnc.PropietarioBodega.IdPropietarioBodega <> 0 Then
-                '    lcmbPropietario.EditValue = pBePedidoEnc.PropietarioBodega.IdPropietarioBodega
-
-                '    '#CKFK20240527 Agregué esta línea
-                '    Propietario.IdPropietario = IMS.Get_IdPropietario_By_IdBodega(cmbBodega.EditValue, lcmbPropietario.EditValue)
-
-                '    lcmbPropietario.Enabled = False
-                'End If
-
-                'cmbRoadRutaPedido.EditValue = pBePedidoEnc.RoadIdRuta
-                'cmbRoadVendedorPedido.EditValue = pBePedidoEnc.RoadIdVendedor
-
-                'cmbRoadRutaDespacho.EditValue = pBePedidoEnc.RoadIdRutaDespacho
-                'cmbRoadVendedorDespacho.EditValue = pBePedidoEnc.RoadIdVendedor
-
-                'dtpFechaPedido.EditValue = pBePedidoEnc.Fecha_Pedido
-                'dtpHoraInicioPreparacion.Value = pBePedidoEnc.Hora_ini
-                'dtpHoraFinPreparacion.Value = pBePedidoEnc.Hora_ini
-
-                'dtpFechaEntrega.EditValue = pBePedidoEnc.RoadFechaEntr
-                'dtpHoraEntregaDesde.Value = pBePedidoEnc.HoraEntregaDesde
-                'dtpHoraEntregaHasta.Value = pBePedidoEnc.HoraEntregaHasta
-
-                'If Not pBePedidoEnc.RoadDirEntrega = "" Then
-                '    txtDireccionEntrega.Text = pBePedidoEnc.RoadDirEntrega
-                'ElseIf Not pBePedidoEnc.Cliente.Direccion = "" Then
-                '    txtDireccionEntrega.Text = pBePedidoEnc.Cliente.Direccion
-                'End If
-
-                'lblEstado.Text = pBePedidoEnc.Estado
-                'chkActivo.Checked = pBePedidoEnc.Activo
-
-                'User_agrTextEdit1.Text = pBePedidoEnc.User_agr
-                'Fec_agrDateEdit1.Text = pBePedidoEnc.Fec_agr
-                'User_modTextEdit1.Text = pBePedidoEnc.User_mod
-                'Fec_modDateEdit1.Text = pBePedidoEnc.Fec_mod
-
-                'txtNoDocumento.Text = pBePedidoEnc.No_documento
-
-                'txtReferencia.ReadOnly = (pBePedidoEnc.Referencia <> "" AndAlso AP.Bodega.Interface_SAP)
-                'txtReferencia.Text = pBePedidoEnc.Referencia
-                'txtNoPickingERP.Text = pBePedidoEnc.No_Picking_ERP
-                'txtReferencia2.ReadOnly = (pBePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino <> "" AndAlso AP.Bodega.Interface_SAP)
-                'txtReferencia2.Text = pBePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino
-
-                'chkPedidoLocal.Checked = pBePedidoEnc.Local
-                'chkPalletPrimero.Checked = pBePedidoEnc.Pallet_primero
-                'txtDiasVencimiento.Value = pBePedidoEnc.Dias_cliente
-
-                'txtObservacion.Text = pBePedidoEnc.Observacion
-                'txtGuiaTransporte.Text = pBePedidoEnc.Guia_Transporte
-
-                'cmbTipoPedido.EditValue = pBePedidoEnc.IdTipoPedido
-                'cmbTipoPedido.Enabled = False
-
-                'Set_Tipo_Documento()
-
-                'cmbMotivoDevolucion.EditValue = pBePedidoEnc.IdMotivoDevolucion
-
-                '#EJC20220327: Cambio por lookupedit. (antex textbox)
-                'IMS.Listar_Clientes_By_IdPropietario(txtIdCliente,
-                '                                     lcmbPropietario.GetColumnValue("IdPropietario"),
-                '                                     cmbBodega.EditValue,
-                '                                     BeTipoDoc.Requerir_Cliente_Es_Bodega_WMS)
-
-                '#EJC20220327: Cambio por lookupedit.
-                'txtIdCliente.EditValue = pBePedidoEnc.Cliente.IdCliente
-                'txtIdCliente.Enabled = False
-
-                'chkAnulado.Checked = pBePedidoEnc.Anulado
-                'RoadKilometrajeSpinEdit.Text = pBePedidoEnc.RoadKilometraje
-                'RoadTotalSpinEdit.Value = pBePedidoEnc.RoadTotal
-                'RoadDesMontoSpinEdit.Value = pBePedidoEnc.RoadDesMonto
-                'RoadImpMontoSpinEdit.Value = pBePedidoEnc.RoadImpMonto
-                'RoadPesoSpinEdit.Value = pBePedidoEnc.RoadPeso
-                'RoadBanderaTextEdit.Text = pBePedidoEnc.RoadBandera
-                'RoadStatComTextEdit.Text = pBePedidoEnc.RoadStatCom
-                'RoadCalcoBJTextEdit.Text = pBePedidoEnc.RoadCalcoBJ
-                'RoadImpresSpinEdit.Value = pBePedidoEnc.RoadImpres
-                'RoadADD1TextEdit.Text = pBePedidoEnc.RoadADD1
-                'RoadADD2TextEdit.Text = pBePedidoEnc.RoadADD2
-                'RoadADD3TextEdit.Text = pBePedidoEnc.RoadADD3
-                'RoadStatProcTextEdit.Text = pBePedidoEnc.RoadStatProc
-                'RoadRechazadoCheckEdit.Checked = pBePedidoEnc.RoadRechazado
-                'RoadRazon_RechazadoTextEdit.Text = pBePedidoEnc.RoadRazon_Rechazado
-                'RoadInformadoCheckEdit.Checked = pBePedidoEnc.RoadInformado
-                'RoadSucursalTextEdit.Text = pBePedidoEnc.RoadSucursal
-                'RoadIdDespachoSpinEdit.Value = pBePedidoEnc.RoadIdDespacho
-                'RoadIdFacturacionSpinEdit.Text = pBePedidoEnc.RoadIdFacturacion
-                'chkRequiereTarimas.Checked = pBePedidoEnc.Requiere_Tarimas
-                'dtpFechaPreparacion.EditValue = pBePedidoEnc.Fecha_Preparacion
-                'cmbManufacturaLigera.EditValue = pBePedidoEnc.IdTipoManufactura
-
-                'txtIdPicking.Text = pBePedidoEnc.IdPickingEnc
-
-                'lblBodegaDestino.Visible = pBePedidoEnc.Bodega_Destino.Trim <> ""
-                'txtBodegaDestino.Visible = pBePedidoEnc.Bodega_Destino.Trim <> ""
-
-                'lblBodegaOrigen.Visible = pBePedidoEnc.Bodega_Origen.Trim <> ""
-                'txtBodegaOrigen.Visible = pBePedidoEnc.Bodega_Origen.Trim <> ""
-
-                'txtBodegaOrigen.Text = pBePedidoEnc.Bodega_Origen
-                'txtBodegaDestino.Text = pBePedidoEnc.Bodega_Destino
-
-                'txtSociedadSAP.Text = pBePedidoEnc.Codigo_Empresa_ERP
-
-                'lblSociedadSAP.Visible = BeConfigBodega.Interface_SAP
-                'txtSociedadSAP.Visible = BeConfigBodega.Interface_SAP
-
                 Cargar_Detalle_Pedido(lConnection,
                                       lTransaction)
 
-                'Cargar_Log_MI3(lConnection,
-                '               lTransaction)
-
-                'Get_Log_Reserva(lConnection, lTransaction)
-
-                ''#EJC202403281018:Esto estaba en comentario pero no se porque ni porquien, lo revertí.
-                'Cargar_Imagenes()
-
-                'Set_Estado_Envio_A_ERP()
 
             End If
 
@@ -772,8 +651,79 @@ Public Class frmVerificacionBOF
     Private Sub CargarImagenProducto(ByVal sku As String)
 
         Try
+            ' --- PARTE QUE YA TENÍAS PARA OBTENER productoBase, talla, color ---
+            Dim codigoSKU As String = sku
+            Dim productoBase As String = codigoSKU
+            Dim talla As String = ""
+            Dim color As String = ""
 
-            Dim vRutaCDN As String = clsLnBodega.GetRutaCDN_By_Idbodega(AP.IdBodega)
+            If codigoSKU.Length >= 13 Then
+                productoBase = codigoSKU.Substring(0, 10)
+                talla = codigoSKU.Substring(10, 3)
+                If codigoSKU.Length > 13 Then
+                    color = codigoSKU.Substring(13)
+                End If
+            ElseIf codigoSKU.Length >= 10 Then
+                productoBase = codigoSKU.Substring(0, 10)
+            End If
+
+            ' --- PATRONES COMO PREFIJOS (SIN "*.png") ---
+            Dim patrones As New List(Of String)
+
+            If talla <> "" AndAlso color <> "" Then
+                patrones.Add("._" & productoBase & "-" & talla & "-" & color)
+                patrones.Add(productoBase & "-" & talla & "-" & color)
+            End If
+
+            If talla <> "" Then
+                patrones.Add("._" & productoBase & "-" & talla)
+                patrones.Add(productoBase & "-" & talla)
+            End If
+
+            patrones.Add("._" & productoBase)
+            patrones.Add(productoBase)
+
+            ' --- BÚSQUEDA EN LA LISTA EN MEMORIA (_listaRutasPng) ---
+            Dim archivoEncontrado As String = Nothing
+
+            If _listaRutasPng IsNot Nothing AndAlso _listaRutasPng.Count > 0 Then
+                For Each prefijo In patrones
+                    archivoEncontrado = _listaRutasPng _
+                    .FirstOrDefault(Function(ruta)
+                                        Dim nombre = Path.GetFileName(ruta)
+                                        Return nombre.StartsWith(prefijo, StringComparison.OrdinalIgnoreCase)
+                                    End Function)
+
+                    If Not String.IsNullOrEmpty(archivoEncontrado) Then
+                        Exit For
+                    End If
+                Next
+            End If
+
+
+            If Not String.IsNullOrEmpty(archivoEncontrado) AndAlso File.Exists(archivoEncontrado) Then
+                peProducto.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom
+                peProducto.Image = Nothing
+
+                Using fs As New FileStream(archivoEncontrado, FileMode.Open, FileAccess.Read)
+                    peProducto.Image = Image.FromStream(fs)
+                End Using
+            Else
+                peProducto.Image = Nothing
+            End If
+
+        Catch ex As Exception
+            peProducto.Image = Nothing
+        End Try
+
+    End Sub
+
+
+    Private Sub CargarImagenProducto_temp(ByVal sku As String)
+
+        Try
+
+            'Dim vRutaCDN As String = clsLnBodega.GetRutaCDN_By_Idbodega(AP.IdBodega)
 
             Dim codigoSKU As String = sku
             Dim productoBase As String = codigoSKU
