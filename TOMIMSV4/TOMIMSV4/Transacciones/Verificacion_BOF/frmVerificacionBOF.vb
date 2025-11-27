@@ -73,8 +73,8 @@ Public Class frmVerificacionBOF
             End If
 
 
-            Dim archivosPng() As String = Directory.GetFiles(vRutaCDN, "*.png")
-            _listaRutasPng = archivosPng.ToList()
+            'Dim archivosPng() As String = Directory.GetFiles(vRutaCDN, "*.png")
+            '_listaRutasPng = archivosPng.ToList()
 
             BeBodega = clsLnBodega.GetSingle_By_Idbodega(pBePedidoEnc.IdBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
@@ -572,33 +572,36 @@ Public Class frmVerificacionBOF
     Private Sub ProcesarScan()
         Dim sku As String = txtScanner.Text.Trim()
         If sku <> "" Then
-            BuscarSKU_Y_Cargar(sku)
+            If BuscarSKU_Y_Cargar(sku) Then
+                AplicarEstiloScanner()
+                txtEstado.SelectAll()
+                txtEstado.Focus()
+            End If
+        Else
+            txtScanner.SelectAll()
+            txtScanner.Focus()
         End If
-
-        AplicarEstiloScanner()
-        txtScanner.SelectAll()
-        txtScanner.Focus()
 
     End Sub
 
 
-    Private Sub BuscarSKU_Y_Cargar(ByVal sku As String)
+    Private Function BuscarSKU_Y_Cargar(ByVal sku As String) As Boolean
+
+        BuscarSKU_Y_Cargar = False
 
         Try
 
-            If String.IsNullOrWhiteSpace(sku) Then Exit Sub
+            If String.IsNullOrWhiteSpace(sku) Then Exit Function
 
             Dim dt As DataTable = TryCast(dgridListaPedido.DataSource, DataTable)
-            If dt Is Nothing OrElse dt.Rows.Count = 0 Then Exit Sub
+            If dt Is Nothing OrElse dt.Rows.Count = 0 Then Exit Function
 
             ' Buscar en DataTable
-            'Dim filas() As DataRow = dt.Select("SKU = '" & sku.Replace("'", "''") & "'")
             Dim filas() As DataRow = dt.Select("[SKU] = '" & sku.Replace("'", "''") & "'")
-
 
             If filas.Length = 0 Then
                 XtraMessageBox.Show("No se encontró el SKU: " & sku, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Exit Sub
+                Exit Function
             End If
 
             Dim row As DataRow = filas(0)
@@ -613,20 +616,12 @@ Public Class frmVerificacionBOF
             ' --- CARGAR INPUTS ---
             txtScanner.Text = sku
             txtDescripcionProducto.Text = CStr(row("NombreProducto"))      ' ajusta FieldName real
-            txtLote.Text = If(dt.Columns.Contains("Lote"), CStr(row("Lote")), "")
+            'txtLote.Text = If(dt.Columns.Contains("Lote"), CStr(row("Lote")), "")
             txtTalla.Text = If(dt.Columns.Contains("Talla"), CStr(row("Talla")), "")
             txtColor.Text = If(dt.Columns.Contains("Color"), CStr(row("Color")), "")
             txtCantidad.Text = If(dt.Columns.Contains("CantidadPickeada"), CStr(row("CantidadPickeada")), "")
 
             ' --- CARGAR IMAGEN ---
-            ' Idealmente tienes IdProducto o Codigo Producto para buscarla
-            Dim idProducto As Integer = 0
-            If dt.Columns.Contains("IdProducto") Then
-                idProducto = CInt(row("IdProducto"))
-            ElseIf dt.Columns.Contains("colIdProducto") Then
-                idProducto = CInt(row("colIdProducto"))
-            End If
-
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             If SplashScreenManager.Default IsNot Nothing Then
                 SplashScreenManager.Default.SetWaitFormCaption("Cargando imagen...")
@@ -636,6 +631,7 @@ Public Class frmVerificacionBOF
 
             CargarImagenProducto(sku)
 
+            BuscarSKU_Y_Cargar = True
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -643,15 +639,15 @@ Public Class frmVerificacionBOF
             If SplashScreenManager.Default IsNot Nothing Then
                 SplashScreenManager.CloseForm(False)
             End If
-
-            txtScanner.SelectAll()
         End Try
-    End Sub
+    End Function
 
     Private Sub CargarImagenProducto(ByVal sku As String)
 
+
         Try
-            ' --- PARTE QUE YA TENÍAS PARA OBTENER productoBase, talla, color ---
+
+            Dim img As Image
             Dim codigoSKU As String = sku
             Dim productoBase As String = codigoSKU
             Dim talla As String = ""
@@ -706,8 +702,16 @@ Public Class frmVerificacionBOF
                 peProducto.Image = Nothing
 
                 Using fs As New FileStream(archivoEncontrado, FileMode.Open, FileAccess.Read)
-                    peProducto.Image = Image.FromStream(fs)
+                    'peProducto.Image = Image.FromStream(fs)
+                    img = Image.FromStream(fs)
                 End Using
+
+                '#GT27112025: mejora para redimensionar hasta un 200% como máximo
+                Dim imgEscalada = EscalarImagen(img, 2.0)
+                peProducto.Properties.SizeMode = PictureSizeMode.Squeeze
+                peProducto.Image = imgEscalada
+
+
             Else
                 peProducto.Image = Nothing
             End If
@@ -780,6 +784,8 @@ Public Class frmVerificacionBOF
                 peProducto.Image = Nothing
             End If
 
+
+
         Catch ex As Exception
             peProducto.Image = Nothing
         End Try
@@ -806,6 +812,63 @@ Public Class frmVerificacionBOF
         End With
 
     End Sub
+
+    Private Sub txtEstado_KeyDown(sender As Object, e As KeyEventArgs) Handles txtEstado.KeyDown
+        Try
+
+            If e.KeyCode <> Keys.Enter Then Return
+
+            Dim valorLeido As String = txtEstado.Text.Trim()
+            txtEstado.Clear()
+
+            ' Normalizamos para comparar (ignorando mayúsculas/minúsculas y espacios)
+            Dim estado As String = valorLeido.ToUpperInvariant()
+
+            Select Case estado
+                Case "OK"
+                ' Producto confirmado correctamente
+                'ProcesarEstadoOK()
+
+                Case "PAUSA"
+                    ' Poner en pausa: bloquear controles para impedir cerrar o escanear otro producto
+                    'ProcesarEstadoPausa()
+
+                Case Else
+                    ' Cualquier otra cosa se considera no válida
+                    MessageBox.Show(
+                        $"Estado no reconocido: [{valorLeido}]. Escanee un código 'OK' o 'Pausa'.",
+                        "Estado inválido",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    )
+
+                    ' Vuelve a esperar un estado correcto
+                    txtEstado.Focus()
+            End Select
+
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Private Function EscalarImagen(ByVal imgOriginal As Image, ByVal factor As Double) As Image
+        Dim nuevoAncho As Integer = CInt(imgOriginal.Width * factor)
+        Dim nuevoAlto As Integer = CInt(imgOriginal.Height * factor)
+
+        Dim bmp As New Bitmap(nuevoAncho, nuevoAlto)
+
+        Using g As Graphics = Graphics.FromImage(bmp)
+            g.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+            g.PixelOffsetMode = Drawing2D.PixelOffsetMode.HighQuality
+            g.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
+            g.CompositingQuality = Drawing2D.CompositingQuality.HighQuality
+
+            g.DrawImage(imgOriginal, 0, 0, nuevoAncho, nuevoAlto)
+        End Using
+
+        Return bmp
+    End Function
+
 
 
     'Private Sub Llena_Presentacion_Grid(ByVal pIndex As Integer,
