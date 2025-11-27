@@ -817,6 +817,7 @@ Public Class frmVerificacionBOF
             ' --- ASIGNACIÓN CORRECTA AL PictureEdit ---
             If Not String.IsNullOrEmpty(archivoEncontrado) AndAlso File.Exists(archivoEncontrado) Then
 
+                peProducto.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom
                 ' Libera imagen anterior para evitar bloqueo de archivo
                 peProducto.Image = Nothing
 

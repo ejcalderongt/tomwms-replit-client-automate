@@ -25,14 +25,15 @@ Partial Class frmVerificacionBOF
         Dim lblScan As System.Windows.Forms.Label
         Dim Label1 As System.Windows.Forms.Label
         Dim Label2 As System.Windows.Forms.Label
-        Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
-        Dim GridFormatRule2 As DevExpress.XtraGrid.GridFormatRule = New DevExpress.XtraGrid.GridFormatRule()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmVerificacionBOF))
+        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim GridFormatRule1 As DevExpress.XtraGrid.GridFormatRule = New DevExpress.XtraGrid.GridFormatRule()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.grpScan = New DevExpress.XtraEditors.GroupControl()
+        Me.LabelControl2 = New DevExpress.XtraEditors.LabelControl()
         Me.txtCantidad = New DevExpress.XtraEditors.TextEdit()
         Me.txtScanner = New DevExpress.XtraEditors.TextEdit()
         Me.txtColor = New DevExpress.XtraEditors.TextEdit()
@@ -47,7 +48,6 @@ Partial Class frmVerificacionBOF
         Me.peProducto = New DevExpress.XtraEditors.PictureEdit()
         Me.PanelControl2 = New DevExpress.XtraEditors.PanelControl()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
-        Me.LabelControl2 = New DevExpress.XtraEditors.LabelControl()
         Label8 = New System.Windows.Forms.Label()
         lblBarraProducto = New System.Windows.Forms.Label()
         Label5 = New System.Windows.Forms.Label()
@@ -197,6 +197,19 @@ Partial Class frmVerificacionBOF
         Me.grpScan.TabIndex = 52
         Me.grpScan.Text = "Producto"
         '
+        'LabelControl2
+        '
+        Me.LabelControl2.Appearance.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.LabelControl2.Appearance.Image = CType(resources.GetObject("LabelControl2.Appearance.Image"), System.Drawing.Image)
+        Me.LabelControl2.Appearance.Options.UseFont = True
+        Me.LabelControl2.Appearance.Options.UseImage = True
+        Me.LabelControl2.ImageOptions.Image = CType(resources.GetObject("LabelControl2.ImageOptions.Image"), System.Drawing.Image)
+        Me.LabelControl2.Location = New System.Drawing.Point(424, 41)
+        Me.LabelControl2.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.LabelControl2.Name = "LabelControl2"
+        Me.LabelControl2.Size = New System.Drawing.Size(32, 32)
+        Me.LabelControl2.TabIndex = 57
+        '
         'txtCantidad
         '
         Me.txtCantidad.Location = New System.Drawing.Point(124, 229)
@@ -295,8 +308,8 @@ Partial Class frmVerificacionBOF
         Me.dgridListaPedido.Cursor = System.Windows.Forms.Cursors.Default
         Me.dgridListaPedido.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgridListaPedido.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        GridLevelNode2.RelationName = "Level1"
-        Me.dgridListaPedido.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode2})
+        GridLevelNode1.RelationName = "Level1"
+        Me.dgridListaPedido.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
         Me.dgridListaPedido.Location = New System.Drawing.Point(2, 28)
         Me.dgridListaPedido.MainView = Me.gvListaPedido
         Me.dgridListaPedido.Margin = New System.Windows.Forms.Padding(4)
@@ -313,9 +326,9 @@ Partial Class frmVerificacionBOF
         Me.gvListaPedido.Appearance.Row.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.gvListaPedido.Appearance.Row.Options.UseFont = True
         Me.gvListaPedido.DetailHeight = 431
-        GridFormatRule2.Name = "Format0"
-        GridFormatRule2.Rule = Nothing
-        Me.gvListaPedido.FormatRules.Add(GridFormatRule2)
+        GridFormatRule1.Name = "Format0"
+        GridFormatRule1.Rule = Nothing
+        Me.gvListaPedido.FormatRules.Add(GridFormatRule1)
         Me.gvListaPedido.GridControl = Me.dgridListaPedido
         Me.gvListaPedido.Name = "gvListaPedido"
         Me.gvListaPedido.OptionsBehavior.Editable = False
@@ -345,6 +358,7 @@ Partial Class frmVerificacionBOF
         Me.peProducto.MenuManager = Me.RibbonControl
         Me.peProducto.Name = "peProducto"
         Me.peProducto.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.[Auto]
+        Me.peProducto.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch
         Me.peProducto.Size = New System.Drawing.Size(923, 587)
         Me.peProducto.TabIndex = 0
         '
@@ -372,19 +386,6 @@ Partial Class frmVerificacionBOF
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.TableLayoutPanel1.Size = New System.Drawing.Size(616, 587)
         Me.TableLayoutPanel1.TabIndex = 54
-        '
-        'LabelControl2
-        '
-        Me.LabelControl2.Appearance.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LabelControl2.Appearance.Image = CType(resources.GetObject("LabelControl2.Appearance.Image"), System.Drawing.Image)
-        Me.LabelControl2.Appearance.Options.UseFont = True
-        Me.LabelControl2.Appearance.Options.UseImage = True
-        Me.LabelControl2.ImageOptions.Image = CType(resources.GetObject("LabelControl2.ImageOptions.Image"), System.Drawing.Image)
-        Me.LabelControl2.Location = New System.Drawing.Point(424, 41)
-        Me.LabelControl2.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.LabelControl2.Name = "LabelControl2"
-        Me.LabelControl2.Size = New System.Drawing.Size(32, 32)
-        Me.LabelControl2.TabIndex = 57
         '
         'frmVerificacionBOF
         '
