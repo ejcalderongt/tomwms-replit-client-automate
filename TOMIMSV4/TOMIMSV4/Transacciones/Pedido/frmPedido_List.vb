@@ -75,10 +75,10 @@ Public Class frmPedido_List
 
             Select Case Modo
                 Case pModo.verificacion
-                    SetRibbonEnabled(RibbonControl, False)
+                    'SetRibbonEnabled(RibbonControl, False)
                     verificar_bof = True
                 Case pModo.Lista
-                    SetRibbonEnabled(RibbonControl, True)
+                    'SetRibbonEnabled(RibbonControl, True)
                     verificar_bof = False
             End Select
 
@@ -206,7 +206,7 @@ Public Class frmPedido_List
                     gviewEncabezadoPedido.Columns("no_documento").Caption = "No_Documento"
                     gviewEncabezadoPedido.Columns("referencia").Caption = "Referencia"
                     gviewEncabezadoPedido.Columns("IdBodega").Visible = False
-                    'gviewEncabezadoPedido.Columns("IdPrioridadPicking").Visible = False
+                    gviewEncabezadoPedido.Columns("IdPrioridadPicking").Visible = False
                     gviewEncabezadoPedido.Columns("verificar_con_imagen").Visible = False
                 End If
 
