@@ -99,50 +99,63 @@ Public Class DevolucionTransacWMS_Mapper
     End Function
 
     Public Shared Async Function MapearDetalleTallaColor_Devolucion(dtDetTallaColor As DataTable,
-                                                                    lConnection As SqlConnection,
-                                                                    lTransaction As SqlTransaction,
                                                                     Usuario As String,
                                                                     SessionCookie As String,
                                                                     BaseURL As String) As Task(Of List(Of clsBeProducto_talla_color))
 
-        Dim lista As New List(Of clsBeProducto_talla_color)()
+        Dim lista As New List(Of clsBeProducto_talla_color)
 
-        For Each det As DataRow In dtDetTallaColor.Rows
-            Dim d As New clsBeProducto_talla_color()
+        Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
-            Dim BeProducto = clsLnProducto.Get_Single_By_Codigo(det("U_Modelo").ToString(), lConnection, lTransaction)
-            If BeProducto IsNot Nothing Then
-                d.IdProducto = BeProducto.IdProducto
-            Else
-                d.IdProducto = clsSyncSAPProducto.Insertar_Producto_From_Sap_Hana(det("U_Modelo").ToString(), lConnection, lTransaction)
-            End If
+            lConnection.Open()
 
-            Dim BeTalla = clsLnTalla.Get_Single_By_Codigo(det("U_Talla").ToString(), lConnection, lTransaction)
-            If BeTalla IsNot Nothing Then
-                d.IdTalla = BeTalla.IdTalla
-            End If
+            Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-            Dim BeColor = clsLnColor.Get_Single_By_Codigo(det("U_Color").ToString(), lConnection, lTransaction)
-            If BeColor IsNot Nothing Then
-                d.IdColor = BeColor.IdColor
-            Else
-                d.IdColor = clsSyncSapColor.Insertar_Color_From_Sap_Hana(det("U_Color").ToString(), lConnection, lTransaction)
-            End If
+                For Each det As DataRow In dtDetTallaColor.Rows
+                    Dim d As New clsBeProducto_talla_color()
 
-            d.CodigoSKU = $"{det("U_Modelo")}{det("U_Color")}{det("U_Talla")}"
+                    Dim BeProducto = clsLnProducto.Get_Single_By_Codigo(det("U_Modelo").ToString(), lConnection, lTransaction)
+                    If BeProducto IsNot Nothing Then
+                        d.IdProducto = BeProducto.IdProducto
+                    Else
+                        d.IdProducto = clsSyncSAPProducto.Insertar_Producto_From_Sap_Hana(det("U_Modelo").ToString(), lConnection, lTransaction)
+                    End If
 
-            d.IdCampaña = 0
+                    Dim BeTalla = clsLnTalla.Get_Single_By_Codigo(det("U_Talla").ToString(), lConnection, lTransaction)
+                    If BeTalla IsNot Nothing Then
+                        d.IdTalla = BeTalla.IdTalla
+                    End If
 
-            d.Fec_agr = Date.Now()
-            d.User_agr = Usuario
-            d.Fec_mod = Date.Now()
-            d.User_mod = Usuario
+                    Dim BeColor = clsLnColor.Get_Single_By_Codigo(det("U_Color").ToString(), lConnection, lTransaction)
+                    If BeColor IsNot Nothing Then
+                        d.IdColor = BeColor.IdColor
+                    Else
+                        d.IdColor = clsSyncSapColor.Insertar_Color_From_Sap_Hana(det("U_Color").ToString(), lConnection, lTransaction)
+                    End If
 
-            clsLnProducto_talla_color.InsertOrUpdate(d, lConnection, lTransaction)
-            lista.Add(d)
-        Next
+                    d.CodigoSKU = $"{det("U_Modelo")}{det("U_Color")}{det("U_Talla")}"
 
-        Return lista
+                    d.IdCampaña = 0
+
+                    d.Fec_agr = Date.Now()
+                    d.User_agr = Usuario
+                    d.Fec_mod = Date.Now()
+                    d.User_mod = Usuario
+
+                    clsLnProducto_talla_color.InsertOrUpdate(d, lConnection, lTransaction)
+                    lista.Add(d)
+                Next
+
+                lTransaction.Commit()
+
+            End Using
+
+            lConnection.Close()
+
+        End Using
+
+        Return Await Task.FromResult(lista)
+
     End Function
 
 End Class
