@@ -75,10 +75,10 @@ Public Class frmPedido_List
 
             Select Case Modo
                 Case pModo.verificacion
-                    'SetRibbonEnabled(RibbonControl, False)
+                    SetRibbonEnabled(RibbonControl, False)
                     verificar_bof = True
                 Case pModo.Lista
-                    'SetRibbonEnabled(RibbonControl, True)
+                    SetRibbonEnabled(RibbonControl, True)
                     verificar_bof = False
             End Select
 
