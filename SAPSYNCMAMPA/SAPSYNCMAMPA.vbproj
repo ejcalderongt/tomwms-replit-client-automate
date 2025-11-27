@@ -227,6 +227,7 @@
     <Compile Include="Clases Interface Sync\Factura_Deudor_Cliente\clsSyncSapFacturaDeudor.vb" />
     <Compile Include="Clases Interface Sync\Factura_Reserva\FacturaReservaMapper.vb" />
     <Compile Include="Clases Interface Sync\Factura_Reserva_Cliente\clsSyncSapFacturaReservaCliente.vb" />
+    <Compile Include="Clases Interface Sync\Producto\Codigos_Barra\clsSyncSAPCodigosBarra_SL.vb" />
     <Compile Include="Clases Interface Sync\Transacciones_WMS\DevolucionTransacWMS_Mapper.vb" />
     <Compile Include="Clases Interface Sync\Traslados_Envio\clsSyncSapTrasladosEnvio.vb" />
     <Compile Include="Clases Interface Sync\Traslados_Recepcion\clsSyncSapSolTrasladoRec.vb" />
