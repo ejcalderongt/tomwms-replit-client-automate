@@ -269,7 +269,6 @@ Public Class clsLnCampaña
             Const sp As String = "SELECT * FROM Campaña" &
             " Where(IdCampaña = @IdCampaña)"
 
-
             Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 
                 lConnection.Open()
