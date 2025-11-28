@@ -1,5 +1,6 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
+Imports DevExpress.XtraEditors
 
 Partial Public Class clsLnTrans_picking_enc
 
@@ -3207,5 +3208,63 @@ Partial Public Class clsLnTrans_picking_enc
         End Try
 
     End Function
+
+    Public Shared Function Guardar_Verificacion_Bof(ByVal plistPickingUbic As List(Of clsBeTrans_picking_ubic),
+                                                    ByVal pIdOperador As Integer,
+                                                    ByVal pBePedidoEnc As clsBeTrans_pe_enc) As Boolean
+
+        Dim clsTrans As New clsTransaccion
+
+        Try
+            clsTrans.Open_Connection() : clsTrans.Begin_Transaction()
+
+            Dim ListaVerificada As Boolean = False
+
+            If plistPickingUbic.Count > 0 Then
+
+                For Each BePickingUbic As clsBeTrans_picking_ubic In plistPickingUbic
+
+                    '#GT28112025:redundante, pero la verificación recibe lista de un registro
+                    Dim tmpListaPickingUbic = New List(Of clsBeTrans_picking_ubic)
+                    tmpListaPickingUbic.Add(BePickingUbic)
+
+                    If clsLnTrans_picking_ubic.Actualiza_Cant_Peso_Verificacion(tmpListaPickingUbic,
+                                                                                pIdOperador,
+                                                                                BePickingUbic.Cantidad_Recibida,
+                                                                                BePickingUbic.Peso_recibido,
+                                                                                0,
+                                                                                pBePedidoEnc.IdPedidoEnc,
+                                                                                clsTrans.lConnection,
+                                                                                clsTrans.lTransaction) Then
+
+                        ListaVerificada = True
+                    Else
+                        ListaVerificada = False
+                    End If
+
+                Next
+
+                '#GT28112025: si la lista pickingUbic esta correcta, se actualiza el encabezado del pedido y picking
+                If ListaVerificada Then Actualizar_PickingEnc_Verificado(pBePedidoEnc.Picking,
+                                                                         clsTrans.lConnection,
+                                                                         clsTrans.lTransaction)
+
+            Else
+                clsTrans.RollBack_Transaction()
+                Exit Function
+            End If
+
+            clsTrans.Commit_Transaction()
+            Return True
+
+        Catch ex As Exception
+            clsTrans.RollBack_Transaction()
+            Throw New Exception(String.Format("{0} {1} {2} ", MethodBase.GetCurrentMethod().Name, ex.Message, ""))
+        Finally
+            clsTrans.Close_Conection()
+        End Try
+
+    End Function
+
 
 End Class

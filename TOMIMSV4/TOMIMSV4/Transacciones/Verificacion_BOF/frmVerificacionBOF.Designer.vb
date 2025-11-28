@@ -24,14 +24,16 @@ Partial Class frmVerificacionBOF
         Dim lblScan As System.Windows.Forms.Label
         Dim Label1 As System.Windows.Forms.Label
         Dim Label2 As System.Windows.Forms.Label
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmVerificacionBOF))
         Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim GridFormatRule1 As DevExpress.XtraGrid.GridFormatRule = New DevExpress.XtraGrid.GridFormatRule()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmVerificacionBOF))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
+        Me.cmdEnviar = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.grpScan = New DevExpress.XtraEditors.GroupControl()
+        Me.txtEstado = New DevExpress.XtraEditors.TextEdit()
         Me.lbOk = New DevExpress.XtraEditors.LabelControl()
         Me.txtCantidad = New DevExpress.XtraEditors.TextEdit()
         Me.txtScanner = New DevExpress.XtraEditors.TextEdit()
@@ -46,8 +48,6 @@ Partial Class frmVerificacionBOF
         Me.peProducto = New DevExpress.XtraEditors.PictureEdit()
         Me.PanelControl2 = New DevExpress.XtraEditors.PanelControl()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
-        Me.txtEstado = New DevExpress.XtraEditors.TextEdit()
-        Me.cmdEnviar = New DevExpress.XtraBars.BarButtonItem()
         Label8 = New System.Windows.Forms.Label()
         Label5 = New System.Windows.Forms.Label()
         lblScan = New System.Windows.Forms.Label()
@@ -56,6 +56,7 @@ Partial Class frmVerificacionBOF
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grpScan, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpScan.SuspendLayout()
+        CType(Me.txtEstado.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCantidad.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtScanner.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtColor.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -72,7 +73,6 @@ Partial Class frmVerificacionBOF
         CType(Me.PanelControl2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PanelControl2.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
-        CType(Me.txtEstado.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label8
@@ -141,6 +141,13 @@ Partial Class frmVerificacionBOF
         Me.RibbonControl.Size = New System.Drawing.Size(1547, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
+        'cmdEnviar
+        '
+        Me.cmdEnviar.Caption = "Enviar"
+        Me.cmdEnviar.Id = 1
+        Me.cmdEnviar.ImageOptions.SvgImage = CType(resources.GetObject("cmdEnviar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdEnviar.Name = "cmdEnviar"
+        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1})
@@ -181,18 +188,32 @@ Partial Class frmVerificacionBOF
         Me.grpScan.Location = New System.Drawing.Point(4, 2)
         Me.grpScan.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.grpScan.Name = "grpScan"
-        Me.grpScan.Size = New System.Drawing.Size(608, 289)
+        Me.grpScan.Size = New System.Drawing.Size(669, 289)
         Me.grpScan.TabIndex = 52
         Me.grpScan.Text = "Producto"
+        '
+        'txtEstado
+        '
+        Me.txtEstado.Location = New System.Drawing.Point(124, 244)
+        Me.txtEstado.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtEstado.Name = "txtEstado"
+        Me.txtEstado.Properties.Appearance.BackColor = System.Drawing.Color.WhiteSmoke
+        Me.txtEstado.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtEstado.Properties.Appearance.Options.UseBackColor = True
+        Me.txtEstado.Properties.Appearance.Options.UseFont = True
+        Me.txtEstado.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.txtEstado.Properties.MaxLength = 50
+        Me.txtEstado.Size = New System.Drawing.Size(16, 28)
+        Me.txtEstado.TabIndex = 58
         '
         'lbOk
         '
         Me.lbOk.Appearance.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lbOk.Appearance.Image = CType(resources.GetObject("LabelControl2.Appearance.Image"), System.Drawing.Image)
+        Me.lbOk.Appearance.Image = CType(resources.GetObject("lbOk.Appearance.Image"), System.Drawing.Image)
         Me.lbOk.Appearance.Options.UseFont = True
         Me.lbOk.Appearance.Options.UseImage = True
-        Me.lbOk.ImageOptions.Image = CType(resources.GetObject("LabelControl2.ImageOptions.Image"), System.Drawing.Image)
-        Me.lbOk.Location = New System.Drawing.Point(424, 41)
+        Me.lbOk.ImageOptions.Image = CType(resources.GetObject("lbOk.ImageOptions.Image"), System.Drawing.Image)
+        Me.lbOk.Location = New System.Drawing.Point(409, 35)
         Me.lbOk.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.lbOk.Name = "lbOk"
         Me.lbOk.Size = New System.Drawing.Size(32, 32)
@@ -273,7 +294,7 @@ Partial Class frmVerificacionBOF
         Me.GroupControl2.Location = New System.Drawing.Point(4, 295)
         Me.GroupControl2.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupControl2.Name = "GroupControl2"
-        Me.GroupControl2.Size = New System.Drawing.Size(608, 290)
+        Me.GroupControl2.Size = New System.Drawing.Size(669, 290)
         Me.GroupControl2.TabIndex = 53
         Me.GroupControl2.Text = "Lista"
         '
@@ -289,7 +310,7 @@ Partial Class frmVerificacionBOF
         Me.dgridListaPedido.Margin = New System.Windows.Forms.Padding(4)
         Me.dgridListaPedido.MenuManager = Me.RibbonControl
         Me.dgridListaPedido.Name = "dgridListaPedido"
-        Me.dgridListaPedido.Size = New System.Drawing.Size(604, 260)
+        Me.dgridListaPedido.Size = New System.Drawing.Size(665, 260)
         Me.dgridListaPedido.TabIndex = 1
         Me.dgridListaPedido.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvListaPedido, Me.GridView6})
         '
@@ -320,9 +341,9 @@ Partial Class frmVerificacionBOF
         '
         Me.PanelControl1.Controls.Add(Me.peProducto)
         Me.PanelControl1.Dock = System.Windows.Forms.DockStyle.Right
-        Me.PanelControl1.Location = New System.Drawing.Point(620, 193)
+        Me.PanelControl1.Location = New System.Drawing.Point(681, 193)
         Me.PanelControl1.Name = "PanelControl1"
-        Me.PanelControl1.Size = New System.Drawing.Size(927, 591)
+        Me.PanelControl1.Size = New System.Drawing.Size(866, 591)
         Me.PanelControl1.TabIndex = 58
         '
         'peProducto
@@ -333,7 +354,7 @@ Partial Class frmVerificacionBOF
         Me.peProducto.Name = "peProducto"
         Me.peProducto.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.[Auto]
         Me.peProducto.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch
-        Me.peProducto.Size = New System.Drawing.Size(923, 587)
+        Me.peProducto.Size = New System.Drawing.Size(862, 587)
         Me.peProducto.TabIndex = 0
         '
         'PanelControl2
@@ -342,7 +363,7 @@ Partial Class frmVerificacionBOF
         Me.PanelControl2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.PanelControl2.Location = New System.Drawing.Point(0, 193)
         Me.PanelControl2.Name = "PanelControl2"
-        Me.PanelControl2.Size = New System.Drawing.Size(620, 591)
+        Me.PanelControl2.Size = New System.Drawing.Size(681, 591)
         Me.PanelControl2.TabIndex = 59
         '
         'TableLayoutPanel1
@@ -358,29 +379,8 @@ Partial Class frmVerificacionBOF
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(616, 587)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(677, 587)
         Me.TableLayoutPanel1.TabIndex = 54
-        '
-        'txtEstado
-        '
-        Me.txtEstado.Location = New System.Drawing.Point(124, 244)
-        Me.txtEstado.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtEstado.Name = "txtEstado"
-        Me.txtEstado.Properties.Appearance.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.txtEstado.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtEstado.Properties.Appearance.Options.UseBackColor = True
-        Me.txtEstado.Properties.Appearance.Options.UseFont = True
-        Me.txtEstado.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.txtEstado.Properties.MaxLength = 50
-        Me.txtEstado.Size = New System.Drawing.Size(16, 28)
-        Me.txtEstado.TabIndex = 58
-        '
-        'cmdEnviar
-        '
-        Me.cmdEnviar.Caption = "Enviar"
-        Me.cmdEnviar.Id = 1
-        Me.cmdEnviar.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdEnviar.Name = "cmdEnviar"
         '
         'frmVerificacionBOF
         '
@@ -399,6 +399,7 @@ Partial Class frmVerificacionBOF
         CType(Me.grpScan, System.ComponentModel.ISupportInitialize).EndInit()
         Me.grpScan.ResumeLayout(False)
         Me.grpScan.PerformLayout()
+        CType(Me.txtEstado.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCantidad.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtScanner.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtColor.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -415,7 +416,6 @@ Partial Class frmVerificacionBOF
         CType(Me.PanelControl2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.PanelControl2.ResumeLayout(False)
         Me.TableLayoutPanel1.ResumeLayout(False)
-        CType(Me.txtEstado.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

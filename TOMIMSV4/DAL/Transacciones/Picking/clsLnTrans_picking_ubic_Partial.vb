@@ -8615,4 +8615,103 @@ Partial Public Class clsLnTrans_picking_ubic
 
     End Function
 
+    '#GT28112025: metodo sobrecargado para recibir transaccion remota y no tocar el proceso de verificacion por HH
+    Public Shared Function Actualiza_Cant_Peso_Verificacion(ByVal pBePickingUbicList As List(Of clsBeTrans_picking_ubic),
+                                                            ByVal pIdOperador As Integer,
+                                                            ByRef pCantidad As Double,
+                                                            ByRef pPeso As Double,
+                                                            ByVal pTipo As Integer,
+                                                            ByVal pIdPedidoEnc As Integer,
+                                                            ByRef lConnection As SqlConnection,
+                                                            ByRef lTransaction As SqlTransaction) As Boolean
+
+        Dim CantPendiente As Double
+        Dim PesoPendiente As Double
+        Dim BeStockRes As New clsBeStock_res
+        Dim resultado As String = ""
+        Dim tmpBeListPickingUbic As List(Of clsBeTrans_picking_ubic) = Nothing
+        Dim BePickingUbic As New clsBeTrans_picking_ubic
+        Actualiza_Cant_Peso_Verificacion = False
+
+        Try
+
+            BePickingUbic = pBePickingUbicList(0)
+            pBePickingUbicList = Nothing
+
+            tmpBeListPickingUbic = Get_All_PickingUbic_By_IdPickingEnc_For_Verificacion(BePickingUbic.IdPickingEnc,
+                                                                                        False,
+                                                                                        0,
+                                                                                        pIdPedidoEnc,
+                                                                                        lConnection,
+                                                                                        lTransaction)
+
+            '#AT20220509 Si pTipo <> 0 No aplica buscar por Lote y Fecha Vencimiento
+            If pTipo <> 0 Then
+                pBePickingUbicList = tmpBeListPickingUbic.Where(Function(x) x.CodigoProducto = BePickingUbic.CodigoProducto And x.IdPresentacion = BePickingUbic.IdPresentacion And ((x.Cantidad_Recibida - x.Cantidad_Verificada) <> 0.0)).ToList()
+            Else
+                pBePickingUbicList = tmpBeListPickingUbic.Where(Function(x) x.CodigoProducto = BePickingUbic.CodigoProducto And x.Lote = BePickingUbic.Lote And x.Fecha_Vence = BePickingUbic.Fecha_Vence And x.Lic_plate = BePickingUbic.Lic_plate And ((x.Cantidad_Recibida - x.Cantidad_Verificada) <> 0.0)).ToList()
+
+            End If
+
+            For Each vBePickingUbic As clsBeTrans_picking_ubic In pBePickingUbicList
+
+                If Math.Round(vBePickingUbic.Cantidad_Verificada + pCantidad, 6) > vBePickingUbic.Cantidad_Recibida Then
+                    CantPendiente = vBePickingUbic.Cantidad_Recibida - vBePickingUbic.Cantidad_Verificada
+                Else
+                    CantPendiente = pCantidad
+                End If
+
+
+                If ((vBePickingUbic.Peso_verificado + pPeso) > vBePickingUbic.Peso_recibido) Then
+                    PesoPendiente = vBePickingUbic.Peso_recibido - vBePickingUbic.Peso_verificado
+                Else
+                    PesoPendiente = pPeso
+                End If
+
+                vBePickingUbic.Cantidad_Verificada += CantPendiente
+                vBePickingUbic.Cantidad_Verificada = Math.Round(vBePickingUbic.Cantidad_Verificada, 6)
+
+                vBePickingUbic.Peso_verificado += PesoPendiente
+                vBePickingUbic.Peso_verificado = Math.Round(vBePickingUbic.Peso_verificado, 6)
+
+                vBePickingUbic.IdOperadorBodega_Verifico = pIdOperador
+                vBePickingUbic.Fecha_verificado = Now
+
+                BeStockRes.IdStockRes = vBePickingUbic.IdStockRes
+                BeStockRes.IdProductoBodega = vBePickingUbic.IdProductoBodega
+
+                clsLnStock_res.GetSingle(BeStockRes,
+                                         lConnection,
+                                         lTransaction)
+
+                BeStockRes.Estado = "VERIFICADO"
+                BeStockRes.User_mod = pIdOperador
+                BeStockRes.Fec_mod = Now
+
+                '#GT25042023: cantidad y peso son opcionales, porque el método se llama desde otro lugar, donde no son necesarios dichos valores.
+                resultado += Actualizar_PickingUbic_Por_Verificacion(vBePickingUbic,
+                                                                     BeStockRes,
+                                                                     pCantidad,
+                                                                     pPeso,
+                                                                     lConnection,
+                                                                     lTransaction)
+
+
+                If (Math.Round(pCantidad - CantPendiente, 6) = 0) Then
+                    Exit For
+                Else
+                    pCantidad -= CantPendiente
+                    pCantidad = Math.Round(pCantidad, 6)
+                End If
+
+            Next
+
+            Return True
+
+        Catch ex As Exception
+            Throw New Exception(String.Format("{0} {1} {2} ", MethodBase.GetCurrentMethod().Name, ex.Message, ""))
+        End Try
+
+    End Function
+
 End Class

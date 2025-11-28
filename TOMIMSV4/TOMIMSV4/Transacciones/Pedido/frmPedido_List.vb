@@ -391,8 +391,6 @@ Public Class frmPedido_List
 
                                 .pBePedidoEnc = pBePedidoEnc
                                 '.InvokeListarPedidos = AddressOf Listar_Pedidos
-
-                                ' --- IMPORTANTE para fullscreen real del monitor ---
                                 ' Si está como hijo MDI, solo ocupará el contenedor MDI, no el monitor completo.
                                 .MdiParent = Nothing
                                 ' Fullscreen real (monitor completo)
@@ -402,7 +400,6 @@ Public Class frmPedido_List
                                 .WindowState = FormWindowState.Normal
                                 .Bounds = scr.WorkingArea
                                 .Text = "Pedido " & pBePedidoEnc.IdPedidoEnc & " - " & pBePedidoEnc.Referencia
-                                ' Modal: el usuario no puede cambiar a otra funcionalidad hasta cerrar aquí
                                 .ShowDialog(Me)
                                 .Focus()
                             End With
