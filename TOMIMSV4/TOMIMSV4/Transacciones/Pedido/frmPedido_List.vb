@@ -388,30 +388,20 @@ Public Class frmPedido_List
                             clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_20251126: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " verifica bof con el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
 
                             With frmVerificacionBOF
-                                '.Modo = frmPedido.TipoTrans.Editar
+
                                 .pBePedidoEnc = pBePedidoEnc
                                 '.InvokeListarPedidos = AddressOf Listar_Pedidos
 
                                 ' --- IMPORTANTE para fullscreen real del monitor ---
                                 ' Si está como hijo MDI, solo ocupará el contenedor MDI, no el monitor completo.
                                 .MdiParent = Nothing
-
                                 ' Fullscreen real (monitor completo)
                                 .StartPosition = FormStartPosition.Manual
-                                Dim scr = Screen.FromControl(Me)   ' Me = formulario que invoca
+                                Dim scr = Screen.FromControl(Me)
                                 .FormBorderStyle = FormBorderStyle.None
                                 .WindowState = FormWindowState.Normal
-                                .Bounds = Screen.FromControl(Me).Bounds  ' mismo monitor que el padre
-
+                                .Bounds = scr.WorkingArea
                                 .Text = "Pedido " & pBePedidoEnc.IdPedidoEnc & " - " & pBePedidoEnc.Referencia
-
-                                'If OpcionesMenu IsNot Nothing Then
-                                '    .OpcionesMenu = OpcionesMenu
-                                '    .mnuGuardar.Enabled = .OpcionesMenu.Modificar
-                                '    .cmdActualizar.Enabled = .OpcionesMenu.Modificar
-                                '    .cmdEliminar.Enabled = .OpcionesMenu.Eliminar
-                                'End If
-
                                 ' Modal: el usuario no puede cambiar a otra funcionalidad hasta cerrar aquí
                                 .ShowDialog(Me)
                                 .Focus()

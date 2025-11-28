@@ -6257,10 +6257,10 @@ Partial Public Class clsLnTrans_pe_enc
 
         Try
 
-            Dim vSQL As String = " SELECT * FROM VW_PEDIDOS_LIST WHERE IDBODEGA = @IDBODEGA and verificar_con_imagen=1 "
+            Dim vSQL As String = " SELECT * FROM VW_PEDIDOS_LIST WHERE IDBODEGA = @IDBODEGA and verificar_con_imagen=1 and estado='Pickeado' "
 
             If pActivo = True Then
-                vSQL += " AND Activo=1"
+                vSQL += " AND Activo=1 "
             Else
                 vSQL += " AND Activo=0"
             End If

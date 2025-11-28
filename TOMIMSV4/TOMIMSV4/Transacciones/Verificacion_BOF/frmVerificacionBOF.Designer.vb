@@ -24,9 +24,9 @@ Partial Class frmVerificacionBOF
         Dim lblScan As System.Windows.Forms.Label
         Dim Label1 As System.Windows.Forms.Label
         Dim Label2 As System.Windows.Forms.Label
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmVerificacionBOF))
         Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim GridFormatRule1 As DevExpress.XtraGrid.GridFormatRule = New DevExpress.XtraGrid.GridFormatRule()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmVerificacionBOF))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -47,6 +47,7 @@ Partial Class frmVerificacionBOF
         Me.PanelControl2 = New DevExpress.XtraEditors.PanelControl()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
         Me.txtEstado = New DevExpress.XtraEditors.TextEdit()
+        Me.cmdEnviar = New DevExpress.XtraBars.BarButtonItem()
         Label8 = New System.Windows.Forms.Label()
         Label5 = New System.Windows.Forms.Label()
         lblScan = New System.Windows.Forms.Label()
@@ -132,9 +133,9 @@ Partial Class frmVerificacionBOF
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdEnviar})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.MaxItemId = 1
+        Me.RibbonControl.MaxItemId = 2
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.Size = New System.Drawing.Size(1547, 193)
@@ -148,6 +149,7 @@ Partial Class frmVerificacionBOF
         '
         'RibbonPageGroup1
         '
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdEnviar)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RibbonStatusBar
@@ -373,6 +375,13 @@ Partial Class frmVerificacionBOF
         Me.txtEstado.Size = New System.Drawing.Size(16, 28)
         Me.txtEstado.TabIndex = 58
         '
+        'cmdEnviar
+        '
+        Me.cmdEnviar.Caption = "Enviar"
+        Me.cmdEnviar.Id = 1
+        Me.cmdEnviar.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdEnviar.Name = "cmdEnviar"
+        '
         'frmVerificacionBOF
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -432,4 +441,5 @@ Partial Class frmVerificacionBOF
     Friend WithEvents peProducto As DevExpress.XtraEditors.PictureEdit
     Friend WithEvents lbOk As DevExpress.XtraEditors.LabelControl
     Friend WithEvents txtEstado As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents cmdEnviar As DevExpress.XtraBars.BarButtonItem
 End Class

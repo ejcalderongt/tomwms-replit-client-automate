@@ -1,5 +1,6 @@
 ﻿Imports System.Data.SqlClient
 Imports System.IO
+Imports System.Linq.Expressions
 Imports System.Reflection
 Imports DevExpress.Data
 Imports DevExpress.Utils
@@ -49,6 +50,13 @@ Public Class frmVerificacionBOF
     Public listarPicking As New List(Of clsBeTrans_picking_enc)
     Private EsKit As Boolean = False
     Private PedidoGuardadoPorUsuario As Boolean = False
+    Private plistPickingUbic As New List(Of clsBeTrans_picking_ubic)
+    Private BePickingUbicList As New List(Of clsBeTrans_picking_ubic)
+    Private gBePedidoDetVerif As New clsBeDetallePedidoAVerificar
+
+    '#GT27112025: Guardar en memoria el producto seleccionado del pedido y marcarlo como Ok o Pausa
+    Private pBeTransPickingUbicTemp As New clsBeTrans_picking_ubic
+
     '#CKFK20220325 Agregué estas dos variables para cuando el cliente se maneje en el detalle del pedido
     Private Cliente_Detalle_Ultimo_Lote As Integer
     Private Cliente_Detalle_Control_Calidad As Integer
@@ -57,6 +65,7 @@ Public Class frmVerificacionBOF
     '#GT27112025: patron para mejorar consulta de imagenes
     Private vRutaCDN As String = ""
     Private _listaRutasPng As List(Of String)
+
 
     Private Sub frmVerificacionBOF_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
@@ -109,6 +118,8 @@ Public Class frmVerificacionBOF
                 Cargar_Detalle_Pedido(lConnection,
                                       lTransaction)
 
+                BePickingUbicList = New List(Of clsBeTrans_picking_ubic)
+                BePickingUbicList = pBePedidoEnc.Picking.ListaPickingUbic
 
             End If
 
@@ -125,7 +136,6 @@ Public Class frmVerificacionBOF
         End Try
 
     End Sub
-
 
     Private Function Set_DataTable() As DataTable
 
@@ -153,11 +163,13 @@ Public Class frmVerificacionBOF
         'dt.Columns.Add("colPeso", GetType(Double))
         'dt.Columns.Add("colPrecio", GetType(Double))
         'dt.Columns.Add("colTotal", GetType(Double))
+        dt.Columns.Add("IdPedidoEnc", GetType(Integer))
         dt.Columns.Add("IdPedidoDet", GetType(Integer))
         'dt.Columns.Add("colNoDias", GetType(Integer))
         'dt.Columns.Add("ColFechaEspecifica", GetType(Boolean))
         dt.Columns.Add("IdStockEspecifico", GetType(Integer))
         dt.Columns.Add("Licencia", GetType(String))
+        dt.Columns.Add("IdPickingUbic", GetType(Integer))
 
         ' Asigna el DataSource UNA sola vez
         dgridListaPedido.DataSource = dt
@@ -166,8 +178,6 @@ Public Class frmVerificacionBOF
         Return dt
 
     End Function
-
-
 
     Private Sub Cargar_Detalle_Pedido(ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction)
 
@@ -238,6 +248,7 @@ Public Class frmVerificacionBOF
 
                         If pTempPickingUbic IsNot Nothing Then
                             gvListaPedido.SetRowCellValue(i, "Licencia", pTempPickingUbic.Lic_plate)
+                            gvListaPedido.SetRowCellValue(i, "IdPickingUbic", pTempPickingUbic.IdPickingUbic)
                         End If
 
                         pBeProducto.IdProductoBodega = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(pBeProducto.IdProducto,
@@ -474,6 +485,7 @@ Public Class frmVerificacionBOF
                         'gvListaPedido.SetRowCellValue(i, "colPeso", pDet.Peso)
                         'gvListaPedido.SetRowCellValue(i, "colPrecio", pDet.Precio)
                         'gvListaPedido.SetRowCellValue(i, "colTotal", pDet.RoadTotal)
+                        gvListaPedido.SetRowCellValue(i, "IdPedidoEnc", pDet.IdPedidoEnc)
                         gvListaPedido.SetRowCellValue(i, "IdPedidoDet", pDet.IdPedidoDet)
                         'gvListaPedido.SetRowCellValue(i, "colNoDias", pDet.Ndias)
                         'gvListaPedido.SetRowCellValue(i, "ColFechaEspecifica", pDet.Fecha_especifica)
@@ -584,7 +596,6 @@ Public Class frmVerificacionBOF
 
     End Sub
 
-
     Private Function BuscarSKU_Y_Cargar(ByVal sku As String) As Boolean
 
         BuscarSKU_Y_Cargar = False
@@ -615,13 +626,27 @@ Public Class frmVerificacionBOF
 
             ' --- CARGAR INPUTS ---
             txtScanner.Text = sku
-            txtDescripcionProducto.Text = CStr(row("NombreProducto"))      ' ajusta FieldName real
-            'txtLote.Text = If(dt.Columns.Contains("Lote"), CStr(row("Lote")), "")
+            txtDescripcionProducto.Text = CStr(row("NombreProducto"))
             txtTalla.Text = If(dt.Columns.Contains("Talla"), CStr(row("Talla")), "")
             txtColor.Text = If(dt.Columns.Contains("Color"), CStr(row("Color")), "")
-            txtCantidad.Text = If(dt.Columns.Contains("CantidadPickeada"), CStr(row("CantidadPickeada")), "")
+            txtCantidad.Text = If(dt.Columns.Contains("CantidadPickeada"), CInt(row("CantidadPickeada")), "")
 
-            ' --- CARGAR IMAGEN ---
+            '-- Cargar objeto picking_ubicTemp y al leer la barra OK, se asignará a la lista para enviar a verificar
+            Dim pIdPickingUbic = If(dt.Columns.Contains("IdPickingUbic"), CInt(row("IdPickingUbic")), 0)
+            Dim pLicPlate = If(dt.Columns.Contains("Licencia"), CStr(row("Licencia")), "")
+            Dim pIdPedidoEnc = If(dt.Columns.Contains("IdPedidoEnc"), CInt(row("IdPedidoEnc")), 0)
+            Dim pIdPedidoDet = If(dt.Columns.Contains("IdPedidoDet"), CInt(row("IdPedidoDet")), 0)
+
+            pBeTransPickingUbicTemp = New clsBeTrans_picking_ubic()
+            pBeTransPickingUbicTemp = BePickingUbicList.Find(Function(x) x.IdPickingUbic = pIdPickingUbic _
+                                                                           AndAlso x.IdPedidoEnc = pIdPedidoEnc _
+                                                                           AndAlso x.IdPedidoDet = pIdPedidoDet _
+                                                                           AndAlso x.Lic_plate = pLicPlate)
+
+            '---cuando se lea la barra de OK, será true para poder enviar la lista final al WS
+            pBeTransPickingUbicTemp.IsNew = False
+
+            ' --- Aviso de cargar imagen si por alguna razón existiera Lag ---
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             If SplashScreenManager.Default IsNot Nothing Then
                 SplashScreenManager.Default.SetWaitFormCaption("Cargando imagen...")
@@ -722,7 +747,6 @@ Public Class frmVerificacionBOF
 
     End Sub
 
-
     Private Sub CargarImagenProducto_temp(ByVal sku As String)
 
         Try
@@ -784,15 +808,11 @@ Public Class frmVerificacionBOF
                 peProducto.Image = Nothing
             End If
 
-
-
         Catch ex As Exception
             peProducto.Image = Nothing
         End Try
 
     End Sub
-
-
 
     Private Sub AplicarEstiloScanner()
 
@@ -826,8 +846,8 @@ Public Class frmVerificacionBOF
 
             Select Case estado
                 Case "OK"
-                ' Producto confirmado correctamente
-                'ProcesarEstadoOK()
+                    ' Producto confirmado correctamente
+                    ProcesarEstadoOK()
 
                 Case "PAUSA"
                     ' Poner en pausa: bloquear controles para impedir cerrar o escanear otro producto
@@ -847,7 +867,7 @@ Public Class frmVerificacionBOF
             End Select
 
         Catch ex As Exception
-
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -869,7 +889,73 @@ Public Class frmVerificacionBOF
         Return bmp
     End Function
 
+    Private Function ProcesarEstadoOK() As Boolean
+        Try
 
+            '#GT27112025: cada vez que se escanea un SKU, se llena el objeto pBeTransPickingUbicTemp, y al leer la barra OK, se asigna a la lista con IsNew=true
+            '#GT27112025: al terminar de escanear todos los productos, enviar la lista a verificar y cerrar la tarea
+            pBeTransPickingUbicTemp.IsNew = True
+            plistPickingUbic.Add(pBeTransPickingUbicTemp)
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+    End Function
+
+    Private Sub cmdEnviar_ItemClick(sender As Object, e As ItemClickEventArgs) Handles cmdEnviar.ItemClick
+        Try
+
+            cmdEnviar.Enabled = False
+            Guardar_Verificacion()
+            cmdEnviar.Enabled = True
+
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Private Sub Guardar_Verificacion()
+        Try
+
+            Dim ListaVerificada As Boolean = False
+
+            If plistPickingUbic.Count > 0 Then
+
+                For Each BePickingUbic As clsBeTrans_picking_ubic In plistPickingUbic
+
+                    '#GT28112025: parece redundante, pero la verificación recibe una lista de un registro
+                    Dim tmpListaPickingUbic = New List(Of clsBeTrans_picking_ubic)
+                    tmpListaPickingUbic.Add(BePickingUbic)
+
+                    If clsLnTrans_picking_ubic.Actualiza_Cant_Peso_Verificacion(tmpListaPickingUbic,
+                                                                              AP.UsuarioAp.IdUsuario,
+                                                                              BePickingUbic.Cantidad_Recibida,
+                                                                              BePickingUbic.Peso_recibido,
+                                                                              0,
+                                                                              pBePedidoEnc.IdPedidoEnc) Then
+
+                        ListaVerificada = True
+                    Else
+                        ListaVerificada = False
+                    End If
+
+                Next
+
+                'clsLnTrans_picking_enc.Actualizar_PickingEnc_Verificado(pBePedidoEnc.Picking)
+                'clsLnTrans_pe_enc.Actualizar_Estado_Verificado(pBePedidoEnc)
+
+                '#GT28112025: si la lista se itero completa no será false de lo contrario, algun registro lanzo excepción
+                If ListaVerificada Then clsLnTrans_picking_enc.Actualizar_PickingEnc_Verificado(pBePedidoEnc.Picking)
+
+            Else
+                    XtraMessageBox.Show("No se ha fiscalizado ningun producto.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            End If
+
+        Catch ex As Exception
+
+        End Try
+
+    End Sub
 
     'Private Sub Llena_Presentacion_Grid(ByVal pIndex As Integer,
     '                                    ByVal lConnection As SqlConnection,
