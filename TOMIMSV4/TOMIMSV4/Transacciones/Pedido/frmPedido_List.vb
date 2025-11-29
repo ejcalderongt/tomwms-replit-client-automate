@@ -390,7 +390,7 @@ Public Class frmPedido_List
                             With frmVerificacionBOF
 
                                 .pBePedidoEnc = pBePedidoEnc
-                                '.InvokeListarPedidos = AddressOf Listar_Pedidos
+                                .InvokeListarPedidos = AddressOf Listar_Pedidos
                                 ' Si está como hijo MDI, solo ocupará el contenedor MDI, no el monitor completo.
                                 .MdiParent = Nothing
                                 ' Fullscreen real (monitor completo)

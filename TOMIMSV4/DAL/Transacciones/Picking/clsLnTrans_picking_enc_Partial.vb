@@ -3214,6 +3214,7 @@ Partial Public Class clsLnTrans_picking_enc
                                                     ByVal pBePedidoEnc As clsBeTrans_pe_enc) As Boolean
 
         Dim clsTrans As New clsTransaccion
+        Guardar_Verificacion_Bof = False
 
         Try
             clsTrans.Open_Connection() : clsTrans.Begin_Transaction()
@@ -3254,8 +3255,8 @@ Partial Public Class clsLnTrans_picking_enc
                 Exit Function
             End If
 
+            Guardar_Verificacion_Bof = True
             clsTrans.Commit_Transaction()
-            Return True
 
         Catch ex As Exception
             clsTrans.RollBack_Transaction()

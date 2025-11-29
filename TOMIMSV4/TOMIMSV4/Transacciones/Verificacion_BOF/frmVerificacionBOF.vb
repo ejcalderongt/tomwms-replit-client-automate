@@ -9,12 +9,13 @@ Imports DevExpress.XtraSplashScreen
 
 Public Class frmVerificacionBOF
     Public pBePedidoEnc As New clsBeTrans_pe_enc
-    Public Delegate Sub ListarPedidos()
     Public Property InvokeListarPedidos As ListarPedidos
+    Public Delegate Sub ListarPedidos()
     Public Property Modo As TipoTrans
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
     Public Delegate Sub Cargar_Datos_Pedido()
-    ReadOnly Property InvokeCargarPedido As Cargar_Datos_Pedido()
+
+    'ReadOnly Property InvokeCargarPedido As Cargar_Datos_Pedido()
     Public Enum TipoTrans
         Nuevo = 1
         Editar = 2
@@ -611,7 +612,8 @@ Public Class frmVerificacionBOF
             Dim filas() As DataRow = dt.Select("[SKU] = '" & sku.Replace("'", "''") & "'")
 
             If filas.Length = 0 Then
-                XtraMessageBox.Show("No se encontró el SKU: " & sku, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                XtraMessageBox.Show("No se encontró el SKU, por favor reintente: " & sku, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                LimpiarControlesGrupo()
                 Exit Function
             End If
 
@@ -939,7 +941,10 @@ Public Class frmVerificacionBOF
             ProcesarLinea = True
 
         Catch ex As Exception
-            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
         End Try
     End Function
 
@@ -978,29 +983,12 @@ Public Class frmVerificacionBOF
             End If
 
         Catch ex As Exception
-            ' Si algo falla aquí, mejor no romper el pintado del grid
-            ' (puedes loguearlo si manejas logs)
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
         End Try
     End Sub
-
-
-
-    'Private Function ProcesarEstadoOK() As Boolean
-    '    Try
-    '        pBeTransPickingUbicTemp.IsNew = True
-    '        plistPickingUbic.Add(pBeTransPickingUbicTemp)
-
-    '        LimpiarControlesGrupo()
-
-    '        txtScanner.SelectAll()
-    '        txtScanner.Focus()
-
-    '    Catch ex As Exception
-    '        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-    '    End Try
-    'End Function
-
-
 
 
     Private Sub LimpiarControlesGrupo()
@@ -1020,7 +1008,10 @@ Public Class frmVerificacionBOF
             cmdEnviar.Enabled = True
 
         Catch ex As Exception
-
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -1035,6 +1026,14 @@ Public Class frmVerificacionBOF
                                                                       pBePedidoEnc) Then
 
                     XtraMessageBox.Show("No se fiscalizó el pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Else
+                    XtraMessageBox.Show("Pedido fiscalizado.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+
+                    If InvokeListarPedidos IsNot Nothing Then
+                        InvokeListarPedidos.Invoke()
+                    End If
+
+                    Me.DialogResult = DialogResult.OK
 
                 End If
 
