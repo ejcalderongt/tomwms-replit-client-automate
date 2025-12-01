@@ -1007,7 +1007,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                             If vMostrar Then clsPublic.Actualizar_Progreso(lblprg, "Procesando producto: " & PDet.Item_No)
 
-                            If vCodigoProducto = "600699001540" Then
+                            If vCodigoProducto = "WMS66" Then
                                 Debug.Print("7411000360002")
                             End If
 

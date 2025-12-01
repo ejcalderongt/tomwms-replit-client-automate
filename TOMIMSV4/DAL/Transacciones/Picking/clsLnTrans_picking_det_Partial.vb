@@ -1838,6 +1838,12 @@ Partial Public Class clsLnTrans_picking_det
 
             For Each IdPedidoEnc In lPedidosEnc
 
+                Dim vIdPickingEnc As Integer = clsLnTrans_pe_enc.Get_IdPicking_By_IdPedido(IdPedidoEnc, lConnection, lTransaction)
+
+                If Not vIdPickingEnc = 0 AndAlso vIdPickingEnc <> IdPickingEnc Then
+                    Throw New Exception("Error_202510101240: El IdPedidoEnc " & IdPedidoEnc & " Ya tiene un picking asociado, esto puede ocurrir por concurrencia, cierre la pantalla y verifique si el pedido ya tiene un picking asociado.")
+                End If
+
                 clsLnTrans_pe_enc.ActualizarIdPickingEnc(IdPickingEnc,
                                                          IdPedidoEnc,
                                                          lConnection,
@@ -2844,6 +2850,7 @@ Partial Public Class clsLnTrans_picking_det
                                 End If
                             Next
                         Next
+
                     Next
 
                     lTransaction.Commit()

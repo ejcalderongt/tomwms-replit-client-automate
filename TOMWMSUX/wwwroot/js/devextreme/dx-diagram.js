@@ -1,7 +1,7 @@
 /*!
  * DevExpress Diagram (dx-diagram)
- * Version: 2.2.19
- * Build date: Mon Jun 30 2025
+ * Version: 2.2.21
+ * Build date: Wed Aug 20 2025
  *
  * Copyright (c) 2012 - 2025 Developer Express Inc. ALL RIGHTS RESERVED
  * Read about DevExpress licensing here: https://www.devexpress.com/Support/EULAs
@@ -15393,10 +15393,11 @@ var VisualizerManager = (function (_super) {
             y1 = y1nc - CanvasSelectionManager_1.CanvasSelectionManager.extensionLineOffset;
             y2 = y2nc + lwCor + CanvasSelectionManager_1.CanvasSelectionManager.extensionLineOffset;
         }
+        var eps = this.settings.gridSize / 2;
         if (x1 !== undefined && x2 !== undefined) {
             var distanceText = this.getViewUnitText(Math.abs(x1nc - x2nc));
-            if (rect.center.y === sRect.center.y) {
-                var segment = new segment_1.Segment(new point_1.Point(x1, rect.center.y), new point_1.Point(x2, sRect.center.y));
+            if (Math.abs(rect.center.y - sRect.center.y) < eps) {
+                var segment = new segment_1.Segment(new point_1.Point(x1, rect.center.y), new point_1.Point(x2, rect.center.y));
                 this.extensionLinesVisualizer.addSegment(x1 > x2 ? ExtensionLinesVisualizer_1.ExtensionLineType.VerticalCenterAfter : ExtensionLinesVisualizer_1.ExtensionLineType.VerticalCenterBefore, segment, showDistance ? distanceText : "");
                 showDistance = false;
             }
@@ -15419,8 +15420,8 @@ var VisualizerManager = (function (_super) {
         }
         if (y1 !== undefined && y2 !== undefined) {
             var distanceText = this.getViewUnitText(Math.abs(y1nc - y2nc));
-            if (rect.center.x === sRect.center.x) {
-                var segment = new segment_1.Segment(new point_1.Point(rect.center.x, y1), new point_1.Point(sRect.center.x, y2));
+            if (Math.abs(rect.center.x - sRect.center.x) < eps) {
+                var segment = new segment_1.Segment(new point_1.Point(rect.center.x, y1), new point_1.Point(rect.center.x, y2));
                 this.extensionLinesVisualizer.addSegment(y1 > y2 ? ExtensionLinesVisualizer_1.ExtensionLineType.HorizontalCenterBelow : ExtensionLinesVisualizer_1.ExtensionLineType.HorizontalCenterAbove, segment, showDistance ? distanceText : "");
                 showDistance = false;
             }
@@ -24843,11 +24844,11 @@ var Enums_1 = __webpack_require__(5383);
 var ModelUtils_1 = __webpack_require__(4867);
 var DiagramModel = (function () {
     function DiagramModel(pageSize) {
-        if (pageSize === void 0) { pageSize = new size_1.Size(8391, 11906); }
+        if (pageSize === void 0) { pageSize = new size_1.Size(8400, 11910); }
         this.items = [];
         this.itemIndexByKey = {};
         this.keyCounter = 0;
-        this.pageSize = new size_1.Size(8391, 11906);
+        this.pageSize = new size_1.Size(8400, 11910);
         this.pageLandscape = false;
         this.pageColor = DiagramModel.defaultPageColor;
         this.units = Enums_1.DiagramUnit.In;
@@ -39194,14 +39195,14 @@ var DiagramSettings = (function () {
             { size: new size_1.Size(12240, 15840), text: "US-Letter ({width} x {height})" },
             { size: new size_1.Size(12240, 20160), text: "US-Legal ({width} x {height})" },
             { size: new size_1.Size(15817, 24491), text: "US-Tabloid ({width} x {height})" },
-            { size: new size_1.Size(47679, 67408), text: "A0 ({width} x {height})" },
-            { size: new size_1.Size(33676, 47679), text: "A1 ({width} x {height})" },
-            { size: new size_1.Size(23811, 33676), text: "A2 ({width} x {height})" },
-            { size: new size_1.Size(16838, 23811), text: "A3 ({width} x {height})" },
-            { size: new size_1.Size(11906, 16838), text: "A4 ({width} x {height})" },
-            { size: new size_1.Size(8391, 11906), text: "A5 ({width} x {height})" },
-            { size: new size_1.Size(5953, 8391), text: "A6 ({width} x {height})" },
-            { size: new size_1.Size(4195, 5953), text: "A7 ({width} x {height})" }
+            { size: new size_1.Size(47685, 67410), text: "A0 ({width} x {height})" },
+            { size: new size_1.Size(33675, 47685), text: "A1 ({width} x {height})" },
+            { size: new size_1.Size(23805, 33675), text: "A2 ({width} x {height})" },
+            { size: new size_1.Size(16830, 23805), text: "A3 ({width} x {height})" },
+            { size: new size_1.Size(11910, 16830), text: "A4 ({width} x {height})" },
+            { size: new size_1.Size(8400, 11910), text: "A5 ({width} x {height})" },
+            { size: new size_1.Size(5955, 8400), text: "A6 ({width} x {height})" },
+            { size: new size_1.Size(4200, 5955), text: "A7 ({width} x {height})" }
         ];
         this._viewUnits = Enums_1.DiagramUnit.In;
         this._connectorRoutingMode = ConnectorRoutingMode.AllShapesOnly;

@@ -25,7 +25,7 @@ Public Class clsSyncSapCodigosBarra : Inherits clsInterfaceBase
                          WHERE U_CodWMS is not null
                          UNION
                          SELECT OITM.U_CodWMS, BcdCode
-                         FROM " & BD.Instancia.SAP_COMPANY_DB2 & ".dbo.OBCD INNER JOIN " & BD.Instancia.SAP_COMPANY_DB & ".dbo.OITM ON OBCD.ItemCode = OITM.ItemCode
+                         FROM " & BD.Instancia.SAP_COMPANY_DB2 & ".dbo.OBCD INNER JOIN " & BD.Instancia.SAP_COMPANY_DB2 & ".dbo.OITM ON OBCD.ItemCode = OITM.ItemCode
                          WHERE U_CodWMS is not null "
 
             If Conectar_A_SAP(oCompany, False, lErrCode, sErrMsg) Then

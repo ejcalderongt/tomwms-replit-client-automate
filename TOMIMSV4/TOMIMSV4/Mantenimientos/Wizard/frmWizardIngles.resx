@@ -241,7 +241,7 @@
     <value>0</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>DevExpress.XtraBars.Ribbon.RibbonForm, DevExpress.XtraBars.v25.1, Version=25.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+    <value>DevExpress.XtraBars.Ribbon.RibbonForm, DevExpress.XtraBars.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
   </data>
   <data name="&gt;&gt;lblPaso1.Parent" xml:space="preserve">
     <value>$this</value>

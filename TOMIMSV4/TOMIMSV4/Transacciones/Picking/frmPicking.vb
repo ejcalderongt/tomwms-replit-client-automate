@@ -278,7 +278,6 @@ Public Class frmPicking
             Pedidos_Tienen_Picking_Asociado = False
 
         Catch ex As Exception
-            SplashScreenManager.CloseForm(False)
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 

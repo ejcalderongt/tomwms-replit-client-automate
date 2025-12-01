@@ -36373,7 +36373,7 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
     </member>
     <member name="M:DevExpress.XtraEditors.XtraMessageBox.Show(DevExpress.LookAndFeel.UserLookAndFeel,System.Windows.Forms.IWin32Window,System.String,System.String,System.Windows.Forms.DialogResult[],System.Drawing.Icon,System.Int32,System.Windows.Forms.MessageBoxIcon)">
       <summary>
-        <para>Displays the XtraMessageBox with the specified look and feel settings, owner, text, caption, buttons, icon, default button and plays the sound that corresponds to the specified system-alert level.</para>
+        <para>Displays the XtraMessageBox with the specified look and feel settings, owner, text, caption, buttons, icon, default button, and plays the sound that corresponds to the specified system-alert level.</para>
       </summary>
       <param name="lookAndFeel">A <see cref="T:DevExpress.LookAndFeel.UserLookAndFeel"/> object whose properties specify the look and feel of the message box.</param>
       <param name="owner">An object that serves as a dialog box’s top-level window and owner.</param>
@@ -36559,7 +36559,7 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
     </member>
     <member name="M:DevExpress.XtraEditors.XtraMessageBox.Show(System.String,System.String,System.Windows.Forms.MessageBoxButtons)">
       <summary>
-        <para>Displays the XtraMessageBox with the specified text, caption and buttons.</para>
+        <para>Displays the XtraMessageBox with the specified text, caption, and buttons.</para>
       </summary>
       <param name="text">A string value that specifies the text to display in the message box.</param>
       <param name="caption">A string value that specifies the message box’s caption.</param>
@@ -36688,7 +36688,7 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
     </member>
     <member name="M:DevExpress.XtraEditors.XtraMessageBox.Show(System.Windows.Forms.IWin32Window,System.String,System.String,System.Windows.Forms.MessageBoxButtons)">
       <summary>
-        <para>Displays the XtraMessageBox with the specified owner, text, caption and buttons.</para>
+        <para>Displays the XtraMessageBox with the specified owner, text, caption, and buttons.</para>
       </summary>
       <param name="owner">An object that serves as a dialog box’s top-level window and owner.</param>
       <param name="text">A string value that specifies the text to display in the message box.</param>
@@ -39967,7 +39967,7 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
     </member>
     <member name="T:DevExpress.XtraTab.XtraTabPage">
       <summary>
-        <para>Represents a single tab page.</para>
+        <para>A tab page.</para>
       </summary>
     </member>
     <member name="M:DevExpress.XtraTab.XtraTabPage.#ctor">

@@ -7,14 +7,14 @@
     <framework targetVersion="4.8" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="SAPBOSync.exe.manifest" size="21205">
+    <dependentAssembly dependencyType="install" codebase="SAPBOSync.exe.manifest" size="27592">
       <assemblyIdentity name="SAPBOSync.exe" version="1.0.0.1" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="amd64" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>aSTBwH0lOScsErLgEWvdulhC89jxSacblCiQBgke+BU=</dsig:DigestValue>
+        <dsig:DigestValue>Q2RcE81dmxDeKXlwenPwoqGiSOuIlaDnxLXTkIzvj0g=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
