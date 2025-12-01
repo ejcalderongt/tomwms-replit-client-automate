@@ -5,7 +5,6 @@ using System.Reflection;
 using WMS.EntityCore.Trans_re;
 using Microsoft.Extensions.Configuration;
 using WMS.EntityCore.Trans_oc;
-using WMS.EntityCore.Interface;
 using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Stock;
 using WMSWebAPI.Be;
@@ -1803,6 +1802,7 @@ public class clsLnTrans_re_enc
                 BeRecepcionEnc.PropietarioBodega.IdBodega = BeOrdenCompraEnc.IdBodega;
                 BeRecepcionEnc.IdBodega = BeOrdenCompraEnc.IdBodega;
                 BeRecepcionEnc.PropietarioBodega.IdPropietarioBodega = BeOrdenCompraEnc.IdPropietarioBodega;
+                BeRecepcionEnc.IdPropietarioBodega = BeOrdenCompraEnc.IdPropietarioBodega;
                 BeRecepcionEnc.User_agr = BeMI3Config.IdUsuario.ToString();
                 BeRecepcionEnc.Fec_agr = DateTime.Now;
                 BeRecepcionEnc.Activo = true;
@@ -1812,11 +1812,12 @@ public class clsLnTrans_re_enc
                 BeRecepcionEnc.OrdenCompraRec.IsNew = true;
                 BeRecepcionEnc.OrdenCompraRec.IdRecepcionEnc = BeRecepcionEnc.IdRecepcionEnc;
 
-                if (BeRecepcionEnc.PropietarioBodega == null || BeRecepcionEnc.PropietarioBodega.IdPropietarioBodega <= 0)
+                if (BeRecepcionEnc.PropietarioBodega == null || BeRecepcionEnc.PropietarioBodega.IdPropietarioBodega <= 0 || BeRecepcionEnc.IdPropietarioBodega==0)
                 {
                     throw new Exception("Propietario no válido al crear la recepción");
                 }
 
+                
                 BeRecepcionEnc.IdTipoTransaccion = "HCOC00";
 
                 BeRecepcionEnc.IdMuelle = clsLnBodega_muelles.Get_IdMuelle_Default_By_IdBodega(IdBodegaDestino, lConnection, lTransaction);
@@ -1941,7 +1942,7 @@ public class clsLnTrans_re_enc
                         BeTareaHH,
                         BeRecepcionEnc,
                         BeRecepcionEnc.OrdenCompraRec,
-                        null,
+                        null,//aqui recepcion_det
                         null,
                         pListOperadorRecepcion,
                         null,

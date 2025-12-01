@@ -100,6 +100,7 @@ namespace WMSWebAPI.Be
         public int Campaign_No { get; set; } = 0;
         public string User_Document { get; set; } = "";
         public string Comments { get; set; } = "";
+        public int No_Document_Wms { get; set; } = 0;
 
         public clsBeI_nav_ped_compra_enc() { }
 

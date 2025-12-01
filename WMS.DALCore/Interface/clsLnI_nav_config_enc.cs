@@ -4,7 +4,8 @@ using Microsoft.VisualBasic.CompilerServices;
 using System.Data;
 using System.Diagnostics;
 using System.Reflection;
-using WMS.EntityCore.Interface;
+using WMS.EntityCore;
+using static clsBeI_nav_config_enc;
 
 public class clsLnI_nav_config_enc
 {
@@ -32,11 +33,20 @@ public class clsLnI_nav_config_enc
             oBeI_nav_config_enc.Fec_mod = GetDate("fec_mod");
             oBeI_nav_config_enc.User_mod = GetString("user_mod");
             oBeI_nav_config_enc.IdProductoEstado = GetInt("IdProductoEstado");
-            oBeI_nav_config_enc.Rechazar_pedido_incompleto = GetInt("rechazar_pedido_incompleto");
+            
+            if (Enum.TryParse<tRechazarPedidoIncompleto>(("rechazar_pedido_incompleto"), true, out var result))
+            {
+                oBeI_nav_config_enc.Rechazar_pedido_incompleto = result;
+            }
+            else
+            {
+                oBeI_nav_config_enc.Rechazar_pedido_incompleto = tRechazarPedidoIncompleto.No;
+            }
+
             oBeI_nav_config_enc.Despachar_existencia_parcial = GetInt("despachar_existencia_parcial");
             oBeI_nav_config_enc.Convertir_decimales_a_umbas = GetInt("convertir_decimales_a_umbas");
             oBeI_nav_config_enc.Generar_pedido_ingreso_bodega_destino = GetBool("generar_pedido_ingreso_bodega_destino");
-            oBeI_nav_config_enc.Generar_recepcion_auto_bodega_destino = GetBool("generar_recepcion_auto_bodega_destino");
+            oBeI_nav_config_enc.Generar_Recepcion_Auto_Bodega_Destino = GetBool("generar_recepcion_auto_bodega_destino");
             oBeI_nav_config_enc.Codigo_proveedor_produccion = GetString("codigo_proveedor_produccion");
             oBeI_nav_config_enc.IdFamilia = GetInt("idFamilia");
             oBeI_nav_config_enc.Idclasificacion = GetInt("idclasificacion");
@@ -46,55 +56,50 @@ public class clsLnI_nav_config_enc
             oBeI_nav_config_enc.Control_vencimiento = GetBool("control_vencimiento");
             oBeI_nav_config_enc.Genera_lp = GetBool("genera_lp");
             oBeI_nav_config_enc.Nombre_ejecutable = GetString("nombre_ejecutable");
-            oBeI_nav_config_enc.IdTipoDocumentoTransferenciasIngreso = GetInt("IdTipoDocumentoTransferenciasIngreso");
-            oBeI_nav_config_enc.Crear_recepcion_de_transferencia_nav = GetBool("crear_recepcion_de_transferencia_nav");
+            oBeI_nav_config_enc.IdTipoDocumentoTransferenciasIngreso = (clsDataContractDI.tTipoDocumentoIngreso)GetInt("IdTipoDocumentoTransferenciasIngreso");
+            oBeI_nav_config_enc.Crear_Recepcion_De_Transferencia_NAV = GetBool("crear_recepcion_de_transferencia_nav");
             oBeI_nav_config_enc.Control_peso = GetBool("control_peso");
-            oBeI_nav_config_enc.Crear_recepcion_de_compra_nav = GetBool("crear_recepcion_de_compra_nav");
+            oBeI_nav_config_enc.Crear_Recepcion_De_Compra_NAV = GetBool("crear_recepcion_de_compra_nav");
             oBeI_nav_config_enc.IdAcuerdoEnc = GetInt("IdAcuerdoEnc");
             oBeI_nav_config_enc.IdTipoEtiqueta = GetInt("IdTipoEtiqueta");
-            oBeI_nav_config_enc.Equiparar_cliente_con_propietario_en_doc_salida = GetBool("equiparar_cliente_con_propietario_en_doc_salida");
-            oBeI_nav_config_enc.Push_ingreso_nav_desde_hh = GetBool("push_ingreso_nav_desde_hh");
-            oBeI_nav_config_enc.Reservar_umbas_primero = GetBool("reservar_umbas_primero");
-            oBeI_nav_config_enc.Implosion_automatica = GetBool("implosion_automatica");
-            oBeI_nav_config_enc.Explosion_automatica = GetBool("explosion_automatica");
+            oBeI_nav_config_enc.equiparar_cliente_con_propietario_en_doc_salida = GetBool("equiparar_cliente_con_propietario_en_doc_salida");
+            oBeI_nav_config_enc.Push_Ingreso_NAV_Desde_HH = GetBool("push_ingreso_nav_desde_hh");
+            oBeI_nav_config_enc.Reservar_UMBas_Primero = GetBool("reservar_umbas_primero");
+            oBeI_nav_config_enc.Implosion_Automatica = GetBool("implosion_automatica");
+            oBeI_nav_config_enc.Explosion_Automatica = GetBool("explosion_automatica");
             oBeI_nav_config_enc.Ejecutar_En_Despacho_Automaticamente = GetBool("Ejecutar_En_Despacho_Automaticamente");
             oBeI_nav_config_enc.IdTipoRotacion = GetInt("IdTipoRotacion");
-            oBeI_nav_config_enc.Explosion_automatica_desde_ubicacion_picking = GetBool("explosion_automatica_desde_ubicacion_picking");
-            oBeI_nav_config_enc.Explosion_automatica_nivel_max = GetInt("explosion_automatica_nivel_max");
-            oBeI_nav_config_enc.Conservar_zona_picking_clavaud = GetBool("conservar_zona_picking_clavaud");
+            oBeI_nav_config_enc.Explosion_Automatica_Desde_Ubicacion_Picking = GetBool("explosion_automatica_desde_ubicacion_picking");
+            oBeI_nav_config_enc.Explosion_Automatica_Nivel_Max = GetInt("explosion_automatica_nivel_max");
+            oBeI_nav_config_enc.Conservar_Zona_Picking_Clavaud = GetBool("conservar_zona_picking_clavaud");
             oBeI_nav_config_enc.Recepcion_genera_historico = GetBool("recepcion_genera_historico");
-            oBeI_nav_config_enc.Excluir_ubicaciones_reabasto = GetBool("excluir_ubicaciones_reabasto");
-            oBeI_nav_config_enc.Considerar_disponibilidad_ubicacion_reabasto = GetBool("considerar_disponibilidad_ubicacion_reabasto");
-            oBeI_nav_config_enc.Considerar_paletizado_en_reabasto = GetBool("considerar_paletizado_en_reabasto");
-            oBeI_nav_config_enc.Dias_vida_defecto_perecederos = GetInt("dias_vida_defecto_perecederos");
-            oBeI_nav_config_enc.Codigo_bodega_erp_nc = GetString("codigo_bodega_erp_nc");
-            oBeI_nav_config_enc.Lote_defecto_entrada_nc = GetString("lote_defecto_entrada_nc");
-            oBeI_nav_config_enc.Vence_defecto_nc = GetDate("vence_defecto_nc");
+            oBeI_nav_config_enc.Excluir_Ubicaciones_Reabasto = GetBool("excluir_ubicaciones_reabasto");
+            oBeI_nav_config_enc.Considerar_Disponibilidad_Ubicacion_Reabasto = GetBool("considerar_disponibilidad_ubicacion_reabasto");
+            oBeI_nav_config_enc.considerar_paletizado_en_reabasto = GetBool("considerar_paletizado_en_reabasto");
+            oBeI_nav_config_enc.Dias_Vida_Defecto_Perecederos = GetInt("dias_vida_defecto_perecederos");
+            oBeI_nav_config_enc.Codigo_Bodega_ERP_NC = GetString("codigo_bodega_erp_nc");
+            oBeI_nav_config_enc.Lote_Defecto_Entrada_NC = GetString("lote_defecto_entrada_nc");
+            oBeI_nav_config_enc.Vence_Defecto_NC = GetDate("vence_defecto_nc");
             oBeI_nav_config_enc.IdProductoEstado_NC = GetInt("IdProductoEstado_NC");
             oBeI_nav_config_enc.Lote_defecto_entrada_mercancia_sap = GetString("lote_defecto_entrada_mercancia_sap");
             oBeI_nav_config_enc.Fecha_vence_defecto = GetDate("fecha_vence_defecto");
-            oBeI_nav_config_enc.Interface_sap = GetBool("interface_sap");
-            oBeI_nav_config_enc.Sap_control_draft_ajustes = GetBool("sap_control_draft_ajustes");
-            oBeI_nav_config_enc.Sap_control_draft_traslados = GetBool("sap_control_draft_traslados");
-            oBeI_nav_config_enc.Inferir_bonificacion_pedido_sap = GetBool("inferir_bonificacion_pedido_sap");
-            oBeI_nav_config_enc.Rechazar_bonificacion_incompleta = GetBool("rechazar_bonificacion_incompleta");
+            oBeI_nav_config_enc.Interface_SAP = GetBool("interface_sap");
+            oBeI_nav_config_enc.SAP_Control_Draft_Ajustes = GetBool("sap_control_draft_ajustes");
+            oBeI_nav_config_enc.SAP_Control_Draft_Traslados = GetBool("sap_control_draft_traslados");
+            oBeI_nav_config_enc.Inferir_Bonificacion_Pedido_SAP = GetBool("inferir_bonificacion_pedido_sap");
+            oBeI_nav_config_enc.Rechazar_Bonificacion_Incompleta = GetBool("rechazar_bonificacion_incompleta");
             oBeI_nav_config_enc.IdIndiceRotacion = GetInt("IdIndiceRotacion");
-            oBeI_nav_config_enc.Rango_dias_importacion = GetInt("rango_dias_importacion");
-            oBeI_nav_config_enc.Equiparar_productos = GetBool("equiparar_productos");
-            oBeI_nav_config_enc.Bodega_facturacion = GetString("bodega_facturacion");
-            oBeI_nav_config_enc.Valida_solo_codigo = GetBool("valida_solo_codigo");
-            oBeI_nav_config_enc.Excluir_recepcion_picking = GetBool("excluir_recepcion_picking");
-            oBeI_nav_config_enc.Bodega_prorrateo = GetString("bodega_prorrateo");
-            oBeI_nav_config_enc.Bodega_prorrateo1 = GetString("bodega_prorrateo1");
+            oBeI_nav_config_enc.Rango_Dias_Importacion = GetInt("rango_dias_importacion");
+            oBeI_nav_config_enc.Equiparar_Productos = GetBool("equiparar_productos");
+            oBeI_nav_config_enc.Bodega_Facturacion = GetString("bodega_facturacion");
+            oBeI_nav_config_enc.Valida_Solo_Codigo = GetBool("valida_solo_codigo");
+            oBeI_nav_config_enc.Excluir_Recepcion_Picking = GetBool("excluir_recepcion_picking");
+            oBeI_nav_config_enc.Bodega_Prorrateo = GetString("bodega_prorrateo");
+            oBeI_nav_config_enc.Bodega_Prorrateo1 = GetString("bodega_prorrateo1");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            var st = new System.Diagnostics.StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = sf?.GetMethod();
-            string vMsgError = string.Format("{{0}} {{1}}", currentMethodName, ex.Message);
-
-            throw new Exception(vMsgError);
+            throw;
         }
     }
 
@@ -115,7 +120,7 @@ public class clsLnI_nav_config_enc
         cmd.Parameters.Add(new SqlParameter("@despachar_existencia_parcial", oBe.Despachar_existencia_parcial));
         cmd.Parameters.Add(new SqlParameter("@convertir_decimales_a_umbas", oBe.Convertir_decimales_a_umbas));
         cmd.Parameters.Add(new SqlParameter("@generar_pedido_ingreso_bodega_destino", oBe.Generar_pedido_ingreso_bodega_destino));
-        cmd.Parameters.Add(new SqlParameter("@generar_recepcion_auto_bodega_destino", oBe.Generar_recepcion_auto_bodega_destino));
+        cmd.Parameters.Add(new SqlParameter("@generar_recepcion_auto_bodega_destino", oBe.Generar_Recepcion_Auto_Bodega_Destino));
         cmd.Parameters.Add(new SqlParameter("@codigo_proveedor_produccion", oBe.Codigo_proveedor_produccion));
         cmd.Parameters.Add(new SqlParameter("@idFamilia", oBe.IdFamilia));
         cmd.Parameters.Add(new SqlParameter("@idclasificacion", oBe.Idclasificacion));
@@ -126,45 +131,45 @@ public class clsLnI_nav_config_enc
         cmd.Parameters.Add(new SqlParameter("@genera_lp", oBe.Genera_lp));
         cmd.Parameters.Add(new SqlParameter("@nombre_ejecutable", oBe.Nombre_ejecutable));
         cmd.Parameters.Add(new SqlParameter("@IdTipoDocumentoTransferenciasIngreso", oBe.IdTipoDocumentoTransferenciasIngreso));
-        cmd.Parameters.Add(new SqlParameter("@crear_recepcion_de_transferencia_nav", oBe.Crear_recepcion_de_transferencia_nav));
+        cmd.Parameters.Add(new SqlParameter("@crear_recepcion_de_transferencia_nav", oBe.Crear_Recepcion_De_Transferencia_NAV));
         cmd.Parameters.Add(new SqlParameter("@control_peso", oBe.Control_peso));
-        cmd.Parameters.Add(new SqlParameter("@crear_recepcion_de_compra_nav", oBe.Crear_recepcion_de_compra_nav));
+        cmd.Parameters.Add(new SqlParameter("@crear_recepcion_de_compra_nav", oBe.Crear_Recepcion_De_Compra_NAV));
         cmd.Parameters.Add(new SqlParameter("@IdAcuerdoEnc", oBe.IdAcuerdoEnc));
         cmd.Parameters.Add(new SqlParameter("@IdTipoEtiqueta", oBe.IdTipoEtiqueta));
-        cmd.Parameters.Add(new SqlParameter("@equiparar_cliente_con_propietario_en_doc_salida", oBe.Equiparar_cliente_con_propietario_en_doc_salida));
-        cmd.Parameters.Add(new SqlParameter("@push_ingreso_nav_desde_hh", oBe.Push_ingreso_nav_desde_hh));
-        cmd.Parameters.Add(new SqlParameter("@reservar_umbas_primero", oBe.Reservar_umbas_primero));
-        cmd.Parameters.Add(new SqlParameter("@implosion_automatica", oBe.Implosion_automatica));
-        cmd.Parameters.Add(new SqlParameter("@explosion_automatica", oBe.Explosion_automatica));
+        cmd.Parameters.Add(new SqlParameter("@equiparar_cliente_con_propietario_en_doc_salida", oBe.equiparar_cliente_con_propietario_en_doc_salida));
+        cmd.Parameters.Add(new SqlParameter("@push_ingreso_nav_desde_hh", oBe.Push_Ingreso_NAV_Desde_HH));
+        cmd.Parameters.Add(new SqlParameter("@reservar_umbas_primero", oBe.Reservar_UMBas_Primero));
+        cmd.Parameters.Add(new SqlParameter("@implosion_automatica", oBe.Implosion_Automatica));
+        cmd.Parameters.Add(new SqlParameter("@explosion_automatica", oBe.Explosion_Automatica));
         cmd.Parameters.Add(new SqlParameter("@Ejecutar_En_Despacho_Automaticamente", oBe.Ejecutar_En_Despacho_Automaticamente));
         cmd.Parameters.Add(new SqlParameter("@IdTipoRotacion", oBe.IdTipoRotacion));
-        cmd.Parameters.Add(new SqlParameter("@explosion_automatica_desde_ubicacion_picking", oBe.Explosion_automatica_desde_ubicacion_picking));
-        cmd.Parameters.Add(new SqlParameter("@explosion_automatica_nivel_max", oBe.Explosion_automatica_nivel_max));
-        cmd.Parameters.Add(new SqlParameter("@conservar_zona_picking_clavaud", oBe.Conservar_zona_picking_clavaud));
+        cmd.Parameters.Add(new SqlParameter("@explosion_automatica_desde_ubicacion_picking", oBe.Explosion_Automatica_Desde_Ubicacion_Picking));
+        cmd.Parameters.Add(new SqlParameter("@explosion_automatica_nivel_max", oBe.Explosion_Automatica_Nivel_Max));
+        cmd.Parameters.Add(new SqlParameter("@conservar_zona_picking_clavaud", oBe.Conservar_Zona_Picking_Clavaud));
         cmd.Parameters.Add(new SqlParameter("@recepcion_genera_historico", oBe.Recepcion_genera_historico));
-        cmd.Parameters.Add(new SqlParameter("@excluir_ubicaciones_reabasto", oBe.Excluir_ubicaciones_reabasto));
-        cmd.Parameters.Add(new SqlParameter("@considerar_disponibilidad_ubicacion_reabasto", oBe.Considerar_disponibilidad_ubicacion_reabasto));
-        cmd.Parameters.Add(new SqlParameter("@considerar_paletizado_en_reabasto", oBe.Considerar_paletizado_en_reabasto));
-        cmd.Parameters.Add(new SqlParameter("@dias_vida_defecto_perecederos", oBe.Dias_vida_defecto_perecederos));
-        cmd.Parameters.Add(new SqlParameter("@codigo_bodega_erp_nc", oBe.Codigo_bodega_erp_nc));
-        cmd.Parameters.Add(new SqlParameter("@lote_defecto_entrada_nc", oBe.Lote_defecto_entrada_nc));
-        cmd.Parameters.Add(new SqlParameter("@vence_defecto_nc", oBe.Vence_defecto_nc));
+        cmd.Parameters.Add(new SqlParameter("@excluir_ubicaciones_reabasto", oBe.Excluir_Ubicaciones_Reabasto));
+        cmd.Parameters.Add(new SqlParameter("@considerar_disponibilidad_ubicacion_reabasto", oBe.Considerar_Disponibilidad_Ubicacion_Reabasto));
+        cmd.Parameters.Add(new SqlParameter("@considerar_paletizado_en_reabasto", oBe.considerar_paletizado_en_reabasto));
+        cmd.Parameters.Add(new SqlParameter("@dias_vida_defecto_perecederos", oBe.Dias_Vida_Defecto_Perecederos));
+        cmd.Parameters.Add(new SqlParameter("@codigo_bodega_erp_nc", oBe.Codigo_Bodega_ERP_NC));
+        cmd.Parameters.Add(new SqlParameter("@lote_defecto_entrada_nc", oBe.Lote_Defecto_Entrada_NC));
+        cmd.Parameters.Add(new SqlParameter("@vence_defecto_nc", oBe.Vence_Defecto_NC));
         cmd.Parameters.Add(new SqlParameter("@IdProductoEstado_NC", oBe.IdProductoEstado_NC));
         cmd.Parameters.Add(new SqlParameter("@lote_defecto_entrada_mercancia_sap", oBe.Lote_defecto_entrada_mercancia_sap));
         cmd.Parameters.Add(new SqlParameter("@fecha_vence_defecto", oBe.Fecha_vence_defecto));
-        cmd.Parameters.Add(new SqlParameter("@interface_sap", oBe.Interface_sap));
-        cmd.Parameters.Add(new SqlParameter("@sap_control_draft_ajustes", oBe.Sap_control_draft_ajustes));
-        cmd.Parameters.Add(new SqlParameter("@sap_control_draft_traslados", oBe.Sap_control_draft_traslados));
-        cmd.Parameters.Add(new SqlParameter("@inferir_bonificacion_pedido_sap", oBe.Inferir_bonificacion_pedido_sap));
-        cmd.Parameters.Add(new SqlParameter("@rechazar_bonificacion_incompleta", oBe.Rechazar_bonificacion_incompleta));
+        cmd.Parameters.Add(new SqlParameter("@interface_sap", oBe.Interface_SAP));
+        cmd.Parameters.Add(new SqlParameter("@sap_control_draft_ajustes", oBe.SAP_Control_Draft_Ajustes));
+        cmd.Parameters.Add(new SqlParameter("@sap_control_draft_traslados", oBe.SAP_Control_Draft_Traslados));
+        cmd.Parameters.Add(new SqlParameter("@inferir_bonificacion_pedido_sap", oBe.Inferir_Bonificacion_Pedido_SAP));
+        cmd.Parameters.Add(new SqlParameter("@rechazar_bonificacion_incompleta", oBe.Rechazar_Bonificacion_Incompleta));
         cmd.Parameters.Add(new SqlParameter("@IdIndiceRotacion", oBe.IdIndiceRotacion));
-        cmd.Parameters.Add(new SqlParameter("@rango_dias_importacion", oBe.Rango_dias_importacion));
-        cmd.Parameters.Add(new SqlParameter("@equiparar_productos", oBe.Equiparar_productos));
-        cmd.Parameters.Add(new SqlParameter("@bodega_facturacion", oBe.Bodega_facturacion));
-        cmd.Parameters.Add(new SqlParameter("@valida_solo_codigo", oBe.Valida_solo_codigo));
-        cmd.Parameters.Add(new SqlParameter("@excluir_recepcion_picking", oBe.Excluir_recepcion_picking));
-        cmd.Parameters.Add(new SqlParameter("@bodega_prorrateo", oBe.Bodega_prorrateo));
-        cmd.Parameters.Add(new SqlParameter("@bodega_prorrateo1", oBe.Bodega_prorrateo1));
+        cmd.Parameters.Add(new SqlParameter("@rango_dias_importacion", oBe.Rango_Dias_Importacion));
+        cmd.Parameters.Add(new SqlParameter("@equiparar_productos", oBe.Equiparar_Productos));
+        cmd.Parameters.Add(new SqlParameter("@bodega_facturacion", oBe.Bodega_Facturacion));
+        cmd.Parameters.Add(new SqlParameter("@valida_solo_codigo", oBe.Valida_Solo_Codigo));
+        cmd.Parameters.Add(new SqlParameter("@excluir_recepcion_picking", oBe.Excluir_Recepcion_Picking));
+        cmd.Parameters.Add(new SqlParameter("@bodega_prorrateo", oBe.Bodega_Prorrateo));
+        cmd.Parameters.Add(new SqlParameter("@bodega_prorrateo1", oBe.Bodega_Prorrateo1));
     }
 
 
@@ -659,7 +664,7 @@ public class clsLnI_nav_config_enc
             dad.SelectCommand.Parameters.Add(new SqlParameter("@despachar_existencia_parcial", pBeI_nav_config_enc.Despachar_existencia_parcial));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@convertir_decimales_a_umbas", pBeI_nav_config_enc.Convertir_decimales_a_umbas));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@generar_pedido_ingreso_bodega_destino", pBeI_nav_config_enc.Generar_pedido_ingreso_bodega_destino));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@generar_recepcion_auto_bodega_destino", pBeI_nav_config_enc.Generar_recepcion_auto_bodega_destino));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@generar_recepcion_auto_bodega_destino", pBeI_nav_config_enc.Generar_Recepcion_Auto_Bodega_Destino));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@codigo_proveedor_produccion", pBeI_nav_config_enc.Codigo_proveedor_produccion));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@idFamilia", pBeI_nav_config_enc.IdFamilia));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@idclasificacion", pBeI_nav_config_enc.Idclasificacion));
@@ -670,45 +675,45 @@ public class clsLnI_nav_config_enc
             dad.SelectCommand.Parameters.Add(new SqlParameter("@genera_lp", pBeI_nav_config_enc.Genera_lp));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@nombre_ejecutable", pBeI_nav_config_enc.Nombre_ejecutable));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@IdTipoDocumentoTransferenciasIngreso", pBeI_nav_config_enc.IdTipoDocumentoTransferenciasIngreso));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@crear_recepcion_de_transferencia_nav", pBeI_nav_config_enc.Crear_recepcion_de_transferencia_nav));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@crear_recepcion_de_transferencia_nav", pBeI_nav_config_enc.Crear_Recepcion_De_Transferencia_NAV));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@control_peso", pBeI_nav_config_enc.Control_peso));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@crear_recepcion_de_compra_nav", pBeI_nav_config_enc.Crear_recepcion_de_compra_nav));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@crear_recepcion_de_compra_nav", pBeI_nav_config_enc.Crear_Recepcion_De_Compra_NAV));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@IdAcuerdoEnc", pBeI_nav_config_enc.IdAcuerdoEnc));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@IdTipoEtiqueta", pBeI_nav_config_enc.IdTipoEtiqueta));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@equiparar_cliente_con_propietario_en_doc_salida", pBeI_nav_config_enc.Equiparar_cliente_con_propietario_en_doc_salida));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@push_ingreso_nav_desde_hh", pBeI_nav_config_enc.Push_ingreso_nav_desde_hh));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@reservar_umbas_primero", pBeI_nav_config_enc.Reservar_umbas_primero));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@implosion_automatica", pBeI_nav_config_enc.Implosion_automatica));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@explosion_automatica", pBeI_nav_config_enc.Explosion_automatica));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@equiparar_cliente_con_propietario_en_doc_salida", pBeI_nav_config_enc.equiparar_cliente_con_propietario_en_doc_salida));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@push_ingreso_nav_desde_hh", pBeI_nav_config_enc.Push_Ingreso_NAV_Desde_HH));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@reservar_umbas_primero", pBeI_nav_config_enc.Reservar_UMBas_Primero));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@implosion_automatica", pBeI_nav_config_enc.Implosion_Automatica));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@explosion_automatica", pBeI_nav_config_enc.Explosion_Automatica));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@Ejecutar_En_Despacho_Automaticamente", pBeI_nav_config_enc.Ejecutar_En_Despacho_Automaticamente));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@IdTipoRotacion", pBeI_nav_config_enc.IdTipoRotacion));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@explosion_automatica_desde_ubicacion_picking", pBeI_nav_config_enc.Explosion_automatica_desde_ubicacion_picking));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@explosion_automatica_nivel_max", pBeI_nav_config_enc.Explosion_automatica_nivel_max));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@conservar_zona_picking_clavaud", pBeI_nav_config_enc.Conservar_zona_picking_clavaud));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@explosion_automatica_desde_ubicacion_picking", pBeI_nav_config_enc.Explosion_Automatica_Desde_Ubicacion_Picking));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@explosion_automatica_nivel_max", pBeI_nav_config_enc.Explosion_Automatica_Nivel_Max));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@conservar_zona_picking_clavaud", pBeI_nav_config_enc.Conservar_Zona_Picking_Clavaud));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@recepcion_genera_historico", pBeI_nav_config_enc.Recepcion_genera_historico));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@excluir_ubicaciones_reabasto", pBeI_nav_config_enc.Excluir_ubicaciones_reabasto));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@considerar_disponibilidad_ubicacion_reabasto", pBeI_nav_config_enc.Considerar_disponibilidad_ubicacion_reabasto));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@considerar_paletizado_en_reabasto", pBeI_nav_config_enc.Considerar_paletizado_en_reabasto));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@dias_vida_defecto_perecederos", pBeI_nav_config_enc.Dias_vida_defecto_perecederos));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@codigo_bodega_erp_nc", pBeI_nav_config_enc.Codigo_bodega_erp_nc));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@lote_defecto_entrada_nc", pBeI_nav_config_enc.Lote_defecto_entrada_nc));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@vence_defecto_nc", pBeI_nav_config_enc.Vence_defecto_nc));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@excluir_ubicaciones_reabasto", pBeI_nav_config_enc.Excluir_Ubicaciones_Reabasto));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@considerar_disponibilidad_ubicacion_reabasto", pBeI_nav_config_enc.Considerar_Disponibilidad_Ubicacion_Reabasto));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@considerar_paletizado_en_reabasto", pBeI_nav_config_enc.considerar_paletizado_en_reabasto));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@dias_vida_defecto_perecederos", pBeI_nav_config_enc.Dias_Vida_Defecto_Perecederos));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@codigo_bodega_erp_nc", pBeI_nav_config_enc.Codigo_Bodega_ERP_NC));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@lote_defecto_entrada_nc", pBeI_nav_config_enc.Lote_Defecto_Entrada_NC));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@vence_defecto_nc", pBeI_nav_config_enc.Vence_Defecto_NC));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@IdProductoEstado_NC", pBeI_nav_config_enc.IdProductoEstado_NC));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@lote_defecto_entrada_mercancia_sap", pBeI_nav_config_enc.Lote_defecto_entrada_mercancia_sap));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@fecha_vence_defecto", pBeI_nav_config_enc.Fecha_vence_defecto));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@interface_sap", pBeI_nav_config_enc.Interface_sap));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@sap_control_draft_ajustes", pBeI_nav_config_enc.Sap_control_draft_ajustes));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@sap_control_draft_traslados", pBeI_nav_config_enc.Sap_control_draft_traslados));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@inferir_bonificacion_pedido_sap", pBeI_nav_config_enc.Inferir_bonificacion_pedido_sap));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@rechazar_bonificacion_incompleta", pBeI_nav_config_enc.Rechazar_bonificacion_incompleta));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@interface_sap", pBeI_nav_config_enc.Interface_SAP));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@sap_control_draft_ajustes", pBeI_nav_config_enc.SAP_Control_Draft_Ajustes));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@sap_control_draft_traslados", pBeI_nav_config_enc.SAP_Control_Draft_Traslados));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@inferir_bonificacion_pedido_sap", pBeI_nav_config_enc.Inferir_Bonificacion_Pedido_SAP));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@rechazar_bonificacion_incompleta", pBeI_nav_config_enc.Rechazar_Bonificacion_Incompleta));
             dad.SelectCommand.Parameters.Add(new SqlParameter("@IdIndiceRotacion", pBeI_nav_config_enc.IdIndiceRotacion));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@rango_dias_importacion", pBeI_nav_config_enc.Rango_dias_importacion));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@equiparar_productos", pBeI_nav_config_enc.Equiparar_productos));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@bodega_facturacion", pBeI_nav_config_enc.Bodega_facturacion));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@valida_solo_codigo", pBeI_nav_config_enc.Valida_solo_codigo));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@excluir_recepcion_picking", pBeI_nav_config_enc.Excluir_recepcion_picking));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@bodega_prorrateo", pBeI_nav_config_enc.Bodega_prorrateo));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@bodega_prorrateo1", pBeI_nav_config_enc.Bodega_prorrateo1));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@rango_dias_importacion", pBeI_nav_config_enc.Rango_Dias_Importacion));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@equiparar_productos", pBeI_nav_config_enc.Equiparar_Productos));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@bodega_facturacion", pBeI_nav_config_enc.Bodega_Facturacion));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@valida_solo_codigo", pBeI_nav_config_enc.Valida_Solo_Codigo));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@excluir_recepcion_picking", pBeI_nav_config_enc.Excluir_Recepcion_Picking));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@bodega_prorrateo", pBeI_nav_config_enc.Bodega_Prorrateo));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@bodega_prorrateo1", pBeI_nav_config_enc.Bodega_Prorrateo1));
 
             DataTable dt = new DataTable();
             dad.Fill(dt);
@@ -1026,8 +1031,71 @@ public class clsLnI_nav_config_enc
         }
     }
 
-    internal static void GetSingle(IConfiguration config, clsBeI_nav_config_enc beInavConfigEnc, SqlConnection connection, SqlTransaction effectiveTx)
+    public static clsBeI_nav_config_enc? Get_Single_By_IdBodega(int pIdBodega, SqlConnection lConnection, SqlTransaction lTransaction)
     {
-        throw new NotImplementedException();
+        try
+        {
+            string vSQL = @"SELECT * FROM i_nav_config_enc 
+                       WHERE IdBodega=@IdBodega";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("IdBodega", pIdBodega);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+                    clsBeI_nav_config_enc ObjUM = new clsBeI_nav_config_enc();
+                    Cargar(ref ObjUM, lRow);
+                    return ObjUM;
+                }
+            }
+
+            return null;
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
+    public static clsBeI_nav_config_enc? GetSingle_By_IdBodega_And_IdPropietario(int pIdBodega, int pIdPropietario, SqlConnection pConnection, SqlTransaction pTransaction)
+    {
+        try
+        {
+            string vSQL = @"SELECT * FROM i_nav_config_enc 
+                       WHERE IdBodega=@IdBodega 
+                       AND IdPropietario=@IdPropietario";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, pConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = pTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("IdBodega", pIdBodega);
+                lDTA.SelectCommand.Parameters.AddWithValue("IdPropietario", pIdPropietario);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+                    clsBeI_nav_config_enc ObjUM = new clsBeI_nav_config_enc();
+                    Cargar(ref ObjUM, lRow);
+                    return ObjUM;
+                }
+            }
+
+            return null;
+        }
+        catch
+        {
+            throw;
+        }
     }
 }

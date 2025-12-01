@@ -1671,10 +1671,7 @@ Public Class frmMenu
 
             If AP.IdConfiguracionInterface <> 0 Then
 
-                '#EJC20250903: Se cambia el parametro de instancia por el IdConfiguracionInterface  
-                Dim gIndiceInstancia As Integer = clsLnI_nav_config_enc.Get_IdConfiguracion(AP.IdBodega, AP.IdEmpresa)
-
-                Ejecutar_Interface(" -" & gIndiceInstancia & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-0-0" & "-" & clsBD.Instancia.NombreInstancia, Me)
+                Ejecutar_Interface(" -" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-0-0" & "-" & clsBD.Instancia.NombreInstancia, Me)
 
             Else
 
@@ -5253,4 +5250,35 @@ Public Class frmMenu
 
     End Sub
 
+    Private Sub frmMenu_Closing(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles Me.Closing
+        If XtraMessageBox.Show("¿Está seguro de salir de la aplicación?",
+                       Text,
+                       MessageBoxButtons.YesNo,
+                       MessageBoxIcon.Question) = DialogResult.No Then
+            e.Cancel = True
+        End If
+    End Sub
+
+    Private Sub mnuVerificacionBOF_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuVerificacionBOF.ItemClick
+        If Not permiteMenu(e.Link) Then Return
+        Try
+
+            With frmPedido_List
+                .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
+                .Modo = frmPedido_List.pModo.verificacion
+                .WindowState = FormWindowState.Maximized
+                .Show()
+                .Focus()
+            End With
+
+            SplashScreenManager.CloseForm(False)
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("La Bodega {0} de la Empresa {1} no  tiene definida configuración para interface", AP.NomBodega, AP.NomEmpresa),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+    End Sub
 End Class

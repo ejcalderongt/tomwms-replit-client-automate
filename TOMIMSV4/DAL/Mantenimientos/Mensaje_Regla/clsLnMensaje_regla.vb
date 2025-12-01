@@ -39,6 +39,7 @@ Public Class clsLnMensaje_regla
             Ins.Add("fec_mod", "@fec_mod", DataType.Parametro)
             Ins.Add("user_mod", "@user_mod", DataType.Parametro)
             Ins.Add("activo", "@activo", DataType.Parametro)
+            Ins.Add("IdreglaRecepcion", "@IdreglaRecepcion", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -60,6 +61,7 @@ Public Class clsLnMensaje_regla
             cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeMensaje_regla.Fec_mod))
             cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeMensaje_regla.User_mod))
             cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeMensaje_regla.Activo))
+            cmd.Parameters.Add(New SqlParameter("@IDREGLARECEPCION", oBeMensaje_regla.IdReglaRecepcion))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

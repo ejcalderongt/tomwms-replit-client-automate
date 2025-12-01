@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using Microsoft.Data.SqlClient;
-using Microsoft.VisualBasic.CompilerServices;
 using WMS.EntityCore.Pedido;
 using Microsoft.Extensions.Configuration;
 using WMSWebAPI.Dtos.Salidas;
@@ -91,24 +90,17 @@ public class clsLnTrans_pe_enc
             oBeTrans_pe_enc.Bodega_origen = GetString("bodega_origen");
             oBeTrans_pe_enc.Bodega_destino = GetString("bodega_destino");
             oBeTrans_pe_enc.IdMotivoDevolucion = GetInt("IdMotivoDevolucion");
+            oBeTrans_pe_enc.EsExportacion = GetBool("EsExportacion");
         }
-        catch (Exception ex)
-        {
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = sf?.GetMethod();
-            string vMsgError = string.Format("{{0}} {{1}}", currentMethodName, ex.Message);
-            
-            throw new Exception(vMsgError);
+        catch (Exception)
+        {                      
+            throw;
         }
     }
 
-    public static int Insertar(IConfiguration config, clsBeTrans_pe_enc oBeTrans_pe_enc, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Insertar(clsBeTrans_pe_enc oBeTrans_pe_enc, SqlConnection pConection, SqlTransaction pTransaction)
     {
-
-        int rowsAffected = 0;        
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
+        int rowsAffected = 0;
 
         try
         {
@@ -184,117 +176,87 @@ public class clsLnTrans_pe_enc
 
             string sp = Ins.SQL();
 
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction)
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+                CommandType = CommandType.Text
+            };
 
             cmd.Parameters.Add(new SqlParameter("@IdPedidoEnc", oBeTrans_pe_enc.IdPedidoEnc));
             cmd.Parameters.Add(new SqlParameter("@IdBodega", oBeTrans_pe_enc.IdBodega));
             cmd.Parameters.Add(new SqlParameter("@IdCliente", oBeTrans_pe_enc.IdCliente));
-            cmd.Parameters.Add(new SqlParameter("@IdMuelle", oBeTrans_pe_enc.IdMuelle == 0 ? (object)DBNull.Value : (object) oBeTrans_pe_enc.IdMuelle));
+            cmd.Parameters.Add(new SqlParameter("@IdMuelle", oBeTrans_pe_enc.IdMuelle == 0 ? (object)DBNull.Value : oBeTrans_pe_enc.IdMuelle));
             cmd.Parameters.Add(new SqlParameter("@IdPropietarioBodega", oBeTrans_pe_enc.IdPropietarioBodega));
             cmd.Parameters.Add(new SqlParameter("@IdTipoPedido", oBeTrans_pe_enc.IdTipoPedido));
             cmd.Parameters.Add(new SqlParameter("@IdPickingEnc", oBeTrans_pe_enc.IdPickingEnc));
             cmd.Parameters.Add(new SqlParameter("@Fecha_Pedido", oBeTrans_pe_enc.Fecha_Pedido));
             cmd.Parameters.Add(new SqlParameter("@hora_ini", oBeTrans_pe_enc.Hora_ini));
             cmd.Parameters.Add(new SqlParameter("@hora_fin", oBeTrans_pe_enc.Hora_fin));
-            cmd.Parameters.Add(new SqlParameter("@ubicacion", oBeTrans_pe_enc.Ubicacion));
-            cmd.Parameters.Add(new SqlParameter("@estado", oBeTrans_pe_enc.Estado));
-            cmd.Parameters.Add(new SqlParameter("@no_despacho", oBeTrans_pe_enc.No_despacho));
+            cmd.Parameters.Add(new SqlParameter("@ubicacion", oBeTrans_pe_enc.Ubicacion ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@estado", oBeTrans_pe_enc.Estado ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@no_despacho", oBeTrans_pe_enc.No_despacho == 0 ? (object)DBNull.Value : oBeTrans_pe_enc.No_despacho));
             cmd.Parameters.Add(new SqlParameter("@activo", oBeTrans_pe_enc.Activo));
-            cmd.Parameters.Add(new SqlParameter("@user_agr", oBeTrans_pe_enc.User_agr));
+            cmd.Parameters.Add(new SqlParameter("@user_agr", oBeTrans_pe_enc.User_agr ?? (object)DBNull.Value));
             cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeTrans_pe_enc.Fec_agr));
-            cmd.Parameters.Add(new SqlParameter("@user_mod", oBeTrans_pe_enc.User_mod));
+            cmd.Parameters.Add(new SqlParameter("@user_mod", oBeTrans_pe_enc.User_mod ?? (object)DBNull.Value));
             cmd.Parameters.Add(new SqlParameter("@fec_mod", oBeTrans_pe_enc.Fec_mod));
-            cmd.Parameters.Add(new SqlParameter("@no_documento", oBeTrans_pe_enc.No_documento));
-            cmd.Parameters.Add(new SqlParameter("@local", oBeTrans_pe_enc.Local));
+            cmd.Parameters.Add(new SqlParameter("@no_documento", oBeTrans_pe_enc.No_documento == 0 ? (object)DBNull.Value : oBeTrans_pe_enc.No_documento));
+            cmd.Parameters.Add(new SqlParameter("@local", oBeTrans_pe_enc.Local ? 1 : 0));
             cmd.Parameters.Add(new SqlParameter("@pallet_primero", oBeTrans_pe_enc.Pallet_primero));
             cmd.Parameters.Add(new SqlParameter("@dias_cliente", oBeTrans_pe_enc.Dias_cliente));
             cmd.Parameters.Add(new SqlParameter("@anulado", oBeTrans_pe_enc.Anulado));
             cmd.Parameters.Add(new SqlParameter("@RoadKilometraje", oBeTrans_pe_enc.RoadKilometraje));
             cmd.Parameters.Add(new SqlParameter("@RoadFechaEntr", oBeTrans_pe_enc.RoadFechaEntr));
-            cmd.Parameters.Add(new SqlParameter("@RoadDirEntrega", oBeTrans_pe_enc.RoadDirEntrega));
+            cmd.Parameters.Add(new SqlParameter("@RoadDirEntrega", oBeTrans_pe_enc.RoadDirEntrega ?? (object)DBNull.Value));
             cmd.Parameters.Add(new SqlParameter("@RoadTotal", oBeTrans_pe_enc.RoadTotal));
             cmd.Parameters.Add(new SqlParameter("@RoadDesMonto", oBeTrans_pe_enc.RoadDesMonto));
             cmd.Parameters.Add(new SqlParameter("@RoadImpMonto", oBeTrans_pe_enc.RoadImpMonto));
             cmd.Parameters.Add(new SqlParameter("@RoadPeso", oBeTrans_pe_enc.RoadPeso));
-            cmd.Parameters.Add(new SqlParameter("@RoadBandera", oBeTrans_pe_enc.RoadBandera));
-            cmd.Parameters.Add(new SqlParameter("@RoadStatCom", oBeTrans_pe_enc.RoadStatCom));
-            cmd.Parameters.Add(new SqlParameter("@RoadCalcoBJ", oBeTrans_pe_enc.RoadCalcoBJ));
-            cmd.Parameters.Add(new SqlParameter("@RoadImpres", oBeTrans_pe_enc.RoadImpres));
-            cmd.Parameters.Add(new SqlParameter("@RoadADD1", oBeTrans_pe_enc.RoadADD1));
-            cmd.Parameters.Add(new SqlParameter("@RoadADD2", oBeTrans_pe_enc.RoadADD2));
-            cmd.Parameters.Add(new SqlParameter("@RoadADD3", oBeTrans_pe_enc.RoadADD3));
-            cmd.Parameters.Add(new SqlParameter("@RoadStatProc", oBeTrans_pe_enc.RoadStatProc));
+            cmd.Parameters.Add(new SqlParameter("@RoadBandera", oBeTrans_pe_enc.RoadBandera ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@RoadStatCom", oBeTrans_pe_enc.RoadStatCom ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@RoadCalcoBJ", oBeTrans_pe_enc.RoadCalcoBJ ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@RoadImpres", oBeTrans_pe_enc.RoadImpres == 0 ? (object)DBNull.Value : oBeTrans_pe_enc.RoadImpres));
+            cmd.Parameters.Add(new SqlParameter("@RoadADD1", oBeTrans_pe_enc.RoadADD1 ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@RoadADD2", oBeTrans_pe_enc.RoadADD2 ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@RoadADD3", oBeTrans_pe_enc.RoadADD3 ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@RoadStatProc", oBeTrans_pe_enc.RoadStatProc ?? (object)DBNull.Value));
             cmd.Parameters.Add(new SqlParameter("@RoadRechazado", oBeTrans_pe_enc.RoadRechazado));
-            cmd.Parameters.Add(new SqlParameter("@RoadRazon_Rechazado", oBeTrans_pe_enc.RoadRazon_Rechazado));
+            cmd.Parameters.Add(new SqlParameter("@RoadRazon_Rechazado", oBeTrans_pe_enc.RoadRazon_Rechazado ?? (object)DBNull.Value));
             cmd.Parameters.Add(new SqlParameter("@RoadInformado", oBeTrans_pe_enc.RoadInformado));
-            cmd.Parameters.Add(new SqlParameter("@RoadSucursal", oBeTrans_pe_enc.RoadSucursal));
+            cmd.Parameters.Add(new SqlParameter("@RoadSucursal", oBeTrans_pe_enc.RoadSucursal ?? (object)DBNull.Value));
             cmd.Parameters.Add(new SqlParameter("@RoadIdDespacho", oBeTrans_pe_enc.RoadIdDespacho));
             cmd.Parameters.Add(new SqlParameter("@RoadIdFacturacion", oBeTrans_pe_enc.RoadIdFacturacion));
             cmd.Parameters.Add(new SqlParameter("@RoadIdRuta", oBeTrans_pe_enc.RoadIdRuta));
             cmd.Parameters.Add(new SqlParameter("@RoadIdVendedor", oBeTrans_pe_enc.RoadIdVendedor));
             cmd.Parameters.Add(new SqlParameter("@RoadIdRutaDespacho", oBeTrans_pe_enc.RoadIdRutaDespacho));
             cmd.Parameters.Add(new SqlParameter("@RoadIdVendedorDespacho", oBeTrans_pe_enc.RoadIdVendedorDespacho));
-            cmd.Parameters.Add(new SqlParameter("@Observacion", oBeTrans_pe_enc.Observacion));
-            cmd.Parameters.Add(new SqlParameter("@PedidoRoad", oBeTrans_pe_enc.PedidoRoad));
+            cmd.Parameters.Add(new SqlParameter("@Observacion", oBeTrans_pe_enc.Observacion ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@PedidoRoad", oBeTrans_pe_enc.PedidoRoad ? 1 : 0));
             cmd.Parameters.Add(new SqlParameter("@HoraEntregaDesde", oBeTrans_pe_enc.HoraEntregaDesde));
             cmd.Parameters.Add(new SqlParameter("@HoraEntregaHasta", oBeTrans_pe_enc.HoraEntregaHasta));
-            cmd.Parameters.Add(new SqlParameter("@referencia", oBeTrans_pe_enc.Referencia));
+            cmd.Parameters.Add(new SqlParameter("@referencia", oBeTrans_pe_enc.Referencia ?? (object)DBNull.Value));
             cmd.Parameters.Add(new SqlParameter("@IdMotivoAnulacionBodega", oBeTrans_pe_enc.IdMotivoAnulacionBodega));
             cmd.Parameters.Add(new SqlParameter("@Enviado_A_ERP", oBeTrans_pe_enc.Enviado_A_ERP));
             cmd.Parameters.Add(new SqlParameter("@control_ultimo_lote", oBeTrans_pe_enc.Control_ultimo_lote));
-            cmd.Parameters.Add(new SqlParameter("@serie", oBeTrans_pe_enc.Serie));
-            cmd.Parameters.Add(new SqlParameter("@correlativo", oBeTrans_pe_enc.Correlativo));
-            cmd.Parameters.Add(new SqlParameter("@Referencia_Documento_Ingreso_Bodega_Destino", oBeTrans_pe_enc.Referencia_Documento_Ingreso_Bodega_Destino));
+            cmd.Parameters.Add(new SqlParameter("@serie", oBeTrans_pe_enc.Serie ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@correlativo", oBeTrans_pe_enc.Correlativo == 0 ? (object)DBNull.Value : oBeTrans_pe_enc.Correlativo));
+            cmd.Parameters.Add(new SqlParameter("@Referencia_Documento_Ingreso_Bodega_Destino", oBeTrans_pe_enc.Referencia_Documento_Ingreso_Bodega_Destino ?? (object)DBNull.Value));
             cmd.Parameters.Add(new SqlParameter("@sync_mi3", oBeTrans_pe_enc.Sync_mi3));
-            cmd.Parameters.Add(new SqlParameter("@No_Picking_ERP", oBeTrans_pe_enc.No_Picking_ERP));
-            cmd.Parameters.Add(new SqlParameter("@no_documento_externo", oBeTrans_pe_enc.No_documento_externo));
+            cmd.Parameters.Add(new SqlParameter("@No_Picking_ERP", oBeTrans_pe_enc.No_Picking_ERP ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@no_documento_externo", oBeTrans_pe_enc.No_documento_externo ?? (object)DBNull.Value));
             cmd.Parameters.Add(new SqlParameter("@requiere_tarimas", oBeTrans_pe_enc.Requiere_tarimas));
             cmd.Parameters.Add(new SqlParameter("@fecha_preparacion", oBeTrans_pe_enc.Fecha_preparacion));
             cmd.Parameters.Add(new SqlParameter("@IdTipoManufactura", oBeTrans_pe_enc.IdTipoManufactura));
-            cmd.Parameters.Add(new SqlParameter("@bodega_origen", oBeTrans_pe_enc.Bodega_origen));
-            cmd.Parameters.Add(new SqlParameter("@bodega_destino", oBeTrans_pe_enc.Bodega_destino));
+            cmd.Parameters.Add(new SqlParameter("@bodega_origen", oBeTrans_pe_enc.Bodega_origen ?? (object)DBNull.Value));
+            cmd.Parameters.Add(new SqlParameter("@bodega_destino", oBeTrans_pe_enc.Bodega_destino ?? (object)DBNull.Value));
             cmd.Parameters.Add(new SqlParameter("@IdMotivoDevolucion", oBeTrans_pe_enc.IdMotivoDevolucion));
 
             rowsAffected = cmd.ExecuteNonQuery();
-
-            cmd.Dispose();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
         }
-        catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+        catch (Exception)
+        {            
+            throw;
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
-        }
+
         return rowsAffected;
     }
 
@@ -413,16 +375,12 @@ public class clsLnTrans_pe_enc
         return rowsAffected;
     }
 
-    public static int Actualizar(IConfiguration config, clsBeTrans_pe_enc oBeTrans_pe_enc, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Actualizar(clsBeTrans_pe_enc oBeTrans_pe_enc, SqlConnection pConection, SqlTransaction pTransaction)
     {
-
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
-
             Upd.Init("trans_pe_enc");
             Upd.Add("idpedidoenc", "@idpedidoenc", "F");
             Upd.Add("idbodega", "@idbodega", "F");
@@ -496,48 +454,25 @@ public class clsLnTrans_pe_enc
 
             string sp = Upd.SQL();
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction)
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+                CommandType = CommandType.Text
+            };
 
             Bind(cmd, oBeTrans_pe_enc);
 
             rowsAffected = cmd.ExecuteNonQuery();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
         }
-        catch (SqlException ex1)
+        catch (Exception ex1)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
             var st = new StackTrace();
             var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
+            MethodBase? currentMethodName = sf?.GetMethod();
             string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
+
             throw new Exception(vMsgError);
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
-        }
+
         return rowsAffected;
     }
 
@@ -798,55 +733,31 @@ public class clsLnTrans_pe_enc
             throw new Exception(vMsgError);
         }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int MaxID(SqlConnection pConection, SqlTransaction pTransaction)
     {
-
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
         int lMax = 0;
+
         try
         {
+            const string sp = "SELECT ISNULL(Max(IdPedidoEnc),0) FROM Trans_pe_enc";
 
-
-            const string sp = "Select ISNULL(Max(IdPedidoEnc),0) FROM Trans_pe_enc";
-
-            bool Es_Transaccion_Remota = pConection is not null && pTransaction is not null;
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-            if (Es_Transaccion_Remota)
+            using SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction)
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+                CommandType = CommandType.Text
+            };
 
-            Object lreturnValue = cmd.ExecuteScalar();
+            object lreturnValue = cmd.ExecuteScalar();
 
             if (lreturnValue != DBNull.Value && lreturnValue != null)
             {
-                lMax = int.Parse((String)lreturnValue);
+                lMax = Convert.ToInt32(lreturnValue);
             }
 
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
             return lMax;
-
         }
-        catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+        catch (Exception)
+        {           
+            throw;
         }
     }
     public static void Bind(SqlCommand cmd, clsBeTrans_pe_enc o)
@@ -921,33 +832,18 @@ public class clsLnTrans_pe_enc
         cmd.Parameters.Add(new SqlParameter("@IdMotivoDevolucion", o.IdMotivoDevolucion != 0 ? o.IdMotivoDevolucion : DBNull.Value));
     }
 
-    public static int InsertOrUpdate(IConfiguration config, clsBeTrans_pe_enc entity, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(clsBeTrans_pe_enc entity, SqlConnection conn, SqlTransaction tx)
     {
-        bool isExternalTx = conn != null && tx != null;
-
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
-        if (!isExternalTx) { connection.Open(); localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted); }
-
         try
         {
-            if (Existe(entity.IdPedidoEnc, connection, isExternalTx ? tx! : localTx!))
-                return Actualizar(config, entity, connection, isExternalTx ? tx : localTx);
+            if (Existe(entity.IdPedidoEnc, conn, tx))
+                return Actualizar(entity, conn, tx);
             else
-                return Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                return Insertar(entity, conn, tx);
         }
-        catch
+        catch (Exception)
         {
-            if (!isExternalTx) localTx?.Rollback();
             throw;
-        }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                localTx?.Commit();
-                connection.Close();
-            }
         }
     }
     public static bool Existe(int idPedidoEnc, SqlConnection conn, SqlTransaction? tx = null)
@@ -1044,5 +940,146 @@ public class clsLnTrans_pe_enc
             throw new Exception(vMsgError, ex);
         }
     }
-    
+
+    public static clsBeTrans_pe_enc? Get_Single_By_Referencia(clsBeTrans_pe_enc pBeTrans_pe_enc,
+                                                             SqlConnection pConection,
+                                                             SqlTransaction pTransaction)
+    {
+        try
+        {
+            const string sp = @"SELECT * FROM Trans_pe_enc 
+                           Where(Referencia = @Referencia AND IdTipoPedido = @IdTipoPedido)";
+
+            SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
+            SqlDataAdapter dad = new SqlDataAdapter(cmd);
+
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@Referencia", pBeTrans_pe_enc.Referencia));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdTipoPedido", pBeTrans_pe_enc.IdTipoPedido));
+
+            DataTable dt = new DataTable();
+            dad.Fill(dt);
+
+            if (dt.Rows.Count >= 1)
+            {
+                clsBeTrans_pe_enc ObjUM = new clsBeTrans_pe_enc();
+                Cargar(ref ObjUM, dt.Rows[0]);
+                return ObjUM;
+            }
+
+            return null;
+        }
+        catch (Exception)
+        {         
+            throw;
+        }
+    }
+
+    public static clsBeTrans_pe_enc? Get_Single_By_Referencia_And_Company(ref clsBeTrans_pe_enc pBeTrans_pe_enc,
+                                                                        SqlConnection pConection,
+                                                                        SqlTransaction pTransaction)
+    {
+        clsBeTrans_pe_enc? result = null;
+
+        try
+        {
+            const string sp = "SELECT * FROM Trans_pe_enc " +
+                             " WHERE (Referencia = @Referencia AND IdTipoPedido = @IdTipoPedido AND Codigo_Empresa_ERP = @Codigo_Empresa_ERP) ";
+
+            using (SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text })
+            {
+                using (SqlDataAdapter dad = new SqlDataAdapter(cmd))
+                {
+                    dad.SelectCommand.Parameters.Add(new SqlParameter("@Referencia", pBeTrans_pe_enc.Referencia));
+                    dad.SelectCommand.Parameters.Add(new SqlParameter("@IdTipoPedido", pBeTrans_pe_enc.IdTipoPedido));
+                    dad.SelectCommand.Parameters.Add(new SqlParameter("@Codigo_Empresa_ERP", pBeTrans_pe_enc.Codigo_Empresa_ERP));
+
+                    DataTable dt = new DataTable();
+                    dad.Fill(dt);
+
+                    if (dt.Rows.Count >= 1)
+                    {
+                        clsBeTrans_pe_enc ObjUM = new clsBeTrans_pe_enc();
+                        Cargar(ref ObjUM, dt.Rows[0]);
+                        return ObjUM;
+                    }
+                }
+            }
+        }
+        catch (Exception)
+        {            
+            throw;
+        }
+
+        return result;
+    }
+
+    public static bool Inserta_Encabezado(ref clsBeTrans_pe_enc pPedido,
+                                          SqlConnection lConnection,
+                                          SqlTransaction lTransaction)
+    {
+        bool result = false;
+
+        try
+        {
+            pPedido.IdPedidoEnc = MaxID(lConnection, lTransaction)+1;
+            string correlativo = pPedido.IdPedidoEnc.ToString().PadLeft(7, '0');
+            pPedido.No_documento = int.Parse(correlativo);
+            int ResultadoInsert = Insertar(pPedido, lConnection, lTransaction);
+            result = ResultadoInsert > 0;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return result;
+    }
+
+    public static bool Tiene_Detalle(int IdPedidoEnc, SqlConnection lConnection, SqlTransaction lTransaction)
+    {
+        try
+        {
+            string vSQL = "SELECT TOP(1) IdPedidoDet FROM trans_pe_det WHERE IdPedidoEnc = @IdPedidoEnc";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", IdPedidoEnc);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                return lDT.Rows.Count > 0;
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static int Eliminar_Encabezado_Pedido(int IdPedidoEnc,
+                                                SqlConnection lConnection,
+                                                SqlTransaction lTransaction)
+    {
+        try
+        {
+            string sp = "DELETE FROM Trans_pe_enc WHERE (IdPedidoEnc = @IdPedidoEnc)";
+
+            using SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            cmd.Parameters.Add(new SqlParameter("@IDPEDIDOENC", IdPedidoEnc));
+
+            int rowsAffected = cmd.ExecuteNonQuery();
+            return rowsAffected;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }

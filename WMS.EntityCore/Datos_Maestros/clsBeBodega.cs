@@ -384,6 +384,7 @@ namespace WMS.EntityCore.Datos_Maestros
         [Column("despacho_automatico_hh")]
         [DisplayName("despacho_automatico_hh")]
         public bool Despacho_automatico_hh { get; set; } = false;
+        public bool Control_Talla_Color { get; set; } = false;
 
         public clsBeBodega() { }
 

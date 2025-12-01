@@ -430,7 +430,7 @@ public class clsLnProveedor_bodega
                         Object lreturnValue = lCommand.ExecuteScalar();
                         if (lreturnValue != DBNull.Value && lreturnValue != null)
                         {
-                            lMax = int.Parse((String)lreturnValue);
+                            lMax = Convert.ToInt32(lreturnValue);
                         }
                     }
                     lTransaction.Commit();
@@ -469,7 +469,7 @@ public class clsLnProveedor_bodega
 
             if (lreturnValue != DBNull.Value && lreturnValue != null)
             {
-                lMax = int.Parse((string)lreturnValue);
+                lMax = Convert.ToInt32(lreturnValue);
             }
             
             return lMax;
@@ -624,4 +624,45 @@ public class clsLnProveedor_bodega
             throw;
         }
     }
+
+    public static bool Get_Single_By_IdBodega_And_IdAsignacion(ref clsBeProveedor_bodega pBeProveedor_bodega,
+                                                               SqlConnection lConnection,
+                                                               SqlTransaction lTransaction)
+    {
+        bool result = false;
+
+        try
+        {
+            const string sp = @"SELECT * FROM Proveedor_bodega 
+                            WHERE (IdBodega = @IdBodega) 
+                            AND (IdAsignacion = @IdAsignacion) 
+                            AND Activo = 1";
+
+            SqlCommand cmd = new SqlCommand(sp, lConnection, lTransaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            SqlDataAdapter dad = new SqlDataAdapter(cmd);
+
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@IDASIGNACION", pBeProveedor_bodega.IdAsignacion));
+            dad.SelectCommand.Parameters.Add(new SqlParameter("@IDBODEGA", pBeProveedor_bodega.IdBodega));
+
+            DataTable dt = new DataTable();
+            dad.Fill(dt);
+
+            if (dt.Rows.Count > 0)
+            {
+                Cargar(ref pBeProveedor_bodega, dt.Rows[0]);
+                result = true;
+            }
+
+            return result;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
 }

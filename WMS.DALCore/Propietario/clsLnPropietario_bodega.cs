@@ -623,4 +623,43 @@ public class clsLnPropietario_bodega
             throw;
         }
     }
+
+    public static int Get_IdPropietarioBodega_By_IdPropietario_And_IdBodega(int pIdPropietario,
+                                                                        int pIdBodega,
+                                                                        SqlConnection lConnection,
+                                                                        SqlTransaction lTransaction)
+    {
+        int result = 0;
+
+        try
+        {
+            string vSQL = @"SELECT pb.IdPropietarioBodega 
+                       FROM propietario_bodega AS pb  
+                       INNER JOIN propietarios AS p ON pb.IdPropietario = p.IdPropietario 
+                       WHERE p.activo=1 AND pb.IdPropietario = @IdPropietario 
+                       AND pb.IdBodega = @IdBodega";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPropietario", pIdPropietario);
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega);
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable != null && lDataTable.Rows.Count > 0)
+                {
+                    result = Convert.ToInt32(lDataTable.Rows[0]["IdPropietarioBodega"]);
+                }
+            }
+        }
+        catch (Exception ex)
+        {            
+            throw;
+        }
+
+        return result;
+    }
 }

@@ -63,7 +63,6 @@ Partial Public Class clsLnEmpresa_transporte_pilotos
 
     End Function
 
-
     Public Shared Function Listar(ByVal pActivo As Boolean) As DataTable
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -105,7 +104,6 @@ Partial Public Class clsLnEmpresa_transporte_pilotos
 
     End Function
 
-
     Public Shared Function MaxID() As Integer
 
         Try
@@ -134,7 +132,6 @@ Partial Public Class clsLnEmpresa_transporte_pilotos
         End Try
 
     End Function
-
 
     Public Shared Function ExisteDPI(ByVal pDPI As String) As Boolean
 
@@ -287,5 +284,32 @@ Partial Public Class clsLnEmpresa_transporte_pilotos
         End Try
 
     End Function
+
+    Public Shared Function Get_All_By_IdEmpresaTransporte(ByVal pIdEmpresaTransporte As Integer,
+                                                          ByVal pConnection As SqlConnection,
+                                                          ByVal pTransaction As SqlTransaction) As DataTable
+
+        Get_All_By_IdEmpresaTransporte = Nothing
+
+        Try
+
+            Dim sp As String = "SELECT IdPiloto, ISNULL(Nombres,'') + ' ' + ISNULL(Apellidos,'') AS Nombre   
+                                FROM empresa_transporte_pilotos WHERE Activo = 1 AND IdEmpresaTransporte = @IdEmpresaTransporte"
+
+            Dim cmd As New SqlCommand(sp, pConnection, pTransaction) With {.CommandType = CommandType.Text}
+            cmd.Parameters.AddWithValue("@IdEmpresaTransporte", pIdEmpresaTransporte)
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            Get_All_By_IdEmpresaTransporte = dt
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        End Try
+
+    End Function
+
 
 End Class

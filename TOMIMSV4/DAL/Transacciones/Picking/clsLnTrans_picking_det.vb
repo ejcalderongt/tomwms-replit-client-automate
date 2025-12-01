@@ -34,7 +34,9 @@ Public Class clsLnTrans_picking_det
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTrans_picking_det As clsBeTrans_picking_det, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_picking_det As clsBeTrans_picking_det,
+                                    Optional ByVal pConection As SqlConnection = Nothing,
+                                    Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -59,13 +61,12 @@ Public Class clsLnTrans_picking_det
             Ins.Add("nombre", "@nombre", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
-            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+            Dim cmd As SqlCommand
 
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
 
             If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(sp, pConection)
-                cmd.Transaction = pTransaction
+                cmd = New SqlCommand(sp, pConection, pTransaction)
             Else
                 lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
@@ -93,9 +94,9 @@ Public Class clsLnTrans_picking_det
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            Return rowsAffected
-
             oBeTrans_picking_det.IdPickingDet = CInt(cmd.Parameters("@IDPICKINGDET").Value)
+
+            Return rowsAffected
 
         Catch ex1 As SqlException
             If lTransaction IsNot Nothing Then lTransaction.Rollback()

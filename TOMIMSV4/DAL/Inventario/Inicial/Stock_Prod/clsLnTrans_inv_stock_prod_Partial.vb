@@ -268,6 +268,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     InvDetalle.precio = BeTransInvStockProd.Precio
                     InvDetalle.IdProductoParametroA = IIf(BeTransInvStockProd.Parametro_a = "", 0, BeTransInvStockProd.Parametro_a)
                     InvDetalle.IdProductoParametroB = IIf(BeTransInvStockProd.Parametro_b = "", 0, BeTransInvStockProd.Parametro_b)
+                    InvDetalle.IdProductoTallaColor = BeTransInvStockProd.IdProductoTallaColor
 
                     clsLnTrans_inv_detalle.InsertarSinID(InvDetalle,
                                                          lConnection,
@@ -296,6 +297,7 @@ Partial Public Class clsLnTrans_inv_stock_prod
                     InvResumen.IdUbicacion = InvDetalle.IdUbicacion
                     InvResumen.Lic_plate = BeTransInvStockProd.License_plate
                     InvResumen.IdBodega = InvDetalle.IdBodega
+                    InvResumen.IdProductoTallaColor = BeTransInvStockProd.IdProductoTallaColor
 
                     clsLnTrans_inv_resumen.Insertar(InvResumen,
                                                     lConnection,

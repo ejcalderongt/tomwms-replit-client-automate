@@ -72,6 +72,9 @@ Public Class clsLnI_nav_config_enc
                 .Bodega_Prorrateo = IIf(IsDBNull(dr.Item("Bodega_Prorrateo")), "", dr.Item("Bodega_Prorrateo"))
                 .Bodega_Prorrateo1 = IIf(IsDBNull(dr.Item("Bodega_Prorrateo1")), "", dr.Item("Bodega_Prorrateo1"))
                 .Bodega_Faltante = IIf(IsDBNull(dr.Item("Bodega_Faltante")), "", dr.Item("Bodega_Faltante"))
+                .Centro_Costo_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Erp")), 0, dr.Item("Centro_Costo_Erp"))
+                .Centro_Costo_Dir_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Dir_Erp")), 0, dr.Item("Centro_Costo_Dir_Erp"))
+                .Centro_Costo_Dep_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Dep_Erp")), 0, dr.Item("Centro_Costo_Dep_Erp"))
 
             End With
 
@@ -156,6 +159,9 @@ Public Class clsLnI_nav_config_enc
             Ins.Add("bodega_prorrateo", "@bodega_prorrateo", DataType.Parametro)
             Ins.Add("bodega_prorrateo1", "@bodega_prorrateo1", DataType.Parametro)
             Ins.Add("bodega_faltante", "@bodega_faltante", DataType.Parametro)
+            Ins.Add("Centro_Costo_Erp", "@Centro_Costo_Erp", DataType.Parametro)
+            Ins.Add("Centro_Costo_Dir_Erp", "@Centro_Costo_Dir_Erp", DataType.Parametro)
+            Ins.Add("Centro_Costo_Dep_Erp", "@Centro_Costo_Dep_Erp", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
@@ -233,6 +239,9 @@ Public Class clsLnI_nav_config_enc
             cmd.Parameters.Add(New SqlParameter("@Bodega_Prorrateo", oBeI_nav_config_enc.Bodega_Prorrateo))
             cmd.Parameters.Add(New SqlParameter("@Bodega_Prorrateo1", oBeI_nav_config_enc.Bodega_Prorrateo1))
             cmd.Parameters.Add(New SqlParameter("@Bodega_Faltante", oBeI_nav_config_enc.Bodega_Faltante))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_ERP", oBeI_nav_config_enc.Centro_Costo_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DIR_ERP", oBeI_nav_config_enc.Centro_Costo_Dir_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DEP_ERP", oBeI_nav_config_enc.Centro_Costo_Dep_Erp))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -325,6 +334,9 @@ Public Class clsLnI_nav_config_enc
             Upd.Add("bodega_prorrateo", "@bodega_prorrateo", DataType.Parametro)
             Upd.Add("bodega_prorrateo1", "@bodega_prorrateo1", DataType.Parametro)
             Upd.Add("bodega_faltante", "@bodega_faltante", DataType.Parametro)
+            Upd.Add("Centro_Costo_Erp", "@Centro_Costo_Erp", DataType.Parametro)
+            Upd.Add("Centro_Costo_Dir_Erp", "@Centro_Costo_Dir_Erp", DataType.Parametro)
+            Upd.Add("Centro_Costo_Dep_Erp", "@Centro_Costo_Dep_Erp", DataType.Parametro)
             Upd.Where("idnavconfigenc = @idnavconfigenc")
 
             Dim sp As String = Upd.SQL()
@@ -397,12 +409,15 @@ Public Class clsLnI_nav_config_enc
             cmd.Parameters.Add(New SqlParameter("@INFERIR_BONIFICACION_PEDIDO_SAP", oBeI_nav_config_enc.Inferir_Bonificacion_Pedido_SAP))
             cmd.Parameters.Add(New SqlParameter("@RECHAZAR_BONIFICACION_INCOMPLETA", oBeI_nav_config_enc.Rechazar_Bonificacion_Incompleta))
             cmd.Parameters.Add(New SqlParameter("@EQUIPARAR_PRODUCTOS", oBeI_nav_config_enc.Equiparar_Productos))
-            cmd.Parameters.Add(New SqlParameter("@Bodega_Facturacion", oBeI_nav_config_enc.Bodega_Facturacion))
-            cmd.Parameters.Add(New SqlParameter("@Valida_Solo_Codigo", oBeI_nav_config_enc.Valida_Solo_Codigo))
-            cmd.Parameters.Add(New SqlParameter("@Excluir_Recepcion_Picking", oBeI_nav_config_enc.Excluir_Recepcion_Picking))
-            cmd.Parameters.Add(New SqlParameter("@Bodega_Prorrateo", oBeI_nav_config_enc.Bodega_Prorrateo))
-            cmd.Parameters.Add(New SqlParameter("@Bodega_Prorrateo1", oBeI_nav_config_enc.Bodega_Prorrateo1))
-            cmd.Parameters.Add(New SqlParameter("@Bodega_Faltante", oBeI_nav_config_enc.Bodega_Faltante))
+            cmd.Parameters.Add(New SqlParameter("@BODEGA_FACTURACION", oBeI_nav_config_enc.Bodega_Facturacion))
+            cmd.Parameters.Add(New SqlParameter("@VALIDA_SOLO_CODIGO", oBeI_nav_config_enc.Valida_Solo_Codigo))
+            cmd.Parameters.Add(New SqlParameter("@EXCLUIR_RECEPCION_PICKING", oBeI_nav_config_enc.Excluir_Recepcion_Picking))
+            cmd.Parameters.Add(New SqlParameter("@BODEGA_PRORRATEO", oBeI_nav_config_enc.Bodega_Prorrateo))
+            cmd.Parameters.Add(New SqlParameter("@BODEGA_PRORRATEO1", oBeI_nav_config_enc.Bodega_Prorrateo1))
+            cmd.Parameters.Add(New SqlParameter("@BODEGA_FALTANTE", oBeI_nav_config_enc.Bodega_Faltante))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_ERP", oBeI_nav_config_enc.Centro_Costo_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DIR_ERP", oBeI_nav_config_enc.Centro_Costo_Dir_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DEP_ERP", oBeI_nav_config_enc.Centro_Costo_Dep_Erp))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

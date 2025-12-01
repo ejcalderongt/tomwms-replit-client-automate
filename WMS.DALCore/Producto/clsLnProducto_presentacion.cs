@@ -4,7 +4,6 @@ using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Producto;
-using WMS.EntityCore.Interface;
 
 public class clsLnProducto_presentacion
 {
@@ -793,7 +792,7 @@ public class clsLnProducto_presentacion
 
     public static clsBeProducto_presentacion? Get_Presentacion_Defecto_By_IdProducto(int pIdProducto,
                                                                                     SqlConnection lConnection,
-                                                                                    SqlTransaction lTransaction)
+                                                                                    SqlTransaction? lTransaction)
     {
         string vSQL = "SELECT TOP(1) * FROM producto_presentacion WHERE (IdProducto = @pIdProducto)";
 
@@ -884,5 +883,43 @@ public class clsLnProducto_presentacion
         {            
             throw;
         }
-    }    
+    }
+
+    public static clsBeProducto_presentacion? Get_Presentacion_By_IdProductoBodega_And_CodPres(int pIdProductoBodega,
+                                                                                         string pCodigo,
+                                                                                         SqlConnection lConnection,
+                                                                                         SqlTransaction lTransaction)
+    {
+        try
+        {
+            string vSQL = @"SELECT TOP 1 pp.* FROM producto_presentacion pp inner join 
+                producto_bodega pb on pp.idproducto = pb.idproducto
+                WHERE pp.codigo=@Codigo and pb.idproductobodega=@IdProductoBodega";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pIdProductoBodega);
+                lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+                    clsBeProducto_presentacion ObjUM = new clsBeProducto_presentacion();
+                    Cargar(ref ObjUM, lRow);
+                    return ObjUM;
+                }
+            }
+
+            return null;
+        }
+        catch
+        {
+            throw;
+        }
+    }
 }

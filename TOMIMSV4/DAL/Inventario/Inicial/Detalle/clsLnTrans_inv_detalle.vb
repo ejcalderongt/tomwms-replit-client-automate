@@ -33,6 +33,7 @@ Public Class clsLnTrans_inv_detalle
                 .nombre_propietario = IIf(IsDBNull(dr.Item("nombre_propietario")), "", dr.Item("nombre_propietario"))
                 .License_plate = IIf(IsDBNull(dr.Item("lic_plate")), 0, dr.Item("lic_plate"))
                 .Codigo_variante = IIf(IsDBNull(dr.Item("cod_variante")), "", dr.Item("cod_variante"))
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), "", dr.Item("IdProductoTallaColor"))
 
             End With
 

@@ -48,6 +48,10 @@ Public Class frmBodega
     Private pUbicacionRow As DataRowView
     Private pTramoRow As DataRowView
 
+    Private FiltroCentroCosto As Integer = 0
+    Private FiltroCentroCostoDirERP As Integer = 0
+    Private FiltroCentroCostoDepERP As Integer = 0
+
     Public Enum TipoTrans
         Nuevo = 1
         Editar = 2
@@ -68,11 +72,27 @@ Public Class frmBodega
 
     Private Sub frmBodega_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
+        Check_Parametro_Interface()
+
+        If BeINavConfigEnc IsNot Nothing Then
+
+            If BeINavConfigEnc.Centro_Costo_Erp > 0 AndAlso BeINavConfigEnc.Centro_Costo_Dep_Erp > 0 AndAlso BeINavConfigEnc.Centro_Costo_Dir_Erp > 0 Then
+
+                FiltroCentroCosto = BeINavConfigEnc.Centro_Costo_Erp
+                FiltroCentroCostoDepERP = BeINavConfigEnc.Centro_Costo_Dep_Erp
+                FiltroCentroCostoDirERP = BeINavConfigEnc.Centro_Costo_Dir_Erp
+
+                Carga_Centro_Costo_Dir_Depto_ERP()
+
+            End If
+
+        End If
+
         ImplementarBarra()
         CargaSimbolosCodigoBarra()
         CargaComboEtiquetas()
         Buscar_Registro()
-        Check_Parametro_Interface()
+
         txtCodigo.Focus()
 
     End Sub
@@ -1258,8 +1278,15 @@ Public Class frmBodega
             txtRutaCDN.Text = pBeBodega.Ruta_CDN
 
             chkControlTallaColor.Checked = pBeBodega.Control_Talla_Color
+            chkControlGondola.Checked = pBeBodega.Control_Gondola
 
             nudRangoDiasDocumentos.Value = pBeBodega.Rango_Dias_Documentos
+
+            chkAgrupar_sin_lic_veri_no_cons.Checked = pBeBodega.Agrupar_Sin_Lic_Veri_No_Cons
+            chkAdvertirMpqUmbas.Checked = pBeBodega.Advertir_Mpq_Umbas
+            cmbCentroCostoERP.EditValue = pBeBodega.Centro_Costo_Erp
+            cmbCentroCostoDirERP.EditValue = pBeBodega.Centro_Costo_Dir_Erp
+            cmbCentroCostoDepERP.EditValue = pBeBodega.Centro_Costo_Dep_Erp
 
         Catch ex As Exception
 
@@ -1319,6 +1346,16 @@ Public Class frmBodega
         Guardar = False
 
         Try
+
+            '#GT18112025: guardar smpt
+            'se hace aqui porque no guarda en la bd, sino en un archivo de configuración.
+            _smtpConfig.Servidor = txtServidor.Text.Trim()
+            _smtpConfig.Puerto = Integer.Parse(txtPuerto.Text.Trim())
+            _smtpConfig.Usuario = txtUsuario.Text.Trim()
+            _smtpConfig.Password = CryptoHelper.Encriptar(txtPassword.Text)  ' guardamos encriptada
+            _smtpConfig.UsarSsl = chkSsl.Checked
+            _smtpConfig.RemitentePorDefecto = txtUsuario.Text.Trim() 'el remitente es la misma cuenta del usuario
+            ConfigManager.Guardar(_smtpConfig)
 
             If cmbPais.EditValue <> 0 Then
                 pBeBodega.IdPais = cmbPais.EditValue
@@ -1482,7 +1519,16 @@ Public Class frmBodega
             pBeBodega.Ruta_CDN = txtRutaCDN.Text
             pBeBodega.Rango_Dias_Documentos = nudRangoDiasDocumentos.Value
 
+            pBeBodega.Agrupar_Sin_Lic_Veri_No_Cons = chkAgrupar_sin_lic_veri_no_cons.Checked
+            pBeBodega.Advertir_Mpq_Umbas = chkAdvertirMpqUmbas.Checked
+
+            pBeBodega.Centro_Costo_Erp = cmbCentroCostoERP.EditValue
+            pBeBodega.Centro_Costo_Dir_Erp = cmbCentroCostoDirERP.EditValue
+            pBeBodega.Centro_Costo_Dep_Erp = cmbCentroCostoDepERP.EditValue
+
             pBeBodega.Control_Talla_Color = chkControlTallaColor.Checked
+            pBeBodega.Control_Gondola = chkControlGondola.Checked
+
             Guardar = clsLnBodega.Insertar(pBeBodega) > 0
 
             pObjBAB.IdBodega = pBeBodega.IdBodega
@@ -1583,6 +1629,18 @@ Public Class frmBodega
         Try
 
             If Datos_Correctos() Then
+
+
+                '#GT18112025: guardar smpt
+                'se hace aqui porque no guarda en la bd, sino en un archivo de configuración.
+                _smtpConfig.Servidor = txtServidor.Text.Trim()
+                _smtpConfig.Puerto = Integer.Parse(txtPuerto.Text.Trim())
+                _smtpConfig.Usuario = txtUsuario.Text.Trim()
+                _smtpConfig.Password = CryptoHelper.Encriptar(txtPassword.Text)  ' guardamos encriptada
+                _smtpConfig.UsarSsl = chkSsl.Checked
+                _smtpConfig.RemitentePorDefecto = txtUsuario.Text.Trim() 'el remitente es la misma cuenta del usuario
+                ConfigManager.Guardar(_smtpConfig)
+
 
                 If cmbPais.EditValue <> 0 Then
                     pBeBodega.IdPais = cmbPais.EditValue
@@ -1693,6 +1751,12 @@ Public Class frmBodega
                 pBeBodega.Ruta_CDN = txtRutaCDN.Text
                 pBeBodega.Rango_Dias_Documentos = nudRangoDiasDocumentos.Value
                 pBeBodega.Control_Talla_Color = chkControlTallaColor.Checked
+                pBeBodega.Agrupar_Sin_Lic_Veri_No_Cons = chkAgrupar_sin_lic_veri_no_cons.Checked
+                pBeBodega.Advertir_Mpq_Umbas = chkAdvertirMpqUmbas.Checked
+                pBeBodega.Centro_Costo_Erp = cmbCentroCostoERP.EditValue
+                pBeBodega.Centro_Costo_Dir_Erp = cmbCentroCostoDirERP.EditValue
+                pBeBodega.Centro_Costo_Dep_Erp = cmbCentroCostoDepERP.EditValue
+                pBeBodega.Control_Gondola = chkControlGondola.Checked
                 Actualizar = clsLnBodega.Actualizar(pBeBodega) > 0
 
             End If
@@ -4926,10 +4990,58 @@ Public Class frmBodega
                 cmdHabilitarReemplazo.Enabled = False
             End If
 
+            If BeINavConfigEnc IsNot Nothing Then
+
+                If BeINavConfigEnc.Centro_Costo_Erp > 0 AndAlso BeINavConfigEnc.Centro_Costo_Dep_Erp > 0 AndAlso BeINavConfigEnc.Centro_Costo_Dir_Erp > 0 Then
+                    gcCentroCosto.Visible = True
+                Else
+                    gcCentroCosto.Visible = False
+                End If
+
+            End If
+
+            Cargar_Smpt()
+
+        Catch ex As Exception
+
+        End Try
+
+    End Sub
+
+    Private _smtpConfig As Smtp_Configuracion
+    Private Sub Cargar_Smpt()
+        Try
+            '#GT18112025; cargar configuracion smtp
+            gpSmtp.Visible = True
+            _smtpConfig = ConfigManager.Cargar()
+            txtServidor.Text = _smtpConfig.Servidor
+            txtPuerto.Text = _smtpConfig.Puerto.ToString()
+            txtUsuario.Text = _smtpConfig.Usuario
+            '' Mostramos la contraseña desencriptada
+            txtPassword.Text = CryptoHelper.Desencriptar(_smtpConfig.Password)
+            chkSsl.Checked = _smtpConfig.UsarSsl
+            'txtRemitente.Text = _smtpConfig.RemitentePorDefecto
         Catch ex As Exception
 
         End Try
     End Sub
+
+    Private Sub gpSmtp_CustomButtonClick(sender As Object, e As DevExpress.XtraBars.Docking2010.BaseButtonEventArgs) Handles gpSmtp.CustomButtonClick
+        ' Opcional: si tienes más de un botón, puedes distinguirlos por Caption o Tag
+        Dim caption = e.Button.Properties.Caption
+
+        If caption = "Limpiar" Then
+            ConfigManager.RestablecerAValoresDefault()
+
+            ' Volver a cargar el objeto en memoria
+            _smtpConfig = ConfigManager.Cargar()
+
+            ' Actualizar los controles en el formulario
+            Cargar_Smpt()
+
+        End If
+    End Sub
+
 
     Private Sub cmdHabilitarReemplazo_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdHabilitarReemplazo.ItemClick
 
@@ -5240,4 +5352,38 @@ Public Class frmBodega
             End If
         End Using
     End Sub
+
+    Private Sub Carga_Centro_Costo_Dir_Depto_ERP()
+
+        Try
+
+            cmbCentroCostoERP.Properties.DisplayMember = "Codigo"
+            cmbCentroCostoERP.Properties.ValueMember = "IdCentroCosto"
+            cmbCentroCostoERP.Properties.DataSource = clsLnCentro_costo.GetAllForCombo(FiltroCentroCosto)
+            cmbCentroCostoERP.ItemIndex = 0
+
+            cmbCentroCostoDepERP.Properties.DisplayMember = "Codigo"
+            cmbCentroCostoDepERP.Properties.ValueMember = "IdCentroCosto"
+            cmbCentroCostoDepERP.Properties.DataSource = clsLnCentro_costo.GetAllForCombo(FiltroCentroCostoDepERP)
+            cmbCentroCostoDepERP.ItemIndex = 0
+
+            cmbCentroCostoDirERP.Properties.DisplayMember = "Codigo"
+            cmbCentroCostoDirERP.Properties.ValueMember = "IdCentroCosto"
+            cmbCentroCostoDirERP.Properties.DataSource = clsLnCentro_costo.GetAllForCombo(FiltroCentroCostoDirERP)
+            cmbCentroCostoDirERP.ItemIndex = 0
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
 End Class

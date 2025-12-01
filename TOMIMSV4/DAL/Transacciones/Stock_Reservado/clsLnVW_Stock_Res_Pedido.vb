@@ -168,7 +168,7 @@ Public Class clsLnVW_Stock_Res_Pedido
                                   dbo.Nombre_Completo_Ubicacion(ubicacion_ant, IdBodega) as UbicaciónAnterior,
                                   Lic_Plate as Licencia,Serial,Indicador,fecha_ingreso as FechaIngreso,Uds_lic_plate,fecha_manufactura FechaManofactura,
                                   estado as EstadoRes,Host,IdPicking, IdProductoBodega,fec_agr,
-                                  Columna,Nivel,Tramo, Estructura
+                                  Columna,Nivel,Tramo, Estructura, Color, Talla
 		                          From VW_Stock_Res_Pedido  WHERE IdBodega = @IdBodega  "
 
 

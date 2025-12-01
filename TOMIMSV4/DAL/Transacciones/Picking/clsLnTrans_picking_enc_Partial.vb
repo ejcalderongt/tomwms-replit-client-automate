@@ -1,5 +1,6 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
+Imports DevExpress.XtraEditors
 
 Partial Public Class clsLnTrans_picking_enc
 
@@ -1098,12 +1099,15 @@ Partial Public Class clsLnTrans_picking_enc
                                      lConnection,
                                      lTransaction)
 
-            pBeTareaHH.IdTransaccion = pBeTrans_picking_enc.IdPickingEnc
+            If pBeTareaHH IsNot Nothing Then
+                pBeTareaHH.IdTransaccion = pBeTrans_picking_enc.IdPickingEnc
 
-            'Tarea de picking.
-            clsLnTarea_hh.Guardar_Tarea_Picking_HH(pBeTareaHH,
-                                                   lConnection,
-                                                   lTransaction)
+                'Tarea de picking.
+                clsLnTarea_hh.Guardar_Tarea_Picking_HH(pBeTareaHH,
+                                                       lConnection,
+                                                       lTransaction)
+
+            End If
 
             ' Picking Detalle
             clsLnTrans_picking_det.Guarda_Trans_picking_det(pBeTrans_picking_enc.IdPickingEnc,
@@ -1114,9 +1118,11 @@ Partial Public Class clsLnTrans_picking_enc
                                                             lTransaction)
 
             ' Picking Detalle Parametros
-            clsLnTrans_picking_det_parametros.Guarda_Trans_picking_parametros(pListBePickingDetParametros,
-                                                                              lConnection,
-                                                                              lTransaction)
+            If pListBePickingDetParametros IsNot Nothing Then
+                clsLnTrans_picking_det_parametros.Guarda_Trans_picking_parametros(pListBePickingDetParametros,
+                                                                                  lConnection,
+                                                                                  lTransaction)
+            End If
 
             ' Picking Detalle Operador
             clsLnTrans_picking_op.Guarda_Trans_picking_operador(pBeTrans_picking_enc.IdPickingEnc,
@@ -1349,7 +1355,7 @@ Partial Public Class clsLnTrans_picking_enc
 
     End Function
 
-    Public Shared Sub Guarda_Trans_picking_enc(ByVal pBeTransPickingEnc As clsBeTrans_picking_enc,
+    Public Shared Sub Guarda_Trans_picking_enc(ByRef pBeTransPickingEnc As clsBeTrans_picking_enc,
                                                ByRef lConnection As SqlConnection,
                                                ByRef lTransaction As SqlTransaction)
         Try
@@ -3119,5 +3125,147 @@ Partial Public Class clsLnTrans_picking_enc
             Throw ex
         End Try
     End Function
+
+    Public Shared Function Guardar(ByVal pBeTrans_picking_enc As clsBeTrans_picking_enc,
+                                   ByVal pBeTareaHH As clsBeTarea_hh,
+                                   ByVal pListBePickingDet As List(Of clsBeTrans_picking_det),
+                                   ByVal pListBePickingDetParametros As List(Of clsBeTrans_picking_det_parametros),
+                                   ByVal pListBePickingOpe As List(Of clsBeTrans_picking_op),
+                                   ByVal pListBePickingUbic As List(Of clsBeTrans_picking_ubic),
+                                   ByVal lConnection As SqlConnection,
+                                   ByVal lTransaction As SqlTransaction) As Boolean
+
+        Guardar = False
+
+        Try
+
+            '#GT01022023: Obtener el IdPickingEnc
+            Dim vBePickingEncOriginal As New clsBeTrans_picking_enc
+            vBePickingEncOriginal.IdPickingEnc = pBeTrans_picking_enc.IdPickingEnc
+
+            '#EJC202301301011:Determinar si se cambió la bandera de procesado BOF después de que el operador pickeara con HH.
+            If Not pBeTrans_picking_enc.IsNew Then
+                If GetSingle(vBePickingEncOriginal, lConnection, lTransaction) Then
+                    If Not vBePickingEncOriginal Is Nothing Then
+                        If Not vBePickingEncOriginal.procesado_bof Then
+                            If pBeTrans_picking_enc.procesado_bof Then
+
+                                Dim vMensajeLog As String = "Advertencia_202303032146: Se actualizó a procesado_bof el picking_enc: " & pBeTrans_picking_enc.IdPickingEnc
+
+                                clsLnLog_error_wms.Agregar_Error(vMensajeLog)
+                            End If
+                        End If
+                    End If
+                End If
+            End If
+
+            ' Picking Encabezado
+            Guarda_Trans_picking_enc(pBeTrans_picking_enc,
+                                     lConnection,
+                                     lTransaction)
+
+            If pBeTareaHH IsNot Nothing Then
+                pBeTareaHH.IdTransaccion = pBeTrans_picking_enc.IdPickingEnc
+
+                'Tarea de picking.
+                clsLnTarea_hh.Guardar_Tarea_Picking_HH(pBeTareaHH,
+                                                       lConnection,
+                                                       lTransaction)
+
+            End If
+
+            ' Picking Detalle
+            clsLnTrans_picking_det.Guarda_Trans_picking_det(pBeTrans_picking_enc.IdPickingEnc,
+                                                            pBeTrans_picking_enc.IdBodegaMuelle,
+                                                            pListBePickingDet,
+                                                            pListBePickingUbic,
+                                                            lConnection,
+                                                            lTransaction)
+
+            ' Picking Detalle Parametros
+            If pListBePickingDetParametros IsNot Nothing Then
+                clsLnTrans_picking_det_parametros.Guarda_Trans_picking_parametros(pListBePickingDetParametros,
+                                                                                  lConnection,
+                                                                                  lTransaction)
+            End If
+
+            ' Picking Detalle Operador
+            clsLnTrans_picking_op.Guarda_Trans_picking_operador(pBeTrans_picking_enc.IdPickingEnc,
+                                                                pListBePickingOpe,
+                                                                lConnection,
+                                                                lTransaction)
+
+            ' Picking Detalle Ubicacion
+            clsLnTrans_picking_ubic.Guarda_Trans_picking_ubic(pBeTrans_picking_enc.IdPickingEnc,
+                                                              pListBePickingUbic,
+                                                              lConnection,
+                                                              lTransaction)
+
+            Guardar = True
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Guardar_Verificacion_Bof(ByVal plistPickingUbic As List(Of clsBeTrans_picking_ubic),
+                                                    ByVal pIdOperador As Integer,
+                                                    ByVal pBePedidoEnc As clsBeTrans_pe_enc) As Boolean
+
+        Dim clsTrans As New clsTransaccion
+        Guardar_Verificacion_Bof = False
+
+        Try
+            clsTrans.Open_Connection() : clsTrans.Begin_Transaction()
+
+            Dim ListaVerificada As Boolean = False
+
+            If plistPickingUbic.Count > 0 Then
+
+                For Each BePickingUbic As clsBeTrans_picking_ubic In plistPickingUbic
+
+                    '#GT28112025:redundante, pero la verificación recibe lista de un registro
+                    Dim tmpListaPickingUbic = New List(Of clsBeTrans_picking_ubic)
+                    tmpListaPickingUbic.Add(BePickingUbic)
+
+                    If clsLnTrans_picking_ubic.Actualiza_Cant_Peso_Verificacion(tmpListaPickingUbic,
+                                                                                pIdOperador,
+                                                                                BePickingUbic.Cantidad_Recibida,
+                                                                                BePickingUbic.Peso_recibido,
+                                                                                0,
+                                                                                pBePedidoEnc.IdPedidoEnc,
+                                                                                clsTrans.lConnection,
+                                                                                clsTrans.lTransaction) Then
+
+                        ListaVerificada = True
+                    Else
+                        ListaVerificada = False
+                    End If
+
+                Next
+
+                '#GT28112025: si la lista pickingUbic esta correcta, se actualiza el encabezado del pedido y picking
+                If ListaVerificada Then Actualizar_PickingEnc_Verificado(pBePedidoEnc.Picking,
+                                                                         clsTrans.lConnection,
+                                                                         clsTrans.lTransaction)
+
+            Else
+                clsTrans.RollBack_Transaction()
+                Exit Function
+            End If
+
+            Guardar_Verificacion_Bof = True
+            clsTrans.Commit_Transaction()
+
+        Catch ex As Exception
+            clsTrans.RollBack_Transaction()
+            Throw New Exception(String.Format("{0} {1} {2} ", MethodBase.GetCurrentMethod().Name, ex.Message, ""))
+        Finally
+            clsTrans.Close_Conection()
+        End Try
+
+    End Function
+
 
 End Class

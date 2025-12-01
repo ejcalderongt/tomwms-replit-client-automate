@@ -8758,6 +8758,80 @@ Public Class TOMHHWS
     End Function
 
     <WebMethod(), SoapHeader("mArch")>
+    Public Function Guardar_Picking_Cm(ByVal pListaPicking As List(Of clsBeTrans_picking_ubic),
+                                       ByVal IdBodega As Integer,
+                                       ByVal pIdOperador As Integer,
+                                       ByVal host As String, TipoLista As Integer) As String
+
+        Guardar_Picking_Cm = False
+        Dim vResult As String = "Inicio picking"
+
+        Try
+            If TipoLista = 2 Then
+                For Each ObjUbic As clsBeTrans_picking_ubic In pListaPicking
+
+                    Dim BeStockRes = clsLnStock_res.GetSingle_By_IdStockRes(IdBodega, ObjUbic.IdStockRes)
+                    ObjUbic.Cantidad_Recibida = ObjUbic.Cantidad_Solicitada
+                    ObjUbic.IdOperadorBodega_Pickeo = pIdOperador
+                    ObjUbic.Acepto = True
+                    ObjUbic.Encontrado = True
+                    ObjUbic.Fecha_picking = Now
+                    ObjUbic.Fec_mod = Now
+
+                    clsLnTrans_picking_ubic.Actualizar_Picking(ObjUbic,
+                                                               BeStockRes,
+                                                               IdBodega,
+                                                               ObjUbic.Cantidad_Solicitada,
+                                                               host)
+                Next
+
+                vResult = " terminó la actualizacion"
+            Else
+                clsLnTrans_picking_ubic.Actualiza_Picking_Consolidado_Cm(pListaPicking(0),
+                                                                        pIdOperador,
+                                                                        host)
+
+                vResult = " terminó la actualizacion"
+            End If
+
+            Return String.Format("Res:{0}", vResult)
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
+
+    <WebMethod(), SoapHeader("mArch")>
     Public Function Actualizar_Picking_Con_Reemplazo_De_Pallet(ByVal oBeTrans_picking_ubic As clsBeTrans_picking_ubic,
                                                               ByVal BeStockRes As clsBeStock_res,
                                                               ByVal oBeTrans_picking_det As clsBeTrans_picking_det,
@@ -17461,4 +17535,62 @@ Public Class TOMHHWS
         End Try
 
     End Function
+
+    '#AT20251120 Packing consolidado MAMPA
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Get_Picking_Para_Emapaque_Consolidado()
+
+        Try
+            Dim lista = clsLnTarea_hh.Get_All_Picking_Para_Empaque_Consolidado()
+            Dim jArray As New JArray()
+
+            For Each item In lista
+                Dim jObj As JObject = JObject.FromObject(item)
+
+                SerializarJson(jObj, "ListaPickingDet")
+                SerializarJson(jObj, "ListaPickingUbic")
+
+                jArray.Add(jObj)
+            Next
+
+            Dim json As String = JsonConvert.SerializeObject(jArray,
+                New JsonSerializerSettings With {.NullValueHandling = NullValueHandling.Include}
+            )
+
+            Dim curContext As HttpContext = HttpContext.Current
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(json)
+            curContext.ApplicationInstance.CompleteRequest()
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim errorJson As String = JsonConvert.SerializeObject(New With {.Error = True, .Mensaje = ex.Message})
+                    Dim curContext As HttpContext = HttpContext.Current
+
+                    curContext.Response.Clear()
+                    curContext.Response.StatusCode = 500
+                    curContext.Response.ContentType = "application/json"
+                    curContext.Response.Write(errorJson)
+                    curContext.ApplicationInstance.CompleteRequest()
+                End If
+
+            End If
+
+        End Try
+
+    End Sub
+
 End Class

@@ -375,6 +375,7 @@ Public Class frmPedido
             pBePedidoEnc.HoraEntregaDesde = Now
             pBePedidoEnc.HoraEntregaHasta = Now
             pBePedidoEnc.Observacion = txtObservacion.Text.Trim
+            pBePedidoEnc.Guia_Transporte = txtGuiaTransporte.Text.Trim
             pBePedidoEnc.Enviado_A_ERP = False
             pBePedidoEnc.Activo = True
             '#GT11082023: Se carga vacia porque es el insert del encabezado sin detalle de nada.
@@ -558,6 +559,7 @@ Public Class frmPedido
                 txtDiasVencimiento.Value = pBePedidoEnc.Dias_cliente
 
                 txtObservacion.Text = pBePedidoEnc.Observacion
+                txtGuiaTransporte.Text = pBePedidoEnc.Guia_Transporte
 
                 cmbTipoPedido.EditValue = pBePedidoEnc.IdTipoPedido
                 cmbTipoPedido.Enabled = False
@@ -793,6 +795,7 @@ Public Class frmPedido
             txtIdPicking.Text = pBePedidoEnc.IdPickingEnc
 
             txtObservacion.Text = pBePedidoEnc.Observacion
+            txtGuiaTransporte.Text = pBePedidoEnc.Guia_Transporte
 
             '#EJC20220510: Fix
             PedidoGuardadoPorUsuario = True
@@ -1365,9 +1368,9 @@ Public Class frmPedido
 
             If dgrid.IsCurrentRowDirty Then
 
-                XtraMessageBox.Show("Un valor se ha modificado en el grid y no se han " &
-                       " confirmado los cambios, presione enter en la celda " &
-                       " que está modificando antes de guardar el registro",
+                XtraMessageBox.Show(" Un valor se ha modificado en el grid y no se han " &
+                                    " confirmado los cambios, presione enter en la celda " &
+                                    " que está modificando antes de guardar el registro",
                                     Text,
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Error)
@@ -1566,6 +1569,7 @@ Public Class frmPedido
 
             pBePedidoEnc.Ubicacion = txtDireccionEntrega.Text
             pBePedidoEnc.Observacion = txtObservacion.Text.Trim
+            pBePedidoEnc.Guia_Transporte = txtGuiaTransporte.Text.Trim
 
             If pBePedidoEnc.Estado.ToUpper <> "NUEVO" Then
                 pBePedidoEnc.Estado = pBePedidoEnc.Estado
@@ -6004,20 +6008,11 @@ Public Class frmPedido
                         '#GT21082025: en el pedido estan los id´s para talla y color, no consultar again la bd
                         Dim Pedido_Det = pBePedidoEnc.Detalle.Find(Function(x) x.IdPedidoEnc = Objs.IdPedidoEnc AndAlso x.IdPedidoDet = Objs.IdPedidoDet)
 
-                        lRow.Item("Talla") = Lista_tallas.Find(Function(x) x.IdTalla = Pedido_Det.Talla)
+                        Dim Talla = Lista_tallas.Find(Function(x) x.IdTalla = Pedido_Det.Talla)
+                        lRow.Item("Talla") = Talla.Codigo
 
-                        'Dim rowsTalla() As DataRow = Lista_tallas.Select("IdTalla = " & Pedido_Det.Talla)
-                        'If rowsTalla.Length > 0 Then
-                        '    Dim tallaBuscada As DataRow = rowsTalla(0)
-                        '    lRow.Item("Talla") = tallaBuscada(1)
-                        'End If
-
-                        lRow.Item("Color") = Lista_colores.Find(Function(x) x.IdColor = Pedido_Det.Color)
-                        'Dim rowsColor() As DataRow = Lista_colores.Select("IdColor = " & Pedido_Det.Color)
-                        'If rowsColor.Length > 0 Then
-                        '    Dim colorBuscada As DataRow = rowsColor(0)
-                        '    lRow.Item("Color") = colorBuscada(1)
-                        'End If
+                        Dim Color = Lista_colores.Find(Function(x) x.IdColor = Pedido_Det.Color)
+                        lRow.Item("Color") = Color.Codigo
 
                     End If
 
@@ -6750,10 +6745,10 @@ Public Class frmPedido
                     valores.Add(BeVW_stock_res.IdProductoTallaColor)
                     valores.Add(BeVW_stock_res.Codigo_Talla)
                     valores.Add(BeVW_stock_res.Codigo_Color)
+                    valores.Add(BeVW_stock_res.Codigo_Producto & BeVW_stock_res.Codigo_Talla & BeVW_stock_res.Codigo_Color)
                 End If
 
                 DTStockRes.Rows.Add(valores.ToArray())
-
 
             Next
 
@@ -7750,6 +7745,16 @@ Public Class frmPedido
                                                     clsTransaccion.lConnection,
                                                     clsTransaccion.lTransaction)
 
+                IMS.Llena_Empresas_Transporte(cmbEmpresaTransporte,
+                                              cmbBodega.EditValue,
+                                              clsTransaccion.lConnection,
+                                              clsTransaccion.lTransaction)
+
+                IMS.Llena_Pilotos(cmbPiloto,
+                                  cmbEmpresaTransporte.EditValue,
+                                  clsTransaccion.lConnection,
+                                  clsTransaccion.lTransaction)
+
                 'GT 090820211654: agregue esto para filtrar el tipo de doc según la bodega (fiscal o general)
                 BeBodega = clsLnBodega.GetSingle_By_Idbodega(cmbBodega.EditValue,
                                                              clsTransaccion.lConnection,
@@ -7791,8 +7796,6 @@ Public Class frmPedido
                 End If
 
                 IsLoading = True
-
-
 
                 '#EJC20210409:Servicios CEALSA.
                 If AP.Bodega.Control_Tarifa_Servicios Then

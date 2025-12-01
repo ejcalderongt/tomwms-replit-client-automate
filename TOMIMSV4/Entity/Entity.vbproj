@@ -228,6 +228,7 @@
     <Compile Include="Mantenimientos\Ajustes\clsBeTrans_ajuste_det_doc.vb" />
     <Compile Include="Mantenimientos\Bodega\Bodega\clsBeBodegaSeleccion.vb" />
     <Compile Include="Mantenimientos\Bodega\Importacion\clsBeTrans_bodega_ubicaciones_excel.vb" />
+    <Compile Include="Mantenimientos\Bodega\Smtp_configuracion\Smtp_Configuracion.vb" />
     <Compile Include="Mantenimientos\Campaña\clsBeCampaña.vb" />
     <Compile Include="Mantenimientos\Centro_Costo\clsBeCentro_costo.vb" />
     <Compile Include="Mantenimientos\Cliente\clsBeCliente_lotes.vb" />

@@ -60,6 +60,7 @@ Partial Public Class clsLnTrans_inv_detalle
             Ins.Add("precio", "@precio", DataType.Parametro)
             Ins.Add("IdProductoParametroA", "@IdProductoParametroA", DataType.Parametro)
             Ins.Add("IdProductoParametroB", "@IdProductoParametroB", DataType.Parametro)
+            Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -105,6 +106,7 @@ Partial Public Class clsLnTrans_inv_detalle
             cmd.Parameters.Add(New SqlParameter("@PRECIO", oBeTrans_inv_detalle.precio))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOPARAMETROA", oBeTrans_inv_detalle.IdProductoParametroA))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOPARAMETROB", oBeTrans_inv_detalle.IdProductoParametroB))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_inv_detalle.IdProductoTallaColor))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

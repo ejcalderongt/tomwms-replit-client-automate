@@ -221,6 +221,9 @@ Partial Class frmPedido
         Dim Label16 As System.Windows.Forms.Label
         Dim lblManufacturaLigera As System.Windows.Forms.Label
         Dim Label44 As System.Windows.Forms.Label
+        Dim Label45 As System.Windows.Forms.Label
+        Dim lblPiloto As System.Windows.Forms.Label
+        Dim lblEmpresaTransporte As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPedido))
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
@@ -294,6 +297,11 @@ Partial Class frmPedido
         Me.GrpProducto = New DevExpress.XtraEditors.GroupControl()
         Me.XtraScrollableControl2 = New DevExpress.XtraEditors.XtraScrollableControl()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.cmbPiloto = New DevExpress.XtraEditors.LookUpEdit()
+        Me.cmbEmpresaTransporte = New DevExpress.XtraEditors.LookUpEdit()
+        Me.gcVerificacionBOF = New DevExpress.XtraEditors.GroupControl()
+        Me.lblVerificacionBOF = New System.Windows.Forms.LinkLabel()
+        Me.txtGuiaTransporte = New DevExpress.XtraEditors.TextEdit()
         Me.lblprg = New System.Windows.Forms.RichTextBox()
         Me.lblSociedadSAP = New System.Windows.Forms.Label()
         Me.txtSociedadSAP = New System.Windows.Forms.TextBox()
@@ -652,6 +660,9 @@ Partial Class frmPedido
         Label16 = New System.Windows.Forms.Label()
         lblManufacturaLigera = New System.Windows.Forms.Label()
         Label44 = New System.Windows.Forms.Label()
+        Label45 = New System.Windows.Forms.Label()
+        lblPiloto = New System.Windows.Forms.Label()
+        lblEmpresaTransporte = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -661,6 +672,11 @@ Partial Class frmPedido
         Me.GrpProducto.SuspendLayout()
         Me.XtraScrollableControl2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
+        CType(Me.cmbPiloto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbEmpresaTransporte.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.gcVerificacionBOF, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.gcVerificacionBOF.SuspendLayout()
+        CType(Me.txtGuiaTransporte.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView12, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbMotivoDevolucion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1706,7 +1722,7 @@ Partial Class frmPedido
         'lblControlUltimoLote
         '
         lblControlUltimoLote.AutoSize = True
-        lblControlUltimoLote.Location = New System.Drawing.Point(512, 185)
+        lblControlUltimoLote.Location = New System.Drawing.Point(519, 158)
         lblControlUltimoLote.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         lblControlUltimoLote.Name = "lblControlUltimoLote"
         lblControlUltimoLote.Size = New System.Drawing.Size(73, 16)
@@ -1716,7 +1732,7 @@ Partial Class frmPedido
         'Label11
         '
         Label11.AutoSize = True
-        Label11.Location = New System.Drawing.Point(790, 239)
+        Label11.Location = New System.Drawing.Point(797, 213)
         Label11.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Label11.Name = "Label11"
         Label11.Size = New System.Drawing.Size(101, 16)
@@ -1726,7 +1742,7 @@ Partial Class frmPedido
         'Label10
         '
         Label10.AutoSize = True
-        Label10.Location = New System.Drawing.Point(671, 240)
+        Label10.Location = New System.Drawing.Point(678, 214)
         Label10.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Label10.Name = "Label10"
         Label10.Size = New System.Drawing.Size(114, 16)
@@ -1756,7 +1772,7 @@ Partial Class frmPedido
         'Label17
         '
         Label17.AutoSize = True
-        Label17.Location = New System.Drawing.Point(513, 326)
+        Label17.Location = New System.Drawing.Point(519, 299)
         Label17.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Label17.Name = "Label17"
         Label17.Size = New System.Drawing.Size(100, 16)
@@ -1786,7 +1802,7 @@ Partial Class frmPedido
         'lblCertificadoCalidad
         '
         lblCertificadoCalidad.AutoSize = True
-        lblCertificadoCalidad.Location = New System.Drawing.Point(626, 185)
+        lblCertificadoCalidad.Location = New System.Drawing.Point(626, 158)
         lblCertificadoCalidad.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         lblCertificadoCalidad.Name = "lblCertificadoCalidad"
         lblCertificadoCalidad.Size = New System.Drawing.Size(54, 16)
@@ -1816,7 +1832,7 @@ Partial Class frmPedido
         'lblDiasVencimiento
         '
         lblDiasVencimiento.AutoSize = True
-        lblDiasVencimiento.Location = New System.Drawing.Point(756, 185)
+        lblDiasVencimiento.Location = New System.Drawing.Point(756, 158)
         lblDiasVencimiento.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         lblDiasVencimiento.Name = "lblDiasVencimiento"
         lblDiasVencimiento.Size = New System.Drawing.Size(145, 16)
@@ -1827,7 +1843,7 @@ Partial Class frmPedido
         'Label6
         '
         Label6.AutoSize = True
-        Label6.Location = New System.Drawing.Point(862, 208)
+        Label6.Location = New System.Drawing.Point(862, 181)
         Label6.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Label6.Name = "Label6"
         Label6.Size = New System.Drawing.Size(31, 16)
@@ -1848,7 +1864,7 @@ Partial Class frmPedido
         'Label16
         '
         Label16.AutoSize = True
-        Label16.Location = New System.Drawing.Point(513, 244)
+        Label16.Location = New System.Drawing.Point(519, 217)
         Label16.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Label16.Name = "Label16"
         Label16.Size = New System.Drawing.Size(118, 16)
@@ -1858,7 +1874,7 @@ Partial Class frmPedido
         'lblManufacturaLigera
         '
         lblManufacturaLigera.AutoSize = True
-        lblManufacturaLigera.Location = New System.Drawing.Point(513, 298)
+        lblManufacturaLigera.Location = New System.Drawing.Point(519, 271)
         lblManufacturaLigera.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         lblManufacturaLigera.Name = "lblManufacturaLigera"
         lblManufacturaLigera.Size = New System.Drawing.Size(151, 16)
@@ -1874,6 +1890,36 @@ Partial Class frmPedido
         Label44.Size = New System.Drawing.Size(140, 16)
         Label44.TabIndex = 94
         Label44.Text = "Referencia 2 /DocNum:"
+        '
+        'Label45
+        '
+        Label45.AutoSize = True
+        Label45.Location = New System.Drawing.Point(12, 412)
+        Label45.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
+        Label45.Name = "Label45"
+        Label45.Size = New System.Drawing.Size(118, 16)
+        Label45.TabIndex = 103
+        Label45.Text = "Guía de transporte:"
+        '
+        'lblPiloto
+        '
+        lblPiloto.AutoSize = True
+        lblPiloto.Location = New System.Drawing.Point(519, 410)
+        lblPiloto.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
+        lblPiloto.Name = "lblPiloto"
+        lblPiloto.Size = New System.Drawing.Size(106, 16)
+        lblPiloto.TabIndex = 107
+        lblPiloto.Text = "Piloto transporte:"
+        '
+        'lblEmpresaTransporte
+        '
+        lblEmpresaTransporte.AutoSize = True
+        lblEmpresaTransporte.Location = New System.Drawing.Point(519, 383)
+        lblEmpresaTransporte.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
+        lblEmpresaTransporte.Name = "lblEmpresaTransporte"
+        lblEmpresaTransporte.Size = New System.Drawing.Size(125, 16)
+        lblEmpresaTransporte.TabIndex = 105
+        lblEmpresaTransporte.Text = "Empresa transporte:"
         '
         'RibbonStatusBar
         '
@@ -2292,6 +2338,13 @@ Partial Class frmPedido
         '
         'GroupBox3
         '
+        Me.GroupBox3.Controls.Add(Me.cmbPiloto)
+        Me.GroupBox3.Controls.Add(Me.cmbEmpresaTransporte)
+        Me.GroupBox3.Controls.Add(lblPiloto)
+        Me.GroupBox3.Controls.Add(lblEmpresaTransporte)
+        Me.GroupBox3.Controls.Add(Me.gcVerificacionBOF)
+        Me.GroupBox3.Controls.Add(Label45)
+        Me.GroupBox3.Controls.Add(Me.txtGuiaTransporte)
         Me.GroupBox3.Controls.Add(Me.lblprg)
         Me.GroupBox3.Controls.Add(Me.lblSociedadSAP)
         Me.GroupBox3.Controls.Add(Me.txtSociedadSAP)
@@ -2358,6 +2411,67 @@ Partial Class frmPedido
         Me.GroupBox3.TabIndex = 85
         Me.GroupBox3.TabStop = False
         '
+        'cmbPiloto
+        '
+        Me.cmbPiloto.Location = New System.Drawing.Point(676, 409)
+        Me.cmbPiloto.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.cmbPiloto.Name = "cmbPiloto"
+        Me.cmbPiloto.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.cmbPiloto.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbPiloto.Properties.NullText = ""
+        Me.cmbPiloto.Size = New System.Drawing.Size(233, 22)
+        Me.cmbPiloto.TabIndex = 109
+        '
+        'cmbEmpresaTransporte
+        '
+        Me.cmbEmpresaTransporte.Location = New System.Drawing.Point(675, 382)
+        Me.cmbEmpresaTransporte.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.cmbEmpresaTransporte.Name = "cmbEmpresaTransporte"
+        Me.cmbEmpresaTransporte.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.cmbEmpresaTransporte.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbEmpresaTransporte.Properties.NullText = ""
+        Me.cmbEmpresaTransporte.Size = New System.Drawing.Size(233, 22)
+        Me.cmbEmpresaTransporte.TabIndex = 108
+        '
+        'gcVerificacionBOF
+        '
+        Me.gcVerificacionBOF.AppearanceCaption.BackColor = System.Drawing.Color.SteelBlue
+        Me.gcVerificacionBOF.AppearanceCaption.Options.UseBackColor = True
+        Me.gcVerificacionBOF.AppearanceCaption.Options.UseTextOptions = True
+        Me.gcVerificacionBOF.AppearanceCaption.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+        Me.gcVerificacionBOF.Controls.Add(Me.lblVerificacionBOF)
+        Me.gcVerificacionBOF.Location = New System.Drawing.Point(691, 26)
+        Me.gcVerificacionBOF.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
+        Me.gcVerificacionBOF.Name = "gcVerificacionBOF"
+        Me.gcVerificacionBOF.Size = New System.Drawing.Size(170, 79)
+        Me.gcVerificacionBOF.TabIndex = 89
+        Me.gcVerificacionBOF.Text = "Ult. Verificación #"
+        Me.gcVerificacionBOF.Visible = False
+        '
+        'lblVerificacionBOF
+        '
+        Me.lblVerificacionBOF.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.lblVerificacionBOF.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lblVerificacionBOF.Font = New System.Drawing.Font("Tahoma", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblVerificacionBOF.Location = New System.Drawing.Point(2, 28)
+        Me.lblVerificacionBOF.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
+        Me.lblVerificacionBOF.Name = "lblVerificacionBOF"
+        Me.lblVerificacionBOF.Size = New System.Drawing.Size(166, 49)
+        Me.lblVerificacionBOF.TabIndex = 8
+        Me.lblVerificacionBOF.TabStop = True
+        Me.lblVerificacionBOF.Text = "0"
+        Me.lblVerificacionBOF.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'txtGuiaTransporte
+        '
+        Me.txtGuiaTransporte.Location = New System.Drawing.Point(183, 409)
+        Me.txtGuiaTransporte.Margin = New System.Windows.Forms.Padding(6)
+        Me.txtGuiaTransporte.MenuManager = Me.RibbonControl
+        Me.txtGuiaTransporte.Name = "txtGuiaTransporte"
+        Me.txtGuiaTransporte.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.txtGuiaTransporte.Size = New System.Drawing.Size(316, 22)
+        Me.txtGuiaTransporte.TabIndex = 102
+        '
         'lblprg
         '
         Me.lblprg.BackColor = System.Drawing.Color.AliceBlue
@@ -2372,7 +2486,7 @@ Partial Class frmPedido
         'lblSociedadSAP
         '
         Me.lblSociedadSAP.AutoSize = True
-        Me.lblSociedadSAP.Location = New System.Drawing.Point(862, 134)
+        Me.lblSociedadSAP.Location = New System.Drawing.Point(862, 107)
         Me.lblSociedadSAP.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblSociedadSAP.Name = "lblSociedadSAP"
         Me.lblSociedadSAP.Size = New System.Drawing.Size(91, 16)
@@ -2383,7 +2497,7 @@ Partial Class frmPedido
         '
         Me.txtSociedadSAP.BackColor = System.Drawing.Color.Thistle
         Me.txtSociedadSAP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtSociedadSAP.Location = New System.Drawing.Point(864, 155)
+        Me.txtSociedadSAP.Location = New System.Drawing.Point(864, 128)
         Me.txtSociedadSAP.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.txtSociedadSAP.Name = "txtSociedadSAP"
         Me.txtSociedadSAP.ReadOnly = True
@@ -2425,7 +2539,7 @@ Partial Class frmPedido
         '
         'cmbMotivoDevolucion
         '
-        Me.cmbMotivoDevolucion.Location = New System.Drawing.Point(668, 382)
+        Me.cmbMotivoDevolucion.Location = New System.Drawing.Point(676, 355)
         Me.cmbMotivoDevolucion.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.cmbMotivoDevolucion.Name = "cmbMotivoDevolucion"
         Me.cmbMotivoDevolucion.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
@@ -2439,7 +2553,7 @@ Partial Class frmPedido
         '
         Me.lblMotivoDevolucion.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lblMotivoDevolucion.Appearance.Options.UseFont = True
-        Me.lblMotivoDevolucion.Location = New System.Drawing.Point(517, 385)
+        Me.lblMotivoDevolucion.Location = New System.Drawing.Point(519, 358)
         Me.lblMotivoDevolucion.Margin = New System.Windows.Forms.Padding(4)
         Me.lblMotivoDevolucion.Name = "lblMotivoDevolucion"
         Me.lblMotivoDevolucion.Size = New System.Drawing.Size(107, 16)
@@ -2461,7 +2575,7 @@ Partial Class frmPedido
         '
         Me.txtBodegaDestino.BackColor = System.Drawing.Color.OldLace
         Me.txtBodegaDestino.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtBodegaDestino.Location = New System.Drawing.Point(625, 155)
+        Me.txtBodegaDestino.Location = New System.Drawing.Point(625, 128)
         Me.txtBodegaDestino.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.txtBodegaDestino.Name = "txtBodegaDestino"
         Me.txtBodegaDestino.ReadOnly = True
@@ -2472,7 +2586,7 @@ Partial Class frmPedido
         'lblBodegaDestino
         '
         Me.lblBodegaDestino.AutoSize = True
-        Me.lblBodegaDestino.Location = New System.Drawing.Point(626, 134)
+        Me.lblBodegaDestino.Location = New System.Drawing.Point(626, 107)
         Me.lblBodegaDestino.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblBodegaDestino.Name = "lblBodegaDestino"
         Me.lblBodegaDestino.Size = New System.Drawing.Size(99, 16)
@@ -2483,7 +2597,7 @@ Partial Class frmPedido
         '
         Me.txtBodegaOrigen.BackColor = System.Drawing.Color.OldLace
         Me.txtBodegaOrigen.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtBodegaOrigen.Location = New System.Drawing.Point(511, 155)
+        Me.txtBodegaOrigen.Location = New System.Drawing.Point(519, 128)
         Me.txtBodegaOrigen.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.txtBodegaOrigen.Name = "txtBodegaOrigen"
         Me.txtBodegaOrigen.ReadOnly = True
@@ -2494,7 +2608,7 @@ Partial Class frmPedido
         'lblBodegaOrigen
         '
         Me.lblBodegaOrigen.AutoSize = True
-        Me.lblBodegaOrigen.Location = New System.Drawing.Point(512, 134)
+        Me.lblBodegaOrigen.Location = New System.Drawing.Point(519, 107)
         Me.lblBodegaOrigen.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblBodegaOrigen.Name = "lblBodegaOrigen"
         Me.lblBodegaOrigen.Size = New System.Drawing.Size(94, 16)
@@ -2508,7 +2622,7 @@ Partial Class frmPedido
         Me.grpUltTareaManufactura.AppearanceCaption.Options.UseTextOptions = True
         Me.grpUltTareaManufactura.AppearanceCaption.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
         Me.grpUltTareaManufactura.Controls.Add(Me.txtIdManufactura)
-        Me.grpUltTareaManufactura.Location = New System.Drawing.Point(513, 25)
+        Me.grpUltTareaManufactura.Location = New System.Drawing.Point(519, 25)
         Me.grpUltTareaManufactura.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.grpUltTareaManufactura.Name = "grpUltTareaManufactura"
         Me.grpUltTareaManufactura.Size = New System.Drawing.Size(170, 79)
@@ -2532,7 +2646,7 @@ Partial Class frmPedido
         '
         'cmbManufacturaLigera
         '
-        Me.cmbManufacturaLigera.Location = New System.Drawing.Point(668, 295)
+        Me.cmbManufacturaLigera.Location = New System.Drawing.Point(676, 268)
         Me.cmbManufacturaLigera.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.cmbManufacturaLigera.MenuManager = Me.RibbonControl
         Me.cmbManufacturaLigera.Name = "cmbManufacturaLigera"
@@ -2544,18 +2658,19 @@ Partial Class frmPedido
         'lblUbicacionAbastecimiento
         '
         Me.lblUbicacionAbastecimiento.AutoSize = True
-        Me.lblUbicacionAbastecimiento.Location = New System.Drawing.Point(513, 354)
+        Me.lblUbicacionAbastecimiento.Location = New System.Drawing.Point(519, 327)
         Me.lblUbicacionAbastecimiento.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblUbicacionAbastecimiento.Name = "lblUbicacionAbastecimiento"
         Me.lblUbicacionAbastecimiento.Size = New System.Drawing.Size(131, 16)
         Me.lblUbicacionAbastecimiento.TabIndex = 84
         Me.lblUbicacionAbastecimiento.Text = "Ubic. Abastecimiento:"
+        Me.lblUbicacionAbastecimiento.Visible = False
         '
         'txtIdUbicacionAbastecimiento
         '
         Me.txtIdUbicacionAbastecimiento.BackColor = System.Drawing.Color.Thistle
         Me.txtIdUbicacionAbastecimiento.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtIdUbicacionAbastecimiento.Location = New System.Drawing.Point(668, 352)
+        Me.txtIdUbicacionAbastecimiento.Location = New System.Drawing.Point(676, 325)
         Me.txtIdUbicacionAbastecimiento.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.txtIdUbicacionAbastecimiento.Name = "txtIdUbicacionAbastecimiento"
         Me.txtIdUbicacionAbastecimiento.ReadOnly = True
@@ -2566,7 +2681,7 @@ Partial Class frmPedido
         'dtpFechaPreparacion
         '
         Me.dtpFechaPreparacion.EditValue = New Date(2017, 11, 20, 9, 3, 33, 744)
-        Me.dtpFechaPreparacion.Location = New System.Drawing.Point(511, 263)
+        Me.dtpFechaPreparacion.Location = New System.Drawing.Point(519, 236)
         Me.dtpFechaPreparacion.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dtpFechaPreparacion.MenuManager = Me.RibbonControl
         Me.dtpFechaPreparacion.Name = "dtpFechaPreparacion"
@@ -2598,7 +2713,7 @@ Partial Class frmPedido
         '
         'txtDiasVencimiento
         '
-        Me.txtDiasVencimiento.Location = New System.Drawing.Point(752, 206)
+        Me.txtDiasVencimiento.Location = New System.Drawing.Point(752, 179)
         Me.txtDiasVencimiento.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.txtDiasVencimiento.Name = "txtDiasVencimiento"
         Me.txtDiasVencimiento.Size = New System.Drawing.Size(100, 23)
@@ -2609,7 +2724,7 @@ Partial Class frmPedido
         '
         Me.txtCertificadoCalidad.BackColor = System.Drawing.Color.LightPink
         Me.txtCertificadoCalidad.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtCertificadoCalidad.Location = New System.Drawing.Point(625, 206)
+        Me.txtCertificadoCalidad.Location = New System.Drawing.Point(625, 179)
         Me.txtCertificadoCalidad.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.txtCertificadoCalidad.Name = "txtCertificadoCalidad"
         Me.txtCertificadoCalidad.ReadOnly = True
@@ -2620,7 +2735,7 @@ Partial Class frmPedido
         '
         'txtNoPickingERP
         '
-        Me.txtNoPickingERP.Location = New System.Drawing.Point(668, 324)
+        Me.txtNoPickingERP.Location = New System.Drawing.Point(676, 297)
         Me.txtNoPickingERP.Margin = New System.Windows.Forms.Padding(6)
         Me.txtNoPickingERP.MenuManager = Me.RibbonControl
         Me.txtNoPickingERP.Name = "txtNoPickingERP"
@@ -2700,7 +2815,7 @@ Partial Class frmPedido
         'dtpHoraInicioPreparacion
         '
         Me.dtpHoraInicioPreparacion.Format = System.Windows.Forms.DateTimePickerFormat.Time
-        Me.dtpHoraInicioPreparacion.Location = New System.Drawing.Point(668, 262)
+        Me.dtpHoraInicioPreparacion.Location = New System.Drawing.Point(675, 236)
         Me.dtpHoraInicioPreparacion.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dtpHoraInicioPreparacion.Name = "dtpHoraInicioPreparacion"
         Me.dtpHoraInicioPreparacion.Size = New System.Drawing.Size(110, 23)
@@ -2725,11 +2840,12 @@ Partial Class frmPedido
         Me.lblUbicTransito.Size = New System.Drawing.Size(91, 16)
         Me.lblUbicTransito.TabIndex = 63
         Me.lblUbicTransito.Text = "Ubic. Tránsito:"
+        Me.lblUbicTransito.Visible = False
         '
         'dtpHoraFinPreparacion
         '
         Me.dtpHoraFinPreparacion.Format = System.Windows.Forms.DateTimePickerFormat.Time
-        Me.dtpHoraFinPreparacion.Location = New System.Drawing.Point(788, 261)
+        Me.dtpHoraFinPreparacion.Location = New System.Drawing.Point(795, 235)
         Me.dtpHoraFinPreparacion.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dtpHoraFinPreparacion.Name = "dtpHoraFinPreparacion"
         Me.dtpHoraFinPreparacion.Size = New System.Drawing.Size(111, 23)
@@ -2739,7 +2855,7 @@ Partial Class frmPedido
         '
         Me.txtControlUltimoLote.BackColor = System.Drawing.Color.LightPink
         Me.txtControlUltimoLote.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtControlUltimoLote.Location = New System.Drawing.Point(511, 206)
+        Me.txtControlUltimoLote.Location = New System.Drawing.Point(519, 179)
         Me.txtControlUltimoLote.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.txtControlUltimoLote.Name = "txtControlUltimoLote"
         Me.txtControlUltimoLote.ReadOnly = True
@@ -5271,6 +5387,11 @@ Partial Class frmPedido
         Me.XtraScrollableControl2.ResumeLayout(False)
         Me.GroupBox3.ResumeLayout(False)
         Me.GroupBox3.PerformLayout()
+        CType(Me.cmbPiloto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbEmpresaTransporte.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.gcVerificacionBOF, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.gcVerificacionBOF.ResumeLayout(False)
+        CType(Me.txtGuiaTransporte.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView12, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbMotivoDevolucion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -5809,4 +5930,9 @@ Partial Class frmPedido
     Friend WithEvents colIdProductoBodega As DataGridViewTextBoxColumn
     Friend WithEvents colIdPedidoDet As DataGridViewTextBoxColumn
     Friend WithEvents IdCliente As DataGridViewComboBoxColumn
+    Friend WithEvents txtGuiaTransporte As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents gcVerificacionBOF As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents lblVerificacionBOF As LinkLabel
+    Friend WithEvents cmbPiloto As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents cmbEmpresaTransporte As DevExpress.XtraEditors.LookUpEdit
 End Class

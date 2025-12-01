@@ -1,4 +1,5 @@
-﻿Imports System.Net
+﻿Imports System.Globalization
+Imports System.Net
 Imports System.Net.Http
 Imports System.Net.Http.Headers
 Imports System.Text
@@ -60,7 +61,11 @@ Public Class clsSyncSapAjustes
                 Dim grupos = ajustes.GroupBy(Function(a) New With {
                                          Key .Doc = a.NoDocumento,
                                          Key .IdAjusteWMS = a.IdAjusteEnc,
-                                         Key .Tipo = If(EsSalida(a), InvAdjType.Issue, InvAdjType.Receipt)
+                                         Key .Usr_Agr = a.Usr_Agr,
+                                         Key .Tipo = If(EsSalida(a), InvAdjType.Issue, InvAdjType.Receipt),
+                                         Key .CentroCostoErp = a.Centro_Costo_Erp,
+                                         Key .CentroCostoDirErp = a.Centro_Costo_Dir_Erp,
+                                         Key .CentroCostoDepErp = a.Centro_Costo_Dep_Erp
                                      })
 
                 For Each g In grupos
@@ -74,8 +79,20 @@ Public Class clsSyncSapAjustes
                     comments:=$"WMS Ajuste {g.Key.Doc} ({docTxt}) IdAjusteWMS:({g.Key.IdAjusteWMS}) ",
                     journalMemo:=$"WMS {docTxt} – MI3",
                     series:=Nothing,
+                    centroCostoErp:=clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(g.Key.CentroCostoErp),
+                    centroCostoDirErp:=clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(g.Key.CentroCostoDirErp),
+                    centroCostoDepErp:=clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(g.Key.CentroCostoDepErp),
                     detalles:=g.ToList()
                 )
+
+                    '#CKFK20251028 Agregamos los campos UDFs necesarios
+                    payload.U_ENVIADO_WMS = 1
+                    payload.U_MOTIVO_WMS = "1"
+                    payload.U_OPERADOR_WMS = g.Key.Usr_Agr
+                    payload.U_DOCUMENTO_WMS = g.Key.IdAjusteWMS
+                    payload.U_INICIO_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)
+                    payload.U_FIN_ENVIO = Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)
+                    payload.U_ENVIADO_SAP_WMS = FormatoFechas.tFechaHoraSAP(Now)
 
                     Dim json As String = JsonConvert.SerializeObject(payload, New JsonSerializerSettings With {.NullValueHandling = NullValueHandling.Ignore})
                     Dim content = New StringContent(json, Encoding.UTF8)
@@ -152,11 +169,13 @@ Public Class clsSyncSapAjustes
 
     End Function
 
-
     Private Shared Function Build_Inventory_Payload(ByVal docDate As Date,
                                                     ByVal comments As String,
                                                     ByVal journalMemo As String,
                                                     ByVal series As Integer?,
+                                                    ByVal centroCostoErp As String,
+                                                    ByVal centroCostoDirErp As String,
+                                                    ByVal centroCostoDepErp As String,
                                                     ByVal detalles As List(Of clsBeAjustesMI3)) As InventoryPayload
 
         Dim payload As New InventoryPayload With {
@@ -192,8 +211,11 @@ Public Class clsSyncSapAjustes
             .U_Color = color,
             .U_Talla = talla,
             .U_MotivoDev = If(d.Motivo_Ajuste, String.Empty),
-            .unitMsr = If(d.UMBas, String.Empty)
-        }
+            .unitMsr = If(d.UMBas, String.Empty),
+            .CostingCode = centroCostoErp,
+            .CostingCode2 = centroCostoDirErp,
+            .CostingCode3 = centroCostoDepErp
+             }
 
             ' BatchNumbers desde Color&Talla
             If Not String.IsNullOrWhiteSpace(lote) Then
@@ -240,6 +262,16 @@ Public Class clsSyncSapAjustes
         Public Property JournalMemo As String
         Public Property Series As Integer?
         Public Property Ref2 As Integer?
+        Public Property U_MOTIVO_WMS As String = ""
+        Public Property U_OPERADOR_WMS As String = ""
+        Public Property U_DOCUMENTO_WMS As Integer = 0
+        Public Property U_INICIO_PICK As DateTime = Now
+        Public Property U_FIN_PICK As DateTime = Now
+        Public Property U_ESTADO_PEDIDO As Integer = 0
+        Public Property U_INICIO_ENVIO As DateTime = Now
+        Public Property U_FIN_ENVIO As DateTime = Now
+        Public Property U_ENVIADO_WMS As Integer = 1
+        Public Property U_ENVIADO_SAP_WMS As String = ""
         Public Property DocumentLines As List(Of InventoryDocumentLine)
     End Class
 
@@ -251,6 +283,9 @@ Public Class clsSyncSapAjustes
         Public Property U_Talla As String = ""
         Public Property U_MotivoDev As String = ""
         Public Property unitMsr As String = ""
+        Public Property CostingCode As String = ""
+        Public Property CostingCode2 As String = ""
+        Public Property CostingCode3 As String = ""
         Public Property BatchNumbers As List(Of BatchNumber)
     End Class
 

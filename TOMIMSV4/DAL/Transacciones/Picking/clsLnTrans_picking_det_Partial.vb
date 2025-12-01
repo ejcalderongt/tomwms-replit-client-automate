@@ -1789,7 +1789,7 @@ Partial Public Class clsLnTrans_picking_det
     Public Shared Sub Guarda_Trans_picking_det(ByVal IdPickingEnc As Integer,
                                                ByVal IdBodegaMuelle As Integer,
                                                ByVal pListObjPickingDet As List(Of clsBeTrans_picking_det),
-                                               ByVal pListObjPickingUbic As List(Of clsBeTrans_picking_ubic),
+                                               ByRef pListObjPickingUbic As List(Of clsBeTrans_picking_ubic),
                                                ByRef lConnection As SqlConnection,
                                                ByRef lTransaction As SqlTransaction)
 
@@ -1807,12 +1807,11 @@ Partial Public Class clsLnTrans_picking_det
 
                 If BeTransPickingDet.IsNew Then
 
-                    lMaxIdDet = MaxID(lConnection, lTransaction) + 1
-
                     BeTransPickingDet.IdPickingEnc = IdPickingEnc
 
-                    beListPickingUbic = pListObjPickingUbic.FindAll(Function(x) x.IdPickingDet = BeTransPickingDet.IdPickingDet _
-                                                                        AndAlso x.IdPedidoDet = BeTransPickingDet.IdPedidoDet _
+                    lMaxIdDet = MaxID(lConnection, lTransaction) + 1
+
+                    beListPickingUbic = pListObjPickingUbic.FindAll(Function(x) x.IdPedidoDet = BeTransPickingDet.IdPedidoDet _
                                                                         AndAlso x.IdPedidoEnc = BeTransPickingDet.IdPedidoEnc)
 
                     For Each BePickingUbic In beListPickingUbic

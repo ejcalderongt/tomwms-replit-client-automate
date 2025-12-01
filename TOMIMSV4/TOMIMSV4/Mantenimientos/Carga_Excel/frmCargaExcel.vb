@@ -341,36 +341,22 @@ Public Class frmCargaExcel
 
             'Loop through the Worksheet rows.
             Dim firstRow As Boolean = True
-            Dim startRow As Integer = 6
-            Dim currentRow As Integer = 0
-
             For Each row As IXLRow In documento1.RowsUsed
-
-                currentRow += 1
-                ' Omitir filas anteriores a la que queremos iniciar
-                If currentRow < startRow Then Continue For
-
-                ' Si es la primera fila procesada, se toman los encabezados
-                If firstRow AndAlso currentRow = startRow Then
+                'Use the first row to add columns to DataTable.
+                If firstRow Then
                     For Each cell As IXLCell In row.Cells
-                        DT.Columns.Add(cell.Value.ToString().Trim())
+                        DT.Columns.Add(cell.Value.ToString())
                     Next
                     firstRow = False
-                    Continue For  ' Pasar a la siguiente fila (ya tenemos columnas)
+                Else
+                    'Add rows to DataTable.
+                    DT.Rows.Add()
+                    Dim i As Integer = 0
+                    For Each cell As IXLCell In row.Cells(False)
+                        DT.Rows(DT.Rows.Count - 1)(i) = cell.Value.ToString()
+                        i += 1
+                    Next
                 End If
-
-                ' Agregar nueva fila al DataTable
-                DT.Rows.Add()
-                Dim i As Integer = 0
-
-                ' Llenar las celdas de la fila
-                For Each cell As IXLCell In row.Cells(False)
-                    If i < DT.Columns.Count Then
-                        DT.Rows(DT.Rows.Count - 1)(i) = cell.Value.ToString().Trim()
-                    End If
-                    i += 1
-                Next
-
             Next
 
             lblPrg.Text = ""
@@ -2054,6 +2040,7 @@ Public Class frmCargaExcel
                         If Not clsLnProducto.Exist_by_Codigo(pDT(i)(0)) Then
                             errorCampos = True
                             clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "El código del producto " & pDT(i)(0) & "en la fila " & i + 1 & " no existe en la bd.")
+                            Continue For
                         End If
                         vCodigoProducto = pDT(i)(0)
                     End If
@@ -2190,7 +2177,7 @@ Public Class frmCargaExcel
                             BeTallaColorNuevo.IdTalla = BeTalla.IdTalla
                             BeTallaColorNuevo.IdColor = BeColor.IdColor
                             BeTallaColorNuevo.IdCampaña = 63
-                            BeTallaColorNuevo.CodigoSKU = BeProducto.Codigo + "" + BeTalla.Codigo + "" + BeColor.Codigo
+                            BeTallaColorNuevo.CodigoSKU = BeProducto.Codigo + BeColor.Codigo + BeTalla.Codigo
                             BeTallaColorNuevo.User_agr = AP.UsuarioAp.IdUsuario
                             BeTallaColorNuevo.User_mod = AP.UsuarioAp.IdUsuario
                             BeTallaColorNuevo.Fec_agr = Date.Today

@@ -10,13 +10,13 @@
         public string No { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Item_No { get; set; } = string.Empty;
-        public decimal Qty_to_Receive { get; set; } = 0.0m;
-        public decimal Qty_to_Ship { get; set; } = 0.0m;
-        public decimal Quantity { get; set; } = 0.0m;
+        public double Qty_to_Receive { get; set; } = 0;
+        public double Qty_to_Ship { get; set; } = 0;
+        public double Quantity { get; set; } = 0;
         public decimal Quantity_Shipped { get; set; } = 0;
         public string Transfer_to_CodeField { get; set; } = string.Empty;
         public string Transfer_From_CodeField { get; set; } = string.Empty;
-        public DateTime Shipment_Date { get; set; } = DateTime.Now;
+        public DateTime? Shipment_Date { get; set; } = new DateTime(1900, 1, 1);
         public string Unit_of_Measure_Code { get; set; } = string.Empty;
         public int Status { get; set; } = 0;
         public string Process_Result { get; set; } = string.Empty;
@@ -40,9 +40,9 @@
             string No,
             string Description,
             string Item_No,
-            decimal Qty_to_Receive,
-            decimal Qty_to_Ship,
-            decimal Quantity,
+            double Qty_to_Receive,
+            double Qty_to_Ship,
+            double Quantity,
             string transfer_to_CodeField,
             DateTime Shipment_Date,
             string Unit_of_Measure_Code)

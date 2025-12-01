@@ -738,12 +738,13 @@ public class clsLnTrans_oc_enc
         }
     }
 
-    public static clsBeTrans_oc_enc Get_Single_By_Referencia(ref clsBeTrans_oc_enc pBeTrans_oc_enc,
+    public static clsBeTrans_oc_enc? Get_Single_By_Referencia(ref clsBeTrans_oc_enc pBeTrans_oc_enc,
                                                              SqlConnection pConnection,
                                                              SqlTransaction pTransaction,
                                                              bool Llenar_Lotes = false)
     {
-        clsBeTrans_oc_enc resultado = new clsBeTrans_oc_enc(); // Initialize with a non-null value
+        
+        clsBeTrans_oc_enc? resultado = null;
 
         try
         {
@@ -779,6 +780,8 @@ public class clsLnTrans_oc_enc
                     }
                 }
             }
+
+            return resultado;
         }
         catch (Exception ex)
         {
@@ -788,9 +791,8 @@ public class clsLnTrans_oc_enc
             string vMsgError = string.Format("{0} {1}", currentMethodName?.Name ?? "UnknownMethod", ex.Message);
             throw new Exception(vMsgError, ex);
         }
-
-        return resultado;
     }   
+
     public static clsBeTrans_oc_enc? GetSingle(int pIdOrdenCompra,
                                           SqlConnection lConnection,
                                           SqlTransaction lTransaction)

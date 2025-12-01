@@ -5,7 +5,6 @@ using System.Reflection;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
 using WMS.EntityCore.Datos_Maestros;
-using WMS.EntityCore.Interface;
 public class clsLnProducto
 {
 
@@ -1348,5 +1347,232 @@ public class clsLnProducto
 
         be.IsNew = false;
         return be;
+    }
+
+    public static clsBeProducto? Get_BeProducto_By_Only_Codigo(string pCodigo,
+                                                         int IdBodega,
+                                                         SqlConnection lConnection,
+                                                         SqlTransaction lTransaction)
+    {
+        clsBeProducto? result = null;
+        clsBeProducto oBeProducto = new clsBeProducto();
+
+        try
+        {
+            string vSQL = @"SELECT * FROM VW_ProductoSI  
+                       WHERE IdBodega = @IdBodega And codigo = @Codigo";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+
+                lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo);
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", IdBodega);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+
+                    Cargar(ref oBeProducto, lRow);
+
+                    if (lRow["IdProductoBodega"] != DBNull.Value && lRow["IdProductoBodega"] != null)
+                    {
+                        oBeProducto.IdProductoBodega = Convert.ToInt32(lRow["IdProductoBodega"]);
+                    }
+
+                    oBeProducto.IsNew = false;
+                    result = oBeProducto;
+                }
+            }
+        }
+        catch
+        {
+            throw;
+        }
+
+        return result;
+    }
+
+    public static int Get_Id_Producto_By_IdProductoBodega(int pIdProductoBodega,
+                                                         SqlConnection lConnection,
+                                                         SqlTransaction lTransaction)
+    {
+        int result = 0;
+
+        try
+        {
+            string vSQL = @"SELECT p.IdProducto
+            FROM producto_bodega AS pb  
+            INNER JOIN producto AS p ON p.IdProducto = pb.IdProducto 
+            WHERE pb.activo = 1 
+            and (pb.IdProductoBodega = @IdProductoBodega)";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pIdProductoBodega);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+                    result = Convert.ToInt32(lRow["IdProducto"]);
+                }
+            }
+        }
+        catch
+        {
+            throw;
+        }
+
+        return result;
+    }
+
+    public static int Get_Id_Unidad_Medida_By_Codigo(string Codigo, SqlConnection lConnection, SqlTransaction lTransaction)
+    {
+        int result = 0;
+
+        try
+        {
+            string vSQL = "SELECT IdUnidadMedidaBasica FROM producto WHERE Codigo=@codigo";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@codigo", Codigo);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    result = Convert.ToInt32(lDT.Rows[0]["IdUnidadMedidaBasica"]);
+                }
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return result;
+    }
+    public static clsBeProducto? Get_Single_By_IdProductoBodega(int pIdProductoBodega,
+                                                              SqlConnection lConnection,
+                                                              SqlTransaction? lTransaction)
+    {
+        clsBeProducto? result = null;
+
+        try
+        {
+            string vSQL = @"SELECT p.* FROM Producto_Bodega AS pb 
+                       INNER JOIN Producto AS p ON pb.IdProducto = p.IdProducto 
+                       AND pb.IdProductoBodega=@IdProductoBodega";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pIdProductoBodega);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+                    clsBeProducto ObjProducto = new clsBeProducto();                    
+                    Cargar(ref ObjProducto, lRow);
+                    result = ObjProducto;
+                }
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return result;
+    }
+
+    public static clsBeProducto? Get_Single_By_IdProducto(int pIdProducto, SqlConnection connection, SqlTransaction? transaction)
+    {
+        clsBeProducto? result = null;
+
+        try
+        {
+            string vSQL = "SELECT TOP 1 * FROM producto WHERE IdProducto=@IdProducto ";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, connection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = transaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdProducto", pIdProducto);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+                    clsBeProducto ObjProducto = new clsBeProducto();
+
+                    Cargar(ref ObjProducto, lRow);
+                    ObjProducto.IsNew = false;
+                    result = ObjProducto;
+                }
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return result;
+    }
+
+    public static int Get_Tipo_Rotacion_By_IdProductoBodega(int IdProductoBodega,
+                                                         SqlConnection lConnection,
+                                                         SqlTransaction lTransaction)
+    {
+        int result = 0;
+
+        try
+        {
+            string vSQL = @"SELECT producto_bodega.IdProductoBodega, producto.IdTipoRotacion
+                        FROM producto_bodega INNER JOIN
+                        producto ON producto_bodega.IdProducto = producto.IdProducto
+                        WHERE producto_bodega.IdProductoBodega = @IdProductoBodega";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, lConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = lTransaction;
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", IdProductoBodega);
+
+                DataTable lDT = new DataTable();
+                lDTA.Fill(lDT);
+
+                if (lDT != null && lDT.Rows.Count > 0)
+                {
+                    DataRow lRow = lDT.Rows[0];
+                    result = lRow["IdTipoRotacion"] == DBNull.Value ? 0 : Convert.ToInt32(lRow["IdTipoRotacion"]);
+                }
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+        return result;
     }
 }

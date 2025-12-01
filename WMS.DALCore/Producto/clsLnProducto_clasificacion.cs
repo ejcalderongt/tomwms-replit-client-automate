@@ -5,7 +5,6 @@ using System.Reflection;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
 using WMS.EntityCore.Producto.ProductoSimple;
-using WMS.EntityCore.Interface;
 public class clsLnProducto_clasificacion
 {
     private static clsInsert Ins = new clsInsert();

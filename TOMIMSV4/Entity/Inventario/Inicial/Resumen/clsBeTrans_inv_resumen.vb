@@ -16,6 +16,7 @@ Public Class clsBeTrans_inv_resumen
     Public Property IdUbicacion() As Integer = 0
     Public Property IdBodega() As Integer = 0
     Public Property Lic_plate() As String = ""
+    Public Property IdProductoTallaColor() As Integer = 0
     Sub New()
     End Sub
     Sub New(ByRef idinventariores As Integer, ByVal idinventarioenct As Integer, ByVal idtramo As Integer, ByVal idproducto As Integer, ByVal idoperador As Integer, ByVal IdUnidadMedida As Integer, ByVal idpresentacion As Integer, ByVal idproductoestado As Integer, ByVal cantidad As Double, ByVal fecha_captura As Date, ByVal host As String, ByVal nom_producto As String, ByVal nom_operador As String)

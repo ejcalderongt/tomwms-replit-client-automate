@@ -1,6 +1,10 @@
 ﻿Imports System.Data.SqlClient
+Imports System.Net
+Imports System.Net.Http
+Imports System.Net.Http.Headers
 Imports System.Reflection
-Imports DevExpress.Drawing.Internal.Images
+Imports System.Text
+Imports Newtonsoft.Json.Linq
 Imports Sap.Data.Hana
 
 Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
@@ -12,11 +16,9 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
     Public Sub Dispose() Implements IDisposable.Dispose
     End Sub
 
-    Private Shared Function Importar_Productos_Desde_SAP_A_TablaIntermedia(ByVal lblprg As RichTextBox,
-                                                                     ByRef prg As ProgressBar,
-                                                                     ByRef cnnLog As SqlConnection) As Boolean
-
-        Importar_Productos_Desde_SAP_A_TablaIntermedia = False
+    Private Shared Async Function Importar_Productos_Desde_SAP_A_TablaIntermediaAsync(ByVal lblprg As RichTextBox,
+                                                                                     ByVal prg As ProgressBar,
+                                                                                     ByVal cnnLog As SqlConnection) As Task(Of Boolean)
 
         Dim Cnn As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
         Dim lTrans As SqlTransaction = Nothing
@@ -24,10 +26,20 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
 
         Try
 
-            clsPublic.Actualizar_Progreso(lblprg, "Iniciando procesamiento de productos a tabla intermedia -> " & Now)
+            Dim vHanaService As New SapServiceLayerClient
+            Dim loginResponse As LoginResponseDto = Await vHanaService.LoginAsync()
+
+            If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
+                clsPublic.Actualizar_Progreso(lblprg, "No se pudo obtener sesión.")
+                Return False
+            End If
+
+            clsPublic.Actualizar_Progreso(lblprg, "Sesión iniciada correctamente.")
 
             Dim lfichaProductos As New List(Of clsBeI_nav_producto)
-            lfichaProductos = GetProductos_SAP_HANA()
+            lfichaProductos = Await Get_Productos_SAP_SL(vHanaService.SessionCookie, SapServiceLayerClient.baseUrl, lblprg)
+
+            clsPublic.Actualizar_Progreso(lblprg, "Consultando bodegas en SAP (OWHS).")
 
             Application.DoEvents()
 
@@ -50,13 +62,13 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
 
                     RegistrosNoEncontrados = True
 
-                    For Each Prod In lfichaProductos
+                    For Each singleProduct In lfichaProductos
 
                         Try
 
-                            clsPublic.Actualizar_Progreso(lblprg, String.Format("Procesando Producto: {0} {1} ", Prod.No, vbNewLine))
+                            clsPublic.Actualizar_Progreso(lblprg, String.Format("Procesando Producto: {0} {1} ", singleProduct.No, vbNewLine))
 
-                            clsLnI_nav_producto.Insertar(Prod, Cnn, lTrans)
+                            clsLnI_nav_producto.Insertar(singleProduct, Cnn, lTrans)
 
                             VContadorBitacoraIntermedia += 1
 
@@ -69,11 +81,11 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
                         Catch ex As Exception
 
                             clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                                   Prod.No,
+                                                                   singleProduct.No,
                                                                    BeNavEjecucionEnc.IdEjecucionEnc,
                                                                    BeConfigDet.Idnavconfigdet, cnnLog)
 
-                            clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al procesar producto: {0} {1} ", Prod.No, ex.Message))
+                            clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al procesar producto: {0} {1} ", singleProduct.No, ex.Message))
 
                             Application.DoEvents()
 
@@ -88,7 +100,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
                 lTrans.Commit()
 
                 If RegistrosNoEncontrados Then
-                    Importar_Productos_Desde_SAP_A_TablaIntermedia = True
+                    Return True
                 End If
 
                 clsPublic.Actualizar_Progreso(lblprg, "Fin de procesamiento de productos -> " & Now)
@@ -329,103 +341,151 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
 
     End Function
 
-    Public Shared Function Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(ByRef lblprg As RichTextBox,
-                                                                                    ByRef prg As ProgressBar,
-                                                                                    Optional ByVal ForzarEjecucion As Boolean = False,
-                                                                                    Optional ByVal Pregunta_Si_LLena_Intermedia As Boolean = False) As Boolean
-        Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS = False
+    Public Shared Async Function Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(ByVal lblprg As RichTextBox,
+                                                                                          ByVal prg As ProgressBar,
+                                                                                          Optional ByVal ForzarEjecucion As Boolean = False,
+                                                                                          Optional ByVal Pregunta_Si_LLena_Intermedia As Boolean = False) As Task(Of Boolean)
 
-        Dim CnnInterface As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
-        Dim CnnLog As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
+        Dim CnnInterface As SqlConnection = Nothing
+        Dim CnnLog As SqlConnection = Nothing
         Dim lTrans As SqlTransaction = Nothing
 
         Try
 
-            If Not ForzarEjecucion AndAlso Not Ejecutar_Interfaz("Producto") Then
-                clsPublic.Actualizar_Progreso(lblprg, "La configuración de la interface indica que no se debe ejecutar en este momento.")
-                Return False
-            End If
+            ' Inicializar conexiones
+            CnnInterface = New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
+            CnnLog = New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
 
             CnnLog.Open()
-
             Iniciar_Ejecucion(CnnLog)
 
             CnnInterface.Open()
-
             lTrans = CnnInterface.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-            If Not Confirmar_Y_Llenar_Intermedia(Pregunta_Si_LLena_Intermedia, lblprg, prg, CnnLog) Then Return False
+            ' Confirmar y llenar tabla intermedia
+            If Not Await Confirmar_Y_Llenar_Intermedia(Pregunta_Si_LLena_Intermedia, lblprg, prg, CnnLog) Then
+                Return False
+            End If
 
+            ' Obtener y procesar productos
             Dim productos As List(Of clsBeI_nav_producto) = clsLnI_nav_producto.GetAll(CnnInterface, lTrans)
             clsPublic.Actualizar_Progreso(lblprg, $"Productos en tabla intermedia: {productos.Count}")
 
             If productos.Count > 0 Then
                 ProcesarProductosDesdeSAP(productos, lblprg, prg, CnnInterface, lTrans)
+            Else
+                clsPublic.Actualizar_Progreso(lblprg, "No hay productos para procesar en la tabla intermedia.")
             End If
 
+            ' Confirmar transacción
             lTrans.Commit()
-
             Finalizar_Ejecucion(lblprg, CnnLog, "Productos procesados correctamente: ")
 
-            Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS = True
+            Return True
 
         Catch ex As Exception
-            If lTrans IsNot Nothing Then lTrans.Rollback()
+            ' Manejo de errores
+            If lTrans IsNot Nothing Then
+                lTrans.Rollback()
+            End If
+
             prg.Value = 0
             clsPublic.Actualizar_Progreso(lblprg, $"Error al insertar producto a tabla de TOMWMS: {ex.Message}")
-            Throw
+
+            Throw New Exception($"Error en inserción de productos a TOMWMS: {ex.Message}", ex)
         Finally
-            If CnnInterface.State = ConnectionState.Open Then CnnInterface.Close()
-            If CnnLog.State = ConnectionState.Open Then CnnLog.Close()
+            ' Limpieza de recursos
+            If lTrans IsNot Nothing Then
+                lTrans.Dispose()
+            End If
+
+            If CnnInterface IsNot Nothing Then
+                If CnnInterface.State = ConnectionState.Open Then
+                    CnnInterface.Close()
+                End If
+                CnnInterface.Dispose()
+            End If
+
+            If CnnLog IsNot Nothing Then
+                If CnnLog.State = ConnectionState.Open Then
+                    CnnLog.Close()
+                End If
+                CnnLog.Dispose()
+            End If
         End Try
     End Function
 
     Private Shared Function ProcesarProductosDesdeSAP(productos As List(Of clsBeI_nav_producto),
-                                                     lblprg As RichTextBox,
-                                                     prg As ProgressBar,
-                                                     lConnection As SqlConnection,
-                                                     lTransaction As SqlTransaction) As Boolean
+                                                      lblprg As RichTextBox,
+                                                      prg As ProgressBar,
+                                                      lConnection As SqlConnection,
+                                                      lTransaction As SqlTransaction) As Boolean
 
-        ProcesarProductosDesdeSAP = False
-
+        ' Obtener configuración
         BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface, lConnection, lTransaction)
 
         Dim vMostrarProgreso As Boolean = (lblprg IsNot Nothing AndAlso prg IsNot Nothing)
+        Dim productosProcesados As Integer = 0
+        Dim productosConError As Integer = 0
 
-        If vMostrarProgreso Then prg.Maximum = productos.Count : prg.Value = 0
+        If vMostrarProgreso Then
+            prg.Maximum = productos.Count
+            prg.Value = 0
+        End If
 
+        ' Procesar cada producto
         For Each productoSAP In productos
-
             Try
+                If vMostrarProgreso Then
+                    clsPublic.Actualizar_Progreso(lblprg, $"Procesando producto: {productoSAP.No}")
+                End If
 
-                If vMostrarProgreso Then clsPublic.Actualizar_Progreso(lblprg, $"Procesando producto: {productoSAP.No}")
-
+                ' Verificar si el producto existe
                 Dim productoExistente = clsLnProducto.Existe(productoSAP.No, lConnection, lTransaction)
                 Dim producto = InicializarProductoDesdeSAP(productoSAP, productoExistente)
 
+                ' Enlazar entidades relacionadas
                 EnlazarEntidadRelacionada(productoSAP, producto, lConnection, lTransaction, lblprg)
 
+                ' Insertar o actualizar producto
                 If productoExistente IsNot Nothing Then
                     ActualizarProductoExistente(producto, productoExistente, lConnection, lTransaction, lblprg)
                 Else
                     InsertarProductoNuevo(producto, lConnection, lTransaction, lblprg)
                 End If
 
-                If vMostrarProgreso Then prg.Value += 1
+                Dim marcadoOk As Boolean = Marcar_Producto_Sincronizado_SL(productoSAP.No, lblprg)
 
-                ProcesarProductosDesdeSAP = True
+                If Not marcadoOk Then
+                    ' Aquí puedes decidir si lo cuentas como error
+                    productosConError += 1
+                Else
+                    productosProcesados += 1
+                End If
+
+                If vMostrarProgreso Then
+                    prg.Value += 1
+                End If
 
             Catch ex As Exception
+                productosConError += 1
                 clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, productoSAP.No, BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet)
+
                 If vMostrarProgreso Then
-                    clsPublic.Actualizar_Progreso(lblprg, $"Error general en producto {productoSAP.No}: {ex.Message}")
+                    clsPublic.Actualizar_Progreso(lblprg, $"Error en producto {productoSAP.No}: {ex.Message}")
                 Else
-                    Throw ex
+                    ' En modo sin progreso, lanzar la excepción para manejo superior
+                    Throw New Exception($"Error procesando producto {productoSAP.No}: {ex.Message}", ex)
                 End If
             End Try
-
         Next
 
+        ' Resumen del procesamiento
+        If vMostrarProgreso Then
+            clsPublic.Actualizar_Progreso(lblprg, $"Procesamiento completado: {productosProcesados} exitosos, {productosConError} con errores")
+        End If
+
+        Return productosConError = 0
     End Function
 
     Private Shared Sub Iniciar_Ejecucion(cnnLog As SqlConnection)
@@ -448,17 +508,17 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
         clsLnI_nav_ejecucion_res.Insertar(BeNavEjecucionRes, cnnLog)
     End Sub
 
-    Private Shared Function Confirmar_Y_Llenar_Intermedia(preguntar As Boolean,
-                                                           lblprg As RichTextBox,
-                                                           prg As ProgressBar,
-                                                           cnnLog As SqlConnection) As Boolean
+    Private Shared Async Function Confirmar_Y_Llenar_Intermedia(preguntar As Boolean,
+                                                                lblprg As RichTextBox,
+                                                                prg As ProgressBar,
+                                                                cnnLog As SqlConnection) As Task(Of Boolean)
         If Not preguntar Then
-            Return Importar_Productos_Desde_SAP_A_TablaIntermedia(lblprg, prg, cnnLog)
+            Return Await Importar_Productos_Desde_SAP_A_TablaIntermediaAsync(lblprg, prg, cnnLog)
         End If
 
         Dim respuesta = MessageBox.Show("¿Llenar tabla intermedia desde SAP?", "Parametro", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
         If respuesta = DialogResult.Yes Then
-            Return Importar_Productos_Desde_SAP_A_TablaIntermedia(lblprg, prg, cnnLog)
+            Return Await Importar_Productos_Desde_SAP_A_TablaIntermediaAsync(lblprg, prg, cnnLog)
         End If
 
         Return True
@@ -713,50 +773,91 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
         End Try
     End Sub
 
-    Private Shared Sub ActualizarProductoExistente(producto As clsBeProducto,
-                                                   productoExistente As clsBeProducto,
-                                                   cnn As SqlConnection,
-                                                   tran As SqlTransaction,
-                                                   lbl As RichTextBox)
+    Private Shared Function ActualizarProductoExistente(producto As clsBeProducto,
+                                                        productoExistente As clsBeProducto,
+                                                        cnn As SqlConnection,
+                                                        tran As SqlTransaction,
+                                                        lbl As RichTextBox) As Boolean
         Try
-            producto.IdProducto = productoExistente.IdProducto
-            producto.Largo = productoExistente.Largo
-            producto.Ancho = productoExistente.Ancho
-            producto.Alto = productoExistente.Alto
-            producto.Control_peso = productoExistente.Control_peso
-            producto.IdTipoRotacion = productoExistente.IdTipoRotacion
-            producto.IdIndiceRotacion = productoExistente.IdIndiceRotacion
-            producto.User_mod = BeConfigEnc.IdUsuario
-            producto.Fec_mod = Now
+            ' Preparar producto para actualización
+            PrepararProductoParaActualizacion(producto, productoExistente)
 
-            If clsLnProducto.Actualizar(producto, cnn, tran) > 0 Then
-                If Not clsLnProducto_bodega.Exist(producto.Codigo, cnn, tran) Then
-                    Dim productoBodega As New clsBeProducto_bodega With {
-                        .IdProductoBodega = clsLnProducto_bodega.MaxID(cnn, tran) + 1,
-                        .IdProducto = producto.IdProducto,
-                        .IdBodega = BeConfigEnc.Idbodega,
-                        .Activo = True,
-                        .User_agr = BeConfigEnc.IdUsuario,
-                        .User_mod = BeConfigEnc.IdUsuario,
-                        .Fec_agr = Now,
-                        .Fec_mod = Now
-                    }
-                    clsLnProducto_bodega.InsertarFromInterface(productoBodega, cnn, tran)
-                    clsPublic.Actualizar_Progreso(lbl, $"Asociado producto {producto.Codigo} a bodega {BeConfigEnc.Idbodega}")
-                End If
-                VContadorBitacoraTOMWMS += 1
-                Marcar_Producto_Sincronizado_SAP(producto.Codigo)
+            ' Actualizar producto principal
+            Dim filasAfectadas As Integer = clsLnProducto.Actualizar(producto, cnn, tran)
+
+            If filasAfectadas > 0 Then
+                ' Gestionar relación con bodega
+                GestionarProductoBodegaAsync(producto, cnn, tran, lbl)
+
+                '' Actualizar contadores y sincronización
+                'Dim usado = Marcar_Producto_Sincronizad0_SLAsync(producto.Codigo, lbl)
+
+                clsPublic.Actualizar_Progreso(lbl, $"Producto {producto.Codigo} actualizado correctamente")
+                Return True
+            Else
+                clsPublic.Actualizar_Progreso(lbl, $"No se pudo actualizar el producto {producto.Codigo}")
+                Return False
             End If
+
         Catch ex As Exception
-            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, producto.Codigo, BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet)
-            clsPublic.Actualizar_Progreso(lbl, $"Error al actualizar producto {producto.Codigo}: {ex.Message}")
+            ManejarErrorActualizacionAsync(ex, producto.Codigo, lbl)
+            Return False
         End Try
+    End Function
+
+    ' Métodos auxiliares para modularizar la funcionalidad
+    Private Shared Sub PrepararProductoParaActualizacion(producto As clsBeProducto, productoExistente As clsBeProducto)
+        producto.IdProducto = productoExistente.IdProducto
+        producto.Largo = productoExistente.Largo
+        producto.Ancho = productoExistente.Ancho
+        producto.Alto = productoExistente.Alto
+        producto.Control_peso = productoExistente.Control_peso
+        producto.IdTipoRotacion = productoExistente.IdTipoRotacion
+        producto.IdIndiceRotacion = productoExistente.IdIndiceRotacion
+        producto.User_mod = BeConfigEnc.IdUsuario
+        producto.Fec_mod = DateTime.Now
+    End Sub
+
+    Private Shared Sub GestionarProductoBodegaAsync(producto As clsBeProducto,
+                                                    cnn As SqlConnection,
+                                                    tran As SqlTransaction,
+                                                    lbl As RichTextBox)
+        Dim existeEnBodega As Boolean = clsLnProducto_bodega.Exist(producto.Codigo, cnn, tran)
+
+        If Not existeEnBodega Then
+            Dim productoBodega As clsBeProducto_bodega = CrearProductoBodega(producto, cnn, tran)
+            clsLnProducto_bodega.InsertarFromInterface(productoBodega, cnn, tran)
+            clsPublic.Actualizar_Progreso(lbl, $"Producto {producto.Codigo} asociado a bodega {BeConfigEnc.Idbodega}")
+        End If
+    End Sub
+
+    Private Shared Function CrearProductoBodega(producto As clsBeProducto, cnn As SqlConnection, tran As SqlTransaction) As clsBeProducto_bodega
+        Return New clsBeProducto_bodega With {
+        .IdProductoBodega = clsLnProducto_bodega.MaxID(cnn, tran) + 1,
+        .IdProducto = producto.IdProducto,
+        .IdBodega = BeConfigEnc.Idbodega,
+        .Activo = True,
+        .User_agr = BeConfigEnc.IdUsuario,
+        .User_mod = BeConfigEnc.IdUsuario,
+        .Fec_agr = DateTime.Now,
+        .Fec_mod = DateTime.Now
+    }
+    End Function
+
+    Private Shared Sub ActualizarContadoresYSincronizacion(codigoProducto As String)
+        VContadorBitacoraTOMWMS += 1
+        Marcar_Producto_Sincronizado_SAP(codigoProducto)
+    End Sub
+
+    Private Shared Sub ManejarErrorActualizacionAsync(ex As Exception, codigoProducto As String, lbl As RichTextBox)
+        clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, codigoProducto, BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet)
+        clsPublic.Actualizar_Progreso(lbl, $"Error al actualizar producto {codigoProducto}: {ex.Message}")
     End Sub
 
     Private Shared Function InsertarProductoNuevo(producto As clsBeProducto,
-                                             cnn As SqlConnection,
-                                             tran As SqlTransaction,
-                                             lbl As RichTextBox) As Integer
+                                                  cnn As SqlConnection,
+                                                  tran As SqlTransaction,
+                                                  lbl As RichTextBox) As Integer
         InsertarProductoNuevo = 0
         Try
 
@@ -782,7 +883,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
 
             VContadorBitacoraTOMWMS += 1
 
-            Marcar_Producto_Sincronizado_SAP(producto.Codigo)
+            'Marcar_Producto_Sincronizad0_SLAsync(producto.Codigo, lbl)
 
             InsertarProductoNuevo = producto.IdProducto
 
@@ -793,7 +894,8 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
 
     End Function
 
-    Public Shared Function Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lConnection As SqlConnection, lTransaction As SqlTransaction) As Integer
+    Public Shared Function Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lConnection As SqlConnection,
+                                                                                    lTransaction As SqlTransaction) As Integer
 
         Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS = 0
 
@@ -803,7 +905,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
 
             If productos.Count > 0 Then
                 If ProcesarProductosDesdeSAP(productos, Nothing, Nothing, lConnection, lTransaction) Then
-                    Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS = True
+                    Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS = 1
                 End If
             End If
 
@@ -856,6 +958,231 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
 
         Catch ex As Exception
             Throw
+        End Try
+
+    End Function
+
+    Public Shared Async Function Get_Productos_SAP_SL(sessionCookie As String,
+                                                      baseUrl As String,
+                                                      lbl As RichTextBox,
+                                                      Optional codigo As String = "") As Task(Of List(Of clsBeI_nav_producto))
+
+        Dim productos As New List(Of clsBeI_nav_producto)
+
+        Try
+            Dim fechaHasta As Date = Date.Today
+            Dim fechaDesde As Date = fechaHasta.AddDays(-BeConfigEnc.Rango_Dias_Importacion)
+
+            Dim fechaDesdeStr As String = fechaDesde.ToString("yyyy-MM-dd")
+            Dim fechaHastaStr As String = fechaHasta.ToString("yyyy-MM-dd")
+
+            Dim filtro As New Text.StringBuilder()
+
+            filtro.Append("U_Grupo ne '19' and " &
+                      "U_ENVIADO_WMS eq null and " &
+                      "Valid eq 'tYES' and " &
+                      "InventoryUOM ne '' ")
+
+            If Not String.IsNullOrWhiteSpace(codigo) Then
+                Dim codEscapado = codigo.Replace("'", "''")
+                filtro.AppendFormat(" and ItemCode eq '{0}'", codEscapado)
+            End If
+
+            Dim filterEncoded = Uri.EscapeDataString(filtro.ToString())
+            Dim pageSize As Integer = 100
+            Dim skip As Integer = 0
+
+            Using handler As New HttpClientHandler()
+                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
+                handler.UseCookies = False
+
+                Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.ConnectionClose = True
+                    client.DefaultRequestHeaders.Add("Cookie", sessionCookie)
+                    client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+
+                    Dim hayMas As Boolean = True
+
+                    While hayMas
+                        Dim requestUrl As String =
+                        $"{baseUrl}Items?$filter={filterEncoded}&$top={pageSize}&$skip={skip}"
+
+                        Using request As New HttpRequestMessage(HttpMethod.Get, requestUrl)
+                            request.Headers.ConnectionClose = True
+
+                            Dim response As HttpResponseMessage = Await client.SendAsync(request).ConfigureAwait(False)
+
+                            If Not response.IsSuccessStatusCode Then
+                                Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                                Throw New Exception($"Error al obtener productos desde Service Layer. Código: {response.StatusCode}, Detalle: {errContent}")
+                            End If
+
+                            Dim jsonResponse = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                            Dim obj = JObject.Parse(jsonResponse)
+                            Dim rows = obj("value")
+
+                            If rows Is Nothing OrElse Not rows.HasValues Then
+                                ' Ya no hay más páginas
+                                hayMas = False
+                                Exit While
+                            End If
+
+                            Dim filasPagina As Integer = rows.Count()
+
+                            For Each row In rows
+                                Dim prod As New clsBeI_nav_producto()
+
+                                prod.No = SafeGetString(row, "ItemCode")
+
+                                If lbl IsNot Nothing Then
+                                    clsPublic.Actualizar_Progreso(lbl, $"Producto encontrado: {prod.No}")
+                                End If
+
+                                prod.Item_Tracking_Code = SafeGetString(row, "BarCode")
+                                prod.Description = SafeGetString(row, "ItemName")
+                                prod.Description_2 = SafeGetString(row, "BarCode")
+
+                                prod.Item_Category_Code = SafeGetString(row, "U_Division")
+                                prod.Product_Group_Code = SafeGetString(row, "U_Fabricante")
+                                prod.Gen_Prod_Posting_Group = SafeGetString(row, "U_Marca")
+                                prod.Product_Class_Code = SafeGetString(row, "U_Grupo")
+
+                                prod.Base_Unit_Of_Measure = SafeGetString(row, "InventoryUOM")
+
+                                prod.Inventory = 0D
+                                prod.Unit_Cost = 0D
+                                prod.BatchControl = (SafeGetString(row, "ManageBatchNumbers") = "tYES")
+
+                                prod.Item_Category_Name = String.Empty
+                                prod.Producto_Group_Name = String.Empty
+                                prod.Gen_Prod_Posting_Name = String.Empty
+                                prod.Product_Class_Name = String.Empty
+
+                                Dim inventoryUom As String = SafeGetString(row, "InventoryUOM")
+                                Dim salesUnit As String = SafeGetString(row, "SalesUnit")
+                                Dim purchaseUnit As String = SafeGetString(row, "PurchaseUnit")
+
+                                Dim uomGroupEntry As Integer = SafeGetInteger(row, "UoMGroupEntry")
+                                Dim inventoryUomEntry As Integer = SafeGetInteger(row, "InventoryUoMEntry")
+                                Dim defaultSalesUomEntry As Integer = SafeGetInteger(row, "DefaultSalesUoMEntry")
+                                Dim defaultPurchasingUomEntry As Integer = SafeGetInteger(row, "DefaultPurchasingUoMEntry")
+
+                                If String.IsNullOrWhiteSpace(inventoryUom) _
+                                   OrElse String.IsNullOrWhiteSpace(salesUnit) _
+                                   OrElse String.IsNullOrWhiteSpace(purchaseUnit) _
+                                   OrElse inventoryUomEntry <= 0 _
+                                   OrElse defaultSalesUomEntry <= 0 _
+                                   OrElse defaultPurchasingUomEntry <= 0 Then
+
+                                    clsLnI_nav_ejecucion_det_error.Inserta_Log(
+                                    "Producto rechazado por falta de Unidades de Medida (TN04020)",
+                                    prod.No,
+                                    BeNavEjecucionEnc.IdEjecucionEnc,
+                                    BeConfigDet.Idnavconfigdet)
+
+                                    'Continue For
+                                End If
+
+                                If Not clsLnProducto.Existe_Codigo(prod.No) Then
+                                    productos.Add(prod)
+
+                                    If lbl IsNot Nothing Then
+                                        clsPublic.Actualizar_Progreso(lbl, $"Producto agregado: {prod.No}")
+                                    End If
+
+                                End If
+
+                            Next
+
+                            ' Avanzar al siguiente bloque
+                            skip += filasPagina
+                        End Using
+                    End While
+                End Using
+            End Using
+
+            Return productos
+
+        Catch ex As Exception
+            Throw New Exception("Error en Get_Productos_SAP_SL: " & ex.Message, ex)
+        End Try
+    End Function
+
+    ' Métodos auxiliares para manejo seguro de valores
+    Private Shared Function SafeGetString(token As JToken, propertyName As String) As String
+        Return If(token?.Value(Of String)(propertyName)?.Trim(), String.Empty)
+    End Function
+
+    Private Shared Function SafeGetInteger(token As JToken, propertyName As String) As Integer
+        Dim value = token?.Value(Of Integer?)(propertyName)
+        Return If(value.HasValue, value.Value, 0)
+    End Function
+
+    Private Shared Function SafeGetDecimal(token As JToken, propertyName As String) As Decimal
+        Dim value = token?.Value(Of Decimal?)(propertyName)
+        Return If(value.HasValue, value.Value, 0D)
+    End Function
+
+    Private Shared Function SafeGetDateTime(token As JToken, propertyName As String) As DateTime
+        Dim value = token?.Value(Of DateTime?)(propertyName)
+        Return If(value.HasValue, value.Value, DateTime.MinValue)
+    End Function
+
+    Private Shared Function Marcar_Producto_Sincronizado_SL(ItemCode As String,
+                                                            lbl As RichTextBox) As Boolean
+
+        Try
+            If String.IsNullOrWhiteSpace(ItemCode) Then Return False
+
+            Dim vHanaService As SapServiceLayerClient
+
+            vHanaService = New SapServiceLayerClient()
+            Dim loginResponse As LoginResponseDto = vHanaService.LoginAsync().GetAwaiter().GetResult()
+
+            If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
+                clsPublic.Actualizar_Progreso(lbl, "No se pudo obtener sesión.")
+            Else
+                clsPublic.Actualizar_Progreso(lbl, "Conexión correcta. Token: " & vHanaService.SessionCookie)
+                Debug.WriteLine(vHanaService.SessionCookie)
+            End If
+
+            Dim baseUrl As String = SapServiceLayerClient.baseUrl
+            Dim sessionCookie As String = vHanaService.SessionCookie
+
+            Dim requestUrl As String = $"Items('{ItemCode}')"
+            Dim payload As String = "{""U_ENVIADO_WMS"": 1}"
+
+            Dim httpPatch As New HttpMethod("PATCH")
+
+            Using handler As New HttpClientHandler()
+                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
+                handler.UseCookies = False
+
+                Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.ConnectionClose = True
+
+                    Using request As New HttpRequestMessage(httpPatch, baseUrl & requestUrl)
+                        request.Headers.ConnectionClose = True
+                        request.Headers.Add("Cookie", sessionCookie)
+                        request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+                        request.Content = New StringContent(payload, Encoding.UTF8, "application/json")
+
+                        Dim response = client.SendAsync(request).Result
+
+                        If response.IsSuccessStatusCode Then
+                            Return True
+                        Else
+                            Dim errContent = response.Content.ReadAsStringAsync().Result
+                            Throw New Exception($"Error al actualizar productos. Código: {response.StatusCode}, Detalle: {errContent}")
+                        End If
+                    End Using
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception($"(SL) {MethodBase.GetCurrentMethod().Name} {ex.Message}", ex)
         End Try
 
     End Function

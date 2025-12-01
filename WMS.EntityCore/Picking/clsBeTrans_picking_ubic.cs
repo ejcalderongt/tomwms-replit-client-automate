@@ -6,6 +6,8 @@ namespace WMS.EntityCore.Picking
 {
     public class clsBeTrans_picking_ubic : ICloneable
     {
+        public int IdProducto=0;
+
         [Column("IdPickingUbic")]
         [DisplayName("IdPickingUbic")]
         public int IdPickingUbic { get; set; } = 0;
@@ -235,8 +237,7 @@ namespace WMS.EntityCore.Picking
         public string Nombre_Color { get; set; } = "";
         public string CodigoSKU { get; set; } = "";
         public int No_Linea { get; set; } = 0;
-        public clsBeTrans_picking_ubic() { }
-
+        public clsBeTrans_picking_ubic() { }        
         public object Clone()
         {
             return MemberwiseClone();

@@ -5,6 +5,8 @@ using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic.CompilerServices;
 using WMS.EntityCore.Picking;
 using Microsoft.Extensions.Configuration;
+using WMSWebAPI.Be;
+using AppGlobal;
 public class clsLnTrans_picking_ubic
 {
 
@@ -80,12 +82,9 @@ public class clsLnTrans_picking_ubic
         }
     }
 
-    public static int Insertar(IConfiguration config, clsBeTrans_picking_ubic oBeTrans_picking_ubic, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Insertar(clsBeTrans_picking_ubic oBeTrans_picking_ubic, SqlConnection pConection, SqlTransaction pTransaction)
     {
-
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
@@ -145,44 +144,17 @@ public class clsLnTrans_picking_ubic
 
             string sp = Ins.SQL();
 
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text })
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
+                Bind(cmd, oBeTrans_picking_ubic);
+                rowsAffected = cmd.ExecuteNonQuery();
             }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
-
-            Bind(cmd, oBeTrans_picking_ubic);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            cmd.Dispose();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
         }
         catch (SqlException)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();            
             throw;
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection is not null) lConnection.Dispose();
-            if (lTransaction is not null) lTransaction.Dispose();
-        }
+
         return rowsAffected;
     }
 
@@ -279,16 +251,12 @@ public class clsLnTrans_picking_ubic
         return rowsAffected;
     }
 
-    public static int Actualizar(IConfiguration config, clsBeTrans_picking_ubic oBeTrans_picking_ubic, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int Actualizar(clsBeTrans_picking_ubic oBeTrans_picking_ubic, SqlConnection pConection, SqlTransaction pTransaction)
     {
-
         int rowsAffected = 0;
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
 
         try
         {
-
             Upd.Init("trans_picking_ubic");
             Upd.Add("idpickingubic", "@idpickingubic", "F");
             Upd.Add("idpickingenc", "@idpickingenc", "F");
@@ -346,48 +314,17 @@ public class clsLnTrans_picking_ubic
 
             string sp = Upd.SQL();
 
-            SqlCommand cmd = new SqlCommand() { CommandType = CommandType.Text };
-
-            bool Es_Transaccion_Remota = (pConection != null && pTransaction != null);
-
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text })
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
+                Bind(cmd, oBeTrans_picking_ubic);
+                rowsAffected = cmd.ExecuteNonQuery();
             }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
-
-            Bind(cmd, oBeTrans_picking_ubic);
-
-            rowsAffected = cmd.ExecuteNonQuery();
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
-
-
         }
-        catch (SqlException ex1)
+        catch (SqlException)
         {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+            throw;
         }
-        finally
-        {
-            if (lConnection.State == ConnectionState.Open) lConnection.Close();
-            if (lConnection != null) lConnection.Dispose();
-            if (lTransaction != null) lTransaction.Dispose();
-        }
+
         return rowsAffected;
     }
 
@@ -649,55 +586,29 @@ public class clsLnTrans_picking_ubic
             throw new Exception(vMsgError);
         }
     }
-    public static int MaxID(IConfiguration config, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    public static int MaxID(SqlConnection pConection, SqlTransaction pTransaction)
     {
-
-        SqlConnection lConnection = new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? lTransaction = null;
         int lMax = 0;
+
         try
         {
-
-
             const string sp = "Select ISNULL(Max(IdPickingUbic),0) FROM Trans_picking_ubic";
 
-            bool Es_Transaccion_Remota = pConection is not null && pTransaction is not null;
-            var cmd = new SqlCommand(sp, lConnection) { CommandType = (CommandType)Conversions.ToInteger(CommandType.Text) };
-            if (Es_Transaccion_Remota)
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text })
             {
-                cmd = new SqlCommand(sp, pConection, pTransaction);
-            }
-            else
-            {
-                lConnection.Open(); lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
-                cmd = new SqlCommand(sp, lConnection, lTransaction);
-            }
+                var lreturnValue = cmd.ExecuteScalar();
 
-            var lreturnValue = cmd.ExecuteScalar();
-
-            if (lreturnValue != DBNull.Value && lreturnValue != null)
-            {
-                lMax = int.Parse((string)lreturnValue);
+                if (lreturnValue != DBNull.Value && lreturnValue != null)
+                {
+                    lMax = Convert.ToInt32(lreturnValue);
+                }
             }
-
-            if (!Es_Transaccion_Remota)
-                if (lTransaction != null)
-                    lTransaction.Commit();
 
             return lMax;
-
         }
-        catch (SqlException ex1)
-        {
-            if (lTransaction is not null)
-                lTransaction.Rollback();
-            var st = new StackTrace();
-            var sf = st.GetFrame(0);
-            MethodBase? currentMethodName = null;
-            if (sf != null) { currentMethodName = sf.GetMethod(); }
-            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
-            
-            throw new Exception(vMsgError);
+        catch (SqlException)
+        {    
+            throw;
         }
     }
     public static void Bind(SqlCommand cmd, clsBeTrans_picking_ubic o)
@@ -755,47 +666,28 @@ public class clsLnTrans_picking_ubic
         cmd.Parameters.Add(new SqlParameter("@IdUbicacionTemporal", o.IdUbicacionTemporal != 0 ? o.IdUbicacionTemporal : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@IdOperadorBodega_Asignado", o.IdOperadorBodega_Asignado != 0 ? o.IdOperadorBodega_Asignado : DBNull.Value));
     }
-    public static int InsertOrUpdate(IConfiguration config, List<clsBeTrans_picking_ubic> entities, SqlConnection? conn = null, SqlTransaction? tx = null)
+    public static int InsertOrUpdate(List<clsBeTrans_picking_ubic> entities, SqlConnection conn, SqlTransaction tx)
     {
-        bool isExternalTx = conn != null && tx != null;
         int total = 0;
-
-        var connection = isExternalTx ? conn! : new SqlConnection(config.GetConnectionString("CST"));
-        SqlTransaction? localTx = null;
-        if (!isExternalTx) { connection.Open(); localTx = connection.BeginTransaction(IsolationLevel.ReadUncommitted); }
 
         try
         {
             foreach (var entity in entities)
             {
-                bool existe = Existe(entity.IdPickingUbic, entity.IdPickingEnc, connection, isExternalTx ? tx! : localTx!);
+                bool existe = Existe(entity.IdPickingUbic, entity.IdPickingEnc, conn, tx);
 
                 int resultado = existe
-                    ? Actualizar(config, entity, connection, isExternalTx ? tx : localTx)
-                    : Insertar(config, entity, connection, isExternalTx ? tx : localTx);
+                    ? Actualizar(entity, conn, tx)
+                    : Insertar(entity, conn, tx);
 
                 total += resultado;
             }
-
-            if (!isExternalTx)
-                localTx?.Commit();
 
             return total;
         }
         catch
         {
-            if (!isExternalTx)
-                localTx?.Rollback();
             throw;
-        }
-        finally
-        {
-            if (!isExternalTx)
-            {
-                connection.Close();
-                connection.Dispose();
-                localTx?.Dispose();
-            }
         }
     }
     public static bool Existe(int idPickingUbic, int idPickingEnc, SqlConnection conn, SqlTransaction? tx = null)
@@ -940,5 +832,128 @@ public class clsLnTrans_picking_ubic
         {         
             throw;
         }
+    }
+
+    public static List<clsBeTrans_picking_ubic>? Get_All_PickingUbic_By_IdPedidoDet(int pIdPedidoDet, int pIdPedidoEnc, SqlConnection pConnection, SqlTransaction pTransaction)
+    {
+        List<clsBeTrans_picking_ubic>? lReturnList = null;
+
+        try
+        {
+            string vSQL = " SELECT * FROM VW_PickingUbic_By_IdPedidoDet WHERE IdPedidoDet = @IdPedidoDet AND IdPedidoEnc = @IdPedidoEnc ";
+
+            using (SqlDataAdapter lDTA = new SqlDataAdapter(vSQL, pConnection))
+            {
+                lDTA.SelectCommand.CommandType = CommandType.Text;
+                lDTA.SelectCommand.Transaction = pTransaction;
+                lDTA.SelectCommand.CommandTimeout = 100;
+                lDTA.SelectCommand.Parameters.Add(new SqlParameter("@IdPedidoDet", pIdPedidoDet));
+                lDTA.SelectCommand.Parameters.Add(new SqlParameter("@IdPedidoEnc", pIdPedidoEnc));
+
+                DataTable lDataTable = new DataTable();
+                lDTA.Fill(lDataTable);
+
+                if (lDataTable != null && lDataTable.Rows.Count > 0)
+                {
+                    lReturnList = new List<clsBeTrans_picking_ubic>();
+
+                    foreach (DataRow lRow in lDataTable.Rows)
+                    {
+                        clsBeTrans_picking_ubic Obj = new clsBeTrans_picking_ubic();
+                        Cargar(ref Obj, lRow);
+
+                        Obj.Ubicacion.IdUbicacion = lRow.Field<int?>("IdUbicacion") ?? 0;
+                        Obj.NombreUbicacion = lRow.Field<string>("Nombre_Ubicacion") ?? "";
+                        Obj.IdPickingEnc = lRow.Field<int?>("IdPickingEnc") ?? 0;
+                        Obj.IdPedidoDet = lRow.Field<int?>("IdPedidoDet") ?? 0;
+                        Obj.CodigoProducto = lRow.Field<string>("codigo_producto") ?? "";
+                        Obj.NombreProducto = lRow.Field<string>("nombre_producto") ?? "";
+                        Obj.ProductoPresentacion = lRow.Field<string>("nom_presentacion") ?? "";
+                        Obj.ProductoUnidadMedida = lRow.Field<string>("nom_unid_med") ?? "";
+                        Obj.ProductoEstado = lRow.Field<string>("nom_estado") ?? "";
+                        Obj.IdProductoBodega = lRow.Field<int?>("IdProductoBodega") ?? 0;
+                        Obj.IdProductoEstado = lRow.Field<int?>("IdProductoEstado") ?? 0;
+                        Obj.IdPresentacion = lRow.Field<int?>("IdPresentacion") ?? 0;
+                        Obj.IdUnidadMedida = lRow.Field<int?>("IdUnidadMedidaBasica") ?? 0;
+                        Obj.IdStockRes = lRow.Field<int?>("IdStockRes") ?? 0;
+                        Obj.IdStock = lRow.Field<int?>("IdStock") ?? 0;
+                        Obj.IdPedidoEnc = lRow.Field<int?>("IdPedidoEnc") ?? 0;
+                        Obj.IsNew = false;
+
+                        lReturnList.Add(Obj);
+                    }
+                }
+            }
+
+            return lReturnList;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static bool Insertar_PickingUbic(clsBeStock_res pStockRes,
+                                            int pIdPickingDet,
+                                            SqlConnection lConnection,
+                                            SqlTransaction lTransaction)
+    {
+        bool result = false;
+
+        try
+        {
+            clsBeTrans_picking_ubic BePickingUbic = new clsBeTrans_picking_ubic();
+
+            BePickingUbic.IdPickingUbic = MaxID(lConnection, lTransaction) + 1;
+            BePickingUbic.IdPedidoDet = pStockRes.IdPedidoDet;
+            BePickingUbic.IdStockRes = pStockRes.IdStockRes;
+            BePickingUbic.IdPickingDet = pIdPickingDet;
+            BePickingUbic.IdPickingEnc = pStockRes.IdPicking;
+            BePickingUbic.IdPedidoEnc = pStockRes.IdPedido;
+            BePickingUbic.IdStock = pStockRes.IdStock;
+            BePickingUbic.IdPropietarioBodega = pStockRes.IdPropietarioBodega;
+            BePickingUbic.IdProductoBodega = pStockRes.IdProductoBodega;
+            BePickingUbic.IdProductoEstado = pStockRes.IdProductoEstado;
+            BePickingUbic.IdPresentacion = pStockRes.IdPresentacion;
+            BePickingUbic.IdUnidadMedida = pStockRes.IdUnidadMedida;
+            BePickingUbic.IdUbicacionAnterior = Convert.ToInt32(pStockRes.Ubicacion_ant);
+            BePickingUbic.IdRecepcion = pStockRes.IdRecepcion;
+            BePickingUbic.IdUbicacion = pStockRes.IdUbicacion;
+            BePickingUbic.Lote = pStockRes.Lote;
+            BePickingUbic.Fecha_vence = pStockRes.Fecha_vence;
+            BePickingUbic.Serial = pStockRes.Serial;
+            BePickingUbic.Lic_plate = pStockRes.Lic_plate;
+            BePickingUbic.Peso_solicitado = pStockRes.Peso;
+            BePickingUbic.Cantidad_solicitada = pStockRes.Cantidad;
+            BePickingUbic.Cantidad_recibida = 0.0;
+            BePickingUbic.Fecha_real_vence = pStockRes.Fecha_vence;
+            BePickingUbic.User_agr = pStockRes.User_agr;
+            BePickingUbic.Fec_agr = DateTime.Now;
+            BePickingUbic.User_mod = pStockRes.User_mod;
+            BePickingUbic.Fec_mod = DateTime.Now;
+            BePickingUbic.Activo = true;
+            BePickingUbic.IsNew = true;
+            BePickingUbic.IdBodega = clsLnProducto_bodega.Get_IdBodega_By_IdProductoBodega(pStockRes.IdProductoBodega, lConnection, lTransaction);
+            BePickingUbic.IdProducto = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(pStockRes.IdProductoBodega, lConnection, lTransaction);
+
+            double CantidadStockDestino = BePickingUbic.Cantidad_solicitada;
+
+            bool vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BePickingUbic.IdBodega, lConnection, lTransaction);
+            clsPublic.Abs(CantidadStockDestino - Math.Floor(CantidadStockDestino), vPermitirDecimales);
+
+            Insertar(BePickingUbic, lConnection, lTransaction);
+
+            pStockRes.IdPicking = pStockRes.IdPicking;
+            pStockRes.User_agr = pStockRes.User_agr;
+            clsLnStock_res.Actualizar_IdPickingEnc(pStockRes, lConnection, lTransaction);
+
+            result = true;
+        }
+        catch (Exception)
+        {            
+            throw;
+        }
+
+        return result;
     }
 }

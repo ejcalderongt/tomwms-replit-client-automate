@@ -975,6 +975,10 @@ Public Class frmRecepcion
 
                 Application.DoEvents()
 
+                If gBeRecepcionEnc Is Nothing Then
+                    Exit Sub
+                End If
+
                 chkHabilitaStock.Checked = gBeRecepcionEnc.Habilitar_Stock
 
                 chkMostrarCantidadPI.Checked = gBeRecepcionEnc.Mostrar_Cantidad_Esperada

@@ -108,6 +108,13 @@ Public Class clsLnBodega
                 .Ruta_CDN = IIf(IsDBNull(dr.Item("Ruta_CDN")), "", dr.Item("Ruta_CDN"))
                 .Control_Talla_Color = IIf(IsDBNull(dr.Item("Control_Talla_Color")), False, dr.Item("Control_Talla_Color"))
                 .Rango_Dias_Documentos = IIf(IsDBNull(dr.Item("Rango_Dias_Documentos")), 0, dr.Item("Rango_Dias_Documentos"))
+                .Agrupar_Sin_Lic_Veri_No_Cons = IIf(IsDBNull(dr.Item("Agrupar_Sin_Lic_Veri_No_Cons")), False, dr.Item("Agrupar_Sin_Lic_Veri_No_Cons"))
+                .Advertir_Mpq_Umbas = IIf(IsDBNull(dr.Item("Advertir_Mpq_Umbas")), False, dr.Item("Advertir_Mpq_Umbas"))
+                .Centro_Costo_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Erp")), "", dr.Item("Centro_Costo_Erp"))
+                .Centro_Costo_Dir_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Dir_Erp")), "", dr.Item("Centro_Costo_Dir_Erp"))
+                .Centro_Costo_Dep_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Dep_Erp")), "", dr.Item("Centro_Costo_Dep_Erp"))
+                .Control_Gondola = IIf(IsDBNull(dr.Item("control_gondola")), False, dr.Item("control_gondola"))
+                .Packing_Consolidado_Guia = IIf(IsDBNull(dr.Item("packing_consolidado_guia")), False, dr.Item("packing_consolidado_guia"))
 
             End With
 
@@ -226,6 +233,12 @@ Public Class clsLnBodega
             Ins.Add("permitir_cambio_ubic_recepcion", "@permitir_cambio_ubic_recepcion", DataType.Parametro)
             Ins.Add("ruta_cdn", "@ruta_cdn", DataType.Parametro)
             Ins.Add("rango_dias_documentos", "@rango_dias_documentos", DataType.Parametro)
+            Ins.Add("Agrupar_Sin_Lic_Veri_No_Cons", "@Agrupar_Sin_Lic_Veri_No_Cons", DataType.Parametro)
+            Ins.Add("Advertir_Mpq_Umbas", "@Advertir_Mpq_Umbas", DataType.Parametro)
+            Ins.Add("Centro_Costo_Erp", "@Centro_Costo_Erp", DataType.Parametro)
+            Ins.Add("Centro_Costo_Dir_Erp", "@Centro_Costo_Dir_Erp", DataType.Parametro)
+            Ins.Add("Centro_Costo_Dep_Erp", "@Centro_Costo_Dep_Erp", DataType.Parametro)
+            Ins.Add("control_gondola", "@Control_Gondola", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -338,6 +351,12 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@RUTA_CDN", oBeBodega.Ruta_CDN))
             cmd.Parameters.Add(New SqlParameter("@CONTROL_TALLA_COLOR", oBeBodega.Control_Talla_Color))
             cmd.Parameters.Add(New SqlParameter("@RANGO_DIAS_DOCUMENTOS", oBeBodega.Rango_Dias_Documentos))
+            cmd.Parameters.Add(New SqlParameter("@AGRUPAR_SIN_LIC_VERI_NO_CONS", oBeBodega.Agrupar_Sin_Lic_Veri_No_Cons))
+            cmd.Parameters.Add(New SqlParameter("@ADVERTIR_MPQ_UMBAS", oBeBodega.Advertir_Mpq_Umbas))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_ERP", oBeBodega.Centro_Costo_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DIR_ERP", oBeBodega.Centro_Costo_Dir_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DEP_ERP", oBeBodega.Centro_Costo_Dep_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CONTROL_GONDOLA", oBeBodega.Control_Gondola))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -465,6 +484,12 @@ Public Class clsLnBodega
             Upd.Add("ruta_cdn", "@ruta_cdn", DataType.Parametro)
             Upd.Add("control_talla_color", "@control_talla_color", DataType.Parametro)
             Upd.Add("rango_dias_documentos", "@rango_dias_documentos", DataType.Parametro)
+            Upd.Add("Agrupar_Sin_Lic_Veri_No_Cons", "@Agrupar_Sin_Lic_Veri_No_Cons", DataType.Parametro)
+            Upd.Add("Advertir_Mpq_Umbas", "@Advertir_Mpq_Umbas", DataType.Parametro)
+            Upd.Add("Centro_Costo_Erp", "@Centro_Costo_Erp", DataType.Parametro)
+            Upd.Add("Centro_Costo_Dir_Erp", "@Centro_Costo_Dir_Erp", DataType.Parametro)
+            Upd.Add("Centro_Costo_Dep_Erp", "@Centro_Costo_Dep_Erp", DataType.Parametro)
+            Upd.Add("control_gondola", "@Control_Gondola", DataType.Parametro)
             Upd.Where("IdBodega = @IdBodega")
 
             Dim sp As String = Upd.SQL()
@@ -578,6 +603,12 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@RUTA_CDN", oBeBodega.Ruta_CDN))
             cmd.Parameters.Add(New SqlParameter("@CONTROL_TALLA_COLOR", oBeBodega.Control_Talla_Color))
             cmd.Parameters.Add(New SqlParameter("@RANGO_DIAS_DOCUMENTOS", oBeBodega.Rango_Dias_Documentos))
+            cmd.Parameters.Add(New SqlParameter("@AGRUPAR_SIN_LIC_VERI_NO_CONS", oBeBodega.Agrupar_Sin_Lic_Veri_No_Cons))
+            cmd.Parameters.Add(New SqlParameter("@ADVERTIR_MPQ_UMBAS", oBeBodega.Advertir_Mpq_Umbas))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_ERP", oBeBodega.Centro_Costo_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DIR_ERP", oBeBodega.Centro_Costo_Dir_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DEP_ERP", oBeBodega.Centro_Costo_Dep_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CONTROL_GONDOLA", oBeBodega.Control_Gondola))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -1467,5 +1498,36 @@ Public Class clsLnBodega
         End Try
 
     End Function
+
+    Public Shared Function GetRutaCDN_By_Idbodega(ByVal pIdBodega As Integer,
+                                              ByVal lConnection As SqlConnection,
+                                              ByVal lTransaction As SqlTransaction) As String
+
+        GetRutaCDN_By_Idbodega = ""
+
+        Try
+
+            Const sp As String = "SELECT RUTA_CDN FROM Bodega 
+                              Where(IdBodega = @IdBodega)"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdBodega", pIdBodega))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                GetRutaCDN_By_Idbodega = IIf(IsDBNull(dt.Rows(0).Item("RUTA_CDN")), "", dt.Rows(0).Item("RUTA_CDN"))
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
 
 End Class

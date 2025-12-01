@@ -36,6 +36,7 @@ Public Class clsBeTrans_inv_detalle
     Public Property precio As Double = 0.0
     Public Property IdProductoParametroA As Integer = 0
     Public Property IdProductoParametroB As Integer = 0
+    Public Property IdProductoTallaColor As Integer = 0
 
     Sub New()
     End Sub
