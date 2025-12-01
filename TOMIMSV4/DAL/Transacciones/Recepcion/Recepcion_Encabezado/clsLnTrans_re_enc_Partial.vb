@@ -2687,7 +2687,10 @@ Partial Public Class clsLnTrans_re_enc
                                      ByVal pIdBodega As Integer,
                                      ByVal pIdUsuario As Integer,
                                      ByVal pIdResolucionLp As Integer,
-                                     Optional pIdOperadorBodega As Integer = 0) As String
+                                     Optional pIdOperadorBodega As Integer = 0,
+                                     Optional pRecepcionCajaMaster As Boolean = False) As String
+
+
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -2754,6 +2757,8 @@ Partial Public Class clsLnTrans_re_enc
 
                     If pListStockRec.Count > 0 Then
 
+                        Dim vCantStock As Integer = 0
+
                         For Each pBeStockRec In pListStockRec
 
                             Dim vLPExiste As Boolean = False
@@ -2771,25 +2776,27 @@ Partial Public Class clsLnTrans_re_enc
                             vLPexisteEnRec = clsLnTrans_re_det.Existe_By_IdRecepcionEnc_And_IdRecepcionDet(objRecepcion, lConnection, lTransaction)
                             vLPExiste = clsLnStock.Existe_Lp_In_Stock_By_IdBodega(pBeStockRec.Lic_plate, pIdBodega, lConnection, lTransaction)
 
-                            If vLPExiste OrElse vLPexisteEnRec Then
+                            If (vLPExiste OrElse vLPexisteEnRec) AndAlso Not pRecepcionCajaMaster Then
                                 Throw New Exception("ERROR_20220823C_HH_GuardarRecepcion: La licencia: " & pBeStockRec.Lic_plate & " fue registrada previamente.")
                             Else
-                                '#CKFK20250205 Agregué este sino para que se actualice la resolicop
-                                If pIdResolucionLp <> 0 Then
+                                If (pRecepcionCajaMaster AndAlso vCantStock = 0) OrElse Not pRecepcionCajaMaster Then
+                                    '#CKFK20250205 Agregué este sino para que se actualice la resolicop
+                                    If pIdResolucionLp <> 0 Then
 
-                                    Dim BeResolLp As New clsBeResolucion_lp_operador()
-                                    BeResolLp = clsLnResolucion_lp_operador.GetSingle(pIdResolucionLp, lConnection, lTransaction)
+                                        Dim BeResolLp As New clsBeResolucion_lp_operador()
+                                        BeResolLp = clsLnResolucion_lp_operador.GetSingle(pIdResolucionLp, lConnection, lTransaction)
 
-                                    If Not BeResolLp Is Nothing Then
-                                        BeResolLp.Correlativo_Actual += 1
-                                        clsLnResolucion_lp_operador.Actualizar_Correlativo_Actual(BeResolLp,
-                                                                                                  lConnection,
-                                                                                                  lTransaction)
+                                        If Not BeResolLp Is Nothing Then
+                                            BeResolLp.Correlativo_Actual += 1
+                                            clsLnResolucion_lp_operador.Actualizar_Correlativo_Actual(BeResolLp,
+                                                                                                      lConnection,
+                                                                                                      lTransaction)
+                                        End If
+
                                     End If
-
                                 End If
                             End If
-
+                            vCantStock += 1
                         Next
 
                         If vGenera_LP AndAlso pIdResolucionLp <= 0 Then

@@ -2596,7 +2596,8 @@ Public Class TOMHHWS
                                       ByVal pIdBodega As Integer,
                                       ByVal pIdUsuario As Integer,
                                       ByVal pIdResolucionLp As Integer,
-                                      ByVal pIdOperadorBodega As Integer) As String
+                                      ByVal pIdOperadorBodega As Integer,
+                                      ByVal pRecepcionCajaMaster As Boolean) As String
 
         Guardar_Recepcion = ""
 
@@ -2618,7 +2619,8 @@ Public Class TOMHHWS
                                                   pIdBodega,
                                                   pIdUsuario,
                                                   pIdResolucionLp,
-                                                  pIdOperadorBodega)
+                                                  pIdOperadorBodega,
+                                                  pRecepcionCajaMaster)
 
 
             Return String.Format("Res:{0}", vResult)
