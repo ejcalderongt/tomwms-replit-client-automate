@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data.Common
+Imports System.Data.SqlClient
 Imports System.Reflection
 Imports DevExpress.XtraEditors
 
@@ -414,8 +415,10 @@ Partial Public Class clsLnTrans_picking_det
             End If
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pIdPickingDet:=IdPedidoDet, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -442,8 +445,10 @@ Partial Public Class clsLnTrans_picking_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pIdPickingDet:=IdPickingDet, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -480,8 +485,15 @@ Partial Public Class clsLnTrans_picking_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdPedidoDet:=IdPedidoDet,
+                                                  pIdPedidoEnc:=IdPedidoEnc,
+                                                  pIdPickingEnc:=IdPIckingEnc,
+                                                  pIdPickingDet:=IdPickingDet,
+                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -935,8 +947,19 @@ Partial Public Class clsLnTrans_picking_det
                                                                                                                                                     lTransaction)
 
                                                                                         Catch ex As Exception
+                                                                                            '#MECR23102025: Se agrego bitacora para logs de picking
                                                                                             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), "Error_20220108_1148: Al eliminar el PickingDet: " & PickingUbic.IdPickingDet & " Probablemente ya tenga un despacho asociado. ")
-                                                                                            clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                                                                            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                                                                            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                                                                                                  pIdPedidoDet:=PickingUbic.IdPedidoDet,
+                                                                                                                                  pIdPedidoEnc:=PickingUbic.IdPedidoEnc,
+                                                                                                                                  pIdPickingEnc:=PickingUbic.IdPickingEnc,
+                                                                                                                                  pIdPickingDet:=PickingUbic.IdPickingDet,
+                                                                                                                                  pIdPickingUbic:=PickingUbic.IdPickingUbic,
+                                                                                                                                  pCodigoProducto:=PickingUbic.CodigoProducto,
+                                                                                                                                  pStackTrace:=ex.StackTrace,
+                                                                                                                                  pConection:=lConnection,
+                                                                                                                                  pTransaction:=lTransaction)
                                                                                         End Try
 
                                                                                         Dim Betrans_log_pedido_liberacion As New clsBeTrans_log_pedido_liberacion
@@ -1117,8 +1140,16 @@ Partial Public Class clsLnTrans_picking_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdPedidoDet:=IdPedidoDet,
+                                                  pIdPedidoEnc:=IdPedidoEnc,
+                                                  pIdPickingEnc:=IdPickingEnc,
+                                                  pUserAgr:=IdUsuario,
+                                                  pIdBodega:=IdBodega,
+                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -1567,8 +1598,21 @@ Partial Public Class clsLnTrans_picking_det
                                                                     End If
 
                                                                 Catch ex As Exception
+                                                                    '#MECR23102025: Se agrego bitacora para logs de picking
                                                                     Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), "Error_20220108_1148: Al eliminar el PickingDet: " & PickingUbic.IdPickingDet & " Probablemente ya tenga un despacho asociado. ")
-                                                                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                                                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                                                    clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                                                                          pIdPedidoDet:=PickingUbic.IdPedidoDet,
+                                                                                                          pIdPedidoEnc:=PickingUbic.IdPedidoEnc,
+                                                                                                          pIdPickingEnc:=PickingUbic.IdPickingEnc,
+                                                                                                          pIdPickingDet:=PickingUbic.IdPickingDet,
+                                                                                                          pIdPickingUbic:=PickingUbic.IdPickingUbic,
+                                                                                                          pCodigoProducto:=PickingUbic.CodigoProducto,
+                                                                                                          pIdBodega:=IdBodega,
+                                                                                                          pUserAgr:=IdUsuario,
+                                                                                                          pStackTrace:=ex.StackTrace,
+                                                                                                          pConection:=lConnection,
+                                                                                                          pTransaction:=lTransaction)
                                                                 End Try
 
                                                                 Dim Betrans_log_pedido_liberacion As New clsBeTrans_log_pedido_liberacion
@@ -1718,8 +1762,16 @@ Partial Public Class clsLnTrans_picking_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdPedidoDet:=IdPedidoDet,
+                                                  pIdPedidoEnc:=IdPedidoEnc,
+                                                  pIdPickingEnc:=IdPickingEnc,
+                                                  pStackTrace:=ex.StackTrace,
+                                                  pIdBodega:=IdBodega,
+                                                  pUserAgr:=IdUsuario)
             Throw ex
         End Try
 
@@ -1776,8 +1828,17 @@ Partial Public Class clsLnTrans_picking_det
             Insertar_PickingDet = True
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdPedidoDet:=pBePedidoDet.IdPedidoDet,
+                                                  pIdPedidoEnc:=pBePedidoDet.IdPedidoEnc,
+                                                  pIdPickingEnc:=pIdPickingEnc,
+                                                  pIdPickingDet:=pIdPickingDet,
+                                                  pCodigoProducto:=pBePedidoDet.Codigo_Producto,
+                                                  pNombreProducto:=pBePedidoDet.NombreProducto,
+                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -1873,8 +1934,10 @@ Partial Public Class clsLnTrans_picking_det
             Next
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError, pIdPickingEnc:=IdPickingEnc, pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -2017,8 +2080,18 @@ Partial Public Class clsLnTrans_picking_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdPedidoDet:=BePickingUbic.IdPedidoDet,
+                                                  pIdPedidoEnc:=BePickingUbic.IdPedidoEnc,
+                                                  pIdPickingEnc:=BePickingUbic.IdPickingEnc,
+                                                  pIdPickingDet:=BePickingUbic.IdPickingDet,
+                                                  pIdPickingUbic:=BePickingUbic.IdPickingUbic,
+                                                  pCodigoProducto:=BePickingUbic.CodigoProducto,
+                                                  pNombreProducto:=BePickingUbic.NombreProducto,
+                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -2241,7 +2314,19 @@ Partial Public Class clsLnTrans_picking_det
 
                                                         Catch ex As Exception
                                                             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), "Error_20220108_1148: Al eliminar el PickingDet: " & PickingUbic.IdPickingDet & " Probablemente ya tenga un despacho asociado. ")
-                                                            clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                                            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                                            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                                                                  pIdPedidoDet:=PickingUbic.IdPedidoDet,
+                                                                                                  pIdPedidoEnc:=PickingUbic.IdPedidoEnc,
+                                                                                                  pIdPickingEnc:=PickingUbic.IdPickingEnc,
+                                                                                                  pIdPickingDet:=PickingUbic.IdPickingDet,
+                                                                                                  pIdPickingUbic:=PickingUbic.IdPickingUbic,
+                                                                                                  pCodigoProducto:=PickingUbic.CodigoProducto,
+                                                                                                  pStackTrace:=ex.StackTrace,
+                                                                                                  pIdBodega:=IdBodega,
+                                                                                                  pUserAgr:=IdUsuario,
+                                                                                                  pConection:=lConnection,
+                                                                                                  pTransaction:=lTransaction)
                                                         End Try
 
                                                         Dim Betrans_log_pedido_liberacion As New clsBeTrans_log_pedido_liberacion
@@ -2381,8 +2466,16 @@ Partial Public Class clsLnTrans_picking_det
             End If
 
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdPedidoDet:=IdPedidoDet,
+                                                  pIdPedidoEnc:=IdPedidoEnc,
+                                                  pIdPickingEnc:=IdPickingEnc,
+                                                  pIdBodega:=IdBodega,
+                                                  pUserAgr:=IdUsuario,
+                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -2532,8 +2625,21 @@ Partial Public Class clsLnTrans_picking_det
                                                                                                                                                     lTransaction)
 
                                                                                 Catch ex As Exception
+                                                                                    '#MECR23102025: Se agrego bitacora para logs de picking
                                                                                     Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), "Error_20220108_1148: Al eliminar el PickingDet: " & PickingUbic.IdPickingDet & " Probablemente ya tenga un despacho asociado. ")
-                                                                                    clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                                                                    'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                                                                    clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                                                                                          pIdPedidoDet:=PickingUbic.IdPedidoDet,
+                                                                                                                          pIdPedidoEnc:=PickingUbic.IdPedidoEnc,
+                                                                                                                          pIdPickingEnc:=PickingUbic.IdPickingEnc,
+                                                                                                                          pIdPickingDet:=PickingUbic.IdPickingDet,
+                                                                                                                          pIdPickingUbic:=PickingUbic.IdPickingUbic,
+                                                                                                                          pCodigoProducto:=PickingUbic.CodigoProducto,
+                                                                                                                          pStackTrace:=ex.StackTrace,
+                                                                                                                          pIdBodega:=IdBodega,
+                                                                                                                          pUserAgr:=IdUsuario,
+                                                                                                                          pConection:=lConnection,
+                                                                                                                          pTransaction:=lTransaction)
                                                                                 End Try
 
                                                                                 Dim Betrans_log_pedido_liberacion As New clsBeTrans_log_pedido_liberacion
@@ -2703,8 +2809,16 @@ Partial Public Class clsLnTrans_picking_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdPedidoDet:=IdPedidoDet,
+                                                  pIdPedidoEnc:=IdPedidoEnc,
+                                                  pIdPickingEnc:=IdPickingEnc,
+                                                  pIdBodega:=IdBodega,
+                                                  pUserAgr:=IdUsuario,
+                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -2794,8 +2908,21 @@ Partial Public Class clsLnTrans_picking_det
                                             Try
                                                 vResultadoEliminacionPickingDet = Eliminar_By_BePickingUbic(PickingUbic, lConnection, lTransaction)
                                             Catch ex As Exception
+                                                '#MECR23102025: Se agrego bitacora para logs de picking
                                                 Dim msg = $"{MethodBase.GetCurrentMethod.Name()} Error_20220108_1148: Al eliminar PickingDet: {PickingUbic.IdPickingDet}"
-                                                clsLnLog_error_wms.Agregar_Error(msg)
+                                                'clsLnLog_error_wms.Agregar_Error(msg)
+                                                clsLnLog_error_wms_pick.Agregar_Error(msg,
+                                                                                      pIdPedidoDet:=PickingUbic.IdPedidoDet,
+                                                                                      pIdPedidoEnc:=PickingUbic.IdPedidoEnc,
+                                                                                      pIdPickingEnc:=PickingUbic.IdPickingEnc,
+                                                                                      pIdPickingDet:=PickingUbic.IdPickingDet,
+                                                                                      pIdPickingUbic:=PickingUbic.IdPickingUbic,
+                                                                                      pCodigoProducto:=PickingUbic.CodigoProducto,
+                                                                                      pIdBodega:=IdBodega,
+                                                                                      pUserAgr:=IdUsuario,
+                                                                                      pStackTrace:=ex.StackTrace,
+                                                                                      pConection:=lConnection,
+                                                                                      pTransaction:=lTransaction)
                                             End Try
 
                                             Dim log As New clsBeTrans_log_pedido_liberacion With {
@@ -2863,8 +2990,15 @@ Partial Public Class clsLnTrans_picking_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
             Dim msg = $"{MethodBase.GetCurrentMethod.Name()} {ex.Message}"
-            clsLnLog_error_wms.Agregar_Error(msg)
+            'clsLnLog_error_wms.Agregar_Error(msg)
+            clsLnLog_error_wms_pick.Agregar_Error(msg,
+                                      pIdPedidoEnc:=IdPedidoEnc,
+                                      pIdPickingEnc:=IdPickingEnc,
+                                      pIdBodega:=IdBodega,
+                                      pUserAgr:=IdUsuario,
+                                      pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
     End Function

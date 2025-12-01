@@ -425,8 +425,9 @@ Partial Public Class clsLnTrans_re_oc
             End If
 
         Catch ex As Exception
+            '#MECR25092025: se agrego bitacora de logs en recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pRecEnc.IdBodega, pRecEnc.User_agr, pStackTrace:=ex.StackTrace, pIdRecEnc:=pRecEnc.IdRecepcionEnc)
             Throw ex
         End Try
 
@@ -616,8 +617,9 @@ Partial Public Class clsLnTrans_re_oc
             Existe_Documento_By_IdOrdenCompraEnc = dt.Rows.Count > 0
 
         Catch ex As Exception
+            '#MECR25092025: Se agrego bitacora de logs en recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, 0, 0, ex.StackTrace)
             Throw ex
         End Try
 

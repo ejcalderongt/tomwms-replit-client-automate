@@ -113,6 +113,8 @@ Partial Public Class rptDespacho
         Me.GrandTotalBackground3 = New DevExpress.XtraReports.UI.XRControlStyle()
         Me.PageInfo = New DevExpress.XtraReports.UI.XRControlStyle()
         Me.PageHeader = New DevExpress.XtraReports.UI.PageHeaderBand()
+        Me.XrLabel43 = New DevExpress.XtraReports.UI.XRLabel()
+        Me.XrLabel42 = New DevExpress.XtraReports.UI.XRLabel()
         Me.XrLabel25 = New DevExpress.XtraReports.UI.XRLabel()
         Me.XrLabel39 = New DevExpress.XtraReports.UI.XRLabel()
         Me.XrLabel38 = New DevExpress.XtraReports.UI.XRLabel()
@@ -146,8 +148,6 @@ Partial Public Class rptDespacho
         Me.ReportHeader = New DevExpress.XtraReports.UI.ReportHeaderBand()
         Me.XrLogo = New DevExpress.XtraReports.UI.XRPictureBox()
         Me.IdPedidoEnc = New DevExpress.XtraReports.Parameters.Parameter()
-        Me.XrLabel42 = New DevExpress.XtraReports.UI.XRLabel()
-        Me.XrLabel43 = New DevExpress.XtraReports.UI.XRLabel()
         CType(Me.XrTable3, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.XrTable1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.XrTable2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -277,6 +277,7 @@ Partial Public Class rptDespacho
         Me.XrPageInfo1.PageInfo = DevExpress.XtraPrinting.PageInfo.DateTime
         Me.XrPageInfo1.SizeF = New System.Drawing.SizeF(313.0!, 23.0!)
         Me.XrPageInfo1.StyleName = "PageInfo"
+        Me.XrPageInfo1.TextFormatString = "{0:dddd, d 'de' MMMM 'de' yyyy HH:mm}"
         '
         'XrPageInfo2
         '
@@ -879,6 +880,26 @@ Partial Public Class rptDespacho
         Me.PageHeader.HeightF = 262.9169!
         Me.PageHeader.Name = "PageHeader"
         '
+        'XrLabel43
+        '
+        Me.XrLabel43.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
+        Me.XrLabel43.LocationFloat = New DevExpress.Utils.PointFloat(11.21014!, 200.4167!)
+        Me.XrLabel43.Name = "XrLabel43"
+        Me.XrLabel43.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel43.SizeF = New System.Drawing.SizeF(85.66309!, 23.0!)
+        Me.XrLabel43.StylePriority.UseFont = False
+        Me.XrLabel43.Text = "Ref. Pedido :"
+        '
+        'XrLabel42
+        '
+        Me.XrLabel42.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "?IdPedidoEnc")})
+        Me.XrLabel42.LocationFloat = New DevExpress.Utils.PointFloat(96.87322!, 200.4167!)
+        Me.XrLabel42.Multiline = True
+        Me.XrLabel42.Name = "XrLabel42"
+        Me.XrLabel42.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel42.SizeF = New System.Drawing.SizeF(178.3107!, 23.0!)
+        Me.XrLabel42.Text = "XrLabel42"
+        '
         'XrLabel25
         '
         Me.XrLabel25.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "?Empresa")})
@@ -1017,7 +1038,7 @@ Partial Public Class rptDespacho
         Me.XrLabel28.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel28.SizeF = New System.Drawing.SizeF(100.0!, 23.0!)
         Me.XrLabel28.Text = "XrLabel28"
-        Me.XrLabel28.TextFormatString = "{0:dd/MM/yy}"
+        Me.XrLabel28.TextFormatString = "{0:d/MM/yyyy HH:mm}"
         '
         'XrLabel27
         '
@@ -1181,26 +1202,6 @@ Partial Public Class rptDespacho
         Me.IdPedidoEnc.Description = "IdPedidoEnc"
         Me.IdPedidoEnc.Name = "IdPedidoEnc"
         '
-        'XrLabel42
-        '
-        Me.XrLabel42.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "?IdPedidoEnc")})
-        Me.XrLabel42.LocationFloat = New DevExpress.Utils.PointFloat(96.87322!, 200.4167!)
-        Me.XrLabel42.Multiline = True
-        Me.XrLabel42.Name = "XrLabel42"
-        Me.XrLabel42.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96.0!)
-        Me.XrLabel42.SizeF = New System.Drawing.SizeF(178.3107!, 23.0!)
-        Me.XrLabel42.Text = "XrLabel42"
-        '
-        'XrLabel43
-        '
-        Me.XrLabel43.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
-        Me.XrLabel43.LocationFloat = New DevExpress.Utils.PointFloat(11.21014!, 200.4167!)
-        Me.XrLabel43.Name = "XrLabel43"
-        Me.XrLabel43.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
-        Me.XrLabel43.SizeF = New System.Drawing.SizeF(85.66309!, 23.0!)
-        Me.XrLabel43.StylePriority.UseFont = False
-        Me.XrLabel43.Text = "Ref. Pedido :"
-        '
         'rptDespacho
         '
         Me.Bands.AddRange(New DevExpress.XtraReports.UI.Band() {Me.Detail, Me.TopMargin, Me.BottomMargin, Me.GroupHeaderBand1, Me.GroupHeaderBand2, Me.GroupFooterBand1, Me.GroupFooterBand2, Me.ReportFooterBand1, Me.PageHeader, Me.ReportHeader})
@@ -1211,7 +1212,7 @@ Partial Public Class rptDespacho
         Me.Parameters.AddRange(New DevExpress.XtraReports.Parameters.Parameter() {Me.Empresa, Me.Bodega, Me.IdPedidoEnc})
         Me.ScriptLanguage = DevExpress.XtraReports.ScriptLanguage.VisualBasic
         Me.StyleSheet.AddRange(New DevExpress.XtraReports.UI.XRControlStyle() {Me.Title, Me.GroupCaption3, Me.GroupData3, Me.DetailCaption3, Me.DetailData3, Me.DetailData3_Odd, Me.DetailCaptionBackground3, Me.TotalCaption3, Me.TotalData3, Me.TotalBackground3, Me.GrandTotalCaption3, Me.GrandTotalData3, Me.GrandTotalBackground3, Me.PageInfo})
-        Me.Version = "24.2"
+        Me.Version = "25.1"
         XrWatermark1.ForeColor = System.Drawing.Color.DimGray
         XrWatermark1.Id = "Watermark1"
         XrWatermark1.TextTransparency = 164

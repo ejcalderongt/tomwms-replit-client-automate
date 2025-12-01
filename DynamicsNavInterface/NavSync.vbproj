@@ -494,6 +494,7 @@
   <ItemGroup>
     <Content Include="Conn.ini" />
     <Content Include="remote_32x32-32.ico" />
+    <None Include="packages.config" />
     <None Include="Web References\WebReference\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.vb</LastGenOutput>
@@ -516,7 +517,6 @@
     <None Include="Formas\Reportes\DSEjecuciones.xss">
       <DependentUpon>DSEjecuciones.xsd</DependentUpon>
     </None>
-    <None Include="packages.config" />
     <None Include="Resources\button-power_basic_blue.png" />
     <None Include="Resources\Template.png" />
     <None Include="My Project\Application.myapp">

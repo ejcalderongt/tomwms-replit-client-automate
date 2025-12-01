@@ -1123,7 +1123,7 @@ Public Class clsLnStock_CI
 					  Factor, codigo_poliza, Numero_poliza,
 					  ubicacion_picking, Area, Factor,IdTipoEtiqueta, Clasificacion, IdUbicacion, IdProductoBodega, IdArea "
 
-                vSQL += "ORDER BY Codigo, Nombre_Completo "
+                vSQL += "ORDER BY Codigo, Nombre_Completo, IdPresentacion "
 
             End If
 

@@ -1,4 +1,6 @@
-﻿Imports DevExpress.XtraEditors
+﻿Imports System.IO
+Imports DevExpress.XtraEditors
+Imports DevExpress.XtraGrid
 
 Public Class frmEstacionalidadProducto
 
@@ -232,6 +234,44 @@ Public Class frmEstacionalidadProducto
 
         Dim rec As RectangleF = New RectangleF(0, 0, e.Graph.ClientPageSize.Width, 70)
         e.Graph.DrawString(reportHeader, Color.Black, rec, DevExpress.XtraPrinting.BorderSide.None)
+
+    End Sub
+
+    Private Sub cmdExcel_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdExcel.ItemClick
+        Exportar_Grid_A_Excel(Dgrid, "WMS_Estacionalidad_Productos.xlsx")
+    End Sub
+
+    Private Sub Exportar_Grid_A_Excel(ByRef dGrid As GridControl, ByVal NomArchivo As String)
+
+        Try
+
+            Try
+
+                Dim myStream As Stream
+                Dim saveFileDialog1 As New SaveFileDialog()
+
+                saveFileDialog1.Filter = "xlsx files (*.xlsx)|*.xlsx"
+                saveFileDialog1.FilterIndex = 1
+                saveFileDialog1.RestoreDirectory = True
+                saveFileDialog1.FileName = NomArchivo
+
+                If saveFileDialog1.ShowDialog() = DialogResult.OK Then
+                    myStream = saveFileDialog1.OpenFile()
+                    If (myStream IsNot Nothing) Then
+                        ' Code to write the stream goes here.
+                        dGrid.ExportToXlsx(myStream)
+                        myStream.Close()
+                    End If
+                End If
+
+            Catch ex As Exception
+                XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End Try
+
+        Catch ex As Exception
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        End Try
 
     End Sub
 

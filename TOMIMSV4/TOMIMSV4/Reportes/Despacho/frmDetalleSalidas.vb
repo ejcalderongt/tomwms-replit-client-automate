@@ -105,7 +105,6 @@ Public Class frmDetalleSalidas
 
             pBodega = AP.Bodega
 
-
             listarDespacho = clsLnVW_Despacho_Rep.Get_All_By_Rango_Fechas(dtpFechaDel.Value, dtpFechaAl.Value, pBodega)
 
             If listarDespacho.Count > 0 Then

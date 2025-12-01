@@ -1099,6 +1099,7 @@ Public Class frmInventario
                                 SplashScreenManager.CloseForm(False)
                                 XtraMessageBox.Show("El inventario tiene conteos, no se puede anular.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                             End If
+
                         End If
                     End If
 
@@ -3631,6 +3632,8 @@ Public Class frmInventario
 
                                 End If
 
+                            Else
+                                XtraMessageBox.Show("Debe seleccionar un registro para asignar al operador.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                             End If
 
                         Next
@@ -7655,6 +7658,9 @@ Public Class frmInventario
 
                     End If
 
+
+                Else
+                    XtraMessageBox.Show("Debe seleccionar un registro para asignar al operador.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 End If
 
                 cantReg += 1

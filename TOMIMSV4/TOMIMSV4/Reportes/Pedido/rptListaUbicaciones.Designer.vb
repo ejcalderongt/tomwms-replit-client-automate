@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Public Class rptListaUbicaciones
     Inherits DevExpress.XtraReports.UI.XtraReport
 
     'XtraReport overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,7 +17,7 @@ Partial Public Class rptListaUbicaciones
     'NOTE: The following procedure is required by the Designer
     'It can be modified using the Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim MsSqlConnectionParameters1 As DevExpress.DataAccess.ConnectionParameters.MsSqlConnectionParameters = New DevExpress.DataAccess.ConnectionParameters.MsSqlConnectionParameters()
@@ -466,8 +466,8 @@ Partial Public Class rptListaUbicaciones
         '
         Me.SqlDataSource1.ConnectionName = "localhost_IMS4MB_CLC_QA_Connection"
         MsSqlConnectionParameters1.AuthorizationType = DevExpress.DataAccess.ConnectionParameters.MsSqlAuthorizationType.SqlServer
-        MsSqlConnectionParameters1.DatabaseName = "IMS4MB_CLC_QA"
-        MsSqlConnectionParameters1.ServerName = "PROGRA12\SQL2019"
+        MsSqlConnectionParameters1.DatabaseName = "IMS4MB_BYB_PRD"
+        MsSqlConnectionParameters1.ServerName = "172.16.100.36"
         Me.SqlDataSource1.ConnectionParameters = MsSqlConnectionParameters1
         Me.SqlDataSource1.Name = "SqlDataSource1"
         ColumnExpression1.ColumnName = "IdCliente"
