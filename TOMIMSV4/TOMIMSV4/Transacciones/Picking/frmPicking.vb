@@ -1808,6 +1808,14 @@ Public Class frmPicking
                                                                                       AP.HostName,
                                                                                       vNombreArchivoLayOutGrid)
 
+                '#GT01122025: Estoy infiriendo que mampa no trabaja picking consolidados.
+                Dim BePedido = clsLnTrans_pe_enc.Get_Single_Without_Picking(BePickingEnc.IdPedidoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                If BePedido.TipoPedido.Verificar_con_imagen Then
+                    BloquearControles_Por_VerificacionBOF(True)
+                Else
+                    BloquearControles_Por_VerificacionBOF(False)
+                End If
 
                 If Not BeConfiguracionUsuarioDet Is Nothing Then
                     grdvPickingUbic.RestoreLayoutFromStream(BeConfiguracionUsuarioDet.Stream_Template)
@@ -4733,6 +4741,16 @@ Public Class frmPicking
 
         End Try
 
+    End Sub
+
+    '#GT01122025: si tipo pedido es verificar por bof, bloquear controles que permiten modificar la verificación en la HH
+    Public Sub BloquearControles_Por_VerificacionBOF(ByVal estado As Boolean)
+        cmdNoPickeado.Enabled = estado
+        mnuProcesarLinea.Enabled = estado
+        mnuProcesar.Enabled = estado
+        mnuVerificarPickeados.Enabled = estado
+        cmdVerificarNuevamente.Enabled = estado
+        cmdNoVerificado.Enabled = estado
     End Sub
 
 End Class

@@ -37,6 +37,7 @@ Public Class clsLnTrans_pe_tipo
                 .Mover_Producto_Zona_Muelle = IIf(IsDBNull(dr.Item("mover_producto_zona_muelle")), False, dr.Item("mover_producto_zona_muelle"))
                 .Escanear_Muelle_Picking = IIf(IsDBNull(dr.Item("escanear_muelle_picking")), False, dr.Item("escanear_muelle_picking"))
                 .Transferir_Ubicacion = IIf(IsDBNull(dr.Item("transferir_ubicacion")), False, dr.Item("transferir_ubicacion"))
+                .Verificar_con_imagen = IIf(IsDBNull(dr.Item("verificar_con_imagen")), False, dr.Item("verificar_con_imagen"))
 
             End With
 

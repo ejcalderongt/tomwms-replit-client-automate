@@ -59,16 +59,16 @@ Partial Class frmPicking
         Dim Label5 As System.Windows.Forms.Label
         Dim Label6 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPicking))
-        Dim ArcScaleRange7 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
-        Dim ArcScaleRange8 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
-        Dim ArcScaleRange9 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
-        Dim DataGridViewCellStyle15 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle16 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle17 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle21 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle18 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle19 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle20 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim ArcScaleRange1 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
+        Dim ArcScaleRange2 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
+        Dim ArcScaleRange3 As DevExpress.XtraGauges.Core.Model.ArcScaleRange = New DevExpress.XtraGauges.Core.Model.ArcScaleRange()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim GridFormatRule1 As DevExpress.XtraGrid.GridFormatRule = New DevExpress.XtraGrid.GridFormatRule()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
@@ -117,9 +117,9 @@ Partial Class frmPicking
         Me.RibbonPageGroup5 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup3 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup2 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
+        Me.RibbonStatusBar2 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.RibbonStatusBar1 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
-        Me.RibbonStatusBar2 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.PopupMenu1 = New DevExpress.XtraBars.PopupMenu(Me.components)
         Me.XtraTabControl1 = New DevExpress.XtraTab.XtraTabControl()
         Me.XtratabPageDato = New DevExpress.XtraTab.XtraTabPage()
@@ -143,6 +143,8 @@ Partial Class frmPicking
         Me.lblEstado = New System.Windows.Forms.Label()
         Me.lblC = New System.Windows.Forms.Label()
         Me.GrpAsignacionTransaccion = New DevExpress.XtraEditors.GroupControl()
+        Me.cmbMuelle = New DevExpress.XtraEditors.GridLookUpEdit()
+        Me.GridView12 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.txtIdUbicacionMuelle = New DevExpress.XtraEditors.TextEdit()
         Me.txtReferencia = New DevExpress.XtraEditors.TextEdit()
         Me.txtNombreUbicacion = New DevExpress.XtraEditors.TextEdit()
@@ -226,8 +228,6 @@ Partial Class frmPicking
         Me.OperadorDragDropEvent = New DevExpress.Utils.DragDrop.DragDropEvents(Me.components)
         Me.pickingUbicDragDropEvent = New DevExpress.Utils.DragDrop.DragDropEvents(Me.components)
         Me.ToastNotificationsManager1 = New DevExpress.XtraBars.ToastNotifications.ToastNotificationsManager(Me.components)
-        Me.cmbMuelle = New DevExpress.XtraEditors.GridLookUpEdit()
-        Me.GridView12 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Label10 = New System.Windows.Forms.Label()
         Label12 = New System.Windows.Forms.Label()
         Label2 = New System.Windows.Forms.Label()
@@ -273,6 +273,8 @@ Partial Class frmPicking
         CType(Me.cmbPropietario.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GrpAsignacionTransaccion, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GrpAsignacionTransaccion.SuspendLayout()
+        CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView12, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtIdUbicacionMuelle.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtReferencia.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtNombreUbicacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -337,8 +339,6 @@ Partial Class frmPicking
         Me.hideContainerBottom.SuspendLayout()
         CType(Me.behaviorManager1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ToastNotificationsManager1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.GridView12, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label10
@@ -551,8 +551,8 @@ Partial Class frmPicking
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1554, 193)
-        Me.RibbonControl.StatusBar = Me.RibbonStatusBar2
+        Me.RibbonControl.Size = New System.Drawing.Size(1762, 193)
+        Me.RibbonControl.StatusBar = Me.RibbonStatusBar1
         '
         'mnuGuardar
         '
@@ -874,6 +874,14 @@ Partial Class frmPicking
         Me.RibbonPageGroup2.Name = "RibbonPageGroup2"
         Me.RibbonPageGroup2.Text = "Estado del Registro"
         '
+        'RibbonStatusBar2
+        '
+        Me.RibbonStatusBar2.ItemLinks.Add(Me.lblRegs1)
+        Me.RibbonStatusBar2.Location = New System.Drawing.Point(2, 450)
+        Me.RibbonStatusBar2.Name = "RibbonStatusBar2"
+        Me.RibbonStatusBar2.Ribbon = Me.RibbonControl
+        Me.RibbonStatusBar2.Size = New System.Drawing.Size(1153, 33)
+        '
         'RibbonStatusBar
         '
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegistros)
@@ -881,7 +889,7 @@ Partial Class frmPicking
         Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1554, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1762, 30)
         Me.RibbonStatusBar.Visible = False
         '
         'RibbonStatusBar1
@@ -892,14 +900,6 @@ Partial Class frmPicking
         Me.RibbonStatusBar1.Name = "RibbonStatusBar1"
         Me.RibbonStatusBar1.Ribbon = Me.RibbonControl
         Me.RibbonStatusBar1.Size = New System.Drawing.Size(1548, 33)
-        '
-        'RibbonStatusBar2
-        '
-        Me.RibbonStatusBar2.ItemLinks.Add(Me.lblRegs1)
-        Me.RibbonStatusBar2.Location = New System.Drawing.Point(2, 450)
-        Me.RibbonStatusBar2.Name = "RibbonStatusBar2"
-        Me.RibbonStatusBar2.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar2.Size = New System.Drawing.Size(1153, 33)
         '
         'PopupMenu1
         '
@@ -917,7 +917,7 @@ Partial Class frmPicking
         Me.XtraTabControl1.Name = "XtraTabControl1"
         Me.XtraTabControl1.Padding = New System.Windows.Forms.Padding(12)
         Me.XtraTabControl1.SelectedTabPage = Me.XtratabPageDato
-        Me.XtraTabControl1.Size = New System.Drawing.Size(1554, 737)
+        Me.XtraTabControl1.Size = New System.Drawing.Size(1762, 737)
         Me.XtraTabControl1.TabIndex = 0
         Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.XtratabPageDato, Me.XtratabPagePedido, Me.XtraTabPageUbicacionPicking, Me.tbDañados})
         '
@@ -928,7 +928,7 @@ Partial Class frmPicking
         Me.XtratabPageDato.Controls.Add(Me.GroupControl10)
         Me.XtratabPageDato.Margin = New System.Windows.Forms.Padding(4)
         Me.XtratabPageDato.Name = "XtratabPageDato"
-        Me.XtratabPageDato.Size = New System.Drawing.Size(1552, 707)
+        Me.XtratabPageDato.Size = New System.Drawing.Size(1760, 707)
         Me.XtratabPageDato.Text = "Datos Picking"
         '
         'GroupControl10
@@ -940,7 +940,7 @@ Partial Class frmPicking
         Me.GroupControl10.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl10.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl10.Name = "GroupControl10"
-        Me.GroupControl10.Size = New System.Drawing.Size(1552, 707)
+        Me.GroupControl10.Size = New System.Drawing.Size(1760, 707)
         Me.GroupControl10.TabIndex = 0
         Me.GroupControl10.Text = "Datos"
         '
@@ -958,7 +958,7 @@ Partial Class frmPicking
         Me.GroupControl8.Location = New System.Drawing.Point(2, 605)
         Me.GroupControl8.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl8.Name = "GroupControl8"
-        Me.GroupControl8.Size = New System.Drawing.Size(974, 100)
+        Me.GroupControl8.Size = New System.Drawing.Size(1182, 100)
         Me.GroupControl8.TabIndex = 21
         Me.GroupControl8.Text = "Bitácora"
         '
@@ -1026,7 +1026,7 @@ Partial Class frmPicking
         Me.GroupControl5.Location = New System.Drawing.Point(2, 28)
         Me.GroupControl5.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupControl5.Name = "GroupControl5"
-        Me.GroupControl5.Size = New System.Drawing.Size(974, 554)
+        Me.GroupControl5.Size = New System.Drawing.Size(1182, 554)
         Me.GroupControl5.TabIndex = 20
         Me.GroupControl5.Text = "Generales"
         '
@@ -1188,9 +1188,30 @@ Partial Class frmPicking
         Me.GrpAsignacionTransaccion.Location = New System.Drawing.Point(2, 426)
         Me.GrpAsignacionTransaccion.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpAsignacionTransaccion.Name = "GrpAsignacionTransaccion"
-        Me.GrpAsignacionTransaccion.Size = New System.Drawing.Size(970, 126)
+        Me.GrpAsignacionTransaccion.Size = New System.Drawing.Size(1178, 126)
         Me.GrpAsignacionTransaccion.TabIndex = 14
         Me.GrpAsignacionTransaccion.Text = "Asignación de Transacción"
+        '
+        'cmbMuelle
+        '
+        Me.cmbMuelle.Location = New System.Drawing.Point(145, 75)
+        Me.cmbMuelle.Margin = New System.Windows.Forms.Padding(6)
+        Me.cmbMuelle.MenuManager = Me.RibbonControl
+        Me.cmbMuelle.Name = "cmbMuelle"
+        Me.cmbMuelle.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbMuelle.Properties.NullText = ""
+        Me.cmbMuelle.Properties.PopupView = Me.GridView12
+        Me.cmbMuelle.Size = New System.Drawing.Size(256, 22)
+        Me.cmbMuelle.TabIndex = 99
+        '
+        'GridView12
+        '
+        Me.GridView12.DetailHeight = 682
+        Me.GridView12.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
+        Me.GridView12.Name = "GridView12"
+        Me.GridView12.OptionsSelection.EnableAppearanceFocusedCell = False
+        Me.GridView12.OptionsView.ShowAutoFilterRow = True
+        Me.GridView12.OptionsView.ShowGroupPanel = False
         '
         'txtIdUbicacionMuelle
         '
@@ -1250,7 +1271,7 @@ Partial Class frmPicking
         Me.GrpTarea.Controls.Add(Me.GroupControl4)
         Me.GrpTarea.Controls.Add(Me.GroupControl9)
         Me.GrpTarea.Dock = System.Windows.Forms.DockStyle.Right
-        Me.GrpTarea.Location = New System.Drawing.Point(976, 28)
+        Me.GrpTarea.Location = New System.Drawing.Point(1184, 28)
         Me.GrpTarea.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpTarea.Name = "GrpTarea"
         Me.GrpTarea.Size = New System.Drawing.Size(574, 677)
@@ -1317,27 +1338,27 @@ Partial Class frmPicking
         Me.ArcScaleComponent1.Name = "scale1"
         Me.ArcScaleComponent1.RadiusX = 98.0!
         Me.ArcScaleComponent1.RadiusY = 98.0!
-        ArcScaleRange7.AppearanceRange.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:#9EC968")
-        ArcScaleRange7.EndThickness = 14.0!
-        ArcScaleRange7.EndValue = 33.0!
-        ArcScaleRange7.Name = "Range0"
-        ArcScaleRange7.ShapeOffset = 0!
-        ArcScaleRange7.StartThickness = 14.0!
-        ArcScaleRange8.AppearanceRange.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:#FED96D")
-        ArcScaleRange8.EndThickness = 14.0!
-        ArcScaleRange8.EndValue = 66.0!
-        ArcScaleRange8.Name = "Range1"
-        ArcScaleRange8.ShapeOffset = 0!
-        ArcScaleRange8.StartThickness = 14.0!
-        ArcScaleRange8.StartValue = 33.0!
-        ArcScaleRange9.AppearanceRange.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:#EF8C75")
-        ArcScaleRange9.EndThickness = 14.0!
-        ArcScaleRange9.EndValue = 100.0!
-        ArcScaleRange9.Name = "Range2"
-        ArcScaleRange9.ShapeOffset = 0!
-        ArcScaleRange9.StartThickness = 14.0!
-        ArcScaleRange9.StartValue = 66.0!
-        Me.ArcScaleComponent1.Ranges.AddRange(New DevExpress.XtraGauges.Core.Model.IRange() {ArcScaleRange7, ArcScaleRange8, ArcScaleRange9})
+        ArcScaleRange1.AppearanceRange.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:#9EC968")
+        ArcScaleRange1.EndThickness = 14.0!
+        ArcScaleRange1.EndValue = 33.0!
+        ArcScaleRange1.Name = "Range0"
+        ArcScaleRange1.ShapeOffset = 0!
+        ArcScaleRange1.StartThickness = 14.0!
+        ArcScaleRange2.AppearanceRange.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:#FED96D")
+        ArcScaleRange2.EndThickness = 14.0!
+        ArcScaleRange2.EndValue = 66.0!
+        ArcScaleRange2.Name = "Range1"
+        ArcScaleRange2.ShapeOffset = 0!
+        ArcScaleRange2.StartThickness = 14.0!
+        ArcScaleRange2.StartValue = 33.0!
+        ArcScaleRange3.AppearanceRange.ContentBrush = New DevExpress.XtraGauges.Core.Drawing.SolidBrushObject("Color:#EF8C75")
+        ArcScaleRange3.EndThickness = 14.0!
+        ArcScaleRange3.EndValue = 100.0!
+        ArcScaleRange3.Name = "Range2"
+        ArcScaleRange3.ShapeOffset = 0!
+        ArcScaleRange3.StartThickness = 14.0!
+        ArcScaleRange3.StartValue = 66.0!
+        Me.ArcScaleComponent1.Ranges.AddRange(New DevExpress.XtraGauges.Core.Model.IRange() {ArcScaleRange1, ArcScaleRange2, ArcScaleRange3})
         Me.ArcScaleComponent1.StartAngle = -180.0!
         '
         'ArcScaleNeedleComponent1
@@ -1489,14 +1510,14 @@ Partial Class frmPicking
         Me.dgridPedidos.AllowUserToResizeRows = False
         Me.dgridPedidos.BackgroundColor = System.Drawing.Color.LightSteelBlue
         Me.dgridPedidos.BorderStyle = System.Windows.Forms.BorderStyle.None
-        DataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle15.BackColor = System.Drawing.Color.AliceBlue
-        DataGridViewCellStyle15.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        DataGridViewCellStyle15.ForeColor = System.Drawing.Color.MidnightBlue
-        DataGridViewCellStyle15.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle15.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgridPedidos.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle15
+        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle1.BackColor = System.Drawing.Color.AliceBlue
+        DataGridViewCellStyle1.Font = New System.Drawing.Font("Tahoma", 7.8!)
+        DataGridViewCellStyle1.ForeColor = System.Drawing.Color.MidnightBlue
+        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgridPedidos.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.dgridPedidos.ColumnHeadersHeight = 40
         Me.dgridPedidos.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.IdPedido, Me.Referencia, Me.Bodega, Me.Cliente, Me.Propietario, Me.FechaPedido, Me.EstadoP})
         Me.dgridPedidos.Dock = System.Windows.Forms.DockStyle.Fill
@@ -1507,14 +1528,14 @@ Partial Class frmPicking
         Me.dgridPedidos.Margin = New System.Windows.Forms.Padding(4)
         Me.dgridPedidos.MultiSelect = False
         Me.dgridPedidos.Name = "dgridPedidos"
-        DataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle16.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle16.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        DataGridViewCellStyle16.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle16.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle16.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle16.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgridPedidos.RowHeadersDefaultCellStyle = DataGridViewCellStyle16
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Tahoma", 7.8!)
+        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgridPedidos.RowHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.dgridPedidos.RowHeadersVisible = False
         Me.dgridPedidos.RowHeadersWidth = 40
         Me.dgridPedidos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
@@ -1609,14 +1630,14 @@ Partial Class frmPicking
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgridDetallePicking.BackgroundColor = System.Drawing.Color.LightSteelBlue
         Me.dgridDetallePicking.BorderStyle = System.Windows.Forms.BorderStyle.None
-        DataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle17.BackColor = System.Drawing.Color.AliceBlue
-        DataGridViewCellStyle17.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        DataGridViewCellStyle17.ForeColor = System.Drawing.Color.MidnightBlue
-        DataGridViewCellStyle17.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgridDetallePicking.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle17
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle3.BackColor = System.Drawing.Color.AliceBlue
+        DataGridViewCellStyle3.Font = New System.Drawing.Font("Tahoma", 7.8!)
+        DataGridViewCellStyle3.ForeColor = System.Drawing.Color.MidnightBlue
+        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgridDetallePicking.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
         Me.dgridDetallePicking.ColumnHeadersHeight = 40
         Me.dgridDetallePicking.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.IdPedidoEnc, Me.Codigo, Me.Producto, Me.Presentacion, Me.UnidadMedida, Me.Estado, Me.Cantidad, Me.ClienteDias, Me.CantidadRecibida, Me.OperadorBodega, Me.IdPedidoDet})
         Me.dgridDetallePicking.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
@@ -1626,14 +1647,14 @@ Partial Class frmPicking
         Me.dgridDetallePicking.Margin = New System.Windows.Forms.Padding(4)
         Me.dgridDetallePicking.MultiSelect = False
         Me.dgridDetallePicking.Name = "dgridDetallePicking"
-        DataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle21.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle21.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        DataGridViewCellStyle21.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle21.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle21.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle21.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgridDetallePicking.RowHeadersDefaultCellStyle = DataGridViewCellStyle21
+        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle7.Font = New System.Drawing.Font("Tahoma", 7.8!)
+        DataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgridDetallePicking.RowHeadersDefaultCellStyle = DataGridViewCellStyle7
         Me.dgridDetallePicking.RowHeadersVisible = False
         Me.dgridDetallePicking.RowHeadersWidth = 40
         Me.dgridDetallePicking.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
@@ -1642,9 +1663,9 @@ Partial Class frmPicking
         '
         'IdPedidoEnc
         '
-        DataGridViewCellStyle18.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle18.Format = "N0"
-        Me.IdPedidoEnc.DefaultCellStyle = DataGridViewCellStyle18
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle4.Format = "N0"
+        Me.IdPedidoEnc.DefaultCellStyle = DataGridViewCellStyle4
         Me.IdPedidoEnc.HeaderText = "Pedido"
         Me.IdPedidoEnc.MinimumWidth = 6
         Me.IdPedidoEnc.Name = "IdPedidoEnc"
@@ -1699,11 +1720,11 @@ Partial Class frmPicking
         '
         'Cantidad
         '
-        DataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle19.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle19.Format = "N2"
-        DataGridViewCellStyle19.NullValue = Nothing
-        Me.Cantidad.DefaultCellStyle = DataGridViewCellStyle19
+        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle5.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle5.Format = "N2"
+        DataGridViewCellStyle5.NullValue = Nothing
+        Me.Cantidad.DefaultCellStyle = DataGridViewCellStyle5
         Me.Cantidad.HeaderText = "Cantidad"
         Me.Cantidad.MinimumWidth = 6
         Me.Cantidad.Name = "Cantidad"
@@ -1721,11 +1742,11 @@ Partial Class frmPicking
         '
         'CantidadRecibida
         '
-        DataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle20.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle20.Format = "N2"
-        DataGridViewCellStyle20.NullValue = "0.0"
-        Me.CantidadRecibida.DefaultCellStyle = DataGridViewCellStyle20
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle6.Format = "N2"
+        DataGridViewCellStyle6.NullValue = "0.0"
+        Me.CantidadRecibida.DefaultCellStyle = DataGridViewCellStyle6
         Me.CantidadRecibida.HeaderText = "Cantidad Recibida"
         Me.CantidadRecibida.MinimumWidth = 6
         Me.CantidadRecibida.Name = "CantidadRecibida"
@@ -2127,32 +2148,11 @@ Partial Class frmPicking
         Me.ToastNotificationsManager1.ApplicationId = "cf3fbf03-d92f-4866-8ad6-96e1f04a2f1d"
         Me.ToastNotificationsManager1.Notifications.AddRange(New DevExpress.XtraBars.ToastNotifications.IToastNotificationProperties() {New DevExpress.XtraBars.ToastNotifications.ToastNotification("658711a9-bc62-4725-9f8a-71f0dbe14299", Nothing, "Nuevo Picking", "Realice la asignación de picking a operador", "", DevExpress.XtraBars.ToastNotifications.ToastNotificationSound.Looping_Alarm, DevExpress.XtraBars.ToastNotifications.ToastNotificationDuration.[Default], DevExpress.XtraBars.ToastNotifications.ToastNotificationTemplate.Text01)})
         '
-        'cmbMuelle
-        '
-        Me.cmbMuelle.Location = New System.Drawing.Point(145, 75)
-        Me.cmbMuelle.Margin = New System.Windows.Forms.Padding(6)
-        Me.cmbMuelle.MenuManager = Me.RibbonControl
-        Me.cmbMuelle.Name = "cmbMuelle"
-        Me.cmbMuelle.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbMuelle.Properties.NullText = ""
-        Me.cmbMuelle.Properties.PopupView = Me.GridView12
-        Me.cmbMuelle.Size = New System.Drawing.Size(256, 22)
-        Me.cmbMuelle.TabIndex = 99
-        '
-        'GridView12
-        '
-        Me.GridView12.DetailHeight = 682
-        Me.GridView12.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
-        Me.GridView12.Name = "GridView12"
-        Me.GridView12.OptionsSelection.EnableAppearanceFocusedCell = False
-        Me.GridView12.OptionsView.ShowAutoFilterRow = True
-        Me.GridView12.OptionsView.ShowGroupPanel = False
-        '
         'frmPicking
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1554, 960)
+        Me.ClientSize = New System.Drawing.Size(1762, 960)
         Me.Controls.Add(Me.XtraTabControl1)
         Me.Controls.Add(Me.hideContainerBottom)
         Me.Controls.Add(Me.RibbonStatusBar)
@@ -2193,6 +2193,8 @@ Partial Class frmPicking
         CType(Me.GrpAsignacionTransaccion, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GrpAsignacionTransaccion.ResumeLayout(False)
         Me.GrpAsignacionTransaccion.PerformLayout()
+        CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView12, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtIdUbicacionMuelle.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtReferencia.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtNombreUbicacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -2263,8 +2265,6 @@ Partial Class frmPicking
         Me.hideContainerBottom.ResumeLayout(False)
         CType(Me.behaviorManager1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ToastNotificationsManager1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.GridView12, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
