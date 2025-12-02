@@ -1,28 +1,21 @@
 ﻿Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Reflection
-Imports DevExpress.Data
-Imports DevExpress.Utils
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Controls
-Imports DevExpress.XtraEditors.Repository
-Imports DevExpress.XtraGrid
-Imports DevExpress.XtraGrid.Columns
-Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraGrid.Views.Grid
-Imports DevExpress.XtraPrinting
-Imports DevExpress.XtraReports.UI
 Imports DevExpress.XtraSplashScreen
 
 Public Class frmVerificacionBOF
     Public pBePedidoEnc As New clsBeTrans_pe_enc
-    Public Delegate Sub ListarPedidos()
     Public Property InvokeListarPedidos As ListarPedidos
+    Public Delegate Sub ListarPedidos()
     Public Property Modo As TipoTrans
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
     Public Delegate Sub Cargar_Datos_Pedido()
-    ReadOnly Property InvokeCargarPedido As Cargar_Datos_Pedido()
+
+    'ReadOnly Property InvokeCargarPedido As Cargar_Datos_Pedido()
     Public Enum TipoTrans
         Nuevo = 1
         Editar = 2
@@ -49,6 +42,13 @@ Public Class frmVerificacionBOF
     Public listarPicking As New List(Of clsBeTrans_picking_enc)
     Private EsKit As Boolean = False
     Private PedidoGuardadoPorUsuario As Boolean = False
+    Private plistPickingUbic As New List(Of clsBeTrans_picking_ubic)
+    Private BePickingUbicList As New List(Of clsBeTrans_picking_ubic)
+    Private gBePedidoDetVerif As New clsBeDetallePedidoAVerificar
+
+    '#GT27112025: Guardar en memoria el producto seleccionado del pedido y marcarlo como Ok o Pausa
+    Private pBeTransPickingUbicTemp As New clsBeTrans_picking_ubic
+
     '#CKFK20220325 Agregué estas dos variables para cuando el cliente se maneje en el detalle del pedido
     Private Cliente_Detalle_Ultimo_Lote As Integer
     Private Cliente_Detalle_Control_Calidad As Integer
@@ -58,8 +58,11 @@ Public Class frmVerificacionBOF
     Private vRutaCDN As String = ""
     Private _listaRutasPng As List(Of String)
 
+
     Private Sub frmVerificacionBOF_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
+        pBeTransPickingUbicTemp = New clsBeTrans_picking_ubic()
+        plistPickingUbic = New List(Of clsBeTrans_picking_ubic)
         Dim clsTransaccion As New clsTransaccion()
 
         Try
@@ -68,10 +71,10 @@ Public Class frmVerificacionBOF
 
             vRutaCDN = clsLnBodega.GetRutaCDN_By_Idbodega(AP.IdBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
-            If String.IsNullOrEmpty(vRutaCDN) Then
-                XtraMessageBox.Show("No esta definida la ruta hacia la galeria de imagenes")
-            End If
 
+            If String.IsNullOrEmpty(vRutaCDN) Then
+                XtraMessageBox.Show("No esta definida la ruta hacia la galeria de imagenes.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            End If
 
             Dim archivosPng() As String = Directory.GetFiles(vRutaCDN, "*.png")
             _listaRutasPng = archivosPng.ToList()
@@ -83,6 +86,8 @@ Public Class frmVerificacionBOF
 
             If pBePedidoEnc Is Nothing Then Exit Sub
 
+            LimpiarControlesGrupo()
+
             Cargar_Datos(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
             AplicarEstiloScanner()
@@ -93,6 +98,10 @@ Public Class frmVerificacionBOF
             clsTransaccion.Commit_Transaction()
 
         Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
 
         End Try
 
@@ -109,6 +118,8 @@ Public Class frmVerificacionBOF
                 Cargar_Detalle_Pedido(lConnection,
                                       lTransaction)
 
+                BePickingUbicList = New List(Of clsBeTrans_picking_ubic)
+                BePickingUbicList = pBePedidoEnc.Picking.ListaPickingUbic
 
             End If
 
@@ -125,7 +136,6 @@ Public Class frmVerificacionBOF
         End Try
 
     End Sub
-
 
     Private Function Set_DataTable() As DataTable
 
@@ -153,11 +163,13 @@ Public Class frmVerificacionBOF
         'dt.Columns.Add("colPeso", GetType(Double))
         'dt.Columns.Add("colPrecio", GetType(Double))
         'dt.Columns.Add("colTotal", GetType(Double))
+        dt.Columns.Add("IdPedidoEnc", GetType(Integer))
         dt.Columns.Add("IdPedidoDet", GetType(Integer))
         'dt.Columns.Add("colNoDias", GetType(Integer))
         'dt.Columns.Add("ColFechaEspecifica", GetType(Boolean))
         dt.Columns.Add("IdStockEspecifico", GetType(Integer))
         dt.Columns.Add("Licencia", GetType(String))
+        dt.Columns.Add("IdPickingUbic", GetType(Integer))
 
         ' Asigna el DataSource UNA sola vez
         dgridListaPedido.DataSource = dt
@@ -166,8 +178,6 @@ Public Class frmVerificacionBOF
         Return dt
 
     End Function
-
-
 
     Private Sub Cargar_Detalle_Pedido(ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction)
 
@@ -238,6 +248,7 @@ Public Class frmVerificacionBOF
 
                         If pTempPickingUbic IsNot Nothing Then
                             gvListaPedido.SetRowCellValue(i, "Licencia", pTempPickingUbic.Lic_plate)
+                            gvListaPedido.SetRowCellValue(i, "IdPickingUbic", pTempPickingUbic.IdPickingUbic)
                         End If
 
                         pBeProducto.IdProductoBodega = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(pBeProducto.IdProducto,
@@ -474,6 +485,7 @@ Public Class frmVerificacionBOF
                         'gvListaPedido.SetRowCellValue(i, "colPeso", pDet.Peso)
                         'gvListaPedido.SetRowCellValue(i, "colPrecio", pDet.Precio)
                         'gvListaPedido.SetRowCellValue(i, "colTotal", pDet.RoadTotal)
+                        gvListaPedido.SetRowCellValue(i, "IdPedidoEnc", pDet.IdPedidoEnc)
                         gvListaPedido.SetRowCellValue(i, "IdPedidoDet", pDet.IdPedidoDet)
                         'gvListaPedido.SetRowCellValue(i, "colNoDias", pDet.Ndias)
                         'gvListaPedido.SetRowCellValue(i, "ColFechaEspecifica", pDet.Fecha_especifica)
@@ -572,33 +584,37 @@ Public Class frmVerificacionBOF
     Private Sub ProcesarScan()
         Dim sku As String = txtScanner.Text.Trim()
         If sku <> "" Then
-            BuscarSKU_Y_Cargar(sku)
+            If BuscarSKU_Y_Cargar(sku) Then
+                AplicarEstiloScanner()
+                txtEstado.SelectAll()
+                txtEstado.Focus()
+            End If
+        Else
+            txtScanner.SelectAll()
+            txtScanner.Focus()
         End If
-
-        AplicarEstiloScanner()
-        txtScanner.SelectAll()
-        txtScanner.Focus()
 
     End Sub
 
 
-    Private Sub BuscarSKU_Y_Cargar(ByVal sku As String)
+    Private Function BuscarSKU_Y_Cargar(ByVal sku As String) As Boolean
+
+        BuscarSKU_Y_Cargar = False
 
         Try
 
-            If String.IsNullOrWhiteSpace(sku) Then Exit Sub
+            If String.IsNullOrWhiteSpace(sku) Then Exit Function
 
             Dim dt As DataTable = TryCast(dgridListaPedido.DataSource, DataTable)
-            If dt Is Nothing OrElse dt.Rows.Count = 0 Then Exit Sub
+            If dt Is Nothing OrElse dt.Rows.Count = 0 Then Exit Function
 
             ' Buscar en DataTable
-            'Dim filas() As DataRow = dt.Select("SKU = '" & sku.Replace("'", "''") & "'")
             Dim filas() As DataRow = dt.Select("[SKU] = '" & sku.Replace("'", "''") & "'")
 
-
             If filas.Length = 0 Then
-                XtraMessageBox.Show("No se encontró el SKU: " & sku, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Exit Sub
+                XtraMessageBox.Show("No se encontró el SKU, por favor reintente: " & sku, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                LimpiarControlesGrupo()
+                Exit Function
             End If
 
             Dim row As DataRow = filas(0)
@@ -612,21 +628,27 @@ Public Class frmVerificacionBOF
 
             ' --- CARGAR INPUTS ---
             txtScanner.Text = sku
-            txtDescripcionProducto.Text = CStr(row("NombreProducto"))      ' ajusta FieldName real
-            txtLote.Text = If(dt.Columns.Contains("Lote"), CStr(row("Lote")), "")
+            txtDescripcionProducto.Text = CStr(row("NombreProducto"))
             txtTalla.Text = If(dt.Columns.Contains("Talla"), CStr(row("Talla")), "")
             txtColor.Text = If(dt.Columns.Contains("Color"), CStr(row("Color")), "")
-            txtCantidad.Text = If(dt.Columns.Contains("CantidadPickeada"), CStr(row("CantidadPickeada")), "")
+            txtCantidad.Text = If(dt.Columns.Contains("CantidadPickeada"), CInt(row("CantidadPickeada")), "")
 
-            ' --- CARGAR IMAGEN ---
-            ' Idealmente tienes IdProducto o Codigo Producto para buscarla
-            Dim idProducto As Integer = 0
-            If dt.Columns.Contains("IdProducto") Then
-                idProducto = CInt(row("IdProducto"))
-            ElseIf dt.Columns.Contains("colIdProducto") Then
-                idProducto = CInt(row("colIdProducto"))
-            End If
+            '-- Cargar objeto picking_ubicTemp y al leer la barra OK, se asignará a la lista para enviar a verificar
+            Dim pIdPickingUbic = If(dt.Columns.Contains("IdPickingUbic"), CInt(row("IdPickingUbic")), 0)
+            Dim pLicPlate = If(dt.Columns.Contains("Licencia"), CStr(row("Licencia")), "")
+            Dim pIdPedidoEnc = If(dt.Columns.Contains("IdPedidoEnc"), CInt(row("IdPedidoEnc")), 0)
+            Dim pIdPedidoDet = If(dt.Columns.Contains("IdPedidoDet"), CInt(row("IdPedidoDet")), 0)
 
+            pBeTransPickingUbicTemp = New clsBeTrans_picking_ubic()
+            pBeTransPickingUbicTemp = BePickingUbicList.Find(Function(x) x.IdPickingUbic = pIdPickingUbic _
+                                                                           AndAlso x.IdPedidoEnc = pIdPedidoEnc _
+                                                                           AndAlso x.IdPedidoDet = pIdPedidoDet _
+                                                                           AndAlso x.Lic_plate = pLicPlate)
+
+            '---cuando se lea la barra de OK, será true para poder enviar la lista final al WS
+            pBeTransPickingUbicTemp.IsNew = False
+
+            ' --- Aviso de cargar imagen si por alguna razón existiera Lag ---
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             If SplashScreenManager.Default IsNot Nothing Then
                 SplashScreenManager.Default.SetWaitFormCaption("Cargando imagen...")
@@ -636,6 +658,7 @@ Public Class frmVerificacionBOF
 
             CargarImagenProducto(sku)
 
+            BuscarSKU_Y_Cargar = True
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -643,15 +666,15 @@ Public Class frmVerificacionBOF
             If SplashScreenManager.Default IsNot Nothing Then
                 SplashScreenManager.CloseForm(False)
             End If
-
-            txtScanner.SelectAll()
         End Try
-    End Sub
+    End Function
 
     Private Sub CargarImagenProducto(ByVal sku As String)
 
+
         Try
-            ' --- PARTE QUE YA TENÍAS PARA OBTENER productoBase, talla, color ---
+
+            Dim img As Image
             Dim codigoSKU As String = sku
             Dim productoBase As String = codigoSKU
             Dim talla As String = ""
@@ -706,8 +729,16 @@ Public Class frmVerificacionBOF
                 peProducto.Image = Nothing
 
                 Using fs As New FileStream(archivoEncontrado, FileMode.Open, FileAccess.Read)
-                    peProducto.Image = Image.FromStream(fs)
+                    'peProducto.Image = Image.FromStream(fs)
+                    img = Image.FromStream(fs)
                 End Using
+
+                '#GT27112025: mejora para redimensionar hasta un 200% como máximo
+                Dim imgEscalada = EscalarImagen(img, 2.0)
+                peProducto.Properties.SizeMode = PictureSizeMode.Squeeze
+                peProducto.Image = imgEscalada
+
+
             Else
                 peProducto.Image = Nothing
             End If
@@ -717,7 +748,6 @@ Public Class frmVerificacionBOF
         End Try
 
     End Sub
-
 
     Private Sub CargarImagenProducto_temp(ByVal sku As String)
 
@@ -786,8 +816,6 @@ Public Class frmVerificacionBOF
 
     End Sub
 
-
-
     Private Sub AplicarEstiloScanner()
 
         With txtScanner.Properties.AppearanceFocused
@@ -807,468 +835,221 @@ Public Class frmVerificacionBOF
 
     End Sub
 
+    Private Sub txtEstado_KeyDown(sender As Object, e As KeyEventArgs) Handles txtEstado.KeyDown
+        Try
 
-    'Private Sub Llena_Presentacion_Grid(ByVal pIndex As Integer,
-    '                                    ByVal lConnection As SqlConnection,
-    '                                    ByVal lTransaction As SqlTransaction,
-    '                                    Optional ByVal pIdPresentacion As Integer = 0)
+            If e.KeyCode <> Keys.Enter Then Return
 
-    '    Try
+            Dim valorLeido As String = txtEstado.Text.Trim()
+            txtEstado.Clear()
 
-    '        DgComboPresentacion = TryCast(dgrid.Rows(pIndex).Cells("colPresentacion"), DataGridViewComboBoxCell)
-    '        DgComboPresentacion.DropDownWidth = 200
+            ' Normalizamos para comparar (ignorando mayúsculas/minúsculas y espacios)
+            Dim estado As String = valorLeido.ToUpperInvariant()
 
-    '        Dim lPres As New List(Of clsBeProducto_Presentacion)
+            Select Case estado
+                Case "OK"
+                    ' Producto confirmado correctamente
+                    ProcesarLinea()
 
-    '        lPres = New List(Of clsBeProducto_Presentacion)
+                Case "PAUSA"
+                    ' Poner en pausa: bloquear controles para impedir cerrar o escanear otro producto
+                    'ProcesarEstadoPausa()
 
-    '        If Modo = TipoTrans.Nuevo Then
-    '            lPres = clsLnProducto_presentacion.Get_All_Presentacion_By_IdProductoBodega(pBeProducto.IdProductoBodega, lConnection, lTransaction).ToList()
-    '        Else
-    '            lPres = clsLnProducto_presentacion.Get_All_Presentaciones_By_IdProductoBodega(pBeProducto.IdProductoBodega, True, lConnection, lTransaction).ToList()
-    '        End If
+                Case Else
+                    ' Cualquier otra cosa se considera no válida
+                    MessageBox.Show(
+                        $"Estado no reconocido: [{valorLeido}]. Escanee un código 'OK' o 'Pausa'.",
+                        "Estado inválido",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    )
 
-    '        DgComboPresentacion.DataSource = lPres
-    '        DgComboPresentacion.ValueMember = "IdPresentacion"
-    '        DgComboPresentacion.DisplayMember = "Nombre"
+                    ' Vuelve a esperar un estado correcto
+                    txtEstado.Focus()
+            End Select
 
-    '        If DgComboPresentacion.Items.Count > 0 AndAlso (Modo = TipoTrans.Nuevo Or Modo = TipoTrans.Editar) Then
-    '            Dim vIdPresentacion As Integer = lPres(0).IdPresentacion
-    '            DgComboPresentacion.Value = vIdPresentacion
-    '            If Not DgComboPresentacion.Value = lPres(0).IdPresentacion Then
-    '                DgComboPresentacion.Value = Nothing
-    '            End If
-    '            Exit Sub
-    '        Else
-    '            DgComboPresentacion.Value = Nothing
-    '        End If
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+    End Sub
+
+    Private Function EscalarImagen(ByVal imgOriginal As Image, ByVal factor As Double) As Image
+        Dim nuevoAncho As Integer = CInt(imgOriginal.Width * factor)
+        Dim nuevoAlto As Integer = CInt(imgOriginal.Height * factor)
+
+        Dim bmp As New Bitmap(nuevoAncho, nuevoAlto)
+
+        Using g As Graphics = Graphics.FromImage(bmp)
+            g.InterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+            g.PixelOffsetMode = Drawing2D.PixelOffsetMode.HighQuality
+            g.SmoothingMode = Drawing2D.SmoothingMode.HighQuality
+            g.CompositingQuality = Drawing2D.CompositingQuality.HighQuality
+
+            g.DrawImage(imgOriginal, 0, 0, nuevoAncho, nuevoAlto)
+        End Using
+
+        Return bmp
+    End Function
+
+
+    Private Function ProcesarLinea() As Boolean
+        ProcesarLinea = False
+
+        Try
+            '--- marcar que este picking es nuevo (confirmado) y agregar a la lista ---
+            pBeTransPickingUbicTemp.IsNew = True
+            plistPickingUbic.Add(pBeTransPickingUbicTemp)
+
+            '--- UBICAR FILA EN EL GRID PARA REFRESCARLA ---
+            Dim dt As DataTable = TryCast(dgridListaPedido.DataSource, DataTable)
+
+            If dt IsNot Nothing AndAlso dt.Rows.Count > 0 AndAlso pBeTransPickingUbicTemp IsNot Nothing Then
+
+                Dim idPicking As Integer = pBeTransPickingUbicTemp.IdPickingUbic
+                Dim idPedidoEnc As Integer = pBeTransPickingUbicTemp.IdPedidoEnc
+                Dim idPedidoDet As Integer = pBeTransPickingUbicTemp.IdPedidoDet
+
+                Dim filtro As String = String.Format("IdPickingUbic = {0} AND IdPedidoEnc = {1} AND IdPedidoDet = {2}",
+                                                 idPicking, idPedidoEnc, idPedidoDet)
+
+                Dim filas() As DataRow = dt.Select(filtro)
+
+                If filas IsNot Nothing AndAlso filas.Length > 0 Then
+                    Dim row As DataRow = filas(0)
+                    Dim index As Integer = dt.Rows.IndexOf(row)
+
+                    If index >= 0 Then
+                        Dim handle As Integer = gvListaPedido.GetRowHandle(index)
+
+                        If handle >= 0 Then
+                            ' Opcional: enfocar la fila confirmada
+                            gvListaPedido.FocusedRowHandle = handle
+                            gvListaPedido.MakeRowVisible(handle)
+
+                            ' Forzar repintado para que RowStyle aplique el color
+                            gvListaPedido.RefreshRow(handle)
+                        End If
+                    End If
+                End If
+            End If
+
+            LimpiarControlesGrupo()
+
+            txtScanner.SelectAll()
+            txtScanner.Focus()
+
+            ProcesarLinea = True
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+        End Try
+    End Function
+
+    Private Sub gvListaPedido_RowStyle(sender As Object, e As RowStyleEventArgs) Handles gvListaPedido.RowStyle
+        Try
+            Dim view As GridView = TryCast(sender, GridView)
+            If view Is Nothing Then Exit Sub
+            If e.RowHandle < 0 Then Exit Sub
+            If plistPickingUbic Is Nothing OrElse plistPickingUbic.Count = 0 Then Exit Sub
+
+            ' Tomar los valores de la fila actual
+            Dim idPickingObj As Object = view.GetRowCellValue(e.RowHandle, "IdPickingUbic")
+            Dim idEncObj As Object = view.GetRowCellValue(e.RowHandle, "IdPedidoEnc")
+            Dim idDetObj As Object = view.GetRowCellValue(e.RowHandle, "IdPedidoDet")
+
+            If idPickingObj Is Nothing OrElse idEncObj Is Nothing OrElse idDetObj Is Nothing _
+            OrElse idPickingObj Is DBNull.Value OrElse idEncObj Is DBNull.Value OrElse idDetObj Is DBNull.Value Then
+                Exit Sub
+            End If
+
+            Dim idPicking As Integer = Convert.ToInt32(idPickingObj)
+            Dim idEnc As Integer = Convert.ToInt32(idEncObj)
+            Dim idDet As Integer = Convert.ToInt32(idDetObj)
+
+            ' Verificar si esta combinación ya está confirmada en plistPickingUbic
+            Dim estaConfirmado As Boolean =
+            plistPickingUbic.Any(Function(x) x.IdPickingUbic = idPicking _
+                                      AndAlso x.IdPedidoEnc = idEnc _
+                                      AndAlso x.IdPedidoDet = idDet)
+
+            If estaConfirmado Then
+                e.Appearance.BackColor = Color.LightGreen
+                e.Appearance.ForeColor = Color.Black
+                e.Appearance.Options.UseBackColor = True
+                e.Appearance.Options.UseForeColor = True
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+
+    Private Sub LimpiarControlesGrupo()
+        txtScanner.Text = ""
+        txtDescripcionProducto.Text = ""
+        txtTalla.Text = ""
+        txtColor.Text = ""
+        txtCantidad.Text = ""
+    End Sub
+
+
+    Private Sub cmdEnviar_ItemClick(sender As Object, e As ItemClickEventArgs) Handles cmdEnviar.ItemClick
+        Try
+
+            cmdEnviar.Enabled = False
+            Guardar_Verificacion()
+            cmdEnviar.Enabled = True
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub Guardar_Verificacion()
+
+        Try
+
+            If plistPickingUbic.Count > 0 Then
+
+                If Not clsLnTrans_picking_enc.Guardar_Verificacion_Bof(plistPickingUbic,
+                                                                      AP.UsuarioAp.IdUsuario,
+                                                                      pBePedidoEnc) Then
+
+                    XtraMessageBox.Show("No se fiscalizó el pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Else
+                    XtraMessageBox.Show("Pedido fiscalizado.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+
+                    If InvokeListarPedidos IsNot Nothing Then
+                        InvokeListarPedidos.Invoke()
+                    End If
+
+                    Me.DialogResult = DialogResult.OK
+
+                End If
+
+            Else
+                XtraMessageBox.Show("No se ha verificado ninguna linea del pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+        End Try
+
+    End Sub
 
-    '        If pIdPresentacion <> 0 AndAlso DgComboPresentacion.Items.Count > 0 Then
-    '            DgComboPresentacion.Value = pIdPresentacion
-    '        Else
-    '            DgComboPresentacion.Value = Nothing
-    '        End If
-
-    '    Catch ex As Exception
-    '        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-    '    End Try
-
-    'End Sub
-
-
-    'Private Sub Cargar_Detalle_Pedido(ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction)
-
-    '    Try
-
-    '        'gvListaPedido.Rows.Clear()
-    '        dgridListaPedido.DataSource = Nothing
-
-    '        Dim i As Integer = -1
-    '        Dim vCantidadPickeada As Double = 0
-    '        Dim vCantidadVerificada As Double = 0
-    '        Dim IndicePadre As Integer = -1
-    '        Dim vCodigoPadre As String = ""
-    '        Dim vClienteTiempo As New clsBeCliente_tiempos
-
-    '        If Not pClienteTiemposList Is Nothing Then
-    '            vClienteTiempo = pClienteTiemposList.Find(Function(x) _
-    '                            x.IdClasificacion = pBeProducto.Clasificacion.IdClasificacion _
-    '                            And x.IdFamilia = pBeProducto.Familia.IdFamilia)
-    '        End If
-
-    '        Dim vDiasVencimientoCliente As Integer = 0
-
-    '        If Not vClienteTiempo Is Nothing Then
-    '            If chkPedidoLocal.Checked Then
-    '                vDiasVencimientoCliente = vClienteTiempo.Dias_Local
-    '            Else
-    '                vDiasVencimientoCliente = vClienteTiempo.Dias_Exterior
-    '            End If
-    '        End If
-
-    '        'ltrans.Begin_Transaction()
-
-    '        Cliente_Detalle_Ultimo_Lote = 0
-    '        Cliente_Detalle_Control_Calidad = 0
-
-
-    '        SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-
-    '        Application.DoEvents()
-
-    '        If Not pBePedidoEnc Is Nothing Then
-
-    '            For Each pDet As clsBeTrans_pe_det In pBePedidoEnc.Detalle.OrderBy(Function(x) x.No_linea)
-
-    '                pBeStock = New clsBeStock
-    '                pBeProducto = New clsBeProducto
-    '                pBeProducto.IdProducto = pDet.Producto.IdProducto
-
-    '                If SplashScreenManager.Default Is Nothing Then
-    '                    SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-    '                    SplashScreenManager.Default.SetWaitFormDescription("Obteniendo código: " & pDet.Codigo_Producto)
-    '                End If
-
-    '                If Not pDet.EsPadre AndAlso Not pDet.IdPedidoDetPadre > 0 Then
-
-    '                    i = dgrid.Rows.Add(pDet.No_linea,
-    '                                       pDet.Producto.IdProducto,
-    '                                       pDet.IsNew,
-    '                                       pDet.Codigo_Producto,
-    '                                       pDet.Nombre_producto)
-
-    '                    pBeProducto.IdProductoBodega = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(pBeProducto.IdProducto,
-    '                                                                                                                        cmbBodega.EditValue,
-    '                                                                                                                        lConnection,
-    '                                                                                                                        lTransaction)
-
-
-    '                    If BeBodega.Control_Talla_Color Then
-
-    '                        Dim BeProductoTc = clsLnProducto_talla_color.GetSingle(pDet.IdProductoTallaColor, lConnection, lTransaction)
-
-    '                        If BeProductoTc IsNot Nothing Then
-    '                            dgrid.Rows(i).Cells("colTalla").Value = BeProductoTc.IdTalla
-    '                            dgrid.Rows(i).Cells("colColor").Value = BeProductoTc.IdColor
-    '                        End If
-
-    '                        dgrid.Columns("colTalla").ReadOnly = True
-    '                        dgrid.Columns("colColor").ReadOnly = True
-
-    '                        '#GT21082025: a futuro si cliente lo requiere se muestran
-    '                        dgrid.Columns("colIdProductoTallaColor").Visible = False
-    '                        'dgrid.Columns("colSKU").Visible = False
-
-    '                    End If
-
-    '                    Llena_Presentacion_Grid(i, lConnection, lTransaction, pDet.IdPresentacion)
-
-    '                    If BeTipoDoc.Generar_pedido_ingreso_bodega_destino Then
-    '                        Llena_Cliente_Grid(i, lConnection, lTransaction, pDet.IdCliente)
-    '                    End If
-
-    '                    If pDet.IdCliente <> 0 Then
-
-    '                        If Cliente_Control_Calidad(pDet.IdCliente, lConnection, lTransaction) Then
-    '                            Cliente_Detalle_Control_Calidad += 1
-    '                        End If
-
-    '                        If Cliente_Control_Ultimo_Lote(pDet.IdCliente, lConnection, lTransaction) Then
-    '                            Cliente_Detalle_Ultimo_Lote += 1
-    '                        End If
-
-    '                    End If
-
-    '                    dgrid.Rows(i).Cells("colUnidadMedida").Value = pDet.Nom_unid_med
-
-    '                    '#EJC20180614: Se agregó validación para que cuando no haya existencia, no se trate de desplegar el estado
-    '                    Llena_Estados_Grid(i,
-    '                                       lConnection,
-    '                                       lTransaction,
-    '                                       pDet.IdEstado)
-
-    '                    dgrid.Rows(i).Cells("colUnidadMedida").Value = pDet.Nom_unid_med
-
-    '                    '#EJC20180114: Agregu? No_Linea y Atributo_Variante_1 en Cargar_Detalle_Pedido
-    '                    dgrid.Rows(i).Cells("ColNo_Linea").Value = pDet.No_linea
-    '                    dgrid.Rows(i).Cells("Atributo_Variante_1").Value = pDet.Atributo_Variante_1
-
-    '                    '#EJC20180606: Para reservar stock a posteriori.
-    '                    dgrid.Rows(i).Cells("colIdProductoBodega").Value = pDet.ProductoBodega.IdProductoBodega
-
-    '                    pBeStock.IdProductoBodega = pDet.ProductoBodega.IdProductoBodega
-    '                    pBeStock.ProductoEstado.IdEstado = pDet.IdEstado
-    '                    pBeStock.Presentacion.IdPresentacion = pDet.IdPresentacion
-    '                    pBeStock.IdPresentacion = pDet.IdPresentacion
-    '                    pBeStock.IdBodega = cmbBodega.EditValue
-
-    '                    ''#EJC20171025_0217PM: Si no se manda la unidad de medida no devuelve el stock disponible en el pedido.
-    '                    pBeStock.IdUnidadMedida = pDet.IdUnidadMedidaBasica
-
-    '                    If pBeStock.IdProductoBodega <> 0 AndAlso pBeStock.ProductoEstado.IdEstado <> 0 Then
-
-    '                        pBeStock.IdProductoBodega = pDet.ProductoBodega.IdProductoBodega
-    '                        pDet.IdProductoBodega = pDet.ProductoBodega.IdProductoBodega
-
-    '                        '#EJC20220720_1357:Abastecer desde ubicación específica de cliente.
-    '                        pBeStock.IdUbicacion = Val(txtIdUbicacionAbastecimiento.Text)
-
-    '                        'Obtiene la cantidad disponible restando la cantidad reservada.
-    '                        clsLnStock.Get_Existencia_Disp_By_IdProducto(pBeStock,
-    '                                                                     cmbBodega.EditValue,
-    '                                                                     True,
-    '                                                                     False,
-    '                                                                     vDiasVencimientoCliente,
-    '                                                                     True,
-    '                                                                     lConnection,
-    '                                                                     lTransaction)
-
-    '                        pDet.CantidadReservada = clsLnStock.Get_Cantidad_Reservada_By_IdPedidoDet(pBeStock,
-    '                                                                                                  pDet.IdPedidoDet,
-    '                                                                                                  lConnection,
-    '                                                                                                  lTransaction,
-    '                                                                                                  True)
-    '                        'GT 270720210843: para un pedido, si se edita, es porque ya se guardo, y no se debe sumar lo reservado más la existencia
-    '                        If Modo = TipoTrans.Editar Then
-
-    '                        Else
-    '                            '#EJC20171021_1108AM: Obtiene la cantidad reservada por detalle de pedido para considerarla como disponible.
-    '                            pBeStock.Cantidad += pDet.CantidadReservada
-    '                        End If
-
-    '                        pDet.PesoReservado = clsLnStock.Get_Peso_Reservado(pBeStock,
-    '                                                                           pDet.IdPedidoDet,
-    '                                                                           lConnection,
-    '                                                                           lTransaction,
-    '                                                                           True)
-
-    '                        '#EJC20171021_1108AM: Obtiene el peso reservado por detalle de pedido para considerarlo como disponible.
-    '                        pBeStock.Peso += pDet.PesoReservado
-
-    '                        ''#EJC20171025_0221PM: Desplegar cantidad disponible en base a presentación cuando se edita un pedido.
-    '                        If Not pBeStock.Presentacion Is Nothing Then
-
-    '                            If pBeStock.Presentacion.IdPresentacion <> 0 Then
-
-    '                                dgrid.Rows(i).Cells("colCantidadExistencia").Value = pBeStock.Cantidad
-    '                                dgrid.Rows(i).Cells("colPesoExistencia").Value = pBeStock.Peso
-
-    '                            Else
-
-    '                                DgComboPresentacion = TryCast(dgrid.Rows(i).Cells("colPresentacion"), DataGridViewComboBoxCell)
-    '                                DgComboPresentacion.Value = Nothing
-
-    '                                dgrid.Rows(i).Cells("colCantidadExistencia").Value = pBeStock.Cantidad
-    '                                dgrid.Rows(i).Cells("colPesoExistencia").Value = pBeStock.Peso
-
-    '                            End If
-
-    '                        Else
-
-    '                            dgrid.Rows(i).Cells("colCantidadExistencia").Value = pBeStock.Cantidad
-    '                            dgrid.Rows(i).Cells("colPesoExistencia").Value = pBeStock.Peso
-
-    '                        End If
-
-    '                        If pBeStock.Cantidad > 0 Then
-    '                            dgrid.Rows(i).Cells("colPesoUnitario").Value = pBeStock.Peso / pBeStock.Cantidad
-    '                        ElseIf pBeStock.Peso > 0 Then
-    '                            dgrid.Rows(i).Cells("colPesoUnitario").Value = pBeStock.Peso
-    '                        Else
-    '                            dgrid.Rows(i).Cells("colPesoUnitario").Value = 0
-    '                        End If
-
-    '                        '#EJC20171021_0527PM: Obtener la cantidad pickeada.
-    '                        If Not pDet.ListaPickingUbic Is Nothing Then
-
-    '                            Try
-
-    '                                Dim vCantidadRecUMBas As Double = 0
-    '                                Dim vCantidadVerUMBas As Double = 0
-    '                                vCantidadPickeada = 0
-    '                                vCantidadVerificada = 0
-
-    '                                If pDet.IdPresentacion > 0 Then
-    '                                    '#CM_20191128: Esta fue la única manera que encontré para sumar bien la cantidad del pedido cuando se tiene reservada 
-    '                                    'X cantidad del pedido en presentación y la otra parte en UMBas.
-    '                                    vCantidadRecUMBas = pDet.ListaPickingUbic.FindAll(Function(x) x.IdPedidoDet = pDet.IdPedidoDet AndAlso x.IdPresentacion = 0).Sum(Function(y) y.Cantidad_Recibida)
-    '                                    vCantidadVerUMBas = pDet.ListaPickingUbic.FindAll(Function(x) x.IdPedidoDet = pDet.IdPedidoDet AndAlso x.IdPresentacion = 0).Sum(Function(y) y.Cantidad_Verificada)
-    '                                End If
-
-    '                                If vCantidadRecUMBas > 0 OrElse vCantidadVerUMBas > 0 Then
-    '                                    '#CM_20191128: Busco de primero la cantidad total con presentación
-
-    '                                    vCantidadPickeada = pDet.ListaPickingUbic.FindAll(Function(x) x.IdPedidoDet = pDet.IdPedidoDet AndAlso x.IdPresentacion = pDet.IdPresentacion).Sum(Function(y) y.Cantidad_Recibida)
-    '                                    vCantidadVerificada = pDet.ListaPickingUbic.FindAll(Function(x) x.IdPedidoDet = pDet.IdPedidoDet AndAlso x.IdPresentacion = pDet.IdPresentacion).Sum(Function(y) y.Cantidad_Verificada)
-
-    '                                    '#CM_20191128: Busco el factor de la presentación
-    '                                    pDet.Factor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pDet.IdProductoBodega, pDet.IdPresentacion, lConnection, lTransaction)
-
-    '                                    '#CM_20191128: Divido la cantidad UMBas entre el factor
-    '                                    vCantidadRecUMBas = Math.Round(vCantidadRecUMBas / pDet.Factor, 6)
-    '                                    vCantidadVerUMBas = Math.Round(vCantidadVerUMBas / pDet.Factor, 6)
-
-    '                                    '#CM_20191128: Sumo las cantidades.
-    '                                    vCantidadPickeada = Math.Round(vCantidadPickeada + vCantidadRecUMBas, 6)
-    '                                    vCantidadVerificada = Math.Round(vCantidadVerificada + vCantidadVerUMBas, 6)
-    '                                Else
-
-    '                                    '#CKFK20221211 Modifiqué la forma de obtener lo pickeado y lo verificado
-    '                                    'vCantidadPickeada = pDet.ListaPickingUbic.FindAll(Function(x) x.IdPedidoDet = pDet.IdPedidoDet AndAlso x.IdPresentacion = pDet.IdPresentacion).Sum(Function(y) y.Cantidad_Recibida)
-    '                                    'vCantidadVerificada = pDet.ListaPickingUbic.FindAll(Function(x) x.IdPedidoDet = pDet.IdPedidoDet AndAlso x.IdPresentacion = pDet.IdPresentacion).Sum(Function(y) y.Cantidad_Verificada)
-
-    '                                    If pDet.IdPresentacion = 0 Then
-
-    '                                        Dim vFactor As Integer = 0
-
-    '                                        For Each ubic In pDet.ListaPickingUbic.FindAll(Function(x) x.IdPedidoDet = pDet.IdPedidoDet).ToList
-    '                                            If ubic.IdPresentacion <> 0 Then
-
-    '                                                vFactor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pDet.IdProductoBodega, ubic.IdPresentacion, lConnection, lTransaction)
-
-    '                                                vCantidadPickeada += pDet.ListaPickingUbic.FindAll(Function(x) x.IdPickingUbic = ubic.IdPickingUbic And x.IdPedidoDet = pDet.IdPedidoDet AndAlso x.IdPresentacion = ubic.IdPresentacion).Sum(Function(y) y.Cantidad_Recibida) * vFactor
-    '                                                vCantidadVerificada += pDet.ListaPickingUbic.FindAll(Function(x) x.IdPickingUbic = ubic.IdPickingUbic And x.IdPedidoDet = pDet.IdPedidoDet AndAlso x.IdPresentacion = ubic.IdPresentacion).Sum(Function(y) y.Cantidad_Verificada) * vFactor
-
-    '                                            Else
-
-    '                                                vCantidadPickeada += pDet.ListaPickingUbic.FindAll(Function(x) x.IdPickingUbic = ubic.IdPickingUbic And x.IdPedidoDet = pDet.IdPedidoDet AndAlso x.IdPresentacion = 0).Sum(Function(y) y.Cantidad_Recibida)
-    '                                                vCantidadVerificada += pDet.ListaPickingUbic.FindAll(Function(x) x.IdPickingUbic = ubic.IdPickingUbic And x.IdPedidoDet = pDet.IdPedidoDet AndAlso x.IdPresentacion = 0).Sum(Function(y) y.Cantidad_Verificada)
-
-    '                                            End If
-    '                                        Next
-
-    '                                    Else
-
-    '                                        vCantidadPickeada = pDet.ListaPickingUbic.FindAll(Function(x) x.IdPedidoDet = pDet.IdPedidoDet AndAlso x.IdPresentacion = pDet.IdPresentacion).Sum(Function(y) y.Cantidad_Recibida)
-    '                                        vCantidadVerificada = pDet.ListaPickingUbic.FindAll(Function(x) x.IdPedidoDet = pDet.IdPedidoDet AndAlso x.IdPresentacion = pDet.IdPresentacion).Sum(Function(y) y.Cantidad_Verificada)
-
-    '                                    End If
-
-    '                                End If
-
-
-    '                            Catch ex As Exception
-    '                                '#EJC201710210531PM: No se pudo obtener la cantidad pickeada de la lista, podr?a pasar pero aun no se porqu? ;) 
-    '                            End Try
-
-    '                            dgrid.Rows(i).Cells("CantidadPickeada").Value = vCantidadPickeada
-    '                            dgrid.Rows(i).Cells("CantidadVerificada").Value = vCantidadVerificada
-
-    '                            Dim vDif As Double = (pDet.Cantidad - Math.Round(vCantidadPickeada, 6))
-    '                            '#EJC20171021_0534OM: Formateo condicional de color, cantidad pedido vrs. cantidad_picking
-    '                            Select Case vDif
-
-    '                                Case pDet.Cantidad
-
-    '                                    'No se ha pickeado nada.
-    '                                    dgrid.Rows(i).DefaultCellStyle.BackColor = Color.White
-
-    '                                Case Is > 0
-
-    '                                    'Falta pickear producto 
-    '                                    dgrid.Rows(i).DefaultCellStyle.BackColor = Color.MistyRose
-
-    '                                Case Is < 0
-
-    '                                    'Sobra producto en el picking, esto no debería pasar nunca.
-    '                                    dgrid.Rows(i).DefaultCellStyle.BackColor = Color.LightYellow
-
-    '                                Case 0
-
-    '                                    'Se pickeó completa la cantidad solicitada en el pedido.
-    '                                    dgrid.Rows(i).DefaultCellStyle.BackColor = Color.LightGreen
-
-    '                                Case Else
-    '                                    Exit Select
-
-    '                            End Select
-
-    '                        End If
-
-    '                    End If
-
-    '                    dgrid.Rows(i).Cells("colCantidad").Value = pDet.Cantidad
-    '                    If Modo = TipoTrans.Editar Then
-    '                        dgrid.Rows(i).Cells("colCantidadExistencia").Value = pDet.Cantidad + dgrid.Rows(i).Cells("colCantidadExistencia").Value
-    '                    End If
-    '                    dgrid.Rows(i).Cells("colPeso").Value = pDet.Peso
-    '                    dgrid.Rows(i).Cells("colPrecio").Value = pDet.Precio
-    '                    dgrid.Rows(i).Cells("colTotal").Value = pDet.RoadTotal
-    '                    dgrid.Rows(i).Cells("colIdPedidoDet").Value = pDet.IdPedidoDet
-    '                    dgrid.Rows(i).Cells("colNoDias").Value = pDet.Ndias
-    '                    dgrid.Rows(i).Cells("ColFechaEspecifica").Value = pDet.Fecha_especifica
-
-    '                    If pDet.IdStockEspecifico > 0 Then
-    '                        dgrid.Rows(i).Cells("IdStockEspecifico").Value = pDet.IdStockEspecifico
-    '                    End If
-
-    '                Else
-    '                    If pDet.EsPadre Then
-
-    '                        i = dgrid.Rows.Add(pDet.No_linea,
-    '                                           pDet.Producto.IdProducto,
-    '                                           pDet.IsNew,
-    '                                           pDet.Codigo_Producto,
-    '                                           pDet.Nombre_producto)
-
-    '                        IndicePadre = i
-    '                        vCodigoPadre = pDet.Codigo_Producto
-
-    '                        Set_Producto_Padre_Kit(pBeProducto,
-    '                                               i,
-    '                                               lConnection,
-    '                                               lTransaction)
-
-    '                        dgrid.Rows(i).Cells("colCantidad").Value = pDet.Cantidad
-    '                        If Modo = TipoTrans.Editar Then
-    '                            dgrid.Rows(i).Cells("colCantidadExistencia").Value = pDet.Cantidad + dgrid.Rows(i).Cells("colCantidadExistencia").Value
-    '                        End If
-    '                        dgrid.Rows(i).Cells("colPeso").Value = pDet.Peso
-    '                        dgrid.Rows(i).Cells("colPrecio").Value = pDet.Precio
-    '                        dgrid.Rows(i).Cells("colTotal").Value = pDet.RoadTotal
-    '                        dgrid.Rows(i).Cells("colIdPedidoDet").Value = pDet.IdPedidoDet
-    '                        dgrid.Rows(i).Cells("colNoDias").Value = pDet.Ndias
-    '                        dgrid.Rows(i).Cells("ColFechaEspecifica").Value = pDet.Fecha_especifica
-
-    '                        If pDet.IdStockEspecifico > 0 Then
-    '                            dgrid.Rows(i).Cells("IdStockEspecifico").Value = pDet.IdStockEspecifico
-    '                        End If
-
-    '                    End If
-
-    '                    pDet.IdProductoBodega = pDet.ProductoBodega.IdProductoBodega
-
-    '                    If pDet.IdPedidoDetPadre <> 0 Then
-
-    '                        pBeStock.IdProductoBodega = pDet.ProductoBodega.IdProductoBodega
-
-    '                        Set_Productos_Hijos_Kit(pBeProducto,
-    '                                                IndicePadre,
-    '                                                vCodigoPadre)
-
-    '                    End If
-
-    '                End If
-
-    '                i += 1
-
-    '                pBePedidoDetList.Add(pDet)
-
-    '                Application.DoEvents()
-
-    '            Next
-
-    '        End If
-
-    '        txtControlUltimoLote.Text = IIf(Cliente_Detalle_Ultimo_Lote > 0, "Si", "No")
-
-    '        If txtControlUltimoLote.Text = "Si" Then
-    '            txtControlUltimoLote.BackColor = Color.PaleGreen
-    '        Else
-    '            txtControlUltimoLote.BackColor = Color.Firebrick
-    '        End If
-
-    '        txtCertificadoCalidad.Text = IIf(Cliente_Detalle_Control_Calidad > 0, "Si", "No")
-
-    '        If txtCertificadoCalidad.Text = "Si" Then
-    '            txtCertificadoCalidad.BackColor = Color.PaleGreen
-    '        Else
-    '            txtCertificadoCalidad.BackColor = Color.Firebrick
-    '        End If
-
-    '    Catch ex As Exception
-
-    '        SplashScreenManager.CloseForm(False)
-
-    '        XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-    '                            Text,
-    '                            MessageBoxButtons.OK,
-    '                            MessageBoxIcon.Exclamation)
-
-    '    Finally
-    '        SplashScreenManager.CloseForm(False)
-    '    End Try
-
-    'End Sub
 
 End Class

@@ -2180,10 +2180,18 @@ Partial Public Class clsLnTrans_pe_enc
 
             If Not Es_Transaccion_Remota Then lConnection.Open() : ltrans = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
+            'Dim sp As String = "SELECT DISTINCT pe.*, r.nombre AS NombreRutaDespacho FROM trans_pe_enc pe 
+            '                    INNER JOIN trans_picking_op op on op.IdPickingEnc = pe.IdPickingEnc
+            '                    LEFT JOIN road_ruta r on r.IdRuta = pe.RoadIdDespacho
+            '                    WHERE pe.IdBodega = @IdBodega AND pe.estado in('Pickeado','Pendiente')"
+
+
+            '#GT01122025: se agrega inner join al tipo pedido para saber si aplica verificar por imagen para no mostrar las tareas en la HH
             Dim sp As String = "SELECT DISTINCT pe.*, r.nombre AS NombreRutaDespacho FROM trans_pe_enc pe 
                                 INNER JOIN trans_picking_op op on op.IdPickingEnc = pe.IdPickingEnc
                                 LEFT JOIN road_ruta r on r.IdRuta = pe.RoadIdDespacho
-                                WHERE pe.IdBodega = @IdBodega AND pe.estado in('Pickeado','Pendiente')"
+                                INNER JOIN trans_pe_tipo pe_tipo on pe.IdTipoPedido=pe_tipo.IdTipoPedido
+                                WHERE pe.IdBodega = @IdBodega AND pe.estado in('Pickeado','Pendiente') and pe_tipo.verificar_con_imagen=0"
 
             If pIdOperadorBodega <> 0 Then
                 sp += " AND op.IdOperadorBodega = @IdOperadorBodega "
@@ -6257,10 +6265,10 @@ Partial Public Class clsLnTrans_pe_enc
 
         Try
 
-            Dim vSQL As String = " SELECT * FROM VW_PEDIDOS_LIST WHERE IDBODEGA = @IDBODEGA and verificar_con_imagen=1 "
+            Dim vSQL As String = " SELECT * FROM VW_PEDIDOS_LIST WHERE IDBODEGA = @IDBODEGA and verificar_con_imagen=1 and estado='Pickeado' "
 
             If pActivo = True Then
-                vSQL += " AND Activo=1"
+                vSQL += " AND Activo=1 "
             Else
                 vSQL += " AND Activo=0"
             End If

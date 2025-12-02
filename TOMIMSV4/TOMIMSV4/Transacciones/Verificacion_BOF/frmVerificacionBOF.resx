@@ -120,9 +120,6 @@
   <metadata name="Label8.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
-  <metadata name="lblBarraProducto.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
   <metadata name="Label5.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
@@ -135,8 +132,25 @@
   <metadata name="Label2.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
+  <assembly alias="DevExpress.Data.v24.2" name="DevExpress.Data.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+  <data name="cmdEnviar.ImageOptions.SvgImage" type="DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v24.2" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFpEZXZFeHByZXNzLkRhdGEudjI0LjIsIFZlcnNpb249MjQuMi4x
+        Mi4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI4OGQxNzU0ZDcwMGU0OWEFAQAAAB1E
+        ZXZFeHByZXNzLlV0aWxzLlN2Zy5TdmdJbWFnZQEAAAAERGF0YQcCAgAAAAkDAAAADwMAAADuAQAAAu+7
+        vzw/eG1sIHZlcnNpb249JzEuMCcgZW5jb2Rpbmc9J1VURi04Jz8+DQo8c3ZnIHg9IjBweCIgeT0iMHB4
+        IiB2aWV3Qm94PSIwIDAgMzIgMzIiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3Jn
+        LzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNw
+        YWNlPSJwcmVzZXJ2ZSIgaWQ9IlNhdmUiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDMy
+        IDMyIj4NCiAgPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5CbGFja3tmaWxsOiM3MjcyNzI7fQo8L3N0
+        eWxlPg0KICA8cGF0aCBkPSJNMjcsNGgtM3YxMEg4VjRINUM0LjQsNCw0LDQuNCw0LDV2MjJjMCwwLjYs
+        MC40LDEsMSwxaDIyYzAuNiwwLDEtMC40LDEtMVY1QzI4LDQuNCwyNy42LDQsMjcsNHogTTI0LDI0SDh2
+        LTYgIGgxNlYyNHogTTEwLDR2OGgxMFY0SDEweiBNMTQsMTBoLTJWNmgyVjEweiIgY2xhc3M9IkJsYWNr
+        IiAvPg0KPC9zdmc+Cw==
+</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="LabelControl2.Appearance.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="lbOk.Appearance.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAB10RVh0VGl0
         bGUARGF0YWJhc2U7REI7U291cmNlO1N0b3KssepyAAADLUlEQVQ4T2WTf0zUZRzHH1etMrOs1H6YSZs5
@@ -156,7 +170,7 @@
         5TJQMpL9G8s/b7LDaOctAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="LabelControl2.ImageOptions.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="lbOk.ImageOptions.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAOdEVYdFRpdGxlAEJhcmNvZGU7nc/ZFgAABlpJREFU
