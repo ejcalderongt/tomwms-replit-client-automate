@@ -1809,12 +1809,15 @@ Public Class frmPicking
                                                                                       vNombreArchivoLayOutGrid)
 
                 '#GT01122025: Estoy infiriendo que mampa no trabaja picking consolidados.
-                Dim BePedido = clsLnTrans_pe_enc.Get_Single_Without_Picking(BePickingEnc.IdPedidoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                Dim tmpPedido = lPedidosPicking(0)
+                Dim BePedido = clsLnTrans_pe_enc.Get_Single_Without_Picking(tmpPedido.IdPedidoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
-                If BePedido.TipoPedido.Verificar_con_imagen Then
-                    BloquearControles_Por_VerificacionBOF(True)
-                Else
-                    BloquearControles_Por_VerificacionBOF(False)
+                If BePedido IsNot Nothing Then
+                    If BePedido.TipoPedido.Verificar_con_imagen Then
+                        BloquearControles_Por_VerificacionBOF(False)
+                    Else
+                        BloquearControles_Por_VerificacionBOF(True)
+                    End If
                 End If
 
                 If Not BeConfiguracionUsuarioDet Is Nothing Then
@@ -4745,12 +4748,17 @@ Public Class frmPicking
 
     '#GT01122025: si tipo pedido es verificar por bof, bloquear controles que permiten modificar la verificación en la HH
     Public Sub BloquearControles_Por_VerificacionBOF(ByVal estado As Boolean)
-        cmdNoPickeado.Enabled = estado
+        'cmdNoPickeado.Enabled = estado
         mnuProcesarLinea.Enabled = estado
         mnuProcesar.Enabled = estado
         mnuVerificarPickeados.Enabled = estado
         cmdVerificarNuevamente.Enabled = estado
         cmdNoVerificado.Enabled = estado
+        mnuDespachado.Enabled = estado
+        chkProcesarDesdeBOF.Checked = False
+        chkProcesarDesdeBOF.Enabled = estado
+        chkverifica_auto.Checked = False
+        chkverifica_auto.Enabled = estado
     End Sub
 
 End Class
