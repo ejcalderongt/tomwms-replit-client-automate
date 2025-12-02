@@ -1100,6 +1100,7 @@ Public Class clsSyncSAPProducto : Inherits clsInterfaceBase
                         End Using
                     End While
                 End Using
+
             End Using
 
             Return productos

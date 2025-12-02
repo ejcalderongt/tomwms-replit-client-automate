@@ -378,17 +378,16 @@ Public Class frmEjecucion
 
     End Function
 
-    Private Sub mnuActualizarCodigosBarra_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuActualizarCodigosBarra.ItemClick
+    Private Async Sub mnuActualizarCodigosBarra_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuActualizarCodigosBarra.ItemClick
 
         Try
 
             Dim SapProductoCodigosBarra As New clsSyncSapCodigosBarra
-            SapProductoCodigosBarra.Importar_Codigos_Barra_Productos(lblprg, prg)
+            Await SapProductoCodigosBarra.Importar_Codigos_Barra_Productos_SL(lblprg, prg)
 
         Catch ex As Exception
             clsPublic.Actualizar_Progreso(lblprg, "Error: " & ex.Message)
         End Try
-
 
     End Sub
 

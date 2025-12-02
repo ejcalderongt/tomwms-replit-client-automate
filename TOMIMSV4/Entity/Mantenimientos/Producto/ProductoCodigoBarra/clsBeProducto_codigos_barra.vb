@@ -48,6 +48,8 @@ Public Class clsBeProducto_codigos_barra
     ''' </summary>
     ''' <value><c>true</c> if activo; otherwise, <c>false</c>.</value>
     Public Property Activo() As Boolean = False
+    Public Property IdColor As Integer = 0
+    Public Property IdTalla As Integer = 0
 
     ''' <summary>
     ''' Initializes a new instance of the <see cref="clsBeProducto_codigos_barra"/> class.
