@@ -3745,8 +3745,8 @@ Partial Public Class clsLnTrans_picking_ubic
                 resultado += "Inicia la actualizacion"
 
                 FilasAfectadas = Actualizar(oBeTrans_picking_ubic,
-                                        IIf(Es_Transaccion_Remota, pConection, lConnection),
-                                        IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                                            IIf(Es_Transaccion_Remota, pConection, lConnection),
+                                            IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
 
                 resultado += String.Format(", actualizó {0} filas en trans_picking_ubic, cantidad {1}, operador {2}, pedido {3}, pedidodet {4} IdPickingUbic {5} ",
                                            FilasAfectadas.ToString, oBeTrans_picking_ubic.Cantidad_Verificada,
@@ -3754,20 +3754,22 @@ Partial Public Class clsLnTrans_picking_ubic
                                            oBeTrans_picking_ubic.IdPedidoDet, oBeTrans_picking_ubic.IdPickingUbic)
 
                 FilasAfectadas = clsLnStock_res.Actualizar(BeStockRes,
-                                                       IIf(Es_Transaccion_Remota, pConection, lConnection),
-                                                       IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                                                           IIf(Es_Transaccion_Remota, pConection, lConnection),
+                                                           IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
 
                 resultado += String.Format(", actualizó {0} filas en stock_res ", FilasAfectadas.ToString)
 
                 Dim BeStock As New clsBeStock
-                BeStock = clsLnStock.Get_Single_By_IdStock(BeStockRes.IdStock, IIf(Es_Transaccion_Remota, pConection, lConnection), IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                BeStock = clsLnStock.Get_Single_By_IdStock(BeStockRes.IdStock,
+                                                           IIf(Es_Transaccion_Remota, pConection, lConnection),
+                                                           IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
 
                 FilasAfectadas = clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(oBeTrans_picking_ubic,
-                                                                                     BeStock.IdUbicacion,
-                                                                                     pCantidad,
-                                                                                     pPeso,
-                                                                                     IIf(Es_Transaccion_Remota, pConection, lConnection),
-                                                                                     IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                                                                                         BeStock.IdUbicacion,
+                                                                                         pCantidad,
+                                                                                         pPeso,
+                                                                                         IIf(Es_Transaccion_Remota, pConection, lConnection),
+                                                                                         IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
 
                 resultado += String.Format(", actualizó {0} filas en trans_movimientos ", FilasAfectadas.ToString)
 

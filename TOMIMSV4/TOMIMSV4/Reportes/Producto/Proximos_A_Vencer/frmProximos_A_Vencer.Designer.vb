@@ -66,6 +66,7 @@ Partial Class frmProximos_A_Vencer
         Me.cmbPropietarioBodega = New DevExpress.XtraEditors.LookUpEdit()
         Me.cmbBodega = New DevExpress.XtraEditors.LookUpEdit()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.chkIncluirVencidos = New DevExpress.XtraEditors.CheckEdit()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PanelControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PanelControl1.SuspendLayout()
@@ -85,6 +86,7 @@ Partial Class frmProximos_A_Vencer
         Me.PanelControl2.SuspendLayout()
         CType(Me.cmbPropietarioBodega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbBodega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkIncluirVencidos.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'RibbonControl
@@ -316,6 +318,7 @@ Partial Class frmProximos_A_Vencer
         '
         'PanelControl2
         '
+        Me.PanelControl2.Controls.Add(Me.chkIncluirVencidos)
         Me.PanelControl2.Controls.Add(Me.lblEstatus)
         Me.PanelControl2.Controls.Add(Me.Label2)
         Me.PanelControl2.Controls.Add(Me.cmbPropietarioBodega)
@@ -381,6 +384,15 @@ Partial Class frmProximos_A_Vencer
         Me.Label1.TabIndex = 7
         Me.Label1.Text = "Bodega:"
         '
+        'chkIncluirVencidos
+        '
+        Me.chkIncluirVencidos.Location = New System.Drawing.Point(10, 186)
+        Me.chkIncluirVencidos.MenuManager = Me.RibbonControl
+        Me.chkIncluirVencidos.Name = "chkIncluirVencidos"
+        Me.chkIncluirVencidos.Properties.Caption = "Incluir vencidos"
+        Me.chkIncluirVencidos.Size = New System.Drawing.Size(170, 24)
+        Me.chkIncluirVencidos.TabIndex = 13
+        '
         'frmProximos_A_Vencer
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -415,6 +427,7 @@ Partial Class frmProximos_A_Vencer
         Me.PanelControl2.PerformLayout()
         CType(Me.cmbPropietarioBodega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbBodega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkIncluirVencidos.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -444,4 +457,5 @@ Partial Class frmProximos_A_Vencer
     Friend WithEvents tabGrafico As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents ChartControl1 As DevExpress.XtraCharts.ChartControl
     Friend WithEvents cmdExcel As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents chkIncluirVencidos As DevExpress.XtraEditors.CheckEdit
 End Class

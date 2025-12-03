@@ -37,9 +37,10 @@ Public Class frmProximos_A_Vencer
             Dim rango As Integer = IIf(TrackBarControl1.Value > 0, TrackBarControl1.Value, 0)
 
             DT = clsLnStock.Get_Rpt_Horizonte_Critico_By_IdBodega_And_IdPropietarioBodega(0,
-                                                                                             IdBodega,
-                                                                                             IdPropietarioBodega,
-                                                                                             rango)
+                                                                                          IdBodega,
+                                                                                          IdPropietarioBodega,
+                                                                                          rango,
+                                                                                          chkIncluirVencidos.Checked)
 
 
             If DT.Rows.Count = 0 Then
