@@ -1110,6 +1110,9 @@ Public Class frmVerificacionBOF
 
             If plistPickingUbic.Count > 0 Then
 
+
+
+
                 If Not clsLnTrans_picking_enc.Guardar_Verificacion_Bof(plistPickingUbic,
                                                                       AP.UsuarioAp.IdUsuario,
                                                                       pBePedidoEnc) Then
