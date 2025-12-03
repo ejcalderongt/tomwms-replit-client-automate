@@ -20,6 +20,7 @@
     Public Property IdOperador() As Integer = 0
     Public Property Fec_agr() As Date = New Date(1900, 1, 1)
     Public Property User_agr() As String = String.Empty
+    Public Property EsImplosion() As Boolean = False
 
     Sub New()
     End Sub

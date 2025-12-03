@@ -721,6 +721,21 @@ Partial Public Class clsLnTrans_ubic_hh_det
 
                             End If
 
+                            '#MECR19112025: Se agregó bitacora de logs para implosion
+                            Dim vMsgInformacion As String = "Se agrego implosion, Licencia: " + pMovimiento.Lic_plate + " por el operador: " + pMovimiento.IdOperadorBodega.ToString()
+                            clsLnLog_error_wms_pack.Agregar_Error(vMsgInformacion,
+                                                                  pIdEmpresa:=pMovimiento.IdEmpresa,
+                                                                  pIdBodega:=pMovimiento.IdBodegaDestino,
+                                                                  pIdPedidoEnc:=pMovimiento.IdPedidoEnc,
+                                                                  pIdDespachoEnc:=pMovimiento.IdDespachoEnc,
+                                                                  pIdProductoBodega:=pMovimiento.IdProductoBodega,
+                                                                  pIdPresentacion:=pMovimiento.IdPresentacion,
+                                                                  pIdUnidadMedida:=pMovimiento.IdUnidadMedida,
+                                                                  pLic_Plate:=pMovimiento.Lic_plate,
+                                                                  pIdOperador:=pMovimiento.IdOperadorBodega,
+                                                                  pUsuario_agr:=pMovimiento.Usuario_agr,
+                                                                  pEsImplosion:=True)
+
                         Else
                             Throw New Exception("No hay cantidad disponible para implosionar")
                         End If

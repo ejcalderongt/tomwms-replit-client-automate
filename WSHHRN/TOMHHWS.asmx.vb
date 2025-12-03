@@ -1759,9 +1759,11 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
+            '#MECR19112025: Se agrego bitacora de logs para implosion
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pack.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pEsImplosion:=True, pIdBodega:=pIdBodega)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -1845,9 +1847,11 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
+            '#MECR18112025: Se agrego bitacora de logs para implosion
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pack.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pEsImplosion:=True)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -1973,9 +1977,11 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
+            '#MECR19112025: Se agrego bitacora de logs para implosion
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pack.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdProductoBodega:=pIdProducto, pEsImplosion:=True)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -2361,9 +2367,11 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
+            '#MECR19112025: Se agrego bitacora de logs para implosion.
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pack.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdBodega:=IdBodega)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -5795,9 +5803,23 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
+            '#MECR19112025: Se agrego bitacora de logs para implosion
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pack.Agregar_Error(vMsgError,
+                                                  pStackTrace:=ex.StackTrace,
+                                                  pIdEmpresa:=pMovimiento.IdEmpresa,
+                                                  pIdBodega:=pMovimiento.IdBodegaDestino,
+                                                  pIdPedidoEnc:=pMovimiento.IdPedidoEnc,
+                                                  pIdDespachoEnc:=pMovimiento.IdDespachoEnc,
+                                                  pIdProductoBodega:=pMovimiento.IdProductoBodega,
+                                                  pIdPresentacion:=pMovimiento.IdPresentacion,
+                                                  pIdUnidadMedida:=pMovimiento.IdUnidadMedida,
+                                                  pLic_Plate:=pMovimiento.Lic_plate,
+                                                  pIdOperador:=pMovimiento.IdOperadorBodega,
+                                                  pUsuario_agr:=pMovimiento.Usuario_agr,
+                                                  pEsImplosion:=True)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -5837,9 +5859,11 @@ Public Class TOMHHWS
             Return Set_LP_Stock_Mixto = clsLnTrans_ubic_hh_det.Aplica_LP_Stock_Mixto(pStockResList, pIdResolucionLp)
         Catch ex As Exception
 
+            '#MECR19112025: Se agrego bitacora de logs para implosion
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pack.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -5976,10 +6000,10 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
-            '#MECR01102025: Se agrego bitacora de logs para recepciones.
+            '#MECR01811025: Se agrego bitacora de logs para recepciones.
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, 0, pIdBodega, 0, ex.StackTrace)
+            clsLnLog_error_wms_pack.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdBodega:=pIdBodega, pEsImplosion:=True)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -6021,9 +6045,11 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
+            '#MECR19112025: Se agrego bitacora de logs para implosion
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pack.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdProductoBodega:=pIdProductoBodega, pEsImplosion:=True)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -6168,9 +6194,17 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
+            '#MECR18112025: Se agrego bitacora de logs para implosion
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pack.Agregar_Error(vMsgError,
+                                                  pStackTrace:=ex.StackTrace,
+                                                  pIdBodega:=pIdBodega,
+                                                  pIdProductoBodega:=pIdProductoBodega,
+                                                  pLic_Plate:=pLicPlate,
+                                                  pIdPresentacion:=pIdPresentacion,
+                                                  pEsImplosion:=True)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -10350,9 +10384,11 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
+            '#MECR18112025: Se agrego log para implosion
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pack.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pEsImplosion:=True, pIdBodega:=pIdBodega, pLic_Plate:=pLicensePlate)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -11947,9 +11983,11 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
+            '#MECR19112025: Se agrego bitacora de logs para implosion
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pack.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdBodega:=pIdBodega, pLic_Plate:=pLic_Plate, pEsImplosion:=True)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -15542,9 +15580,11 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
+            '#MECR19112025: Se agrego bitacora de logs para implosion
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pack.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdBodega:=pIdBodega, pLic_Plate:=pLicensePlate, pEsImplosion:=True)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
