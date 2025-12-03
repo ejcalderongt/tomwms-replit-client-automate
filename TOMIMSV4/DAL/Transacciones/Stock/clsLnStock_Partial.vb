@@ -7645,7 +7645,9 @@ Partial Public Class clsLnStock
     'Se agregó indice.
     Public Shared Function Get_Rpt_Horizonte_Critico_By_IdBodega_And_IdPropietarioBodega(ByVal pIdProducto As Integer,
                                                                                          ByVal pIdBodega As Integer,
-                                                                                         ByVal pIdPropietarioBodega As Integer, ByVal pMaxRange As Integer) As DataTable
+                                                                                         ByVal pIdPropietarioBodega As Integer,
+                                                                                         ByVal pMaxRange As Integer,
+                                                                                         ByVal pIncluirVencidos As Boolean) As DataTable
 
         Get_Rpt_Horizonte_Critico_By_IdBodega_And_IdPropietarioBodega = Nothing
 
@@ -7670,19 +7672,26 @@ Partial Public Class clsLnStock
                                             FROM VW_ProximosVencimiento "
 
                     If pIdProducto <> 0 Then
-
                         vSQL += " WHERE IdBodega=@IdBodega 
-                                AND IdPropietarioBodega=@IdPropietarioBodega 
-                                AND IdProducto= @IdProducto "
+                                        AND IdPropietarioBodega=@IdPropietarioBodega 
+                                        AND IdProducto= @IdProducto "
                     Else
                         vSQL += " WHERE IdBodega=@IdBodega 
-                                 AND IdPropietarioBodega=@IdPropietarioBodega "
+                                        AND IdPropietarioBodega=@IdPropietarioBodega "
                     End If
 
-                    If pMaxRange > 0 Then
-                        vSQL += " AND Tolerancia_dias BETWEEN 0 and @MaxRange "
-                    ElseIf pMaxRange = 0 Then '#CKFK habilitamos el mínimo en 0 para que si seleccionan 0 me muestre los vencidos
-                        vSQL += " AND Tolerancia_dias < 0 "
+                    If pIncluirVencidos Then
+                        If pMaxRange = 0 Then
+                            vSQL += " AND (Tolerancia_dias < 0  )"
+                        Else
+                            vSQL += " AND (Tolerancia_dias BETWEEN 0 and @MaxRange OR Tolerancia_dias < 0  )"
+                        End If
+                    Else
+                        If pMaxRange > 0 Then
+                            vSQL += " AND Tolerancia_dias BETWEEN 0 and @MaxRange "
+                        ElseIf pMaxRange = 0 Then '#CKFK habilitamos el mínimo en 0 para que si seleccionan 0 me muestre los vencidos
+                            vSQL += " AND Tolerancia_dias < 0 "
+                        End If
                     End If
 
                     vSQL += "GROUP BY Bodega,Propietario, Codigo , nombre, UnidadMedida, 
