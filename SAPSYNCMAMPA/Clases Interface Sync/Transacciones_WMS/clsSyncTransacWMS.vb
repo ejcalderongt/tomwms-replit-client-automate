@@ -969,6 +969,332 @@ Public Class clsSyncTransacWMS
 
 #End Region
 
+#Region "Ajustes de inventario positivos"
+
+    Public Shared Async Function Procesar_Ajustes_SAP(lblprg As RichTextBox,
+                                                      prg As System.Windows.Forms.ProgressBar,
+                                                      Optional ByVal ForzarEjecucion As Boolean = False) As Task(Of Boolean)
+
+        Dim inicio As Date = Now
+        Dim ok As Boolean = False
+
+        Try
+
+            Dim ejecutarImportacion As Boolean = True
+
+            If ejecutarImportacion Then
+
+                Dim importo As Boolean = Await Procesar_Documentos_Ajustes("", "", BeConfigEnc, lblprg).ConfigureAwait(False)
+
+                If Not importo Then
+                    prg.Value = 0
+                    clsPublic.Actualizar_Progreso(lblprg, "No se importaron los ajustes.")
+                    Return False
+                End If
+
+            End If
+
+            ok = True
+
+            ' Log del tiempo transcurrido (fuera de la transacción)
+            Dim difSegundos As Double = DateDiff(DateInterval.Second, inicio, Now)
+            clsPublic.Actualizar_Progreso(lblprg, vbTab & $" -> Fin de proceso, tiempo transcurrido: {difSegundos} segundo(s)")
+
+            Return ok
+
+        Catch ex As Exception
+            prg.Value = 0
+            clsLnLog_error_wms.Agregar_Error("Error_20250422_Insert_Fact_Res: " & ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, $"Error al insertar pedido de compra a tabla de TOMWMS: {ex.Message}{vbNewLine}")
+            Return False
+        End Try
+    End Function
+
+    Private Shared Function Get_Ajustes_Tiendas(pCodigoBodegaInterface As String,
+                                                lblprg As RichTextBox) As List(Of clsBeTrans_ajuste_enc)
+
+        Dim lAjustes As New List(Of clsBeTrans_ajuste_enc)
+        Dim BePropietario As clsBePropietarios = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario)
+        Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega)
+
+        If BePropietario Is Nothing Then
+            Throw New Exception($"#ERROR: No se encontró el propietario con ID {BeConfigEnc.IdPropietario}")
+        End If
+
+        Try
+
+            vHanaService = New SapServiceLayerClient()
+
+            Dim loginResponse As LoginResponseDto = vHanaService.LoginAsync().GetAwaiter().GetResult()
+
+            If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
+                clsPublic.Actualizar_Progreso(lblprg, "No se pudo obtener sesión.")
+                Return lAjustes
+            Else
+                clsPublic.Actualizar_Progreso(lblprg, "Conexión correcta.")
+            End If
+
+            clsPublic.Actualizar_Progreso(lblprg, "Obteniendo documento(s).")
+
+            Dim filtroEnviado As String = "(U_Procesado_WMS eq null or U_Procesado_WMS eq 2)"
+            Dim filtroVentas As String = "( U_Document_Type eq '100')"
+            Dim filtroFinal As String = $"{filtroEnviado} and {filtroVentas} "
+
+            Dim url As String = $"{BD.Instancia.HANA_SL}TRANSAC_WMS?$filter={Uri.EscapeDataString(filtroFinal)}"
+
+            Using handler As New HttpClientHandler()
+
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, sslPolicyErrors) True
+                handler.UseCookies = False
+
+                Using client As New HttpClient(handler)
+
+                    client.DefaultRequestHeaders.Add("Cookie", vHanaService.SessionCookie)
+                    client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+
+                    Dim response = client.GetAsync(url).GetAwaiter().GetResult()
+
+                    If Not response.IsSuccessStatusCode Then
+                        Dim errorDetail = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
+                        Throw New Exception($"Error al obtener transacciones de la bodega: {pCodigoBodegaInterface}-{response.StatusCode}, {errorDetail}")
+                    End If
+
+                    Dim json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult()
+                    Dim parsed = JObject.Parse(json)
+
+                    Dim jsonResponse As String = json
+
+                    lAjustes = ProcesarTransaccionesWMS_Ajustes(jsonResponse, pCodigoBodegaInterface, BePropietario)
+
+                End Using
+
+            End Using
+
+            Return lAjustes
+
+        Catch ex As Exception
+            Throw New Exception("(SL) Get_Traslados_SAP_SL: " & ex.Message, ex)
+        End Try
+    End Function
+
+    Public Shared Function ProcesarTransaccionesWMS_Ajustes(jsonResponse As String,
+                                                            pCodigoBodegaInterface As String,
+                                                            BePropietario As clsBePropietarios) As List(Of clsBeTrans_ajuste_enc)
+        Try
+            ' 1. Deserializar JSON
+            Dim response As TRANSAC_WMS_Response = JsonConvert.DeserializeObject(Of TRANSAC_WMS_Response)(jsonResponse)
+
+            ' 2. Agrupar por número de encabezado
+            Dim transaccionesAgrupadas As New List(Of PedidoTrasladoEncabezado)()
+            Dim agrupamiento = response.Value.GroupBy(Function(x) x.U_NoEnc)
+
+            For Each grupo In agrupamiento
+                Dim primerRegistro = grupo.First()
+                Dim encabezado As New PedidoTrasladoEncabezado With {
+                .NoEnc = primerRegistro.U_NoEnc,
+                .ExternalDocumentNo = primerRegistro.U_External_Document_No,
+                .Serie = primerRegistro.U_Serie,
+                .CompanyCode = primerRegistro.U_Company_Code,
+                .PostingDate = primerRegistro.U_Posting_Date,
+                .CreateDate = primerRegistro.CreateDate,
+                .TransferFromCode = primerRegistro.U_Transfer_from_Code,
+                .TransferFromContact = primerRegistro.U_Transfer_from_Contact,
+                .TransferToCode = primerRegistro.U_Transfer_to_Code,
+                .TransferToName = primerRegistro.U_Transfer_to_Name,
+                .ReceipDocumentReference = primerRegistro.U_Receip_Document_Reference,
+                .DocumentType = primerRegistro.U_Document_Type,
+                .LineasDetalle = New List(Of PedidoTrasladoDetalle)()
+            }
+
+                ' Agregar líneas
+                For Each transaccion In grupo
+                    encabezado.LineasDetalle.Add(New PedidoTrasladoDetalle With {
+                .LineNo = transaccion.U_Line_No,
+                .ItemNo = transaccion.U_Item_No,
+                .Descripcion = transaccion.U_Descripcion,
+                .UnitOfMeasureCode = transaccion.U_Unit_of_Mesasure_Code,
+                .QtyToShip = transaccion.U_Qty_to_Ship,
+                .QtyWMS = transaccion.U_Qty_WMS,
+                .Color = transaccion.U_Color,
+                .Size = transaccion.U_Size,
+                .ProcesadoWMS = transaccion.U_Procesado_WMS,
+                .ProcessResult = transaccion.U_Process_Result,
+                .DocEntry = transaccion.DocEntry
+            })
+                Next
+
+                ' Ordenar líneas
+                encabezado.LineasDetalle = encabezado.LineasDetalle.OrderBy(Function(x) x.LineNo).ToList()
+                transaccionesAgrupadas.Add(encabezado)
+            Next
+
+            ' 3. Mapear a clases de negocio
+            Return MapearAAjustes(transaccionesAgrupadas, pCodigoBodegaInterface, BePropietario)
+
+        Catch ex As Exception
+            Throw New Exception("Error completo en procesamiento de transacciones WMS: " & ex.Message, ex)
+        End Try
+    End Function
+
+    Public Shared Function MapearAAjustes(transaccionesAgrupadas As List(Of PedidoTrasladoEncabezado),
+                                          pCodigoBodegaInterface As String,
+                                          BePropietario As clsBePropietarios) As List(Of clsBeTrans_ajuste_enc)
+
+        Dim lAjustes As New List(Of clsBeTrans_ajuste_enc)()
+
+        For Each ajuste In transaccionesAgrupadas
+            ' Parsear fechas de forma segura
+            Dim postingDate As Date
+            If Not Date.TryParse(ajuste.CreateDate, postingDate) Then
+                postingDate = Date.Now
+            End If
+
+            ' Mapeo del encabezado según tu referencia
+            Dim beAjustes As New clsBeTrans_ajuste_enc With {
+            .Idajusteenc = 0,
+            .Fecha = postingDate,
+            .Idusuario = 1,
+            .Referencia = ajuste.NoEnc,
+            .Fec_agr = Date.Now,
+            .User_agr = "MI3",
+            .Fec_mod = Date.Now,
+            .User_mod = "MI3",
+            .IdBodega = BeConfigEnc.Idbodega,
+            .IdProductoFamilia = 0,
+            .Enviado_A_ERP = False,
+            .IdPropietarioBodega = clsLnPropietario_bodega.Get_IdPropietarioBodega_By_IdPropietario_And_IdBodega(BePropietario.IdPropietario, BeConfigEnc.Idbodega),
+            .Ajuste_Por_Inventario = 0,
+            .IdCentroCosto = 0,
+            .Auditado = False,
+            .Centro_Costo_Erp = "",
+            .Centro_Costo_Dir_Erp = "",
+            .Centro_Costo_Dep_Erp = "",
+            .Lineas_Detalle = New List(Of clsBeTrans_ajuste_det)()
+        }
+
+            ' Mapeo de las líneas de detalle según tu referencia
+            For Each detalle In ajuste.LineasDetalle
+                ' Verificar filtro por bodega si es necesario
+                ' If detalle.AlgunCampoBodega <> pCodigoBodegaInterface Then Continue For
+
+                '    Dim beAjusteDet As New clsBeTrans_ajuste_det With {
+                '    .IdAjusteDet = 0,
+                '    .IdAjusteEnc = beAjustes.Idajusteenc,
+                '    .IdStock = detalle.IdStock,
+                '    .IdPropietarioBodega = detalle.IdPropietarioBodega,
+                '    .IdProductoBodega = detalle.IdProductoBodega,
+                '    .IdProductoEstado = detalle.IdProductoEstado,
+                '    .IdPresentacion = detalle.IdPresentacion,
+                '    .IdUnidadMedida = detalle.IdUnidadMedida,
+                '    .IdUbicacion = detalle.IdUbicacion,
+                '    .Lote_original = detalle.LoteOriginal,
+                '    .Lote_nuevo = detalle.LoteNuevo,
+                '    .Fecha_vence_original = detalle.FechaVenceOriginal,
+                '    .Fecha_vence_nueva = detalle.FechaVenceNueva,
+                '    .Peso_original = detalle.PesoOriginal,
+                '    .Peso_nuevo = detalle.PesoNuevo,
+                '    .Cantidad_original = detalle.CantidadOriginal,
+                '    .Cantidad_nueva = detalle.CantidadNueva,
+                '    .Codigo_producto = detalle.CodigoProducto,
+                '    .Nombre_producto = detalle.NombreProducto,
+                '    .Idtipoajuste = detalle.IdTipoAjuste,
+                '    .IdMotivoAjuste = detalle.IdMotivoAjuste,
+                '    .Observacion = detalle.Observacion,
+                '    .Codigo_ajuste = detalle.CodigoAjuste,
+                '    .Enviado = False,
+                '    .Presentacion = detalle.Presentacion,
+                '    .IdBodegaERP = detalle.IdBodegaERP,
+                '    .lic_plate = detalle.LicPlate,
+                '    .referencia_ajuste_erp = detalle.ReferenciaAjusteERP,
+                '    .estado_ajuste_erp = detalle.EstadoAjusteERP,
+                '    .IdProductoTallaColor = detalle.IdProductoTallaColor,
+                '    .Talla = detalle.Size,
+                '    .Color = detalle.Color
+                '}
+
+                'beAjustes.Lineas_Detalle.Add(beDet)
+            Next
+
+            ' Solo agregar si tiene líneas de detalle
+            If beAjustes.Lineas_Detalle.Any() Then
+                lAjustes.Add(beAjustes)
+            End If
+        Next
+
+        Return lAjustes
+    End Function
+
+    Private Shared Async Function Procesar_Documentos_Ajustes(ByVal codigoBodega As String,
+                                                              ByVal pNoDocumento As String,
+                                                              ByVal BeConfigEnc As clsBeI_nav_config_enc,
+                                                              ByVal lblprg As RichTextBox) As Task(Of Boolean)
+
+        Try
+
+            clsPublic.Actualizar_Progreso(lblprg, "Conectando a SAP.")
+
+            Dim facturas As List(Of clsBeI_nav_ped_traslado_enc) = Get_Ventas_TMK(codigoBodega, lblprg)
+            Dim pBePedidoEnc As New clsBeTrans_pe_enc
+            Dim PedidoClienteExistenteByCompany As New clsBeTrans_pe_enc
+            Dim PedidoClienteExistente As New clsBeTrans_pe_enc
+
+            If facturas.Count = 0 Then
+                clsPublic.Actualizar_Progreso(lblprg, "No hay documentos para importar.")
+                Return False
+            End If
+
+            For Each factura In facturas
+
+                clsPublic.Actualizar_Progreso(lblprg, $"Procesando pedido de cliente de SAP (@Transac_WMS): {factura.Receipt_Document_Reference}/{factura.No}{vbNewLine}")
+
+                Dim clsTrans As New clsTransaccion
+                clsTrans.Begin_Transaction()
+
+                Try
+
+                    '#MECR 202508080524: Verifica si el proveedor ya existe como cliente en WMS.
+                    If Await clsSyncSapTrasladosEnvio.Validar_Cliente_WMS(factura.Transfer_to_Code, "C", lblprg, clsTrans, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
+
+                        Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(factura, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
+
+                        If pedidoEnc IsNot Nothing Then
+
+                            Dim listaDocEntryDistintos As List(Of Integer) = factura.Lineas_Detalle.Select(Function(x) x.DocEntry) _
+                                                                                               .Distinct() _
+                                                                                               .ToList()
+
+                            Dim trasladoSincronizado As Boolean = Marcar_Transac_Wms_Por_DocEntries_SLAsync(listaDocEntryDistintos, vHanaService.SessionCookie, BD.Instancia.HANA_SL).GetAwaiter().GetResult()
+
+                            If pedidoEnc IsNot Nothing AndAlso trasladoSincronizado Then
+                                clsPublic.Actualizar_Progreso(lblprg, "Documento procesado mágicamente :) !")
+                                Return True
+                            End If
+
+                        End If
+
+                    End If
+
+                    clsTrans.Commit_Transaction()
+
+                Catch ex As Exception
+                    clsTrans.RollBack_Transaction()
+                    clsPublic.Actualizar_Progreso(lblprg, ex.Message)
+                Finally
+                    clsTrans.Close_Conection()
+                End Try
+
+            Next
+
+            Return False
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+#End Region
+
 End Class
 
 Public Class TRANSAC_WMS_Response
