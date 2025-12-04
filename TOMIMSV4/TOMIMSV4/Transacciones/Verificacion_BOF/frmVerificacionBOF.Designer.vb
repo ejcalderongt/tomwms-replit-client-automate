@@ -25,15 +25,16 @@ Partial Class frmVerificacionBOF
         Dim Label1 As System.Windows.Forms.Label
         Dim Label2 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmVerificacionBOF))
-        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
-        Dim GridFormatRule1 As DevExpress.XtraGrid.GridFormatRule = New DevExpress.XtraGrid.GridFormatRule()
+        Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim GridFormatRule2 As DevExpress.XtraGrid.GridFormatRule = New DevExpress.XtraGrid.GridFormatRule()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.cmdEnviar = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.grpScan = New DevExpress.XtraEditors.GroupControl()
-        Me.txtEstado = New DevExpress.XtraEditors.TextEdit()
+        Me.cmbMotivo = New DevExpress.XtraEditors.LookUpEdit()
+        Me.cmbEstado = New DevExpress.XtraEditors.LookUpEdit()
         Me.lbOk = New DevExpress.XtraEditors.LabelControl()
         Me.txtCantidad = New DevExpress.XtraEditors.TextEdit()
         Me.txtScanner = New DevExpress.XtraEditors.TextEdit()
@@ -56,7 +57,8 @@ Partial Class frmVerificacionBOF
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grpScan, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpScan.SuspendLayout()
-        CType(Me.txtEstado.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbMotivo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbEstado.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCantidad.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtScanner.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtColor.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -172,7 +174,8 @@ Partial Class frmVerificacionBOF
         Me.grpScan.AppearanceCaption.Options.UseBackColor = True
         Me.grpScan.AppearanceCaption.Options.UseTextOptions = True
         Me.grpScan.AppearanceCaption.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
-        Me.grpScan.Controls.Add(Me.txtEstado)
+        Me.grpScan.Controls.Add(Me.cmbMotivo)
+        Me.grpScan.Controls.Add(Me.cmbEstado)
         Me.grpScan.Controls.Add(Me.lbOk)
         Me.grpScan.Controls.Add(Me.txtCantidad)
         Me.grpScan.Controls.Add(Me.txtScanner)
@@ -188,23 +191,35 @@ Partial Class frmVerificacionBOF
         Me.grpScan.Location = New System.Drawing.Point(4, 2)
         Me.grpScan.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.grpScan.Name = "grpScan"
-        Me.grpScan.Size = New System.Drawing.Size(669, 289)
+        Me.grpScan.Size = New System.Drawing.Size(669, 281)
         Me.grpScan.TabIndex = 52
         Me.grpScan.Text = "Producto"
         '
-        'txtEstado
+        'cmbMotivo
         '
-        Me.txtEstado.Location = New System.Drawing.Point(124, 244)
-        Me.txtEstado.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtEstado.Name = "txtEstado"
-        Me.txtEstado.Properties.Appearance.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.txtEstado.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtEstado.Properties.Appearance.Options.UseBackColor = True
-        Me.txtEstado.Properties.Appearance.Options.UseFont = True
-        Me.txtEstado.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.txtEstado.Properties.MaxLength = 50
-        Me.txtEstado.Size = New System.Drawing.Size(16, 28)
-        Me.txtEstado.TabIndex = 58
+        Me.cmbMotivo.Location = New System.Drawing.Point(318, 247)
+        Me.cmbMotivo.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.cmbMotivo.MenuManager = Me.RibbonControl
+        Me.cmbMotivo.Name = "cmbMotivo"
+        Me.cmbMotivo.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!)
+        Me.cmbMotivo.Properties.Appearance.Options.UseFont = True
+        Me.cmbMotivo.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbMotivo.Properties.NullText = ""
+        Me.cmbMotivo.Size = New System.Drawing.Size(182, 24)
+        Me.cmbMotivo.TabIndex = 59
+        '
+        'cmbEstado
+        '
+        Me.cmbEstado.Location = New System.Drawing.Point(124, 247)
+        Me.cmbEstado.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.cmbEstado.MenuManager = Me.RibbonControl
+        Me.cmbEstado.Name = "cmbEstado"
+        Me.cmbEstado.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 9.0!)
+        Me.cmbEstado.Properties.Appearance.Options.UseFont = True
+        Me.cmbEstado.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbEstado.Properties.NullText = ""
+        Me.cmbEstado.Size = New System.Drawing.Size(182, 24)
+        Me.cmbEstado.TabIndex = 58
         '
         'lbOk
         '
@@ -213,7 +228,7 @@ Partial Class frmVerificacionBOF
         Me.lbOk.Appearance.Options.UseFont = True
         Me.lbOk.Appearance.Options.UseImage = True
         Me.lbOk.ImageOptions.Image = CType(resources.GetObject("lbOk.ImageOptions.Image"), System.Drawing.Image)
-        Me.lbOk.Location = New System.Drawing.Point(409, 35)
+        Me.lbOk.Location = New System.Drawing.Point(508, 37)
         Me.lbOk.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.lbOk.Name = "lbOk"
         Me.lbOk.Size = New System.Drawing.Size(32, 32)
@@ -230,7 +245,7 @@ Partial Class frmVerificacionBOF
         Me.txtCantidad.Properties.Appearance.Options.UseFont = True
         Me.txtCantidad.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.txtCantidad.Properties.MaxLength = 50
-        Me.txtCantidad.Size = New System.Drawing.Size(277, 28)
+        Me.txtCantidad.Size = New System.Drawing.Size(376, 28)
         Me.txtCantidad.TabIndex = 48
         '
         'txtScanner
@@ -242,7 +257,7 @@ Partial Class frmVerificacionBOF
         Me.txtScanner.Properties.Appearance.Options.UseFont = True
         Me.txtScanner.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.txtScanner.Properties.MaxLength = 50
-        Me.txtScanner.Size = New System.Drawing.Size(277, 28)
+        Me.txtScanner.Size = New System.Drawing.Size(376, 28)
         Me.txtScanner.TabIndex = 42
         '
         'txtColor
@@ -256,7 +271,7 @@ Partial Class frmVerificacionBOF
         Me.txtColor.Properties.Appearance.Options.UseFont = True
         Me.txtColor.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.txtColor.Properties.MaxLength = 50
-        Me.txtColor.Size = New System.Drawing.Size(277, 28)
+        Me.txtColor.Size = New System.Drawing.Size(376, 28)
         Me.txtColor.TabIndex = 54
         '
         'txtTalla
@@ -270,7 +285,7 @@ Partial Class frmVerificacionBOF
         Me.txtTalla.Properties.Appearance.Options.UseFont = True
         Me.txtTalla.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.txtTalla.Properties.MaxLength = 50
-        Me.txtTalla.Size = New System.Drawing.Size(277, 28)
+        Me.txtTalla.Size = New System.Drawing.Size(376, 28)
         Me.txtTalla.TabIndex = 53
         '
         'txtDescripcionProducto
@@ -284,17 +299,17 @@ Partial Class frmVerificacionBOF
         Me.txtDescripcionProducto.Properties.Appearance.Options.UseFont = True
         Me.txtDescripcionProducto.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.txtDescripcionProducto.Properties.MaxLength = 50
-        Me.txtDescripcionProducto.Size = New System.Drawing.Size(277, 28)
+        Me.txtDescripcionProducto.Size = New System.Drawing.Size(376, 28)
         Me.txtDescripcionProducto.TabIndex = 48
         '
         'GroupControl2
         '
         Me.GroupControl2.Controls.Add(Me.dgridListaPedido)
         Me.GroupControl2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupControl2.Location = New System.Drawing.Point(4, 295)
+        Me.GroupControl2.Location = New System.Drawing.Point(4, 287)
         Me.GroupControl2.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupControl2.Name = "GroupControl2"
-        Me.GroupControl2.Size = New System.Drawing.Size(669, 290)
+        Me.GroupControl2.Size = New System.Drawing.Size(669, 298)
         Me.GroupControl2.TabIndex = 53
         Me.GroupControl2.Text = "Lista"
         '
@@ -303,14 +318,14 @@ Partial Class frmVerificacionBOF
         Me.dgridListaPedido.Cursor = System.Windows.Forms.Cursors.Default
         Me.dgridListaPedido.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgridListaPedido.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        GridLevelNode1.RelationName = "Level1"
-        Me.dgridListaPedido.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
+        GridLevelNode2.RelationName = "Level1"
+        Me.dgridListaPedido.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode2})
         Me.dgridListaPedido.Location = New System.Drawing.Point(2, 28)
         Me.dgridListaPedido.MainView = Me.gvListaPedido
         Me.dgridListaPedido.Margin = New System.Windows.Forms.Padding(4)
         Me.dgridListaPedido.MenuManager = Me.RibbonControl
         Me.dgridListaPedido.Name = "dgridListaPedido"
-        Me.dgridListaPedido.Size = New System.Drawing.Size(665, 260)
+        Me.dgridListaPedido.Size = New System.Drawing.Size(665, 268)
         Me.dgridListaPedido.TabIndex = 1
         Me.dgridListaPedido.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvListaPedido, Me.GridView6})
         '
@@ -321,9 +336,9 @@ Partial Class frmVerificacionBOF
         Me.gvListaPedido.Appearance.Row.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.gvListaPedido.Appearance.Row.Options.UseFont = True
         Me.gvListaPedido.DetailHeight = 431
-        GridFormatRule1.Name = "Format0"
-        GridFormatRule1.Rule = Nothing
-        Me.gvListaPedido.FormatRules.Add(GridFormatRule1)
+        GridFormatRule2.Name = "Format0"
+        GridFormatRule2.Rule = Nothing
+        Me.gvListaPedido.FormatRules.Add(GridFormatRule2)
         Me.gvListaPedido.GridControl = Me.dgridListaPedido
         Me.gvListaPedido.Name = "gvListaPedido"
         Me.gvListaPedido.OptionsBehavior.Editable = False
@@ -377,8 +392,8 @@ Partial Class frmVerificacionBOF
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(2, 2)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 2
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.55196!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 51.44804!))
         Me.TableLayoutPanel1.Size = New System.Drawing.Size(677, 587)
         Me.TableLayoutPanel1.TabIndex = 54
         '
@@ -399,7 +414,8 @@ Partial Class frmVerificacionBOF
         CType(Me.grpScan, System.ComponentModel.ISupportInitialize).EndInit()
         Me.grpScan.ResumeLayout(False)
         Me.grpScan.PerformLayout()
-        CType(Me.txtEstado.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbMotivo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbEstado.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCantidad.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtScanner.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtColor.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -440,6 +456,7 @@ Partial Class frmVerificacionBOF
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents peProducto As DevExpress.XtraEditors.PictureEdit
     Friend WithEvents lbOk As DevExpress.XtraEditors.LabelControl
-    Friend WithEvents txtEstado As DevExpress.XtraEditors.TextEdit
     Friend WithEvents cmdEnviar As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents cmbMotivo As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents cmbEstado As DevExpress.XtraEditors.LookUpEdit
 End Class

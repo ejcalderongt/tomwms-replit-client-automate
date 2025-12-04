@@ -15,7 +15,6 @@ Public Class frmVerificacionBOF
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
     Public Delegate Sub Cargar_Datos_Pedido()
 
-    'ReadOnly Property InvokeCargarPedido As Cargar_Datos_Pedido()
     Public Enum TipoTrans
         Nuevo = 1
         Editar = 2
@@ -57,7 +56,7 @@ Public Class frmVerificacionBOF
     '#GT27112025: patron para mejorar consulta de imagenes
     Private vRutaCDN As String = ""
     Private _listaRutasPng As List(Of String)
-
+    Private Confirmar_SKU As Boolean = False
 
     Private Sub frmVerificacionBOF_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
@@ -76,8 +75,8 @@ Public Class frmVerificacionBOF
                 XtraMessageBox.Show("No esta definida la ruta hacia la galeria de imagenes.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             End If
 
-            Dim archivosPng() As String = Directory.GetFiles(vRutaCDN, "*.png")
-            _listaRutasPng = archivosPng.ToList()
+            'Dim archivosPng() As String = Directory.GetFiles(vRutaCDN, "*.png")
+            '_listaRutasPng = archivosPng.ToList()
 
             BeBodega = clsLnBodega.GetSingle_By_Idbodega(pBePedidoEnc.IdBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
@@ -91,6 +90,12 @@ Public Class frmVerificacionBOF
             Cargar_Datos(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
             AplicarEstiloScanner()
+
+            ' Configurar los LookUpEdit
+            Dim dtEstados As DataTable = GetEstados()
+            Dim dtMotivos As DataTable = GetMotivos()
+            ConfigurarLookUp(cmbEstado, dtEstados, "IdEstado", "Descripcion")
+            ConfigurarLookUp(cmbMotivo, dtMotivos, "IdMotivo", "Descripcion")
 
             txtScanner.SelectAll()
             txtScanner.Focus()
@@ -582,20 +587,92 @@ Public Class frmVerificacionBOF
     End Sub
 
     Private Sub ProcesarScan()
+
         Dim sku As String = txtScanner.Text.Trim()
-        If sku <> "" Then
-            If BuscarSKU_Y_Cargar(sku) Then
-                AplicarEstiloScanner()
-                txtEstado.SelectAll()
-                txtEstado.Focus()
-            End If
-        Else
-            txtScanner.SelectAll()
-            txtScanner.Focus()
-        End If
+
+        Dim estado As String = sku.ToUpperInvariant()
+
+        Select Case estado
+
+            Case "OK"
+                If ProcesarLinea() Then
+                    txtScanner.Text = ""
+                    Confirmar_SKU = False
+                End If
+
+            Case "PAUSA"
+                ' Poner en pausa: bloquear controles para impedir cerrar o escanear otro producto
+                'ProcesarEstadoPausa()
+
+            Case Else
+
+                If Confirmar_SKU Then
+                    MessageBox.Show(
+                           $"Hay un SKU en cola y requiere confirmación de 'OK' o 'Pausa' ",
+                           "Estado inválido",
+                           MessageBoxButtons.OK,
+                           MessageBoxIcon.Warning
+                       )
+                    txtScanner.Text = ""
+                End If
+
+                If Not BuscarSKU_Y_Cargar(estado) Then
+                    MessageBox.Show(
+                            $"Estado no reconocido: [{sku}]. Escanee un SKU, o un estado para cerrar o pausar la tarea.",
+                            "Estado inválido",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                        )
+                    Confirmar_SKU = False
+                Else
+                    Confirmar_SKU = True
+                    txtScanner.Text = ""
+                End If
+
+        End Select
+
+        txtScanner.SelectAll()
+        txtScanner.Focus()
 
     End Sub
 
+    'Private Sub Confirmar_SKU()
+    '    Try
+
+    '        Dim valorLeido As String = txtScanner.Text.Trim()
+    '        txtScanner.Clear()
+
+    '        ' Normalizamos para comparar (ignorando mayúsculas/minúsculas y espacios)
+    '        Dim estado As String = valorLeido.ToUpperInvariant()
+
+    '        Select Case estado
+    '            Case "OK"
+    '                ' Producto confirmado correctamente
+    '                ProcesarLinea()
+
+    '            Case "PAUSA"
+    '                ' Poner en pausa: bloquear controles para impedir cerrar o escanear otro producto
+    '                'ProcesarEstadoPausa()
+
+    '            Case Else
+    '                ' Cualquier otra cosa se considera no válida
+    '                MessageBox.Show(
+    '                    $"Estado no reconocido: [{valorLeido}]. Escanee un código 'OK' o 'Pausa'.",
+    '                    "Estado inválido",
+    '                    MessageBoxButtons.OK,
+    '                    MessageBoxIcon.Warning
+    '                )
+
+    '                ' Vuelve a esperar un estado correcto
+    '                txtEstado.Focus()
+    '        End Select
+
+
+    '    Catch ex As Exception
+
+    '    End Try
+
+    'End Sub
 
     Private Function BuscarSKU_Y_Cargar(ByVal sku As String) As Boolean
 
@@ -638,6 +715,7 @@ Public Class frmVerificacionBOF
             Dim pLicPlate = If(dt.Columns.Contains("Licencia"), CStr(row("Licencia")), "")
             Dim pIdPedidoEnc = If(dt.Columns.Contains("IdPedidoEnc"), CInt(row("IdPedidoEnc")), 0)
             Dim pIdPedidoDet = If(dt.Columns.Contains("IdPedidoDet"), CInt(row("IdPedidoDet")), 0)
+            Dim pSku = If(dt.Columns.Contains("SKU"), CStr(row("SKU")), "")
 
             pBeTransPickingUbicTemp = New clsBeTrans_picking_ubic()
             pBeTransPickingUbicTemp = BePickingUbicList.Find(Function(x) x.IdPickingUbic = pIdPickingUbic _
@@ -645,20 +723,33 @@ Public Class frmVerificacionBOF
                                                                            AndAlso x.IdPedidoDet = pIdPedidoDet _
                                                                            AndAlso x.Lic_plate = pLicPlate)
 
-            '---cuando se lea la barra de OK, será true para poder enviar la lista final al WS
-            pBeTransPickingUbicTemp.IsNew = False
+            If pBeTransPickingUbicTemp IsNot Nothing Then
 
-            ' --- Aviso de cargar imagen si por alguna razón existiera Lag ---
-            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-            If SplashScreenManager.Default IsNot Nothing Then
-                SplashScreenManager.Default.SetWaitFormCaption("Cargando imagen...")
+                pBeTransPickingUbicTemp.CodigoSKU = pSku.ToString()
+
+                '#GT02122025: si el SKU exite, validar que no se haya verificado antes
+                Dim Existe = plistPickingUbic.Find(Function(x) x.IdPickingUbic = pBeTransPickingUbicTemp.IdPickingUbic AndAlso
+                                                               x.IdPedidoEnc = pBeTransPickingUbicTemp.IdPedidoEnc AndAlso
+                                                               x.IdPedidoDet = pBeTransPickingUbicTemp.IdPedidoDet AndAlso
+                                                               x.Lic_plate = pBeTransPickingUbicTemp.Lic_plate)
+
+                If Existe IsNot Nothing Then
+                    XtraMessageBox.Show("El SKU ya fue verificado." & sku, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    LimpiarControlesGrupo()
+                    Exit Function
+                End If
+
+                SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+                If SplashScreenManager.Default IsNot Nothing Then
+                    SplashScreenManager.Default.SetWaitFormCaption("Cargando imagen...")
+                End If
+
+                Application.DoEvents()
+                CargarImagenProducto(sku)
+
+                BuscarSKU_Y_Cargar = True
+
             End If
-
-            Application.DoEvents()
-
-            CargarImagenProducto(sku)
-
-            BuscarSKU_Y_Cargar = True
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -835,43 +926,43 @@ Public Class frmVerificacionBOF
 
     End Sub
 
-    Private Sub txtEstado_KeyDown(sender As Object, e As KeyEventArgs) Handles txtEstado.KeyDown
-        Try
+    'Private Sub txtEstado_KeyDown(sender As Object, e As KeyEventArgs) Handles txtEstado.KeyDown
+    '    Try
 
-            If e.KeyCode <> Keys.Enter Then Return
+    '        If e.KeyCode <> Keys.Enter Then Return
 
-            Dim valorLeido As String = txtEstado.Text.Trim()
-            txtEstado.Clear()
+    '        Dim valorLeido As String = txtEstado.Text.Trim()
+    '        txtEstado.Clear()
 
-            ' Normalizamos para comparar (ignorando mayúsculas/minúsculas y espacios)
-            Dim estado As String = valorLeido.ToUpperInvariant()
+    '        ' Normalizamos para comparar (ignorando mayúsculas/minúsculas y espacios)
+    '        Dim estado As String = valorLeido.ToUpperInvariant()
 
-            Select Case estado
-                Case "OK"
-                    ' Producto confirmado correctamente
-                    ProcesarLinea()
+    '        Select Case estado
+    '            Case "OK"
+    '                ' Producto confirmado correctamente
+    '                ProcesarLinea()
 
-                Case "PAUSA"
-                    ' Poner en pausa: bloquear controles para impedir cerrar o escanear otro producto
-                    'ProcesarEstadoPausa()
+    '            Case "PAUSA"
+    '                ' Poner en pausa: bloquear controles para impedir cerrar o escanear otro producto
+    '                'ProcesarEstadoPausa()
 
-                Case Else
-                    ' Cualquier otra cosa se considera no válida
-                    MessageBox.Show(
-                        $"Estado no reconocido: [{valorLeido}]. Escanee un código 'OK' o 'Pausa'.",
-                        "Estado inválido",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning
-                    )
+    '            Case Else
+    '                ' Cualquier otra cosa se considera no válida
+    '                MessageBox.Show(
+    '                    $"Estado no reconocido: [{valorLeido}]. Escanee un código 'OK' o 'Pausa'.",
+    '                    "Estado inválido",
+    '                    MessageBoxButtons.OK,
+    '                    MessageBoxIcon.Warning
+    '                )
 
-                    ' Vuelve a esperar un estado correcto
-                    txtEstado.Focus()
-            End Select
+    '                ' Vuelve a esperar un estado correcto
+    '                txtEstado.Focus()
+    '        End Select
 
-        Catch ex As Exception
-            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        End Try
-    End Sub
+    '    Catch ex As Exception
+    '        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+    '    End Try
+    'End Sub
 
     Private Function EscalarImagen(ByVal imgOriginal As Image, ByVal factor As Double) As Image
         Dim nuevoAncho As Integer = CInt(imgOriginal.Width * factor)
@@ -923,8 +1014,8 @@ Public Class frmVerificacionBOF
 
                         If handle >= 0 Then
                             ' Opcional: enfocar la fila confirmada
-                            gvListaPedido.FocusedRowHandle = handle
-                            gvListaPedido.MakeRowVisible(handle)
+                            'gvListaPedido.FocusedRowHandle = handle
+                            'gvListaPedido.MakeRowVisible(handle)
 
                             ' Forzar repintado para que RowStyle aplique el color
                             gvListaPedido.RefreshRow(handle)
@@ -935,8 +1026,8 @@ Public Class frmVerificacionBOF
 
             LimpiarControlesGrupo()
 
-            txtScanner.SelectAll()
-            txtScanner.Focus()
+            'txtScanner.SelectAll()
+            'txtScanner.Focus()
 
             ProcesarLinea = True
 
@@ -990,7 +1081,6 @@ Public Class frmVerificacionBOF
         End Try
     End Sub
 
-
     Private Sub LimpiarControlesGrupo()
         txtScanner.Text = ""
         txtDescripcionProducto.Text = ""
@@ -998,7 +1088,6 @@ Public Class frmVerificacionBOF
         txtColor.Text = ""
         txtCantidad.Text = ""
     End Sub
-
 
     Private Sub cmdEnviar_ItemClick(sender As Object, e As ItemClickEventArgs) Handles cmdEnviar.ItemClick
         Try
@@ -1050,6 +1139,52 @@ Public Class frmVerificacionBOF
         End Try
 
     End Sub
+
+
+    Private Sub ConfigurarLookUp(lookup As LookUpEdit,
+                                 data As DataTable,
+                                 valueField As String,
+                                 displayField As String)
+
+        lookup.Properties.DataSource = data
+        lookup.Properties.ValueMember = valueField
+        lookup.Properties.DisplayMember = displayField
+
+        lookup.Properties.Columns.Clear()
+        lookup.Properties.Columns.Add(New LookUpColumnInfo(displayField, "Descripción"))
+
+        lookup.Properties.ShowHeader = False    ' Oculta encabezado de columna
+        lookup.Properties.NullText = ""         ' Texto cuando no hay selección
+    End Sub
+
+    '--- Data de ejemplo para los estados
+    Private Function GetEstados() As DataTable
+        Dim dt As New DataTable()
+        dt.Columns.Add("IdEstado", GetType(Integer))
+        dt.Columns.Add("Descripcion", GetType(String))
+
+        dt.Rows.Add(1, "Suspendido")
+        dt.Rows.Add(2, "Empacado")
+        dt.Rows.Add(3, "Cancelado")
+
+        Return dt
+    End Function
+
+    ' --- Data de ejemplo para MOTIVOS ---
+    Private Function GetMotivos() As DataTable
+        Dim dt As New DataTable()
+        dt.Columns.Add("IdMotivo", GetType(Integer))
+        dt.Columns.Add("Descripcion", GetType(String))
+
+        dt.Rows.Add(10, "Dañado")
+        dt.Rows.Add(20, "Impar")
+        dt.Rows.Add(30, "Bodega Incorrecta")
+        dt.Rows.Add(40, "Factura Incorrecta")
+        dt.Rows.Add(50, "Código de barra no existe")
+
+        Return dt
+    End Function
+
 
 
 End Class
