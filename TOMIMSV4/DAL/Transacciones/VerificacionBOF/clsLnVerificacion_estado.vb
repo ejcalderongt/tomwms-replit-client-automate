@@ -26,21 +26,21 @@ Public Class clsLnVerificacion_estado
 		Try
 
 			Ins.Init("verificacion_estado")
-			Ins.Add("idestado","@idestado","F")
-			Ins.Add("descripcion","@descripcion","F")
-			Ins.Add("user_agr","@user_agr","F")
-			Ins.Add("fec_agr","@fec_agr","F")
-			Ins.Add("activo","@activo","F")
+			Ins.Add("idestado", "@idestado", DataType.Parametro)
+			Ins.Add("descripcion", "@descripcion", DataType.Parametro)
+			Ins.Add("user_agr", "@user_agr", DataType.Parametro)
+			Ins.Add("fec_agr", "@fec_agr", DataType.Parametro)
+			Ins.Add("activo", "@activo", DataType.Parametro)
 
 			Dim sp As String = Ins.SQL()
-			Dim cmd As New SqlCommand With {.CommandType=CommandType.Text}
+			Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
 
 			Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
 
-			If Es_Transaccion_Remota Then 
+			If Es_Transaccion_Remota Then
 				cmd = New SqlCommand(sp, pConection, pTransaction)
 			Else
-				lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
+				lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 				cmd = New SqlCommand(sp, lConnection, lTransaction)
 			End If
 
@@ -52,7 +52,7 @@ Public Class clsLnVerificacion_estado
 
 			Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
-			cmd.Dispose
+			cmd.Dispose()
 
 			If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
@@ -60,16 +60,16 @@ Public Class clsLnVerificacion_estado
 
 		Catch ex As Exception
 			If Not lTransaction Is Nothing Then lTransaction.Rollback()
-			Throw New Exception (String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
 		Finally
-			If lConnection.State =ConnectionState.Open Then lConnection.Close
-			If Not lConnection is Nothing Then lConnection.Dispose()
-			If Not lTransaction is Nothing Then lTransaction.Dispose()
+			If lConnection.State = ConnectionState.Open Then lConnection.Close()
+			If Not lConnection Is Nothing Then lConnection.Dispose()
+			If Not lTransaction Is Nothing Then lTransaction.Dispose()
 		End Try
 
 	End Function
 
-	Public Shared Function Actualizar(ByRef oBeVerificacion_estado As clsBeVerificacion_estado, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+	Public Shared Function Actualizar(ByRef oBeVerificacion_estado As clsBeVerificacion_estado, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
 		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 		Dim lTransaction As SqlTransaction = Nothing
@@ -77,11 +77,11 @@ Public Class clsLnVerificacion_estado
 		Try
 
 			Upd.Init("verificacion_estado")
-			Upd.Add("idestado","@idestado","F")
-			Upd.Add("descripcion","@descripcion","F")
-			Upd.Add("user_agr","@user_agr","F")
-			Upd.Add("fec_agr","@fec_agr","F")
-			Upd.Add("activo","@activo","F")
+			Upd.Add("idestado", "@idestado", DataType.Parametro)
+			Upd.Add("descripcion", "@descripcion", DataType.Parametro)
+			Upd.Add("user_agr", "@user_agr", DataType.Parametro)
+			Upd.Add("fec_agr", "@fec_agr", DataType.Parametro)
+			Upd.Add("activo", "@activo", DataType.Parametro)
 			Upd.Where("IdEstado = @IdEstado")
 
 			Dim sp As String = Upd.SQL()

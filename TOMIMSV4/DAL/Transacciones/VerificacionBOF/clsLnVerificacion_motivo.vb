@@ -27,22 +27,22 @@ Public Class clsLnVerificacion_motivo
 		Try
 
 			Ins.Init("verificacion_motivo")
-			Ins.Add("idmotivo","@idmotivo","F")
-			Ins.Add("idestado","@idestado","F")
-			Ins.Add("descripcion","@descripcion","F")
-			Ins.Add("user_agr","@user_agr","F")
-			Ins.Add("fec_agr","@fec_agr","F")
-			Ins.Add("activo","@activo","F")
+			Ins.Add("idmotivo", "@idmotivo", DataType.Parametro)
+			Ins.Add("idestado", "@idestado", DataType.Parametro)
+			Ins.Add("descripcion", "@descripcion", DataType.Parametro)
+			Ins.Add("user_agr", "@user_agr", DataType.Parametro)
+			Ins.Add("fec_agr", "@fec_agr", DataType.Parametro)
+			Ins.Add("activo", "@activo", DataType.Parametro)
 
 			Dim sp As String = Ins.SQL()
-			Dim cmd As New SqlCommand With {.CommandType=CommandType.Text}
+			Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
 
 			Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
 
-			If Es_Transaccion_Remota Then 
+			If Es_Transaccion_Remota Then
 				cmd = New SqlCommand(sp, pConection, pTransaction)
 			Else
-				lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
+				lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 				cmd = New SqlCommand(sp, lConnection, lTransaction)
 			End If
 
@@ -55,7 +55,7 @@ Public Class clsLnVerificacion_motivo
 
 			Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
-			cmd.Dispose
+			cmd.Dispose()
 
 			If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
@@ -63,16 +63,16 @@ Public Class clsLnVerificacion_motivo
 
 		Catch ex As Exception
 			If Not lTransaction Is Nothing Then lTransaction.Rollback()
-			Throw New Exception (String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
 		Finally
-			If lConnection.State =ConnectionState.Open Then lConnection.Close
-			If Not lConnection is Nothing Then lConnection.Dispose()
-			If Not lTransaction is Nothing Then lTransaction.Dispose()
+			If lConnection.State = ConnectionState.Open Then lConnection.Close()
+			If Not lConnection Is Nothing Then lConnection.Dispose()
+			If Not lTransaction Is Nothing Then lTransaction.Dispose()
 		End Try
 
 	End Function
 
-	Public Shared Function Actualizar(ByRef oBeVerificacion_motivo As clsBeVerificacion_motivo, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+	Public Shared Function Actualizar(ByRef oBeVerificacion_motivo As clsBeVerificacion_motivo, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
 		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 		Dim lTransaction As SqlTransaction = Nothing
@@ -80,12 +80,12 @@ Public Class clsLnVerificacion_motivo
 		Try
 
 			Upd.Init("verificacion_motivo")
-			Upd.Add("idmotivo","@idmotivo","F")
-			Upd.Add("idestado","@idestado","F")
-			Upd.Add("descripcion","@descripcion","F")
-			Upd.Add("user_agr","@user_agr","F")
-			Upd.Add("fec_agr","@fec_agr","F")
-			Upd.Add("activo","@activo","F")
+			Upd.Add("idmotivo", "@idmotivo", DataType.Parametro)
+			Upd.Add("idestado", "@idestado", DataType.Parametro)
+			Upd.Add("descripcion", "@descripcion", DataType.Parametro)
+			Upd.Add("user_agr", "@user_agr", DataType.Parametro)
+			Upd.Add("fec_agr", "@fec_agr", DataType.Parametro)
+			Upd.Add("activo", "@activo", DataType.Parametro)
 			Upd.Where("IdMotivo = @IdMotivo")
 
 			Dim sp As String = Upd.SQL()
@@ -324,6 +324,58 @@ Public Class clsLnVerificacion_motivo
 
 		Catch ex As Exception
 			Throw New Exception (String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		End Try
+
+	End Function
+
+	Public Shared Function GetSingle_By_IdEstado(ByVal pIdEstado As Integer) As List(Of clsBeVerificacion_motivo)
+
+		GetSingle_By_IdEstado = Nothing
+
+		Try
+
+			Const sp As String = "SELECT * FROM Verificacion_motivo" &
+			" Where(IdEstado = @IdEstado)"
+
+
+			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+
+				lConnection.Open()
+
+				Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+					Using lDTA As New SqlDataAdapter(sp, lConnection)
+
+						lDTA.SelectCommand.CommandType = CommandType.Text
+						lDTA.SelectCommand.Transaction = lTransaction
+						lDTA.SelectCommand.Parameters.Add(New SqlParameter("@IdEstado", pIdEstado))
+						Dim lDataTable As New DataTable
+						lDTA.Fill(lDataTable)
+
+						If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+							GetSingle_By_IdEstado = New List(Of clsBeVerificacion_motivo)
+
+							For Each row As DataRow In lDataTable.Rows
+								Dim vBeVerificacion_motivo As New clsBeVerificacion_motivo
+								Cargar(vBeVerificacion_motivo, row)
+								GetSingle_By_IdEstado.Add(vBeVerificacion_motivo)
+							Next
+
+						End If
+
+					End Using
+
+					lTransaction.Commit()
+
+				End Using
+
+				lConnection.Close()
+
+			End Using
+
+		Catch ex As Exception
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
 		End Try
 
 	End Function
