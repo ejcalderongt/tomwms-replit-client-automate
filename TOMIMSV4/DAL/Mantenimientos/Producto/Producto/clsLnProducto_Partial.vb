@@ -4630,8 +4630,9 @@ Partial Public Class clsLnProducto
             Dim lReturnList As New List(Of clsBeProducto_codigos_barra)
 
             Dim vSQL As String = String.Format("SELECT pcb.IdProductoCodigoBarra,pcb.IdProducto,pcb.IdProveedor,
-                                                pr.nombre AS Producto,'' AS Proveedor,pcb.codigo_barra,pcb.activo,pcb.user_agr,
-                                                pcb.fec_agr,pcb.user_mod,pcb.fec_mod FROM producto_codigos_barra AS pcb 
+                                                       pr.nombre AS Producto,'' AS Proveedor,pcb.codigo_barra,pcb.activo,pcb.user_agr,
+                                                       pcb.fec_agr,pcb.user_mod,pcb.fec_mod, pcb.IdColor, pcb.IdTalla
+                                                FROM producto_codigos_barra AS pcb 
                                                 INNER JOIN  producto AS pr ON pcb.IdProducto = pr.IdProducto 
                                                 WHERE pcb.IdProducto={0}", pIdProducto)
 
