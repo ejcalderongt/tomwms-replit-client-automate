@@ -712,6 +712,9 @@
     <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_HH_Stock\clsBeTrans_ubic_hh_stock_Partial.vb" />
     <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Tarima\clsBeTrans_ubic_tarima.vb" />
     <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Tarima\clsBeTrans_ubic_tarima_partial.vb" />
+    <Compile Include="Transacciones\VerificacionBOF\clsBeLog_verificacion_bof.vb" />
+    <Compile Include="Transacciones\VerificacionBOF\clsBeVerificacion_estado.vb" />
+    <Compile Include="Transacciones\VerificacionBOF\clsBeVerificacion_motivo.vb" />
     <Compile Include="Ubicacion_Sugerida\clsBeProductoUS.vb" />
   </ItemGroup>
   <ItemGroup>

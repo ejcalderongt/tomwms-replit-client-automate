@@ -2,6 +2,7 @@
 Imports System.Collections.Generic
 Imports System.Data.SqlClient
 Imports System.Linq
+Imports System.Net
 Imports System.Net.Http
 Imports System.Net.Http.Headers
 Imports System.Text.Json
@@ -11,6 +12,7 @@ Imports System.Threading.Tasks
 ' ===== DTOs para deserializar el Service Layer =====
 
 Public Class CodigoBarrasSlRow
+    Public Property Code As Integer
     Public Property Name As String
     Public Property U_Color As String
     Public Property U_Talla As String
@@ -35,117 +37,136 @@ Public Class ItemBarcodeDto
     Public Property Talla As String
     Public Property IdColor As Integer?
     Public Property IdTalla As Integer?
+    Public Property Code As Integer?
 
 End Class
 
 Public Class clsSyncSAPCodigosBarra_SL
-    Public Shared Async Function GetCodigosBarrasWmsAsync(ByVal baseUrl As String,
-                                                      ByVal sessionCookie As String) As Task(Of List(Of ItemBarcodeDto))
+    Public Shared Async Function GetCodigosBarrasWmsAsync(sessionCookie As String,
+                                                      baseUrl As String,
+                                                      lblprg As RichTextBox) As Task(Of List(Of ItemBarcodeDto))
 
         Dim resultado As New List(Of ItemBarcodeDto)()
-        Dim vistos As New HashSet(Of String)() ' para Distinct por ItemCode+CodigoBarra
+        Dim vistos As New HashSet(Of String)()
 
-        Using httpClient As New HttpClient()
+        ' Normalizamos baseUrl para que termine en /b1s/v1/
+        Dim baseSl As String = baseUrl.TrimEnd("/"c)
+        If Not baseSl.ToLower().EndsWith("/b1s/v1") Then
+            baseSl &= "/b1s/v1"
+        End If
+        baseSl &= "/"
 
-            httpClient.BaseAddress = New Uri(baseUrl.TrimEnd("/"c) & "/b1s/v1/")
-            httpClient.DefaultRequestHeaders.Accept.Clear()
-            httpClient.DefaultRequestHeaders.Accept.Add(
-            New MediaTypeWithQualityHeaderValue("application/json"))
+        Dim pageSize As Integer = 1000
+        Dim skip As Integer = 0
+        Dim hayMas As Boolean = True
 
-            ' Cookie de sesión (B1SESSION=...;ROUTEID=...)
-            httpClient.DefaultRequestHeaders.Add("Cookie", sessionCookie)
+        Using handler As New HttpClientHandler()
+            handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+            handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
+            handler.UseCookies = False
 
-            ' Primer URL: filtramos por U_ENVIADO_WMS eq 2
-            Dim requestUrl As String =
-            "U_CODIGO_BARRAS?$select=Name,U_Color,U_Talla," &
-            "U_CodigoAnterior,U_CodigoProv,U_CodigoAnterior2,U_CodigoAnterior3,U_ENVIADO_WMS" &
-            "&$filter=U_ENVIADO_WMS eq 2"
+            Using client As New HttpClient(handler)
+                client.DefaultRequestHeaders.ConnectionClose = True
+                client.DefaultRequestHeaders.Add("Cookie", sessionCookie)
+                client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
 
-            ' Abrimos la conexión UNA sola vez
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-                lConnection.Open()
+                Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                    lConnection.Open()
 
-                ' Si solo lees catálogos, podrías incluso quitar la transacción.
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                    Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                    While Not String.IsNullOrEmpty(requestUrl)
+                        While hayMas
 
-                        Dim response As HttpResponseMessage = Await httpClient.GetAsync(requestUrl)
-                        response.EnsureSuccessStatusCode()
+                            Dim requestUrl As String =
+                            $"{baseSl}U_CODIGO_BARRAS?$filter=U_ENVIADO_WMS eq 2&$top={pageSize}&$skip={skip}"
 
-                        Dim json As String = Await response.Content.ReadAsStringAsync()
+                            Using request As New HttpRequestMessage(HttpMethod.Get, requestUrl)
+                                request.Headers.ConnectionClose = True
 
-                        Dim opcionesJson As New JsonSerializerOptions() With {
-                        .PropertyNameCaseInsensitive = True
-                    }
+                                Dim response As HttpResponseMessage = Await client.SendAsync(request).ConfigureAwait(False)
+                                Dim json As String = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
 
-                        Dim slResponse As SlResponse(Of CodigoBarrasSlRow) =
-                        JsonSerializer.Deserialize(Of SlResponse(Of CodigoBarrasSlRow))(json, opcionesJson)
-
-                        If slResponse IsNot Nothing AndAlso slResponse.value IsNot Nothing Then
-
-                            For Each row In slResponse.value
-
-                                Dim itemCode As String = If(row.Name, String.Empty).Trim()
-                                If String.IsNullOrEmpty(itemCode) Then
-                                    Continue For
+                                If Not response.IsSuccessStatusCode Then
+                                    clsPublic.Actualizar_Progreso(lblprg,
+                                    $"Error SL {response.StatusCode}: {json}")
+                                    Exit While
                                 End If
 
-                                ' 1) Name + U_Color + U_Talla
-                                Dim concat As String = (If(row.Name, String.Empty) &
-                                                    If(row.U_Color, String.Empty) &
-                                                    If(row.U_Talla, String.Empty)).Trim()
+                                Dim opcionesJson As New JsonSerializerOptions() With {
+                                .PropertyNameCaseInsensitive = True
+                            }
 
-                                AgregarSiValido(resultado, vistos, itemCode, concat,
-                                            row.U_Color, row.U_Talla,
-                                            lConnection, lTransaction)
+                                Dim slResponse As SlResponse(Of CodigoBarrasSlRow) =
+                                JsonSerializer.Deserialize(Of SlResponse(Of CodigoBarrasSlRow))(json, opcionesJson)
 
-                                ' 2) U_CodigoAnterior
-                                AgregarSiValido(resultado, vistos, itemCode, row.U_CodigoAnterior,
-                                            row.U_Color, row.U_Talla,
-                                            lConnection, lTransaction)
+                                If slResponse Is Nothing OrElse slResponse.value Is Nothing OrElse slResponse.value.Count = 0 Then
+                                    hayMas = False
+                                    Exit While
+                                End If
 
-                                ' 3) U_CodigoProv
-                                AgregarSiValido(resultado, vistos, itemCode, row.U_CodigoProv,
-                                            row.U_Color, row.U_Talla,
-                                            lConnection, lTransaction)
+                                Dim filasPagina As Integer = slResponse.value.Count
 
-                                ' 4) U_CodigoAnterior2
-                                AgregarSiValido(resultado, vistos, itemCode, row.U_CodigoAnterior2,
-                                            row.U_Color, row.U_Talla,
-                                            lConnection, lTransaction)
+                                For Each row In slResponse.value
 
-                                ' 5) U_CodigoAnterior3
-                                AgregarSiValido(resultado, vistos, itemCode, row.U_CodigoAnterior3,
-                                            row.U_Color, row.U_Talla,
-                                            lConnection, lTransaction)
+                                    Dim itemCode As String = If(row.Name, String.Empty).Trim()
+                                    If String.IsNullOrEmpty(itemCode) Then Continue For
 
-                            Next
+                                    ' 1) Name + U_Color + U_Talla
+                                    Dim concat As String = (If(row.Name, String.Empty) &
+                                                        If(row.U_Color, String.Empty) &
+                                                        If(row.U_Talla, String.Empty)).Trim()
 
-                        End If
+                                    If lblprg IsNot Nothing Then
+                                        clsPublic.Actualizar_Progreso(lblprg, $"Barra encontrada: {concat}")
+                                    End If
 
-                        ' Paginación: si viene @odata.nextLink, la usamos
-                        If slResponse IsNot Nothing AndAlso
-                       Not String.IsNullOrEmpty(slResponse.NextLink) Then
+                                    AgregarSiValido(resultado, vistos, itemCode, concat,
+                                                    row.U_Color, row.U_Talla, row.Code,
+                                                    lConnection, lTransaction)
 
-                            requestUrl = slResponse.NextLink
-                        Else
-                            requestUrl = Nothing
-                        End If
+                                    ' 2) U_CodigoAnterior
+                                    AgregarSiValido(resultado, vistos, itemCode, row.U_CodigoAnterior,
+                                                    row.U_Color, row.U_Talla, row.Code,
+                                                    lConnection, lTransaction)
 
-                    End While
+                                    ' 3) U_CodigoProv
+                                    AgregarSiValido(resultado, vistos, itemCode, row.U_CodigoProv,
+                                                    row.U_Color, row.U_Talla, row.Code,
+                                                    lConnection, lTransaction)
 
-                    lTransaction.Commit()
+                                    ' 4) U_CodigoAnterior2
+                                    AgregarSiValido(resultado, vistos, itemCode, row.U_CodigoAnterior2,
+                                                    row.U_Color, row.U_Talla, row.Code,
+                                                    lConnection, lTransaction)
+
+                                    ' 5) U_CodigoAnterior3
+                                    AgregarSiValido(resultado, vistos, itemCode, row.U_CodigoAnterior3,
+                                                    row.U_Color, row.U_Talla, row.Code,
+                                                    lConnection, lTransaction)
+
+                                Next
+
+                                ' Siguiente página
+                                If filasPagina < pageSize Then
+                                    skip += filasPagina
+                                Else
+                                    hayMas = False
+                                End If
+
+                            End Using
+
+                        End While
+
+                        lTransaction.Commit()
+
+                    End Using
 
                 End Using
 
             End Using
-
         End Using
 
-        ' Ordenar por ItemCode antes de devolver
         Return resultado.OrderBy(Function(r) r.ItemCode).ToList()
-
     End Function
 
     Private Shared Sub AgregarSiValido(lista As List(Of ItemBarcodeDto),
@@ -154,6 +175,7 @@ Public Class clsSyncSAPCodigosBarra_SL
                                        valor As String,
                                        color As String,
                                        talla As String,
+                                       code As Integer,
                                        conn As SqlConnection,
                                        tran As SqlTransaction)
 
@@ -187,7 +209,8 @@ Public Class clsSyncSAPCodigosBarra_SL
         .Color = colorTrim,
         .Talla = tallaTrim,
         .IdColor = idColor,
-        .IdTalla = idTalla
+        .IdTalla = idTalla,
+        .Code = code
     })
     End Sub
 

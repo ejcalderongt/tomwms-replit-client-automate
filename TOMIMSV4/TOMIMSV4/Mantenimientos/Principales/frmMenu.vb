@@ -909,6 +909,8 @@ Public Class frmMenu
             If Not permiteMenu(e.Link) Then Return
         End If
 
+        Cierra_Instancia_Previa(frmPedido_List)
+
         With frmPedido_List
             .Modo = frmPedido_List.pModo.Lista
             If Not e Is Nothing Then
@@ -5263,6 +5265,9 @@ Public Class frmMenu
         If Not permiteMenu(e.Link) Then Return
         Try
 
+            Cierra_Instancia_Previa(frmPedido_List)
+
+
             With frmPedido_List
                 .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
                 .Modo = frmPedido_List.pModo.verificacion
@@ -5281,4 +5286,30 @@ Public Class frmMenu
             MessageBoxIcon.Exclamation)
         End Try
     End Sub
+
+    Public Sub Cierra_Instancia_Previa(ByRef Myform As Form)
+
+        Try
+
+            For Each objForm In My.Application.OpenForms
+                If (Trim(objForm.Name) = Trim(Myform.Name)) Then
+                    Myform.Close()
+                    Exit For
+                End If
+            Next
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
 End Class
