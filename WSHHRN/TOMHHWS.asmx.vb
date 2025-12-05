@@ -5641,8 +5641,16 @@ Public Class TOMHHWS
 
 
         Try
+            '#MECR25112025: Sea grego bitacora de logs para reabastecimiento
             '#GT28072023: control de llamadas al ws
-            clsLnLog_error_wms.Agregar_Error(pMovimiento.IdEmpresa, pMovimiento.IdBodegaOrigen, "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: " & pMovimiento.IdOperadorBodega & " y TipoTarea " & pMovimiento.IdTipoTarea)
+            'clsLnLog_error_wms.Agregar_Error(pMovimiento.IdEmpresa, pMovimiento.IdBodegaOrigen, "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: " & pMovimiento.IdOperadorBodega & " y TipoTarea " & pMovimiento.IdTipoTarea)
+            Dim msjControl As String = "Aplica_Cambio_Estado_Ubic_HH: llamada de WS con usuario: " & pMovimiento.IdOperadorBodega & " y TipoTarea " & pMovimiento.IdTipoTarea
+            clsLnLog_error_wms_reab.Agregar_Error(msjControl,
+                                                  pIdStock:=pIdStockNuevo,
+                                                  pIdMovimiento:=pIdMovimientoNuevo,
+                                                  pLic_Plate:=pMovimiento.Lic_plate,
+                                                  pIdProductoBodega:=pMovimiento.IdProductoBodega,
+                                                  pCantidad:=pMovimiento.Cantidad)
 
             Return clsLnTrans_ubic_hh_det.Aplica_Cambio_Estado_Ubic(pMovimiento,
                                                                     pStockRes,
@@ -5652,9 +5660,16 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
+            '#MECR25112025: Sea grego bitacora de logs para reabastecimiento
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_reab.Agregar_Error(vMsgError,
+                                                  pIdStock:=pIdStockNuevo,
+                                                  pIdMovimiento:=pIdMovimientoNuevo,
+                                                  pLic_Plate:=pMovimiento.Lic_plate,
+                                                  pIdProductoBodega:=pMovimiento.IdProductoBodega,
+                                                  pCantidad:=pMovimiento.Cantidad)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -5747,8 +5762,18 @@ Public Class TOMHHWS
 
         Try
 
+            '#MECR25112025: Se agrego bitacora de logs para Reabastecimiento
             '#GT28072023: control de llamadas al ws
-            clsLnLog_error_wms.Agregar_Error(0, pIdBodega, "Set_Nuevo_Pallet_Id: llamada de WS con usuario: " & pIdUsuario)
+            'clsLnLog_error_wms.Agregar_Error(0, pIdBodega, "Set_Nuevo_Pallet_Id: llamada de WS con usuario: " & pIdUsuario)
+            Dim msjControl As String = "Set_Nuevo_Pallet_Id: llamada de WS con usuario: " & pIdUsuario
+            clsLnLog_error_wms_reab.Agregar_Error(msjControl,
+                                                  pIdBodega:=pIdBodega,
+                                                  pIdStock:=pIdStockNuevo,
+                                                  pIdMovimiento:=pIdMovimientoNuevo,
+                                                  pLic_Plate_Anterior:=pLicPlateAnt,
+                                                  pLic_Plate:=pLicPlateNuevo,
+                                                  pIdResolucion:=pIdResolucion,
+                                                  pUser_agr:=pIdUsuario)
 
             Return clsLnStock.Actualizar_PalletId_Por_Explosion(pIdBodega,
                                                                     pIdUsuario,
@@ -5760,9 +5785,19 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
+            '#MECR25112025: Se agrego bitacora de logs para Reabastecimiento
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_reab.Agregar_Error(vMsgError,
+                                                  pStackTrace:=ex.StackTrace,
+                                                  pIdBodega:=pIdBodega,
+                                                  pIdStock:=pIdStockNuevo,
+                                                  pIdMovimiento:=pIdMovimientoNuevo,
+                                                  pLic_Plate_Anterior:=pLicPlateAnt,
+                                                  pLic_Plate:=pLicPlateNuevo,
+                                                  pIdResolucion:=pIdResolucion,
+                                                  pUser_agr:=pIdUsuario)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
