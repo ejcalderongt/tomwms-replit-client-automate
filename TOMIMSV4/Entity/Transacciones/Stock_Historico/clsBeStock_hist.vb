@@ -34,6 +34,7 @@ Public Class clsBeStock_hist
     Public Property Peso() As Double = 0.0
     Public Property Temperatura() As Double = 0.0
     Public Property Posiciones() As Integer = 0
+    Public Property IdProductoTallaColor() As Integer = 0
 
     Sub New()
 
