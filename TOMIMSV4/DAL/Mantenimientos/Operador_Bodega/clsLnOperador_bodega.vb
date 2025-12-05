@@ -402,4 +402,37 @@ Public Class clsLnOperador_bodega
 
     End Function
 
+    '#MA20251204'
+    Public Shared Function Operador_Permite_Reemplazo(ByVal op As clsBeOperador) As Boolean
+        Try
+            Using conn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                conn.Open()
+                Using tran = conn.BeginTransaction(IsolationLevel.ReadCommitted)
+
+                    Const sql As String = "SELECT  ISNULL( r.PermiteReemplazo, 0) PermiteReemplazo from
+                                            operador As o
+                                            INNER JOIN  rol_operador As r
+                                            ON  O.IdRolOperador = r.IdRolOperador
+                                            where IdOperador = @Idoperador"
+
+                    Using cmd As New SqlCommand(sql, conn, tran)
+                        cmd.Parameters.AddWithValue("@Idoperador", op.IdOperador)
+                        Dim result = cmd.ExecuteScalar()
+
+                        tran.Commit()
+
+                        If result IsNot Nothing Then
+                            Return Convert.ToBoolean(result)
+                        Else
+                            Return False
+                        End If
+                    End Using
+                End Using
+            End Using
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(ex.Message)
+            Return False
+        End Try
+    End Function
+
 End Class
