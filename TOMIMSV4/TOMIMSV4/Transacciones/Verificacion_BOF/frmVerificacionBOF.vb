@@ -178,6 +178,11 @@ Public Class frmVerificacionBOF
 
                 pBePedidoEnc.IsNew = False
 
+                txtIdPedidoEnc.Text = pBePedidoEnc.IdPedidoEnc
+                txtReferencia.Text = pBePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino
+                txtIdPedidoEnc.Enabled = False
+                txtReferencia.Enabled = False
+
                 Cargar_Detalle_Pedido(lConnection,
                                       lTransaction)
 

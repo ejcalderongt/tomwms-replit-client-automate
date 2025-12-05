@@ -27,6 +27,8 @@ Partial Class frmVerificacionBOF
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmVerificacionBOF))
         Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim GridFormatRule2 As DevExpress.XtraGrid.GridFormatRule = New DevExpress.XtraGrid.GridFormatRule()
+        Dim lbPedido As System.Windows.Forms.Label
+        Dim lbReferencia As System.Windows.Forms.Label
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.cmdEnviar = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
@@ -49,11 +51,16 @@ Partial Class frmVerificacionBOF
         Me.peProducto = New DevExpress.XtraEditors.PictureEdit()
         Me.PanelControl2 = New DevExpress.XtraEditors.PanelControl()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
+        Me.PanelControl3 = New DevExpress.XtraEditors.PanelControl()
+        Me.txtIdPedidoEnc = New DevExpress.XtraEditors.TextEdit()
+        Me.txtReferencia = New DevExpress.XtraEditors.TextEdit()
         Label8 = New System.Windows.Forms.Label()
         Label5 = New System.Windows.Forms.Label()
         lblScan = New System.Windows.Forms.Label()
         Label1 = New System.Windows.Forms.Label()
         Label2 = New System.Windows.Forms.Label()
+        lbPedido = New System.Windows.Forms.Label()
+        lbReferencia = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grpScan, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpScan.SuspendLayout()
@@ -75,13 +82,17 @@ Partial Class frmVerificacionBOF
         CType(Me.PanelControl2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PanelControl2.SuspendLayout()
         Me.TableLayoutPanel1.SuspendLayout()
+        CType(Me.PanelControl3, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.PanelControl3.SuspendLayout()
+        CType(Me.txtIdPedidoEnc.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtReferencia.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label8
         '
         Label8.AutoSize = True
         Label8.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label8.Location = New System.Drawing.Point(14, 80)
+        Label8.Location = New System.Drawing.Point(25, 169)
         Label8.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label8.Name = "Label8"
         Label8.Size = New System.Drawing.Size(102, 21)
@@ -92,7 +103,7 @@ Partial Class frmVerificacionBOF
         '
         Label5.AutoSize = True
         Label5.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label5.Location = New System.Drawing.Point(14, 198)
+        Label5.Location = New System.Drawing.Point(25, 287)
         Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label5.Name = "Label5"
         Label5.Size = New System.Drawing.Size(81, 21)
@@ -103,7 +114,7 @@ Partial Class frmVerificacionBOF
         '
         lblScan.AutoSize = True
         lblScan.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblScan.Location = New System.Drawing.Point(16, 46)
+        lblScan.Location = New System.Drawing.Point(27, 135)
         lblScan.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblScan.Name = "lblScan"
         lblScan.Size = New System.Drawing.Size(66, 21)
@@ -114,7 +125,7 @@ Partial Class frmVerificacionBOF
         '
         Label1.AutoSize = True
         Label1.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label1.Location = New System.Drawing.Point(16, 122)
+        Label1.Location = New System.Drawing.Point(27, 211)
         Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label1.Name = "Label1"
         Label1.Size = New System.Drawing.Size(52, 21)
@@ -125,7 +136,7 @@ Partial Class frmVerificacionBOF
         '
         Label2.AutoSize = True
         Label2.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label2.Location = New System.Drawing.Point(14, 160)
+        Label2.Location = New System.Drawing.Point(25, 249)
         Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label2.Name = "Label2"
         Label2.Size = New System.Drawing.Size(54, 21)
@@ -174,6 +185,7 @@ Partial Class frmVerificacionBOF
         Me.grpScan.AppearanceCaption.Options.UseBackColor = True
         Me.grpScan.AppearanceCaption.Options.UseTextOptions = True
         Me.grpScan.AppearanceCaption.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+        Me.grpScan.Controls.Add(Me.PanelControl3)
         Me.grpScan.Controls.Add(Me.cmbMotivo)
         Me.grpScan.Controls.Add(Me.cmbEstado)
         Me.grpScan.Controls.Add(Me.lbOk)
@@ -191,13 +203,13 @@ Partial Class frmVerificacionBOF
         Me.grpScan.Location = New System.Drawing.Point(4, 2)
         Me.grpScan.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.grpScan.Name = "grpScan"
-        Me.grpScan.Size = New System.Drawing.Size(669, 281)
+        Me.grpScan.Size = New System.Drawing.Size(720, 377)
         Me.grpScan.TabIndex = 52
         Me.grpScan.Text = "Producto"
         '
         'cmbMotivo
         '
-        Me.cmbMotivo.Location = New System.Drawing.Point(318, 247)
+        Me.cmbMotivo.Location = New System.Drawing.Point(329, 336)
         Me.cmbMotivo.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.cmbMotivo.MenuManager = Me.RibbonControl
         Me.cmbMotivo.Name = "cmbMotivo"
@@ -210,7 +222,7 @@ Partial Class frmVerificacionBOF
         '
         'cmbEstado
         '
-        Me.cmbEstado.Location = New System.Drawing.Point(124, 247)
+        Me.cmbEstado.Location = New System.Drawing.Point(135, 336)
         Me.cmbEstado.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.cmbEstado.MenuManager = Me.RibbonControl
         Me.cmbEstado.Name = "cmbEstado"
@@ -228,7 +240,7 @@ Partial Class frmVerificacionBOF
         Me.lbOk.Appearance.Options.UseFont = True
         Me.lbOk.Appearance.Options.UseImage = True
         Me.lbOk.ImageOptions.Image = CType(resources.GetObject("lbOk.ImageOptions.Image"), System.Drawing.Image)
-        Me.lbOk.Location = New System.Drawing.Point(508, 37)
+        Me.lbOk.Location = New System.Drawing.Point(519, 126)
         Me.lbOk.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.lbOk.Name = "lbOk"
         Me.lbOk.Size = New System.Drawing.Size(32, 32)
@@ -236,7 +248,7 @@ Partial Class frmVerificacionBOF
         '
         'txtCantidad
         '
-        Me.txtCantidad.Location = New System.Drawing.Point(124, 195)
+        Me.txtCantidad.Location = New System.Drawing.Point(135, 284)
         Me.txtCantidad.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtCantidad.Name = "txtCantidad"
         Me.txtCantidad.Properties.Appearance.BackColor = System.Drawing.Color.WhiteSmoke
@@ -250,7 +262,7 @@ Partial Class frmVerificacionBOF
         '
         'txtScanner
         '
-        Me.txtScanner.Location = New System.Drawing.Point(124, 39)
+        Me.txtScanner.Location = New System.Drawing.Point(135, 128)
         Me.txtScanner.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtScanner.Name = "txtScanner"
         Me.txtScanner.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -262,7 +274,7 @@ Partial Class frmVerificacionBOF
         '
         'txtColor
         '
-        Me.txtColor.Location = New System.Drawing.Point(124, 157)
+        Me.txtColor.Location = New System.Drawing.Point(135, 246)
         Me.txtColor.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtColor.Name = "txtColor"
         Me.txtColor.Properties.Appearance.BackColor = System.Drawing.Color.WhiteSmoke
@@ -276,7 +288,7 @@ Partial Class frmVerificacionBOF
         '
         'txtTalla
         '
-        Me.txtTalla.Location = New System.Drawing.Point(124, 119)
+        Me.txtTalla.Location = New System.Drawing.Point(135, 208)
         Me.txtTalla.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtTalla.Name = "txtTalla"
         Me.txtTalla.Properties.Appearance.BackColor = System.Drawing.Color.WhiteSmoke
@@ -290,7 +302,7 @@ Partial Class frmVerificacionBOF
         '
         'txtDescripcionProducto
         '
-        Me.txtDescripcionProducto.Location = New System.Drawing.Point(124, 77)
+        Me.txtDescripcionProducto.Location = New System.Drawing.Point(135, 166)
         Me.txtDescripcionProducto.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtDescripcionProducto.Name = "txtDescripcionProducto"
         Me.txtDescripcionProducto.Properties.Appearance.BackColor = System.Drawing.Color.WhiteSmoke
@@ -306,10 +318,10 @@ Partial Class frmVerificacionBOF
         '
         Me.GroupControl2.Controls.Add(Me.dgridListaPedido)
         Me.GroupControl2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupControl2.Location = New System.Drawing.Point(4, 287)
+        Me.GroupControl2.Location = New System.Drawing.Point(4, 383)
         Me.GroupControl2.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupControl2.Name = "GroupControl2"
-        Me.GroupControl2.Size = New System.Drawing.Size(669, 298)
+        Me.GroupControl2.Size = New System.Drawing.Size(720, 202)
         Me.GroupControl2.TabIndex = 53
         Me.GroupControl2.Text = "Lista"
         '
@@ -325,7 +337,7 @@ Partial Class frmVerificacionBOF
         Me.dgridListaPedido.Margin = New System.Windows.Forms.Padding(4)
         Me.dgridListaPedido.MenuManager = Me.RibbonControl
         Me.dgridListaPedido.Name = "dgridListaPedido"
-        Me.dgridListaPedido.Size = New System.Drawing.Size(665, 268)
+        Me.dgridListaPedido.Size = New System.Drawing.Size(716, 172)
         Me.dgridListaPedido.TabIndex = 1
         Me.dgridListaPedido.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvListaPedido, Me.GridView6})
         '
@@ -356,9 +368,9 @@ Partial Class frmVerificacionBOF
         '
         Me.PanelControl1.Controls.Add(Me.peProducto)
         Me.PanelControl1.Dock = System.Windows.Forms.DockStyle.Right
-        Me.PanelControl1.Location = New System.Drawing.Point(681, 193)
+        Me.PanelControl1.Location = New System.Drawing.Point(732, 193)
         Me.PanelControl1.Name = "PanelControl1"
-        Me.PanelControl1.Size = New System.Drawing.Size(866, 591)
+        Me.PanelControl1.Size = New System.Drawing.Size(815, 591)
         Me.PanelControl1.TabIndex = 58
         '
         'peProducto
@@ -369,7 +381,7 @@ Partial Class frmVerificacionBOF
         Me.peProducto.Name = "peProducto"
         Me.peProducto.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.[Auto]
         Me.peProducto.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch
-        Me.peProducto.Size = New System.Drawing.Size(862, 587)
+        Me.peProducto.Size = New System.Drawing.Size(811, 587)
         Me.peProducto.TabIndex = 0
         '
         'PanelControl2
@@ -378,24 +390,80 @@ Partial Class frmVerificacionBOF
         Me.PanelControl2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.PanelControl2.Location = New System.Drawing.Point(0, 193)
         Me.PanelControl2.Name = "PanelControl2"
-        Me.PanelControl2.Size = New System.Drawing.Size(681, 591)
+        Me.PanelControl2.Size = New System.Drawing.Size(732, 591)
         Me.PanelControl2.TabIndex = 59
         '
         'TableLayoutPanel1
         '
         Me.TableLayoutPanel1.ColumnCount = 1
         Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.TableLayoutPanel1.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
         Me.TableLayoutPanel1.Controls.Add(Me.grpScan, 0, 0)
         Me.TableLayoutPanel1.Controls.Add(Me.GroupControl2, 0, 1)
         Me.TableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill
         Me.TableLayoutPanel1.Location = New System.Drawing.Point(2, 2)
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 2
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.55196!))
-        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 51.44804!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(677, 587)
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 65.0!))
+        Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 35.0!))
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(728, 587)
         Me.TableLayoutPanel1.TabIndex = 54
+        '
+        'PanelControl3
+        '
+        Me.PanelControl3.Controls.Add(lbReferencia)
+        Me.PanelControl3.Controls.Add(lbPedido)
+        Me.PanelControl3.Controls.Add(Me.txtReferencia)
+        Me.PanelControl3.Controls.Add(Me.txtIdPedidoEnc)
+        Me.PanelControl3.Location = New System.Drawing.Point(6, 31)
+        Me.PanelControl3.Name = "PanelControl3"
+        Me.PanelControl3.Size = New System.Drawing.Size(709, 78)
+        Me.PanelControl3.TabIndex = 60
+        '
+        'txtIdPedidoEnc
+        '
+        Me.txtIdPedidoEnc.Location = New System.Drawing.Point(129, 7)
+        Me.txtIdPedidoEnc.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtIdPedidoEnc.Name = "txtIdPedidoEnc"
+        Me.txtIdPedidoEnc.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtIdPedidoEnc.Properties.Appearance.Options.UseFont = True
+        Me.txtIdPedidoEnc.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.txtIdPedidoEnc.Properties.MaxLength = 50
+        Me.txtIdPedidoEnc.Size = New System.Drawing.Size(376, 28)
+        Me.txtIdPedidoEnc.TabIndex = 61
+        '
+        'txtReferencia
+        '
+        Me.txtReferencia.Location = New System.Drawing.Point(129, 43)
+        Me.txtReferencia.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtReferencia.Name = "txtReferencia"
+        Me.txtReferencia.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtReferencia.Properties.Appearance.Options.UseFont = True
+        Me.txtReferencia.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.txtReferencia.Properties.MaxLength = 50
+        Me.txtReferencia.Size = New System.Drawing.Size(376, 28)
+        Me.txtReferencia.TabIndex = 62
+        '
+        'lbPedido
+        '
+        lbPedido.AutoSize = True
+        lbPedido.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lbPedido.Location = New System.Drawing.Point(21, 10)
+        lbPedido.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        lbPedido.Name = "lbPedido"
+        lbPedido.Size = New System.Drawing.Size(65, 21)
+        lbPedido.TabIndex = 61
+        lbPedido.Text = "Pedido:"
+        '
+        'lbReferencia
+        '
+        lbReferencia.AutoSize = True
+        lbReferencia.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        lbReferencia.Location = New System.Drawing.Point(21, 46)
+        lbReferencia.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        lbReferencia.Name = "lbReferencia"
+        lbReferencia.Size = New System.Drawing.Size(95, 21)
+        lbReferencia.TabIndex = 63
+        lbReferencia.Text = "Referencia:"
         '
         'frmVerificacionBOF
         '
@@ -432,6 +500,11 @@ Partial Class frmVerificacionBOF
         CType(Me.PanelControl2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.PanelControl2.ResumeLayout(False)
         Me.TableLayoutPanel1.ResumeLayout(False)
+        CType(Me.PanelControl3, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.PanelControl3.ResumeLayout(False)
+        Me.PanelControl3.PerformLayout()
+        CType(Me.txtIdPedidoEnc.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtReferencia.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -459,4 +532,7 @@ Partial Class frmVerificacionBOF
     Friend WithEvents cmdEnviar As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents cmbMotivo As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents cmbEstado As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents PanelControl3 As DevExpress.XtraEditors.PanelControl
+    Friend WithEvents txtReferencia As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents txtIdPedidoEnc As DevExpress.XtraEditors.TextEdit
 End Class

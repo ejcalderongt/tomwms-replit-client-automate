@@ -97,6 +97,25 @@ Public Class frmPedido_List
 
     End Sub
 
+    Private Sub AplicarEstiloScanner()
+
+        With txtGuia.Properties.AppearanceFocused
+            .BackColor = Color.LightYellow
+            .Font = New Font(txtGuia.Font, FontStyle.Bold)
+            .Options.UseBackColor = True
+            .Options.UseFont = True
+        End With
+
+        ' opcional: también estilo normal cuando NO tiene foco
+        With txtGuia.Properties.Appearance
+            .BackColor = Color.White
+            .Font = New Font(txtGuia.Font, FontStyle.Regular)
+            .Options.UseBackColor = True
+            .Options.UseFont = True
+        End With
+
+    End Sub
+
     Public Sub SetRibbonEnabled(ribbon As RibbonControl, enabled As Boolean)
 
         Try
@@ -733,6 +752,20 @@ Public Class frmPedido_List
 
         Catch ex As Exception
         End Try
+
+
+        If verificar_bof Then
+            txtGuia.Visible = True
+            lbOk.Visible = True
+            lbGuia.Visible = True
+            txtGuia.SelectAll()
+            txtGuia.Focus()
+            AplicarEstiloScanner()
+        Else
+            txtGuia.Visible = False
+            lbOk.Visible = False
+            lbGuia.Visible = False
+        End If
 
     End Sub
 
