@@ -158,6 +158,7 @@ Public Class clsLnVW_stock_res
                 If dr.Table.Columns.Contains("IdStock") Then .IdStock = IIf(IsDBNull(dr.Item("IdStock")), 0, dr.Item("IdStock"))
 
                 If dr.Table.Columns.Contains("IdUbicacion_anterior") Then .IdStock = IIf(IsDBNull(dr.Item("IdUbicacion_anterior")), 0, dr.Item("IdUbicacion_anterior"))
+                If dr.Table.Columns.Contains("Codigo_Barra") Then .Codigo_Barra = IIf(IsDBNull(dr.Item("Codigo_Barra")), "", dr.Item("Codigo_Barra"))
 
 
             End With

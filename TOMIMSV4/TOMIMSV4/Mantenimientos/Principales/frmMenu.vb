@@ -2717,7 +2717,7 @@ Public Class frmMenu
 
         With frmStockPorLote
             .Modo = frmStockPorLote.pModo.Lista
-            .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
+            .MdiParent = Me : If Not e Is Nothing Then .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
             .Show()
             .Focus()
         End With

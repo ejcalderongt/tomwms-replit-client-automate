@@ -1389,84 +1389,83 @@ Partial Public Class clsLnTrans_re_enc
 
                     ' Recepción Encabezado
                     Guarda_Trans_re_enc(pRecEnc,
-                                    lConnection,
-                                    lTransaction)
+                                        lConnection,
+                                        lTransaction)
 
                     ' Recepción Orden Compra
                     clsLnTrans_re_oc.Guarda_Trans_Re_OC(pRecEnc,
-                                                    pRecOrdenCompra,
-                                                    lConnection,
-                                                    lTransaction)
+                                                        pRecOrdenCompra,
+                                                        lConnection,
+                                                        lTransaction)
 
                     ' Recepción Detalle
                     clsLnTrans_re_det.Guarda_Trans_re_det(pListRecDet,
-                                                      True,
-                                                      pRecEnc,
-                                                      lConnection,
-                                                      lTransaction)
+                                                          True,
+                                                          pRecEnc,
+                                                          lConnection,
+                                                          lTransaction)
 
                     If pRecEnc.IdTipoTransaccion <> clsBeTrans_re_enc.pTipoTrans.PICH000.ToString() Then 'Si no es pre-ingreso, actualizar cantidad_recibida en O.C.
                         'Actualiza cantidad recibida OC.
                         clsLnTrans_oc_det.Actualiza_Cantidad_Recibida_OC(pRecOrdenCompra,
-                                                                     pListRecDet,
-                                                                     lConnection,
-                                                                     lTransaction)
+                                                                         pListRecDet,
+                                                                         lConnection,
+                                                                         lTransaction)
                     End If
 
                     'Guarda parámetros de productos.
                     clsLnTrans_re_det_parametros.Guarda_Trans_Re_Det_Parametros(pRecEnc.IdRecepcionEnc,
-                                                                            pListRecDet,
-                                                                            pListRecDetParam,
-                                                                            lConnection,
-                                                                            lTransaction)
+                                                                                pListRecDet,
+                                                                                pListRecDetParam,
+                                                                                lConnection,
+                                                                                lTransaction)
 
                     'Recepción Operadores
                     clsLnTrans_re_op.Guarda_Trans_Re_Op(pRecEnc.IdRecepcionEnc,
-                                                    pListRecOpe,
-                                                    lConnection,
-                                                    lTransaction)
-
-                    ' Imagenes
-                    clsLnTrans_re_img.Guarda_Trans_Re_Img(pRecEnc.IdRecepcionEnc,
-                                                      pListRecImg,
-                                                      lConnection,
-                                                      lTransaction)
-
-                    ' Facturas asociadas
-                    clsLnTrans_re_fact.Guarda_facturas_asoc(pRecEnc.IdRecepcionEnc,
-                                                        pListRecFact,
+                                                        pListRecOpe,
                                                         lConnection,
                                                         lTransaction)
 
-                    ' Stock Rec
-                    clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
-                                                IdBodega,
-                                                pListStockRec,
-                                                lConnection,
-                                                lTransaction)
+                    ' Imagenes
+                    clsLnTrans_re_img.Guarda_Trans_Re_Img(pRecEnc.IdRecepcionEnc,
+                                                          pListRecImg,
+                                                          lConnection,
+                                                          lTransaction)
 
-                    ' Producto_pallet
-                    clsLnProducto_pallet.Guarda_Producto_Pallet(pRecEnc.IdRecepcionEnc,
-                                                            pListProductoPallet,
+                    ' Facturas asociadas
+                    clsLnTrans_re_fact.Guarda_facturas_asoc(pRecEnc.IdRecepcionEnc,
+                                                            pListRecFact,
                                                             lConnection,
                                                             lTransaction)
 
+                    ' Stock Rec
+                    clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
+                                                    IdBodega,
+                                                    pListStockRec,
+                                                    lConnection,
+                                                    lTransaction)
+
+                    ' Producto_pallet
+                    clsLnProducto_pallet.Guarda_Producto_Pallet(pRecEnc.IdRecepcionEnc,
+                                                                pListProductoPallet,
+                                                                lConnection,
+                                                                lTransaction)
+
                     ' Stock Serializado Rec
                     clsLnStock_se_rec.Guarda_Stock_Se_Rec(pListStockRecSer,
-                                                      pListStockRec,
-                                                      lConnection,
-                                                      lTransaction)
+                                                          pListStockRec,
+                                                          lConnection,
+                                                          lTransaction)
 
                     'Tarea de recepción para la HH.
                     clsLnTarea_hh.Guardar_Tarea_Recepcion_HH(pObjTareaHH,
-                                                         lConnection,
-                                                         lTransaction)
-
-                    'Tarea de actualizar el estado de un ticket existente
-                    clsLnTrans_oc_enc.Cambiar_A_Estado_Procesado(No_Ticket_Tms,
                                                              lConnection,
                                                              lTransaction)
 
+                    'Tarea de actualizar el estado de un ticket existente
+                    clsLnTrans_oc_enc.Cambiar_A_Estado_Procesado(No_Ticket_Tms,
+                                                                 lConnection,
+                                                                 lTransaction)
 
                 End If
 
@@ -3593,6 +3592,23 @@ Partial Public Class clsLnTrans_re_enc
                     Actualizar_Estado_Cerrado_Recepcion(pIdRecepcionEnc,
                                                         lConnection,
                                                         lTransaction)
+
+                    Dim BeOc As New clsBeTrans_oc_enc
+                    BeOc = clsLnTrans_oc_enc.GetSingle(pIdOrdenCompraEnc,
+                                                       lConnection,
+                                                       lTransaction)
+                    Dim BeTipoIngreso As New clsBeTrans_oc_ti
+                    BeTipoIngreso = clsLnTrans_oc_ti.GetSingle(BeOc.IdTipoIngresoOC,
+                                                               lConnection,
+                                                               lTransaction)
+                    If Not BeTipoIngreso Is Nothing Then
+                        If BeTipoIngreso.Marcar_Registros_Enviados_MI3 Then
+                            clsLnTrans_oc_enc.Actualizar_Estado_Enviado_A_ERP(pIdOrdenCompraEnc,
+                                                                              True,
+                                                                              lConnection,
+                                                                              lTransaction)
+                        End If
+                    End If
 
                     '#MECR23092025: Se agrego bitacora de logs para recepciones
                     Dim msjAdvertencia As String = "#240313A: Se cerró la recepción: " & pIdRecepcionEnc & " IdUsuario_BOF: " & pIdUsuario

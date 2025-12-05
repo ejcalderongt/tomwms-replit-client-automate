@@ -460,6 +460,7 @@ Public Class frmInventario
         DTInventarioCiclico.Columns.Add("IdProductoBodega", GetType(Integer))
         DTInventarioCiclico.Columns.Add("Licencia", GetType(String))
         DTInventarioCiclico.Columns.Add("Cant.Reservada", GetType(Double))
+        DTInventarioCiclico.Columns.Add("Contado", GetType(Boolean))
     End Sub
 
     '#GT17012025: tabla para el ciclico basico solo con diferencias, sin grupos ni filtros
@@ -4941,7 +4942,8 @@ Public Class frmInventario
                                                   BeTransInvCiclico.Idinventarioenc,
                                                   BeTransInvCiclico.IdProductoBodega,
                                                   IIf(BeTransInvCiclico.lic_plate = "", "", BeTransInvCiclico.lic_plate),
-                                                  BeTransInvCiclico.Cantidad_Reservada_UMBas)
+                                                  BeTransInvCiclico.Cantidad_Reservada_UMBas,
+                                                  BeTransInvCiclico.Contado)
 
                     SplashScreenManager.Default.SetWaitFormDescription(vContador & " de: " & ListInventarioCiclico.Count)
 
@@ -8254,7 +8256,8 @@ Public Class frmInventario
                                                   Extraviado,
                                                   BeTransInvCiclico.Idinventarioenc,
                                                   BeTransInvCiclico.IdProductoBodega,
-                                                  IIf(BeTransInvCiclico.lic_plate = "", "", BeTransInvCiclico.lic_plate))
+                                                  IIf(BeTransInvCiclico.lic_plate = "", "", BeTransInvCiclico.lic_plate),
+                                                  BeTransInvCiclico.Contado)
 
                     SplashScreenManager.Default.SetWaitFormDescription(vContador & " de: " & ListInventarioCiclico.Count)
 
@@ -8710,7 +8713,8 @@ Public Class frmInventario
                                                   BeTransInvCiclico.Idinventarioenc,
                                                   BeTransInvCiclico.IdProductoBodega,
                                                   IIf(BeTransInvCiclico.lic_plate = "", "", BeTransInvCiclico.lic_plate),
-                                                  BeTransInvCiclico.Cantidad_Reservada_UMBas)
+                                                  BeTransInvCiclico.Cantidad_Reservada_UMBas,
+                                                  BeTransInvCiclico.Contado)
 
                     SplashScreenManager.Default.SetWaitFormDescription(vContador + 1 & " de: " & ListInventarioCiclico.Count)
 

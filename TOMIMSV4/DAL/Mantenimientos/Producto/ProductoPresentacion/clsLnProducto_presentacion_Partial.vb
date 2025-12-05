@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data.Common
+Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnProducto_presentacion
@@ -3435,6 +3436,41 @@ Partial Public Class clsLnProducto_presentacion
 
         Catch ex As Exception
             Throw New Exception("Error en Get_All_Presentacion_By_IdPedidoEnc: " & ex.Message)
+        End Try
+
+    End Function
+
+    Public Shared Function Get_IdPresentacion_By_Codigo(ByVal pCodigo As String,
+                                                        ByVal pIdProducto As String,
+                                                        ByVal pConnection As SqlConnection,
+                                                        ByVal pTransaction As SqlTransaction) As Integer
+
+        Get_IdPresentacion_By_Codigo = 0
+
+        Try
+
+            Dim vSQL As String = "SELECT IdPresentacion FROM producto_presentacion WHERE Codigo=@pCodigo AND IdProducto = @pIdProducto "
+
+            Using lDTA As New SqlDataAdapter(vSQL, pConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = pTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@pCodigo", pCodigo)
+                lDTA.SelectCommand.Parameters.AddWithValue("@pIdProducto", pIdProducto)
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                    Get_IdPresentacion_By_Codigo = lDataTable.Rows(0).Item("IdPresentacion")
+
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
         End Try
 
     End Function

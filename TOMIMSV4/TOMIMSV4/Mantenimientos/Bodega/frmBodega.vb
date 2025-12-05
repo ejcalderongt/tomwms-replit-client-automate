@@ -3739,7 +3739,7 @@ Public Class frmBodega
                 pListObjBodegaAreas(pIndex).Fec_mod = Now
                 pListObjBodegaAreas(pIndex).Grupo = txtGrupoArea.Text.Trim()
                 pListObjBodegaAreas(pIndex).Activo = chkActivoAreaBodega.Checked
-                pListObjBodegaAreas(pIndex).IdUbicacionRef = txtUbicacionRecepcionArea.Text
+                pListObjBodegaAreas(pIndex).IdUbicacionRef = Val(txtUbicacionRecepcionArea.Text)
 
             Else
 

@@ -294,7 +294,6 @@ Public Class frmPicking
             Pedidos_Tienen_Picking_Asociado = False
 
         Catch ex As Exception
-            SplashScreenManager.CloseForm(False)
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
@@ -4362,6 +4361,8 @@ Public Class frmPicking
                     chkverifica_auto.Checked = bo.pBePedidoEnc.TipoPedido.Verificar
                     chkFotografiaVerificacion.Checked = bo.pBePedidoEnc.TipoPedido.Fotografia_Verificacion
                     chkEmpaquePorTarima.Checked = bo.pBePedidoEnc.TipoPedido.Empaque_Tarima
+
+                    bo.pBePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(bo.pBePedidoEnc.IdPedidoEnc)
 
                     If bo.pBePedidoEnc.Detalle IsNot Nothing AndAlso bo.pBePedidoEnc.Detalle.Count > 0 Then
 

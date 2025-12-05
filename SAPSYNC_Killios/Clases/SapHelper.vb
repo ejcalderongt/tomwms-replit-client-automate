@@ -152,5 +152,75 @@ Public Class SapHelper
         Return factor
     End Function
 
+    Public Structure UoMInfo
+        Public UoMEntry As Integer
+        Public UoMCode As String
+    End Structure
+
+    ''' <summary>
+    ''' Obtiene UoMEntry y UoMCode de una línea de una Inventory Transfer Request.
+    ''' </summary>
+    ''' <param name="company">Instancia conectada de SAPbobsCOM.Company</param>
+    ''' <param name="docEntry">DocEntry del documento (Transfer Request)</param>
+    ''' <param name="itemCode">Código de artículo (ItemCode) a buscar</param>
+    ''' <param name="lineNum">Número de línea EXACTO (base 0 en SAP B1)</param>
+    ''' <param name="result">Estructura de salida con UoMEntry y UoMCode</param>
+    ''' <returns>True si encontró la línea y llenó result; False en caso contrario</returns>
+    Public Shared Function GetUoMFromTransferRequest(
+        ByVal company As SAPbobsCOM.Company,
+        ByVal docEntry As Integer,
+        ByVal itemCode As String,
+        ByVal lineNum As Integer,
+        ByRef result As UoMInfo
+    ) As Boolean
+
+        If company Is Nothing OrElse company.Connected = False Then
+            Throw New InvalidOperationException("La conexión a SAP (Company) no está establecida.")
+        End If
+
+        ' Obtener el documento de tipo Inventory Transfer Request
+        Dim trq As SAPbobsCOM.StockTransfer =
+            CType(company.GetBusinessObject(BoObjectTypes.oInventoryTransferRequest), SAPbobsCOM.StockTransfer)
+
+        If trq Is Nothing Then
+            Throw New ApplicationException("No se pudo crear el objeto oInventoryTransferRequest.")
+        End If
+
+        If Not trq.GetByKey(docEntry) Then
+            ' No existe el DocEntry solicitado
+            Return False
+        End If
+
+        ' Recorrer líneas y encontrar coincidencia por ItemCode y LineNum
+        For i As Integer = 0 To trq.Lines.Count - 1
+            trq.Lines.SetCurrentLine(i)
+
+            ' Comparación estricta por línea e ItemCode
+            If trq.Lines.LineNum = lineNum AndAlso
+               String.Equals(trq.Lines.ItemCode, itemCode, StringComparison.OrdinalIgnoreCase) Then
+
+                result = New UoMInfo With {
+                    .UoMEntry = trq.Lines.UoMEntry,
+                    .UoMCode = trq.Lines.UoMCode
+                }
+                Return True
+            End If
+        Next
+
+        ' Si no se encontró la línea exacta, intentar por ItemCode y devolver la primera coincidencia (opcional).
+        ' Descomenta este bloque si quieres fallback por ItemCode:
+        'For i As Integer = 0 To trq.Lines.Count - 1
+        '    trq.Lines.SetCurrentLine(i)
+        '    If String.Equals(trq.Lines.ItemCode, itemCode, StringComparison.OrdinalIgnoreCase) Then
+        '        result = New UoMInfo With {
+        '            .UoMEntry = trq.Lines.UoMEntry,
+        '            .UoMCode = trq.Lines.UoMCode
+        '        }
+        '        Return True
+        '    End If
+        'Next
+
+        Return False
+    End Function
 
 End Class

@@ -5,6 +5,7 @@ Imports System.Threading
 Imports System.Threading.Tasks
 Imports DevExpress.Data
 Imports DevExpress.Utils
+Imports DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Controls
@@ -980,6 +981,10 @@ Public Class frmPedido
                             pBeStock.IdProductoBodega = pDet.ProductoBodega.IdProductoBodega
                             pDet.IdProductoBodega = pDet.ProductoBodega.IdProductoBodega
 
+                            If pDet.IdProductoBodega = 991 Then
+                                Debug.Print("Hola")
+                            End If
+
                             '#EJC20220720_1357:Abastecer desde ubicación específica de cliente.
                             pBeStock.IdUbicacion = Val(txtIdUbicacionAbastecimiento.Text)
 
@@ -1073,6 +1078,9 @@ Public Class frmPedido
                                         Dim BePresProd = lPresentacionesByPedido.Find(Function(x) x.IdProducto = pDet.Producto.IdProducto)
                                         If Not BePresProd Is Nothing Then
                                             pDet.Factor = BePresProd.Factor
+                                        Else
+                                            '#CKFK20251010 Se agregó esta línea para cuando no haya presentación en el inventario
+                                            pDet.Factor = 1
                                         End If
 
                                         '#CM_20191128: Divido la cantidad UMBas entre el factor
@@ -3069,9 +3077,7 @@ Public Class frmPedido
     End Sub
 
     Private Sub lnkCliente_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnkCliente.LinkClicked
-
         Set_Cliente()
-
     End Sub
 
     Private Sub Set_Cliente()
@@ -3094,13 +3100,6 @@ Public Class frmPedido
             If Not CliList.Propietario() Is Nothing Then
 
                 CliList.ShowDialog()
-
-                ''GT21082022_2100: deje esto aca para para que cargue el list de clientes si hacen clic en lnkCliente
-                'IMS.Listar_Clientes_By_IdPropietario(txtIdCliente,
-                '                                         lcmbPropietario.GetColumnValue("IdPropietario"),
-                '                                         0,
-                '                                         cmbBodega.EditValue,
-                '                                         BeTipoDoc.Requerir_Cliente_Es_Bodega_WMS)
 
                 '#CKFK20241107 Listar los clientes tomando en cuenta el tipo de documento
                 If BeTipoDoc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Devolucion_Proveedor Then
@@ -4468,6 +4467,15 @@ Public Class frmPedido
                         CantidadCell.ErrorText = result
                         dgrid.Rows(CantidadCell.RowIndex).ErrorText = result
                         e.Cancel = True
+                    ElseIf BeConfigBodega.Interface_SAP AndAlso vNoLinea <> "0" AndAlso vNoLinea <> "" AndAlso
+                        Not Producto_Linea_Consistente(dgrid, NoLineaCell.RowIndex) Then '#EJC20251010: Validación para Killios/SAP.
+                        dgrid.Rows(CodProductoCell.RowIndex).ErrorText = ""
+                        dgrid.Rows(CantidadCell.RowIndex).ErrorText = ""
+                        dgrid.Rows(PesoCell.RowIndex).ErrorText = ""
+                        dgrid.Rows(PrecioCell.RowIndex).ErrorText = ""
+                        NoLineaCell.ErrorText = ""
+                        dgrid.Rows(NoLineaCell.RowIndex).ErrorText = "Producto/Línea inconsistente"
+                        e.Cancel = True
                     Else
 
                         LimpiarMensajesErrorCeldas()
@@ -4482,7 +4490,6 @@ Public Class frmPedido
                                     '#EJC20210209: Lo cambio a IdPedidoDet antes NoLinea, evaluar....
                                     vIdPedidoDet = pBePedidoDetList.Max(Function(x) x.IdPedidoDet) + 1
                                 Else 'Se movi? hacia una línea existente (Que probablemente ya tiene stock reservado) #EJC20180710: Descubierto!
-
                                     vIdPedidoDet = pBePedidoDet.IdPedidoDet
                                 End If
 
@@ -12237,6 +12244,88 @@ Public Class frmPedido
 
         Dim fecha As Date
         Return Date.TryParseExact(Fecha_Aceptacion, "dd/MM/yyyy", Nothing, Globalization.DateTimeStyles.None, fecha)
+    End Function
+
+    Private Function Producto_Linea_Consistente(ByVal dgrid As DataGridView, ByVal rowIndex As Integer) As Boolean
+        If rowIndex < 0 OrElse rowIndex >= dgrid.Rows.Count Then Return True
+
+        Dim row As DataGridViewRow = dgrid.Rows(rowIndex)
+        If row Is Nothing OrElse row.IsNewRow Then Return True
+
+        ' Limpiar errores previos en la fila
+        row.ErrorText = ""
+        If dgrid.Columns.Contains("ColNo_Linea") Then row.Cells("ColNo_Linea").ErrorText = ""
+        If dgrid.Columns.Contains("colCodProducto") Then row.Cells("colCodProducto").ErrorText = ""
+
+        Dim linea As Integer = 0
+        If dgrid.Columns.Contains("ColNo_Linea") Then
+            Integer.TryParse(Convert.ToString(row.Cells("ColNo_Linea").Value), linea)
+        End If
+
+        Dim pKey As String = GetProductoKey(row)
+        If pKey Is Nothing Then Return True ' nada que validar si no hay producto
+
+        Dim ok As Boolean = True
+
+        ' 3.1 – ¿Hay OTRO producto usando mi misma línea?
+        Dim mismoLineaOtroProducto = dgrid.Rows.Cast(Of DataGridViewRow)().
+            Where(Function(r) Not r.IsNewRow AndAlso r.Index <> rowIndex).
+            Any(Function(r)
+                    Dim l2 As Integer = 0 : Integer.TryParse(Convert.ToString(r.Cells("ColNo_Linea").Value), l2)
+                    Dim p2 As String = GetProductoKey(r)
+                    Return l2 = linea AndAlso p2 IsNot Nothing AndAlso p2 <> pKey
+                End Function)
+
+        If mismoLineaOtroProducto Then
+            ok = False
+            row.ErrorText = "Este No. de línea ya está asociado a otro producto."
+            If dgrid.Columns.Contains("ColNo_Linea") Then
+                row.Cells("ColNo_Linea").ErrorText = "Conflicto: línea duplicada con producto distinto."
+            End If
+        End If
+
+        ' 3.2 – ¿Mi producto aparece en OTRA línea?
+        Dim productoEnOtraLinea = dgrid.Rows.Cast(Of DataGridViewRow)().
+            Where(Function(r) Not r.IsNewRow AndAlso r.Index <> rowIndex).
+            Any(Function(r)
+                    Dim l2 As Integer = 0 : Integer.TryParse(Convert.ToString(r.Cells("ColNo_Linea").Value), l2)
+                    Dim p2 As String = GetProductoKey(r)
+                    Return p2 = pKey AndAlso l2 <> linea
+                End Function)
+
+        If productoEnOtraLinea Then
+            ok = False
+            row.ErrorText = If(String.IsNullOrEmpty(row.ErrorText), "Este producto ya está en otra línea.", row.ErrorText & " Este producto ya está en otra línea.")
+            If dgrid.Columns.Contains("colCodProducto") Then
+                row.Cells("colCodProducto").ErrorText = "Conflicto: mismo producto con Nº de línea distinto."
+            End If
+        End If
+
+        Return ok
+    End Function
+    Private Function GetProductoKey(row As DataGridViewRow) As String
+        If row Is Nothing OrElse row.IsNewRow Then Return Nothing
+
+        Dim idPTC As Integer = 0
+        Dim idPB As Integer = 0
+        Dim cod As String = ""
+
+        If row.DataGridView.Columns.Contains("colIdProductoTallaColor") Then
+            Integer.TryParse(Convert.ToString(row.Cells("colIdProductoTallaColor").Value), idPTC)
+        End If
+
+        If row.DataGridView.Columns.Contains("colIdProductoBodega") Then
+            Integer.TryParse(Convert.ToString(row.Cells("colIdProductoBodega").Value), idPB)
+        End If
+
+        If row.DataGridView.Columns.Contains("colCodProducto") Then
+            cod = Convert.ToString(row.Cells("colCodProducto").Value)
+        End If
+
+        If idPTC > 0 Then Return $"PTC:{idPTC}"
+        If idPB > 0 Then Return $"PB:{idPB}"
+        If Not String.IsNullOrWhiteSpace(cod) Then Return $"COD:{cod.Trim().ToUpperInvariant()}"
+        Return Nothing
     End Function
 
 End Class
