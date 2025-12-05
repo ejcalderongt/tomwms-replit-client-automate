@@ -148,6 +148,18 @@ Entity
  PICH000. Ingreso sin referencia verificado con HH. Permite realizar la impresión de etiquetas para pre-ingreso
  </summary>
 </member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_enc.Auditado">
+#EJC20240719: Auditado, determina si el ajuste ya se validó previo a ser enviado a ERP.<summary>
+ </summary>
+ <returns></returns>
+</member>
+<member name="P:TOMWMS.clsBeTrans_ajuste_enc.Centro_Costo_Erp">
+ <summary>
+ #CKFK20251030 Agregamos estos tres campos para la integración con ERP 
+ ya que  centro de costo maneja centro de costo dirección y departamento
+ </summary>
+ <returns></returns>
+</member>
 <member name="P:TOMWMS.clsBeProveedor_tiempos.IdTiempoProveedor">
  <summary>
  Gets or sets the identifier tiempo proveedor.
@@ -1428,18 +1440,6 @@ Entity
  Creates a new object that is a copy of the current instance.
  </summary>
  <returns>A new object that is a copy of this instance.</returns>
-</member>
-<member name="P:TOMWMS.clsBeTrans_ajuste_enc.Auditado">
-#EJC20240719: Auditado, determina si el ajuste ya se validó previo a ser enviado a ERP.<summary>
- </summary>
- <returns></returns>
-</member>
-<member name="P:TOMWMS.clsBeTrans_ajuste_enc.Centro_Costo_Erp">
- <summary>
- #CKFK20251030 Agregamos estos tres campos para la integración con ERP 
- ya que  centro de costo maneja centro de costo dirección y departamento
- </summary>
- <returns></returns>
 </member>
 <member name="P:TOMWMS.clsBeBodega_ubicacion.Disponibilidad_Ubicacion">
  <summary>
