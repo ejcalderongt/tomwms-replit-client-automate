@@ -70,6 +70,17 @@ SAPBOSyncKillios
  <returns></returns>
  <remarks></remarks>
 </member>
+<member name="M:TOMWMS.SapHelper.GetUoMFromTransferRequest(SAPbobsCOM.Company,System.Int32,System.String,System.Int32,TOMWMS.SapHelper.UoMInfo@)">
+ <summary>
+ Obtiene UoMEntry y UoMCode de una línea de una Inventory Transfer Request.
+ </summary>
+ <param name="company">Instancia conectada de SAPbobsCOM.Company</param>
+ <param name="docEntry">DocEntry del documento (Transfer Request)</param>
+ <param name="itemCode">Código de artículo (ItemCode) a buscar</param>
+ <param name="lineNum">Número de línea EXACTO (base 0 en SAP B1)</param>
+ <param name="result">Estructura de salida con UoMEntry y UoMCode</param>
+ <returns>True si encontró la línea y llenó result; False en caso contrario</returns>
+</member>
 <member name="T:TOMWMS.DSEjecuciones">
 <summary>
 Represents a strongly typed in-memory cache of data.

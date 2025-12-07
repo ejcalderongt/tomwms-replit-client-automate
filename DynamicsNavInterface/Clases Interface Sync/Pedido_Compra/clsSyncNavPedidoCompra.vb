@@ -174,7 +174,10 @@ Public Class clsSyncNavPedidoCompra : Inherits clsInterfaceBase
                         'Proveedor
                         BeI_nav_PedidoCompra.Buy_From_Vendor_Name = PC.Buy_from_Vendor_Name
                         BeI_nav_PedidoCompra.Buy_From_Vendor_No = PC.Buy_from_Vendor_No
-                        BeI_nav_PedidoCompra.Document_Type = clsDataContractDI.tTipoDocumentoIngreso.Orden_De_Compra_Interna
+                        '#CKFK20251107 Voy a poner esto en comentario porque deberia ser de tipo ingreso
+                        'BeI_nav_PedidoCompra.Document_Type = clsDataContractDI.tTipoDocumentoIngreso.Orden_De_Compra_Interna
+
+                        BeI_nav_PedidoCompra.Document_Type = clsDataContractDI.tTipoDocumentoIngreso.Ingreso
 
                         lblprg.AppendText(String.Format("Procesando Pedido Compra: {0} ", BeI_nav_PedidoCompra.No, vbNewLine))
                         lblprg.AppendText(vbNewLine)
@@ -718,23 +721,10 @@ Public Class clsSyncNavPedidoCompra : Inherits clsInterfaceBase
 
                     If navPedidoCompraEnc.Status <> 0 Then
 
-                        If Not navPedidoCompraEnc.No = "OP-00047234" Then
-                            Debug.Print("ESPERA")
-                            'Continue For
-                        End If
-
                         lblprg.AppendText(String.Format("Procesando D.I.: {0} ", navPedidoCompraEnc.No, vbNewLine))
                         lblprg.AppendText(vbNewLine)
                         lblprg.SelectionStart = lblprg.TextLength
                         lblprg.ScrollToCaret()
-
-                        If navPedidoCompraEnc.No = "PC-096587" Then
-                            Debug.Print("Hola")
-                        End If
-
-                        If navPedidoCompraEnc.No = "PC-098135" Then
-                            Debug.Print("Hola")
-                        End If
 
                         gBeOrdenCompra = New clsBeTrans_oc_enc() With {.Referencia = navPedidoCompraEnc.No,
                                                                        .IdTipoIngresoOC = navPedidoCompraEnc.Document_Type}

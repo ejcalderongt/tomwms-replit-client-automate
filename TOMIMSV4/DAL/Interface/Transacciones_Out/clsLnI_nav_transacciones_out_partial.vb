@@ -487,6 +487,17 @@ Partial Public Class clsLnI_nav_transacciones_out
                     If BeConfigEnc.Interface_SAP Then
                         '#EJC20250609: Validar si no afecta esta condición en la cumbre.
                         vEnviado = BePedidoEnc.Enviado_A_ERP
+
+                        '#EJC20251010: Si ya tiene no_picking_erp = transferencia_sap (para Killios), entonces actualizo el no_picking_erp vacío.
+                        'para que se pueda enviar nuevamente por la interface.
+                        Dim vNoPickingErp As String = clsLnTrans_pe_enc.Get_No_Picking_ERP_By_IdPedidoEnc(BePedidoEnc.IdPedidoEnc, lConnection, lTransaction)
+                        If Not vNoPickingErp = "" Then
+                            BePedidoEnc.No_Picking_ERP = ""
+                            pBeDespachoEnc.No_pase = 0
+                            clsLnTrans_pe_enc.Actualizar_No_Picking_ERP(BePedidoEnc, lConnection, lTransaction)
+                            clsLnTrans_despacho_enc.Actualizar_No_Pase(pBeDespachoEnc, lConnection, lTransaction)
+                        End If
+
                     End If
 
                     For Each BeDespachoDet As clsBeTrans_despacho_det In pBeDespachoEnc.ListaDetalle.Where(Function(x) (x.IdPedidoEnc = BePedidoEnc.IdPedidoEnc AndAlso

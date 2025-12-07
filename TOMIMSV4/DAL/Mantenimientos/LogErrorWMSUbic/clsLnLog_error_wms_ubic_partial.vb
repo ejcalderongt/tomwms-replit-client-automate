@@ -52,8 +52,8 @@ Partial Public Class clsLnLog_error_wms_ubic
             oBe.Licencia = pLicencia
             oBe.IdOperador = pIdOperador
 
-            oBe.UsrAgr = pUsrAgr
-            oBe.FechaAgr = Now
+            oBe.user_agr = pUsrAgr
+            oBe.fec_agr = Now
 
             Insertar(oBe, pConection, pTransaction)
 

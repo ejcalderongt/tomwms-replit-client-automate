@@ -525,16 +525,16 @@ Public Class frmListaStockControlCalidad
             pTrans_ubic_hh_enc.IsNew = 1
 
             clsLnTrans_ubic_hh_enc.Guardar_Transaccion(pTrans_ubic_hh_enc,
-                                                      pListUbicHHDet,
-                                                      pListjOperador,
-                                                      pListMovimiento,
-                                                      0,
-                                                      IdPropietario_,
-                                                      pListStockMov,
-                                                      pListTransUbicTarimaDisponibles,
-                                                      pListTransUbicTarimaUsadas,
-                                                      pTrans_ubic_hh_enc.IdTareaUbicacionEnc,
-                                                      AP.HostName
+                                                       pListUbicHHDet,
+                                                       pListjOperador,
+                                                       pListMovimiento,
+                                                       0,
+                                                       IdPropietario_,
+                                                       pListStockMov,
+                                                       pListTransUbicTarimaDisponibles,
+                                                       pListTransUbicTarimaUsadas,
+                                                       pTrans_ubic_hh_enc.IdTareaUbicacionEnc,
+                                                       AP.HostName
                                                       )
 
             Guardar = True
@@ -648,6 +648,7 @@ Public Class frmListaStockControlCalidad
         Try
 
             pListStockMov.Clear()
+            pListMovimiento.Clear()
 
             '#GT27120223: llenar la lista con las filas seleccionadas del grid, para luego cargar Estados
             '#GT27122023: mostrar estados de un único propietario.
@@ -787,8 +788,8 @@ Public Class frmListaStockControlCalidad
                                 If BePresentacion.Factor = 0 Then
                                     Throw New Exception("ERR20220202_1458: El factor de la presentación es 0. esto crearía un movimiento no válido para el sistema, valide el factor de la presentación. Identificador de presentación: " & mov.IdPresentacion)
                                 Else
-                                    mov.Cantidad = Math.Round(mov.Cantidad * BePresentacion.Factor, 6)
-                                    mov.Cantidad_hist = Math.Round(mov.Cantidad_hist * BePresentacion.Factor, 6)
+                                    mov.Cantidad = Math.Round(mov.Cantidad / BePresentacion.Factor, 6)
+                                    mov.Cantidad_hist = Math.Round(mov.Cantidad_hist / BePresentacion.Factor, 6)
                                 End If
                             Else
                                 Throw New Exception("ERR20220202_1458: No se encontró el objeto de presentación para el identificador: " & mov.IdPresentacion)

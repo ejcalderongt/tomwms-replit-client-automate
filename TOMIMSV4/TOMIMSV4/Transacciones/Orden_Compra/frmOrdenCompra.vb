@@ -7709,7 +7709,6 @@ MessageBoxButtons.YesNo,
                                                                                   AP.HostName,
                                                                                   vNombreArchivoLayOutGridgvDetalleDocIngreso)
 
-
             If Not BeConfiguracionUsuarioDet Is Nothing Then
                 gvDetalleDocIngreso.RestoreLayoutFromStream(BeConfiguracionUsuarioDet.Stream_Template)
                 mnuEliminarLayoutGrid.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
@@ -8011,6 +8010,7 @@ MessageBoxButtons.YesNo,
         End Try
 
     End Sub
+
     Private Sub cmdDuplicar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdDuplicar.ItemClick
 
         Try
