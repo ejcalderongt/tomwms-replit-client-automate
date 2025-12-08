@@ -10935,6 +10935,21 @@ Partial Public Class clsLnStock
                     clsLnResolucion_lp_operador.Actualizar_Correlativo_Actual(clsBeRes_Operador, lConnection, lTransaction)
                 End If
 
+                '#MECR25112025: Se agrego bitacora de logs para reabastecimiento
+                Dim msjInsercion As String = "Se creó reabastecimiento con licencia: " + pLic_Plate + " , Por el usuario: " + pIdUsuario.ToString
+                clsLnLog_error_wms_reab.Agregar_Error(msjInsercion,
+                                                      pIdBodega:=pIdBodega,
+                                                      pIdStock:=pIdStock,
+                                                      pIdMovimiento:=pIdMovimiento,
+                                                      pLic_Plate_Anterior:=pLic_Plate_Ant,
+                                                      pLic_Plate:=pLic_Plate,
+                                                      pIdResolucion:=pIdResolucion,
+                                                      pIdProductoBodega:=BeProdPallet.IdProductoBodega,
+                                                      pCantidad:=BeProdPallet.Cantidad,
+                                                      pUser_agr:=pIdUsuario,
+                                                      pConection:=lConnection,
+                                                      pTransaction:=lTransaction)
+
                 Actualizar_PalletId_Por_Explosion = True
 
             Else

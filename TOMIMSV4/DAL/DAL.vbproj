@@ -216,6 +216,8 @@
     <Compile Include="Mantenimientos\LogErrorWMSPed\clsLnLog_error_wms_pe_partial.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSPick\clsLnLog_error_wms_pick.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSPick\clsLnLog_error_wms_pick_partial.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSReab\clsLnLog_error_wms_reab.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSReab\clsLn_Log_error_wms_reab_partial.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSRec\clsLnLog_error_wms_rec.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSRec\clsLnLog_error_wms_rec_partial.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb" />
