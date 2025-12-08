@@ -6008,11 +6008,14 @@ Public Class frmPedido
                         '#GT21082025: en el pedido estan los id´s para talla y color, no consultar again la bd
                         Dim Pedido_Det = pBePedidoEnc.Detalle.Find(Function(x) x.IdPedidoEnc = Objs.IdPedidoEnc AndAlso x.IdPedidoDet = Objs.IdPedidoDet)
 
-                        Dim Talla = Lista_tallas.Find(Function(x) x.IdTalla = Pedido_Det.Talla)
-                        lRow.Item("Talla") = Talla.Codigo
+                        'Dim Talla = Lista_tallas.Find(Function(x) x.Codigo = Pedido_Det.Talla)
+                        'lRow.Item("Talla") = Talla.Codigo
 
-                        Dim Color = Lista_colores.Find(Function(x) x.IdColor = Pedido_Det.Color)
-                        lRow.Item("Color") = Color.Codigo
+                        'Dim Color = Lista_colores.Find(Function(x) x.Codigo = Pedido_Det.Color)
+                        'lRow.Item("Color") = Color.Codigo
+
+                        lRow.Item("Talla") = Pedido_Det.Talla
+                        lRow.Item("Color") = Pedido_Det.Color
 
                     End If
 

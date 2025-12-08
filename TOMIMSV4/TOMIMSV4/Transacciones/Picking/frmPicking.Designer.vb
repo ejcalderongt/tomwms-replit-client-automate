@@ -117,9 +117,9 @@ Partial Class frmPicking
         Me.RibbonPageGroup5 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup3 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup2 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
+        Me.RibbonStatusBar1 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.RibbonStatusBar2 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
-        Me.RibbonStatusBar1 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.PopupMenu1 = New DevExpress.XtraBars.PopupMenu(Me.components)
         Me.XtraTabControl1 = New DevExpress.XtraTab.XtraTabControl()
         Me.XtratabPageDato = New DevExpress.XtraTab.XtraTabPage()
@@ -552,7 +552,7 @@ Partial Class frmPicking
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.RibbonControl.Size = New System.Drawing.Size(1762, 193)
-        Me.RibbonControl.StatusBar = Me.RibbonStatusBar1
+        Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'mnuGuardar
         '
@@ -874,6 +874,15 @@ Partial Class frmPicking
         Me.RibbonPageGroup2.Name = "RibbonPageGroup2"
         Me.RibbonPageGroup2.Text = "Estado del Registro"
         '
+        'RibbonStatusBar1
+        '
+        Me.RibbonStatusBar1.ItemLinks.Add(Me.lblRegs)
+        Me.RibbonStatusBar1.Location = New System.Drawing.Point(2, 672)
+        Me.RibbonStatusBar1.Margin = New System.Windows.Forms.Padding(4)
+        Me.RibbonStatusBar1.Name = "RibbonStatusBar1"
+        Me.RibbonStatusBar1.Ribbon = Me.RibbonControl
+        Me.RibbonStatusBar1.Size = New System.Drawing.Size(1756, 33)
+        '
         'RibbonStatusBar2
         '
         Me.RibbonStatusBar2.ItemLinks.Add(Me.lblRegs1)
@@ -891,15 +900,6 @@ Partial Class frmPicking
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
         Me.RibbonStatusBar.Size = New System.Drawing.Size(1762, 30)
         Me.RibbonStatusBar.Visible = False
-        '
-        'RibbonStatusBar1
-        '
-        Me.RibbonStatusBar1.ItemLinks.Add(Me.lblRegs)
-        Me.RibbonStatusBar1.Location = New System.Drawing.Point(2, 672)
-        Me.RibbonStatusBar1.Margin = New System.Windows.Forms.Padding(4)
-        Me.RibbonStatusBar1.Name = "RibbonStatusBar1"
-        Me.RibbonStatusBar1.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar1.Size = New System.Drawing.Size(1548, 33)
         '
         'PopupMenu1
         '
@@ -1466,7 +1466,7 @@ Partial Class frmPicking
         Me.XtratabPagePedido.Margin = New System.Windows.Forms.Padding(4)
         Me.XtratabPagePedido.Name = "XtratabPagePedido"
         Me.XtratabPagePedido.Padding = New System.Windows.Forms.Padding(12)
-        Me.XtratabPagePedido.Size = New System.Drawing.Size(1552, 707)
+        Me.XtratabPagePedido.Size = New System.Drawing.Size(1760, 707)
         Me.XtratabPagePedido.Text = "Pedidos"
         '
         'SplitContainerControl1
@@ -1490,7 +1490,7 @@ Partial Class frmPicking
         Me.SplitContainerControl1.Panel2.Controls.Add(Me.GroupControl1)
         Me.SplitContainerControl1.Panel2.Text = "Panel2"
         Me.SplitContainerControl1.ShowSplitGlyph = DevExpress.Utils.DefaultBoolean.[False]
-        Me.SplitContainerControl1.Size = New System.Drawing.Size(1528, 683)
+        Me.SplitContainerControl1.Size = New System.Drawing.Size(1736, 683)
         Me.SplitContainerControl1.SplitterPosition = 169
         Me.SplitContainerControl1.TabIndex = 1
         '
@@ -1501,7 +1501,7 @@ Partial Class frmPicking
         Me.GroupControl6.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl6.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl6.Name = "GroupControl6"
-        Me.GroupControl6.Size = New System.Drawing.Size(1520, 165)
+        Me.GroupControl6.Size = New System.Drawing.Size(1728, 165)
         Me.GroupControl6.TabIndex = 0
         Me.GroupControl6.Text = "Encabezado de Pedido"
         '
@@ -1539,7 +1539,7 @@ Partial Class frmPicking
         Me.dgridPedidos.RowHeadersVisible = False
         Me.dgridPedidos.RowHeadersWidth = 40
         Me.dgridPedidos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgridPedidos.Size = New System.Drawing.Size(1516, 135)
+        Me.dgridPedidos.Size = New System.Drawing.Size(1724, 135)
         Me.dgridPedidos.TabIndex = 1
         '
         'IdPedido
@@ -1607,7 +1607,7 @@ Partial Class frmPicking
         Me.GroupControl1.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl1.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(1520, 494)
+        Me.GroupControl1.Size = New System.Drawing.Size(1728, 494)
         Me.GroupControl1.TabIndex = 0
         Me.GroupControl1.Text = "Detalles de Pedidos"
         '
@@ -1658,7 +1658,7 @@ Partial Class frmPicking
         Me.dgridDetallePicking.RowHeadersVisible = False
         Me.dgridDetallePicking.RowHeadersWidth = 40
         Me.dgridDetallePicking.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgridDetallePicking.Size = New System.Drawing.Size(1508, 409)
+        Me.dgridDetallePicking.Size = New System.Drawing.Size(1716, 409)
         Me.dgridDetallePicking.TabIndex = 3
         '
         'IdPedidoEnc
@@ -1787,7 +1787,7 @@ Partial Class frmPicking
         Me.XtraTabPageUbicacionPicking.Controls.Add(Me.GroupControl7)
         Me.XtraTabPageUbicacionPicking.Margin = New System.Windows.Forms.Padding(4)
         Me.XtraTabPageUbicacionPicking.Name = "XtraTabPageUbicacionPicking"
-        Me.XtraTabPageUbicacionPicking.Size = New System.Drawing.Size(1552, 707)
+        Me.XtraTabPageUbicacionPicking.Size = New System.Drawing.Size(1760, 707)
         Me.XtraTabPageUbicacionPicking.Text = "Asignación"
         '
         'GroupControl7
@@ -1798,7 +1798,7 @@ Partial Class frmPicking
         Me.GroupControl7.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl7.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl7.Name = "GroupControl7"
-        Me.GroupControl7.Size = New System.Drawing.Size(1552, 707)
+        Me.GroupControl7.Size = New System.Drawing.Size(1760, 707)
         Me.GroupControl7.TabIndex = 0
         '
         'TableLayoutPanel1
@@ -1814,17 +1814,17 @@ Partial Class frmPicking
         Me.TableLayoutPanel1.Name = "TableLayoutPanel1"
         Me.TableLayoutPanel1.RowCount = 1
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 79.26566!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1548, 644)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(1756, 644)
         Me.TableLayoutPanel1.TabIndex = 2
         '
         'GroupControl2
         '
         Me.GroupControl2.Controls.Add(Me.GroupControl3)
         Me.GroupControl2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupControl2.Location = New System.Drawing.Point(863, 4)
+        Me.GroupControl2.Location = New System.Drawing.Point(978, 4)
         Me.GroupControl2.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl2.Name = "GroupControl2"
-        Me.GroupControl2.Size = New System.Drawing.Size(681, 636)
+        Me.GroupControl2.Size = New System.Drawing.Size(774, 636)
         Me.GroupControl2.TabIndex = 0
         '
         'GroupControl3
@@ -1835,7 +1835,7 @@ Partial Class frmPicking
         Me.GroupControl3.Location = New System.Drawing.Point(2, 28)
         Me.GroupControl3.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl3.Name = "GroupControl3"
-        Me.GroupControl3.Size = New System.Drawing.Size(677, 606)
+        Me.GroupControl3.Size = New System.Drawing.Size(770, 606)
         Me.GroupControl3.TabIndex = 0
         Me.GroupControl3.Text = "Selección de Operadores"
         '
@@ -1845,11 +1845,11 @@ Partial Class frmPicking
         Me.grdOperadorBodega.DataSource = Me.DataBindingSource
         Me.grdOperadorBodega.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grdOperadorBodega.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        Me.grdOperadorBodega.Location = New System.Drawing.Point(2, 55)
+        Me.grdOperadorBodega.Location = New System.Drawing.Point(2, 59)
         Me.grdOperadorBodega.MainView = Me.DgridOperadorBodega
         Me.grdOperadorBodega.Margin = New System.Windows.Forms.Padding(4)
         Me.grdOperadorBodega.Name = "grdOperadorBodega"
-        Me.grdOperadorBodega.Size = New System.Drawing.Size(673, 549)
+        Me.grdOperadorBodega.Size = New System.Drawing.Size(766, 545)
         Me.grdOperadorBodega.TabIndex = 0
         Me.grdOperadorBodega.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.DgridOperadorBodega})
         '
@@ -1938,7 +1938,7 @@ Partial Class frmPicking
         Me.ToolStripPR.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdSavePR, Me.cmdDesactivarPresentacion})
         Me.ToolStripPR.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripPR.Name = "ToolStripPR"
-        Me.ToolStripPR.Size = New System.Drawing.Size(673, 27)
+        Me.ToolStripPR.Size = New System.Drawing.Size(766, 31)
         Me.ToolStripPR.TabIndex = 2
         Me.ToolStripPR.Text = "ToolStrip2"
         '
@@ -1947,7 +1947,7 @@ Partial Class frmPicking
         Me.cmdSavePR.Image = CType(resources.GetObject("cmdSavePR.Image"), System.Drawing.Image)
         Me.cmdSavePR.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdSavePR.Name = "cmdSavePR"
-        Me.cmdSavePR.Size = New System.Drawing.Size(73, 24)
+        Me.cmdSavePR.Size = New System.Drawing.Size(73, 28)
         Me.cmdSavePR.Text = "Todos"
         '
         'cmdDesactivarPresentacion
@@ -1955,7 +1955,7 @@ Partial Class frmPicking
         Me.cmdDesactivarPresentacion.Image = CType(resources.GetObject("cmdDesactivarPresentacion.Image"), System.Drawing.Image)
         Me.cmdDesactivarPresentacion.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDesactivarPresentacion.Name = "cmdDesactivarPresentacion"
-        Me.cmdDesactivarPresentacion.Size = New System.Drawing.Size(90, 24)
+        Me.cmdDesactivarPresentacion.Size = New System.Drawing.Size(90, 28)
         Me.cmdDesactivarPresentacion.Text = "Ninguno"
         '
         'dgridPickingUbic
@@ -1970,7 +1970,7 @@ Partial Class frmPicking
         Me.dgridPickingUbic.Margin = New System.Windows.Forms.Padding(4)
         Me.dgridPickingUbic.MenuManager = Me.RibbonControl
         Me.dgridPickingUbic.Name = "dgridPickingUbic"
-        Me.dgridPickingUbic.Size = New System.Drawing.Size(851, 636)
+        Me.dgridPickingUbic.Size = New System.Drawing.Size(966, 636)
         Me.dgridPickingUbic.TabIndex = 1
         Me.dgridPickingUbic.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.grdvPickingUbic})
         '
@@ -1997,7 +1997,7 @@ Partial Class frmPicking
         Me.tbDañados.Controls.Add(Me.PanelControl1)
         Me.tbDañados.Margin = New System.Windows.Forms.Padding(4)
         Me.tbDañados.Name = "tbDañados"
-        Me.tbDañados.Size = New System.Drawing.Size(1552, 707)
+        Me.tbDañados.Size = New System.Drawing.Size(1760, 707)
         Me.tbDañados.Text = "Reemplazos"
         '
         'PanelControl1
@@ -2007,7 +2007,7 @@ Partial Class frmPicking
         Me.PanelControl1.Location = New System.Drawing.Point(0, 0)
         Me.PanelControl1.Margin = New System.Windows.Forms.Padding(4)
         Me.PanelControl1.Name = "PanelControl1"
-        Me.PanelControl1.Size = New System.Drawing.Size(1552, 707)
+        Me.PanelControl1.Size = New System.Drawing.Size(1760, 707)
         Me.PanelControl1.TabIndex = 0
         '
         'grdProductosDañados
@@ -2019,7 +2019,7 @@ Partial Class frmPicking
         Me.grdProductosDañados.Margin = New System.Windows.Forms.Padding(4)
         Me.grdProductosDañados.MenuManager = Me.RibbonControl
         Me.grdProductosDañados.Name = "grdProductosDañados"
-        Me.grdProductosDañados.Size = New System.Drawing.Size(1548, 703)
+        Me.grdProductosDañados.Size = New System.Drawing.Size(1756, 703)
         Me.grdProductosDañados.TabIndex = 0
         Me.grdProductosDañados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
         '
