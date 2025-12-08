@@ -1457,4 +1457,125 @@ Public Class frmPedido_List
     Private Sub chkSinExistenciasERP_CheckedChanged(sender As Object, e As ItemClickEventArgs) Handles chkSinExistenciasERP.CheckedChanged
         Listar_Pedidos()
     End Sub
+
+    Private Sub txtGuia_KeyDown(sender As Object, e As KeyEventArgs) Handles txtGuia.KeyDown
+
+        If e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
+            e.SuppressKeyPress = True   ' evita beep / salto raro
+            Buscar_Guia()
+        End If
+    End Sub
+
+    Private Sub Buscar_Guia()
+        Try
+
+            Dim Guia As String = txtGuia.Text.Trim()
+            Dim Guia_Transporte As String = Guia.ToUpperInvariant()
+
+            Dim pIdPedidoEnc = Procesar_Guia(Guia_Transporte)
+
+            If pIdPedidoEnc > 0 Then
+
+                pBePedidoEnc = New clsBeTrans_pe_enc
+                pBePedidoEnc = clsLnTrans_pe_enc.GetSingle(pIdPedidoEnc)
+
+                Dim lSelectionIndex As Integer = gviewEncabezadoPedido.FocusedRowHandle
+
+                If pBePedidoEnc Is Nothing Or pBePedidoEnc.IdPedidoEnc = 0 Then
+                    clsLnTrans_pe_enc.Eliminar_Pedido(pIdPedidoEnc)
+                    Throw New Exception("El pedido con correlativo WMS: " & pIdPedidoEnc & " fué modificado, eliminado o es un pedido inconsistente y no se puede recuperar")
+                ElseIf pBePedidoEnc.Estado = "NUEVO" AndAlso pBePedidoEnc.Ubicacion = "TMP" Then
+                    XtraMessageBox.Show("El pedido seleccionado se creó de forma incorrecta por el usuario en el WMS y no se concluyó: Ubicación = TMP (Valide Cliente y Propietario)", Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+                End If
+
+                '#GT09092024: si es fiscal cargar poliza.
+                If AP.Bodega.Es_Bodega_Fiscal Then
+                    pBePedidoEnc.ObjPoliza = clsLnTrans_pe_pol.GetSingleId(pBePedidoEnc.IdPedidoEnc)
+                Else
+                    pBePedidoEnc.ObjPoliza = Nothing
+                End If
+
+                Select Case Modo
+
+                    Case pModo.verificacion
+
+                        Cierra_Instancia_Previa(frmVerificacionBOF)
+                        clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_20251126: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " verifica bof con el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
+
+                        With frmVerificacionBOF
+
+                            .pBePedidoEnc = pBePedidoEnc
+                            .InvokeListarPedidos = AddressOf Listar_Pedidos
+                            ' Si está como hijo MDI, solo ocupará el contenedor MDI, no el monitor completo.
+                            .MdiParent = Nothing
+                            ' Fullscreen real (monitor completo)
+                            .StartPosition = FormStartPosition.Manual
+                            Dim scr = Screen.FromControl(Me)
+                            .FormBorderStyle = FormBorderStyle.None
+                            .WindowState = FormWindowState.Normal
+                            .Bounds = scr.WorkingArea
+                            .Text = "Pedido " & pBePedidoEnc.IdPedidoEnc & " - " & pBePedidoEnc.Referencia
+                            .ShowDialog(Me)
+                            .Focus()
+                        End With
+
+                        gviewEncabezadoPedido.FocusedRowHandle = lSelectionIndex
+
+                    Case pModo.Seleccion
+                        DialogResult = DialogResult.OK
+
+                End Select
+            Else
+                txtGuia.SelectAll()
+                txtGuia.Focus()
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+         Text,
+         MessageBoxButtons.OK,
+         MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Function Procesar_Guia(guia_Transporte As String) As Integer
+        Procesar_Guia = 0
+
+        Try
+
+            Dim dt As DataTable = TryCast(DgridPedido.DataSource, DataTable)
+            If dt Is Nothing OrElse dt.Rows.Count = 0 Then Exit Function
+
+            Dim filas() As DataRow = dt.Select("[guia_transporte] = '" & guia_Transporte.Replace("'", "''") & "'")
+
+
+            If filas.Length = 0 Then
+                XtraMessageBox.Show("No se encontró la guia, por favor reintente: " & guia_Transporte, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Exit Function
+            End If
+
+            Dim row As DataRow = filas(0)
+
+            'Dim handle As Integer = gviewEncabezadoPedido.LocateByValue("guia_transporte", guia_Transporte)
+            'If handle >= 0 Then
+            '    gviewEncabezadoPedido.FocusedRowHandle = handle
+            '    gviewEncabezadoPedido.MakeRowVisible(handle)
+            'End If
+
+            Dim pGuia_Transporte = If(dt.Columns.Contains("guia_transporte"), CStr(row("guia_transporte")), "")
+            Dim IdPedidoEnc = If(dt.Columns.Contains("Correlativo"), CInt(row("Correlativo")), 0)
+
+            Procesar_Guia = IdPedidoEnc
+
+            Application.DoEvents()
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+        Text,
+        MessageBoxButtons.OK,
+        MessageBoxIcon.Error)
+        End Try
+
+    End Function
+
 End Class
