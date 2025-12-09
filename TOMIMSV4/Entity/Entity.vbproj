@@ -226,6 +226,7 @@
     <Compile Include="Log\clsBeLog_sincronizacion_fallos.vb" />
     <Compile Include="Log\clsBeLog_sincronizacion_nube.vb" />
     <Compile Include="Mantenimientos\Ajustes\clsBeTrans_ajuste_det_doc.vb" />
+    <Compile Include="Mantenimientos\Ajustes\clsBeTrans_ajuste_enc_Partial.vb" />
     <Compile Include="Mantenimientos\Bodega\Bodega\clsBeBodegaSeleccion.vb" />
     <Compile Include="Mantenimientos\Bodega\Importacion\clsBeTrans_bodega_ubicaciones_excel.vb" />
     <Compile Include="Mantenimientos\Bodega\Smtp_configuracion\Smtp_Configuracion.vb" />
@@ -712,6 +713,9 @@
     <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_HH_Stock\clsBeTrans_ubic_hh_stock_Partial.vb" />
     <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Tarima\clsBeTrans_ubic_tarima.vb" />
     <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Tarima\clsBeTrans_ubic_tarima_partial.vb" />
+    <Compile Include="Transacciones\VerificacionBOF\clsBeLog_verificacion_bof.vb" />
+    <Compile Include="Transacciones\VerificacionBOF\clsBeVerificacion_estado.vb" />
+    <Compile Include="Transacciones\VerificacionBOF\clsBeVerificacion_motivo.vb" />
     <Compile Include="Ubicacion_Sugerida\clsBeProductoUS.vb" />
   </ItemGroup>
   <ItemGroup>

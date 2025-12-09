@@ -134,18 +134,14 @@ Partial Class frmOrdenCompra
         Me.GridView4 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.GrpEnc = New DevExpress.XtraEditors.GroupControl()
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
+        Me.txtComentarios = New System.Windows.Forms.TextBox()
+        Me.lblComentarios = New DevExpress.XtraEditors.LabelControl()
         Me.txtNomCampaña = New DevExpress.XtraEditors.TextEdit()
         Me.txtIdCampaña = New DevExpress.XtraEditors.TextEdit()
         Me.lnkCampaña = New System.Windows.Forms.LinkLabel()
-        Me.txtCodigoEmpresaERP = New System.Windows.Forms.TextBox()
-        Me.lblSociedadERP = New DevExpress.XtraEditors.LabelControl()
-        Me.txtNoDocumentoRecepcion = New System.Windows.Forms.TextBox()
-        Me.lblNoDocumentoRecepcion = New DevExpress.XtraEditors.LabelControl()
         Me.grpUltRec = New DevExpress.XtraEditors.GroupControl()
         Me.txtIdRecepcion = New System.Windows.Forms.LinkLabel()
         Me.cmbBodega = New DevExpress.XtraEditors.LookUpEdit()
-        Me.txtDocumentoUbicacion = New System.Windows.Forms.TextBox()
-        Me.lblDocumentoUbicacion = New DevExpress.XtraEditors.LabelControl()
         Me.cmbOperadorDefecto = New DevExpress.XtraEditors.LookUpEdit()
         Me.LabelControl6 = New DevExpress.XtraEditors.LabelControl()
         Me.lblC = New System.Windows.Forms.TextBox()
@@ -173,6 +169,15 @@ Partial Class frmOrdenCompra
         Me.lblObservacion = New DevExpress.XtraEditors.LabelControl()
         Me.cmbDocumentoRef = New DevExpress.XtraEditors.LookUpEdit()
         Me.lblDocumentoRef = New DevExpress.XtraEditors.LabelControl()
+        Me.grpDatosERP = New DevExpress.XtraEditors.GroupControl()
+        Me.txtUsuarioERP = New System.Windows.Forms.TextBox()
+        Me.lblUsuarioERP = New DevExpress.XtraEditors.LabelControl()
+        Me.txtCodigoEmpresaERP = New System.Windows.Forms.TextBox()
+        Me.lblDocumentoUbicacion = New DevExpress.XtraEditors.LabelControl()
+        Me.txtDocumentoUbicacion = New System.Windows.Forms.TextBox()
+        Me.lblNoDocumentoRecepcion = New DevExpress.XtraEditors.LabelControl()
+        Me.txtNoDocumentoRecepcion = New System.Windows.Forms.TextBox()
+        Me.lblSociedadERP = New DevExpress.XtraEditors.LabelControl()
         Me.grpScanPoliza = New DevExpress.XtraEditors.GroupControl()
         Me.LabelControl4 = New DevExpress.XtraEditors.LabelControl()
         Me.txtScanPoliza = New DevExpress.XtraEditors.TextEdit()
@@ -315,11 +320,6 @@ Partial Class frmOrdenCompra
         Me.cmdImportar = New DevExpress.XtraBars.BarButtonItem()
         Me.BarButtonItem6 = New DevExpress.XtraBars.BarButtonItem()
         Me.BarButtonItem7 = New DevExpress.XtraBars.BarButtonItem()
-        Me.txtComentarios = New System.Windows.Forms.TextBox()
-        Me.lblComentarios = New DevExpress.XtraEditors.LabelControl()
-        Me.grpDatosERP = New DevExpress.XtraEditors.GroupControl()
-        Me.txtUsuarioERP = New System.Windows.Forms.TextBox()
-        Me.lblUsuarioERP = New DevExpress.XtraEditors.LabelControl()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
@@ -403,6 +403,8 @@ Partial Class frmOrdenCompra
         CType(Me.dtmFechaOrdenCompra.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.lcmbPropietario.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbDocumentoRef.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.grpDatosERP, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpDatosERP.SuspendLayout()
         CType(Me.grpScanPoliza, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpScanPoliza.SuspendLayout()
         CType(Me.txtScanPoliza.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -529,8 +531,6 @@ Partial Class frmOrdenCompra
         CType(Me.dgridTallaColor, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView7, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DetalleBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.grpDatosERP, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.grpDatosERP.SuspendLayout()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -1084,7 +1084,7 @@ Partial Class frmOrdenCompra
         Me.grpEncRec.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemTextEdit1, Me.RepositoryItemTextEdit2})
         Me.grpEncRec.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.grpEncRec.Size = New System.Drawing.Size(1632, 193)
-        Me.grpEncRec.StatusBar = Me.RibbonStatusBar1
+        Me.grpEncRec.StatusBar = Me.RibbonStatusBar
         '
         'mnuGuardar
         '
@@ -1358,7 +1358,7 @@ Partial Class frmOrdenCompra
         Me.RibbonStatusBar1.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.RibbonStatusBar1.Name = "RibbonStatusBar1"
         Me.RibbonStatusBar1.Ribbon = Me.grpEncRec
-        Me.RibbonStatusBar1.Size = New System.Drawing.Size(1548, 33)
+        Me.RibbonStatusBar1.Size = New System.Drawing.Size(1626, 33)
         '
         'Fec_agrDateEdit
         '
@@ -1519,6 +1519,27 @@ Partial Class frmOrdenCompra
         Me.SplitContainer2.SplitterWidth = 5
         Me.SplitContainer2.TabIndex = 0
         '
+        'txtComentarios
+        '
+        Me.txtComentarios.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtComentarios.Location = New System.Drawing.Point(130, 503)
+        Me.txtComentarios.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtComentarios.Multiline = True
+        Me.txtComentarios.Name = "txtComentarios"
+        Me.txtComentarios.Size = New System.Drawing.Size(374, 60)
+        Me.txtComentarios.TabIndex = 42
+        '
+        'lblComentarios
+        '
+        Me.lblComentarios.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
+        Me.lblComentarios.Appearance.Options.UseFont = True
+        Me.lblComentarios.Location = New System.Drawing.Point(18, 506)
+        Me.lblComentarios.Margin = New System.Windows.Forms.Padding(4)
+        Me.lblComentarios.Name = "lblComentarios"
+        Me.lblComentarios.Size = New System.Drawing.Size(77, 16)
+        Me.lblComentarios.TabIndex = 41
+        Me.lblComentarios.Text = "Comentarios:"
+        '
         'txtNomCampaña
         '
         Me.txtNomCampaña.Location = New System.Drawing.Point(232, 401)
@@ -1551,48 +1572,6 @@ Partial Class frmOrdenCompra
         Me.lnkCampaña.TabIndex = 38
         Me.lnkCampaña.TabStop = True
         Me.lnkCampaña.Text = "Campaña:"
-        '
-        'txtCodigoEmpresaERP
-        '
-        Me.txtCodigoEmpresaERP.AcceptsReturn = True
-        Me.txtCodigoEmpresaERP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtCodigoEmpresaERP.Location = New System.Drawing.Point(20, 67)
-        Me.txtCodigoEmpresaERP.Margin = New System.Windows.Forms.Padding(4)
-        Me.txtCodigoEmpresaERP.Name = "txtCodigoEmpresaERP"
-        Me.txtCodigoEmpresaERP.ReadOnly = True
-        Me.txtCodigoEmpresaERP.Size = New System.Drawing.Size(214, 23)
-        Me.txtCodigoEmpresaERP.TabIndex = 37
-        '
-        'lblSociedadERP
-        '
-        Me.lblSociedadERP.Appearance.Options.UseFont = True
-        Me.lblSociedadERP.Location = New System.Drawing.Point(20, 49)
-        Me.lblSociedadERP.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.lblSociedadERP.Name = "lblSociedadERP"
-        Me.lblSociedadERP.Size = New System.Drawing.Size(57, 16)
-        Me.lblSociedadERP.TabIndex = 36
-        Me.lblSociedadERP.Text = "Sociedad:"
-        '
-        'txtNoDocumentoRecepcion
-        '
-        Me.txtNoDocumentoRecepcion.AcceptsReturn = True
-        Me.txtNoDocumentoRecepcion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtNoDocumentoRecepcion.Location = New System.Drawing.Point(486, 67)
-        Me.txtNoDocumentoRecepcion.Margin = New System.Windows.Forms.Padding(4)
-        Me.txtNoDocumentoRecepcion.Name = "txtNoDocumentoRecepcion"
-        Me.txtNoDocumentoRecepcion.ReadOnly = True
-        Me.txtNoDocumentoRecepcion.Size = New System.Drawing.Size(214, 23)
-        Me.txtNoDocumentoRecepcion.TabIndex = 35
-        '
-        'lblNoDocumentoRecepcion
-        '
-        Me.lblNoDocumentoRecepcion.Appearance.Options.UseFont = True
-        Me.lblNoDocumentoRecepcion.Location = New System.Drawing.Point(486, 50)
-        Me.lblNoDocumentoRecepcion.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.lblNoDocumentoRecepcion.Name = "lblNoDocumentoRecepcion"
-        Me.lblNoDocumentoRecepcion.Size = New System.Drawing.Size(149, 16)
-        Me.lblNoDocumentoRecepcion.TabIndex = 34
-        Me.lblNoDocumentoRecepcion.Text = "Documento de Recepción:"
         '
         'grpUltRec
         '
@@ -1631,28 +1610,6 @@ Partial Class frmOrdenCompra
         Me.cmbBodega.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbBodega.Size = New System.Drawing.Size(374, 22)
         Me.cmbBodega.TabIndex = 30
-        '
-        'txtDocumentoUbicacion
-        '
-        Me.txtDocumentoUbicacion.AcceptsReturn = True
-        Me.txtDocumentoUbicacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtDocumentoUbicacion.Location = New System.Drawing.Point(253, 67)
-        Me.txtDocumentoUbicacion.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtDocumentoUbicacion.Name = "txtDocumentoUbicacion"
-        Me.txtDocumentoUbicacion.ReadOnly = True
-        Me.txtDocumentoUbicacion.Size = New System.Drawing.Size(214, 23)
-        Me.txtDocumentoUbicacion.TabIndex = 29
-        '
-        'lblDocumentoUbicacion
-        '
-        Me.lblDocumentoUbicacion.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
-        Me.lblDocumentoUbicacion.Appearance.Options.UseFont = True
-        Me.lblDocumentoUbicacion.Location = New System.Drawing.Point(253, 50)
-        Me.lblDocumentoUbicacion.Margin = New System.Windows.Forms.Padding(4)
-        Me.lblDocumentoUbicacion.Name = "lblDocumentoUbicacion"
-        Me.lblDocumentoUbicacion.Size = New System.Drawing.Size(145, 16)
-        Me.lblDocumentoUbicacion.TabIndex = 28
-        Me.lblDocumentoUbicacion.Text = "Documento de Ubicación:"
         '
         'cmbOperadorDefecto
         '
@@ -1958,6 +1915,108 @@ Partial Class frmOrdenCompra
         Me.lblDocumentoRef.TabIndex = 24
         Me.lblDocumentoRef.Text = "Documento Ref:"
         '
+        'grpDatosERP
+        '
+        Me.grpDatosERP.Controls.Add(Me.txtUsuarioERP)
+        Me.grpDatosERP.Controls.Add(Me.lblUsuarioERP)
+        Me.grpDatosERP.Controls.Add(Me.txtCodigoEmpresaERP)
+        Me.grpDatosERP.Controls.Add(Me.lblDocumentoUbicacion)
+        Me.grpDatosERP.Controls.Add(Me.txtDocumentoUbicacion)
+        Me.grpDatosERP.Controls.Add(Me.lblNoDocumentoRecepcion)
+        Me.grpDatosERP.Controls.Add(Me.txtNoDocumentoRecepcion)
+        Me.grpDatosERP.Controls.Add(Me.lblSociedadERP)
+        Me.grpDatosERP.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.grpDatosERP.Location = New System.Drawing.Point(0, 493)
+        Me.grpDatosERP.Name = "grpDatosERP"
+        Me.grpDatosERP.Size = New System.Drawing.Size(755, 199)
+        Me.grpDatosERP.TabIndex = 4
+        Me.grpDatosERP.Text = "Datos ERP"
+        '
+        'txtUsuarioERP
+        '
+        Me.txtUsuarioERP.AcceptsReturn = True
+        Me.txtUsuarioERP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtUsuarioERP.Location = New System.Drawing.Point(20, 116)
+        Me.txtUsuarioERP.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtUsuarioERP.Name = "txtUsuarioERP"
+        Me.txtUsuarioERP.ReadOnly = True
+        Me.txtUsuarioERP.Size = New System.Drawing.Size(214, 23)
+        Me.txtUsuarioERP.TabIndex = 39
+        '
+        'lblUsuarioERP
+        '
+        Me.lblUsuarioERP.Appearance.Options.UseFont = True
+        Me.lblUsuarioERP.Location = New System.Drawing.Point(20, -1159)
+        Me.lblUsuarioERP.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
+        Me.lblUsuarioERP.Name = "lblUsuarioERP"
+        Me.lblUsuarioERP.Size = New System.Drawing.Size(48, 16)
+        Me.lblUsuarioERP.TabIndex = 38
+        Me.lblUsuarioERP.Text = "Usuario:"
+        '
+        'txtCodigoEmpresaERP
+        '
+        Me.txtCodigoEmpresaERP.AcceptsReturn = True
+        Me.txtCodigoEmpresaERP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtCodigoEmpresaERP.Location = New System.Drawing.Point(20, 67)
+        Me.txtCodigoEmpresaERP.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtCodigoEmpresaERP.Name = "txtCodigoEmpresaERP"
+        Me.txtCodigoEmpresaERP.ReadOnly = True
+        Me.txtCodigoEmpresaERP.Size = New System.Drawing.Size(214, 23)
+        Me.txtCodigoEmpresaERP.TabIndex = 37
+        '
+        'lblDocumentoUbicacion
+        '
+        Me.lblDocumentoUbicacion.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
+        Me.lblDocumentoUbicacion.Appearance.Options.UseFont = True
+        Me.lblDocumentoUbicacion.Location = New System.Drawing.Point(253, -1207)
+        Me.lblDocumentoUbicacion.Margin = New System.Windows.Forms.Padding(4)
+        Me.lblDocumentoUbicacion.Name = "lblDocumentoUbicacion"
+        Me.lblDocumentoUbicacion.Size = New System.Drawing.Size(145, 16)
+        Me.lblDocumentoUbicacion.TabIndex = 28
+        Me.lblDocumentoUbicacion.Text = "Documento de Ubicación:"
+        '
+        'txtDocumentoUbicacion
+        '
+        Me.txtDocumentoUbicacion.AcceptsReturn = True
+        Me.txtDocumentoUbicacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtDocumentoUbicacion.Location = New System.Drawing.Point(253, 67)
+        Me.txtDocumentoUbicacion.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtDocumentoUbicacion.Name = "txtDocumentoUbicacion"
+        Me.txtDocumentoUbicacion.ReadOnly = True
+        Me.txtDocumentoUbicacion.Size = New System.Drawing.Size(214, 23)
+        Me.txtDocumentoUbicacion.TabIndex = 29
+        '
+        'lblNoDocumentoRecepcion
+        '
+        Me.lblNoDocumentoRecepcion.Appearance.Options.UseFont = True
+        Me.lblNoDocumentoRecepcion.Location = New System.Drawing.Point(486, -1207)
+        Me.lblNoDocumentoRecepcion.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
+        Me.lblNoDocumentoRecepcion.Name = "lblNoDocumentoRecepcion"
+        Me.lblNoDocumentoRecepcion.Size = New System.Drawing.Size(149, 16)
+        Me.lblNoDocumentoRecepcion.TabIndex = 34
+        Me.lblNoDocumentoRecepcion.Text = "Documento de Recepción:"
+        '
+        'txtNoDocumentoRecepcion
+        '
+        Me.txtNoDocumentoRecepcion.AcceptsReturn = True
+        Me.txtNoDocumentoRecepcion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtNoDocumentoRecepcion.Location = New System.Drawing.Point(486, 67)
+        Me.txtNoDocumentoRecepcion.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtNoDocumentoRecepcion.Name = "txtNoDocumentoRecepcion"
+        Me.txtNoDocumentoRecepcion.ReadOnly = True
+        Me.txtNoDocumentoRecepcion.Size = New System.Drawing.Size(214, 23)
+        Me.txtNoDocumentoRecepcion.TabIndex = 35
+        '
+        'lblSociedadERP
+        '
+        Me.lblSociedadERP.Appearance.Options.UseFont = True
+        Me.lblSociedadERP.Location = New System.Drawing.Point(20, -1208)
+        Me.lblSociedadERP.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
+        Me.lblSociedadERP.Name = "lblSociedadERP"
+        Me.lblSociedadERP.Size = New System.Drawing.Size(57, 16)
+        Me.lblSociedadERP.TabIndex = 36
+        Me.lblSociedadERP.Text = "Sociedad:"
+        '
         'grpScanPoliza
         '
         Me.grpScanPoliza.CaptionImageOptions.Image = CType(resources.GetObject("grpScanPoliza.CaptionImageOptions.Image"), System.Drawing.Image)
@@ -2202,7 +2261,7 @@ Partial Class frmOrdenCompra
         Me.GrpDetalle.Location = New System.Drawing.Point(0, 0)
         Me.GrpDetalle.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.GrpDetalle.Name = "GrpDetalle"
-        Me.GrpDetalle.Size = New System.Drawing.Size(1552, 715)
+        Me.GrpDetalle.Size = New System.Drawing.Size(1630, 715)
         Me.GrpDetalle.TabIndex = 0
         Me.GrpDetalle.Text = "Lista de Productos"
         '
@@ -2230,7 +2289,7 @@ Partial Class frmOrdenCompra
         Me.DgridDetalleOC.MainView = Me.gvDetalleDocIngreso
         Me.DgridDetalleOC.Margin = New System.Windows.Forms.Padding(4)
         Me.DgridDetalleOC.Name = "DgridDetalleOC"
-        Me.DgridDetalleOC.Size = New System.Drawing.Size(1548, 658)
+        Me.DgridDetalleOC.Size = New System.Drawing.Size(1626, 658)
         Me.DgridDetalleOC.TabIndex = 19
         Me.DgridDetalleOC.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvDetalleDocIngreso})
         '
@@ -2253,7 +2312,7 @@ Partial Class frmOrdenCompra
         Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAgregarProducto, Me.cmdEliminarFila})
         Me.ToolStrip1.Location = New System.Drawing.Point(2, 28)
         Me.ToolStrip1.Name = "ToolStrip1"
-        Me.ToolStrip1.Size = New System.Drawing.Size(1548, 27)
+        Me.ToolStrip1.Size = New System.Drawing.Size(1626, 27)
         Me.ToolStrip1.TabIndex = 0
         Me.ToolStrip1.Text = "ToolStrip4"
         '
@@ -2283,7 +2342,7 @@ Partial Class frmOrdenCompra
         Me.GrpImagen.Location = New System.Drawing.Point(0, 0)
         Me.GrpImagen.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.GrpImagen.Name = "GrpImagen"
-        Me.GrpImagen.Size = New System.Drawing.Size(1552, 715)
+        Me.GrpImagen.Size = New System.Drawing.Size(1630, 715)
         Me.GrpImagen.TabIndex = 0
         '
         'PicImg
@@ -2438,7 +2497,7 @@ Partial Class frmOrdenCompra
         Me.Poliza.Controls.Add(Me.GrpEmbarque)
         Me.Poliza.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.Poliza.Name = "Poliza"
-        Me.Poliza.Size = New System.Drawing.Size(1552, 715)
+        Me.Poliza.Size = New System.Drawing.Size(1630, 715)
         Me.Poliza.Text = "Poliza"
         '
         'SplitContainer1
@@ -2456,7 +2515,7 @@ Partial Class frmOrdenCompra
         'SplitContainer1.Panel2
         '
         Me.SplitContainer1.Panel2.Controls.Add(Me.GroupControl2)
-        Me.SplitContainer1.Size = New System.Drawing.Size(1552, 715)
+        Me.SplitContainer1.Size = New System.Drawing.Size(1630, 715)
         Me.SplitContainer1.SplitterDistance = 433
         Me.SplitContainer1.SplitterWidth = 5
         Me.SplitContainer1.TabIndex = 2
@@ -2521,7 +2580,7 @@ Partial Class frmOrdenCompra
         Me.GrpPoliza.Location = New System.Drawing.Point(0, 0)
         Me.GrpPoliza.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.GrpPoliza.Name = "GrpPoliza"
-        Me.GrpPoliza.Size = New System.Drawing.Size(1552, 433)
+        Me.GrpPoliza.Size = New System.Drawing.Size(1630, 433)
         Me.GrpPoliza.TabIndex = 0
         Me.GrpPoliza.Text = "Cabecera de Poliza"
         '
@@ -2874,7 +2933,7 @@ Partial Class frmOrdenCompra
         Me.GroupControl2.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl2.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl2.Name = "GroupControl2"
-        Me.GroupControl2.Size = New System.Drawing.Size(1552, 277)
+        Me.GroupControl2.Size = New System.Drawing.Size(1630, 277)
         Me.GroupControl2.TabIndex = 1
         Me.GroupControl2.Text = "Detalle de Póliza"
         '
@@ -2887,7 +2946,7 @@ Partial Class frmOrdenCompra
         Me.dgridDetallePoliza.Margin = New System.Windows.Forms.Padding(4)
         Me.dgridDetallePoliza.MenuManager = Me.grpEncRec
         Me.dgridDetallePoliza.Name = "dgridDetallePoliza"
-        Me.dgridDetallePoliza.Size = New System.Drawing.Size(1548, 247)
+        Me.dgridDetallePoliza.Size = New System.Drawing.Size(1626, 247)
         Me.dgridDetallePoliza.TabIndex = 0
         Me.dgridDetallePoliza.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvdetallepoliza})
         '
@@ -3096,7 +3155,7 @@ Partial Class frmOrdenCompra
         Me.DetalleOC.Controls.Add(Me.GrpDetalle)
         Me.DetalleOC.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.DetalleOC.Name = "DetalleOC"
-        Me.DetalleOC.Size = New System.Drawing.Size(1552, 715)
+        Me.DetalleOC.Size = New System.Drawing.Size(1630, 715)
         Me.DetalleOC.Text = "Detalle"
         '
         'tabDetalleServicios
@@ -3107,7 +3166,7 @@ Partial Class frmOrdenCompra
         Me.tabDetalleServicios.Controls.Add(Me.lblAcuerdoComercial)
         Me.tabDetalleServicios.Margin = New System.Windows.Forms.Padding(4)
         Me.tabDetalleServicios.Name = "tabDetalleServicios"
-        Me.tabDetalleServicios.Size = New System.Drawing.Size(1552, 715)
+        Me.tabDetalleServicios.Size = New System.Drawing.Size(1630, 715)
         Me.tabDetalleServicios.Text = "Servicios Asociados"
         '
         'ToolStrip2
@@ -3116,7 +3175,7 @@ Partial Class frmOrdenCompra
         Me.ToolStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdEliminarServicio})
         Me.ToolStrip2.Location = New System.Drawing.Point(0, 65)
         Me.ToolStrip2.Name = "ToolStrip2"
-        Me.ToolStrip2.Size = New System.Drawing.Size(1552, 27)
+        Me.ToolStrip2.Size = New System.Drawing.Size(1630, 27)
         Me.ToolStrip2.TabIndex = 61
         Me.ToolStrip2.Text = "ToolStrip4"
         '
@@ -3157,7 +3216,7 @@ Partial Class frmOrdenCompra
         Me.cmbAcuerdoComercial.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.cmbAcuerdoComercial.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbAcuerdoComercial.Properties.NullText = ""
-        Me.cmbAcuerdoComercial.Size = New System.Drawing.Size(1552, 28)
+        Me.cmbAcuerdoComercial.Size = New System.Drawing.Size(1630, 28)
         Me.cmbAcuerdoComercial.TabIndex = 59
         '
         'lblAcuerdoComercial
@@ -3171,7 +3230,7 @@ Partial Class frmOrdenCompra
         Me.lblAcuerdoComercial.Location = New System.Drawing.Point(0, 0)
         Me.lblAcuerdoComercial.Margin = New System.Windows.Forms.Padding(4)
         Me.lblAcuerdoComercial.Name = "lblAcuerdoComercial"
-        Me.lblAcuerdoComercial.Size = New System.Drawing.Size(1552, 37)
+        Me.lblAcuerdoComercial.Size = New System.Drawing.Size(1630, 37)
         Me.lblAcuerdoComercial.TabIndex = 57
         Me.lblAcuerdoComercial.Text = "Acuerdo Comercial:"
         '
@@ -3180,7 +3239,7 @@ Partial Class frmOrdenCompra
         Me.Enc_RecOC.Controls.Add(Me.GroupControl1)
         Me.Enc_RecOC.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.Enc_RecOC.Name = "Enc_RecOC"
-        Me.Enc_RecOC.Size = New System.Drawing.Size(1552, 715)
+        Me.Enc_RecOC.Size = New System.Drawing.Size(1630, 715)
         Me.Enc_RecOC.Text = "Recepción"
         '
         'GroupControl1
@@ -3191,7 +3250,7 @@ Partial Class frmOrdenCompra
         Me.GroupControl1.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl1.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(1552, 715)
+        Me.GroupControl1.Size = New System.Drawing.Size(1630, 715)
         Me.GroupControl1.TabIndex = 0
         '
         'grdEncRec
@@ -3204,7 +3263,7 @@ Partial Class frmOrdenCompra
         Me.grdEncRec.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.grdEncRec.MenuManager = Me.grpEncRec
         Me.grdEncRec.Name = "grdEncRec"
-        Me.grdEncRec.Size = New System.Drawing.Size(1548, 685)
+        Me.grdEncRec.Size = New System.Drawing.Size(1626, 685)
         Me.grdEncRec.TabIndex = 0
         Me.grdEncRec.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView6})
         '
@@ -3317,7 +3376,7 @@ Partial Class frmOrdenCompra
         Me.Imagenes.Controls.Add(Me.GrpImagen)
         Me.Imagenes.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.Imagenes.Name = "Imagenes"
-        Me.Imagenes.Size = New System.Drawing.Size(1552, 715)
+        Me.Imagenes.Size = New System.Drawing.Size(1630, 715)
         Me.Imagenes.Text = "Imágenes"
         '
         'tabLotes
@@ -3325,7 +3384,7 @@ Partial Class frmOrdenCompra
         Me.tabLotes.Controls.Add(Me.DgridLotes)
         Me.tabLotes.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.tabLotes.Name = "tabLotes"
-        Me.tabLotes.Size = New System.Drawing.Size(1552, 715)
+        Me.tabLotes.Size = New System.Drawing.Size(1630, 715)
         Me.tabLotes.Text = "Lotes"
         '
         'DgridLotes
@@ -3337,7 +3396,7 @@ Partial Class frmOrdenCompra
         Me.DgridLotes.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.DgridLotes.MenuManager = Me.grpEncRec
         Me.DgridLotes.Name = "DgridLotes"
-        Me.DgridLotes.Size = New System.Drawing.Size(1552, 715)
+        Me.DgridLotes.Size = New System.Drawing.Size(1630, 715)
         Me.DgridLotes.TabIndex = 0
         Me.DgridLotes.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gridviewLotes})
         '
@@ -3357,7 +3416,7 @@ Partial Class frmOrdenCompra
         Me.tabDetERP.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.tabDetERP.Name = "tabDetERP"
         Me.tabDetERP.PageVisible = False
-        Me.tabDetERP.Size = New System.Drawing.Size(1552, 715)
+        Me.tabDetERP.Size = New System.Drawing.Size(1630, 715)
         Me.tabDetERP.Text = "Documento ERP"
         '
         'PanelControl1
@@ -3367,7 +3426,7 @@ Partial Class frmOrdenCompra
         Me.PanelControl1.Location = New System.Drawing.Point(0, 0)
         Me.PanelControl1.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.PanelControl1.Name = "PanelControl1"
-        Me.PanelControl1.Size = New System.Drawing.Size(1552, 715)
+        Me.PanelControl1.Size = New System.Drawing.Size(1630, 715)
         Me.PanelControl1.TabIndex = 0
         '
         'grdDetERP
@@ -3379,7 +3438,7 @@ Partial Class frmOrdenCompra
         Me.grdDetERP.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.grdDetERP.MenuManager = Me.grpEncRec
         Me.grdDetERP.Name = "grdDetERP"
-        Me.grdDetERP.Size = New System.Drawing.Size(1548, 711)
+        Me.grdDetERP.Size = New System.Drawing.Size(1626, 711)
         Me.grdDetERP.TabIndex = 0
         Me.grdDetERP.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView5})
         '
@@ -3399,7 +3458,7 @@ Partial Class frmOrdenCompra
         Me.tabPedidosDevolucion.Controls.Add(Me.GroupControl6)
         Me.tabPedidosDevolucion.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.tabPedidosDevolucion.Name = "tabPedidosDevolucion"
-        Me.tabPedidosDevolucion.Size = New System.Drawing.Size(1552, 715)
+        Me.tabPedidosDevolucion.Size = New System.Drawing.Size(1630, 715)
         Me.tabPedidosDevolucion.Text = "Pedidos en devolución"
         '
         'GroupControl6
@@ -3409,7 +3468,7 @@ Partial Class frmOrdenCompra
         Me.GroupControl6.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl6.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl6.Name = "GroupControl6"
-        Me.GroupControl6.Size = New System.Drawing.Size(1552, 715)
+        Me.GroupControl6.Size = New System.Drawing.Size(1630, 715)
         Me.GroupControl6.TabIndex = 1
         Me.GroupControl6.Text = "Lista"
         '
@@ -3423,8 +3482,8 @@ Partial Class frmOrdenCompra
         'SplitContainer3.Panel1
         '
         Me.SplitContainer3.Panel1.Controls.Add(Me.dgridPedidos)
-        Me.SplitContainer3.Size = New System.Drawing.Size(1548, 685)
-        Me.SplitContainer3.SplitterDistance = 810
+        Me.SplitContainer3.Size = New System.Drawing.Size(1626, 685)
+        Me.SplitContainer3.SplitterDistance = 850
         Me.SplitContainer3.TabIndex = 2
         '
         'dgridPedidos
@@ -3461,7 +3520,7 @@ Partial Class frmOrdenCompra
         Me.dgridPedidos.RowHeadersVisible = False
         Me.dgridPedidos.RowHeadersWidth = 40
         Me.dgridPedidos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgridPedidos.Size = New System.Drawing.Size(810, 685)
+        Me.dgridPedidos.Size = New System.Drawing.Size(850, 685)
         Me.dgridPedidos.TabIndex = 1
         '
         'IdPedido
@@ -3524,7 +3583,7 @@ Partial Class frmOrdenCompra
         Me.tabPolizaCorregida.Controls.Add(Me.DgridPolizas)
         Me.tabPolizaCorregida.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.tabPolizaCorregida.Name = "tabPolizaCorregida"
-        Me.tabPolizaCorregida.Size = New System.Drawing.Size(1552, 715)
+        Me.tabPolizaCorregida.Size = New System.Drawing.Size(1630, 715)
         Me.tabPolizaCorregida.Text = "Pólizas corregidas"
         '
         'DgridPolizas
@@ -3535,7 +3594,7 @@ Partial Class frmOrdenCompra
         Me.DgridPolizas.MainView = Me.gridViewPolizas
         Me.DgridPolizas.Margin = New System.Windows.Forms.Padding(4)
         Me.DgridPolizas.Name = "DgridPolizas"
-        Me.DgridPolizas.Size = New System.Drawing.Size(1552, 715)
+        Me.DgridPolizas.Size = New System.Drawing.Size(1630, 715)
         Me.DgridPolizas.TabIndex = 17
         Me.DgridPolizas.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gridViewPolizas})
         '
@@ -3553,7 +3612,7 @@ Partial Class frmOrdenCompra
         '
         Me.tabTallaColor.Controls.Add(Me.dgridTallaColor)
         Me.tabTallaColor.Name = "tabTallaColor"
-        Me.tabTallaColor.Size = New System.Drawing.Size(1552, 715)
+        Me.tabTallaColor.Size = New System.Drawing.Size(1630, 715)
         Me.tabTallaColor.Text = "Talla/Color"
         '
         'dgridTallaColor
@@ -3564,7 +3623,7 @@ Partial Class frmOrdenCompra
         Me.dgridTallaColor.MainView = Me.GridView7
         Me.dgridTallaColor.Margin = New System.Windows.Forms.Padding(4)
         Me.dgridTallaColor.Name = "dgridTallaColor"
-        Me.dgridTallaColor.Size = New System.Drawing.Size(1552, 715)
+        Me.dgridTallaColor.Size = New System.Drawing.Size(1630, 715)
         Me.dgridTallaColor.TabIndex = 20
         Me.dgridTallaColor.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView7})
         '
@@ -3595,65 +3654,6 @@ Partial Class frmOrdenCompra
         Me.BarButtonItem7.Caption = "Importar Excel"
         Me.BarButtonItem7.Id = 7
         Me.BarButtonItem7.Name = "BarButtonItem7"
-        '
-        'txtComentarios
-        '
-        Me.txtComentarios.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtComentarios.Location = New System.Drawing.Point(130, 503)
-        Me.txtComentarios.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtComentarios.Multiline = True
-        Me.txtComentarios.Name = "txtComentarios"
-        Me.txtComentarios.Size = New System.Drawing.Size(374, 60)
-        Me.txtComentarios.TabIndex = 42
-        '
-        'lblComentarios
-        '
-        Me.lblComentarios.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
-        Me.lblComentarios.Appearance.Options.UseFont = True
-        Me.lblComentarios.Location = New System.Drawing.Point(18, 506)
-        Me.lblComentarios.Margin = New System.Windows.Forms.Padding(4)
-        Me.lblComentarios.Name = "lblComentarios"
-        Me.lblComentarios.Size = New System.Drawing.Size(77, 16)
-        Me.lblComentarios.TabIndex = 41
-        Me.lblComentarios.Text = "Comentarios:"
-        '
-        'grpDatosERP
-        '
-        Me.grpDatosERP.Controls.Add(Me.txtUsuarioERP)
-        Me.grpDatosERP.Controls.Add(Me.lblUsuarioERP)
-        Me.grpDatosERP.Controls.Add(Me.txtCodigoEmpresaERP)
-        Me.grpDatosERP.Controls.Add(Me.lblDocumentoUbicacion)
-        Me.grpDatosERP.Controls.Add(Me.txtDocumentoUbicacion)
-        Me.grpDatosERP.Controls.Add(Me.lblNoDocumentoRecepcion)
-        Me.grpDatosERP.Controls.Add(Me.txtNoDocumentoRecepcion)
-        Me.grpDatosERP.Controls.Add(Me.lblSociedadERP)
-        Me.grpDatosERP.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grpDatosERP.Location = New System.Drawing.Point(0, 493)
-        Me.grpDatosERP.Name = "grpDatosERP"
-        Me.grpDatosERP.Size = New System.Drawing.Size(755, 199)
-        Me.grpDatosERP.TabIndex = 4
-        Me.grpDatosERP.Text = "Datos ERP"
-        '
-        'txtUsuarioERP
-        '
-        Me.txtUsuarioERP.AcceptsReturn = True
-        Me.txtUsuarioERP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtUsuarioERP.Location = New System.Drawing.Point(20, 116)
-        Me.txtUsuarioERP.Margin = New System.Windows.Forms.Padding(4)
-        Me.txtUsuarioERP.Name = "txtUsuarioERP"
-        Me.txtUsuarioERP.ReadOnly = True
-        Me.txtUsuarioERP.Size = New System.Drawing.Size(214, 23)
-        Me.txtUsuarioERP.TabIndex = 39
-        '
-        'lblUsuarioERP
-        '
-        Me.lblUsuarioERP.Appearance.Options.UseFont = True
-        Me.lblUsuarioERP.Location = New System.Drawing.Point(20, 98)
-        Me.lblUsuarioERP.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
-        Me.lblUsuarioERP.Name = "lblUsuarioERP"
-        Me.lblUsuarioERP.Size = New System.Drawing.Size(48, 16)
-        Me.lblUsuarioERP.TabIndex = 38
-        Me.lblUsuarioERP.Text = "Usuario:"
         '
         'frmOrdenCompra
         '
@@ -3707,6 +3707,9 @@ Partial Class frmOrdenCompra
         CType(Me.dtmFechaOrdenCompra.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.lcmbPropietario.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbDocumentoRef.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.grpDatosERP, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpDatosERP.ResumeLayout(False)
+        Me.grpDatosERP.PerformLayout()
         CType(Me.grpScanPoliza, System.ComponentModel.ISupportInitialize).EndInit()
         Me.grpScanPoliza.ResumeLayout(False)
         Me.grpScanPoliza.PerformLayout()
@@ -3845,9 +3848,6 @@ Partial Class frmOrdenCompra
         CType(Me.dgridTallaColor, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView7, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DetalleBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.grpDatosERP, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.grpDatosERP.ResumeLayout(False)
-        Me.grpDatosERP.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

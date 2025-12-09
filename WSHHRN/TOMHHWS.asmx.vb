@@ -2596,7 +2596,8 @@ Public Class TOMHHWS
                                       ByVal pIdBodega As Integer,
                                       ByVal pIdUsuario As Integer,
                                       ByVal pIdResolucionLp As Integer,
-                                      ByVal pIdOperadorBodega As Integer) As String
+                                      ByVal pIdOperadorBodega As Integer,
+                                      ByVal pRecepcionCajaMaster As Boolean) As String
 
         Guardar_Recepcion = ""
 
@@ -2618,7 +2619,8 @@ Public Class TOMHHWS
                                                   pIdBodega,
                                                   pIdUsuario,
                                                   pIdResolucionLp,
-                                                  pIdOperadorBodega)
+                                                  pIdOperadorBodega,
+                                                  pRecepcionCajaMaster)
 
 
             Return String.Format("Res:{0}", vResult)
@@ -5330,7 +5332,7 @@ Public Class TOMHHWS
     '#MA20250210 migracion de xml a Json
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Function Get_Ubicacion_By_Codigo_Barra_And_IdBodega_JSON(ByVal pBarra As String,
-                                                          ByVal pIdBodega As Integer) As clsBeBodega_ubicacion
+                                                                    ByVal pIdBodega As Integer) As clsBeBodega_ubicacion
 
         ' Get_Ubicacion_By_Codigo_Barra_And_IdBodega = Nothing
         Dim curContext As HttpContext = HttpContext.Current
@@ -17533,4 +17535,197 @@ Public Class TOMHHWS
         End Try
 
     End Function
+
+    '#AT20251120 Packing consolidado MAMPA
+    <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
+    Public Sub Get_Picking_Para_Emapaque_Consolidado()
+
+        Try
+            Dim lista = clsLnTarea_hh.Get_All_Picking_Para_Empaque_Consolidado()
+            Dim jArray As New JArray()
+
+            For Each item In lista
+                Dim jObj As JObject = JObject.FromObject(item)
+
+                SerializarJson(jObj, "ListaPickingDet")
+                SerializarJson(jObj, "ListaPickingUbic")
+
+                jArray.Add(jObj)
+            Next
+
+            Dim json As String = JsonConvert.SerializeObject(jArray,
+                New JsonSerializerSettings With {.NullValueHandling = NullValueHandling.Include}
+            )
+
+            Dim curContext As HttpContext = HttpContext.Current
+            curContext.Response.Clear()
+            curContext.Response.ContentType = "application/json"
+            curContext.Response.Write(json)
+            curContext.ApplicationInstance.CompleteRequest()
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim errorJson As String = JsonConvert.SerializeObject(New With {.Error = True, .Mensaje = ex.Message})
+                    Dim curContext As HttpContext = HttpContext.Current
+
+                    curContext.Response.Clear()
+                    curContext.Response.StatusCode = 500
+                    curContext.Response.ContentType = "application/json"
+                    curContext.Response.Write(errorJson)
+                    curContext.ApplicationInstance.CompleteRequest()
+                End If
+
+            End If
+
+        End Try
+
+    End Sub
+
+
+    '<WebMethod(), SoapHeader("mArch")>
+    'Public Function Get_Ubicacion_By_Codigo_Barra_And_IdBodega(ByVal pBarra As String, ByVal pIdBodega As Integer) As clsBeBodega_ubicacion
+
+    '    Get_Ubicacion_By_Codigo_Barra_And_IdBodega = Nothing
+
+    '    Try
+
+    '        Return clsLnBodega_ubicacion.Get_Ubicacion_By_Codigo_Barra_And_IdBodega(pBarra, pIdBodega)
+
+    '    Catch ex As Exception
+
+    '        '#MECR04112025: Se agrego bitacora de ubicacion
+    '        'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+    '        Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+    '        clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+    '        Dim Mensaje As String = ex.Message
+    '        WriteErrorToEventLog(Mensaje)
+
+    '        If mArch IsNot Nothing Then
+
+    '            If mArch.Tipo = "WM" Then
+    '                Throw New Exception(Mensaje)
+    '            Else
+    '                Dim currrentContext As HttpContext = HttpContext.Current
+    '                Dim DT As New DataTable("CustomError")
+    '                DT.Columns.Add("Error", GetType(String))
+    '                DT.Rows.Add(Mensaje)
+    '                Dim sw As New StringWriter()
+    '                DT.WriteXml(sw)
+    '                HttpContext.Current.Response.Clear()
+    '                HttpContext.Current.Response.StatusCode = 299
+    '                HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+    '                HttpContext.Current.Response.Output.Write(sw.ToString())
+    '                HttpContext.Current.Response.ContentType = "text/xml"
+    '                HttpContext.Current.Response.End()
+    '            End If
+
+    '        End If
+
+    '    End Try
+
+    'End Function
+
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Get_Ubicacion_By_Codigo_Barra_And_IdBodega(ByVal pBarra As String, ByVal pIdBodega As Integer) As clsBeBodega_ubicacion
+
+        Get_Ubicacion_By_Codigo_Barra_And_IdBodega = Nothing
+
+        Try
+
+            Return clsLnBodega_ubicacion.Get_Ubicacion_By_Codigo_Barra_And_IdBodega(pBarra, pIdBodega)
+
+        Catch ex As Exception
+
+            '#MECR04112025: Se agrego bitacora de ubicacion
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms_ubic.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdBodega:=pIdBodega)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
+
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Get_BeProducto_By_Codigo_For_HH(ByVal pCodigo As String, ByVal IdBodega As Integer) As clsBeProducto
+
+
+        Get_BeProducto_By_Codigo_For_HH = Nothing
+
+        Try
+
+            Return clsLnProducto.Get_BeProducto_By_Codigo(pCodigo, IdBodega)
+
+        Catch ex As Exception
+
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
 End Class

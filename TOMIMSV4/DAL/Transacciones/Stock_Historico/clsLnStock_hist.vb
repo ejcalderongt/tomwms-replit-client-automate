@@ -42,6 +42,7 @@ Public Class clsLnStock_hist
                 .Peso = IIf(IsDBNull(dr.Item("peso")), 0.0, dr.Item("peso"))
                 .Temperatura = IIf(IsDBNull(dr.Item("temperatura")), 0.0, dr.Item("temperatura"))
                 .Posiciones = IIf(IsDBNull(dr.Item("posiciones")), 0.0, dr.Item("posiciones"))
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
 
             End With
 
@@ -96,6 +97,7 @@ Public Class clsLnStock_hist
             Ins.Add("peso", "@peso", DataType.Parametro)
             Ins.Add("temperatura", "@temperatura", DataType.Parametro)
             Ins.Add("posiciones", "@posiciones", DataType.Parametro)
+            Ins.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -143,7 +145,7 @@ Public Class clsLnStock_hist
             cmd.Parameters.Add(New SqlParameter("@PESO", oBeStock_hist.Peso))
             cmd.Parameters.Add(New SqlParameter("@TEMPERATURA", oBeStock_hist.Temperatura))
             cmd.Parameters.Add(New SqlParameter("@POSICIONES", oBeStock_hist.Posiciones))
-
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeStock_hist.IdProductoTallaColor))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -208,6 +210,7 @@ Public Class clsLnStock_hist
             Upd.Add("peso", "@peso", DataType.Parametro)
             Upd.Add("temperatura", "@temperatura", DataType.Parametro)
             Upd.Add("posiciones", "@posiciones", DataType.Parametro)
+            Upd.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
             Upd.Where("IdStockHist = @IdStockHist")
 
             Dim sp As String = Upd.SQL()
@@ -256,7 +259,7 @@ Public Class clsLnStock_hist
             cmd.Parameters.Add(New SqlParameter("@PESO", oBeStock_hist.Peso))
             cmd.Parameters.Add(New SqlParameter("@TEMPERATURA", oBeStock_hist.Temperatura))
             cmd.Parameters.Add(New SqlParameter("@POSICIONES", oBeStock_hist.Posiciones))
-
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeStock_hist.IdProductoTallaColor))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

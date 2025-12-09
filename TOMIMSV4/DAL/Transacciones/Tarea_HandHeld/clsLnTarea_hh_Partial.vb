@@ -2037,4 +2037,124 @@ Partial Public Class clsLnTarea_hh
 
     End Function
 
+    Public Shared Function Get_All_Picking_Para_Empaque_Consolidado() As List(Of clsBeTrans_picking_enc)
+
+        Get_All_Picking_Para_Empaque_Consolidado = Nothing
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Dim vSQL As String = "SELECT p.IdPickingEnc, 
+                                    p.IdBodega, 
+                                    p.IdPropietarioBodega, 
+                                    p.IdUbicacionPicking, 
+                                    p.fecha_picking, 
+                                    p.hora_ini, p.hora_fin, 
+                                    p.estado, 
+                                    p.user_agr, 
+                                    p.fec_agr, 
+                                    p.user_mod, 
+                                    p.fec_mod, 
+                                    p.detalle_operador, 
+                                    p.activo, 
+                                    p.verifica_auto,
+                                    p.procesado_bof,
+                                    p.Requiere_Preparacion,
+                                    p.Tipo_Preparacion,
+                                    b.nombre AS NombreBodega, 
+                                    pp.nombre_comercial,
+                                    d.IdPedidoEnc,
+                                    pe.bodega_destino Referencia,
+                                    pe.guia_transporte
+                                    FROM trans_picking_enc AS p INNER JOIN 
+                                            (SELECT distinct IdPedidoEnc, IdPickingEnc 
+                                            FROM trans_picking_ubic 
+                                            WHERE cantidad_verificada>0 and 
+                                                cantidad_despachada < cantidad_verificada AND
+                                                dañado_picking =0 AND
+                                                dañado_verificacion = 0 AND 
+                                                no_encontrado = 0) AS d ON p.IdPickingEnc = d.IdPickingEnc INNER JOIN
+                                            trans_pe_enc pe ON pe.IdPickingEnc = p.IdPickingEnc AND 
+                                                                d.IdPedidoEnc = pe.IdPedidoEnc INNER JOIN
+                                            bodega AS b ON p.IdBodega = b.IdBodega INNER JOIN
+                                            propietario_bodega AS pb ON pb.IdPropietarioBodega = p.IdPropietarioBodega AND
+                                                                        b.IdBodega = pb.IdBodega INNER JOIN
+                                            propietarios AS pp ON pp.IdPropietario = pb.IdPropietario INNER JOIN 
+		                                    trans_pe_tipo pt ON pt.IdTipoPedido = pe.IdTipoPedido
+                                    WHERE (p.estado in ('Procesado', 'Pendiente','Verificado')
+                                    AND p.Requiere_Preparacion=1 
+                                    AND p.activo=1 
+                                    AND p.estado_preparacion IN ('Nuevo','Pendiente'))  
+                                    AND d.IdPedidoEnc NOT IN (SELECT IdPedidoEnc FROM trans_packing_enc WHERE finalizado = 1 AND IdDespachoEnc = 0)
+                                    AND d.IdPedidoEnc NOT IN (SELECT IdPedidoEnc FROM trans_pe_enc WHERE estado = 'Despachado')
+                                    AND NULLIF(pe.guia_transporte, '') IS NOT NULL
+                                    AND pt.empaque_tarima = 1 "
+
+            Dim cmd As New SqlCommand(vSQL, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+
+            dad.Fill(dt)
+
+            Dim Picking As clsBeTrans_picking_enc
+            Dim lPicking As New List(Of clsBeTrans_picking_enc)
+
+            For Each dr As DataRow In dt.Rows
+
+                Picking = New clsBeTrans_picking_enc
+
+                With Picking
+
+                    .IdPickingEnc = dr("IdPickingEnc")
+                    .IdPropietarioBodega = dr("IdPropietarioBodega")
+                    .NombreBodega = dr("NombreBodega")
+                    .IdBodega = dr("IdBodega")
+                    .Fecha_picking = dr("Fecha_picking")
+                    .Hora_ini = dr("Hora_ini")
+                    .Hora_fin = dr("Hora_fin")
+                    .Estado = dr("Estado")
+                    .User_agr = dr("User_agr")
+                    .Fec_agr = dr("Fec_agr")
+                    .User_mod = dr("User_mod")
+                    .Fec_mod = dr("Fec_mod")
+                    .Detalle_operador = dr("Detalle_operador")
+                    .Activo = dr("Activo")
+                    .verifica_auto = dr("verifica_auto")
+                    .procesado_bof = dr("procesado_bof")
+                    .Requiere_Preparacion = dr("Requiere_Preparacion")
+                    .Tipo_Preparacion = dr("Tipo_Preparacion")
+                    .NombreBodega = IIf(IsDBNull(dr("NombreBodega")), "", dr("NombreBodega"))
+                    .NombrePropietarioPicking = IIf(IsDBNull(dr("nombre_comercial")), "", dr("nombre_comercial"))
+                    .IdPedidoEnc = dr("IdPedidoEnc")
+                    .Referencia = IIf(IsDBNull(dr("Referencia")), "", dr("Referencia"))
+                    .Guia_Transporte = IIf(IsDBNull(dr("Guia_Transporte")), "", dr("Guia_Transporte"))
+
+                End With
+
+                lPicking.Add(Picking)
+
+            Next
+
+            lTransaction.Commit()
+
+            dt.Dispose()
+
+            Get_All_Picking_Para_Empaque_Consolidado = lPicking
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Dim ss As String = ex.Message
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection IsNot Nothing Then lConnection.Dispose()
+        End Try
+
+    End Function
+
 End Class

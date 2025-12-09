@@ -3080,4 +3080,184 @@ Partial Public Class clsLnTrans_despacho_enc
 
     End Function
 
+    Public Shared Function Guardar_Despacho(ByVal pListBePickingUbic As List(Of clsBeTrans_picking_ubic),
+                                            ByVal pBePedidoEnc As clsBeTrans_pe_enc,
+                                            ByVal pConnection As SqlConnection,
+                                            ByVal pTransaction As SqlTransaction) As Boolean
+
+        Dim hora_server As DateTime
+        Dim BeDespachoEnc As New clsBeTrans_despacho_enc
+
+        Guardar_Despacho = False
+
+        Try
+
+            hora_server = clsServidor.Get_Fecha_Servidor()
+
+            BeDespachoEnc.IdBodega = pBePedidoEnc.IdBodega
+            BeDespachoEnc.IdEmpresa = clsLnBodega.Get_IdEmpresa_By_IdBodega(BeDespachoEnc.IdBodega)
+            BeDespachoEnc.IdPropietarioBodega = pBePedidoEnc.IdPropietarioBodega
+            BeDespachoEnc.IdPiloto = 0
+            BeDespachoEnc.IdVehiculo = 0
+            BeDespachoEnc.IdRuta = 0
+            BeDespachoEnc.Fecha = hora_server
+            BeDespachoEnc.No_pase = 0
+            BeDespachoEnc.Observacion = ""
+            BeDespachoEnc.Hora_ini = hora_server
+            BeDespachoEnc.Hora_fin = hora_server
+            BeDespachoEnc.Estado = "Finalizado"
+            BeDespachoEnc.Numero = 0
+            BeDespachoEnc.Marchamo = ""
+            BeDespachoEnc.Cant_bultos = 0
+            BeDespachoEnc.IsNew = True
+            BeDespachoEnc.User_agr = pBePedidoEnc.User_agr
+            BeDespachoEnc.Fec_agr = hora_server
+            BeDespachoEnc.User_mod = pBePedidoEnc.User_agr
+            BeDespachoEnc.Fec_mod = hora_server
+            BeDespachoEnc.Activo = True
+
+            BeDespachoEnc.ListaPedidos.Add(pBePedidoEnc)
+
+            If Not pListBePickingUbic Is Nothing Then
+                For Each BePickingUbic In pListBePickingUbic
+                    Adicionar_Producto_A_Detalle_Despacho(BeDespachoEnc,
+                                                          BePickingUbic,
+                                                          pBePedidoEnc.Fecha_Pedido,
+                                                          pConnection,
+                                                          pTransaction)
+                Next
+            End If
+
+            Guardar_Despacho = Guardar_Auto(BeDespachoEnc, pConnection, pTransaction)
+
+        Catch ex As Exception
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    Private Shared Sub Adicionar_Producto_A_Detalle_Despacho(ByRef BeDespachoEnc As clsBeTrans_despacho_enc,
+                                                             ByVal BeTransPickingUbic As clsBeTrans_picking_ubic,
+                                                             ByVal vFechaPedido As Date,
+                                                             ByVal lConnection As SqlConnection,
+                                                             ByVal lTransaction As SqlTransaction)
+
+        Try
+
+            Dim BeDespachoDet As New clsBeTrans_despacho_det
+
+            If BeDespachoEnc.ListaDetalle IsNot Nothing AndAlso BeDespachoEnc.ListaDetalle.Count > 0 Then
+                BeDespachoDet.IdDespachoDet = BeDespachoEnc.ListaDetalle.Max(Function(b) b.IdDespachoDet) + 1
+            Else
+                BeDespachoDet.IdDespachoDet = 1
+            End If
+
+            BeDespachoDet.Codigo = BeTransPickingUbic.CodigoProducto
+            BeDespachoDet.NombreProducto = BeTransPickingUbic.NombreProducto
+            BeDespachoDet.NombreEstado = BeTransPickingUbic.ProductoEstado
+            BeDespachoDet.IdPickingUbic = BeTransPickingUbic.IdPickingUbic
+            BeDespachoDet.IdProductoBodega = BeTransPickingUbic.IdProductoBodega
+            BeDespachoDet.IdProductoEstado = BeTransPickingUbic.IdProductoEstado
+            BeDespachoDet.IdPresentacion = BeTransPickingUbic.IdPresentacion
+            BeDespachoDet.IdUnidadMedidaBasica = BeTransPickingUbic.IdUnidadMedida
+            BeDespachoDet.IdPedidoEnc = BeTransPickingUbic.IdPedidoEnc
+            BeDespachoDet.IdPedidoDet = BeTransPickingUbic.IdPedidoDet
+            BeDespachoDet.IdPickingUbic = BeTransPickingUbic.IdPickingUbic
+            BeDespachoDet.CantidadDespachada = BeTransPickingUbic.Cantidad_Verificada
+            BeDespachoDet.PesoDespachado = BeTransPickingUbic.Peso_verificado
+            BeDespachoDet.User_agr = BeDespachoEnc.User_agr
+            BeDespachoDet.Fec_agr = Now
+            BeDespachoDet.User_mod = BeDespachoEnc.User_agr
+            BeDespachoDet.NombreUbicacion = BeTransPickingUbic.NombreUbicacion
+            BeDespachoDet.Fec_mod = Now
+            BeDespachoDet.Activo = True
+            BeDespachoDet.IsNew = True
+            BeDespachoDet.FechaPedido = vFechaPedido
+
+            If BeTransPickingUbic.IdProductoTallaColor > 0 Then
+                BeDespachoDet.Talla = BeTransPickingUbic.Codigo_Talla
+                BeDespachoDet.Color = BeTransPickingUbic.Codigo_Color
+                BeDespachoDet.IdProductoTallaColor = BeTransPickingUbic.IdProductoTallaColor
+            Else
+                BeDespachoDet.Talla = ""
+                BeDespachoDet.Color = ""
+
+            End If
+
+            BeDespachoEnc.ListaDetalle.Add(BeDespachoDet)
+
+        Catch ex As Exception
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Sub
+
+    Public Shared Function Guardar_Auto(ByVal pBeDespachoEnc As clsBeTrans_despacho_enc,
+                                        ByVal lConnection As SqlConnection,
+                                        ByVal lTransaction As SqlTransaction) As Boolean
+
+        Guardar_Auto = False
+
+        Try
+
+            'Despacho Encabezado
+            Guarda_Trans_Despacho_Enc(pBeDespachoEnc,
+                                      lConnection,
+                                      lTransaction)
+
+            'Despacho Detalle
+            Guarda_Trans_Despacho_Det(pBeDespachoEnc,
+                                      lConnection,
+                                      lTransaction)
+
+            'Movimientos
+            Guarda_Trans_Despacho_Mov(pBeDespachoEnc,
+                                      lConnection,
+                                      lTransaction)
+
+            Dim BeInterfaceConfig As New clsBeI_nav_config_enc
+            BeInterfaceConfig = clsLnI_nav_config_enc.Get_Single_By_IdBodega_And_IdEmpresa(pBeDespachoEnc.IdBodega,
+                                                                                           pBeDespachoEnc.IdEmpresa,
+                                                                                           lConnection,
+                                                                                           lTransaction)
+
+            Dim OutBePedidoCompraEnc As New clsBeTrans_oc_enc()
+            Dim OutBeRecepcionEnc As New clsBeTrans_re_enc()
+
+            '#GT21012025: si tipo doc permite, se genera transferencia hacia otra bodega (aca hace el registro de oc y recepcion)
+            Guardar_Despacho_Stock(pBeDespachoEnc,
+                                   BeInterfaceConfig,
+                                   OutBePedidoCompraEnc,
+                                   False,
+                                   lConnection,
+                                   lTransaction)
+
+            'Estado en Pickings asociados
+            Verifica_Status_Picking(pBeDespachoEnc,
+                                    lConnection,
+                                    lTransaction)
+
+            Guarda_Trans_Packing_Enc(pBeDespachoEnc,
+                                     lConnection,
+                                     lTransaction)
+
+            'Tabla intermedia para interface.
+            clsLnI_nav_transacciones_out.Insertar_Salida(pBeDespachoEnc.IdEmpresa,
+                                                         pBeDespachoEnc.IdBodega,
+                                                         pBeDespachoEnc,
+                                                         lConnection,
+                                                         lTransaction)
+
+            Guardar_Auto = True
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 End Class

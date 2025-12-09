@@ -378,17 +378,16 @@ Public Class frmEjecucion
 
     End Function
 
-    Private Sub mnuActualizarCodigosBarra_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuActualizarCodigosBarra.ItemClick
+    Private Async Sub mnuActualizarCodigosBarra_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuActualizarCodigosBarra.ItemClick
 
         Try
 
             Dim SapProductoCodigosBarra As New clsSyncSapCodigosBarra
-            SapProductoCodigosBarra.Importar_Codigos_Barra_Productos(lblprg, prg)
+            Await SapProductoCodigosBarra.Importar_Codigos_Barra_Productos_SL(lblprg, prg)
 
         Catch ex As Exception
             clsPublic.Actualizar_Progreso(lblprg, "Error: " & ex.Message)
         End Try
-
 
     End Sub
 
@@ -823,9 +822,9 @@ Public Class frmEjecucion
     End Function
 
     Private Async Sub Ejecuta_Interface_Traslados_Sap_Hana(Optional ByVal Preguntar As Boolean = True,
-                                                     Optional ByVal pNoDocumentoSolTraslado As String = "",
-                                                     Optional ByVal pEsProrrateo As Boolean = True,
-                                                     Optional ByVal pEsTrasladoBodegaVirtual As Boolean = False)
+                                                           Optional ByVal pNoDocumentoSolTraslado As String = "",
+                                                           Optional ByVal pEsProrrateo As Boolean = True,
+                                                           Optional ByVal pEsTrasladoBodegaVirtual As Boolean = False)
 
         Try
 
@@ -1404,9 +1403,8 @@ Public Class frmEjecucion
     End Sub
 
     Private Sub mnuProductosI_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuProductosI.ItemClick
-
+        Ejecuta_Interface_Productos(True)
     End Sub
-
 
     Public Async Sub Ejecuta_Interface_Centros_Costo(Optional ByVal Preguntar As Boolean = True)
 
@@ -1427,7 +1425,6 @@ Public Class frmEjecucion
             If Ejecutar Then
                 Await clsSyncSapCentrosCosto.Importar_Centros_Costo_Desde_SAP(lblprg, prg)
             End If
-
 
         Catch ex As Exception
 
@@ -1629,7 +1626,7 @@ Public Class frmEjecucion
 
     End Sub
 
-    Private Async Function mnuSincronizarTienda_ItemClickAsync(sender As Object, e As ItemClickEventArgs) As Task Handles mnuSincronizarTienda.ItemClick
+    Private Async Function mnuSincronizarTienda_ItemClick(sender As Object, e As ItemClickEventArgs) As Task Handles mnuSincronizarTienda.ItemClick
         Try
 
             Dim Ejecutar As Boolean = False
@@ -1648,11 +1645,11 @@ Public Class frmEjecucion
                 'Dim unused = Await ProcesarTodoAsync()
 
                 '#CKFK20251101: Llamado al método para procesar las facturas de reserva de cliente
-                'Dim unused = clsSyncTransacWMS.Procesar_Ajustes_SAP(lblprg, prg) 'Ajustes
-                Dim unused1 = clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_SAP(lblprg, prg) 'Devoluciones de cliente
-                'Dim unused2 = clsSyncTransacWMS.Procesar_Pedido_de_Cliente_SAP(lblprg, prg) 'Pedidos de cliente
-                'Dim unused3 = clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_Anulada_SAP(lblprg, prg) 'Anulaciones de notas de crédito
-                'Dim unused4 = clsSyncTransacWMS.Procesar_Pedido_de_Cliente_Anulado_SAP(lblprg, prg) 'Anulaciones de pedidos de cliente
+                Await clsSyncTransacWMS.Procesar_Ajustes_SAP(lblprg, prg) 'Ajustes
+                Await clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_SAP(lblprg, prg) 'Devoluciones de cliente  Ya está desarrollado
+                Await clsSyncTransacWMS.Procesar_Pedido_de_Cliente_SAP(lblprg, prg) 'Pedidos de cliente
+                'Await clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_Anulada_SAP(lblprg, prg) 'Anulaciones de notas de crédito
+                'Await clsSyncTransacWMS.Procesar_Pedido_de_Cliente_Anulado_SAP(lblprg, prg) 'Anulaciones de pedidos de cliente
 
             End If
 
@@ -1664,22 +1661,35 @@ Public Class frmEjecucion
         End Try
     End Function
 
-    Private Async Function ProcesarTodoAsync() As Task
-        ' Ajustes
-        'Await clsSyncTransacWMS.Procesar_Ajustes_SAP(lblprg, prg)
+    Public Async Sub Ejecuta_Interface_Productos(Optional ByVal Preguntar As Boolean = True)
 
-        ' Devoluciones de cliente
-        Await clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_SAP(lblprg, prg)
+        Try
 
-        ' Pedidos de cliente
-        'Await clsSyncTransacWMS.Procesar_Pedido_de_Cliente_SAP(lblprg, prg)
+            prg.Visible = True
 
-        ' Anulación NC
-        'Await clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_Anulada_SAP(lblprg, prg)
+            Dim Ejecutar As Boolean = False
 
-        ' Anulación pedido
-        'Await clsSyncTransacWMS.Procesar_Pedido_de_Cliente_Anulado_SAP(lblprg, prg)
-    End Function
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Actualizar registros?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
 
+            If Ejecutar Then
+                lblprg.Clear()
+                Await clsSyncSAPProducto.Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lblprg, prg)
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+            prg.Visible = False
+
+        End Try
+
+    End Sub
 
 End Class

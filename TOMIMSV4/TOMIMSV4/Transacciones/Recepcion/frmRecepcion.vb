@@ -975,6 +975,10 @@ Public Class frmRecepcion
 
                 Application.DoEvents()
 
+                If gBeRecepcionEnc Is Nothing Then
+                    Exit Sub
+                End If
+
                 chkHabilitaStock.Checked = gBeRecepcionEnc.Habilitar_Stock
 
                 chkMostrarCantidadPI.Checked = gBeRecepcionEnc.Mostrar_Cantidad_Esperada
@@ -1990,6 +1994,15 @@ Public Class frmRecepcion
 
             End If
 
+            '#GT02122025: no se ha determinado que hace el operador de HH para duplicar la tarea
+            'aqui removemos duplicados y se mantienen las variantes.
+            pListOpe = pListOpe _
+             .GroupBy(Function(o) New With {
+                 Key .IdRecepcionEnc = o.IdRecepcionEnc,
+                 Key .IdOperadorBodega = o.IdOperadorBodega
+             }) _
+             .Select(Function(g) g.First()) _
+             .ToList()
 
             clsLnTrans_re_enc.Guardar(BeTareaHH,
                                       gBeRecepcionEnc,

@@ -69,7 +69,7 @@ Public Class clsLnI_nav_ped_traslado_enc
             Ins.Add("Comments", "@Comments", DataType.Parametro)
             Ins.Add("Company_Code", "@Company_Code", DataType.Parametro)
             Ins.Add("IsExport", "@IsExport", DataType.Parametro)
-            Ins.Add("Transportation_Guide", "@Transportation_Guide", DataType.Parametro)
+            If Not oBeI_nav_ped_traslado_enc.Transportation_Guide Is Nothing Then Ins.Add("Transportation_Guide", "@Transportation_Guide", DataType.Parametro)
 
             If Not oBeI_nav_ped_traslado_enc.External_Document_No Is Nothing Then
                 If Not oBeI_nav_ped_traslado_enc.External_Document_No.Trim = "" Then Ins.Add("external_document_no", "@external_document_no", DataType.Parametro)
@@ -112,7 +112,7 @@ Public Class clsLnI_nav_ped_traslado_enc
             cmd.Parameters.Add(New SqlParameter("@ADDRESS", oBeI_nav_ped_traslado_enc.Address))
             cmd.Parameters.Add(New SqlParameter("@COMMENTS", oBeI_nav_ped_traslado_enc.Comments))
             cmd.Parameters.Add(New SqlParameter("@COMPANY_CODE", oBeI_nav_ped_traslado_enc.Company_Code))
-            cmd.Parameters.Add(New SqlParameter("@TRANSPORTATION_GUIDE", oBeI_nav_ped_traslado_enc.Transportation_Guide))
+            If Not oBeI_nav_ped_traslado_enc.Transportation_Guide Is Nothing Then cmd.Parameters.Add(New SqlParameter("@TRANSPORTATION_GUIDE", oBeI_nav_ped_traslado_enc.Transportation_Guide))
 
             If Not oBeI_nav_ped_traslado_enc.External_Document_No Is Nothing Then
                 If Not oBeI_nav_ped_traslado_enc.External_Document_No.Trim = "" Then cmd.Parameters.Add(New SqlParameter("@EXTERNAL_DOCUMENT_NO", oBeI_nav_ped_traslado_enc.External_Document_No))

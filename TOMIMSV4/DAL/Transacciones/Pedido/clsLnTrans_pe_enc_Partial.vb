@@ -847,6 +847,7 @@ Partial Public Class clsLnTrans_pe_enc
                                   Optional ByVal pSinExistenciasWMS As Boolean = False,
                                   Optional ByVal pSinExistenciasERP As Boolean = False) As DataTable
 
+
         Dim lTable As New DataTable("Result")
 
         Try
@@ -857,7 +858,7 @@ Partial Public Class clsLnTrans_pe_enc
                 vSQL += " AND Activo=1"
             Else
                 vSQL += " AND Activo=0"
-            End If
+                End If
 
             If pAnulado And pDespachado Then
                 vSQL += " AND (Estado = 'Anulado' Or Estado = 'Despachado') "
@@ -885,6 +886,7 @@ Partial Public Class clsLnTrans_pe_enc
                                   i_nav_ped_traslado_enc enc on enc.No = det.NoEnc 
                                   WHERE det.Process_Result <> 'Ok' )) "
             End If
+
 
             vSQL += " AND cast(Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) &
                    " AND " & FormatoFechas.fFecha(pFechaAl)
@@ -2178,10 +2180,18 @@ Partial Public Class clsLnTrans_pe_enc
 
             If Not Es_Transaccion_Remota Then lConnection.Open() : ltrans = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
+            'Dim sp As String = "SELECT DISTINCT pe.*, r.nombre AS NombreRutaDespacho FROM trans_pe_enc pe 
+            '                    INNER JOIN trans_picking_op op on op.IdPickingEnc = pe.IdPickingEnc
+            '                    LEFT JOIN road_ruta r on r.IdRuta = pe.RoadIdDespacho
+            '                    WHERE pe.IdBodega = @IdBodega AND pe.estado in('Pickeado','Pendiente')"
+
+
+            '#GT01122025: se agrega inner join al tipo pedido para saber si aplica verificar por imagen para no mostrar las tareas en la HH
             Dim sp As String = "SELECT DISTINCT pe.*, r.nombre AS NombreRutaDespacho FROM trans_pe_enc pe 
                                 INNER JOIN trans_picking_op op on op.IdPickingEnc = pe.IdPickingEnc
                                 LEFT JOIN road_ruta r on r.IdRuta = pe.RoadIdDespacho
-                                WHERE pe.IdBodega = @IdBodega AND pe.estado in('Pickeado','Pendiente')"
+                                INNER JOIN trans_pe_tipo pe_tipo on pe.IdTipoPedido=pe_tipo.IdTipoPedido
+                                WHERE pe.IdBodega = @IdBodega AND pe.estado in('Pickeado','Pendiente') and pe_tipo.verificar_con_imagen=0"
 
             If pIdOperadorBodega <> 0 Then
                 sp += " AND op.IdOperadorBodega = @IdOperadorBodega "
@@ -6241,5 +6251,63 @@ Partial Public Class clsLnTrans_pe_enc
         End Try
 
     End Function
+
+    '#GT25112025: cargar lista de pedidos pickeados exclusivo para verificacion_bof
+    Public Shared Function GetAll_By_VerificacionBOF(ByVal pActivo As Boolean,
+                                                     ByVal pFechaDel As Date,
+                                                     ByVal pFechaAl As Date,
+                                                     ByVal IdBodega As Integer) As DataTable
+
+
+
+
+        Dim lTable As New DataTable("Result")
+
+        Try
+
+            Dim vSQL As String = " SELECT * FROM VW_PEDIDOS_LIST WHERE IDBODEGA = @IDBODEGA and verificar_con_imagen=1 and estado='Pickeado' "
+
+            If pActivo = True Then
+                vSQL += " AND Activo=1 "
+            Else
+                vSQL += " AND Activo=0"
+            End If
+
+
+            vSQL += " AND cast(Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) &
+                   " AND " & FormatoFechas.fFecha(pFechaAl)
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDataAdapter.SelectCommand.Transaction = lTransaction
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdBodega", IdBodega)
+
+                        lDataAdapter.SelectCommand.CommandType = CommandType.Text
+                        lDataAdapter.Fill(lTable)
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lTable
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 
 End Class
