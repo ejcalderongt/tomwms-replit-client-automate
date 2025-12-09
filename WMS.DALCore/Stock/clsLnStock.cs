@@ -954,15 +954,15 @@ public class clsLnStock
         return double.TryParse(value, out _);
     }
     public static List<clsBeStock>? lStock(ref clsBeStock_res pBeStockRes,
-                                       ref clsBeProducto? pBeProductoOutput,
-                                       int DiasVencimiento,
-                                       clsBeI_nav_config_enc pBeConfigEnc,
-                                       SqlConnection lConnection,
-                                       SqlTransaction ltransaction,
-                                       bool pExcluirUbicacionPicking = false,
-                                       bool Conmutar_Umbas_A_Presentacion = false,
-                                       bool pTarea_Reabasto = false,
-                                       bool pEs_Devolucion = false)
+                                           ref clsBeProducto? pBeProductoOutput,
+                                           int DiasVencimiento,
+                                           clsBeI_nav_config_enc pBeConfigEnc,
+                                           SqlConnection lConnection,
+                                           SqlTransaction? ltransaction,
+                                           bool pExcluirUbicacionPicking = false,
+                                           bool Conmutar_Umbas_A_Presentacion = false,
+                                           bool pTarea_Reabasto = false,
+                                           bool pEs_Devolucion = false)
     {
         try
         {
@@ -1027,6 +1027,7 @@ public class clsLnStock
                 vSQL += " and stock.idproductoestado = @idproductoestado ";
             }
 
+            if (BeBodega !=null)
             if (!BeBodega.Permitir_decimales)
             {
                 if (pBeStockRes.IdPresentacion != 0 || pBeStockRes.Atributo_Variante_1 != null)

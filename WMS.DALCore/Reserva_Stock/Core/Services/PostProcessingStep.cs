@@ -1,10 +1,11 @@
+using Microsoft.Extensions.Configuration;
 using WMS.DALCore.I_nav_ped_traslado_det;
 
 namespace WMS.StockReservation.Core.Services
 {
     /// <summary>
     /// Paso 6: Post-procesamiento (actualizar trasladoDet, logs finales).
-    /// Target: ~100 líneas
+    /// Target: ~100 lineas
     /// </summary>
     public class PostProcessingStep : IPipelineStep
     {
@@ -31,7 +32,7 @@ namespace WMS.StockReservation.Core.Services
                     }
                     else
                     {
-                        // Reserva en presentación
+                        // Reserva en presentacion
                         if (context.PedidoDet?.IdPresentacion == 0)
                         {
                             context.TrasladoDet.Quantity_Reserved_WMS += reservation.Cantidad;
@@ -58,6 +59,37 @@ namespace WMS.StockReservation.Core.Services
 
             // Log de resumen
             var totalReserved = context.Request.Cantidad - context.PendingQuantity;
+
+            // INSERTAR RESERVAS EN stock_res
+            if (context.CreatedReservations.Count > 0)
+            {
+                var config = new ConfigurationBuilder()
+                    .AddEnvironmentVariables()
+                    .Build();
+
+                foreach (var reservation in context.CreatedReservations)
+                {
+                    try
+                    {
+                        clsLnStock_res.Insertar(
+                            config,
+                            reservation,
+                            context.Connection,
+                            context.Transaction);
+
+                        _logger.LogCheckpoint(
+                            $"#MI3_STOCK_RES_INSERTED - " +
+                            $"IdProductoBodega: {reservation.IdProductoBodega}, " +
+                            $"Cantidad: {reservation.Cantidad:F6}, " +
+                            $"IdStock: {reservation.IdStock}");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError($"Error insertando en stock_res: {ex.Message}");
+                        throw;
+                    }
+                }
+            }
 
             _logger.LogCheckpoint(
                 $"#MI3_SUMMARY - " +
