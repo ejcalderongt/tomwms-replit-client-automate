@@ -1541,7 +1541,7 @@ public class clsLnProducto
 
     public static int Get_Tipo_Rotacion_By_IdProductoBodega(int IdProductoBodega,
                                                          SqlConnection lConnection,
-                                                         SqlTransaction lTransaction)
+                                                         SqlTransaction? lTransaction)
     {
         int result = 0;
 

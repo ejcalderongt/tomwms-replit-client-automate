@@ -19,8 +19,8 @@ namespace WMS.StockReservation.Core.Domain
         public clsBeI_nav_config_enc Configuration { get; set; } = new clsBeI_nav_config_enc();
         public SqlConnection Connection { get; set; } = new SqlConnection();
         public SqlTransaction? Transaction { get; set; }
-        public clsBeTrans_pe_det PedidoDet { get; set; } = new clsBeTrans_pe_det();
-        public clsBeI_nav_ped_traslado_det TrasladoDet { get; set; } = new clsBeI_nav_ped_traslado_det();
+        public clsBeTrans_pe_det? PedidoDet { get; set; } = new clsBeTrans_pe_det();
+        public clsBeI_nav_ped_traslado_det? TrasladoDet { get; set; } = new clsBeI_nav_ped_traslado_det();
         public bool TareaReabasto { get; set; }=false;
         public bool EsDevolucion { get; set; } = false;
         public int LineNumber { get; set; } = 0;

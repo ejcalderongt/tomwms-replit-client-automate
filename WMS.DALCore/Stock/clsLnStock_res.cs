@@ -775,8 +775,6 @@ public class clsLnStock_res
 
     public static double Get_Cantidad_Reservada_By_IdStock(int pIdStock, SqlConnection lConnection, SqlTransaction lTransaction)
     {
-        double result = 0;
-
         try
         {
             List<clsBeStock_res> lStockRes = Get_All_By_IdStock(pIdStock, lConnection, lTransaction);
@@ -814,7 +812,7 @@ public class clsLnStock_res
         }
     }
 
-    public static List<clsBeStock_res> Get_All_By_IdStock(int pIdStock, SqlConnection lConnection, SqlTransaction lTransaction)
+    public static List<clsBeStock_res> Get_All_By_IdStock(int pIdStock, SqlConnection lConnection, SqlTransaction? lTransaction)
     {
         try
         {
@@ -922,7 +920,7 @@ public class clsLnStock_res
                                                                 ref double Cantidad_Reservada,
                                                                 ref double Peso_Reservado,
                                                                 SqlConnection lConnection,
-                                                                SqlTransaction lTransaction)
+                                                                SqlTransaction? lTransaction)
     {
         bool result = false;
 
@@ -983,7 +981,7 @@ public class clsLnStock_res
         return result;
     }
 
-    public static List<int> Get_All_By_IdBodega(int pIdBodega, SqlConnection lConnection, SqlTransaction lTransaction)
+    public static List<int> Get_All_By_IdBodega(int pIdBodega, SqlConnection lConnection, SqlTransaction? lTransaction)
     {
         List<int> lReturnValue = new List<int>();
 
@@ -1016,7 +1014,7 @@ public class clsLnStock_res
     public static bool Restar_Stock_Reservado(List<clsBeStock> lStock,
                                               clsBeI_nav_config_enc pBeConfigEnc,
                                               SqlConnection lConnection,
-                                              SqlTransaction lTransaction)
+                                              SqlTransaction? lTransaction)
     {
         double vCantidadReservadaRef = 0;
         double vPesoReservadoRef = 0;
@@ -1031,7 +1029,6 @@ public class clsLnStock_res
         try
         {
             clsBeProducto_presentacion BePresentacionStock = new clsBeProducto_presentacion();
-            string vHash = "";
 
             if (lStock == null) return true;
 
@@ -1110,6 +1107,8 @@ public class clsLnStock_res
                                         }
                                     }
                                 }
+
+                                if(BePresentacionStock !=null)
 
                                 if (BePresentacionStock.Factor > 0)
                                 {

@@ -359,7 +359,7 @@ Public Class clsSyncTransacWMS
                     '#MECR 202508080524: Verifica si el proveedor ya existe como cliente en WMS.
                     If Await clsSyncSapTrasladosEnvio.Validar_Cliente_WMS(factura.Transfer_to_Code, "C", lblprg, clsTrans, vHanaService.SessionCookie, BD.Instancia.HANA_SL) Then
 
-                        Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(factura, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
+                        Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_Transac_WMS(factura, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
 
                         If pedidoEnc IsNot Nothing Then
 

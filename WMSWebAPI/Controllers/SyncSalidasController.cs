@@ -138,7 +138,7 @@ namespace WMSWebAPI.Controllers
             {
                 _logger.LogWarning("Request o documento clsBeI_nav_ped_traslado_enc es nulo.");
                 return BadRequest("Debe proporcionar un documento válido con la estructura { beINavPedCompraEnc: {...} }");
-            }
+            } 
 
             // MAPEO EXPLÍCITO: Extraer el documento del wrapper DTO
             // Esto asegura que documento.Lineas_Detalle ya esté poblado desde el JSON
@@ -162,16 +162,25 @@ namespace WMSWebAPI.Controllers
                     throw new InvalidOperationException("El servicio no implementa la interfaz requerida");
                 }
 
-                // AHORA documento.Lineas_Detalle ya está poblado desde el JSON deserializado
-                // La validación Datos_Validos() dentro de Insert_salida_mi3 pasará correctamente
+                // AHORA documento.Lineas_Detalle ya está poblado desde el JSON deserializado                
                 int lineasProcesadas = salidaService.Insert_salida_mi3(ref documento, ref resultado);
 
-                if (!string.IsNullOrEmpty(resultado) && !resultado.Contains("éxito"))
+                // Validar resultado de texto (errores explicitos)
+                if (!string.IsNullOrEmpty(resultado) && !resultado.Contains("exito"))
                 {
                     throw new Exception(resultado);
                 }
 
-                _logger.LogInformation("Documento MI3 procesado correctamente. Líneas procesadas: {LineasProcesadas}", lineasProcesadas);
+                // CRITICO: Si no se procesaron lineas, es un error (reserva fallo)
+                if (lineasProcesadas == 0)
+                {
+                    string mensajeError = !string.IsNullOrEmpty(resultado)
+                        ? resultado
+                        : "No se procesaron lineas. Verifique stock disponible y configuracion de bodega.";
+                    throw new Exception(mensajeError);
+                }
+
+                _logger.LogInformation("Documento MI3 procesado correctamente. Lineas procesadas: {LineasProcesadas}", lineasProcesadas);
 
                 return Ok(new
                 {

@@ -755,7 +755,7 @@ public class clsLnProducto_presentacion
 
     public static bool GetSingle(ref clsBeProducto_presentacion pBeProducto_presentacion,
                                  SqlConnection lConnection,
-                                 SqlTransaction lTransaction)
+                                 SqlTransaction? lTransaction)
     {
         bool result = false;
 
