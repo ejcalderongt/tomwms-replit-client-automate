@@ -17420,7 +17420,6 @@ Public Class TOMHHWS
 
             Dim BeOperador = clsLnOperador.Existe(pOperador)
 
-
             If BeOperador IsNot Nothing Then
                 Operador_Permite_Reemplazo = clsLnOperador_bodega.Operador_Permite_Reemplazo(BeOperador)
             Else
