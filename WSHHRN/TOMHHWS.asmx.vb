@@ -17411,19 +17411,18 @@ Public Class TOMHHWS
 
     '#MA20251204'
     <WebMethod(), SoapHeader("mArch")>
-    Public Function Operador_Permite_Reemplazo(ByVal pOperador As clsBeOperador) As Boolean
+    Public Function Operador_Tiene_Permiso(ByVal pOperador As clsBeOperador, ByVal pOpcion As String) As Boolean
 
-        Operador_Permite_Reemplazo = False
+        Operador_Tiene_Permiso = False
 
         Try
             'Si existe en el WS, RETORNA'
-
             Dim BeOperador = clsLnOperador.Existe(pOperador)
 
             If BeOperador IsNot Nothing Then
-                Operador_Permite_Reemplazo = clsLnOperador_bodega.Operador_Permite_Reemplazo(BeOperador)
+                Operador_Tiene_Permiso = clsLnOperador_bodega.Operador_Tiene_Permiso(BeOperador.IdOperador, pOpcion)
             Else
-                Operador_Permite_Reemplazo = False
+                Operador_Tiene_Permiso = False
             End If
 
         Catch ex As Exception
