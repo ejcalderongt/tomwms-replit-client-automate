@@ -180,7 +180,7 @@ Public Class frmPedido_List
                 Dt = clsLnTrans_pe_enc.GetAll_By_VerificacionBOF(chkActivos.Checked,
                                                                  dtpFechaDel.Value,
                                                                  dtpFechaAl.Value,
-                                                                 AP.IdBodega)
+                                                                 AP.UsuarioAp.IdUsuario)
 
             Else
 
