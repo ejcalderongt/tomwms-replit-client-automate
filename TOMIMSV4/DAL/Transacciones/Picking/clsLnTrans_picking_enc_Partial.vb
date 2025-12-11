@@ -3227,17 +3227,22 @@ Partial Public Class clsLnTrans_picking_enc
 
                 For Each BePickingUbic As clsBeTrans_picking_ubic In plistPickingUbic
 
-                    '#GT28112025:redundante, pero la verificación recibe lista de un registro
+                    '#GT28112025:la verificación recibe lista de un registro
                     tmpListaPickingUbic = New List(Of clsBeTrans_picking_ubic)
                     tmpListaPickingUbic.Add(BePickingUbic)
 
-                    '#GT11122025: buscar el match entre pickingubic y la lista de pedidos, para enviar solo el que corresponde
+                    '#GT11122025: la cantidad a verificar se envia por separado, y posteriormente se deja en 0 en picking_ubic
+                    Dim pCantidad_A_Verificar = tmpListaPickingUbic(0).Cantidad_Verificada
+                    tmpListaPickingUbic(0).Cantidad_Verificada = 0
+
+
+                    '#GT11122025: obtener el pedido al buscarlo en la lista, según los datos del picking_ubic
                     pBePedidoEnc = New clsBeTrans_pe_enc()
                     pBePedidoEnc = pListBePedidoEnc.Find(Function(x) x.IdPickingEnc = BePickingUbic.IdPickingEnc AndAlso x.IdPedidoEnc = BePickingUbic.IdPedidoEnc)
 
                     If clsLnTrans_picking_ubic.Actualiza_Cant_Peso_Verificacion(tmpListaPickingUbic,
                                                                                 pIdOperador,
-                                                                                BePickingUbic.Cantidad_Recibida,
+                                                                                pCantidad_A_Verificar,
                                                                                 BePickingUbic.Peso_recibido,
                                                                                 0,
                                                                                 pBePedidoEnc.IdPedidoEnc,

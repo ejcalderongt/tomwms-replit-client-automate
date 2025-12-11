@@ -3,6 +3,7 @@ Imports System.Drawing.Drawing2D
 Imports System.Drawing.Imaging
 Imports System.IO
 Imports System.Reflection
+Imports DevExpress.Xpf.Core.ConditionalFormatting.Native
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Controls
@@ -850,7 +851,7 @@ Public Class frmVerificacionBOF
 
             ' NUEVO: calcular estado después de esta lectura
             Dim siguePendiente As Boolean = (pickeada > 0 AndAlso nuevaVerificada < pickeada)
-            Dim lineaCompleta As Boolean = (pickeada > 0 AndAlso nuevaVerificada >= pickeada)
+            'Dim lineaCompleta As Boolean = (pickeada > 0 AndAlso nuevaVerificada >= pickeada)
 
             If handle >= 0 Then
                 Dim siguienteHandle As Integer = handle + 1
@@ -878,14 +879,18 @@ Public Class frmVerificacionBOF
             Dim pSku = If(dt.Columns.Contains("SKU"), CStr(row("SKU")), "")
             Dim pIdProductoTallaColor = If(dt.Columns.Contains("IdProductoTallaColor"), CInt(row("IdProductoTallaColor")), 0)
 
-            '#GT10122025: con los campos obtenidos de la tabla validamos que existan en el objeto tipificado.
-            pBeTransPickingUbicTemp = New clsBeTrans_picking_ubic()
+            '#GT10122025: con los campos obtenidos de la tabla validamos que existan en la lista.
+            'pBeTransPickingUbicTemp = New clsBeTrans_picking_ubic()
             pBeTransPickingUbicTemp = BePickingUbicList_Origen.Find(Function(x) x.IdPickingUbic = pIdPickingUbic _
                                                                    AndAlso x.IdPedidoEnc = pIdPedidoEnc _
                                                                    AndAlso x.IdPedidoDet = pIdPedidoDet _
                                                                    AndAlso x.Lic_plate = pLicPlate)
 
             If pBeTransPickingUbicTemp IsNot Nothing Then
+
+                '#GT11122025: incremento por cada lectura.
+                pBeTransPickingUbicTemp.Cantidad_Verificada = nuevaVerificada
+                pBeTransPickingUbicTemp.CodigoSKU = pSku.ToString()
 
                 '#GT04122025: se llena el objeto de log cada vez que se escanea un SKU
                 BeLogVeficacion.IdPickingEnc = pBeTransPickingUbicTemp.IdPickingEnc
@@ -897,10 +902,8 @@ Public Class frmVerificacionBOF
                 BeLogVeficacion.Fec_agr = Now
                 BeLogVeficacion.User_agr = AP.UsuarioAp.IdUsuario
                 BeLogVeficacion.Sku = pSku
-                BeLogVeficacion.Cantidad = Convert.ToInt16(txtCantidad.Text)
+                BeLogVeficacion.Cantidad = verificada
                 BeLogVeficacion.IdProductoTallaColor = pIdProductoTallaColor
-
-                pBeTransPickingUbicTemp.CodigoSKU = pSku.ToString()
 
                 ' Carga de imagen
                 SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
@@ -1176,7 +1179,6 @@ Public Class frmVerificacionBOF
                         If handle >= 0 Then
                             ' Forzar repintado para que RowStyle aplique el color
                             gvListaPedido.RefreshRow(handle)
-                            'gvListaPedido.ClearSelection()
                         End If
                     End If
                 End If
@@ -1319,7 +1321,6 @@ Public Class frmVerificacionBOF
 
             Else
 
-
                 If plistPickingUbic.Count > 0 Then
 
                     If Not clsLnTrans_picking_enc.Guardar_Verificacion_Bof(plistPickingUbic,
@@ -1339,7 +1340,7 @@ Public Class frmVerificacionBOF
                     End If
 
                 Else
-                    XtraMessageBox.Show("No se ha fiscalizado ninguna linea del pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    XtraMessageBox.Show("Primero fiscalice las lineas del pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 End If
 
             End If
