@@ -3,6 +3,7 @@ Imports System.Drawing.Drawing2D
 Imports System.Drawing.Imaging
 Imports System.IO
 Imports System.Reflection
+Imports System.Text
 Imports DevExpress.Xpf.Core.ConditionalFormatting.Native
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraEditors
@@ -1155,6 +1156,8 @@ Public Class frmVerificacionBOF
             pBeTransPickingUbicTemp.IsNew = True
             plistPickingUbic.Add(pBeTransPickingUbicTemp)
 
+            pBeTransPickingUbicTemp = New clsBeTrans_picking_ubic()
+
             '--- UBICAR FILA EN EL GRID PARA REFRESCARLA ---
             Dim dt As DataTable = TryCast(dgridListaPedido.DataSource, DataTable)
 
@@ -1185,8 +1188,6 @@ Public Class frmVerificacionBOF
             End If
 
             LimpiarControlesGrupo()
-
-            pBeTransPickingUbicTemp = New clsBeTrans_picking_ubic()
 
             ProcesarLinea = True
 
@@ -1322,6 +1323,43 @@ Public Class frmVerificacionBOF
             Else
 
                 If plistPickingUbic.Count > 0 Then
+
+                    ' Validar líneas no verificadas (cantidad_verificada = 0), agrupadas por pedido
+                    Dim pendientesPorPedido = plistPickingUbic _
+                                            .Where(Function(x) x.Cantidad_Verificada = 0) _
+                                            .GroupBy(Function(x) x.IdPedidoEnc) _
+                                            .ToList()
+
+
+                    If pendientesPorPedido IsNot Nothing AndAlso pendientesPorPedido.Count > 0 Then
+
+                        Dim sb As New StringBuilder()
+                        sb.AppendLine("Existen líneas sin verificar en los siguientes pedidos:")
+
+                        For Each grupo In pendientesPorPedido
+                            sb.AppendLine(String.Format(" - Pedido {0}: {1} líneas sin verificar",
+                                    grupo.Key,
+                                    grupo.Count()))
+                        Next
+
+                        sb.AppendLine()
+                        sb.AppendLine("¿Desea continuar y guardar solo las líneas verificadas?")
+
+                        Dim r = XtraMessageBox.Show(
+                                                    sb.ToString(),
+                                                    "Líneas pendientes",
+                                                    MessageBoxButtons.YesNo,
+                                                    MessageBoxIcon.Warning
+                                                )
+
+
+                        If r = DialogResult.No Then
+                            Exit Sub
+                        End If
+
+                    End If
+
+
 
                     If Not clsLnTrans_picking_enc.Guardar_Verificacion_Bof(plistPickingUbic,
                                                                           AP.UsuarioAp.IdUsuario,
