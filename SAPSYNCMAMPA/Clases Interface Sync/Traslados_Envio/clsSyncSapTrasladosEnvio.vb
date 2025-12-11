@@ -126,6 +126,7 @@ Public Class clsSyncSapTrasladosEnvio
                     Dim debeProcesar As Boolean = Not destinoEsWMS OrElse Not origenEsWMS OrElse (origenEsWMS AndAlso destinoEsWMS)
 
                     If debeProcesar Then
+
                         Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(solicitud, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
 
                         Dim trasladoSincronizado As Boolean = Marcar_Traslado_Sincronizado_SLAsync(solicitud.No, vHanaService.SessionCookie, BD.Instancia.HANA_SL).GetAwaiter().GetResult()

@@ -1946,7 +1946,7 @@ Partial Class frmOrdenCompra
         'lblUsuarioERP
         '
         Me.lblUsuarioERP.Appearance.Options.UseFont = True
-        Me.lblUsuarioERP.Location = New System.Drawing.Point(20, -321)
+        Me.lblUsuarioERP.Location = New System.Drawing.Point(20, -1159)
         Me.lblUsuarioERP.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblUsuarioERP.Name = "lblUsuarioERP"
         Me.lblUsuarioERP.Size = New System.Drawing.Size(48, 16)
@@ -1968,7 +1968,7 @@ Partial Class frmOrdenCompra
         '
         Me.lblDocumentoUbicacion.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lblDocumentoUbicacion.Appearance.Options.UseFont = True
-        Me.lblDocumentoUbicacion.Location = New System.Drawing.Point(253, -369)
+        Me.lblDocumentoUbicacion.Location = New System.Drawing.Point(253, -1207)
         Me.lblDocumentoUbicacion.Margin = New System.Windows.Forms.Padding(4)
         Me.lblDocumentoUbicacion.Name = "lblDocumentoUbicacion"
         Me.lblDocumentoUbicacion.Size = New System.Drawing.Size(145, 16)
@@ -1989,7 +1989,7 @@ Partial Class frmOrdenCompra
         'lblNoDocumentoRecepcion
         '
         Me.lblNoDocumentoRecepcion.Appearance.Options.UseFont = True
-        Me.lblNoDocumentoRecepcion.Location = New System.Drawing.Point(486, -369)
+        Me.lblNoDocumentoRecepcion.Location = New System.Drawing.Point(486, -1207)
         Me.lblNoDocumentoRecepcion.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblNoDocumentoRecepcion.Name = "lblNoDocumentoRecepcion"
         Me.lblNoDocumentoRecepcion.Size = New System.Drawing.Size(149, 16)
@@ -2010,7 +2010,7 @@ Partial Class frmOrdenCompra
         'lblSociedadERP
         '
         Me.lblSociedadERP.Appearance.Options.UseFont = True
-        Me.lblSociedadERP.Location = New System.Drawing.Point(20, -370)
+        Me.lblSociedadERP.Location = New System.Drawing.Point(20, -1208)
         Me.lblSociedadERP.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblSociedadERP.Name = "lblSociedadERP"
         Me.lblSociedadERP.Size = New System.Drawing.Size(57, 16)

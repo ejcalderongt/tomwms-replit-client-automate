@@ -1,6 +1,5 @@
-
-using WMS.EntityCore.Stock;
 using WMSWebAPI.Be;
+using WMS.EntityCore.Stock;
 
 namespace WMS.StockReservation.Strategies
 {
@@ -36,12 +35,11 @@ namespace WMS.StockReservation.Strategies
 
             if (!CanProcess(context))
             {
-                if (_logger != null)
-                    _logger.LogInfo("#CASO_2_SKIP - No stock en pallets incompletos");
+                _logger.LogInfo("#CASO_2_SKIP - No stock en pallets incompletos");
                 return result;
             }
-            if (_logger != null)
-                _logger.LogCheckpoint("#CASO_2_START");
+
+            _logger.LogCheckpoint("#CASO_2_START");
 
             // Filtrar stock de pallets incompletos
             var incompleteStock = context.StockListNonPickingZones
@@ -56,8 +54,7 @@ namespace WMS.StockReservation.Strategies
 
             if (incompleteStock.Count == 0)
             {
-                if (_logger != null)
-                    _logger.LogInfo("#CASO_2_SKIP - No stock con fecha mínima");
+                _logger.LogInfo("#CASO_2_SKIP - No stock con fecha mínima");
                 return result;
             }
 
@@ -73,21 +70,18 @@ namespace WMS.StockReservation.Strategies
                 // Crear reserva
                 var reservation = CreateReservation(context, stock, quantityToReserve);
 
-                // Actualizar stock y contexto
+                // Actualizar stock (NO modificar context.PendingQuantity - lo hace ReservationLoopStep)
                 stock.Cantidad -= quantityToReserve;
-                context.PendingQuantity -= quantityToReserve;
                 result.ReservedQuantity += quantityToReserve;
                 result.Reservations.Add(reservation);
 
-                if (_logger != null)
-                    _logger.LogReservation(
+                _logger.LogReservation(
                     reservation,
                     "CASO_2",
                     $"Pallet incompleto | Stock: {stock.IdStock} | Cantidad: {quantityToReserve:F6}");
             }
 
-            if (_logger != null)
-                _logger.LogCheckpoint($"#CASO_2_END - Reservado: {result.ReservedQuantity:F6}");
+            _logger.LogCheckpoint($"#CASO_2_END - Reservado: {result.ReservedQuantity:F6}");
 
             return result;
         }

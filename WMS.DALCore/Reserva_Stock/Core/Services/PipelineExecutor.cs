@@ -22,11 +22,13 @@ namespace WMS.StockReservation.Core.Services
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
 
+            if (_logger !=null)
             _logger.LogCheckpoint("=== INICIO PIPELINE RESERVA ===");
 
             foreach (var step in _steps)
             {
-                _logger.LogInfo($"Ejecutando: {step.GetType().Name}");
+                if (_logger != null)
+                    _logger.LogInfo($"Ejecutando: {step.GetType().Name}");
 
                 try
                 {
@@ -35,24 +37,28 @@ namespace WMS.StockReservation.Core.Services
                 catch (Exception ex)
                 {
                     context.SetError($"Error en {step.GetType().Name}: {ex.Message}");
-                    _logger.LogError($"Error en {step.GetType().Name}: {ex.Message}");
+                    if (_logger != null)
+                        _logger.LogError($"Error en {step.GetType().Name}: {ex.Message}");
                 }
 
                 if (context.HasError)
                 {
-                    _logger.LogError($"Pipeline detenido por error: {context.ErrorMessage}");
+                    if (_logger != null)
+                        _logger.LogError($"Pipeline detenido por error: {context.ErrorMessage}");
                     break;
                 }
 
                 // Salida temprana si la cantidad ya fue completamente reservada
                 if (context.IsQuantityFullyReserved())
                 {
-                    _logger.LogInfo("Cantidad completamente reservada. Fin pipeline.");
+                    if (_logger != null)
+                        _logger.LogInfo("Cantidad completamente reservada. Fin pipeline.");
                     break;
                 }
             }
 
-            _logger.LogCheckpoint("=== FIN PIPELINE RESERVA ===");
+            if (_logger != null)
+                _logger.LogCheckpoint("=== FIN PIPELINE RESERVA ===");
 
             return new ReservationResult
             {

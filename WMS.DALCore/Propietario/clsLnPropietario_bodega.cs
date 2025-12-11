@@ -655,7 +655,7 @@ public class clsLnPropietario_bodega
                 }
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {            
             throw;
         }

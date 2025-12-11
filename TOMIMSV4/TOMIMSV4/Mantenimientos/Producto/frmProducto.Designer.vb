@@ -5723,12 +5723,12 @@ Partial Class frmProducto
         Me.GrdImagen.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
         GridLevelNode10.RelationName = "Level1"
         Me.GrdImagen.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode10})
-        Me.GrdImagen.Location = New System.Drawing.Point(2, 55)
+        Me.GrdImagen.Location = New System.Drawing.Point(2, 59)
         Me.GrdImagen.MainView = Me.GridViewImg
         Me.GrdImagen.Margin = New System.Windows.Forms.Padding(4)
         Me.GrdImagen.MenuManager = Me.RibbonControl
         Me.GrdImagen.Name = "GrdImagen"
-        Me.GrdImagen.Size = New System.Drawing.Size(1116, 516)
+        Me.GrdImagen.Size = New System.Drawing.Size(1116, 512)
         Me.GrdImagen.TabIndex = 1
         Me.GrdImagen.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridViewImg})
         '
@@ -5747,7 +5747,7 @@ Partial Class frmProducto
         Me.ToolStrip.Location = New System.Drawing.Point(2, 28)
         Me.ToolStrip.Name = "ToolStrip"
         Me.ToolStrip.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStrip.Size = New System.Drawing.Size(1116, 27)
+        Me.ToolStrip.Size = New System.Drawing.Size(1116, 31)
         Me.ToolStrip.TabIndex = 0
         Me.ToolStrip.Text = "ToolStrip4"
         '
@@ -5757,7 +5757,7 @@ Partial Class frmProducto
         Me.cmdAdd.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(29, 24)
+        Me.cmdAdd.Size = New System.Drawing.Size(29, 28)
         '
         'cmdDelete
         '
@@ -5765,7 +5765,7 @@ Partial Class frmProducto
         Me.cmdDelete.Image = CType(resources.GetObject("cmdDelete.Image"), System.Drawing.Image)
         Me.cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDelete.Name = "cmdDelete"
-        Me.cmdDelete.Size = New System.Drawing.Size(29, 24)
+        Me.cmdDelete.Size = New System.Drawing.Size(29, 28)
         '
         'Panel3
         '

@@ -1,13 +1,11 @@
-using WMS.EntityCore.Producto;
-using WMSWebAPI.Be;
 using static clsBeI_nav_config_enc;
 
 namespace WMS.StockReservation.Core.Services
 {
     /// <summary>
     /// Paso 5: Loop de reserva iterativo con re-entry y fallbacks.
-    /// Este es el componente más crítico que reproduce el control flow del MI3 original.
-    /// Target: ~180 líneas
+    /// Este es el componente mas critico que reproduce el control flow del MI3 original.
+    /// Target: ~180 lineas
     /// </summary>
     public class ReservationLoopStep : IPipelineStep
     {
@@ -44,7 +42,7 @@ namespace WMS.StockReservation.Core.Services
 
                 _logger.LogCheckpoint($"#MI3_STARTING_POINT_{startingPoint}");
 
-                // PASO 2: ✅ RECONSTRUIR cadena según punto de inicio
+                // PASO 2: RECONSTRUIR cadena segun punto de inicio
                 IReservationHandler handlerChain = _factory.BuildHandlerChain(
                     startingPoint,
                     context,
@@ -52,6 +50,15 @@ namespace WMS.StockReservation.Core.Services
 
                 // PASO 3: Ejecutar cadena (puede procesar parcialmente)
                 var result = handlerChain.Handle(context);
+
+                // DEBUG: Log completo del resultado
+                _logger.LogCheckpoint(
+                    $"#DEBUG_HANDLER_RESULT | " +
+                    $"Success: {result.Success} | " +
+                    $"ReservedQuantity: {result.ReservedQuantity:F6} | " +
+                    $"Reservations.Count: {result.Reservations?.Count ?? 0} | " +
+                    $"CaseCode: {result.CaseCode} | " +
+                    $"Message: {result.Message}");
 
                 // PASO 4: Actualizar contexto
                 if (result.Success && result.ReservedQuantity > 0)
@@ -62,10 +69,31 @@ namespace WMS.StockReservation.Core.Services
                     if (result.Reservations != null && result.Reservations.Count > 0)
                     {
                         context.CreatedReservations.AddRange(result.Reservations);
+                        
+                        _logger.LogCheckpoint(
+                            $"#MI3_RESERVATIONS_ADDED | " +
+                            $"Count: {result.Reservations.Count} | " +
+                            $"TotalInContext: {context.CreatedReservations.Count}");
+                    }
+                    else
+                    {
+                        _logger.LogCheckpoint(
+                            $"#WARNING_NO_RESERVATIONS | " +
+                            $"Success=true pero Reservations es null/empty");
                     }
 
                     _logger.LogCheckpoint(
                         $"#MI3_PROGRESS | Reservado: {result.ReservedQuantity:F6} | Casos: {result.CaseCode}");
+                }
+                else
+                {
+                    // Problema: No se procesa el resultado
+                    string reason = !result.Success ? "Success es false" : "ReservedQuantity <= 0";
+                    _logger.LogCheckpoint(
+                        $"#WARNING_RESULT_REJECTED | " +
+                        $"Success={result.Success} | " +
+                        $"ReservedQuantity={result.ReservedQuantity:F6} | " +
+                        $"Reason: {reason}");
                 }
 
                 // PASO 5: Evaluar progreso
@@ -91,12 +119,12 @@ namespace WMS.StockReservation.Core.Services
                         continue;
                     }
 
-                    // No hay más fallbacks
+                    // No hay mas fallbacks
                     _logger.LogCheckpoint("#MI3_NO_MORE_OPTIONS");
                     break;
                 }
 
-                // PASO 6: Re-calcular fechas mínimas para próxima iteración
+                // PASO 6: Re-calcular fechas minimas para proxima iteracion
                 if (context.PendingQuantity > 0.000001)
                 {
                     RecalculateMinimumDates(context);
@@ -133,7 +161,7 @@ namespace WMS.StockReservation.Core.Services
             var defaultDate = new DateTime(1900, 1, 1);
             int startingPoint = 0;
 
-            // === LÓGICA CLAVAUD (pallets completos/incompletos) ===
+            // === LOGICA CLAVAUD (pallets completos/incompletos) ===
             if (context.Configuration.Conservar_Zona_Picking_Clavaud)
             {
                 if (context.MinExpirationCompletePalletsClavaud > context.GlobalMinimumExpirationDate &&
@@ -149,7 +177,7 @@ namespace WMS.StockReservation.Core.Services
                 }
             }
 
-            // === LÓGICA ZONA PICKING ===
+            // === LOGICA ZONA PICKING ===
             if (context.GlobalMinimumExpirationDate > context.MinExpirationDatePickingZone &&
                 context.MinExpirationDatePickingZone > defaultDate)
             {
@@ -162,7 +190,7 @@ namespace WMS.StockReservation.Core.Services
                 return 3; // INICIAR_EN_3
             }
 
-            // === LÓGICA ALMACÉN GENERAL ===
+            // === LOGICA ALMACEN GENERAL ===
             if (context.MinExpirationDateNonPickingZones > defaultDate &&
                 context.StockListNonPickingZones != null &&
                 context.StockListNonPickingZones.Count > 0)
@@ -170,7 +198,7 @@ namespace WMS.StockReservation.Core.Services
                 return 4; // INICIAR_EN_4
             }
 
-            return startingPoint; // 0 = última lista (default)
+            return startingPoint; // 0 = ultima lista (default)
         }
 
         private bool TryEnableExplosionFallback(ReservationContext context)
@@ -196,73 +224,57 @@ namespace WMS.StockReservation.Core.Services
 
         private void ReQueryStockForExplosion(ReservationContext context)
         {
-            // Crear request para explosión (sin presentación)
-            clsBeStock_res explosionRequest = context.Request;
+            // NOTA: Pasamos el Request original directamente ya que lStock lo recibe por valor
+            // (no se modificara). El filtrado por IdPresentacion se maneja en el SQL interno
+            
+            var tempProduct = context.Product;
+            var tempRequest = context.Request;
 
-            // NOTA: Si clsBeStock_res no tiene IdPresentacion como propiedad settable,
-            // el método lStock debe filtrar por IdPresentacion = 0 internamente
-            // cuando el request lo requiera
-            clsBeProducto? producto = context.Product;
-
-            if (producto != null && context.Configuration != null && context.Transaction != null) {
-
-                var newStock = clsLnStock.lStock(
-                ref explosionRequest,
-                ref producto,
-                0, // diasVencimiento - valor por defecto
+            var newStock = clsLnStock.lStock(
+                ref tempRequest,
+                ref tempProduct,
+                0,
                 context.Configuration,
                 context.Connection,
                 context.Transaction,
                 pExcluirUbicacionPicking: false,
                 Conmutar_Umbas_A_Presentacion: false,
                 pTarea_Reabasto: context.TareaReabasto,
-                context.EsDevolucion);
+                pEs_Devolucion: context.EsDevolucion);
 
-                if (newStock != null && newStock.Count > 0)
-                {
-                    clsLnStock_res.Restar_Stock_Reservado(newStock, context.Configuration,
-                                                           context.Connection, context.Transaction);
-                    newStock = newStock.Where(s => s.Cantidad > 0).ToList();
+            if (newStock != null && newStock.Count > 0)
+            {
+                clsLnStock_res.Restar_Stock_Reservado(newStock, context.Configuration,
+                                                       context.Connection, context.Transaction);
+                newStock = newStock.Where(s => s.Cantidad > 0).ToList();
 
-                    context.WorkingStockList = newStock;
-                    _logger.LogInfo($"Re-query explosión: {newStock.Count} registros");
-                }
+                context.WorkingStockList = newStock;
+                _logger.LogInfo($"Re-query explosion: {newStock.Count} registros");
             }
-            
         }
 
         private void ReQueryStockForUMBas(ReservationContext context)
         {
-            // Crear request para UMBas (sin presentación)
-            clsBeStock_res umbasRequest = context.Request;
-
-            // NOTA: Si clsBeStock_res no tiene IdPresentacion como propiedad settable,
-            // el método lStock debe filtrar por IdPresentacion = 0 o NULL internamente
-            // cuando el request lo requiera                        
-
-            // Variable temporal para producto
-            var productoTmp = context.Product;
+            // NOTA: Pasamos el Request original directamente ya que lStock lo recibe por valor
+            // (no se modificara). El parametro Conmutar_Umbas_A_Presentacion=true maneja la logica UMBas
+            
+            var tempProduct = context.Product;
+            var tempRequest = context.Request;
 
             var newStock = clsLnStock.lStock(
-                ref umbasRequest,
-                ref productoTmp, // ← variable temporal ref
-                DiasVencimiento: 0,
-                pBeConfigEnc: context.Configuration,
-                lConnection: context.Connection!,
-                ltransaction: context.Transaction!,
+                ref tempRequest,
+                ref tempProduct,
+                0,
+                context.Configuration,
+                context.Connection,
+                context.Transaction,
                 pExcluirUbicacionPicking: false,
-                Conmutar_Umbas_A_Presentacion: false,
-                pTarea_Reabasto: false,
-                pEs_Devolucion: false
-            );
-
-            if (productoTmp != null) 
-            // Actualizar el producto del contexto con la referencia modificada
-            context.Product = productoTmp;
+                Conmutar_Umbas_A_Presentacion: true,
+                pTarea_Reabasto: context.TareaReabasto,
+                pEs_Devolucion: context.EsDevolucion);
 
             if (newStock != null && newStock.Count > 0)
             {
-                if (context.Connection != null && context.Transaction !=null) 
                 clsLnStock_res.Restar_Stock_Reservado(newStock, context.Configuration,
                                                        context.Connection, context.Transaction);
                 newStock = newStock.Where(s => s.Cantidad > 0).ToList();

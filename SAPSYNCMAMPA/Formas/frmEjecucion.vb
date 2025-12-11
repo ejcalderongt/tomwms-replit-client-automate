@@ -822,9 +822,9 @@ Public Class frmEjecucion
     End Function
 
     Private Async Sub Ejecuta_Interface_Traslados_Sap_Hana(Optional ByVal Preguntar As Boolean = True,
-                                                     Optional ByVal pNoDocumentoSolTraslado As String = "",
-                                                     Optional ByVal pEsProrrateo As Boolean = True,
-                                                     Optional ByVal pEsTrasladoBodegaVirtual As Boolean = False)
+                                                           Optional ByVal pNoDocumentoSolTraslado As String = "",
+                                                           Optional ByVal pEsProrrateo As Boolean = True,
+                                                           Optional ByVal pEsTrasladoBodegaVirtual As Boolean = False)
 
         Try
 
