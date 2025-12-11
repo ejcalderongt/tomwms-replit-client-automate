@@ -47,7 +47,7 @@ Public Class frmVerificacionBOF
     Private EsKit As Boolean = False
     Private PedidoGuardadoPorUsuario As Boolean = False
     Private plistPickingUbic As New List(Of clsBeTrans_picking_ubic)
-    Private BePickingUbicList As New List(Of clsBeTrans_picking_ubic)
+    Private BePickingUbicList_Origen As New List(Of clsBeTrans_picking_ubic)
     Private gBePedidoDetVerif As New clsBeDetallePedidoAVerificar
 
     '#GT27112025: Guardar en memoria el producto seleccionado del pedido y marcarlo como Ok o Pausa
@@ -90,14 +90,15 @@ Public Class frmVerificacionBOF
             'Dim archivosPng() As String = Directory.GetFiles(vRutaCDN, "*.png")
             '_listaRutasPng = archivosPng.ToList()
 
-            '#GT08122025: como son varios pedidos, la bodega se valida directamente al iterar cada pedido
-            'BeBodega = clsLnBodega.GetSingle_By_Idbodega(pBePedidoEnc.IdBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormCaption("Cargando datos...")
 
             'If pBePedidoEnc Is Nothing Then Exit Sub
             If pBeListaPedidos Is Nothing OrElse pBeListaPedidos.Count = 0 Then Exit Sub
+
+            lbPedidos.Text = "Pedidos: " & pBeListaPedidos.Count
+
+            'GroupControl2.Text = "Lista pedidos: " & pBeListaPedidos.Count
 
             LimpiarControlesGrupo()
 
@@ -211,7 +212,7 @@ Public Class frmVerificacionBOF
     Private Sub Cargar_Detalle_Picking()
         Try
             ' #GT08122025: obtener la lista de picking para validar los datos de cada producto a verificar.
-            BePickingUbicList = New List(Of clsBeTrans_picking_ubic)
+            BePickingUbicList_Origen = New List(Of clsBeTrans_picking_ubic)
 
             For Each PedidoEnc As clsBeTrans_pe_enc In pBeListaPedidos
 
@@ -220,7 +221,7 @@ Public Class frmVerificacionBOF
                PedidoEnc.Picking.ListaPickingUbic IsNot Nothing Then
 
                     ' En lugar de reemplazar, acumulamos:
-                    BePickingUbicList.AddRange(PedidoEnc.Picking.ListaPickingUbic)
+                    BePickingUbicList_Origen.AddRange(PedidoEnc.Picking.ListaPickingUbic)
 
                 End If
 
@@ -235,7 +236,6 @@ Public Class frmVerificacionBOF
 
         Dim dt As New DataTable()
         dt.Columns.Add("SKU", GetType(String))
-        dt.Columns.Add("No_Linea", GetType(Integer))
         dt.Columns.Add("CodigoProducto", GetType(String))
         dt.Columns.Add("NombreProducto", GetType(String))
         dt.Columns.Add("Talla", GetType(String))
@@ -245,6 +245,8 @@ Public Class frmVerificacionBOF
         'dt.Columns.Add("CantidadVerificada", GetType(Double))
         dt.Columns.Add("Pickeada", GetType(Double))
         dt.Columns.Add("Verificada", GetType(Double))
+        dt.Columns.Add("No_Linea", GetType(Integer))
+
         dt.Columns.Add("IdPedidoEnc", GetType(Integer))
         dt.Columns.Add("IdPedidoDet", GetType(Integer))
         dt.Columns.Add("IdStockEspecifico", GetType(Integer))
@@ -752,76 +754,6 @@ Public Class frmVerificacionBOF
 
     End Sub
 
-    'Private Sub ProcesarScan()
-
-    '    Dim sku As String = txtScanner.Text.Trim()
-    '    Dim estado As String = sku.ToUpperInvariant()
-
-    '    Select Case estado
-
-    '        Case "OK"
-
-    '            If Not Sku_en_proceso AndAlso pBeTransPickingUbicTemp.IdPickingUbic > 0 Then
-    '                ' Si pasó la validación, ahora sí procesar la línea
-    '                If ProcesarLinea() Then
-    '                    txtScanner.Text = ""
-    '                    Sku_en_proceso = True
-    '                End If
-    '            Else
-
-    '                XtraMessageBox.Show(
-    '                 "Leer un nuevo SKU antes de leer la barra 'OK' ",
-    '                 "Estado inválido",
-    '                 MessageBoxButtons.OK,
-    '                 MessageBoxIcon.Information
-    '             )
-
-    '                LimpiarControlesGrupo()
-
-    '            End If
-
-    '        Case "PAUSA"
-    '            ' (tu lógica para PAUSA)
-
-    '        Case Else
-    '            '#GT: sino hay sku en proceso porque la cantidad esta completa, pero ingresaron un sku alertar.
-    '            If Not Sku_en_proceso Then
-    '                Dim skuActual As String = If(pBeTransPickingUbicTemp.IdPickingUbic > 0,
-    '                                         Convert.ToString(pBeTransPickingUbicTemp.CodigoSKU),
-    '                                         String.Empty)
-
-    '                XtraMessageBox.Show(
-    '                        "Hay un SKU en cola" & Environment.NewLine &
-    '                        "SKU: (" & skuActual & ") y requiere un OK o un Motivo para continuar.",
-    '                        "Estado inválido",
-    '                        MessageBoxButtons.OK,
-    '                        MessageBoxIcon.Information
-    '                    )
-
-
-    '                txtScanner.Text = ""
-    '                txtScanner.SelectAll()
-    '                txtScanner.Focus()
-    '                Exit Sub
-
-    '            End If
-
-    '            ' === Procesar lectura del SKU (permitido si es el mismo SKU o no hay ninguno en cola) ===
-    '            If BuscarSKU_Y_Cargar(estado) Then
-    '                Sku_en_proceso = True
-    '            Else
-    '                Sku_en_proceso = False
-    '                txtScanner.Text = ""
-    '            End If
-
-    '    End Select
-
-    '    txtScanner.SelectAll()
-    '    txtScanner.Focus()
-
-    'End Sub
-
-
     Private Function BuscarSKU_Y_Cargar(ByVal sku As String) As Boolean
 
         BuscarSKU_Y_Cargar = False
@@ -872,7 +804,6 @@ Public Class frmVerificacionBOF
             Next
 
             ' Si no hay ninguna fila pendiente para este SKU, ya se completó en un pedido especifico.
-            ' Importante: aquí NO mostramos mensaje, solo devolvemos False
             If rowPendiente Is Nothing Then
 
                 XtraMessageBox.Show(
@@ -949,7 +880,7 @@ Public Class frmVerificacionBOF
 
             '#GT10122025: con los campos obtenidos de la tabla validamos que existan en el objeto tipificado.
             pBeTransPickingUbicTemp = New clsBeTrans_picking_ubic()
-            pBeTransPickingUbicTemp = BePickingUbicList.Find(Function(x) x.IdPickingUbic = pIdPickingUbic _
+            pBeTransPickingUbicTemp = BePickingUbicList_Origen.Find(Function(x) x.IdPickingUbic = pIdPickingUbic _
                                                                    AndAlso x.IdPedidoEnc = pIdPedidoEnc _
                                                                    AndAlso x.IdPedidoDet = pIdPedidoDet _
                                                                    AndAlso x.Lic_plate = pLicPlate)
@@ -994,290 +925,6 @@ Public Class frmVerificacionBOF
             End If
         End Try
     End Function
-
-
-    'Private Function BuscarSKU_Y_Cargar(ByVal sku As String) As Boolean
-
-    '    BuscarSKU_Y_Cargar = False
-    '    BeLogVeficacion = New clsBeLog_verificacion_bof()
-    '    Try
-
-    '        If String.IsNullOrWhiteSpace(sku) Then Exit Function
-
-    '        Dim dt As DataTable = TryCast(dgridListaPedido.DataSource, DataTable)
-    '        If dt Is Nothing OrElse dt.Rows.Count = 0 Then Exit Function
-
-    '        ' Buscar en DataTable
-    '        Dim filas() As DataRow = dt.Select("[SKU] = '" & sku.Replace("'", "''") & "'")
-
-    '        If filas.Length = 0 Then
-    '            XtraMessageBox.Show("No se encontró el SKU, por favor reintente: " & sku, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-    '            LimpiarControlesGrupo()
-    '            Exit Function
-    '        End If
-
-    '        Dim row As DataRow = filas(0)
-
-    '        ' --- FOCUS EN GRID: ubicar fila por SKU ---
-    '        Dim handle As Integer = gvListaPedido.LocateByValue("SKU", sku)
-    '        If handle >= 0 Then
-    '            gvListaPedido.FocusedRowHandle = handle
-    '            gvListaPedido.MakeRowVisible(handle)
-    '        End If
-
-    '        ' === NUEVO: controlar CantidadVerificada vs CantidadPickeada y refrescar color ===
-    '        Dim cantidadPickeada As Integer = 0
-    '        Dim cantidadVerificada As Integer = 0
-
-    '        If dt.Columns.Contains("Pickeada") AndAlso Not IsDBNull(row("Pickeada")) Then
-    '            cantidadPickeada = Convert.ToInt32(row("Pickeada"))
-    '        End If
-
-    '        If dt.Columns.Contains("Verificada") AndAlso Not IsDBNull(row("Verificada")) Then
-    '            cantidadVerificada = Convert.ToInt32(row("Verificada"))
-    '        End If
-
-    '        If cantidadPickeada > 0 Then
-
-    '            ' Si ya llegó al máximo, no permitir otra lectura de este SKU
-    '            If cantidadVerificada >= cantidadPickeada Then
-    '                XtraMessageBox.Show(
-    '                "El SKU ya fue escaneado con la cantidad requerida." & Environment.NewLine &
-    '                "SKU: " & sku & Environment.NewLine &
-    '                "Pickeado: " & cantidadPickeada & ", Verificado: " & cantidadVerificada,
-    '                Text,
-    '                MessageBoxButtons.OK,
-    '                MessageBoxIcon.Information
-    '            )
-    '                LimpiarControlesGrupo()
-    '                Return False
-    '            End If
-
-    '            ' Incrementar verificación en memoria (1 unidad por scan)
-    '            cantidadVerificada += 1
-    '            row("Verificada") = cantidadVerificada
-
-    '            ' Forzar repintado de la fila para que RowStyle actualice el color
-    '            If handle >= 0 Then
-    '                gvListaPedido.RefreshRow(handle)
-
-    '                ' Si ya llegamos al total, aseguramos que la fila quede visible en pantalla
-    '                If cantidadVerificada >= cantidadPickeada Then
-    '                    gvListaPedido.FocusedRowHandle = handle
-    '                    gvListaPedido.MakeRowVisible(handle)
-    '                    gvListaPedido.TopRowIndex = handle   ' desplaza el scroll para que se vea con el encabezado
-    '                End If
-    '            End If
-    '        End If
-    '        ' =========================================================================
-
-    '        ' --- CARGAR INPUTS ---
-    '        txtScanner.Text = sku
-    '        txtDescripcionProducto.Text = CStr(row("NombreProducto"))
-    '        txtTalla.Text = If(dt.Columns.Contains("Talla"), CStr(row("Talla")), "")
-    '        txtColor.Text = If(dt.Columns.Contains("Color"), CStr(row("Color")), "")
-    '        txtCantidad.Text = If(dt.Columns.Contains("Pickeada"), CInt(row("Pickeada")), "")
-
-    '        '-- Cargar objeto picking_ubicTemp y al leer la barra OK, se asignará a la lista para enviar a verificar
-    '        Dim pIdPickingUbic = If(dt.Columns.Contains("IdPickingUbic"), CInt(row("IdPickingUbic")), 0)
-    '        Dim pLicPlate = If(dt.Columns.Contains("Licencia"), CStr(row("Licencia")), "")
-    '        Dim pIdPedidoEnc = If(dt.Columns.Contains("IdPedidoEnc"), CInt(row("IdPedidoEnc")), 0)
-    '        Dim pIdPedidoDet = If(dt.Columns.Contains("IdPedidoDet"), CInt(row("IdPedidoDet")), 0)
-    '        Dim pSku = If(dt.Columns.Contains("SKU"), CStr(row("SKU")), "")
-    '        Dim pIdProductoTallaColor = If(dt.Columns.Contains("IdProductoTallaColor"), CInt(row("IdProductoTallaColor")), 0)
-
-    '        '#GT10122025: con los campos obtenidos de la tabla validamos que existan en el objeto tipificado.
-    '        pBeTransPickingUbicTemp = New clsBeTrans_picking_ubic()
-    '        pBeTransPickingUbicTemp = BePickingUbicList.Find(Function(x) x.IdPickingUbic = pIdPickingUbic _
-    '                                                                   AndAlso x.IdPedidoEnc = pIdPedidoEnc _
-    '                                                                   AndAlso x.IdPedidoDet = pIdPedidoDet _
-    '                                                                   AndAlso x.Lic_plate = pLicPlate)
-
-    '        If pBeTransPickingUbicTemp IsNot Nothing Then
-
-    '            '#GT04122025: se llena el objeto de log cada vez que se escanea un SKU
-    '            BeLogVeficacion.IdPickingEnc = pBeTransPickingUbicTemp.IdPickingEnc
-    '            BeLogVeficacion.IdPickingDet = pBeTransPickingUbicTemp.IdPickingDet
-    '            BeLogVeficacion.IdPickingUbic = pBeTransPickingUbicTemp.IdPickingUbic
-    '            BeLogVeficacion.IdPedidoEnc = pBeTransPickingUbicTemp.IdPedidoEnc
-    '            BeLogVeficacion.IdPedidoDet = pBeTransPickingUbicTemp.IdPedidoDet
-    '            BeLogVeficacion.IdBodega = pBeTransPickingUbicTemp.IdBodega
-    '            BeLogVeficacion.Fec_agr = Now
-    '            BeLogVeficacion.User_agr = AP.UsuarioAp.IdUsuario
-    '            BeLogVeficacion.Sku = pSku
-    '            BeLogVeficacion.Cantidad = Convert.ToInt16(txtCantidad.Text)
-    '            BeLogVeficacion.IdProductoTallaColor = pIdProductoTallaColor
-
-    '            pBeTransPickingUbicTemp.CodigoSKU = pSku.ToString()
-
-    '            ' (aquí mantienes tu lógica de lista, ProcesarEstadoOK/ProcesarLinea, etc.)
-
-    '            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-    '            If SplashScreenManager.Default IsNot Nothing Then
-    '                SplashScreenManager.Default.SetWaitFormCaption("Cargando imagen...")
-    '            End If
-
-    '            Application.DoEvents()
-    '            CargarImagenProducto(sku)
-
-    '            BuscarSKU_Y_Cargar = True
-
-    '        End If
-
-    '    Catch ex As Exception
-    '        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-    '    Finally
-    '        If SplashScreenManager.Default IsNot Nothing Then
-    '            SplashScreenManager.CloseForm(False)
-    '        End If
-    '    End Try
-    'End Function
-
-
-
-    'Private Sub ProcesarScan()
-
-    '    Dim sku As String = txtScanner.Text.Trim()
-
-    '    Dim estado As String = sku.ToUpperInvariant()
-
-    '    Select Case estado
-
-    '        Case "OK"
-    '            If ProcesarLinea() Then
-    '                txtScanner.Text = ""
-    '                Confirmar_SKU = False
-    '            End If
-
-    '        Case "PAUSA"
-
-    '        Case Else
-
-    '            If Confirmar_SKU Then
-    '                MessageBox.Show(
-    '                       $"Hay un SKU en cola y requiere confirmar un OK o un Motivo ",
-    '                       "Estado inválido",
-    '                       MessageBoxButtons.OK,
-    '                       MessageBoxIcon.Warning
-    '                   )
-    '                txtScanner.Text = ""
-    '            End If
-
-    '            If Not BuscarSKU_Y_Cargar(estado) Then
-    '                Confirmar_SKU = False
-    '            Else
-    '                Confirmar_SKU = True
-    '                txtScanner.Text = ""
-    '            End If
-
-    '    End Select
-
-    '    txtScanner.SelectAll()
-    '    txtScanner.Focus()
-
-    'End Sub
-
-    'Private Function BuscarSKU_Y_Cargar(ByVal sku As String) As Boolean
-
-    '    BuscarSKU_Y_Cargar = False
-    '    BeLogVeficacion = New clsBeLog_verificacion_bof()
-    '    Try
-
-    '        If String.IsNullOrWhiteSpace(sku) Then Exit Function
-
-    '        Dim dt As DataTable = TryCast(dgridListaPedido.DataSource, DataTable)
-    '        If dt Is Nothing OrElse dt.Rows.Count = 0 Then Exit Function
-
-    '        ' Buscar en DataTable
-    '        Dim filas() As DataRow = dt.Select("[SKU] = '" & sku.Replace("'", "''") & "'")
-
-    '        If filas.Length = 0 Then
-    '            XtraMessageBox.Show("No se encontró el SKU, por favor reintente: " & sku, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-    '            LimpiarControlesGrupo()
-    '            Exit Function
-    '        End If
-
-    '        Dim row As DataRow = filas(0)
-
-    '        ' --- FOCUS EN GRID: ubicar fila por SKU ---
-    '        Dim handle As Integer = gvListaPedido.LocateByValue("SKU", sku)
-    '        If handle >= 0 Then
-    '            gvListaPedido.FocusedRowHandle = handle
-    '            gvListaPedido.MakeRowVisible(handle)
-    '        End If
-
-    '        ' --- CARGAR INPUTS ---
-    '        txtScanner.Text = sku
-    '        txtDescripcionProducto.Text = CStr(row("NombreProducto"))
-    '        txtTalla.Text = If(dt.Columns.Contains("Talla"), CStr(row("Talla")), "")
-    '        txtColor.Text = If(dt.Columns.Contains("Color"), CStr(row("Color")), "")
-    '        txtCantidad.Text = If(dt.Columns.Contains("CantidadPickeada"), CInt(row("CantidadPickeada")), "")
-
-    '        '-- Cargar objeto picking_ubicTemp y al leer la barra OK, se asignará a la lista para enviar a verificar
-    '        Dim pIdPickingUbic = If(dt.Columns.Contains("IdPickingUbic"), CInt(row("IdPickingUbic")), 0)
-    '        Dim pLicPlate = If(dt.Columns.Contains("Licencia"), CStr(row("Licencia")), "")
-    '        Dim pIdPedidoEnc = If(dt.Columns.Contains("IdPedidoEnc"), CInt(row("IdPedidoEnc")), 0)
-    '        Dim pIdPedidoDet = If(dt.Columns.Contains("IdPedidoDet"), CInt(row("IdPedidoDet")), 0)
-    '        Dim pSku = If(dt.Columns.Contains("SKU"), CStr(row("SKU")), "")
-    '        Dim pIdProductoTallaColor = If(dt.Columns.Contains("IdProductoTallaColor"), CInt(row("IdProductoTallaColor")), 0)
-
-    '        '#GT10122025: con los campos obtenidos de la tabla validamos que existan en el objeto tipificado.
-    '        pBeTransPickingUbicTemp = New clsBeTrans_picking_ubic()
-    '        pBeTransPickingUbicTemp = BePickingUbicList.Find(Function(x) x.IdPickingUbic = pIdPickingUbic _
-    '                                                                       AndAlso x.IdPedidoEnc = pIdPedidoEnc _
-    '                                                                       AndAlso x.IdPedidoDet = pIdPedidoDet _
-    '                                                                       AndAlso x.Lic_plate = pLicPlate)
-
-    '        If pBeTransPickingUbicTemp IsNot Nothing Then
-
-    '            '#GT04122025: se llena el objeto de log cada vez que se escanea un SKU
-    '            BeLogVeficacion.IdPickingEnc = pBeTransPickingUbicTemp.IdPickingEnc
-    '            BeLogVeficacion.IdPickingDet = pBeTransPickingUbicTemp.IdPickingDet
-    '            BeLogVeficacion.IdPickingUbic = pBeTransPickingUbicTemp.IdPickingUbic
-    '            BeLogVeficacion.IdPedidoEnc = pBeTransPickingUbicTemp.IdPedidoEnc
-    '            BeLogVeficacion.IdPedidoDet = pBeTransPickingUbicTemp.IdPedidoDet
-    '            BeLogVeficacion.IdBodega = pBeTransPickingUbicTemp.IdBodega
-    '            BeLogVeficacion.Fec_agr = Now
-    '            BeLogVeficacion.User_agr = AP.UsuarioAp.IdUsuario
-    '            BeLogVeficacion.Sku = pSku
-    '            BeLogVeficacion.Cantidad = Convert.ToInt16(txtCantidad.Text)
-    '            BeLogVeficacion.IdProductoTallaColor = pIdProductoTallaColor
-
-
-    '            pBeTransPickingUbicTemp.CodigoSKU = pSku.ToString()
-
-    '            '#GT02122025: si el SKU exite, validar que no se haya verificado antes
-    '            Dim Existe = plistPickingUbic.Find(Function(x) x.IdPickingUbic = pBeTransPickingUbicTemp.IdPickingUbic AndAlso
-    '                                                           x.IdPedidoEnc = pBeTransPickingUbicTemp.IdPedidoEnc AndAlso
-    '                                                           x.IdPedidoDet = pBeTransPickingUbicTemp.IdPedidoDet AndAlso
-    '                                                           x.Lic_plate = pBeTransPickingUbicTemp.Lic_plate)
-
-    '            If Existe IsNot Nothing Then
-    '                XtraMessageBox.Show("El SKU ya fue verificado." & sku, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-    '                LimpiarControlesGrupo()
-    '                Exit Function
-    '            End If
-
-    '            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-    '            If SplashScreenManager.Default IsNot Nothing Then
-    '                SplashScreenManager.Default.SetWaitFormCaption("Cargando imagen...")
-    '            End If
-
-    '            Application.DoEvents()
-    '            CargarImagenProducto(sku)
-
-    '            BuscarSKU_Y_Cargar = True
-
-    '        End If
-
-    '    Catch ex As Exception
-    '        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-    '    Finally
-    '        If SplashScreenManager.Default IsNot Nothing Then
-    '            SplashScreenManager.CloseForm(False)
-    '        End If
-    '    End Try
-    'End Function
 
     Private Sub CargarImagenProducto(ByVal sku As String)
 
@@ -1629,7 +1276,6 @@ Public Class frmVerificacionBOF
         End Try
     End Sub
 
-
     Private Sub LimpiarControlesGrupo()
         txtScanner.Text = ""
         txtDescripcionProducto.Text = ""
@@ -1642,7 +1288,7 @@ Public Class frmVerificacionBOF
         Try
 
             cmdEnviar.Enabled = False
-            'Guardar_Verificacion()
+            Guardar_Verificacion()
             cmdEnviar.Enabled = True
 
         Catch ex As Exception
@@ -1653,64 +1299,60 @@ Public Class frmVerificacionBOF
         End Try
     End Sub
 
-    'Private Sub Guardar_Verificacion()
+    Private Sub Guardar_Verificacion()
 
-    '    Try
+        Try
 
-    '        If pMotivo > 0 Then
+            If pMotivo > 0 Then
 
-    '            If plistPickingUbic.Count > 0 Then
-    '                XtraMessageBox.Show("Proceso detenido por motivo: " & cmbMotivo.Text, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                '#GT03122025: aqui se guarda en la tabla la razón de la pausa, y se retorna a la lista de pedidos
+                XtraMessageBox.Show("Proceso detenido por motivo: " & cmbMotivo.Text, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                BeLogVeficacion.IdEstado = cmbEstado.EditValue
+                BeLogVeficacion.IdMotivo = cmbMotivo.EditValue
+                clsLnLog_verificacion_bof.Guardar_Log(BeLogVeficacion)
 
-    '                '#GT03122025: aqui se guarda en la tabla la razón de la pausa, y se retorna a la lista de pedidos
-    '                BeLogVeficacion.IdEstado = cmbEstado.EditValue
-    '                BeLogVeficacion.IdMotivo = cmbMotivo.EditValue
-    '                clsLnLog_verificacion_bof.Guardar_Log(BeLogVeficacion)
+                If InvokeListarPedidos IsNot Nothing Then
+                    InvokeListarPedidos.Invoke()
+                End If
 
-    '                If InvokeListarPedidos IsNot Nothing Then
-    '                    InvokeListarPedidos.Invoke()
-    '                End If
+                Me.DialogResult = DialogResult.OK
 
-    '                Me.DialogResult = DialogResult.OK
-    '            Else
-    '                XtraMessageBox.Show("No se ha fiscalizado un producto para asociarlo al motivo seleccionado", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-    '            End If
+            Else
 
 
-    '        Else
-    '            If plistPickingUbic.Count > 0 Then
+                If plistPickingUbic.Count > 0 Then
 
-    '                If Not clsLnTrans_picking_enc.Guardar_Verificacion_Bof(plistPickingUbic,
-    '                                                                      AP.UsuarioAp.IdUsuario,
-    '                                                                      pBePedidoEnc) Then
+                    If Not clsLnTrans_picking_enc.Guardar_Verificacion_Bof(plistPickingUbic,
+                                                                          AP.UsuarioAp.IdUsuario,
+                                                                          pBeListaPedidos) Then
 
-    '                    XtraMessageBox.Show("No se fiscalizó el pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-    '                Else
-    '                    XtraMessageBox.Show("Pedido fiscalizado.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                        XtraMessageBox.Show("No se fiscalizó el pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Else
+                        XtraMessageBox.Show("Pedido fiscalizado.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
 
-    '                    If InvokeListarPedidos IsNot Nothing Then
-    '                        InvokeListarPedidos.Invoke()
-    '                    End If
+                        If InvokeListarPedidos IsNot Nothing Then
+                            InvokeListarPedidos.Invoke()
+                        End If
 
-    '                    Me.DialogResult = DialogResult.OK
+                        Me.DialogResult = DialogResult.OK
 
-    '                End If
+                    End If
 
-    '            Else
-    '                XtraMessageBox.Show("No se ha fiscalizado ninguna linea del pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-    '            End If
+                Else
+                    XtraMessageBox.Show("No se ha fiscalizado ninguna linea del pedido.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                End If
 
-    '        End If
+            End If
 
-    '    Catch ex As Exception
-    '        XtraMessageBox.Show(ex.Message,
-    '        Text,
-    '        MessageBoxButtons.OK,
-    '        MessageBoxIcon.Error)
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
 
-    '    End Try
+        End Try
 
-    'End Sub
+    End Sub
 
     Private Sub cmbMotivo_EditValueChanged(sender As Object, e As EventArgs) Handles cmbMotivo.EditValueChanged
         If cmbMotivo.EditValue > 0 Then

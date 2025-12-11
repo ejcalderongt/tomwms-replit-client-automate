@@ -27,8 +27,8 @@ Partial Class frmVerificacionBOF
         Dim Label3 As System.Windows.Forms.Label
         Dim Label4 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmVerificacionBOF))
-        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
-        Dim GridFormatRule1 As DevExpress.XtraGrid.GridFormatRule = New DevExpress.XtraGrid.GridFormatRule()
+        Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim GridFormatRule2 As DevExpress.XtraGrid.GridFormatRule = New DevExpress.XtraGrid.GridFormatRule()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.cmdEnviar = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
@@ -51,6 +51,7 @@ Partial Class frmVerificacionBOF
         Me.peProducto = New DevExpress.XtraEditors.PictureEdit()
         Me.PanelControl2 = New DevExpress.XtraEditors.PanelControl()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
+        Me.lbPedidos = New DevExpress.XtraEditors.LabelControl()
         Label8 = New System.Windows.Forms.Label()
         Label5 = New System.Windows.Forms.Label()
         lblScan = New System.Windows.Forms.Label()
@@ -198,8 +199,7 @@ Partial Class frmVerificacionBOF
         '
         Me.grpScan.AppearanceCaption.BackColor = System.Drawing.Color.SteelBlue
         Me.grpScan.AppearanceCaption.Options.UseBackColor = True
-        Me.grpScan.AppearanceCaption.Options.UseTextOptions = True
-        Me.grpScan.AppearanceCaption.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+        Me.grpScan.Controls.Add(Me.lbPedidos)
         Me.grpScan.Controls.Add(Label4)
         Me.grpScan.Controls.Add(Label3)
         Me.grpScan.Controls.Add(Me.cmbMotivo)
@@ -346,8 +346,8 @@ Partial Class frmVerificacionBOF
         Me.dgridListaPedido.Cursor = System.Windows.Forms.Cursors.Default
         Me.dgridListaPedido.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgridListaPedido.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        GridLevelNode1.RelationName = "Level1"
-        Me.dgridListaPedido.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
+        GridLevelNode2.RelationName = "Level1"
+        Me.dgridListaPedido.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode2})
         Me.dgridListaPedido.Location = New System.Drawing.Point(2, 28)
         Me.dgridListaPedido.MainView = Me.gvListaPedido
         Me.dgridListaPedido.Margin = New System.Windows.Forms.Padding(4)
@@ -364,9 +364,9 @@ Partial Class frmVerificacionBOF
         Me.gvListaPedido.Appearance.Row.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.gvListaPedido.Appearance.Row.Options.UseFont = True
         Me.gvListaPedido.DetailHeight = 431
-        GridFormatRule1.Name = "Format0"
-        GridFormatRule1.Rule = Nothing
-        Me.gvListaPedido.FormatRules.Add(GridFormatRule1)
+        GridFormatRule2.Name = "Format0"
+        GridFormatRule2.Rule = Nothing
+        Me.gvListaPedido.FormatRules.Add(GridFormatRule2)
         Me.gvListaPedido.GridControl = Me.dgridListaPedido
         Me.gvListaPedido.Name = "gvListaPedido"
         Me.gvListaPedido.OptionsBehavior.Editable = False
@@ -423,6 +423,16 @@ Partial Class frmVerificacionBOF
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55.0!))
         Me.TableLayoutPanel1.Size = New System.Drawing.Size(919, 587)
         Me.TableLayoutPanel1.TabIndex = 54
+        '
+        'lbPedidos
+        '
+        Me.lbPedidos.Appearance.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Bold)
+        Me.lbPedidos.Appearance.Options.UseFont = True
+        Me.lbPedidos.Location = New System.Drawing.Point(820, 40)
+        Me.lbPedidos.Name = "lbPedidos"
+        Me.lbPedidos.Size = New System.Drawing.Size(86, 24)
+        Me.lbPedidos.TabIndex = 64
+        Me.lbPedidos.Text = "Pedidos:"
         '
         'frmVerificacionBOF
         '
@@ -486,4 +496,5 @@ Partial Class frmVerificacionBOF
     Friend WithEvents cmdEnviar As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents cmbMotivo As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents cmbEstado As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents lbPedidos As DevExpress.XtraEditors.LabelControl
 End Class
