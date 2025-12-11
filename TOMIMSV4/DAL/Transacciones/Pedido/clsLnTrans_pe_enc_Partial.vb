@@ -6273,9 +6273,10 @@ Partial Public Class clsLnTrans_pe_enc
                 vSQL += " AND Activo=0"
             End If
 
-
             vSQL += " AND cast(Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) &
                    " AND " & FormatoFechas.fFecha(pFechaAl)
+
+            vSQL += " ORDER BY CONVERT(date, Fecha_Pedido) ASC, Correlativo ASC "
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 

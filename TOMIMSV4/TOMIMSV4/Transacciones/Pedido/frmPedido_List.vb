@@ -403,16 +403,18 @@ Public Class frmPedido_List
 
                         Case pModo.verificacion
 
+                            '#GT10122025: aqui debo buscar la guia e iterar los pedidos, porque el evento fue por doble click en el grid
+
+
                             Cierra_Instancia_Previa(frmVerificacionBOF)
                             clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_20251126: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " verifica bof con el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
 
                             With frmVerificacionBOF
 
-                                .pBePedidoEnc = pBePedidoEnc
+                                .pBeListaPedidos = pBeListPedidos
                                 .InvokeListarPedidos = AddressOf Listar_Pedidos
                                 ' Si está como hijo MDI, solo ocupará el contenedor MDI, no el monitor completo.
                                 .MdiParent = Nothing
-                                ' Fullscreen real (monitor completo)
                                 .StartPosition = FormStartPosition.Manual
                                 Dim scr = Screen.FromControl(Me)
                                 .FormBorderStyle = FormBorderStyle.None
@@ -1466,49 +1468,59 @@ Public Class frmPedido_List
         End If
     End Sub
 
+
+    '#GT08122025: lista global para enviar los pedidos por el escanner o un doble click que busca la guia en la lista y retorne mas de uno
+    Dim pBeListPedidos As New List(Of clsBeTrans_pe_enc)()
     Private Sub Buscar_Guia()
+
+        Dim listaGuias As List(Of Integer)
+        pBeListPedidos = New List(Of clsBeTrans_pe_enc)()
+
         Try
 
             Dim Guia As String = txtGuia.Text.Trim()
             Dim Guia_Transporte As String = Guia.ToUpperInvariant()
 
-            Dim pIdPedidoEnc = Procesar_Guia(Guia_Transporte)
+            '#GT08122025: una guia puede estar asociada a más de un pedido
+            'Dim pIdPedidoEnc = Procesar_Guia(Guia_Transporte)
+            listaGuias = Procesar_Guia(txtGuia.Text)
 
-            If pIdPedidoEnc > 0 Then
-
+            If listaGuias.Count > 0 Then
                 pBePedidoEnc = New clsBeTrans_pe_enc
-                pBePedidoEnc = clsLnTrans_pe_enc.GetSingle(pIdPedidoEnc)
+                For Each pIdPedidoEnc As Integer In listaGuias
+                    pBePedidoEnc = clsLnTrans_pe_enc.GetSingle(pIdPedidoEnc)
+                    If pBePedidoEnc IsNot Nothing Then
+                        If pBePedidoEnc Is Nothing Or pBePedidoEnc.IdPedidoEnc = 0 Then
+                            clsLnTrans_pe_enc.Eliminar_Pedido(pIdPedidoEnc)
+                            Throw New Exception("El pedido con correlativo WMS: " & pIdPedidoEnc & " fué modificado, eliminado o es un pedido inconsistente y no se puede recuperar")
+                        ElseIf pBePedidoEnc.Estado = "NUEVO" AndAlso pBePedidoEnc.Ubicacion = "TMP" Then
+                            Throw New Exception("El pedido " & pBePedidoEnc.IdPedidoEnc & " seleccionado se creó de forma incorrecta por el usuario en el WMS y no se concluyó: Ubicación = TMP (Valide Cliente y Propietario)")
+                        End If
 
-                Dim lSelectionIndex As Integer = gviewEncabezadoPedido.FocusedRowHandle
+                        '#GT09092024: si es fiscal cargar poliza.
+                        If AP.Bodega.Es_Bodega_Fiscal Then
+                            pBePedidoEnc.ObjPoliza = clsLnTrans_pe_pol.GetSingleId(pBePedidoEnc.IdPedidoEnc)
+                        Else
+                            pBePedidoEnc.ObjPoliza = Nothing
+                        End If
 
-                If pBePedidoEnc Is Nothing Or pBePedidoEnc.IdPedidoEnc = 0 Then
-                    clsLnTrans_pe_enc.Eliminar_Pedido(pIdPedidoEnc)
-                    Throw New Exception("El pedido con correlativo WMS: " & pIdPedidoEnc & " fué modificado, eliminado o es un pedido inconsistente y no se puede recuperar")
-                ElseIf pBePedidoEnc.Estado = "NUEVO" AndAlso pBePedidoEnc.Ubicacion = "TMP" Then
-                    XtraMessageBox.Show("El pedido seleccionado se creó de forma incorrecta por el usuario en el WMS y no se concluyó: Ubicación = TMP (Valide Cliente y Propietario)", Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
-                End If
-
-                '#GT09092024: si es fiscal cargar poliza.
-                If AP.Bodega.Es_Bodega_Fiscal Then
-                    pBePedidoEnc.ObjPoliza = clsLnTrans_pe_pol.GetSingleId(pBePedidoEnc.IdPedidoEnc)
-                Else
-                    pBePedidoEnc.ObjPoliza = Nothing
-                End If
+                        pBeListPedidos.Add(pBePedidoEnc)
+                    End If
+                Next
 
                 Select Case Modo
 
                     Case pModo.verificacion
 
+                        txtGuia.Text = ""
+
                         Cierra_Instancia_Previa(frmVerificacionBOF)
                         clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_20251126: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " verifica bof con el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
 
                         With frmVerificacionBOF
-
-                            .pBePedidoEnc = pBePedidoEnc
+                            .pBeListaPedidos = pBeListPedidos
                             .InvokeListarPedidos = AddressOf Listar_Pedidos
-                            ' Si está como hijo MDI, solo ocupará el contenedor MDI, no el monitor completo.
                             .MdiParent = Nothing
-                            ' Fullscreen real (monitor completo)
                             .StartPosition = FormStartPosition.Manual
                             Dim scr = Screen.FromControl(Me)
                             .FormBorderStyle = FormBorderStyle.None
@@ -1518,8 +1530,6 @@ Public Class frmPedido_List
                             .ShowDialog(Me)
                             .Focus()
                         End With
-
-                        gviewEncabezadoPedido.FocusedRowHandle = lSelectionIndex
 
                     Case pModo.Seleccion
                         DialogResult = DialogResult.OK
@@ -1538,43 +1548,54 @@ Public Class frmPedido_List
         End Try
     End Sub
 
-    Private Function Procesar_Guia(guia_Transporte As String) As Integer
-        Procesar_Guia = 0
+
+    Private Function Procesar_Guia(guia_Transporte As String) As List(Of Integer)
+
+        Dim listaIds As New List(Of Integer)
 
         Try
-
             Dim dt As DataTable = TryCast(DgridPedido.DataSource, DataTable)
-            If dt Is Nothing OrElse dt.Rows.Count = 0 Then Exit Function
+            If dt Is Nothing OrElse dt.Rows.Count = 0 Then
+                Return listaIds
+            End If
 
             Dim filas() As DataRow = dt.Select("[guia_transporte] = '" & guia_Transporte.Replace("'", "''") & "'")
 
-
             If filas.Length = 0 Then
-                XtraMessageBox.Show("No se encontró la guia, por favor reintente: " & guia_Transporte, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Exit Function
+                XtraMessageBox.Show("No se encontró la guía, por favor reintente: " & guia_Transporte,
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information)
+                Return listaIds
             End If
 
-            Dim row As DataRow = filas(0)
+            ' Validar que exista la columna Correlativo
+            If Not dt.Columns.Contains("Correlativo") Then
+                Return listaIds
+            End If
 
-            'Dim handle As Integer = gviewEncabezadoPedido.LocateByValue("guia_transporte", guia_Transporte)
-            'If handle >= 0 Then
-            '    gviewEncabezadoPedido.FocusedRowHandle = handle
-            '    gviewEncabezadoPedido.MakeRowVisible(handle)
-            'End If
+            ' Recorrer todas las filas encontradas y agregar los IdPedidoEnc (Correlativo)
+            For Each row As DataRow In filas
+                If Not IsDBNull(row("Correlativo")) Then
+                    Dim id As Integer = CInt(row("Correlativo"))
 
-            Dim pGuia_Transporte = If(dt.Columns.Contains("guia_transporte"), CStr(row("guia_transporte")), "")
-            Dim IdPedidoEnc = If(dt.Columns.Contains("Correlativo"), CInt(row("Correlativo")), 0)
-
-            Procesar_Guia = IdPedidoEnc
+                    ' Opcional: evitar duplicados en la lista
+                    If Not listaIds.Contains(id) Then
+                        listaIds.Add(id)
+                    End If
+                End If
+            Next
 
             Application.DoEvents()
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message,
-        Text,
-        MessageBoxButtons.OK,
-        MessageBoxIcon.Error)
+                            Text,
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error)
         End Try
+
+        Return listaIds
 
     End Function
 

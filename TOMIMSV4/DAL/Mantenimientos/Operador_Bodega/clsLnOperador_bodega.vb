@@ -403,32 +403,27 @@ Public Class clsLnOperador_bodega
     End Function
 
     '#MA20251204'
-    Public Shared Function Operador_Permite_Reemplazo(ByVal op As clsBeOperador) As Boolean
+
+    Public Shared Function Operador_Tiene_Permiso(ByVal idOperador As Integer, ByVal opcion As String) As Boolean
         Try
             Using conn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
                 conn.Open()
-                Using tran = conn.BeginTransaction(IsolationLevel.ReadCommitted)
 
-                    Const sql As String = "SELECT  ISNULL( r.PermiteReemplazo, 0) PermiteReemplazo from
-                                            operador As o
-                                            INNER JOIN  rol_operador As r
-                                            ON  O.IdRolOperador = r.IdRolOperador
-                                            where IdOperador = @Idoperador"
+                Const sql As String = "SELECT 1 AS TienePermiso 
+                                       FROM menu_rol_op m
+                                       INNER JOIN operador o ON o.IdRolOperador = m.IdRolOperador
+                                       WHERE o.IdOperador = @IdOperador
+                                        AND m.IdMenuSistemaOP = @Opcion"
 
-                    Using cmd As New SqlCommand(sql, conn, tran)
-                        cmd.Parameters.AddWithValue("@Idoperador", op.IdOperador)
-                        Dim result = cmd.ExecuteScalar()
+                Using cmd As New SqlCommand(sql, conn)
+                    cmd.Parameters.AddWithValue("@IdOperador", idOperador)
+                    cmd.Parameters.AddWithValue("@Opcion", opcion)
 
-                        tran.Commit()
-
-                        If result IsNot Nothing Then
-                            Return Convert.ToBoolean(result)
-                        Else
-                            Return False
-                        End If
-                    End Using
+                    Dim result = cmd.ExecuteScalar()
+                    Return result IsNot Nothing
                 End Using
             End Using
+
         Catch ex As Exception
             clsLnLog_error_wms.Agregar_Error(ex.Message)
             Return False
