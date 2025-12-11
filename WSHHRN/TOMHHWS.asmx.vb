@@ -10284,6 +10284,7 @@ Public Class TOMHHWS
                 SerializarJson(producto, "Presentacion.MedidasPorTarima")
                 SerializarJson(producto, "Presentacion.RellenadoPorUbicacionDePicking")
                 SerializarJson(producto, "Presentaciones")
+                SerializarJson(producto, "Codigos_barra")
                 SerializarJson(producto, "Parametros")
                 SerializarJson(producto, "Stock.BePresentacionProductoEnStock.MedidasPorTarima")
                 SerializarJson(producto, "Stock.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking")
