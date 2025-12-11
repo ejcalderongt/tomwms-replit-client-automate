@@ -1472,6 +1472,10 @@ Public Class frmPedido_List
     '#GT08122025: lista global para enviar los pedidos por el escanner o un doble click que busca la guia en la lista y retorne mas de uno
     Dim pBeListPedidos As New List(Of clsBeTrans_pe_enc)()
     Private Sub Buscar_Guia()
+
+        Dim listaGuias As List(Of Integer)
+        pBeListPedidos = New List(Of clsBeTrans_pe_enc)()
+
         Try
 
             Dim Guia As String = txtGuia.Text.Trim()
@@ -1479,7 +1483,7 @@ Public Class frmPedido_List
 
             '#GT08122025: una guia puede estar asociada a más de un pedido
             'Dim pIdPedidoEnc = Procesar_Guia(Guia_Transporte)
-            Dim listaGuias As List(Of Integer) = Procesar_Guia(txtGuia.Text)
+            listaGuias = Procesar_Guia(txtGuia.Text)
 
             If listaGuias.Count > 0 Then
                 pBePedidoEnc = New clsBeTrans_pe_enc

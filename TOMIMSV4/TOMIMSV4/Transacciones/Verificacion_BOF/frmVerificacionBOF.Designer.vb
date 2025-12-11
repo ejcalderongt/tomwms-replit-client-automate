@@ -219,7 +219,7 @@ Partial Class frmVerificacionBOF
         Me.grpScan.Location = New System.Drawing.Point(4, 2)
         Me.grpScan.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.grpScan.Name = "grpScan"
-        Me.grpScan.Size = New System.Drawing.Size(720, 260)
+        Me.grpScan.Size = New System.Drawing.Size(911, 260)
         Me.grpScan.TabIndex = 52
         Me.grpScan.Text = "Producto"
         '
@@ -337,7 +337,7 @@ Partial Class frmVerificacionBOF
         Me.GroupControl2.Location = New System.Drawing.Point(4, 266)
         Me.GroupControl2.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupControl2.Name = "GroupControl2"
-        Me.GroupControl2.Size = New System.Drawing.Size(720, 319)
+        Me.GroupControl2.Size = New System.Drawing.Size(911, 319)
         Me.GroupControl2.TabIndex = 53
         Me.GroupControl2.Text = "Lista"
         '
@@ -353,7 +353,7 @@ Partial Class frmVerificacionBOF
         Me.dgridListaPedido.Margin = New System.Windows.Forms.Padding(4)
         Me.dgridListaPedido.MenuManager = Me.RibbonControl
         Me.dgridListaPedido.Name = "dgridListaPedido"
-        Me.dgridListaPedido.Size = New System.Drawing.Size(716, 289)
+        Me.dgridListaPedido.Size = New System.Drawing.Size(907, 289)
         Me.dgridListaPedido.TabIndex = 1
         Me.dgridListaPedido.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvListaPedido, Me.GridView6})
         '
@@ -384,9 +384,9 @@ Partial Class frmVerificacionBOF
         '
         Me.PanelControl1.Controls.Add(Me.peProducto)
         Me.PanelControl1.Dock = System.Windows.Forms.DockStyle.Right
-        Me.PanelControl1.Location = New System.Drawing.Point(732, 193)
+        Me.PanelControl1.Location = New System.Drawing.Point(923, 193)
         Me.PanelControl1.Name = "PanelControl1"
-        Me.PanelControl1.Size = New System.Drawing.Size(815, 591)
+        Me.PanelControl1.Size = New System.Drawing.Size(624, 591)
         Me.PanelControl1.TabIndex = 58
         '
         'peProducto
@@ -397,7 +397,7 @@ Partial Class frmVerificacionBOF
         Me.peProducto.Name = "peProducto"
         Me.peProducto.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.[Auto]
         Me.peProducto.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch
-        Me.peProducto.Size = New System.Drawing.Size(811, 587)
+        Me.peProducto.Size = New System.Drawing.Size(620, 587)
         Me.peProducto.TabIndex = 0
         '
         'PanelControl2
@@ -406,7 +406,7 @@ Partial Class frmVerificacionBOF
         Me.PanelControl2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.PanelControl2.Location = New System.Drawing.Point(0, 193)
         Me.PanelControl2.Name = "PanelControl2"
-        Me.PanelControl2.Size = New System.Drawing.Size(732, 591)
+        Me.PanelControl2.Size = New System.Drawing.Size(923, 591)
         Me.PanelControl2.TabIndex = 59
         '
         'TableLayoutPanel1
@@ -421,7 +421,7 @@ Partial Class frmVerificacionBOF
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 45.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(728, 587)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(919, 587)
         Me.TableLayoutPanel1.TabIndex = 54
         '
         'frmVerificacionBOF
