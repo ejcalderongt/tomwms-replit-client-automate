@@ -444,7 +444,7 @@ Partial Public Class clsLnOperador
 
         Existe = Nothing
 
-        Dim vSQL As String = "SELECT * FROM operador WHERE Nombres = @nombres AND Clave = @clave"
+        Dim vSQL As String = "SELECT * FROM operador WHERE Codigo = @codigo AND Clave = @clave"
 
         Try
 
@@ -453,7 +453,7 @@ Partial Public Class clsLnOperador
                 Using lCommand As New SqlCommand(vSQL, lConnection)
 
                     lCommand.CommandType = CommandType.Text
-                    lCommand.Parameters.AddWithValue("@nombres", op.Nombres)
+                    lCommand.Parameters.AddWithValue("@codigo", op.Codigo)
                     lCommand.Parameters.AddWithValue("@clave", op.Clave)
 
 
