@@ -151,7 +151,7 @@ Partial Public Class rptPrefactura
         Me.XrLabel5.LocationFloat = New DevExpress.Utils.PointFloat(532.3079!, 243.9999!)
         Me.XrLabel5.Multiline = True
         Me.XrLabel5.Name = "XrLabel5"
-        Me.XrLabel5.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel5.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel5.SizeF = New System.Drawing.SizeF(100.0!, 23.0!)
         Me.XrLabel5.StylePriority.UseFont = False
         Me.XrLabel5.Text = "XrLabel5"
@@ -173,7 +173,7 @@ Partial Public Class rptPrefactura
         Me.XrLabel4.LocationFloat = New DevExpress.Utils.PointFloat(122.8357!, 266.9999!)
         Me.XrLabel4.Multiline = True
         Me.XrLabel4.Name = "XrLabel4"
-        Me.XrLabel4.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel4.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel4.SizeF = New System.Drawing.SizeF(314.0999!, 23.0!)
         Me.XrLabel4.StylePriority.UseFont = False
         Me.XrLabel4.Text = "XrLabel4"
@@ -193,7 +193,7 @@ Partial Public Class rptPrefactura
         Me.XrLabel3.LocationFloat = New DevExpress.Utils.PointFloat(122.8357!, 243.9999!)
         Me.XrLabel3.Multiline = True
         Me.XrLabel3.Name = "XrLabel3"
-        Me.XrLabel3.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel3.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel3.SizeF = New System.Drawing.SizeF(189.9333!, 23.0!)
         Me.XrLabel3.StylePriority.UseFont = False
         Me.XrLabel3.Text = "XrLabel3"
@@ -213,7 +213,7 @@ Partial Public Class rptPrefactura
         Me.XrLabel2.LocationFloat = New DevExpress.Utils.PointFloat(122.8357!, 220.6666!)
         Me.XrLabel2.Multiline = True
         Me.XrLabel2.Name = "XrLabel2"
-        Me.XrLabel2.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel2.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel2.SizeF = New System.Drawing.SizeF(314.0999!, 23.0!)
         Me.XrLabel2.StylePriority.UseFont = False
         Me.XrLabel2.Text = "XrLabel2"
@@ -233,7 +233,7 @@ Partial Public Class rptPrefactura
         Me.XrLabel1.LocationFloat = New DevExpress.Utils.PointFloat(122.8357!, 197.3332!)
         Me.XrLabel1.Multiline = True
         Me.XrLabel1.Name = "XrLabel1"
-        Me.XrLabel1.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel1.SizeF = New System.Drawing.SizeF(74.99999!, 23.0!)
         Me.XrLabel1.StylePriority.UseFont = False
         Me.XrLabel1.Text = "XrLabel1"
@@ -441,7 +441,7 @@ Partial Public Class rptPrefactura
         Me.Title.Font = New DevExpress.Drawing.DXFont("Arial", 14.25!)
         Me.Title.ForeColor = System.Drawing.Color.FromArgb(CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer))
         Me.Title.Name = "Title"
-        Me.Title.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
+        Me.Title.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(6), CInt(0), CInt(0), CSng(100.0!))
         '
         'DetailCaption1
         '
@@ -452,7 +452,7 @@ Partial Public Class rptPrefactura
         Me.DetailCaption1.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.DetailCaption1.ForeColor = System.Drawing.Color.White
         Me.DetailCaption1.Name = "DetailCaption1"
-        Me.DetailCaption1.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
+        Me.DetailCaption1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(6), CInt(0), CInt(0), CSng(100.0!))
         Me.DetailCaption1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'DetailData1
@@ -463,7 +463,7 @@ Partial Public Class rptPrefactura
         Me.DetailData1.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!)
         Me.DetailData1.ForeColor = System.Drawing.Color.Black
         Me.DetailData1.Name = "DetailData1"
-        Me.DetailData1.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
+        Me.DetailData1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(6), CInt(0), CInt(0), CSng(100.0!))
         Me.DetailData1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'DetailData3_Odd
@@ -475,7 +475,7 @@ Partial Public Class rptPrefactura
         Me.DetailData3_Odd.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!)
         Me.DetailData3_Odd.ForeColor = System.Drawing.Color.Black
         Me.DetailData3_Odd.Name = "DetailData3_Odd"
-        Me.DetailData3_Odd.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
+        Me.DetailData3_Odd.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(6), CInt(0), CInt(0), CSng(100.0!))
         Me.DetailData3_Odd.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'GrandTotalCaption1
@@ -484,7 +484,7 @@ Partial Public Class rptPrefactura
         Me.GrandTotalCaption1.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.GrandTotalCaption1.ForeColor = System.Drawing.Color.FromArgb(CType(CType(147, Byte), Integer), CType(CType(147, Byte), Integer), CType(CType(147, Byte), Integer))
         Me.GrandTotalCaption1.Name = "GrandTotalCaption1"
-        Me.GrandTotalCaption1.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 2, 0, 0, 100.0!)
+        Me.GrandTotalCaption1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.GrandTotalCaption1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'GrandTotalData1
@@ -493,7 +493,7 @@ Partial Public Class rptPrefactura
         Me.GrandTotalData1.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.GrandTotalData1.ForeColor = System.Drawing.Color.FromArgb(CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer))
         Me.GrandTotalData1.Name = "GrandTotalData1"
-        Me.GrandTotalData1.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 6, 0, 0, 100.0!)
+        Me.GrandTotalData1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(6), CInt(0), CInt(0), CSng(100.0!))
         Me.GrandTotalData1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'GrandTotalBackground1
@@ -509,7 +509,7 @@ Partial Public Class rptPrefactura
         Me.PageInfo.Font = New DevExpress.Drawing.DXFont("Arial", 8.25!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.PageInfo.ForeColor = System.Drawing.Color.FromArgb(CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer))
         Me.PageInfo.Name = "PageInfo"
-        Me.PageInfo.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
+        Me.PageInfo.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(6), CInt(0), CInt(0), CSng(100.0!))
         '
         'Fecha_Agr
         '
@@ -525,7 +525,7 @@ Partial Public Class rptPrefactura
         Me.XrLabel6.LocationFloat = New DevExpress.Utils.PointFloat(91.66666!, 0!)
         Me.XrLabel6.Multiline = True
         Me.XrLabel6.Name = "XrLabel6"
-        Me.XrLabel6.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel6.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel6.SizeF = New System.Drawing.SizeF(512.4575!, 53.21785!)
         Me.XrLabel6.Text = "XrLabel6"
         '
