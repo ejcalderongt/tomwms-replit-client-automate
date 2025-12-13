@@ -6287,16 +6287,15 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                      clsTrans.lConnection,
                                                                      clsTrans.lTransaction)
 
-                '#MECR23102025: Se agrego bitacora para logs de picking
+                '#MECR11122025: Se agrego bitacora para logs de verificacion
                 resultado += " Codigo " & vBePickingUbic.CodigoProducto & " Pedido parámetro " & pIdPedidoEnc
                 'clsLnLog_error_wms.Agregar_Error(resultado)
-                clsLnLog_error_wms_pick.Agregar_Error(resultado,
+                clsLnLog_verificacion_bof.Agregar_Error(resultado,
                                                       pIdPedidoDet:=vBePickingUbic.IdPedidoDet,
                                                       pIdPedidoEnc:=vBePickingUbic.IdPedidoEnc,
                                                       pIdPickingEnc:=vBePickingUbic.IdPickingEnc,
                                                       pIdPickingDet:=vBePickingUbic.IdPickingDet,
                                                       pIdPickingUbic:=vBePickingUbic.IdPickingUbic,
-                                                      pCodigoProducto:=vBePickingUbic.CodigoProducto,
                                                       pConection:=clsTrans.lConnection,
                                                       pTransaction:=clsTrans.lTransaction)
 
