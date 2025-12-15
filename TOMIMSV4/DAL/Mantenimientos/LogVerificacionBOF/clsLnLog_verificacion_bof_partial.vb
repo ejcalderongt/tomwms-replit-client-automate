@@ -23,7 +23,7 @@ Partial Public Class clsLnLog_verificacion_bof
         Try
             Dim oBe As New clsBeLog_verificacion_bof()
 
-            ' Required
+            ' Obligatorios
             oBe.MensajeError = pMensajeExcepcion
             oBe.Fec_agr = Now
 
