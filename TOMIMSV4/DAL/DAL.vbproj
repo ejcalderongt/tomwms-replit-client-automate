@@ -224,6 +224,8 @@
     <Compile Include="Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic_partial.vb" />
     <Compile Include="Mantenimientos\LogErrorWMS\clsLnLog_error_wms_partial.vb" />
     <Compile Include="Mantenimientos\LogErrorWMS\clsLnLog_error_wms.vb" />
+    <Compile Include="Mantenimientos\LogVerificacionBOF\clsLnLog_verificacion_bof.vb" />
+    <Compile Include="Mantenimientos\LogVerificacionBOF\clsLnLog_verificacion_bof_partial.vb" />
     <Compile Include="Mantenimientos\Manufactura\Manufactura_Tipo\clsLnTrans_manufactura_tipo.vb" />
     <Compile Include="Mantenimientos\MotivoCorreccion\clsLnTrans_oc_pol_motivo_correccion.vb" />
     <Compile Include="Mantenimientos\MotivoCorreccion\clsLnTrans_oc_pol_motivo_correccion_bodega.vb" />
@@ -836,7 +838,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-
   <ItemGroup>
     <Analyzer Include="C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll" Visible="false" Condition="Exists('C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll')" />
   </ItemGroup>

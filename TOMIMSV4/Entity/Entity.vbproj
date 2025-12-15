@@ -259,6 +259,7 @@
     <Compile Include="Mantenimientos\LogErrorWMSReab\clsBeLog_error_wms_reab.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSRec\clsBeLog_error_wms_rec.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSUbic\clsBeLog_error_wms_ubic.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSVeri\clsBeLog_verificacion_bof.vb" />
     <Compile Include="Mantenimientos\LogErrorWMS\clsBeLog_error_wms.vb" />
     <Compile Include="Mantenimientos\Manufactura\Manufactura_Tipo\clsBeTrans_manufactura_tipo.vb" />
     <Compile Include="Mantenimientos\Menu_Rol\clsBeOpcionesMenuRol.vb" />

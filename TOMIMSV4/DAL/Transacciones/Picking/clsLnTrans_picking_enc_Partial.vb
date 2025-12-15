@@ -1706,6 +1706,16 @@ Partial Public Class clsLnTrans_picking_enc
                               IIf(Es_Transaccion_Remota, pConection, lConnection),
                               IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
 
+            'MECR04122025: Se agrego bitacora de logs para verificacion.
+            Dim msgControl As String = "Se actualizo estado verificado el pedido: " + oBeTrans_picking_enc.IdPedidoEnc
+            clsLnLog_verificacion_bof.Agregar_Error(msgControl,
+                                                    pIdPedidoEnc:=oBeTrans_picking_enc.IdPedidoEnc,
+                                                    pIdBodega:=oBeTrans_picking_enc.IdBodega,
+                                                    pIdPickingEnc:=oBeTrans_picking_enc.IdPickingEnc,
+                                                    pUser_agr:=oBeTrans_picking_enc.User_mod,
+                                                    pConection:=IIf(Es_Transaccion_Remota, pConection, lConnection),
+                                                    pTransaction:=IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
             Return True
