@@ -9,14 +9,21 @@ Public Class frmAjustePositivo
     Public Property pStockIdPropietarioBodega As Integer
     Public Property pStockBodegaFiltro As Integer
     Public Property vProducto As New clsBeProducto
-
-    Private pIdProductoBodega As Integer
     Public Property pStockTemporal As clsBeStock
     Public Property pUbicacion As clsBeBodega_ubicacion
 
+    Private pIdProductoBodega As Integer
+    Private BeBodega As New clsBeBodega
     Private DT As New DataTable("Producto")
     Private DT_Estado As New DataTable("Producto_Estado")
     Private DT_Presentacion As New DataTable("Producto_Presentacion")
+    Private DT_Umbas As New DataTable("Umbas")
+
+    Private listaTalla As New List(Of clsBeTalla)
+    Private listaColor As New List(Of clsBeColor)
+
+    Dim altoHueco As Integer
+
 
     Private Sub frmAjustePositivo_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         Try
@@ -25,13 +32,65 @@ Public Class frmAjustePositivo
             SplashScreenManager.Default.SetWaitFormCaption("Producto sin Stock")
             SplashScreenManager.Default.SetWaitFormDescription("cargando productos...")
 
+            BeBodega = AP.Bodega
             '#GT26112024: datos del encabezado
             lbIdStock.Text = clsLnStock.MaxID() + 1
             pUbicacion = New clsBeBodega_ubicacion
             pUbicacion = clsLnBodega_ubicacion.GetSingle(AP.Bodega.Ubic_recepcion, AP.IdBodega)
             txtUbicacion.Text = pUbicacion.NombreCompleto
             Cargar_Productos_Sin_Stock()
-            cmbProducto.Focus()
+            cmbProductos.Focus()
+
+            '#GT15122025: se utiliza para reducir el espacio dejado por inputs que estan invisibles pero ocupan
+            altoHueco = txtCantidad.Height + 6 ' separación (ajusta)
+
+            If BeBodega.Control_Talla_Color Then
+
+                listaTalla = clsLnTalla.Get_All()
+                listaColor = clsLnColor.Get_All()
+
+                Cargar_Talla()
+                Caregar_Color()
+
+                lbTalla.Visible = True
+                lbColor.Visible = True
+                cmbTalla.Visible = True
+                cmbColor.Visible = True
+
+                lbTalla.Top = lbTalla.Top - altoHueco
+                lbColor.Top = lbColor.Top - altoHueco
+                cmbTalla.Top = cmbTalla.Top - altoHueco
+                cmbColor.Top = cmbColor.Top - altoHueco
+
+                '#GT15122025: campos por defecto
+                dtpFechaVence.Visible = False
+                txtLote.Visible = False
+                txtPeso.Visible = False
+                lblFechaVence.Visible = False
+                lblLote.Visible = False
+                lblPesoAnterior.Visible = False
+
+            Else
+
+                lbTalla.Visible = False
+                lbColor.Visible = False
+                cmbTalla.Visible = False
+                cmbColor.Visible = False
+
+                lbTalla.Top = lbTalla.Top + altoHueco
+                lbColor.Top = lbColor.Top + altoHueco
+                cmbTalla.Top = cmbTalla.Top + altoHueco
+                cmbColor.Top = cmbColor.Top + altoHueco
+
+                '#GT15122025: campos por defecto
+                dtpFechaVence.Visible = True
+                txtLote.Visible = True
+                txtPeso.Visible = True
+                lblFechaVence.Visible = True
+                lblLote.Visible = True
+                lblPesoAnterior.Visible = True
+
+            End If
 
             SplashScreenManager.CloseForm(False)
 
@@ -47,21 +106,78 @@ Public Class frmAjustePositivo
         End Try
     End Sub
 
+    Private Sub Caregar_Color()
+        Try
+
+            With cmbColor.Properties
+                .DataSource = listaColor
+                .ValueMember = "IdColor"
+                .DisplayMember = "Codigo"   ' el campo requerido
+
+                .Columns.Clear()
+                .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Codigo", "Código"))
+                .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Nombre", "Nombre"))
+                .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("IdColor", "Id") With {
+                    .Visible = False
+                })
+
+                .ShowHeader = True          ' para que se vean los títulos de columnas
+                .NullText = ""
+                .BestFitMode = DevExpress.XtraEditors.Controls.BestFitMode.BestFitResizePopup
+            End With
+
+            cmbColor.EditValue = Nothing
+
+
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Private Sub Cargar_Talla()
+        Try
+
+            With cmbTalla.Properties
+                .DataSource = listaTalla
+                .ValueMember = "IdTalla"
+                .DisplayMember = "Codigo"   ' el campo requerido
+
+                .Columns.Clear()
+                .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Codigo", "Código"))
+                .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Nombre", "Nombre"))
+                .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("IdTalla", "Id") With {
+                    .Visible = False
+                })
+
+                .ShowHeader = True          ' para que se vean los títulos de columnas
+                .NullText = ""
+                .BestFitMode = DevExpress.XtraEditors.Controls.BestFitMode.BestFitResizePopup
+            End With
+
+            cmbTalla.EditValue = Nothing
+
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
     Private Sub Cargar_Productos_Sin_Stock()
         Try
 
             DT = clsLnProducto.Get_All_Lista_Producto_SinStock(pStockIdPropietario, pStockIdPropietarioBodega, pStockBodegaFiltro, 1)
 
-            If DT IsNot Nothing AndAlso DT.Rows.Count > 0 Then
-                cmbProducto.Properties.DisplayMember = "Nombre"
-                cmbProducto.Properties.ValueMember = "IdProductoBodega"
-                cmbProducto.Properties.DataSource = DT
-                cmbProducto.Properties.PopupWidth = 700
-                cmbProducto.Properties.PopulateColumns()
-                cmbProducto.Properties.BestFit()
-                cmbProducto.Properties.NullText = ""
-                cmbProducto.EditValue = 0
+            If DT.Rows.Count > 0 Then
+                With cmbProductos.Properties
+                    .DataSource = DT
+                    .ValueMember = "IdProductoBodega"
+                    .DisplayMember = "Nombre"   ' el campo requerido
+                    .NullText = ""
+                    .BestFitMode = DevExpress.XtraEditors.Controls.BestFitMode.BestFitResizePopup
+                End With
+
             End If
+
+            cmbProductos.EditValue = Nothing
 
         Catch ex As Exception
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
@@ -70,12 +186,10 @@ Public Class frmAjustePositivo
         End Try
     End Sub
 
-    Private Sub cmbProducto_EditValueChanged(sender As Object, e As EventArgs) Handles cmbProducto.EditValueChanged
+    Private Sub cmbProductos_EditValueChanged(sender As Object, e As EventArgs) Handles cmbProductos.EditValueChanged
         Try
-
-            If cmbProducto.EditValue > 0 Then
-
-                pIdProductoBodega = cmbProducto.EditValue
+            If cmbProductos.EditValue > 0 Then
+                pIdProductoBodega = cmbProductos.EditValue
                 vProducto = New clsBeProducto
                 vProducto = clsLnProducto.Get_BeProducto_By_IdProductoBodega(pIdProductoBodega, pStockBodegaFiltro)
 
@@ -85,12 +199,12 @@ Public Class frmAjustePositivo
                     pStockTemporal = New clsBeStock
 
                     '#GT26112024: cargar propiedades de un producto valido, para no hacerlo sobre uno vacio.
+                    '#GT15122025: ajustar para no genera lp auto si maneja control talla/color
                     Set_Propiedades_Producto()
 
                 Else
                     Throw New Exception("No se cargaron los atributos del producto seleccionado.")
                 End If
-
             Else
 
                 '#GT26112024: deshabilitar los campos cuando no hay producto seleccionado en el combo
@@ -98,7 +212,6 @@ Public Class frmAjustePositivo
                 txtLote.Enabled = False
                 txtPeso.Enabled = False
                 dtpFechaVence.Enabled = False
-
             End If
 
         Catch ex As Exception
@@ -115,43 +228,66 @@ Public Class frmAjustePositivo
 
             Cargar_Producto_Estado()
             Cargar_Producto_Presentacion()
+            Cargar_Umbas()
 
-            If vProducto.Genera_lp Then
+            '#GT15122025: control talla color excluye si genera lp en producto
+            If BeBodega.Control_Talla_Color Then
 
-                SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-                SplashScreenManager.Default.SetWaitFormDescription("Cálculando LP...")
+                lblLote.Visible = False
+                txtLote.Visible = False
+                lblFechaVence.Visible = False
+                dtpFechaVence.Visible = False
 
-                txtLicencia.EditValue = Genera_Licencia_BOF(pStockBodegaFiltro, AP.UsuarioAp.IdUsuario)
+                lblLote.Visible = False
+                txtLote.Visible = False
+                lblFechaVence.Visible = False
+                dtpFechaVence.Visible = False
+                lblPesoAnterior.Visible = False
+                txtPeso.Visible = False
 
             Else
-                txtLicencia.Enabled = False
+
+                If vProducto.Genera_lp Then
+
+                    SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+                    SplashScreenManager.Default.SetWaitFormDescription("Cálculando LP...")
+
+                    txtLicencia.EditValue = Genera_Licencia_BOF(pStockBodegaFiltro, AP.UsuarioAp.IdUsuario)
+
+                Else
+                    txtLicencia.Enabled = False
+                End If
+
+                If vProducto.Genera_lote Then
+
+                    SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+                    SplashScreenManager.Default.SetWaitFormDescription("Cálculando Lote...")
+
+                    txtLote.Enabled = True
+                    txtLote.EditValue = ""
+                Else
+                    txtLote.Enabled = False
+                End If
+
+                If vProducto.Control_peso Then
+                    txtPeso.Enabled = True
+                    txtPeso.Value = 0
+                Else
+                    txtPeso.Enabled = False
+                End If
+
+                If vProducto.Control_vencimiento Then
+                    dtpFechaVence.Enabled = True
+                    dtpFechaVence.EditValue = Now
+                Else
+                    dtpFechaVence.Enabled = False
+                    dtpFechaVence.EditValue = Nothing
+                End If
+
+
             End If
 
-            If vProducto.Genera_lote Then
 
-                SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-                SplashScreenManager.Default.SetWaitFormDescription("Cálculando Lote...")
-
-                txtLote.Enabled = True
-                txtLote.EditValue = ""
-            Else
-                txtLote.Enabled = False
-            End If
-
-            If vProducto.Control_peso Then
-                txtPeso.Enabled = True
-                txtPeso.Value = 0
-            Else
-                txtPeso.Enabled = False
-            End If
-
-            If vProducto.Control_vencimiento Then
-                dtpFechaVence.Enabled = True
-                dtpFechaVence.EditValue = Now
-            Else
-                dtpFechaVence.Enabled = False
-                dtpFechaVence.EditValue = Nothing
-            End If
 
             pStockTemporal.IsNew = True
             pStockTemporal.IdUnidadMedida = vProducto.IdUnidadMedidaBasica
@@ -175,6 +311,35 @@ Public Class frmAjustePositivo
 
             SplashScreenManager.CloseForm(False)
 
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+          Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub Cargar_Umbas()
+        Try
+
+            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+            SplashScreenManager.Default.SetWaitFormDescription("Cargando Umbas...")
+
+            DT_Umbas = clsLnUnidad_medida.Get_All_By_IdPropietario_And_Activo(pStockIdPropietario)
+
+            'DT_Estado = clsLnProducto_estado.Get_All_By_IdPropietario_And_IdBodega(pStockIdPropietario, pStockBodegaFiltro)
+
+            If DT_Umbas IsNot Nothing AndAlso DT_Umbas.Rows.Count > 0 Then
+                cmbUmbas.Properties.DisplayMember = "Nombre"
+                cmbUmbas.Properties.ValueMember = "IdUnidadMedida"
+                cmbUmbas.Properties.DataSource = DT_Umbas
+                cmbUmbas.Properties.PopupWidth = 700
+                cmbUmbas.Properties.PopulateColumns()
+                cmbUmbas.Properties.BestFit()
+                cmbUmbas.Properties.NullText = ""
+                cmbUmbas.EditValue = 0
+            End If
+
+        Catch ex As Exception
+
+            SplashScreenManager.CloseForm(False)
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
           Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -233,7 +398,7 @@ Public Class frmAjustePositivo
         End Try
     End Sub
 
-    Private Sub BarButtonItem1_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles BarButtonItem1.ItemClick
+    Private Sub cmdGuardar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdGuardar.ItemClick
         Try
 
             DialogResult = DialogResult.OK
@@ -261,6 +426,46 @@ Public Class frmAjustePositivo
 
             If cmbProductoPresentacion.EditValue > 0 Then
                 pStockTemporal.IdPresentacion = cmbProductoPresentacion.EditValue
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+         Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub cmbUmbas_EditValueChanged(sender As Object, e As EventArgs) Handles cmbUmbas.EditValueChanged
+        Try
+
+            If cmbUmbas.EditValue > 0 Then
+                pStockTemporal.Producto.IdUnidadMedidaBasica = cmbUmbas.EditValue
+                pStockTemporal.IdUnidadMedida = cmbUmbas.EditValue
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+         Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub cmbTalla_EditValueChanged(sender As Object, e As EventArgs) Handles cmbTalla.EditValueChanged
+        Try
+
+            If cmbTalla.EditValue > 0 Then
+                pStockTemporal.Talla = cmbTalla.Text
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+         Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub cmbColor_EditValueChanged(sender As Object, e As EventArgs) Handles cmbColor.EditValueChanged
+        Try
+
+            If cmbColor.EditValue > 0 Then
+                pStockTemporal.Color = cmbColor.Text
             End If
 
         Catch ex As Exception

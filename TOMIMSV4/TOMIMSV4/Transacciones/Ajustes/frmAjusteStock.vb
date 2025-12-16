@@ -471,15 +471,19 @@ Public Class frmAjusteStock
 
                 If BeBodega.Control_Talla_Color Then
 
+
+
                     Dim pProductoTallaColor = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeAjusteDet.IdProductoTallaColor)
 
                     If pProductoTallaColor IsNot Nothing Then
 
-                        BeAjusteDet.IdProductoTallaColor = BeAjusteDet.IdProductoTallaColor
+                        'BeAjusteDet.IdProductoTallaColor = BeAjusteDet.IdProductoTallaColor
 
                         BeAjusteDet.Talla = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
                         BeAjusteDet.Color = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
 
+                    Else
+                        Throw New Exception("No se encontró talla y color para el producto (id): " & BeAjusteDet.IdProductoBodega)
                     End If
 
                 End If
@@ -552,9 +556,9 @@ Public Class frmAjusteStock
                     If pProductoTallaColor IsNot Nothing Then
                         dgrid.Rows(rc).Cells("colIdProductoTallaColor").Value = BeAjusteDet.IdProductoTallaColor
                         dgrid.Rows(rc).Cells("colTalla").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Talla")), "", pProductoTallaColor.Rows(0).Item("Talla"))
-                        dgrid.Rows(rc).Cells("colTalla").ReadOnly = True
+                        dgrid.Rows(rc).Cells("colTalla").ReadOnly = False
                         dgrid.Rows(rc).Cells("colColor").Value = IIf(IsDBNull(pProductoTallaColor.Rows(0).Item("Color")), "", pProductoTallaColor.Rows(0).Item("Color"))
-                        dgrid.Rows(rc).Cells("colColor").ReadOnly = True
+                        dgrid.Rows(rc).Cells("colColor").ReadOnly = False
                     End If
 
                 End If
@@ -718,6 +722,8 @@ Public Class frmAjusteStock
                     pStock_Reservado.IdProductoTallaColor = pStock.IdProductoTallaColor
                     pStock_Reservado.Talla = pProductoTallaColor.Rows(0).Item("Talla")
                     pStock_Reservado.Color = pProductoTallaColor.Rows(0).Item("Color")
+                Else
+                    Throw New Exception("No se encontró talla y color para el producto (id): " & pStock.IdProductoBodega)
                 End If
 
             End If
@@ -758,6 +764,9 @@ Public Class frmAjusteStock
             pStock_Reservado.Fecha_manufactura = pStock.Fecha_Manufactura
             pStock_Reservado.Atributo_Variante_1 = pStock.Atributo_Variante_1
             pStock_Reservado.IdBodega = pStock.IdBodega
+            pStock_Reservado.Talla = pStock.Talla
+            pStock_Reservado.Color = pStock.Color
+            pStock_Reservado.IdProductoTallaColor = pStock.IdProductoTallaColor
 
             clsLnStock_res.Insertar(pStock_Reservado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
@@ -3653,6 +3662,13 @@ Public Class frmAjusteStock
             BeAjusteDet.idstockres = IdStockRes
             BeAjusteDet.idstocklink = 0
             BeAjusteDet.esnuevolink = 0
+
+            '#GT15122025: asignar valores sobre talla/color
+            BeAjusteDet.Talla = pStockTemporal.Talla
+            BeAjusteDet.Color = pStockTemporal.Color
+            '#calcular si la combinacion talla/color ya existe, sino se debe guardar y luego asociar al ajuste
+            BeAjusteDet.IdProductoTallaColor = 0
+
             lBeTransAjusteDet.Add(BeAjusteDet)
 
 
@@ -3691,6 +3707,12 @@ Public Class frmAjusteStock
                 dgrid.Rows(rc).Cells("ColLicPlate").ReadOnly = True
             End If
 
+            '#GT15122025: ajuste positivo sobre existencia 0 no habilita los combos para talla/color porque ya fueron seleccionados en la ventana de ajuste.
+            If BeBodega.Control_Talla_Color Then
+
+            End If
+
+
             Llenar_Motivo(rc, -1)
 
             '#GT13062022_16_50: si pTipoAjuste es 0, entonces se deja set de cmbTipoAjuste, para que el grid obtenga las columnas adecuadas
@@ -3709,6 +3731,9 @@ Public Class frmAjusteStock
             If dgrid.Rows.Count > 0 Then
                 cmbTipoAjuste.Enabled = False
             End If
+
+
+
 
         Catch ex As Exception
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),

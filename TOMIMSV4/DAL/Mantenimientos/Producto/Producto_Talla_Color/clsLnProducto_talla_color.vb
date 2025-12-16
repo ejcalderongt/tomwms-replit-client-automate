@@ -441,7 +441,7 @@ Public Class clsLnProducto_talla_color
 									from producto_talla_color ptc
 									inner join talla t on ptc.IdTalla = t.IdTalla
 									inner join color c on ptc.IdColor = c.IdColor
-									inner join campaña ca on ptc.IdCampaña = ca.IdCampaña 
+									left join campaña ca on ptc.IdCampaña = ca.IdCampaña 
 									WHERE ptc.IdCampaña= @IdCampaña "
 
 			lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
@@ -481,7 +481,7 @@ Public Class clsLnProducto_talla_color
 									from producto_talla_color ptc
 									inner join talla t on ptc.IdTalla = t.IdTalla
 									inner join color c on ptc.IdColor = c.IdColor
-									inner join campaña ca on ptc.IdCampaña = ca.IdCampaña 
+									left join campaña ca on ptc.IdCampaña = ca.IdCampaña 
 									WHERE ptc.IdProducto = @IdProducto "
 
 			lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
@@ -680,7 +680,7 @@ Public Class clsLnProducto_talla_color
 									from producto_talla_color ptc
 									inner join talla t on ptc.IdTalla = t.IdTalla
 									inner join color c on ptc.IdColor = c.IdColor
-									inner join campaña ca on ptc.IdCampaña = ca.IdCampaña 
+									left join campaña ca on ptc.IdCampaña = ca.IdCampaña 
 									WHERE ptc.IdProductoTallaColor = @IdProductoTallaColor "
 
 			Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
@@ -833,6 +833,9 @@ Public Class clsLnProducto_talla_color
 
 	Public Shared Function Get_Single_Dt_By_IdProductoTallaColor(IdProductoTallaColor As Integer) As DataTable
 		Try
+
+			'#GT12122025: left join para la campaña, puede ser null
+
 			Const sql As String = "
 						SELECT 
 							ptc.IdProductoTallaColor AS Codigo, 
@@ -842,7 +845,7 @@ Public Class clsLnProducto_talla_color
 						FROM producto_talla_color AS ptc
 						INNER JOIN talla  AS t ON ptc.IdTalla  = t.IdTalla
 						INNER JOIN color  AS c ON ptc.IdColor  = c.IdColor
-						INNER JOIN [campaña] AS ca ON ptc.IdCampaña = ca.IdCampaña
+						LEFT JOIN [campaña] AS ca ON ptc.IdCampaña = ca.IdCampaña
 						WHERE ptc.IdProductoTallaColor = @IdProductoTallaColor;"
 
 			Dim dt As New DataTable()
@@ -1115,7 +1118,7 @@ Public Class clsLnProducto_talla_color
 						FROM producto_talla_color AS ptc
 						INNER JOIN talla  AS t ON ptc.IdTalla  = t.IdTalla
 						INNER JOIN color  AS c ON ptc.IdColor  = c.IdColor
-						INNER JOIN [campaña] AS ca ON ptc.IdCampaña = ca.IdCampaña
+						LEFT JOIN [campaña] AS ca ON ptc.IdCampaña = ca.IdCampaña
 						WHERE ptc.IdProductoTallaColor = @IdProductoTallaColor;"
 
 			Dim dt As New DataTable()
