@@ -41,6 +41,8 @@
     Public Property Nombre_Color As String = ""
     Public Property CodigoSKU As String = ""
     Public Property No_Linea As Integer = 0
+    Public Property IdTalla As Integer = 0
+    Public Property IdColor As Integer = 0
 
     '#EJC20220816: Analizando para el futuro.
     'Public Property IdDespachoDet as Integer =0
