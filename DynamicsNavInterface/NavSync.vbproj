@@ -478,7 +478,6 @@
     <EmbeddedResource Include="Formas\Reportes\frmRegistrosPendPush.resx">
       <DependentUpon>frmRegistrosPendPush.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
@@ -495,6 +494,7 @@
   <ItemGroup>
     <Content Include="Conn.ini" />
     <Content Include="remote_32x32-32.ico" />
+    <None Include="packages.config" />
     <None Include="Web References\WebReference\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.vb</LastGenOutput>
@@ -517,7 +517,6 @@
     <None Include="Formas\Reportes\DSEjecuciones.xss">
       <DependentUpon>DSEjecuciones.xsd</DependentUpon>
     </None>
-    <None Include="packages.config" />
     <None Include="Resources\button-power_basic_blue.png" />
     <None Include="Resources\Template.png" />
     <None Include="My Project\Application.myapp">
@@ -1150,4 +1149,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+
+  <ItemGroup>
+    <Analyzer Include="C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll" Visible="false" Condition="Exists('C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll')" />
+  </ItemGroup>
 </Project>

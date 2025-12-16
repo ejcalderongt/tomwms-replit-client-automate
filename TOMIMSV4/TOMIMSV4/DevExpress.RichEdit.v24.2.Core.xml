@@ -92,11 +92,6 @@
         <para>For internal use.</para>
       </summary>
     </member>
-    <member name="M:DevExpress.XtraPrinting.RichTextBrick.SetDocManagerAndPrinter(DevExpress.XtraRichEdit.Model.DocumentModel,DevExpress.XtraPrinting.Native.RichText.GraphicsDocumentPrinter)">
-      <summary>
-        <para>For internal use.</para>
-      </summary>
-    </member>
     <member name="P:DevExpress.XtraPrinting.RichTextBrick.Text">
       <summary>
         <para>For internal use.</para>
@@ -6963,7 +6958,7 @@
       <summary>
         <para>Specifies an application used to modify the document.</para>
       </summary>
-      <value>The application name. The default is “DevExpress Office File API/24.2.7.0”.</value>
+      <value>The application name. The default is “DevExpress Office File API/24.2.10.0”.</value>
     </member>
     <member name="P:DevExpress.XtraRichEdit.API.Native.DocumentProperties.AppVersion">
       <summary>
@@ -6979,8 +6974,7 @@
     </member>
     <member name="P:DevExpress.XtraRichEdit.API.Native.DocumentProperties.Category">
       <summary>
-        <para>Gets or sets the categorization of the document content (e.g. Resume, Letter, Financial Forecast, Proposal, Technical).</para>
-        <para>Presentation, and so on.</para>
+        <para>Gets or sets the categorization of the document content (e.g. Resume, Letter, Financial Forecast, Proposal, Technical Presentation, and so on).</para>
       </summary>
       <value>A string of text that specifies the category name.</value>
     </member>
@@ -12184,7 +12178,7 @@
       <summary>
         <para>Gets the name of the application used to modify the document.</para>
       </summary>
-      <value>The application’s name. The default is “DevExpress Office File API/24.2.7.0”.</value>
+      <value>The application’s name. The default is “DevExpress Office File API/24.2.10.0”.</value>
     </member>
     <member name="P:DevExpress.XtraRichEdit.API.Native.ReadOnlyDocumentBuiltInProperties.AppVersion">
       <summary>

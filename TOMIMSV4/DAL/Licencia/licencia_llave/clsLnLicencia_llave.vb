@@ -343,6 +343,7 @@ Public Class clsLnLicencia_llave
                 pBeLicenciaItem.Vence = BeLicenciaLlave.Vence
                 pBeLicenciaItem.CantHandHeld = BeLicenciaLlave.CantHandHeld
                 pBeLicenciaItem.CantBackOffice = BeLicenciaLlave.CantBackOffice
+                pBeLicenciaItem.CantUx = BeLicenciaLlave.CantUx
                 pBeLicenciaItem.Activa = BeLicenciaLlave.Activa
                 pBeLicenciaItem.IdDisp = BeLicenciaLlave.MacServer
 

@@ -67,7 +67,7 @@ Public Class clsLnProductoDMS
                 For Each grupo In grupos
 
                     If propietarioAnterior <> grupo.IdPropietario Then
-                        clsHelper.LogMensaje(lblprg, $"➡ Procesando registros del propietario {grupo.IdPropietario}", clsHelper.TipoMensaje.Info)
+                        clsHelper.LogMensaje(lblprg, $"Procesando registros del propietario {grupo.IdPropietario}", clsHelper.TipoMensaje.Info)
                     End If
 
                     Dim objRespuesta As Object = Await ProcesarProductos(lblprg, grupo.Lista)
@@ -90,7 +90,7 @@ Public Class clsLnProductoDMS
                 Next
 
             Else
-                clsHelper.LogMensaje(lblprg, "Ingresos no encontrados para sincronizar", clsHelper.TipoMensaje.Error_)
+                clsHelper.LogMensaje(lblprg, "Productos no encontrados para sincronizar", clsHelper.TipoMensaje.Error_)
                 Exit Function
             End If
 
@@ -237,6 +237,7 @@ Public Class clsLnProductoDMS
                 resultado = "Propietario no esta asociado correctamente al producto: " & pProducto.IdProducto
                 clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Info)
                 Guadar_Envio_Rechazado(pProducto, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                clsTransaccion.Commit_Transaction()
                 Return ""
 
             End If
@@ -268,6 +269,7 @@ Public Class clsLnProductoDMS
                 resultado = "No existe un estado asociado al producto: " & pProducto.IdProducto
                 clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Info)
                 Guadar_Envio_Rechazado(pProducto, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                clsTransaccion.Commit_Transaction()
                 Return ""
             End If
 
@@ -294,6 +296,7 @@ Public Class clsLnProductoDMS
                 resultado = "No existe UMBAS asociada al producto: " & pProducto.IdProducto
                 clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Info)
                 Guadar_Envio_Rechazado(pProducto, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                clsTransaccion.Commit_Transaction()
                 Return ""
             End If
 
@@ -353,6 +356,7 @@ Public Class clsLnProductoDMS
                 resultado = "El propietario no esta asociado a ninguna bodega, para el producto: " & pProducto.IdProducto
                 clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Info)
                 Guadar_Envio_Rechazado(pProducto, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                clsTransaccion.Commit_Transaction()
                 Return ""
             End If
 
@@ -429,13 +433,17 @@ Public Class clsLnProductoDMS
                                      .unidadMedida = productoUmbasList
                                  })
 
-            clsTransaccion.Commit_Transaction()
 
             listPayload.AddRange(productoList)
+            clsTransaccion.Commit_Transaction()
+
             Crear_Json = JsonConvert.SerializeObject(listPayload)
 
         Catch ex As Exception
+            clsTransaccion.RollBack_Transaction()
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        Finally
+            clsTransaccion.Close_Conection()
         End Try
 
     End Function
@@ -464,18 +472,20 @@ Public Class clsLnProductoDMS
                 localTransaction = True
             End If
 
-            ' Preparar el objeto de log
-            BeLogSyncError.IdLogFallo = clsLnDMS_Log_sincronizacion_fallos.MaxID(lConnection, lTransaction) + 1
-            BeLogSyncError.IdOrdenCompraEnc = 0
-            BeLogSyncError.IdPedidoEnc = 0
-            BeLogSyncError.Estado = "Error"
-            BeLogSyncError.Mensaje_error = pMensaje
-            BeLogSyncError.Fec_agr = Now
-            BeLogSyncError.Fec_mod = Now
-            BeLogSyncError.IdProducto = pProducto.IdProducto
-            BeLogSyncError.IdPropietario = pProducto.IdPropietario
+            '#GT08102025: validar que no exista un registro previo para no duplicar el mismo error
+            'If Not clsLnDMS_Log_sincronizacion_fallos.Existe_by_Producto(pProducto) Then
+            '    BeLogSyncError.IdLogFallo = clsLnDMS_Log_sincronizacion_fallos.MaxID(lConnection, lTransaction) + 1
+            '    BeLogSyncError.IdOrdenCompraEnc = 0
+            '    BeLogSyncError.IdPedidoEnc = 0
+            '    BeLogSyncError.Estado = "Error"
+            '    BeLogSyncError.Mensaje_error = pMensaje
+            '    BeLogSyncError.Fec_agr = Now
+            '    BeLogSyncError.Fec_mod = Now
+            '    BeLogSyncError.IdProducto = pProducto.IdProducto
+            '    BeLogSyncError.IdPropietario = pProducto.IdPropietario
+            '    clsLnDMS_Log_sincronizacion_fallos.Insertar(BeLogSyncError, lConnection, lTransaction)
+            'End If
 
-            ' Insertar usando conexión y transacción
             clsLnDMS_Log_sincronizacion_fallos.Insertar(BeLogSyncError, lConnection, lTransaction)
 
             ' Confirmar si se inició transacción local
@@ -492,7 +502,7 @@ Public Class clsLnProductoDMS
                     ' Ignorar errores de rollback
                 End Try
             End If
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
+            'Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
 
         Finally
             ' Cierre solo si es local
@@ -502,28 +512,6 @@ Public Class clsLnProductoDMS
         End Try
 
     End Sub
-
-
-
-    'Public Shared Sub Guadar_Envio_Rechazado(ByVal pIdProducto As Integer, ByVal pMensaje As String)
-    '    Dim BeLogSyncError As New clsBeDMS_Log_sincronizacion_fallos()
-    '    Try
-    '        BeLogSyncError = New clsBeDMS_Log_sincronizacion_fallos()
-    '        BeLogSyncError.IdLogFallo = clsLnDMS_Log_sincronizacion_fallos.MaxID() + 1
-    '        BeLogSyncError.IdOrdenCompraEnc = 0
-    '        BeLogSyncError.IdPedidoEnc = 0
-    '        BeLogSyncError.Estado = "Error"
-    '        BeLogSyncError.Mensaje_error = pMensaje
-    '        BeLogSyncError.Fec_agr = Now
-    '        BeLogSyncError.IdProducto = pIdProducto
-
-    '        clsLnDMS_Log_sincronizacion_fallos.Insertar(BeLogSyncError)
-
-    '    Catch ex As Exception
-    '        Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-    '    End Try
-    'End Sub
-
 
     Public Shared Function GetAll_By_CDC(ByVal pTablaSincronizada As String,
                                          ByRef pListProducto As List(Of clsBeProducto),

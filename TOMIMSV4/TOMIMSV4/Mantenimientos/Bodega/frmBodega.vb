@@ -1236,6 +1236,7 @@ Public Class frmBodega
 
             '#CKFK20240403: Indicar los tipos de etiqueta y simbología para la licencia
             cmbEtiqueta.EditValue = pBeBodega.IdTipoEtiquetaLicencia
+            cmbEtiquetaVerificacion.EditValue = pBeBodega.IdTipoEtiquetaVerificacion
             cmbSymbology.EditValue = pBeBodega.IdSimbologiaLicencia
 
             cmbTamañoEtiquetaUbicacionDefecto.EditValue = pBeBodega.IdTamañoEtiquetaUbicacionDefecto
@@ -1475,6 +1476,7 @@ Public Class frmBodega
             pBeBodega.Homologar_Lote_Vencimiento = chkHomologarLoteConFechaVence.Checked
             pBeBodega.Escanear_Licencia_Picking = chkEscanearLicenciaPicking.Checked
             pBeBodega.IdTipoEtiquetaLicencia = cmbEtiqueta.EditValue
+            pBeBodega.IdTipoEtiquetaVerificacion = cmbEtiquetaVerificacion.EditValue
             pBeBodega.IdSimbologiaLicencia = cmbSymbology.EditValue
             pBeBodega.Interface_SAP = chkInterface_SAP.Checked
             pBeBodega.Restringir_Areas_SAP = chkRestringirAreasSAP.Checked
@@ -3739,7 +3741,7 @@ Public Class frmBodega
                 pListObjBodegaAreas(pIndex).Fec_mod = Now
                 pListObjBodegaAreas(pIndex).Grupo = txtGrupoArea.Text.Trim()
                 pListObjBodegaAreas(pIndex).Activo = chkActivoAreaBodega.Checked
-                pListObjBodegaAreas(pIndex).IdUbicacionRef = txtUbicacionRecepcionArea.Text
+                pListObjBodegaAreas(pIndex).IdUbicacionRef = Val(txtUbicacionRecepcionArea.Text)
 
             Else
 
@@ -5091,6 +5093,12 @@ Public Class frmBodega
             cmbTamañoEtiquetaUbicacionDefecto.Properties.ValueMember = "IdTipoEtiqueta"
             cmbTamañoEtiquetaUbicacionDefecto.Properties.DataSource = clsLnTipo_etiqueta.GetAllForCombo()
             cmbTamañoEtiquetaUbicacionDefecto.ItemIndex = -1
+
+            cmbEtiquetaVerificacion.Properties.DisplayMember = "Nombre"
+            cmbEtiquetaVerificacion.Properties.ValueMember = "IdTipoEtiqueta"
+            cmbEtiquetaVerificacion.Properties.DataSource = clsLnTipo_etiqueta.GetAllForCombo()
+            cmbEtiquetaVerificacion.ItemIndex = -1
+
 
         Catch ex As Exception
 

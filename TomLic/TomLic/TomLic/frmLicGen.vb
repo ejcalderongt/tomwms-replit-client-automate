@@ -1,4 +1,5 @@
 ﻿Imports System.Reflection
+Imports System.Text
 Imports DevExpress.XtraEditors
 
 Public Class frmLicGen
@@ -7,7 +8,7 @@ Public Class frmLicGen
         Try
 
             Select Case TabLic.SelectedPageIndex
-                Case 0 : Genera_Licencia_Servidor()
+                Case 0 : Genera_Licencia_Servidor(chkConUx.Checked)
                 Case 1 : Genera_Licencia_Cliente()
                 Case 2 : Genera_Antidoto_Licencia_Conectada()
                 Case 3 : Genera_Licencia_Activacion_Server()
@@ -24,6 +25,7 @@ Public Class frmLicGen
 
     Dim yy, mm, dd, cbo, chh As Integer
     Dim s, ss As String
+    Dim ux As Integer
 
     Private Sub TabLic_SelectedPageChanged(sender As Object, e As DevExpress.XtraBars.Navigation.SelectedPageChangedEventArgs) Handles TabLic.SelectedPageChanged
 
@@ -41,6 +43,8 @@ Public Class frmLicGen
 
             cbo = numBO.Value
             chh = numHH.Value
+            '#GT09092025: ux es para licenciar propietarios que exportan data hacia el portal web
+            ux = numUx.Value
 
             yy = dtpFecha.Value.Year - 2000
             mm = dtpFecha.Value.Month
@@ -54,20 +58,31 @@ Public Class frmLicGen
 
     End Function
 
-    Private Sub Genera_Licencia_Servidor()
+    Private Sub Genera_Licencia_Servidor(ByVal conUx As Boolean)
 
         Try
 
             txtLlave.Text = ""
 
             If Parse_Data() Then
+                Dim s As String
+                If conUx Then
+                    s = String.Format("{0},{1},{2},{3},{4},{5}",
+                                                                    cbo,
+                                                                    chh,
+                                                                    ux,
+                                                                    yy,
+                                                                    mm,
+                                                                    dd)
+                Else
+                    s = String.Format("{0},{1},{2},{3},{4}",
+                                                                    cbo,
+                                                                    chh,
+                                                                    yy,
+                                                                    mm,
+                                                                    dd)
+                End If
 
-                Dim s As String = String.Format("{0},{1},{2},{3},{4}",
-                                                cbo,
-                                                chh,
-                                                yy,
-                                                mm,
-                                                dd)
                 txtLlave.Text = EncodeString(s)
                 txtLlave.SelectAll()
                 txtLlave.Focus()
@@ -194,7 +209,11 @@ Public Class frmLicGen
             si = String.Format("SERVLIC{0}#", mac)
 
             If Parse_Data() Then
-                si += String.Format(",{0},{1},{2},{3},{4}", cbo, chh, yy, mm, dd)
+                If chkConUx.Checked Then
+                    si += String.Format(",{0},{1},{2},{3},{4},{5}", cbo, chh, ux, yy, mm, dd)
+                Else
+                    si += String.Format(",{0},{1},{2},{3},{4}", cbo, chh, yy, mm, dd)
+                End If
             End If
 
             txtServ.Text = EncodeString(si) : txtServ.Focus() : txtServ.SelectAll()
@@ -214,5 +233,48 @@ Public Class frmLicGen
         Dim stringBytes As Byte() = Convert.FromBase64String(encodedText)
         Return System.Text.Encoding.Unicode.GetString(stringBytes)
     End Function
+
+    'Private Shared Function DecodeString(ByVal encodedText As String) As String
+    '    Dim bytes As Byte() = Convert.FromBase64String(encodedText)
+
+    '    ' 1) Detectar BOMs
+    '    If bytes.Length >= 2 Then
+    '        ' UTF-16 LE BOM: FF FE
+    '        If bytes(0) = &HFF AndAlso bytes(1) = &HFE Then
+    '            Return Encoding.Unicode.GetString(bytes, 2, bytes.Length - 2)
+    '        End If
+    '        ' UTF-16 BE BOM: FE FF
+    '        If bytes(0) = &HFE AndAlso bytes(1) = &HFF Then
+    '            Return Encoding.BigEndianUnicode.GetString(bytes, 2, bytes.Length - 2)
+    '        End If
+    '    End If
+    '    ' UTF-8 BOM: EF BB BF
+    '    If bytes.Length >= 3 AndAlso bytes(0) = &HEF AndAlso bytes(1) = &HBB AndAlso bytes(2) = &HBF Then
+    '        Return Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3)
+    '    End If
+
+    '    ' 2) Heurística: ¿parece UTF-16 LE sin BOM? (alto = 0 en bytes impares)
+    '    If (bytes.Length Mod 2 = 0) Then
+    '        Dim looksUtf16Le As Boolean = True
+    '        For i As Integer = 1 To bytes.Length - 1 Step 2
+    '            If bytes(i) <> 0 Then
+    '                looksUtf16Le = False
+    '                Exit For
+    '            End If
+    '        Next
+    '        If looksUtf16Le Then
+    '            Return Encoding.Unicode.GetString(bytes)
+    '        End If
+    '    End If
+
+    '    ' 3) Por defecto: UTF-8 (estricto)
+    '    Dim utf8Strict As New UTF8Encoding(False, True)
+    '    Try
+    '        Return utf8Strict.GetString(bytes)
+    '    Catch ex As DecoderFallbackException
+    '        ' Último recurso: intentar UTF-16 LE
+    '        Return Encoding.Unicode.GetString(bytes)
+    '    End Try
+    'End Function
 
 End Class

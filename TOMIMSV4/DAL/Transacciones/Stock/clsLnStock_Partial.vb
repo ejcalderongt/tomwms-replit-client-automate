@@ -1688,6 +1688,23 @@ Partial Public Class clsLnStock
 
                     Else
                         '#CKFK20221017 Modifiqué la vista VW_Stock_Resumen por la VW_Stock_Res
+                        '                  vSQL = "SELECT 
+                        '                  Isnull( cast(movimiento as nvarchar(50)),'Error') IMovimiento,
+                        '                  Isnull( cast(IdStock as nvarchar(50)),'Error') IdStock,
+                        '                  codigo as Código,
+                        'nombre as Producto,
+                        'Disponible_UMBas,
+                        'UnidadMedida,
+                        'Presentacion as Presentación,
+                        'NomEstado as Estado,
+                        'Fecha_Ingreso,Fecha_Vence,IdUbicacion,
+                        'Ubicacion_Tramo as Rack,
+                        'Nombre_Completo as UbicacionCompleta,IdRecepcionEnc,
+                        'MotivoDevolucion,codigo_poliza,numero_poliza,
+                        '                  Referencia,No_Docto AS No_Docto_Rec
+                        'from [VW_Stock_CLC] 
+                        'WHERE IdBodega=@IdBodega and IdPropietarioBodega=@IdPropietarioBodega "
+
                         vSQL = "SELECT codigo as Código,
 						nombre as Producto,
 						Disponible_UMBas,
@@ -1701,7 +1718,7 @@ Partial Public Class clsLnStock
                         Referencia,No_Docto AS No_Docto_Rec
 						from VW_Stock_Res 
 						WHERE IdBodega=@IdBodega and IdPropietarioBodega=@IdPropietarioBodega 
-						and disponible_umbas > 0 "
+						and disponible_umbas > 0"
 
                         If Not ConFechas Then
                             vSQL += String.Format(" AND cast(Fecha_Ingreso AS DATE) BETWEEN {0} AND {1}", FormatoFechas.fFecha(pFechaDel), FormatoFechas.fFecha(pFechaAl))
@@ -5966,14 +5983,20 @@ Partial Public Class clsLnStock
                     vSQL += " ORDER BY fecha_ingreso desc,bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,bodega_ubicacion.IdTramo,indice_x,nivel,orientacion_pos,cantidad"
                 Case 3 'FEFO
                     'vSQL += " ORDER BY fecha_vence, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.idubicacion,bodega_ubicacion.idbodega),cantidad "
-                    vSQL += " ORDER BY" &
+                    If Not BeBodega.Priorizar_Cantidad_Superior Then
+                        vSQL += " ORDER BY fecha_vence, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.idubicacion,bodega_ubicacion.idbodega),cantidad "
+                    Else
+                        vSQL += " ORDER BY" &
+                        " stock.fecha_vence ASC," &
+                        " fecha_ingreso ASC, " &
+                        " bodega_ubicacion.ubicacion_picking desc, " &
                         " CASE" &
                         " WHEN stock.cantidad = @CantidadSolicitada THEN 0" &
                         " WHEN stock.cantidad > @CantidadSolicitada THEN 1" &
                         " ELSE 2 END," &
-                        " stock.fecha_vence ASC," &
                         " stock.cantidad ASC," &
                         " dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) "
+                    End If
                 Case 4 'UPSR (Ubicación prioritaria sobre rotación)
                     vSQL += " ORDER BY indice_x,bodega_tramo.es_rack,bodega_ubicacion.IdTramo,nivel,orientacion_pos,cantidad"
                 Case Else 'Default
@@ -7622,7 +7645,9 @@ Partial Public Class clsLnStock
     'Se agregó indice.
     Public Shared Function Get_Rpt_Horizonte_Critico_By_IdBodega_And_IdPropietarioBodega(ByVal pIdProducto As Integer,
                                                                                          ByVal pIdBodega As Integer,
-                                                                                         ByVal pIdPropietarioBodega As Integer, ByVal pMaxRange As Integer) As DataTable
+                                                                                         ByVal pIdPropietarioBodega As Integer,
+                                                                                         ByVal pMaxRange As Integer,
+                                                                                         ByVal pIncluirVencidos As Boolean) As DataTable
 
         Get_Rpt_Horizonte_Critico_By_IdBodega_And_IdPropietarioBodega = Nothing
 
@@ -7647,19 +7672,26 @@ Partial Public Class clsLnStock
                                             FROM VW_ProximosVencimiento "
 
                     If pIdProducto <> 0 Then
-
                         vSQL += " WHERE IdBodega=@IdBodega 
-                                AND IdPropietarioBodega=@IdPropietarioBodega 
-                                AND IdProducto= @IdProducto "
+                                        AND IdPropietarioBodega=@IdPropietarioBodega 
+                                        AND IdProducto= @IdProducto "
                     Else
                         vSQL += " WHERE IdBodega=@IdBodega 
-                                 AND IdPropietarioBodega=@IdPropietarioBodega "
+                                        AND IdPropietarioBodega=@IdPropietarioBodega "
                     End If
 
-                    If pMaxRange > 0 Then
-                        vSQL += " AND Tolerancia_dias BETWEEN 0 and @MaxRange "
-                    ElseIf pMaxRange = 0 Then '#CKFK habilitamos el mínimo en 0 para que si seleccionan 0 me muestre los vencidos
-                        vSQL += " AND Tolerancia_dias < 0 "
+                    If pIncluirVencidos Then
+                        If pMaxRange = 0 Then
+                            vSQL += " AND (Tolerancia_dias < 0  )"
+                        Else
+                            vSQL += " AND (Tolerancia_dias BETWEEN 0 and @MaxRange OR Tolerancia_dias < 0  )"
+                        End If
+                    Else
+                        If pMaxRange > 0 Then
+                            vSQL += " AND Tolerancia_dias BETWEEN 0 and @MaxRange "
+                        ElseIf pMaxRange = 0 Then '#CKFK habilitamos el mínimo en 0 para que si seleccionan 0 me muestre los vencidos
+                            vSQL += " AND Tolerancia_dias < 0 "
+                        End If
                     End If
 
                     vSQL += "GROUP BY Bodega,Propietario, Codigo , nombre, UnidadMedida, 
@@ -10903,6 +10935,21 @@ Partial Public Class clsLnStock
                     clsLnResolucion_lp_operador.Actualizar_Correlativo_Actual(clsBeRes_Operador, lConnection, lTransaction)
                 End If
 
+                '#MECR25112025: Se agrego bitacora de logs para reabastecimiento
+                Dim msjInsercion As String = "Se creó reabastecimiento con licencia: " + pLic_Plate + " , Por el usuario: " + pIdUsuario.ToString
+                clsLnLog_error_wms_reab.Agregar_Error(msjInsercion,
+                                                      pIdBodega:=pIdBodega,
+                                                      pIdStock:=pIdStock,
+                                                      pIdMovimiento:=pIdMovimiento,
+                                                      pLic_Plate_Anterior:=pLic_Plate_Ant,
+                                                      pLic_Plate:=pLic_Plate,
+                                                      pIdResolucion:=pIdResolucion,
+                                                      pIdProductoBodega:=BeProdPallet.IdProductoBodega,
+                                                      pCantidad:=BeProdPallet.Cantidad,
+                                                      pUser_agr:=pIdUsuario,
+                                                      pConection:=lConnection,
+                                                      pTransaction:=lTransaction)
+
                 Actualizar_PalletId_Por_Explosion = True
 
             Else
@@ -11668,6 +11715,12 @@ Partial Public Class clsLnStock
                     If objStockOrigen.Presentacion.EsPallet Then
                         vCantidadDisponible = Math.Round((objStockOrigen.Cantidad * objStockOrigen.Presentacion.Factor * objStockOrigen.Presentacion.CamasPorTarima * objStockOrigen.Presentacion.CajasPorCama), 6)
                     Else
+                        'If (objStockOrigen.Presentacion.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion <> 0) AndAlso (objStockOrigen.Presentacion.IdPresentacion = BeTransPeDet.IdPresentacion) Then
+                        '    'Killios, Quantity 12.5 = 144, Erik. #EJC20250909
+                        '    vCantidadDisponible = Math.Round((objStockOrigen.Cantidad * objStockOrigen.Presentacion.Factor), 6)
+                        'Else
+                        '    vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
+                        'End If
                         vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
                     End If
 
@@ -11711,9 +11764,9 @@ Partial Public Class clsLnStock
                     If (pPickingUbic.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion = 0) Then
                         Dim vFactor As Integer
                         vFactor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
-                                                                                                         pPickingUbic.IdPresentacion,
-                                                                                                         lConnection,
-                                                                                                         lTransaction)
+                                                                                                             pPickingUbic.IdPresentacion,
+                                                                                                             lConnection,
+                                                                                                             lTransaction)
                         Dim vCantidadVerificada As Double = pPickingUbic.Cantidad_Verificada * vFactor
 
                         If (vCantidadVerificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
@@ -11723,9 +11776,9 @@ Partial Public Class clsLnStock
                     ElseIf (pPickingUbic.IdPresentacion = 0) AndAlso (BeTransPeDet.IdPresentacion <> 0) Then
                         Dim vFactor As Integer
                         vFactor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
-                                                                                                         BeTransPeDet.IdPresentacion,
-                                                                                                         lConnection,
-                                                                                                         lTransaction)
+                                                                                                             BeTransPeDet.IdPresentacion,
+                                                                                                             lConnection,
+                                                                                                             lTransaction)
                         Dim vCantidadVerificada As Double = pPickingUbic.Cantidad_Verificada / vFactor
 
                         If (vCantidadVerificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
@@ -11835,9 +11888,9 @@ Partial Public Class clsLnStock
 
                         If pPickingUbic.IdPresentacion <> 0 Then
                             vFactorPres = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
-                                                                                                             pPickingUbic.IdPresentacion,
-                                                                                                             lConnection,
-                                                                                                             lTransaction)
+                                                                                                                 pPickingUbic.IdPresentacion,
+                                                                                                                 lConnection,
+                                                                                                                 lTransaction)
                             If vFactorPres = 0 Then
                                 Throw New Exception("El factor de la presentación es 0 no se puede continuar el proceso de actualización de Stock")
                             End If
@@ -13959,7 +14012,7 @@ Partial Public Class clsLnStock
 
                                     Dim vInsert As String = "update stock set fecha_vence = " & FormatoFechas.fFecha(L.Vence) & " where IdStock = " & L.IdStock
 
-                                    clsLnLog_error_wms.Agregar_Error(vInsert, lConnection, lTransaction)
+                                    clsLnLog_error_wms.Agregar_Error(vInsert)
 
                                     vRegistros += lReturnValue
 

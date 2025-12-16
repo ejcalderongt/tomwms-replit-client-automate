@@ -1,5 +1,6 @@
 Imports System.Data.SqlClient
 Imports System.Reflection
+Imports System.Runtime.InteropServices
 
 Public Class clsLnBodega
     Implements IDisposable
@@ -111,6 +112,7 @@ Public Class clsLnBodega
                 .Rango_Dias_Documentos = IIf(IsDBNull(dr.Item("Rango_Dias_Documentos")), 0, dr.Item("Rango_Dias_Documentos"))
                 .Agrupar_Sin_Lic_Veri_No_Cons = IIf(IsDBNull(dr.Item("agrupar_sin_lic_veri_no_cons")), False, dr.Item("agrupar_sin_lic_veri_no_cons"))
                 .Advertir_Mpq_Umbas = IIf(IsDBNull(dr.Item("advertir_mpq_umbas")), False, dr.Item("advertir_mpq_umbas"))
+                .Priorizar_Cantidad_Superior = IIf(IsDBNull(dr.Item("Priorizar_Cantidad_Superior")), False, dr.Item("Priorizar_Cantidad_Superior"))
 
             End With
 
@@ -230,6 +232,8 @@ Public Class clsLnBodega
             Ins.Add("ruta_cdn", "@ruta_cdn", DataType.Parametro)
             Ins.Add("rango_dias_documentos", "@rango_dias_documentos", DataType.Parametro)
             Ins.Add("agrupar_sin_lic_veri_no_cons", "@agrupar_sin_lic_veri_no_cons", DataType.Parametro)
+            Ins.Add("advertir_mpq_umbas", "@advertir_mpq_umbas", DataType.Parametro)
+            Ins.Add("priorizar_cantidad_superior", "@priorizar_cantidad_superior", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -343,6 +347,8 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@RUTA_CDN", oBeBodega.Ruta_CDN))
             cmd.Parameters.Add(New SqlParameter("@RANGO_DIAS_DOCUMENTOS", oBeBodega.Rango_Dias_Documentos))
             cmd.Parameters.Add(New SqlParameter("@AGRUPAR_SIN_LIC_VERI_NO_CONS", oBeBodega.Agrupar_Sin_Lic_Veri_No_Cons))
+            cmd.Parameters.Add(New SqlParameter("@ADVERTIR_MPQ_UMBAS", oBeBodega.Advertir_Mpq_Umbas))
+            cmd.Parameters.Add(New SqlParameter("@PRIORIZAR_CANTIDAD_SUPERIOR", oBeBodega.Priorizar_Cantidad_Superior))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -470,6 +476,8 @@ Public Class clsLnBodega
             Upd.Add("ruta_cdn", "@ruta_cdn", DataType.Parametro)
             Upd.Add("rango_dias_documentos", "@rango_dias_documentos", DataType.Parametro)
             Upd.Add("agrupar_sin_lic_veri_no_cons", "@agrupar_sin_lic_veri_no_cons", DataType.Parametro)
+            Upd.Add("advertir_mpq_umbas", "@advertir_mpq_umbas", DataType.Parametro)
+            Upd.Add("priorizar_cantidad_superior", "@priorizar_cantidad_superior", DataType.Parametro)
             Upd.Where("IdBodega = @IdBodega")
 
             Dim sp As String = Upd.SQL()
@@ -583,6 +591,8 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@RUTA_CDN", oBeBodega.Ruta_CDN))
             cmd.Parameters.Add(New SqlParameter("@RANGO_DIAS_DOCUMENTOS", oBeBodega.Rango_Dias_Documentos))
             cmd.Parameters.Add(New SqlParameter("@AGRUPAR_SIN_LIC_VERI_NO_CONS", oBeBodega.Agrupar_Sin_Lic_Veri_No_Cons))
+            cmd.Parameters.Add(New SqlParameter("@ADVERTIR_MPQ_UMBAS", oBeBodega.Advertir_Mpq_Umbas))
+            cmd.Parameters.Add(New SqlParameter("@PRIORIZAR_CANTIDAD_SUPERIOR", oBeBodega.Priorizar_Cantidad_Superior))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -1461,6 +1471,82 @@ Public Class clsLnBodega
 
             If dt.Rows.Count = 1 Then
                 GetRutaCDN_By_Idbodega = IIf(IsDBNull(dt.Rows(0).Item("RUTA_CDN")), "", dt.Rows(0).Item("RUTA_CDN"))
+            End If
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            lTransaction.Dispose()
+            lConnection.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function GetIdBodegaGeneral() As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Const sp As String = "SELECT * FROM Bodega " &
+                                 " Where(es_bodega_fiscal =0 )"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Dim pBeBodega As New clsBeBodega
+                Cargar(pBeBodega, dt.Rows(0))
+                GetIdBodegaGeneral = pBeBodega.IdBodega
+            End If
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            lTransaction.Dispose()
+            lConnection.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function GetIdBodegaFiscal() As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Const sp As String = "SELECT * FROM Bodega " &
+                                 " Where(es_bodega_fiscal =1)"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Dim pBeBodega As New clsBeBodega
+                Cargar(pBeBodega, dt.Rows(0))
+                GetIdBodegaFiscal = pBeBodega.IdBodega
             End If
 
             lTransaction.Commit()

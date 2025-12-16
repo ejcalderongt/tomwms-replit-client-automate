@@ -460,6 +460,7 @@ Public Class frmInventario
         DTInventarioCiclico.Columns.Add("IdProductoBodega", GetType(Integer))
         DTInventarioCiclico.Columns.Add("Licencia", GetType(String))
         DTInventarioCiclico.Columns.Add("Cant.Reservada", GetType(Double))
+        DTInventarioCiclico.Columns.Add("Contado", GetType(Boolean))
     End Sub
 
     '#GT17012025: tabla para el ciclico basico solo con diferencias, sin grupos ni filtros
@@ -1099,6 +1100,7 @@ Public Class frmInventario
                                 SplashScreenManager.CloseForm(False)
                                 XtraMessageBox.Show("El inventario tiene conteos, no se puede anular.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                             End If
+
                         End If
                     End If
 
@@ -3631,6 +3633,8 @@ Public Class frmInventario
 
                                 End If
 
+                            Else
+                                XtraMessageBox.Show("Debe seleccionar un registro para asignar al operador.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                             End If
 
                         Next
@@ -4938,7 +4942,8 @@ Public Class frmInventario
                                                   BeTransInvCiclico.Idinventarioenc,
                                                   BeTransInvCiclico.IdProductoBodega,
                                                   IIf(BeTransInvCiclico.lic_plate = "", "", BeTransInvCiclico.lic_plate),
-                                                  BeTransInvCiclico.Cantidad_Reservada_UMBas)
+                                                  BeTransInvCiclico.Cantidad_Reservada_UMBas,
+                                                  BeTransInvCiclico.Contado)
 
                     SplashScreenManager.Default.SetWaitFormDescription(vContador & " de: " & ListInventarioCiclico.Count)
 
@@ -6878,6 +6883,8 @@ Public Class frmInventario
             If gBeTransInvEnc.Regularizado Then
                 Close()
                 'Desactiva_Menu()
+            Else
+                Listar_Datos_De_Inventario()
             End If
 
         Catch ex As Exception
@@ -7653,6 +7660,9 @@ Public Class frmInventario
 
                     End If
 
+
+                Else
+                    XtraMessageBox.Show("Debe seleccionar un registro para asignar al operador.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 End If
 
                 cantReg += 1
@@ -8246,7 +8256,8 @@ Public Class frmInventario
                                                   Extraviado,
                                                   BeTransInvCiclico.Idinventarioenc,
                                                   BeTransInvCiclico.IdProductoBodega,
-                                                  IIf(BeTransInvCiclico.lic_plate = "", "", BeTransInvCiclico.lic_plate))
+                                                  IIf(BeTransInvCiclico.lic_plate = "", "", BeTransInvCiclico.lic_plate),
+                                                  BeTransInvCiclico.Contado)
 
                     SplashScreenManager.Default.SetWaitFormDescription(vContador & " de: " & ListInventarioCiclico.Count)
 
@@ -8702,7 +8713,8 @@ Public Class frmInventario
                                                   BeTransInvCiclico.Idinventarioenc,
                                                   BeTransInvCiclico.IdProductoBodega,
                                                   IIf(BeTransInvCiclico.lic_plate = "", "", BeTransInvCiclico.lic_plate),
-                                                  BeTransInvCiclico.Cantidad_Reservada_UMBas)
+                                                  BeTransInvCiclico.Cantidad_Reservada_UMBas,
+                                                  BeTransInvCiclico.Contado)
 
                     SplashScreenManager.Default.SetWaitFormDescription(vContador + 1 & " de: " & ListInventarioCiclico.Count)
 

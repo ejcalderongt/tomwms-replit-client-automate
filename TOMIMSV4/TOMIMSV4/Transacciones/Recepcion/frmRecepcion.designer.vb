@@ -182,6 +182,8 @@ Partial Class frmRecepcion
         Me.GrpObservacion = New DevExpress.XtraEditors.GroupControl()
         Me.txtObservacion = New System.Windows.Forms.TextBox()
         Me.GrpAsignacionTransaccion = New DevExpress.XtraEditors.GroupControl()
+        Me.cmbMuelle = New DevExpress.XtraEditors.GridLookUpEdit()
+        Me.GridView12 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.txtNombreEstado = New DevExpress.XtraEditors.TextEdit()
         Me.lnkEstadoPorDefecto = New System.Windows.Forms.LinkLabel()
         Me.txtIdEstadoDefectoRecepcion = New DevExpress.XtraEditors.TextEdit()
@@ -324,8 +326,6 @@ Partial Class frmRecepcion
         Me.ToolStripButton1 = New System.Windows.Forms.ToolStripButton()
         Me.ToolEliminarFila = New System.Windows.Forms.ToolStripButton()
         Me.tmrActualizarDatosRecepcion = New System.Windows.Forms.Timer(Me.components)
-        Me.cmbMuelle = New DevExpress.XtraEditors.GridLookUpEdit()
-        Me.GridView12 = New DevExpress.XtraGrid.Views.Grid.GridView()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
@@ -379,6 +379,8 @@ Partial Class frmRecepcion
         Me.GrpObservacion.SuspendLayout()
         CType(Me.GrpAsignacionTransaccion, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GrpAsignacionTransaccion.SuspendLayout()
+        CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView12, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtNombreEstado.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtIdEstadoDefectoRecepcion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtNombreUbicacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -469,8 +471,6 @@ Partial Class frmRecepcion
         CType(Me.DgridDetalleRec2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gvDetalleRec2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ToolStrip2.SuspendLayout()
-        CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.GridView12, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -716,7 +716,7 @@ Partial Class frmRecepcion
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.RibbonControl.Size = New System.Drawing.Size(1645, 193)
-        Me.RibbonControl.StatusBar = Me.RibbonStatusBar1
+        Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'cmdGuardar
         '
@@ -1266,6 +1266,27 @@ Partial Class frmRecepcion
         Me.GrpAsignacionTransaccion.TabIndex = 3
         Me.GrpAsignacionTransaccion.Text = "Asignación de Transacción"
         '
+        'cmbMuelle
+        '
+        Me.cmbMuelle.Location = New System.Drawing.Point(141, 38)
+        Me.cmbMuelle.Margin = New System.Windows.Forms.Padding(6)
+        Me.cmbMuelle.MenuManager = Me.RibbonControl
+        Me.cmbMuelle.Name = "cmbMuelle"
+        Me.cmbMuelle.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbMuelle.Properties.NullText = ""
+        Me.cmbMuelle.Properties.PopupView = Me.GridView12
+        Me.cmbMuelle.Size = New System.Drawing.Size(329, 22)
+        Me.cmbMuelle.TabIndex = 100
+        '
+        'GridView12
+        '
+        Me.GridView12.DetailHeight = 682
+        Me.GridView12.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
+        Me.GridView12.Name = "GridView12"
+        Me.GridView12.OptionsSelection.EnableAppearanceFocusedCell = False
+        Me.GridView12.OptionsView.ShowAutoFilterRow = True
+        Me.GridView12.OptionsView.ShowGroupPanel = False
+        '
         'txtNombreEstado
         '
         Me.txtNombreEstado.Location = New System.Drawing.Point(230, 106)
@@ -1513,7 +1534,7 @@ Partial Class frmRecepcion
         Me.GrpFactura.Location = New System.Drawing.Point(0, 0)
         Me.GrpFactura.Margin = New System.Windows.Forms.Padding(4)
         Me.GrpFactura.Name = "GrpFactura"
-        Me.GrpFactura.Size = New System.Drawing.Size(491, 325)
+        Me.GrpFactura.Size = New System.Drawing.Size(491, 327)
         Me.GrpFactura.TabIndex = 1
         Me.GrpFactura.Text = "Facturas asociadas"
         '
@@ -1601,7 +1622,7 @@ Partial Class frmRecepcion
         Me.grdListaFactura.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.grdListaFactura.ShowEditingIcon = False
         Me.grdListaFactura.ShowRowErrors = False
-        Me.grdListaFactura.Size = New System.Drawing.Size(487, 295)
+        Me.grdListaFactura.Size = New System.Drawing.Size(487, 297)
         Me.grdListaFactura.TabIndex = 0
         '
         'IdFacturaRecepcion
@@ -1732,7 +1753,7 @@ Partial Class frmRecepcion
         Me.DgridDetalleRec.RowHeadersVisible = False
         Me.DgridDetalleRec.RowHeadersWidth = 60
         Me.DgridDetalleRec.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.DgridDetalleRec.Size = New System.Drawing.Size(1639, 537)
+        Me.DgridDetalleRec.Size = New System.Drawing.Size(1639, 525)
         Me.DgridDetalleRec.TabIndex = 1
         '
         'No_Linea
@@ -2074,10 +2095,10 @@ Partial Class frmRecepcion
         Me.Panel1.Controls.Add(Me.lblCantidadR)
         Me.Panel1.Controls.Add(Me.lblCostoR)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel1.Location = New System.Drawing.Point(2, 592)
+        Me.Panel1.Location = New System.Drawing.Point(2, 580)
         Me.Panel1.Margin = New System.Windows.Forms.Padding(4)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(1639, 48)
+        Me.Panel1.Size = New System.Drawing.Size(1639, 60)
         Me.Panel1.TabIndex = 2
         '
         'lblPesoR
@@ -2421,13 +2442,13 @@ Partial Class frmRecepcion
         Me.DockPanel1.Controls.Add(Me.DockPanel1_Container)
         Me.DockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.ID = New System.Guid("3bb47686-189c-4fb8-a839-198f9210017f")
-        Me.DockPanel1.Location = New System.Drawing.Point(0, 699)
+        Me.DockPanel1.Location = New System.Drawing.Point(0, 741)
         Me.DockPanel1.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel1.Name = "DockPanel1"
         Me.DockPanel1.OriginalSize = New System.Drawing.Size(200, 99)
         Me.DockPanel1.SavedDock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.SavedIndex = 0
-        Me.DockPanel1.Size = New System.Drawing.Size(1546, 122)
+        Me.DockPanel1.Size = New System.Drawing.Size(1645, 124)
         Me.DockPanel1.Text = "Bitácora"
         Me.DockPanel1.Visibility = DevExpress.XtraBars.Docking.DockVisibility.AutoHide
         '
@@ -2441,10 +2462,10 @@ Partial Class frmRecepcion
         Me.DockPanel1_Container.Controls.Add(User_agrLabel)
         Me.DockPanel1_Container.Controls.Add(Fec_modLabel)
         Me.DockPanel1_Container.Controls.Add(Me.Fec_modDateEdit)
-        Me.DockPanel1_Container.Location = New System.Drawing.Point(5, 30)
+        Me.DockPanel1_Container.Location = New System.Drawing.Point(4, 34)
         Me.DockPanel1_Container.Margin = New System.Windows.Forms.Padding(4)
         Me.DockPanel1_Container.Name = "DockPanel1_Container"
-        Me.DockPanel1_Container.Size = New System.Drawing.Size(1536, 87)
+        Me.DockPanel1_Container.Size = New System.Drawing.Size(1637, 86)
         Me.DockPanel1_Container.TabIndex = 0
         '
         'xtrRecepcion
@@ -2553,7 +2574,7 @@ Partial Class frmRecepcion
         '
         Me.SplitContainer1.Panel2.Controls.Add(Me.GrpFactura)
         Me.SplitContainer1.Size = New System.Drawing.Size(491, 642)
-        Me.SplitContainer1.SplitterDistance = 313
+        Me.SplitContainer1.SplitterDistance = 311
         Me.SplitContainer1.TabIndex = 7
         '
         'GroupControl3
@@ -2565,7 +2586,7 @@ Partial Class frmRecepcion
         Me.GroupControl3.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl3.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl3.Name = "GroupControl3"
-        Me.GroupControl3.Size = New System.Drawing.Size(491, 313)
+        Me.GroupControl3.Size = New System.Drawing.Size(491, 311)
         Me.GroupControl3.TabIndex = 6
         Me.GroupControl3.Text = "Datos de Transporte"
         '
@@ -2800,35 +2821,15 @@ Partial Class frmRecepcion
         'ToolEliminarFila
         '
         Me.ToolEliminarFila.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ToolEliminarFila.Image = Global.TOMWMS.My.Resources.Resources.Delete_16
         Me.ToolEliminarFila.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ToolEliminarFila.Name = "ToolEliminarFila"
-        Me.ToolEliminarFila.Size = New System.Drawing.Size(98, 24)
+        Me.ToolEliminarFila.Size = New System.Drawing.Size(118, 24)
         Me.ToolEliminarFila.Text = "Eliminar Fila"
         '
         'tmrActualizarDatosRecepcion
         '
         Me.tmrActualizarDatosRecepcion.Interval = 3000
-        '
-        'cmbMuelle
-        '
-        Me.cmbMuelle.Location = New System.Drawing.Point(141, 38)
-        Me.cmbMuelle.Margin = New System.Windows.Forms.Padding(6)
-        Me.cmbMuelle.MenuManager = Me.RibbonControl
-        Me.cmbMuelle.Name = "cmbMuelle"
-        Me.cmbMuelle.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbMuelle.Properties.NullText = ""
-        Me.cmbMuelle.Properties.PopupView = Me.GridView12
-        Me.cmbMuelle.Size = New System.Drawing.Size(329, 22)
-        Me.cmbMuelle.TabIndex = 100
-        '
-        'GridView12
-        '
-        Me.GridView12.DetailHeight = 682
-        Me.GridView12.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
-        Me.GridView12.Name = "GridView12"
-        Me.GridView12.OptionsSelection.EnableAppearanceFocusedCell = False
-        Me.GridView12.OptionsView.ShowAutoFilterRow = True
-        Me.GridView12.OptionsView.ShowGroupPanel = False
         '
         'frmRecepcion
         '
@@ -2883,6 +2884,8 @@ Partial Class frmRecepcion
         CType(Me.GrpAsignacionTransaccion, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GrpAsignacionTransaccion.ResumeLayout(False)
         Me.GrpAsignacionTransaccion.PerformLayout()
+        CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView12, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtNombreEstado.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtIdEstadoDefectoRecepcion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtNombreUbicacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -2987,8 +2990,6 @@ Partial Class frmRecepcion
         CType(Me.gvDetalleRec2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ToolStrip2.ResumeLayout(False)
         Me.ToolStrip2.PerformLayout()
-        CType(Me.cmbMuelle.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.GridView12, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

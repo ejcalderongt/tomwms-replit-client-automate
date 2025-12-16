@@ -69,7 +69,7 @@ Partial Public Class repEstadoEnviosNAV
         Me.Detail.Expanded = False
         Me.Detail.HeightF = 25.0!
         Me.Detail.Name = "Detail"
-        Me.Detail.Padding = New DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100.0!)
+        Me.Detail.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(0), CInt(0), CInt(0), CInt(0), CSng(100.0!))
         Me.Detail.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft
         Me.Detail.Visible = False
         '
@@ -78,7 +78,7 @@ Partial Public Class repEstadoEnviosNAV
         Me.TopMargin.Controls.AddRange(New DevExpress.XtraReports.UI.XRControl() {Me.XrLabel18, Me.XrPageInfo1})
         Me.TopMargin.HeightF = 52.0!
         Me.TopMargin.Name = "TopMargin"
-        Me.TopMargin.Padding = New DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100.0!)
+        Me.TopMargin.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(0), CInt(0), CInt(0), CInt(0), CSng(100.0!))
         Me.TopMargin.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft
         '
         'XrLabel18
@@ -87,7 +87,7 @@ Partial Public Class repEstadoEnviosNAV
         Me.XrLabel18.Font = New DevExpress.Drawing.DXFont("Verdana", 9.0!, DevExpress.Drawing.DXFontStyle.Regular, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel18.LocationFloat = New DevExpress.Utils.PointFloat(0!, 29.0!)
         Me.XrLabel18.Name = "XrLabel18"
-        Me.XrLabel18.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel18.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel18.SizeF = New System.Drawing.SizeF(301.8749!, 23.0!)
         Me.XrLabel18.StylePriority.UseFont = False
         Me.XrLabel18.Text = "XrLabel18"
@@ -104,7 +104,7 @@ Partial Public Class repEstadoEnviosNAV
         Me.XrPageInfo1.Format = "Fecha impresión: {0}"
         Me.XrPageInfo1.LocationFloat = New DevExpress.Utils.PointFloat(350.0!, 29.0!)
         Me.XrPageInfo1.Name = "XrPageInfo1"
-        Me.XrPageInfo1.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrPageInfo1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrPageInfo1.PageInfo = DevExpress.XtraPrinting.PageInfo.DateTime
         Me.XrPageInfo1.SizeF = New System.Drawing.SizeF(305.0!, 23.0!)
         Me.XrPageInfo1.StylePriority.UseFont = False
@@ -118,7 +118,7 @@ Partial Public Class repEstadoEnviosNAV
         '
         Me.BottomMargin.HeightF = 54.0!
         Me.BottomMargin.Name = "BottomMargin"
-        Me.BottomMargin.Padding = New DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100.0!)
+        Me.BottomMargin.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(0), CInt(0), CInt(0), CInt(0), CSng(100.0!))
         Me.BottomMargin.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft
         '
         'PageHeader
@@ -133,7 +133,7 @@ Partial Public Class repEstadoEnviosNAV
         Me.XrLabel20.Font = New DevExpress.Drawing.DXFont("Verdana", 9.0!)
         Me.XrLabel20.LocationFloat = New DevExpress.Utils.PointFloat(336.4584!, 90.95834!)
         Me.XrLabel20.Name = "XrLabel20"
-        Me.XrLabel20.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel20.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel20.SizeF = New System.Drawing.SizeF(37.5!, 23.0!)
         Me.XrLabel20.StylePriority.UseFont = False
         Me.XrLabel20.StylePriority.UseTextAlignment = False
@@ -146,7 +146,7 @@ Partial Public Class repEstadoEnviosNAV
         Me.XrLabel17.Font = New DevExpress.Drawing.DXFont("Verdana", 9.0!)
         Me.XrLabel17.LocationFloat = New DevExpress.Utils.PointFloat(373.9583!, 90.95834!)
         Me.XrLabel17.Name = "XrLabel17"
-        Me.XrLabel17.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel17.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel17.SizeF = New System.Drawing.SizeF(88.54166!, 23.0!)
         Me.XrLabel17.StylePriority.UseFont = False
         Me.XrLabel17.StylePriority.UseTextAlignment = False
@@ -166,7 +166,7 @@ Partial Public Class repEstadoEnviosNAV
         Me.XrLabel16.Font = New DevExpress.Drawing.DXFont("Verdana", 9.0!)
         Me.XrLabel16.LocationFloat = New DevExpress.Utils.PointFloat(239.375!, 90.95834!)
         Me.XrLabel16.Name = "XrLabel16"
-        Me.XrLabel16.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel16.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel16.SizeF = New System.Drawing.SizeF(95.83331!, 23.0!)
         Me.XrLabel16.StylePriority.UseFont = False
         Me.XrLabel16.StylePriority.UseTextAlignment = False
@@ -185,7 +185,7 @@ Partial Public Class repEstadoEnviosNAV
         Me.XrLabel15.Font = New DevExpress.Drawing.DXFont("Verdana", 14.25!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel15.LocationFloat = New DevExpress.Utils.PointFloat(10.00001!, 43.33334!)
         Me.XrLabel15.Name = "XrLabel15"
-        Me.XrLabel15.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel15.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel15.SizeF = New System.Drawing.SizeF(640.0!, 28.62499!)
         Me.XrLabel15.StylePriority.UseFont = False
         Me.XrLabel15.StylePriority.UseTextAlignment = False
@@ -197,7 +197,7 @@ Partial Public Class repEstadoEnviosNAV
         Me.XrLabel19.Font = New DevExpress.Drawing.DXFont("Verdana", 9.0!)
         Me.XrLabel19.LocationFloat = New DevExpress.Utils.PointFloat(199.7915!, 90.95834!)
         Me.XrLabel19.Name = "XrLabel19"
-        Me.XrLabel19.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel19.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel19.SizeF = New System.Drawing.SizeF(38.5417!, 23.0!)
         Me.XrLabel19.StylePriority.UseFont = False
         Me.XrLabel19.Text = "Del"
@@ -207,7 +207,7 @@ Partial Public Class repEstadoEnviosNAV
         Me.XrLabel1.Font = New DevExpress.Drawing.DXFont("Verdana", 10.0!)
         Me.XrLabel1.LocationFloat = New DevExpress.Utils.PointFloat(10.00001!, 20.33334!)
         Me.XrLabel1.Name = "XrLabel1"
-        Me.XrLabel1.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel1.SizeF = New System.Drawing.SizeF(640.0!, 23.0!)
         Me.XrLabel1.StylePriority.UseFont = False
         Me.XrLabel1.StylePriority.UseTextAlignment = False
@@ -227,7 +227,7 @@ Partial Public Class repEstadoEnviosNAV
         Me.XrLabel3.Font = New DevExpress.Drawing.DXFont("Verdana", 9.75!, DevExpress.Drawing.DXFontStyle.Regular, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel3.LocationFloat = New DevExpress.Utils.PointFloat(350.0!, 311.1669!)
         Me.XrLabel3.Name = "XrLabel3"
-        Me.XrLabel3.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel3.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel3.SizeF = New System.Drawing.SizeF(295.0!, 23.0!)
         Me.XrLabel3.StylePriority.UseFont = False
         Me.XrLabel3.StylePriority.UseTextAlignment = False
@@ -247,7 +247,7 @@ Partial Public Class repEstadoEnviosNAV
         Me.XrLabel2.Font = New DevExpress.Drawing.DXFont("Verdana", 9.75!, DevExpress.Drawing.DXFontStyle.Regular, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel2.LocationFloat = New DevExpress.Utils.PointFloat(0!, 311.1669!)
         Me.XrLabel2.Name = "XrLabel2"
-        Me.XrLabel2.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel2.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel2.SizeF = New System.Drawing.SizeF(301.8749!, 23.0!)
         Me.XrLabel2.StylePriority.UseFont = False
         Me.XrLabel2.StylePriority.UseTextAlignment = False

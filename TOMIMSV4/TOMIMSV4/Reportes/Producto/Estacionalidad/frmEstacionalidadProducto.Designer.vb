@@ -80,6 +80,7 @@ Partial Class frmEstacionalidadProducto
         Me.cmbPropietarioBodega = New DevExpress.XtraEditors.LookUpEdit()
         Me.cmbBodega = New DevExpress.XtraEditors.LookUpEdit()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.cmdExcel = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PanelControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.PanelControl1.SuspendLayout()
@@ -99,10 +100,10 @@ Partial Class frmEstacionalidadProducto
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.RibbonControl.SearchEditItem, Me.BarButtonItem1, Me.BarButtonItem2, Me.mnuImprimir})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.BarButtonItem1, Me.BarButtonItem2, Me.mnuImprimir, Me.cmdExcel})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.RibbonControl.MaxItemId = 4
+        Me.RibbonControl.MaxItemId = 5
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -140,6 +141,7 @@ Partial Class frmEstacionalidadProducto
         '
         Me.RibbonPageGroup1.ItemLinks.Add(Me.BarButtonItem1)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuImprimir)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdExcel)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.BarButtonItem2)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
@@ -354,7 +356,7 @@ Partial Class frmEstacionalidadProducto
         Me.Label2.AutoSize = True
         Me.Label2.Location = New System.Drawing.Point(6, 114)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(78, 17)
+        Me.Label2.Size = New System.Drawing.Size(74, 16)
         Me.Label2.TabIndex = 10
         Me.Label2.Text = "Propietario:"
         '
@@ -385,9 +387,16 @@ Partial Class frmEstacionalidadProducto
         Me.Label1.AutoSize = True
         Me.Label1.Location = New System.Drawing.Point(6, 33)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(59, 17)
+        Me.Label1.Size = New System.Drawing.Size(54, 16)
         Me.Label1.TabIndex = 7
         Me.Label1.Text = "Bodega:"
+        '
+        'cmdExcel
+        '
+        Me.cmdExcel.Caption = "Exportar a Excel"
+        Me.cmdExcel.Id = 4
+        Me.cmdExcel.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem3.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdExcel.Name = "cmdExcel"
         '
         'frmEstacionalidadProducto
         '
@@ -442,4 +451,5 @@ Partial Class frmEstacionalidadProducto
     Friend WithEvents GroupBox1 As GroupBox
     Friend WithEvents lblEstatus As Label
     Friend WithEvents mnuImprimir As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents cmdExcel As DevExpress.XtraBars.BarButtonItem
 End Class

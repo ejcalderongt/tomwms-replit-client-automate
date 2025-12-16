@@ -1,5 +1,6 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
+Imports DevExpress.CodeParser
 Imports DevExpress.XtraEditors
 Imports TOMWMS.clsBeI_nav_config_enc
 
@@ -1759,6 +1760,9 @@ Partial Public Class clsLnStock_res
             '#EJC20171018_0715PM: Registrar en tabla stock_res la PC que bloqueó/reservó el stock
             BeStockRes.Host = MaquinaQueSolicita
             vCantidadCompletada = (vCantidadPendiente = 0)
+            '#GT08102025: la reserva maneja la fecha del dia del pedido no del ingreso a stock
+            BeStockRes.Fec_agr = pStockRes.Fec_agr
+            BeStockRes.Fec_mod = pStockRes.Fec_mod
 
             'pStockRes.Cantidad = vCantidadReservada
             lBeStockAReservar.Add(BeStockRes)
@@ -8889,6 +8893,11 @@ Partial Public Class clsLnStock_res
 
             For Each BeStock In lStock
 
+                If BeStock.IdStock = 753660 Or BeStock.IdStock = 762637 Or
+                                                BeStock.IdStock = 762991 Or BeStock.IdStock = 764875 Or BeStock.IdStock = 767730 Then
+                    Debug.Write("Hola")
+                End If
+
                 If lIdStocksReservados.Contains(BeStock.IdStock) Then
 
                     BePresentacionStock = BeStock.Presentacion
@@ -8909,7 +8918,7 @@ Partial Public Class clsLnStock_res
                                 BeStock.Pallet_Completo = False
 
                                 If BeStock.Cantidad > 0 Then
-                                    If vCantidadReservadaRef > BeStock.Cantidad Then
+                                    If vCantidadReservadaRef >= BeStock.Cantidad Then
                                         BeStock.Cantidad = 0
                                     Else
                                         BeStock.Cantidad -= vCantidadReservadaRef
@@ -8991,6 +9000,11 @@ Partial Public Class clsLnStock_res
                                             '#EJC202211081355: Solo en teoría, luego hay que validar contra la presentación si ya el pallet se desarmó previamente.
                                             BeStock.Pallet_Completo = (vCantidadEnStockEnPresentacionClavaud = vCantidadProductoPorTarima)
 
+                                            If BeStock.IdStock = 753660 Or BeStock.IdStock = 762637 Or
+                                                BeStock.IdStock = 762991 Or BeStock.IdStock = 764875 Or BeStock.IdStock = 767730 Then
+                                                Debug.Write("Hola")
+                                            End If
+
                                             Debug.WriteLine("El pallet está " & IIf(BeStock.Pallet_Completo, "in", "") & "completo para el el IdStock: " & BeStock.IdStock & " - " & BeStock.Pallet_Completo)
 
                                         End If
@@ -9006,7 +9020,7 @@ Partial Public Class clsLnStock_res
                     End If
 
                 Else
-
+                    BeStock.Pallet_Completo = True
                 End If
 
             Next
@@ -9521,7 +9535,6 @@ Partial Public Class clsLnStock_res
                     FechaMinimaVenceALM = lBeStockExistenteZonasALM.Min(Function(x) x.Fecha_vence)
                 End If
             End If
-
 
             ' Zona Picking
             Dim lBeStockExistenteZonaPicking = clsLnStock.lStock(pStockResSolicitud,
@@ -18264,9 +18277,14 @@ Partial Public Class clsLnStock_res
             Dim vIdTipoPedido As Integer = 0
             Dim pEs_Devolucion As Boolean = False
             Dim vPresReserva As Integer = 0
-            Dim vEsReempaque As Boolean = False
+            Dim vBeCliente As New clsBeCliente
 
 #End Region
+
+            If pStockResSolicitud.IdProductoBodega = 616 Then
+                Debug.Print("Aqui " & DiasVencimiento)
+            End If
+
             vIdTipoPedido = clsLnTrans_pe_enc.Get_IdTipoPedido_By_IdPedidoEnc(pStockResSolicitud.IdPedido,
                                                                               lConnection,
                                                                               ltransaction)
@@ -18402,11 +18420,17 @@ EXPLOSIONAR_PRODUCTO:
 
                     If lBeStockExistente.Count = 0 Then
 
-                        '#EJC20250714: K, reempaque.
-                        'If productoEstado.EsReempaque then
-                        If pStockResSolicitud.IdProductoEstado = 8 AndAlso pBeConfigEnc.Interface_SAP Then
+                        '#EJC20250714: Funcionalidad para Killios por funcionalidad del estado reempaque.
+                        Dim vEstadoProducto As New clsBeProducto_estado
+                        Dim vReservaUMBas As Boolean = False
+
+                        If pStockResSolicitud.IdProductoEstado <> 0 Then
+                            vEstadoProducto = clsLnProducto_estado.GetSingle(pStockResSolicitud.IdProductoEstado, lConnection, ltransaction)
+                            vReservaUMBas = vEstadoProducto.Reservar_En_UmBas
+                        End If
+
+                        If vReservaUMBas AndAlso pBeConfigEnc.Interface_SAP Then
                             vBusquedaEnUmBas = True
-                            vEsReempaque = True
                             pStockResSolicitud.IdPresentacion = 0
                         ElseIf pStockResSolicitud.IdPresentacion = 0 Then
                             If BePresentacionDefecto IsNot Nothing Then
@@ -18476,7 +18500,7 @@ EXPLOSIONAR_PRODUCTO:
                                                                                     BeProducto.Codigo,
                                                                                     vCantidadSolicitadaPedido,
                                                                                     vCantidadStock)
-                                    clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_MI3 = false", lConnection, ltransaction)
+                                    clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_MI3 = false")
                                     'Exit Function
                                 End If
                             End If
@@ -18666,7 +18690,7 @@ EXPLOSIONAR_PRODUCTO:
 
                         End If
 
-                        If vBusquedaEnUmBas AndAlso lBeStockExistente.Count = 0 Then
+                        If (vBusquedaEnUmBas AndAlso lBeStockExistente.Count = 0) Then
 
                             If pBeConfigEnc.Rechazar_pedido_incompleto = tRechazarPedidoIncompleto.Si Then
                                 Throw New Exception(String.Format("Error_202212140140D: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
@@ -19093,6 +19117,11 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
 
                         vFechaMinima = FechaMinimaVenceStock
 
+                        '#CKFK20250919 Agregué esto para que solo tome de la zona de picking lo no reservado
+                        If Not lBeStockExistenteZonaPicking Is Nothing Then
+                            lBeStockExistenteZonaPicking = lBeStockExistenteZonaPicking.FindAll(Function(x) x.Cantidad > 0)
+                        End If
+
                         If (vFechaMinimaVenceZonaALM.Date > vFechaMinimaVenceZonaPicking.Date) AndAlso
                             Not (vFechaMinimaVenceZonaPicking.Date = vFechaDefecto) Then
 
@@ -19122,15 +19151,91 @@ ANALIZAR_FECHAS_DE_VENCIMIENTO:
                                 vFechaMinimaVenceZonaALM.Date > vFechaDefecto) Then
                                 If Not lBeStockExistenteZonasNoPicking Is Nothing Then
                                     If lBeStockExistenteZonasNoPicking.Count > 0 Then
-                                        lBeStockExistente = lBeStockExistenteZonasNoPicking
+                                        If (vRestoInventarioEnUmBas _
+                                                AndAlso pStockResBusquedaParaExplosion IsNot Nothing _
+                                                AndAlso pStockResBusquedaParaExplosion.IdPresentacion <> 0) Then
+                                            '#CKFK20250909 Agregué este else porque si no no encuentra salida
+                                            If pBeConfigEnc.Rechazar_pedido_incompleto = tRechazarPedidoIncompleto.Si Then
+                                                Throw New Exception(String.Format("Error_202212140140D: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
+                                                                               BeProducto.Codigo,
+                                                                               pStockResSolicitud.Cantidad,
+                                                                               0))
+                                            Else
+
+                                                If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                    vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                    clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                    Return False
+                                                End If
+
+                                            End If
+                                        Else
+                                            lBeStockExistente = lBeStockExistenteZonasNoPicking
+                                        End If
                                     End If
                                 End If
                             ElseIf vFechaMinimaVenceZonaPicking > vFechaDefecto Then
+
                                 If Not lBeStockExistenteZonaPicking Is Nothing Then
                                     If lBeStockExistenteZonaPicking.Count > 0 Then
                                         lBeStockExistente = lBeStockExistenteZonaPicking
+                                    Else
+                                        '#CKFK20250919 Agregué este else porque si no no encuentra salida
+                                        If Not lBeStockExistenteZonasNoPicking Is Nothing Then
+                                            If lBeStockExistenteZonasNoPicking.Count > 0 Then
+                                                If (vRestoInventarioEnUmBas _
+                                                AndAlso pStockResBusquedaParaExplosion IsNot Nothing _
+                                                AndAlso pStockResBusquedaParaExplosion.IdPresentacion <> 0) Then
+                                                    If pBeConfigEnc.Rechazar_pedido_incompleto = tRechazarPedidoIncompleto.Si Then
+                                                        Throw New Exception(String.Format("Error_202212140140D: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
+                                                                               BeProducto.Codigo,
+                                                                               pStockResSolicitud.Cantidad,
+                                                                               0))
+                                                    Else
+
+                                                        If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                            vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                            Return False
+                                                        End If
+
+                                                    End If
+                                                Else
+                                                    lBeStockExistente = lBeStockExistenteZonasNoPicking
+                                                End If
+                                            End If
+                                        End If
+
                                     End If
                                 End If
+
+                            Else
+                                '#CKFK20250919 Agregué este else porque si no no encuentra salida
+                                If Not lBeStockExistenteZonasNoPicking Is Nothing Then
+                                    If lBeStockExistenteZonasNoPicking.Count > 0 Then
+                                        If (vRestoInventarioEnUmBas _
+                                                AndAlso pStockResBusquedaParaExplosion IsNot Nothing _
+                                                AndAlso pStockResBusquedaParaExplosion.IdPresentacion <> 0) Then
+                                            If pBeConfigEnc.Rechazar_pedido_incompleto = tRechazarPedidoIncompleto.Si Then
+                                                Throw New Exception(String.Format("Error_202212140140D: {0} Código: {1} Sol: {2} Disp: {3}. " & vbNewLine, clsDalEx.ErrorS0002,
+                                                                               BeProducto.Codigo,
+                                                                               pStockResSolicitud.Cantidad,
+                                                                               0))
+                                            Else
+
+                                                If Not vCantidadCompletada AndAlso pStockResSolicitud.IdPresentacion = 0 Then
+                                                    vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp. zona no picking: " & vStockDispZonaPicking
+                                                    clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+                                                    Return False
+                                                End If
+
+                                            End If
+                                        Else
+                                            lBeStockExistente = lBeStockExistenteZonasNoPicking
+                                        End If
+                                    End If
+                                End If
+
                             End If
 
                         End If
@@ -19327,6 +19432,8 @@ INICIAR_EN_1:
                         If Not ListaEstadosDeProceso.Contains(100) Then
 
                             If pBeConfigEnc.Conservar_Zona_Picking_Clavaud Then
+
+                                Restar_Stock_Reservado(lBeStockConPalletsCompletosClavaud, pBeConfigEnc, lConnection, ltransaction)
 
                                 For Each vStockOrigen As clsBeStock In lBeStockConPalletsCompletosClavaud
 
@@ -19976,6 +20083,8 @@ INICIAR_EN_2:
 
                                     End If
 
+                                    Restar_Stock_Reservado(lBeStockConPalletsInCompletosClavaud, pBeConfigEnc, lConnection, ltransaction)
+
                                     For Each vStockOrigen As clsBeStock In lBeStockConPalletsInCompletosClavaud
 
                                         BeStockDestino = New clsBeStock()
@@ -19984,7 +20093,7 @@ INICIAR_EN_2:
 
                                         vCantidadDispStock = Math.Round(vStockOrigen.Cantidad, 6)
 
-                                        If (vStockOrigen.Fecha_vence > FechaMinimaVenceStock) AndAlso Not ListaEstadosDeProceso.Contains(101) AndAlso ListaEstadosDeProceso.Contains(100) Then
+                                        If (vStockOrigen.Fecha_vence >= FechaMinimaVenceStock) AndAlso Not ListaEstadosDeProceso.Contains(101) AndAlso ListaEstadosDeProceso.Contains(100) Then
                                             ListaEstadosDeProceso.Add(101)
                                             GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
                                         ElseIf (vStockOrigen.Fecha_vence > FechaMinimaVenceStock) Then
@@ -20340,6 +20449,19 @@ INICIAR_EN_2:
 
                                                         vCantidadCompletada = (vCantidadPendiente = 0)
 
+                                                        '#CKFK20250912_Get_Fecha_Vence_Minima_Stock_Reserva_MI3
+                                                        FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
+                                                                                                     DiasVencimiento,
+                                                                                                     pBeConfigEnc,
+                                                                                                     lConnection,
+                                                                                                     ltransaction,
+                                                                                                     BeProducto,
+                                                                                                     pTarea_Reabasto,
+                                                                                                     vFechaMinimaVenceZonaPicking,
+                                                                                                     vFechaMinimaVenceZonaALM,
+                                                                                                     lBeStockExistente,
+                                                                                                     BePresentacionDefecto)
+
                                                         If vCantidadCompletada Then Exit For
 
                                                     End If
@@ -20445,6 +20567,19 @@ INICIAR_EN_2:
                                                                        ltransaction)
 
                                                 vCantidadDecimalTarimasCompletasClavaud -= 1
+
+                                                '#CKFK20250912_Get_Fecha_Vence_Minima_Stock_Reserva_MI3
+                                                FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
+                                                                                                     DiasVencimiento,
+                                                                                                     pBeConfigEnc,
+                                                                                                     lConnection,
+                                                                                                     ltransaction,
+                                                                                                     BeProducto,
+                                                                                                     pTarea_Reabasto,
+                                                                                                     vFechaMinimaVenceZonaPicking,
+                                                                                                     vFechaMinimaVenceZonaALM,
+                                                                                                     lBeStockExistente,
+                                                                                                     BePresentacionDefecto)
 
                                                 If vCantidadCompletada Then Exit For
 
@@ -20629,6 +20764,12 @@ INICIAR_EN_2:
 
                                                 clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva(BeStockRes, vNombreCasoReservaInternoWMS, vMensajeReserva)
 
+                                                If BeStockRes.IdProductoBodega = 125 Then
+                                                    Debug.Print("" & vFechaMinimaVenceZonaALM.Date)
+                                                    Debug.Print("" & FechaMinimaVenceStock.Date)
+                                                    Debug.Print("" & BeStockRes.Fecha_vence.Date)
+                                                End If
+
                                                 If Not pBeTrasladoDet Is Nothing Then
 
                                                     If BeStockRes.IdPresentacion = 0 Then
@@ -20671,6 +20812,19 @@ INICIAR_EN_2:
                                                 End If
 
                                                 vCantidadDecimalTarimasCompletasClavaud -= 1
+
+                                                '#CKFK20250912_Get_Fecha_Vence_Minima_Stock_Reserva_MI3
+                                                FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
+                                                                                                     DiasVencimiento,
+                                                                                                     pBeConfigEnc,
+                                                                                                     lConnection,
+                                                                                                     ltransaction,
+                                                                                                     BeProducto,
+                                                                                                     pTarea_Reabasto,
+                                                                                                     vFechaMinimaVenceZonaPicking,
+                                                                                                     vFechaMinimaVenceZonaALM,
+                                                                                                     lBeStockExistente,
+                                                                                                     BePresentacionDefecto)
 
                                                 If vCantidadCompletada Then
                                                     Exit For
@@ -20733,6 +20887,10 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
 
                     If Not vCantidadCompletada Then
 
+                        If BeProducto.Codigo = "00190454" Then
+                            Debug.Print("Aqui")
+                        End If
+
                         FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
                                                                                          DiasVencimiento,
                                                                                          pBeConfigEnc,
@@ -20745,7 +20903,8 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                                                          lBeStockExistente,
                                                                                          BePresentacionDefecto)
 
-                        If Not ExcepcionFechaVenceEsInferiorEnZonaPicking Then
+                        '#CKFK20250910 Agregué esto AndAlso lBeStockZonaPicking.Count > 0 porque en este caso este stock deberia tener inventario
+                        If Not ExcepcionFechaVenceEsInferiorEnZonaPicking AndAlso lBeStockZonaPicking.Count > 0 Then
 
                             If pStockResSolicitud.IdPresentacion = 0 Then
                                 '#EJC: Verificar que en ALM, no existan unidades antes de llevar de PICK.
@@ -20830,7 +20989,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                 End If
 
                                 If vCantidadDispStock < 0 Then
-                                    Throw New Exception("ERROR_202302061300G: La cantidad disponible en stock, reflejó un resultado negativo y no hay fundamento técncio para que eso ocurra (aún), reportar a dsearrollo.")
+                                    Throw New Exception("ERROR_202302061300G: La cantidad disponible en stock, reflejó un resultado negativo y no hay fundamento técnico para que eso ocurra (aún), reportar a dsearrollo.")
                                 End If
 
                                 If vCantidadDispStock > 0 Then
@@ -20898,156 +21057,96 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                               vCantidadEnteraSolicitadaPedidoEnPres,
                                                               vCantidadDecimalSolicitadaPedidoEnPres)
 
-                                            If vCantidadDecimalSolicitadaPedidoEnPres = 0 Then
 
-                                                vCantidadAReservarPorIdStock = vCantidadPendiente
-                                                vCantidadPendiente -= vCantidadPendiente
-                                                vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
-                                                vCantidadPendienteEnPres -= Math.Round(vCantidadPendiente * BePresentacionDefecto.Factor, 6)
+                                            If BeUbicacionStock.Ubicacion_picking Then
 
-                                                BeStockRes.IdPresentacion = vStockOrigen.Presentacion.IdPresentacion
+                                                Split_Decimal(vCantidadPendienteEnPres,
+                                                              vCantidadEnteraSolicitadaPedidoEnPres,
+                                                              vCantidadDecimalSolicitadaPedidoEnPres)
 
-                                            Else
+                                                If vCantidadDecimalSolicitadaPedidoEnPres = 0 OrElse vCantidadEnteraSolicitadaPedidoEnPres > 0 Then
 
-                                                BeStockOriginal = clsLnStock.Get_Single_By_IdStock(vStockOrigen.IdStock, lConnection, ltransaction)
-                                                BeStockDestino.Cantidad = (1 * BePresentacionDefecto.Factor)
-                                                BeStockDestino.Fec_agr = Now
-                                                BeStockDestino.IdPresentacion = 0
-                                                BeStockDestino.Presentacion.IdPresentacion = 0
-                                                BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
-                                                BeStockRes.IdStock = BeStockDestino.IdStock
-                                                BeStockDestino.No_bulto = 1989
+                                                    If vCantidadDecimalSolicitadaPedidoEnPres = 0 Then
 
-                                                CantidadStockDestino = BeStockDestino.Cantidad
+                                                        vCantidadAReservarPorIdStock = vCantidadPendiente
+                                                        vCantidadPendiente -= vCantidadPendiente
+                                                        vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+                                                        vCantidadPendienteEnPres -= Math.Round(vCantidadPendiente * BePresentacionDefecto.Factor, 6)
 
-                                                vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
-                                                clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
+                                                        BeStockRes.IdPresentacion = vStockOrigen.Presentacion.IdPresentacion
 
-                                                clsLnStock.Insertar(BeStockDestino,
+                                                    Else
+
+                                                        vCantidadAReservarPorIdStock = Math.Round(vCantidadEnteraSolicitadaPedidoEnPres * BePresentacionDefecto.Factor, 6)
+                                                        vCantidadPendiente -= vCantidadAReservarPorIdStock
+                                                        vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+                                                        vCantidadPendienteEnPres -= vCantidadEnteraSolicitadaPedidoEnPres
+
+                                                        BeStockRes.IdPresentacion = vStockOrigen.Presentacion.IdPresentacion
+
+                                                    End If
+
+
+                                                Else
+
+                                                    BeStockOriginal = clsLnStock.Get_Single_By_IdStock(vStockOrigen.IdStock, lConnection, ltransaction)
+
+                                                    Dim cantidadBase As Decimal
+
+                                                    If vCantidadDecimalSolicitadaPedidoEnPres > 0 Then
+                                                        ' Verifica si es un número entero
+                                                        If vCantidadDecimalSolicitadaPedidoEnPres = Math.Floor(vCantidadDecimalSolicitadaPedidoEnPres) Then
+                                                            cantidadBase = vCantidadDecimalSolicitadaPedidoEnPres
+                                                        Else
+                                                            cantidadBase = 1
+                                                        End If
+                                                    Else
+                                                        cantidadBase = 1
+                                                    End If
+
+                                                    BeStockDestino.Cantidad = cantidadBase * BePresentacionDefecto.Factor
+                                                    BeStockDestino.Fec_agr = Now
+                                                    BeStockDestino.IdPresentacion = 0
+                                                    BeStockDestino.Presentacion.IdPresentacion = 0
+                                                    BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                                    BeStockRes.IdStock = BeStockDestino.IdStock
+                                                    BeStockDestino.No_bulto = 1989
+
+                                                    CantidadStockDestino = BeStockDestino.Cantidad
+
+                                                    vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
+                                                    clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
+
+                                                    clsLnStock.Insertar(BeStockDestino,
                                                                         lConnection,
                                                                         ltransaction)
 
-                                                If vCantidadPendiente > BeStockDestino.Cantidad Then
-                                                    vCantidadAReservarPorIdStock = vCantidadPendiente - BeStockDestino.Cantidad
-                                                Else
-                                                    vCantidadAReservarPorIdStock = vCantidadPendiente
-                                                End If
-
-                                                '#EJC20220510: Quitar al stock en cajas, las unidades.
-                                                vStockOrigen.Cantidad = BeStockOriginal.Cantidad - (1 * BePresentacionDefecto.Factor)
-
-                                                If vStockOrigen.Cantidad > 0 Then
-                                                    clsLnStock.Actualizar_Cantidad(vStockOrigen, lConnection, ltransaction)
-                                                Else
-                                                    clsLnStock.Eliminar_By_IdStock(vStockOrigen.IdStock, lConnection, ltransaction)
-                                                End If
-
-                                                vCantidadPendiente -= vCantidadAReservarPorIdStock
-                                                vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
-                                                vCantidadPendienteEnPres -= Math.Round(vCantidadPendiente * BePresentacionDefecto.Factor, 6)
-
-                                                BeStockRes.IdUbicacion = vStockOrigen.IdUbicacion
-                                                BeStockRes.IdProductoEstado = vStockOrigen.ProductoEstado.IdEstado
-                                                BeStockRes.IdPresentacion = IIf(pStockResSolicitud.IdPresentacion = 0, 0, vStockOrigen.Presentacion.IdPresentacion)
-                                                BeStockRes.IdUnidadMedida = vStockOrigen.IdUnidadMedida
-                                                BeStockRes.Lote = vStockOrigen.Lote
-                                                BeStockRes.Lic_plate = vStockOrigen.Lic_plate
-                                                BeStockRes.Serial = IIf(No_Linea <> 0, No_Linea, vStockOrigen.Serial)
-                                                BeStockRes.Peso = vStockOrigen.Peso
-                                                BeStockRes.Estado = "UNCOMMITED"
-                                                BeStockRes.Fecha_ingreso = vStockOrigen.Fecha_Ingreso
-                                                BeStockRes.Fecha_vence = vStockOrigen.Fecha_vence
-                                                BeStockRes.Uds_lic_plate = 20220525 'Marcar el stock reservado para indicar que se tomó a partir de una caja explosionada.
-                                                BeStockRes.Ubicacion_ant = vStockOrigen.IdUbicacion_anterior
-                                                BeStockRes.No_bulto = vStockOrigen.No_bulto
-                                                BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
-                                                BeStockRes.IdPicking = 0
-                                                BeStockRes.IdPedido = pStockResSolicitud.IdPedido
-                                                BeStockRes.IdPedidoDet = pStockResSolicitud.IdPedidoDet
-                                                BeStockRes.IdDespacho = 0
-                                                BeStockRes.añada = vStockOrigen.Añada
-                                                BeStockRes.Fecha_manufactura = vStockOrigen.Fecha_Manufactura
-                                                BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
-                                                BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
-                                                BeStockRes.Host = MaquinaQueSolicita
-                                                BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
-
-                                                CantidadStockDestino = BeStockRes.Cantidad
-
-                                                vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
-                                                clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
-
-                                                Insertar(BeStockRes,
-                                                             lConnection,
-                                                             ltransaction)
-
-                                                vNombreCasoReservaInternoWMS = "CASO_#9_EJC202310090957"
-                                                vMensajeReserva = vNombreCasoReservaInternoWMS + " Fecha Mínima: " & FechaMinimaVenceStock.Date &
-                                                                            " DiasVencimiento: " & " FechaMinimaVenceZonaPicking: " & vFechaMinimaVenceZonaPicking.Date &
-                                                                            " vFechaMinimaVenceZonaALM: " & vFechaMinimaVenceZonaALM.Date &
-                                                                            " FechaReservada: " & BeStockRes.Fecha_vence.Date &
-                                                                            " Lote: " & BeStockRes.Lote &
-                                                                            " Ubicación: " & BeStockRes.IdUbicacion
-
-                                                clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva(BeStockRes, vNombreCasoReservaInternoWMS, vMensajeReserva)
-
-                                                If Not pBeTrasladoDet Is Nothing Then
-
-                                                    If BeStockRes.IdPresentacion = 0 Then
-                                                        pBeTrasladoDet.Quantity_Reserved_WMS += BeStockRes.Cantidad
+                                                    If vCantidadPendiente > BeStockDestino.Cantidad Then
+                                                        vCantidadAReservarPorIdStock = BeStockDestino.Cantidad
                                                     Else
-                                                        If BePedidoDet.IdPresentacion = 0 Then
-                                                            pBeTrasladoDet.Quantity_Reserved_WMS += BeStockRes.Cantidad
-                                                        Else
-                                                            pBeTrasladoDet.Quantity_Reserved_WMS += Math.Round(BeStockRes.Cantidad / BePresentacionDefecto.Factor, 6)
-                                                        End If
+                                                        vCantidadAReservarPorIdStock = vCantidadPendiente
                                                     End If
 
-                                                    clsLnI_nav_ped_traslado_det.Actualizar_Quantity_Reserved_WMS(pBeTrasladoDet,
-                                                                                                                     BeProducto,
-                                                                                                                     lConnection,
-                                                                                                                     ltransaction)
-                                                End If
+                                                    vStockOrigen.Cantidad = BeStockOriginal.Cantidad - BeStockDestino.Cantidad
 
+                                                    If vStockOrigen.Cantidad > 0 Then
+                                                        clsLnStock.Actualizar_Cantidad(vStockOrigen, lConnection, ltransaction)
+                                                    Else
+                                                        clsLnStock.Eliminar_By_IdStock(vStockOrigen.IdStock, lConnection, ltransaction)
+                                                    End If
 
-                                                Restar_Stock_Reservado(lBeStockZonaPicking,
-                                                                       pBeConfigEnc,
-                                                                       lConnection,
-                                                                       ltransaction)
-
-                                                lBeStockAReservar.Add(BeStockRes)
-
-                                                lBeStockZonaPicking = lBeStockZonaPicking.Where(Function(x) x.Cantidad > 0).ToList()
-
-                                                FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
-                                                                                                                 DiasVencimiento,
-                                                                                                                 pBeConfigEnc,
-                                                                                                                 lConnection,
-                                                                                                                 ltransaction,
-                                                                                                                 BeProducto,
-                                                                                                                 pTarea_Reabasto,
-                                                                                                                 vFechaMinimaVenceZonaPicking,
-                                                                                                                 vFechaMinimaVenceZonaALM,
-                                                                                                                 lBeStockExistente,
-                                                                                                                 BePresentacionDefecto)
-
-                                                If vCantidadEnteraSolicitadaPedidoEnPres > 0 Then
-
-                                                    'Reservar el remanente en cajas completas.
-                                                    vCantidadAReservarPorIdStock = Math.Round(vCantidadEnteraSolicitadaPedidoEnPres * BePresentacionDefecto.Factor, 6)
                                                     vCantidadPendiente -= vCantidadAReservarPorIdStock
                                                     vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
 
-                                                    BeStockRes = New clsBeStock_res
-                                                    BeStockRes.IdTransaccion = pStockResSolicitud.IdTransaccion
-                                                    BeStockRes.Indicador = IIf(pStockResSolicitud.Indicador = "", "PED", pStockResSolicitud.Indicador)
-                                                    BeStockRes.IdBodega = vStockOrigen.IdBodega
-                                                    BeStockRes.IdStock = vStockOrigen.IdStock
-                                                    BeStockRes.IdPropietarioBodega = vStockOrigen.IdPropietarioBodega
-                                                    BeStockRes.IdProductoBodega = vStockOrigen.IdProductoBodega
+                                                    If vBusquedaEnUmBas Then
+                                                        vCantidadPendienteEnPres = Math.Round(vCantidadPendiente / BePresentacionDefecto.Factor, 6)
+                                                    Else
+                                                        vCantidadPendienteEnPres -= Math.Round(vCantidadPendiente * BePresentacionDefecto.Factor, 6)
+                                                    End If
+
                                                     BeStockRes.IdUbicacion = vStockOrigen.IdUbicacion
                                                     BeStockRes.IdProductoEstado = vStockOrigen.ProductoEstado.IdEstado
-                                                    BeStockRes.IdPresentacion = BePresentacionDefecto.IdPresentacion
+                                                    BeStockRes.IdPresentacion = IIf(pStockResSolicitud.IdPresentacion = 0, 0, vStockOrigen.Presentacion.IdPresentacion)
                                                     BeStockRes.IdUnidadMedida = vStockOrigen.IdUnidadMedida
                                                     BeStockRes.Lote = vStockOrigen.Lote
                                                     BeStockRes.Lic_plate = vStockOrigen.Lic_plate
@@ -21056,7 +21155,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                     BeStockRes.Estado = "UNCOMMITED"
                                                     BeStockRes.Fecha_ingreso = vStockOrigen.Fecha_Ingreso
                                                     BeStockRes.Fecha_vence = vStockOrigen.Fecha_vence
-                                                    BeStockRes.Uds_lic_plate = 20220526 'Marcar el stock reservado para indicar que se tomó a partir de cajas de una solicitud en unidades.
+                                                    BeStockRes.Uds_lic_plate = 20220525 'Marcar el stock reservado para indicar que se tomó a partir de una caja explosionada.
                                                     BeStockRes.Ubicacion_ant = vStockOrigen.IdUbicacion_anterior
                                                     BeStockRes.No_bulto = vStockOrigen.No_bulto
                                                     BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
@@ -21080,7 +21179,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                              lConnection,
                                                              ltransaction)
 
-                                                    vNombreCasoReservaInternoWMS = "CASO_#10_EJC202310090957"
+                                                    vNombreCasoReservaInternoWMS = "CASO_#21_EJC202310090957"
                                                     vMensajeReserva = vNombreCasoReservaInternoWMS + " Fecha Mínima: " & FechaMinimaVenceStock.Date &
                                                                             " DiasVencimiento: " & " FechaMinimaVenceZonaPicking: " & vFechaMinimaVenceZonaPicking.Date &
                                                                             " vFechaMinimaVenceZonaALM: " & vFechaMinimaVenceZonaALM.Date &
@@ -21108,36 +21207,509 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
                                                                                                                      ltransaction)
                                                     End If
 
-                                                    Restar_Stock_Reservado(lBeStockZonaPicking,
+
+                                                    Restar_Stock_Reservado(lBeStockExistente,
                                                                            pBeConfigEnc,
                                                                            lConnection,
                                                                            ltransaction)
 
                                                     lBeStockAReservar.Add(BeStockRes)
 
-                                                    lBeStockZonaPicking = lBeStockZonaPicking.Where(Function(x) x.Cantidad > 0).ToList()
 
-                                                    FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
-                                                                                                                     DiasVencimiento,
-                                                                                                                     pBeConfigEnc,
-                                                                                                                     lConnection,
-                                                                                                                     ltransaction,
-                                                                                                                     BeProducto,
-                                                                                                                     pTarea_Reabasto,
-                                                                                                                     vFechaMinimaVenceZonaPicking,
-                                                                                                                     vFechaMinimaVenceZonaALM,
-                                                                                                                     lBeStockExistente,
-                                                                                                                     BePresentacionDefecto)
+                                                    lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
+
+                                                    If lBeStockExistente.Count > 0 Then
+                                                        '#EJC20231019_Get_Fecha_Vence_Minima_Stock_Reserva_MI3
+                                                        FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
+                                                                                                                         DiasVencimiento,
+                                                                                                                         pBeConfigEnc,
+                                                                                                                         lConnection,
+                                                                                                                         ltransaction,
+                                                                                                                         BeProducto,
+                                                                                                                         pTarea_Reabasto,
+                                                                                                                         vFechaMinimaVenceZonaPicking,
+                                                                                                                         vFechaMinimaVenceZonaALM,
+                                                                                                                         lBeStockExistente,
+                                                                                                                         BePresentacionDefecto)
+                                                    End If
+
+                                                    If vCantidadEnteraSolicitadaPedidoEnPres > 0 Then
+
+                                                        'If vCantidadPendiente < BePresentacionDefecto.Factor Then
+                                                        '    vCantidadAReservarPorIdStock = vCantidadPendiente
+                                                        'Else
+                                                        '    'Reservar el remanente en cajas completas.
+                                                        '    vCantidadAReservarPorIdStock = Math.Round(vCantidadEnteraSolicitadaPedidoEnPres * BePresentacionDefecto.Factor, 6)
+                                                        'End If
+
+                                                        ''vCantidadPendiente = Math.Round(vCantidadPendiente * BePresentacionDefecto.Factor, 6)
+                                                        'vCantidadPendiente -= vCantidadAReservarPorIdStock
+                                                        'vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+
+                                                        BeStockRes = New clsBeStock_res
+                                                        BeStockRes.IdTransaccion = pStockResSolicitud.IdTransaccion
+                                                        BeStockRes.Indicador = IIf(pStockResSolicitud.Indicador = "", "PED", pStockResSolicitud.Indicador)
+                                                        BeStockRes.IdBodega = vStockOrigen.IdBodega
+                                                        BeStockRes.IdStock = vStockOrigen.IdStock
+                                                        BeStockRes.IdPropietarioBodega = vStockOrigen.IdPropietarioBodega
+                                                        BeStockRes.IdProductoBodega = vStockOrigen.IdProductoBodega
+                                                        BeStockRes.IdUbicacion = vStockOrigen.IdUbicacion
+                                                        BeStockRes.IdProductoEstado = vStockOrigen.ProductoEstado.IdEstado
+
+                                                        If vBusquedaEnUmBas AndAlso (vCantidadAReservarPorIdStock <= BePresentacionDefecto.Factor) Then
+                                                            BeStockRes.IdPresentacion = 0
+                                                            If (vCantidadAReservarPorIdStock < vStockOrigen.Cantidad) AndAlso (vStockOrigen.Cantidad <= BePresentacionDefecto.Factor) Then
+                                                                vStockOrigen.IdPresentacion = 0
+                                                                vStockOrigen.User_mod = "RES_MI3"
+                                                                clsLnStock.Actualizar_Presentacion(vStockOrigen, lConnection, ltransaction)
+                                                            End If
+                                                        Else
+                                                            BeStockRes.IdPresentacion = BePresentacionDefecto.IdPresentacion
+                                                        End If
+
+#Region "Explosión por múltiplo"
+
+                                                        Dim vEsMultiplo As Boolean = True
+                                                        Dim cantidadMultiplo As Double = 0
+
+                                                        If Not vSolicitudEsEnUMBas Then
+                                                            If Not vOrdernarListaStockSinPresentacionPrimero Then
+                                                                If Not vConvirtioCantidadSolicitadaEnUmBas Then
+                                                                    If Not BePresentacionDefecto Is Nothing Then
+                                                                        vCantidadPendiente = Math.Round(vCantidadPendiente * BePresentacionDefecto.Factor, 6)
+                                                                    End If
+                                                                    vConvirtioCantidadSolicitadaEnUmBas = True
+                                                                End If
+                                                            End If
+                                                        Else
+                                                            BeStockRes.IdPresentacion = 0
+                                                        End If
+
+                                                        If Not BePresentacionDefecto Is Nothing Then
+                                                            If BePresentacionDefecto.Factor <> 0 Then
+                                                                vEsMultiplo = (vCantidadPendiente Mod BePresentacionDefecto.Factor = 0)
+                                                                cantidadMultiplo = (vCantidadPendiente \ BePresentacionDefecto.Factor) * BePresentacionDefecto.Factor
+                                                            End If
+                                                        End If
+
+                                                        If Not vEsMultiplo Then
+                                                            pStockResSolicitud.IdPresentacion = 0
+                                                        End If
+
+                                                        If vStockOrigen.IdStock = 6800 Then
+                                                            Debug.Write("espera picking")
+                                                        End If
+
+                                                        If vCantidadPendiente = vCantidadDispStock Then
+
+                                                            vCantidadAReservarPorIdStock = vCantidadDispStock
+                                                            vCantidadPendiente -= vCantidadDispStock
+                                                            vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+
+                                                        ElseIf vCantidadPendiente < vCantidadDispStock Then
+
+                                                            If pStockResSolicitud.IdPresentacion <> 0 Then
+                                                                vCantidadAReservarPorIdStock = IIf(vEsMultiplo, vCantidadPendiente, cantidadMultiplo)
+                                                            Else
+                                                                vCantidadAReservarPorIdStock = vCantidadPendiente
+                                                            End If
+                                                            vCantidadPendiente -= vCantidadAReservarPorIdStock
+                                                            vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+
+                                                        ElseIf vCantidadPendiente > vCantidadDispStock Then
+
+                                                            If pStockResSolicitud.IdPresentacion <> 0 Then
+                                                                If Not BePresentacionDefecto Is Nothing Then
+                                                                    If BePresentacionDefecto.Factor <> 0 Then
+                                                                        vEsMultiplo = (vCantidadDispStock Mod BePresentacionDefecto.Factor = 0)
+                                                                        cantidadMultiplo = (vCantidadDispStock \ BePresentacionDefecto.Factor) * BePresentacionDefecto.Factor
+                                                                        vCantidadDispStock = cantidadMultiplo
+                                                                    End If
+                                                                End If
+                                                            End If
+
+
+                                                            vCantidadAReservarPorIdStock = vCantidadDispStock
+                                                            vCantidadPendiente -= vCantidadAReservarPorIdStock
+                                                            vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+
+                                                        End If
+
+#End Region
+
+                                                        BeStockRes.IdUnidadMedida = vStockOrigen.IdUnidadMedida
+                                                        BeStockRes.Lote = vStockOrigen.Lote
+                                                        BeStockRes.Lic_plate = vStockOrigen.Lic_plate
+                                                        BeStockRes.Serial = IIf(No_Linea <> 0, No_Linea, vStockOrigen.Serial)
+                                                        BeStockRes.Peso = vStockOrigen.Peso
+                                                        BeStockRes.Estado = "UNCOMMITED"
+                                                        BeStockRes.Fecha_ingreso = vStockOrigen.Fecha_Ingreso
+                                                        BeStockRes.Fecha_vence = vStockOrigen.Fecha_vence
+                                                        BeStockRes.Uds_lic_plate = 20220526 'Marcar el stock reservado para indicar que se tomó a partir de cajas de una solicitud en unidades.
+                                                        BeStockRes.Ubicacion_ant = vStockOrigen.IdUbicacion_anterior
+                                                        BeStockRes.No_bulto = vStockOrigen.No_bulto
+                                                        BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
+                                                        BeStockRes.IdPicking = 0
+                                                        BeStockRes.IdPedido = pStockResSolicitud.IdPedido
+                                                        BeStockRes.IdPedidoDet = pStockResSolicitud.IdPedidoDet
+                                                        BeStockRes.IdDespacho = 0
+                                                        BeStockRes.añada = vStockOrigen.Añada
+                                                        BeStockRes.Fecha_manufactura = vStockOrigen.Fecha_Manufactura
+                                                        BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
+                                                        BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
+                                                        BeStockRes.Host = MaquinaQueSolicita
+                                                        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
+                                                        CantidadStockDestino = BeStockRes.Cantidad
+
+                                                        vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
+                                                        clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
+
+                                                        Insertar(BeStockRes,
+                                                                 lConnection,
+                                                                 ltransaction)
+
+                                                        vNombreCasoReservaInternoWMS = "CASO_#22_EJC202310090957"
+                                                        vMensajeReserva = vNombreCasoReservaInternoWMS + " Fecha Mínima: " & FechaMinimaVenceStock.Date &
+                                                                            " DiasVencimiento: " & " FechaMinimaVenceZonaPicking: " & vFechaMinimaVenceZonaPicking.Date &
+                                                                            " vFechaMinimaVenceZonaALM: " & vFechaMinimaVenceZonaALM.Date &
+                                                                            " FechaReservada: " & BeStockRes.Fecha_vence.Date &
+                                                                            " Lote: " & BeStockRes.Lote &
+                                                                            " Ubicación: " & BeStockRes.IdUbicacion
+
+                                                        clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva(BeStockRes, vNombreCasoReservaInternoWMS, vMensajeReserva)
+
+                                                        If Not pBeTrasladoDet Is Nothing Then
+
+                                                            If BeStockRes.IdPresentacion = 0 Then
+                                                                pBeTrasladoDet.Quantity_Reserved_WMS += BeStockRes.Cantidad
+                                                            Else
+                                                                If BePedidoDet.IdPresentacion = 0 Then
+                                                                    pBeTrasladoDet.Quantity_Reserved_WMS += BeStockRes.Cantidad
+                                                                Else
+                                                                    pBeTrasladoDet.Quantity_Reserved_WMS += Math.Round(BeStockRes.Cantidad / BePresentacionDefecto.Factor, 6)
+                                                                End If
+                                                            End If
+
+                                                            clsLnI_nav_ped_traslado_det.Actualizar_Quantity_Reserved_WMS(pBeTrasladoDet,
+                                                                                                                         BeProducto,
+                                                                                                                         lConnection,
+                                                                                                                         ltransaction)
+                                                        End If
+
+
+                                                        Restar_Stock_Reservado(lBeStockExistente,
+                                                                               pBeConfigEnc,
+                                                                               lConnection,
+                                                                               ltransaction)
+
+                                                        lBeStockAReservar.Add(BeStockRes)
+
+                                                        lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
+
+                                                        FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
+                                                                                                                         DiasVencimiento,
+                                                                                                                         pBeConfigEnc,
+                                                                                                                         lConnection,
+                                                                                                                         ltransaction,
+                                                                                                                         BeProducto,
+                                                                                                                         pTarea_Reabasto,
+                                                                                                                         vFechaMinimaVenceZonaPicking,
+                                                                                                                         vFechaMinimaVenceZonaALM,
+                                                                                                                         lBeStockExistente,
+                                                                                                                         BePresentacionDefecto)
+
+                                                    End If
+
+                                                    vCantidadCompletada = (vCantidadPendiente = 0)
+
+                                                    If vCantidadCompletada Then
+                                                        Exit For
+                                                    End If
 
                                                 End If
 
-                                                vCantidadCompletada = (vCantidadPendiente = 0)
+                                            Else
 
-                                                If vCantidadCompletada Then
-                                                    Exit For
+                                                Dim BeUnidadMedida As New clsBeUnidad_medida
+                                                BeUnidadMedida = clsLnUnidad_medida.GetSingle(pStockResSolicitud.IdUnidadMedida, lConnection, ltransaction)
+
+                                                If pBeConfigEnc.Rechazar_pedido_incompleto = tRechazarPedidoIncompleto.Si Then
+
+                                                    vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo &
+                                                        " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente &
+                                                        " UM: " & BeUnidadMedida.Nombre & " Disp. zona no picking: " & vStockDispZonaPicking
+
+                                                    '#EJC202401291004: Dice Carolina que aquí viene o va dependiendo la perspectiva del observador, que 
+                                                    pBeTrasladoDet.Process_Result = vMensajeNoExplosionEnZonasNoPicking
+                                                    pBeTrasladoDet.Qty_to_Receive = vCantidadPendiente
+                                                    clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
+                                                                                                          lConnection,
+                                                                                                          ltransaction)
+
+                                                    clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
+
+                                                    Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
+
+                                                Else
+
+                                                    vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202401291007: No se puede explosionar producto en zonas de ALM para el producto: " & BeProducto.Codigo &
+                                                        " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente &
+                                                        " UM: " & BeUnidadMedida.Nombre & " Disp. zona no picking: " & vStockDispZonaPicking
+
+                                                    '#EJC202401291004: Mejorar el mensaje cuando lleguen a este punto mis amados maestros.
+                                                    pBeTrasladoDet.Process_Result = vMensajeNoExplosionEnZonasNoPicking
+                                                    pBeTrasladoDet.Qty_to_Receive = vCantidadPendiente
+                                                    clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
+                                                                                                          lConnection,
+                                                                                                          ltransaction)
+
+                                                    '#CKFK20240115 Erik dice que es continue for
+                                                    Continue For
                                                 End If
 
                                             End If
+
+                                            'If vCantidadDecimalSolicitadaPedidoEnPres = 0 Then
+
+                                            '    vCantidadAReservarPorIdStock = vCantidadPendiente
+                                            '    vCantidadPendiente -= vCantidadPendiente
+                                            '    vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+                                            '    vCantidadPendienteEnPres -= Math.Round(vCantidadPendiente * BePresentacionDefecto.Factor, 6)
+
+                                            '    BeStockRes.IdPresentacion = vStockOrigen.Presentacion.IdPresentacion
+
+                                            'Else
+
+                                            '    BeStockOriginal = clsLnStock.Get_Single_By_IdStock(vStockOrigen.IdStock, lConnection, ltransaction)
+                                            '    BeStockDestino.Cantidad = (1 * BePresentacionDefecto.Factor)
+                                            '    BeStockDestino.Fec_agr = Now
+                                            '    BeStockDestino.IdPresentacion = 0
+                                            '    BeStockDestino.Presentacion.IdPresentacion = 0
+                                            '    BeStockDestino.IdStock = clsLnStock.MaxID(lConnection, ltransaction) + 1
+                                            '    BeStockRes.IdStock = BeStockDestino.IdStock
+                                            '    BeStockDestino.No_bulto = 1989
+
+                                            '    CantidadStockDestino = BeStockDestino.Cantidad
+
+                                            '    vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
+                                            '    clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
+
+                                            '    clsLnStock.Insertar(BeStockDestino,
+                                            '                            lConnection,
+                                            '                            ltransaction)
+
+                                            '    If vCantidadPendiente > BeStockDestino.Cantidad Then
+                                            '        vCantidadAReservarPorIdStock = vCantidadPendiente - BeStockDestino.Cantidad
+                                            '    Else
+                                            '        vCantidadAReservarPorIdStock = vCantidadPendiente
+                                            '    End If
+
+                                            '    '#EJC20220510: Quitar al stock en cajas, las unidades.
+                                            '    vStockOrigen.Cantidad = BeStockOriginal.Cantidad - (1 * BePresentacionDefecto.Factor)
+
+                                            '    If vStockOrigen.Cantidad > 0 Then
+                                            '        clsLnStock.Actualizar_Cantidad(vStockOrigen, lConnection, ltransaction)
+                                            '    Else
+                                            '        clsLnStock.Eliminar_By_IdStock(vStockOrigen.IdStock, lConnection, ltransaction)
+                                            '    End If
+
+                                            '    vCantidadPendiente -= vCantidadAReservarPorIdStock
+                                            '    vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+                                            '    vCantidadPendienteEnPres -= Math.Round(vCantidadPendiente * BePresentacionDefecto.Factor, 6)
+
+                                            '    BeStockRes.IdUbicacion = vStockOrigen.IdUbicacion
+                                            '    BeStockRes.IdProductoEstado = vStockOrigen.ProductoEstado.IdEstado
+                                            '    BeStockRes.IdPresentacion = IIf(pStockResSolicitud.IdPresentacion = 0, 0, vStockOrigen.Presentacion.IdPresentacion)
+                                            '    BeStockRes.IdUnidadMedida = vStockOrigen.IdUnidadMedida
+                                            '    BeStockRes.Lote = vStockOrigen.Lote
+                                            '    BeStockRes.Lic_plate = vStockOrigen.Lic_plate
+                                            '    BeStockRes.Serial = IIf(No_Linea <> 0, No_Linea, vStockOrigen.Serial)
+                                            '    BeStockRes.Peso = vStockOrigen.Peso
+                                            '    BeStockRes.Estado = "UNCOMMITED"
+                                            '    BeStockRes.Fecha_ingreso = vStockOrigen.Fecha_Ingreso
+                                            '    BeStockRes.Fecha_vence = vStockOrigen.Fecha_vence
+                                            '    BeStockRes.Uds_lic_plate = 20220525 'Marcar el stock reservado para indicar que se tomó a partir de una caja explosionada.
+                                            '    BeStockRes.Ubicacion_ant = vStockOrigen.IdUbicacion_anterior
+                                            '    BeStockRes.No_bulto = vStockOrigen.No_bulto
+                                            '    BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
+                                            '    BeStockRes.IdPicking = 0
+                                            '    BeStockRes.IdPedido = pStockResSolicitud.IdPedido
+                                            '    BeStockRes.IdPedidoDet = pStockResSolicitud.IdPedidoDet
+                                            '    BeStockRes.IdDespacho = 0
+                                            '    BeStockRes.añada = vStockOrigen.Añada
+                                            '    BeStockRes.Fecha_manufactura = vStockOrigen.Fecha_Manufactura
+                                            '    BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
+                                            '    BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
+                                            '    BeStockRes.Host = MaquinaQueSolicita
+                                            '    BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
+                                            '    CantidadStockDestino = BeStockRes.Cantidad
+
+                                            '    vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
+                                            '    clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
+
+                                            '    Insertar(BeStockRes,
+                                            '                 lConnection,
+                                            '                 ltransaction)
+
+                                            '    vNombreCasoReservaInternoWMS = "CASO_#9_EJC202310090957"
+                                            '    vMensajeReserva = vNombreCasoReservaInternoWMS + " Fecha Mínima: " & FechaMinimaVenceStock.Date &
+                                            '                                " DiasVencimiento: " & " FechaMinimaVenceZonaPicking: " & vFechaMinimaVenceZonaPicking.Date &
+                                            '                                " vFechaMinimaVenceZonaALM: " & vFechaMinimaVenceZonaALM.Date &
+                                            '                                " FechaReservada: " & BeStockRes.Fecha_vence.Date &
+                                            '                                " Lote: " & BeStockRes.Lote &
+                                            '                                " Ubicación: " & BeStockRes.IdUbicacion
+
+                                            '    clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva(BeStockRes, vNombreCasoReservaInternoWMS, vMensajeReserva)
+
+                                            '    If Not pBeTrasladoDet Is Nothing Then
+
+                                            '        If BeStockRes.IdPresentacion = 0 Then
+                                            '            pBeTrasladoDet.Quantity_Reserved_WMS += BeStockRes.Cantidad
+                                            '        Else
+                                            '            If BePedidoDet.IdPresentacion = 0 Then
+                                            '                pBeTrasladoDet.Quantity_Reserved_WMS += BeStockRes.Cantidad
+                                            '            Else
+                                            '                pBeTrasladoDet.Quantity_Reserved_WMS += Math.Round(BeStockRes.Cantidad / BePresentacionDefecto.Factor, 6)
+                                            '            End If
+                                            '        End If
+
+                                            '        clsLnI_nav_ped_traslado_det.Actualizar_Quantity_Reserved_WMS(pBeTrasladoDet,
+                                            '                                                                         BeProducto,
+                                            '                                                                         lConnection,
+                                            '                                                                         ltransaction)
+                                            '    End If
+
+
+                                            '    Restar_Stock_Reservado(lBeStockZonaPicking,
+                                            '                           pBeConfigEnc,
+                                            '                           lConnection,
+                                            '                           ltransaction)
+
+                                            '    lBeStockAReservar.Add(BeStockRes)
+
+                                            '    lBeStockZonaPicking = lBeStockZonaPicking.Where(Function(x) x.Cantidad > 0).ToList()
+
+                                            '    FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
+                                            '                                                                     DiasVencimiento,
+                                            '                                                                     pBeConfigEnc,
+                                            '                                                                     lConnection,
+                                            '                                                                     ltransaction,
+                                            '                                                                     BeProducto,
+                                            '                                                                     pTarea_Reabasto,
+                                            '                                                                     vFechaMinimaVenceZonaPicking,
+                                            '                                                                     vFechaMinimaVenceZonaALM,
+                                            '                                                                     lBeStockExistente,
+                                            '                                                                     BePresentacionDefecto)
+
+                                            '    If vCantidadEnteraSolicitadaPedidoEnPres > 0 Then
+
+                                            '        'Reservar el remanente en cajas completas.
+                                            '        vCantidadAReservarPorIdStock = Math.Round(vCantidadEnteraSolicitadaPedidoEnPres * BePresentacionDefecto.Factor, 6)
+                                            '        vCantidadPendiente -= vCantidadAReservarPorIdStock
+                                            '        vCantidadPendiente = Math.Round(vCantidadPendiente, 6)
+
+                                            '        BeStockRes = New clsBeStock_res
+                                            '        BeStockRes.IdTransaccion = pStockResSolicitud.IdTransaccion
+                                            '        BeStockRes.Indicador = IIf(pStockResSolicitud.Indicador = "", "PED", pStockResSolicitud.Indicador)
+                                            '        BeStockRes.IdBodega = vStockOrigen.IdBodega
+                                            '        BeStockRes.IdStock = vStockOrigen.IdStock
+                                            '        BeStockRes.IdPropietarioBodega = vStockOrigen.IdPropietarioBodega
+                                            '        BeStockRes.IdProductoBodega = vStockOrigen.IdProductoBodega
+                                            '        BeStockRes.IdUbicacion = vStockOrigen.IdUbicacion
+                                            '        BeStockRes.IdProductoEstado = vStockOrigen.ProductoEstado.IdEstado
+                                            '        BeStockRes.IdPresentacion = BePresentacionDefecto.IdPresentacion
+                                            '        BeStockRes.IdUnidadMedida = vStockOrigen.IdUnidadMedida
+                                            '        BeStockRes.Lote = vStockOrigen.Lote
+                                            '        BeStockRes.Lic_plate = vStockOrigen.Lic_plate
+                                            '        BeStockRes.Serial = IIf(No_Linea <> 0, No_Linea, vStockOrigen.Serial)
+                                            '        BeStockRes.Peso = vStockOrigen.Peso
+                                            '        BeStockRes.Estado = "UNCOMMITED"
+                                            '        BeStockRes.Fecha_ingreso = vStockOrigen.Fecha_Ingreso
+                                            '        BeStockRes.Fecha_vence = vStockOrigen.Fecha_vence
+                                            '        BeStockRes.Uds_lic_plate = 20220526 'Marcar el stock reservado para indicar que se tomó a partir de cajas de una solicitud en unidades.
+                                            '        BeStockRes.Ubicacion_ant = vStockOrigen.IdUbicacion_anterior
+                                            '        BeStockRes.No_bulto = vStockOrigen.No_bulto
+                                            '        BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
+                                            '        BeStockRes.IdPicking = 0
+                                            '        BeStockRes.IdPedido = pStockResSolicitud.IdPedido
+                                            '        BeStockRes.IdPedidoDet = pStockResSolicitud.IdPedidoDet
+                                            '        BeStockRes.IdDespacho = 0
+                                            '        BeStockRes.añada = vStockOrigen.Añada
+                                            '        BeStockRes.Fecha_manufactura = vStockOrigen.Fecha_Manufactura
+                                            '        BeStockRes.Cantidad = Math.Round(vCantidadAReservarPorIdStock, 6)
+                                            '        BeStockRes.IdRecepcion = vStockOrigen.IdRecepcionEnc
+                                            '        BeStockRes.Host = MaquinaQueSolicita
+                                            '        BeStockRes.IdStockRes = MaxID(lConnection, ltransaction) + 1
+
+                                            '        CantidadStockDestino = BeStockRes.Cantidad
+
+                                            '        vPermitirDecimales = clsLnBodega.Get_Permitir_Decimales(BeStockRes.IdBodega, lConnection, ltransaction)
+                                            '        clsPublic.Abs(CantidadStockDestino - Fix(CantidadStockDestino), vPermitirDecimales)
+
+                                            '        Insertar(BeStockRes,
+                                            '                 lConnection,
+                                            '                 ltransaction)
+
+                                            '        vNombreCasoReservaInternoWMS = "CASO_#10_EJC202310090957"
+                                            '        vMensajeReserva = vNombreCasoReservaInternoWMS + " Fecha Mínima: " & FechaMinimaVenceStock.Date &
+                                            '                                " DiasVencimiento: " & " FechaMinimaVenceZonaPicking: " & vFechaMinimaVenceZonaPicking.Date &
+                                            '                                " vFechaMinimaVenceZonaALM: " & vFechaMinimaVenceZonaALM.Date &
+                                            '                                " FechaReservada: " & BeStockRes.Fecha_vence.Date &
+                                            '                                " Lote: " & BeStockRes.Lote &
+                                            '                                " Ubicación: " & BeStockRes.IdUbicacion
+
+                                            '        clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva(BeStockRes, vNombreCasoReservaInternoWMS, vMensajeReserva)
+
+                                            '        If Not pBeTrasladoDet Is Nothing Then
+
+                                            '            If BeStockRes.IdPresentacion = 0 Then
+                                            '                pBeTrasladoDet.Quantity_Reserved_WMS += BeStockRes.Cantidad
+                                            '            Else
+                                            '                If BePedidoDet.IdPresentacion = 0 Then
+                                            '                    pBeTrasladoDet.Quantity_Reserved_WMS += BeStockRes.Cantidad
+                                            '                Else
+                                            '                    pBeTrasladoDet.Quantity_Reserved_WMS += Math.Round(BeStockRes.Cantidad / BePresentacionDefecto.Factor, 6)
+                                            '                End If
+                                            '            End If
+
+                                            '            clsLnI_nav_ped_traslado_det.Actualizar_Quantity_Reserved_WMS(pBeTrasladoDet,
+                                            '                                                                         BeProducto,
+                                            '                                                                         lConnection,
+                                            '                                                                         ltransaction)
+                                            '        End If
+
+                                            '        Restar_Stock_Reservado(lBeStockZonaPicking,
+                                            '                               pBeConfigEnc,
+                                            '                               lConnection,
+                                            '                               ltransaction)
+
+                                            '        lBeStockAReservar.Add(BeStockRes)
+
+                                            '        lBeStockZonaPicking = lBeStockZonaPicking.Where(Function(x) x.Cantidad > 0).ToList()
+
+                                            '        FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
+                                            '                                                                         DiasVencimiento,
+                                            '                                                                         pBeConfigEnc,
+                                            '                                                                         lConnection,
+                                            '                                                                         ltransaction,
+                                            '                                                                         BeProducto,
+                                            '                                                                         pTarea_Reabasto,
+                                            '                                                                         vFechaMinimaVenceZonaPicking,
+                                            '                                                                         vFechaMinimaVenceZonaALM,
+                                            '                                                                         lBeStockExistente,
+                                            '                                                                         BePresentacionDefecto)
+
+                                            '    End If
+
+                                            '    vCantidadCompletada = (vCantidadPendiente = 0)
+
+                                            '    If vCantidadCompletada Then
+                                            '        Exit For
+                                            '    End If
+
+                                            'End If
 
                                         ElseIf vCantidadPendiente > vCantidadDispStock Then
 
@@ -21477,6 +22049,8 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_PICKING:
 #Region "Reserverar stock de zona NO Picking"
 EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING1:
                             If Not vCantidadCompletada Then
+
+                                Restar_Stock_Reservado(lBeStockZonasNoPicking, pBeConfigEnc, lConnection, ltransaction)
 
                                 For Each vStockOrigen As clsBeStock In lBeStockZonasNoPicking
 
@@ -22268,6 +22842,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                     ListaEstadosDeProceso.Add(104)
                                     GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
                                 Else
+                                    '#CKFK20250909 Analizar si es correcto que se vaya
                                     Exit For
                                 End If
                             Else
@@ -22396,7 +22971,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                         Else
                                                             '#CKFK20240116 Agregué este mensaje para ver lo que pasa
                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking, lConnection, ltransaction)
+                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
                                                         End If
 
                                                     End If
@@ -22748,7 +23323,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                     vMensajeNoExplosionEnZonasNoPicking = "#ERROR_20231101: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp: " & vStockDispZonaPicking
                                                 End If
 
-                                                clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking, lConnection, ltransaction)
+                                                clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
                                                 Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
 
@@ -23260,6 +23835,11 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                 End If
                             End If
 
+                            Restar_Stock_Reservado(lBeStockExistente,
+                                                   pBeConfigEnc,
+                                                   lConnection,
+                                                   ltransaction)
+
                             For Each vStockOrigen As clsBeStock In lBeStockExistente.FindAll(Function(x) Math.Round(x.Cantidad, 6) > 0)
 
                                 BeStockDestino = New clsBeStock()
@@ -23286,13 +23866,25 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                     '    '#CKFK20240320 Puse este exit for en comentario porque no aplica ese exit for
                                     '    GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
                                     'End If
-                                    '
+
+
+                                    '#EJC20250923 Se agregó validacion al proceso 105
+                                    If ListaEstadosDeProceso.Contains(105) Then
+                                        If (FechaMinimaVenceStock < vStockOrigen.Fecha_vence) AndAlso Not (FechaMinimaVenceStock = New Date(1900, 1, 1)) Then
+                                            If Not ListaEstadosDeProceso.Contains(106) Then
+                                                ListaEstadosDeProceso.Add(106)
+                                                GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
+                                            End If
+                                        End If
+                                    End If
+
                                     '#EJC20241104 Se agregó validacion del proceso 105
                                     If Not ListaEstadosDeProceso.Contains(105) Then
                                         If Not (FechaMinimaVenceStock = New Date(1900, 1, 1) AndAlso pBeConfigEnc.Interface_SAP) Then
                                             GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
                                         End If
                                     End If
+
                                 Else
                                     If Not ListaEstadosDeProceso.Contains(105) Then
                                         ListaEstadosDeProceso.Add(105)
@@ -24252,6 +24844,9 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                         BeStockRes.Estado = "UNCOMMITED"
                                         BeStockRes.Fecha_ingreso = vStockOrigen.Fecha_Ingreso
                                         BeStockRes.Fecha_vence = vStockOrigen.Fecha_vence
+                                        If vStockOrigen.IdProductoBodega = 102 Then
+                                            Debug.Print("Aqui")
+                                        End If
                                         BeStockRes.Uds_lic_plate = vStockOrigen.Uds_lic_plate
                                         BeStockRes.Ubicacion_ant = vStockOrigen.IdUbicacion_anterior
                                         BeStockRes.No_bulto = vStockOrigen.No_bulto
@@ -24289,6 +24884,12 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
                                         clsLnTrans_pe_det_log_reserva.Agregar_Log_Reserva(BeStockRes, vNombreCasoReservaInternoWMS, vMensajeReserva)
 
+                                        If BeStockRes.IdProductoBodega = 125 Then
+                                            Debug.Print("" & vFechaMinimaVenceZonaALM.Date)
+                                            Debug.Print("" & FechaMinimaVenceStock.Date)
+                                            Debug.Print("" & BeStockRes.Fecha_vence.Date)
+                                        End If
+
                                         If Not pBeTrasladoDet Is Nothing Then
 
                                             If BeStockRes.IdPresentacion = 0 Then
@@ -24318,7 +24919,6 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                         If vCantidadCompletada AndAlso (vCantidadPendienteEnPres < 1) Then vCantidadDecimalUMBas = 0
 
                                         lBeStockAReservar.Add(BeStockRes)
-
 
                                         lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
 
@@ -24889,7 +25489,8 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
 
                                         vRestoInventarioEnUmBas = True
 
-                                        lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0).ToList()
+                                        '#CKFK20250910 Agregué  AndAlso x.IdPresentacion = 0
+                                        lBeStockExistente = lBeStockExistente.Where(Function(x) x.Cantidad > 0 AndAlso x.IdPresentacion = 0).ToList()
 
                                         '#EJC20231019_Get_Fecha_Vence_Minima_Stock_Reserva_MI3
                                         FechaMinimaVenceStock = Get_Fecha_Vence_Minima_Stock_Reserva_MI3(pStockResSolicitud,
@@ -25403,6 +26004,8 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                     Dim vCantDisRef As Double = 0
 
                                     If Inserta_Stock_Reservado(lBeStockAReservar, lConnection, ltransaction) Then
+
+                                        '#CKFK20250924 Agregar al log
 
                                         If Not Reserva_Stock_From_MI3(BeStockResUMBas,
                                                                           DiasVencimiento,
@@ -26262,7 +26865,7 @@ EXPLOSIONAR_PRODUCTO:
                                                                                     BeProducto.Codigo,
                                                                                     vCantidadSolicitadaPedido,
                                                                                     vCantidadStock)
-                                    clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_SAP = false", lConnection, ltransaction)
+                                    clsLnLog_error_wms.Agregar_Error(vMensajeError20230306 & "C se realizó exit function con Reserva_Stock_From_SAP = false")
                                     'Exit Function
                                 End If
                             End If
@@ -30072,7 +30675,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                         Else
                                                             '#CKFK20240116 Agregué este mensaje para ver lo que pasa
                                                             vMensajeNoExplosionEnZonasNoPicking = "#ERROR_202310312158: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " UM: " & BeUnidadMedida.Nombre & " Disp. zona no picking: " & vStockDispZonaPicking
-                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking, lConnection, ltransaction)
+                                                            clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
                                                         End If
 
                                                     End If
@@ -30422,7 +31025,7 @@ EJC_202308081248_RESERVAR_DESDE_ZONA_NO_PICKING:
                                                     vMensajeNoExplosionEnZonasNoPicking = "#ERROR_20231101: No se puede explosionar producto en zonas de no picking para el producto: " & BeProducto.Codigo & " Linea: " & No_Linea & " Cantidad: " & vCantidadPendiente & " Disp: " & vStockDispZonaPicking
                                                 End If
 
-                                                clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking, lConnection, ltransaction)
+                                                clsLnLog_error_wms.Agregar_Error(vMensajeNoExplosionEnZonasNoPicking)
 
                                                 Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
 
@@ -33302,7 +33905,9 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
                                          0 peso_recibido,   
                                          0 peso_verificado,   
                                          0 peso_despachado,  
-                                         stock_res.cantidad cantidad_solicitada,   
+                                         case when stock_res.IdPresentacion =0 then 
+                                                   stock_res.cantidad 
+										 else stock_res.cantidad/iif(pp.factor = 0,1,pp.factor) end cantidad_solicitada, 
                                          0 cantidad_recibida,   
                                          0 cantidad_verificada,   
                                          0 encontrado,  
@@ -33335,7 +33940,9 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
 										 producto.nombre NombreProducto  
                                   FROM stock_res INNER JOIN    
                                        producto_bodega ON stock_res.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN    
-                                       producto ON producto_bodega.IdProducto = producto.IdProducto    
+                                       producto ON producto_bodega.IdProducto = producto.IdProducto LEFT JOIN  
+                                       producto_presentacion pp ON stock_res.IdPresentacion =  pp.IdPresentacion AND 
+                                                                   pp.IdProducto = producto.IdProducto    
                                   WHERE IdPedido = @IdPedidoEnc "
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))

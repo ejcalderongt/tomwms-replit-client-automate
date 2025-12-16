@@ -853,10 +853,15 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                             lConectionInterface,
                                                                             lTransInterface)
 
-                        '#EJC20171107_REF13_0506AM: El MaxId del IdPedidoEnc se genera dentro del insert                            
-                        pBePedidoEnc.Fecha_Pedido = BeINavPedTrasladoEnc.Posting_Date
-                        Dim currentTime As TimeSpan = Now.TimeOfDay
-                        pBePedidoEnc.Fecha_Pedido = pBePedidoEnc.Fecha_Pedido.Add(currentTime)
+                        '#EJC20171107_REF13_0506AM: El MaxId del IdPedidoEnc se genera dentro del insert
+                        Dim fechaBase As Date = BeINavPedTrasladoEnc.Posting_Date
+                        Dim fechaFinal As Date = New DateTime(fechaBase.Year, fechaBase.Month, fechaBase.Day,
+                                                              Now.Hour, Now.Minute, Now.Second)
+
+                        pBePedidoEnc.Fecha_Pedido = fechaFinal
+                        'pBePedidoEnc.Fecha_Pedido = BeINavPedTrasladoEnc.Posting_Date
+                        'Dim currentTime As TimeSpan = Now.TimeOfDay
+                        'pBePedidoEnc.Fecha_Pedido = pBePedidoEnc.Fecha_Pedido.Add(currentTime)
                         pBePedidoEnc.Referencia = BeINavPedTrasladoEnc.No
                         pBePedidoEnc.IdBodega = IdBodegaOrigen
                         pBePedidoEnc.Cliente = New clsBeCliente
@@ -1002,7 +1007,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                             If vMostrar Then clsPublic.Actualizar_Progreso(lblprg, "Procesando producto: " & PDet.Item_No)
 
-                            If vCodigoProducto = "600699001540" Then
+                            If vCodigoProducto = "WMS66" Then
                                 Debug.Print("7411000360002")
                             End If
 
@@ -1180,7 +1185,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                                        lTransInterface)
 
                                         Dim BeMensajeErrorWMS As New clsBeLog_error_wms
-                                        BeMensajeErrorWMS.IdError = clsLnLog_error_wms.MaxID(lConectionInterface, lTransInterface) + 1
+                                        BeMensajeErrorWMS.IdError = clsLnLog_error_wms.MaxID() + 1
                                         BeMensajeErrorWMS.IdEmpresa = BeEmpresa.IdEmpresa
                                         BeMensajeErrorWMS.IdBodega = IdBodegaOrigen
                                         BeMensajeErrorWMS.Fecha = Now
@@ -1191,7 +1196,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                         BeMensajeErrorWMS.Cantidad = PDet.Quantity
                                         BeMensajeErrorWMS.Referencia_Documento = pBePedidoEnc.Referencia
                                         BeMensajeErrorWMS.Item_No = PDet.Item_No
-                                        clsLnLog_error_wms.Insertar(BeMensajeErrorWMS, lConectionInterface, lTransInterface)
+                                        clsLnLog_error_wms.Insertar(BeMensajeErrorWMS)
 
                                         clsPublic.Actualizar_Progreso(lblprg, vMensajeEx)
 
@@ -1304,7 +1309,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                             BeEmpresa = clsLnEmpresa.GetSingle_By_IdBodega(IdBodegaOrigen)
 
                                             Dim BeMensajeErrorWMS As New clsBeLog_error_wms
-                                            BeMensajeErrorWMS.IdError = clsLnLog_error_wms.MaxID(lConectionInterface, lTransInterface) + 1
+                                            BeMensajeErrorWMS.IdError = clsLnLog_error_wms.MaxID() + 1
                                             BeMensajeErrorWMS.IdEmpresa = BeEmpresa.IdEmpresa
                                             BeMensajeErrorWMS.IdBodega = pBePedidoEnc.IdBodega
                                             BeMensajeErrorWMS.Fecha = Now
@@ -1315,7 +1320,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                             BeMensajeErrorWMS.Cantidad = PDet.Quantity
                                             BeMensajeErrorWMS.Referencia_Documento = pBePedidoEnc.Referencia
                                             BeMensajeErrorWMS.Item_No = PDet.Item_No
-                                            clsLnLog_error_wms.Insertar(BeMensajeErrorWMS, lConectionInterface, lTransInterface)
+                                            clsLnLog_error_wms.Insertar(BeMensajeErrorWMS)
 
                                         End If
 
@@ -1632,7 +1637,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                 End If
 
             Catch ex As Exception
-                Throw New Exception("ERES_TU: " & ex.Message)
+                Throw New Exception("ERR_20250917: " & ex.Message)
             End Try
 
             pBeStockRes.IdPedido = BePedidoEnc.IdPedidoEnc
@@ -2696,7 +2701,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                                                        lTransInterface)
 
                                         Dim BeMensajeErrorWMS As New clsBeLog_error_wms
-                                        BeMensajeErrorWMS.IdError = clsLnLog_error_wms.MaxID(lConectionInterface, lTransInterface) + 1
+                                        BeMensajeErrorWMS.IdError = clsLnLog_error_wms.MaxID() + 1
                                         BeMensajeErrorWMS.IdEmpresa = BeEmpresa.IdEmpresa
                                         BeMensajeErrorWMS.IdBodega = IdBodegaOrigen
                                         BeMensajeErrorWMS.Fecha = Now
@@ -2707,7 +2712,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                         BeMensajeErrorWMS.Cantidad = PDet.Quantity
                                         BeMensajeErrorWMS.Referencia_Documento = pBePedidoEnc.Referencia
                                         BeMensajeErrorWMS.Item_No = PDet.Item_No
-                                        clsLnLog_error_wms.Insertar(BeMensajeErrorWMS, lConectionInterface, lTransInterface)
+                                        clsLnLog_error_wms.Insertar(BeMensajeErrorWMS)
 
                                         clsPublic.Actualizar_Progreso(lblprg, vMensajeEx)
 
@@ -2783,7 +2788,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                             BeEmpresa = clsLnEmpresa.GetSingle_By_IdBodega(IdBodegaOrigen)
 
                                             Dim BeMensajeErrorWMS As New clsBeLog_error_wms
-                                            BeMensajeErrorWMS.IdError = clsLnLog_error_wms.MaxID(lConectionInterface, lTransInterface) + 1
+                                            BeMensajeErrorWMS.IdError = clsLnLog_error_wms.MaxID() + 1
                                             BeMensajeErrorWMS.IdEmpresa = BeEmpresa.IdEmpresa
                                             BeMensajeErrorWMS.IdBodega = pBePedidoEnc.IdBodega
                                             BeMensajeErrorWMS.Fecha = Now
@@ -2794,7 +2799,7 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                             BeMensajeErrorWMS.Cantidad = PDet.Quantity
                                             BeMensajeErrorWMS.Referencia_Documento = pBePedidoEnc.Referencia
                                             BeMensajeErrorWMS.Item_No = PDet.Item_No
-                                            clsLnLog_error_wms.Insertar(BeMensajeErrorWMS, lConectionInterface, lTransInterface)
+                                            clsLnLog_error_wms.Insertar(BeMensajeErrorWMS)
 
                                         End If
 
@@ -2982,24 +2987,25 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
         Dim IdxPresentacion As Integer = -1
         Dim vNombreEstado As String = "Buen Estado"
         Dim beProductoEstadoReempaque As New clsBeProducto_estado
-        Dim EsReempaque As Boolean = False
+        'Dim EsReempaque As Boolean = False
 
         BePedidoDet = Nothing
 
         Try
 
-            If Not pBeConfigEnc Is Nothing Then
-                If pBeConfigEnc.Interface_SAP Then
-                    If BePedidoEnc.Bodega_Destino = "BOD6" Then 'Es bodega reempaque
-                        'Existse config producto reempaque
-                        beProductoEstadoReempaque = clsLnProducto_estado.GetSingle(8, lConectionInterface, lTransactionInterface)
-                        If Not beProductoEstadoReempaque Is Nothing Then
-                            vNombreEstado = beProductoEstadoReempaque.Nombre
-                            EsReempaque = True
-                        End If
-                    End If
-                End If
-            End If
+            '#CKFK20250905 Quité esta validación porque lo vamos a configurar de otra forma
+            'If Not pBeConfigEnc Is Nothing Then
+            '    If pBeConfigEnc.Interface_SAP Then
+            '        If BePedidoEnc.Bodega_Destino = "BOD6" Then 'Es bodega reempaque
+            '            'Existse config producto reempaque
+            '            beProductoEstadoReempaque = clsLnProducto_estado.GetSingle(8, lConectionInterface, lTransactionInterface)
+            '            If Not beProductoEstadoReempaque Is Nothing Then
+            '                vNombreEstado = beProductoEstadoReempaque.Nombre
+            '                EsReempaque = True
+            '            End If
+            '        End If
+            '    End If
+            'End If
 
             pBePedidoDet = New clsBeTrans_pe_det
             'pBePedidoDet.IdPedidoDet = clsLnTrans_pe_det.MaxID() + 1
@@ -3119,9 +3125,12 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
                                                          lConectionInterface,
                                                          lTransactionInterface)
             Try
-                '#CKFK 20240723 Agregué esta funcionalidad para Clarispharma porque en el caso de ellos si van a poder sacar produdcto de cualquier área
+                '#CKFK 20240723 Agregué esta funcionalidad para Clarispharma porque en el caso de ellos si van a
+                'poder sacar produdcto de cualquier área
                 If Not BeBodega Is Nothing Then
+
                     If BeBodega.Interface_SAP AndAlso BeBodega.Restringir_Areas_SAP Then
+
                         pBeStockRes.IdProductoEstado = clsLnProducto_estado.Get_IdEstado_By_Codigo_Area(BePedidoEnc.Bodega_Origen,
                                                                                                         lConectionInterface,
                                                                                                         lTransactionInterface)
@@ -3129,9 +3138,14 @@ Partial Public Class clsLnI_nav_ped_traslado_enc
 
                         Dim vIdEstadoProductoInterface As Integer = pBeConfigEnc.IdProductoEstado
 
-                        If EsReempaque Then
-                            vIdEstadoProductoInterface = beProductoEstadoReempaque.IdEstado
+                        If Val(pBeCliente.IdProductoEstadoDefecto) <> 0 Then
+                            vIdEstadoProductoInterface = Val(pBeCliente.IdProductoEstadoDefecto)
                         End If
+
+                        ''#CKFK20250905 Puse esto en comentario
+                        'If EsReempaque Then
+                        '    vIdEstadoProductoInterface = beProductoEstadoReempaque.IdEstado
+                        'End If
 
                         BeProductoEstadoList = clsLnProducto_estado.Existe_IdEstado_By_IdPropietario(vIdPropietario,
                                                                                                      vIdEstadoProductoInterface,

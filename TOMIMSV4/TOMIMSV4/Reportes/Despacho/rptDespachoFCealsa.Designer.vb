@@ -163,7 +163,7 @@ Partial Public Class rptDespachofCealsa
         Me.Detail.Controls.AddRange(New DevExpress.XtraReports.UI.XRControl() {Me.XrTable3})
         Me.Detail.HeightF = 25.0!
         Me.Detail.Name = "Detail"
-        Me.Detail.Padding = New DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100.0!)
+        Me.Detail.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(0), CInt(0), CInt(0), CInt(0), CSng(100.0!))
         Me.Detail.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft
         '
         'XrTable3
@@ -267,7 +267,7 @@ Partial Public Class rptDespachofCealsa
         '
         Me.TopMargin.HeightF = 5.0!
         Me.TopMargin.Name = "TopMargin"
-        Me.TopMargin.Padding = New DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100.0!)
+        Me.TopMargin.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(0), CInt(0), CInt(0), CInt(0), CSng(100.0!))
         Me.TopMargin.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft
         '
         'BottomMargin
@@ -275,7 +275,7 @@ Partial Public Class rptDespachofCealsa
         Me.BottomMargin.Controls.AddRange(New DevExpress.XtraReports.UI.XRControl() {Me.XrPageInfo1, Me.XrPageInfo2})
         Me.BottomMargin.HeightF = 33.0!
         Me.BottomMargin.Name = "BottomMargin"
-        Me.BottomMargin.Padding = New DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100.0!)
+        Me.BottomMargin.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(0), CInt(0), CInt(0), CInt(0), CSng(100.0!))
         Me.BottomMargin.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft
         '
         'XrPageInfo1
@@ -283,7 +283,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrPageInfo1.Font = New DevExpress.Drawing.DXFont("Tahoma", 7.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.XrPageInfo1.LocationFloat = New DevExpress.Utils.PointFloat(10.16668!, 0!)
         Me.XrPageInfo1.Name = "XrPageInfo1"
-        Me.XrPageInfo1.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrPageInfo1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrPageInfo1.PageInfo = DevExpress.XtraPrinting.PageInfo.DateTime
         Me.XrPageInfo1.SizeF = New System.Drawing.SizeF(313.0!, 19.88383!)
         Me.XrPageInfo1.StyleName = "PageInfo"
@@ -294,7 +294,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrPageInfo2.Font = New DevExpress.Drawing.DXFont("Tahoma", 7.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.XrPageInfo2.LocationFloat = New DevExpress.Utils.PointFloat(477.0002!, 2.832031!)
         Me.XrPageInfo2.Name = "XrPageInfo2"
-        Me.XrPageInfo2.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrPageInfo2.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrPageInfo2.SizeF = New System.Drawing.SizeF(313.0!, 19.88383!)
         Me.XrPageInfo2.StyleName = "PageInfo"
         Me.XrPageInfo2.StylePriority.UseFont = False
@@ -318,7 +318,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel1.LocationFloat = New DevExpress.Utils.PointFloat(10.00001!, 7.999718!)
         Me.XrLabel1.Multiline = True
         Me.XrLabel1.Name = "XrLabel1"
-        Me.XrLabel1.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel1.SizeF = New System.Drawing.SizeF(795.6141!, 38.79168!)
         Me.XrLabel1.StyleName = "Title"
         Me.XrLabel1.StylePriority.UseBorders = False
@@ -607,7 +607,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel2.Borders = DevExpress.XtraPrinting.BorderSide.None
         Me.XrLabel2.LocationFloat = New DevExpress.Utils.PointFloat(0!, 0!)
         Me.XrLabel2.Name = "XrLabel2"
-        Me.XrLabel2.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel2.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel2.SizeF = New System.Drawing.SizeF(707.4301!, 2.08!)
         Me.XrLabel2.StyleName = "GroupCaption3"
         Me.XrLabel2.StylePriority.UseBorders = False
@@ -635,7 +635,7 @@ Partial Public Class rptDespachofCealsa
         '
         Me.XrLabel3.LocationFloat = New DevExpress.Utils.PointFloat(502.0002!, 0!)
         Me.XrLabel3.Name = "XrLabel3"
-        Me.XrLabel3.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel3.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel3.SizeF = New System.Drawing.SizeF(70.44717!, 16.0!)
         Me.XrLabel3.StyleName = "TotalCaption3"
         Me.XrLabel3.Text = "SUBTOTAL"
@@ -645,7 +645,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel4.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([CantidadDespachada])")})
         Me.XrLabel4.LocationFloat = New DevExpress.Utils.PointFloat(572.4474!, 0!)
         Me.XrLabel4.Name = "XrLabel4"
-        Me.XrLabel4.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel4.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel4.SizeF = New System.Drawing.SizeF(76.83334!, 16.0!)
         Me.XrLabel4.StyleName = "TotalData3"
         Me.XrLabel4.StylePriority.UseTextAlignment = False
@@ -660,7 +660,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel6.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([PesoDespachado])")})
         Me.XrLabel6.LocationFloat = New DevExpress.Utils.PointFloat(649.7635!, 0!)
         Me.XrLabel6.Name = "XrLabel6"
-        Me.XrLabel6.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel6.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel6.SizeF = New System.Drawing.SizeF(74.33331!, 16.0!)
         Me.XrLabel6.StyleName = "TotalData3"
         Me.XrLabel6.StylePriority.UseTextAlignment = False
@@ -674,7 +674,7 @@ Partial Public Class rptDespachofCealsa
         '
         Me.XrLabel7.LocationFloat = New DevExpress.Utils.PointFloat(6.000004!, 30.90001!)
         Me.XrLabel7.Name = "XrLabel7"
-        Me.XrLabel7.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel7.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel7.SizeF = New System.Drawing.SizeF(799.6141!, 29.0!)
         Me.XrLabel7.StyleName = "TotalCaption3"
         Me.XrLabel7.StylePriority.UseTextAlignment = False
@@ -694,7 +694,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel39.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel39.LocationFloat = New DevExpress.Utils.PointFloat(5.464713!, 40.34968!)
         Me.XrLabel39.Name = "XrLabel39"
-        Me.XrLabel39.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel39.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel39.SizeF = New System.Drawing.SizeF(113.7899!, 23.0!)
         Me.XrLabel39.StylePriority.UseFont = False
         Me.XrLabel39.Text = "Observación:"
@@ -705,7 +705,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel18.LocationFloat = New DevExpress.Utils.PointFloat(120.8334!, 40.34968!)
         Me.XrLabel18.Multiline = True
         Me.XrLabel18.Name = "XrLabel18"
-        Me.XrLabel18.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel18.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel18.SizeF = New System.Drawing.SizeF(669.1667!, 62.49998!)
         Me.XrLabel18.Text = "XrLabel18"
         '
@@ -721,7 +721,7 @@ Partial Public Class rptDespachofCealsa
         '
         Me.XrLabel8.LocationFloat = New DevExpress.Utils.PointFloat(512.5488!, 0!)
         Me.XrLabel8.Name = "XrLabel8"
-        Me.XrLabel8.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel8.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel8.SizeF = New System.Drawing.SizeF(59.89862!, 16.0!)
         Me.XrLabel8.StyleName = "GrandTotalCaption3"
         Me.XrLabel8.Text = "TOTAL"
@@ -731,7 +731,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel9.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([CantidadDespachada])")})
         Me.XrLabel9.LocationFloat = New DevExpress.Utils.PointFloat(572.4474!, 0!)
         Me.XrLabel9.Name = "XrLabel9"
-        Me.XrLabel9.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel9.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel9.SizeF = New System.Drawing.SizeF(76.83334!, 16.0!)
         Me.XrLabel9.StyleName = "GrandTotalData3"
         Me.XrLabel9.StylePriority.UseTextAlignment = False
@@ -745,7 +745,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel11.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([PesoDespachado])")})
         Me.XrLabel11.LocationFloat = New DevExpress.Utils.PointFloat(649.7635!, 0!)
         Me.XrLabel11.Name = "XrLabel11"
-        Me.XrLabel11.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel11.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel11.SizeF = New System.Drawing.SizeF(74.33331!, 16.0!)
         Me.XrLabel11.StyleName = "GrandTotalData3"
         Me.XrLabel11.StylePriority.UseTextAlignment = False
@@ -759,7 +759,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel41.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.XrLabel41.LocationFloat = New DevExpress.Utils.PointFloat(597.2762!, 29.16799!)
         Me.XrLabel41.Name = "XrLabel41"
-        Me.XrLabel41.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel41.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel41.SizeF = New System.Drawing.SizeF(169.1712!, 23.0!)
         Me.XrLabel41.StylePriority.UseFont = False
         Me.XrLabel41.StylePriority.UseTextAlignment = False
@@ -771,7 +771,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel40.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.XrLabel40.LocationFloat = New DevExpress.Utils.PointFloat(48.37054!, 29.16799!)
         Me.XrLabel40.Name = "XrLabel40"
-        Me.XrLabel40.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel40.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel40.SizeF = New System.Drawing.SizeF(169.1712!, 23.0!)
         Me.XrLabel40.StylePriority.UseFont = False
         Me.XrLabel40.StylePriority.UseTextAlignment = False
@@ -809,7 +809,7 @@ Partial Public Class rptDespachofCealsa
         Me.GroupCaption3.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.GroupCaption3.ForeColor = System.Drawing.Color.FromArgb(CType(CType(228, Byte), Integer), CType(CType(228, Byte), Integer), CType(CType(228, Byte), Integer))
         Me.GroupCaption3.Name = "GroupCaption3"
-        Me.GroupCaption3.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 2, 0, 0, 100.0!)
+        Me.GroupCaption3.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.GroupCaption3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'GroupData3
@@ -821,7 +821,7 @@ Partial Public Class rptDespachofCealsa
         Me.GroupData3.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.GroupData3.ForeColor = System.Drawing.Color.White
         Me.GroupData3.Name = "GroupData3"
-        Me.GroupData3.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 2, 0, 0, 100.0!)
+        Me.GroupData3.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.GroupData3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'DetailCaption3
@@ -832,7 +832,7 @@ Partial Public Class rptDespachofCealsa
         Me.DetailCaption3.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.DetailCaption3.ForeColor = System.Drawing.Color.FromArgb(CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer))
         Me.DetailCaption3.Name = "DetailCaption3"
-        Me.DetailCaption3.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
+        Me.DetailCaption3.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(6), CInt(0), CInt(0), CSng(100.0!))
         Me.DetailCaption3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'DetailData3
@@ -840,7 +840,7 @@ Partial Public Class rptDespachofCealsa
         Me.DetailData3.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!)
         Me.DetailData3.ForeColor = System.Drawing.Color.Black
         Me.DetailData3.Name = "DetailData3"
-        Me.DetailData3.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
+        Me.DetailData3.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(6), CInt(0), CInt(0), CSng(100.0!))
         Me.DetailData3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'DetailData3_Odd
@@ -852,7 +852,7 @@ Partial Public Class rptDespachofCealsa
         Me.DetailData3_Odd.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!)
         Me.DetailData3_Odd.ForeColor = System.Drawing.Color.Black
         Me.DetailData3_Odd.Name = "DetailData3_Odd"
-        Me.DetailData3_Odd.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100.0!)
+        Me.DetailData3_Odd.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(6), CInt(0), CInt(0), CSng(100.0!))
         Me.DetailData3_Odd.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'DetailCaptionBackground3
@@ -868,7 +868,7 @@ Partial Public Class rptDespachofCealsa
         Me.TotalCaption3.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.TotalCaption3.ForeColor = System.Drawing.Color.FromArgb(CType(CType(147, Byte), Integer), CType(CType(147, Byte), Integer), CType(CType(147, Byte), Integer))
         Me.TotalCaption3.Name = "TotalCaption3"
-        Me.TotalCaption3.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 2, 0, 0, 100.0!)
+        Me.TotalCaption3.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.TotalCaption3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'TotalData3
@@ -876,7 +876,7 @@ Partial Public Class rptDespachofCealsa
         Me.TotalData3.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.TotalData3.ForeColor = System.Drawing.Color.FromArgb(CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer))
         Me.TotalData3.Name = "TotalData3"
-        Me.TotalData3.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 6, 0, 0, 100.0!)
+        Me.TotalData3.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(6), CInt(0), CInt(0), CSng(100.0!))
         Me.TotalData3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'TotalBackground3
@@ -889,7 +889,7 @@ Partial Public Class rptDespachofCealsa
         Me.GrandTotalCaption3.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.GrandTotalCaption3.ForeColor = System.Drawing.Color.FromArgb(CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer), CType(CType(197, Byte), Integer))
         Me.GrandTotalCaption3.Name = "GrandTotalCaption3"
-        Me.GrandTotalCaption3.Padding = New DevExpress.XtraPrinting.PaddingInfo(6, 2, 0, 0, 100.0!)
+        Me.GrandTotalCaption3.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(6), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.GrandTotalCaption3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'GrandTotalData3
@@ -898,7 +898,7 @@ Partial Public Class rptDespachofCealsa
         Me.GrandTotalData3.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.GrandTotalData3.ForeColor = System.Drawing.Color.White
         Me.GrandTotalData3.Name = "GrandTotalData3"
-        Me.GrandTotalData3.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 6, 0, 0, 100.0!)
+        Me.GrandTotalData3.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(6), CInt(0), CInt(0), CSng(100.0!))
         Me.GrandTotalData3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
         '
         'GrandTotalBackground3
@@ -914,14 +914,14 @@ Partial Public Class rptDespachofCealsa
         Me.PageInfo.Font = New DevExpress.Drawing.DXFont("Tahoma", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.PageInfo.ForeColor = System.Drawing.Color.FromArgb(CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer), CType(CType(75, Byte), Integer))
         Me.PageInfo.Name = "PageInfo"
-        Me.PageInfo.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.PageInfo.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         '
         'PageHeader
         '
         Me.PageHeader.Controls.AddRange(New DevExpress.XtraReports.UI.XRControl() {Me.XrLabel46, Me.XrLabel44, Me.XrLabel43, Me.XrLabel10, Me.XrLabel5, Me.XrLabel25, Me.XrLabel38, Me.XrLabel37, Me.XrLabel36, Me.XrLabel35, Me.XrLabel34, Me.XrLabel33, Me.XrLabel15, Me.XrLabel32, Me.XrLabel31, Me.XrLabel30, Me.XrLabel29, Me.XrLabel28, Me.XrLabel27, Me.XrLabel26, Me.XrLabel24, Me.XrLabel1, Me.XrLabel22, Me.XrLabel12, Me.XrLabel21, Me.XrLabel20, Me.XrLabel19, Me.XrLabel17, Me.XrLabel14, Me.XrLabel13, Me.XrLabel23})
         Me.PageHeader.HeightF = 213.7502!
         Me.PageHeader.Name = "PageHeader"
-        Me.PageHeader.Padding = New DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100.0!)
+        Me.PageHeader.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(0), CInt(0), CInt(0), CInt(0), CSng(100.0!))
         Me.PageHeader.StylePriority.UsePadding = False
         '
         'XrLabel46
@@ -933,7 +933,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel46.KeepTogether = True
         Me.XrLabel46.LocationFloat = New DevExpress.Utils.PointFloat(98.75976!, 116.9791!)
         Me.XrLabel46.Name = "XrLabel46"
-        Me.XrLabel46.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel46.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel46.SizeF = New System.Drawing.SizeF(220.2402!, 23.00001!)
         Me.XrLabel46.Text = "XrLabel16"
         '
@@ -943,7 +943,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel44.LocationFloat = New DevExpress.Utils.PointFloat(96.87321!, 185.9791!)
         Me.XrLabel44.Multiline = True
         Me.XrLabel44.Name = "XrLabel44"
-        Me.XrLabel44.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel44.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel44.SizeF = New System.Drawing.SizeF(222.1268!, 23.00002!)
         Me.XrLabel44.Text = "XrLabel44"
         '
@@ -952,7 +952,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel43.Font = New DevExpress.Drawing.DXFont("Microsoft Sans Serif", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.XrLabel43.LocationFloat = New DevExpress.Utils.PointFloat(11.21012!, 185.9791!)
         Me.XrLabel43.Name = "XrLabel43"
-        Me.XrLabel43.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel43.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel43.SizeF = New System.Drawing.SizeF(85.66312!, 23.33347!)
         Me.XrLabel43.StylePriority.UseFont = False
         Me.XrLabel43.StylePriority.UseTextAlignment = False
@@ -965,7 +965,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel10.LocationFloat = New DevExpress.Utils.PointFloat(574.3132!, 185.979!)
         Me.XrLabel10.Multiline = True
         Me.XrLabel10.Name = "XrLabel10"
-        Me.XrLabel10.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel10.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel10.SizeF = New System.Drawing.SizeF(192.1342!, 23.00002!)
         Me.XrLabel10.Text = "XrLabel10"
         '
@@ -974,7 +974,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel5.Font = New DevExpress.Drawing.DXFont("Microsoft Sans Serif", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.XrLabel5.LocationFloat = New DevExpress.Utils.PointFloat(458.6575!, 185.979!)
         Me.XrLabel5.Name = "XrLabel5"
-        Me.XrLabel5.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel5.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel5.SizeF = New System.Drawing.SizeF(113.7899!, 23.33348!)
         Me.XrLabel5.StylePriority.UseFont = False
         Me.XrLabel5.StylePriority.UseTextAlignment = False
@@ -987,7 +987,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel25.LocationFloat = New DevExpress.Utils.PointFloat(96.87323!, 47.97902!)
         Me.XrLabel25.Multiline = True
         Me.XrLabel25.Name = "XrLabel25"
-        Me.XrLabel25.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel25.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel25.SizeF = New System.Drawing.SizeF(222.1268!, 23.0!)
         '
         'XrLabel38
@@ -995,7 +995,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel38.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel38.LocationFloat = New DevExpress.Utils.PointFloat(458.6575!, 93.97903!)
         Me.XrLabel38.Name = "XrLabel38"
-        Me.XrLabel38.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel38.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel38.SizeF = New System.Drawing.SizeF(113.7899!, 23.0!)
         Me.XrLabel38.StylePriority.UseFont = False
         Me.XrLabel38.Text = "Vehículo:"
@@ -1005,7 +1005,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel37.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Modelo_Vehiculo]")})
         Me.XrLabel37.LocationFloat = New DevExpress.Utils.PointFloat(674.3134!, 93.97903!)
         Me.XrLabel37.Name = "XrLabel37"
-        Me.XrLabel37.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel37.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel37.SizeF = New System.Drawing.SizeF(81.66644!, 23.0!)
         Me.XrLabel37.Text = "XrLabel37"
         '
@@ -1014,7 +1014,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel36.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Marca_Vehiculo]")})
         Me.XrLabel36.LocationFloat = New DevExpress.Utils.PointFloat(574.3132!, 93.97903!)
         Me.XrLabel36.Name = "XrLabel36"
-        Me.XrLabel36.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel36.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel36.SizeF = New System.Drawing.SizeF(100.0!, 23.0!)
         Me.XrLabel36.Text = "XrLabel36"
         '
@@ -1023,7 +1023,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel35.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel35.LocationFloat = New DevExpress.Utils.PointFloat(458.6575!, 116.979!)
         Me.XrLabel35.Name = "XrLabel35"
-        Me.XrLabel35.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel35.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel35.SizeF = New System.Drawing.SizeF(113.7899!, 23.0!)
         Me.XrLabel35.StylePriority.UseFont = False
         Me.XrLabel35.Text = "Placa:"
@@ -1033,7 +1033,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel34.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel34.LocationFloat = New DevExpress.Utils.PointFloat(458.6575!, 139.9791!)
         Me.XrLabel34.Name = "XrLabel34"
-        Me.XrLabel34.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel34.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel34.SizeF = New System.Drawing.SizeF(113.7899!, 23.0!)
         Me.XrLabel34.StylePriority.UseFont = False
         Me.XrLabel34.Text = "Placa TC.:"
@@ -1043,7 +1043,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel33.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel33.LocationFloat = New DevExpress.Utils.PointFloat(11.21012!, 162.9791!)
         Me.XrLabel33.Name = "XrLabel33"
-        Me.XrLabel33.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel33.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel33.SizeF = New System.Drawing.SizeF(85.66309!, 23.0!)
         Me.XrLabel33.StylePriority.UseFont = False
         Me.XrLabel33.Text = "Ruta:"
@@ -1053,7 +1053,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel15.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Codigo_Ruta]")})
         Me.XrLabel15.LocationFloat = New DevExpress.Utils.PointFloat(96.87322!, 162.9791!)
         Me.XrLabel15.Name = "XrLabel15"
-        Me.XrLabel15.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel15.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel15.SizeF = New System.Drawing.SizeF(78.31065!, 23.0!)
         Me.XrLabel15.Text = "XrLabel15"
         '
@@ -1062,7 +1062,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel32.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel32.LocationFloat = New DevExpress.Utils.PointFloat(10.16668!, 139.9791!)
         Me.XrLabel32.Name = "XrLabel32"
-        Me.XrLabel32.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel32.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel32.SizeF = New System.Drawing.SizeF(86.70654!, 23.0!)
         Me.XrLabel32.StylePriority.UseFont = False
         Me.XrLabel32.Text = "Licencia:"
@@ -1072,7 +1072,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel31.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel31.LocationFloat = New DevExpress.Utils.PointFloat(10.16668!, 116.9791!)
         Me.XrLabel31.Name = "XrLabel31"
-        Me.XrLabel31.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel31.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel31.SizeF = New System.Drawing.SizeF(86.70654!, 23.0!)
         Me.XrLabel31.StylePriority.UseFont = False
         Me.XrLabel31.Text = "Piloto:"
@@ -1082,7 +1082,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel30.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel30.LocationFloat = New DevExpress.Utils.PointFloat(458.6575!, 162.9791!)
         Me.XrLabel30.Name = "XrLabel30"
-        Me.XrLabel30.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel30.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel30.SizeF = New System.Drawing.SizeF(113.7899!, 23.0!)
         Me.XrLabel30.StylePriority.UseBorders = False
         Me.XrLabel30.StylePriority.UseBorderWidth = False
@@ -1094,7 +1094,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel29.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel29.LocationFloat = New DevExpress.Utils.PointFloat(458.6575!, 70.97902!)
         Me.XrLabel29.Name = "XrLabel29"
-        Me.XrLabel29.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel29.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel29.SizeF = New System.Drawing.SizeF(113.7899!, 22.20834!)
         Me.XrLabel29.StylePriority.UseFont = False
         Me.XrLabel29.StylePriority.UseTextAlignment = False
@@ -1106,7 +1106,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel28.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Fecha_Despacho]")})
         Me.XrLabel28.LocationFloat = New DevExpress.Utils.PointFloat(574.3132!, 70.18728!)
         Me.XrLabel28.Name = "XrLabel28"
-        Me.XrLabel28.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel28.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel28.SizeF = New System.Drawing.SizeF(181.6667!, 23.0!)
         Me.XrLabel28.Text = "XrLabel28"
         Me.XrLabel28.TextFormatString = "{0:d/MM/yyyy HH:mm:ss}"
@@ -1116,7 +1116,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel27.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel27.LocationFloat = New DevExpress.Utils.PointFloat(10.16668!, 70.97902!)
         Me.XrLabel27.Name = "XrLabel27"
-        Me.XrLabel27.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel27.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel27.SizeF = New System.Drawing.SizeF(86.70654!, 23.00001!)
         Me.XrLabel27.StylePriority.UseFont = False
         Me.XrLabel27.Text = "Bodega:"
@@ -1126,7 +1126,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel26.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "?Bodega")})
         Me.XrLabel26.LocationFloat = New DevExpress.Utils.PointFloat(96.87323!, 70.97902!)
         Me.XrLabel26.Name = "XrLabel26"
-        Me.XrLabel26.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel26.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel26.SizeF = New System.Drawing.SizeF(222.1268!, 23.0!)
         Me.XrLabel26.Text = "XrLabel26"
         '
@@ -1135,7 +1135,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel24.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel24.LocationFloat = New DevExpress.Utils.PointFloat(10.16668!, 47.97901!)
         Me.XrLabel24.Name = "XrLabel24"
-        Me.XrLabel24.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel24.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel24.SizeF = New System.Drawing.SizeF(86.70654!, 23.00001!)
         Me.XrLabel24.StylePriority.UseFont = False
         Me.XrLabel24.Text = "Empresa:"
@@ -1145,7 +1145,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel22.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel22.LocationFloat = New DevExpress.Utils.PointFloat(10.16668!, 93.97903!)
         Me.XrLabel22.Name = "XrLabel22"
-        Me.XrLabel22.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel22.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel22.SizeF = New System.Drawing.SizeF(86.70654!, 23.0!)
         Me.XrLabel22.StylePriority.UseFont = False
         Me.XrLabel22.Text = "Propietario:"
@@ -1155,7 +1155,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel12.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[IdDespachoEnc]")})
         Me.XrLabel12.LocationFloat = New DevExpress.Utils.PointFloat(574.3132!, 46.7914!)
         Me.XrLabel12.Name = "XrLabel12"
-        Me.XrLabel12.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel12.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel12.SizeF = New System.Drawing.SizeF(100.0!, 23.00001!)
         Me.XrLabel12.Text = "XrLabel12"
         '
@@ -1164,7 +1164,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel21.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Propietario]")})
         Me.XrLabel21.LocationFloat = New DevExpress.Utils.PointFloat(96.87324!, 93.97903!)
         Me.XrLabel21.Name = "XrLabel21"
-        Me.XrLabel21.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel21.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel21.SizeF = New System.Drawing.SizeF(222.1268!, 23.0!)
         Me.XrLabel21.Text = "XrLabel21"
         '
@@ -1173,7 +1173,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel20.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Placa_Vehiculo]")})
         Me.XrLabel20.LocationFloat = New DevExpress.Utils.PointFloat(574.3132!, 116.979!)
         Me.XrLabel20.Name = "XrLabel20"
-        Me.XrLabel20.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel20.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel20.SizeF = New System.Drawing.SizeF(125.4212!, 23.0!)
         Me.XrLabel20.Text = "XrLabel20"
         '
@@ -1182,7 +1182,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel19.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Placa_Comercial]")})
         Me.XrLabel19.LocationFloat = New DevExpress.Utils.PointFloat(574.3132!, 139.9791!)
         Me.XrLabel19.Name = "XrLabel19"
-        Me.XrLabel19.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel19.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel19.SizeF = New System.Drawing.SizeF(125.4212!, 23.0!)
         Me.XrLabel19.Text = "XrLabel19"
         '
@@ -1191,7 +1191,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel17.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Nombre_Ruta]")})
         Me.XrLabel17.LocationFloat = New DevExpress.Utils.PointFloat(175.1839!, 162.9791!)
         Me.XrLabel17.Name = "XrLabel17"
-        Me.XrLabel17.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel17.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel17.SizeF = New System.Drawing.SizeF(143.8161!, 23.0!)
         Me.XrLabel17.Text = "XrLabel17"
         '
@@ -1200,7 +1200,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel14.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[No_Licencia_Piloto]")})
         Me.XrLabel14.LocationFloat = New DevExpress.Utils.PointFloat(96.87323!, 139.9791!)
         Me.XrLabel14.Name = "XrLabel14"
-        Me.XrLabel14.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel14.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel14.SizeF = New System.Drawing.SizeF(222.1268!, 23.0!)
         Me.XrLabel14.Text = "XrLabel14"
         '
@@ -1209,7 +1209,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel13.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[marchamo]")})
         Me.XrLabel13.LocationFloat = New DevExpress.Utils.PointFloat(574.3132!, 162.9791!)
         Me.XrLabel13.Name = "XrLabel13"
-        Me.XrLabel13.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel13.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel13.SizeF = New System.Drawing.SizeF(125.4212!, 23.0!)
         Me.XrLabel13.Text = "XrLabel13"
         '
@@ -1218,7 +1218,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel23.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold, DevExpress.Drawing.DXGraphicsUnit.Point, New DevExpress.Drawing.DXFontAdditionalProperty() {New DevExpress.Drawing.DXFontAdditionalProperty("GdiCharSet", CType(0, Byte))})
         Me.XrLabel23.LocationFloat = New DevExpress.Utils.PointFloat(458.6575!, 47.18732!)
         Me.XrLabel23.Name = "XrLabel23"
-        Me.XrLabel23.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel23.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel23.SizeF = New System.Drawing.SizeF(113.7899!, 22.20834!)
         Me.XrLabel23.StylePriority.UseFont = False
         Me.XrLabel23.StylePriority.UseTextAlignment = False
@@ -1262,7 +1262,7 @@ Partial Public Class rptDespachofCealsa
         Me.XrLabel42.LocationFloat = New DevExpress.Utils.PointFloat(11.21033!, 63.42683!)
         Me.XrLabel42.Multiline = True
         Me.XrLabel42.Name = "XrLabel42"
-        Me.XrLabel42.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel42.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
         Me.XrLabel42.SizeF = New System.Drawing.SizeF(778.7899!, 50.83333!)
         Me.XrLabel42.StylePriority.UseBorders = False
         Me.XrLabel42.StylePriority.UseBorderWidth = False

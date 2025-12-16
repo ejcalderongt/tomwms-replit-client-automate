@@ -36,7 +36,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DocumentationFile>MI3.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <RegisterForComInterop>false</RegisterForComInterop>
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
@@ -368,6 +368,7 @@
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </None>
+    <None Include="My Project\PublishProfiles\MI3.pubxml" />
     <None Include="My Project\PublishProfiles\PROGRAN_Local.pubxml" />
     <None Include="My Project\PublishProfiles\wsAmazon.pubxml" />
     <None Include="My Project\Settings.settings">

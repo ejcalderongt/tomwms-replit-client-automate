@@ -3649,4 +3649,103 @@ Partial Public Class clsLnBodega_ubicacion
 
     End Function
 
+    Public Shared Function Get_Ubicaciones(ByVal pIdBodega As Integer,
+                                           ByVal Ocupadas As Boolean,
+                                           ByVal Todas As Boolean) As DataTable
+
+        Get_Ubicaciones = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT IdBodega, Ubicacion, Area, Case when Max(IdStock)>0 then 'Ocupada' Else 'Vacia' End 'Estado'
+                                  FROM VW_OcupacionBodega
+                                  WHERE  (IdBodega = @IdBodega)"
+
+            If Not Todas Then
+                If Ocupadas Then
+                    vSQL += " AND IDSTOCK > 0 "
+                Else
+                    vSQL += " AND IDSTOCK = 0 "
+                End If
+            End If
+
+            vSQL += " GROUP BY IdBodega, Ubicacion, Area"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                        Dim lDT As New DataTable
+                        lDTA.Fill(lDT)
+
+                        Get_Ubicaciones = lDT
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Ubicaciones_Detallado(ByVal pIdBodega As Integer) As DataTable
+
+        Get_Ubicaciones_Detallado = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT IdUbicacion, Ubicacion, Código, Nombre, Lote, Fecha, Lic_Plate, Cantidad, UM
+                                  FROM VW_Ocupacion_Bodega_Detallado
+                                  WHERE  (IdBodega = @IdBodega)"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                        Dim lDT As New DataTable
+                        lDTA.Fill(lDT)
+
+                        Get_Ubicaciones_Detallado = lDT
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+
 End Class

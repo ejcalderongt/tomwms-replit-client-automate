@@ -88,8 +88,16 @@ Public Class frmCambioUbicacion
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pStackTrace:=ex.StackTrace,
+                                                  pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdTareaUbicacionEnc:=gBeTransubicacionHHEnc.IdTareaUbicacionEnc,
+                                                  pIdMotivoUbicacion:=gBeTransubicacionHHEnc.IdMotivoUbicacion)
 
         End Try
 
@@ -420,9 +428,17 @@ Public Class frmCambioUbicacion
             End If
 
         Catch ex As Exception
+            '#MECR03112025: Se agrego bitacora de ubicacion
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pStackTrace:=ex.StackTrace,
+                                                  pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdTareaUbicacionEnc:=gBeTransubicacionHHEnc.IdTareaUbicacionEnc,
+                                                  pIdMotivoUbicacion:=gBeTransubicacionHHEnc.IdMotivoUbicacion)
         End Try
 
     End Function
@@ -2664,8 +2680,16 @@ Public Class frmCambioUbicacion
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
+            '#MECR03112025: Se agrego bitacora de ubicacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_ubic.Agregar_Error(vMsgError,
+                                                  pIdEmpresa:=AP.IdEmpresa,
+                                                  pIdBodega:=AP.IdBodega,
+                                                  pStackTrace:=ex.StackTrace,
+                                                  pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                  pIdTareaUbicacionEnc:=gBeTransubicacionHHEnc.IdTareaUbicacionEnc,
+                                                  pIdMotivoUbicacion:=gBeTransubicacionHHEnc.IdMotivoUbicacion)
 
         End Try
 

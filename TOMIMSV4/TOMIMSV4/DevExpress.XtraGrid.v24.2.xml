@@ -14262,7 +14262,7 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
     </member>
     <member name="P:DevExpress.XtraGrid.Views.Grid.GridOptionsPrint.PrintHorzLines">
       <summary>
-        <para>Gets or sets whether horizontal grid lines are printed/exported. Supports WYSIWYG and <see href="https://docs.devexpress.com/WindowsForms/17733/controls-and-libraries/data-grid/export-and-printing/export-to-xls-and-xlsx-formats">Data-aware</see> export mode.</para>
+        <para>Gets or sets whether to display horizontal grid lines in the print/export output. Supports WYSIWYG and <see href="https://docs.devexpress.com/WindowsForms/17733/controls-and-libraries/data-grid/export-and-printing/export-to-xls-and-xlsx-formats">Data-aware</see> export mode.</para>
       </summary>
       <value>true to display horizontal grid lines in the print/export output; otherwise, false.</value>
     </member>
@@ -14280,9 +14280,9 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
     </member>
     <member name="P:DevExpress.XtraGrid.Views.Grid.GridOptionsPrint.PrintVertLines">
       <summary>
-        <para>Gets or sets whether vertical grid lines are displayed in the print/export output. Supports WYSIWYG and <see href="https://docs.devexpress.com/WindowsForms/17733/controls-and-libraries/data-grid/export-and-printing/export-to-xls-and-xlsx-formats">Data-aware</see> export mode.</para>
+        <para>Gets or sets whether to display vertical grid lines in the print/export output. Supports WYSIWYG and <see href="https://docs.devexpress.com/WindowsForms/17733/controls-and-libraries/data-grid/export-and-printing/export-to-xls-and-xlsx-formats">Data-aware</see> export mode.</para>
       </summary>
-      <value>true, to print/export vertical grid lines; otherwise, false.</value>
+      <value>true to print/export vertical grid lines; otherwise, false.</value>
     </member>
     <member name="P:DevExpress.XtraGrid.Views.Grid.GridOptionsPrint.SplitCellPreviewAcrossPages">
       <summary>
@@ -15225,7 +15225,7 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
     </member>
     <member name="E:DevExpress.XtraGrid.Views.Grid.GridView.CustomSummaryCalculate">
       <summary>
-        <para>Allows you to manually calculate summaries. Fires for summaries whose <see cref="P:DevExpress.XtraGrid.GridSummaryItem.SummaryType"/> is <see cref="F:DevExpress.Data.SummaryItemType.Custom">SummaryItemType.Custom</see>.</para>
+        <para>Allows custom summary value calculation. Fires for summary items with <see cref="P:DevExpress.XtraGrid.GridSummaryItem.SummaryType"/> set to <see cref="F:DevExpress.Data.SummaryItemType.Custom">SummaryItemType.Custom</see>.</para>
       </summary>
     </member>
     <member name="E:DevExpress.XtraGrid.Views.Grid.GridView.CustomSummaryExists">
@@ -16648,7 +16648,7 @@ If set to -1, the method acts like the GridView.SetMasterRowExpanded method.</pa
     </member>
     <member name="M:DevExpress.XtraGrid.Views.Grid.GridView.ShowEditForm">
       <summary>
-        <para>Opens an Edit Form for the focused row based on the Edit Form type specified in the <see cref="P:DevExpress.XtraGrid.Views.Grid.GridOptionsBehavior.EditingMode">GridOptionsBehavior.EditingMode</see> property.</para>
+        <para>Opens an Edit Form for the focused row.</para>
       </summary>
     </member>
     <member name="M:DevExpress.XtraGrid.Views.Grid.GridView.ShowEditor">

@@ -2130,7 +2130,7 @@ Partial Public Class clsLnBodega
                     pObjBU.Margen_superior = 0
                     pObjBU.Margen_inferior = 0
                     pObjBU.Orientacion_pos = 0
-                    pObjBU.IdIndiceRotacion = 0
+                    pObjBU.IdIndiceRotacion = 1
                     pObjBU.IdTipoRotacion = 0
                     pObjBU.Indice_x = 0
                     clsLnBodega_ubicacion.Insertar(pObjBU,
@@ -2279,7 +2279,7 @@ Partial Public Class clsLnBodega
                     pObjBU.Margen_superior = 0
                     pObjBU.Margen_inferior = 0
                     pObjBU.Orientacion_pos = 0
-                    pObjBU.IdIndiceRotacion = Nothing
+                    pObjBU.IdIndiceRotacion = 1
                     pObjBU.IdTipoRotacion = Nothing
                     pObjBU.Indice_x = 0
                     clsLnBodega_ubicacion.Insertar(pObjBU,
@@ -2352,7 +2352,7 @@ Partial Public Class clsLnBodega
                     pObjBU.Margen_superior = 0
                     pObjBU.Margen_inferior = 0
                     pObjBU.Orientacion_pos = 0
-                    pObjBU.IdIndiceRotacion = Nothing
+                    pObjBU.IdIndiceRotacion = 1
                     pObjBU.IdTipoRotacion = Nothing
                     pObjBU.Indice_x = 0
                     clsLnBodega_ubicacion.Insertar(pObjBU,
@@ -3523,5 +3523,56 @@ Partial Public Class clsLnBodega
         End Try
 
     End Function
+
+    Public Shared Function GetOcupacionAreaTipoDT(idBodega As Integer,
+                                                  ByRef ubicacionesVacias As Integer,
+                                                  ByRef ubicacionesOcupadas As Integer) As DataTable
+        Dim dt As New DataTable()
+
+        Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            cn.Open()
+
+            ' 1) Traer el detalle de ocupación por Área/Tipo/Estado
+            Using da As New SqlDataAdapter("
+            SELECT Area, Tipo, Estado, Cantidad, TotalAreaTipo, PorcentajeEnAreaTipo
+            FROM dbo.VW_Ocupacion_Area_Resumen
+            WHERE IdBodega = @IdBodega
+            ORDER BY Area, Tipo, Estado", cn)
+
+                da.SelectCommand.Parameters.AddWithValue("@IdBodega", idBodega)
+                da.Fill(dt)
+            End Using
+
+            ' 2) Traer en UNA sola consulta las ubicaciones vacías y ocupadas
+            Using cmd As New SqlCommand("
+            SELECT
+                COUNT(DISTINCT CASE WHEN IDSTOCK = 0  THEN IDUBICACION END) AS UBICACIONES_VACIAS,
+                COUNT(DISTINCT CASE WHEN IDSTOCK <> 0 THEN IDUBICACION END) AS UBICACIONES_OCUPADAS
+            FROM dbo.VW_OcupacionBodega
+            WHERE IdBodega = @IdBodega;", cn)
+
+                cmd.Parameters.AddWithValue("@IdBodega", idBodega)
+
+                Using rdr = cmd.ExecuteReader()
+                    If rdr.Read() Then
+                        ubicacionesVacias = If(IsDBNull(rdr(0)), 0, Convert.ToInt32(rdr(0)))
+                        ubicacionesOcupadas = If(IsDBNull(rdr(1)), 0, Convert.ToInt32(rdr(1)))
+                    Else
+                        ubicacionesVacias = 0
+                        ubicacionesOcupadas = 0
+                    End If
+                End Using
+            End Using
+        End Using
+
+        ' 3) Agregar columna "Serie" (Tipo - Estado) como en tu implementación original
+        If Not dt.Columns.Contains("Serie") Then dt.Columns.Add("Serie", GetType(String))
+        For Each r As DataRow In dt.Rows
+            r("Serie") = $"{r("Tipo")} - {r("Estado")}"   ' p.ej. "FISCAL - Ocupadas"
+        Next
+
+        Return dt
+    End Function
+
 
 End Class

@@ -66,17 +66,17 @@ Public Class clsLnTrans_oc_encDMS
                 Dim propietarioAnterior As Integer = -1
 
                 For Each grupo In grupos
-                    ' 🔹 Mensaje visual de control (opcional)
+                    ' Mensaje visual de control (opcional)
                     If propietarioAnterior <> grupo.IdPropietario Then
-                        clsHelper.LogMensaje(lblprg, $"➡ Procesando registros del propietario {grupo.IdPropietario}", clsHelper.TipoMensaje.Info)
+                        clsHelper.LogMensaje(lblprg, $"Procesando registros del propietario {grupo.IdPropietario}", clsHelper.TipoMensaje.Info)
                     End If
 
-                    ' 🔹 Procesar todos los registros de este propietario
+                    ' Procesar todos los registros de este propietario
                     Dim objRespuesta As Object = Await ProcesarIngresos(lblprg, grupo.Lista)
                     pRegistrosExitosos += objRespuesta.item1
                     pRegistrosFallidos += objRespuesta.item2
 
-                    ' 🔹 Guardar log al terminar este grupo (independientemente de la bandera)
+                    ' Guardar log al terminar este grupo (independientemente de la bandera)
                     Dim pRespuesta As String = ""
                     If objRespuesta.item2 > 0 AndAlso objRespuesta.item1 > 0 Then
                         pRespuesta = $"Parcial: no se sincronizaron {objRespuesta.item2} registros de propietario {grupo.IdPropietario}. Total enviados: {objRespuesta.item1 + objRespuesta.item2}"
@@ -93,7 +93,7 @@ Public Class clsLnTrans_oc_encDMS
                 Next
 
             Else
-                clsHelper.LogMensaje(lblprg, "Ingresos no encontrados para sincronizar", clsHelper.TipoMensaje.Error_)
+                clsHelper.LogMensaje(lblprg, "Ingresos nuevos no encontrados para sincronizar", clsHelper.TipoMensaje.Error_)
                 Exit Function
             End If
 
@@ -111,12 +111,12 @@ Public Class clsLnTrans_oc_encDMS
 
     Private Shared listaIdsEnviados As New List(Of Integer)
     Public Shared Async Function ProcesarIngresos(ByVal lblprg As RichTextBox, ByVal ingresos As List(Of clsBeTrans_oc_enc)) As Task(Of Object)
-        ' Inicializar variables
+
         Dim Contador As Integer = 0
         Dim resultado As String = ""
         Dim pRegistrosExitosos As Integer = 0
         Dim pRegistrosFallidos As Integer = 0
-        Dim api As New ApiService() ' Suponiendo que tienes un servicio para enviar los datos a la nube
+        Dim api As New ApiService()
         Dim registros As Integer = ingresos.Count
 
         ' Iterar sobre los registros de ingresos
@@ -126,10 +126,7 @@ Public Class clsLnTrans_oc_encDMS
             Dim intento As Integer = 0
             Const maxIntentos As Integer = 2 ' Maximo número de intentos
 
-            'pOC.IdOrdenCompraEnc = 12526
-
             clsHelper.LogMensaje(lblprg, "Iterando Registro: " & Contador & "/" & registros, clsHelper.TipoMensaje.Info)
-            'clsHelper.LogMensaje(lblprg, "Ingreso: " & pOC.IdOrdenCompraEnc, clsHelper.TipoMensaje.Info)
             Dim JsonOC = Crear_Json(lblprg, pOC)
 
             If String.IsNullOrEmpty(JsonOC) Then
@@ -148,7 +145,7 @@ Public Class clsLnTrans_oc_encDMS
                 Else
                     intento += 1
                     clsHelper.LogMensaje(lblprg, "Reintento de envio: " & intento, clsHelper.TipoMensaje.Info)
-                    Await Task.Delay(2000) ' Esperar 2 segundos entre intentos
+                    Await Task.Delay(1000) ' Esperar 2 segundos entre intentos
                 End If
             End While
 
@@ -187,6 +184,10 @@ Public Class clsLnTrans_oc_encDMS
                 localTransaction = True
             End If
 
+            '#GT08102025: evita duplicar el registro para el mismo ingreso
+            'If Not clsLnDMS_Log_sincronizacion_fallos.Existe_by_Ingreso(pOrdenCompra.IdOrdenCompraEnc, lConnection, lTransaction) Then
+
+            'End If
 
             BeLogSyncError = New clsBeDMS_Log_sincronizacion_fallos()
             BeLogSyncError.IdLogFallo = clsLnDMS_Log_sincronizacion_fallos.MaxID(lConnection, lTransaction) + 1
@@ -197,7 +198,6 @@ Public Class clsLnTrans_oc_encDMS
             BeLogSyncError.Mensaje_error = pMensaje
             BeLogSyncError.Fec_agr = Now
             BeLogSyncError.IdProducto = 0
-
             clsLnDMS_Log_sincronizacion_fallos.Insertar(BeLogSyncError, lConnection, lTransaction)
 
             If localTransaction Then
@@ -290,6 +290,11 @@ Public Class clsLnTrans_oc_encDMS
             listPayload = New List(Of Object)
             clsHelper.LogMensaje(lblprg, "Procesando ingreso: " & pOCEnc.IdOrdenCompraEnc, clsHelper.TipoMensaje.Info)
 
+
+            If pOCEnc.IdOrdenCompraEnc = 1257 Then
+                Debug.Write("aqui")
+            End If
+
             reOcList = New List(Of Object)()
             reOperadorList = New List(Of Object)()
             operadorBodegaList = New List(Of Object)
@@ -370,6 +375,7 @@ Public Class clsLnTrans_oc_encDMS
                             resultado = "Por un error desconocido, no se pudo obtener proveedor_bodega del ingreso: " & pOCEnc.IdOrdenCompraEnc
                             clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                             Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                            clsTransaccion.Commit_Transaction()
                             Return ""
                         End If
 
@@ -378,12 +384,14 @@ Public Class clsLnTrans_oc_encDMS
                     resultado = "Por un error desconocido, no se pudo obtener proveedor del ingreso: " & pOCEnc.IdOrdenCompraEnc
                     clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                     Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                    clsTransaccion.Commit_Transaction()
                     Return ""
                 End If
             Else
                 resultado = "Por un error desconocido, no se pudo obtener propietario del ingreso: " & pOCEnc.IdOrdenCompraEnc
                 clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                 Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                clsTransaccion.Commit_Transaction()
                 Return ""
             End If
 
@@ -456,6 +464,7 @@ Public Class clsLnTrans_oc_encDMS
                         resultado = "Por un error desconocido, no se pudo obtener el producto_bodega del ingreso: " & pOCEnc.IdOrdenCompraEnc
                         clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                         Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                        clsTransaccion.Commit_Transaction()
                         Return ""
                     End If
 
@@ -467,6 +476,7 @@ Public Class clsLnTrans_oc_encDMS
                 resultado = "Por un error desconocido, no se cargo detale del ingreso: " & pOCEnc.IdOrdenCompraEnc
                 clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                 Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                clsTransaccion.Commit_Transaction()
                 Return ""
             End If
 
@@ -623,7 +633,7 @@ Public Class clsLnTrans_oc_encDMS
                                                                         .fec_mod = Now.Date,
                                                                         .costo_hora = 0,
                                                                         .usa_hh = False,
-                                                                        .foto = False,
+                                                                        .foto = New Byte() {},
                                                                         .recibe = False,
                                                                         .ubica = False,
                                                                         .transporta = False,
@@ -705,9 +715,14 @@ Public Class clsLnTrans_oc_encDMS
                                                             .Activo = pTrans_re_tr.Activo
                                         }
                     Else
-                        clsHelper.LogMensaje(lblprg, "La tarea de recepción no tiene asociado un tipo de transacción", clsHelper.TipoMensaje.Error_)
+
+                        ''clsHelper.LogMensaje(lblprg, "La tarea de recepción no tiene asociado un tipo de transacción", clsHelper.TipoMensaje.Error_)
+                        resultado = "Por un error desconocido, La tarea de recepción no tiene asociado un tipo de transacción: " & pOCEnc.IdOrdenCompraEnc
+                        clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
+                        Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                        clsTransaccion.Commit_Transaction()
                         Return ""
-                        'Throw New Exception("La tarea de recepción no tiene asociado un tipo de transacción!")
+
                     End If
 
                     '*********************************************************************************************
@@ -768,6 +783,7 @@ Public Class clsLnTrans_oc_encDMS
                         resultado = "Por un error desconocido, no se cargo la recepcion del ingreso: " & pOCEnc.IdOrdenCompraEnc
                         clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                         Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                        clsTransaccion.Commit_Transaction()
                         Return ""
                     End If
 
@@ -775,6 +791,7 @@ Public Class clsLnTrans_oc_encDMS
                         resultado = "La recepción no tiene detalle del ingreso: " & pOCEnc.IdOrdenCompraEnc
                         clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                         Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                        clsTransaccion.Commit_Transaction()
                         Return ""
                     End If
 
@@ -785,12 +802,24 @@ Public Class clsLnTrans_oc_encDMS
                         pStock_Rec = New clsBeStock_rec()
                         pStock = New clsBeStock()
 
+                        If re_det.IdRecepcionEnc = 282 AndAlso re_det.IdRecepcionDet = 5 Then
+                            Debug.Write("aqui")
+                        End If
 
                         pTrans_movimientos = clsLnTrans_movimientos.GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet(re_det.IdRecepcionEnc,
                                                                                                                                re_det.IdRecepcionDet,
                                                                                                                                re_det.Lic_plate,
                                                                                                                                clsTransaccion.lConnection,
                                                                                                                                clsTransaccion.lTransaction)
+
+                        '#GT06102025: no hay asociación por recepcion enc/det, validamos solo por lic_plate
+                        If pTrans_movimientos Is Nothing Then
+                            pTrans_movimientos = clsLnTrans_movimientos.GetSingle_By_LicPlate(re_det.IdRecepcionEnc, re_det.Lic_plate,
+                                                                                                                    clsTransaccion.lConnection,
+                                                                                                                    clsTransaccion.lTransaction)
+                        End If
+
+
 
                         pStock_Rec = clsLnStock_rec.GetSingle_Stock_By_IdRecepcionEnc_And_IdRecpecionDet(re_det.IdRecepcionEnc,
                                                                                                                      re_det.IdRecepcionDet,
@@ -847,6 +876,7 @@ Public Class clsLnTrans_oc_encDMS
                             resultado = "No se obtuvo el movimiento asociado a la recepción " & re_det.IdRecepcionEnc & " detalle: " & re_det.IdRecepcionDet
                             clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                             Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                            clsTransaccion.Commit_Transaction()
                             Return ""
                         End If
 
@@ -891,10 +921,50 @@ Public Class clsLnTrans_oc_encDMS
                                                                 .pallet_no_estandar = pStock_Rec.Pallet_No_Estandar
                                                       })
                         Else
-                            resultado = "No se obtuvo el stock_rec asociado a la recepción " & re_det.IdRecepcionEnc & " detalle: " & re_det.IdRecepcionDet
-                            clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
-                            Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                            Return ""
+                            'resultado = "No se obtuvo el stock_rec asociado a la recepción " & re_det.IdRecepcionEnc & " detalle: " & re_det.IdRecepcionDet
+                            'clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
+                            'Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                            'Return ""
+
+                            stock_recList.Add(New With {.IdStockRec = 0,
+                                                                .IdPropietarioBodega = 0,
+                                                                .IdProductoBodega = 0,
+                                                                .IdProductoEstado = 0,
+                                                                .IdPresentacion = 0,
+                                                                .IdUnidadMedida = 0,
+                                                                .IdUbicacion = 0,
+                                                                .IdUbicacion_anterior = 0,
+                                                                .IdRecepcionEnc = 0,
+                                                                .IdRecepcionDet = 0,
+                                                                .IdPedidoEnc = 0,
+                                                                .IdPickingEnc = 0,
+                                                                .IdDespachoEnc = 0,
+                                                                .lote = "",
+                                                                .lic_plate = "",
+                                                                .serial = "",
+                                                                .cantidad = 0,
+                                                                .fecha_ingreso = New Date(1900, 1, 1),
+                                                                .fecha_vence = New Date(1900, 1, 1),
+                                                                .uds_lic_plate = 0.0,
+                                                                .no_bulto = 0,
+                                                                .fecha_manufactura = New Date(1900, 1, 1),
+                                                                .añada = 0,
+                                                                .user_agr = "",
+                                                                .fec_agr = New Date(1900, 1, 1),
+                                                                .user_mod = "1",
+                                                                .fec_mod = New Date(1900, 1, 1),
+                                                                .activo = False,
+                                                                .peso = 0.0,
+                                                                .temperatura = 0,
+                                                                .regularizado = False,
+                                                                .fecha_regularizacion = New Date(1900, 1, 1),
+                                                                .no_linea = 0,
+                                                                .atributo_variante_1 = "",
+                                                                .impreso = False,
+                                                                .IdBodega = 0,
+                                                                .pallet_no_estandar = False
+                                                      })
+
                         End If
 
                         If pStock IsNot Nothing Then
@@ -985,6 +1055,7 @@ Public Class clsLnTrans_oc_encDMS
                 resultado = "No existe el registro entre la recepción y el  ingreso: " & pOCEnc.IdOrdenCompraEnc
                 clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
                 Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                clsTransaccion.Commit_Transaction()
                 Return ""
 
             End If

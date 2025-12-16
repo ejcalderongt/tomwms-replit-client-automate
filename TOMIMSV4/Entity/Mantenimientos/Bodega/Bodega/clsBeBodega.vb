@@ -134,6 +134,8 @@ Public Class clsBeBodega : Inherits clsBeBodegaBase
     Public Property Escanear_Licencia_Picking As Boolean = False
 
     Public Property IdTipoEtiquetaLicencia As Integer = 0
+    Public Property IdTipoEtiquetaVerificacion As Integer
+
 
     Public Property IdSimbologiaLicencia As Integer = 0
 
@@ -154,6 +156,8 @@ Public Class clsBeBodega : Inherits clsBeBodegaBase
     Public Property Rango_Dias_Documentos As Integer = 0
     Public Property Agrupar_Sin_Lic_Veri_No_Cons As Boolean = False
     Public Property Advertir_Mpq_Umbas As Boolean = False
+    Public Property Priorizar_Cantidad_Superior As Boolean = False
+
 
     Sub New()
     End Sub
