@@ -1,3 +1,4 @@
+Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
 
@@ -185,6 +186,27 @@ Public Class clsLnTalla
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If Not lConnection Is Nothing Then lConnection.Dispose()
             If Not lTransaction Is Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function Listar(ByVal pActivo As Boolean, ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction) As DataTable
+
+        Try
+
+            Const sp As String = "SELECT * FROM Talla where Activo=@pActivo"
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            cmd.Parameters.Add(New SqlParameter("@PACTIVO", pActivo))
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            Return dt
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
         End Try
 
     End Function

@@ -173,7 +173,7 @@ Partial Class frmAjustePositivo
         Me.cmbColor.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.cmbColor.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbColor.Properties.NullText = ""
-        Me.cmbColor.Size = New System.Drawing.Size(108, 22)
+        Me.cmbColor.Size = New System.Drawing.Size(309, 22)
         Me.cmbColor.TabIndex = 82
         '
         'cmbTalla
@@ -185,7 +185,7 @@ Partial Class frmAjustePositivo
         Me.cmbTalla.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.cmbTalla.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbTalla.Properties.NullText = ""
-        Me.cmbTalla.Size = New System.Drawing.Size(108, 22)
+        Me.cmbTalla.Size = New System.Drawing.Size(309, 22)
         Me.cmbTalla.TabIndex = 81
         '
         'cmbProductos

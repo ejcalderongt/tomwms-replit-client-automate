@@ -285,9 +285,11 @@ Public Class frmAjustePositivo
                 End If
 
 
+
             End If
 
-
+            cmbUmbas.EditValue = vProducto.IdUnidadMedidaBasica
+            cmbUmbas.Enabled = False
 
             pStockTemporal.IsNew = True
             pStockTemporal.IdUnidadMedida = vProducto.IdUnidadMedidaBasica
