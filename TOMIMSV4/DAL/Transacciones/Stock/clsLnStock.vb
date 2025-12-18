@@ -874,6 +874,11 @@ Public Class clsLnStock
             Upd.Add("peso", "@peso", DataType.Parametro)
             Upd.Add("user_mod", "@user_mod", DataType.Parametro)
             Upd.Add("fec_mod", "@fec_mod", DataType.Parametro)
+
+            If oBeStock.IdProductoTallaColor > 0 Then
+                Upd.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
+            End If
+
             Upd.Where("IdStock = @IdStock")
 
             Dim sp As String = Upd.SQL()
@@ -895,6 +900,10 @@ Public Class clsLnStock
             cmd.Parameters.Add(New SqlParameter("@PESO", oBeStock.Peso))
             cmd.Parameters.Add(New SqlParameter("@user_mod", oBeStock.User_mod))
             cmd.Parameters.Add(New SqlParameter("@fec_mod", oBeStock.Fec_mod))
+
+            If oBeStock.IdProductoTallaColor > 0 Then
+                cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor", oBeStock.IdProductoTallaColor))
+            End If
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
