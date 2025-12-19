@@ -229,6 +229,7 @@ public class ProductoSyncService : IProductoSyncService
             if (dto.Clasificacion != null)
                 if (dto.Clasificacion.IdClasificacion != 0)
                     clsLnProducto_clasificacion.InsertOrUpdate(_mapper.Map<clsBeProducto_clasificacion>(dto.Clasificacion), conn, tx);
+
         }
         catch (Exception ex)
         {
