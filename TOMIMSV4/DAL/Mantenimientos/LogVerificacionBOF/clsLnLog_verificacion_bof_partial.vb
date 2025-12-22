@@ -49,7 +49,8 @@ Partial Public Class clsLnLog_verificacion_bof
         Catch ex As Exception
             Dim vMsgError As String =
                 String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-        Throw
+            Throw
         End Try
 
     End Sub
+End Class
