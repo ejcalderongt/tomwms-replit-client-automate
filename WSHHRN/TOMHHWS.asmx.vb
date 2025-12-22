@@ -3062,7 +3062,7 @@ Public Class TOMHHWS
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdPickingEnc:=pIdPickingEnc)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdPickingEnc:=pIdPickingEnc)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -3164,7 +3164,7 @@ Public Class TOMHHWS
             '#MECR04122025: Se agrego bitacora para logs de verificacion
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdPickingEnc:=pIdPickingEnc, pIdPedidoEnc:=pIdPedidoEnc)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdPickingEnc:=pIdPickingEnc, pIdPedidoEnc:=pIdPedidoEnc)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -5034,9 +5034,9 @@ Public Class TOMHHWS
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_verificacion_bof.Agregar_Error(vMsgError,
-                                                    pStackTrace:=ex.StackTrace,
-                                                    pIdPickingDet:=pIdPedidoDet)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError,
+            'pStackTrace:=ex.StackTrace,
+            'pIdPickingDet:=pIdPedidoDet)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -5162,9 +5162,9 @@ Public Class TOMHHWS
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_verificacion_bof.Agregar_Error(vMsgError,
-                                                    pStackTrace:=ex.StackTrace,
-                                                    pIdPedidoDet:=pIdPedidoDet)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError,
+            'pStackTrace:=ex.StackTrace,
+            'pIdPedidoDet:=pIdPedidoDet)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -9202,10 +9202,10 @@ Public Class TOMHHWS
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_verificacion_bof.Agregar_Error(vMsgError,
-                                                    pStackTrace:=ex.StackTrace,
-                                                    pIdPickingEnc:=oBeTrans_picking_enc.IdPickingEnc,
-                                                    pIdPedidoEnc:=oBeTrans_picking_enc.IdPedidoEnc)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError,
+            'pStackTrace:=ex.StackTrace,
+            'pIdPickingEnc:=oBeTrans_picking_enc.IdPickingEnc,
+            'pIdPedidoEnc:=oBeTrans_picking_enc.IdPedidoEnc)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -9250,7 +9250,7 @@ Public Class TOMHHWS
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdPickingEnc:=pIdPickingEnc)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pIdPickingEnc:=pIdPickingEnc)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -9338,7 +9338,7 @@ Public Class TOMHHWS
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pIdBodega:=pIdBodega, pStackTrace:=ex.StackTrace)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pIdBodega:=pIdBodega, pStackTrace:=ex.StackTrace)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -9428,7 +9428,7 @@ Public Class TOMHHWS
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pIdBodega:=pIdBodega, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pIdBodega:=pIdBodega, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -9472,7 +9472,7 @@ Public Class TOMHHWS
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -9522,7 +9522,7 @@ Public Class TOMHHWS
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace, pIdProductoBodega:=pIdProductoBodega)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace, pIdProductoBodega:=pIdProductoBodega)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -9568,7 +9568,7 @@ Public Class TOMHHWS
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pIdPedidoEnc:=pIdPedidoEnc, pStackTrace:=ex.StackTrace)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -9700,11 +9700,11 @@ Public Class TOMHHWS
 
             'MECR04122025: Se agrego bitacora de logs para verificacion.
             Dim msgControl As String = "Se actualizo estado verificado el pedido: " + oBeTrans_pe_enc.IdPedidoEnc
-            clsLnLog_verificacion_bof.Agregar_Error(msgControl,
-                                                    pIdPedidoEnc:=oBeTrans_pe_enc.IdPedidoEnc,
-                                                    pIdBodega:=oBeTrans_pe_enc.IdBodega,
-                                                    pIdPickingEnc:=oBeTrans_pe_enc.IdPickingEnc,
-                                                    pUser_agr:=oBeTrans_pe_enc.User_mod)
+            'clsLnLog_verificacion_bof.Agregar_Error(msgControl,
+            'pIdPedidoEnc:=oBeTrans_pe_enc.IdPedidoEnc,
+            'pIdBodega:=oBeTrans_pe_enc.IdBodega,
+            'pIdPickingEnc:=oBeTrans_pe_enc.IdPickingEnc,
+            'pUser_agr:=oBeTrans_pe_enc.User_mod)
 
             Return Set_Estado_Pedido_Verificado
 
@@ -9714,11 +9714,11 @@ Public Class TOMHHWS
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_verificacion_bof.Agregar_Error(vMsgError,
-                                                    pIdPedidoEnc:=oBeTrans_pe_enc.IdPedidoEnc,
-                                                    pStackTrace:=ex.StackTrace,
-                                                    pIdBodega:=oBeTrans_pe_enc.IdBodega,
-                                                    pIdPickingEnc:=oBeTrans_pe_enc.IdPickingEnc)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError,
+            'pIdPedidoEnc:=oBeTrans_pe_enc.IdPedidoEnc,
+            ' pStackTrace:=ex.StackTrace,
+            'pIdBodega:=oBeTrans_pe_enc.IdBodega,
+            '                                      pIdPickingEnc:=oBeTrans_pe_enc.IdPickingEnc)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -11384,7 +11384,8 @@ Public Class TOMHHWS
                                                      ByRef pCantidad As Double,
                                                      ByRef pPeso As Double,
                                                      ByVal pTipo As Integer,
-                                                     ByVal pIdPedidoEnc As Integer) As Boolean
+                                                     ByVal pIdPedidoEnc As Integer,
+                                                     ByRef pEtiqueta As clsBeTrans_verificacion_etiqueta) As Boolean
 
         Actualiza_Cant_Peso_Verificacion = False
 
@@ -11397,7 +11398,9 @@ Public Class TOMHHWS
                                                                                 pCantidad,
                                                                                 pPeso,
                                                                                 pTipo,
-                                                                                pIdPedidoEnc)
+                                                                                pIdPedidoEnc,
+                                                                                pEtiqueta)
+
 
             Else
                 Throw New Exception("ERROR_20220410_0907: La lista de verificación está vacía.")
@@ -11409,7 +11412,7 @@ Public Class TOMHHWS
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pCantidad:=pCantidad, pIdPedidoEnc:=pIdPedidoEnc)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pCantidad:=pCantidad, pIdPedidoEnc:=pIdPedidoEnc)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -16768,7 +16771,7 @@ Public Class TOMHHWS
             ' Manejo de errores
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pIdBodega:=IdBodega, pIdPedidoEnc:=IdPedidoEnc, pStackTrace:=ex.StackTrace)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pIdBodega:=IdBodega, pIdPedidoEnc:=IdPedidoEnc, pStackTrace:=ex.StackTrace)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -17151,11 +17154,11 @@ Public Class TOMHHWS
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_verificacion_bof.Agregar_Error(vMsgError,
-                                                    pIdPedidoEnc:=pIdPedidoEnc,
-                                                    pStackTrace:=ex.StackTrace,
-                                                    pIdBodega:=pIdBodega,
-                                                    pIdPickingEnc:=pIdPickingEnc)
+            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError,
+            'pIdPedidoEnc:=pIdPedidoEnc,
+            'pStackTrace:=ex.StackTrace,
+            'pIdBodega:=pIdBodega,
+            'pIdPickingEnc:=pIdPickingEnc)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
@@ -17441,6 +17444,46 @@ Public Class TOMHHWS
             Else
                 Operador_Tiene_Permiso = False
             End If
+
+        Catch ex As Exception
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+
+            If mArch IsNot Nothing Then
+
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+
+            End If
+
+        End Try
+
+    End Function
+
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Get_TipoEtiqueta_By_Id(ByVal pIdTipoEtiqueta As Integer) As clsBeTipo_etiqueta
+
+        Try
+
+            Return clsLnTipo_etiqueta.GetSingle_By_IdTipoEtiqueta(pIdTipoEtiqueta)
 
         Catch ex As Exception
             'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)

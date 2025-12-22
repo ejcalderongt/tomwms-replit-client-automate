@@ -105,7 +105,7 @@ Partial Public Class clsLnBodega
             For Each T As DataRow In Dt.Rows
                 vBeTramo = New clsBeBodega_tramo
                 clsLnBodega_tramo.Cargar(vBeTramo, T)
-                vBeTramo.pFont = New clsBeFont_Enc
+                vBeTramo.pFont = New clsBeFont_enc
                 vBeTramo.pFont.IdFontEnc = vBeTramo.IdFontEnc
                 vBeTramo.pFont = clsLnFont_enc.GetSingleByIdFontEnc(vBeTramo.IdFontEnc, lConnection, lTransaction)
                 lTramos.Add(vBeTramo)

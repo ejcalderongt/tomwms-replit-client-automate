@@ -1264,6 +1264,7 @@ Public Class frmBodega
             nudRangoDiasDocumentos.Value = pBeBodega.Rango_Dias_Documentos
 
             chkAgrupar_sin_lic_veri_no_cons.Checked = pBeBodega.Agrupar_Sin_Lic_Veri_No_Cons
+            chkImprimir_Verificacion.Checked = pBeBodega.impresion_verificacion
 
         Catch ex As Exception
 
@@ -1487,6 +1488,7 @@ Public Class frmBodega
             pBeBodega.Ruta_CDN = txtRutaCDN.Text
             pBeBodega.Rango_Dias_Documentos = nudRangoDiasDocumentos.Value
             pBeBodega.Agrupar_Sin_Lic_Veri_No_Cons = chkAgrupar_sin_lic_veri_no_cons.Checked
+            pBeBodega.impresion_verificacion = chkImprimir_Verificacion.Checked
 
             Guardar = clsLnBodega.Insertar(pBeBodega) > 0
 
@@ -1688,6 +1690,7 @@ Public Class frmBodega
                 pBeBodega.Homologar_Lote_Vencimiento = chkHomologarLoteConFechaVence.Checked
                 pBeBodega.Escanear_Licencia_Picking = chkEscanearLicenciaPicking.Checked
                 pBeBodega.IdTipoEtiquetaLicencia = cmbEtiqueta.EditValue
+                pBeBodega.IdTipoEtiquetaVerificacion = cmbEtiquetaVerificacion.EditValue
                 pBeBodega.IdSimbologiaLicencia = cmbSymbology.EditValue
                 pBeBodega.Interface_SAP = chkInterface_SAP.Checked
                 pBeBodega.Restringir_Areas_SAP = chkRestringirAreasSAP.Checked
@@ -1699,6 +1702,7 @@ Public Class frmBodega
                 pBeBodega.Ruta_CDN = txtRutaCDN.Text
                 pBeBodega.Rango_Dias_Documentos = nudRangoDiasDocumentos.Value
                 pBeBodega.Agrupar_Sin_Lic_Veri_No_Cons = chkAgrupar_sin_lic_veri_no_cons.Checked
+                pBeBodega.impresion_verificacion = chkImprimir_Verificacion.Checked
                 Actualizar = clsLnBodega.Actualizar(pBeBodega) > 0
 
             End If

@@ -28,6 +28,8 @@ Partial Public Class clsLnLog_verificacion_bof
             oBe.Fec_agr = Now
 
             ' Optional
+            '       oBe.RutaError = pStackTrace
+            ' Optional
             oBe.RutaError = pStackTrace
             oBe.IdBodega = pIdBodega
             oBe.IdPedidoEnc = pIdPedidoEnc
@@ -43,7 +45,7 @@ Partial Public Class clsLnLog_verificacion_bof
             oBe.User_agr = pUser_agr
 
             Insertar(oBe, pConection, pTransaction)
-
+            'Dim vMsgError As String =
         Catch ex As Exception
             Dim vMsgError As String =
                 String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
@@ -51,5 +53,4 @@ Partial Public Class clsLnLog_verificacion_bof
         End Try
 
     End Sub
-
 End Class
