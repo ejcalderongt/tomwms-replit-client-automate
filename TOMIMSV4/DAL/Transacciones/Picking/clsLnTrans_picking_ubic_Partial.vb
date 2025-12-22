@@ -6303,15 +6303,15 @@ Partial Public Class clsLnTrans_picking_ubic
 
                 '#MECR11122025: Se agrego bitacora para logs de verificacion
                 resultado += " Codigo " & vBePickingUbic.CodigoProducto & " Pedido parámetro " & pIdPedidoEnc
-                'clsLnLog_error_wms.Agregar_Error(resultado)
-                '  clsLnLog_verificacion_bof.Agregar_Error(resultado,
-                '  pIdPedidoDet:=vBePickingUbic.IdPedidoDet,
-                ' pIdPedidoEnc:=vBePickingUbic.IdPedidoEnc,
-                ' pIdPickingEnc:=vBePickingUbic.IdPickingEnc,
-                'pIdPickingDet:=vBePickingUbic.IdPickingDet,
-                'pIdPickingUbic:=vBePickingUbic.IdPickingUbic,
-                'pConection:=clsTrans.lConnection,
-                'pTransaction:=clsTrans.lTransaction)
+                clsLnLog_error_wms.Agregar_Error(resultado)
+                clsLnLog_verificacion_bof.Agregar_Error(resultado,
+                  pIdPedidoDet:=vBePickingUbic.IdPedidoDet,
+                  pIdPedidoEnc:=vBePickingUbic.IdPedidoEnc,
+                  pIdPickingEnc:=vBePickingUbic.IdPickingEnc,
+                  pIdPickingDet:=vBePickingUbic.IdPickingDet,
+                  pIdPickingUbic:=vBePickingUbic.IdPickingUbic,
+                  pConection:=clsTrans.lConnection,
+                  pTransaction:=clsTrans.lTransaction)
 
                 If (Math.Round(pCantidad - CantPendiente, 6) = 0) Then
                     Exit For
