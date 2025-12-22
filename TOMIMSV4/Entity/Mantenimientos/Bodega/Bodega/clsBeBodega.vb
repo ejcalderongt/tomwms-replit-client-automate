@@ -134,8 +134,7 @@ Public Class clsBeBodega : Inherits clsBeBodegaBase
     Public Property Escanear_Licencia_Picking As Boolean = False
 
     Public Property IdTipoEtiquetaLicencia As Integer = 0
-    Public Property IdTipoEtiquetaVerificacion As Integer
-
+    Public Property IdTipoEtiquetaVerificacion As Integer = 0
 
     Public Property IdSimbologiaLicencia As Integer = 0
 
