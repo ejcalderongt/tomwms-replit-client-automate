@@ -1049,6 +1049,7 @@ Partial Public Class clsLnOperador_bodega
     End Function
 
 
+
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls
 
