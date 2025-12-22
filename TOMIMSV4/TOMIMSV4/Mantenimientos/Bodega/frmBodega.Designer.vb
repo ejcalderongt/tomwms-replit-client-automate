@@ -186,8 +186,8 @@ Partial Class frmBodega
         Dim Label97 As System.Windows.Forms.Label
         Dim Label98 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBodega))
-        Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
-        Dim Code128Generator4 As DevExpress.XtraPrinting.BarCode.Code128Generator = New DevExpress.XtraPrinting.BarCode.Code128Generator()
+        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim Code128Generator1 As DevExpress.XtraPrinting.BarCode.Code128Generator = New DevExpress.XtraPrinting.BarCode.Code128Generator()
         Me.Label80 = New System.Windows.Forms.Label()
         Me.Label81 = New System.Windows.Forms.Label()
         Me.lblRutaCDN = New System.Windows.Forms.Label()
@@ -470,6 +470,8 @@ Partial Class frmBodega
         Me.chkOrdenarPickingDescendente = New DevExpress.XtraEditors.CheckEdit()
         Me.chkOrdenarNombreCompleto = New DevExpress.XtraEditors.CheckEdit()
         Me.GroupControl2 = New DevExpress.XtraEditors.GroupControl()
+        Me.cmbEtiquetaVerificacion = New DevExpress.XtraEditors.LookUpEdit()
+        Me.Label99 = New System.Windows.Forms.Label()
         Me.Bcc = New DevExpress.XtraEditors.BarCodeControl()
         Me.cmbSymbology = New DevExpress.XtraEditors.LookUpEdit()
         Me.cmbEtiqueta = New DevExpress.XtraEditors.LookUpEdit()
@@ -525,8 +527,8 @@ Partial Class frmBodega
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.NumericUpDown1 = New System.Windows.Forms.NumericUpDown()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
-        Me.Label99 = New System.Windows.Forms.Label()
-        Me.cmbEtiquetaVerificacion = New DevExpress.XtraEditors.LookUpEdit()
+        Me.Label100 = New System.Windows.Forms.Label()
+        Me.chkImprimir_Verificacion = New DevExpress.XtraEditors.CheckEdit()
         User_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
@@ -914,6 +916,7 @@ Partial Class frmBodega
         CType(Me.chkOrdenarNombreCompleto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl2.SuspendLayout()
+        CType(Me.cmbEtiquetaVerificacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbSymbology.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbEtiqueta.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dtHorarioEjecucionHistorico.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -948,7 +951,7 @@ Partial Class frmBodega
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.cmbEtiquetaVerificacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkImprimir_Verificacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -2358,7 +2361,7 @@ Partial Class frmBodega
         Me.GroupControl12.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl12.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl12.Name = "GroupControl12"
-        Me.GroupControl12.Size = New System.Drawing.Size(476, 102)
+        Me.GroupControl12.Size = New System.Drawing.Size(476, 250)
         Me.GroupControl12.TabIndex = 0
         Me.GroupControl12.Text = "Datos de Tramo"
         '
@@ -2699,7 +2702,7 @@ Partial Class frmBodega
         Me.GroupControl11.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl11.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl11.Name = "GroupControl11"
-        Me.GroupControl11.Size = New System.Drawing.Size(703, 102)
+        Me.GroupControl11.Size = New System.Drawing.Size(703, 250)
         Me.GroupControl11.TabIndex = 0
         Me.GroupControl11.Text = "Dimensiones"
         '
@@ -2804,7 +2807,7 @@ Partial Class frmBodega
         Me.GroupControl10.Controls.Add(Me.grdTramo)
         Me.GroupControl10.Controls.Add(Me.chkTramosActivos)
         Me.GroupControl10.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.GroupControl10.Location = New System.Drawing.Point(0, 127)
+        Me.GroupControl10.Location = New System.Drawing.Point(0, 275)
         Me.GroupControl10.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl10.Name = "GroupControl10"
         Me.GroupControl10.Size = New System.Drawing.Size(1184, 308)
@@ -2887,7 +2890,7 @@ Partial Class frmBodega
         Me.GroupControl14.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl14.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl14.Name = "GroupControl14"
-        Me.GroupControl14.Size = New System.Drawing.Size(621, 204)
+        Me.GroupControl14.Size = New System.Drawing.Size(621, 352)
         Me.GroupControl14.TabIndex = 0
         Me.GroupControl14.Text = "Dimensiones"
         '
@@ -2913,7 +2916,7 @@ Partial Class frmBodega
         '
         Me.chkUbicacionesActivas.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.chkUbicacionesActivas.EditValue = True
-        Me.chkUbicacionesActivas.Location = New System.Drawing.Point(2, 182)
+        Me.chkUbicacionesActivas.Location = New System.Drawing.Point(2, 330)
         Me.chkUbicacionesActivas.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.chkUbicacionesActivas.Name = "chkUbicacionesActivas"
         Me.chkUbicacionesActivas.Properties.Caption = "Listar ubicaciones activas"
@@ -3114,7 +3117,7 @@ Partial Class frmBodega
         '
         Me.GroupControl15.Controls.Add(Me.grdUbicacion)
         Me.GroupControl15.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.GroupControl15.Location = New System.Drawing.Point(0, 229)
+        Me.GroupControl15.Location = New System.Drawing.Point(0, 377)
         Me.GroupControl15.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl15.Name = "GroupControl15"
         Me.GroupControl15.Size = New System.Drawing.Size(1184, 206)
@@ -3152,7 +3155,7 @@ Partial Class frmBodega
         Me.GroupControl16.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl16.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl16.Name = "GroupControl16"
-        Me.GroupControl16.Size = New System.Drawing.Size(1184, 435)
+        Me.GroupControl16.Size = New System.Drawing.Size(1184, 583)
         Me.GroupControl16.TabIndex = 0
         Me.GroupControl16.Text = "Bodega"
         '
@@ -3165,7 +3168,7 @@ Partial Class frmBodega
         Me.tlUbicaciones.Name = "tlUbicaciones"
         Me.tlUbicaciones.OptionsBehavior.Editable = False
         Me.tlUbicaciones.OptionsBehavior.ReadOnly = True
-        Me.tlUbicaciones.Size = New System.Drawing.Size(1180, 410)
+        Me.tlUbicaciones.Size = New System.Drawing.Size(1180, 558)
         Me.tlUbicaciones.TabIndex = 0
         Me.tlUbicaciones.TreeLevelWidth = 19
         '
@@ -3173,13 +3176,13 @@ Partial Class frmBodega
         '
         Me.Dgrid.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Dgrid.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        GridLevelNode2.RelationName = "Level1"
-        Me.Dgrid.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode2})
+        GridLevelNode1.RelationName = "Level1"
+        Me.Dgrid.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
         Me.Dgrid.Location = New System.Drawing.Point(0, 146)
         Me.Dgrid.MainView = Me.GridView1
         Me.Dgrid.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Dgrid.Name = "Dgrid"
-        Me.Dgrid.Size = New System.Drawing.Size(1184, 289)
+        Me.Dgrid.Size = New System.Drawing.Size(1184, 437)
         Me.Dgrid.TabIndex = 1
         Me.Dgrid.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
         '
@@ -3289,7 +3292,7 @@ Partial Class frmBodega
         Me.tabDatos.Controls.Add(Me.grpDatosGen)
         Me.tabDatos.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.tabDatos.Name = "tabDatos"
-        Me.tabDatos.Size = New System.Drawing.Size(1184, 435)
+        Me.tabDatos.Size = New System.Drawing.Size(1184, 583)
         Me.tabDatos.Text = "Bodega"
         '
         'grpDatosGen
@@ -3299,7 +3302,7 @@ Partial Class frmBodega
         Me.grpDatosGen.Location = New System.Drawing.Point(0, 0)
         Me.grpDatosGen.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.grpDatosGen.Name = "grpDatosGen"
-        Me.grpDatosGen.Size = New System.Drawing.Size(1184, 435)
+        Me.grpDatosGen.Size = New System.Drawing.Size(1184, 583)
         Me.grpDatosGen.TabIndex = 0
         Me.grpDatosGen.Text = "Datos de Bodega"
         '
@@ -3340,7 +3343,7 @@ Partial Class frmBodega
         Me.XtraScrollableControl.Location = New System.Drawing.Point(2, 23)
         Me.XtraScrollableControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.XtraScrollableControl.Name = "XtraScrollableControl"
-        Me.XtraScrollableControl.Size = New System.Drawing.Size(1180, 410)
+        Me.XtraScrollableControl.Size = New System.Drawing.Size(1180, 558)
         Me.XtraScrollableControl.TabIndex = 0
         '
         'cmdRutaCDN
@@ -3473,9 +3476,9 @@ Partial Class frmBodega
         Me.lblMensajeUbicacionesDef.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.lblMensajeUbicacionesDef.Font = New System.Drawing.Font("Tahoma", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblMensajeUbicacionesDef.ForeColor = System.Drawing.Color.Red
-        Me.lblMensajeUbicacionesDef.Location = New System.Drawing.Point(0, 496)
+        Me.lblMensajeUbicacionesDef.Location = New System.Drawing.Point(0, 509)
         Me.lblMensajeUbicacionesDef.Name = "lblMensajeUbicacionesDef"
-        Me.lblMensajeUbicacionesDef.Size = New System.Drawing.Size(1163, 49)
+        Me.lblMensajeUbicacionesDef.Size = New System.Drawing.Size(1180, 49)
         Me.lblMensajeUbicacionesDef.TabIndex = 25
         Me.lblMensajeUbicacionesDef.Text = "-"
         '
@@ -3590,7 +3593,7 @@ Partial Class frmBodega
         Me.tabDimensionesBod.Controls.Add(Me.GroupControl18)
         Me.tabDimensionesBod.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.tabDimensionesBod.Name = "tabDimensionesBod"
-        Me.tabDimensionesBod.Size = New System.Drawing.Size(1184, 435)
+        Me.tabDimensionesBod.Size = New System.Drawing.Size(1184, 583)
         Me.tabDimensionesBod.Text = "Dimensiones de bodega"
         '
         'GroupControl18
@@ -3611,7 +3614,7 @@ Partial Class frmBodega
         Me.GroupControl18.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl18.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl18.Name = "GroupControl18"
-        Me.GroupControl18.Size = New System.Drawing.Size(1184, 435)
+        Me.GroupControl18.Size = New System.Drawing.Size(1184, 583)
         Me.GroupControl18.TabIndex = 0
         '
         'Label27
@@ -3716,7 +3719,7 @@ Partial Class frmBodega
         Me.tabArea.Controls.Add(Me.GroupControl17)
         Me.tabArea.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.tabArea.Name = "tabArea"
-        Me.tabArea.Size = New System.Drawing.Size(1184, 435)
+        Me.tabArea.Size = New System.Drawing.Size(1184, 583)
         Me.tabArea.Text = "Areas"
         '
         'SplitContainer1
@@ -3733,7 +3736,7 @@ Partial Class frmBodega
         'SplitContainer1.Panel2
         '
         Me.SplitContainer1.Panel2.Controls.Add(Me.GroupControl6)
-        Me.SplitContainer1.Size = New System.Drawing.Size(1184, 143)
+        Me.SplitContainer1.Size = New System.Drawing.Size(1184, 291)
         Me.SplitContainer1.SplitterDistance = 541
         Me.SplitContainer1.SplitterWidth = 5
         Me.SplitContainer1.TabIndex = 1
@@ -3763,7 +3766,7 @@ Partial Class frmBodega
         Me.GroupControl4.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl4.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl4.Name = "GroupControl4"
-        Me.GroupControl4.Size = New System.Drawing.Size(541, 143)
+        Me.GroupControl4.Size = New System.Drawing.Size(541, 291)
         Me.GroupControl4.TabIndex = 0
         Me.GroupControl4.Text = "Datos de Area"
         '
@@ -3906,7 +3909,7 @@ Partial Class frmBodega
         Me.GroupControl6.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl6.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl6.Name = "GroupControl6"
-        Me.GroupControl6.Size = New System.Drawing.Size(638, 143)
+        Me.GroupControl6.Size = New System.Drawing.Size(638, 291)
         Me.GroupControl6.TabIndex = 0
         Me.GroupControl6.Text = "Dimensiones"
         '
@@ -3987,7 +3990,7 @@ Partial Class frmBodega
         Me.GroupControl17.Controls.Add(Me.grdAreaBodega)
         Me.GroupControl17.Controls.Add(Me.chkAreasBodegaActivos)
         Me.GroupControl17.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.GroupControl17.Location = New System.Drawing.Point(0, 168)
+        Me.GroupControl17.Location = New System.Drawing.Point(0, 316)
         Me.GroupControl17.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl17.Name = "GroupControl17"
         Me.GroupControl17.Size = New System.Drawing.Size(1184, 267)
@@ -4041,7 +4044,7 @@ Partial Class frmBodega
         Me.tabSector.Controls.Add(Me.ToolStrip1)
         Me.tabSector.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.tabSector.Name = "tabSector"
-        Me.tabSector.Size = New System.Drawing.Size(1184, 435)
+        Me.tabSector.Size = New System.Drawing.Size(1184, 583)
         Me.tabSector.Text = "Sector"
         '
         'SplitContainer2
@@ -4058,7 +4061,7 @@ Partial Class frmBodega
         'SplitContainer2.Panel2
         '
         Me.SplitContainer2.Panel2.Controls.Add(Me.GroupControl7)
-        Me.SplitContainer2.Size = New System.Drawing.Size(1184, 103)
+        Me.SplitContainer2.Size = New System.Drawing.Size(1184, 251)
         Me.SplitContainer2.SplitterDistance = 555
         Me.SplitContainer2.SplitterWidth = 5
         Me.SplitContainer2.TabIndex = 1
@@ -4085,7 +4088,7 @@ Partial Class frmBodega
         Me.GroupControl8.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl8.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl8.Name = "GroupControl8"
-        Me.GroupControl8.Size = New System.Drawing.Size(555, 103)
+        Me.GroupControl8.Size = New System.Drawing.Size(555, 251)
         Me.GroupControl8.TabIndex = 0
         Me.GroupControl8.Text = "Datos de Sector"
         '
@@ -4212,7 +4215,7 @@ Partial Class frmBodega
         Me.GroupControl7.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl7.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl7.Name = "GroupControl7"
-        Me.GroupControl7.Size = New System.Drawing.Size(624, 103)
+        Me.GroupControl7.Size = New System.Drawing.Size(624, 251)
         Me.GroupControl7.TabIndex = 0
         Me.GroupControl7.Text = "Dimensiones"
         '
@@ -4325,7 +4328,7 @@ Partial Class frmBodega
         Me.GroupControl9.Controls.Add(Me.grdSectorArea)
         Me.GroupControl9.Controls.Add(Me.chkSectoresActivos)
         Me.GroupControl9.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.GroupControl9.Location = New System.Drawing.Point(0, 128)
+        Me.GroupControl9.Location = New System.Drawing.Point(0, 276)
         Me.GroupControl9.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl9.Name = "GroupControl9"
         Me.GroupControl9.Size = New System.Drawing.Size(1184, 307)
@@ -4404,7 +4407,7 @@ Partial Class frmBodega
         Me.tabTramo.Controls.Add(Me.ToolStrip2)
         Me.tabTramo.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.tabTramo.Name = "tabTramo"
-        Me.tabTramo.Size = New System.Drawing.Size(1184, 435)
+        Me.tabTramo.Size = New System.Drawing.Size(1184, 583)
         Me.tabTramo.Text = "Tramo"
         '
         'SplitContainer3
@@ -4421,7 +4424,7 @@ Partial Class frmBodega
         'SplitContainer3.Panel2
         '
         Me.SplitContainer3.Panel2.Controls.Add(Me.GroupControl11)
-        Me.SplitContainer3.Size = New System.Drawing.Size(1184, 102)
+        Me.SplitContainer3.Size = New System.Drawing.Size(1184, 250)
         Me.SplitContainer3.SplitterDistance = 476
         Me.SplitContainer3.SplitterWidth = 5
         Me.SplitContainer3.TabIndex = 1
@@ -4461,7 +4464,7 @@ Partial Class frmBodega
         Me.TabUbicacion.Controls.Add(Me.ToolStrip3)
         Me.TabUbicacion.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.TabUbicacion.Name = "TabUbicacion"
-        Me.TabUbicacion.Size = New System.Drawing.Size(1184, 435)
+        Me.TabUbicacion.Size = New System.Drawing.Size(1184, 583)
         Me.TabUbicacion.Text = "Ubicación"
         '
         'SplitContainer4
@@ -4478,7 +4481,7 @@ Partial Class frmBodega
         'SplitContainer4.Panel2
         '
         Me.SplitContainer4.Panel2.Controls.Add(Me.GroupControl14)
-        Me.SplitContainer4.Size = New System.Drawing.Size(1184, 204)
+        Me.SplitContainer4.Size = New System.Drawing.Size(1184, 352)
         Me.SplitContainer4.SplitterDistance = 558
         Me.SplitContainer4.SplitterWidth = 5
         Me.SplitContainer4.TabIndex = 1
@@ -4511,7 +4514,7 @@ Partial Class frmBodega
         Me.GroupControl13.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl13.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl13.Name = "GroupControl13"
-        Me.GroupControl13.Size = New System.Drawing.Size(558, 204)
+        Me.GroupControl13.Size = New System.Drawing.Size(558, 352)
         Me.GroupControl13.TabIndex = 0
         Me.GroupControl13.Text = "Datos de Ubicación"
         '
@@ -4667,7 +4670,7 @@ Partial Class frmBodega
         Me.tabReferencia.Controls.Add(Me.GroupControl16)
         Me.tabReferencia.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.tabReferencia.Name = "tabReferencia"
-        Me.tabReferencia.Size = New System.Drawing.Size(1184, 435)
+        Me.tabReferencia.Size = New System.Drawing.Size(1184, 583)
         Me.tabReferencia.Text = "Árbol de ubicaciones"
         '
         'tabParametros
@@ -4676,7 +4679,7 @@ Partial Class frmBodega
         Me.tabParametros.Controls.Add(Me.GroupControl1)
         Me.tabParametros.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.tabParametros.Name = "tabParametros"
-        Me.tabParametros.Size = New System.Drawing.Size(1184, 435)
+        Me.tabParametros.Size = New System.Drawing.Size(1184, 583)
         Me.tabParametros.Text = "Parametros Monitor"
         '
         'tabUbicacionesDefecto
@@ -5094,6 +5097,8 @@ Partial Class frmBodega
         '
         'GroupBox4
         '
+        Me.GroupBox4.Controls.Add(Me.chkImprimir_Verificacion)
+        Me.GroupBox4.Controls.Add(Me.Label100)
         Me.GroupBox4.Controls.Add(Me.chkAgrupar_sin_lic_veri_no_cons)
         Me.GroupBox4.Controls.Add(Me.Label83)
         Me.GroupBox4.Controls.Add(Me.chkVerificacion_Consolidada)
@@ -5441,6 +5446,24 @@ Partial Class frmBodega
         Me.GroupControl2.TabIndex = 0
         Me.GroupControl2.Text = "Ubicaciones por defecto"
         '
+        'cmbEtiquetaVerificacion
+        '
+        Me.cmbEtiquetaVerificacion.Location = New System.Drawing.Point(377, 424)
+        Me.cmbEtiquetaVerificacion.Name = "cmbEtiquetaVerificacion"
+        Me.cmbEtiquetaVerificacion.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbEtiquetaVerificacion.Properties.NullText = ""
+        Me.cmbEtiquetaVerificacion.Size = New System.Drawing.Size(106, 20)
+        Me.cmbEtiquetaVerificacion.TabIndex = 47
+        '
+        'Label99
+        '
+        Me.Label99.AutoSize = True
+        Me.Label99.Location = New System.Drawing.Point(379, 406)
+        Me.Label99.Name = "Label99"
+        Me.Label99.Size = New System.Drawing.Size(104, 13)
+        Me.Label99.TabIndex = 46
+        Me.Label99.Text = "Etiqueta Verificación"
+        '
         'Bcc
         '
         Me.Bcc.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -5448,7 +5471,7 @@ Partial Class frmBodega
         Me.Bcc.Name = "Bcc"
         Me.Bcc.Padding = New System.Windows.Forms.Padding(10, 2, 10, 0)
         Me.Bcc.Size = New System.Drawing.Size(167, 43)
-        Me.Bcc.Symbology = Code128Generator4
+        Me.Bcc.Symbology = Code128Generator1
         Me.Bcc.TabIndex = 45
         '
         'cmbSymbology
@@ -5875,7 +5898,7 @@ Partial Class frmBodega
         '
         Me.tabListaUbicaciones.Controls.Add(Me.GroupControl5)
         Me.tabListaUbicaciones.Name = "tabListaUbicaciones"
-        Me.tabListaUbicaciones.Size = New System.Drawing.Size(1184, 435)
+        Me.tabListaUbicaciones.Size = New System.Drawing.Size(1184, 583)
         Me.tabListaUbicaciones.Text = "Lista de ubicaciones"
         '
         'GroupControl5
@@ -5885,7 +5908,7 @@ Partial Class frmBodega
         Me.GroupControl5.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl5.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl5.Name = "GroupControl5"
-        Me.GroupControl5.Size = New System.Drawing.Size(1184, 435)
+        Me.GroupControl5.Size = New System.Drawing.Size(1184, 583)
         Me.GroupControl5.TabIndex = 3
         Me.GroupControl5.Text = "Detalle Ubicaciones"
         '
@@ -5897,7 +5920,7 @@ Partial Class frmBodega
         Me.dgridUbicaciones.MainView = Me.GridView4
         Me.dgridUbicaciones.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridUbicaciones.Name = "dgridUbicaciones"
-        Me.dgridUbicaciones.Size = New System.Drawing.Size(1180, 410)
+        Me.dgridUbicaciones.Size = New System.Drawing.Size(1180, 558)
         Me.dgridUbicaciones.TabIndex = 0
         Me.dgridUbicaciones.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView4})
         '
@@ -5975,23 +5998,23 @@ Partial Class frmBodega
         Me.NumericUpDown1.TabIndex = 26
         Me.NumericUpDown1.Value = New Decimal(New Integer() {1, 0, 0, 0})
         '
-        'Label99
+        'Label100
         '
-        Me.Label99.AutoSize = True
-        Me.Label99.Location = New System.Drawing.Point(379, 406)
-        Me.Label99.Name = "Label99"
-        Me.Label99.Size = New System.Drawing.Size(104, 13)
-        Me.Label99.TabIndex = 46
-        Me.Label99.Text = "Etiqueta Verificación"
+        Me.Label100.AutoSize = True
+        Me.Label100.Location = New System.Drawing.Point(328, 104)
+        Me.Label100.Name = "Label100"
+        Me.Label100.Size = New System.Drawing.Size(102, 13)
+        Me.Label100.TabIndex = 122
+        Me.Label100.Text = "Imprimir verificacion"
         '
-        'cmbEtiquetaVerificacion
+        'chkImprimir_Verificacion
         '
-        Me.cmbEtiquetaVerificacion.Location = New System.Drawing.Point(377, 424)
-        Me.cmbEtiquetaVerificacion.Name = "cmbEtiquetaVerificacion"
-        Me.cmbEtiquetaVerificacion.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbEtiquetaVerificacion.Properties.NullText = ""
-        Me.cmbEtiquetaVerificacion.Size = New System.Drawing.Size(106, 20)
-        Me.cmbEtiquetaVerificacion.TabIndex = 47
+        Me.chkImprimir_Verificacion.Location = New System.Drawing.Point(590, 94)
+        Me.chkImprimir_Verificacion.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.chkImprimir_Verificacion.Name = "chkImprimir_Verificacion"
+        Me.chkImprimir_Verificacion.Properties.Caption = ""
+        Me.chkImprimir_Verificacion.Size = New System.Drawing.Size(20, 20)
+        Me.chkImprimir_Verificacion.TabIndex = 123
         '
         'frmBodega
         '
@@ -6291,6 +6314,7 @@ Partial Class frmBodega
         CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl2.ResumeLayout(False)
         Me.GroupControl2.PerformLayout()
+        CType(Me.cmbEtiquetaVerificacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbSymbology.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbEtiqueta.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.dtHorarioEjecucionHistorico.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6326,7 +6350,7 @@ Partial Class frmBodega
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
         CType(Me.NumericUpDown1, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.cmbEtiquetaVerificacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkImprimir_Verificacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -6670,4 +6694,6 @@ Partial Class frmBodega
     Friend WithEvents XtraScrollableControl1 As DevExpress.XtraEditors.XtraScrollableControl
     Friend WithEvents Label99 As Label
     Friend WithEvents cmbEtiquetaVerificacion As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents chkImprimir_Verificacion As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents Label100 As Label
 End Class
