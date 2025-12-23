@@ -105,4 +105,66 @@ Partial Public Class clsLnTrans_verificacion_etiqueta
 
         Return zpl
     End Function
+
+    '#MA20251222 - Reimpresión de etiqueta de verificación
+    Public Shared Function Obtener_Etiqueta_Verificacion(ByVal pIdPedidoEnc As Integer,
+                                                         ByVal pIdProductoBodega As Integer,
+                                                         ByVal pLote As String,
+                                                         ByVal pFechaVence As Date,
+                                                         ByVal pLicPlate As String) As clsBeTrans_verificacion_etiqueta
+
+        Dim etiqueta As clsBeTrans_verificacion_etiqueta = Nothing
+
+        Try
+            Dim sql As String = "SELECT TOP (1) * FROM trans_verificacion_etiqueta  
+                                 WHERE IdPedidoEnc = @IdPedidoEnc
+                                 AND IdProductoBodega = @IdProductoBodega
+                                 AND Lote = @Lote 
+                                 AND Fecha_vence = @FechaVence
+                                 AND (Lic_plate = @LicPlate
+                                      OR Lic_plate = '0'
+                                      OR @LicPlate = '0'
+                                      OR @LicPlate = ''
+                                      OR Lic_plate IS NULL)
+                                 AND Activo = 1  
+                                 ORDER BY Fec_agr DESC"
+
+            Using lConnection As SqlConnection = New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                    Using cmd As New SqlCommand(sql, lConnection, lTransaction)
+
+                        cmd.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
+                        cmd.Parameters.AddWithValue("@IdProductoBodega", pIdProductoBodega)
+                        cmd.Parameters.AddWithValue("@Lote", pLote)
+                        cmd.Parameters.AddWithValue("@FechaVence", pFechaVence)
+                        cmd.Parameters.AddWithValue("@LicPlate", pLicPlate)
+
+                        Using da As New SqlDataAdapter(cmd)
+                            Dim dt As New DataTable()
+                            da.Fill(dt)
+
+                            If dt.Rows.Count > 0 Then
+                                etiqueta = New clsBeTrans_verificacion_etiqueta()
+                                Cargar(etiqueta, dt.Rows(0))
+                            End If
+                        End Using
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+                lConnection.Close()
+
+            End Using
+
+            Return etiqueta
+
+        Catch ex As Exception
+            Throw New Exception($"{MethodBase.GetCurrentMethod.Name}: {ex.Message}")
+        End Try
+    End Function
+
 End Class

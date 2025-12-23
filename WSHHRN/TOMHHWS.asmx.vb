@@ -17518,4 +17518,25 @@ Public Class TOMHHWS
 
     End Function
 
+    ' #MA20251222 Reimprimir
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Obtener_Etiqueta_Verificacion_WS(ByVal pIdPedidoEnc As Integer,
+                                                     ByVal pIdProductoBodega As Integer,
+                                                     ByVal pLote As String,
+                                                     ByVal pFechaVence As Date,
+                                                     ByVal pLicPlate As String) As clsBeTrans_verificacion_etiqueta
+        Try
+
+            Return clsLnTrans_verificacion_etiqueta.Obtener_Etiqueta_Verificacion(pIdPedidoEnc,
+                                                                                  pIdProductoBodega,
+                                                                                  pLote,
+                                                                                  pFechaVence,
+                                                                                  pLicPlate)
+
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error("Obtener_Etiqueta_Verificacion_WS " & ex.Message)
+            Throw New Exception(ex.Message)
+        End Try
+
+    End Function
 End Class

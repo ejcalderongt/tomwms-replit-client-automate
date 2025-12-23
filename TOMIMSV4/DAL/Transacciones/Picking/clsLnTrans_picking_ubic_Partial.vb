@@ -6290,7 +6290,7 @@ Partial Public Class clsLnTrans_picking_ubic
                 '#MA20251219
                 If BeBodega.impresion_verificacion Then
 
-                    'Dim etiquetaVerificacion As clsBeTrans_verificacion_etiqueta
+                    pEtiqueta = New clsBeTrans_verificacion_etiqueta()
                     pEtiqueta =
                     clsLnTrans_verificacion_etiqueta.Guardar_Etiqueta_Verificacion(
                                                                                     vBePickingUbic,
