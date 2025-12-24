@@ -4792,37 +4792,30 @@ Public Class frmInventario
 
             If pIdPropietario > 0 Then
                 ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdPropietario = pIdPropietario)
-                'dv.RowFilter += " AND IdPropietario = " & cmbPropietario.EditValue
             End If
 
             If txtIdFamilia.Text <> "" Then
                 ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdFamilia = txtIdFamilia.Text)
-                'dv.RowFilter += " AND IdFamilia = " & txtIdFamilia.Text
             End If
 
             If txtIdClasificacion.Text <> "" Then
                 ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdClasificacion = txtIdClasificacion.Text)
-                'dv.RowFilter += " AND IdClasificacion = " & txtIdClasificacion.Text
             End If
 
             If txtIdProducto.Text <> "" Then
                 ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.Codigo = txtIdProducto.Text)
-                'dv.RowFilter += " AND Codigo = " & txtIdClasificacion.Text
             End If
 
             If txtIdUbicacion.Text <> "" Then
                 ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdUbicacion = txtIdUbicacion.Text)
-                'dv.RowFilter += " AND IdUbicacion = " & txtIdUbicacion.Text
             End If
 
             If txtIdTramo.Text <> "" Then
                 ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.IdTramo = txtIdTramo.Text)
-                'dv.RowFilter += " AND IdTramo = " & txtIdTramo.Text
             End If
 
             If txtIdOperador.Text <> "" Then
                 ListInventarioCiclico = ListInventarioCiclico.FindAll(Function(x) x.Idoperador = txtIdOperador.Text)
-                'dv.RowFilter += " AND Idoperador = " & txtIdOperador.Text
             End If
 
             If ListInventarioCiclico.Count > 0 Then
