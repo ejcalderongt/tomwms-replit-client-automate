@@ -1,3 +1,4 @@
+using WMSWebAPI.Be;
 using static clsBeI_nav_config_enc;
 
 namespace WMS.StockReservation.Core.Services
@@ -60,19 +61,63 @@ namespace WMS.StockReservation.Core.Services
                     $"CaseCode: {result.CaseCode} | " +
                     $"Message: {result.Message}");
 
-                // PASO 4: Actualizar contexto
+                // PASO 4: Actualizar contexto con CLAMP para evitar PendingQuantity negativo
                 if (result.Success && result.ReservedQuantity > 0)
                 {
-                    context.PendingQuantity -= result.ReservedQuantity;
-                    context.PendingQuantity = Math.Round(context.PendingQuantity, 6);
+                    // CRITICAL FIX: Limitar cantidad reservada a lo que realmente estaba pendiente
+                    double allowed = Math.Min(previousPending, result.ReservedQuantity);
+                    
+                    if (result.ReservedQuantity > previousPending + 0.000001)
+                    {
+                        _logger.LogCheckpoint(
+                            $"#WARNING_OVER_RESERVATION | " +
+                            $"ReservedQuantity={result.ReservedQuantity:F6} > PreviousPending={previousPending:F6} | " +
+                            $"Clamping to {allowed:F6}");
+                    }
+                    
+                    context.PendingQuantity -= allowed;
+                    context.PendingQuantity = Math.Max(0, Math.Round(context.PendingQuantity, 6));
 
                     if (result.Reservations != null && result.Reservations.Count > 0)
                     {
-                        context.CreatedReservations.AddRange(result.Reservations);
+                        // CRITICAL FIX: Solo agregar reservas que cubran hasta 'allowed'
+                        double cumulativeReserved = 0;
+                        var validReservations = new List<clsBeStock_res>();
+                        
+                        foreach (var reservation in result.Reservations)
+                        {
+                            if (cumulativeReserved >= allowed)
+                            {
+                                _logger.LogCheckpoint(
+                                    $"#DISCARDING_EXCESS_RESERVATION | " +
+                                    $"IdStock={reservation.IdStock} | " +
+                                    $"Cantidad={reservation.Cantidad:F6} | " +
+                                    $"CumulativeAlready={cumulativeReserved:F6} >= Allowed={allowed:F6}");
+                                continue;
+                            }
+                            
+                            double canTake = Math.Min(reservation.Cantidad, allowed - cumulativeReserved);
+                            
+                            if (Math.Abs(canTake - reservation.Cantidad) > 0.000001)
+                            {
+                                // Ajustar la cantidad de la reserva
+                                _logger.LogCheckpoint(
+                                    $"#ADJUSTING_RESERVATION | " +
+                                    $"IdStock={reservation.IdStock} | " +
+                                    $"Original={reservation.Cantidad:F6} | " +
+                                    $"Adjusted={canTake:F6}");
+                                reservation.Cantidad = canTake;
+                            }
+                            
+                            cumulativeReserved += canTake;
+                            validReservations.Add(reservation);
+                        }
+                        
+                        context.CreatedReservations.AddRange(validReservations);
                         
                         _logger.LogCheckpoint(
                             $"#MI3_RESERVATIONS_ADDED | " +
-                            $"Count: {result.Reservations.Count} | " +
+                            $"Count: {validReservations.Count} (of {result.Reservations.Count}) | " +
                             $"TotalInContext: {context.CreatedReservations.Count}");
                     }
                     else
@@ -83,7 +128,7 @@ namespace WMS.StockReservation.Core.Services
                     }
 
                     _logger.LogCheckpoint(
-                        $"#MI3_PROGRESS | Reservado: {result.ReservedQuantity:F6} | Casos: {result.CaseCode}");
+                        $"#MI3_PROGRESS | Reservado: {allowed:F6} (clamped from {result.ReservedQuantity:F6}) | Casos: {result.CaseCode}");
                 }
                 else
                 {
@@ -203,12 +248,22 @@ namespace WMS.StockReservation.Core.Services
 
         private bool TryEnableExplosionFallback(ReservationContext context)
         {
+            // EXPLOSION: Romper cajas en unidades
+            // Solo aplica cuando:
+            //   1. Piden UNIDADES (IdPresentacion == 0)
+            //   2. Pero solo hay stock en CAJAS
+            // NUNCA explosionar si piden CAJAS (IdPresentacion > 0)
+            
             if (context.IsExplosionModeEnabled) return false;
             if (!context.Configuration.Explosion_Automatica) return false;
-            if (context.Request.IdPresentacion == 0) return false;
+            
+            // CRITICAL: Si piden CAJAS, NO explosionar - solo reservar cajas disponibles
+            if (context.Request.IdPresentacion > 0) return false;
+            
             if (context.DefaultPresentation == null) return false;
 
             context.IsExplosionModeEnabled = true;
+            _logger.LogInfo("#EXPLOSION_ENABLED - Pedido en unidades, buscando cajas para explosionar");
             return true;
         }
 
@@ -246,10 +301,41 @@ namespace WMS.StockReservation.Core.Services
             {
                 clsLnStock_res.Restar_Stock_Reservado(newStock, context.Configuration,
                                                        context.Connection, context.Transaction);
-                newStock = newStock.Where(s => s.Cantidad > 0).ToList();
+                
+                // CRITICAL: Restar tambien las reservas ya creadas en memoria (no en BD aun)
+                // NOTA: En modo explosión, el stock ahora está en UMBas.
+                // Si la reserva previa fue en presentación, debemos convertir al restar.
+                double factor = context.DefaultPresentation?.Factor ?? 1;
+                
+                foreach (var reservation in context.CreatedReservations)
+                {
+                    var stockItem = newStock.FirstOrDefault(s => s.IdStock == reservation.IdStock);
+                    if (stockItem != null)
+                    {
+                        // Si la reserva fue en presentación (IdPresentacion > 0) y ahora el stock
+                        // está en UMBas, debemos multiplicar por el factor al restar
+                        double cantidadARestar = reservation.Cantidad;
+                        if (reservation.IdPresentacion > 0 && stockItem.IdPresentacion == 0)
+                        {
+                            // Reserva en cajas, stock en unidades → multiplicar
+                            cantidadARestar = reservation.Cantidad * factor;
+                            _logger.LogInfo($"Conversión al restar: {reservation.Cantidad} cajas = {cantidadARestar} unidades");
+                        }
+                        else if (reservation.IdPresentacion == 0 && stockItem.IdPresentacion > 0)
+                        {
+                            // Reserva en unidades, stock en cajas → dividir
+                            cantidadARestar = reservation.Cantidad / factor;
+                            _logger.LogInfo($"Conversión al restar: {reservation.Cantidad} unidades = {cantidadARestar} cajas");
+                        }
+                        
+                        stockItem.Cantidad -= cantidadARestar;
+                    }
+                }
+                
+                newStock = newStock.Where(s => s.Cantidad > 0.000001).ToList();
 
                 context.WorkingStockList = newStock;
-                _logger.LogInfo($"Re-query explosion: {newStock.Count} registros");
+                _logger.LogInfo($"Re-query explosion: {newStock.Count} registros (after subtracting {context.CreatedReservations.Count} in-memory reservations)");
             }
         }
 
@@ -277,15 +363,81 @@ namespace WMS.StockReservation.Core.Services
             {
                 clsLnStock_res.Restar_Stock_Reservado(newStock, context.Configuration,
                                                        context.Connection, context.Transaction);
-                newStock = newStock.Where(s => s.Cantidad > 0).ToList();
+                
+                // CRITICAL: Restar tambien las reservas ya creadas en memoria (no en BD aun)
+                // NOTA: En modo UMBas, el stock ahora está en presentación.
+                // Si la reserva previa fue en UMBas, debemos convertir al restar.
+                double factor = context.DefaultPresentation?.Factor ?? 1;
+                
+                foreach (var reservation in context.CreatedReservations)
+                {
+                    var stockItem = newStock.FirstOrDefault(s => s.IdStock == reservation.IdStock);
+                    if (stockItem != null)
+                    {
+                        double cantidadARestar = reservation.Cantidad;
+                        if (reservation.IdPresentacion > 0 && stockItem.IdPresentacion == 0)
+                        {
+                            cantidadARestar = reservation.Cantidad * factor;
+                            _logger.LogInfo($"UMBas - Conversión: {reservation.Cantidad} cajas = {cantidadARestar} unidades");
+                        }
+                        else if (reservation.IdPresentacion == 0 && stockItem.IdPresentacion > 0)
+                        {
+                            cantidadARestar = reservation.Cantidad / factor;
+                            _logger.LogInfo($"UMBas - Conversión: {reservation.Cantidad} unidades = {cantidadARestar} cajas");
+                        }
+                        
+                        stockItem.Cantidad -= cantidadARestar;
+                    }
+                }
+                
+                newStock = newStock.Where(s => s.Cantidad > 0.000001).ToList();
 
                 context.WorkingStockList = newStock;
-                _logger.LogInfo($"Re-query UMBas: {newStock.Count} registros");
+                _logger.LogInfo($"Re-query UMBas: {newStock.Count} registros (after subtracting {context.CreatedReservations.Count} in-memory reservations)");
             }
         }
 
         private void RecalculateMinimumDates(ReservationContext context)
         {
+            // CRITICAL: Recalcular TODAS las fechas mínimas por zona
+            // De lo contrario, los handlers solo ven stock con la fecha anterior
+            
+            // Recalcular para zona Picking
+            if (context.StockListPickingZone != null)
+            {
+                var validPicking = context.StockListPickingZone.Where(s => s.Cantidad > 0).ToList();
+                if (validPicking.Count > 0)
+                {
+                    context.MinExpirationDatePickingZone = validPicking.Min(s => s.Fecha_vence);
+                    _logger.LogInfo($"#RECALC MinExpPickingZone: {context.MinExpirationDatePickingZone:yyyy-MM-dd}");
+                }
+            }
+            
+            // Recalcular para zonas No-Picking
+            if (context.StockListNonPickingZones != null)
+            {
+                var validNonPicking = context.StockListNonPickingZones.Where(s => s.Cantidad > 0).ToList();
+                if (validNonPicking.Count > 0)
+                {
+                    context.MinExpirationDateNonPickingZones = validNonPicking.Min(s => s.Fecha_vence);
+                    _logger.LogInfo($"#RECALC MinExpNonPickingZones: {context.MinExpirationDateNonPickingZones:yyyy-MM-dd}");
+                    
+                    // Recalcular también fechas Clavaud
+                    var completePallets = validNonPicking.Where(s => s.Pallet_Completo && !s.UbicacionPicking && s.UbicacionNivel > 0).ToList();
+                    if (completePallets.Count > 0)
+                    {
+                        context.MinExpirationCompletePalletsClavaud = completePallets.Min(s => s.Fecha_vence);
+                    }
+                    
+                    var incompletePallets = validNonPicking.Where(s => !s.Pallet_Completo && !s.UbicacionPicking && s.UbicacionNivel > 0).ToList();
+                    if (incompletePallets.Count > 0)
+                    {
+                        context.MinExpirationIncompletePalletsClavaud = incompletePallets.Min(s => s.Fecha_vence);
+                    }
+                }
+            }
+            
+            // Recalcular fecha global
             if (context.WorkingStockList != null && context.WorkingStockList.Count > 0)
             {
                 var validStock = context.WorkingStockList.Where(s => s.Cantidad > 0).ToList();

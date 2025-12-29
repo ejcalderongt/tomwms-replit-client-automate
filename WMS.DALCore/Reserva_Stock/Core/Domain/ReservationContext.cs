@@ -18,19 +18,24 @@ namespace WMS.StockReservation.Core.Domain
         public int ProductId { get; set; }
         public clsBeI_nav_config_enc Configuration { get; set; } = new clsBeI_nav_config_enc();
         public SqlConnection Connection { get; set; } = new SqlConnection();
-        public SqlTransaction? Transaction { get; set; }
-        public clsBeTrans_pe_det? PedidoDet { get; set; } = new clsBeTrans_pe_det();
-        public clsBeI_nav_ped_traslado_det? TrasladoDet { get; set; } = new clsBeI_nav_ped_traslado_det();
-        public bool TareaReabasto { get; set; }=false;
+        public SqlTransaction? Transaction { get; set; } = null;
+        public clsBeTrans_pe_det PedidoDet { get; set; } = new clsBeTrans_pe_det();
+        public clsBeI_nav_ped_traslado_det TrasladoDet { get; set; } = new clsBeI_nav_ped_traslado_det();
+
+        /// <summary>
+        /// IdPedidoEnc del Trans_pe_enc creado. Se usa para asignar IdTransaccion en stock_res.
+        /// </summary>
+        public int IdPedidoEnc { get; set; } = 0;
+        public bool TareaReabasto { get; set; } = false;
         public bool EsDevolucion { get; set; } = false;
         public int LineNumber { get; set; } = 0;
-        public string MachineName { get; set; } = string.Empty;
-        public double DiasVencimiento { get; set; } = 0;
+        public string MachineName { get; set; } = "";
+        public double DiasVencimiento { get; set; } = 0;  // Días antes del vencimiento para filtrar stock
 
         // ===== ENTITIES (cargadas en EntityLoadingStep) =====
         public clsBeBodega Bodega { get; set; } = new clsBeBodega();
         public clsBeProducto Product { get; set; } = new clsBeProducto();
-        public clsBeProducto_presentacion DefaultPresentation { get; set; } = new clsBeProducto_presentacion();
+        public clsBeProducto_presentacion? DefaultPresentation { get; set; } = null;
 
         // ===== STOCK LISTS (modificadas por handlers y steps) =====
         public List<clsBeStock> StockListPickingZone { get; set; } = new List<clsBeStock>();
@@ -38,27 +43,41 @@ namespace WMS.StockReservation.Core.Domain
         public List<clsBeStock> WorkingStockList { get; set; } = new List<clsBeStock>();
 
         // ===== DATES (calculadas en DateCalculationStep) =====
-        public DateTime GlobalMinimumExpirationDate { get; set; } = new DateTime(1900, 1, 1);
+        public DateTime GlobalMinimumExpirationDate { get; set; } = new DateTime(1900,1,1);
         public DateTime MinExpirationDatePickingZone { get; set; } = new DateTime(1900, 1, 1);
         public DateTime MinExpirationDateNonPickingZones { get; set; } = new DateTime(1900, 1, 1);
         public DateTime MinExpirationCompletePalletsClavaud { get; set; } = new DateTime(1900, 1, 1);
         public DateTime MinExpirationIncompletePalletsClavaud { get; set; } = new DateTime(1900, 1, 1);
 
         // ===== STATE (estado de la operación) =====
-        public double PendingQuantity { get; set; }
+        public double PendingQuantity { get; set; } = 0;
         public List<clsBeStock_res> CreatedReservations { get; set; } = new List<clsBeStock_res>();
         public List<int> ProcessStateFlags { get; set; } = new List<int>();
-        public int StartingPoint { get; set; }
-        public bool IsExplosionModeEnabled { get; set; } = false;
-        public bool IsUMBasModeEnabled { get; set; } = false;
+        public int StartingPoint { get; set; } = new int();
+        public bool IsExplosionModeEnabled { get; set; } = new bool();
+        public bool IsUMBasModeEnabled { get; set; } = new bool();
 
         // ===== CACHES (evitar consultas repetidas) =====
         public List<clsBeBodega_ubicacion> CachedLocations { get; set; } = new List<clsBeBodega_ubicacion>();
         public List<clsBeProducto_presentacion> CachedPresentations { get; set; } = new List<clsBeProducto_presentacion>();
 
         // ===== ERROR HANDLING =====
-        public bool HasError { get; set; } = false;
-        public string ErrorMessage { get; set; } = string.Empty;
+        public bool HasError { get; set; }=false;
+        public string ErrorMessage { get; set; } = "";
+
+        // ===== CONSTRUCTOR =====
+        public ReservationContext()
+        {
+            CreatedReservations = new List<clsBeStock_res>();
+            ProcessStateFlags = new List<int>();
+            CachedLocations = new List<clsBeBodega_ubicacion>();
+            CachedPresentations = new List<clsBeProducto_presentacion>();
+            GlobalMinimumExpirationDate = new DateTime(1900, 1, 1);
+            MinExpirationDatePickingZone = new DateTime(1900, 1, 1);
+            MinExpirationDateNonPickingZones = new DateTime(1900, 1, 1);
+            MinExpirationCompletePalletsClavaud = new DateTime(1900, 1, 1);
+            MinExpirationIncompletePalletsClavaud = new DateTime(1900, 1, 1);
+        }
 
         // ===== HELPER METHODS =====
 
@@ -143,6 +162,6 @@ namespace WMS.StockReservation.Core.Domain
             double totalReserved = CreatedReservations.Sum(r => r.Cantidad);
             Debug.Assert(totalReserved <= Request.Cantidad + 0.01,
                 $"[{checkpoint}] Total reservado ({totalReserved}) > solicitado ({Request.Cantidad})");
-        }
+        }    
     }
 }
