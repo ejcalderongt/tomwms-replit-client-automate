@@ -441,7 +441,7 @@ Public Class clsLnProducto_talla_color
 									from producto_talla_color ptc
 									inner join talla t on ptc.IdTalla = t.IdTalla
 									inner join color c on ptc.IdColor = c.IdColor
-									inner join campaña ca on ptc.IdCampaña = ca.IdCampaña 
+									left join campaña ca on ptc.IdCampaña = ca.IdCampaña 
 									WHERE ptc.IdCampaña= @IdCampaña "
 
 			lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
@@ -481,7 +481,7 @@ Public Class clsLnProducto_talla_color
 									from producto_talla_color ptc
 									inner join talla t on ptc.IdTalla = t.IdTalla
 									inner join color c on ptc.IdColor = c.IdColor
-									inner join campaña ca on ptc.IdCampaña = ca.IdCampaña 
+									left join campaña ca on ptc.IdCampaña = ca.IdCampaña 
 									WHERE ptc.IdProducto = @IdProducto "
 
 			lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
@@ -680,7 +680,7 @@ Public Class clsLnProducto_talla_color
 									from producto_talla_color ptc
 									inner join talla t on ptc.IdTalla = t.IdTalla
 									inner join color c on ptc.IdColor = c.IdColor
-									inner join campaña ca on ptc.IdCampaña = ca.IdCampaña 
+									left join campaña ca on ptc.IdCampaña = ca.IdCampaña 
 									WHERE ptc.IdProductoTallaColor = @IdProductoTallaColor "
 
 			Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
@@ -833,6 +833,9 @@ Public Class clsLnProducto_talla_color
 
 	Public Shared Function Get_Single_Dt_By_IdProductoTallaColor(IdProductoTallaColor As Integer) As DataTable
 		Try
+
+			'#GT12122025: left join para la campaña, puede ser null
+
 			Const sql As String = "
 						SELECT 
 							ptc.IdProductoTallaColor AS Codigo, 
@@ -842,7 +845,7 @@ Public Class clsLnProducto_talla_color
 						FROM producto_talla_color AS ptc
 						INNER JOIN talla  AS t ON ptc.IdTalla  = t.IdTalla
 						INNER JOIN color  AS c ON ptc.IdColor  = c.IdColor
-						INNER JOIN [campaña] AS ca ON ptc.IdCampaña = ca.IdCampaña
+						LEFT JOIN [campaña] AS ca ON ptc.IdCampaña = ca.IdCampaña
 						WHERE ptc.IdProductoTallaColor = @IdProductoTallaColor;"
 
 			Dim dt As New DataTable()
@@ -1115,7 +1118,7 @@ Public Class clsLnProducto_talla_color
 						FROM producto_talla_color AS ptc
 						INNER JOIN talla  AS t ON ptc.IdTalla  = t.IdTalla
 						INNER JOIN color  AS c ON ptc.IdColor  = c.IdColor
-						INNER JOIN [campaña] AS ca ON ptc.IdCampaña = ca.IdCampaña
+						LEFT JOIN [campaña] AS ca ON ptc.IdCampaña = ca.IdCampaña
 						WHERE ptc.IdProductoTallaColor = @IdProductoTallaColor;"
 
 			Dim dt As New DataTable()
@@ -1186,6 +1189,43 @@ Public Class clsLnProducto_talla_color
 			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
 		End Try
 
+	End Function
+
+	Public Shared Function Get_Single_By_IdColor_IdTalla(IdProducto As Integer, Talla As String, Color As String,
+														 lConnection As SqlConnection,
+														 lTransaction As SqlTransaction) As clsBeProducto_talla_color
+
+		Get_Single_By_IdColor_IdTalla = Nothing
+
+		Try
+			Const sp As String = "select * from producto_talla_color p
+								  join talla t on p.IdTalla = t.IdTalla
+								  join color c on p.IdColor = c.IdColor
+								  Where(p.IdProducto = @IdProducto AND t.Codigo = @Talla AND c.Codigo = @Color)"
+
+			Using lDTA As New SqlDataAdapter(sp, lConnection)
+
+				lDTA.SelectCommand.CommandType = CommandType.Text
+				lDTA.SelectCommand.Transaction = lTransaction
+				lDTA.SelectCommand.Parameters.AddWithValue("@IdProducto", IdProducto)
+				lDTA.SelectCommand.Parameters.AddWithValue("@Talla", Talla)
+				lDTA.SelectCommand.Parameters.AddWithValue("@Color", Color)
+
+				Dim lDataTable As New DataTable
+				lDTA.Fill(lDataTable)
+
+				Dim vBeProducto_talla_color As New clsBeProducto_talla_color
+
+				If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+					Cargar(vBeProducto_talla_color, lDataTable.Rows(0))
+					Get_Single_By_IdColor_IdTalla = vBeProducto_talla_color
+				End If
+
+			End Using
+
+		Catch ex As Exception
+			Throw ex
+		End Try
 	End Function
 
 End Class

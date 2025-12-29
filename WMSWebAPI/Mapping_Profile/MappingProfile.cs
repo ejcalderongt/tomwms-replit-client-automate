@@ -285,5 +285,6 @@ public class MappingProfile : Profile
         CreateMap<UnidadMedidaMi3Dto, clsBeUnidad_medidaMi3>().ReverseMap();
         CreateMap<ProductoPresentacionMi3Dto, clsBeProducto_presentacionMi3>().ReverseMap();
         CreateMap<NavPedTrasladoRequestDto, clsBeI_nav_ped_traslado_enc>().ConvertUsing(src => src.beINavPedCompraEnc);
+        CreateMap<Producto3PL_Dto, clsBeProducto_3PL>().ReverseMap();
     }
 }

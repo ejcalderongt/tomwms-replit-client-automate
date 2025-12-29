@@ -3211,7 +3211,7 @@ Partial Public Class clsLnTrans_picking_enc
 
     Public Shared Function Guardar_Verificacion_Bof(ByVal plistPickingUbic As List(Of clsBeTrans_picking_ubic),
                                                     ByVal pIdOperador As Integer,
-                                                    ByVal pBePedidoEnc As clsBeTrans_pe_enc) As Boolean
+                                                    ByVal pListBePedidoEnc As List(Of clsBeTrans_pe_enc)) As Boolean
 
         Dim clsTrans As New clsTransaccion
         Guardar_Verificacion_Bof = False
@@ -3220,18 +3220,29 @@ Partial Public Class clsLnTrans_picking_enc
             clsTrans.Open_Connection() : clsTrans.Begin_Transaction()
 
             Dim ListaVerificada As Boolean = False
+            Dim pBePedidoEnc As New clsBeTrans_pe_enc()
+            Dim tmpListaPickingUbic As New List(Of clsBeTrans_picking_ubic)()
 
             If plistPickingUbic.Count > 0 Then
 
                 For Each BePickingUbic As clsBeTrans_picking_ubic In plistPickingUbic
 
-                    '#GT28112025:redundante, pero la verificación recibe lista de un registro
-                    Dim tmpListaPickingUbic = New List(Of clsBeTrans_picking_ubic)
+                    '#GT28112025:la verificación recibe lista de un registro
+                    tmpListaPickingUbic = New List(Of clsBeTrans_picking_ubic)
                     tmpListaPickingUbic.Add(BePickingUbic)
+
+                    '#GT11122025: la cantidad a verificar se envia por separado, y posteriormente se deja en 0 en picking_ubic
+                    Dim pCantidad_A_Verificar = tmpListaPickingUbic(0).Cantidad_Verificada
+                    tmpListaPickingUbic(0).Cantidad_Verificada = 0
+
+
+                    '#GT11122025: obtener el pedido al buscarlo en la lista, según los datos del picking_ubic
+                    pBePedidoEnc = New clsBeTrans_pe_enc()
+                    pBePedidoEnc = pListBePedidoEnc.Find(Function(x) x.IdPickingEnc = BePickingUbic.IdPickingEnc AndAlso x.IdPedidoEnc = BePickingUbic.IdPedidoEnc)
 
                     If clsLnTrans_picking_ubic.Actualiza_Cant_Peso_Verificacion(tmpListaPickingUbic,
                                                                                 pIdOperador,
-                                                                                BePickingUbic.Cantidad_Recibida,
+                                                                                pCantidad_A_Verificar,
                                                                                 BePickingUbic.Peso_recibido,
                                                                                 0,
                                                                                 pBePedidoEnc.IdPedidoEnc,
