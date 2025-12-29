@@ -117,7 +117,7 @@ namespace WMSWebAPI.Dtos.Catalogos
         public ProductoTipoDto TipoProducto { get; set; } = new ProductoTipoDto();
         public UnidadMedidaDto UnidadMedida { get; set; } = new UnidadMedidaDto();
         public List<ProductoPresentacionDto> Presentaciones { get; set; } = new List<ProductoPresentacionDto>();
-        public List<clsBeProducto_codigos_barra> Codigos_Barra { get; set; } = new List<clsBeProducto_codigos_barra>();
+        public List<clsBeProducto_codigos_barra>? Codigos_Barra { get; set; } = new List<clsBeProducto_codigos_barra>();
         public List<clsBeProducto_parametros> Parametros { get; set; } = new List<clsBeProducto_parametros>();
         public clsBeProducto_parametro_a ParametroA { get; set; } = new clsBeProducto_parametro_a();
         public clsBeProducto_parametro_b ParametroB { get; set; } = new clsBeProducto_parametro_b();
