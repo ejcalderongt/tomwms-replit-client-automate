@@ -14647,13 +14647,14 @@ Public Class TOMHHWS
     Public Function Get_CantidadInvVer_By_Producto(ByVal pIdUbicacion As Integer,
                                                    ByVal pIdProducto As Integer,
                                                    ByVal pIdBodega As Integer,
-                                                   ByVal pIdPresentacion As Integer) As clsBeTrans_inv_resumen
+                                                   ByVal pIdPresentacion As Integer,
+                                                   ByVal pIdInventarioEnc As Integer) As clsBeTrans_inv_resumen
 
 
         Get_CantidadInvVer_By_Producto = Nothing
 
         Try
-            Return clsLnTrans_inv_resumen.Get_CantidadInvVer_By_Producto(pIdUbicacion, pIdProducto, pIdBodega, pIdPresentacion)
+            Return clsLnTrans_inv_resumen.Get_CantidadInvVer_By_Producto(pIdUbicacion, pIdProducto, pIdBodega, pIdPresentacion, pIdInventarioEnc)
 
         Catch ex As Exception
 

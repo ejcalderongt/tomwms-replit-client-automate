@@ -3122,7 +3122,7 @@ Public Class IMS
 
     End Function
 
-    Public Overloads Shared Function Listar_Productos(ByRef Cmb As LookUpEdit, IdBodega As Integer) As Boolean
+    Public Overloads Shared Function Listar_Productos(ByRef Cmb As DevExpress.XtraEditors.GridLookUpEdit, IdBodega As Integer) As Boolean
 
         Listar_Productos = False
 
@@ -3132,14 +3132,51 @@ Public Class IMS
 
             DT = clsLnProducto.Get_All_By_Bodega_DT(IdBodega)
 
-            If DT.Rows.Count > 0 Then
-                Cmb.Properties.DisplayMember = "Nombre"
-                Cmb.Properties.ValueMember = "IdProducto"
-                Cmb.Properties.DataSource = DT
-                Cmb.ItemIndex = 0
+            '#MA20251230 Filtro en cmbProducto se cambio de LookUpEdit a GridLookUpEdit
+            If DT Is Nothing OrElse DT.Rows.Count = 0 Then Return False
+
+            With Cmb.Properties
+                .DataSource = DT
+                .DisplayMember = "Nombre"
+                .ValueMember = "IdProducto"
+                .NullText = ""
+                .ImmediatePopup = True
+                .PopupFilterMode = PopupFilterMode.Contains
+                .TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard
+                .SearchMode = DevExpress.XtraEditors.Controls.SearchMode.AutoFilter
+                .PopupFormSize = New Size(500, 250)
+
+                .BestFitMode = DevExpress.XtraEditors.Controls.BestFitMode.BestFit
+                .PopupSizeable = True
+                .ShowFooter = True
+            End With
+
+            Cmb.Properties.PopulateViewColumns()
+            Dim view = Cmb.Properties.View
+
+            If view.Columns("IdProducto") IsNot Nothing Then
+                view.Columns("IdProducto").Caption = "ID"
+                view.Columns("IdProducto").Visible = True
             End If
 
-            Listar_Productos = DT.Rows.Count > 0
+            If view.Columns("Nombre") IsNot Nothing Then
+                view.Columns("Nombre").Caption = "Producto"
+                view.Columns("Nombre").Visible = True
+            End If
+
+            view.OptionsView.ColumnAutoWidth = False
+            view.OptionsView.ShowAutoFilterRow = True
+            view.OptionsBehavior.Editable = False
+
+            view.BestFitColumns()
+
+            If view.Columns("Nombre") IsNot Nothing Then
+                If view.Columns("Nombre").Width > 450 Then
+                    view.Columns("Nombre").Width = 450
+                End If
+            End If
+
+            Listar_Productos = True
 
         Catch ex As Exception
             Throw New Exception(ex.Message)
