@@ -55,11 +55,7 @@ namespace WMS.EntityCore.Pedido
         [Column("cant_despachada")]
         [DisplayName("cant_despachada")]
         public double Cant_despachada { get; set; } = 0;
-
-        [Column("codigo_producto")]
-        [DisplayName("codigo_producto")]
-        public string Codigo_producto { get; set; } = "";
-
+        
         [Column("nombre_producto")]
         [DisplayName("nombre_producto")]
         public string Nombre_producto { get; set; } = "";

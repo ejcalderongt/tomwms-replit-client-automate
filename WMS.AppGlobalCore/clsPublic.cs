@@ -91,7 +91,7 @@ namespace AppGlobal
             }
         }
 
-        public static void CopyObject<wcf>(object ObjOrigen, ref wcf ObjDestino)
+        public static void CopyObject<OtD>(object ObjOrigen, ref OtD ObjDestino)
         {
             try
             {

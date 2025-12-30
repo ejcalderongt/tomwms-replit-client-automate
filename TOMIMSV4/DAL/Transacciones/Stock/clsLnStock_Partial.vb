@@ -5060,6 +5060,15 @@ Partial Public Class clsLnStock
                                 BeStockNuevo.User_mod = BeUsuario.IdUsuario
                             End If
 
+                            '#GT18122025: considerar que solo talla o color fue actualizado y no ambos.
+                            Dim vTalla As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Talla_destino), BeTransAjusteDet.Talla_destino, BeTransAjusteDet.Talla_origen)
+                            Dim vColor As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Color_destino), BeTransAjusteDet.Color_destino, BeTransAjusteDet.Color_origen)
+                            Dim vIdProductoTallaColor As Integer = IIf(BeTransAjusteDet.IdProductoTallaColor_destino > 0, BeTransAjusteDet.IdProductoTallaColor_destino, BeTransAjusteDet.IdProductoTallaColor_origen)
+
+                            BeStockAActualizar.IdProductoTallaColor = vIdProductoTallaColor
+                            BeStockAActualizar.Talla = vTalla
+                            BeStockAActualizar.Color = vColor
+
                             Insertar(BeStockNuevo, pConection, pTransaction)
 
                             IdStock = BeStockNuevo.IdStock
@@ -5104,6 +5113,16 @@ Partial Public Class clsLnStock
                                 If Not BeUsuario Is Nothing Then
                                     BeStockAActualizar.User_mod = BeUsuario.IdUsuario
                                 End If
+
+
+                                '#GT18122025: considerar que solo talla o color fue actualizado y no ambos.
+                                Dim vTalla As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Talla_destino), BeTransAjusteDet.Talla_destino, BeTransAjusteDet.Talla_origen)
+                                Dim vColor As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Color_destino), BeTransAjusteDet.Color_destino, BeTransAjusteDet.Color_origen)
+                                Dim vIdProductoTallaColor As Integer = IIf(BeTransAjusteDet.IdProductoTallaColor_destino > 0, BeTransAjusteDet.IdProductoTallaColor_destino, BeTransAjusteDet.IdProductoTallaColor_origen)
+
+                                BeStockAActualizar.IdProductoTallaColor = vIdProductoTallaColor
+                                BeStockAActualizar.Talla = vTalla
+                                BeStockAActualizar.Color = vColor
 
                                 If Es_Transaccion_Remota Then
                                     rowsAffected = Actualizar_Stock_Por_Ajuste(BeStockAActualizar, pConection, pTransaction)

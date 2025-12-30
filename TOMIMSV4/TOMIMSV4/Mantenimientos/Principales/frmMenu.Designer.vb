@@ -24,13 +24,13 @@ Partial Class frmMenu
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMenu))
-        Dim GalleryItemGroup2 As DevExpress.XtraBars.Ribbon.GalleryItemGroup = New DevExpress.XtraBars.Ribbon.GalleryItemGroup()
-        Dim GalleryItem2 As DevExpress.XtraBars.Ribbon.GalleryItem = New DevExpress.XtraBars.Ribbon.GalleryItem()
-        Dim SuperToolTip2 As DevExpress.Utils.SuperToolTip = New DevExpress.Utils.SuperToolTip()
-        Dim ToolTipTitleItem3 As DevExpress.Utils.ToolTipTitleItem = New DevExpress.Utils.ToolTipTitleItem()
-        Dim ToolTipItem2 As DevExpress.Utils.ToolTipItem = New DevExpress.Utils.ToolTipItem()
-        Dim ToolTipSeparatorItem2 As DevExpress.Utils.ToolTipSeparatorItem = New DevExpress.Utils.ToolTipSeparatorItem()
-        Dim ToolTipTitleItem4 As DevExpress.Utils.ToolTipTitleItem = New DevExpress.Utils.ToolTipTitleItem()
+        Dim GalleryItemGroup1 As DevExpress.XtraBars.Ribbon.GalleryItemGroup = New DevExpress.XtraBars.Ribbon.GalleryItemGroup()
+        Dim GalleryItem1 As DevExpress.XtraBars.Ribbon.GalleryItem = New DevExpress.XtraBars.Ribbon.GalleryItem()
+        Dim SuperToolTip1 As DevExpress.Utils.SuperToolTip = New DevExpress.Utils.SuperToolTip()
+        Dim ToolTipTitleItem1 As DevExpress.Utils.ToolTipTitleItem = New DevExpress.Utils.ToolTipTitleItem()
+        Dim ToolTipItem1 As DevExpress.Utils.ToolTipItem = New DevExpress.Utils.ToolTipItem()
+        Dim ToolTipSeparatorItem1 As DevExpress.Utils.ToolTipSeparatorItem = New DevExpress.Utils.ToolTipSeparatorItem()
+        Dim ToolTipTitleItem2 As DevExpress.Utils.ToolTipTitleItem = New DevExpress.Utils.ToolTipTitleItem()
         Me.rbMain = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuBodega = New DevExpress.XtraBars.BarSubItem()
         Me.mnuMantBodega = New DevExpress.XtraBars.BarButtonItem()
@@ -331,6 +331,7 @@ Partial Class frmMenu
         Me.mnuProductividad = New DevExpress.XtraBars.BarSubItem()
         Me.mnuProductividadPicking = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuInterfaceDMS = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuVerificacionBOF = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonMiniToolbar1 = New DevExpress.XtraBars.Ribbon.RibbonMiniToolbar(Me.components)
         Me.rpCatalogos = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.pgEmpresa = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -355,6 +356,7 @@ Partial Class frmMenu
         Me.grpStockRes = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.pgCotizar = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.pgPacking = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
+        Me.pgVerificacionBOF = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.rpServicios = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.pgRegistroServicios = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.pgReporteServicios = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -413,8 +415,6 @@ Partial Class frmMenu
         Me.BarButtonItem12 = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuReporteTransNav = New DevExpress.XtraBars.BarSubItem()
         Me.PopupMenu3 = New DevExpress.XtraBars.PopupMenu(Me.components)
-        Me.pgVerificacionBOF = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
-        Me.mnuVerificacionBOF = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.rbMain, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PopupMenu2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemBreadCrumbEdit1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -712,10 +712,10 @@ Partial Class frmMenu
         '
         '
         '
-        GalleryItemGroup2.Caption = "Group4"
-        GalleryItem2.Caption = "Item4"
-        GalleryItemGroup2.Items.AddRange(New DevExpress.XtraBars.Ribbon.GalleryItem() {GalleryItem2})
-        Me.RibbonGalleryBarItem1.Gallery.Groups.AddRange(New DevExpress.XtraBars.Ribbon.GalleryItemGroup() {GalleryItemGroup2})
+        GalleryItemGroup1.Caption = "Group4"
+        GalleryItem1.Caption = "Item4"
+        GalleryItemGroup1.Items.AddRange(New DevExpress.XtraBars.Ribbon.GalleryItem() {GalleryItem1})
+        Me.RibbonGalleryBarItem1.Gallery.Groups.AddRange(New DevExpress.XtraBars.Ribbon.GalleryItemGroup() {GalleryItemGroup1})
         Me.RibbonGalleryBarItem1.Id = 25
         Me.RibbonGalleryBarItem1.Name = "RibbonGalleryBarItem1"
         '
@@ -912,18 +912,18 @@ Partial Class frmMenu
         Me.mnuOrdenesCompra.ImageOptions.Image = CType(resources.GetObject("mnuOrdenesCompra.ImageOptions.Image"), System.Drawing.Image)
         Me.mnuOrdenesCompra.ImageOptions.LargeImage = CType(resources.GetObject("mnuOrdenesCompra.ImageOptions.LargeImage"), System.Drawing.Image)
         Me.mnuOrdenesCompra.Name = "mnuOrdenesCompra"
-        ToolTipTitleItem3.Text = "Ingreso / Orden de compra"
-        ToolTipItem2.LeftIndent = 6
-        ToolTipItem2.Text = "Permite registrar la orden de compra de un proveedor para ser recibida posteriorm" &
+        ToolTipTitleItem1.Text = "Ingreso / Orden de compra"
+        ToolTipItem1.LeftIndent = 6
+        ToolTipItem1.Text = "Permite registrar la orden de compra de un proveedor para ser recibida posteriorm" &
     "ente."
-        ToolTipTitleItem4.LeftIndent = 6
-        ToolTipTitleItem4.Text = "Muestra el listado de ordenes de compra para filtro, creación o modificación de u" &
+        ToolTipTitleItem2.LeftIndent = 6
+        ToolTipTitleItem2.Text = "Muestra el listado de ordenes de compra para filtro, creación o modificación de u" &
     "na O.C. ya existente."
-        SuperToolTip2.Items.Add(ToolTipTitleItem3)
-        SuperToolTip2.Items.Add(ToolTipItem2)
-        SuperToolTip2.Items.Add(ToolTipSeparatorItem2)
-        SuperToolTip2.Items.Add(ToolTipTitleItem4)
-        Me.mnuOrdenesCompra.SuperTip = SuperToolTip2
+        SuperToolTip1.Items.Add(ToolTipTitleItem1)
+        SuperToolTip1.Items.Add(ToolTipItem1)
+        SuperToolTip1.Items.Add(ToolTipSeparatorItem1)
+        SuperToolTip1.Items.Add(ToolTipTitleItem2)
+        Me.mnuOrdenesCompra.SuperTip = SuperToolTip1
         '
         'mnuRecepcion
         '
@@ -2422,6 +2422,14 @@ Partial Class frmMenu
         Me.mnuInterfaceDMS.ImageOptions.SvgImage = CType(resources.GetObject("mnuInterfaceDMS.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.mnuInterfaceDMS.Name = "mnuInterfaceDMS"
         '
+        'mnuVerificacionBOF
+        '
+        Me.mnuVerificacionBOF.Caption = "Verificacion BOF"
+        Me.mnuVerificacionBOF.Hint = "Verificación por BOF"
+        Me.mnuVerificacionBOF.Id = 372
+        Me.mnuVerificacionBOF.ImageOptions.SvgImage = CType(resources.GetObject("mnuVerificacionBOF.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuVerificacionBOF.Name = "mnuVerificacionBOF"
+        '
         'rpCatalogos
         '
         Me.rpCatalogos.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.pgEmpresa, Me.pgBodega, Me.pgProductos, Me.pgLogistica, Me.pgClientes, Me.PgPropietario2, Me.pgProveedores, Me.pgSeguridad, Me.RpgCalendario, Me.rbPageMonitor, Me.rbPageQA})
@@ -2541,6 +2549,11 @@ Partial Class frmMenu
         Me.pgPacking.ItemLinks.Add(Me.mnuPacking)
         Me.pgPacking.Name = "pgPacking"
         Me.pgPacking.Visible = False
+        '
+        'pgVerificacionBOF
+        '
+        Me.pgVerificacionBOF.ItemLinks.Add(Me.mnuVerificacionBOF)
+        Me.pgVerificacionBOF.Name = "pgVerificacionBOF"
         '
         'rpServicios
         '
@@ -2905,18 +2918,6 @@ Partial Class frmMenu
         '
         Me.PopupMenu3.Name = "PopupMenu3"
         Me.PopupMenu3.Ribbon = Me.rbMain
-        '
-        'pgVerificacionBOF
-        '
-        Me.pgVerificacionBOF.ItemLinks.Add(Me.mnuVerificacionBOF)
-        Me.pgVerificacionBOF.Name = "pgVerificacionBOF"
-        '
-        'mnuVerificacionBOF
-        '
-        Me.mnuVerificacionBOF.Caption = "Verificacion"
-        Me.mnuVerificacionBOF.Id = 372
-        Me.mnuVerificacionBOF.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem16.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.mnuVerificacionBOF.Name = "mnuVerificacionBOF"
         '
         'frmMenu
         '

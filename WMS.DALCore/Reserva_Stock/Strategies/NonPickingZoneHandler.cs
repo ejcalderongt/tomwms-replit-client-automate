@@ -1,6 +1,9 @@
-
-using WMS.EntityCore.Stock;
+using System;
+using System.Linq;
+using WMS.StockReservation.Core.Domain;
+using WMS.StockReservation.Core.Interfaces;
 using WMSWebAPI.Be;
+using WMS.EntityCore.Stock;
 
 namespace WMS.StockReservation.Strategies
 {
@@ -31,12 +34,11 @@ namespace WMS.StockReservation.Strategies
 
             if (!CanProcess(context))
             {
-                if (_logger != null)
-                    _logger.LogInfo("#CASO_4_SKIP - No stock en zonas no-picking");
+                _logger.LogInfo("#CASO_4_SKIP - No stock en zonas no-picking");
                 return result;
             }
-            if (_logger != null)
-                _logger.LogCheckpoint("#CASO_4_START");
+
+            _logger.LogCheckpoint("#CASO_4_START");
 
             // Filtrar stock de zonas no-picking con fecha mínima
             var nonPickingStock = context.StockListNonPickingZones
@@ -48,8 +50,7 @@ namespace WMS.StockReservation.Strategies
 
             if (nonPickingStock.Count == 0)
             {
-                if (_logger != null)
-                    _logger.LogInfo("#CASO_4_SKIP - No stock con fecha mínima");
+                _logger.LogInfo("#CASO_4_SKIP - No stock con fecha mínima");
                 return result;
             }
 
@@ -65,21 +66,18 @@ namespace WMS.StockReservation.Strategies
                 // Crear reserva
                 var reservation = CreateReservation(context, stock, quantityToReserve);
 
-                // Actualizar stock y contexto
+                // Actualizar stock (NO modificar context.PendingQuantity - lo hace ReservationLoopStep)
                 stock.Cantidad -= quantityToReserve;
-                context.PendingQuantity -= quantityToReserve;
                 result.ReservedQuantity += quantityToReserve;
-                result.Reservations.Add(reservation);           
+                result.Reservations.Add(reservation);
 
-                if (_logger != null)
-                    _logger.LogReservation(
+                _logger.LogReservation(
                     reservation,
                     "CASO_4",
                     $"Non-picking zone | Stock: {stock.IdStock} | Cantidad: {quantityToReserve:F6}");
             }
 
-            if (_logger != null)
-                _logger.LogCheckpoint($"#CASO_4_END - Reservado: {result.ReservedQuantity:F6}");
+            _logger.LogCheckpoint($"#CASO_4_END - Reservado: {result.ReservedQuantity:F6}");
 
             return result;
         }
@@ -119,6 +117,7 @@ namespace WMS.StockReservation.Strategies
                 
                 // Flags
                 Pallet_no_estandar = stock.Pallet_No_Estandar,
+                
                 
                 // Host/auditoría
                 Host = context.MachineName ?? Environment.MachineName

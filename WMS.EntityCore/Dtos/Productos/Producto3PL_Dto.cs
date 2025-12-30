@@ -1,14 +1,15 @@
 ﻿using WMS.EntityCore.Datos_Maestros;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Stock;
+using WMSWebAPI.Dtos.Catalogos;
 using WMSWebAPI.Dtos.Productos;
 
-namespace WMSWebAPI.Dtos.Catalogos
-{
 
-    public class ProductoDto
+namespace WMS.EntityCore.Dtos.Catalogos
+{
+    public class Producto3PL_Dto
     {
-        // === EXISTENTES ===
+
         public int IdProducto { get; set; }
         public int IdPropietario { get; set; }
         public int? IdClasificacion { get; set; }
@@ -33,20 +34,7 @@ namespace WMSWebAPI.Dtos.Catalogos
         public float? Peso_Tolerancia { get; set; }
         public float? Temperatura_Referencia { get; set; }
         public float? Temperatura_Tolerancia { get; set; }
-
-        // DUPLICADA LÓGICA de "activo" (se deja habilitada la que tiene default)
-        // public bool? Activo { get; set; }
-
         public bool? Serializado { get; set; }
-
-        // (Estas ya estaban comentadas y duplican a las de abajo con default)
-        // public bool? Genera_Lote { get; set; }
-        // public bool? Genera_Lp_Old { get; set; }
-        // public bool? Control_Vencimiento { get; set; }
-
-        // DUPLICADA LÓGICA de "control_lote" (se deja habilitada la que tiene default)
-        // public bool? Control_Lote { get; set; }
-
         public bool? Peso_Recepcion { get; set; }
         public bool? Peso_Despacho { get; set; }
         public bool? Temperatura_Recepcion { get; set; }
@@ -63,10 +51,6 @@ namespace WMSWebAPI.Dtos.Catalogos
         public string? NoParte { get; set; }
         public bool? FechaManufactura { get; set; }
         public bool? Capturar_Aniada { get; set; }
-
-        // DUPLICADA LÓGICA de "control_peso" (se deja habilitada la que tiene default)
-        // public bool? Control_Peso { get; set; }
-
         public bool? Captura_Arancel { get; set; }
         public bool? Es_Hardware { get; set; }
         public float? Largo { get; set; }
@@ -115,7 +99,7 @@ namespace WMSWebAPI.Dtos.Catalogos
         public ProductoFamiliaDto Familia { get; set; } = new ProductoFamiliaDto();
         public ProductoMarcaDto Marca { get; set; } = new ProductoMarcaDto();
         public ProductoTipoDto TipoProducto { get; set; } = new ProductoTipoDto();
-        public UnidadMedidaDto UnidadMedida { get; set; } = new UnidadMedidaDto();
+        public List< UnidadMedidaDto> UnidadMedida { get; set; } = new List<UnidadMedidaDto>();
         public List<ProductoPresentacionDto> Presentaciones { get; set; } = new List<ProductoPresentacionDto>();
         public List<clsBeProducto_codigos_barra> Codigos_Barra { get; set; } = new List<clsBeProducto_codigos_barra>();
         public List<clsBeProducto_parametros> Parametros { get; set; } = new List<clsBeProducto_parametros>();
@@ -124,12 +108,7 @@ namespace WMSWebAPI.Dtos.Catalogos
         public List<PropietarioBodegaDto>? PropietarioBodega { get; set; }
         public List<ProductoBodegaDto>? ProductoBodega { get; set; }
         public List<ProductoEstadoDto>? ProductoEstado { get; set; }
+
     }
 
-
-    public class IndiceRotacionDto
-    {
-        public int IdIndiceRotacion { get; set; }
-        public string? Nombre { get; set; }
-    }    
 }

@@ -121,8 +121,8 @@ Partial Class frmRecepcion
         Dim DataGridViewCellStyle26 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle27 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
-        Dim lblno_erp_docentry_entrega As System.Windows.Forms.Label
-        Dim lblno_erp_docnum_entrega As System.Windows.Forms.Label
+        Me.lblno_erp_docentry_entrega = New System.Windows.Forms.Label()
+        Me.lblno_erp_docnum_entrega = New System.Windows.Forms.Label()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.cmdGuardar = New DevExpress.XtraBars.BarButtonItem()
@@ -299,6 +299,9 @@ Partial Class frmRecepcion
         Me.xtrRecepcion = New DevExpress.XtraTab.XtraTabControl()
         Me.tabDatosRec = New DevExpress.XtraTab.XtraTabPage()
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
+        Me.GroupControl2 = New DevExpress.XtraEditors.GroupControl()
+        Me.txtno_erp_docnum_entrega = New DevExpress.XtraEditors.TextEdit()
+        Me.txtno_erp_docentry_entrega = New DevExpress.XtraEditors.TextEdit()
         Me.GrpTIpoTransaccion = New DevExpress.XtraEditors.GroupControl()
         Me.txtDescripcionTR = New DevExpress.XtraEditors.TextEdit()
         Me.lnkTipoT = New System.Windows.Forms.LinkLabel()
@@ -328,9 +331,6 @@ Partial Class frmRecepcion
         Me.ToolStripButton1 = New System.Windows.Forms.ToolStripButton()
         Me.ToolEliminarFila = New System.Windows.Forms.ToolStripButton()
         Me.tmrActualizarDatosRecepcion = New System.Windows.Forms.Timer(Me.components)
-        Me.GroupControl2 = New DevExpress.XtraEditors.GroupControl()
-        Me.txtno_erp_docentry_entrega = New DevExpress.XtraEditors.TextEdit()
-        Me.txtno_erp_docnum_entrega = New DevExpress.XtraEditors.TextEdit()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
@@ -353,8 +353,6 @@ Partial Class frmRecepcion
         Label10 = New System.Windows.Forms.Label()
         lblNoGuia = New System.Windows.Forms.Label()
         lblCartaCupo = New System.Windows.Forms.Label()
-        lblno_erp_docentry_entrega = New System.Windows.Forms.Label()
-        lblno_erp_docnum_entrega = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Fec_agrDateEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Fec_agrDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -447,6 +445,10 @@ Partial Class frmRecepcion
         Me.SplitContainer2.Panel1.SuspendLayout()
         Me.SplitContainer2.Panel2.SuspendLayout()
         Me.SplitContainer2.SuspendLayout()
+        CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.GroupControl2.SuspendLayout()
+        CType(Me.txtno_erp_docnum_entrega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtno_erp_docentry_entrega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GrpTIpoTransaccion, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GrpTIpoTransaccion.SuspendLayout()
         CType(Me.txtDescripcionTR.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -478,10 +480,6 @@ Partial Class frmRecepcion
         CType(Me.DgridDetalleRec2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gvDetalleRec2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ToolStrip2.SuspendLayout()
-        CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl2.SuspendLayout()
-        CType(Me.txtno_erp_docentry_entrega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtno_erp_docnum_entrega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'User_agrLabel
@@ -708,6 +706,26 @@ Partial Class frmRecepcion
         lblCartaCupo.TabIndex = 5
         lblCartaCupo.Text = "Carta de Cupo:"
         '
+        'lblno_erp_docentry_entrega
+        '
+        Me.lblno_erp_docentry_entrega.AutoSize = True
+        Me.lblno_erp_docentry_entrega.Location = New System.Drawing.Point(78, 61)
+        Me.lblno_erp_docentry_entrega.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblno_erp_docentry_entrega.Name = "lblno_erp_docentry_entrega"
+        Me.lblno_erp_docentry_entrega.Size = New System.Drawing.Size(62, 16)
+        Me.lblno_erp_docentry_entrega.TabIndex = 2
+        Me.lblno_erp_docentry_entrega.Text = "DocEntry:"
+        '
+        'lblno_erp_docnum_entrega
+        '
+        Me.lblno_erp_docnum_entrega.AutoSize = True
+        Me.lblno_erp_docnum_entrega.Location = New System.Drawing.Point(78, 91)
+        Me.lblno_erp_docnum_entrega.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblno_erp_docnum_entrega.Name = "lblno_erp_docnum_entrega"
+        Me.lblno_erp_docnum_entrega.Size = New System.Drawing.Size(59, 16)
+        Me.lblno_erp_docnum_entrega.TabIndex = 4
+        Me.lblno_erp_docnum_entrega.Text = "DocNum:"
+        '
         'RibbonStatusBar
         '
         Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 891)
@@ -727,7 +745,7 @@ Partial Class frmRecepcion
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.RibbonControl.Size = New System.Drawing.Size(1645, 193)
-        Me.RibbonControl.StatusBar = Me.RibbonStatusBar1
+        Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'cmdGuardar
         '
@@ -2521,6 +2539,45 @@ Partial Class frmRecepcion
         Me.SplitContainer2.SplitterDistance = 504
         Me.SplitContainer2.TabIndex = 6
         '
+        'GroupControl2
+        '
+        Me.GroupControl2.Controls.Add(Me.txtno_erp_docnum_entrega)
+        Me.GroupControl2.Controls.Add(Me.lblno_erp_docnum_entrega)
+        Me.GroupControl2.Controls.Add(Me.txtno_erp_docentry_entrega)
+        Me.GroupControl2.Controls.Add(Me.lblno_erp_docentry_entrega)
+        Me.GroupControl2.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.GroupControl2.Location = New System.Drawing.Point(0, 478)
+        Me.GroupControl2.Name = "GroupControl2"
+        Me.GroupControl2.Size = New System.Drawing.Size(644, 164)
+        Me.GroupControl2.TabIndex = 6
+        Me.GroupControl2.Text = "Documentos de integración"
+        '
+        'txtno_erp_docnum_entrega
+        '
+        Me.txtno_erp_docnum_entrega.Enabled = False
+        Me.txtno_erp_docnum_entrega.Location = New System.Drawing.Point(189, 87)
+        Me.txtno_erp_docnum_entrega.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtno_erp_docnum_entrega.MenuManager = Me.RibbonControl
+        Me.txtno_erp_docnum_entrega.Name = "txtno_erp_docnum_entrega"
+        Me.txtno_erp_docnum_entrega.Properties.Appearance.BackColor = System.Drawing.Color.Azure
+        Me.txtno_erp_docnum_entrega.Properties.Appearance.Options.UseBackColor = True
+        Me.txtno_erp_docnum_entrega.Properties.MaskSettings.Set("mask", "n0")
+        Me.txtno_erp_docnum_entrega.Size = New System.Drawing.Size(344, 22)
+        Me.txtno_erp_docnum_entrega.TabIndex = 5
+        '
+        'txtno_erp_docentry_entrega
+        '
+        Me.txtno_erp_docentry_entrega.Enabled = False
+        Me.txtno_erp_docentry_entrega.Location = New System.Drawing.Point(189, 57)
+        Me.txtno_erp_docentry_entrega.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtno_erp_docentry_entrega.MenuManager = Me.RibbonControl
+        Me.txtno_erp_docentry_entrega.Name = "txtno_erp_docentry_entrega"
+        Me.txtno_erp_docentry_entrega.Properties.Appearance.BackColor = System.Drawing.Color.Azure
+        Me.txtno_erp_docentry_entrega.Properties.Appearance.Options.UseBackColor = True
+        Me.txtno_erp_docentry_entrega.Properties.MaskSettings.Set("mask", "n0")
+        Me.txtno_erp_docentry_entrega.Size = New System.Drawing.Size(344, 22)
+        Me.txtno_erp_docentry_entrega.TabIndex = 3
+        '
         'GrpTIpoTransaccion
         '
         Me.GrpTIpoTransaccion.Appearance.Options.UseBackColor = True
@@ -2787,11 +2844,11 @@ Partial Class frmRecepcion
         '
         Me.DgridDetalleRec2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DgridDetalleRec2.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        Me.DgridDetalleRec2.Location = New System.Drawing.Point(2, 55)
+        Me.DgridDetalleRec2.Location = New System.Drawing.Point(2, 59)
         Me.DgridDetalleRec2.MainView = Me.gvDetalleRec2
         Me.DgridDetalleRec2.Margin = New System.Windows.Forms.Padding(4)
         Me.DgridDetalleRec2.Name = "DgridDetalleRec2"
-        Me.DgridDetalleRec2.Size = New System.Drawing.Size(1639, 585)
+        Me.DgridDetalleRec2.Size = New System.Drawing.Size(1639, 581)
         Me.DgridDetalleRec2.TabIndex = 19
         Me.DgridDetalleRec2.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvDetalleRec2})
         '
@@ -2818,7 +2875,7 @@ Partial Class frmRecepcion
         Me.ToolStrip2.Location = New System.Drawing.Point(2, 28)
         Me.ToolStrip2.Name = "ToolStrip2"
         Me.ToolStrip2.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStrip2.Size = New System.Drawing.Size(1639, 27)
+        Me.ToolStrip2.Size = New System.Drawing.Size(1639, 31)
         Me.ToolStrip2.TabIndex = 0
         Me.ToolStrip2.Text = "ToolStrip4"
         '
@@ -2840,65 +2897,6 @@ Partial Class frmRecepcion
         'tmrActualizarDatosRecepcion
         '
         Me.tmrActualizarDatosRecepcion.Interval = 3000
-        '
-        'GroupControl2
-        '
-        Me.GroupControl2.Controls.Add(Me.txtno_erp_docnum_entrega)
-        Me.GroupControl2.Controls.Add(lblno_erp_docnum_entrega)
-        Me.GroupControl2.Controls.Add(Me.txtno_erp_docentry_entrega)
-        Me.GroupControl2.Controls.Add(lblno_erp_docentry_entrega)
-        Me.GroupControl2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupControl2.Location = New System.Drawing.Point(0, 478)
-        Me.GroupControl2.Name = "GroupControl2"
-        Me.GroupControl2.Size = New System.Drawing.Size(644, 164)
-        Me.GroupControl2.TabIndex = 6
-        Me.GroupControl2.Text = "Documentos de integración"
-        '
-        'txtno_erp_docentry_entrega
-        '
-        Me.txtno_erp_docentry_entrega.Enabled = False
-        Me.txtno_erp_docentry_entrega.Location = New System.Drawing.Point(189, 57)
-        Me.txtno_erp_docentry_entrega.Margin = New System.Windows.Forms.Padding(4)
-        Me.txtno_erp_docentry_entrega.MenuManager = Me.RibbonControl
-        Me.txtno_erp_docentry_entrega.Name = "txtno_erp_docentry_entrega"
-        Me.txtno_erp_docentry_entrega.Properties.Appearance.BackColor = System.Drawing.Color.Azure
-        Me.txtno_erp_docentry_entrega.Properties.Appearance.Options.UseBackColor = True
-        Me.txtno_erp_docentry_entrega.Properties.MaskSettings.Set("mask", "n0")
-        Me.txtno_erp_docentry_entrega.Size = New System.Drawing.Size(344, 22)
-        Me.txtno_erp_docentry_entrega.TabIndex = 3
-        '
-        'lblno_erp_docentry_entrega
-        '
-        lblno_erp_docentry_entrega.AutoSize = True
-        lblno_erp_docentry_entrega.Location = New System.Drawing.Point(78, 61)
-        lblno_erp_docentry_entrega.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        lblno_erp_docentry_entrega.Name = "lblno_erp_docentry_entrega"
-        lblno_erp_docentry_entrega.Size = New System.Drawing.Size(62, 16)
-        lblno_erp_docentry_entrega.TabIndex = 2
-        lblno_erp_docentry_entrega.Text = "DocEntry:"
-        '
-        'txtno_erp_docnum_entrega
-        '
-        Me.txtno_erp_docnum_entrega.Enabled = False
-        Me.txtno_erp_docnum_entrega.Location = New System.Drawing.Point(189, 87)
-        Me.txtno_erp_docnum_entrega.Margin = New System.Windows.Forms.Padding(4)
-        Me.txtno_erp_docnum_entrega.MenuManager = Me.RibbonControl
-        Me.txtno_erp_docnum_entrega.Name = "txtno_erp_docnum_entrega"
-        Me.txtno_erp_docnum_entrega.Properties.Appearance.BackColor = System.Drawing.Color.Azure
-        Me.txtno_erp_docnum_entrega.Properties.Appearance.Options.UseBackColor = True
-        Me.txtno_erp_docnum_entrega.Properties.MaskSettings.Set("mask", "n0")
-        Me.txtno_erp_docnum_entrega.Size = New System.Drawing.Size(344, 22)
-        Me.txtno_erp_docnum_entrega.TabIndex = 5
-        '
-        'lblno_erp_docnum_entrega
-        '
-        lblno_erp_docnum_entrega.AutoSize = True
-        lblno_erp_docnum_entrega.Location = New System.Drawing.Point(78, 91)
-        lblno_erp_docnum_entrega.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        lblno_erp_docnum_entrega.Name = "lblno_erp_docnum_entrega"
-        lblno_erp_docnum_entrega.Size = New System.Drawing.Size(59, 16)
-        lblno_erp_docnum_entrega.TabIndex = 4
-        lblno_erp_docnum_entrega.Text = "DocNum:"
         '
         'frmRecepcion
         '
@@ -3022,6 +3020,11 @@ Partial Class frmRecepcion
         Me.SplitContainer2.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer2.ResumeLayout(False)
+        CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.GroupControl2.ResumeLayout(False)
+        Me.GroupControl2.PerformLayout()
+        CType(Me.txtno_erp_docnum_entrega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtno_erp_docentry_entrega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GrpTIpoTransaccion, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GrpTIpoTransaccion.ResumeLayout(False)
         Me.GrpTIpoTransaccion.PerformLayout()
@@ -3059,11 +3062,6 @@ Partial Class frmRecepcion
         CType(Me.gvDetalleRec2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ToolStrip2.ResumeLayout(False)
         Me.ToolStrip2.PerformLayout()
-        CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.GroupControl2.ResumeLayout(False)
-        Me.GroupControl2.PerformLayout()
-        CType(Me.txtno_erp_docentry_entrega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtno_erp_docnum_entrega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -3277,4 +3275,6 @@ Partial Class frmRecepcion
     Friend WithEvents GroupControl2 As DevExpress.XtraEditors.GroupControl
     Friend WithEvents txtno_erp_docnum_entrega As DevExpress.XtraEditors.TextEdit
     Friend WithEvents txtno_erp_docentry_entrega As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents lblno_erp_docentry_entrega As Label
+    Friend WithEvents lblno_erp_docnum_entrega As Label
 End Class

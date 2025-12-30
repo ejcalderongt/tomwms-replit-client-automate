@@ -1,7 +1,6 @@
 ﻿using AppGlobal;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System.Reflection;
 using WMS.DALCore.Cliente;
 using WMS.DALCore.I_nav_ped_traslado_det;
 using WMS.DALCore.Road;
@@ -1090,6 +1089,7 @@ namespace WMS.DALCore
                 pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet;
                 pBeStockRes.IdProductoBodega = pBePoducto.IdProductoBodega;
                 pBeStockRes.IdPropietarioBodega = pIdPropietarioBodega;
+                pBeStockRes.IdBodega = pIdBodegaOrigen;
                 pBeStockRes.IdUnidadMedida = clsLnProducto.Get_Id_Unidad_Medida_By_Codigo(pBePedidoDet.Producto.codigo,
                                                                                           lConectionInterface,
                                                                                           lTransactionInterface);
@@ -1306,8 +1306,9 @@ namespace WMS.DALCore
                         {
                             try
                             {
-                                BeI_Nav_PedidoTrasladoDet.NoEnc = BePedidoCliente.No;                                
-                                BeI_Nav_PedidoTrasladoDet.No = BeI_Nav_PedidoTrasladoDet.Item_No;
+                                BeI_Nav_PedidoTrasladoDet.NoEnc = BePedidoCliente.No;
+                                if (BeI_Nav_PedidoTrasladoDet.Item_No != null)
+                                    BeI_Nav_PedidoTrasladoDet.No = BeI_Nav_PedidoTrasladoDet.Item_No;
                                 BeI_Nav_PedidoTrasladoDet.Variant_Code = BeI_Nav_PedidoTrasladoDet.Variant_Code;
 
                                 if (BeI_Nav_PedidoTrasladoDet.Item_No != null)
@@ -1567,7 +1568,7 @@ namespace WMS.DALCore
                     dad.SelectCommand.Parameters.Add(new SqlParameter("@NO", pNo));
 
                     var dt = new DataTable();
-                    dad.Fill(dt);
+                    dad.Fill(dt); 
 
                     Exist = dt.Rows.Count > 0;
                 }

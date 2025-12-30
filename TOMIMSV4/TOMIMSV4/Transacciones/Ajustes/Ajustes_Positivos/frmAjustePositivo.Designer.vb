@@ -21,11 +21,19 @@ Partial Class frmAjustePositivo
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmAjustePositivo))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
-        Me.BarButtonItem1 = New DevExpress.XtraBars.BarButtonItem()
+        Me.cmdGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.grpReconteo = New DevExpress.XtraEditors.GroupControl()
+        Me.cmbUmbas = New DevExpress.XtraEditors.LookUpEdit()
+        Me.lbColor = New DevExpress.XtraEditors.LabelControl()
+        Me.lbTalla = New DevExpress.XtraEditors.LabelControl()
+        Me.cmbColor = New DevExpress.XtraEditors.LookUpEdit()
+        Me.cmbTalla = New DevExpress.XtraEditors.LookUpEdit()
+        Me.cmbProductos = New DevExpress.XtraEditors.GridLookUpEdit()
+        Me.GridLookUpEdit1View = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.lbUmbas = New DevExpress.XtraEditors.LabelControl()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.txtLicencia = New DevExpress.XtraEditors.TextEdit()
         Me.lblUbicacion = New System.Windows.Forms.Label()
@@ -37,19 +45,23 @@ Partial Class frmAjustePositivo
         Me.txtUbicacion = New DevExpress.XtraEditors.TextEdit()
         Me.txtLote = New DevExpress.XtraEditors.TextEdit()
         Me.txtPeso = New System.Windows.Forms.NumericUpDown()
-        Me.cmbProducto = New DevExpress.XtraEditors.LookUpEdit()
         Me.lblOperador = New System.Windows.Forms.Label()
         Me.cmbProductoPresentacion = New DevExpress.XtraEditors.LookUpEdit()
         Me.cmbProductoEstado = New DevExpress.XtraEditors.LookUpEdit()
+        Me.txtCantidad = New System.Windows.Forms.NumericUpDown()
+        Me.lblCantidadAnterior = New System.Windows.Forms.Label()
         Me.lblPresentacion = New System.Windows.Forms.Label()
         Me.lblEstadoProducto = New System.Windows.Forms.Label()
         Me.lbIdStock = New System.Windows.Forms.Label()
         Me.lblId = New System.Windows.Forms.Label()
-        Me.lblCantidadAnterior = New System.Windows.Forms.Label()
-        Me.txtCantidad = New System.Windows.Forms.NumericUpDown()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grpReconteo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpReconteo.SuspendLayout()
+        CType(Me.cmbUmbas.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbColor.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbTalla.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.cmbProductos.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridLookUpEdit1View, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox2.SuspendLayout()
         CType(Me.txtLicencia.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dtpFechaVence.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -57,7 +69,6 @@ Partial Class frmAjustePositivo
         CType(Me.txtUbicacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtLote.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtPeso, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.cmbProducto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbProductoPresentacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbProductoEstado.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCantidad, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -66,20 +77,20 @@ Partial Class frmAjustePositivo
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.BarButtonItem1})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdGuardar})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.MaxItemId = 3
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
-        Me.RibbonControl.Size = New System.Drawing.Size(1008, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(1012, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
-        'BarButtonItem1
+        'cmdGuardar
         '
-        Me.BarButtonItem1.Caption = "Guardar"
-        Me.BarButtonItem1.Id = 1
-        Me.BarButtonItem1.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.BarButtonItem1.Name = "BarButtonItem1"
+        Me.cmdGuardar.Caption = "Guardar"
+        Me.cmdGuardar.Id = 1
+        Me.cmdGuardar.ImageOptions.SvgImage = CType(resources.GetObject("cmdGuardar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdGuardar.Name = "cmdGuardar"
         '
         'RibbonPage1
         '
@@ -89,20 +100,26 @@ Partial Class frmAjustePositivo
         '
         'RibbonPageGroup1
         '
-        Me.RibbonPageGroup1.ItemLinks.Add(Me.BarButtonItem1)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdGuardar)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RibbonStatusBar
         '
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 499)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 543)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1008, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1012, 30)
         '
         'grpReconteo
         '
+        Me.grpReconteo.Controls.Add(Me.cmbUmbas)
+        Me.grpReconteo.Controls.Add(Me.lbColor)
+        Me.grpReconteo.Controls.Add(Me.lbTalla)
+        Me.grpReconteo.Controls.Add(Me.cmbColor)
+        Me.grpReconteo.Controls.Add(Me.cmbTalla)
+        Me.grpReconteo.Controls.Add(Me.cmbProductos)
+        Me.grpReconteo.Controls.Add(Me.lbUmbas)
         Me.grpReconteo.Controls.Add(Me.GroupBox2)
-        Me.grpReconteo.Controls.Add(Me.cmbProducto)
         Me.grpReconteo.Controls.Add(Me.lblOperador)
         Me.grpReconteo.Controls.Add(Me.cmbProductoPresentacion)
         Me.grpReconteo.Controls.Add(Me.cmbProductoEstado)
@@ -116,8 +133,88 @@ Partial Class frmAjustePositivo
         Me.grpReconteo.Location = New System.Drawing.Point(0, 193)
         Me.grpReconteo.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.grpReconteo.Name = "grpReconteo"
-        Me.grpReconteo.Size = New System.Drawing.Size(1008, 306)
+        Me.grpReconteo.Size = New System.Drawing.Size(1012, 350)
         Me.grpReconteo.TabIndex = 3
+        '
+        'cmbUmbas
+        '
+        Me.cmbUmbas.Location = New System.Drawing.Point(149, 217)
+        Me.cmbUmbas.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.cmbUmbas.MenuManager = Me.RibbonControl
+        Me.cmbUmbas.Name = "cmbUmbas"
+        Me.cmbUmbas.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.cmbUmbas.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbUmbas.Properties.NullText = ""
+        Me.cmbUmbas.Size = New System.Drawing.Size(309, 22)
+        Me.cmbUmbas.TabIndex = 85
+        '
+        'lbColor
+        '
+        Me.lbColor.Location = New System.Drawing.Point(28, 326)
+        Me.lbColor.Name = "lbColor"
+        Me.lbColor.Size = New System.Drawing.Size(30, 16)
+        Me.lbColor.TabIndex = 84
+        Me.lbColor.Text = "Color"
+        '
+        'lbTalla
+        '
+        Me.lbTalla.Location = New System.Drawing.Point(28, 293)
+        Me.lbTalla.Name = "lbTalla"
+        Me.lbTalla.Size = New System.Drawing.Size(28, 16)
+        Me.lbTalla.TabIndex = 83
+        Me.lbTalla.Text = "Talla"
+        '
+        'cmbColor
+        '
+        Me.cmbColor.Location = New System.Drawing.Point(149, 322)
+        Me.cmbColor.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.cmbColor.MenuManager = Me.RibbonControl
+        Me.cmbColor.Name = "cmbColor"
+        Me.cmbColor.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.cmbColor.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbColor.Properties.NullText = ""
+        Me.cmbColor.Size = New System.Drawing.Size(309, 22)
+        Me.cmbColor.TabIndex = 82
+        '
+        'cmbTalla
+        '
+        Me.cmbTalla.Location = New System.Drawing.Point(149, 290)
+        Me.cmbTalla.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.cmbTalla.MenuManager = Me.RibbonControl
+        Me.cmbTalla.Name = "cmbTalla"
+        Me.cmbTalla.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.cmbTalla.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbTalla.Properties.NullText = ""
+        Me.cmbTalla.Size = New System.Drawing.Size(309, 22)
+        Me.cmbTalla.TabIndex = 81
+        '
+        'cmbProductos
+        '
+        Me.cmbProductos.Location = New System.Drawing.Point(149, 106)
+        Me.cmbProductos.Margin = New System.Windows.Forms.Padding(6)
+        Me.cmbProductos.MenuManager = Me.RibbonControl
+        Me.cmbProductos.Name = "cmbProductos"
+        Me.cmbProductos.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbProductos.Properties.PopupView = Me.GridLookUpEdit1View
+        Me.cmbProductos.Size = New System.Drawing.Size(309, 22)
+        Me.cmbProductos.TabIndex = 80
+        '
+        'GridLookUpEdit1View
+        '
+        Me.GridLookUpEdit1View.DetailHeight = 682
+        Me.GridLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
+        Me.GridLookUpEdit1View.Name = "GridLookUpEdit1View"
+        Me.GridLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = False
+        Me.GridLookUpEdit1View.OptionsView.ShowAutoFilterRow = True
+        Me.GridLookUpEdit1View.OptionsView.ShowGroupPanel = False
+        '
+        'lbUmbas
+        '
+        Me.lbUmbas.Location = New System.Drawing.Point(28, 218)
+        Me.lbUmbas.Name = "lbUmbas"
+        Me.lbUmbas.Size = New System.Drawing.Size(84, 16)
+        Me.lbUmbas.TabIndex = 40
+        Me.lbUmbas.Text = "Unidad Medida"
         '
         'GroupBox2
         '
@@ -239,18 +336,6 @@ Partial Class frmAjustePositivo
         Me.txtPeso.Size = New System.Drawing.Size(309, 23)
         Me.txtPeso.TabIndex = 30
         '
-        'cmbProducto
-        '
-        Me.cmbProducto.Location = New System.Drawing.Point(149, 106)
-        Me.cmbProducto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.cmbProducto.MenuManager = Me.RibbonControl
-        Me.cmbProducto.Name = "cmbProducto"
-        Me.cmbProducto.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.cmbProducto.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbProducto.Properties.NullText = ""
-        Me.cmbProducto.Size = New System.Drawing.Size(309, 22)
-        Me.cmbProducto.TabIndex = 38
-        '
         'lblOperador
         '
         Me.lblOperador.AutoSize = True
@@ -283,6 +368,28 @@ Partial Class frmAjustePositivo
         Me.cmbProductoEstado.Properties.NullText = ""
         Me.cmbProductoEstado.Size = New System.Drawing.Size(309, 22)
         Me.cmbProductoEstado.TabIndex = 31
+        '
+        'txtCantidad
+        '
+        Me.txtCantidad.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtCantidad.DecimalPlaces = 6
+        Me.txtCantidad.Location = New System.Drawing.Point(149, 256)
+        Me.txtCantidad.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtCantidad.Maximum = New Decimal(New Integer() {1569325056, 23283064, 0, 0})
+        Me.txtCantidad.Name = "txtCantidad"
+        Me.txtCantidad.Size = New System.Drawing.Size(309, 23)
+        Me.txtCantidad.TabIndex = 28
+        Me.txtCantidad.Visible = False
+        '
+        'lblCantidadAnterior
+        '
+        Me.lblCantidadAnterior.AutoSize = True
+        Me.lblCantidadAnterior.Location = New System.Drawing.Point(25, 259)
+        Me.lblCantidadAnterior.Name = "lblCantidadAnterior"
+        Me.lblCantidadAnterior.Size = New System.Drawing.Size(62, 16)
+        Me.lblCantidadAnterior.TabIndex = 19
+        Me.lblCantidadAnterior.Text = "Cantidad:"
+        Me.lblCantidadAnterior.Visible = False
         '
         'lblPresentacion
         '
@@ -319,33 +426,11 @@ Partial Class frmAjustePositivo
         Me.lblId.TabIndex = 2
         Me.lblId.Text = "IdStock:"
         '
-        'lblCantidadAnterior
-        '
-        Me.lblCantidadAnterior.AutoSize = True
-        Me.lblCantidadAnterior.Location = New System.Drawing.Point(25, 217)
-        Me.lblCantidadAnterior.Name = "lblCantidadAnterior"
-        Me.lblCantidadAnterior.Size = New System.Drawing.Size(62, 16)
-        Me.lblCantidadAnterior.TabIndex = 19
-        Me.lblCantidadAnterior.Text = "Cantidad:"
-        Me.lblCantidadAnterior.Visible = False
-        '
-        'txtCantidad
-        '
-        Me.txtCantidad.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtCantidad.DecimalPlaces = 6
-        Me.txtCantidad.Location = New System.Drawing.Point(149, 214)
-        Me.txtCantidad.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.txtCantidad.Maximum = New Decimal(New Integer() {1569325056, 23283064, 0, 0})
-        Me.txtCantidad.Name = "txtCantidad"
-        Me.txtCantidad.Size = New System.Drawing.Size(309, 23)
-        Me.txtCantidad.TabIndex = 28
-        Me.txtCantidad.Visible = False
-        '
         'frmAjustePositivo
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1008, 529)
+        Me.ClientSize = New System.Drawing.Size(1012, 573)
         Me.Controls.Add(Me.grpReconteo)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
@@ -357,6 +442,11 @@ Partial Class frmAjustePositivo
         CType(Me.grpReconteo, System.ComponentModel.ISupportInitialize).EndInit()
         Me.grpReconteo.ResumeLayout(False)
         Me.grpReconteo.PerformLayout()
+        CType(Me.cmbUmbas.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbColor.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbTalla.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbProductos.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridLookUpEdit1View, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox2.ResumeLayout(False)
         Me.GroupBox2.PerformLayout()
         CType(Me.txtLicencia.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -365,7 +455,6 @@ Partial Class frmAjustePositivo
         CType(Me.txtUbicacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtLote.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtPeso, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.cmbProducto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbProductoPresentacion.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbProductoEstado.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCantidad, System.ComponentModel.ISupportInitialize).EndInit()
@@ -379,7 +468,6 @@ Partial Class frmAjustePositivo
     Friend WithEvents RibbonPageGroup1 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents RibbonStatusBar As DevExpress.XtraBars.Ribbon.RibbonStatusBar
     Friend WithEvents grpReconteo As DevExpress.XtraEditors.GroupControl
-    Friend WithEvents cmbProducto As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents lblOperador As Label
     Friend WithEvents lblLicPlate As Label
     Friend WithEvents cmbProductoPresentacion As DevExpress.XtraEditors.LookUpEdit
@@ -396,9 +484,17 @@ Partial Class frmAjustePositivo
     Friend WithEvents lblEstadoProducto As Label
     Friend WithEvents lbIdStock As Label
     Friend WithEvents lblId As Label
-    Friend WithEvents BarButtonItem1 As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents cmdGuardar As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents GroupBox2 As GroupBox
     Friend WithEvents txtLicencia As DevExpress.XtraEditors.TextEdit
     Friend WithEvents txtCantidad As NumericUpDown
     Friend WithEvents lblCantidadAnterior As Label
+    Friend WithEvents lbUmbas As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents cmbProductos As DevExpress.XtraEditors.GridLookUpEdit
+    Friend WithEvents GridLookUpEdit1View As DevExpress.XtraGrid.Views.Grid.GridView
+    Friend WithEvents lbColor As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents lbTalla As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents cmbColor As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents cmbTalla As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents cmbUmbas As DevExpress.XtraEditors.LookUpEdit
 End Class

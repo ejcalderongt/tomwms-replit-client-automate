@@ -6256,7 +6256,7 @@ Partial Public Class clsLnTrans_pe_enc
     Public Shared Function GetAll_By_VerificacionBOF(ByVal pActivo As Boolean,
                                                      ByVal pFechaDel As Date,
                                                      ByVal pFechaAl As Date,
-                                                     ByVal IdBodega As Integer) As DataTable
+                                                     ByVal pIdUsuario As Integer) As DataTable
 
 
 
@@ -6265,17 +6265,40 @@ Partial Public Class clsLnTrans_pe_enc
 
         Try
 
-            Dim vSQL As String = " SELECT * FROM VW_PEDIDOS_LIST WHERE IDBODEGA = @IDBODEGA and verificar_con_imagen=1 and estado='Pickeado' "
+            '#GT11122025: mostrar los pedidos asociados al usuario para no filtrar por cada idbodega
+            Dim vSQL As String = " SELECT * " &
+                     " FROM VW_PEDIDOS_LIST " &
+                     " WHERE IdBodega IN ( " &
+                     "     SELECT ub.IdBodega " &
+                     "     FROM Usuario_Bodega ub " &
+                     "     WHERE ub.IdUsuario = @pIdUsuario " &
+                     " ) " &
+                     " AND verificar_con_imagen = 1 " &
+                     " AND estado = 'Pickeado' "
 
             If pActivo = True Then
-                vSQL += " AND Activo=1 "
+                vSQL += " AND Activo = 1 "
             Else
-                vSQL += " AND Activo=0"
+                vSQL += " AND Activo = 0 "
             End If
 
+            vSQL += " AND CAST(Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) & " AND " & FormatoFechas.fFecha(pFechaAl)
 
-            vSQL += " AND cast(Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) &
-                   " AND " & FormatoFechas.fFecha(pFechaAl)
+            vSQL += " ORDER BY CONVERT(date, Fecha_Pedido) ASC, Correlativo ASC "
+
+
+            'Dim vSQL As String = " SELECT * FROM VW_PEDIDOS_LIST WHERE IDBODEGA = @IDBODEGA and verificar_con_imagen=1 and estado='Pickeado' "
+
+            'If pActivo = True Then
+            '    vSQL += " AND Activo=1 "
+            'Else
+            '    vSQL += " AND Activo=0"
+            'End If
+
+            'vSQL += " AND cast(Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) &
+            '       " AND " & FormatoFechas.fFecha(pFechaAl)
+
+            'vSQL += " ORDER BY CONVERT(date, Fecha_Pedido) ASC, Correlativo ASC "
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -6286,7 +6309,7 @@ Partial Public Class clsLnTrans_pe_enc
                     Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
 
                         lDataAdapter.SelectCommand.Transaction = lTransaction
-                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdBodega", IdBodega)
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@pIdUsuario", pIdUsuario)
 
                         lDataAdapter.SelectCommand.CommandType = CommandType.Text
                         lDataAdapter.Fill(lTable)

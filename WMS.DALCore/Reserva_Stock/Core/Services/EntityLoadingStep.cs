@@ -16,10 +16,9 @@ namespace WMS.StockReservation.Core.Services
             _logger.LogCheckpoint("#MI3_ENTITY_LOADING_START");
 
             // --- Cargar Bodega (validar antes de asignar a la propiedad) ---
-            var bodega = clsLnBodega.GetSingle_By_Idbodega(
-                context.Request.IdBodega,
-                context.Connection,
-                context.Transaction);
+            var bodega = clsLnBodega.GetSingle_By_Idbodega(context.Request.IdBodega,
+                                                           context.Connection,
+                                                           context.Transaction);
 
             if (bodega is null)
             {
@@ -29,10 +28,9 @@ namespace WMS.StockReservation.Core.Services
 
             context.Bodega = bodega;
         
-            var product = clsLnProducto.Get_Single_By_IdProductoBodega(
-                context.ProductId,
-                context.Connection,
-                context.Transaction);
+            var product = clsLnProducto.Get_Single_By_IdProductoBodega(context.ProductId,
+                                                                       context.Connection,
+                                                                       context.Transaction);
 
             if (product is null)
             {
@@ -43,10 +41,9 @@ namespace WMS.StockReservation.Core.Services
             context.Product = product; // <- seguro
 
             // --- Cargar Presentación por defecto (puede ser null y está bien) ---
-            clsBeProducto_presentacion? defaultPresentation = clsLnProducto_presentacion.Get_Presentacion_Defecto_By_IdProducto(
-                context.ProductId,
-                context.Connection,
-                context.Transaction);
+            clsBeProducto_presentacion? defaultPresentation = clsLnProducto_presentacion.Get_Presentacion_Defecto_By_IdProducto(context.ProductId,
+                                                                                                                                context.Connection,
+                                                                                                                                context.Transaction);
 
             if (defaultPresentation != null) 
             context.DefaultPresentation = defaultPresentation; // esta puede ser nullable en el contexto

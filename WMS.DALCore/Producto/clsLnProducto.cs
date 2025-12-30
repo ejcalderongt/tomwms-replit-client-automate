@@ -190,6 +190,97 @@ public class clsLnProducto
 
         return rowsAffected;
     }
+
+    public static int Insertar3pl(clsBeProducto_3PL oBeProducto, SqlConnection pConection, SqlTransaction pTransaction)
+    {
+        int rowsAffected = 0;
+        SqlCommand cmd = new SqlCommand();
+
+        try
+        {
+            Ins.Init("producto");
+            Ins.Add("idproducto", "@idproducto", "F");
+            Ins.Add("idpropietario", "@idpropietario", "F");
+            Ins.Add("idclasificacion", "@idclasificacion", "F");
+            Ins.Add("idfamilia", "@idfamilia", "F");
+            Ins.Add("idmarca", "@idmarca", "F");
+            if (oBeProducto.IdTipoProducto > 0)
+            {
+
+            }
+            Ins.Add("idtipoproducto", "@idtipoproducto", "F");
+            Ins.Add("idunidadmedidabasica", "@idunidadmedidabasica", "F");
+            Ins.Add("idcamara", "@idcamara", "F");
+            Ins.Add("idtiporotacion", "@idtiporotacion", "F");
+            Ins.Add("idperfilserializado", "@idperfilserializado", "F");
+            Ins.Add("idindicerotacion", "@idindicerotacion", "F");
+            Ins.Add("idsimbologia", "@idsimbologia", "F");
+            Ins.Add("idarancel", "@idarancel", "F");
+            Ins.Add("codigo", "@codigo", "F");
+            Ins.Add("nombre", "@nombre", "F");
+            Ins.Add("codigo_barra", "@codigo_barra", "F");
+            Ins.Add("precio", "@precio", "F");
+            Ins.Add("existencia_min", "@existencia_min", "F");
+            Ins.Add("existencia_max", "@existencia_max", "F");
+            Ins.Add("costo", "@costo", "F");
+            Ins.Add("peso_referencia", "@peso_referencia", "F");
+            Ins.Add("peso_tolerancia", "@peso_tolerancia", "F");
+            Ins.Add("temperatura_referencia", "@temperatura_referencia", "F");
+            Ins.Add("temperatura_tolerancia", "@temperatura_tolerancia", "F");
+            Ins.Add("activo", "@activo", "F");
+            Ins.Add("serializado", "@serializado", "F");
+            Ins.Add("genera_lote", "@genera_lote", "F");
+            Ins.Add("genera_lp_old", "@genera_lp_old", "F");
+            Ins.Add("control_vencimiento", "@control_vencimiento", "F");
+            Ins.Add("control_lote", "@control_lote", "F");
+            Ins.Add("peso_recepcion", "@peso_recepcion", "F");
+            Ins.Add("peso_despacho", "@peso_despacho", "F");
+            Ins.Add("temperatura_recepcion", "@temperatura_recepcion", "F");
+            Ins.Add("temperatura_despacho", "@temperatura_despacho", "F");
+            Ins.Add("materia_prima", "@materia_prima", "F");
+            Ins.Add("kit", "@kit", "F");
+            Ins.Add("tolerancia", "@tolerancia", "F");
+            Ins.Add("ciclo_vida", "@ciclo_vida", "F");
+            Ins.Add("user_agr", "@user_agr", "F");
+            Ins.Add("fec_agr", "@fec_agr", "F");
+            Ins.Add("user_mod", "@user_mod", "F");
+            Ins.Add("fec_mod", "@fec_mod", "F");
+            Ins.Add("imagen", "@imagen", "F");
+            Ins.Add("noserie", "@noserie", "F");
+            Ins.Add("noparte", "@noparte", "F");
+            Ins.Add("fechamanufactura", "@fechamanufactura", "F");
+            Ins.Add("capturar_aniada", "@capturar_aniada", "F");
+            Ins.Add("control_peso", "@control_peso", "F");
+            Ins.Add("captura_arancel", "@captura_arancel", "F");
+            Ins.Add("es_hardware", "@es_hardware", "F");
+            Ins.Add("largo", "@largo", "F");
+            Ins.Add("alto", "@alto", "F");
+            Ins.Add("ancho", "@ancho", "F");
+            Ins.Add("idunidadmedidacobro", "@idunidadmedidacobro", "F");
+            Ins.Add("idtipoetiqueta", "@idtipoetiqueta", "F");
+            Ins.Add("dias_inventario_promedio", "@dias_inventario_promedio", "F");
+            Ins.Add("idproductoparametroa", "@idproductoparametroa", "F");
+            Ins.Add("idproductoparametrob", "@idproductoparametrob", "F");
+            Ins.Add("idtipomanufactura", "@idtipomanufactura", "F");
+
+            string sp = Ins.SQL();
+            cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
+
+            Bind3pl(cmd, oBeProducto);
+
+            rowsAffected = cmd.ExecuteNonQuery();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+        finally
+        {
+            cmd?.Dispose();
+        }
+
+        return rowsAffected;
+    }
     public static int Insertar(IConfiguration configuration, clsBeProducto oBeProducto)
     {
 
@@ -368,6 +459,94 @@ public class clsLnProducto
             cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
 
             Bind(cmd, oBeProducto);
+
+            rowsAffected = cmd.ExecuteNonQuery();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+        finally
+        {
+            cmd?.Dispose();
+        }
+
+        return rowsAffected;
+    }
+
+    public static int Actualizar3pl(clsBeProducto_3PL oBeProducto, SqlConnection pConection, SqlTransaction pTransaction)
+    {
+        int rowsAffected = 0;
+        SqlCommand cmd = new SqlCommand();
+
+        try
+        {
+            Upd.Init("producto");
+            Upd.Add("idproducto", "@idproducto", "F");
+            Upd.Add("idpropietario", "@idpropietario", "F");
+            Upd.Add("idclasificacion", "@idclasificacion", "F");
+            Upd.Add("idfamilia", "@idfamilia", "F");
+            Upd.Add("idmarca", "@idmarca", "F");
+            Upd.Add("idtipoproducto", "@idtipoproducto", "F");
+            Upd.Add("idunidadmedidabasica", "@idunidadmedidabasica", "F");
+            Upd.Add("idcamara", "@idcamara", "F");
+            Upd.Add("idtiporotacion", "@idtiporotacion", "F");
+            Upd.Add("idperfilserializado", "@idperfilserializado", "F");
+            Upd.Add("idindicerotacion", "@idindicerotacion", "F");
+            Upd.Add("idsimbologia", "@idsimbologia", "F");
+            Upd.Add("idarancel", "@idarancel", "F");
+            Upd.Add("codigo", "@codigo", "F");
+            Upd.Add("nombre", "@nombre", "F");
+            Upd.Add("codigo_barra", "@codigo_barra", "F");
+            Upd.Add("precio", "@precio", "F");
+            Upd.Add("existencia_min", "@existencia_min", "F");
+            Upd.Add("existencia_max", "@existencia_max", "F");
+            Upd.Add("costo", "@costo", "F");
+            Upd.Add("peso_referencia", "@peso_referencia", "F");
+            Upd.Add("peso_tolerancia", "@peso_tolerancia", "F");
+            Upd.Add("temperatura_referencia", "@temperatura_referencia", "F");
+            Upd.Add("temperatura_tolerancia", "@temperatura_tolerancia", "F");
+            Upd.Add("activo", "@activo", "F");
+            Upd.Add("serializado", "@serializado", "F");
+            Upd.Add("genera_lote", "@genera_lote", "F");
+            Upd.Add("genera_lp_old", "@genera_lp_old", "F");
+            Upd.Add("control_vencimiento", "@control_vencimiento", "F");
+            Upd.Add("control_lote", "@control_lote", "F");
+            Upd.Add("peso_recepcion", "@peso_recepcion", "F");
+            Upd.Add("peso_despacho", "@peso_despacho", "F");
+            Upd.Add("temperatura_recepcion", "@temperatura_recepcion", "F");
+            Upd.Add("temperatura_despacho", "@temperatura_despacho", "F");
+            Upd.Add("materia_prima", "@materia_prima", "F");
+            Upd.Add("kit", "@kit", "F");
+            Upd.Add("tolerancia", "@tolerancia", "F");
+            Upd.Add("ciclo_vida", "@ciclo_vida", "F");
+            Upd.Add("user_agr", "@user_agr", "F");
+            Upd.Add("fec_agr", "@fec_agr", "F");
+            Upd.Add("user_mod", "@user_mod", "F");
+            Upd.Add("fec_mod", "@fec_mod", "F");
+            Upd.Add("imagen", "@imagen", "F");
+            Upd.Add("noserie", "@noserie", "F");
+            Upd.Add("noparte", "@noparte", "F");
+            Upd.Add("fechamanufactura", "@fechamanufactura", "F");
+            Upd.Add("capturar_aniada", "@capturar_aniada", "F");
+            Upd.Add("control_peso", "@control_peso", "F");
+            Upd.Add("captura_arancel", "@captura_arancel", "F");
+            Upd.Add("es_hardware", "@es_hardware", "F");
+            Upd.Add("largo", "@largo", "F");
+            Upd.Add("alto", "@alto", "F");
+            Upd.Add("ancho", "@ancho", "F");
+            Upd.Add("idunidadmedidacobro", "@idunidadmedidacobro", "F");
+            Upd.Add("idtipoetiqueta", "@idtipoetiqueta", "F");
+            Upd.Add("dias_inventario_promedio", "@dias_inventario_promedio", "F");
+            Upd.Add("idproductoparametroa", "@idproductoparametroa", "F");
+            Upd.Add("idproductoparametrob", "@idproductoparametrob", "F");
+            Upd.Add("idtipomanufactura", "@idtipomanufactura", "F");
+            Upd.Where("IdProducto = @IdProducto");
+
+            string sp = Upd.SQL();
+            cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
+
+            Bind3pl(cmd, oBeProducto);
 
             rowsAffected = cmd.ExecuteNonQuery();
         }
@@ -672,6 +851,23 @@ public class clsLnProducto
             throw;
         }
     }
+
+    public static int InsertOrUpdate3pl(clsBeProducto_3PL entity, SqlConnection connection, SqlTransaction tx)
+    {
+        try
+        {
+            bool existe = Existe(entity.IdProducto, connection, tx);
+
+            return existe
+                ? Actualizar3pl(entity, connection, tx)
+                : Insertar3pl(entity, connection, tx);
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
     public static void Bind(SqlCommand cmd, clsBeProducto o)
     {
         cmd.Parameters.AddWithValue("@IdProducto", o.IdProducto);
@@ -734,6 +930,70 @@ public class clsLnProducto
         cmd.Parameters.AddWithValue("@IDPRODUCTOPARAMETROB", o.IDPRODUCTOPARAMETROB == 0 ? DBNull.Value : o.IDPRODUCTOPARAMETROB);
         cmd.Parameters.AddWithValue("@IdTipoManufactura", o.IdTipoManufactura == 0 ? DBNull.Value : o.IdTipoManufactura);
     }
+
+    public static void Bind3pl(SqlCommand cmd, clsBeProducto_3PL o)
+    {
+        cmd.Parameters.AddWithValue("@IdProducto", o.IdProducto);
+        cmd.Parameters.AddWithValue("@IdPropietario", o.IdPropietario == 0 ? DBNull.Value : o.IdPropietario);
+        cmd.Parameters.AddWithValue("@IdClasificacion", o.IdClasificacion == 0 ? DBNull.Value : o.IdClasificacion);
+        cmd.Parameters.AddWithValue("@IdFamilia", o.IdFamilia == 0 ? DBNull.Value : o.IdFamilia);
+        cmd.Parameters.AddWithValue("@IdMarca", o.IdMarca == 0 ? DBNull.Value : o.IdMarca);
+        cmd.Parameters.AddWithValue("@IdTipoProducto", o.IdTipoProducto == 0 ? DBNull.Value : o.IdTipoProducto);
+        cmd.Parameters.AddWithValue("@IdUnidadMedidaBasica", o.IdUnidadMedidaBasica == 0 ? DBNull.Value : o.IdUnidadMedidaBasica);
+        cmd.Parameters.AddWithValue("@IdCamara", o.IdCamara == 0 ? DBNull.Value : o.IdCamara);
+        cmd.Parameters.AddWithValue("@IdTipoRotacion", o.IdTipoRotacion == 0 ? DBNull.Value : o.IdTipoRotacion);
+        cmd.Parameters.AddWithValue("@IdPerfilSerializado", o.IdPerfilSerializado == 0 ? DBNull.Value : o.IdPerfilSerializado);
+        cmd.Parameters.AddWithValue("@IdIndiceRotacion", o.IdIndiceRotacion == 0 ? DBNull.Value : o.IdIndiceRotacion);
+        cmd.Parameters.AddWithValue("@IdSimbologia", o.IdSimbologia == 0 ? DBNull.Value : o.IdSimbologia);
+        cmd.Parameters.AddWithValue("@IdArancel", o.IdArancel == 0 ? DBNull.Value : o.IdArancel);
+        cmd.Parameters.AddWithValue("@codigo", o.codigo ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@nombre", o.nombre ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@codigo_barra", o.codigo_barra ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@precio", o.precio);
+        cmd.Parameters.AddWithValue("@existencia_min", o.existencia_min);
+        cmd.Parameters.AddWithValue("@existencia_max", o.existencia_max);
+        cmd.Parameters.AddWithValue("@costo", o.costo);
+        cmd.Parameters.AddWithValue("@peso_referencia", o.peso_referencia);
+        cmd.Parameters.AddWithValue("@peso_tolerancia", o.peso_tolerancia);
+        cmd.Parameters.AddWithValue("@temperatura_referencia", o.temperatura_referencia);
+        cmd.Parameters.AddWithValue("@temperatura_tolerancia", o.temperatura_tolerancia);
+        cmd.Parameters.AddWithValue("@activo", o.activo);
+        cmd.Parameters.AddWithValue("@serializado", o.serializado);
+        cmd.Parameters.AddWithValue("@genera_lote", o.genera_lote);
+        cmd.Parameters.AddWithValue("@genera_lp_old", o.genera_lp_old);
+        cmd.Parameters.AddWithValue("@control_vencimiento", o.control_vencimiento);
+        cmd.Parameters.AddWithValue("@control_lote", o.control_lote);
+        cmd.Parameters.AddWithValue("@peso_recepcion", o.peso_recepcion);
+        cmd.Parameters.AddWithValue("@peso_despacho", o.peso_despacho);
+        cmd.Parameters.AddWithValue("@temperatura_recepcion", o.temperatura_recepcion);
+        cmd.Parameters.AddWithValue("@temperatura_despacho", o.temperatura_despacho);
+        cmd.Parameters.AddWithValue("@materia_prima", o.materia_prima);
+        cmd.Parameters.AddWithValue("@kit", o.kit);
+        cmd.Parameters.AddWithValue("@tolerancia", o.tolerancia);
+        cmd.Parameters.AddWithValue("@ciclo_vida", o.ciclo_vida);
+        cmd.Parameters.AddWithValue("@user_agr", o.user_agr ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@fec_agr", o.fec_agr);
+        cmd.Parameters.AddWithValue("@user_mod", o.user_mod ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@fec_mod", o.fec_mod);
+        cmd.Parameters.Add("@imagen", SqlDbType.Image).Value = o.imagen ?? (object)DBNull.Value;
+        cmd.Parameters.AddWithValue("@noserie", o.noserie ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@noparte", o.noparte ?? (object)DBNull.Value);
+        cmd.Parameters.AddWithValue("@fechamanufactura", o.fechamanufactura);
+        cmd.Parameters.AddWithValue("@capturar_aniada", o.capturar_aniada);
+        cmd.Parameters.AddWithValue("@control_peso", o.control_peso);
+        cmd.Parameters.AddWithValue("@captura_arancel", o.captura_arancel);
+        cmd.Parameters.AddWithValue("@es_hardware", o.es_hardware);
+        cmd.Parameters.AddWithValue("@largo", o.largo);
+        cmd.Parameters.AddWithValue("@alto", o.alto);
+        cmd.Parameters.AddWithValue("@ancho", o.ancho);
+        cmd.Parameters.AddWithValue("@IdUnidadMedidaCobro", o.IdUnidadMedidaCobro == 0 ? DBNull.Value : o.IdUnidadMedidaCobro);
+        cmd.Parameters.AddWithValue("@IdTipoEtiqueta", o.IdTipoEtiqueta == 0 ? DBNull.Value : o.IdTipoEtiqueta);
+        cmd.Parameters.AddWithValue("@dias_inventario_promedio", o.dias_inventario_promedio);
+        cmd.Parameters.AddWithValue("@IDPRODUCTOPARAMETROA", o.IDPRODUCTOPARAMETROA == 0 ? DBNull.Value : o.IDPRODUCTOPARAMETROA);
+        cmd.Parameters.AddWithValue("@IDPRODUCTOPARAMETROB", o.IDPRODUCTOPARAMETROB == 0 ? DBNull.Value : o.IDPRODUCTOPARAMETROB);
+        cmd.Parameters.AddWithValue("@IdTipoManufactura", o.IdTipoManufactura == 0 ? DBNull.Value : o.IdTipoManufactura);
+    }
+
     public static bool Existe(int IdProducto, SqlConnection pConnection, SqlTransaction pTransaction)
     {
         try
@@ -1541,7 +1801,7 @@ public class clsLnProducto
 
     public static int Get_Tipo_Rotacion_By_IdProductoBodega(int IdProductoBodega,
                                                          SqlConnection lConnection,
-                                                         SqlTransaction lTransaction)
+                                                         SqlTransaction? lTransaction)
     {
         int result = 0;
 

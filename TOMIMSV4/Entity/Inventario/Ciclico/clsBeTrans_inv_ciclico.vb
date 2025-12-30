@@ -57,6 +57,7 @@ Public Class clsBeTrans_inv_ciclico
     Public Property EstadoNuevo As String = ""
     Public Property Regularizar As Boolean = True
     Public Property IdProductoTallaColor As Integer = 0
+    Public Property Gondola As String = ""
     Sub New()
     End Sub
 

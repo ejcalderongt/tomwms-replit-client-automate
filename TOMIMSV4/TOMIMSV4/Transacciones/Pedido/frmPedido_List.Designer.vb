@@ -447,10 +447,10 @@ Partial Class frmPedido_List
         '
         'prg
         '
-        Me.prg.Location = New System.Drawing.Point(915, 140)
+        Me.prg.Location = New System.Drawing.Point(1140, 145)
         Me.prg.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.prg.Name = "prg"
-        Me.prg.Size = New System.Drawing.Size(257, 23)
+        Me.prg.Size = New System.Drawing.Size(161, 23)
         Me.prg.TabIndex = 4
         Me.prg.Visible = False
         '

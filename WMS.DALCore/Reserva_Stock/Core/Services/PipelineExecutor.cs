@@ -1,3 +1,6 @@
+using System;
+using WMS.StockReservation.Core.Domain;
+using WMS.StockReservation.Core.Interfaces;
 
 namespace WMS.StockReservation.Core.Services
 {
@@ -24,6 +27,8 @@ namespace WMS.StockReservation.Core.Services
 
             _logger.LogCheckpoint("=== INICIO PIPELINE RESERVA ===");
 
+            bool shouldStop = false;
+
             foreach (var step in _steps)
             {
                 _logger.LogInfo($"Ejecutando: {step.GetType().Name}");
@@ -44,11 +49,18 @@ namespace WMS.StockReservation.Core.Services
                     break;
                 }
 
-                // Salida temprana si la cantidad ya fue completamente reservada
-                if (context.IsQuantityFullyReserved())
+                // PostProcessingStep SIEMPRE debe ejecutarse - no hacer break antes
+                if (step.GetType().Name == "PostProcessingStep")
                 {
-                    _logger.LogInfo("Cantidad completamente reservada. Fin pipeline.");
+                    _logger.LogInfo("Post-procesamiento completado.");
                     break;
+                }
+
+                // Marcar para salida después de post-procesamiento
+                if (context.IsQuantityFullyReserved() && !shouldStop)
+                {
+                    _logger.LogInfo("Cantidad completamente reservada. Ejecutando post-procesamiento...");
+                    shouldStop = true;
                 }
             }
 
