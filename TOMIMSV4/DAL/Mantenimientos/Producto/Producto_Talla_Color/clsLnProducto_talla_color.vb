@@ -1188,4 +1188,60 @@ Public Class clsLnProducto_talla_color
 
 	End Function
 
+    Public Shared Function Get_IdProductoTallaColor_By_CodTalla_and_CodColor(ByVal pCodigoTalla As String,
+                                                                             ByVal pCodigoColor As String,
+                                                                             ByVal pIdProducto As Integer,
+                                                                             Optional ByVal pConection As SqlConnection = Nothing,
+                                                                             Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim cmd As New SqlCommand()
+        Dim lTransaction As SqlTransaction = Nothing
+        Get_IdProductoTallaColor_By_CodTalla_and_CodColor = 0
+
+        Try
+
+            Dim sql As String = "SELECT IdProductoTallaColor
+								 FROM producto_talla_color ptc LEFT OUTER JOIN 
+									  talla t ON t.IdTalla = ptc.IdTalla LEFT OUTER JOIN
+									  color c ON c.IdColor = ptc.IdColor 
+								 WHERE t.Codigo=@CodTalla and c.Codigo=@CodColor and ptc.IdProducto = @IdProducto"
+
+            Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sql, pConection, pTransaction)
+            Else
+                lConnection.Open()
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                cmd = New SqlCommand(sql, lConnection, lTransaction)
+            End If
+
+            cmd.Parameters.Add(New SqlParameter("@CodTalla", pCodigoTalla))
+            cmd.Parameters.Add(New SqlParameter("@CodColor", pCodigoColor))
+            cmd.Parameters.Add(New SqlParameter("@IdProducto", pIdProducto))
+
+            Dim lDataTable As New DataTable
+
+			Using da As New SqlDataAdapter(cmd)
+                da.Fill(lDataTable)
+            End Using
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+			If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+				Get_IdProductoTallaColor_By_CodTalla_and_CodColor = lDataTable.Rows(0).Item("IdProductoTallaColor")
+			End If
+
+		Catch ex As Exception
+            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If Not lConnection Is Nothing Then lConnection.Dispose()
+            If Not lTransaction Is Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
 End Class

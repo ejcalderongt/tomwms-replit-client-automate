@@ -241,6 +241,29 @@ Public Class clsSyncSapAjustes
         Return payload
     End Function
 
+    Public Shared Async Function Validar_Bodega_WMS(ByVal codigoBodega As String,
+                                                     ByVal lblprg As RichTextBox,
+                                                     ByVal clsTrans As clsTransaccion,
+                                                     ByVal sessioncookie As String,
+                                                     ByVal baseurl As String) As Task(Of Boolean)
+
+        If String.IsNullOrWhiteSpace(codigoBodega) Then
+            clsPublic.Actualizar_Progreso(lblprg, "Validar_Cliente_WMS: Código de cliente vacío.")
+            Return False
+        End If
+
+        Try
+            Dim ExisteBodegaWMS As clsBeBodega = clsLnBodega.Exists_By_Codigo(codigoBodega, clsTrans.lConnection, clsTrans.lTransaction)
+            If ExisteBodegaWMS IsNot Nothing Then
+                Return True
+            End If
+
+        Catch ex As Exception
+            clsPublic.Actualizar_Progreso(lblprg, $"Validar_Cliente_WMS: {ex.Message}")
+            Return False
+        End Try
+    End Function
+
     ' Decide si un ajuste MI3 debe ir como Salida (Exits) o Entrada (Entries)
     Private Shared Function EsSalida(ByVal a As clsBeAjustesMI3) As Boolean
         ' Usa tus propios criterios; estos son seguros con los datos que ya tenés

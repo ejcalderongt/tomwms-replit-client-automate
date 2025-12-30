@@ -1,5 +1,8 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data.Common
+Imports System.Data.SqlClient
 Imports System.Reflection
+Imports System.Threading.Tasks
+Imports DevExpress.XtraEditors
 
 Partial Public Class clsLnTrans_ajuste_enc
     Public Shared Function GetAll(ByVal pFechaDel As Date,
@@ -161,7 +164,6 @@ Partial Public Class clsLnTrans_ajuste_enc
 
     End Sub
 
-
     Public Shared Sub Actualizar_Ajuste(ByVal lDet As List(Of clsBeTrans_ajuste_det),
                                         ByVal lMovs As List(Of clsBeTrans_movimientos),
                                         ByVal pIdEmpresa As Integer,
@@ -196,6 +198,7 @@ Partial Public Class clsLnTrans_ajuste_enc
         End Try
 
     End Sub
+
     Public Shared Sub RollBackStockRes(enc As clsBeTrans_ajuste_enc)
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -221,6 +224,7 @@ Partial Public Class clsLnTrans_ajuste_enc
         End Try
 
     End Sub
+
     Public Shared Function GetAll_Pendientes_Envio() As List(Of clsBeTrans_ajuste_enc)
 
         GetAll_Pendientes_Envio = Nothing
@@ -446,6 +450,7 @@ Partial Public Class clsLnTrans_ajuste_enc
         End Try
 
     End Function
+
     Public Shared Function Actualizar_Referencia(ByVal pIdAjusteEnc As Integer,
                                                 ByVal pReferencia As String) As Integer
 
@@ -677,6 +682,121 @@ Partial Public Class clsLnTrans_ajuste_enc
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Async Function Inserta_Stock_Y_Movimiento(ByVal pAjusteEnc As clsBeTrans_ajuste_enc,
+                                                      ByVal pIdEmpresa As Integer,
+                                                      ByVal lConnection As SqlConnection,
+                                                      ByVal lTransaction As SqlTransaction) As Task(Of Boolean)
+
+        Try
+
+            Dim BeStock As clsBeStock
+            Dim BeMov As clsBeTrans_movimientos
+            Dim IdMovimiento, IdStock As Integer
+            Dim lBeStock As List(Of clsBeStock) = New List(Of clsBeStock)
+            Dim lBeTransMovimientos As List(Of clsBeTrans_movimientos) = New List(Of clsBeTrans_movimientos)
+
+            Inserta_Stock_Y_Movimiento = False
+
+            IdMovimiento = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+            IdStock = clsLnStock.MaxID(lConnection, lTransaction)
+
+            For Each item As clsBeTrans_ajuste_det In pAjusteEnc.Lineas_Detalle
+
+                'Stock del ajuste positivo
+                BeStock = New clsBeStock
+                BeStock.IsNew = True
+                BeStock.IdStock = IdStock
+                BeStock.IdPropietarioBodega = item.IdPropietarioBodega
+                BeStock.IdProductoBodega = item.IdProductoBodega
+                BeStock.IdUnidadMedida = item.IdUnidadMedida
+                BeStock.Fecha_Ingreso = Now
+                BeStock.Fecha_vence = item.Fecha_vence_nueva
+                BeStock.IdPresentacion = item.IdPresentacion
+                BeStock.IdProductoEstado = item.IdProductoEstado
+                BeStock.ProductoEstado = New clsBeProducto_estado
+                BeStock.ProductoEstado = clsLnProducto_estado.GetSingleByIdEstado(item.IdProductoEstado, lConnection, lTransaction)
+                BeStock.IdUbicacion = item.IdUbicacion
+                BeStock.IdUbicacion_anterior = item.IdUbicacion
+                BeStock.Cantidad = item.Cantidad_nueva
+                BeStock.Lic_plate = item.lic_plate
+                BeStock.Lote = item.Lote_nuevo
+                BeStock.Peso = item.Peso_nuevo
+                BeStock.User_agr = pAjusteEnc.Idusuario
+                BeStock.Fec_agr = Now
+                BeStock.User_mod = pAjusteEnc.Idusuario
+                BeStock.Fec_mod = Now
+                BeStock.IdBodega = pAjusteEnc.IdBodega
+                BeStock.Activo = 1
+                BeStock.IdProductoTallaColor = item.IdProductoTallaColor
+
+                clsLnStock.Insertar(BeStock, lConnection, lTransaction)
+
+                'Movimiento de ajuste positivo
+                BeMov = New clsBeTrans_movimientos
+                BeMov.IdMovimiento = IdMovimiento
+                BeMov.IdEmpresa = pIdEmpresa
+                BeMov.IdBodegaOrigen = pAjusteEnc.IdBodega
+                BeMov.IdTransaccion = item.IdAjusteEnc
+                BeMov.IdPropietarioBodega = BeStock.IdPropietarioBodega
+                BeMov.IdProductoBodega = BeStock.IdProductoBodega
+                BeMov.IdUbicacionOrigen = BeStock.IdUbicacion
+                BeMov.IdUbicacionDestino = BeStock.IdUbicacion
+                BeMov.IdPresentacion = BeStock.IdPresentacion
+                BeMov.IdEstadoOrigen = BeStock.IdProductoEstado
+                BeMov.IdEstadoDestino = BeStock.IdProductoEstado
+
+                BeMov.IdUnidadMedida = BeStock.IdUnidadMedida
+
+                BeMov.IdTipoTarea = 13
+                BeMov.IdBodegaDestino = pAjusteEnc.IdBodega
+                BeMov.IdRecepcion = BeStock.IdRecepcionEnc
+                BeMov.IdRecepcionDet = BeStock.IdRecepcionDet
+                BeMov.Serie = BeStock.Serial
+                BeMov.Lote = item.Lote_nuevo
+                BeMov.Fecha_vence = item.Fecha_vence_nueva
+                BeMov.Fecha = Now
+                BeMov.Barra_pallet = ""
+                BeMov.Hora_ini = Now
+                BeMov.Hora_fin = Now
+                BeMov.Fecha_agr = Now
+                BeMov.Usuario_agr = pAjusteEnc.Idusuario
+                BeMov.Barra_pallet = BeStock.Lic_plate
+                BeMov.Cantidad = item.Cantidad_nueva
+                BeMov.Cantidad_hist = 0
+                BeMov.Peso = item.Peso_nuevo
+                BeMov.Peso_hist = 0
+
+                '#EJC20211220: Si el ajuste es en presentación, enviar el movimiento en la cantidad multiplicado por el factor, es decir en umbas.
+                Dim BePresentacion As New clsBeProducto_Presentacion
+
+                If BeMov.IdPresentacion <> 0 Then
+
+                    BePresentacion = clsLnProducto_presentacion.GetSingle(BeMov.IdPresentacion, lConnection, lTransaction)
+
+                    If Not BePresentacion Is Nothing Then
+                        BeMov.Cantidad = Math.Round(BeMov.Cantidad * BePresentacion.Factor, 6)
+                    End If
+
+                End If
+
+                clsLnTrans_movimientos.Insertar(BeMov, lConnection, lTransaction)
+
+                IdMovimiento += 1
+                IdStock += 1
+
+            Next
+
+
+            Inserta_Stock_Y_Movimiento = True
+
+        Catch ex As Exception
+            Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
