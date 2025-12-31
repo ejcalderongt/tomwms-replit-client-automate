@@ -697,7 +697,7 @@ Partial Public Class clsLnTrans_ajuste_enc
 
             Dim BeStock As clsBeStock
             Dim BeMov As clsBeTrans_movimientos
-            Dim IdMovimiento As Integer = clsLnTrans_movimientos.MaxID(lConnection, lTransaction) + 1
+            Dim IdMovimiento As Integer = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
             Dim IdStock As Integer = clsLnStock.MaxID(lConnection, lTransaction) + 1
 
             For Each item As clsBeTrans_ajuste_det In pAjusteEnc.Lineas_Detalle
@@ -726,7 +726,9 @@ Partial Public Class clsLnTrans_ajuste_enc
                 .Fec_mod = Now,
                 .IdBodega = pAjusteEnc.IdBodega,
                 .Activo = 1,
-                .IdProductoTallaColor = item.IdProductoTallaColor_destino
+                .IdProductoTallaColor = item.IdProductoTallaColor_origen,
+                .Talla = item.Talla_origen,
+                .Color = item.Color_origen
             }
 
                 Dim RowsStockInsertado As Integer = clsLnStock.Insertar(BeStock, lConnection, lTransaction)
@@ -767,7 +769,10 @@ Partial Public Class clsLnTrans_ajuste_enc
                 .Cantidad = item.Cantidad_nueva,
                 .Cantidad_hist = 0,
                 .Peso = item.Peso_nuevo,
-                .Peso_hist = 0
+                .Peso_hist = 0,
+                .IdProductoTallaColor = BeStock.IdProductoTallaColor,
+                .Talla = BeStock.Talla,
+                .Color = BeStock.Color
             }
 
                 'Si el ajuste es en presentación, multiplicar por el factor (umbas)
