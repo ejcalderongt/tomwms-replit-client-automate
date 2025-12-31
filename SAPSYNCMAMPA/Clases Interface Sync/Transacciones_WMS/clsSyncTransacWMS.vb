@@ -1147,6 +1147,7 @@ Public Class clsSyncTransacWMS
                                           BePropietario As clsBePropietarios) As List(Of clsBeTrans_ajuste_enc)
 
         Dim lAjustes As New List(Of clsBeTrans_ajuste_enc)()
+        Dim BeBodega As New clsBeBodega
 
         Using lConnection As New SqlConnection(ConfigurationManager.AppSettings("CST"))
 
@@ -1156,6 +1157,9 @@ Public Class clsSyncTransacWMS
 
                 For Each ajuste In transaccionesAgrupadas
 
+                    BeBodega = New clsBeBodega
+                    BeBodega = clsLnBodega.GetSingle_By_Codigo(ajuste.TransferFromCode, lConnection, lTransaction)
+
                     ' Parsear fechas de forma segura
                     Dim postingDate As Date
                     If Not Date.TryParse(ajuste.CreateDate, postingDate) Then
@@ -1164,7 +1168,7 @@ Public Class clsSyncTransacWMS
 
                     ' Mapeo del encabezado según tu referencia
                     Dim beAjustes As New clsBeTrans_ajuste_enc With {
-                        .Idajusteenc = 0,
+                        .Idajusteenc = clsLnTrans_ajuste_enc.MaxID(lConnection, lTransaction) + 1,
                         .Fecha = postingDate,
                         .Idusuario = 1,
                         .Referencia = ajuste.NoEnc,
@@ -1172,7 +1176,7 @@ Public Class clsSyncTransacWMS
                         .User_agr = "MI3",
                         .Fec_mod = Date.Now,
                         .User_mod = "MI3",
-                        .IdBodega = clsLnBodega.GetSingle_By_Codigo(ajuste.TransferFromCode, lConnection, lTransaction).IdBodega,
+                        .IdBodega = BeBodega.IdBodega,
                         .IdProductoFamilia = 0,
                         .Enviado_A_ERP = False,
                         .IdPropietarioBodega = clsLnPropietario_bodega.Get_IdPropietarioBodega_By_IdPropietario_And_IdBodega(BePropietario.IdPropietario, .IdBodega, lConnection, lTransaction),
@@ -1184,6 +1188,12 @@ Public Class clsSyncTransacWMS
                         .Centro_Costo_Dep_Erp = "",
                         .Lineas_Detalle = New List(Of clsBeTrans_ajuste_det)()
                     }
+
+                    Dim RowsEncabezadoAjuste As Integer = clsLnTrans_ajuste_enc.Insertar(beAjustes)
+
+                    If RowsEncabezadoAjuste = 0 Then
+                        Throw New Exception("No se pudo insertar el encabezado del ajuste " & ajuste.NoEnc)
+                    End If
 
                     ' Mapeo de las líneas de detalle según tu referencia
                     For Each detalle In ajuste.LineasDetalle
@@ -1217,7 +1227,7 @@ Public Class clsSyncTransacWMS
                                 .IdProducto = BeProducto.IdProducto,
                                 .IdTalla = clsLnTalla.GetSingleCodigo(detalle.Size).IdTalla,
                                 .IdColor = clsLnColor.GetSingle_By_CodigoColor(detalle.Color).IdColor,
-                                .CodigoSKU = "",
+                                .CodigoSKU = BeProducto.Codigo & detalle.Color & detalle.Size,
                                 .IdCampaña = 0,
                                 .Fec_agr = Now,
                                 .User_agr = beAjustes.Idusuario,
@@ -1226,16 +1236,19 @@ Public Class clsSyncTransacWMS
                                 .Activo = True
                                 }
 
-                            clsLnProducto_talla_color.Insertar(BeProductoTallaColor,
-                                                               lConnection,
-                                                               lTransaction)
+                            Dim RowInsertadas As Integer = clsLnProducto_talla_color.Insertar(BeProductoTallaColor,
+                                                                                              lConnection,
+                                                                                              lTransaction)
+                            If RowInsertadas = 0 Then
+                                Throw New Exception("No se pudo insertar la talla y el color")
+                            End If
 
                             IdProductoTallaColor = BeProductoTallaColor.IdProductoTallaColor
 
                         End If
 
                         Dim beAjusteDet As New clsBeTrans_ajuste_det With {
-                        .IdAjusteDet = 0,
+                        .IdAjusteDet = clsLnTrans_ajuste_det.MaxID(lConnection, lTransaction) + 1,
                         .IdAjusteEnc = beAjustes.Idajusteenc,
                         .IdStock = 0,
                         .IdPropietarioBodega = beAjustes.IdPropietarioBodega,
@@ -1243,7 +1256,7 @@ Public Class clsSyncTransacWMS
                         .IdProductoEstado = vIdProductoEstado,
                         .IdPresentacion = 0,
                         .IdUnidadMedida = BeUnidadMedida.IdUnidadMedida,
-                        .IdUbicacion = 0,
+                        .IdUbicacion = BeBodega.Ubic_recepcion,
                         .Lote_original = "",
                         .Lote_nuevo = "",
                         .Fecha_vence_original = New Date(1900, 1, 1),
@@ -1262,14 +1275,23 @@ Public Class clsSyncTransacWMS
                         .Presentacion = Nothing,
                         .IdBodegaERP = 0,
                         .lic_plate = "",
-                        .referencia_ajuste_erp = ajuste.NoEnc,
-                        .estado_ajuste_erp = "",
-                        .IdProductoTallaColor = IdProductoTallaColor,
-                        .Talla = detalle.Size,
-                        .Color = detalle.Color
+                        .referencia_ajuste_erp = detalle.DocEntry,
+                        .estado_ajuste_erp = False,
+                        .IdProductoTallaColor_origen = IdProductoTallaColor,
+                        .Talla_origen = detalle.Size,
+                        .Color_origen = detalle.Color,
+                        .Talla_destino = detalle.Size,
+                        .Color_destino = detalle.Color
                         }
 
                         beAjustes.Lineas_Detalle.Add(beAjusteDet)
+
+                        Dim RowsDetalleAjuste As Integer = clsLnTrans_ajuste_det.Insertar(beAjusteDet)
+
+                        If RowsDetalleAjuste = 0 Then
+                            Throw New Exception("No se pudo insertar el detalle del ajuste " & detalle.DocEntry)
+                        End If
+
                     Next
 
                     ' Solo agregar si tiene líneas de detalle
@@ -1299,9 +1321,6 @@ Public Class clsSyncTransacWMS
             clsPublic.Actualizar_Progreso(lblprg, "Conectando a SAP.")
 
             Dim ajustes As List(Of clsBeTrans_ajuste_enc) = Await Get_Ajustes_Tiendas(codigoBodega, lblprg)
-            Dim pBePedidoEnc As New clsBeTrans_pe_enc
-            Dim PedidoClienteExistenteByCompany As New clsBeTrans_pe_enc
-            Dim PedidoClienteExistente As New clsBeTrans_pe_enc
 
             If ajustes.Count = 0 Then
                 clsPublic.Actualizar_Progreso(lblprg, "No hay documentos para importar.")
@@ -1318,29 +1337,27 @@ Public Class clsSyncTransacWMS
                 Try
 
                     Dim pIdEmpresa As Integer = BeConfigEnc.Idempresa
-                    Dim CreoAjuste As Boolean = Await clsLnTrans_ajuste_enc.Inserta_Stock_Y_Movimiento(ajuste,
+                    Dim CreoAjuste As Boolean = clsLnTrans_ajuste_enc.Inserta_Stock_Y_Movimiento(ajuste,
                                                                                                  pIdEmpresa,
                                                                                                  clsTrans.lConnection,
                                                                                                  clsTrans.lTransaction)
 
                     If CreoAjuste Then
 
-                        Dim listaDocEntryDistintos As List(Of Integer) = ajuste.Lineas_Detalle.Select(Function(x) CInt(x.referencia_ajuste_erp)) _
-                                                                                              .Distinct() _
-                                                                                              .ToList()
+                        Dim listaDocEntryDistintos As List(Of Integer) = ajuste.Lineas_Detalle.Select(Function(x) CInt(x.referencia_ajuste_erp)).Distinct().ToList()
 
                         Dim trasladoSincronizado As Boolean = Await Marcar_Transac_Wms_Por_DocEntries_SLAsync(listaDocEntryDistintos,
-                                                                                                        vHanaService.SessionCookie,
-                                                                                                        BD.Instancia.HANA_SL)
+                                                                                                              vHanaService.SessionCookie,
+                                                                                                              BD.Instancia.HANA_SL)
 
-                        If CreoAjuste AndAlso trasladoSincronizado Then
+                        If trasladoSincronizado Then
+                            clsTrans.Commit_Transaction()
                             clsPublic.Actualizar_Progreso(lblprg, "Documento procesado mágicamente :) !")
-                            Return True
+                        Else
+                            clsTrans.RollBack_Transaction()
+                            clsPublic.Actualizar_Progreso(lblprg, "No se pudo marcar en SAP (SL). Se revierte la transacción.")
                         End If
-
                     End If
-
-                    clsTrans.Commit_Transaction()
 
                 Catch ex As Exception
                     clsTrans.RollBack_Transaction()
@@ -1351,10 +1368,10 @@ Public Class clsSyncTransacWMS
 
             Next
 
-            Return False
+            Return True
 
         Catch ex As Exception
-            Throw ex
+            Throw
         End Try
 
     End Function

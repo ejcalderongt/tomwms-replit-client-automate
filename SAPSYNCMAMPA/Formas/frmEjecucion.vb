@@ -1626,7 +1626,7 @@ Public Class frmEjecucion
 
     End Sub
 
-    Private Async Function mnuSincronizarTienda_ItemClick(sender As Object, e As ItemClickEventArgs) As Task Handles mnuSincronizarTienda.ItemClick
+    Private Async Sub mnuSincronizarTienda_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuSincronizarTienda.ItemClick
         Try
 
             Dim Ejecutar As Boolean = False
@@ -1646,8 +1646,8 @@ Public Class frmEjecucion
 
                 '#CKFK20251101: Llamado al método para procesar las facturas de reserva de cliente
                 Await clsSyncTransacWMS.Procesar_Ajustes_SAP(lblprg, prg) 'Ajustes
-                Await clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_SAP(lblprg, prg) 'Devoluciones de cliente  Ya está desarrollado
-                Await clsSyncTransacWMS.Procesar_Pedido_de_Cliente_SAP(lblprg, prg) 'Pedidos de cliente
+                'Await clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_SAP(lblprg, prg) 'Devoluciones de cliente  Ya está desarrollado
+                'Await clsSyncTransacWMS.Procesar_Pedido_de_Cliente_SAP(lblprg, prg) 'Pedidos de cliente
                 'Await clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_Anulada_SAP(lblprg, prg) 'Anulaciones de notas de crédito
                 'Await clsSyncTransacWMS.Procesar_Pedido_de_Cliente_Anulado_SAP(lblprg, prg) 'Anulaciones de pedidos de cliente
 
@@ -1659,7 +1659,7 @@ Public Class frmEjecucion
             clsPublic.Actualizar_Progreso(lblprg, vMensaje)
 
         End Try
-    End Function
+    End Sub
 
     Public Async Sub Ejecuta_Interface_Productos(Optional ByVal Preguntar As Boolean = True)
 
