@@ -19,6 +19,7 @@ Public Class clsLnTrans_inv_resumen
                 .Host = IIf(IsDBNull(dr.Item("host")), "", dr.Item("host"))
                 .Nom_producto = IIf(IsDBNull(dr.Item("nom_producto")), "", dr.Item("nom_producto"))
                 .Nom_operador = IIf(IsDBNull(dr.Item("nom_operador")), "", dr.Item("nom_operador"))
+                .IdUbicacion = IIf(IsDBNull(dr.Item("idubicacion")), 0, dr.Item("idubicacion"))
             End With
         Catch ex As Exception
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))

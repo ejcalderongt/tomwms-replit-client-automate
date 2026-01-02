@@ -127,6 +127,11 @@ Public Class frmInventarioVerifica
                 gBeTransInvVer.Idpresentacion = CInt(cmbPresentacion.EditValue)
             End If
 
+            If cmbOperador.EditValue IsNot Nothing Then
+                gBeTransInvVer.Idoperador = CInt(cmbOperador.EditValue)
+            End If
+
+
             gBeTransInvVer.Fecha_captura = Now
             gBeTransInvVer.Cantidad = txtCantidad.Value
             gBeTransInvVer.IdUbicacion = txtIdUbicacion.Text
