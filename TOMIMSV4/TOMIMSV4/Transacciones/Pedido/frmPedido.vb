@@ -1,11 +1,9 @@
 ﻿Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Reflection
-Imports System.Threading
 Imports System.Threading.Tasks
 Imports DevExpress.Data
 Imports DevExpress.Utils
-Imports DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Controls
@@ -6306,8 +6304,6 @@ Public Class frmPedido
             Else
                 frmSelStock.IdProductoEstadoDefault = 0
             End If
-
-
 
             If frmSelStock.ShowDialog() = DialogResult.OK Then
 
