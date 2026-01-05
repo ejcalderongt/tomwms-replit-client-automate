@@ -429,4 +429,44 @@ Public Class clsLnOperador_bodega
         End Try
     End Function
 
+    Public Shared Function Get_Nombre_By_IdOperadorBodega(ByVal pIdOperadorBodega As Integer,
+                                                          ByVal lConnection As SqlConnection,
+                                                          ByVal lTransaction As SqlTransaction) As String
+
+        Get_Nombre_By_IdOperadorBodega = ""
+
+        Try
+
+            Const vSQL As String = "SELECT nombres + ' ' + apellidos Nombre  
+                                    FROM operador o INNER JOIN operador_bodega ob ON o.IdOperador = ob.IdOperador
+                                    WHERE ob.IdOperadorBodega = @IdOperadorBodega "
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdOperadorBodega", pIdOperadorBodega)
+
+                Dim lDT As New DataTable
+
+                lDTA.Fill(lDT)
+
+                If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                    Dim lRow As DataRow = lDT.Rows(0)
+
+                    Get_Nombre_By_IdOperadorBodega = IIf(IsDBNull(lRow("Nombre")), "", lRow("Nombre"))
+
+                End If
+
+            End Using
+
+        Catch ex As Exception
+
+            Throw ex
+
+        End Try
+
+    End Function
+
 End Class

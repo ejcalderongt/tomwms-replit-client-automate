@@ -295,6 +295,8 @@
     <Compile Include="Transacciones\Doc_Con_Diferencias\clsLnVW_Doc_con_Diferencias.vb" />
     <Compile Include="Transacciones\Doc_Con_Diferencias\clsLnVW_Pe_Con_Diferencias.vb" />
     <Compile Include="Transacciones\EstadoEnviosNav\clsLnVW_EstadoEnviosNav.vb" />
+    <Compile Include="Transacciones\EtiquetaVerificacion\clsLnTrans_verificacion_etiqueta_Partial.vb" />
+    <Compile Include="Transacciones\EtiquetaVerificacion\clsLnTrans_verificacion_etiqueta.vb" />
     <Compile Include="Transacciones\Log\clsLnTrans_log_reubic_stock_res.vb" />
     <Compile Include="Transacciones\Log\clsLnTrans_log_reubic_stock_res_Partial.vb" />
     <Compile Include="Transacciones\Manufactura\clsLnTrans_manufactura_det_partial.vb" />

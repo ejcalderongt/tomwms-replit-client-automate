@@ -1501,6 +1501,8 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 beUbicHHDet.Estado = "Pendiente"
                 beUbicHHDet.Operador = New clsBeOperador
                 beUbicHHDet.IdOperadorBodega = UsuarioHH
+                '#CKFK20251229 Agregamos el campo IdBodega que no se estaba enviando
+                beUbicHHDet.IdBodega = IdBodega
                 beUbicHHDet.Activo = True
                 beListUbicHHDet.Add(beUbicHHDet)
 

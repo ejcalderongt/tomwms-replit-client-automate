@@ -5726,6 +5726,8 @@ Partial Public Class clsLnTrans_pe_enc
                     '#GT26032024: campo para identificar si aplica manufactura ligera
                     vPedidoEnc.IdTipoManufactura = IIf(IsDBNull(lRow("idtipomanufactura")), 0, lRow("idtipomanufactura"))
 
+                    vPedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino = IIf(IsDBNull(lRow("Referencia_Documento_Ingreso_Bodega_Destino")), "", lRow("Referencia_Documento_Ingreso_Bodega_Destino"))
+
 
                     '#CKFK20250227: Obtener detalle sin el picking
                     vPedidoEnc.Detalle = clsLnTrans_pe_det.Get_Detalle_By_IdPedidoEnc_Sin_Picking(vPedidoEnc.IdPedidoEnc,

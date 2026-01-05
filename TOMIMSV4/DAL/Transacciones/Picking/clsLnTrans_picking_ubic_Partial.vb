@@ -6204,7 +6204,8 @@ Partial Public Class clsLnTrans_picking_ubic
                                                             ByRef pCantidad As Double,
                                                             ByRef pPeso As Double,
                                                             ByVal pTipo As Integer,
-                                                            ByVal pIdPedidoEnc As Integer) As Boolean
+                                                            ByVal pIdPedidoEnc As Integer,
+                                                            ByRef pEtiqueta As clsBeTrans_verificacion_etiqueta) As Boolean
 
         Dim CantPendiente As Double
         Dim PesoPendiente As Double
@@ -6286,18 +6287,31 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                      pPeso,
                                                                      clsTrans.lConnection,
                                                                      clsTrans.lTransaction)
+                '#MA20251219
+                If BeBodega.impresion_verificacion Then
+
+                    pEtiqueta = New clsBeTrans_verificacion_etiqueta()
+                    pEtiqueta =
+                    clsLnTrans_verificacion_etiqueta.Guardar_Etiqueta_Verificacion(
+                                                                                    vBePickingUbic,
+                                                                                    pIdOperador,
+                                                                                    BeBodega.IdTipoEtiquetaVerificacion,
+                                                                                    clsTrans.lConnection,
+                                                                                    clsTrans.lTransaction
+                                                                                )
+                End If
 
                 '#MECR11122025: Se agrego bitacora para logs de verificacion
                 resultado += " Codigo " & vBePickingUbic.CodigoProducto & " Pedido parámetro " & pIdPedidoEnc
-                'clsLnLog_error_wms.Agregar_Error(resultado)
+                clsLnLog_error_wms.Agregar_Error(resultado)
                 clsLnLog_verificacion_bof.Agregar_Error(resultado,
-                                                      pIdPedidoDet:=vBePickingUbic.IdPedidoDet,
-                                                      pIdPedidoEnc:=vBePickingUbic.IdPedidoEnc,
-                                                      pIdPickingEnc:=vBePickingUbic.IdPickingEnc,
-                                                      pIdPickingDet:=vBePickingUbic.IdPickingDet,
-                                                      pIdPickingUbic:=vBePickingUbic.IdPickingUbic,
-                                                      pConection:=clsTrans.lConnection,
-                                                      pTransaction:=clsTrans.lTransaction)
+                  pIdPedidoDet:=vBePickingUbic.IdPedidoDet,
+                  pIdPedidoEnc:=vBePickingUbic.IdPedidoEnc,
+                  pIdPickingEnc:=vBePickingUbic.IdPickingEnc,
+                  pIdPickingDet:=vBePickingUbic.IdPickingDet,
+                  pIdPickingUbic:=vBePickingUbic.IdPickingUbic,
+                  pConection:=clsTrans.lConnection,
+                  pTransaction:=clsTrans.lTransaction)
 
                 If (Math.Round(pCantidad - CantPendiente, 6) = 0) Then
                     Exit For
@@ -8310,5 +8324,6 @@ Partial Public Class clsLnTrans_picking_ubic
         End Try
 
     End Function
+
 
 End Class
