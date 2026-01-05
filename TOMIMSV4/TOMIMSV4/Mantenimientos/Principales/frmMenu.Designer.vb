@@ -355,7 +355,6 @@ Partial Class frmMenu
         Me.pgDespacho = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.grpStockRes = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.pgCotizar = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
-        Me.pgPacking = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.pgVerificacionBOF = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.rpServicios = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.pgRegistroServicios = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -2514,7 +2513,7 @@ Partial Class frmMenu
         '
         'rpSalidas
         '
-        Me.rpSalidas.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.pgPedidoVenta, Me.pgPicking, Me.pgDespacho, Me.grpStockRes, Me.pgCotizar, Me.pgPacking, Me.pgVerificacionBOF})
+        Me.rpSalidas.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.pgPedidoVenta, Me.pgPicking, Me.pgDespacho, Me.grpStockRes, Me.pgCotizar, Me.pgVerificacionBOF})
         Me.rpSalidas.Name = "rpSalidas"
         Me.rpSalidas.Text = "Salidas"
         '
@@ -2543,12 +2542,6 @@ Partial Class frmMenu
         Me.pgCotizar.ItemLinks.Add(Me.mnuCotizar)
         Me.pgCotizar.Name = "pgCotizar"
         Me.pgCotizar.Visible = False
-        '
-        'pgPacking
-        '
-        Me.pgPacking.ItemLinks.Add(Me.mnuPacking)
-        Me.pgPacking.Name = "pgPacking"
-        Me.pgPacking.Visible = False
         '
         'pgVerificacionBOF
         '
@@ -3037,7 +3030,6 @@ Partial Class frmMenu
     Friend WithEvents mnuPicking As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents pgPicking As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents mnuPacking As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents pgPacking As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents RibbonPageGroup7 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents mnuDespachos As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents pgDespacho As DevExpress.XtraBars.Ribbon.RibbonPageGroup

@@ -260,6 +260,8 @@ Public Class frmAjusteStock
                     Llenar_Motivo(rc, vBeAjustDet.IdMotivoAjuste, clsTrans.lConnection, clsTrans.lTransaction)
                     Llenar_Tipo(rc, vBeAjustDet.Idtipoajuste, clsTrans.lConnection, clsTrans.lTransaction)
                     Llena_Bodegas_ERP_Grid(rc, vBeAjustDet.IdBodegaERP, clsTrans.lConnection, clsTrans.lTransaction)
+                    Llenar_Talla(rc, -1)
+                    Llenar_Color(rc, -1)
 
                     If vBeAjustDet.Idtipoajuste = 3 Then
                         If vBeAjustDet.IdPresentacion <> 0 Then
@@ -2140,6 +2142,7 @@ Public Class frmAjusteStock
                 Try
 
                     Dim vNuevaCantidad As Double = 0
+                    Dim vCantidadGrid As Double = dgrid.Rows(sr).Cells("ColCantidad").Value
 
                     If (dgrid.Rows(sr).Cells("tipoajuste").Value = Nothing) Then
                         XtraMessageBox.Show("Linea : " & sr + 1 & " No ha seleccionado correctamente el tipo de ajuste !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -2153,7 +2156,10 @@ Public Class frmAjusteStock
                     End If
 
                     If lBeTransAjusteDet(sr).idstocklink = 0 Then
-                        If (dgrid.Rows(sr).Cells("CantidadP").Value = vNuevaCantidad) Then
+                        If vNuevaCantidad = 0 Then
+                            XtraMessageBox.Show("Linea : " & sr + 1 & " Ingrese cantidad <> 0", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                            Return False
+                        ElseIf (dgrid.Rows(sr).Cells("CantidadP").Value = vNuevaCantidad) Then
                             XtraMessageBox.Show("Linea : " & sr + 1 & " Valor original y nuevo deben ser distintos !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                             Return False
                         End If
@@ -2213,15 +2219,6 @@ Public Class frmAjusteStock
             End If
 
             If BeBodega.Control_Talla_Color Then
-                If lBeTransAjusteDet(sr).Talla_origen = "" Then
-                    XtraMessageBox.Show("Linea : " & sr + 1 & " debe seleccionar una talla !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                    Return False
-                End If
-
-                If lBeTransAjusteDet(sr).Color_origen = "" Then
-                    XtraMessageBox.Show("Linea : " & sr + 1 & " debe seleccionar un color !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                    Return False
-                End If
 
                 '#GT17122025: si talla/color de combos es distinto al asignado significa que actualizaron a una nueva combinación.
                 'vTalla = dgrid.Rows(sr).Cells("ColTalla").Value
@@ -2229,6 +2226,16 @@ Public Class frmAjusteStock
                 '#GT: obtener el texto, no el id
                 vTalla = dgrid.Rows(sr).Cells("ColTalla").FormattedValue
                 vColor = dgrid.Rows(sr).Cells("ColColor").FormattedValue
+
+                If lBeTransAjusteDet(sr).Talla_origen = "" Then
+                    XtraMessageBox.Show("Linea : " & sr + 1 & " debe seleccionar una talla.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    Return False
+                End If
+
+                If lBeTransAjusteDet(sr).Color_origen = "" Then
+                    XtraMessageBox.Show("Linea : " & sr + 1 & " debe seleccionar un color.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    Return False
+                End If
 
                 If vTalla <> lBeTransAjusteDet(sr).Talla_origen Then
                     lBeTransAjusteDet(sr).Talla_destino = vTalla
@@ -3512,130 +3519,6 @@ Public Class frmAjusteStock
 
     Private IsLoading As Boolean = False
 
-    'Private Sub chkAuditado_CheckedChanged(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles chkAuditado.CheckedChanged
-
-    '    Try
-
-    '        If IsLoading Then Exit Sub
-
-    '        If Not pBeTransAjustEnc.Enviado_A_ERP Then
-
-    '            If chkAuditado.Checked Then
-
-    '                If XtraMessageBox.Show("¿El ajuste está listo para ser enviado a ERP?", Text,
-    '                                        MessageBoxButtons.YesNo,
-    '                                        MessageBoxIcon.Information) = DialogResult.Yes Then
-
-    '                    Dim vResult As Integer = clsLnTrans_ajuste_enc.Actualizar_Estado_Auditado(pBeTransAjustEnc.Idajusteenc, True)
-
-    '                    If Not vResult = 0 Then
-    '                        XtraMessageBox.Show("El ajuste fue auditado y está listo para enviarse a ERP.",
-    '                                            Text,
-    '                                            MessageBoxButtons.OK,
-    '                                            MessageBoxIcon.Information)
-
-    '                        If AP.IdConfiguracionInterface <> -1 Then
-
-    '                            Dim BeINavConfig As New clsBeI_nav_config_enc
-    '                            BeINavConfig = clsLnI_nav_config_enc.GetSingle(AP.IdConfiguracionInterface)
-
-    '                            Dim vArgumentosAEnviarAInterface As String = ""
-
-    '                            If Not BeINavConfig Is Nothing Then
-
-    '                                vArgumentosAEnviarAInterface = "20-" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-" & pBeTransAjustEnc.Idajusteenc & "-0" & "-" & clsBD.Instancia.NombreInstancia
-    '                                Ejecutar_Interface(vArgumentosAEnviarAInterface, Me)
-
-    '                            End If
-
-    '                        End If
-
-    '                        If Not InvokeListarAjustes Is Nothing Then
-    '                            InvokeListarAjustes.Invoke
-    '                        End If
-
-    '                        Close()
-
-    '                    End If
-
-    '                End If
-
-    '            Else
-
-    '                If Not pBeTransAjustEnc.Enviado_A_ERP Then
-
-    '                    If chkAuditado.Checked Then
-
-    '                        If XtraMessageBox.Show("¿El ajuste está listo para ser enviado a ERP?", Text,
-    '                                        MessageBoxButtons.YesNo,
-    '                                        MessageBoxIcon.Information) = DialogResult.Yes Then
-
-    '                            Dim vResult As Integer = clsLnTrans_ajuste_enc.Actualizar_Estado_Auditado(pBeTransAjustEnc.Idajusteenc, True)
-
-    '                            If Not vResult = 0 Then
-    '                                XtraMessageBox.Show("El ajuste fue auditado y está listo para enviarse a ERP.",
-    '                                                Text,
-    '                                                MessageBoxButtons.OK,
-    '                                                MessageBoxIcon.Information)
-
-    '                                If Not InvokeListarAjustes Is Nothing Then
-    '                                    InvokeListarAjustes.Invoke
-    '                                End If
-
-    '                                Close()
-
-    '                            End If
-
-    '                        End If
-
-    '                    Else
-
-    '                        Dim vResult As Integer = clsLnTrans_ajuste_enc.Actualizar_Estado_Auditado(pBeTransAjustEnc.Idajusteenc, False)
-
-    '                        If Not vResult = 0 Then
-
-    '                            XtraMessageBox.Show("El ajuste se marchó como no auditado ya no podrá enviarse a ERP.",
-    '                                                Text,
-    '                                                MessageBoxButtons.OK,
-    '                                                MessageBoxIcon.Information)
-
-    '                            If Not InvokeListarAjustes Is Nothing Then
-    '                                InvokeListarAjustes.Invoke
-    '                            End If
-
-    '                            Close()
-
-    '                        End If
-
-    '                    End If
-
-    '                Else
-    '                    XtraMessageBox.Show("El ajuste ya fue enviado al ERP, no se puede deshabilitar su auditoría.",
-    '                                Text,
-    '                                MessageBoxButtons.OK,
-    '                                MessageBoxIcon.Exclamation)
-    '                End If
-
-
-    '            End If
-
-    '        End If
-
-    '    Catch ex As Exception
-
-    '        XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-    '                            Text,
-    '                            MessageBoxButtons.OK,
-    '                            MessageBoxIcon.Error)
-
-    '        Dim vMsgError As String = ex.Message
-    '        clsLnLog_error_wms.Agregar_Error(vMsgError)
-
-    '    End Try
-
-    'End Sub
-
-
     Private Sub chkAuditado_CheckedChanged(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles chkAuditado.CheckedChanged
 
         Try
@@ -3949,7 +3832,26 @@ Public Class frmAjusteStock
                 pProducto = clsLnProducto.Get_BeProducto_By_IdProductoBodega(pStockTemporal.IdProductoBodega, pStockTemporal.IdBodega)
                 pProductoTallaExiste = clsLnProducto_talla_color.Get_Single_By_IdProducto(pProducto.IdProducto, pStockTemporal.Talla, pStockTemporal.Color)
 
-                If pProductoTallaExiste IsNot Nothing Then
+                If pProductoTallaExiste Is Nothing Then
+
+                    Dim pProductoTallaNuevo As New clsBeProducto_talla_color()
+                    pProductoTallaNuevo = New clsBeProducto_talla_color()
+                    pProductoTallaNuevo.IdProductoTallaColor = clsLnProducto_talla_color.MaxID() + 1
+                    pProductoTallaNuevo.IdProducto = pProducto.IdProducto
+                    pProductoTallaNuevo.IdTalla = pTalla.IdTalla
+                    pProductoTallaNuevo.IdColor = pColor.IdColor
+                    pProductoTallaNuevo.CodigoSKU = pProducto.Codigo & pColor.Codigo & pTalla.Codigo
+                    pProductoTallaNuevo.Fec_agr = Now
+                    pProductoTallaNuevo.Fec_mod = Now
+                    pProductoTallaNuevo.User_agr = AP.UsuarioAp.IdUsuario
+                    pProductoTallaNuevo.User_mod = AP.UsuarioAp.IdUsuario
+                    clsLnProducto_talla_color.Insertar(pProductoTallaNuevo) '#EJC20260105: Crear la combinación.
+
+                    BeAjusteDet.Talla_origen = pTalla.Codigo
+                    BeAjusteDet.Color_origen = pColor.Codigo
+                    BeAjusteDet.IdProductoTallaColor_origen = pProductoTallaNuevo.IdProductoTallaColor
+
+                ElseIf pProductoTallaExiste IsNot Nothing Then
                     BeAjusteDet.Talla_origen = pStockTemporal.Talla
                     BeAjusteDet.Color_origen = pStockTemporal.Color
                     BeAjusteDet.IdProductoTallaColor_origen = pProductoTallaExiste.IdProductoTallaColor
@@ -4051,6 +3953,10 @@ Public Class frmAjusteStock
 
     Private Sub frmAjusteStock_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
         If e.KeyCode = Keys.Escape Then Close()
+    End Sub
+
+    Private Sub frmAjusteStock_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
     End Sub
 
     Private Sub Set_Estado_Envio_A_ERP()

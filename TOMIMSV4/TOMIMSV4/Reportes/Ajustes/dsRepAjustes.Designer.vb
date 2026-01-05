@@ -303,6 +303,14 @@ Partial Public Class dsRepAjustes
         
         Private columnLicPlate As Global.System.Data.DataColumn
         
+        Private columntalla_origen As Global.System.Data.DataColumn
+        
+        Private columntalla_destino As Global.System.Data.DataColumn
+        
+        Private columncolor_origen As Global.System.Data.DataColumn
+        
+        Private columncolor_destino As Global.System.Data.DataColumn
+        
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
         Public Sub New()
@@ -419,6 +427,38 @@ Partial Public Class dsRepAjustes
         End Property
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
+        Public ReadOnly Property talla_origenColumn() As Global.System.Data.DataColumn
+            Get
+                Return Me.columntalla_origen
+            End Get
+        End Property
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
+        Public ReadOnly Property talla_destinoColumn() As Global.System.Data.DataColumn
+            Get
+                Return Me.columntalla_destino
+            End Get
+        End Property
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
+        Public ReadOnly Property color_origenColumn() As Global.System.Data.DataColumn
+            Get
+                Return Me.columncolor_origen
+            End Get
+        End Property
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
+        Public ReadOnly Property color_destinoColumn() As Global.System.Data.DataColumn
+            Get
+                Return Me.columncolor_destino
+            End Get
+        End Property
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0"),  _
          Global.System.ComponentModel.Browsable(false)>  _
         Public ReadOnly Property Count() As Integer
@@ -455,9 +495,9 @@ Partial Public Class dsRepAjustes
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
-        Public Overloads Function Addtrans_ajuste_detRow(ByVal Codigo As String, ByVal Producto As String, ByVal Ubicacion As String, ByVal Motivo As String, ByVal Tipo As String, ByVal observacion As String, ByVal Lote As String, ByVal ValorAnterior As String, ByVal ValorActual As String, ByVal LicPlate As String) As trans_ajuste_detRow
+        Public Overloads Function Addtrans_ajuste_detRow(ByVal Codigo As String, ByVal Producto As String, ByVal Ubicacion As String, ByVal Motivo As String, ByVal Tipo As String, ByVal observacion As String, ByVal Lote As String, ByVal ValorAnterior As String, ByVal ValorActual As String, ByVal LicPlate As String, ByVal talla_origen As String, ByVal talla_destino As Integer, ByVal color_origen As String, ByVal color_destino As Integer) As trans_ajuste_detRow
             Dim rowtrans_ajuste_detRow As trans_ajuste_detRow = CType(Me.NewRow,trans_ajuste_detRow)
-            Dim columnValuesArray() As Object = New Object() {Codigo, Producto, Ubicacion, Motivo, Tipo, observacion, Lote, ValorAnterior, ValorActual, LicPlate}
+            Dim columnValuesArray() As Object = New Object() {Codigo, Producto, Ubicacion, Motivo, Tipo, observacion, Lote, ValorAnterior, ValorActual, LicPlate, talla_origen, talla_destino, color_origen, color_destino}
             rowtrans_ajuste_detRow.ItemArray = columnValuesArray
             Me.Rows.Add(rowtrans_ajuste_detRow)
             Return rowtrans_ajuste_detRow
@@ -490,6 +530,10 @@ Partial Public Class dsRepAjustes
             Me.columnValorAnterior = MyBase.Columns("ValorAnterior")
             Me.columnValorActual = MyBase.Columns("ValorActual")
             Me.columnLicPlate = MyBase.Columns("LicPlate")
+            Me.columntalla_origen = MyBase.Columns("talla_origen")
+            Me.columntalla_destino = MyBase.Columns("talla_destino")
+            Me.columncolor_origen = MyBase.Columns("color_origen")
+            Me.columncolor_destino = MyBase.Columns("color_destino")
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
@@ -515,6 +559,14 @@ Partial Public Class dsRepAjustes
             MyBase.Columns.Add(Me.columnValorActual)
             Me.columnLicPlate = New Global.System.Data.DataColumn("LicPlate", GetType(String), Nothing, Global.System.Data.MappingType.Element)
             MyBase.Columns.Add(Me.columnLicPlate)
+            Me.columntalla_origen = New Global.System.Data.DataColumn("talla_origen", GetType(String), Nothing, Global.System.Data.MappingType.Element)
+            MyBase.Columns.Add(Me.columntalla_origen)
+            Me.columntalla_destino = New Global.System.Data.DataColumn("talla_destino", GetType(Integer), Nothing, Global.System.Data.MappingType.Element)
+            MyBase.Columns.Add(Me.columntalla_destino)
+            Me.columncolor_origen = New Global.System.Data.DataColumn("color_origen", GetType(String), Nothing, Global.System.Data.MappingType.Element)
+            MyBase.Columns.Add(Me.columncolor_origen)
+            Me.columncolor_destino = New Global.System.Data.DataColumn("color_destino", GetType(Integer), Nothing, Global.System.Data.MappingType.Element)
+            MyBase.Columns.Add(Me.columncolor_destino)
             Me.columnCodigo.MaxLength = 50
             Me.columnProducto.MaxLength = 200
             Me.columnUbicacion.ReadOnly = true
@@ -526,6 +578,8 @@ Partial Public Class dsRepAjustes
             Me.columnValorAnterior.MaxLength = 50
             Me.columnValorActual.MaxLength = 50
             Me.columnLicPlate.MaxLength = 50
+            Me.columntalla_origen.MaxLength = 50
+            Me.columncolor_origen.MaxLength = 50
         End Sub
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
@@ -822,6 +876,66 @@ Partial Public Class dsRepAjustes
         
         <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
+        Public Property talla_origen() As String
+            Get
+                Try 
+                    Return CType(Me(Me.tabletrans_ajuste_det.talla_origenColumn),String)
+                Catch e As Global.System.InvalidCastException
+                    Throw New Global.System.Data.StrongTypingException("The value for column 'talla_origen' in table 'trans_ajuste_det' is DBNull.", e)
+                End Try
+            End Get
+            Set
+                Me(Me.tabletrans_ajuste_det.talla_origenColumn) = value
+            End Set
+        End Property
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
+        Public Property talla_destino() As Integer
+            Get
+                Try 
+                    Return CType(Me(Me.tabletrans_ajuste_det.talla_destinoColumn),Integer)
+                Catch e As Global.System.InvalidCastException
+                    Throw New Global.System.Data.StrongTypingException("The value for column 'talla_destino' in table 'trans_ajuste_det' is DBNull.", e)
+                End Try
+            End Get
+            Set
+                Me(Me.tabletrans_ajuste_det.talla_destinoColumn) = value
+            End Set
+        End Property
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
+        Public Property color_origen() As String
+            Get
+                Try 
+                    Return CType(Me(Me.tabletrans_ajuste_det.color_origenColumn),String)
+                Catch e As Global.System.InvalidCastException
+                    Throw New Global.System.Data.StrongTypingException("The value for column 'color_origen' in table 'trans_ajuste_det' is DBNull.", e)
+                End Try
+            End Get
+            Set
+                Me(Me.tabletrans_ajuste_det.color_origenColumn) = value
+            End Set
+        End Property
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
+        Public Property color_destino() As Integer
+            Get
+                Try 
+                    Return CType(Me(Me.tabletrans_ajuste_det.color_destinoColumn),Integer)
+                Catch e As Global.System.InvalidCastException
+                    Throw New Global.System.Data.StrongTypingException("The value for column 'color_destino' in table 'trans_ajuste_det' is DBNull.", e)
+                End Try
+            End Get
+            Set
+                Me(Me.tabletrans_ajuste_det.color_destinoColumn) = value
+            End Set
+        End Property
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
         Public Function IsCodigoNull() As Boolean
             Return Me.IsNull(Me.tabletrans_ajuste_det.CodigoColumn)
         End Function
@@ -938,6 +1052,54 @@ Partial Public Class dsRepAjustes
          Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
         Public Sub SetLicPlateNull()
             Me(Me.tabletrans_ajuste_det.LicPlateColumn) = Global.System.Convert.DBNull
+        End Sub
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
+        Public Function Istalla_origenNull() As Boolean
+            Return Me.IsNull(Me.tabletrans_ajuste_det.talla_origenColumn)
+        End Function
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
+        Public Sub Settalla_origenNull()
+            Me(Me.tabletrans_ajuste_det.talla_origenColumn) = Global.System.Convert.DBNull
+        End Sub
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
+        Public Function Istalla_destinoNull() As Boolean
+            Return Me.IsNull(Me.tabletrans_ajuste_det.talla_destinoColumn)
+        End Function
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
+        Public Sub Settalla_destinoNull()
+            Me(Me.tabletrans_ajuste_det.talla_destinoColumn) = Global.System.Convert.DBNull
+        End Sub
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
+        Public Function Iscolor_origenNull() As Boolean
+            Return Me.IsNull(Me.tabletrans_ajuste_det.color_origenColumn)
+        End Function
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
+        Public Sub Setcolor_origenNull()
+            Me(Me.tabletrans_ajuste_det.color_origenColumn) = Global.System.Convert.DBNull
+        End Sub
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
+        Public Function Iscolor_destinoNull() As Boolean
+            Return Me.IsNull(Me.tabletrans_ajuste_det.color_destinoColumn)
+        End Function
+        
+        <Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "17.0.0.0")>  _
+        Public Sub Setcolor_destinoNull()
+            Me(Me.tabletrans_ajuste_det.color_destinoColumn) = Global.System.Convert.DBNull
         End Sub
     End Class
     
@@ -1117,6 +1279,10 @@ Namespace dsRepAjustesTableAdapters
             tableMapping.ColumnMappings.Add("ValorAnterior", "ValorAnterior")
             tableMapping.ColumnMappings.Add("ValorActual", "ValorActual")
             tableMapping.ColumnMappings.Add("LicPlate", "LicPlate")
+            tableMapping.ColumnMappings.Add("talla_origen", "talla_origen")
+            tableMapping.ColumnMappings.Add("talla_destino", "talla_destino")
+            tableMapping.ColumnMappings.Add("color_origen", "color_origen")
+            tableMapping.ColumnMappings.Add("color_destino", "color_destino")
             Me._adapter.TableMappings.Add(tableMapping)
         End Sub
         
@@ -1138,11 +1304,12 @@ Namespace dsRepAjustesTableAdapters
                 "                ajuste_motivo.nombre AS Motivo, ajuste_tipo.nombre AS Tipo, tran"& _ 
                 "s_ajuste_det.lote_original AS ValorAnterior, trans_ajuste_det.lote_nuevo AS Valo"& _ 
                 "rActual, "&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"                         trans_ajuste_det.observacion, trans_ajuste_d"& _ 
-                "et.lote_original AS Lote, trans_ajuste_det.lic_plate As LicPlate"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"FROM          "& _ 
-                "  trans_ajuste_det INNER JOIN"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"                         ajuste_tipo ON trans_aju"& _ 
-                "ste_det.idtipoajuste = ajuste_tipo.idtipoajuste INNER JOIN"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"                    "& _ 
-                "     ajuste_motivo ON trans_ajuste_det.idmotivoajuste = ajuste_motivo.idmotivoaj"& _ 
-                "uste"
+                "et.lote_original AS Lote, trans_ajuste_det.lic_plate As LicPlate,"&Global.Microsoft.VisualBasic.ChrW(10)&Global.Microsoft.VisualBasic.ChrW(9)&"trans_ajuste_"& _ 
+                "det.talla_origen,trans_ajuste_det.talla_destino,"&Global.Microsoft.VisualBasic.ChrW(10)&Global.Microsoft.VisualBasic.ChrW(9)&Global.Microsoft.VisualBasic.ChrW(9)&Global.Microsoft.VisualBasic.ChrW(9)&Global.Microsoft.VisualBasic.ChrW(9)&Global.Microsoft.VisualBasic.ChrW(9)&Global.Microsoft.VisualBasic.ChrW(9)&" trans_ajuste_det.color_o"& _ 
+                "rigen, trans_ajuste_det.color_destino"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"FROM            trans_ajuste_det INNER JO"& _ 
+                "IN"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"                         ajuste_tipo ON trans_ajuste_det.idtipoajuste = ajus"& _ 
+                "te_tipo.idtipoajuste INNER JOIN"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"                         ajuste_motivo ON trans"& _ 
+                "_ajuste_det.idmotivoajuste = ajuste_motivo.idmotivoajuste"
             Me._commandCollection(0).CommandType = Global.System.Data.CommandType.Text
         End Sub
         

@@ -2648,10 +2648,6 @@ Public Class frmMenu
 
     End Sub
 
-    Private Sub mnuPacking_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuPacking.ItemClick
-        If Not permiteMenu(e.Link) Then Return
-
-    End Sub
 
     Private Sub cmdUbicacionPicking_ItemClick(sender As Object, e As ItemClickEventArgs) Handles cmdUbicacionPicking.ItemClick
 
