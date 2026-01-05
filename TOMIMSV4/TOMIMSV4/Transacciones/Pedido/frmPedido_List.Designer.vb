@@ -60,6 +60,7 @@ Partial Class frmPedido_List
         Me.gviewEncabezadoPedido = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.RepositoryItemPictureEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.lbGuia = New DevExpress.XtraEditors.LabelControl()
         Me.lbOk = New DevExpress.XtraEditors.LabelControl()
         Me.txtGuia = New DevExpress.XtraEditors.TextEdit()
         Me.lblHasta = New System.Windows.Forms.Label()
@@ -76,7 +77,7 @@ Partial Class frmPedido_List
         Me.gviewDetallePedido = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.RepositoryItemPictureEdit2 = New DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
-        Me.lbGuia = New DevExpress.XtraEditors.LabelControl()
+        Me.ToastNotificationsManager1 = New DevExpress.XtraBars.ToastNotifications.ToastNotificationsManager(Me.components)
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DgridPedido, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gviewEncabezadoPedido, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -91,6 +92,7 @@ Partial Class frmPedido_List
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
+        CType(Me.ToastNotificationsManager1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'RibbonControl
@@ -350,6 +352,14 @@ Partial Class frmPedido_List
         Me.GroupBox1.Tag = ""
         Me.GroupBox1.Text = "Filtro por Fecha"
         '
+        'lbGuia
+        '
+        Me.lbGuia.Location = New System.Drawing.Point(438, 27)
+        Me.lbGuia.Name = "lbGuia"
+        Me.lbGuia.Size = New System.Drawing.Size(25, 16)
+        Me.lbGuia.TabIndex = 59
+        Me.lbGuia.Text = "Guia"
+        '
         'lbOk
         '
         Me.lbOk.Appearance.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -515,13 +525,10 @@ Partial Class frmPedido_List
         Me.SplitContainer1.SplitterWidth = 6
         Me.SplitContainer1.TabIndex = 10
         '
-        'lbGuia
+        'ToastNotificationsManager1
         '
-        Me.lbGuia.Location = New System.Drawing.Point(438, 27)
-        Me.lbGuia.Name = "lbGuia"
-        Me.lbGuia.Size = New System.Drawing.Size(25, 16)
-        Me.lbGuia.TabIndex = 59
-        Me.lbGuia.Text = "Guia"
+        Me.ToastNotificationsManager1.ApplicationId = "4ca7c89b-6aab-4e14-9588-4d1f0b45ecfb"
+        Me.ToastNotificationsManager1.ApplicationName = "TOMWMS"
         '
         'frmPedido_List
         '
@@ -556,6 +563,7 @@ Partial Class frmPedido_List
         Me.SplitContainer1.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer1.ResumeLayout(False)
+        CType(Me.ToastNotificationsManager1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -608,4 +616,5 @@ Partial Class frmPedido_List
     Friend WithEvents txtGuia As DevExpress.XtraEditors.TextEdit
     Friend WithEvents lbOk As DevExpress.XtraEditors.LabelControl
     Friend WithEvents lbGuia As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents ToastNotificationsManager1 As DevExpress.XtraBars.ToastNotifications.ToastNotificationsManager
 End Class
