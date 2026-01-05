@@ -302,7 +302,6 @@ Public Class frmAjustePositivo
             pStockTemporal.Cantidad = 0
             pStockTemporal.IdUbicacion = pUbicacion.IdUbicacion
             '#GT: parametros del producto
-            pStockTemporal.Lic_plate = IIf(vProducto.Genera_lp, txtLicencia.EditValue, DBNull.Value)
             pStockTemporal.Fecha_vence = IIf(vProducto.Control_vencimiento, dtpFechaVence.DateTime, Now.ToString("1900-01-01"))
             pStockTemporal.Peso = IIf(vProducto.Control_peso, txtPeso.Value, 0)
             pStockTemporal.Lote = IIf(vProducto.Genera_lote, txtLote.EditValue, "")
@@ -474,5 +473,14 @@ Public Class frmAjustePositivo
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
          Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub txtLicencia_EditValueChanged(sender As Object, e As EventArgs) Handles txtLicencia.EditValueChanged
+        If Not String.IsNullOrEmpty(txtLicencia.EditValue) Then
+            '#GT 05012025: talla_color es excluyente de si genera lp_auto
+            If BeBodega.Control_Talla_Color Then
+                pStockTemporal.Lic_plate = txtLicencia.EditValue
+            End If
+        End If
     End Sub
 End Class

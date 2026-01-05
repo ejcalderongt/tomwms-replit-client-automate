@@ -1038,6 +1038,10 @@ Public Class frmAjusteStock
                         dgrid.Rows(pIndex).Cells("tipoajuste").ReadOnly = False
                         Valor_Tipo_Ajuste(pIndex)
 
+                        If pidtipo = 3 Then
+                            DgComboTipo.Value = pidtipo
+                        End If
+
                 End Select
 
             Else
@@ -3940,7 +3944,9 @@ Public Class frmAjusteStock
             If BeBodega.Control_Talla_Color Then
                 '#validar si la combinacion talla/color ya existe, sino se debe guardar y luego asociar al ajuste
                 pTalla = clsLnTalla.GetSingleCodigo(pStockTemporal.Talla)
+                If pTalla Is Nothing Then Throw New Exception("La talla no puede estar vacia")
                 pColor = clsLnColor.GetSingle_By_CodigoColor(pStockTemporal.Color)
+                If pColor Is Nothing Then Throw New Exception("El color no puede estar vacio")
                 pProducto = clsLnProducto.Get_BeProducto_By_IdProductoBodega(pStockTemporal.IdProductoBodega, pStockTemporal.IdBodega)
                 pProductoTallaExiste = clsLnProducto_talla_color.Get_Single_By_IdProducto(pProducto.IdProducto, pStockTemporal.Talla, pStockTemporal.Color)
 
