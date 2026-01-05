@@ -791,6 +791,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>dsRepAjustes.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Reportes\Ajustes\dsRepAjustes.vb">
+      <DependentUpon>dsRepAjustes.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Reportes\Ajustes\frmReporteAjustesDet.Designer.vb">
       <DependentUpon>frmReporteAjustesDet.vb</DependentUpon>
     </Compile>
@@ -4387,6 +4390,7 @@
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include="Conn_Becofarma.ini" />
+    <None Include="app.config" />
     <None Include="Configuracion_QADataSet.xsc">
       <DependentUpon>Configuracion_QADataSet.xsd</DependentUpon>
     </None>
