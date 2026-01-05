@@ -1,3 +1,6 @@
+using System;
+using WMS.StockReservation.Core.Domain;
+using WMS.StockReservation.Core.Interfaces;
 
 namespace WMS.StockReservation.Core.Services
 {
@@ -22,13 +25,13 @@ namespace WMS.StockReservation.Core.Services
             if (context == null)
                 throw new ArgumentNullException(nameof(context));
 
-            if (_logger !=null)
             _logger.LogCheckpoint("=== INICIO PIPELINE RESERVA ===");
+
+            bool shouldStop = false;
 
             foreach (var step in _steps)
             {
-                if (_logger != null)
-                    _logger.LogInfo($"Ejecutando: {step.GetType().Name}");
+                _logger.LogInfo($"Ejecutando: {step.GetType().Name}");
 
                 try
                 {
@@ -37,28 +40,31 @@ namespace WMS.StockReservation.Core.Services
                 catch (Exception ex)
                 {
                     context.SetError($"Error en {step.GetType().Name}: {ex.Message}");
-                    if (_logger != null)
-                        _logger.LogError($"Error en {step.GetType().Name}: {ex.Message}");
+                    _logger.LogError($"Error en {step.GetType().Name}: {ex.Message}");
                 }
 
                 if (context.HasError)
                 {
-                    if (_logger != null)
-                        _logger.LogError($"Pipeline detenido por error: {context.ErrorMessage}");
+                    _logger.LogError($"Pipeline detenido por error: {context.ErrorMessage}");
                     break;
                 }
 
-                // Salida temprana si la cantidad ya fue completamente reservada
-                if (context.IsQuantityFullyReserved())
+                // PostProcessingStep SIEMPRE debe ejecutarse - no hacer break antes
+                if (step.GetType().Name == "PostProcessingStep")
                 {
-                    if (_logger != null)
-                        _logger.LogInfo("Cantidad completamente reservada. Fin pipeline.");
+                    _logger.LogInfo("Post-procesamiento completado.");
                     break;
+                }
+
+                // Marcar para salida después de post-procesamiento
+                if (context.IsQuantityFullyReserved() && !shouldStop)
+                {
+                    _logger.LogInfo("Cantidad completamente reservada. Ejecutando post-procesamiento...");
+                    shouldStop = true;
                 }
             }
 
-            if (_logger != null)
-                _logger.LogCheckpoint("=== FIN PIPELINE RESERVA ===");
+            _logger.LogCheckpoint("=== FIN PIPELINE RESERVA ===");
 
             return new ReservationResult
             {

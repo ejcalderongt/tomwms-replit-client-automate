@@ -1160,6 +1160,41 @@ Public Class clsLnBodega
         End Try
 
     End Function
+
+    Public Shared Function GetSingle_By_IdBodega_SL(pIdBodega As Integer) As clsBeBodega
+        Try
+            Const sql As String = "SELECT TOP 1 * FROM Bodega WHERE IdBodega = @IdBodega"
+
+            Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                Using cmd As New SqlCommand(sql, cn)
+                    cmd.CommandType = CommandType.Text
+                    cmd.Parameters.Add("@IdBodega", SqlDbType.Int).Value = pIdBodega
+
+                    cn.Open()
+
+                    Using rd As SqlDataReader = cmd.ExecuteReader(CommandBehavior.SingleRow)
+                        If rd.Read() Then
+                            ' Si tu Cargar usa DataRow, puedes seguir con DataTable, o crear un CargarDesdeReader.
+                            ' Aquí te dejo opción DataTable rápida:
+                            Dim dt As New DataTable()
+                            dt.Load(rd)
+
+                            If dt.Rows.Count = 1 Then
+                                Dim be As New clsBeBodega()
+                                Cargar(be, dt.Rows(0))
+                                Return be
+                            End If
+                        End If
+                    End Using
+                End Using
+            End Using
+
+            Return Nothing
+        Catch
+            Throw
+        End Try
+    End Function
+
     Public Shared Function GetSingle_By_Idbodega(ByVal pIdBodega As Integer,
                                                  ByVal lConnection As SqlConnection,
                                                  ByVal lTransaction As SqlTransaction) As clsBeBodega

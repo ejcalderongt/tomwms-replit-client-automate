@@ -213,6 +213,7 @@ Public Class clsSyncSapTrasladosEnvio
         End Try
 
     End Sub
+
     Private Shared Async Function MarcarClienteComoEnviadoSAPAsync(ByVal sessionCookie As String,
                                                                    ByVal baseUrl As String,
                                                                    ByVal codigoCliente As String) As Task(Of Boolean)
@@ -459,6 +460,7 @@ Public Class clsSyncSapTrasladosEnvio
 
             Dim filtroEstado As String = "DocumentStatus eq 'bost_Open'"
             Dim filtroEnviado As String = "U_ENVIADO_WMS eq 2"
+            filtroEnviado = ""
             Dim filtroBodega As String = $"( and FromWarehouse eq '{pCodigoBodegaInterface}')"
             Dim filtroDocNum As String = If(Not String.IsNullOrWhiteSpace(pNoDocumentoSAP), $" and DocNum eq {pNoDocumentoSAP}", "")
             Dim filtroFinal As String = $"{filtroEstado} and {filtroEnviado} and {filtroBodega}{filtroDocNum}"

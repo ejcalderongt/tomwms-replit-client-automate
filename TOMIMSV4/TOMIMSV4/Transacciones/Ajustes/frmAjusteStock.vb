@@ -737,7 +737,6 @@ Public Class frmAjusteStock
 
             End If
 
-
             pStock_Reservado.IdStockRes = IdStockRes
             pStock_Reservado.IdTransaccion = pBeTransAjustEnc.Idajusteenc
             pStock_Reservado.Indicador = "ajuste_stock" '#EJC20180613 ajuste_stock aplicado.

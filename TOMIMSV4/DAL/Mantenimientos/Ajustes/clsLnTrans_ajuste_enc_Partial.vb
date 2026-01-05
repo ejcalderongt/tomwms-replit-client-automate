@@ -1,5 +1,8 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data.Common
+Imports System.Data.SqlClient
 Imports System.Reflection
+Imports System.Threading.Tasks
+Imports DevExpress.XtraEditors
 
 Partial Public Class clsLnTrans_ajuste_enc
     Public Shared Function GetAll(ByVal pFechaDel As Date,
@@ -161,7 +164,6 @@ Partial Public Class clsLnTrans_ajuste_enc
 
     End Sub
 
-
     Public Shared Sub Actualizar_Ajuste(ByVal lDet As List(Of clsBeTrans_ajuste_det),
                                         ByVal lMovs As List(Of clsBeTrans_movimientos),
                                         ByVal pIdEmpresa As Integer,
@@ -196,6 +198,7 @@ Partial Public Class clsLnTrans_ajuste_enc
         End Try
 
     End Sub
+
     Public Shared Sub RollBackStockRes(enc As clsBeTrans_ajuste_enc)
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -221,6 +224,7 @@ Partial Public Class clsLnTrans_ajuste_enc
         End Try
 
     End Sub
+
     Public Shared Function GetAll_Pendientes_Envio() As List(Of clsBeTrans_ajuste_enc)
 
         GetAll_Pendientes_Envio = Nothing
@@ -446,6 +450,7 @@ Partial Public Class clsLnTrans_ajuste_enc
         End Try
 
     End Function
+
     Public Shared Function Actualizar_Referencia(ByVal pIdAjusteEnc As Integer,
                                                 ByVal pReferencia As String) As Integer
 
@@ -681,6 +686,121 @@ Partial Public Class clsLnTrans_ajuste_enc
             Throw ex
         End Try
 
+    End Function
+
+    Public Shared Function Inserta_Stock_Y_Movimiento(ByVal pAjusteEnc As clsBeTrans_ajuste_enc,
+                                                      ByVal pIdEmpresa As Integer,
+                                                      ByVal lConnection As SqlConnection,
+                                                      ByVal lTransaction As SqlTransaction) As Boolean
+        Try
+            Inserta_Stock_Y_Movimiento = False
+
+            Dim BeStock As clsBeStock
+            Dim BeMov As clsBeTrans_movimientos
+            Dim IdMovimiento As Integer = clsLnTrans_movimientos.MaxID(lConnection, lTransaction)
+            Dim IdStock As Integer = clsLnStock.MaxID(lConnection, lTransaction) + 1
+
+            For Each item As clsBeTrans_ajuste_det In pAjusteEnc.Lineas_Detalle
+
+                'Stock del ajuste positivo
+                BeStock = New clsBeStock With {
+                .IsNew = True,
+                .IdStock = IdStock,
+                .IdPropietarioBodega = item.IdPropietarioBodega,
+                .IdProductoBodega = item.IdProductoBodega,
+                .IdUnidadMedida = item.IdUnidadMedida,
+                .Fecha_Ingreso = Now,
+                .Fecha_vence = item.Fecha_vence_nueva,
+                .IdPresentacion = item.IdPresentacion,
+                .IdProductoEstado = item.IdProductoEstado,
+                .ProductoEstado = clsLnProducto_estado.GetSingleByIdEstado(item.IdProductoEstado, lConnection, lTransaction),
+                .IdUbicacion = item.IdUbicacion,
+                .IdUbicacion_anterior = item.IdUbicacion,
+                .Cantidad = item.Cantidad_nueva,
+                .Lic_plate = item.lic_plate,
+                .Lote = item.Lote_nuevo,
+                .Peso = item.Peso_nuevo,
+                .User_agr = pAjusteEnc.Idusuario,
+                .Fec_agr = Now,
+                .User_mod = pAjusteEnc.Idusuario,
+                .Fec_mod = Now,
+                .IdBodega = pAjusteEnc.IdBodega,
+                .Activo = 1,
+                .IdProductoTallaColor = item.IdProductoTallaColor_origen,
+                .Talla = item.Talla_origen,
+                .Color = item.Color_origen
+            }
+
+                Dim RowsStockInsertado As Integer = clsLnStock.Insertar(BeStock, lConnection, lTransaction)
+
+                If RowsStockInsertado = 0 Then
+                    Throw New Exception("Error al insertar stock para ajuste positivo.")
+                End If
+
+                clsLnTrans_ajuste_det.Actualizar_IdStock(item, BeStock.IdStock, lConnection, lTransaction)
+
+                'Movimiento de ajuste positivo
+                BeMov = New clsBeTrans_movimientos With {
+                .IdMovimiento = IdMovimiento,
+                .IdEmpresa = pIdEmpresa,
+                .IdBodegaOrigen = pAjusteEnc.IdBodega,
+                .IdTransaccion = item.IdAjusteEnc,
+                .IdPropietarioBodega = BeStock.IdPropietarioBodega,
+                .IdProductoBodega = BeStock.IdProductoBodega,
+                .IdUbicacionOrigen = BeStock.IdUbicacion,
+                .IdUbicacionDestino = BeStock.IdUbicacion,
+                .IdPresentacion = BeStock.IdPresentacion,
+                .IdEstadoOrigen = BeStock.IdProductoEstado,
+                .IdEstadoDestino = BeStock.IdProductoEstado,
+                .IdUnidadMedida = BeStock.IdUnidadMedida,
+                .IdTipoTarea = 13,
+                .IdBodegaDestino = pAjusteEnc.IdBodega,
+                .IdRecepcion = BeStock.IdRecepcionEnc,
+                .IdRecepcionDet = BeStock.IdRecepcionDet,
+                .Serie = BeStock.Serial,
+                .Lote = item.Lote_nuevo,
+                .Fecha_vence = item.Fecha_vence_nueva,
+                .Fecha = Now,
+                .Hora_ini = Now,
+                .Hora_fin = Now,
+                .Fecha_agr = Now,
+                .Usuario_agr = pAjusteEnc.Idusuario,
+                .Barra_pallet = BeStock.Lic_plate,
+                .Cantidad = item.Cantidad_nueva,
+                .Cantidad_hist = 0,
+                .Peso = item.Peso_nuevo,
+                .Peso_hist = 0,
+                .IdProductoTallaColor = BeStock.IdProductoTallaColor,
+                .Talla = BeStock.Talla,
+                .Color = BeStock.Color
+            }
+
+                'Si el ajuste es en presentación, multiplicar por el factor (umbas)
+                If BeMov.IdPresentacion <> 0 Then
+                    Dim BePresentacion As clsBeProducto_Presentacion =
+                    clsLnProducto_presentacion.GetSingle(BeMov.IdPresentacion, lConnection, lTransaction)
+
+                    If BePresentacion IsNot Nothing Then
+                        BeMov.Cantidad = Math.Round(BeMov.Cantidad * BePresentacion.Factor, 6)
+                    End If
+                End If
+
+                Dim RowsMovsInsertado As Integer = clsLnTrans_movimientos.Insertar(BeMov, lConnection, lTransaction)
+
+                If RowsMovsInsertado = 0 Then
+                    Throw New Exception("Error al insertar movimientos para ajuste positivo.")
+                End If
+
+                IdMovimiento += 1
+                IdStock += 1
+            Next
+
+            Return True
+
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(ex.Message)
+            Throw
+        End Try
     End Function
 
 End Class
