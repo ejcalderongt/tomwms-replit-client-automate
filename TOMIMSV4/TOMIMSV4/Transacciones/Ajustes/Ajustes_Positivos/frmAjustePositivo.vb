@@ -70,6 +70,8 @@ Public Class frmAjustePositivo
                 lblLote.Visible = False
                 lblPesoAnterior.Visible = False
 
+                txtUbicacion.Enabled = True
+
             Else
 
                 lbTalla.Visible = False
@@ -89,6 +91,8 @@ Public Class frmAjustePositivo
                 lblFechaVence.Visible = True
                 lblLote.Visible = True
                 lblPesoAnterior.Visible = True
+
+                txtUbicacion.Enabled = True
 
             End If
 
@@ -482,5 +486,24 @@ Public Class frmAjustePositivo
                 pStockTemporal.Lic_plate = txtLicencia.EditValue
             End If
         End If
+    End Sub
+
+    Private Sub lnkUbicaciones_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnkUbicaciones.LinkClicked
+
+        '#GT28112024: cargar producto sin stock asociado
+        Dim frmUbicaciones As New frmBodegaUbicacion_List() With {
+                  .Modo = 2,
+                 .pIdBodega = AP.IdBodega,
+                 .pUbicacionesTodas = True,
+                 .StartPosition = FormStartPosition.CenterParent,
+                 .WindowState = FormWindowState.Normal
+            }
+        frmUbicaciones.ShowDialog()
+
+        '#GT06012025: el showdialog no retorna Ok por eso solo validamos si el objeto no es nothing
+        If frmUbicaciones.pObj IsNot Nothing Then
+            txtUbicacion.Text = frmUbicaciones.pObj.NombreCompleto
+        End If
+
     End Sub
 End Class
