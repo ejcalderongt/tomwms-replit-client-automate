@@ -67,7 +67,7 @@ Public Class frmInventarioConteo
             cmbTramo.EditValue = gBeTransInvConteo.Idtramo
             txtUbicacion.Text = Ubicacion.NombreCompleto
             cmbOperador.EditValue = gBeTransInvConteo.Idoperador
-            txtProducto.Text = gBeTransInvConteo.Nom_producto
+            ' txtProducto.Text = gBeTransInvConteo.Nom_producto
             cmbUM.EditValue = gBeTransInvConteo.Idunidadmedida
             cmbPEstado.EditValue = gBeTransInvConteo.Idproductoestado
             txtLote.Text = gBeTransInvConteo.Lote
@@ -76,6 +76,15 @@ Public Class frmInventarioConteo
             cmbProducto.EditValue = gBeTransInvConteo.Idproducto
             cmbProducto.Tag = gBeTransInvConteo.Idproducto
             txtIdUbicacion.Text = gBeTransInvConteo.IdUbicacion
+
+            If gBeTransInvConteo.Idproducto > 0 Then
+                Dim producto As clsBeProducto =
+                clsLnProducto.Get_Single_By_IdProducto(gBeTransInvConteo.Idproducto)
+
+                If producto IsNot Nothing Then
+                    txtProducto.Text = producto.Nombre
+                End If
+            End If
             Ubicacion_Es_Valida()
 
 
@@ -174,8 +183,11 @@ Public Class frmInventarioConteo
             gBeTransInvVer.Idtramo = gBeTransInvConteo.Idtramo
             gBeTransInvVer.Idproducto = gBeTransInvConteo.Idproducto
             gBeTransInvVer.Host = AP.HostName
+            gBeTransInvVer.Idoperador = gBeTransInvConteo.Idoperador
             gBeTransInvVer.Nom_operador = gBeTransInvConteo.Nom_operador
-            gBeTransInvVer.IdUbicacion() = gBeTransInvConteo.IdUbicacion
+            gBeTransInvVer.IdUbicacion = gBeTransInvConteo.IdUbicacion
+            gBeTransInvVer.IdBodega = gBeTransInvConteo.IdBodega
+            gBeTransInvConteo.IdBodega = AP.IdBodega
             gBeTransInvVer.Idpresentacion = cmbPresentacion.EditValue
             gBeTransInvVer.IdUnidadMedida = cmbUM.EditValue
             gBeTransInvVer.Idproductoestado = cmbPEstado.EditValue
@@ -184,6 +196,14 @@ Public Class frmInventarioConteo
             gBeTransInvVer.Nom_producto = txtProducto.Text
 
             clsLnTrans_inv_resumen.Insertar(gBeTransInvVer)
+
+            '#MA20260102
+            SplashScreenManager.CloseForm(False)
+            XtraMessageBox.Show("Inventario verificado correctamente",
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information)
+            Close()
 
         Catch ex As Exception
             MsgBox("Error " & ex.Message)
