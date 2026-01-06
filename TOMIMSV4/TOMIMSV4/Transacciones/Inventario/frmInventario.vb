@@ -9617,10 +9617,14 @@ Public Class frmInventario
                 .PopulateColumns()
                 .OptionsView.ShowIndicator = True
                 .OptionsView.ColumnAutoWidth = False
+                .OptionsView.ShowFooter = True
 
                 If .Columns("IdUbicacion") IsNot Nothing Then
                     .Columns("IdUbicacion").Caption = "ID Ubicación"
                     .Columns("IdUbicacion").AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+                    .Columns("IdUbicacion").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Count
+                    .Columns("IdUbicacion").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Count
+                    .Columns("IdUbicacion").SummaryItem.DisplayFormat = "Registros: {0}"
                 End If
 
                 If .Columns("Ubicacion") IsNot Nothing Then .Columns("Ubicacion").Caption = "Ubicación Completa"
