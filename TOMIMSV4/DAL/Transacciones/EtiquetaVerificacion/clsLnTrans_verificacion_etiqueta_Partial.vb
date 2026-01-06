@@ -96,7 +96,7 @@ Partial Public Class clsLnTrans_verificacion_etiqueta
                    pEtiqueta.Cantidad_verificada & " " & pEtiqueta.Nombre_Presentacion,
                    pEtiqueta.Lote,
                    pEtiqueta.Nombre_cliente,
-                   pEtiqueta.IdPedidoEnc & " " & pEtiqueta.Referencia_pedido,
+                   pEtiqueta.IdPedidoEnc & "/" & pEtiqueta.Referencia_pedido,
                    pEtiqueta.IdPickingEnc,
                    pEtiqueta.Codigo_barra_etiqueta
            )

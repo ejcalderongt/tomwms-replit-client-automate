@@ -3,6 +3,7 @@ Imports System.Data.SqlClient
 Imports System.Drawing.Drawing2D
 Imports System.IO
 Imports System.Reflection
+Imports System.Web.UI.WebControls.Expressions
 Imports DevExpress.Data.Filtering
 Imports DevExpress.XtraCharts
 Imports DevExpress.XtraEditors
@@ -62,6 +63,12 @@ Public Class frmInventario
     Private ufiltcod As Boolean
     Private ufiltubic As String
     Private ufiltcnt As Integer
+
+    'MA20260105
+    Private TotalUbicaciones As Integer = 0
+    Private UbicacionesContadas As Integer = 0
+    Private UbicacionesPendientes As Integer = 0
+    Private ValorObjetivoGauge As Double = 0
 
     Public Enum TipoTrans
         Nuevo = 1
@@ -183,6 +190,7 @@ Public Class frmInventario
                     xtraTabInv.TabPages.Remove(tabComparativoERPWMS)
                     xtraTabInv.TabPages.Remove(tabDiferenciasInventario)
                     xtraTabInv.TabPages.Remove(tabConteoOperador)
+                    xtraTabInv.TabPages.Remove(tabUbicacionesNoContadas)
 
                     lblEsSistema.Visible = False
                     chkSistema.Visible = False
@@ -270,6 +278,7 @@ Public Class frmInventario
                         xtraTabInv.TabPages.Add(tabInvCongelado)
                         xtraTabInv.TabPages.Add(TabInventarioCostos)
                         xtraTabInv.TabPages.Add(tbne)
+                        xtraTabInv.TabPages.Add(tabUbicacionesNoContadas)
 
                         grpImprimirInicial.Visible = False
                         cmdConvertir.Enabled = False
@@ -1012,6 +1021,12 @@ Public Class frmInventario
             Cargar_Conteos_Operador(clsTrans.lConnection, clsTrans.lTransaction)
 
             Carga_Regularizacion(clsTrans.lConnection, clsTrans.lTransaction)
+
+            Cargar_KPI_Ubicaciones(clsTrans.lConnection, clsTrans.lTransaction)
+
+            Me.BeginInvoke(New Action(Sub()
+                                          Actualizar_Gauge_Ubicaciones(clsTrans.lConnection, clsTrans.lTransaction)
+                                      End Sub))
 
             clsTrans.Commit_Transaction()
 
@@ -2553,7 +2568,7 @@ Public Class frmInventario
 
     End Sub
 
-    Private Sub frmInventario_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+    Private Sub frmInventario_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
 
         If e.KeyCode = Keys.Escape Then
             Close()
@@ -6947,7 +6962,7 @@ Public Class frmInventario
         Imprimir_VistaCompara()
     End Sub
 
-    Private Sub frmInventario_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+    Private Sub frmInventario_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
 
         Try
 
@@ -7271,15 +7286,8 @@ Public Class frmInventario
         Llena_Reporte_Inventario_Teorico_Costos()
     End Sub
 
-    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
-        Try
-            If Not bwKPI.IsBusy() Then
-                bwKPI.RunWorkerAsync()
-            End If
-        Catch ex As Exception
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-        End Try
+    Private Sub Timer1_Tick(sender As Object, e As EventArgs)
+
     End Sub
 
     Private Sub bwKPI_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles bwKPI.DoWork
@@ -9554,7 +9562,149 @@ Public Class frmInventario
 
     End Sub
 
-    Private Sub frmInventario_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
+    '#MA20260105
+    Private Sub Cargar_KPI_Ubicaciones(lConnection As SqlConnection, lTransaction As SqlTransaction)
+
+        Try
+            Dim dtPendientes As DataTable = clsLnBodega_ubicacion.Get_Ubicaciones_No_Contadas_DT(gBeTransInvEnc.Idinventarioenc,
+                                                                                                  AP.IdBodega,
+                                                                                                  lConnection,
+                                                                                                  lTransaction)
+
+            UbicacionesPendientes = clsLnBodega_ubicacion.Get_Ubicaciones_Pendientes(gBeTransInvEnc.Idinventarioenc,
+                                                                                     AP.IdBodega,
+                                                                                     lConnection,
+                                                                                     lTransaction)
+
+            UbicacionesContadas = clsLnBodega_ubicacion.Get_Ubicaciones_Contadas(gBeTransInvEnc.Idinventarioenc,
+                                                                                 AP.IdBodega,
+                                                                                 lConnection,
+                                                                                 lTransaction)
+
+            TotalUbicaciones = clsLnBodega_ubicacion.Get_Total_Ubicaciones_Asig(gBeTransInvEnc.Idinventarioenc,
+                                                                                AP.IdBodega,
+                                                                                lConnection,
+                                                                                lTransaction)
+
+            If TotalUbicaciones <= 0 Then TotalUbicaciones = 1
+
+            Dim porcentaje As Double = (UbicacionesContadas / TotalUbicaciones) * 100
+            porcentaje = Math.Min(Math.Max(porcentaje, 0), 100)
+
+            ArcScaleComponent2.Value = porcentaje
+
+            lblGaugeUbicaciones.Text = $"Contadas: {UbicacionesContadas} / Total: {TotalUbicaciones} (Pendientes: {UbicacionesPendientes})"
+
+            lblGaugeUbicaciones.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+
+        Catch ex As Exception
+            XtraMessageBox.Show("Error al cargar KPI de ubicaciones: " & ex.Message,
+                        Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+
+    End Sub
+
+    '#MA20260105
+    Private Sub Actualizar_Gauge_Ubicaciones(lConnection As SqlConnection, lTransaction As SqlTransaction)
+
+        Try
+            Dim dtPendientes As DataTable = clsLnBodega_ubicacion.Get_Ubicaciones_No_Contadas_DT(gBeTransInvEnc.Idinventarioenc,
+                                                                                                  AP.IdBodega,
+                                                                                                  lConnection,
+                                                                                                  lTransaction)
+
+            dgridUbicacionesNoContadas.DataSource = dtPendientes
+
+            With GridViewUbicacionesNoContadas
+                .PopulateColumns()
+                .OptionsView.ShowIndicator = True
+                .OptionsView.ColumnAutoWidth = False
+                .OptionsView.ShowFooter = True
+
+                If .Columns("IdUbicacion") IsNot Nothing Then
+                    .Columns("IdUbicacion").Caption = "ID Ubicación"
+                    .Columns("IdUbicacion").AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+                    .Columns("IdUbicacion").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Count
+                    .Columns("IdUbicacion").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Count
+                    .Columns("IdUbicacion").SummaryItem.DisplayFormat = "Registros: {0}"
+                End If
+
+                If .Columns("Ubicacion") IsNot Nothing Then .Columns("Ubicacion").Caption = "Ubicación Completa"
+                If .Columns("Area") IsNot Nothing Then .Columns("Area").Caption = "Área"
+                If .Columns("Sector") IsNot Nothing Then .Columns("Sector").Caption = "Sector"
+                If .Columns("Tramo") IsNot Nothing Then .Columns("Tramo").Caption = "Tramo"
+
+                .BestFitColumns()
+                .OptionsView.ColumnAutoWidth = True
+                .Appearance.HeaderPanel.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+                .Appearance.HeaderPanel.Font = New Font(.Appearance.HeaderPanel.Font, FontStyle.Bold)
+                .RowHeight = 28
+                .OptionsBehavior.Editable = False
+                .OptionsView.ShowAutoFilterRow = True
+            End With
+
+            UbicacionesPendientes = clsLnBodega_ubicacion.Get_Ubicaciones_Pendientes(gBeTransInvEnc.Idinventarioenc,
+                                                                                     AP.IdBodega,
+                                                                                     lConnection,
+                                                                                     lTransaction)
+
+            UbicacionesContadas = clsLnBodega_ubicacion.Get_Ubicaciones_Contadas(gBeTransInvEnc.Idinventarioenc,
+                                                                                 AP.IdBodega,
+                                                                                 lConnection,
+                                                                                 lTransaction)
+
+            TotalUbicaciones = clsLnBodega_ubicacion.Get_Total_Ubicaciones_Asig(gBeTransInvEnc.Idinventarioenc,
+                                                                                AP.IdBodega,
+                                                                                lConnection,
+                                                                                lTransaction)
+
+            If TotalUbicaciones <= 0 Then TotalUbicaciones = 1
+
+            Dim porcentaje As Double = (UbicacionesContadas / TotalUbicaciones) * 100
+            porcentaje = Math.Min(Math.Max(porcentaje, 0), 100)
+            'porcentaje = 10.0  ' <-- Descomenta si quieres comprobar que funciona el gauge
+
+            Me.Invoke(Sub() Animar_Gauge_Ubicaciones(porcentaje))
+
+            lblGaugeUbicaciones.Text = $"Contadas: {UbicacionesContadas} / Total: {TotalUbicaciones} (Pendientes: {UbicacionesPendientes})"
+
+            lblGaugeUbicaciones.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center
+
+        Catch ex As Exception
+            XtraMessageBox.Show("Error al actualizar Gauge de ubicaciones: " & ex.Message,
+                        Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        End Try
+    End Sub
+
+    '#MA20260105
+    Private Sub Animar_Gauge_Ubicaciones(valorFinal As Double)
+        If valorFinal < 0 Then valorFinal = 0
+        If valorFinal > 100 Then valorFinal = 100
+
+        ValorObjetivoGauge = valorFinal
+
+        Timer1.Interval = 20
+        Timer1.Start()
+    End Sub
+
+    '#MA20260105
+    Private Sub tmrGauge_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+        Dim paso As Double = 2.5
+
+        If ArcScaleComponent2.Value < ValorObjetivoGauge Then
+            ArcScaleComponent2.Value = Math.Min(ArcScaleComponent2.Value + paso, ValorObjetivoGauge)
+        ElseIf ArcScaleComponent2.Value > ValorObjetivoGauge Then
+            ArcScaleComponent2.Value = Math.Max(ArcScaleComponent2.Value - paso, ValorObjetivoGauge)
+        End If
+
+        If ArcScaleComponent2.Value = ValorObjetivoGauge Then Timer1.Stop()
+
+        gaugeUbicaciones.Update()
+        gaugeUbicaciones.Refresh()
+        Application.DoEvents()
+    End Sub
+
+    Private Sub frmInventario_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
         InvokeListarInventario?.Invoke()
     End Sub
 End Class
