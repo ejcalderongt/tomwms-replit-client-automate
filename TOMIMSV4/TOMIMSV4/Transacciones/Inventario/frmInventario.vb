@@ -190,6 +190,7 @@ Public Class frmInventario
                     xtraTabInv.TabPages.Remove(tabComparativoERPWMS)
                     xtraTabInv.TabPages.Remove(tabDiferenciasInventario)
                     xtraTabInv.TabPages.Remove(tabConteoOperador)
+                    xtraTabInv.TabPages.Remove(tabUbicacionesNoContadas)
 
                     lblEsSistema.Visible = False
                     chkSistema.Visible = False
@@ -277,6 +278,7 @@ Public Class frmInventario
                         xtraTabInv.TabPages.Add(tabInvCongelado)
                         xtraTabInv.TabPages.Add(TabInventarioCostos)
                         xtraTabInv.TabPages.Add(tbne)
+                        xtraTabInv.TabPages.Add(tabUbicacionesNoContadas)
 
                         grpImprimirInicial.Visible = False
                         cmdConvertir.Enabled = False

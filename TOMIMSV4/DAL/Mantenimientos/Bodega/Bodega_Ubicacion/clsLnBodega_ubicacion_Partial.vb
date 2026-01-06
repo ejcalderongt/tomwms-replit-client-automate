@@ -3755,26 +3755,25 @@ Partial Public Class clsLnBodega_ubicacion
 
         Dim DT As New DataTable
 
-        Dim SQL As String = " SELECT DISTINCT
-                                u.IdUbicacion, 
-                                dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) AS Ubicacion,
+        Dim SQL As String = "SELECT DISTINCT
+                             u.IdUbicacion, u.IdBodega,
+                             dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) AS Ubicacion,
                                 a.Descripcion AS Area,
                                 s.Descripcion AS Sector,
                                 t.Descripcion AS Tramo
                             FROM bodega_ubicacion u
-                            INNER JOIN bodega_tramo t ON u.IdTramo = t.IdTramo
-                            INNER JOIN bodega_sector s ON t.IdSector = s.IdSector
-                            INNER JOIN bodega_area a ON s.IdArea = a.IdArea
-                            WHERE u.IdBodega = @IdBodega
-                              AND EXISTS (
-                                  SELECT 1 FROM trans_inv_tramo tt 
-                                  WHERE tt.IdTramo = u.IdTramo AND tt.IdInventario = @IdInventario)
-                              AND NOT EXISTS (
-                                  SELECT 1 FROM trans_inv_detalle d 
-                                  WHERE d.IdUbicacion = u.IdUbicacion AND d.IdInventarioEnc = @IdInventario)
-                              AND NOT EXISTS (
-                                  SELECT 1 FROM trans_inv_resumen r 
-                                  WHERE r.IdUbicacion = u.IdUbicacion AND r.IdInventarioEnct = @IdInventario)
+                            INNER JOIN bodega_tramo t ON u.IdTramo = t.IdTramo AND u.IdBodega = t.IdBodega
+                            INNER JOIN bodega_sector s ON t.IdSector = s.IdSector AND u.IdBodega = s.IdBodega
+                            INNER JOIN bodega_area a ON s.IdArea = a.IdArea AND u.IdBodega = a.IdBodega
+                            WHERE u.IdBodega = 1
+						    AND
+							Exists(Select * 
+							from trans_inv_tramo tit
+							where IdInventario = 8 AND tit.idtramo = u.IdTramo And u.IdBodega = tit.IdBodega)
+							AND u.IdUbicacion NOT IN (
+							Select Distinct IdUbicacion 
+							from trans_inv_detalle
+							where idinventarioenc = 8)
                             ORDER BY Area, Sector, Tramo, Ubicacion"
 
         Using da As New SqlDataAdapter(SQL, lConnection)
