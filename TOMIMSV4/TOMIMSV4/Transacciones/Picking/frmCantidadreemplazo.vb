@@ -204,7 +204,11 @@ Public Class frmCantidadreemplazo
                                             IdPresentacionPedido,
                                             True,
                                             txtIdUbicacion.EditValue,
-                                            txtIdUbicacion.EditValue,)
+                                            txtIdUbicacion.EditValue,
+                                            StockReemplazo.Cantidad,' CantidadTotal (Falta)
+                                            True,' CantPend (Falta)
+                                             True' Existencia (Falta)
+                                                 )
             Next
 
         Catch ex As Exception

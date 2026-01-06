@@ -20,6 +20,7 @@ Public Class clsLnTrans_inv_resumen
                 .Nom_producto = IIf(IsDBNull(dr.Item("nom_producto")), "", dr.Item("nom_producto"))
                 .Nom_operador = IIf(IsDBNull(dr.Item("nom_operador")), "", dr.Item("nom_operador"))
                 .IdUbicacion = IIf(IsDBNull(dr.Item("idubicacion")), 0, dr.Item("idubicacion"))
+                .Lic_plate = IIf(IsDBNull(dr.Item("lic_plate")), 0, dr.Item("lic_plate"))
             End With
         Catch ex As Exception
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
@@ -125,6 +126,7 @@ Public Class clsLnTrans_inv_resumen
             Upd.Add("nom_producto", "@nom_producto", DataType.Parametro)
             Upd.Add("nom_operador", "@nom_operador", DataType.Parametro)
             Upd.Add("idubicacion", "@idubicacion", DataType.Parametro)
+            Upd.Add("lic_plate", "@lic_plate", DataType.Parametro)
             Upd.Where("idinventariores = @idinventariores")
 
             Dim sp As String = Upd.SQL()
@@ -154,7 +156,7 @@ Public Class clsLnTrans_inv_resumen
             cmd.Parameters.Add(New SqlParameter("@NOM_PRODUCTO", oBeTrans_inv_resumen.Nom_producto))
             cmd.Parameters.Add(New SqlParameter("@NOM_OPERADOR", oBeTrans_inv_resumen.Nom_operador))
             cmd.Parameters.Add(New SqlParameter("@IDUBICACION", oBeTrans_inv_resumen.IdUbicacion))
-
+            cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", oBeTrans_inv_resumen.Lic_plate))
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
             cmd.Dispose()
