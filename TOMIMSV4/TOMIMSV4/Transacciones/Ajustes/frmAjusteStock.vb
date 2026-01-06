@@ -3437,6 +3437,7 @@ Public Class frmAjusteStock
 
         Dim lRow As DataRow
         Dim repAjuste As New rptAjuste
+        Dim repAjusteTallaColor As New rptAjuste_TallaColor
         Dim DsRepAjustes As New dsRepAjustes
 
         Try
@@ -3486,22 +3487,60 @@ Public Class frmAjusteStock
                     .Item("Lote") = dgrid.Rows(i).Cells(10).Value
                     .Item("LicPlate") = dgrid.Rows(i).Cells("ColLicPlate").Value
 
+
+                    If BeBodega.Control_Talla_Color Then
+                        .Item("talla_origen") = 0
+                        .Item("color_origen") = 0
+
+                        .Item("talla_destino") = 0
+                        .Item("color_destino") = 0
+                    End If
+
                 End With
 
                 DsRepAjustes.trans_ajuste_det.Addtrans_ajuste_detRow(lRow)
 
             Next
 
-            repAjuste.DataSource = DsRepAjustes
-            repAjuste.Parameters("Referencia").Value = pBeTransAjustEnc.Referencia
-            repAjuste.Parameters("Bodega").Value = cmbBodegaERP.Text
-            repAjuste.Parameters("Documento").Value = pBeTransAjustEnc.Idajusteenc
-            repAjuste.Parameters("Fecha").Value = pBeTransAjustEnc.Fecha
-            repAjuste.Parameters("Usuario").Value = String.Format("{0} - {1} {2}", AP.UsuarioAp.Codigo, AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
-            repAjuste.RequestParameters = False
-            Dim tool As ReportPrintTool = New ReportPrintTool(repAjuste)
+            Dim tool As ReportPrintTool
+
+            If BeBodega.Control_Talla_Color Then
+                repAjusteTallaColor.DataSource = DsRepAjustes
+                repAjusteTallaColor.Parameters("Referencia").Value = pBeTransAjustEnc.Referencia
+                repAjusteTallaColor.Parameters("Bodega").Value = cmbBodegaERP.Text
+                repAjusteTallaColor.Parameters("Documento").Value = pBeTransAjustEnc.Idajusteenc
+                repAjusteTallaColor.Parameters("Fecha").Value = pBeTransAjustEnc.Fecha
+                repAjusteTallaColor.Parameters("Usuario").Value = String.Format("{0} - {1} {2}", AP.UsuarioAp.Codigo, AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
+                repAjusteTallaColor.RequestParameters = False
+
+                tool = New ReportPrintTool(repAjusteTallaColor)
+            Else
+                repAjuste.DataSource = DsRepAjustes
+                repAjuste.Parameters("Referencia").Value = pBeTransAjustEnc.Referencia
+                repAjuste.Parameters("Bodega").Value = cmbBodegaERP.Text
+                repAjuste.Parameters("Documento").Value = pBeTransAjustEnc.Idajusteenc
+                repAjuste.Parameters("Fecha").Value = pBeTransAjustEnc.Fecha
+                repAjuste.Parameters("Usuario").Value = String.Format("{0} - {1} {2}", AP.UsuarioAp.Codigo, AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
+                repAjuste.RequestParameters = False
+
+                tool = New ReportPrintTool(repAjuste)
+            End If
+
             tool.PreviewForm.WindowState = FormWindowState.Maximized
             tool.ShowPreview()
+
+
+            'repAjuste.DataSource = DsRepAjustes
+            'repAjuste.Parameters("Referencia").Value = pBeTransAjustEnc.Referencia
+            'repAjuste.Parameters("Bodega").Value = cmbBodegaERP.Text
+            'repAjuste.Parameters("Documento").Value = pBeTransAjustEnc.Idajusteenc
+            'repAjuste.Parameters("Fecha").Value = pBeTransAjustEnc.Fecha
+            'repAjuste.Parameters("Usuario").Value = String.Format("{0} - {1} {2}", AP.UsuarioAp.Codigo, AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
+            'repAjuste.RequestParameters = False
+
+            'Dim tool As ReportPrintTool = New ReportPrintTool(repAjuste)
+            'tool.PreviewForm.WindowState = FormWindowState.Maximized
+            'tool.ShowPreview()
 
         Catch ex As Exception
 

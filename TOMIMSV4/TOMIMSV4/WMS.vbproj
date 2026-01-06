@@ -806,6 +806,12 @@
     <Compile Include="Reportes\Ajustes\rptAjuste.vb">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reportes\Ajustes\rptAjuste_TallaColor.Designer.vb">
+      <DependentUpon>rptAjuste_TallaColor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Ajustes\rptAjuste_TallaColor.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reportes\Analítica\DsetAnalitica.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -3363,6 +3369,9 @@
     <EmbeddedResource Include="Reportes\Ajustes\rptAjuste.resx">
       <DependentUpon>rptAjuste.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Ajustes\rptAjuste_TallaColor.resx">
+      <DependentUpon>rptAjuste_TallaColor.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Analítica\Dashboard1.resx" />
     <EmbeddedResource Include="Reportes\Analítica\frmAnalitica1.resx">
       <DependentUpon>frmAnalitica1.vb</DependentUpon>
@@ -4535,7 +4544,6 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
-    <Content Include="SAPBOSyncMampa.exe" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
