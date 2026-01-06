@@ -212,7 +212,7 @@ Partial Class frmAjusteStock
         Label1.AutoSize = True
         Label1.Location = New System.Drawing.Point(261, 25)
         Label1.Name = "Label1"
-        Label1.Size = New System.Drawing.Size(96, 16)
+        Label1.Size = New System.Drawing.Size(86, 15)
         Label1.TabIndex = 2
         Label1.Text = "Fecha Agregó:"
         '
@@ -221,7 +221,7 @@ Partial Class frmAjusteStock
         Label3.AutoSize = True
         Label3.Location = New System.Drawing.Point(536, 25)
         Label3.Name = "Label3"
-        Label3.Size = New System.Drawing.Size(111, 16)
+        Label3.Size = New System.Drawing.Size(103, 15)
         Label3.TabIndex = 4
         Label3.Text = "Usuario Modificó:"
         '
@@ -230,7 +230,7 @@ Partial Class frmAjusteStock
         Label4.AutoSize = True
         Label4.Location = New System.Drawing.Point(14, 21)
         Label4.Name = "Label4"
-        Label4.Size = New System.Drawing.Size(105, 16)
+        Label4.Size = New System.Drawing.Size(95, 15)
         Label4.TabIndex = 0
         Label4.Text = "Usuario Agregó:"
         '
@@ -239,7 +239,7 @@ Partial Class frmAjusteStock
         Label5.AutoSize = True
         Label5.Location = New System.Drawing.Point(787, 25)
         Label5.Name = "Label5"
-        Label5.Size = New System.Drawing.Size(102, 16)
+        Label5.Size = New System.Drawing.Size(94, 15)
         Label5.TabIndex = 5
         Label5.Text = "Fecha Modificó:"
         '
@@ -569,7 +569,7 @@ Partial Class frmAjusteStock
         Me.ToolStripP.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAdd, Me.mnuAjustePositivo, Me.mnuDel, Me.mnuDividir})
         Me.ToolStripP.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripP.Name = "ToolStripP"
-        Me.ToolStripP.Size = New System.Drawing.Size(1478, 27)
+        Me.ToolStripP.Size = New System.Drawing.Size(1478, 31)
         Me.ToolStripP.TabIndex = 2
         Me.ToolStripP.Text = "ToolStrip1"
         '
@@ -578,7 +578,7 @@ Partial Class frmAjusteStock
         Me.cmdAdd.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(76, 24)
+        Me.cmdAdd.Size = New System.Drawing.Size(76, 28)
         Me.cmdAdd.Text = "Nuevo"
         Me.cmdAdd.ToolTipText = "Ajuste sobre stock existente"
         '
@@ -587,7 +587,7 @@ Partial Class frmAjusteStock
         Me.mnuAjustePositivo.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.mnuAjustePositivo.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuAjustePositivo.Name = "mnuAjustePositivo"
-        Me.mnuAjustePositivo.Size = New System.Drawing.Size(129, 24)
+        Me.mnuAjustePositivo.Size = New System.Drawing.Size(129, 28)
         Me.mnuAjustePositivo.Text = "Ajuste Positivo"
         Me.mnuAjustePositivo.ToolTipText = "Ajuste Positivo sin stock"
         '
@@ -596,7 +596,7 @@ Partial Class frmAjusteStock
         Me.mnuDel.Image = Global.TOMWMS.My.Resources.Resources.desactivar
         Me.mnuDel.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuDel.Name = "mnuDel"
-        Me.mnuDel.Size = New System.Drawing.Size(87, 24)
+        Me.mnuDel.Size = New System.Drawing.Size(87, 28)
         Me.mnuDel.Text = "Eliminar"
         Me.mnuDel.ToolTipText = "Eliminar Linea Seleccionada"
         '
@@ -605,7 +605,7 @@ Partial Class frmAjusteStock
         Me.mnuDividir.Image = Global.TOMWMS.My.Resources.Resources.ubic03
         Me.mnuDividir.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuDividir.Name = "mnuDividir"
-        Me.mnuDividir.Size = New System.Drawing.Size(77, 24)
+        Me.mnuDividir.Size = New System.Drawing.Size(77, 28)
         Me.mnuDividir.Text = "Dividir"
         '
         'dtpFecha
@@ -884,7 +884,7 @@ Partial Class frmAjusteStock
         Me.dgrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.dgrid.EnableHeadersVisualStyles = False
         Me.dgrid.GridColor = System.Drawing.Color.Navy
-        Me.dgrid.Location = New System.Drawing.Point(2, 55)
+        Me.dgrid.Location = New System.Drawing.Point(2, 59)
         Me.dgrid.Margin = New System.Windows.Forms.Padding(4)
         Me.dgrid.MultiSelect = False
         Me.dgrid.Name = "dgrid"

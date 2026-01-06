@@ -2038,7 +2038,7 @@ Public Class frmAjusteStock
 
         Dim FechaVenceNueva, FechaOriginalVence As DateTime
         Dim sr As Integer
-        Dim val As Double
+        Dim ValorGrd As Double
         Dim vNomTipoAjuste As String = ""
         Dim vNomMotivo As String = ""
         Dim vTalla As String = ""
@@ -2142,7 +2142,7 @@ Public Class frmAjusteStock
                 Try
 
                     Dim vNuevaCantidad As Double = 0
-                    Dim vCantidadGrid As Double = dgrid.Rows(sr).Cells("ColCantidad").Value
+                    Dim vCantidadGrid As Double = Val(dgrid.Rows(sr).Cells("ColCantidad").Value)
 
                     If (dgrid.Rows(sr).Cells("tipoajuste").Value = Nothing) Then
                         XtraMessageBox.Show("Linea : " & sr + 1 & " No ha seleccionado correctamente el tipo de ajuste !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -2150,33 +2150,29 @@ Public Class frmAjusteStock
                     End If
 
                     If dgrid.Rows(sr).Cells("tipoajuste").Value = 3 Then
-                        vNuevaCantidad = dgrid.Rows(sr).Cells("CantidadP").Value + dgrid.Rows(sr).Cells("ColCantidad").Value
+                        vNuevaCantidad = Val(dgrid.Rows(sr).Cells("CantidadP").Value) + Val(dgrid.Rows(sr).Cells("ColCantidad").Value)
                     ElseIf dgrid.Rows(sr).Cells("tipoajuste").Value = 5 Then
-                        vNuevaCantidad = dgrid.Rows(sr).Cells("CantidadP").Value - dgrid.Rows(sr).Cells("ColCantidad").Value
+                        vNuevaCantidad = Val(dgrid.Rows(sr).Cells("CantidadP").Value) - Val(dgrid.Rows(sr).Cells("ColCantidad").Value)
                     End If
 
                     If lBeTransAjusteDet(sr).idstocklink = 0 Then
-                        If vNuevaCantidad = 0 Then
-                            XtraMessageBox.Show("Linea : " & sr + 1 & " Ingrese cantidad <> 0", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                            Return False
-                        ElseIf (dgrid.Rows(sr).Cells("CantidadP").Value = vNuevaCantidad) Then
+                        If (dgrid.Rows(sr).Cells("CantidadP").Value = vNuevaCantidad) Then
                             XtraMessageBox.Show("Linea : " & sr + 1 & " Valor original y nuevo deben ser distintos !", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                             Return False
                         End If
                     End If
 
                     If dgrid.Rows(sr).Cells("ColCantidad").Value.ToString = "" Then Throw New Exception
-                    val = vNuevaCantidad
+                    ValorGrd = vNuevaCantidad
 
-                    If val < 0 Then Throw New Exception
+                    If ValorGrd < 0 Then Throw New Exception
 
-                    lBeTransAjusteDet(sr).Cantidad_nueva = val
+                    lBeTransAjusteDet(sr).Cantidad_nueva = ValorGrd
 
                     If lBeTransAjusteDet(sr).Idtipoajuste = 3 Then
                         lBeTransAjusteDet(sr).Codigo_ajuste = 13
                     ElseIf lBeTransAjusteDet(sr).Idtipoajuste = 5 Then
                         lBeTransAjusteDet(sr).Codigo_ajuste = 17
-                    Else
                     End If
 
                     If lBeTransAjusteDet(sr).Cantidad_original < lBeTransAjusteDet(sr).Cantidad_nueva Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image
@@ -2202,10 +2198,10 @@ Public Class frmAjusteStock
                     End If
 
                     If dgrid.Rows(sr).Cells("ColCantidad").Value = "" Then Throw New Exception
-                    val = dgrid.Rows(sr).Cells("ColCantidad").Value
-                    If val < 0 Then Throw New Exception
+                    ValorGrd = dgrid.Rows(sr).Cells("ColCantidad").Value
+                    If ValorGrd < 0 Then Throw New Exception
 
-                    lBeTransAjusteDet(sr).Peso_nuevo = val
+                    lBeTransAjusteDet(sr).Peso_nuevo = ValorGrd
                     lBeTransAjusteDet(sr).Codigo_ajuste = 14
 
                     If lBeTransAjusteDet(sr).Peso_original < lBeTransAjusteDet(sr).Peso_nuevo Then dgrid.Rows(sr).Cells("ColDiferencia").Value = PictureBox2.Image

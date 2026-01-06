@@ -65,11 +65,13 @@ Partial Class frmEjecucion
         Me.mnuFacturaDeudor = New DevExpress.XtraBars.BarSubItem()
         Me.mnuRecibirFactDeudor = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuEnviarFactDeudor = New DevExpress.XtraBars.BarButtonItem()
+        Me.cmdFiltros = New DevExpress.XtraBars.BarButtonItem()
         Me.rpInterfaceSAP = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.rpgDatosMaestros = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.rpgIngresosInterface = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.rpgSalidasInterface = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.rpgResumen = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
+        Me.rpConfiguración = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.mnuReportesI = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.lblprg = New System.Windows.Forms.RichTextBox()
@@ -80,6 +82,7 @@ Partial Class frmEjecucion
         Me.prg = New System.Windows.Forms.ProgressBar()
         Me.PopupMenu1 = New DevExpress.XtraBars.PopupMenu(Me.components)
         Me.PopupMenu2 = New DevExpress.XtraBars.PopupMenu(Me.components)
+        Me.rpConfiguracion = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         CType(Me.rbMain, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PopupMenu1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PopupMenu2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -88,10 +91,10 @@ Partial Class frmEjecucion
         'rbMain
         '
         Me.rbMain.ExpandCollapseItem.Id = 0
-        Me.rbMain.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.rbMain.ExpandCollapseItem, Me.mnuActualizarProveedores, Me.BarButtonItem2, Me.mnuImprimir, Me.mnuImprimirGrid1, Me.mnuImprimirgrid2, Me.mnuReporteEjecuciones, Me.mnuEnviarPedidosCompra, Me.mnuEnviarPedidosTransferencia, Me.cmdRptTransac, Me.mnuProductosI, Me.BarButtonItem1, Me.mnuBodegas, Me.mnuActualizarCodigosBarra, Me.BarButtonItem4, Me.mnuClientes, Me.mnuReporteComparativoWMSvrsERP, Me.mnuTallas, Me.mnuColores, Me.mnuFacturaReservaMenu, Me.mnuRecibirFacturaReservaProv, Me.mnuEnviarFacturaReservaIngreso, Me.mnuTrasladosProrrateo, Me.mnuRecibirTrasladosCedis, Me.mnuEnviarTrasladosCedis, Me.mnuSolDevolProveedorMenu, Me.mnuImportarSolDevolProv, Me.mnuEnviarSolDevolProv, Me.mnuRecepcionTrasladoTiendas, Me.mnuRecibirTrasladosTienda, Me.mnuEnviarTrasladosTienda, Me.mnuEnviarAjustes, Me.mnuSincronizarTienda, Me.mnuTrasladosTiendas, Me.mnuRecibirSolTraTi, Me.mnuEnviarSolTraTi, Me.GetToken, Me.mnuCentroCosto, Me.mnuFacturaReserva, Me.mnuFacturaDeudor, Me.mnuRecibirFactReservaCliente, Me.mnuEnviarFactReservaCliente, Me.mnuRecibirFactDeudor, Me.mnuEnviarFactDeudor})
+        Me.rbMain.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.rbMain.ExpandCollapseItem, Me.mnuActualizarProveedores, Me.BarButtonItem2, Me.mnuImprimir, Me.mnuImprimirGrid1, Me.mnuImprimirgrid2, Me.mnuReporteEjecuciones, Me.mnuEnviarPedidosCompra, Me.mnuEnviarPedidosTransferencia, Me.cmdRptTransac, Me.mnuProductosI, Me.BarButtonItem1, Me.mnuBodegas, Me.mnuActualizarCodigosBarra, Me.BarButtonItem4, Me.mnuClientes, Me.mnuReporteComparativoWMSvrsERP, Me.mnuTallas, Me.mnuColores, Me.mnuFacturaReservaMenu, Me.mnuRecibirFacturaReservaProv, Me.mnuEnviarFacturaReservaIngreso, Me.mnuTrasladosProrrateo, Me.mnuRecibirTrasladosCedis, Me.mnuEnviarTrasladosCedis, Me.mnuSolDevolProveedorMenu, Me.mnuImportarSolDevolProv, Me.mnuEnviarSolDevolProv, Me.mnuRecepcionTrasladoTiendas, Me.mnuRecibirTrasladosTienda, Me.mnuEnviarTrasladosTienda, Me.mnuEnviarAjustes, Me.mnuSincronizarTienda, Me.mnuTrasladosTiendas, Me.mnuRecibirSolTraTi, Me.mnuEnviarSolTraTi, Me.GetToken, Me.mnuCentroCosto, Me.mnuFacturaReserva, Me.mnuFacturaDeudor, Me.mnuRecibirFactReservaCliente, Me.mnuEnviarFactReservaCliente, Me.mnuRecibirFactDeudor, Me.mnuEnviarFactDeudor, Me.cmdFiltros})
         Me.rbMain.Location = New System.Drawing.Point(0, 0)
         Me.rbMain.Margin = New System.Windows.Forms.Padding(4)
-        Me.rbMain.MaxItemId = 97
+        Me.rbMain.MaxItemId = 101
         Me.rbMain.Name = "rbMain"
         Me.rbMain.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.rpInterfaceSAP, Me.RibbonPage1})
         Me.rbMain.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -392,9 +395,16 @@ Partial Class frmEjecucion
         Me.mnuEnviarFactDeudor.Id = 96
         Me.mnuEnviarFactDeudor.Name = "mnuEnviarFactDeudor"
         '
+        'cmdFiltros
+        '
+        Me.cmdFiltros.Caption = "Filtros"
+        Me.cmdFiltros.Id = 100
+        Me.cmdFiltros.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem5.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdFiltros.Name = "cmdFiltros"
+        '
         'rpInterfaceSAP
         '
-        Me.rpInterfaceSAP.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.rpgDatosMaestros, Me.rpgIngresosInterface, Me.rpgSalidasInterface, Me.rpgResumen})
+        Me.rpInterfaceSAP.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.rpConfiguración, Me.rpgDatosMaestros, Me.rpgIngresosInterface, Me.rpgSalidasInterface, Me.rpgResumen})
         Me.rpInterfaceSAP.Name = "rpInterfaceSAP"
         Me.rpInterfaceSAP.Text = "Interface SAP"
         '
@@ -438,6 +448,12 @@ Partial Class frmEjecucion
         Me.rpgResumen.ItemLinks.Add(Me.GetToken)
         Me.rpgResumen.Name = "rpgResumen"
         Me.rpgResumen.Text = "Resumen"
+        '
+        'rpConfiguración
+        '
+        Me.rpConfiguración.ItemLinks.Add(Me.cmdFiltros)
+        Me.rpConfiguración.Name = "rpConfiguración"
+        Me.rpConfiguración.Text = "Configuración"
         '
         'RibbonPage1
         '
@@ -512,6 +528,11 @@ Partial Class frmEjecucion
         '
         Me.PopupMenu2.Name = "PopupMenu2"
         Me.PopupMenu2.Ribbon = Me.rbMain
+        '
+        'rpConfiguracion
+        '
+        Me.rpConfiguracion.Name = "rpConfiguracion"
+        Me.rpConfiguracion.Text = "Configuración"
         '
         'frmEjecucion
         '
@@ -593,4 +614,7 @@ End Sub
     Friend WithEvents mnuFacturaDeudor As DevExpress.XtraBars.BarSubItem
     Friend WithEvents mnuRecibirFactDeudor As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuEnviarFactDeudor As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents rpConfiguracion As DevExpress.XtraBars.Ribbon.RibbonPageGroup
+    Friend WithEvents cmdFiltros As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents rpConfiguración As DevExpress.XtraBars.Ribbon.RibbonPageGroup
 End Class

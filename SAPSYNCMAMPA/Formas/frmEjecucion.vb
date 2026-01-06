@@ -1692,4 +1692,27 @@ Public Class frmEjecucion
 
     End Sub
 
+    Private Sub cmdFiltros_ItemClick(sender As Object, e As ItemClickEventArgs) Handles cmdFiltros.ItemClick
+
+        Try
+
+            With frmNavEnt_List
+                .WindowState = FormWindowState.Maximized
+                .Show()
+                .Focus()
+            End With
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
 End Class
