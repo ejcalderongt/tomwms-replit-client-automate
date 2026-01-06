@@ -7,6 +7,7 @@ Public Class frmCantidadreemplazo
     Public Property IdCliente As Integer = 0
     Public Property IdBodega As Integer = 0
     Public Property Cantidad_Reemplazo As Double = 0
+    Public Property Cantidad_Total As Double = 0
     Private frmSelStock As New frmStock_Especifico_List
     Public pListBeTrans_ubic_hh_det As New List(Of clsBeTrans_ubic_hh_det)
     Public Property BeTipoPedido As New clsBeTrans_pe_tipo
@@ -145,10 +146,15 @@ Public Class frmCantidadreemplazo
 
         If BeTipoPedido IsNot Nothing Then
 
-            txtIdEstadoDefectoRecepcion.EditValue = BeTipoPedido.IdProductoEstado
-            txtNombreEstado.EditValue = clsLnProducto_estado.Get_Nombre_By_IdEstado(BeTipoPedido.IdProductoEstado)
+            Dim idEstado As Integer = If(BeTipoPedido.IdProductoEstado = 0,
+                                         BePickingUbic.IdProductoEstado,
+                                         BeTipoPedido.IdProductoEstado)
 
-            Dim BeProductoEstado As clsBeProducto_estado = clsLnProducto_estado.Get_Single_By_IdEstado(BeTipoPedido.IdProductoEstado)
+            txtIdEstadoDefectoRecepcion.EditValue = idEstado
+            txtNombreEstado.EditValue = clsLnProducto_estado.Get_Nombre_By_IdEstado(idEstado)
+
+            Dim BeProductoEstado As clsBeProducto_estado = clsLnProducto_estado.Get_Single_By_IdEstado(idEstado)
+
             'Dim BeBodega As clsBeBodega = clsLnBodega.GetSingle_By_Idbodega(BePickingUbic.IdBodega)
 
             If BeProductoEstado IsNot Nothing Then
@@ -192,7 +198,10 @@ Public Class frmCantidadreemplazo
         Try
 
             For Each StockReemplazo In pListBeTrans_ubic_hh_det
-                Reemplazar_ListaPu_By_Stock(pBeStockRes,
+
+                If Modo_Reemplazo = eModoReemplazo.picking Then
+
+                    Reemplazar_ListaPu_By_Stock(pBeStockRes,
                                             StockReemplazo.Cantidad,
                                             AP.HostName,
                                             BePickingUbic.IdPickingEnc,
@@ -204,7 +213,29 @@ Public Class frmCantidadreemplazo
                                             IdPresentacionPedido,
                                             True,
                                             txtIdUbicacion.EditValue,
-                                            txtIdUbicacion.EditValue,)
+                                            txtIdUbicacion.EditValue,
+                                            Cantidad_Total,
+                                            Cantidad_Total,
+                                            True)
+
+                Else
+
+
+                    Reemplazar_ListPickingUbic_Verificacion(BePickingUbic,
+                                                            pBeStockRes,
+                                                            BePickingUbic.IdPickingEnc,
+                                                            BePickingUbic.IdOperadorBodega_Pickeo,
+                                                            AP.HostName,
+                                                            AP.IdBodega,
+                                                            AP.IdEmpresa,
+                                                            txtIdUbicacion.Text,
+                                                            txtIdEstadoDefectoRecepcion.Text,
+                                                            StockReemplazo.Cantidad,
+                                                            0, Cantidad_Total,
+                                                            Cantidad_Total,
+                                                            True)
+                End If
+
             Next
 
         Catch ex As Exception
@@ -274,6 +305,9 @@ Public Class frmCantidadreemplazo
                                       pIdPedidoEnc:=IdPedidoEnc,
                                       pIdPedidoDet:=IdPedidoDet,
                                       pIdPickingUbic:=BePickingUbic.IdPickingUbic)
+
+            Throw New Exception(vMsgError)
+
         End Try
 
     End Function
@@ -297,6 +331,63 @@ Public Class frmCantidadreemplazo
 
         Catch ex As Exception
             Throw New Exception(ex.Message)
+        End Try
+
+    End Function
+
+    Public Function Reemplazar_ListPickingUbic_Verificacion(ByVal plistPickingUbi As clsBeTrans_picking_ubic,
+                                                            ByVal pBeStockRes As clsBeStock_res,
+                                                            ByVal pIdPickingEnc As Integer,
+                                                            ByVal pIdOperador As Integer,
+                                                            ByVal pHost As String,
+                                                            ByVal pIdBodega As Integer,
+                                                            ByVal pIdEmpresa As Integer,
+                                                            ByVal pIdUbicDestino As Integer,
+                                                            ByVal pIdEstadoDestino As Integer,
+                                                            ByVal pCantLinea As Double,
+                                                            ByRef pCantReemplazar As Double,
+                                                            ByVal pCantTotal As Double,
+                                                            ByRef CantPend As Double,
+                                                            ByVal ConExistencia As Boolean) As Boolean
+
+        Reemplazar_ListPickingUbic_Verificacion = False
+
+        Try
+
+            If ConExistencia Then
+
+                Return clsLnStock_res.Reemplazo_Verificacion_By_ListPickingUbic(plistPickingUbi,
+                                                                            pBeStockRes,
+                                                                            pIdPickingEnc,
+                                                                            pIdOperador,
+                                                                            pHost,
+                                                                            pIdBodega, pIdEmpresa,
+                                                                            pIdUbicDestino,
+                                                                            pIdEstadoDestino,
+                                                                            pCantLinea,
+                                                                            pCantReemplazar,
+                                                                            pCantTotal,
+                                                                            CantPend)
+            Else
+
+                Return clsLnStock_res.Reemplazar_ListaPu_By_Stock_Sin_Exist(pCantReemplazar,
+                                                                            pIdOperador,
+                                                                            plistPickingUbi,
+                                                                            False,
+                                                                            1,
+                                                                            pCantTotal,
+                                                                            CantPend,
+                                                                            pIdUbicDestino,
+                                                                            pIdEstadoDestino)
+
+            End If
+
+
+        Catch ex As Exception
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            Throw New Exception(vMsgError)
+
         End Try
 
     End Function

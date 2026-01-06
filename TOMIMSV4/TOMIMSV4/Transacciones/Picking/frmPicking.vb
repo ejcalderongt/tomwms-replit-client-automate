@@ -5478,6 +5478,7 @@ Public Class frmPicking
                     frmCant.txtCantidadReemplazo.Maximum = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
                     frmCant.txtCantidadReemplazo.Value = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
                     frmCant.Cantidad_Reemplazo = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
+                    frmCant.Cantidad_Total = frmCant.Cantidad_Reemplazo
                     frmCant.IdPresentacion = BePickingUbic.IdPresentacion
                     frmCant.txtIdProducto.Text = vCodigoProducto
                     frmCant.txtNombreProducto.Text = vNombreProducto
