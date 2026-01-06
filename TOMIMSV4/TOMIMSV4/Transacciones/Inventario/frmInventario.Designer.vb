@@ -291,7 +291,7 @@ Partial Class frmInventario
         Me.xtpRegularizacion = New DevExpress.XtraTab.XtraTabPage()
         Me.grdRegularizar = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
-        Me.XtraTabPage1 = New DevExpress.XtraTab.XtraTabPage()
+        Me.tabUbicacionesNoContadas = New DevExpress.XtraTab.XtraTabPage()
         Me.SplitContainer3 = New System.Windows.Forms.SplitContainer()
         Me.gaugeUbicaciones = New DevExpress.XtraGauges.Win.GaugeControl()
         Me.lblGaugeUbicaciones = New DevExpress.XtraEditors.LabelControl()
@@ -486,7 +486,7 @@ Partial Class frmInventario
         Me.xtpRegularizacion.SuspendLayout()
         CType(Me.grdRegularizar, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.XtraTabPage1.SuspendLayout()
+        Me.tabUbicacionesNoContadas.SuspendLayout()
         CType(Me.SplitContainer3, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer3.Panel1.SuspendLayout()
         Me.SplitContainer3.Panel2.SuspendLayout()
@@ -1802,7 +1802,7 @@ Partial Class frmInventario
         Me.xtraTabInv.SelectedTabPage = Me.Datos
         Me.xtraTabInv.Size = New System.Drawing.Size(1186, 460)
         Me.xtraTabInv.TabIndex = 0
-        Me.xtraTabInv.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.Datos, Me.tabAsignacionProductos, Me.Tramos, Me.tabAsignacionOperadores, Me.tabDetalle, Me.tabConteo, Me.tabDiferenciasInventario, Me.tabConteoOperador, Me.tabReconteo, Me.tabInvTeorico, Me.tabComparativoERPWMS, Me.tbne, Me.tabInvCongelado, Me.TabInventarioCostos, Me.tabKPI, Me.tabAsignacionUbicaciones, Me.xtpRegularizacion, Me.XtraTabPage1})
+        Me.xtraTabInv.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.Datos, Me.tabAsignacionProductos, Me.Tramos, Me.tabAsignacionOperadores, Me.tabDetalle, Me.tabConteo, Me.tabDiferenciasInventario, Me.tabConteoOperador, Me.tabReconteo, Me.tabInvTeorico, Me.tabComparativoERPWMS, Me.tbne, Me.tabInvCongelado, Me.TabInventarioCostos, Me.tabKPI, Me.tabAsignacionUbicaciones, Me.xtpRegularizacion, Me.tabUbicacionesNoContadas})
         '
         'tabAsignacionProductos
         '
@@ -3243,12 +3243,12 @@ Partial Class frmInventario
         Me.GridView1.OptionsView.ShowAutoFilterRow = True
         Me.GridView1.OptionsView.ShowGroupPanel = False
         '
-        'XtraTabPage1
+        'tabUbicacionesNoContadas
         '
-        Me.XtraTabPage1.Controls.Add(Me.SplitContainer3)
-        Me.XtraTabPage1.Name = "XtraTabPage1"
-        Me.XtraTabPage1.Size = New System.Drawing.Size(1184, 435)
-        Me.XtraTabPage1.Text = "Ubicaciones No Contadas"
+        Me.tabUbicacionesNoContadas.Controls.Add(Me.SplitContainer3)
+        Me.tabUbicacionesNoContadas.Name = "tabUbicacionesNoContadas"
+        Me.tabUbicacionesNoContadas.Size = New System.Drawing.Size(1184, 435)
+        Me.tabUbicacionesNoContadas.Text = "Ubicaciones No Contadas"
         '
         'SplitContainer3
         '
@@ -3626,7 +3626,7 @@ Partial Class frmInventario
         Me.xtpRegularizacion.ResumeLayout(False)
         CType(Me.grdRegularizar, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.XtraTabPage1.ResumeLayout(False)
+        Me.tabUbicacionesNoContadas.ResumeLayout(False)
         Me.SplitContainer3.Panel1.ResumeLayout(False)
         Me.SplitContainer3.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer3, System.ComponentModel.ISupportInitialize).EndInit()
@@ -3912,7 +3912,7 @@ Partial Class frmInventario
     Friend WithEvents xtpRegularizacion As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents grdRegularizar As DevExpress.XtraGrid.GridControl
     Friend WithEvents GridView1 As DevExpress.XtraGrid.Views.Grid.GridView
-    Friend WithEvents XtraTabPage1 As DevExpress.XtraTab.XtraTabPage
+    Friend WithEvents tabUbicacionesNoContadas As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents dgridUbicacionesNoContadas As DevExpress.XtraGrid.GridControl
     Friend WithEvents GridViewUbicacionesNoContadas As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents gaugeUbicaciones As DevExpress.XtraGauges.Win.GaugeControl
