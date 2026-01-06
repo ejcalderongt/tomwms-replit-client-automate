@@ -1459,6 +1459,12 @@
     <Compile Include="Transacciones\Pedido\frmTipoTransaccionSalida_List.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\Picking\frmCantidadreemplazo.Designer.vb">
+      <DependentUpon>frmCantidadreemplazo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Picking\frmCantidadreemplazo.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Transacciones\Picking\frmPicking.Designer.vb">
       <DependentUpon>frmPicking.vb</DependentUpon>
     </Compile>
@@ -3655,6 +3661,9 @@
     <EmbeddedResource Include="Transacciones\Pedido\frmTipoTransaccionSalida_List.resx">
       <DependentUpon>frmTipoTransaccionSalida_List.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Picking\frmCantidadreemplazo.resx">
+      <DependentUpon>frmCantidadreemplazo.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Picking\frmPicking.resx">
       <DependentUpon>frmPicking.vb</DependentUpon>
     </EmbeddedResource>
@@ -4390,6 +4399,7 @@
       <DependentUpon>Configuracion_QADataSet.xsd</DependentUpon>
     </None>
     <Content Include="Conn - Cumbre.ini" />
+    <None Include="Conn - MC.ini" />
     <None Include="Conn_GT.ini" />
     <None Include="Conn_Inelac.ini" />
     <None Include="Conn_Killios.ini" />
