@@ -572,6 +572,9 @@ Public Class frmAjusteStock
                         Throw New Exception("No se encontró talla y color para el producto (id): " & BeAjusteDet.IdProductoBodega)
                     End If
 
+                    dgrid.Rows(rc).Cells("colTalla").ReadOnly = True
+                    dgrid.Rows(rc).Cells("colColor").ReadOnly = True
+
                 End If
 
             End If
@@ -3489,11 +3492,8 @@ Public Class frmAjusteStock
 
 
                     If BeBodega.Control_Talla_Color Then
-                        .Item("talla_origen") = 0
-                        .Item("color_origen") = 0
-
-                        .Item("talla_destino") = 0
-                        .Item("color_destino") = 0
+                        .Item("talla_destino") = dgrid.Rows(i).Cells("ColTalla").Value.ToString()
+                        .Item("color_destino") = dgrid.Rows(i).Cells("ColColor").Value.ToString()
                     End If
 
                 End With
@@ -3886,13 +3886,20 @@ Public Class frmAjusteStock
                     pProductoTallaNuevo.User_mod = AP.UsuarioAp.IdUsuario
                     clsLnProducto_talla_color.Insertar(pProductoTallaNuevo) '#EJC20260105: Crear la combinación.
 
+                    '#GT06012025: un ajuste sin existencia no tiene color/talla origen :)
                     BeAjusteDet.Talla_origen = pTalla.Codigo
                     BeAjusteDet.Color_origen = pColor.Codigo
+                    BeAjusteDet.Talla_destino = pTalla.Codigo
+                    BeAjusteDet.Color_destino = pColor.Codigo
                     BeAjusteDet.IdProductoTallaColor_origen = pProductoTallaNuevo.IdProductoTallaColor
 
                 ElseIf pProductoTallaExiste IsNot Nothing Then
                     BeAjusteDet.Talla_origen = pStockTemporal.Talla
                     BeAjusteDet.Color_origen = pStockTemporal.Color
+
+                    BeAjusteDet.Talla_destino = pStockTemporal.Talla
+                    BeAjusteDet.Color_destino = pStockTemporal.Color
+
                     BeAjusteDet.IdProductoTallaColor_origen = pProductoTallaExiste.IdProductoTallaColor
                 End If
             End If

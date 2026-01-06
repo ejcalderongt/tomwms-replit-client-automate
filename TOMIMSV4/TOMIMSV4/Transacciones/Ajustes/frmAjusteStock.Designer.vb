@@ -578,18 +578,16 @@ Partial Class frmAjusteStock
         Me.cmdAdd.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(76, 24)
-        Me.cmdAdd.Text = "Nuevo"
-        Me.cmdAdd.ToolTipText = "Ajuste sobre stock existente"
+        Me.cmdAdd.Size = New System.Drawing.Size(155, 24)
+        Me.cmdAdd.Text = "Ajuste sobre Stock"
         '
         'mnuAjustePositivo
         '
         Me.mnuAjustePositivo.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.mnuAjustePositivo.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuAjustePositivo.Name = "mnuAjustePositivo"
-        Me.mnuAjustePositivo.Size = New System.Drawing.Size(129, 24)
-        Me.mnuAjustePositivo.Text = "Ajuste Positivo"
-        Me.mnuAjustePositivo.ToolTipText = "Ajuste Positivo sin stock"
+        Me.mnuAjustePositivo.Size = New System.Drawing.Size(138, 24)
+        Me.mnuAjustePositivo.Text = "Ajuste Sin Stock"
         '
         'mnuDel
         '

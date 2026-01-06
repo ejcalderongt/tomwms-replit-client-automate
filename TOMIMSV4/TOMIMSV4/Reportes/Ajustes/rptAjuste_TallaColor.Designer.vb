@@ -19,6 +19,7 @@ Partial Public Class rptAjuste_TallaColor
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim XrWatermark1 As DevExpress.XtraReports.UI.XRWatermark = New DevExpress.XtraReports.UI.XRWatermark()
         Me.Detail = New DevExpress.XtraReports.UI.DetailBand()
         Me.XrTable2 = New DevExpress.XtraReports.UI.XRTable()
         Me.XrTableRow2 = New DevExpress.XtraReports.UI.XRTableRow()
@@ -30,6 +31,8 @@ Partial Public Class rptAjuste_TallaColor
         Me.XrTableCell15 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell16 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell17 = New DevExpress.XtraReports.UI.XRTableCell()
+        Me.XrTableCell18 = New DevExpress.XtraReports.UI.XRTableCell()
+        Me.XrTableCell21 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell19 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.TopMargin = New DevExpress.XtraReports.UI.TopMarginBand()
         Me.BottomMargin = New DevExpress.XtraReports.UI.BottomMarginBand()
@@ -46,6 +49,7 @@ Partial Public Class rptAjuste_TallaColor
         Me.XrTableCell11 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell12 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell13 = New DevExpress.XtraReports.UI.XRTableCell()
+        Me.XrTableCell22 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.XrTableCell20 = New DevExpress.XtraReports.UI.XRTableCell()
         Me.Usuario = New DevExpress.XtraReports.Parameters.Parameter()
         Me.Fecha = New DevExpress.XtraReports.Parameters.Parameter()
@@ -66,13 +70,6 @@ Partial Public Class rptAjuste_TallaColor
         Me.GroupFooter2 = New DevExpress.XtraReports.UI.GroupFooterBand()
         Me.ReportFooter = New DevExpress.XtraReports.UI.ReportFooterBand()
         Me.DsRepAjustes3 = New TOMWMS.dsRepAjustes()
-        Me.XrTableCell18 = New DevExpress.XtraReports.UI.XRTableCell()
-        Me.XrTableCell21 = New DevExpress.XtraReports.UI.XRTableCell()
-        Me.XrTableCell22 = New DevExpress.XtraReports.UI.XRTableCell()
-        Me.XrTableCell23 = New DevExpress.XtraReports.UI.XRTableCell()
-        Me.XrTableCell24 = New DevExpress.XtraReports.UI.XRTableCell()
-        Me.XrTableCell25 = New DevExpress.XtraReports.UI.XRTableCell()
-        Me.XrTableCell26 = New DevExpress.XtraReports.UI.XRTableCell()
         CType(Me.XrTable2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.XrTable1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DsRepAjustes3, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -92,7 +89,7 @@ Partial Public Class rptAjuste_TallaColor
         Me.XrTable2.LocationFloat = New DevExpress.Utils.PointFloat(0!, 0!)
         Me.XrTable2.Name = "XrTable2"
         Me.XrTable2.Rows.AddRange(New DevExpress.XtraReports.UI.XRTableRow() {Me.XrTableRow2})
-        Me.XrTable2.SizeF = New System.Drawing.SizeF(826.0!, 25.0!)
+        Me.XrTable2.SizeF = New System.Drawing.SizeF(707.0909!, 25.0!)
         Me.XrTable2.StylePriority.UseFont = False
         '
         'XrTableRow2
@@ -100,7 +97,7 @@ Partial Public Class rptAjuste_TallaColor
         Me.XrTableRow2.Borders = CType((((DevExpress.XtraPrinting.BorderSide.Left Or DevExpress.XtraPrinting.BorderSide.Top) _
             Or DevExpress.XtraPrinting.BorderSide.Right) _
             Or DevExpress.XtraPrinting.BorderSide.Bottom), DevExpress.XtraPrinting.BorderSide)
-        Me.XrTableRow2.Cells.AddRange(New DevExpress.XtraReports.UI.XRTableCell() {Me.XrTableCell4, Me.XrTableCell5, Me.XrTableCell6, Me.XrTableCell8, Me.XrTableCell14, Me.XrTableCell15, Me.XrTableCell16, Me.XrTableCell17, Me.XrTableCell24, Me.XrTableCell26, Me.XrTableCell18, Me.XrTableCell21, Me.XrTableCell19})
+        Me.XrTableRow2.Cells.AddRange(New DevExpress.XtraReports.UI.XRTableCell() {Me.XrTableCell4, Me.XrTableCell5, Me.XrTableCell6, Me.XrTableCell8, Me.XrTableCell14, Me.XrTableCell15, Me.XrTableCell16, Me.XrTableCell17, Me.XrTableCell18, Me.XrTableCell21, Me.XrTableCell19})
         Me.XrTableRow2.Name = "XrTableRow2"
         Me.XrTableRow2.StylePriority.UseBorders = False
         Me.XrTableRow2.Weight = 1.0R
@@ -153,6 +150,18 @@ Partial Public Class rptAjuste_TallaColor
         Me.XrTableCell17.Name = "XrTableCell17"
         Me.XrTableCell17.Weight = 0.9463387031938103R
         '
+        'XrTableCell18
+        '
+        Me.XrTableCell18.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding("Text", Nothing, "trans_ajuste_det.talla_destino")})
+        Me.XrTableCell18.Name = "XrTableCell18"
+        Me.XrTableCell18.Weight = 0.77639626273570672R
+        '
+        'XrTableCell21
+        '
+        Me.XrTableCell21.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding("Text", Nothing, "trans_ajuste_det.color_destino")})
+        Me.XrTableCell21.Name = "XrTableCell21"
+        Me.XrTableCell21.Weight = 0.77639626273570672R
+        '
         'XrTableCell19
         '
         Me.XrTableCell19.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding("Text", Nothing, "trans_ajuste_det.LicPlate")})
@@ -194,13 +203,13 @@ Partial Public Class rptAjuste_TallaColor
         Me.XrTable1.LocationFloat = New DevExpress.Utils.PointFloat(0!, 0!)
         Me.XrTable1.Name = "XrTable1"
         Me.XrTable1.Rows.AddRange(New DevExpress.XtraReports.UI.XRTableRow() {Me.XrTableRow1})
-        Me.XrTable1.SizeF = New System.Drawing.SizeF(826.0!, 25.0!)
+        Me.XrTable1.SizeF = New System.Drawing.SizeF(708.8744!, 25.0!)
         Me.XrTable1.StylePriority.UseBackColor = False
         Me.XrTable1.StylePriority.UseBorders = False
         '
         'XrTableRow1
         '
-        Me.XrTableRow1.Cells.AddRange(New DevExpress.XtraReports.UI.XRTableCell() {Me.XrTableCell1, Me.XrTableCell2, Me.XrTableCell3, Me.XrTableCell7, Me.XrTableCell9, Me.XrTableCell10, Me.XrTableCell11, Me.XrTableCell12, Me.XrTableCell23, Me.XrTableCell25, Me.XrTableCell13, Me.XrTableCell22, Me.XrTableCell20})
+        Me.XrTableRow1.Cells.AddRange(New DevExpress.XtraReports.UI.XRTableCell() {Me.XrTableCell1, Me.XrTableCell2, Me.XrTableCell3, Me.XrTableCell7, Me.XrTableCell9, Me.XrTableCell10, Me.XrTableCell11, Me.XrTableCell12, Me.XrTableCell13, Me.XrTableCell22, Me.XrTableCell20})
         Me.XrTableRow1.Name = "XrTableRow1"
         Me.XrTableRow1.Weight = 1.0R
         '
@@ -277,8 +286,16 @@ Partial Public Class rptAjuste_TallaColor
         Me.XrTableCell13.Font = New DevExpress.Drawing.DXFont("Arial", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
         Me.XrTableCell13.Name = "XrTableCell13"
         Me.XrTableCell13.StylePriority.UseFont = False
-        Me.XrTableCell13.Text = "Talla Destino"
+        Me.XrTableCell13.Text = "Talla"
         Me.XrTableCell13.Weight = 0.75172917190833244R
+        '
+        'XrTableCell22
+        '
+        Me.XrTableCell22.Font = New DevExpress.Drawing.DXFont("Arial", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
+        Me.XrTableCell22.Name = "XrTableCell22"
+        Me.XrTableCell22.StylePriority.UseFont = False
+        Me.XrTableCell22.Text = "Color"
+        Me.XrTableCell22.Weight = 0.776397156548226R
         '
         'XrTableCell20
         '
@@ -441,57 +458,6 @@ Partial Public Class rptAjuste_TallaColor
         Me.DsRepAjustes3.DataSetName = "dsRepAjustes"
         Me.DsRepAjustes3.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
         '
-        'XrTableCell18
-        '
-        Me.XrTableCell18.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding("Text", Nothing, "trans_ajuste_det.talla_destino")})
-        Me.XrTableCell18.Name = "XrTableCell18"
-        Me.XrTableCell18.Weight = 0.77639626273570672R
-        '
-        'XrTableCell21
-        '
-        Me.XrTableCell21.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding("Text", Nothing, "trans_ajuste_det.color_destino")})
-        Me.XrTableCell21.Multiline = True
-        Me.XrTableCell21.Name = "XrTableCell21"
-        Me.XrTableCell21.Weight = 0.77639626273570672R
-        '
-        'XrTableCell22
-        '
-        Me.XrTableCell22.Font = New DevExpress.Drawing.DXFont("Arial", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
-        Me.XrTableCell22.Name = "XrTableCell22"
-        Me.XrTableCell22.StylePriority.UseFont = False
-        Me.XrTableCell22.Text = "Color Destino"
-        Me.XrTableCell22.Weight = 0.776397156548226R
-        '
-        'XrTableCell23
-        '
-        Me.XrTableCell23.Font = New DevExpress.Drawing.DXFont("Arial", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
-        Me.XrTableCell23.Multiline = True
-        Me.XrTableCell23.Name = "XrTableCell23"
-        Me.XrTableCell23.StylePriority.UseFont = False
-        Me.XrTableCell23.Text = "Talla Origen"
-        Me.XrTableCell23.Weight = 0.75172917190833244R
-        '
-        'XrTableCell24
-        '
-        Me.XrTableCell24.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding("Text", Nothing, "trans_ajuste_det.talla_origen")})
-        Me.XrTableCell24.Name = "XrTableCell24"
-        Me.XrTableCell24.Weight = 0.77639626273570672R
-        '
-        'XrTableCell25
-        '
-        Me.XrTableCell25.Font = New DevExpress.Drawing.DXFont("Arial", 8.0!, DevExpress.Drawing.DXFontStyle.Bold)
-        Me.XrTableCell25.Multiline = True
-        Me.XrTableCell25.Name = "XrTableCell25"
-        Me.XrTableCell25.StylePriority.UseFont = False
-        Me.XrTableCell25.Text = "Color Origen"
-        Me.XrTableCell25.Weight = 0.75172917190833244R
-        '
-        'XrTableCell26
-        '
-        Me.XrTableCell26.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding("Text", Nothing, "trans_ajuste_det.color_origen")})
-        Me.XrTableCell26.Name = "XrTableCell26"
-        Me.XrTableCell26.Weight = 0.77639626273570672R
-        '
         'rptAjuste_TallaColor
         '
         Me.Bands.AddRange(New DevExpress.XtraReports.UI.Band() {Me.Detail, Me.TopMargin, Me.BottomMargin, Me.PageHeader, Me.ReportHeader, Me.GroupFooter1, Me.GroupFooter2, Me.ReportFooter})
@@ -504,6 +470,8 @@ Partial Public Class rptAjuste_TallaColor
         Me.RequestParameters = False
         Me.ScriptLanguage = DevExpress.XtraReports.ScriptLanguage.VisualBasic
         Me.Version = "24.2"
+        XrWatermark1.Id = "Watermark1"
+        Me.Watermarks.AddRange(New DevExpress.XtraPrinting.Drawing.Watermark() {XrWatermark1})
         CType(Me.XrTable2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.XrTable1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DsRepAjustes3, System.ComponentModel.ISupportInitialize).EndInit()
@@ -558,10 +526,6 @@ Partial Public Class rptAjuste_TallaColor
     Friend WithEvents XrTableCell19 As DevExpress.XtraReports.UI.XRTableCell
     Friend WithEvents XrTableCell20 As DevExpress.XtraReports.UI.XRTableCell
     Friend WithEvents XrTableCell18 As DevExpress.XtraReports.UI.XRTableCell
-    Friend WithEvents XrTableCell24 As DevExpress.XtraReports.UI.XRTableCell
-    Friend WithEvents XrTableCell26 As DevExpress.XtraReports.UI.XRTableCell
     Friend WithEvents XrTableCell21 As DevExpress.XtraReports.UI.XRTableCell
-    Friend WithEvents XrTableCell23 As DevExpress.XtraReports.UI.XRTableCell
-    Friend WithEvents XrTableCell25 As DevExpress.XtraReports.UI.XRTableCell
     Friend WithEvents XrTableCell22 As DevExpress.XtraReports.UI.XRTableCell
 End Class
