@@ -38,6 +38,9 @@ Public Class frmAjustePositivo
             pUbicacion = New clsBeBodega_ubicacion
             pUbicacion = clsLnBodega_ubicacion.GetSingle(AP.Bodega.Ubic_recepcion, AP.IdBodega)
             txtUbicacion.Text = pUbicacion.NombreCompleto
+            '#GT06012025: se permite cambiar la ubicación mediante la busqueda, no digitado en el input
+            txtUbicacion.Enabled = False
+
             Cargar_Productos_Sin_Stock()
             cmbProductos.Focus()
 
@@ -70,8 +73,6 @@ Public Class frmAjustePositivo
                 lblLote.Visible = False
                 lblPesoAnterior.Visible = False
 
-                txtUbicacion.Enabled = True
-
             Else
 
                 lbTalla.Visible = False
@@ -91,8 +92,6 @@ Public Class frmAjustePositivo
                 lblFechaVence.Visible = True
                 lblLote.Visible = True
                 lblPesoAnterior.Visible = True
-
-                txtUbicacion.Enabled = True
 
             End If
 
