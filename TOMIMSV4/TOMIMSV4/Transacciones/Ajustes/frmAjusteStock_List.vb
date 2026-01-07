@@ -18,7 +18,7 @@ Public Class frmAjusteStock_List
     Private Sub Listar_Ajustes()
         Try
 
-            Dgrid.DataSource = clsLnTrans_ajuste_enc.GetAll(dtpFechaDel.Value, dtpFechaAl.Value, AP.IdBodega)
+            Dgrid.DataSource = clsLnTrans_ajuste_enc.Get_All_VW(dtpFechaDel.Value, dtpFechaAl.Value, AP.IdBodega)
             GridView1.BestFitColumns()
 
             lblRegs.Caption = "Registros: " & GridView1.RowCount
@@ -105,8 +105,8 @@ Public Class frmAjusteStock_List
 
     Private Sub Procesar_Registro()
 
-        Dim Drw As New clsBeTrans_ajuste_enc
-
+        'Dim Drw As New clsBeTrans_ajuste_enc
+        Dim Drw As DataRowView = Nothing
         Try
 
             If (GridView1.RowCount > 0) Then
@@ -118,7 +118,7 @@ Public Class frmAjusteStock_List
                 End Try
 
                 Dim enc = New clsBeTrans_ajuste_enc
-                enc.Idajusteenc = Drw.Idajusteenc
+                enc.Idajusteenc = Drw.Item("Correlativo")
                 clsLnTrans_ajuste_enc.GetSingle(enc)
 
                 Dim lSelectionIndex As Integer = GridView1.FocusedRowHandle
