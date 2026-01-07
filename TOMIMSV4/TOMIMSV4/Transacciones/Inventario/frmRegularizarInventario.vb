@@ -1,5 +1,6 @@
 ﻿Imports System.Data.SqlClient
 Imports System.IO
+Imports DevExpress.Xpf.Bars
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Views.Grid
@@ -932,6 +933,17 @@ Public Class frmRegularizarInventario
             pBeMovs.Usuario_agr = AP.UsuarioAp.IdUsuario
             pBeMovs.Barra_pallet = BeTransInvCiclico.lic_plate
             pBeMovs.IdUnidadMedida = BeTransInvCiclico.IdUnidadMedida
+            pBeMovs.IdProductoTallaColor = BeTransInvCiclico.IdProductoTallaColor
+
+            If BeTransInvCiclico.IdProductoTallaColor <> 0 Then
+                Dim BEProductoTallaColor As New clsBeProducto_talla_color
+                BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransInvCiclico.IdProductoTallaColor)
+                pBeMovs.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
+                pBeMovs.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+            Else
+                pBeMovs.Talla = ""
+                pBeMovs.Color = ""
+            End If
 
             ListMovs.Add(pBeMovs)
             clsLnTrans_movimientos.Insertar(pBeMovs, lConnection, lTransaction)

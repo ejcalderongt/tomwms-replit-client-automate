@@ -3759,6 +3759,17 @@ Partial Public Class clsLnTrans_movimientos
                 BeTransMovimiento.Usuario_agr = oBeTrans_picking_ubic.User_mod
                 BeTransMovimiento.Hora_fin = Now
                 BeTransMovimiento.IdOperadorBodega = oBeTrans_picking_ubic.IdOperadorBodega_Pickeo
+                BeTransMovimiento.IdProductoTallaColor = oBeTrans_picking_ubic.IdProductoTallaColor
+
+                If oBeTrans_picking_ubic.IdProductoTallaColor <> 0 Then
+                    Dim BEProductoTallaColor As New clsBeProducto_talla_color
+                    BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(oBeTrans_picking_ubic.IdProductoTallaColor)
+                    BeTransMovimiento.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
+                    BeTransMovimiento.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+                Else
+                    BeTransMovimiento.Talla = ""
+                    BeTransMovimiento.Color = ""
+                End If
 
                 Insertar(BeTransMovimiento,
                          lConnection,
@@ -3831,6 +3842,17 @@ Partial Public Class clsLnTrans_movimientos
                 BeTransMovimiento.Usuario_agr = oBeTrans_picking_ubic.User_mod
                 BeTransMovimiento.Hora_fin = Now
                 BeTransMovimiento.IdOperadorBodega = oBeTrans_picking_ubic.IdOperadorBodega_Verifico
+                BeTransMovimiento.IdProductoTallaColor = oBeTrans_picking_ubic.IdProductoTallaColor
+
+                If oBeTrans_picking_ubic.IdProductoTallaColor <> 0 Then
+                    Dim BEProductoTallaColor As New clsBeProducto_talla_color
+                    BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(oBeTrans_picking_ubic.IdProductoTallaColor)
+                    BeTransMovimiento.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
+                    BeTransMovimiento.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+                Else
+                    BeTransMovimiento.Talla = ""
+                    BeTransMovimiento.Color = ""
+                End If
 
                 Insertar_Movimiento_Verificacion = Insertar(BeTransMovimiento,
                                                             lConnection,
@@ -3956,6 +3978,17 @@ Partial Public Class clsLnTrans_movimientos
 
             BeTransMovimiento.Cantidad_hist = BeStockRec.CantidadEnStock
             BeTransMovimiento.Peso_hist = BeStockRec.PesoEnStock
+            BeTransMovimiento.IdProductoTallaColor = BeStockNew.IdProductoTallaColor
+
+            If BeStockNew.IdProductoTallaColor <> 0 Then
+                Dim BEProductoTallaColor As New clsBeProducto_talla_color
+                BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeStockNew.IdProductoTallaColor)
+                BeTransMovimiento.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
+                BeTransMovimiento.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+            Else
+                BeTransMovimiento.Talla = ""
+                BeTransMovimiento.Color = ""
+            End If
 
             Insertar(BeTransMovimiento,
                      lConnection,
