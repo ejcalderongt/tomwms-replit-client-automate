@@ -10745,6 +10745,18 @@ Partial Public Class clsLnStock
                                                        lConnection,
                                                        lTransaction)
 
+                    BeMovimiento.IdProductoTallaColor = objStockOrigen.IdProductoTallaColor
+
+                    If objStockOrigen.IdProductoTallaColor <> 0 Then
+                        Dim BEProductoTallaColor As New clsBeProducto_talla_color
+                        BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(objStockOrigen.IdProductoTallaColor)
+                        BeMovimiento.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
+                        BeMovimiento.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+                    Else
+                        BeMovimiento.Talla = ""
+                        BeMovimiento.Color = ""
+                    End If
+
                     '#EJC20220303:Para Erik, si esto ocurre, algo se nos escapó, pero quiero prevenirte problemas así que mejor nos notifican cuando suceda esa
                     'SINGULARIDAD.-
                     If BeMovimiento.Cantidad = 0 Then
