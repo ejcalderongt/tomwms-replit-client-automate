@@ -22,7 +22,7 @@ namespace WMSWebAPI.Controllers
         }
 
         [HttpPost("documento-ingreso")]
-        public async Task<IActionResult> PostDocumentoIngreso([FromBody] List<OrdenCompraDto>  dto)
+        public async Task<IActionResult> PostDocumentoIngreso([FromBody] List<OrdenCompra_3plDto>  dto)
         {
             if (dto == null)
             {
@@ -49,7 +49,7 @@ namespace WMSWebAPI.Controllers
                     {
                         try
                         {
-                            _service.ProcesarDocumentosIngreso(dto, connection, transaction);
+                            _service.ProcesarDocumentosIngreso_3pl(dto, connection, transaction);
 
                             transaction.Commit();
                             scope.Complete();

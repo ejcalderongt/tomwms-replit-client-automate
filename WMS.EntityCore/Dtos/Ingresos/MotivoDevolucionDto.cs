@@ -9,7 +9,7 @@ namespace WMS.EntityCore.Dtos.Ingresos
 {
     public class MotivoDevolucionDto
     {
-       
+
         public int IdMotivoDevolucion { get; set; } = 0;
         public int IdEmpresa { get; set; } = 0;
         public int IdPropietario { get; set; } = 0;
