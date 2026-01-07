@@ -4399,7 +4399,6 @@
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include="Conn_Becofarma.ini" />
-    <None Include="app.config" />
     <None Include="Configuracion_QADataSet.xsc">
       <DependentUpon>Configuracion_QADataSet.xsd</DependentUpon>
     </None>
