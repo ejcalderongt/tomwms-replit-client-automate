@@ -9571,10 +9571,6 @@ Public Class frmInventario
                                                                                                   lConnection,
                                                                                                   lTransaction)
 
-            UbicacionesPendientes = clsLnBodega_ubicacion.Get_Ubicaciones_Pendientes(gBeTransInvEnc.Idinventarioenc,
-                                                                                     AP.IdBodega,
-                                                                                     lConnection,
-                                                                                     lTransaction)
 
             UbicacionesContadas = clsLnBodega_ubicacion.Get_Ubicaciones_Contadas(gBeTransInvEnc.Idinventarioenc,
                                                                                  AP.IdBodega,
@@ -9585,6 +9581,8 @@ Public Class frmInventario
                                                                                 AP.IdBodega,
                                                                                 lConnection,
                                                                                 lTransaction)
+
+            UbicacionesPendientes = TotalUbicaciones - UbicacionesContadas
 
             If TotalUbicaciones <= 0 Then TotalUbicaciones = 1
 
@@ -9643,11 +9641,6 @@ Public Class frmInventario
                 .OptionsView.ShowAutoFilterRow = True
             End With
 
-            UbicacionesPendientes = clsLnBodega_ubicacion.Get_Ubicaciones_Pendientes(gBeTransInvEnc.Idinventarioenc,
-                                                                                     AP.IdBodega,
-                                                                                     lConnection,
-                                                                                     lTransaction)
-
             UbicacionesContadas = clsLnBodega_ubicacion.Get_Ubicaciones_Contadas(gBeTransInvEnc.Idinventarioenc,
                                                                                  AP.IdBodega,
                                                                                  lConnection,
@@ -9657,6 +9650,7 @@ Public Class frmInventario
                                                                                 AP.IdBodega,
                                                                                 lConnection,
                                                                                 lTransaction)
+            UbicacionesPendientes = TotalUbicaciones - UbicacionesContadas
 
             If TotalUbicaciones <= 0 Then TotalUbicaciones = 1
 

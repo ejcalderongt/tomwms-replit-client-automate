@@ -3789,38 +3789,6 @@ Partial Public Class clsLnBodega_ubicacion
     End Function
 
     '#MA20260105
-    Public Shared Function Get_Ubicaciones_Pendientes(IdInventario As Integer,
-                                                      IdBodega As Integer,
-                                                      ByRef lConnection As SqlConnection,
-                                                      ByRef lTransaction As SqlTransaction) As Integer
-        Dim Total As Integer = 0
-
-        Try
-            If lConnection.State <> ConnectionState.Open Then lConnection.Open()
-
-            Dim SQL As String = "SELECT COUNT(*) 
-                                FROM bodega_ubicacion u
-                                INNER JOIN trans_inv_tramo tt ON u.IdTramo = tt.IdTramo
-                                WHERE tt.IdInventario = @IdInventario
-                                  AND u.IdBodega = @IdBodega
-                                  AND NOT EXISTS (SELECT 1 FROM trans_inv_detalle d WHERE d.IdUbicacion = u.IdUbicacion AND d.IdInventarioEnc = @IdInventario)
-                                  AND NOT EXISTS (SELECT 1 FROM trans_inv_resumen r WHERE r.IdUbicacion = u.IdUbicacion AND r.IdInventarioEnct = @IdInventario)"
-
-            Using cmd As New SqlCommand(SQL, lConnection, lTransaction)
-                cmd.CommandType = CommandType.Text
-                cmd.Parameters.AddWithValue("@IdInventario", IdInventario)
-                cmd.Parameters.AddWithValue("@IdBodega", IdBodega)
-                Total = Convert.ToInt32(cmd.ExecuteScalar())
-            End Using
-
-        Catch ex As Exception
-            Throw
-        End Try
-
-        Return Total
-    End Function
-
-    '#MA20260105
     Public Shared Function Get_Total_Ubicaciones_Asig(IdInventarioEnc As Integer,
                                                       IdBodega As Integer,
                                                       lConnection As SqlConnection,
@@ -3869,15 +3837,13 @@ Partial Public Class clsLnBodega_ubicacion
                                  FROM bodega_ubicacion u
                                  INNER JOIN trans_inv_tramo tt ON u.IdTramo = tt.IdTramo
                                  WHERE tt.IdInventario = @IdInventario
-                                   AND u.IdBodega = @IdBodega
-                                   AND (EXISTS (SELECT 1
-                                               FROM trans_inv_detalle d
-                                               WHERE d.IdUbicacion = u.IdUbicacion
-                                                 AND d.IdInventarioEnc = @IdInventario)
-                                       OR EXISTS (SELECT 1
-                                               FROM trans_inv_resumen r
-                                               WHERE r.IdUbicacion = u.IdUbicacion
-                                                 AND r.IdInventarioEnct = @IdInventario))"
+                                  AND u.IdBodega = @IdBodega
+                                  AND EXISTS (
+                                        SELECT 1
+                                        FROM trans_inv_detalle d
+                                        WHERE d.IdUbicacion = u.IdUbicacion
+                                          AND d.IdInventarioEnc = @IdInventario
+                                      )"
 
             Using cmd As New SqlCommand(SQL, lConnection, lTransaction)
                 cmd.CommandType = CommandType.Text
