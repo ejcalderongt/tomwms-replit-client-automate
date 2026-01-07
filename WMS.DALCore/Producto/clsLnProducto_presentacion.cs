@@ -89,7 +89,7 @@ public class clsLnProducto_presentacion
             Ins.Add("genera_lp_auto", "@genera_lp_auto", "F");
             Ins.Add("permitir_paletizar", "@permitir_paletizar", "F");
             Ins.Add("sistema", "@sistema", "F");
-            Ins.Add("idpresentacionpallet", "@IdPresentacionPallet", "F");
+            //Ins.Add("idpresentacionpallet", "@IdPresentacionPallet", "F");
             Ins.Add("codigo", "@codigo", "F");
 
             string sql = Ins.SQL();
@@ -495,7 +495,7 @@ public class clsLnProducto_presentacion
         cmd.Parameters.AddWithValue("@genera_lp_auto", e.Genera_lp_auto);
         cmd.Parameters.AddWithValue("@permitir_paletizar", e.Permitir_paletizar);
         cmd.Parameters.AddWithValue("@sistema", e.Sistema);
-        cmd.Parameters.AddWithValue("@IdPresentacionPallet", e.IdPresentacionPallet);
+        //cmd.Parameters.AddWithValue("@IdPresentacionPallet", e.IdPresentacionPallet);
         cmd.Parameters.AddWithValue("@codigo", e.Codigo);
     }
     public static int InsertOrUpdate(List<clsBeProducto_presentacion> lista, SqlConnection cn, SqlTransaction tx)
@@ -602,7 +602,7 @@ public class clsLnProducto_presentacion
         try
         {
             var Presentacion = new clsBeProducto_presentacion();
-            bool existe = Existe_By_Codigo(pPresentacionMi3.Codigo_presentacion, ref Presentacion, connection, tx);
+            bool existe = Existe_By_Codigo(pPresentacionMi3.Codigo_presentacion.Trim(), ref Presentacion, connection, tx);
 
             var BeInavConfigEnc = new clsBeI_nav_config_enc();
             clsLnI_nav_config_enc.GetSingle(BeInavConfigEnc, connection, tx);
@@ -615,14 +615,14 @@ public class clsLnProducto_presentacion
                 if (!string.IsNullOrEmpty(pPresentacionMi3.Codigo_presentacion))
                 {
                     var BeProducto = new clsBeProducto();
-                    var ExisteProducto = clsLnProducto.Existe_By_Codigo(pPresentacionMi3.Codigo_producto, ref BeProducto, connection, tx);
+                    var ExisteProducto = clsLnProducto.Existe_By_Codigo(pPresentacionMi3.Codigo_producto.Trim(), ref BeProducto, connection, tx);
 
                     if (ExisteProducto)
                     {
                         Presentacion.IdPresentacion = MaxID(connection, tx) + 1;
                         Presentacion.IdProducto = BeProducto.IdProducto;
-                        Presentacion.Codigo = pPresentacionMi3.Codigo_presentacion;
-                        Presentacion.Nombre = pPresentacionMi3.Nombre ?? pPresentacionMi3.Codigo_presentacion;
+                        Presentacion.Codigo = pPresentacionMi3.Codigo_presentacion.Trim();
+                        Presentacion.Nombre = pPresentacionMi3.Nombre ?? pPresentacionMi3.Codigo_presentacion.Trim();
                         Presentacion.Factor = pPresentacionMi3.Factor;
                         Presentacion.Activo = pPresentacionMi3.Activo;
                         Presentacion.EsPallet = pPresentacionMi3.EsPallet;
@@ -631,12 +631,13 @@ public class clsLnProducto_presentacion
                         Presentacion.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                         Presentacion.Fec_agr = DateTime.Now;
                         Presentacion.Fec_mod = DateTime.Now;
-
+                        Presentacion.CamasPorTarima = pPresentacionMi3.CamasPorTarima;
+                        Presentacion.CajasPorCama= pPresentacionMi3.CajasPorCama;
                         Insertar(Presentacion, connection, tx);
                     }
                     else
                     {
-                        throw new ArgumentNullException(nameof(pPresentacionMi3.Codigo_producto), "El codigo de producto no existe.");
+                        throw new ArgumentNullException(nameof(pPresentacionMi3.Codigo_producto), "El código de producto no existe.");
                     }
                 }
             }
@@ -650,6 +651,8 @@ public class clsLnProducto_presentacion
                 Presentacion.Genera_lp_auto = pPresentacionMi3.Genera_lp_auto;
                 Presentacion.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                 Presentacion.Fec_mod = DateTime.Now;
+                Presentacion.CamasPorTarima = pPresentacionMi3.CamasPorTarima;
+                Presentacion.CajasPorCama = pPresentacionMi3.CajasPorCama;
                 Actualizar(Presentacion, connection, tx);
             }
         }

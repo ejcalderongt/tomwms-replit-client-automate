@@ -774,8 +774,7 @@ public class clsLnStock_res
     }
 
     public static double Get_Cantidad_Reservada_By_IdStock(int pIdStock, SqlConnection lConnection, SqlTransaction lTransaction)
-    {
-        double result = 0;
+    {        
 
         try
         {

@@ -957,12 +957,12 @@ public class clsLnI_nav_config_enc
         }
     }
 
-    public static clsBeI_nav_config_enc Get_Single_By_IdBodega_And_IdEmpresa(int pIdBodega,
+    public static clsBeI_nav_config_enc? Get_Single_By_IdBodega_And_IdEmpresa(int pIdBodega,
                                                                             int pIdEmpresa,
                                                                             SqlConnection? pConnection,
                                                                             SqlTransaction? pTransaction)
     {
-        clsBeI_nav_config_enc result = new clsBeI_nav_config_enc();
+        clsBeI_nav_config_enc? result = new clsBeI_nav_config_enc();
 
         try
         {
@@ -986,6 +986,9 @@ public class clsLnI_nav_config_enc
                     var objConfig = new clsBeI_nav_config_enc();
                     Cargar(ref objConfig, lRow);
                     result = objConfig;
+                }
+                else {
+                    result = null;
                 }
             }
         }
