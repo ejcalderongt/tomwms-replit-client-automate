@@ -3765,15 +3765,15 @@ Partial Public Class clsLnBodega_ubicacion
                             INNER JOIN bodega_tramo t ON u.IdTramo = t.IdTramo AND u.IdBodega = t.IdBodega
                             INNER JOIN bodega_sector s ON t.IdSector = s.IdSector AND u.IdBodega = s.IdBodega
                             INNER JOIN bodega_area a ON s.IdArea = a.IdArea AND u.IdBodega = a.IdBodega
-                            WHERE u.IdBodega = 1
+                            WHERE u.IdBodega = @IdBodega
 						    AND
 							Exists(Select * 
 							from trans_inv_tramo tit
-							where IdInventario = 8 AND tit.idtramo = u.IdTramo And u.IdBodega = tit.IdBodega)
+							where IdInventario = @IdInventario AND tit.idtramo = u.IdTramo And u.IdBodega = tit.IdBodega)
 							AND u.IdUbicacion NOT IN (
 							Select Distinct IdUbicacion 
 							from trans_inv_detalle
-							where idinventarioenc = 8)
+							where idinventarioenc = @IdInventario)
                             ORDER BY Area, Sector, Tramo, Ubicacion"
 
         Using da As New SqlDataAdapter(SQL, lConnection)
