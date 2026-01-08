@@ -50,10 +50,10 @@ Partial Class frmAjusteStock
         Dim Label11 As System.Windows.Forms.Label
         Dim Label12 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmAjusteStock))
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.GridView2 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.hideContainerBottom = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.GridView5 = New DevExpress.XtraGrid.Views.Grid.GridView()
@@ -116,8 +116,8 @@ Partial Class frmAjusteStock
         Me.LoteOrig = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColBodega = New System.Windows.Forms.DataGridViewComboBoxColumn()
         Me.ColLicPlate = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colTalla = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colTalla = New System.Windows.Forms.DataGridViewComboBoxColumn()
+        Me.colColor = New System.Windows.Forms.DataGridViewComboBoxColumn()
         Me.colIdProductoTallaColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.DockManager1 = New DevExpress.XtraBars.Docking.DockManager(Me.components)
         Me.AutoHideContainer2 = New DevExpress.XtraBars.Docking.AutoHideContainer()
@@ -569,7 +569,7 @@ Partial Class frmAjusteStock
         Me.ToolStripP.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAdd, Me.mnuAjustePositivo, Me.mnuDel, Me.mnuDividir})
         Me.ToolStripP.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripP.Name = "ToolStripP"
-        Me.ToolStripP.Size = New System.Drawing.Size(1478, 31)
+        Me.ToolStripP.Size = New System.Drawing.Size(1478, 27)
         Me.ToolStripP.TabIndex = 2
         Me.ToolStripP.Text = "ToolStrip1"
         '
@@ -578,31 +578,34 @@ Partial Class frmAjusteStock
         Me.cmdAdd.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(76, 28)
-        Me.cmdAdd.Text = "Nuevo"
+        Me.cmdAdd.Size = New System.Drawing.Size(155, 24)
+        Me.cmdAdd.Text = "Ajuste sobre Stock"
+        Me.cmdAdd.ToolTipText = "Se modificara stock existente"
         '
         'mnuAjustePositivo
         '
         Me.mnuAjustePositivo.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.mnuAjustePositivo.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuAjustePositivo.Name = "mnuAjustePositivo"
-        Me.mnuAjustePositivo.Size = New System.Drawing.Size(129, 28)
-        Me.mnuAjustePositivo.Text = "Ajuste Positivo"
+        Me.mnuAjustePositivo.Size = New System.Drawing.Size(138, 24)
+        Me.mnuAjustePositivo.Text = "Ajuste Sin Stock"
+        Me.mnuAjustePositivo.ToolTipText = "Se agrega existencia sin stock previa"
         '
         'mnuDel
         '
         Me.mnuDel.Image = Global.TOMWMS.My.Resources.Resources.desactivar
         Me.mnuDel.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuDel.Name = "mnuDel"
-        Me.mnuDel.Size = New System.Drawing.Size(87, 28)
+        Me.mnuDel.Size = New System.Drawing.Size(87, 24)
         Me.mnuDel.Text = "Eliminar"
+        Me.mnuDel.ToolTipText = "Eliminar Linea Seleccionada"
         '
         'mnuDividir
         '
         Me.mnuDividir.Image = Global.TOMWMS.My.Resources.Resources.ubic03
         Me.mnuDividir.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuDividir.Name = "mnuDividir"
-        Me.mnuDividir.Size = New System.Drawing.Size(77, 28)
+        Me.mnuDividir.Size = New System.Drawing.Size(77, 24)
         Me.mnuDividir.Text = "Dividir"
         '
         'dtpFecha
@@ -867,32 +870,32 @@ Partial Class frmAjusteStock
         Me.dgrid.AllowUserToDeleteRows = False
         Me.dgrid.AllowUserToResizeRows = False
         Me.dgrid.BackgroundColor = System.Drawing.Color.PaleTurquoise
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle1.BackColor = System.Drawing.Color.AliceBlue
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        DataGridViewCellStyle1.ForeColor = System.Drawing.Color.MidnightBlue
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgrid.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle5.BackColor = System.Drawing.Color.AliceBlue
+        DataGridViewCellStyle5.Font = New System.Drawing.Font("Tahoma", 7.8!)
+        DataGridViewCellStyle5.ForeColor = System.Drawing.Color.MidnightBlue
+        DataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgrid.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle5
         Me.dgrid.ColumnHeadersHeight = 40
         Me.dgrid.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ColCodigoProducto, Me.colNombreProducto, Me.UmBas, Me.colPresentacion, Me.colUbicacion, Me.motivoajuste, Me.tipoajuste, Me.CantidadP, Me.ColCantidad, Me.ColDiferencia, Me.colLote, Me.ColObservacion, Me.ColEnviadoAErp, Me.ColIdAjusteDEt, Me.LoteOrig, Me.ColBodega, Me.ColLicPlate, Me.colTalla, Me.colColor, Me.colIdProductoTallaColor})
         Me.dgrid.Dock = System.Windows.Forms.DockStyle.Top
         Me.dgrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.dgrid.EnableHeadersVisualStyles = False
         Me.dgrid.GridColor = System.Drawing.Color.Navy
-        Me.dgrid.Location = New System.Drawing.Point(2, 59)
+        Me.dgrid.Location = New System.Drawing.Point(2, 55)
         Me.dgrid.Margin = New System.Windows.Forms.Padding(4)
         Me.dgrid.MultiSelect = False
         Me.dgrid.Name = "dgrid"
-        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle4.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgrid.RowHeadersDefaultCellStyle = DataGridViewCellStyle4
+        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle8.Font = New System.Drawing.Font("Tahoma", 7.8!)
+        DataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgrid.RowHeadersDefaultCellStyle = DataGridViewCellStyle8
         Me.dgrid.RowHeadersVisible = False
         Me.dgrid.RowHeadersWidth = 60
         Me.dgrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
@@ -967,10 +970,10 @@ Partial Class frmAjusteStock
         'CantidadP
         '
         Me.CantidadP.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle2.Format = "N6"
-        DataGridViewCellStyle2.NullValue = "0"
-        Me.CantidadP.DefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle6.Format = "N6"
+        DataGridViewCellStyle6.NullValue = "0"
+        Me.CantidadP.DefaultCellStyle = DataGridViewCellStyle6
         Me.CantidadP.HeaderText = "Existencia"
         Me.CantidadP.MinimumWidth = 6
         Me.CantidadP.Name = "CantidadP"
@@ -982,10 +985,10 @@ Partial Class frmAjusteStock
         'ColCantidad
         '
         Me.ColCantidad.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None
-        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
-        DataGridViewCellStyle3.Format = "N6"
-        DataGridViewCellStyle3.NullValue = "0"
-        Me.ColCantidad.DefaultCellStyle = DataGridViewCellStyle3
+        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        DataGridViewCellStyle7.Format = "N6"
+        DataGridViewCellStyle7.NullValue = "0"
+        Me.ColCantidad.DefaultCellStyle = DataGridViewCellStyle7
         Me.ColCantidad.HeaderText = "Valor Actual"
         Me.ColCantidad.MinimumWidth = 6
         Me.ColCantidad.Name = "ColCantidad"
@@ -1056,16 +1059,22 @@ Partial Class frmAjusteStock
         '
         'colTalla
         '
+        Me.colTalla.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
         Me.colTalla.HeaderText = "Talla"
         Me.colTalla.MinimumWidth = 6
         Me.colTalla.Name = "colTalla"
+        Me.colTalla.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.colTalla.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
         Me.colTalla.Width = 125
         '
         'colColor
         '
+        Me.colColor.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox
         Me.colColor.HeaderText = "Color"
         Me.colColor.MinimumWidth = 6
         Me.colColor.Name = "colColor"
+        Me.colColor.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.colColor.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
         Me.colColor.Width = 125
         '
         'colIdProductoTallaColor
@@ -1367,6 +1376,11 @@ Partial Class frmAjusteStock
     Friend WithEvents chkAuditado As DevExpress.XtraBars.BarToggleSwitchItem
     Friend WithEvents mnuGuardar As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuAjustePositivo As ToolStripButton
+    Friend WithEvents txtCentroCostoDepERP As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents txtCentroCostoERP As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents txtCentroCostoDirERP As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents gcCentroCosto As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents Label6 As Label
     Friend WithEvents ColCodigoProducto As DataGridViewTextBoxColumn
     Friend WithEvents colNombreProducto As DataGridViewTextBoxColumn
     Friend WithEvents UmBas As DataGridViewTextBoxColumn
@@ -1384,12 +1398,7 @@ Partial Class frmAjusteStock
     Friend WithEvents LoteOrig As DataGridViewTextBoxColumn
     Friend WithEvents ColBodega As DataGridViewComboBoxColumn
     Friend WithEvents ColLicPlate As DataGridViewTextBoxColumn
-    Friend WithEvents colTalla As DataGridViewTextBoxColumn
-    Friend WithEvents colColor As DataGridViewTextBoxColumn
+    Friend WithEvents colTalla As DataGridViewComboBoxColumn
+    Friend WithEvents colColor As DataGridViewComboBoxColumn
     Friend WithEvents colIdProductoTallaColor As DataGridViewTextBoxColumn
-    Friend WithEvents txtCentroCostoDepERP As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents txtCentroCostoERP As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents txtCentroCostoDirERP As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents gcCentroCosto As DevExpress.XtraEditors.GroupControl
-    Friend WithEvents Label6 As Label
 End Class

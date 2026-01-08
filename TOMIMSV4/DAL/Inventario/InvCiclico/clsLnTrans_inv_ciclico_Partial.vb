@@ -1971,6 +1971,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                             objStockHist.Fec_agr = Now
                             objStockHist.Fec_mod = Now
                             objStockHist.Cantidad = vCantidadHist
+                            objStockHist.IdProductoTallaColor = BeStock.IdProductoTallaColor
                             clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                             clsLnStock.Eliminar(BeStock, lConnection, lTransaction)
                         Else
@@ -2028,6 +2029,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                         objStockHist.Fec_agr = Now
                         objStockHist.Fec_mod = Now
                         objStockHist.Cantidad = vCantidadHist
+                        objStockHist.IdProductoTallaColor = pBeStock.IdProductoTallaColor
                         clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                         clsLnStock.Eliminar(pBeStock, lConnection, lTransaction)
 

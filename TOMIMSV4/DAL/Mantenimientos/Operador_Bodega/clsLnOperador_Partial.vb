@@ -439,6 +439,53 @@ Partial Public Class clsLnOperador
 
     End Function
 
+    '#MA20251204'
+    Public Shared Function Existe(ByVal op As clsBeOperador) As clsBeOperador
+
+        Existe = Nothing
+
+        Dim vSQL As String = "SELECT * FROM operador WHERE Codigo = @codigo AND Clave = @clave"
+
+        Try
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                Using lCommand As New SqlCommand(vSQL, lConnection)
+
+                    lCommand.CommandType = CommandType.Text
+                    lCommand.Parameters.AddWithValue("@codigo", op.Codigo)
+                    lCommand.Parameters.AddWithValue("@clave", op.Clave)
+
+
+
+                    Dim dt As New DataTable()
+
+                    Using da As New SqlDataAdapter(lCommand)
+                        da.Fill(dt)
+                    End Using
+
+                    If dt.Rows.Count > 0 Then
+                        Existe = New clsBeOperador
+                        Dim operadorEncontrado As New clsBeOperador()
+                        Cargar(operadorEncontrado, dt.Rows(0))
+
+                        Existe = operadorEncontrado
+
+                    End If
+
+
+                End Using
+
+            End Using
+
+
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls

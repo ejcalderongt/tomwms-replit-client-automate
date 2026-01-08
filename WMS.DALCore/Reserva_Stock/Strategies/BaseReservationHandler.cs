@@ -1,3 +1,8 @@
+using System;
+using WMS.StockReservation.Core.Domain;
+using WMS.StockReservation.Core.Interfaces;
+using WMSWebAPI.Be;
+using WMS.EntityCore.Stock;
 
 namespace WMS.StockReservation.Strategies
 {
@@ -8,10 +13,10 @@ namespace WMS.StockReservation.Strategies
     /// </summary>
     public abstract class BaseReservationHandler : IReservationHandler
     {
-        protected IReservationHandler? _nextHandler;
-        protected IReservationLogger? _logger;
+        protected IReservationHandler _nextHandler;
+        protected IReservationLogger _logger;
 
-        protected BaseReservationHandler(IReservationLogger? logger)
+        protected BaseReservationHandler(IReservationLogger logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -33,7 +38,6 @@ namespace WMS.StockReservation.Strategies
             // Si completamos la reserva, retornar directamente
             if (context.IsQuantityFullyReserved())
             {
-                if (_logger != null)
                 _logger.LogCheckpoint($"#{GetType().Name}_COMPLETED");
                 return result;
             }
@@ -41,7 +45,6 @@ namespace WMS.StockReservation.Strategies
             // Si aún hay cantidad pendiente, pasar al siguiente handler
             if (_nextHandler != null && context.PendingQuantity > 0.000001)
             {
-                if (_logger != null)
                 _logger.LogCheckpoint($"#{GetType().Name}_PASS_TO_NEXT");
                 
                 var nextResult = _nextHandler.Handle(context);

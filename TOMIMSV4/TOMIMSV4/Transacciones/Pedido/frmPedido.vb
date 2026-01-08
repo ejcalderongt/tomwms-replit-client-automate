@@ -6008,20 +6008,14 @@ Public Class frmPedido
                         '#GT21082025: en el pedido estan los id´s para talla y color, no consultar again la bd
                         Dim Pedido_Det = pBePedidoEnc.Detalle.Find(Function(x) x.IdPedidoEnc = Objs.IdPedidoEnc AndAlso x.IdPedidoDet = Objs.IdPedidoDet)
 
-                        lRow.Item("Talla") = Lista_tallas.Find(Function(x) x.IdTalla = Pedido_Det.Talla)
+                        'Dim Talla = Lista_tallas.Find(Function(x) x.Codigo = Pedido_Det.Talla)
+                        'lRow.Item("Talla") = Talla.Codigo
 
-                        'Dim rowsTalla() As DataRow = Lista_tallas.Select("IdTalla = " & Pedido_Det.Talla)
-                        'If rowsTalla.Length > 0 Then
-                        '    Dim tallaBuscada As DataRow = rowsTalla(0)
-                        '    lRow.Item("Talla") = tallaBuscada(1)
-                        'End If
+                        'Dim Color = Lista_colores.Find(Function(x) x.Codigo = Pedido_Det.Color)
+                        'lRow.Item("Color") = Color.Codigo
 
-                        lRow.Item("Color") = Lista_colores.Find(Function(x) x.IdColor = Pedido_Det.Color)
-                        'Dim rowsColor() As DataRow = Lista_colores.Select("IdColor = " & Pedido_Det.Color)
-                        'If rowsColor.Length > 0 Then
-                        '    Dim colorBuscada As DataRow = rowsColor(0)
-                        '    lRow.Item("Color") = colorBuscada(1)
-                        'End If
+                        lRow.Item("Talla") = Pedido_Det.Talla
+                        lRow.Item("Color") = Pedido_Det.Color
 
                     End If
 

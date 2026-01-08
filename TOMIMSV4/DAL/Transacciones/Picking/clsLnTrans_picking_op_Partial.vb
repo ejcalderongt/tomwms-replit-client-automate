@@ -205,5 +205,59 @@ Partial Public Class clsLnTrans_picking_op
 
     End Sub
 
+    Public Shared Function Get_BeOperador_Defecto_By_IdPickingEnc(ByVal pIdBodega As Integer,
+                                                                  ByVal pIdPickingEnc As Integer,
+                                                                  Optional pConnection As SqlConnection = Nothing,
+                                                                  Optional pTransaction As SqlTransaction = Nothing) As clsBeTrans_picking_op
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Dim cmd As New SqlCommand
+
+        Get_BeOperador_Defecto_By_IdPickingEnc = Nothing
+
+        Try
+
+            Const sp As String = "SELECT top 1 (SELECT ISNULL(max(IdOperadorPicking),0) +1 
+                                                FROM trans_picking_op)IdOperadorPicking, @IdPickingEnc IdPickingEnc,
+			                             IdOperadorBodega,'MI3' user_agr, GETDATE()fec_agr, 'MI3' user_mod, GETDATE() fec_mod 
+                                  FROM operador_bodega ob INNER JOIN 
+                                       operador op on ob.IdOperador = op.IdOperador  
+                                  WHERE op.pickea = 1 and ob.IdBodega = @IdBodega "
+
+            Dim Es_Transaccion_Remota As Boolean = (Not pConnection Is Nothing AndAlso Not pTransaction Is Nothing)
+
+            If Not Es_Transaccion_Remota Then
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+            End If
+
+            cmd = New SqlCommand(sp, IIf(Es_Transaccion_Remota, pConnection, lConnection), IIf(Es_Transaccion_Remota, pTransaction, lTransaction)) _
+                With {.CommandType = CommandType.Text}
+
+            Dim dad As New SqlDataAdapter(cmd)
+
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdBodega", pIdBodega))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdPickingEnc", pIdPickingEnc))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Dim BeOp As New clsBeTrans_picking_op
+                Cargar(BeOp, dt.Rows(0))
+                Get_BeOperador_Defecto_By_IdPickingEnc = BeOp
+            End If
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close() : lConnection.Dispose()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
 
 End Class

@@ -2040,6 +2040,7 @@ Public Class frmCargaExcel
                         If Not clsLnProducto.Exist_by_Codigo(pDT(i)(0)) Then
                             errorCampos = True
                             clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "El código del producto " & pDT(i)(0) & "en la fila " & i + 1 & " no existe en la bd.")
+                            Continue For
                         End If
                         vCodigoProducto = pDT(i)(0)
                     End If
@@ -2176,7 +2177,7 @@ Public Class frmCargaExcel
                             BeTallaColorNuevo.IdTalla = BeTalla.IdTalla
                             BeTallaColorNuevo.IdColor = BeColor.IdColor
                             BeTallaColorNuevo.IdCampaña = 63
-                            BeTallaColorNuevo.CodigoSKU = BeProducto.Codigo + "" + BeTalla.Codigo + "" + BeColor.Codigo
+                            BeTallaColorNuevo.CodigoSKU = BeProducto.Codigo + BeColor.Codigo + BeTalla.Codigo
                             BeTallaColorNuevo.User_agr = AP.UsuarioAp.IdUsuario
                             BeTallaColorNuevo.User_mod = AP.UsuarioAp.IdUsuario
                             BeTallaColorNuevo.Fec_agr = Date.Today

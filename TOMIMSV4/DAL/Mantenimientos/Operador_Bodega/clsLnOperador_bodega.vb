@@ -402,4 +402,32 @@ Public Class clsLnOperador_bodega
 
     End Function
 
+    '#MA20251204'
+
+    Public Shared Function Operador_Tiene_Permiso(ByVal idOperador As Integer, ByVal opcion As String) As Boolean
+        Try
+            Using conn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                conn.Open()
+
+                Const sql As String = "SELECT 1 AS TienePermiso 
+                                       FROM menu_rol_op m
+                                       INNER JOIN operador o ON o.IdRolOperador = m.IdRolOperador
+                                       WHERE o.IdOperador = @IdOperador
+                                        AND m.IdMenuSistemaOP = @Opcion"
+
+                Using cmd As New SqlCommand(sql, conn)
+                    cmd.Parameters.AddWithValue("@IdOperador", idOperador)
+                    cmd.Parameters.AddWithValue("@Opcion", opcion)
+
+                    Dim result = cmd.ExecuteScalar()
+                    Return result IsNot Nothing
+                End Using
+            End Using
+
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(ex.Message)
+            Return False
+        End Try
+    End Function
+
 End Class

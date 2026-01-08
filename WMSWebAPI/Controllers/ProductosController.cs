@@ -23,7 +23,7 @@ namespace WMSWebAPI.Controllers
         }
 
         [HttpPost("list/insert")]
-        public IActionResult Sincronizar([FromBody] List<ProductoDto> productosDto, [FromServices] IConfiguration configuration)
+        public IActionResult Sincronizar([FromBody] List<Producto3PL_Dto> productosDto, [FromServices] IConfiguration configuration)
         {
             if (productosDto == null || productosDto.Count == 0)
                 return BadRequest("La lista de productos está vacía.");
@@ -55,7 +55,7 @@ namespace WMSWebAPI.Controllers
                                 if (string.IsNullOrEmpty(dto.Codigo))
                                     return StatusCode(500, new { Exito = false, Mensaje = "El código no puede estar vacio." });
 
-                                syncService.ProcesarProductoDesdeDto(dto, connection, transaction);
+                                syncService.ProcesarProducto3PLDesdeDto(dto, connection, transaction);
                                 resultados.Add(new { dto.IdProducto, Procesado = true, Mensaje = "Procesado correctamente" });
                             }
 

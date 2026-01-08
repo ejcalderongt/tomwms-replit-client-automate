@@ -909,6 +909,8 @@ Public Class frmMenu
             If Not permiteMenu(e.Link) Then Return
         End If
 
+        Cierra_Instancia_Previa(frmPedido_List)
+
         With frmPedido_List
             .Modo = frmPedido_List.pModo.Lista
             If Not e Is Nothing Then
@@ -2646,10 +2648,6 @@ Public Class frmMenu
 
     End Sub
 
-    Private Sub mnuPacking_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuPacking.ItemClick
-        If Not permiteMenu(e.Link) Then Return
-
-    End Sub
 
     Private Sub cmdUbicacionPicking_ItemClick(sender As Object, e As ItemClickEventArgs) Handles cmdUbicacionPicking.ItemClick
 
@@ -5258,4 +5256,56 @@ Public Class frmMenu
             e.Cancel = True
         End If
     End Sub
+
+    Private Sub mnuVerificacionBOF_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuVerificacionBOF.ItemClick
+        If Not permiteMenu(e.Link) Then Return
+        Try
+
+            Cierra_Instancia_Previa(frmPedido_List)
+
+
+            With frmPedido_List
+                .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
+                .Modo = frmPedido_List.pModo.verificacion
+                .WindowState = FormWindowState.Maximized
+                .Show()
+                .Focus()
+            End With
+
+            SplashScreenManager.CloseForm(False)
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("La Bodega {0} de la Empresa {1} no  tiene definida configuración para interface", AP.NomBodega, AP.NomEmpresa),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+    End Sub
+
+    Public Sub Cierra_Instancia_Previa(ByRef Myform As Form)
+
+        Try
+
+            For Each objForm In My.Application.OpenForms
+                If (Trim(objForm.Name) = Trim(Myform.Name)) Then
+                    Myform.Close()
+                    Exit For
+                End If
+            Next
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
 End Class

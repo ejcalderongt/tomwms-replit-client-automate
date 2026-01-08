@@ -975,6 +975,10 @@ Public Class frmRecepcion
 
                 Application.DoEvents()
 
+                If gBeRecepcionEnc Is Nothing Then
+                    Exit Sub
+                End If
+
                 chkHabilitaStock.Checked = gBeRecepcionEnc.Habilitar_Stock
 
                 chkMostrarCantidadPI.Checked = gBeRecepcionEnc.Mostrar_Cantidad_Esperada
@@ -1990,6 +1994,15 @@ Public Class frmRecepcion
 
             End If
 
+            '#GT02122025: no se ha determinado que hace el operador de HH para duplicar la tarea
+            'aqui removemos duplicados y se mantienen las variantes.
+            pListOpe = pListOpe _
+             .GroupBy(Function(o) New With {
+                 Key .IdRecepcionEnc = o.IdRecepcionEnc,
+                 Key .IdOperadorBodega = o.IdOperadorBodega
+             }) _
+             .Select(Function(g) g.First()) _
+             .ToList()
 
             clsLnTrans_re_enc.Guardar(BeTareaHH,
                                       gBeRecepcionEnc,
@@ -9344,18 +9357,28 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     BeProducto.IdProductoBodega = IdProductoBodega
                     Dim IdRecepcionDet As Integer = IIf(IsDBNull(gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "IdRecepcionDet")), 0, gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "IdRecepcionDet"))
                     Dim vNoLinea As Integer = NoLineaActualFilaGrid 'IIf(IsDBNull(gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "No_Linea")), 0, gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "No_Linea"))
-                    Dim vTalla As String = IIf(IsDBNull(drArticulo("Talla")), "", drArticulo("Talla"))
-                    Dim vColor As String = IIf(IsDBNull(drArticulo("Color")), "", drArticulo("Color"))
-                    Dim vSKU As String = IIf(IsDBNull(drArticulo("SKU")), "", drArticulo("SKU"))
+                    Dim BeTalla As New clsBeTalla
+                    Dim BeColor As New clsBeColor
+                    Dim vSKU As String = ""
+                    Dim vTalla As String = ""
+                    Dim vColor As String = ""
 
-                    clsTransaccion.Begin_Transaction()
+                    If AP.Bodega.Control_Talla_Color Then
 
-                    '#GT13082025: obtener los Ids, el codigo no se asigna
-                    Dim vIdTalla = clsLnTalla.Get_Single_By_Codigo(vTalla, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                    Dim vIdColor = clsLnColor.Get_Single_By_Codigo(vColor, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                        vTalla = IIf(IsDBNull(drArticulo("Talla")), "", drArticulo("Talla"))
+                        vColor = IIf(IsDBNull(drArticulo("Color")), "", drArticulo("Color"))
+                        vSKU = IIf(IsDBNull(drArticulo("SKU")), "", drArticulo("SKU"))
 
-                    clsTransaccion.Commit_Transaction()
-                    clsTransaccion.Close_Conection()
+                        clsTransaccion.Begin_Transaction()
+
+                        '#GT13082025: obtener los Ids, el codigo no se asigna
+                        BeTalla = clsLnTalla.Get_Single_By_Codigo(vTalla, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                        BeColor = clsLnColor.Get_Single_By_Codigo(vColor, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                        clsTransaccion.Commit_Transaction()
+                        clsTransaccion.Close_Conection()
+
+                    End If
 
                     '#GT01022024: si es el mismo producto en el productolockup, no alteramos los datos del grid
                     pExisteLinea = Existe_Producto_en_Grid(vNoLinea, IdRecepcionDet, BeProducto.IdProductoBodega)
@@ -9379,8 +9402,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                         drLineaGrid("No_Linea") = vNoLinea
                         drLineaGrid("Costo") = 0.1
                         drLineaGrid("costo_oc") = 0.1
-                        drLineaGrid("Talla") = vIdTalla.IdTalla
-                        drLineaGrid("Color") = vIdColor.IdColor
+                        drLineaGrid("Talla") = BeTalla?.IdTalla
+                        drLineaGrid("Color") = BeColor?.IdColor
                         drLineaGrid("SKU") = vSKU
 
                         '#GT30012024: Set de OC_ENC y OC_DET al grid
@@ -9399,13 +9422,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                 If gBeOrdenCompra.DetalleOC.Count > 0 Then
 
                                     If BeBodega.Control_Talla_Color Then
-                                        Dim codigoProducto = BeProducto.Codigo + "" + vIdTalla.Codigo + "" + vIdColor.Codigo
+                                        Dim codigoProducto = BeProducto.Codigo + "" + BeTalla.Codigo + "" + BeColor.Codigo
                                         BeCompraDet = gBeOrdenCompra.DetalleOC.Find(Function(x) x.Codigo_Producto = codigoProducto AndAlso x.No_Linea = NoLineaActualFilaGrid)
                                     Else
                                         BeCompraDet = gBeOrdenCompra.DetalleOC.Find(Function(x) x.Codigo_Producto = BeProducto.Codigo AndAlso x.No_Linea = NoLineaActualFilaGrid)
                                     End If
-
-
 
                                     If Not BeCompraDet Is Nothing Then
 
@@ -12414,9 +12435,12 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     Dim view2 As GridView = lista.Properties.View
                     Dim row As DataRowView = TryCast(view2.GetFocusedRow(), DataRowView)
 
-                    If row IsNot Nothing Then
-                        vSKU = row("SKU").ToString()
+                    If AP.Bodega.Control_Talla_Color Then
+                        If row IsNot Nothing Then
+                            vSKU = row("SKU").ToString()
+                        End If
                     End If
+
                 End If
 
                 Dim ColNoLinea As GridColumn = View.Columns("No_Linea")

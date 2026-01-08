@@ -626,6 +626,7 @@ Partial Public Class clsLnTrans_pe_det
         End Try
 
     End Function
+
     Public Shared Function Get_Referencias_By_IdPedidoDet(ByVal pIdPedidoDet As Integer) As String
 
         Try
@@ -4642,6 +4643,51 @@ Partial Public Class clsLnTrans_pe_det
                 clsLnProducto_presentacion.Cargar(vPresentacion, dt.Rows(0))
                 Get_BePresentacion_By_NoLinea = vPresentacion
             End If
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_All_Stock_Res_By_IdPedidoDet(ByVal pIdPedidoDet As Integer,
+                                                            ByVal IdPedidoEnc As Integer,
+                                                            ByVal pConnection As SqlConnection,
+                                                            ByVal pTransaction As SqlTransaction) As List(Of clsBeStock_res)
+
+        Dim lReturnList As New List(Of clsBeStock_res)
+
+        Try
+
+            Dim vSQL As String = "SELECT * FROM stock_res WHERE IdPedidoDet = @IdPedidoDet AND IdPedido = @IdPedidoEnc"
+
+            Using lDTA As New SqlDataAdapter(vSQL, pConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = pTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoDet", pIdPedidoDet)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", IdPedidoEnc)
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                Dim Obj As clsBeStock_res
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                    For Each lRow As DataRow In lDataTable.Rows
+
+                        Obj = New clsBeStock_res
+                        clsLnStock_res.Cargar(Obj, lRow)
+                        lReturnList.Add(Obj)
+
+                    Next
+
+                End If
+
+            End Using
+
+            Return lReturnList
 
         Catch ex As Exception
             Throw ex

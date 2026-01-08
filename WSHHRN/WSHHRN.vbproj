@@ -49,7 +49,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\lib\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -133,12 +132,14 @@
     <Content Include="DataSets\NN.bin">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="My Project\PublishProfiles\WCFTOM4_MAMPA.pubxml" />
     <None Include="My Project\PublishProfiles\WCFTOM4_mio.pubxml" />
     <None Include="My Project\PublishProfiles\WCFTOM4_PRD.pubxml" />
     <None Include="My Project\PublishProfiles\WCFTOM4_QA.pubxml" />
     <None Include="My Project\PublishProfiles\WCFTOM4_QAS_B1.pubxml" />
     <None Include="My Project\PublishProfiles\WSTOMHH_QAP.pubxml" />
     <None Include="My Project\PublishProfiles\WSTOMHH_QAS.pubxml" />
+    <None Include="packages.config" />
     <None Include="Resources\pago1.png" />
     <None Include="Resources\pago2.png" />
     <None Include="Resources\pago3.png" />
@@ -272,7 +273,6 @@
     <Content Include="Web References\wsBYBNavUbicarAlmacen\Ubicar_Almacen.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </Content>
-    <None Include="packages.config" />
     <None Include="Web References\wsBYBNavCUWMS\CUWMS.wsdl" />
     <None Include="Web References\wsBYBNavCUWMS\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
@@ -576,7 +576,7 @@
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+      <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
   </Target>

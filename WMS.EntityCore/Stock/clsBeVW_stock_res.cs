@@ -119,14 +119,14 @@ namespace WMS.EntityCore.Stock
         public bool encontrado { get; set; }
         //public clsBeBodega_ubicacion UbicacionActual { get; set; } = new clsBeBodega_ubicacion();
         public double Cantidad_Res { get; set; } = 0.0;
-        public string ValorTexto { get; set; } = string.Empty;
+        public string? ValorTexto { get; set; }
         public double ValorNumerico { get; set; } = 0.0;
         public DateTime ValorFecha { get; set; } = default;
         public bool ValorLogico { get; set; } = false;
 
-        public string No_Serie { get; set; } = string.Empty;
-        public string No_Serie_Inicial { get; set; } = string.Empty;
-        public string No_Serie_Final { get; set; } = string.Empty;
+        public string? No_Serie { get; set; } 
+        public string? No_Serie_Inicial { get; set; } 
+        public string? No_Serie_Final { get; set; } 
 
         public double CantidadReservada { get; set; } = 0.0;
 
@@ -159,7 +159,7 @@ namespace WMS.EntityCore.Stock
         /// <summary>
         /// Se utiliza en la HH para enviar el movimiento generado en cambio de ubicación (licencias completas).
         /// </summary>
-        public clsBeTrans_movimientos Movimiento { get; set; } = new clsBeTrans_movimientos();       
+        public clsBeTrans_movimientos? Movimiento { get; set; } = new clsBeTrans_movimientos();       
         public clsBeVW_stock_res() { }
 
         public clsBeVW_stock_res(

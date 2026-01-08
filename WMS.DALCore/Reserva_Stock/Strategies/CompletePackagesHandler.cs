@@ -1,5 +1,10 @@
-using WMS.EntityCore.Stock;
+using System;
+using System.Linq;
+using WMS.StockReservation.Core.Domain;
+using WMS.StockReservation.Core.Interfaces;
+using WMS.StockReservation.Core.Services;
 using WMSWebAPI.Be;
+using WMS.EntityCore.Stock;
 
 namespace WMS.StockReservation.Strategies
 {
@@ -39,12 +44,11 @@ namespace WMS.StockReservation.Strategies
 
             if (!CanProcess(context))
             {
-                if (_logger != null)
-                    _logger.LogInfo("#CASO_1_SKIP - No stock en pallets completos");
+                _logger.LogInfo("#CASO_1_SKIP - No stock en pallets completos");
                 return result;
             }
-            if (_logger != null)
-                _logger.LogCheckpoint("#CASO_1_START");
+
+            _logger.LogCheckpoint("#CASO_1_START");
 
             // Filtrar stock de pallets completos
             var completeStock = context.StockListNonPickingZones
@@ -59,8 +63,7 @@ namespace WMS.StockReservation.Strategies
 
             if (completeStock.Count == 0)
             {
-                if (_logger != null)
-                    _logger.LogInfo("#CASO_1_SKIP - No stock con fecha mínima");
+                _logger.LogInfo("#CASO_1_SKIP - No stock con fecha mínima");
                 return result;
             }
 
@@ -76,21 +79,18 @@ namespace WMS.StockReservation.Strategies
                 // Crear reserva
                 var reservation = CreateReservation(context, stock, quantityToReserve);
 
-                // Actualizar stock y contexto
+                // Actualizar stock (NO modificar context.PendingQuantity - lo hace ReservationLoopStep)
                 stock.Cantidad -= quantityToReserve;
-                context.PendingQuantity -= quantityToReserve;
                 result.ReservedQuantity += quantityToReserve;
                 result.Reservations.Add(reservation);
 
-                if (_logger != null)
-                    _logger.LogReservation(
+                _logger.LogReservation(
                     reservation,
                     "CASO_1",
                     $"Pallet completo | Stock: {stock.IdStock} | Cantidad: {quantityToReserve:F6}");
             }
 
-            if (_logger != null)
-                _logger.LogCheckpoint($"#CASO_1_END - Reservado: {result.ReservedQuantity:F6}");
+            _logger.LogCheckpoint($"#CASO_1_END - Reservado: {result.ReservedQuantity:F6}");
 
             return result;
         }
@@ -130,6 +130,7 @@ namespace WMS.StockReservation.Strategies
                 
                 // Flags
                 Pallet_no_estandar = stock.Pallet_No_Estandar,
+                
                 
                 // Host/auditoría
                 Host = context.MachineName ?? Environment.MachineName

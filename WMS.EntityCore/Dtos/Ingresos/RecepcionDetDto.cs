@@ -1,4 +1,5 @@
-﻿using WMSWebAPI.Dtos.Catalogos;
+﻿using WMS.EntityCore.Dtos.Ingresos;
+using WMSWebAPI.Dtos.Catalogos;
 using WMSWebAPI.Dtos.Productos;
 
 namespace WMSWebAPI.Dtos.Ingresos
@@ -45,7 +46,10 @@ namespace WMSWebAPI.Dtos.Ingresos
         public ProductoPresentacionDto Presentacion { get; set; } = new ProductoPresentacionDto();
         public ProductoEstadoDto ProductoEstado { get; set; } = new ProductoEstadoDto();
         public UnidadMedidaDto UnidadMedida { get; set; } = new UnidadMedidaDto();
-        public string MotivoDevolucion { get; set; } = string.Empty;
+
+        //#GT: actualizar a tipo objeto
+       // public string MotivoDevolucion { get; set; } = string.Empty;
+       public MotivoDevolucionDto MotivoDevolucion { get; set; } = new MotivoDevolucionDto();
         public bool IsNew { get; set; } = true;
         public bool Control_Peso { get; set; }
         public int IdPropietarioBodega { get; set; }
@@ -55,8 +59,8 @@ namespace WMSWebAPI.Dtos.Ingresos
         public DateTime Fecha_tarea { get; set; }
         public DateTime Hora_ini { get; set; }
         public DateTime Hora_Fin { get; set; }
-        public string Estado_Rec { get; set; } = string.Empty;
-        public string UbicacionCompleta { get; set; } = string.Empty;
+        public string? Estado_Rec { get; set; }
+        public string? UbicacionCompleta { get; set; }
         public decimal Uds_lic_plate { get; set; }
         public string Host { get; set; } = string.Empty;
         public string Talla { get; set; } = string.Empty;

@@ -22,4 +22,9 @@
     <ProjectReference Include="..\WMS.EntityCore\WMS.EntityCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Reserva_Stock\Core\Services\" />
+    <Folder Include="Reserva_Stock\Strategies\" />
+  </ItemGroup>
+
 </Project>

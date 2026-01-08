@@ -1808,6 +1808,17 @@ Public Class frmPicking
                                                                                       AP.HostName,
                                                                                       vNombreArchivoLayOutGrid)
 
+                '#GT01122025: Estoy infiriendo que mampa no trabaja picking consolidados.
+                Dim tmpPedido = lPedidosPicking(0)
+                Dim BePedido = clsLnTrans_pe_enc.Get_Single_Without_Picking(tmpPedido.IdPedidoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                If BePedido IsNot Nothing Then
+                    If BePedido.TipoPedido.Verificar_con_imagen Then
+                        BloquearControles_Por_VerificacionBOF(False)
+                    Else
+                        BloquearControles_Por_VerificacionBOF(True)
+                    End If
+                End If
 
                 If Not BeConfiguracionUsuarioDet Is Nothing Then
                     grdvPickingUbic.RestoreLayoutFromStream(BeConfiguracionUsuarioDet.Stream_Template)
@@ -3402,10 +3413,6 @@ Public Class frmPicking
                                                     MessageBoxButtons.OK,
                                                     MessageBoxIcon.Information)
 
-                                'Set_Stock_Res(pListBeStockRes(0).IdPedido)
-
-                                'Set_Formato_Grid_Picking_Ubic()
-
                                 Cargar_Datos()
 
                             Else
@@ -4733,6 +4740,21 @@ Public Class frmPicking
 
         End Try
 
+    End Sub
+
+    '#GT01122025: si tipo pedido es verificar por bof, bloquear controles que permiten modificar la verificación en la HH
+    Public Sub BloquearControles_Por_VerificacionBOF(ByVal estado As Boolean)
+        'cmdNoPickeado.Enabled = estado
+        mnuProcesarLinea.Enabled = estado
+        mnuProcesar.Enabled = estado
+        mnuVerificarPickeados.Enabled = estado
+        cmdVerificarNuevamente.Enabled = estado
+        cmdNoVerificado.Enabled = estado
+        mnuDespachado.Enabled = estado
+        chkProcesarDesdeBOF.Checked = False
+        chkProcesarDesdeBOF.Enabled = estado
+        chkverifica_auto.Checked = False
+        chkverifica_auto.Enabled = estado
     End Sub
 
 End Class

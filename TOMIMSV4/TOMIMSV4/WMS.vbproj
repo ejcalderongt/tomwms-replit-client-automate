@@ -41,7 +41,7 @@
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>485</ApplicationRevision>
+    <ApplicationRevision>499</ApplicationRevision>
     <ApplicationVersion>4.7.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -791,6 +791,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>dsRepAjustes.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Reportes\Ajustes\dsRepAjustes.vb">
+      <DependentUpon>dsRepAjustes.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Reportes\Ajustes\frmReporteAjustesDet.Designer.vb">
       <DependentUpon>frmReporteAjustesDet.vb</DependentUpon>
     </Compile>
@@ -801,6 +804,12 @@
       <DependentUpon>rptAjuste.vb</DependentUpon>
     </Compile>
     <Compile Include="Reportes\Ajustes\rptAjuste.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reportes\Ajustes\rptAjuste_TallaColor.Designer.vb">
+      <DependentUpon>rptAjuste_TallaColor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Ajustes\rptAjuste_TallaColor.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reportes\Analítica\DsetAnalitica.Designer.vb">
@@ -3091,6 +3100,12 @@
     <Compile Include="Transacciones\Recepcion\frmRecepcion_List.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\Verificacion_BOF\frmVerificacionBOF.Designer.vb">
+      <DependentUpon>frmVerificacionBOF.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Verificacion_BOF\frmVerificacionBOF.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="WaitForm.Designer.vb">
       <DependentUpon>WaitForm.vb</DependentUpon>
     </Compile>
@@ -3338,6 +3353,7 @@
       <DependentUpon>frmZonaPicking_List.vb</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
@@ -3352,6 +3368,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Ajustes\rptAjuste.resx">
       <DependentUpon>rptAjuste.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Ajustes\rptAjuste_TallaColor.resx">
+      <DependentUpon>rptAjuste_TallaColor.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Analítica\Dashboard1.resx" />
     <EmbeddedResource Include="Reportes\Analítica\frmAnalitica1.resx">
@@ -4367,6 +4386,9 @@
     <EmbeddedResource Include="Transacciones\Recepcion\frmRecepcion_List.resx">
       <DependentUpon>frmRecepcion_List.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Verificacion_BOF\frmVerificacionBOF.resx">
+      <DependentUpon>frmVerificacionBOF.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WaitForm.resx">
       <DependentUpon>WaitForm.vb</DependentUpon>
     </EmbeddedResource>
@@ -4377,6 +4399,7 @@
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include="Conn_Becofarma.ini" />
+    <None Include="app.config" />
     <None Include="Configuracion_QADataSet.xsc">
       <DependentUpon>Configuracion_QADataSet.xsd</DependentUpon>
     </None>

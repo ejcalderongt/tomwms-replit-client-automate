@@ -1,5 +1,10 @@
-using WMS.EntityCore.Stock;
+using System;
+using System.Linq;
+using WMS.StockReservation.Core.Domain;
+using WMS.StockReservation.Core.Interfaces;
+using WMS.StockReservation.Core.Services;
 using WMSWebAPI.Be;
+using WMS.EntityCore.Stock;
 
 namespace WMS.StockReservation.Strategies
 {
@@ -41,21 +46,18 @@ namespace WMS.StockReservation.Strategies
 
             if (!CanProcess(context))
             {
-                if (_logger !=null)
                 _logger.LogInfo("#CASO_EXPLOSION_SKIP - Modo no habilitado o sin stock");
                 return result;
             }
 
             if (context.IsExplosionModeEnabled)
             {
-                if (_logger != null)
-                    _logger.LogCheckpoint("#CASO_EXPLOSION_START");
+                _logger.LogCheckpoint("#CASO_EXPLOSION_START");
                 ProcessExplosion(context, result);
             }
             else if (context.IsUMBasModeEnabled)
             {
-                if (_logger != null)
-                    _logger.LogCheckpoint("#CASO_UMBAS_START");
+                _logger.LogCheckpoint("#CASO_UMBAS_START");
                 ProcessUMBas(context, result);
             }
 
@@ -72,8 +74,7 @@ namespace WMS.StockReservation.Strategies
                 context.PendingQuantity,
                 presentationFactor);
 
-            if (_logger != null)
-                _logger.LogInfo($"Explosión: {context.PendingQuantity:F6} presentación = {pendingInUMBas:F6} UMBas");
+            _logger.LogInfo($"Explosión: {context.PendingQuantity:F6} presentación = {pendingInUMBas:F6} UMBas");
 
             // Ordenar stock por FEFO y lic_plate
             var orderedStock = context.WorkingStockList
@@ -100,23 +101,16 @@ namespace WMS.StockReservation.Strategies
                 result.ReservedQuantity += quantityToReserve;
                 result.Reservations.Add(reservation);
 
-                if (_logger != null)
-                    _logger.LogReservation(
+                _logger.LogReservation(
                     reservation,
                     "CASO_EXPLOSION",
                     $"Explosión a UMBas | Stock: {stock.IdStock} | Cantidad: {quantityToReserve:F6}");
             }
 
-            // Actualizar pending en presentación
-            double reservedInPresentation = _converter.ConvertToPresentation(
-                result.ReservedQuantity,
-                presentationFactor);
+            // NO modificar context.PendingQuantity aquí - lo hace ReservationLoopStep
+            // result.ReservedQuantity ya contiene la cantidad en UMBas
 
-            context.PendingQuantity -= reservedInPresentation;
-            context.PendingQuantity = Math.Round(context.PendingQuantity, 6);
-
-            if (_logger != null)
-                _logger.LogCheckpoint($"#CASO_EXPLOSION_END - Reservado: {result.ReservedQuantity:F6} UMBas");
+            _logger.LogCheckpoint($"#CASO_EXPLOSION_END - Reservado: {result.ReservedQuantity:F6} UMBas");
         }
 
         private void ProcessUMBas(ReservationContext context, HandlerResult result)
@@ -124,8 +118,7 @@ namespace WMS.StockReservation.Strategies
             // UMBas: reservar en unidad base desde stock en presentación
             var presentationFactor = context.DefaultPresentation?.Factor ?? 1;
 
-            if (_logger != null)
-                _logger.LogInfo($"UMBas: Pendiente {context.PendingQuantity:F6} UMBas");
+            _logger.LogInfo($"UMBas: Pendiente {context.PendingQuantity:F6} UMBas");
 
             // Ordenar stock por FEFO y lic_plate
             var orderedStock = context.WorkingStockList
@@ -149,20 +142,19 @@ namespace WMS.StockReservation.Strategies
                 var reservation = CreateReservation(context, stock, quantityToReserve, isUMBas: true);
 
                 // Actualizar stock (descontar en presentación)
+                // NO modificar context.PendingQuantity - lo hace ReservationLoopStep
                 double stockDecrease = _converter.ConvertToPresentation(quantityToReserve, presentationFactor);
                 stock.Cantidad -= stockDecrease;
-                context.PendingQuantity -= quantityToReserve;
                 result.ReservedQuantity += quantityToReserve;
                 result.Reservations.Add(reservation);
 
-                if (_logger != null)
-                    _logger.LogReservation(
+                _logger.LogReservation(
                     reservation,
                     "CASO_UMBAS",
                     $"UMBas | Stock: {stock.IdStock} | Cantidad: {quantityToReserve:F6}");
             }
-            if (_logger != null)
-                _logger.LogCheckpoint($"#CASO_UMBAS_END - Reservado: {result.ReservedQuantity:F6} UMBas");
+
+            _logger.LogCheckpoint($"#CASO_UMBAS_END - Reservado: {result.ReservedQuantity:F6} UMBas");
         }
 
         private clsBeStock_res CreateReservation(
@@ -201,6 +193,7 @@ namespace WMS.StockReservation.Strategies
                 
                 // Flags
                 Pallet_no_estandar = stock.Pallet_No_Estandar,
+                
                 
                 // Host/auditoría
                 Host = context.MachineName ?? Environment.MachineName

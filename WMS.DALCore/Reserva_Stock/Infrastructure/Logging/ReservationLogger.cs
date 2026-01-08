@@ -1,4 +1,3 @@
-
 using WMSWebAPI.Be;
 
 namespace WMS.StockReservation.Infrastructure.Logging

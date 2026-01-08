@@ -17,7 +17,7 @@
     '#GT29042025: campos para determinar el muelle adonde se debe llevar el picking.
     Public Property IdUbicacionMuelle As Integer = 0
     Public Property Codigo_Barra_Muelle As String = ""
-
+    Public Property Guia_Transporte As String = ""
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls

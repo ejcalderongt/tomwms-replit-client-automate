@@ -5060,6 +5060,15 @@ Partial Public Class clsLnStock
                                 BeStockNuevo.User_mod = BeUsuario.IdUsuario
                             End If
 
+                            '#GT18122025: considerar que solo talla o color fue actualizado y no ambos.
+                            Dim vTalla As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Talla_destino), BeTransAjusteDet.Talla_destino, BeTransAjusteDet.Talla_origen)
+                            Dim vColor As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Color_destino), BeTransAjusteDet.Color_destino, BeTransAjusteDet.Color_origen)
+                            Dim vIdProductoTallaColor As Integer = IIf(BeTransAjusteDet.IdProductoTallaColor_destino > 0, BeTransAjusteDet.IdProductoTallaColor_destino, BeTransAjusteDet.IdProductoTallaColor_origen)
+
+                            BeStockAActualizar.IdProductoTallaColor = vIdProductoTallaColor
+                            BeStockAActualizar.Talla = vTalla
+                            BeStockAActualizar.Color = vColor
+
                             Insertar(BeStockNuevo, pConection, pTransaction)
 
                             IdStock = BeStockNuevo.IdStock
@@ -5104,6 +5113,16 @@ Partial Public Class clsLnStock
                                 If Not BeUsuario Is Nothing Then
                                     BeStockAActualizar.User_mod = BeUsuario.IdUsuario
                                 End If
+
+
+                                '#GT18122025: considerar que solo talla o color fue actualizado y no ambos.
+                                Dim vTalla As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Talla_destino), BeTransAjusteDet.Talla_destino, BeTransAjusteDet.Talla_origen)
+                                Dim vColor As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Color_destino), BeTransAjusteDet.Color_destino, BeTransAjusteDet.Color_origen)
+                                Dim vIdProductoTallaColor As Integer = IIf(BeTransAjusteDet.IdProductoTallaColor_destino > 0, BeTransAjusteDet.IdProductoTallaColor_destino, BeTransAjusteDet.IdProductoTallaColor_origen)
+
+                                BeStockAActualizar.IdProductoTallaColor = vIdProductoTallaColor
+                                BeStockAActualizar.Talla = vTalla
+                                BeStockAActualizar.Color = vColor
 
                                 If Es_Transaccion_Remota Then
                                     rowsAffected = Actualizar_Stock_Por_Ajuste(BeStockAActualizar, pConection, pTransaction)
@@ -10726,6 +10745,18 @@ Partial Public Class clsLnStock
                                                        lConnection,
                                                        lTransaction)
 
+                    BeMovimiento.IdProductoTallaColor = objStockOrigen.IdProductoTallaColor
+
+                    If objStockOrigen.IdProductoTallaColor <> 0 Then
+                        Dim BEProductoTallaColor As New clsBeProducto_talla_color
+                        BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(objStockOrigen.IdProductoTallaColor)
+                        BeMovimiento.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
+                        BeMovimiento.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+                    Else
+                        BeMovimiento.Talla = ""
+                        BeMovimiento.Color = ""
+                    End If
+
                     '#EJC20220303:Para Erik, si esto ocurre, algo se nos escapó, pero quiero prevenirte problemas así que mejor nos notifican cuando suceda esa
                     'SINGULARIDAD.-
                     If BeMovimiento.Cantidad = 0 Then
@@ -11034,6 +11065,7 @@ Partial Public Class clsLnStock
                                         objStockHist.IdDespachoEnc = 0
                                         objStockHist.Fec_agr = Now
                                         objStockHist.Fec_mod = Now
+                                        objStockHist.IdProductoTallaColor = ObjStockDestino.IdProductoTallaColor
                                         clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                                         '#EJC20180625:1036AM => Fin_Stock_Hist
 
@@ -11085,6 +11117,7 @@ Partial Public Class clsLnStock
                                     objStockHist.IdDespachoEnc = 0
                                     objStockHist.Fec_agr = Now
                                     objStockHist.Fec_mod = Now
+                                    objStockHist.IdProductoTallaColor = ObjStockDestino.IdProductoTallaColor
                                     clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                                     '#EJC20180625:1036AM => Fin_Stock_Hist
                                     'file.WriteLine("Stock History inserted: " & objStockOrigen.IdStock)
@@ -11473,6 +11506,7 @@ Partial Public Class clsLnStock
                                         objStockHist.IdDespachoEnc = 0
                                         objStockHist.Fec_agr = Now
                                         objStockHist.Fec_mod = Now
+                                        objStockHist.IdProductoTallaColor = ObjStockDestino.IdProductoTallaColor
                                         clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                                         '#EJC20180625:1036AM => Fin_Stock_Hist
 
@@ -11517,6 +11551,7 @@ Partial Public Class clsLnStock
                                     objStockHist.IdDespachoEnc = 0
                                     objStockHist.Fec_agr = Now
                                     objStockHist.Fec_mod = Now
+                                    objStockHist.IdProductoTallaColor = ObjStockDestino.IdProductoTallaColor
                                     clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                                     '#EJC20180625:1036AM => Fin_Stock_Hist
 
@@ -11696,6 +11731,7 @@ Partial Public Class clsLnStock
                                 objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
                                 objStockHist.Fec_agr = Now
                                 objStockHist.Fec_mod = Now
+                                objStockHist.IdProductoTallaColor = pPickingUbic.IdProductoTallaColor
                                 clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                                 '#EJC20180625:1036AM => Fin_Stock_Hist
 
@@ -11725,6 +11761,7 @@ Partial Public Class clsLnStock
                                     objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
                                     objStockHist.Fec_agr = Now
                                     objStockHist.Fec_mod = Now
+                                    objStockHist.IdProductoTallaColor = pPickingUbic.IdProductoTallaColor
                                     clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                                     '#EJC20180625:1036AM => Fin_Stock_Hist
                                 End If
@@ -11793,6 +11830,7 @@ Partial Public Class clsLnStock
                             objStockHist.Fec_agr = Now
                             objStockHist.Fec_mod = Now
                             objStockHist.Posiciones = vCantPosiciones
+                            objStockHist.IdProductoTallaColor = pPickingUbic.IdProductoTallaColor
                             clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                             '#EJC20180625:1036AM => Fin_Stock_Hist
 
@@ -11845,6 +11883,7 @@ Partial Public Class clsLnStock
                                 objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
                                 objStockHist.Fec_agr = Now
                                 objStockHist.Fec_mod = Now
+                                objStockHist.IdProductoTallaColor = pPickingUbic.IdProductoTallaColor
                                 clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                                 '#EJC20180625:1036AM => Fin_Stock_Hist
                             End If

@@ -1,6 +1,4 @@
 ﻿using Microsoft.Data.SqlClient;
-using System.Data;
-using System.Reflection;
 using WMS.DALCore.Stock;
 using WMS.EntityCore.Picking;
 using WMS.EntityCore.Stock;

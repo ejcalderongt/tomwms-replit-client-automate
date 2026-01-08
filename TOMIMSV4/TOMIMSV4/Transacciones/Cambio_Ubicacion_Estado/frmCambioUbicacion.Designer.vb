@@ -153,6 +153,8 @@ Partial Class frmCambioUbicacion
         Me.lnkCambioDeEstado = New System.Windows.Forms.LinkLabel()
         Me.txtNombreEstado = New DevExpress.XtraEditors.TextEdit()
         Me.GroupControl4 = New DevExpress.XtraEditors.GroupControl()
+        Me.lblColor = New DevExpress.XtraEditors.LabelControl()
+        Me.lblTalla = New DevExpress.XtraEditors.LabelControl()
         Me.txtColor = New DevExpress.XtraEditors.TextEdit()
         Me.txtTalla = New DevExpress.XtraEditors.TextEdit()
         Me.txtLicPlate = New DevExpress.XtraEditors.TextEdit()
@@ -226,8 +228,6 @@ Partial Class frmCambioUbicacion
         Me.User_agrTextEdit = New DevExpress.XtraEditors.TextEdit()
         Me.Fec_modDateEdit = New DevExpress.XtraEditors.DateEdit()
         Me.User_modTextEdit = New DevExpress.XtraEditors.TextEdit()
-        Me.lblTalla = New DevExpress.XtraEditors.LabelControl()
-        Me.lblColor = New DevExpress.XtraEditors.LabelControl()
         IdPropietarioLabel = New System.Windows.Forms.Label()
         Label9 = New System.Windows.Forms.Label()
         Label24 = New System.Windows.Forms.Label()
@@ -1150,6 +1150,22 @@ Partial Class frmCambioUbicacion
         Me.GroupControl4.TabIndex = 1
         Me.GroupControl4.Text = "Origen"
         '
+        'lblColor
+        '
+        Me.lblColor.Location = New System.Drawing.Point(12, 321)
+        Me.lblColor.Name = "lblColor"
+        Me.lblColor.Size = New System.Drawing.Size(30, 16)
+        Me.lblColor.TabIndex = 36
+        Me.lblColor.Text = "Color"
+        '
+        'lblTalla
+        '
+        Me.lblTalla.Location = New System.Drawing.Point(12, 283)
+        Me.lblTalla.Name = "lblTalla"
+        Me.lblTalla.Size = New System.Drawing.Size(28, 16)
+        Me.lblTalla.TabIndex = 35
+        Me.lblTalla.Text = "Talla"
+        '
         'txtColor
         '
         Me.txtColor.Location = New System.Drawing.Point(135, 313)
@@ -1982,22 +1998,6 @@ Partial Class frmCambioUbicacion
         Me.User_modTextEdit.Name = "User_modTextEdit"
         Me.User_modTextEdit.Size = New System.Drawing.Size(261, 22)
         Me.User_modTextEdit.TabIndex = 10
-        '
-        'lblTalla
-        '
-        Me.lblTalla.Location = New System.Drawing.Point(12, 283)
-        Me.lblTalla.Name = "lblTalla"
-        Me.lblTalla.Size = New System.Drawing.Size(28, 16)
-        Me.lblTalla.TabIndex = 35
-        Me.lblTalla.Text = "Talla"
-        '
-        'lblColor
-        '
-        Me.lblColor.Location = New System.Drawing.Point(12, 321)
-        Me.lblColor.Name = "lblColor"
-        Me.lblColor.Size = New System.Drawing.Size(30, 16)
-        Me.lblColor.TabIndex = 36
-        Me.lblColor.Text = "Color"
         '
         'frmCambioUbicacion
         '

@@ -218,6 +218,27 @@ Public Class clsLnColor
 
     End Function
 
+    Public Shared Function Listar(ByVal pActivo As Boolean, ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction) As DataTable
+
+        Try
+
+            Const sp As String = "SELECT * FROM Color where Activo=@pActivo"
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            cmd.Parameters.Add(New SqlParameter("@PACTIVO", pActivo))
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            Return dt
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
     Public Shared Function Listar(ByVal pActivo As Boolean) As DataTable
 
         Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))

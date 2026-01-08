@@ -275,8 +275,8 @@ Public Class frmOrdenCompra
 
             End If
 
-            '#EJC20210707:Activar o desactivar botón para crear tarea en documento de ingreso.
-            If (gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.NUEVA OrElse gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.BACK_ORDER) AndAlso
+                '#EJC20210707:Activar o desactivar botón para crear tarea en documento de ingreso.
+                If (gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.NUEVA OrElse gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.BACK_ORDER) AndAlso
                 Not clsLnTrans_re_enc.OC_Tiene_Recepciones_Activas(gBeOrdenCompra.IdOrdenCompraEnc) Then
                 mnuTareaRecepcion.Enabled = True
                 txtIdRecepcion.Text = "0"
@@ -8421,25 +8421,55 @@ MessageBoxButtons.YesNo,
     End Sub
 
     Private Sub dgridTallaColor_DoubleClick(sender As Object, e As EventArgs) Handles dgridTallaColor.DoubleClick
-        Dim view As ColumnView = CType(dgridTallaColor.FocusedView, ColumnView)
-        Dim rowHandle As Integer = view.FocusedRowHandle
-        If rowHandle < 0 Then Exit Sub
 
-        Dim rutaImagen As Object = view.GetRowCellValue(rowHandle, "RutaImagen")
-        If rutaImagen IsNot Nothing AndAlso File.Exists(rutaImagen.ToString()) Then
-            Dim previewForm As New DevExpress.XtraEditors.XtraForm()
-            previewForm.Text = "Vista previa de imagen"
-            previewForm.StartPosition = FormStartPosition.CenterParent
-            previewForm.Size = New Size(700, 700)
+        'Dim view As ColumnView = CType(dgridTallaColor.FocusedView, ColumnView)
+        'Dim rowHandle As Integer = view.FocusedRowHandle
+        'If rowHandle < 0 Then Exit Sub
 
-            Dim pictureEdit As New DevExpress.XtraEditors.PictureEdit()
-            pictureEdit.Dock = DockStyle.Fill
-            pictureEdit.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom
-            pictureEdit.Image = Image.FromFile(rutaImagen.ToString())
+        'Dim rutaImagenObj As Object = view.GetRowCellValue(rowHandle, "RutaImagen")
+        'If rutaImagenObj Is Nothing Then Exit Sub
 
-            previewForm.Controls.Add(pictureEdit)
-            previewForm.ShowDialog()
-        End If
+        'Dim rutaImagen As String = rutaImagenObj.ToString()
+        'If Not File.Exists(rutaImagen) Then Exit Sub
+
+        'Dim img As Image = Image.FromFile(rutaImagen)
+
+        'Dim previewForm As New DevExpress.XtraEditors.XtraForm()
+        'previewForm.Text = "Vista previa de imagen"
+        'previewForm.StartPosition = FormStartPosition.CenterScreen
+
+        '' Si quieres que se vea grande, puedes maximizar:
+        'previewForm.WindowState = FormWindowState.Maximized
+        '' O usar un tamaño fijo grande:
+        ''previewForm.ClientSize = New Size(900, 700)
+
+        'Dim pictureEdit As New DevExpress.XtraEditors.PictureEdit()
+        'pictureEdit.Dock = DockStyle.Fill
+
+        'With pictureEdit.Properties
+        '    ' Queremos que la imagen ocupe el espacio disponible
+        '    .SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom
+
+        '    ' Mejor calidad al redimensionar
+        '    .PictureInterpolationMode = Drawing2D.InterpolationMode.HighQualityBicubic
+
+        '    ' Zoom inicial (prueba 150 o 200, según te guste)
+        '    .ZoomPercent = 200
+
+        '    ' Permitir desplazarse cuando la imagen es más grande que el control
+        '    .AllowScrollViaMouseDrag = True
+
+        '    ' Menú contextual con opciones de zoom
+        '    .ShowMenu = True
+        '    .ShowZoomSubMenu = True
+
+        'End With
+
+        'pictureEdit.Image = img
+
+        'previewForm.Controls.Add(pictureEdit)
+        'previewForm.ShowDialog()
+
     End Sub
 
     Private Sub tabTallaColor_VisibleChanged(sender As Object, e As EventArgs) Handles tabTallaColor.VisibleChanged
@@ -8463,4 +8493,7 @@ MessageBoxButtons.YesNo,
         End Try
     End Sub
 
+    Private Sub dgridTallaColor_Click(sender As Object, e As EventArgs) Handles dgridTallaColor.Click
+
+    End Sub
 End Class

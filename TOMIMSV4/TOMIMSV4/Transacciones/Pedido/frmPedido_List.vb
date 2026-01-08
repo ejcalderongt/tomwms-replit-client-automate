@@ -2,7 +2,11 @@
 Imports System.Reflection
 Imports DevExpress.Data
 Imports DevExpress.Utils
+Imports DevExpress.Xpf.Core.ConditionalFormatting.Native
+Imports DevExpress.Xpf.Ribbon
 Imports DevExpress.XtraBars
+Imports DevExpress.XtraBars.Ribbon
+Imports DevExpress.XtraBars.ToastNotifications
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
 Imports DevExpress.XtraGrid.Views.Base
@@ -15,11 +19,13 @@ Public Class frmPedido_List
     Public pBePedidoEnc As clsBeTrans_pe_enc
 
     Public Property Modo As pModo
-
     Public Property vNombreArchivoLayOutGrid As String = "frmPedido_List.vb"
     Public Property vNombreArchivoLayOutGridDetalle As String = ""
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
     Public Call_Bind_Listar_Pedidos As New MethodInvoker(AddressOf Listar_Pedidos)
+    Public Property verificar_con_imagen = False
+    Private Property verificar_bof = False
+
     Public Sub New()
         InitializeComponent()
     End Sub
@@ -27,6 +33,7 @@ Public Class frmPedido_List
     Enum pModo
         Lista = 1
         Seleccion = 2
+        verificacion = 3
     End Enum
 
     Private Sub frmPedido_List_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
@@ -59,8 +66,6 @@ Public Class frmPedido_List
 
             vNombreArchivoLayOutGridDetalle = "grdPedidoListDetalle.xml"
 
-            Listar_Pedidos()
-
             If clsLnMenu_rol.Permiso_Funcionalidad("3.2.1.2", AP.IdRol) Then
                 mnuEliminarPedido.Visibility = BarItemVisibility.Always
                 ' mnuEliminarPedido.Enabled = True
@@ -68,6 +73,17 @@ Public Class frmPedido_List
                 mnuEliminarPedido.Visibility = BarItemVisibility.Never
                 ' mnuEliminarPedido.Enabled = False
             End If
+
+            Select Case Modo
+                Case pModo.verificacion
+                    SetRibbonEnabled(RibbonControl, False)
+                    verificar_bof = True
+                Case pModo.Lista
+                    SetRibbonEnabled(RibbonControl, True)
+                    verificar_bof = False
+            End Select
+
+            Listar_Pedidos()
 
         Catch ex As Exception
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
@@ -81,6 +97,44 @@ Public Class frmPedido_List
         End Try
 
     End Sub
+
+    Private Sub AplicarEstiloScanner()
+
+        With txtGuia.Properties.AppearanceFocused
+            .BackColor = Color.LightYellow
+            .Font = New Font(txtGuia.Font, FontStyle.Bold)
+            .Options.UseBackColor = True
+            .Options.UseFont = True
+        End With
+
+        ' opcional: también estilo normal cuando NO tiene foco
+        With txtGuia.Properties.Appearance
+            .BackColor = Color.White
+            .Font = New Font(txtGuia.Font, FontStyle.Regular)
+            .Options.UseBackColor = True
+            .Options.UseFont = True
+        End With
+
+    End Sub
+
+    Public Sub SetRibbonEnabled(ribbon As RibbonControl, enabled As Boolean)
+
+        Try
+            For Each item As BarItem In ribbon.Items
+                ' Si quieres excluir algunos items especiales, lo puedes filtrar aquí
+                item.Enabled = enabled
+            Next
+
+            If enabled Then
+                mnuEliminarPedido.Visibility = BarItemVisibility.Always
+            Else
+                mnuEliminarPedido.Visibility = BarItemVisibility.Never
+            End If
+
+        Finally
+        End Try
+    End Sub
+
 
     Private Sub frmPedido_List_Closed(sender As Object, e As EventArgs) Handles Me.Closed
 
@@ -122,14 +176,25 @@ Public Class frmPedido_List
 
             Dim Dt As New DataTable
 
-            Dt = clsLnTrans_pe_enc.GetAll(chkActivos.Checked,
-                                          dtpFechaDel.Value,
-                                          dtpFechaAl.Value,
-                                          chkAnulados.Checked,
-                                          AP.IdBodega,
-                                          chkDespachados.Checked,
-                                          chkSinExistencias.Checked,
-                                          chkSinExistenciasERP.Checked)
+            If verificar_bof Then
+
+                Dt = clsLnTrans_pe_enc.GetAll_By_VerificacionBOF(chkActivos.Checked,
+                                                                 dtpFechaDel.Value,
+                                                                 dtpFechaAl.Value,
+                                                                 AP.UsuarioAp.IdUsuario)
+
+            Else
+
+                Dt = clsLnTrans_pe_enc.GetAll(chkActivos.Checked,
+                                       dtpFechaDel.Value,
+                                       dtpFechaAl.Value,
+                                       chkAnulados.Checked,
+                                       AP.IdBodega,
+                                       chkDespachados.Checked,
+                                       chkSinExistencias.Checked,
+                                       chkSinExistenciasERP.Checked)
+
+            End If
 
             DgridPedido.DataSource = Dt
 
@@ -161,7 +226,8 @@ Public Class frmPedido_List
                     gviewEncabezadoPedido.Columns("no_documento").Caption = "No_Documento"
                     gviewEncabezadoPedido.Columns("referencia").Caption = "Referencia"
                     gviewEncabezadoPedido.Columns("IdBodega").Visible = False
-                    'gviewEncabezadoPedido.Columns("IdPrioridadPicking").Visible = False
+                    gviewEncabezadoPedido.Columns("IdPrioridadPicking").Visible = False
+                    gviewEncabezadoPedido.Columns("verificar_con_imagen").Visible = False
                 End If
 
             Catch ex As Exception
@@ -199,6 +265,8 @@ Public Class frmPedido_List
                     End If
 
                 End If
+
+                gviewEncabezadoPedido.BestFitColumns()
 
             Catch ex As Exception
             End Try
@@ -306,37 +374,96 @@ Public Class frmPedido_List
                         pBePedidoEnc.ObjPoliza = Nothing
                     End If
 
-                    If Modo = pModo.Lista Then
 
-                        Cierra_Instancia_Previa(frmPedido)
+                    Select Case Modo
 
-                        clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231702: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " abrió el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
+                        Case pModo.Lista
 
-                        With frmPedido
-                            .Modo = frmPedido.TipoTrans.Editar
-                            .pBePedidoEnc = pBePedidoEnc
-                            .InvokeListarPedidos = AddressOf Listar_Pedidos
-                            .MdiParent = MdiParent
-                            .WindowState = FormWindowState.Normal
-                            .Text = "Pedido " & pBePedidoEnc.IdPedidoEnc & " - " & pBePedidoEnc.Referencia
+                            Cierra_Instancia_Previa(frmPedido)
 
-                            If OpcionesMenu IsNot Nothing Then
-                                .OpcionesMenu = OpcionesMenu
-                                .mnuGuardar.Enabled = .OpcionesMenu.Modificar
-                                .cmdActualizar.Enabled = .OpcionesMenu.Modificar
-                                .cmdEliminar.Enabled = .OpcionesMenu.Eliminar
+                            clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_202302231702: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " abrió el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
+
+                            With frmPedido
+                                .Modo = frmPedido.TipoTrans.Editar
+                                .pBePedidoEnc = pBePedidoEnc
+                                .InvokeListarPedidos = AddressOf Listar_Pedidos
+                                .MdiParent = MdiParent
+                                .WindowState = FormWindowState.Normal
+                                .Text = "Pedido " & pBePedidoEnc.IdPedidoEnc & " - " & pBePedidoEnc.Referencia
+
+                                If OpcionesMenu IsNot Nothing Then
+                                    .OpcionesMenu = OpcionesMenu
+                                    .mnuGuardar.Enabled = .OpcionesMenu.Modificar
+                                    .cmdActualizar.Enabled = .OpcionesMenu.Modificar
+                                    .cmdEliminar.Enabled = .OpcionesMenu.Eliminar
+                                End If
+
+                                .Show()
+                                .Focus()
+                            End With
+
+                            gviewEncabezadoPedido.FocusedRowHandle = lSelectionIndex
+
+                        Case pModo.verificacion
+
+                            '#GT10122025: aqui debo buscar la guia e iterar los pedidos, porque el evento fue por doble click en el grid
+                            '#EJC20260105: Obtener todos los pedidos asociados a la guia.
+                            pBeListPedidos = New List(Of clsBeTrans_pe_enc)
+
+                            Dim pedidoActual As clsBeTrans_pe_enc = clsLnTrans_pe_enc.GetSingle(CInt(Dr.Item("Correlativo")))
+                            If pedidoActual Is Nothing Then Exit Sub
+
+                            Dim correlativosAgregados As New HashSet(Of Integer)
+
+                            ' Función local para agregar solo si no está repetido
+                            Dim AddPedido = Sub(pedido As clsBeTrans_pe_enc)
+                                                If pedido Is Nothing Then Exit Sub
+                                                If correlativosAgregados.Add(pedido.IdPedidoEnc) Then
+                                                    pBeListPedidos.Add(pedido)
+                                                End If
+                                            End Sub
+
+                            ' Agregar pedidos relacionados por guía (si tiene)
+                            If Not String.IsNullOrWhiteSpace(pedidoActual.Guia_Transporte) Then
+
+                                Dim dtPedidos As DataTable = clsLnTrans_pe_enc.GetAll_By_Guia_Transporte(pedidoActual.Guia_Transporte)
+
+                                For Each drPedido As DataRow In dtPedidos.Rows
+                                    Dim correlativo As Integer = CInt(drPedido("Correlativo"))
+                                    Dim pedidoAux As clsBeTrans_pe_enc = clsLnTrans_pe_enc.GetSingle(correlativo)
+                                    AddPedido(pedidoAux)
+                                Next
+
                             End If
 
-                            .Show()
-                            .Focus()
-                        End With
+                            ' Asegurar que el pedido actual también esté incluido
+                            AddPedido(pedidoActual)
 
-                        gviewEncabezadoPedido.FocusedRowHandle = lSelectionIndex
+                            Cierra_Instancia_Previa(frmVerificacionBOF)
+                            clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_20251126: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " verifica bof con el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
 
-                    ElseIf Modo = pModo.Seleccion Then
-                        'Hide()
-                        DialogResult = DialogResult.OK
-                    End If
+                            With frmVerificacionBOF
+
+                                .pBeListaPedidos = pBeListPedidos
+                                .InvokeListarPedidos = AddressOf Listar_Pedidos
+                                ' Si está como hijo MDI, solo ocupará el contenedor MDI, no el monitor completo.
+                                .MdiParent = Nothing
+                                .StartPosition = FormStartPosition.Manual
+                                Dim scr = Screen.FromControl(Me)
+                                .FormBorderStyle = FormBorderStyle.None
+                                .WindowState = FormWindowState.Normal
+                                .Bounds = scr.WorkingArea
+                                .Text = "Pedido " & pBePedidoEnc.IdPedidoEnc & " - " & pBePedidoEnc.Referencia
+                                .ShowDialog(Me)
+                                .Focus()
+                            End With
+
+                            gviewEncabezadoPedido.FocusedRowHandle = lSelectionIndex
+
+                        Case pModo.Seleccion
+                            DialogResult = DialogResult.OK
+
+                    End Select
 
                 End If
 
@@ -660,6 +787,20 @@ Public Class frmPedido_List
 
         Catch ex As Exception
         End Try
+
+
+        If verificar_bof Then
+            txtGuia.Visible = True
+            lbOk.Visible = True
+            lbGuia.Visible = True
+            txtGuia.SelectAll()
+            txtGuia.Focus()
+            AplicarEstiloScanner()
+        Else
+            txtGuia.Visible = False
+            lbOk.Visible = False
+            lbGuia.Visible = False
+        End If
 
     End Sub
 
@@ -1351,4 +1492,163 @@ Public Class frmPedido_List
     Private Sub chkSinExistenciasERP_CheckedChanged(sender As Object, e As ItemClickEventArgs) Handles chkSinExistenciasERP.CheckedChanged
         Listar_Pedidos()
     End Sub
+
+    Private Sub txtGuia_KeyDown(sender As Object, e As KeyEventArgs) Handles txtGuia.KeyDown
+
+        If e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
+            e.SuppressKeyPress = True   ' evita beep / salto raro
+            Buscar_Guia()
+        End If
+    End Sub
+
+
+    '#GT08122025: lista global para enviar los pedidos por el escanner o un doble click que busca la guia en la lista y retorne mas de uno
+    Dim pBeListPedidos As New List(Of clsBeTrans_pe_enc)()
+    Private Sub Buscar_Guia()
+
+        Dim listaGuias As List(Of Integer)
+        pBeListPedidos = New List(Of clsBeTrans_pe_enc)()
+
+        Try
+
+            Dim Guia As String = txtGuia.Text.Trim()
+            Dim Guia_Transporte As String = Guia.ToUpperInvariant()
+
+            '#GT08122025: una guia puede estar asociada a más de un pedido
+            'Dim pIdPedidoEnc = Procesar_Guia(Guia_Transporte)
+            listaGuias = Procesar_Guia(txtGuia.Text)
+
+            If listaGuias.Count > 0 Then
+                pBePedidoEnc = New clsBeTrans_pe_enc
+                For Each pIdPedidoEnc As Integer In listaGuias
+                    pBePedidoEnc = clsLnTrans_pe_enc.GetSingle(pIdPedidoEnc)
+                    If pBePedidoEnc IsNot Nothing Then
+                        If pBePedidoEnc Is Nothing Or pBePedidoEnc.IdPedidoEnc = 0 Then
+                            'clsLnTrans_pe_enc.Eliminar_Pedido(pIdPedidoEnc) '#EJC20260105: Peligroso, no utiilizar a menos que confirmemos que esta funcionalidad ocuurre.
+                            Throw New Exception("El pedido con correlativo WMS: " & pIdPedidoEnc & " fué modificado, eliminado o es un pedido inconsistente y no se puede recuperar")
+                        ElseIf pBePedidoEnc.Estado = "NUEVO" AndAlso pBePedidoEnc.Ubicacion = "TMP" Then
+                            Throw New Exception("El pedido " & pBePedidoEnc.IdPedidoEnc & " seleccionado se creó de forma incorrecta por el usuario en el WMS y no se concluyó: Ubicación = TMP (Valide Cliente y Propietario)")
+                        End If
+
+                        '#GT09092024: si es fiscal cargar poliza.
+                        If AP.Bodega.Es_Bodega_Fiscal Then
+                            pBePedidoEnc.ObjPoliza = clsLnTrans_pe_pol.GetSingleId(pBePedidoEnc.IdPedidoEnc)
+                        Else
+                            pBePedidoEnc.ObjPoliza = Nothing
+                        End If
+
+                        pBeListPedidos.Add(pBePedidoEnc)
+                    End If
+                Next
+
+                Select Case Modo
+
+                    Case pModo.verificacion
+                        Abrir_Ventana_Verificacion_BOF()
+                    Case pModo.Seleccion
+                        DialogResult = DialogResult.OK
+
+                End Select
+            Else
+
+                pBePedidoEnc = clsLnTrans_pe_enc.Get_Single_By_NoGuia(Guia)
+
+                If pBePedidoEnc IsNot Nothing Then
+                    pBePedidoEnc = clsLnTrans_pe_enc.GetSingle(pBePedidoEnc.IdPedidoEnc)
+                    pBeListPedidos.Add(pBePedidoEnc)
+                    Abrir_Ventana_Verificacion_BOF()
+                Else
+                    'ToastError("No se encontró la guia: " & Guia)
+                    txtGuia.SelectAll()
+                    txtGuia.Focus()
+                End If
+
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+         Text,
+         MessageBoxButtons.OK,
+         MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub Abrir_Ventana_Verificacion_BOF()
+
+        txtGuia.Text = ""
+
+        Cierra_Instancia_Previa(frmVerificacionBOF)
+        clsLnLog_error_wms.Agregar_Error("ADVERTENCIA_20251126: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " verifica bof con el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc)
+
+        With frmVerificacionBOF
+            .pBeListaPedidos = pBeListPedidos
+            .InvokeListarPedidos = AddressOf Listar_Pedidos
+            .MdiParent = Nothing
+            .StartPosition = FormStartPosition.Manual
+            Dim scr = Screen.FromControl(Me)
+            .FormBorderStyle = FormBorderStyle.None
+            .WindowState = FormWindowState.Normal
+            .Bounds = scr.WorkingArea
+            .Text = "Pedido " & pBePedidoEnc.IdPedidoEnc & " - " & pBePedidoEnc.Referencia
+            .ShowDialog(Me)
+            .Focus()
+        End With
+
+    End Sub
+    Private Function Procesar_Guia(guia_Transporte As String) As List(Of Integer)
+
+        Dim listaIds As New List(Of Integer)
+
+        Try
+            Dim dt As DataTable = TryCast(DgridPedido.DataSource, DataTable)
+            If dt Is Nothing OrElse dt.Rows.Count = 0 Then
+                Return listaIds
+            End If
+
+            Dim filas() As DataRow = dt.Select("[Guia] = '" & guia_Transporte.Replace("'", "''") & "'")
+
+            If filas.Length = 0 Then
+                XtraMessageBox.Show("No se encontró la guía, por favor reintente: " & guia_Transporte,
+                                Text,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information)
+                Return listaIds
+            End If
+
+            ' Validar que exista la columna Correlativo
+            If Not dt.Columns.Contains("Correlativo") Then
+                Return listaIds
+            End If
+
+            ' Recorrer todas las filas encontradas y agregar los IdPedidoEnc (Correlativo)
+            For Each row As DataRow In filas
+                If Not IsDBNull(row("Correlativo")) Then
+                    Dim id As Integer = CInt(row("Correlativo"))
+
+                    ' Opcional: evitar duplicados en la lista
+                    If Not listaIds.Contains(id) Then
+                        listaIds.Add(id)
+                    End If
+                End If
+            Next
+
+            Application.DoEvents()
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+                            Text,
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error)
+        End Try
+
+        Return listaIds
+
+    End Function
+
+    Private Sub ToastError(msg As String)
+        Dim toast As New ToastNotification(Guid.NewGuid(), Nothing, "Error", msg, "TOMWMS", ToastNotificationTemplate.ImageAndText01)
+        ToastNotificationsManager1.Notifications.Add(toast)
+        ToastNotificationsManager1.ShowNotification(toast)
+    End Sub
+
 End Class

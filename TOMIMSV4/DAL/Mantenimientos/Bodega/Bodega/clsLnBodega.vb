@@ -1160,6 +1160,41 @@ Public Class clsLnBodega
         End Try
 
     End Function
+
+    Public Shared Function GetSingle_By_IdBodega_SL(pIdBodega As Integer) As clsBeBodega
+        Try
+            Const sql As String = "SELECT TOP 1 * FROM Bodega WHERE IdBodega = @IdBodega"
+
+            Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                Using cmd As New SqlCommand(sql, cn)
+                    cmd.CommandType = CommandType.Text
+                    cmd.Parameters.Add("@IdBodega", SqlDbType.Int).Value = pIdBodega
+
+                    cn.Open()
+
+                    Using rd As SqlDataReader = cmd.ExecuteReader(CommandBehavior.SingleRow)
+                        If rd.Read() Then
+                            ' Si tu Cargar usa DataRow, puedes seguir con DataTable, o crear un CargarDesdeReader.
+                            ' Aquí te dejo opción DataTable rápida:
+                            Dim dt As New DataTable()
+                            dt.Load(rd)
+
+                            If dt.Rows.Count = 1 Then
+                                Dim be As New clsBeBodega()
+                                Cargar(be, dt.Rows(0))
+                                Return be
+                            End If
+                        End If
+                    End Using
+                End Using
+            End Using
+
+            Return Nothing
+        Catch
+            Throw
+        End Try
+    End Function
+
     Public Shared Function GetSingle_By_Idbodega(ByVal pIdBodega As Integer,
                                                  ByVal lConnection As SqlConnection,
                                                  ByVal lTransaction As SqlTransaction) As clsBeBodega
@@ -1498,5 +1533,36 @@ Public Class clsLnBodega
         End Try
 
     End Function
+
+    Public Shared Function GetRutaCDN_By_Idbodega(ByVal pIdBodega As Integer,
+                                              ByVal lConnection As SqlConnection,
+                                              ByVal lTransaction As SqlTransaction) As String
+
+        GetRutaCDN_By_Idbodega = ""
+
+        Try
+
+            Const sp As String = "SELECT RUTA_CDN FROM Bodega 
+                              Where(IdBodega = @IdBodega)"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdBodega", pIdBodega))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                GetRutaCDN_By_Idbodega = IIf(IsDBNull(dt.Rows(0).Item("RUTA_CDN")), "", dt.Rows(0).Item("RUTA_CDN"))
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
 
 End Class

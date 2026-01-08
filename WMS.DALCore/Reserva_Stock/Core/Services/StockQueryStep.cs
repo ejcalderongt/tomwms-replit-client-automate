@@ -28,24 +28,22 @@ namespace WMS.StockReservation.Core.Services
 
             // 2) Días de vencimiento (ejemplo: 0 por defecto)
             var diasVencimiento = 0;
-
-            // 3) Variables temporales para poder usar ref (no se puede usar ref sobre propiedades)
+            
             var res = context.Request;          // clsBeStock_res
             var prod = context.Product;         // clsBeProducto? (puede venir nulo)
 
             // 4) Llamada segura a lStock
-            var listPickingZone = clsLnStock.lStock(
-                ref res,
-                ref prod,
-                diasVencimiento,
-                context.Configuration,          // ¡ya validado!
-                context.Connection,
-                context.Transaction,
-                pExcluirUbicacionPicking: true, // o false, según tu regla
-                Conmutar_Umbas_A_Presentacion: false,
-                pTarea_Reabasto: context.TareaReabasto,   // si aplica
-                pEs_Devolucion: context.EsDevolucion      // si aplica
-            );
+            var listPickingZone = clsLnStock.lStock(ref res,
+                                                    ref prod,
+                                                    diasVencimiento,
+                                                    context.Configuration,
+                                                    context.Connection,
+                                                    context.Transaction,
+                                                    pExcluirUbicacionPicking: false, //false, por defecto, analizar como mejorar después.
+                                                    Conmutar_Umbas_A_Presentacion: false,
+                                                    pTarea_Reabasto: context.TareaReabasto,   // si aplica
+                                                    pEs_Devolucion: context.EsDevolucion      // si aplica
+                                                );
 
             if (prod != null)
                 // 5) Actualizar el Product del contexto con lo que pudo modificar lStock
