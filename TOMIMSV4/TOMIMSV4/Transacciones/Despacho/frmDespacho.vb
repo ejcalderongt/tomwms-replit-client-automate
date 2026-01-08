@@ -289,7 +289,10 @@ Public Class frmDespacho
                                 If Not Det.ListaPickingUbic Is Nothing Then
 
                                     '#EJC20250804: Filtrar registros que no fueron pickeados (aceptado) y que no estén dañados en picking o verificación
-                                    Dim lPickingUbicValido = Det.ListaPickingUbic.FindAll(Function(x) x.Dañado_verificacion = False AndAlso x.Dañado_picking = False AndAlso x.Cantidad_Recibida > 0)
+                                    Dim lPickingUbicValido = Det.ListaPickingUbic.FindAll(Function(x) x.Dañado_verificacion = False AndAlso
+                                                                                              x.Dañado_picking = False AndAlso
+                                                                                              x.No_encontrado = False AndAlso
+                                                                                              x.Cantidad_Recibida > 0)
 
                                     For Each Pu In lPickingUbicValido
 
