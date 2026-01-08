@@ -153,9 +153,14 @@ Public Class clsBeTrans_ajuste_det
     Public Property estado_ajuste_erp As Boolean = False
 
     '#GT28082025: control de producto por talla/color
-    Public Property IdProductoTallaColor As Integer = 0
-    Public Property Talla As String = ""
-    Public Property Color As String = ""
+    Public Property IdProductoTallaColor_origen As Integer = 0
+    Public Property Talla_origen As String = ""
+    Public Property Color_origen As String = ""
+
+    '#GT17122025: se agregan propiedades para poder dar traza si una talla cambio a otra, igual con color
+    Public Property Talla_destino As String = ""
+    Public Property Color_destino As String = ""
+    Public Property IdProductoTallaColor_destino As Integer = 0
 
     Sub New()
     End Sub

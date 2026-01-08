@@ -2082,5 +2082,40 @@ Partial Public Class clsLnProducto_estado
 
     End Function
 
+    Public Shared Function Get_Buen_Estado_Producto_By_IdPropietario(ByVal pIdPropietario As Integer,
+                                                                     ByVal lConnection As SqlConnection,
+                                                                     ByVal lTransaction As SqlTransaction) As Integer
+
+        Get_Buen_Estado_Producto_By_IdPropietario = 0
+
+        Try
+
+            Dim sp As String = "SELECT top(1) * FROM producto_estado 
+                                WHERE ACTIVO = 1 AND DAÑADO = 0 AND UTILIZABLE = 1 and IdPropietario = @IdPropietario"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+
+            dad.SelectCommand.Parameters.AddWithValue("@IdPropietario", pIdPropietario)
+
+            Dim dt As New DataTable
+
+            dad.Fill(dt)
+            cmd.Dispose()
+            dad.Dispose()
+
+            Dim vBeProductoEstado As New clsBeProducto_estado
+
+            If dt.Rows.Count > 0 Then
+                Dim dr As DataRow = dt.Rows(0)
+                Get_Buen_Estado_Producto_By_IdPropietario = dr.Item("IdEstado")
+            End If
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 
 End Class

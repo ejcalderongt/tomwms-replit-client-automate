@@ -36,7 +36,6 @@ Partial Class frmAjustePositivo
         Me.lbUmbas = New DevExpress.XtraEditors.LabelControl()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.txtLicencia = New DevExpress.XtraEditors.TextEdit()
-        Me.lblUbicacion = New System.Windows.Forms.Label()
         Me.dtpFechaVence = New DevExpress.XtraEditors.DateEdit()
         Me.lblFechaVence = New System.Windows.Forms.Label()
         Me.lblLote = New System.Windows.Forms.Label()
@@ -54,6 +53,7 @@ Partial Class frmAjustePositivo
         Me.lblEstadoProducto = New System.Windows.Forms.Label()
         Me.lbIdStock = New System.Windows.Forms.Label()
         Me.lblId = New System.Windows.Forms.Label()
+        Me.lnkUbicaciones = New System.Windows.Forms.LinkLabel()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grpReconteo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpReconteo.SuspendLayout()
@@ -173,7 +173,7 @@ Partial Class frmAjustePositivo
         Me.cmbColor.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.cmbColor.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbColor.Properties.NullText = ""
-        Me.cmbColor.Size = New System.Drawing.Size(108, 22)
+        Me.cmbColor.Size = New System.Drawing.Size(309, 22)
         Me.cmbColor.TabIndex = 82
         '
         'cmbTalla
@@ -185,7 +185,7 @@ Partial Class frmAjustePositivo
         Me.cmbTalla.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.cmbTalla.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbTalla.Properties.NullText = ""
-        Me.cmbTalla.Size = New System.Drawing.Size(108, 22)
+        Me.cmbTalla.Size = New System.Drawing.Size(309, 22)
         Me.cmbTalla.TabIndex = 81
         '
         'cmbProductos
@@ -218,8 +218,8 @@ Partial Class frmAjustePositivo
         '
         'GroupBox2
         '
+        Me.GroupBox2.Controls.Add(Me.lnkUbicaciones)
         Me.GroupBox2.Controls.Add(Me.txtLicencia)
-        Me.GroupBox2.Controls.Add(Me.lblUbicacion)
         Me.GroupBox2.Controls.Add(Me.dtpFechaVence)
         Me.GroupBox2.Controls.Add(Me.lblFechaVence)
         Me.GroupBox2.Controls.Add(Me.lblLote)
@@ -238,34 +238,25 @@ Partial Class frmAjustePositivo
         '
         'txtLicencia
         '
-        Me.txtLicencia.Location = New System.Drawing.Point(143, 62)
+        Me.txtLicencia.Location = New System.Drawing.Point(113, 62)
         Me.txtLicencia.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtLicencia.MenuManager = Me.RibbonControl
         Me.txtLicencia.Name = "txtLicencia"
         Me.txtLicencia.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.txtLicencia.Size = New System.Drawing.Size(309, 22)
+        Me.txtLicencia.Size = New System.Drawing.Size(217, 22)
         Me.txtLicencia.TabIndex = 36
-        '
-        'lblUbicacion
-        '
-        Me.lblUbicacion.AutoSize = True
-        Me.lblUbicacion.Location = New System.Drawing.Point(19, 29)
-        Me.lblUbicacion.Name = "lblUbicacion"
-        Me.lblUbicacion.Size = New System.Drawing.Size(66, 16)
-        Me.lblUbicacion.TabIndex = 15
-        Me.lblUbicacion.Text = "Ubicación:"
         '
         'dtpFechaVence
         '
         Me.dtpFechaVence.EditValue = New Date(2018, 3, 7, 10, 34, 56, 981)
-        Me.dtpFechaVence.Location = New System.Drawing.Point(143, 99)
+        Me.dtpFechaVence.Location = New System.Drawing.Point(113, 99)
         Me.dtpFechaVence.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dtpFechaVence.MenuManager = Me.RibbonControl
         Me.dtpFechaVence.Name = "dtpFechaVence"
         Me.dtpFechaVence.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.dtpFechaVence.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.dtpFechaVence.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.dtpFechaVence.Size = New System.Drawing.Size(309, 22)
+        Me.dtpFechaVence.Size = New System.Drawing.Size(217, 22)
         Me.dtpFechaVence.TabIndex = 16
         '
         'lblFechaVence
@@ -306,34 +297,36 @@ Partial Class frmAjustePositivo
         '
         'txtUbicacion
         '
-        Me.txtUbicacion.Location = New System.Drawing.Point(143, 26)
+        Me.txtUbicacion.Location = New System.Drawing.Point(113, 26)
         Me.txtUbicacion.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtUbicacion.MenuManager = Me.RibbonControl
         Me.txtUbicacion.Name = "txtUbicacion"
+        Me.txtUbicacion.Properties.Appearance.BackColor = System.Drawing.Color.White
+        Me.txtUbicacion.Properties.Appearance.Options.UseBackColor = True
         Me.txtUbicacion.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
         Me.txtUbicacion.Properties.ReadOnly = True
-        Me.txtUbicacion.Size = New System.Drawing.Size(309, 22)
+        Me.txtUbicacion.Size = New System.Drawing.Size(217, 22)
         Me.txtUbicacion.TabIndex = 26
         '
         'txtLote
         '
-        Me.txtLote.Location = New System.Drawing.Point(143, 131)
+        Me.txtLote.Location = New System.Drawing.Point(113, 131)
         Me.txtLote.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtLote.MenuManager = Me.RibbonControl
         Me.txtLote.Name = "txtLote"
         Me.txtLote.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.txtLote.Size = New System.Drawing.Size(309, 22)
+        Me.txtLote.Size = New System.Drawing.Size(217, 22)
         Me.txtLote.TabIndex = 27
         '
         'txtPeso
         '
         Me.txtPeso.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.txtPeso.DecimalPlaces = 6
-        Me.txtPeso.Location = New System.Drawing.Point(143, 173)
+        Me.txtPeso.Location = New System.Drawing.Point(113, 173)
         Me.txtPeso.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtPeso.Maximum = New Decimal(New Integer() {1569325056, 23283064, 0, 0})
         Me.txtPeso.Name = "txtPeso"
-        Me.txtPeso.Size = New System.Drawing.Size(309, 23)
+        Me.txtPeso.Size = New System.Drawing.Size(217, 23)
         Me.txtPeso.TabIndex = 30
         '
         'lblOperador
@@ -426,6 +419,17 @@ Partial Class frmAjustePositivo
         Me.lblId.TabIndex = 2
         Me.lblId.Text = "IdStock:"
         '
+        'lnkUbicaciones
+        '
+        Me.lnkUbicaciones.AutoSize = True
+        Me.lnkUbicaciones.Location = New System.Drawing.Point(19, 32)
+        Me.lnkUbicaciones.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lnkUbicaciones.Name = "lnkUbicaciones"
+        Me.lnkUbicaciones.Size = New System.Drawing.Size(66, 16)
+        Me.lnkUbicaciones.TabIndex = 86
+        Me.lnkUbicaciones.TabStop = True
+        Me.lnkUbicaciones.Text = "Ubicacion:"
+        '
         'frmAjustePositivo
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -479,7 +483,6 @@ Partial Class frmAjustePositivo
     Friend WithEvents lblLote As Label
     Friend WithEvents lblFechaVence As Label
     Friend WithEvents dtpFechaVence As DevExpress.XtraEditors.DateEdit
-    Friend WithEvents lblUbicacion As Label
     Friend WithEvents lblPresentacion As Label
     Friend WithEvents lblEstadoProducto As Label
     Friend WithEvents lbIdStock As Label
@@ -497,4 +500,5 @@ Partial Class frmAjustePositivo
     Friend WithEvents cmbColor As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents cmbTalla As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents cmbUmbas As DevExpress.XtraEditors.LookUpEdit
+    Friend WithEvents lnkUbicaciones As LinkLabel
 End Class

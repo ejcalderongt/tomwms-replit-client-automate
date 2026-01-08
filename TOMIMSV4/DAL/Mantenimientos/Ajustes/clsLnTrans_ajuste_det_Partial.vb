@@ -1,5 +1,6 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
+Imports DevExpress.CodeParser
 
 Partial Public Class clsLnTrans_ajuste_det
 
@@ -472,6 +473,31 @@ Partial Public Class clsLnTrans_ajuste_det
 
         Catch ex As Exception
             Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Actualizar_IdStock(oBeAjusteDet As clsBeTrans_ajuste_det,
+                                              pIdStock As Integer,
+                                              lConnection As SqlConnection,
+                                              lTransaction As SqlTransaction) As Integer
+        Try
+
+            Upd.Init("trans_ajuste_det")
+            Upd.Add("IdStock", "@IdStock", DataType.Parametro)
+            Upd.Where("idajustedet = @idajustedet")
+
+            Dim sp As String = Upd.SQL()
+
+            Using cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+                cmd.Parameters.Add(New SqlParameter("@idajustedet", oBeAjusteDet.IdAjusteDet))
+                cmd.Parameters.Add(New SqlParameter("@IdStock", pIdStock))
+
+                Return cmd.ExecuteNonQuery()
+            End Using
+
+        Catch ex As Exception
+            Throw
         End Try
 
     End Function

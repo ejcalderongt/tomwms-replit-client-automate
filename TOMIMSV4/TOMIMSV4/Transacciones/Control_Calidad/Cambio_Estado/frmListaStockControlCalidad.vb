@@ -800,6 +800,17 @@ Public Class frmListaStockControlCalidad
                         mov.Usuario_agr = AP.IdRol
                         mov.Cantidad_hist = Stock.CantidadUmBas
                         mov.Peso_hist = Stock.Peso
+                        mov.IdProductoTallaColor = pObjStock.IdProductoTallaColor
+
+                        If pObjStock.IdProductoTallaColor <> 0 Then
+                            Dim BEProductoTallaColor As New clsBeProducto_talla_color
+                            BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(pObjStock.IdProductoTallaColor)
+                            mov.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
+                            mov.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+                        Else
+                            mov.Talla = ""
+                            mov.Color = ""
+                        End If
 
                         If Stock.IdPresentacion <> 0 Then
 

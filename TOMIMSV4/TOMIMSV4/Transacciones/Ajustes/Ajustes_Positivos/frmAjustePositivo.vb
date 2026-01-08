@@ -38,6 +38,9 @@ Public Class frmAjustePositivo
             pUbicacion = New clsBeBodega_ubicacion
             pUbicacion = clsLnBodega_ubicacion.GetSingle(AP.Bodega.Ubic_recepcion, AP.IdBodega)
             txtUbicacion.Text = pUbicacion.NombreCompleto
+            '#GT06012025: se permite cambiar la ubicación mediante la busqueda, no digitado en el input
+            txtUbicacion.Enabled = False
+
             Cargar_Productos_Sin_Stock()
             cmbProductos.Focus()
 
@@ -285,9 +288,11 @@ Public Class frmAjustePositivo
                 End If
 
 
+
             End If
 
-
+            cmbUmbas.EditValue = vProducto.IdUnidadMedidaBasica
+            cmbUmbas.Enabled = False
 
             pStockTemporal.IsNew = True
             pStockTemporal.IdUnidadMedida = vProducto.IdUnidadMedidaBasica
@@ -300,7 +305,6 @@ Public Class frmAjustePositivo
             pStockTemporal.Cantidad = 0
             pStockTemporal.IdUbicacion = pUbicacion.IdUbicacion
             '#GT: parametros del producto
-            pStockTemporal.Lic_plate = IIf(vProducto.Genera_lp, txtLicencia.EditValue, DBNull.Value)
             pStockTemporal.Fecha_vence = IIf(vProducto.Control_vencimiento, dtpFechaVence.DateTime, Now.ToString("1900-01-01"))
             pStockTemporal.Peso = IIf(vProducto.Control_peso, txtPeso.Value, 0)
             pStockTemporal.Lote = IIf(vProducto.Genera_lote, txtLote.EditValue, "")
@@ -472,5 +476,33 @@ Public Class frmAjustePositivo
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
          Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub txtLicencia_EditValueChanged(sender As Object, e As EventArgs) Handles txtLicencia.EditValueChanged
+        If Not String.IsNullOrEmpty(txtLicencia.EditValue) Then
+            '#GT 05012025: talla_color es excluyente de si genera lp_auto
+            If BeBodega.Control_Talla_Color Then
+                pStockTemporal.Lic_plate = txtLicencia.EditValue
+            End If
+        End If
+    End Sub
+
+    Private Sub lnkUbicaciones_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles lnkUbicaciones.LinkClicked
+
+        '#GT28112024: cargar producto sin stock asociado
+        Dim frmUbicaciones As New frmBodegaUbicacion_List() With {
+                  .Modo = 2,
+                 .pIdBodega = AP.IdBodega,
+                 .pUbicacionesTodas = True,
+                 .StartPosition = FormStartPosition.CenterParent,
+                 .WindowState = FormWindowState.Normal
+            }
+        frmUbicaciones.ShowDialog()
+
+        '#GT06012025: el showdialog no retorna Ok por eso solo validamos si el objeto no es nothing
+        If frmUbicaciones.pObj IsNot Nothing Then
+            txtUbicacion.Text = frmUbicaciones.pObj.NombreCompleto
+        End If
+
     End Sub
 End Class

@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+﻿﻿using System.Reflection;
 using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Pedido;
 using Microsoft.Extensions.Configuration;
@@ -35,7 +35,7 @@ public class clsLnTrans_pe_det
             oBeTrans_pe_det.No_recepcion = GetInt("no_recepcion");
             oBeTrans_pe_det.Ndias = GetInt("ndias");
             oBeTrans_pe_det.Cant_despachada = GetDouble("cant_despachada");
-            oBeTrans_pe_det.Codigo_producto = GetString("codigo_producto");
+            oBeTrans_pe_det.Codigo_Producto = GetString("codigo_producto");
             oBeTrans_pe_det.Nombre_producto = GetString("nombre_producto");
             oBeTrans_pe_det.Nom_presentacion = GetString("nom_presentacion");
             oBeTrans_pe_det.Nom_unid_med = GetString("nom_unid_med");
@@ -611,7 +611,7 @@ public class clsLnTrans_pe_det
         cmd.Parameters.Add(new SqlParameter("@no_recepcion", o.No_recepcion != 0 ? o.No_recepcion : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@ndias", o.Ndias != 0 ? o.Ndias : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@cant_despachada", o.Cant_despachada != 0 ? o.Cant_despachada : DBNull.Value));
-        cmd.Parameters.Add(new SqlParameter("@codigo_producto", !string.IsNullOrWhiteSpace(o.Codigo_producto) ? o.Codigo_producto : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@codigo_producto", !string.IsNullOrWhiteSpace(o.Codigo_Producto) ? o.Codigo_Producto : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@nombre_producto", !string.IsNullOrWhiteSpace(o.Nombre_producto) ? o.Nombre_producto : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@nom_presentacion", !string.IsNullOrWhiteSpace(o.Nom_presentacion) ? o.Nom_presentacion : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@nom_unid_med", !string.IsNullOrWhiteSpace(o.Nom_unid_med) ? o.Nom_unid_med : DBNull.Value));
@@ -969,7 +969,8 @@ public class clsLnTrans_pe_det
                                                                               lTransaction,
                                                                               pBeTrasladoDet.Line_No,
                                                                               false,
-                                                                              pBeTrasladoDet))
+                                                                              pBeTrasladoDet,
+                                                                              pBePedidoDet))
                             {
                                 pBeTrasladoDet.Qty_to_Receive = Qty_received;
                                 var firstPicking = pBePedidoDet.ListaPickingUbic?.FirstOrDefault();
@@ -1013,7 +1014,8 @@ public class clsLnTrans_pe_det
                                                                      lTransaction,
                                                                      pBeTrasladoDet.Line_No,
                                                                      false,
-                                                                     pBeTrasladoDet))
+                                                                     pBeTrasladoDet,
+                                                                     pBePedidoDet))
                     {
                         result = true;
                         pBeTrasladoDet.Qty_to_Receive = Qty_received2;
@@ -1186,7 +1188,8 @@ public class clsLnTrans_pe_det
                                                                              IdPropietarioBodega,
                                                                              ref pListStockResOUT,
                                                                              lConnection,
-                                                                             lTransaction))
+                                                                             lTransaction,
+                                                                             pBePedidoDet: pBePedidoDet))
                             {
                                 
                                 pBeTrasladoDet.Qty_to_Receive = Qty_received;
@@ -1240,7 +1243,8 @@ public class clsLnTrans_pe_det
                                                                 lTransaction,
                                                                 0,
                                                                 false,
-                                                                pBeTrasladoDet))
+                                                                pBeTrasladoDet,
+                                                                pBePedidoDet))
                 {
                     result = true;
                     Qty_received = pBeTrasladoDet.Qty_to_Receive;

@@ -4061,11 +4061,6 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                          If(Es_Transaccion_Remota, pConnection, lConnection),
                                                                          If(Es_Transaccion_Remota, pTransaction, ltransaction))
 
-                                'Dim vIdMovimiento As Integer = clsLnTrans_movimientos.Insertar_Movimiento_Picking(PickingUbic,
-                                '                                                                                  IIf(vMoverProductoAMuelle, vIdUbicacionMuelle, vIdUbicacionPickingByBodega),
-                                '                                                                                  IIf(UsarCantidad = 0, CantidadPendiente, UsarCantidad) * Factor,
-                                '                                                                                  If(Es_Transaccion_Remota, pConnection, lConnection),
-                                '                                                                                  If(Es_Transaccion_Remota, pTransaction, ltransaction))
 
                                 ' Insertar picking_ubic_stock
                                 Dim BePickingUbicStock As New clsBeTrans_picking_ubic_stock
@@ -4155,12 +4150,6 @@ Partial Public Class clsLnTrans_picking_ubic
 
                                 End If
 
-                                'Dim vIdMovimiento As Integer = clsLnTrans_movimientos.Insertar_Movimiento_Picking(PickingUbic,
-                                '                                                                                  IIf(vMoverProductoAMuelle, vIdUbicacionMuelle, vIdUbicacionPickingByBodega),
-                                '                                                                                  IIf(UsarCantidad = 0, CantidadPendiente, UsarCantidad) * Factor,
-                                '                                                                                  IIf(Es_Transaccion_Remota, pConnection, lConnection),
-                                '                                                                                  IIf(Es_Transaccion_Remota, pTransaction, ltransaction))
-
                                 ' Insertar picking_ubic_stock
                                 Dim BePickingUbicStock As New clsBeTrans_picking_ubic_stock
                                 clsPublic.CopyObject(vBePickingUbic, BePickingUbicStock)
@@ -4225,7 +4214,7 @@ Partial Public Class clsLnTrans_picking_ubic
 
                         End If
 
-                        If vBePickingUbic.Cantidad_Recibida > 0 AndAlso vBePickingUbic.Cantidad_Recibida <> vBePickingUbic.Cantidad_Verificada Then
+                        If (vBePickingUbic.Cantidad_Recibida > 0 AndAlso vBePickingUbic.Cantidad_Recibida <> vBePickingUbic.Cantidad_Verificada) AndAlso BePickingEnc.verifica_auto Then
 
                             Dim CantidadStockDestino As Double
 
@@ -4248,11 +4237,11 @@ Partial Public Class clsLnTrans_picking_ubic
                             BeStock = clsLnStock.Get_Single_By_IdStock(PickingUbic.IdStock, IIf(Es_Transaccion_Remota, pConnection, lConnection), IIf(Es_Transaccion_Remota, pTransaction, ltransaction))
 
                             clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(PickingUbic,
-                                                                                BeStock.IdUbicacion,
-                                                                                PickingUbic.Cantidad_Recibida,
-                                                                                PickingUbic.Peso_recibido,
-                                                                                If(Es_Transaccion_Remota, pConnection, lConnection),
-                                                                                If(Es_Transaccion_Remota, pTransaction, ltransaction))
+                                                                                    BeStock.IdUbicacion,
+                                                                                    PickingUbic.Cantidad_Recibida,
+                                                                                    PickingUbic.Peso_recibido,
+                                                                                    If(Es_Transaccion_Remota, pConnection, lConnection),
+                                                                                    If(Es_Transaccion_Remota, pTransaction, ltransaction))
 
                         End If
 

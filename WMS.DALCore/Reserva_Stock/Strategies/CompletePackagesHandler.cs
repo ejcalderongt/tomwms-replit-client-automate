@@ -1,3 +1,8 @@
+using System;
+using System.Linq;
+using WMS.StockReservation.Core.Domain;
+using WMS.StockReservation.Core.Interfaces;
+using WMS.StockReservation.Core.Services;
 using WMSWebAPI.Be;
 using WMS.EntityCore.Stock;
 
@@ -125,6 +130,7 @@ namespace WMS.StockReservation.Strategies
                 
                 // Flags
                 Pallet_no_estandar = stock.Pallet_No_Estandar,
+                
                 
                 // Host/auditoría
                 Host = context.MachineName ?? Environment.MachineName
