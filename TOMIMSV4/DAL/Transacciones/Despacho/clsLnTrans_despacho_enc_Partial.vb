@@ -326,6 +326,10 @@ Partial Public Class clsLnTrans_despacho_enc
 
             'Validar que si tiene Packing esté cerrado
 
+            'Validar_Solicitado_Vrs_Despachado(pBeDespachoEnc,
+            '                                  lConnection,
+            '                                  lTransaction)
+
             'Despacho Encabezado
             Guarda_Trans_Despacho_Enc(pBeDespachoEnc,
                                       lConnection,
@@ -3266,5 +3270,28 @@ Partial Public Class clsLnTrans_despacho_enc
         End Try
 
     End Function
+
+    Private Shared Sub Validar_Solicitado_Vrs_Despachado(ByRef ObjEnc As clsBeTrans_despacho_enc,
+                                                         ByRef lConnection As SqlConnection,
+                                                         ByRef lTransaction As SqlTransaction)
+
+
+        Try
+
+            If ObjEnc IsNot Nothing Then
+
+                For Each BePedidoEnc As clsBeTrans_pe_enc In ObjEnc.ListaPedidos
+
+                Next
+
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Sub
 
 End Class
