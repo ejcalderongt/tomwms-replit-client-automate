@@ -325,6 +325,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Dset_Regla_Vence.xsd</DependentUpon>
     </Compile>
+    <Compile Include="IA\AiClient.vb" />
+    <Compile Include="IA\frmIA_Chat.Designer.vb">
+      <DependentUpon>frmIA_Chat.vb</DependentUpon>
+    </Compile>
+    <Compile Include="IA\frmIA_Chat.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="IA\PromptEngine.vb" />
     <Compile Include="Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.Designer.vb">
       <DependentUpon>frmAcuerdoComercial.vb</DependentUpon>
     </Compile>
@@ -1449,6 +1457,12 @@
       <DependentUpon>frmTipoTransaccionSalida_List.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\Pedido\frmTipoTransaccionSalida_List.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Picking\frmCantidadreemplazo.Designer.vb">
+      <DependentUpon>frmCantidadreemplazo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Picking\frmCantidadreemplazo.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Picking\frmPicking.Designer.vb">
@@ -3104,6 +3118,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="IA\frmIA_Chat.resx">
+      <DependentUpon>frmIA_Chat.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.resx">
       <DependentUpon>frmAcuerdoComercial.vb</DependentUpon>
     </EmbeddedResource>
@@ -3643,6 +3660,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Pedido\frmTipoTransaccionSalida_List.resx">
       <DependentUpon>frmTipoTransaccionSalida_List.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Picking\frmCantidadreemplazo.resx">
+      <DependentUpon>frmCantidadreemplazo.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Picking\frmPicking.resx">
       <DependentUpon>frmPicking.vb</DependentUpon>
@@ -4379,6 +4399,7 @@
       <DependentUpon>Configuracion_QADataSet.xsd</DependentUpon>
     </None>
     <Content Include="Conn - Cumbre.ini" />
+    <None Include="Conn - MC.ini" />
     <None Include="Conn_GT.ini" />
     <None Include="Conn_Inelac.ini" />
     <None Include="Conn_Killios.ini" />
@@ -4405,6 +4426,7 @@
     <None Include="Dset_Regla_Vence.xss">
       <DependentUpon>Dset_Regla_Vence.xsd</DependentUpon>
     </None>
+    <None Include="IA\prompts.json" />
     <None Include="Mantenimientos\Motivo_Correccion\DsMotivoCorreccionPoliza.xsc">
       <DependentUpon>DsMotivoCorreccionPoliza.xsd</DependentUpon>
     </None>

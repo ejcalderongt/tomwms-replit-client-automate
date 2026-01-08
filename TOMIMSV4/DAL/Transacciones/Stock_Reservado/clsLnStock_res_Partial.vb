@@ -6003,7 +6003,8 @@ Partial Public Class clsLnStock_res
                             BeStockRes.IdStock = BeStock.IdStock
                             BeStockRes.IdPropietarioBodega = BeStock.IdPropietarioBodega
                             BeStockRes.IdProductoBodega = BeStock.IdProductoBodega
-                            '#EJC20211221: Se manda inverso desde la selección del stock en cambio de ubicación forma (chapus por emergencia, buscar después causa raíz)
+                            '#EJC20211221: Se manda inverso desde la selección del stock en cambio de ubicación forma
+                            '(chapus por emergencia, buscar después causa raíz)
                             BeStockRes.IdUbicacion = BeStock.IdUbicacion_anterior
                             BeStockRes.Ubicacion_ant = BeStock.IdUbicacion
                             BeStockRes.IdProductoEstado = BeStock.IdProductoEstado

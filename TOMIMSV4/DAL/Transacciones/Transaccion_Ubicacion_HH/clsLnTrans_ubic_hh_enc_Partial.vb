@@ -1496,11 +1496,14 @@ Partial Public Class clsLnTrans_ubic_hh_enc
                 beUbicHHDet.Stock.Serial = pStock.Serial
                 beUbicHHDet.IdEstadoOrigen = pStock.IdProductoEstado
                 beUbicHHDet.IdEstadoDestino = IdEstadoDest
-                beUbicHHDet.Cantidad = IIf(pStock.IdPresentacion <> 0, CantidadDañadaUmBas, CantDañada)
+                '#AT20260105 Guardar la cantidad sin aplicar la conversión 
+                beUbicHHDet.Cantidad = CantDañada
                 beUbicHHDet.Recibido = 0
                 beUbicHHDet.Estado = "Pendiente"
                 beUbicHHDet.Operador = New clsBeOperador
                 beUbicHHDet.IdOperadorBodega = UsuarioHH
+                '#CKFK20251229 Agregamos el campo IdBodega que no se estaba enviando
+                beUbicHHDet.IdBodega = IdBodega
                 beUbicHHDet.Activo = True
                 beListUbicHHDet.Add(beUbicHHDet)
 
@@ -1571,7 +1574,9 @@ Partial Public Class clsLnTrans_ubic_hh_enc
             pMov.Lic_plate = bePickingUbic.Lic_plate
 
             'Modificar campos en el stock
-            pStock.Cantidad = CantDañada
+            '#AT20260105 pStock se utiliza para guardar stock res, siempre se debe guardar en umbas (cantidad)
+            'pStock.Cantidad = CantDañada
+            pStock.Cantidad = IIf(pStock.IdPresentacion <> 0, CantidadDañadaUmBas, CantDañada)
             pStock.IdProductoEstado = IdEstadoDest
             pStock.ProductoEstado.IdEstado = IdEstadoDest
             'pStock.IdUbicacion = IdUbicDest '#CKFK 20180219 Agregué al stock que la ubicación origen es la ubicación destino cuando genero la tarea de cambio de estado

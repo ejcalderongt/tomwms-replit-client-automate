@@ -5726,6 +5726,8 @@ Partial Public Class clsLnTrans_pe_enc
                     '#GT26032024: campo para identificar si aplica manufactura ligera
                     vPedidoEnc.IdTipoManufactura = IIf(IsDBNull(lRow("idtipomanufactura")), 0, lRow("idtipomanufactura"))
 
+                    vPedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino = IIf(IsDBNull(lRow("Referencia_Documento_Ingreso_Bodega_Destino")), "", lRow("Referencia_Documento_Ingreso_Bodega_Destino"))
+
 
                     '#CKFK20250227: Obtener detalle sin el picking
                     vPedidoEnc.Detalle = clsLnTrans_pe_det.Get_Detalle_By_IdPedidoEnc_Sin_Picking(vPedidoEnc.IdPedidoEnc,
@@ -7174,5 +7176,57 @@ Partial Public Class clsLnTrans_pe_enc
         End Try
 
     End Function
+
+    Public Shared Function Get_IdCliente_And_IdPedidoEnc_By_IdPickingUbic(ByVal pIdPickingUbic As Integer, ByVal pIdPickingEnc As Integer) As Tuple(Of Integer, Integer)
+
+        Dim vIdCliente As Integer = 0
+        Dim vIdPedidoEnc As Integer = 0
+
+        Try
+
+            Dim vSQL As String = "SELECT penc.IdCliente, penc.IdPedidoEnc
+                              FROM trans_pe_enc penc
+                              JOIN trans_picking_ubic pu ON penc.IdPedidoEnc = pu.IdPedidoEnc
+                              WHERE pu.IdPickingUbic=@IdPickingUbic AND pu.IdPickingEnc=@IdPickingEnc"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lCmd As New SqlCommand(vSQL, lConnection, lTransaction)
+                        lCmd.Parameters.AddWithValue("@IdPickingUbic", pIdPickingUbic)
+                        lCmd.Parameters.AddWithValue("@IdPickingEnc", pIdPickingEnc)
+
+                        Using lReader As SqlDataReader = lCmd.ExecuteReader()
+
+                            If lReader.Read() Then
+
+                                If Not IsDBNull(lReader("IdCliente")) Then
+                                    vIdCliente = CInt(lReader("IdCliente"))
+                                End If
+
+                                If Not IsDBNull(lReader("IdPedidoEnc")) Then
+                                    vIdPedidoEnc = CInt(lReader("IdPedidoEnc"))
+                                End If
+
+                            End If
+
+                        End Using
+
+                    End Using
+
+                    lTransaction.Commit()
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Throw
+        End Try
+
+        Return Tuple.Create(vIdCliente, vIdPedidoEnc)
+
+    End Function
+
 
 End Class

@@ -1322,16 +1322,18 @@ Partial Class frmPropietario
         Me.cmdAgregar.Name = "cmdAgregar"
         Me.cmdAgregar.Size = New System.Drawing.Size(48, 48)
         Me.cmdAgregar.TabIndex = 0
+        Me.cmdAgregar.ToolTip = "Añadir un mensaje por regla de excepción"
         '
         'cmdEliminar
         '
         Me.cmdEliminar.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdEliminar.ImageOptions.SvgImage = CType(resources.GetObject("cmdEliminar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdEliminar.Location = New System.Drawing.Point(5, 59)
+        Me.cmdEliminar.Location = New System.Drawing.Point(3, 144)
         Me.cmdEliminar.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.cmdEliminar.Name = "cmdEliminar"
         Me.cmdEliminar.Size = New System.Drawing.Size(48, 48)
         Me.cmdEliminar.TabIndex = 1
+        Me.cmdEliminar.ToolTip = "Eliminar mensaje"
         '
         'GroupControl6
         '
@@ -1411,13 +1413,13 @@ Partial Class frmPropietario
         Me.DockPanel1.Controls.Add(Me.DockPanel1_Container)
         Me.DockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.ID = New System.Guid("6d41e5f7-f2b1-4761-8391-fc0ad59630be")
-        Me.DockPanel1.Location = New System.Drawing.Point(0, 0)
+        Me.DockPanel1.Location = New System.Drawing.Point(0, 709)
         Me.DockPanel1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.DockPanel1.Name = "DockPanel1"
         Me.DockPanel1.OriginalSize = New System.Drawing.Size(200, 97)
         Me.DockPanel1.SavedDock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.SavedIndex = 0
-        Me.DockPanel1.Size = New System.Drawing.Size(953, 119)
+        Me.DockPanel1.Size = New System.Drawing.Size(1268, 121)
         Me.DockPanel1.Text = "Bitácora"
         Me.DockPanel1.Visibility = DevExpress.XtraBars.Docking.DockVisibility.AutoHide
         '
@@ -1431,10 +1433,10 @@ Partial Class frmPropietario
         Me.DockPanel1_Container.Controls.Add(User_agrLabel)
         Me.DockPanel1_Container.Controls.Add(Fec_modLabel)
         Me.DockPanel1_Container.Controls.Add(Me.Fec_modDateEdit)
-        Me.DockPanel1_Container.Location = New System.Drawing.Point(3, 31)
+        Me.DockPanel1_Container.Location = New System.Drawing.Point(4, 34)
         Me.DockPanel1_Container.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.DockPanel1_Container.Name = "DockPanel1_Container"
-        Me.DockPanel1_Container.Size = New System.Drawing.Size(946, 85)
+        Me.DockPanel1_Container.Size = New System.Drawing.Size(1260, 83)
         Me.DockPanel1_Container.TabIndex = 0
         '
         'xtraPropietario
@@ -1497,7 +1499,7 @@ Partial Class frmPropietario
         Me.dgridUM.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridUM.MenuManager = Me.RibbonControl
         Me.dgridUM.Name = "dgridUM"
-        Me.dgridUM.Size = New System.Drawing.Size(1266, 607)
+        Me.dgridUM.Size = New System.Drawing.Size(1583, 759)
         Me.dgridUM.TabIndex = 3
         Me.dgridUM.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView2, Me.GridView5})
         '
@@ -1532,7 +1534,7 @@ Partial Class frmPropietario
         Me.dgridEstados.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridEstados.MenuManager = Me.RibbonControl
         Me.dgridEstados.Name = "dgridEstados"
-        Me.dgridEstados.Size = New System.Drawing.Size(1266, 607)
+        Me.dgridEstados.Size = New System.Drawing.Size(1583, 759)
         Me.dgridEstados.TabIndex = 4
         Me.dgridEstados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvEstados, Me.GridView8})
         '
@@ -1567,7 +1569,7 @@ Partial Class frmPropietario
         Me.dgridProductos.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridProductos.MenuManager = Me.RibbonControl
         Me.dgridProductos.Name = "dgridProductos"
-        Me.dgridProductos.Size = New System.Drawing.Size(1266, 607)
+        Me.dgridProductos.Size = New System.Drawing.Size(1583, 759)
         Me.dgridProductos.TabIndex = 5
         Me.dgridProductos.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView9, Me.GridView10})
         '
@@ -1602,7 +1604,7 @@ Partial Class frmPropietario
         Me.dgridStock.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridStock.MenuManager = Me.RibbonControl
         Me.dgridStock.Name = "dgridStock"
-        Me.dgridStock.Size = New System.Drawing.Size(1266, 607)
+        Me.dgridStock.Size = New System.Drawing.Size(1583, 759)
         Me.dgridStock.TabIndex = 6
         Me.dgridStock.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.grdvStock, Me.GridView12})
         '
@@ -1638,7 +1640,7 @@ Partial Class frmPropietario
         Me.dgridMovimientos.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridMovimientos.MenuManager = Me.RibbonControl
         Me.dgridMovimientos.Name = "dgridMovimientos"
-        Me.dgridMovimientos.Size = New System.Drawing.Size(1266, 607)
+        Me.dgridMovimientos.Size = New System.Drawing.Size(1583, 759)
         Me.dgridMovimientos.TabIndex = 7
         Me.dgridMovimientos.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gviewMovimientos, Me.GridView14})
         '

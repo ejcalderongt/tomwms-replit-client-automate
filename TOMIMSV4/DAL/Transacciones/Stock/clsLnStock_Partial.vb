@@ -1068,7 +1068,8 @@ Partial Public Class clsLnStock
                                                        ByRef TieneTiempos As Boolean,
                                                        ByVal NoPoliza As String,
                                                        ByVal IdPropietarioBodega As Integer,
-                                                       ByVal IdProductoEstadoDefault As Integer) As DataTable
+                                                       ByVal IdProductoEstadoDefault As Integer,
+                                                       ByVal IdPresentacion As Integer) As DataTable
 
         '#EJC20171112_0605PM:Agregué transacción
         Dim vSQL As String = ""
@@ -1271,6 +1272,10 @@ Partial Public Class clsLnStock
                     vSQL += " AND IdProductoEstado=@IdProductoEstadoDefault "
                 End If
 
+                If IdPresentacion > 0 Then
+                    vSQL += " AND IdPresentacion=@IdPresentacion "
+                End If
+
                 '#EJC20190311_0948PM: Excluir lo que esté en ubicaciones de tránsito.
                 vSQL += " AND IdUbicacion NOT IN (SELECT IdUbicacion
 					      FROM  bodega_ubicacion AS bodega_ubicacion 
@@ -1298,6 +1303,10 @@ Partial Public Class clsLnStock
 
                 If IdProductoEstadoDefault > 0 Then
                     lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoEstadoDefault", IdProductoEstadoDefault)
+                End If
+
+                If IdPresentacion > 0 Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdPresentacion", IdPresentacion)
                 End If
 
                 lDTA.SelectCommand.Transaction = lTransaction
@@ -10934,6 +10943,21 @@ Partial Public Class clsLnStock
                     clsBeRes_Operador.Correlativo_Actual += 1
                     clsLnResolucion_lp_operador.Actualizar_Correlativo_Actual(clsBeRes_Operador, lConnection, lTransaction)
                 End If
+
+                '#MECR25112025: Se agrego bitacora de logs para reabastecimiento
+                Dim msjInsercion As String = "Se creó reabastecimiento con licencia: " + pLic_Plate + " , Por el usuario: " + pIdUsuario.ToString
+                clsLnLog_error_wms_reab.Agregar_Error(msjInsercion,
+                                                      pIdBodega:=pIdBodega,
+                                                      pIdStock:=pIdStock,
+                                                      pIdMovimiento:=pIdMovimiento,
+                                                      pLic_Plate_Anterior:=pLic_Plate_Ant,
+                                                      pLic_Plate:=pLic_Plate,
+                                                      pIdResolucion:=pIdResolucion,
+                                                      pIdProductoBodega:=BeProdPallet.IdProductoBodega,
+                                                      pCantidad:=BeProdPallet.Cantidad,
+                                                      pUser_agr:=pIdUsuario,
+                                                      pConection:=lConnection,
+                                                      pTransaction:=lTransaction)
 
                 Actualizar_PalletId_Por_Explosion = True
 

@@ -69,6 +69,7 @@ Public Class clsLnTrans_inv_detalle
             Ins.Add("nom_operador", "@nom_operador", DataType.Parametro)
             Ins.Add("carga", "@carga", DataType.Parametro)
             Ins.Add("peso", "@peso", DataType.Parametro)
+            Ins.Add("lic_plate", "@lic_plate", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -102,6 +103,7 @@ Public Class clsLnTrans_inv_detalle
             cmd.Parameters.Add(New SqlParameter("@NOM_OPERADOR", oBeTrans_inv_detalle.Nom_operador))
             cmd.Parameters.Add(New SqlParameter("@CARGA", oBeTrans_inv_detalle.Carga))
             cmd.Parameters.Add(New SqlParameter("@PESO", oBeTrans_inv_detalle.Peso))
+            cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", oBeTrans_inv_detalle.License_plate))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -148,6 +150,7 @@ Public Class clsLnTrans_inv_detalle
             Upd.Add("nom_operador", "@nom_operador", DataType.Parametro)
             Upd.Add("carga", "@carga", DataType.Parametro)
             Upd.Add("peso", "@peso", DataType.Parametro)
+            Upd.Add("lic_plate", "@lic_plate", DataType.Parametro)
             Upd.Where("idinventariodet = @idinventariodet")
 
             Dim sp As String = Upd.SQL()
@@ -182,6 +185,7 @@ Public Class clsLnTrans_inv_detalle
             cmd.Parameters.Add(New SqlParameter("@NOM_OPERADOR", oBeTrans_inv_detalle.Nom_operador))
             cmd.Parameters.Add(New SqlParameter("@CARGA", oBeTrans_inv_detalle.Carga))
             cmd.Parameters.Add(New SqlParameter("@PESO", oBeTrans_inv_detalle.Peso))
+            cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", oBeTrans_inv_detalle.License_plate))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

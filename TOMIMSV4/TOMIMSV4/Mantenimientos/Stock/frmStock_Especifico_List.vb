@@ -39,6 +39,7 @@ Public Class frmStock_Especifico_List
     Public BuscarPoliza As Boolean = False
 
     Public IdProductoEstadoDefault As Integer = 0
+    Public Property IdPresentacion As Integer = 0
 
     Public Sub New()
         InitializeComponent()
@@ -296,7 +297,8 @@ Public Class frmStock_Especifico_List
                                         If Not Presentacion Is Nothing Then
                                             lPresentacion.Add(Presentacion)
                                         End If
-
+                                    Else
+                                        Presentacion = lPresentacion(vIdxPresentacion)
                                     End If
 
                                     If Not Presentacion Is Nothing Then
@@ -358,23 +360,24 @@ Public Class frmStock_Especifico_List
 
             Dim watch As Stopwatch = Stopwatch.StartNew()
 
+            Dim idBodegaFinal As Integer = If(IdBodega = 0, AP.IdBodega, IdBodega)
+
+            Dim noPoliza As String = ""
+            Dim idPropietario As Integer = pIdPropietarioBodega
+
             If chkFiltroPolizaActivo.Checked AndAlso txtNoPoliza.Text.Trim <> "" Then
-
-                If IdBodega = 0 Then
-                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(AP.IdBodega, IdCliente, TieneTiempos, txtNoPoliza.Text, 0, IdProductoEstadoDefault)
-                Else
-                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(IdBodega, IdCliente, TieneTiempos, txtNoPoliza.Text, 0, IdProductoEstadoDefault)
-                End If
-
-            Else
-
-                If IdBodega = 0 Then
-                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(AP.IdBodega, IdCliente, TieneTiempos, "", pIdPropietarioBodega, IdProductoEstadoDefault)
-                Else
-                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(IdBodega, IdCliente, TieneTiempos, "", pIdPropietarioBodega, IdProductoEstadoDefault)
-                End If
-
+                noPoliza = txtNoPoliza.Text.Trim
+                idPropietario = 0
             End If
+
+            DTStock = clsLnStock.Get_All_Stock_Especifico_DT(idBodegaFinal,
+                                                             IdCliente,
+                                                             TieneTiempos,
+                                                             noPoliza,
+                                                             idPropietario,
+                                                             IdProductoEstadoDefault,
+                                                             IdPresentacion)
+
 
             If Not ProductoEspecifico Is Nothing Then
 
@@ -434,6 +437,7 @@ Public Class frmStock_Especifico_List
 
                     pObjStock = clsLnStock.Get_Single_By_IdStock(Dr.Item("IdStock"))
                     pObjStock.CantidadUmBas = Dr.Item("Disponible_UMBas")
+                    pObjStock.CantidadPresentacion = Dr.Item("Cantidad_Presentacion")
 
                     If Dr.Item("Aplica") = "No" AndAlso TieneTiempos Then
                         If XtraMessageBox.Show("No aplica a los tiempos del cliente. ¿Desea agregar?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
@@ -467,10 +471,6 @@ Public Class frmStock_Especifico_List
             Dim watch As Stopwatch = Stopwatch.StartNew()
 
             Listar_Stock_With_DT()
-
-            'BeginInvoke(CallBindProductos_To_Grid)
-
-            'BindProductos_To_Grid()
 
             watch.Stop()
 
@@ -695,11 +695,8 @@ Public Class frmStock_Especifico_List
             grdStock.DataSource = Nothing
 
             If Rec.pObjProducto IsNot Nothing AndAlso Rec.pObjProducto.IdProducto <> 0 Then
-
                 ProductoEspecifico = Nothing
-
                 txtIdProducto.Text = Rec.pObjProducto.Codigo
-                'ProductoEspecifico.Codigo = Rec.pObjProducto.Codigo
                 ProductoEspecifico = Rec.pObjProducto
                 txtNombreProducto.Text = Rec.pObjProducto.Nombre
                 ForceUpdateList = True
@@ -721,7 +718,7 @@ Public Class frmStock_Especifico_List
 
     End Sub
 
-    Private Sub txtIdProducto_Validated(sender As Object, e As EventArgs) Handles txtIdProducto.Validated
+    Public Sub txtIdProducto_Validated(sender As Object, e As EventArgs) Handles txtIdProducto.Validated
 
         Try
 
@@ -1366,4 +1363,7 @@ Public Class frmStock_Especifico_List
 
     End Sub
 
+    Private Sub grdStock_Click(sender As Object, e As EventArgs) Handles grdStock.Click
+
+    End Sub
 End Class
