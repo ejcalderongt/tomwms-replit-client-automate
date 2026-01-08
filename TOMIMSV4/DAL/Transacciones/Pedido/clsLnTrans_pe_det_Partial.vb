@@ -217,7 +217,7 @@ Partial Public Class clsLnTrans_pe_det
 
                         '#GT16092025:si la linea del pedido no tiene stock liberado, se infiere que esta asociada a una linea de despacho
                         'If Not BeTransPeDet.Stock_Liberado Then
-                        '    lReturnList.Add(BeTransPeDet)
+                        lReturnList.Add(BeTransPeDet)
                         'End If
 
                     Next

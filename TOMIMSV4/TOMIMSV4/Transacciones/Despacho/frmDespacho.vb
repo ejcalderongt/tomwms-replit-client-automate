@@ -1547,6 +1547,8 @@ Public Class frmDespacho
 
                     If bo.pBePedidoEnc IsNot Nothing Then
 
+                        'bo.pBePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(bo.pBePedidoEnc.IdPedidoEnc)
+
                         If bo.pBePedidoEnc.Detalle IsNot Nothing Then
 
                             If bo.pBePedidoEnc.Detalle.Count > 0 Then
@@ -1593,12 +1595,18 @@ Public Class frmDespacho
 
                                     ' Recorrer los detalles del pedido que coincidan con esos IDs
                                     '#GT16092025: tomar detalle de pedido que no tenga lineas liberadas de stock
-                                    For Each BePedidoDet As clsBeTrans_pe_det In bo.pBePedidoEnc.Detalle.Where(Function(x) idsConDiferencia.Contains(x.IdProductoBodega))
+                                    'For Each BePedidoDet As clsBeTrans_pe_det In bo.pBePedidoEnc.Detalle.Where(Function(x) idsConDiferencia.Contains(x.IdProductoBodega))
+
+                                    '    SetProducto(BePedidoDet, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                                    '    SetProducto_By_Lista_PickingUbic(BePedidoDet.ListaPickingUbic)
+                                    'Next
+
+                                    '#CKFK20251203 Puse esto en comentario porque provoca que no pueda despachar el pedido
+                                    For Each BePedidoDet As clsBeTrans_pe_det In bo.pBePedidoEnc.Detalle '.Where(Function(x) idsConDiferencia.Contains(x.IdProductoBodega))
 
                                         SetProducto(BePedidoDet, clsTransaccion.lConnection, clsTransaccion.lTransaction)
                                         SetProducto_By_Lista_PickingUbic(BePedidoDet.ListaPickingUbic)
                                     Next
-
 
                                     BeDespachoEnc.ListaPedidos.Add(bo.pBePedidoEnc)
 

@@ -11700,13 +11700,17 @@ Partial Public Class clsLnStock
                     If objStockOrigen.Presentacion.EsPallet Then
                         vCantidadDisponible = Math.Round((objStockOrigen.Cantidad * objStockOrigen.Presentacion.Factor * objStockOrigen.Presentacion.CamasPorTarima * objStockOrigen.Presentacion.CajasPorCama), 6)
                     Else
-                        'If (objStockOrigen.Presentacion.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion <> 0) AndAlso (objStockOrigen.Presentacion.IdPresentacion = BeTransPeDet.IdPresentacion) Then
-                        '    'Killios, Quantity 12.5 = 144, Erik. #EJC20250909
-                        '    vCantidadDisponible = Math.Round((objStockOrigen.Cantidad * objStockOrigen.Presentacion.Factor), 6)
-                        'Else
-                        '    vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
-                        'End If
-                        vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
+
+                        '#EJC20251209 Originalmente estaba asi
+                        'vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
+
+                        '#EJC20251209 Agregó validación por error reportado en el despacho
+                        If objStockOrigen.Cantidad > objStockOrigen.Presentacion.Factor Then
+                            vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
+                        Else
+                            vCantidadDisponible = objStockOrigen.Cantidad
+                        End If
+
                     End If
 
                 End If

@@ -648,7 +648,7 @@ Public Class clsLnTrans_pe_det
                                                  ByRef pTransaction As SqlTransaction) As clsBeTrans_pe_det
 
         If pConection Is Nothing OrElse pTransaction Is Nothing Then
-            Throw New ArgumentNullException("La conexi�n y la transacci�n no pueden ser nulas.")
+            Throw New ArgumentNullException("La conexión y la transacción no pueden ser nulas.")
         End If
 
         Dim resultado As clsBeTrans_pe_det = Nothing

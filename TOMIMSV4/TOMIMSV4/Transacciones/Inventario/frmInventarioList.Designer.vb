@@ -28,6 +28,7 @@ Partial Class frmInventarioList
         Me.cmdImprimir = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdNuevo = New DevExpress.XtraBars.BarButtonItem()
         Me.lblRegs = New DevExpress.XtraBars.BarStaticItem()
+        Me.cmdPlantilla = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
@@ -36,7 +37,7 @@ Partial Class frmInventarioList
         Me.grpInventario = New System.Windows.Forms.GroupBox()
         Me.dtpFechaInicio = New System.Windows.Forms.DateTimePicker()
         Me.dtpFechaFin = New System.Windows.Forms.DateTimePicker()
-        Me.cmdPlantilla = New DevExpress.XtraBars.BarButtonItem()
+        Me.chkActivo = New DevExpress.XtraBars.BarCheckItem()
         Label3 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -66,10 +67,10 @@ Partial Class frmInventarioList
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.RibbonControl.SearchEditItem, Me.cmdActualizar, Me.cmdSalir, Me.cmdImprimir, Me.cmdNuevo, Me.lblRegs, Me.cmdPlantilla})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdActualizar, Me.cmdSalir, Me.cmdImprimir, Me.cmdNuevo, Me.lblRegs, Me.cmdPlantilla, Me.chkActivo})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.RibbonControl.MaxItemId = 7
+        Me.RibbonControl.MaxItemId = 10
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -110,6 +111,13 @@ Partial Class frmInventarioList
         Me.lblRegs.Id = 5
         Me.lblRegs.Name = "lblRegs"
         '
+        'cmdPlantilla
+        '
+        Me.cmdPlantilla.Caption = "Descargar plantilla"
+        Me.cmdPlantilla.Id = 6
+        Me.cmdPlantilla.ImageOptions.SvgImage = CType(resources.GetObject("cmdPlantilla.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdPlantilla.Name = "cmdPlantilla"
+        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1})
@@ -123,6 +131,7 @@ Partial Class frmInventarioList
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdImprimir)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdSalir)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdPlantilla)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.chkActivo)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RibbonStatusBar
@@ -188,12 +197,14 @@ Partial Class frmInventarioList
         Me.dtpFechaFin.Size = New System.Drawing.Size(103, 23)
         Me.dtpFechaFin.TabIndex = 7
         '
-        'cmdPlantilla
+        'chkActivo
         '
-        Me.cmdPlantilla.Caption = "Descargar plantilla"
-        Me.cmdPlantilla.Id = 6
-        Me.cmdPlantilla.ImageOptions.SvgImage = CType(resources.GetObject("cmdPlantilla.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdPlantilla.Name = "cmdPlantilla"
+        Me.chkActivo.BindableChecked = True
+        Me.chkActivo.Caption = "Activos"
+        Me.chkActivo.CheckBoxVisibility = DevExpress.XtraBars.CheckBoxVisibility.BeforeText
+        Me.chkActivo.Checked = True
+        Me.chkActivo.Id = 9
+        Me.chkActivo.Name = "chkActivo"
         '
         'frmInventarioList
         '
@@ -235,4 +246,5 @@ Partial Class frmInventarioList
     Friend WithEvents dtpFechaFin As DateTimePicker
     Friend WithEvents lblRegs As DevExpress.XtraBars.BarStaticItem
     Friend WithEvents cmdPlantilla As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents chkActivo As DevExpress.XtraBars.BarCheckItem
 End Class

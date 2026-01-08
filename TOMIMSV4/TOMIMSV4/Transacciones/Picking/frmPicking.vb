@@ -3723,19 +3723,33 @@ Public Class frmPicking
 
     Private Sub Process_Linea_Picking()
 
-        Dim Dr As DataRowView = grdvPickingUbic.GetFocusedRow
-        Dim lSelectionIndex As Integer = grdvPickingUbic.FocusedRowHandle
-        Dim IdStockRes As Integer = IIf(IsDBNull(Dr.Item("IdStockRes")), 0, Dr.Item("IdStockRes"))
-        Dim vCodigoProducto As String = IIf(IsDBNull(Dr.Item("Código")), 0, Dr.Item("Código"))
-        Dim vNombreProducto As String = IIf(IsDBNull(Dr.Item("Producto")), 0, Dr.Item("Producto"))
-        Dim vCantidadPedidaPres As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_Pres")), 0, Dr.Item("Cant_Ped_Pres"))
-        Dim vCantidadPedidaUMBas As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_UmBas")), 0, Dr.Item("Cant_Ped_UmBas"))
-        Dim vUnidadMedida As String = IIf(IsDBNull(Dr.Item("Unidad_Medida")), "", Dr.Item("Unidad_Medida"))
-        Dim vPedido As Integer = IIf(IsDBNull(Dr.Item("Pedido")), 0, Dr.Item("Pedido"))
-        Dim pListBeStockRes As New List(Of clsBeStock_res)
-        Dim vContinuar As Boolean = True
-
         Try
+
+            ' Verificar que exista una fila enfocada
+            If grdvPickingUbic Is Nothing OrElse grdvPickingUbic.FocusedRowHandle < 0 Then
+                MessageBox.Show("No hay ninguna fila seleccionada.")
+                Exit Sub
+            End If
+
+            ' Obtener la fila
+            Dim Dr As DataRowView = TryCast(grdvPickingUbic.GetFocusedRow(), DataRowView)
+
+            ' Validar que no sea Nothing
+            If Dr Is Nothing Then
+                MessageBox.Show("La fila seleccionada no es válida.")
+                Exit Sub
+            End If
+
+            Dim lSelectionIndex As Integer = grdvPickingUbic.FocusedRowHandle
+            Dim IdStockRes As Integer = IIf(IsDBNull(Dr.Item("IdStockRes")), 0, Dr.Item("IdStockRes"))
+            Dim vCodigoProducto As String = IIf(IsDBNull(Dr.Item("Código")), 0, Dr.Item("Código"))
+            Dim vNombreProducto As String = IIf(IsDBNull(Dr.Item("Producto")), 0, Dr.Item("Producto"))
+            Dim vCantidadPedidaPres As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_Pres")), 0, Dr.Item("Cant_Ped_Pres"))
+            Dim vCantidadPedidaUMBas As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_UmBas")), 0, Dr.Item("Cant_Ped_UmBas"))
+            Dim vUnidadMedida As String = IIf(IsDBNull(Dr.Item("Unidad_Medida")), "", Dr.Item("Unidad_Medida"))
+            Dim vPedido As Integer = IIf(IsDBNull(Dr.Item("Pedido")), 0, Dr.Item("Pedido"))
+            Dim pListBeStockRes As New List(Of clsBeStock_res)
+            Dim vContinuar As Boolean = True
 
             If clsLnTrans_pe_enc.Tiene_Manufactura_Asociada_Sin_Finalizar(vPedido) Then
                 XtraMessageBox.Show("Esta línea pertenece a un pedido con proceso de manufactura sin finalizar, no se puede procesar",
@@ -4362,7 +4376,7 @@ Public Class frmPicking
                     chkFotografiaVerificacion.Checked = bo.pBePedidoEnc.TipoPedido.Fotografia_Verificacion
                     chkEmpaquePorTarima.Checked = bo.pBePedidoEnc.TipoPedido.Empaque_Tarima
 
-                    bo.pBePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(bo.pBePedidoEnc.IdPedidoEnc)
+                    'bo.pBePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(bo.pBePedidoEnc.IdPedidoEnc)
 
                     If bo.pBePedidoEnc.Detalle IsNot Nothing AndAlso bo.pBePedidoEnc.Detalle.Count > 0 Then
 

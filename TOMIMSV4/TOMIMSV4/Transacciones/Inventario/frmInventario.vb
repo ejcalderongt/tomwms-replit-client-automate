@@ -1098,7 +1098,20 @@ Public Class frmInventario
                                 Close()
                             Else
                                 SplashScreenManager.CloseForm(False)
-                                XtraMessageBox.Show("El inventario tiene conteos, no se puede anular.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                                If gBeTransInvEnc.Inicial Then
+                                    XtraMessageBox.Show("El inventario tiene conteos, no se puede anular", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                                Else
+                                    If XtraMessageBox.Show("El inventario tiene conteos.¿Seguro de anularlo", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = DialogResult.Yes Then
+                                        gBeTransInvEnc.Activo = False
+                                        gBeTransInvEnc.Estado = "Anulado"
+                                        clsLnTrans_inv_enc.Actualizar(gBeTransInvEnc)
+                                        SplashScreenManager.CloseForm(False)
+                                        XtraMessageBox.Show("Se anuló el proceso de inventario", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                        If Not InvokeListarInventario Is Nothing Then InvokeListarInventario.Invoke
+                                        Close()
+                                    End If
+                                End If
+
                             End If
 
                         End If
