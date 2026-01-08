@@ -533,6 +533,14 @@ DAL
  <returns></returns>
  <remarks></remarks>
 </member>
+<member name="M:TOMWMS.clsLnVW_Despacho_Rep.Get_Ultimo_Lote_By_IdCliente(System.Int32,System.Int32)">
+ <summary>
+ #EJC20190313: Devuelve el último lote despachado para un cliente  y producto.
+ </summary>
+ <param name="pIdCliente">Id de cliente</param>
+ <param name="pIdProductoBodega">Id de producto</param>
+ <returns>El número de lote</returns>
+</member>
 <member name="M:TOMWMS.clsLnTrans_despacho_det.MaxID(System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
  <summary>
  Creado por Erik Calderón
