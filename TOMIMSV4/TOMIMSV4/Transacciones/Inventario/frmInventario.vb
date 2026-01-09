@@ -56,6 +56,9 @@ Public Class frmInventario
     Public Property Dañado As Boolean
     Public IdInventario As Integer
     Private DTOri As New DataTable
+    Private gConnection As SqlConnection
+    Private gTransaction As SqlTransaction
+
 
     Private DTOriOperador As New DataTable
 
@@ -9700,5 +9703,19 @@ Public Class frmInventario
 
     Private Sub frmInventario_Closing(sender As Object, e As CancelEventArgs) Handles MyBase.Closing
         InvokeListarInventario?.Invoke()
+    End Sub
+
+    '#MA20260108 Agregar
+    Private Sub btnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
+        Dim frm As New frmInventarioDet(frmInventarioDet.TipoTrans.Nuevo)
+        frm.IdInventario = gBeTransInvEnc.Idinventarioenc
+        frm.IdBodega = AP.IdBodega
+
+        If frm.ShowDialog(Me) = DialogResult.OK Then
+            Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                cn.Open()
+                Calcular_Inventario_Teorico_WMS(cn, Nothing)
+            End Using
+        End If
     End Sub
 End Class
