@@ -369,6 +369,12 @@ Partial Public Class clsLnStock_res
                             vCantidadCompletada = (vCantidadPendiente = 0)
 
                             'pStockRes.Cantidad = vCantidadReservada
+
+                            '#GT09012025: añadir talla y color
+                            BeStockRes.Color = pStockRes.Color
+                            BeStockRes.Talla = pStockRes.Talla
+                            BeStockRes.IdProductoTallaColor = pStockRes.IdProductoTallaColor
+
                             lBeStockAReservar.Add(BeStockRes)
 
                             If vCantidadCompletada Then
@@ -1763,6 +1769,11 @@ Partial Public Class clsLnStock_res
             BeStockRes.Fec_agr = pStockRes.Fec_agr
             BeStockRes.Fec_mod = pStockRes.Fec_mod
             'pStockRes.Cantidad = vCantidadReservada
+            '#GT09012025: en la clonación del objeto, el origen no tiene talla/color
+            BeStockRes.Talla = pStockRes.Talla
+            BeStockRes.Color = pStockRes.Color
+            BeStockRes.IdProductoTallaColor = pStockRes.IdProductoTallaColor
+
             lBeStockAReservar.Add(BeStockRes)
 
             If lBeStockAReservar.Count > 0 Then

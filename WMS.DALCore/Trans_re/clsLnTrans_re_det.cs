@@ -127,6 +127,64 @@ public class clsLnTrans_re_det
         }
     }
 
+    public static int Insertar_3pl(clsBeTrans_re_det_3pl oBeTrans_re_det, SqlConnection pConection, SqlTransaction pTransaction)
+    {
+        int rowsAffected = 0;
+
+        try
+        {
+            Ins.Init("trans_re_det");
+            Ins.Add("idrecepciondet", "@idrecepciondet", "F");
+            Ins.Add("idrecepcionenc", "@idrecepcionenc", "F");
+            Ins.Add("idproductobodega", "@idproductobodega", "F");
+            Ins.Add("idpresentacion", "@idpresentacion", "F");
+            Ins.Add("idunidadmedida", "@idunidadmedida", "F");
+            Ins.Add("idproductoestado", "@idproductoestado", "F");
+            Ins.Add("idoperadorbodega", "@idoperadorbodega", "F");
+            Ins.Add("idmotivodevolucion", "@idmotivodevolucion", "F");
+            Ins.Add("no_linea", "@no_linea", "F");
+            Ins.Add("cantidad_recibida", "@cantidad_recibida", "F");
+            Ins.Add("nombre_producto", "@nombre_producto", "F");
+            Ins.Add("nombre_presentacion", "@nombre_presentacion", "F");
+            Ins.Add("nombre_unidad_medida", "@nombre_unidad_medida", "F");
+            Ins.Add("nombre_producto_estado", "@nombre_producto_estado", "F");
+            Ins.Add("lote", "@lote", "F");
+            Ins.Add("fecha_vence", "@fecha_vence", "F");
+            Ins.Add("fecha_ingreso", "@fecha_ingreso", "F");
+            Ins.Add("peso", "@peso", "F");
+            Ins.Add("peso_estadistico", "@peso_estadistico", "F");
+            Ins.Add("peso_minimo", "@peso_minimo", "F");
+            Ins.Add("peso_maximo", "@peso_maximo", "F");
+            Ins.Add("peso_unitario", "@peso_unitario", "F");
+            Ins.Add("user_agr", "@user_agr", "F");
+            Ins.Add("fec_agr", "@fec_agr", "F");
+            Ins.Add("observacion", "@observacion", "F");
+            Ins.Add("añada", "@añada", "F");
+            Ins.Add("costo", "@costo", "F");
+            Ins.Add("costo_oc", "@costo_oc", "F");
+            Ins.Add("costo_estadistico", "@costo_estadistico", "F");
+            Ins.Add("atributo_variante_1", "@atributo_variante_1", "F");
+            Ins.Add("codigo_producto", "@codigo_producto", "F");
+            Ins.Add("lic_plate", "@lic_plate", "F");
+            Ins.Add("pallet_no_estandar", "@pallet_no_estandar", "F");
+            Ins.Add("idordencompraenc", "@idordencompraenc", "F");
+            Ins.Add("idordencompradet", "@idordencompradet", "F");
+            Ins.Add("idjornadasistema", "@idjornadasistema", "F");
+
+            string sp = Ins.SQL();
+            var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
+
+            Bind_3pl(cmd, oBeTrans_re_det);
+            rowsAffected = cmd.ExecuteNonQuery();
+            cmd.Dispose();
+
+            return rowsAffected;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
     public static int Insertar(IConfiguration config, clsBeTrans_re_det oBeTrans_re_det)
     {
 
@@ -258,6 +316,65 @@ public class clsLnTrans_re_det
             var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
 
             Bind(cmd, oBeTrans_re_det);
+            rowsAffected = cmd.ExecuteNonQuery();
+
+            return rowsAffected;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    public static int Actualizar_3pl(clsBeTrans_re_det_3pl oBeTrans_re_det, SqlConnection pConection, SqlTransaction pTransaction)
+    {
+        int rowsAffected = 0;
+
+        try
+        {
+            Upd.Init("trans_re_det");
+            Upd.Add("idrecepciondet", "@idrecepciondet", "F");
+            Upd.Add("idrecepcionenc", "@idrecepcionenc", "F");
+            Upd.Add("idproductobodega", "@idproductobodega", "F");
+            Upd.Add("idpresentacion", "@idpresentacion", "F");
+            Upd.Add("idunidadmedida", "@idunidadmedida", "F");
+            Upd.Add("idproductoestado", "@idproductoestado", "F");
+            Upd.Add("idoperadorbodega", "@idoperadorbodega", "F");
+            Upd.Add("idmotivodevolucion", "@idmotivodevolucion", "F");
+            Upd.Add("no_linea", "@no_linea", "F");
+            Upd.Add("cantidad_recibida", "@cantidad_recibida", "F");
+            Upd.Add("nombre_producto", "@nombre_producto", "F");
+            Upd.Add("nombre_presentacion", "@nombre_presentacion", "F");
+            Upd.Add("nombre_unidad_medida", "@nombre_unidad_medida", "F");
+            Upd.Add("nombre_producto_estado", "@nombre_producto_estado", "F");
+            Upd.Add("lote", "@lote", "F");
+            Upd.Add("fecha_vence", "@fecha_vence", "F");
+            Upd.Add("fecha_ingreso", "@fecha_ingreso", "F");
+            Upd.Add("peso", "@peso", "F");
+            Upd.Add("peso_estadistico", "@peso_estadistico", "F");
+            Upd.Add("peso_minimo", "@peso_minimo", "F");
+            Upd.Add("peso_maximo", "@peso_maximo", "F");
+            Upd.Add("peso_unitario", "@peso_unitario", "F");
+            Upd.Add("user_agr", "@user_agr", "F");
+            Upd.Add("fec_agr", "@fec_agr", "F");
+            Upd.Add("observacion", "@observacion", "F");
+            Upd.Add("añada", "@añada", "F");
+            Upd.Add("costo", "@costo", "F");
+            Upd.Add("costo_oc", "@costo_oc", "F");
+            Upd.Add("costo_estadistico", "@costo_estadistico", "F");
+            Upd.Add("atributo_variante_1", "@atributo_variante_1", "F");
+            Upd.Add("codigo_producto", "@codigo_producto", "F");
+            Upd.Add("lic_plate", "@lic_plate", "F");
+            Upd.Add("pallet_no_estandar", "@pallet_no_estandar", "F");
+            Upd.Add("idordencompraenc", "@idordencompraenc", "F");
+            Upd.Add("idordencompradet", "@idordencompradet", "F");
+            Upd.Add("idjornadasistema", "@idjornadasistema", "F");
+            Upd.Where("IdRecepcionDet = @IdRecepcionDet AND IdRecepcionEnc = @IdRecepcionEnc");
+
+            string sp = Upd.SQL();
+            var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
+
+            Bind_3pl(cmd, oBeTrans_re_det);
             rowsAffected = cmd.ExecuteNonQuery();
 
             return rowsAffected;
@@ -583,6 +700,49 @@ public class clsLnTrans_re_det
         cmd.Parameters.Add(new SqlParameter("@IdJornadaSistema", NullIfZero(o.IdJornadaSistema)));
     }
 
+    public static void Bind_3pl(SqlCommand cmd, clsBeTrans_re_det_3pl o)
+    {
+        object NullIfZero(int value) => value == 0 ? DBNull.Value : value;
+        object NullIfEmpty(string? value) => string.IsNullOrWhiteSpace(value) ? DBNull.Value : value;
+
+        cmd.Parameters.Add(new SqlParameter("@IdRecepcionDet", NullIfZero(o.IdRecepcionDet)));
+        cmd.Parameters.Add(new SqlParameter("@IdRecepcionEnc", NullIfZero(o.IdRecepcionEnc)));
+        cmd.Parameters.Add(new SqlParameter("@IdProductoBodega", NullIfZero(o.IdProductoBodega)));
+        cmd.Parameters.Add(new SqlParameter("@IdPresentacion", NullIfZero(o.IdPresentacion)));
+        cmd.Parameters.Add(new SqlParameter("@IdUnidadMedida", NullIfZero(o.IdUnidadMedida)));
+        cmd.Parameters.Add(new SqlParameter("@IdProductoEstado", NullIfZero(o.IdProductoEstado)));
+        cmd.Parameters.Add(new SqlParameter("@IdOperadorBodega", NullIfZero(o.IdOperadorBodega)));
+        cmd.Parameters.Add(new SqlParameter("@IdMotivoDevolucion", NullIfZero(o.IdMotivoDevolucion)));
+        cmd.Parameters.Add(new SqlParameter("@No_Linea", o.No_Linea));
+        cmd.Parameters.Add(new SqlParameter("@cantidad_recibida", o.Cantidad_recibida));
+        cmd.Parameters.Add(new SqlParameter("@nombre_producto", NullIfEmpty(o.Nombre_producto)));
+        cmd.Parameters.Add(new SqlParameter("@nombre_presentacion", NullIfEmpty(o.Nombre_presentacion)));
+        cmd.Parameters.Add(new SqlParameter("@nombre_unidad_medida", NullIfEmpty(o.Nombre_unidad_medida)));
+        cmd.Parameters.Add(new SqlParameter("@nombre_producto_estado", NullIfEmpty(o.Nombre_producto_estado)));
+        cmd.Parameters.Add(new SqlParameter("@lote", NullIfEmpty(o.Lote)));
+        cmd.Parameters.Add(new SqlParameter("@fecha_vence", o.Fecha_vence));
+        cmd.Parameters.Add(new SqlParameter("@fecha_ingreso", o.Fecha_ingreso));
+        cmd.Parameters.Add(new SqlParameter("@peso", o.Peso));
+        cmd.Parameters.Add(new SqlParameter("@peso_estadistico", o.Peso_Estadistico));
+        cmd.Parameters.Add(new SqlParameter("@peso_minimo", o.Peso_Minimo));
+        cmd.Parameters.Add(new SqlParameter("@peso_maximo", o.Peso_Maximo));
+        cmd.Parameters.Add(new SqlParameter("@peso_unitario", o.peso_unitario));
+        cmd.Parameters.Add(new SqlParameter("@user_agr", NullIfEmpty(o.User_agr)));
+        cmd.Parameters.Add(new SqlParameter("@fec_agr", o.Fec_agr));
+        cmd.Parameters.Add(new SqlParameter("@observacion", NullIfEmpty(o.Observacion)));
+        cmd.Parameters.Add(new SqlParameter("@añada", NullIfZero(o.Añada)));
+        cmd.Parameters.Add(new SqlParameter("@costo", o.Costo));
+        cmd.Parameters.Add(new SqlParameter("@costo_oc", o.Costo_Oc));
+        cmd.Parameters.Add(new SqlParameter("@costo_estadistico", o.Costo_Estadistico));
+        cmd.Parameters.Add(new SqlParameter("@atributo_variante_1", NullIfEmpty(o.Atributo_Variante_1)));
+        cmd.Parameters.Add(new SqlParameter("@codigo_producto", NullIfEmpty(o.Codigo_Producto)));
+        cmd.Parameters.Add(new SqlParameter("@lic_plate", NullIfEmpty(o.Lic_plate)));
+        cmd.Parameters.Add(new SqlParameter("@pallet_no_estandar", o.Pallet_No_Estandar));
+        cmd.Parameters.Add(new SqlParameter("@IdOrdenCompraEnc", NullIfZero(o.IdOrdenCompraEnc)));
+        cmd.Parameters.Add(new SqlParameter("@IdOrdenCompraDet", NullIfZero(o.IdOrdenCompraDet)));
+        cmd.Parameters.Add(new SqlParameter("@IdJornadaSistema", NullIfZero(o.IdJornadaSistema)));
+    }
+
     public static void InsertarOActualizar(List<clsBeTrans_re_det> entities, SqlConnection conn, SqlTransaction tx)
     {
         try
@@ -603,6 +763,25 @@ public class clsLnTrans_re_det
         }
     }
 
+    public static void InsertarOActualizar_3pl(List<clsBeTrans_re_det_3pl> entities, SqlConnection conn, SqlTransaction tx)
+    {
+        try
+        {
+            foreach (var entity in entities)
+            {
+                bool existe = Existe(entity.IdRecepcionDet, entity.IdRecepcionEnc, conn, tx);
+
+                if (existe)
+                    Actualizar_3pl(entity, conn, tx);
+                else
+                    Insertar_3pl(entity, conn, tx);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
     public static bool Existe(int IdRecepcionDet, int IdRecepcionEnc, SqlConnection pConnection, SqlTransaction pTransaction)
     {
         try

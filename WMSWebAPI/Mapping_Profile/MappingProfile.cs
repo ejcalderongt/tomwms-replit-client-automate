@@ -292,6 +292,8 @@ public class MappingProfile : Profile
         CreateMap<RecepcionDet_3plDto,clsBeTrans_re_det_3pl>().ReverseMap();
         CreateMap<MotivoDevolucion_3plDto, clsBeMotivo_devolucion>().ReverseMap();
         CreateMap<RecepcionOperador_3plDto, clsBeTrans_re_op_3pl >().ReverseMap();
-
+        CreateMap<TransPeDet_3plDto, clsBeTrans_pe_det_3pl>().ReverseMap();
+        //CreateMap<StockResDto, clsBeStock_res>().ReverseMap();
+        CreateMap<StockRes_3plDto, clsBeStock_res_3pl>().ReverseMap();
     }
 }

@@ -60,6 +60,29 @@ public class clsLnTrans_re_op
         }
     }
 
+    public static int Insertar_3pl(clsBeTrans_re_op_3pl oBeTrans_re_op,
+                                  SqlConnection pConection,
+                                  SqlTransaction pTransaction)
+    {
+        Ins.Init("trans_re_op");
+        Ins.Add("idoperadorrec", "@idoperadorrec", "F");
+        Ins.Add("idrecepcionenc", "@idrecepcionenc", "F");
+        Ins.Add("idoperadorbodega", "@idoperadorbodega", "F");
+        Ins.Add("user_agr", "@user_agr", "F");
+        Ins.Add("fec_agr", "@fec_agr", "F");
+        Ins.Add("user_mod", "@user_mod", "F");
+        Ins.Add("fec_mod", "@fec_mod", "F");
+
+        string sp = Ins.SQL();
+
+        using (SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction))
+        {
+            cmd.CommandType = CommandType.Text;
+            BindParameters_3pl(cmd, oBeTrans_re_op);
+            return cmd.ExecuteNonQuery();
+        }
+    }
+
     public static int Insertar(IConfiguration config, clsBeTrans_re_op oBeTrans_re_op)
     {
 
@@ -135,6 +158,31 @@ public class clsLnTrans_re_op
         {
             cmd.CommandType = CommandType.Text;
             BindParameters(cmd, oBeTrans_re_op);
+            return cmd.ExecuteNonQuery();
+        }
+    }
+
+    public static int Actualizar_3pl(clsBeTrans_re_op_3pl oBeTrans_re_op,
+                                     SqlConnection pConection,
+                                     SqlTransaction pTransaction)
+    {
+        Upd.Init("trans_re_op");
+        Upd.Add("idoperadorrec", "@idoperadorrec", "F");
+        Upd.Add("idrecepcionenc", "@idrecepcionenc", "F");
+        Upd.Add("idoperadorbodega", "@idoperadorbodega", "F");
+        Upd.Add("user_agr", "@user_agr", "F");
+        Upd.Add("fec_agr", "@fec_agr", "F");
+        Upd.Add("user_mod", "@user_mod", "F");
+        Upd.Add("fec_mod", "@fec_mod", "F");
+        Upd.Where("IdOperadorRec = @IdOperadorRec" +
+            " AND IdRecepcionEnc = @IdRecepcionEnc");
+
+        string sp = Upd.SQL();
+
+        using (SqlCommand cmd = new SqlCommand(sp, pConection, pTransaction))
+        {
+            cmd.CommandType = CommandType.Text;
+            BindParameters_3pl(cmd, oBeTrans_re_op);
             return cmd.ExecuteNonQuery();
         }
     }
@@ -461,6 +509,18 @@ public class clsLnTrans_re_op
         cmd.Parameters.Add(new SqlParameter("@user_mod", string.IsNullOrWhiteSpace(oBeTrans_re_op.User_mod) ? DBNull.Value : oBeTrans_re_op.User_mod));
         cmd.Parameters.Add(new SqlParameter("@fec_mod", oBeTrans_re_op.Fec_mod == default ? DBNull.Value : oBeTrans_re_op.Fec_mod));
     }
+
+    public static void BindParameters_3pl(SqlCommand cmd, clsBeTrans_re_op_3pl oBeTrans_re_op)
+    {
+        cmd.Parameters.Add(new SqlParameter("@IdOperadorRec", oBeTrans_re_op.IdOperadorRec));
+        cmd.Parameters.Add(new SqlParameter("@IdRecepcionEnc", oBeTrans_re_op.IdRecepcionEnc));
+        cmd.Parameters.Add(new SqlParameter("@IdOperadorBodega", oBeTrans_re_op.IdOperadorBodega));
+        cmd.Parameters.Add(new SqlParameter("@user_agr", string.IsNullOrWhiteSpace(oBeTrans_re_op.User_agr) ? DBNull.Value : oBeTrans_re_op.User_agr));
+        cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeTrans_re_op.Fec_agr == default ? DBNull.Value : oBeTrans_re_op.Fec_agr));
+        cmd.Parameters.Add(new SqlParameter("@user_mod", string.IsNullOrWhiteSpace(oBeTrans_re_op.User_mod) ? DBNull.Value : oBeTrans_re_op.User_mod));
+        cmd.Parameters.Add(new SqlParameter("@fec_mod", oBeTrans_re_op.Fec_mod == default ? DBNull.Value : oBeTrans_re_op.Fec_mod));
+    }
+
     public static void InsertarOActualizar(List<clsBeTrans_re_op> entities, SqlConnection conn, SqlTransaction tx)
     {
         if (entities == null)
@@ -497,6 +557,41 @@ public class clsLnTrans_re_op
         }
     }
 
+    public static void InsertarOActualizar_3pl(List<clsBeTrans_re_op_3pl> entities, SqlConnection conn, SqlTransaction tx)
+    {
+        if (entities == null)
+            throw new ArgumentNullException(nameof(entities));
+
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
+
+        if (tx == null)
+            throw new ArgumentNullException(nameof(tx));
+
+        try
+        {
+            foreach (var entity in entities)
+            {
+                if (entity == null)
+                    continue;
+
+                if (entity.IdOperadorBodega != 0)
+                {
+                    bool existe = Existe(entity.IdOperadorRec, entity.IdRecepcionEnc, conn, tx);
+
+                    if (existe)
+                        Actualizar_3pl(entity, conn, tx);
+                    else
+                        Insertar_3pl(entity, conn, tx);
+                }
+            }
+        }
+        catch (SqlException ex)
+        {
+            var method = System.Reflection.MethodBase.GetCurrentMethod();
+            throw new Exception($"{method?.DeclaringType?.Name}.{method?.Name}: {ex.Message}", ex);
+        }
+    }
     public static bool Existe(int idOperadorRec, int idRecepcionEnc, SqlConnection conn, SqlTransaction tx)
     {
         try

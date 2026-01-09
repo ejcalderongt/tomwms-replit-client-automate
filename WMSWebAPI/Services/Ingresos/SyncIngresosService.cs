@@ -402,17 +402,18 @@ namespace WMSWebAPI.Services.Ingresos
                     if (re_enc_list != null)
                         clsLnTrans_re_enc.InsertarOActualizar_3pl(re_enc_list, conn, tx);
 
-                    //#GT06012025: aqui se debe agregar un metodo de tipo 3pl
-                    //if (re_det_list != null)
-                    //    clsLnTrans_re_det.InsertarOActualizar(re_det_list, conn, tx);
+                    //#GT06012025: se manea metodo 3pl
+                    if (re_det_list != null)
+                        clsLnTrans_re_det.InsertarOActualizar_3pl(re_det_list, conn, tx);
 
                     if (re_oc_list != null && re_oc_list.Count > 0)
                         clsLnTrans_re_oc.InsertarOActualizar(re_oc_list, conn, tx);
 
-                    //#GT06012025: aqui se debe agregar un metodo de tipo 3pl
-                    //if (ops_rec_list != null && ops_rec_list.Count > 0)
-                    //    clsLnTrans_re_op.InsertarOActualizar(ops_rec_list, conn, tx);
+                    //#GT06012025: Se maneja metodo 3pl
+                    if (ops_rec_list != null && ops_rec_list.Count > 0)
+                        clsLnTrans_re_op.InsertarOActualizar_3pl(ops_rec_list, conn, tx);
 
+                    //#proceso no aplica a Cealsa
                     //if (re_tr_list != null && re_tr_list.Count > 0)
                     //    clsLnTrans_re_tr.InsertarOActualizar(re_tr_list, conn, tx);
 
