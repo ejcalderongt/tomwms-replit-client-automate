@@ -32,7 +32,7 @@ namespace WMSWebAPI.Services.Producto.Presentacion
             }
             catch (Exception ex)
             {
-                throw new Exception("Error al procesar Clasificación → " + ex.Message, ex);
+                throw new Exception("Error al procesar Presentación → " + ex.Message, ex);
             }
         }
         // Método en la clase de servicio (PresentacionMi3SyncService)
