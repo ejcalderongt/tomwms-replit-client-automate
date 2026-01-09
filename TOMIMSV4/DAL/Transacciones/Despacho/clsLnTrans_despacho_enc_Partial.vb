@@ -326,9 +326,9 @@ Partial Public Class clsLnTrans_despacho_enc
 
             'Validar que si tiene Packing esté cerrado
 
-            'Validar_Solicitado_Vrs_Despachado(pBeDespachoEnc,
-            '                                  lConnection,
-            '                                  lTransaction)
+            Validar_Solicitado_Vrs_Despachado(pBeDespachoEnc,
+                                              lConnection,
+                                              lTransaction)
 
             'Despacho Encabezado
             Guarda_Trans_Despacho_Enc(pBeDespachoEnc,
@@ -3281,6 +3281,21 @@ Partial Public Class clsLnTrans_despacho_enc
             If ObjEnc IsNot Nothing Then
 
                 For Each BePedidoEnc As clsBeTrans_pe_enc In ObjEnc.ListaPedidos
+
+                    For Each peddet In BePedidoEnc.Detalle
+
+                        If peddet.Cantidad > 0 Then
+
+                            Dim cantidadpickeada As Double = ObjEnc.ListaDetalle?.FindAll(Function(x) x.IdPedidoDet = peddet.IdPedidoDet).Sum(Function(y) y.CantidadDespachada)
+
+                            If cantidadpickeada > peddet.Cantidad Then
+                                Throw New Exception("La cantidad pickeada (" & cantidadpickeada & ") del producto " &
+                                                    peddet.Codigo_Producto & " es mayor a la solicitada (" & peddet.Cantidad & ")")
+                            End If
+
+                        End If
+
+                    Next
 
                 Next
 
