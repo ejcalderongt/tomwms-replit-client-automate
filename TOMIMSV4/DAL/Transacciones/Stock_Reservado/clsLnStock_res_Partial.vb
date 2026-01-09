@@ -25906,12 +25906,15 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                                                         BeProducto.UnidadMedida.Nombre,
                                                                                         pStockResSolicitud.IdPresentacion,
                                                                                         pStockResSolicitud.Cantidad)
-                            '#EJC202401291004: Mejorar el mensaje cuando lleguen a este punto mis amados maestros.
-                            pBeTrasladoDet.Process_Result += vMensajeNoExplosionEnZonasNoPicking
-                            pBeTrasladoDet.Qty_to_Receive = vCantidadPendiente
-                            clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
-                                                                                  lConnection,
-                                                                                  ltransaction)
+
+                            If Not pBeTrasladoDet Is Nothing Then
+                                '#EJC202401291004: Mejorar el mensaje cuando lleguen a este punto mis amados maestros.
+                                pBeTrasladoDet.Process_Result += vMensajeNoExplosionEnZonasNoPicking
+                                pBeTrasladoDet.Qty_to_Receive = vCantidadPendiente
+                                clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
+                                                                                      lConnection,
+                                                                                      ltransaction)
+                            End If
 
                             Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
                         Else

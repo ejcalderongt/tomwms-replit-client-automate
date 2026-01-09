@@ -47,6 +47,8 @@ Partial Class frmMovimientosKardex
         Me.lblDel = New System.Windows.Forms.Label()
         Me.cmbBodega = New DevExpress.XtraEditors.LookUpEdit()
         Me.lblBodega = New System.Windows.Forms.Label()
+        Me.txtLote = New System.Windows.Forms.TextBox()
+        Me.lblLote = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdKardex, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -63,7 +65,7 @@ Partial Class frmMovimientosKardex
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.RibbonControl.SearchEditItem, Me.cmdActualizar, Me.cmdImprimir, Me.cmdSalir, Me.lblRegs, Me.mnuGuardarLayoutGrid, Me.mnuEliminarLayoutGrid, Me.cmdExportarExcel})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdActualizar, Me.cmdImprimir, Me.cmdSalir, Me.lblRegs, Me.mnuGuardarLayoutGrid, Me.mnuEliminarLayoutGrid, Me.cmdExportarExcel})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonControl.MaxItemId = 8
@@ -209,13 +211,15 @@ Partial Class frmMovimientosKardex
         '
         Me.GroupControl3.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.GroupControl3.Controls.Add(Me.lblLote)
+        Me.GroupControl3.Controls.Add(Me.txtLote)
         Me.GroupControl3.Controls.Add(Me.txtNombreProducto)
         Me.GroupControl3.Controls.Add(Me.txtIdProducto)
         Me.GroupControl3.Controls.Add(Me.lblProducto)
         Me.GroupControl3.Location = New System.Drawing.Point(6, 168)
         Me.GroupControl3.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl3.Name = "GroupControl3"
-        Me.GroupControl3.Size = New System.Drawing.Size(354, 86)
+        Me.GroupControl3.Size = New System.Drawing.Size(354, 157)
         Me.GroupControl3.TabIndex = 5
         Me.GroupControl3.Text = "Producto"
         '
@@ -255,7 +259,7 @@ Partial Class frmMovimientosKardex
         Me.GroupControl2.Controls.Add(Me.dtpFechaDel)
         Me.GroupControl2.Controls.Add(Me.lblAl)
         Me.GroupControl2.Controls.Add(Me.lblDel)
-        Me.GroupControl2.Location = New System.Drawing.Point(6, 274)
+        Me.GroupControl2.Location = New System.Drawing.Point(6, 333)
         Me.GroupControl2.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl2.Name = "GroupControl2"
         Me.GroupControl2.Size = New System.Drawing.Size(354, 124)
@@ -324,6 +328,24 @@ Partial Class frmMovimientosKardex
         Me.lblBodega.TabIndex = 4
         Me.lblBodega.Text = "Bodega:"
         '
+        'txtLote
+        '
+        Me.txtLote.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtLote.Location = New System.Drawing.Point(6, 108)
+        Me.txtLote.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtLote.Name = "txtLote"
+        Me.txtLote.Size = New System.Drawing.Size(343, 23)
+        Me.txtLote.TabIndex = 10
+        '
+        'lblLote
+        '
+        Me.lblLote.AutoSize = True
+        Me.lblLote.Location = New System.Drawing.Point(8, 88)
+        Me.lblLote.Name = "lblLote"
+        Me.lblLote.Size = New System.Drawing.Size(36, 16)
+        Me.lblLote.TabIndex = 11
+        Me.lblLote.Text = "Lote:"
+        '
         'frmMovimientosKardex
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -384,4 +406,6 @@ Partial Class frmMovimientosKardex
     Friend WithEvents mnuGuardarLayoutGrid As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuEliminarLayoutGrid As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents cmdExportarExcel As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents txtLote As TextBox
+    Friend WithEvents lblLote As Label
 End Class
