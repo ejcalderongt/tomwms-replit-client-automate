@@ -246,6 +246,7 @@ Partial Class frmInventario
         Me.colHora_Fin = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.colIdInventarioEnc = New DevExpress.XtraGrid.Columns.GridColumn()
         Me.tabInvTeorico = New DevExpress.XtraTab.XtraTabPage()
+        Me.grcMenu = New DevExpress.XtraEditors.GroupControl()
         Me.dgridInvTeorico = New DevExpress.XtraGrid.GridControl()
         Me.gvInvTeoricoWMS = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.tabComparativoERPWMS = New DevExpress.XtraTab.XtraTabPage()
@@ -309,6 +310,9 @@ Partial Class frmInventario
         Me.bwKPI = New System.ComponentModel.BackgroundWorker()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
         Me.WorkspaceManager1 = New DevExpress.Utils.WorkspaceManager(Me.components)
+        Me.ContextMenuStrip2 = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
+        Me.btnAgregar = New System.Windows.Forms.ToolStripMenuItem()
         Fec_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
@@ -428,6 +432,8 @@ Partial Class frmInventario
         CType(Me.DSReconteo, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView8, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tabInvTeorico.SuspendLayout()
+        CType(Me.grcMenu, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grcMenu.SuspendLayout()
         CType(Me.dgridInvTeorico, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gvInvTeoricoWMS, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tabComparativoERPWMS.SuspendLayout()
@@ -501,6 +507,7 @@ Partial Class frmInventario
         CType(Me.GridViewUbicacionesNoContadas, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DetalleBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'Fec_agrLabel
@@ -2674,21 +2681,37 @@ Partial Class frmInventario
         'tabInvTeorico
         '
         Me.tabInvTeorico.Controls.Add(Me.dgridInvTeorico)
+        Me.tabInvTeorico.Controls.Add(Me.grcMenu)
         Me.tabInvTeorico.Margin = New System.Windows.Forms.Padding(4)
         Me.tabInvTeorico.Name = "tabInvTeorico"
         Me.tabInvTeorico.Size = New System.Drawing.Size(1184, 435)
         Me.tabInvTeorico.Text = "Comparativo Teórico WMS Vrs Físico"
         '
+        'grcMenu
+        '
+        Me.grcMenu.Appearance.BackColor = System.Drawing.Color.Transparent
+        Me.grcMenu.Appearance.Options.UseBackColor = True
+        Me.grcMenu.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder
+        Me.grcMenu.CaptionLocation = DevExpress.Utils.Locations.Top
+        Me.grcMenu.Controls.Add(Me.MenuStrip1)
+        Me.grcMenu.Dock = System.Windows.Forms.DockStyle.Top
+        Me.grcMenu.GroupStyle = DevExpress.Utils.GroupStyle.Light
+        Me.grcMenu.Location = New System.Drawing.Point(0, 0)
+        Me.grcMenu.Name = "grcMenu"
+        Me.grcMenu.Padding = New System.Windows.Forms.Padding(10)
+        Me.grcMenu.Size = New System.Drawing.Size(1184, 38)
+        Me.grcMenu.TabIndex = 2
+        '
         'dgridInvTeorico
         '
         Me.dgridInvTeorico.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgridInvTeorico.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        Me.dgridInvTeorico.Location = New System.Drawing.Point(0, 0)
+        Me.dgridInvTeorico.Location = New System.Drawing.Point(0, 38)
         Me.dgridInvTeorico.MainView = Me.gvInvTeoricoWMS
         Me.dgridInvTeorico.Margin = New System.Windows.Forms.Padding(4)
         Me.dgridInvTeorico.MenuManager = Me.RibbonControl
         Me.dgridInvTeorico.Name = "dgridInvTeorico"
-        Me.dgridInvTeorico.Size = New System.Drawing.Size(1184, 435)
+        Me.dgridInvTeorico.Size = New System.Drawing.Size(1184, 397)
         Me.dgridInvTeorico.TabIndex = 0
         Me.dgridInvTeorico.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvInvTeoricoWMS})
         '
@@ -3430,6 +3453,27 @@ Partial Class frmInventario
         Me.WorkspaceManager1.TargetControl = Me
         Me.WorkspaceManager1.TransitionType = PushTransition1
         '
+        'ContextMenuStrip2
+        '
+        Me.ContextMenuStrip2.Name = "ContextMenuStrip2"
+        Me.ContextMenuStrip2.Size = New System.Drawing.Size(61, 4)
+        '
+        'MenuStrip1
+        '
+        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnAgregar})
+        Me.MenuStrip1.Location = New System.Drawing.Point(10, 10)
+        Me.MenuStrip1.Name = "MenuStrip1"
+        Me.MenuStrip1.Size = New System.Drawing.Size(1164, 24)
+        Me.MenuStrip1.TabIndex = 0
+        Me.MenuStrip1.Text = "MenuStrip1"
+        '
+        'AgregarToolStripMenuItem
+        '
+        Me.btnAgregar.Image = CType(resources.GetObject("AgregarToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.btnAgregar.Name = "AgregarToolStripMenuItem"
+        Me.btnAgregar.Size = New System.Drawing.Size(77, 20)
+        Me.btnAgregar.Text = "Agregar"
+        '
         'frmInventario
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -3568,6 +3612,9 @@ Partial Class frmInventario
         CType(Me.DSReconteo, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView8, System.ComponentModel.ISupportInitialize).EndInit()
         Me.tabInvTeorico.ResumeLayout(False)
+        CType(Me.grcMenu, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grcMenu.ResumeLayout(False)
+        Me.grcMenu.PerformLayout()
         CType(Me.dgridInvTeorico, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.gvInvTeoricoWMS, System.ComponentModel.ISupportInitialize).EndInit()
         Me.tabComparativoERPWMS.ResumeLayout(False)
@@ -3642,6 +3689,8 @@ Partial Class frmInventario
         CType(Me.GridViewUbicacionesNoContadas, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView2, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DetalleBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.MenuStrip1.ResumeLayout(False)
+        Me.MenuStrip1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -3925,4 +3974,8 @@ Partial Class frmInventario
     Friend WithEvents GridView2 As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents SplitContainer3 As SplitContainer
     Friend WithEvents lblGaugeUbicaciones As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents grcMenu As DevExpress.XtraEditors.GroupControl
+    Friend WithEvents ContextMenuStrip2 As ContextMenuStrip
+    Friend WithEvents MenuStrip1 As MenuStrip
+    Friend WithEvents btnAgregar As ToolStripMenuItem
 End Class

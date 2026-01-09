@@ -41,7 +41,7 @@
     <SuiteName>WMS_PRD</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>48</ApplicationRevision>
+    <ApplicationRevision>50</ApplicationRevision>
     <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -1421,6 +1421,12 @@
       <DependentUpon>frmImplosion.vb</DependentUpon>
     </Compile>
     <Compile Include="Transacciones\Implosion\frmImplosion.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\frmInventarioDet.Designer.vb">
+      <DependentUpon>frmInventarioDet.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Inventario\frmInventarioDet.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Transacciones\Manufactura\frmManufactura.designer.vb">
@@ -3641,6 +3647,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Implosion\frmImplosion.resx">
       <DependentUpon>frmImplosion.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Inventario\frmInventarioDet.resx">
+      <DependentUpon>frmInventarioDet.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Transacciones\Manufactura\frmManufactura.resx">
       <DependentUpon>frmManufactura.vb</DependentUpon>
