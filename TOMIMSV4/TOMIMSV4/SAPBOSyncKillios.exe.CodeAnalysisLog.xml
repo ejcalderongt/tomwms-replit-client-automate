@@ -12,7 +12,7 @@
          <Members>
           <Member Name="#Importar_Bodegas_Desde_SAP_A_TablaIntermedia(System.Windows.Forms.RichTextBox,System.Windows.Forms.ProgressBar&amp;,System.Data.SqlClient.SqlConnection&amp;)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="Provide correct arguments to formatting methods" Category="Microsoft.Usage" CheckId="CA2241" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="DependsOnFix">
+            <Message TypeName="Provide correct arguments to formatting methods" Category="Microsoft.Usage" CheckId="CA2241" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="DependsOnFix">
              <Issue Name="MissingFormatItem" Certainty="75" Level="Warning" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Bodega" File="clsSyncSAPBodega.vb" Line="82">Method 'clsSyncSAPBodega.Importar_Bodegas_Desde_SAP_A_TablaIntermedia(RichTextBox, ByRef ProgressBar, ByRef SqlConnection)' calls 'String.Format(String, Object, Object)' and does not provide a format item for argument "2". The provided format string is: '"Error: {0} "'</Issue>
              <Issue Name="MissingFormatItem" Certainty="75" Level="Warning" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Bodega" File="clsSyncSAPBodega.vb" Line="104">Method 'clsSyncSAPBodega.Importar_Bodegas_Desde_SAP_A_TablaIntermedia(RichTextBox, ByRef ProgressBar, ByRef SqlConnection)' calls 'String.Format(String, Object, Object)' and does not provide a format item for argument "2". The provided format string is: '"Error: {0} "'</Issue>
              <Issue Name="MissingFormatItem" Certainty="75" Level="Warning" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Bodega" File="clsSyncSAPBodega.vb" Line="64">Method 'clsSyncSAPBodega.Importar_Bodegas_Desde_SAP_A_TablaIntermedia(RichTextBox, ByRef ProgressBar, ByRef SqlConnection)' calls 'String.Format(String, Object, Object)' and does not provide a format item for argument "2". The provided format string is: '"Procesando Bodega: {0} "'</Issue>
@@ -25,7 +25,7 @@
          <Members>
           <Member Name="#Insertar_Clientes_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(System.Windows.Forms.RichTextBox&amp;,System.Windows.Forms.ProgressBar&amp;,System.Boolean,System.Boolean)" Kind="Method" Static="True" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Clientes" File="clsSyncSAPClientes.vb" Line="40">'clsSyncSAPClientes.Insertar_Clientes_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(ByRef RichTextBox, ByRef ProgressBar, Boolean, Boolean)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
@@ -36,28 +36,28 @@
          <Members>
           <Member Name="#CrearEntidadProveedor(TOMWMS.clsBeI_nav_proveedor,TOMWMS.m_Global+pEmpresa)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Devolucion_Mercancia" File="clsSyncSAPDevolucionMercancia.vb" Line="312">'clsSyncSAPDevolucionMercancia.CrearEntidadProveedor(clsBeI_nav_proveedor, m_Global.pEmpresa)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#CrearProveedorBodega(TOMWMS.clsBeProveedor)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Devolucion_Mercancia" File="clsSyncSAPDevolucionMercancia.vb" Line="344">'clsSyncSAPDevolucionMercancia.CrearProveedorBodega(clsBeProveedor)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#Get_Solicitud_Devolucion_Detalle_SAP(SAPbobsCOM.Company&amp;,System.Int32)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Devolucion_Mercancia" File="clsSyncSAPDevolucionMercancia.vb" Line="157">'clsSyncSAPDevolucionMercancia.Get_Solicitud_Devolucion_Detalle_SAP(ByRef Company, Integer)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#Get_Solicitud_Devolucion_From_SAP(System.Boolean,System.String,TOMWMS.m_Global+pEmpresa)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Devolucion_Mercancia" File="clsSyncSAPDevolucionMercancia.vb" Line="91">'clsSyncSAPDevolucionMercancia.Get_Solicitud_Devolucion_From_SAP(Boolean, String, m_Global.pEmpresa)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
@@ -68,7 +68,7 @@
          <Members>
           <Member Name="#Marcar_Solicitud_Devolucion_Sincronizado_SAP(System.String,TOMWMS.clsDataContractDI+Estado_Enviado_SAP,System.Windows.Forms.RichTextBox,TOMWMS.m_Global+pEmpresa)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Devolucion_Proveedor" File="clsSyncSapDevolucionProveedor.vb" Line="290">'clsSyncSapDevolucionProveedor.Marcar_Solicitud_Devolucion_Sincronizado_SAP(String, clsDataContractDI.Estado_Enviado_SAP, RichTextBox, m_Global.pEmpresa)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
@@ -79,14 +79,14 @@
          <Members>
           <Member Name="#Enviar_Entrada_Mercancia_OC_SAP(TOMWMS.clsBeI_nav_config_enc,System.Int32,System.Collections.Generic.List`1&lt;TOMWMS.clsBeI_nav_transacciones_out&gt;,TOMWMS.clsBeTrans_oc_enc,System.String,System.Windows.Forms.RichTextBox&amp;,System.Windows.Forms.ProgressBar&amp;,SAPbobsCOM.Company,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Pedido_Compra" File="clsSyncSAPPedidoCompra.vb" Line="1426">'clsSyncSAPPedidoCompra.Enviar_Entrada_Mercancia_OC_SAP(clsBeI_nav_config_enc, Integer, List(Of clsBeI_nav_transacciones_out), clsBeTrans_oc_enc, String, ByRef RichTextBox, ByRef ProgressBar, Company, SqlConnection, SqlTransaction)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#Procesar_Detalle_Ingreso_Devolucion(TOMWMS.clsBeTrans_oc_enc,SAPbobsCOM.Documents,TOMWMS.clsDataContractDI+tTipoDocumentoIngreso,System.Collections.Generic.List`1&lt;TOMWMS.clsBeI_nav_transacciones_out&gt;,System.Int32,System.Windows.Forms.RichTextBox&amp;,TOMWMS.m_Global+pEmpresa,SAPbobsCOM.Company,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Pedido_Compra" File="clsSyncSAPPedidoCompra.vb" Line="729">'clsSyncSAPPedidoCompra.Procesar_Detalle_Ingreso_Devolucion(clsBeTrans_oc_enc, Documents, clsDataContractDI.tTipoDocumentoIngreso, List(Of clsBeI_nav_transacciones_out), Integer, ByRef RichTextBox, m_Global.pEmpresa, Company, SqlConnection, SqlTransaction)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
@@ -97,21 +97,21 @@
          <Members>
           <Member Name="#AsociarBodegas(TOMWMS.clsBeProducto,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction,System.Windows.Forms.RichTextBox)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Producto" File="clsSyncSAPProducto.vb" Line="1031">'clsSyncSAPProducto.AsociarBodegas(clsBeProducto, SqlConnection, SqlTransaction, RichTextBox)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#ResolverClasificacion(TOMWMS.clsBeI_nav_producto,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction,System.Data.SqlClient.SqlConnection,System.Windows.Forms.RichTextBox)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Producto" File="clsSyncSAPProducto.vb" Line="911">'clsSyncSAPProducto.ResolverClasificacion(clsBeI_nav_producto, SqlConnection, SqlTransaction, SqlConnection, RichTextBox)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#ResolverTipoProducto(TOMWMS.clsBeI_nav_producto,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction,System.Data.SqlClient.SqlConnection,System.Windows.Forms.RichTextBox)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Producto" File="clsSyncSAPProducto.vb" Line="943">'clsSyncSAPProducto.ResolverTipoProducto(clsBeI_nav_producto, SqlConnection, SqlTransaction, SqlConnection, RichTextBox)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
@@ -122,14 +122,14 @@
          <Members>
           <Member Name="#Importar_Proveedores_Desde_SAP_A_TablaIntermedia(System.Windows.Forms.RichTextBox,System.Windows.Forms.ProgressBar&amp;,System.Data.SqlClient.SqlConnection&amp;)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Proveedor" File="clsSyncSAPProveedor.vb" Line="145">'clsSyncSAPProveedor.Importar_Proveedores_Desde_SAP_A_TablaIntermedia(RichTextBox, ByRef ProgressBar, ByRef SqlConnection)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#InsertarProveedorNuevo(TOMWMS.clsBeI_nav_proveedor,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Proveedor" File="clsSyncSAPProveedor.vb" Line="375">'clsSyncSAPProveedor.InsertarProveedorNuevo(clsBeI_nav_proveedor, SqlConnection, SqlTransaction)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
@@ -140,7 +140,7 @@
          <Members>
           <Member Name="#FinalizarEntregaSAP(SAPbobsCOM.Company,TOMWMS.clsBeTrans_pe_enc,TOMWMS.clsTransaccion,System.Windows.Forms.RichTextBox,System.Collections.Generic.List`1&lt;TOMWMS.clsBeI_nav_transacciones_out&gt;)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Pedido_Cliente" File="clsSyncSAPSPedidoCliente.vb" Line="774">'clsSyncSAPSPedidoCliente.FinalizarEntregaSAP(Company, clsBeTrans_pe_enc, clsTransaccion, RichTextBox, List(Of clsBeI_nav_transacciones_out))' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
@@ -149,28 +149,28 @@
         </Type>
         <Type Name="clsSyncSAPTrasladoStock" Kind="Class" Accessibility="Public" ExternallyVisible="True">
          <Messages>
-          <Message TypeName="ImplementIDisposableCorrectly" Category="Microsoft.Design" CheckId="CA1063" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="Breaking">
+          <Message TypeName="ImplementIDisposableCorrectly" Category="Microsoft.Design" CheckId="CA1063" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="Breaking">
            <Issue Name="ProvideDisposeBool" Certainty="95" Level="Error">Provide an overridable implementation of Dispose(bool) on 'clsSyncSAPTrasladoStock' or mark the type as sealed. A call to Dispose(false) should only clean up native resources. A call to Dispose(true) should clean up both managed and native resources.</Issue>
           </Message>
          </Messages>
          <Members>
           <Member Name="#Dispose()" Kind="Method" Static="False" Accessibility="Public" ExternallyVisible="True">
            <Messages>
-            <Message TypeName="ImplementIDisposableCorrectly" Category="Microsoft.Design" CheckId="CA1063" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="Breaking">
+            <Message TypeName="ImplementIDisposableCorrectly" Category="Microsoft.Design" CheckId="CA1063" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="Breaking">
              <Issue Name="DisposeImplementation" Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Transferencia_Stock" File="clsSyncSAPTrasladoStock.vb" Line="7">Modify 'clsSyncSAPTrasladoStock.Dispose()' so that it calls Dispose(true), then calls GC.SuppressFinalize on the current object instance ('this' or 'Me' in Visual Basic), and then returns.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#InsertarClienteEnBodegas(TOMWMS.clsBeCliente,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)" Kind="Method" Static="True" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Transferencia_Stock" File="clsSyncSAPTrasladoStock.vb" Line="409">'clsSyncSAPTrasladoStock.InsertarClienteEnBodegas(clsBeCliente, SqlConnection, SqlTransaction)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
           </Member>
           <Member Name="#Procesar_Documentos(System.String,TOMWMS.m_Global+pEmpresa,System.String,TOMWMS.clsBeI_nav_config_enc,System.Windows.Forms.RichTextBox,System.String&amp;,TOMWMS.clsTransaccion)" Kind="Method" Static="False" Accessibility="Private" ExternallyVisible="False">
            <Messages>
-            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+            <Message TypeName="RethrowToPreserveStackDetails" Category="Microsoft.Usage" CheckId="CA2200" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
              <Issue Certainty="95" Level="Error" Path="C:\Users\carol\source\repos\TOMWMS_BOF\SAPSYNC_Killios\Clases Interface Sync\Transferencia_Stock" File="clsSyncSAPTrasladoStock.vb" Line="306">'clsSyncSAPTrasladoStock.Procesar_Documentos(String, m_Global.pEmpresa, String, clsBeI_nav_config_enc, RichTextBox, ByRef String, clsTransaccion)' rethrows a caught exception and specifies it explicitly as an argument. Use 'throw' without an argument instead, in order to preserve the stack location where the exception was initially raised.</Issue>
             </Message>
            </Messages>
@@ -179,21 +179,21 @@
         </Type>
         <Type Name="DSEjecuciones" Kind="Class" Accessibility="Public" ExternallyVisible="True">
          <Messages>
-          <Message TypeName="ImplementISerializableCorrectly" Category="Microsoft.Usage" CheckId="CA2240" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+          <Message TypeName="ImplementISerializableCorrectly" Category="Microsoft.Usage" CheckId="CA2240" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
            <Issue Certainty="60" Level="Error">Add an implementation of GetObjectData to type 'DSEjecuciones'.</Issue>
           </Message>
          </Messages>
         </Type>
         <Type Name="DSEjecuciones+DetalleDataTable" Kind="Class" Accessibility="Public" ExternallyVisible="True">
          <Messages>
-          <Message TypeName="ImplementISerializableCorrectly" Category="Microsoft.Usage" CheckId="CA2240" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+          <Message TypeName="ImplementISerializableCorrectly" Category="Microsoft.Usage" CheckId="CA2240" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
            <Issue Certainty="60" Level="Error">Add an implementation of GetObjectData to type 'DSEjecuciones.DetalleDataTable'.</Issue>
           </Message>
          </Messages>
         </Type>
         <Type Name="DSEjecuciones+EncabezadoDataTable" Kind="Class" Accessibility="Public" ExternallyVisible="True">
          <Messages>
-          <Message TypeName="ImplementISerializableCorrectly" Category="Microsoft.Usage" CheckId="CA2240" Status="Active" Created="2026-01-08 19:40:59Z" FixCategory="NonBreaking">
+          <Message TypeName="ImplementISerializableCorrectly" Category="Microsoft.Usage" CheckId="CA2240" Status="Active" Created="2026-01-09 00:59:45Z" FixCategory="NonBreaking">
            <Issue Certainty="60" Level="Error">Add an implementation of GetObjectData to type 'DSEjecuciones.EncabezadoDataTable'.</Issue>
           </Message>
          </Messages>
