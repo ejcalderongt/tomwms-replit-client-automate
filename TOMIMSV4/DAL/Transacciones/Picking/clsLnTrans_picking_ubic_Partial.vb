@@ -6214,6 +6214,8 @@ Partial Public Class clsLnTrans_picking_ubic
         Dim tmpBeListPickingUbic As List(Of clsBeTrans_picking_ubic) = Nothing
         Dim BePickingUbic As New clsBeTrans_picking_ubic
         Dim clsTrans As New clsTransaccion
+        Dim BePickingUbicT As New clsBeTrans_picking_ubic
+        Dim pCantT As Double = pCantidad
 
         Actualiza_Cant_Peso_Verificacion = False
 
@@ -6287,19 +6289,19 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                      pPeso,
                                                                      clsTrans.lConnection,
                                                                      clsTrans.lTransaction)
-                '#MA20251219
-                If BeBodega.impresion_verificacion Then
+                ''#MA20251219
+                'If BeBodega.impresion_verificacion Then
 
-                    pEtiqueta = New clsBeTrans_verificacion_etiqueta()
-                    pEtiqueta =
-                    clsLnTrans_verificacion_etiqueta.Guardar_Etiqueta_Verificacion(
-                                                                                    vBePickingUbic,
-                                                                                    pIdOperador,
-                                                                                    BeBodega.IdTipoEtiquetaVerificacion,
-                                                                                    clsTrans.lConnection,
-                                                                                    clsTrans.lTransaction
-                                                                                )
-                End If
+                '    pEtiqueta = New clsBeTrans_verificacion_etiqueta()
+                '    pEtiqueta =
+                '    clsLnTrans_verificacion_etiqueta.Guardar_Etiqueta_Verificacion(
+                '                                                                    vBePickingUbic,
+                '                                                                    pIdOperador,
+                '                                                                    BeBodega.IdTipoEtiquetaVerificacion,
+                '                                                                    clsTrans.lConnection,
+                '                                                                    clsTrans.lTransaction
+                '                                                                )
+                'End If
 
                 '#MECR11122025: Se agrego bitacora para logs de verificacion
                 resultado += " Codigo " & vBePickingUbic.CodigoProducto & " Pedido parámetro " & pIdPedidoEnc
@@ -6313,6 +6315,8 @@ Partial Public Class clsLnTrans_picking_ubic
                   pConection:=clsTrans.lConnection,
                   pTransaction:=clsTrans.lTransaction)
 
+                BePickingUbicT = vBePickingUbic
+
                 If (Math.Round(pCantidad - CantPendiente, 6) = 0) Then
                     Exit For
                 Else
@@ -6322,6 +6326,21 @@ Partial Public Class clsLnTrans_picking_ubic
 
             Next
 
+            BePickingUbicT.Cantidad_Verificada = pCantT
+
+            '#MA20251219
+            If BeBodega.impresion_verificacion Then
+
+                pEtiqueta = New clsBeTrans_verificacion_etiqueta()
+                pEtiqueta =
+                    clsLnTrans_verificacion_etiqueta.Guardar_Etiqueta_Verificacion(
+                                                                                    BePickingUbicT,
+                                                                                    pIdOperador,
+                                                                                    BeBodega.IdTipoEtiquetaVerificacion,
+                                                                                    clsTrans.lConnection,
+                                                                                    clsTrans.lTransaction
+                                                                                )
+            End If
             clsTrans.Commit_Transaction()
 
             Return True
