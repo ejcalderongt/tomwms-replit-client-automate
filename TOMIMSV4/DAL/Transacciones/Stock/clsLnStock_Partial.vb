@@ -11729,7 +11729,7 @@ Partial Public Class clsLnStock
                         'vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
 
                         '#EJC20251209 Agregó validación por error reportado en el despacho
-                        If objStockOrigen.Cantidad > objStockOrigen.Presentacion.Factor Then
+                        If objStockOrigen.Cantidad >= objStockOrigen.Presentacion.Factor Then
                             vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
                         Else
                             vCantidadDisponible = objStockOrigen.Cantidad

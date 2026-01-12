@@ -3288,10 +3288,16 @@ Partial Public Class clsLnTrans_despacho_enc
 
                             Dim cantidadpickeada As Double = ObjEnc.ListaDetalle?.FindAll(Function(x) x.IdPedidoDet = peddet.IdPedidoDet).Sum(Function(y) y.CantidadDespachada)
 
-                            If cantidadpickeada > peddet.Cantidad Then
-                                Throw New Exception("La cantidad pickeada (" & cantidadpickeada & ") del producto " &
+                            If peddet.Cantidad <> Math.Truncate(peddet.Cantidad) Then
+                                ' Tiene decimales
+                            Else
+                                If cantidadpickeada > peddet.Cantidad Then
+                                    Throw New Exception("La cantidad pickeada (" & cantidadpickeada & ") del producto " &
                                                     peddet.Codigo_Producto & " es mayor a la solicitada (" & peddet.Cantidad & ")")
+                                End If
+
                             End If
+
 
                         End If
 

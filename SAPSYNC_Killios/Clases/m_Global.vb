@@ -15,7 +15,7 @@ Public Module m_Global
     Public Property NoDocEntrySAP As Integer = 0
     Public Property EstadoEnviadoSAP As clsDataContractDI.Estado_Enviado_SAP? = 0
     Public Property gVersionApp As String = "7.9.8"
-    Public Property gFechaVersion As Date = New Date(2026, 1, 8)
+    Public Property gFechaVersion As Date = New Date(2026, 1, 9)
     Public Property gNombreInstancia As String = ""
     Public Property UsuarioSapFromUsuarioWMS As String = ""
     Public Property ClaveSapFromUsuarioWMS As String = ""
