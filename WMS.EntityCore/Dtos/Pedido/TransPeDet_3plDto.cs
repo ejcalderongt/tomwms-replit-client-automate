@@ -62,7 +62,7 @@ namespace WMSWebAPI.Dtos.Pedido
         public ProductoPresentacionDto Presentacion { get; set; } = new ProductoPresentacionDto();
         public UnidadMedidaDto UnidadMedida { get; set; } = new UnidadMedidaDto();
         public List<StockRes_3plDto> ListaStockRes { get; set; } = new List<StockRes_3plDto>();
-        public List<PickingUbicDto> ListaPickingUbic { get; set; } = new List<PickingUbicDto>();
+        public List<PickingUbic_3plDto> ListaPickingUbic { get; set; } = new List<PickingUbic_3plDto>();
         public string? Codigo_Producto { get; set; } = null;
         public string? NombreProducto { get; set; } = null;
         public string? ProductoPresentacion { get; set; } = null;

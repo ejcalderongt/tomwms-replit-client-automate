@@ -89,6 +89,44 @@ public class clsLnTrans_picking_det
         return rowsAffected;
     }
 
+    public static int Insertar_3pl(clsBeTrans_picking_det_3pl oBeTrans_picking_det, SqlConnection pConection, SqlTransaction pTransaction)
+    {
+        int rowsAffected = 0;
+
+        try
+        {
+            Ins.Init("trans_picking_det");
+            Ins.Add("idpickingdet", "@idpickingdet", "F");
+            Ins.Add("idpickingenc", "@idpickingenc", "F");
+            Ins.Add("idpedidoenc", "@idpedidoenc", "F");
+            Ins.Add("idpedidodet", "@idpedidodet", "F");
+            Ins.Add("idoperadorbodega", "@idoperadorbodega", "F");
+            Ins.Add("cantidad", "@cantidad", "F");
+            Ins.Add("cliente_dias", "@cliente_dias", "F");
+            Ins.Add("cantidad_recibida", "@cantidad_recibida", "F");
+            Ins.Add("user_agr", "@user_agr", "F");
+            Ins.Add("fec_agr", "@fec_agr", "F");
+            Ins.Add("user_mod", "@user_mod", "F");
+            Ins.Add("fec_mod", "@fec_mod", "F");
+            Ins.Add("activo", "@activo", "F");
+            Ins.Add("codigo", "@codigo", "F");
+            Ins.Add("nombre", "@nombre", "F");
+
+            string sp = Ins.SQL();
+
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text })
+            {
+                Bind_3pl(cmd, oBeTrans_picking_det);
+                rowsAffected = cmd.ExecuteNonQuery();
+            }
+        }
+        catch (SqlException)
+        {
+            throw;
+        }
+
+        return rowsAffected;
+    }
     public static int Insertar(IConfiguration config, clsBeTrans_picking_det oBeTrans_picking_det)
     {
 
@@ -191,6 +229,45 @@ public class clsLnTrans_picking_det
         return rowsAffected;
     }
 
+    public static int Actualizar_3pl(clsBeTrans_picking_det_3pl oBeTrans_picking_det, SqlConnection pConection, SqlTransaction pTransaction)
+    {
+        int rowsAffected = 0;
+
+        try
+        {
+            Upd.Init("trans_picking_det");
+            Upd.Add("idpickingdet", "@idpickingdet", "F");
+            Upd.Add("idpickingenc", "@idpickingenc", "F");
+            Upd.Add("idpedidoenc", "@idpedidoenc", "F");
+            Upd.Add("idpedidodet", "@idpedidodet", "F");
+            Upd.Add("idoperadorbodega", "@idoperadorbodega", "F");
+            Upd.Add("cantidad", "@cantidad", "F");
+            Upd.Add("cliente_dias", "@cliente_dias", "F");
+            Upd.Add("cantidad_recibida", "@cantidad_recibida", "F");
+            Upd.Add("user_agr", "@user_agr", "F");
+            Upd.Add("fec_agr", "@fec_agr", "F");
+            Upd.Add("user_mod", "@user_mod", "F");
+            Upd.Add("fec_mod", "@fec_mod", "F");
+            Upd.Add("activo", "@activo", "F");
+            Upd.Add("codigo", "@codigo", "F");
+            Upd.Add("nombre", "@nombre", "F");
+            Upd.Where("IdPickingDet = @IdPickingDet");
+
+            string sp = Upd.SQL();
+
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text })
+            {
+                Bind_3pl(cmd, oBeTrans_picking_det);
+                rowsAffected = cmd.ExecuteNonQuery();
+            }
+        }
+        catch (SqlException)
+        {
+            throw;
+        }
+
+        return rowsAffected;
+    }
     public int Eliminar(IConfiguration config, clsBeTrans_picking_det oBeTrans_picking_det, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
 
@@ -492,6 +569,25 @@ public class clsLnTrans_picking_det
         cmd.Parameters.Add(new SqlParameter("@codigo", !string.IsNullOrWhiteSpace(o.Codigo) ? o.Codigo : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@nombre", !string.IsNullOrWhiteSpace(o.Nombre) ? o.Nombre : DBNull.Value));
     }
+
+    public static void Bind_3pl(SqlCommand cmd, clsBeTrans_picking_det_3pl o)
+    {
+        cmd.Parameters.Add(new SqlParameter("@IdPickingDet", o.IdPickingDet != 0 ? o.IdPickingDet : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPickingEnc", o.IdPickingEnc != 0 ? o.IdPickingEnc : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPedidoEnc", o.IdPedidoEnc != 0 ? o.IdPedidoEnc : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPedidoDet", o.IdPedidoDet != 0 ? o.IdPedidoDet : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdOperadorBodega", o.IdOperadorBodega == 0 ? DBNull.Value : o.IdOperadorBodega)); //GT27062025 enviar null si operador es 0 
+        cmd.Parameters.Add(new SqlParameter("@cantidad", o.Cantidad != 0 ? o.Cantidad : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@cliente_dias", o.Cliente_dias != 0 ? o.Cliente_dias : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@cantidad_recibida", o.Cantidad_recibida != 0 ? o.Cantidad_recibida : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@user_agr", !string.IsNullOrWhiteSpace(o.User_agr) ? o.User_agr : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fec_agr", o.Fec_agr != DateTime.MinValue ? o.Fec_agr : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@user_mod", !string.IsNullOrWhiteSpace(o.User_mod) ? o.User_mod : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fec_mod", o.Fec_mod != DateTime.MinValue ? o.Fec_mod : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@activo", o.Activo));
+        cmd.Parameters.Add(new SqlParameter("@codigo", !string.IsNullOrWhiteSpace(o.Codigo) ? o.Codigo : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@nombre", !string.IsNullOrWhiteSpace(o.NombreProducto) ? o.NombreProducto : DBNull.Value));
+    }
     public static int InsertOrUpdate(List<clsBeTrans_picking_det> entities, SqlConnection conn, SqlTransaction tx)
     {
         int total = 0;
@@ -504,6 +600,30 @@ public class clsLnTrans_picking_det
                 int result = existe
                     ? Actualizar(entity, conn, tx)
                     : Insertar(entity, conn, tx);
+
+                total += result;
+            }
+
+            return total;
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
+    public static int InsertOrUpdate_3pl(List<clsBeTrans_picking_det_3pl> entities, SqlConnection conn, SqlTransaction tx)
+    {
+        int total = 0;
+
+        try
+        {
+            foreach (var entity in entities)
+            {
+                bool existe = Existe(entity.IdPickingDet, entity.IdPickingEnc, conn, tx);
+                int result = existe
+                    ? Actualizar_3pl(entity, conn, tx)
+                    : Insertar_3pl(entity, conn, tx);
 
                 total += result;
             }

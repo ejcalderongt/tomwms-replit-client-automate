@@ -266,7 +266,7 @@ Public Class frmPedido_List
 
                 End If
 
-                gviewEncabezadoPedido.BestFitColumns()
+                'gviewEncabezadoPedido.BestFitColumns()
 
             Catch ex As Exception
             End Try

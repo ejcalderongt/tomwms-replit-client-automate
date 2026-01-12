@@ -963,6 +963,7 @@ Partial Public Class clsLnTrans_pe_det
                         SUM(ISNULL(trans_picking_ubic.cantidad_verificada, 0)) As cantidad_verificada,
                         SUM(ISNULL(trans_picking_ubic.cantidad_despachada, 0)) as Cantidad_Despachada, 
                         ISNULL(trans_picking_ubic.encontrado, 0) As Encontrado, trans_picking_ubic.IdProductoTallaColor
+                        ,res.color as Codigo_Color,res.talla as Codigo_Talla
                         FROM trans_picking_det INNER JOIN 
                         trans_picking_ubic ON trans_picking_det.IdPickingDet = trans_picking_ubic.IdPickingDet RIGHT OUTER JOIN 
                         stock_res AS res INNER JOIN 
@@ -995,7 +996,8 @@ Partial Public Class clsLnTrans_pe_det
                         ISNULL(trans_picking_ubic.acepto, 0), 
                         ISNULL(trans_picking_ubic.encontrado, 0),
                         bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion, 
-                        s.IdRecepcionEnc, s.IdRecepcionDet,trans_picking_ubic.IdProductoTallaColor "
+                        s.IdRecepcionEnc, s.IdRecepcionDet,trans_picking_ubic.IdProductoTallaColor,
+                        res.color ,res.talla "
 
             vSQL += " ORDER BY bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion "
 

@@ -117,9 +117,9 @@ Partial Class frmPicking
         Me.RibbonPageGroup5 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup3 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup2 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
+        Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.RibbonStatusBar1 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.RibbonStatusBar2 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
-        Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.PopupMenu1 = New DevExpress.XtraBars.PopupMenu(Me.components)
         Me.XtraTabControl1 = New DevExpress.XtraTab.XtraTabControl()
         Me.XtratabPageDato = New DevExpress.XtraTab.XtraTabPage()
@@ -552,7 +552,7 @@ Partial Class frmPicking
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.RibbonControl.Size = New System.Drawing.Size(1762, 193)
-        Me.RibbonControl.StatusBar = Me.RibbonStatusBar
+        Me.RibbonControl.StatusBar = Me.RibbonStatusBar2
         '
         'mnuGuardar
         '
@@ -874,6 +874,16 @@ Partial Class frmPicking
         Me.RibbonPageGroup2.Name = "RibbonPageGroup2"
         Me.RibbonPageGroup2.Text = "Estado del Registro"
         '
+        'RibbonStatusBar
+        '
+        Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegistros)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 930)
+        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4)
+        Me.RibbonStatusBar.Name = "RibbonStatusBar"
+        Me.RibbonStatusBar.Ribbon = Me.RibbonControl
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1762, 30)
+        Me.RibbonStatusBar.Visible = False
+        '
         'RibbonStatusBar1
         '
         Me.RibbonStatusBar1.ItemLinks.Add(Me.lblRegs)
@@ -890,16 +900,6 @@ Partial Class frmPicking
         Me.RibbonStatusBar2.Name = "RibbonStatusBar2"
         Me.RibbonStatusBar2.Ribbon = Me.RibbonControl
         Me.RibbonStatusBar2.Size = New System.Drawing.Size(1153, 33)
-        '
-        'RibbonStatusBar
-        '
-        Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegistros)
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 930)
-        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4)
-        Me.RibbonStatusBar.Name = "RibbonStatusBar"
-        Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1762, 30)
-        Me.RibbonStatusBar.Visible = False
         '
         'PopupMenu1
         '
@@ -1845,11 +1845,11 @@ Partial Class frmPicking
         Me.grdOperadorBodega.DataSource = Me.DataBindingSource
         Me.grdOperadorBodega.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grdOperadorBodega.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        Me.grdOperadorBodega.Location = New System.Drawing.Point(2, 59)
+        Me.grdOperadorBodega.Location = New System.Drawing.Point(2, 55)
         Me.grdOperadorBodega.MainView = Me.DgridOperadorBodega
         Me.grdOperadorBodega.Margin = New System.Windows.Forms.Padding(4)
         Me.grdOperadorBodega.Name = "grdOperadorBodega"
-        Me.grdOperadorBodega.Size = New System.Drawing.Size(766, 545)
+        Me.grdOperadorBodega.Size = New System.Drawing.Size(766, 549)
         Me.grdOperadorBodega.TabIndex = 0
         Me.grdOperadorBodega.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.DgridOperadorBodega})
         '
@@ -1938,7 +1938,7 @@ Partial Class frmPicking
         Me.ToolStripPR.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdSavePR, Me.cmdDesactivarPresentacion})
         Me.ToolStripPR.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripPR.Name = "ToolStripPR"
-        Me.ToolStripPR.Size = New System.Drawing.Size(766, 31)
+        Me.ToolStripPR.Size = New System.Drawing.Size(766, 27)
         Me.ToolStripPR.TabIndex = 2
         Me.ToolStripPR.Text = "ToolStrip2"
         '
@@ -1947,7 +1947,7 @@ Partial Class frmPicking
         Me.cmdSavePR.Image = CType(resources.GetObject("cmdSavePR.Image"), System.Drawing.Image)
         Me.cmdSavePR.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdSavePR.Name = "cmdSavePR"
-        Me.cmdSavePR.Size = New System.Drawing.Size(73, 28)
+        Me.cmdSavePR.Size = New System.Drawing.Size(73, 24)
         Me.cmdSavePR.Text = "Todos"
         '
         'cmdDesactivarPresentacion
@@ -1955,7 +1955,7 @@ Partial Class frmPicking
         Me.cmdDesactivarPresentacion.Image = CType(resources.GetObject("cmdDesactivarPresentacion.Image"), System.Drawing.Image)
         Me.cmdDesactivarPresentacion.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDesactivarPresentacion.Name = "cmdDesactivarPresentacion"
-        Me.cmdDesactivarPresentacion.Size = New System.Drawing.Size(90, 28)
+        Me.cmdDesactivarPresentacion.Size = New System.Drawing.Size(90, 24)
         Me.cmdDesactivarPresentacion.Text = "Ninguno"
         '
         'dgridPickingUbic

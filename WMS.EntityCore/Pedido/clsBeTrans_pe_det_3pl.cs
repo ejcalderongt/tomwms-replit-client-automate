@@ -184,7 +184,7 @@ namespace WMS.EntityCore.Pedido
         public clsBeProducto_presentacion Presentacion { get; set; } = new clsBeProducto_presentacion();
         public clsBeUnidad_medida UnidadMedida { get; set; } = new clsBeUnidad_medida();
         public List<clsBeStock_res_3pl> ListaStockRes { get; set; } = new List<clsBeStock_res_3pl>();
-        public List<clsBeTrans_picking_ubic>? ListaPickingUbic { get; set; } = new List<clsBeTrans_picking_ubic>();
+        public List<clsBeTrans_picking_ubic_3pl>? ListaPickingUbic { get; set; } = new List<clsBeTrans_picking_ubic_3pl>();
         public string Codigo_Producto { get; set; } = string.Empty;
         public string NombreProducto { get; set; } = string.Empty;
         public string ProductoPresentacion { get; set; } = string.Empty;

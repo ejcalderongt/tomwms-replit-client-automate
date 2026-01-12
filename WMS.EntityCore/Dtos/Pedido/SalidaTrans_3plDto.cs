@@ -10,7 +10,7 @@ namespace WMSWebAPI.Dtos.Pedido
         public TransPeEncDto? Encabezado { get; set; }
         public List<TransPeDet_3plDto>? Detalle { get; set; }
         public List<TransPePolDto>? Poliza { get; set; }
-        public PickingDto? Picking { get; set; }
+        public Picking_3plDto? Picking { get; set; }
         public BodegaMuelleDto? BodegaMuelle { get; set; }
         public List<ClienteDto>? Cliente { get; set; }
         public List<OperadorDto>? Operadores { get; set; }

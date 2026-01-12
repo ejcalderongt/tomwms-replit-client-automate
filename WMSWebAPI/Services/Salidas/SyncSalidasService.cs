@@ -464,7 +464,7 @@ namespace WMSWebAPI.Services.Salidas
                 {
                     //var detalle = _mapper.Map<List<clsBeTrans_pe_det>>(dto.Detalle);
                     var detalle = _mapper.Map<List<clsBeTrans_pe_det_3pl>>(dto.Detalle);
-                    //clsLnTrans_pe_det.InsertOrUpdate(detalle, conn, tx);
+                    clsLnTrans_pe_det.InsertOrUpdate_3pl(detalle, conn, tx);
                 }
             }
             catch (Exception ex)
@@ -504,8 +504,9 @@ namespace WMSWebAPI.Services.Salidas
                 {
                     if (dto.Picking.Detalle != null && dto.Picking.Detalle.Any())
                     {
-                        var pickingDet = _mapper.Map<List<clsBeTrans_picking_det>>(dto.Picking.Detalle);
-                        clsLnTrans_picking_det.InsertOrUpdate(pickingDet, conn, tx);
+                        var pickingDet = _mapper.Map<List<clsBeTrans_picking_det_3pl>>(dto.Picking.Detalle);
+                        //clsLnTrans_picking_det.InsertOrUpdate(pickingDet, conn, tx);
+                        clsLnTrans_picking_det.InsertOrUpdate_3pl(pickingDet, conn, tx);
                     }
                 }
                 catch (Exception ex)
@@ -517,8 +518,9 @@ namespace WMSWebAPI.Services.Salidas
                 {
                     if (dto.Picking.PickingUbic != null && dto.Picking.PickingUbic.Any())
                     {
-                        var pickingUbic = _mapper.Map<List<clsBeTrans_picking_ubic>>(dto.Picking.PickingUbic);
-                        clsLnTrans_picking_ubic.InsertOrUpdate(pickingUbic, conn, tx);
+                        var pickingUbic = _mapper.Map<List<clsBeTrans_picking_ubic_3pl>>(dto.Picking.PickingUbic);
+                        //clsLnTrans_picking_ubic.InsertOrUpdate(pickingUbic, conn, tx);
+                        clsLnTrans_picking_ubic.InsertOrUpdate_3pl(pickingUbic, conn, tx);
                     }
                     { }
                 }
