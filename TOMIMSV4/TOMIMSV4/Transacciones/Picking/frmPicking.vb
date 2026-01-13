@@ -4758,7 +4758,4 @@ Public Class frmPicking
         chkverifica_auto.Enabled = estado
     End Sub
 
-    Private Sub chkProcesarDesdeBOF_CheckedChanged(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles chkProcesarDesdeBOF.CheckedChanged
-        XtraMessageBox.Show("procesar por bof")
-    End Sub
 End Class
