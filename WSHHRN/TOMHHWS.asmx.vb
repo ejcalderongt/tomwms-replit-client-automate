@@ -10357,7 +10357,7 @@ Public Class TOMHHWS
     '#MA20251410
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Get_Stock_By_Lic_Plate_JSON(ByVal pLicensePlate As String,
-                                      ByVal pIdBodega As Integer)
+                                           ByVal pIdBodega As Integer)
 
         'Get_Stock_By_Lic_Plate = Nothing
         Dim curContext As HttpContext = HttpContext.Current
@@ -10375,7 +10375,7 @@ Public Class TOMHHWS
                 SerializarJson(producto, "Presentacion.MedidasPorTarima")
                 SerializarJson(producto, "Presentacion.RellenadoPorUbicacionDePicking")
                 SerializarJson(producto, "Presentaciones")
-                SerializarJson(producto, "Codigos_barra")
+                SerializarJson(producto, "Codigos_Barra")
                 SerializarJson(producto, "Parametros")
                 SerializarJson(producto, "Stock.BePresentacionProductoEnStock.MedidasPorTarima")
                 SerializarJson(producto, "Stock.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking")
@@ -10383,12 +10383,16 @@ Public Class TOMHHWS
 
             'Dim responseObj As New With {.items = productos}
             Dim json As String = JsonConvert.SerializeObject(ObjProducto, New JsonSerializerSettings With {
-            .NullValueHandling = NullValueHandling.Include
+            .NullValueHandling = NullValueHandling.Include,
+            .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            .Formatting = Formatting.None
             })
+
+            Dim jsonModificado As String = json.Replace("[]", "null")
 
             curContext.Response.Clear()
             curContext.Response.ContentType = "application/json"
-            curContext.Response.Write(json)
+            curContext.Response.Write(jsonModificado)
             curContext.ApplicationInstance.CompleteRequest()
         Catch ex As Exception
 
