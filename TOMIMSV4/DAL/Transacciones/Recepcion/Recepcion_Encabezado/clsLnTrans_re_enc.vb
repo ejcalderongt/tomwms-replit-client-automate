@@ -67,7 +67,7 @@ Public Class clsLnTrans_re_enc
             Ins.Init("trans_re_enc")
             Ins.Add("idrecepcionenc", "@idrecepcionenc", DataType.Parametro)
             Ins.Add("idpropietariobodega", "@idpropietariobodega", DataType.Parametro)
-            Ins.Add("idmuelle", "@idmuelle", DataType.Parametro)
+            If Not oBeTrans_re_enc.IdMuelle = 0 Then Ins.Add("idmuelle", "@idmuelle", DataType.Parametro)
             Ins.Add("IdUbicacionRecepcion", "@IdUbicacionRecepcion", DataType.Parametro)
             Ins.Add("idtipotransaccion", "@idtipotransaccion", DataType.Parametro)
             Ins.Add("fecha_recepcion", "@fecha_recepcion", DataType.Parametro)
@@ -116,7 +116,7 @@ Public Class clsLnTrans_re_enc
 
             cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONENC", oBeTrans_re_enc.IdRecepcionEnc))
             cmd.Parameters.Add(New SqlParameter("@IDPROPIETARIOBODEGA", oBeTrans_re_enc.PropietarioBodega.IdPropietarioBodega))
-            cmd.Parameters.Add(New SqlParameter("@IDMUELLE", oBeTrans_re_enc.IdMuelle))
+            If Not oBeTrans_re_enc.IdMuelle = 0 Then cmd.Parameters.Add(New SqlParameter("@IDMUELLE", oBeTrans_re_enc.IdMuelle))
             cmd.Parameters.Add(New SqlParameter("@IdUbicacionRecepcion", oBeTrans_re_enc.IdUbicacionRecepcion))
             cmd.Parameters.Add(New SqlParameter("@IDTIPOTRANSACCION", IIf(oBeTrans_re_enc.IdTipoTransaccion = "", DBNull.Value, oBeTrans_re_enc.IdTipoTransaccion)))
             cmd.Parameters.Add(New SqlParameter("@FECHA_RECEPCION", oBeTrans_re_enc.Fecha_recepcion))

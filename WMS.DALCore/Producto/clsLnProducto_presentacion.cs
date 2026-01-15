@@ -1,7 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System.Data;
-using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Producto;
 
@@ -203,7 +201,7 @@ public class clsLnProducto_presentacion
             Upd.Add("genera_lp_auto", "@genera_lp_auto", "F");
             Upd.Add("permitir_paletizar", "@permitir_paletizar", "F");
             Upd.Add("sistema", "@sistema", "F");
-            Upd.Add("idpresentacionpallet", "@IdPresentacionPallet", "F");
+             //Upd.Add("idpresentacionpallet", "@IdPresentacionPallet", "F");
             Upd.Add("codigo", "@codigo", "F");
             Upd.Where("IdPresentacion = @IdPresentacion");
 
@@ -570,10 +568,11 @@ public class clsLnProducto_presentacion
     {
         try
         {
-            const string sql = @"SELECT TOP 1 * FROM producto_presentacion WHERE codigo = @codigo";
+            const string sql = @"SELECT TOP 1 * FROM producto_presentacion WHERE codigo = @codigo AND IdProducto = @IdProducto";
 
             using var cmd = new SqlCommand(sql, cn, tx);
             cmd.Parameters.AddWithValue("@codigo", Codigo);
+            cmd.Parameters.AddWithValue("@IdProducto", pBePresentacion.IdProducto);
 
             using var da = new SqlDataAdapter(cmd);
             var dt = new DataTable();
@@ -925,4 +924,65 @@ public class clsLnProducto_presentacion
             throw;
         }
     }
+    public static List<clsBeProducto_presentacion> GetByIds(IConfiguration configuration, List<int> presentacionIds)
+    {
+        if (presentacionIds == null || presentacionIds.Count == 0)
+            return new List<clsBeProducto_presentacion>();
+
+        presentacionIds = presentacionIds.Where(id => id > 0).Distinct().ToList();
+        if (presentacionIds.Count == 0)
+            return new List<clsBeProducto_presentacion>();
+
+        var result = new List<clsBeProducto_presentacion>();
+
+        using var lConnection = new SqlConnection(configuration.GetConnectionString("CST") ?? configuration["CST"]);
+        SqlTransaction? lTransaction = null;
+
+        try
+        {
+            lConnection.Open();
+            lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
+
+            var paramNames = presentacionIds.Select((_, i) => $"@p{i}").ToList();
+
+            string sql = $@"
+SELECT *
+FROM Producto_presentacion
+WHERE IdPresentacion IN ({string.Join(",", paramNames)})";
+
+            using var cmd = new SqlCommand(sql, lConnection, lTransaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            for (int i = 0; i < presentacionIds.Count; i++)
+            {
+                cmd.Parameters.Add(new SqlParameter(paramNames[i], SqlDbType.Int) { Value = presentacionIds[i] });
+            }
+
+            using var dad = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            dad.Fill(dt);
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeProducto_presentacion();
+                Cargar(ref be, dr);
+                result.Add(be);
+            }
+
+            lTransaction.Commit();
+            return result;
+        }
+        catch
+        {
+            lTransaction?.Rollback();
+            throw;
+        }
+        finally
+        {
+            lTransaction?.Dispose();
+        }
+    }
+
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using WMS.DALCore.Transacciones;
 using WMS.EntityCore.Operador;
 using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Producto;
@@ -8,6 +9,7 @@ using WMS.EntityCore.Proveedor;
 using WMS.EntityCore.Stock;
 using WMS.EntityCore.Trans_oc;
 using WMS.EntityCore.Trans_re;
+using WMS.EntityCore.Transacciones;
 using WMSWebAPI.Be;
 using WMSWebAPI.Dtos.Ingresos;
 using WMSWebAPI.Dtos.WebResponseDto;
@@ -228,13 +230,7 @@ namespace WMSWebAPI.Services.Ingresos
                 // 2) Insert a tabla intermedia
                 if (clsLnI_nav_ped_compra_enc.Insert_Single_Pedido_From_ERP(_configuration, beINavPedCompraEnc) <= 0)
                     throw new Exception("No se pudo insertar el pedido en la tabla intermedia.");
-
-                // 2.5) obtener Pedido de NavCompra
-                //clsBeTrans_pe_enc? pPedido = new clsBeTrans_pe_enc();
-                //pPedido.IdPedidoEnc = beINavPedCompraEnc.No_Document_Wms;
-                //if (!clsLnTrans_pe_enc.GetSingle(_configuration, ref pPedido)){
-                //    pPedido = null;
-                //}
+         
 
                 // 3) Procesar MI3
                 var bePedidoCompraEnc = new clsBeTrans_oc_enc();
@@ -248,15 +244,29 @@ namespace WMSWebAPI.Services.Ingresos
 
                 if (!ok)
                     throw new Exception(string.IsNullOrWhiteSpace(vResult)
-                        ? "Error al procesar el pedido en MI3."
+                        ? "Error al procesar el documento de ingreso en MI3."
                         : vResult);
 
-                return 1;
+                return bePedidoCompraEnc.IdOrdenCompraEnc;
             }            
             catch (Exception)
             {
                 throw; // propaga para que el controller lo maneje y responda 500 + mensaje
             }
         }
+
+        public List<clsBeI_nav_transacciones_out> Get_Ingresos_Pendientes_De_Procesar() {
+            List<clsBeI_nav_transacciones_out> detalles = clsLnI_nav_transacciones_out.Get_All_Ingresos_Pendientes_De_Envio(_configuration);
+            return detalles;
+        }
+
+        public int Marcar_Ingresos_Como_Enviados(List<int> idTransacciones)
+        {
+            var ids = idTransacciones.Where(x => x > 0).Distinct().ToList();
+            if (ids.Count == 0) return 0;
+            
+            return clsLnI_nav_transacciones_out.Marcar_Como_Enviado(_configuration, ids);
+        }
+
     }
 }

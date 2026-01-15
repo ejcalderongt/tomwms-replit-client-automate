@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Transactions;
+using WMS.EntityCore.Dtos.Catalogos;
 using WMS.EntityCore.Producto;
 using WMSWebAPI.Dtos.Catalogos;
 using WMSWebAPI.Dtos.Productos;
