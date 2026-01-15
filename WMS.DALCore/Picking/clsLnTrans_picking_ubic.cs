@@ -158,6 +158,81 @@ public class clsLnTrans_picking_ubic
         return rowsAffected;
     }
 
+    public static int Insertar_3pl(clsBeTrans_picking_ubic_3pl oBeTrans_picking_ubic, SqlConnection pConection, SqlTransaction pTransaction)
+    {
+        int rowsAffected = 0;
+
+        try
+        {
+            Ins.Init("trans_picking_ubic");
+            Ins.Add("idpickingubic", "@idpickingubic", "F");
+            Ins.Add("idpickingenc", "@idpickingenc", "F");
+            Ins.Add("idpickingdet", "@idpickingdet", "F");
+            Ins.Add("idubicacion", "@idubicacion", "F");
+            Ins.Add("idstock", "@idstock", "F");
+            Ins.Add("idpropietariobodega", "@idpropietariobodega", "F");
+            Ins.Add("idproductobodega", "@idproductobodega", "F");
+            Ins.Add("idproductoestado", "@idproductoestado", "F");
+            Ins.Add("idpresentacion", "@idpresentacion", "F");
+            Ins.Add("idunidadmedida", "@idunidadmedida", "F");
+            Ins.Add("idubicacionanterior", "@idubicacionanterior", "F");
+            Ins.Add("idrecepcion", "@idrecepcion", "F");
+            Ins.Add("lote", "@lote", "F");
+            Ins.Add("fecha_vence", "@fecha_vence", "F");
+            Ins.Add("fecha_minima", "@fecha_minima", "F");
+            Ins.Add("serial", "@serial", "F");
+            Ins.Add("lic_plate", "@lic_plate", "F");
+            Ins.Add("acepto", "@acepto", "F");
+            Ins.Add("peso_solicitado", "@peso_solicitado", "F");
+            Ins.Add("peso_recibido", "@peso_recibido", "F");
+            Ins.Add("peso_verificado", "@peso_verificado", "F");
+            Ins.Add("peso_despachado", "@peso_despachado", "F");
+            Ins.Add("cantidad_solicitada", "@cantidad_solicitada", "F");
+            Ins.Add("cantidad_recibida", "@cantidad_recibida", "F");
+            Ins.Add("cantidad_verificada", "@cantidad_verificada", "F");
+            Ins.Add("encontrado", "@encontrado", "F");
+            Ins.Add("dañado_verificacion", "@dañado_verificacion", "F");
+            Ins.Add("fecha_real_vence", "@fecha_real_vence", "F");
+            Ins.Add("no_packing", "@no_packing", "F");
+            Ins.Add("fecha_picking", "@fecha_picking", "F");
+            Ins.Add("fecha_verificado", "@fecha_verificado", "F");
+            Ins.Add("fecha_packing", "@fecha_packing", "F");
+            Ins.Add("fecha_despachado", "@fecha_despachado", "F");
+            Ins.Add("cantidad_despachada", "@cantidad_despachada", "F");
+            Ins.Add("user_agr", "@user_agr", "F");
+            Ins.Add("fec_agr", "@fec_agr", "F");
+            Ins.Add("user_mod", "@user_mod", "F");
+            Ins.Add("fec_mod", "@fec_mod", "F");
+            Ins.Add("activo", "@activo", "F");
+            Ins.Add("idpedidodet", "@idpedidodet", "F");
+            Ins.Add("dañado_picking", "@dañado_picking", "F");
+            Ins.Add("idstockres", "@idstockres", "F");
+            Ins.Add("lic_plate_reemplazo", "@lic_plate_reemplazo", "F");
+            Ins.Add("idubicacion_reemplazo", "@idubicacion_reemplazo", "F");
+            Ins.Add("idstock_reemplazo", "@idstock_reemplazo", "F");
+            Ins.Add("idbodega", "@idbodega", "F");
+            Ins.Add("idoperadorbodega_pickeo", "@idoperadorbodega_pickeo", "F");
+            Ins.Add("idoperadorbodega_verifico", "@idoperadorbodega_verifico", "F");
+            Ins.Add("idpedidoenc", "@idpedidoenc", "F");
+            Ins.Add("no_encontrado", "@no_encontrado", "F");
+            Ins.Add("idubicaciontemporal", "@idubicaciontemporal", "F");
+            Ins.Add("idoperadorbodega_asignado", "@idoperadorbodega_asignado", "F");
+
+            string sp = Ins.SQL();
+
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text })
+            {
+                Bind_3pl(cmd, oBeTrans_picking_ubic);
+                rowsAffected = cmd.ExecuteNonQuery();
+            }
+        }
+        catch (SqlException)
+        {
+            throw;
+        }
+
+        return rowsAffected;
+    }
     public static int Insertar(IConfiguration config, clsBeTrans_picking_ubic oBeTrans_picking_ubic)
     {
 
@@ -328,6 +403,82 @@ public class clsLnTrans_picking_ubic
         return rowsAffected;
     }
 
+    public static int Actualizar_3pl(clsBeTrans_picking_ubic_3pl oBeTrans_picking_ubic, SqlConnection pConection, SqlTransaction pTransaction)
+    {
+        int rowsAffected = 0;
+
+        try
+        {
+            Upd.Init("trans_picking_ubic");
+            Upd.Add("idpickingubic", "@idpickingubic", "F");
+            Upd.Add("idpickingenc", "@idpickingenc", "F");
+            Upd.Add("idpickingdet", "@idpickingdet", "F");
+            Upd.Add("idubicacion", "@idubicacion", "F");
+            Upd.Add("idstock", "@idstock", "F");
+            Upd.Add("idpropietariobodega", "@idpropietariobodega", "F");
+            Upd.Add("idproductobodega", "@idproductobodega", "F");
+            Upd.Add("idproductoestado", "@idproductoestado", "F");
+            Upd.Add("idpresentacion", "@idpresentacion", "F");
+            Upd.Add("idunidadmedida", "@idunidadmedida", "F");
+            Upd.Add("idubicacionanterior", "@idubicacionanterior", "F");
+            Upd.Add("idrecepcion", "@idrecepcion", "F");
+            Upd.Add("lote", "@lote", "F");
+            Upd.Add("fecha_vence", "@fecha_vence", "F");
+            Upd.Add("fecha_minima", "@fecha_minima", "F");
+            Upd.Add("serial", "@serial", "F");
+            Upd.Add("lic_plate", "@lic_plate", "F");
+            Upd.Add("acepto", "@acepto", "F");
+            Upd.Add("peso_solicitado", "@peso_solicitado", "F");
+            Upd.Add("peso_recibido", "@peso_recibido", "F");
+            Upd.Add("peso_verificado", "@peso_verificado", "F");
+            Upd.Add("peso_despachado", "@peso_despachado", "F");
+            Upd.Add("cantidad_solicitada", "@cantidad_solicitada", "F");
+            Upd.Add("cantidad_recibida", "@cantidad_recibida", "F");
+            Upd.Add("cantidad_verificada", "@cantidad_verificada", "F");
+            Upd.Add("encontrado", "@encontrado", "F");
+            Upd.Add("dañado_verificacion", "@dañado_verificacion", "F");
+            Upd.Add("fecha_real_vence", "@fecha_real_vence", "F");
+            Upd.Add("no_packing", "@no_packing", "F");
+            Upd.Add("fecha_picking", "@fecha_picking", "F");
+            Upd.Add("fecha_verificado", "@fecha_verificado", "F");
+            Upd.Add("fecha_packing", "@fecha_packing", "F");
+            Upd.Add("fecha_despachado", "@fecha_despachado", "F");
+            Upd.Add("cantidad_despachada", "@cantidad_despachada", "F");
+            Upd.Add("user_agr", "@user_agr", "F");
+            Upd.Add("fec_agr", "@fec_agr", "F");
+            Upd.Add("user_mod", "@user_mod", "F");
+            Upd.Add("fec_mod", "@fec_mod", "F");
+            Upd.Add("activo", "@activo", "F");
+            Upd.Add("idpedidodet", "@idpedidodet", "F");
+            Upd.Add("dañado_picking", "@dañado_picking", "F");
+            Upd.Add("idstockres", "@idstockres", "F");
+            Upd.Add("lic_plate_reemplazo", "@lic_plate_reemplazo", "F");
+            Upd.Add("idubicacion_reemplazo", "@idubicacion_reemplazo", "F");
+            Upd.Add("idstock_reemplazo", "@idstock_reemplazo", "F");
+            Upd.Add("idbodega", "@idbodega", "F");
+            Upd.Add("idoperadorbodega_pickeo", "@idoperadorbodega_pickeo", "F");
+            Upd.Add("idoperadorbodega_verifico", "@idoperadorbodega_verifico", "F");
+            Upd.Add("idpedidoenc", "@idpedidoenc", "F");
+            Upd.Add("no_encontrado", "@no_encontrado", "F");
+            Upd.Add("idubicaciontemporal", "@idubicaciontemporal", "F");
+            Upd.Add("idoperadorbodega_asignado", "@idoperadorbodega_asignado", "F");
+            Upd.Where("IdPickingUbic = @IdPickingUbic");
+
+            string sp = Upd.SQL();
+
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text })
+            {
+                Bind_3pl(cmd, oBeTrans_picking_ubic);
+                rowsAffected = cmd.ExecuteNonQuery();
+            }
+        }
+        catch (SqlException)
+        {
+            throw;
+        }
+
+        return rowsAffected;
+    }
     public int Eliminar(IConfiguration config, clsBeTrans_picking_ubic oBeTrans_picking_ubic, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
 
@@ -666,6 +817,62 @@ public class clsLnTrans_picking_ubic
         cmd.Parameters.Add(new SqlParameter("@IdUbicacionTemporal", o.IdUbicacionTemporal != 0 ? o.IdUbicacionTemporal : DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@IdOperadorBodega_Asignado", o.IdOperadorBodega_Asignado != 0 ? o.IdOperadorBodega_Asignado : DBNull.Value));
     }
+
+    public static void Bind_3pl(SqlCommand cmd, clsBeTrans_picking_ubic_3pl o)
+    {
+        cmd.Parameters.Add(new SqlParameter("@IdPickingUbic", o.IdPickingUbic != 0 ? o.IdPickingUbic : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPickingEnc", o.IdPickingEnc != 0 ? o.IdPickingEnc : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPickingDet", o.IdPickingDet != 0 ? o.IdPickingDet : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdUbicacion", o.IdUbicacion != 0 ? o.IdUbicacion : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdStock", o.IdStock != 0 ? o.IdStock : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPropietarioBodega", o.IdPropietarioBodega != 0 ? o.IdPropietarioBodega : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdProductoBodega", o.IdProductoBodega != 0 ? o.IdProductoBodega : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdProductoEstado", o.IdProductoEstado != 0 ? o.IdProductoEstado : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPresentacion", o.IdPresentacion != 0 ? o.IdPresentacion : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdUnidadMedida", o.IdUnidadMedida != 0 ? o.IdUnidadMedida : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdUbicacionAnterior", o.IdUbicacionAnterior != 0 ? o.IdUbicacionAnterior : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdRecepcion", o.IdRecepcion != 0 ? o.IdRecepcion : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@lote", !string.IsNullOrWhiteSpace(o.Lote) ? o.Lote : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fecha_vence", o.Fecha_Vence != DateTime.MinValue ? o.Fecha_Vence : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fecha_minima", o.Fecha_minima != DateTime.MinValue ? o.Fecha_minima : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@serial", !string.IsNullOrWhiteSpace(o.Serial) ? o.Serial : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@lic_plate", !string.IsNullOrWhiteSpace(o.Lic_plate) ? o.Lic_plate : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@acepto", o.Acepto));
+        cmd.Parameters.Add(new SqlParameter("@peso_solicitado", o.Peso_solicitado != 0 ? o.Peso_solicitado : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@peso_recibido", o.Peso_recibido != 0 ? o.Peso_recibido : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@peso_verificado", o.Peso_verificado != 0 ? o.Peso_verificado : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@peso_despachado", o.Peso_despachado != 0 ? o.Peso_despachado : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@cantidad_solicitada", o.Cantidad_Solicitada != 0 ? o.Cantidad_Solicitada : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@cantidad_recibida", o.Cantidad_Recibida != 0 ? o.Cantidad_Recibida : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@cantidad_verificada", o.Cantidad_Verificada != 0 ? o.Cantidad_Verificada : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@encontrado", o.Encontrado));
+        cmd.Parameters.Add(new SqlParameter("@dañado_verificacion", o.Dañado_verificacion));
+        cmd.Parameters.Add(new SqlParameter("@fecha_real_vence", o.Fecha_real_vence != DateTime.MinValue ? o.Fecha_real_vence : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@no_packing", !string.IsNullOrWhiteSpace(o.No_packing) ? o.No_packing : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fecha_picking", o.Fecha_picking != DateTime.MinValue ? o.Fecha_picking : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fecha_verificado", o.Fecha_verificado != DateTime.MinValue ? o.Fecha_verificado : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fecha_packing", o.Fecha_packing != DateTime.MinValue ? o.Fecha_packing : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fecha_despachado", o.Fecha_despachado != DateTime.MinValue ? o.Fecha_despachado : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@cantidad_despachada", o.Cantidad_despachada != 0 ? o.Cantidad_despachada : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@user_agr", !string.IsNullOrWhiteSpace(o.User_agr) ? o.User_agr : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fec_agr", o.Fec_agr != DateTime.MinValue ? o.Fec_agr : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@user_mod", !string.IsNullOrWhiteSpace(o.User_mod) ? o.User_mod : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fec_mod", o.Fec_mod != DateTime.MinValue ? o.Fec_mod : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@activo", o.Activo));
+        cmd.Parameters.Add(new SqlParameter("@IdPedidoDet", o.IdPedidoDet != 0 ? o.IdPedidoDet : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@dañado_picking", o.Dañado_picking));
+        cmd.Parameters.Add(new SqlParameter("@IdStockRes", o.IdStockRes != 0 ? o.IdStockRes : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@lic_plate_reemplazo", !string.IsNullOrWhiteSpace(o.Lic_plate_Reemplazo) ? o.Lic_plate_Reemplazo : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdUbicacion_reemplazo", o.IdUbicacion_reemplazo != 0 ? o.IdUbicacion_reemplazo : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdStock_reemplazo", o.IdStock_reemplazo != 0 ? o.IdStock_reemplazo : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdBodega", o.IdBodega != 0 ? o.IdBodega : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdOperadorBodega_Pickeo", o.IdOperadorBodega_Pickeo != 0 ? o.IdOperadorBodega_Pickeo : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdOperadorBodega_Verifico", o.IdOperadorBodega_Verifico != 0 ? o.IdOperadorBodega_Verifico : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPedidoEnc", o.IdPedidoEnc != 0 ? o.IdPedidoEnc : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@no_encontrado", o.No_encontrado));
+        cmd.Parameters.Add(new SqlParameter("@IdUbicacionTemporal", o.IdUbicacionTemporal != 0 ? o.IdUbicacionTemporal : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdOperadorBodega_Asignado", o.IdOperadorBodega_Asignado != 0 ? o.IdOperadorBodega_Asignado : DBNull.Value));
+    }
     public static int InsertOrUpdate(List<clsBeTrans_picking_ubic> entities, SqlConnection conn, SqlTransaction tx)
     {
         int total = 0;
@@ -679,6 +886,31 @@ public class clsLnTrans_picking_ubic
                 int resultado = existe
                     ? Actualizar(entity, conn, tx)
                     : Insertar(entity, conn, tx);
+
+                total += resultado;
+            }
+
+            return total;
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
+    public static int InsertOrUpdate_3pl(List<clsBeTrans_picking_ubic_3pl> entities, SqlConnection conn, SqlTransaction tx)
+    {
+        int total = 0;
+
+        try
+        {
+            foreach (var entity in entities)
+            {
+                bool existe = Existe(entity.IdPickingUbic, entity.IdPickingEnc, conn, tx);
+
+                int resultado = existe
+                    ? Actualizar_3pl(entity, conn, tx)
+                    : Insertar_3pl(entity, conn, tx);
 
                 total += resultado;
             }

@@ -202,10 +202,17 @@ Public Class frmRecepcion
                     '#CKFK20240214 Agregué la funcionalidad de que se guarde la recepción cuando sea este tipo de transacción MCOC00
                     If txtIdTipoTR.Text = clsBeTrans_re_enc.pTipoTrans.MCOC00.ToString Then
 
-                        chkRecepcionManual.Checked = True
+
 
                         '#CKFK 20210624 Se llama a la función creada por EJC para habilitar o no el stock basado en las reglas del propietario
                         Check_Reglas_Propietario_Ingreso()
+
+                        '#GT13012025: asignar los estados y bloquear controles.
+                        chkRecepcionManual.Checked = True
+                        chkHabilitaStock.Checked = True
+                        chkRecepcionManual.Enabled = False
+
+
 
                         If txtIdOrdenCompra.Text <> "" Then
                             '#GT08022024: guardar el encabezado al recibir por BOF.
@@ -978,13 +985,18 @@ Public Class frmRecepcion
                     Exit Sub
                 End If
 
+                '#GT13012025: asignar y bloquear controles
                 chkHabilitaStock.Checked = gBeRecepcionEnc.Habilitar_Stock
-
                 chkMostrarCantidadPI.Checked = gBeRecepcionEnc.Mostrar_Cantidad_Esperada
 
                 If Modo = TipoTrans.Editar Then
                     chkHabilitaStock.Enabled = IIf(gBeRecepcionEnc.Habilitar_Stock, False, True)
                 End If
+                chkMostrarCantidadPI.Enabled = False
+                '#GT13012025: no aplica, ya que previamente se asigna el estado proveniente de la recepción
+                'If Modo = TipoTrans.Editar Then
+                '    chkHabilitaStock.Enabled = False
+                'End If
 
                 txtIdOrdenCompra.Enabled = False
 
@@ -1159,8 +1171,12 @@ Public Class frmRecepcion
                 End If
             End If
 
+            '#GT13012025: se añade que, si por tipo recepcion es 2, se habilita stock
+            'en resumen, la recepción dice habilitar stock, pero por el tipo de recepción se coloca false, eso es inconsistente
             If vReglasPropietarioDefinidas AndAlso clsBD.Instancia.Formato_Recepcion = 1 Then
                 chkHabilitaStock.Checked = False
+            ElseIf clsBD.Instancia.Formato_Recepcion = 2 Then
+                chkHabilitaStock.Checked = True
             End If
 
         Catch ex As Exception
@@ -4970,7 +4986,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
         If e.KeyCode = Keys.F3 Then
             cmdVerParametros_Click(Nothing, Nothing)
         ElseIf DgridDetalleRec2.IsFocused AndAlso e.KeyCode = Keys.Delete Then
-            Eliminar_Fila(Nothing)
+            Eliminar_Fila_Nuev_Recepcion(Nothing)
         ElseIf e.KeyCode = Keys.Escape Then
             '#EJC20240326: Validar al salir.
             Dim vMensaje As String = ""
@@ -5823,6 +5839,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     txtDescripcionTR.Text = BeTransReTR.Descripcion
                     Configura_Opcion_Tipo_Rec(BeTransReTR)
 
+                    '#GT13012025: habilitar stock puede ser inconsistente si en check reglas de negocio se aplica false
                     If BeTransReTR.UsaHH = 0 Then
                         chkRecepcionManual.Checked = True
                         chkHabilitaStock.Checked = False
@@ -7804,12 +7821,14 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     '#CKFK20240214 Agregué la funcionalidad de que se guarde la recepción cuando sea este tipo de transacción MCOC00
                     If txtIdTipoTR.Text = "MCOC00" Then
 
+                        '#GT13012025: se valida dentro de las reglas_propietario
                         chkRecepcionManual.Checked = True
+                        'chkHabilitaStock.Checked = True
 
                         '#CKFK 20210624 Se llama a la función creada por EJC para habilitar o no el stock basado en las reglas del propietario
                         Check_Reglas_Propietario_Ingreso()
 
-                        chkHabilitaStock.Checked = True
+                        chkHabilitaStock.Enabled = False
 
                         If txtIdOrdenCompra.Text <> "" Then
 
@@ -7850,31 +7869,32 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             End Select
 
-            'If BeTransOcEnc.No_Ticket_TMS <> "0") OrElse BeTransOcEnc.No_Ticket_TMS <> "" Then
-            If Not BeTransOcEnc.No_Ticket_TMS.Equals("0") AndAlso Not BeTransOcEnc.No_Ticket_TMS.Equals("") Then
+            If BeTransOcEnc IsNot Nothing Then
+                If Not BeTransOcEnc.No_Ticket_TMS.Equals("0") AndAlso Not BeTransOcEnc.No_Ticket_TMS.Equals("") Then
 
-                pBeTms_ticket = clsLnTms_ticket.Get_Ticket_By_Id(BeTransOcEnc.No_Ticket_TMS)
+                    pBeTms_ticket = clsLnTms_ticket.Get_Ticket_By_Id(BeTransOcEnc.No_Ticket_TMS)
 
-                pBeEmpresa_Transporte_Piloto = clsLnEmpresa_transporte_pilotos.Get_By_IdPiloto(pBeTms_ticket.IdPiloto)
-                pBeEmpresa_Transporte_Vehiculo = clsLnEmpresa_transporte_vehiculos.Get_Single_By_IdVehiculo(pBeTms_ticket.IdVehiculo)
+                    pBeEmpresa_Transporte_Piloto = clsLnEmpresa_transporte_pilotos.Get_By_IdPiloto(pBeTms_ticket.IdPiloto)
+                    pBeEmpresa_Transporte_Vehiculo = clsLnEmpresa_transporte_vehiculos.Get_Single_By_IdVehiculo(pBeTms_ticket.IdVehiculo)
 
 
-                If pBeEmpresa_Transporte_Piloto IsNot Nothing AndAlso pBeEmpresa_Transporte_Piloto.IdPiloto > 0 Then
-                    txtIdPiloto.Text = pBeEmpresa_Transporte_Piloto.IdPiloto
-                    txtNombrePiloto.Text = Trim(String.Format("{0} {1}", pBeEmpresa_Transporte_Piloto.Nombres, pBeEmpresa_Transporte_Piloto.Apellidos))
-                    txtIdPiloto.Enabled = False
-                Else
-                    txtIdPiloto.Focus() : txtIdPiloto.SelectAll()
+                    If pBeEmpresa_Transporte_Piloto IsNot Nothing AndAlso pBeEmpresa_Transporte_Piloto.IdPiloto > 0 Then
+                        txtIdPiloto.Text = pBeEmpresa_Transporte_Piloto.IdPiloto
+                        txtNombrePiloto.Text = Trim(String.Format("{0} {1}", pBeEmpresa_Transporte_Piloto.Nombres, pBeEmpresa_Transporte_Piloto.Apellidos))
+                        txtIdPiloto.Enabled = False
+                    Else
+                        txtIdPiloto.Focus() : txtIdPiloto.SelectAll()
+                    End If
+
+                    If pBeEmpresa_Transporte_Vehiculo IsNot Nothing AndAlso pBeEmpresa_Transporte_Vehiculo.IdVehiculo > 0 Then
+                        txtIdVehiculo.Text = pBeEmpresa_Transporte_Vehiculo.IdVehiculo
+                        txtNombreVehiculo.Text = Trim(String.Format("{0} - {1} - {2}", pBeEmpresa_Transporte_Vehiculo.Marca, pBeEmpresa_Transporte_Vehiculo.Modelo, pBeEmpresa_Transporte_Vehiculo.Tipo))
+                        txtIdVehiculo.Enabled = False
+                    Else
+                        txtIdVehiculo.Focus() : txtIdVehiculo.SelectAll()
+                    End If
+
                 End If
-
-                If pBeEmpresa_Transporte_Vehiculo IsNot Nothing AndAlso pBeEmpresa_Transporte_Vehiculo.IdVehiculo > 0 Then
-                    txtIdVehiculo.Text = pBeEmpresa_Transporte_Vehiculo.IdVehiculo
-                    txtNombreVehiculo.Text = Trim(String.Format("{0} - {1} - {2}", pBeEmpresa_Transporte_Vehiculo.Marca, pBeEmpresa_Transporte_Vehiculo.Modelo, pBeEmpresa_Transporte_Vehiculo.Tipo))
-                    txtIdVehiculo.Enabled = False
-                Else
-                    txtIdVehiculo.Focus() : txtIdVehiculo.SelectAll()
-                End If
-
             End If
 
             DgridDetalleRec.Focus()
@@ -9386,7 +9406,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                 If gBeOrdenCompra.DetalleOC.Count > 0 Then
 
                                     If BeBodega.Control_Talla_Color Then
-                                        Dim codigoProducto = BeProducto.Codigo + "" + BeTalla.Codigo + "" + BeColor.Codigo
+                                        Dim codigoProducto = BeProducto.Codigo + "" + BeColor.Codigo + "" + BeTalla.Codigo
                                         BeCompraDet = gBeOrdenCompra.DetalleOC.Find(Function(x) x.Codigo_Producto = codigoProducto AndAlso x.No_Linea = NoLineaActualFilaGrid)
                                     Else
                                         BeCompraDet = gBeOrdenCompra.DetalleOC.Find(Function(x) x.Codigo_Producto = BeProducto.Codigo AndAlso x.No_Linea = NoLineaActualFilaGrid)
@@ -10590,6 +10610,16 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     BeTransReDet.IsNew = gvDetalleRec2.GetRowCellValue(i, "IsNewR")
                     BeTransReDet.IdUbicacion = CInt(txtIdUbicacion.Text)
 
+                    '#GT13012025: preservar idproductotallacolor, porque al presionar Actualizar, asigna 0
+                    Dim tmpTalla As Short = Convert.ToInt16(If(gvDetalleRec2.GetRowCellValue(i, "Talla"), 0))
+                    Dim tmpColor As Short = Convert.ToInt16(If(gvDetalleRec2.GetRowCellValue(i, "Color"), 0))
+                    'Dim tmpSKU As String = Convert.ToString(If(gvDetalleRec2.GetRowCellValue(i, "SKU"), String.Empty))
+                    Dim tmpProductoTallaColor = clsLnProducto_talla_color.Get_IdProductoTallaColor_By_IdTalla_and_IdColor(tmpTalla, tmpColor, BeTransReDet.Producto.IdProducto)
+
+                    If tmpProductoTallaColor > 0 Then
+                        BeTransReDet.IdProductoTallaColor = tmpProductoTallaColor
+                    End If
+
                     '#GT25012024
                     ' CAMPOS FALTANTES STOCK DE ASIGNACIÓN 
                     If pListBeStockRec IsNot Nothing AndAlso pListBeStockRec.Count > 0 Then
@@ -11281,12 +11311,13 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
         If pBeTipo_Tarea_HH.UsaHH Then
             XtraMessageBox.Show("El tipo de tarea requiere que la linea se elimine desde la HH.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
         Else
-            EliminarFila(Nothing)
+            '#GT: no cambiar al otro metodo llamado de forma parecida
+            Eliminar_Fila_Nuev_Recepcion(Nothing)
         End If
 
     End Sub
 
-    Private Sub Eliminar_Fila(e As KeyEventArgs)
+    Private Sub Eliminar_Fila_Nuev_Recepcion(e As KeyEventArgs)
 
         Try
 
@@ -12496,7 +12527,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                         If vCantPorProducto > 1 Then
                             If XtraMessageBox.Show("¿La línea del documento de ingreso que quiere recepcionar es la " & nolineaSeleccionada & "?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
-                                Eliminar_Fila(Nothing)
+                                Eliminar_Fila_Nuev_Recepcion(Nothing)
                                 Exit Sub
                             End If
                         End If

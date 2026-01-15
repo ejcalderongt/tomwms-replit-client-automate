@@ -119,9 +119,12 @@ public class clsLnTrans_movimientos
             Ins.Add("idpedidodet", "@idpedidodet", "F");
             Ins.Add("iddespachoenc", "@iddespachoenc", "F");
             Ins.Add("iddespachodet", "@iddespachodet", "F");
-            Ins.Add("idproductotallacolor", "@idproductotallacolor", "F");
-            Ins.Add("talla", "@talla", "F");
-            Ins.Add("color", "@color", "F");
+            if (oBeTrans_movimientos.IdProductoTallaColor > 0)
+            {
+                Ins.Add("idproductotallacolor", "@idproductotallacolor", "F");
+                Ins.Add("talla", "@talla", "F");
+                Ins.Add("color", "@color", "F");
+            }
 
             string sp = Ins.SQL();
 
@@ -277,9 +280,11 @@ public class clsLnTrans_movimientos
             Upd.Add("iddespachoenc", "@iddespachoenc", "F");
             Upd.Add("iddespachodet", "@iddespachodet", "F");
             // Agregar nuevos campos si es necesario
-            Upd.Add("idproductotallacolor", "@idproductotallacolor", "F");
-            Upd.Add("talla", "@talla", "F");
-            Upd.Add("color", "@color", "F");
+            if (oBeTrans_movimientos.IdProductoTallaColor > 0) {
+                Upd.Add("idproductotallacolor", "@idproductotallacolor", "F");
+                Upd.Add("talla", "@talla", "F");
+                Upd.Add("color", "@color", "F");
+            }
 
             Upd.Where("IdMovimiento = @IdMovimiento" +
                 " AND IdEmpresa = @IdEmpresa" +
@@ -624,9 +629,14 @@ public class clsLnTrans_movimientos
         cmd.Parameters.AddWithValue("@IdPedidoDet", oBeTrans_movimientos.IdPedidoDet == 0 ? DBNull.Value : oBeTrans_movimientos.IdPedidoDet);
         cmd.Parameters.AddWithValue("@IdDespachoEnc", oBeTrans_movimientos.IdDespachoEnc == 0 ? DBNull.Value : oBeTrans_movimientos.IdDespachoEnc);
         cmd.Parameters.AddWithValue("@IdDespachoDet", oBeTrans_movimientos.IdDespachoDet == 0 ? DBNull.Value : oBeTrans_movimientos.IdDespachoDet);
-        cmd.Parameters.AddWithValue("@idproductotallacolor", oBeTrans_movimientos.IdProductoTallaColor == 0 ? DBNull.Value : oBeTrans_movimientos.IdProductoTallaColor);
-        cmd.Parameters.AddWithValue("@talla", string.IsNullOrEmpty(oBeTrans_movimientos.Talla) ? DBNull.Value : oBeTrans_movimientos.Talla);
-        cmd.Parameters.AddWithValue("@color", string.IsNullOrEmpty(oBeTrans_movimientos.Color) ? DBNull.Value : oBeTrans_movimientos.Color);
+        //#GT08012025: agregar si vienen valores.
+        if (oBeTrans_movimientos.IdProductoTallaColor > 0)
+        {
+            cmd.Parameters.AddWithValue("@idproductotallacolor", oBeTrans_movimientos.IdProductoTallaColor == 0 ? DBNull.Value : oBeTrans_movimientos.IdProductoTallaColor);
+            cmd.Parameters.AddWithValue("@talla", string.IsNullOrEmpty(oBeTrans_movimientos.Talla) ? DBNull.Value : oBeTrans_movimientos.Talla);
+            cmd.Parameters.AddWithValue("@color", string.IsNullOrEmpty(oBeTrans_movimientos.Color) ? DBNull.Value : oBeTrans_movimientos.Color);
+        }
+          
     }
     public static void InsertarOActualizar(List<clsBeTrans_movimientos> entities, SqlConnection? conn = null, SqlTransaction? tx = null)
     {

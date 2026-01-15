@@ -27,7 +27,8 @@ namespace WMS.EntityCore.Propietario
 
         [Column("imagen")]
         [DisplayName("imagen")]
-        public byte[] Imagen { get; set; }= Array.Empty<byte>();
+        //public byte[] Imagen { get; set; }= Array.Empty<byte>();
+        public byte[]? Imagen { get; set; } = null;
 
         [Column("telefono")]
         [DisplayName("telefono")]

@@ -1,31 +1,33 @@
 ﻿using AutoMapper;
 using WMS.EntityCore.Cliente;
 using WMS.EntityCore.Datos_Maestros;
+using WMS.EntityCore.Dtos.Catalogos;
+using WMS.EntityCore.Dtos.Clientes;
+using WMS.EntityCore.Dtos.Ingresos;
+using WMS.EntityCore.Dtos.Pedido;
+using WMS.EntityCore.Dtos.Productos;
 using WMS.EntityCore.Log;
 using WMS.EntityCore.Operador;
 using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Picking;
 using WMS.EntityCore.Producto;
+using WMS.EntityCore.Producto.ProductoSimple;
 using WMS.EntityCore.Propietario;
 using WMS.EntityCore.Proveedor;
 using WMS.EntityCore.Stock;
 using WMS.EntityCore.Trans_oc;
 using WMS.EntityCore.Trans_re;
+using WMSWebAPI.Be;
 using WMSWebAPI.Dtos.Catalogos;
 using WMSWebAPI.Dtos.Datos_Maestros;
 using WMSWebAPI.Dtos.Ingresos;
+using WMSWebAPI.Dtos.Log_portal_ux;
 using WMSWebAPI.Dtos.Movimientos.WMSWebAPI.Dto;
 using WMSWebAPI.Dtos.Operador;
 using WMSWebAPI.Dtos.Pedido;
 using WMSWebAPI.Dtos.Picking;
 using WMSWebAPI.Dtos.Productos;
 using WMSWebAPI.Dtos.Stock;
-using WMSWebAPI.Dtos.Log_portal_ux;
-using WMS.EntityCore.Producto.ProductoSimple;
-using WMS.EntityCore.Dtos.Catalogos;
-using WMS.EntityCore.Dtos.Clientes;
-using WMS.EntityCore.Dtos.Productos;
-using WMS.EntityCore.Dtos.Pedido;
 
 public class MappingProfile : Profile
 {
@@ -286,5 +288,14 @@ public class MappingProfile : Profile
         CreateMap<ProductoPresentacionMi3Dto, clsBeProducto_presentacionMi3>().ReverseMap();
         CreateMap<NavPedTrasladoRequestDto, clsBeI_nav_ped_traslado_enc>().ConvertUsing(src => src.beINavPedCompraEnc);
         CreateMap<Producto3PL_Dto, clsBeProducto_3PL>().ReverseMap();
+        CreateMap<RecepcionEnc_3plDto,clsBeTrans_re_enc_3pl >().ReverseMap();
+        CreateMap<RecepcionDet_3plDto,clsBeTrans_re_det_3pl>().ReverseMap();
+        CreateMap<MotivoDevolucion_3plDto, clsBeMotivo_devolucion>().ReverseMap();
+        CreateMap<RecepcionOperador_3plDto, clsBeTrans_re_op_3pl >().ReverseMap();
+        CreateMap<TransPeDet_3plDto, clsBeTrans_pe_det_3pl>().ReverseMap();
+        CreateMap<StockRes_3plDto, clsBeStock_res_3pl>().ReverseMap();
+        CreateMap<PickingDet_3plDto, clsBeTrans_picking_det_3pl>().ReverseMap();
+        CreateMap<PickingUbic_3plDto, clsBeTrans_picking_ubic_3pl>().ReverseMap();
+        
     }
 }

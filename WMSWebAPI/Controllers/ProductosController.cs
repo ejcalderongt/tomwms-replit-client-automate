@@ -5,7 +5,6 @@ using System.Transactions;
 using WMS.EntityCore.Dtos.Catalogos;
 using WMS.EntityCore.Producto;
 using WMSWebAPI.Dtos.Catalogos;
-using WMSWebAPI.Dtos.Productos;
 using WMSWebAPI.Services;
 
 namespace WMSWebAPI.Controllers

@@ -150,6 +150,75 @@ public class clsLnTrans_pe_det
         return rowsAffected;
     }
 
+    public static int Insertar_3pl(clsBeTrans_pe_det_3pl oBeTrans_pe_det, SqlConnection pConection, SqlTransaction pTransaction)
+    {
+        int rowsAffected = 0;
+
+        try
+        {
+            Ins.Init("trans_pe_det");
+            Ins.Add("idpedidodet", "@idpedidodet", "F");
+            Ins.Add("idpedidoenc", "@idpedidoenc", "F");
+            Ins.Add("idproductobodega", "@idproductobodega", "F");
+            Ins.Add("idestado", "@idestado", "F");
+            Ins.Add("idpresentacion", "@idpresentacion", "F");
+            Ins.Add("idunidadmedidabasica", "@idunidadmedidabasica", "F");
+            Ins.Add("cantidad", "@cantidad", "F");
+            Ins.Add("peso", "@peso", "F");
+            Ins.Add("precio", "@precio", "F");
+            Ins.Add("no_recepcion", "@no_recepcion", "F");
+            Ins.Add("ndias", "@ndias", "F");
+            Ins.Add("cant_despachada", "@cant_despachada", "F");
+            Ins.Add("codigo_producto", "@codigo_producto", "F");
+            Ins.Add("nombre_producto", "@nombre_producto", "F");
+            Ins.Add("nom_presentacion", "@nom_presentacion", "F");
+            Ins.Add("nom_unid_med", "@nom_unid_med", "F");
+            Ins.Add("nom_estado", "@nom_estado", "F");
+            Ins.Add("user_agr", "@user_agr", "F");
+            Ins.Add("fec_agr", "@fec_agr", "F");
+            Ins.Add("fecha_especifica", "@fecha_especifica", "F");
+            Ins.Add("roaddes", "@roaddes", "F");
+            Ins.Add("roaddesmon", "@roaddesmon", "F");
+            Ins.Add("roadtotal", "@roadtotal", "F");
+            Ins.Add("roadpreciodoc", "@roadpreciodoc", "F");
+            Ins.Add("roadval1", "@roadval1", "F");
+            Ins.Add("roadval2", "@roadval2", "F");
+            Ins.Add("roadcantproc", "@roadcantproc", "F");
+            Ins.Add("peso_despachado", "@peso_despachado", "F");
+            Ins.Add("no_linea", "@no_linea", "F");
+            Ins.Add("atributo_variante_1", "@atributo_variante_1", "F");
+            Ins.Add("idstockespecifico", "@idstockespecifico", "F");
+            Ins.Add("espadre", "@espadre", "F");
+            Ins.Add("idpedidodetpadre", "@idpedidodetpadre", "F");
+            Ins.Add("peso_bruto", "@peso_bruto", "F");
+            Ins.Add("peso_neto", "@peso_neto", "F");
+            Ins.Add("costo", "@costo", "F");
+            Ins.Add("valor_aduana", "@valor_aduana", "F");
+            Ins.Add("valor_fob", "@valor_fob", "F");
+            Ins.Add("valor_iva", "@valor_iva", "F");
+            Ins.Add("valor_dai", "@valor_dai", "F");
+            Ins.Add("valor_seguro", "@valor_seguro", "F");
+            Ins.Add("valor_flete", "@valor_flete", "F");
+            Ins.Add("total_linea", "@total_linea", "F");
+            Ins.Add("idcliente", "@idcliente", "F");
+
+            string sp = Ins.SQL();
+
+            var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
+
+            Bind_3pl(cmd, oBeTrans_pe_det);
+
+            rowsAffected = cmd.ExecuteNonQuery();
+
+            cmd.Dispose();
+        }
+        catch (SqlException)
+        {
+            throw;
+        }
+
+        return rowsAffected;
+    }
     public static int Insertar(IConfiguration config, clsBeTrans_pe_det oBeTrans_pe_det)
     {
 
@@ -312,6 +381,76 @@ public class clsLnTrans_pe_det
         return rowsAffected;
     }
 
+    public static int Actualizar_3pl(clsBeTrans_pe_det_3pl oBeTrans_pe_det, SqlConnection pConection, SqlTransaction pTransaction)
+    {
+        int rowsAffected = 0;
+
+        try
+        {
+            Upd.Init("trans_pe_det");
+            Upd.Add("idpedidodet", "@idpedidodet", "F");
+            Upd.Add("idpedidoenc", "@idpedidoenc", "F");
+            Upd.Add("idproductobodega", "@idproductobodega", "F");
+            Upd.Add("idestado", "@idestado", "F");
+            Upd.Add("idpresentacion", "@idpresentacion", "F");
+            Upd.Add("idunidadmedidabasica", "@idunidadmedidabasica", "F");
+            Upd.Add("cantidad", "@cantidad", "F");
+            Upd.Add("peso", "@peso", "F");
+            Upd.Add("precio", "@precio", "F");
+            Upd.Add("no_recepcion", "@no_recepcion", "F");
+            Upd.Add("ndias", "@ndias", "F");
+            Upd.Add("cant_despachada", "@cant_despachada", "F");
+            Upd.Add("codigo_producto", "@codigo_producto", "F");
+            Upd.Add("nombre_producto", "@nombre_producto", "F");
+            Upd.Add("nom_presentacion", "@nom_presentacion", "F");
+            Upd.Add("nom_unid_med", "@nom_unid_med", "F");
+            Upd.Add("nom_estado", "@nom_estado", "F");
+            Upd.Add("user_agr", "@user_agr", "F");
+            Upd.Add("fec_agr", "@fec_agr", "F");
+            Upd.Add("fecha_especifica", "@fecha_especifica", "F");
+            Upd.Add("roaddes", "@roaddes", "F");
+            Upd.Add("roaddesmon", "@roaddesmon", "F");
+            Upd.Add("roadtotal", "@roadtotal", "F");
+            Upd.Add("roadpreciodoc", "@roadpreciodoc", "F");
+            Upd.Add("roadval1", "@roadval1", "F");
+            Upd.Add("roadval2", "@roadval2", "F");
+            Upd.Add("roadcantproc", "@roadcantproc", "F");
+            Upd.Add("peso_despachado", "@peso_despachado", "F");
+            Upd.Add("no_linea", "@no_linea", "F");
+            Upd.Add("atributo_variante_1", "@atributo_variante_1", "F");
+            Upd.Add("idstockespecifico", "@idstockespecifico", "F");
+            Upd.Add("espadre", "@espadre", "F");
+            Upd.Add("idpedidodetpadre", "@idpedidodetpadre", "F");
+            Upd.Add("peso_bruto", "@peso_bruto", "F");
+            Upd.Add("peso_neto", "@peso_neto", "F");
+            Upd.Add("costo", "@costo", "F");
+            Upd.Add("valor_aduana", "@valor_aduana", "F");
+            Upd.Add("valor_fob", "@valor_fob", "F");
+            Upd.Add("valor_iva", "@valor_iva", "F");
+            Upd.Add("valor_dai", "@valor_dai", "F");
+            Upd.Add("valor_seguro", "@valor_seguro", "F");
+            Upd.Add("valor_flete", "@valor_flete", "F");
+            Upd.Add("total_linea", "@total_linea", "F");
+            Upd.Add("idcliente", "@idcliente", "F");
+            Upd.Where("IdPedidoDet = @IdPedidoDet");
+
+            string sp = Upd.SQL();
+
+            var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
+
+            Bind_3pl(cmd, oBeTrans_pe_det);
+
+            rowsAffected = cmd.ExecuteNonQuery();
+
+            cmd.Dispose();
+        }
+        catch (SqlException)
+        {
+            throw;
+        }
+
+        return rowsAffected;
+    }
     public int Eliminar(IConfiguration config, clsBeTrans_pe_det oBeTrans_pe_det, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
 
@@ -645,6 +784,53 @@ public class clsLnTrans_pe_det
         cmd.Parameters.Add(new SqlParameter("@IdCliente", o.IdCliente != 0 ? o.IdCliente : DBNull.Value));
     }
 
+    public static void Bind_3pl(SqlCommand cmd, clsBeTrans_pe_det_3pl o)
+    {
+        cmd.Parameters.Add(new SqlParameter("@IdPedidoDet", o.IdPedidoDet != 0 ? o.IdPedidoDet : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPedidoEnc", o.IdPedidoEnc != 0 ? o.IdPedidoEnc : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdProductoBodega", o.IdProductoBodega != 0 ? o.IdProductoBodega : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdEstado", o.IdEstado != 0 ? o.IdEstado : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdPresentacion", o.IdPresentacion != 0 ? o.IdPresentacion : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdUnidadMedidaBasica", o.IdUnidadMedidaBasica != 0 ? o.IdUnidadMedidaBasica : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@Cantidad", o.Cantidad != 0 ? o.Cantidad : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@Peso", o.Peso != 0 ? o.Peso : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@Precio", o.Precio != 0 ? o.Precio : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@no_recepcion", o.No_recepcion != 0 ? o.No_recepcion : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@ndias", o.Ndias != 0 ? o.Ndias : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@cant_despachada", o.Cant_despachada != 0 ? o.Cant_despachada : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@codigo_producto", !string.IsNullOrWhiteSpace(o.Codigo_Producto) ? o.Codigo_Producto : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@nombre_producto", !string.IsNullOrWhiteSpace(o.Nombre_producto) ? o.Nombre_producto : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@nom_presentacion", !string.IsNullOrWhiteSpace(o.Nom_presentacion) ? o.Nom_presentacion : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@nom_unid_med", !string.IsNullOrWhiteSpace(o.Nom_unid_med) ? o.Nom_unid_med : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@nom_estado", !string.IsNullOrWhiteSpace(o.Nom_estado) ? o.Nom_estado : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@user_agr", !string.IsNullOrWhiteSpace(o.User_agr) ? o.User_agr : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fec_agr", o.Fec_agr != DateTime.MinValue ? o.Fec_agr : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@fecha_especifica", o.Fecha_especifica)); // bool, se envía directamente
+        cmd.Parameters.Add(new SqlParameter("@RoadDes", o.RoadDes != 0 ? o.RoadDes : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@RoadDesMon", o.RoadDesMon != 0 ? o.RoadDesMon : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@RoadTotal", o.RoadTotal != 0 ? o.RoadTotal : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@RoadPrecioDoc", o.RoadPrecioDoc != 0 ? o.RoadPrecioDoc : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@RoadVAL1", o.RoadVAL1 != 0 ? o.RoadVAL1 : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@RoadVAL2", !string.IsNullOrWhiteSpace(o.RoadVAL2) ? o.RoadVAL2 : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@RoadCantProc", o.RoadCantProc != 0 ? o.RoadCantProc : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@peso_despachado", o.Peso_despachado != 0 ? o.Peso_despachado : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@no_linea", o.No_linea != 0 ? o.No_linea : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@atributo_variante_1", !string.IsNullOrWhiteSpace(o.Atributo_variante_1) ? o.Atributo_variante_1 : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdStockEspecifico", o.IdStockEspecifico != 0 ? o.IdStockEspecifico : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@EsPadre", o.EsPadre));
+        cmd.Parameters.Add(new SqlParameter("@IdPedidoDetPadre", o.IdPedidoDetPadre != 0 ? o.IdPedidoDetPadre : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@Peso_Bruto", o.Peso_Bruto != 0 ? o.Peso_Bruto : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@Peso_Neto", o.Peso_Neto != 0 ? o.Peso_Neto : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@Costo", o.Costo != 0 ? o.Costo : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@valor_aduana", o.Valor_aduana != 0 ? o.Valor_aduana : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@valor_fob", o.Valor_fob != 0 ? o.Valor_fob : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@valor_iva", o.Valor_iva != 0 ? o.Valor_iva : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@valor_dai", o.Valor_dai != 0 ? o.Valor_dai : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@valor_seguro", o.Valor_seguro != 0 ? o.Valor_seguro : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@valor_flete", o.Valor_flete != 0 ? o.Valor_flete : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@Total_linea", o.Total_linea != 0 ? o.Total_linea : DBNull.Value));
+        cmd.Parameters.Add(new SqlParameter("@IdCliente", o.IdCliente != 0 ? o.IdCliente : DBNull.Value));
+    }
     public static int InsertOrUpdate(List<clsBeTrans_pe_det> entities, SqlConnection conn, SqlTransaction tx)
     {
         int total = 0;
@@ -669,6 +855,29 @@ public class clsLnTrans_pe_det
         }
     }
 
+    public static int InsertOrUpdate_3pl(List<clsBeTrans_pe_det_3pl> entities, SqlConnection conn, SqlTransaction tx)
+    {
+        int total = 0;
+
+        try
+        {
+            foreach (var entity in entities)
+            {
+                bool existe = Existe(entity.IdPedidoDet, entity.IdPedidoEnc, conn, tx);
+                int resultado = existe
+                    ? Actualizar_3pl(entity, conn, tx)
+                    : Insertar_3pl(entity, conn, tx);
+
+                total += resultado;
+            }
+
+            return total;
+        }
+        catch
+        {
+            throw;
+        }
+    }
 
     public static bool Existe(int idPedidoDet, int idPedidoEnc, SqlConnection conn, SqlTransaction? tx = null)
     {
