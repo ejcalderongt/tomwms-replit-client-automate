@@ -39,6 +39,7 @@ Public Class clsLnTrans_inv_stock
                 .Temperatura = IIf(IsDBNull(dr.Item("temperatura")), 0.0, dr.Item("temperatura"))
                 .fecha_copia = IIf(IsDBNull(dr.Item("fecha_copia")), Date.Now, dr.Item("fecha_copia"))
                 .IdBodega = IIf(IsDBNull(dr.Item("IdBodega")), 0, dr.Item("IdBodega"))
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
 
             End With
         Catch ex As Exception

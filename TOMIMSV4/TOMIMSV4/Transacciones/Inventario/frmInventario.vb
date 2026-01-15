@@ -445,6 +445,11 @@ Public Class frmInventario
         DTInventarioCiclico.Columns.Add("Lote", GetType(String))
         DTInventarioCiclico.Columns.Add("Vence_Stock", GetType(Date))
         DTInventarioCiclico.Columns.Add("Vence", GetType(Date))
+        DTInventarioCiclico.Columns.Add("Talla_Stock", GetType(String))
+        DTInventarioCiclico.Columns.Add("Color_Stock", GetType(String))
+        DTInventarioCiclico.Columns.Add("Talla", GetType(String))
+        DTInventarioCiclico.Columns.Add("Color", GetType(String))
+        DTInventarioCiclico.Columns.Add("UM_Bas", GetType(String))
         'DTInventarioCiclico.Columns.Add("Operador", GetType(String))
         DTInventarioCiclico.Columns.Add("Cant.Teorica.Pres", GetType(Double))
         DTInventarioCiclico.Columns.Add("Cant.Teorica.UMBas", GetType(Double))
@@ -472,10 +477,20 @@ Public Class frmInventario
         DTInventarioDiferenciaCiclico.Columns.Add("Código", GetType(String))
         DTInventarioDiferenciaCiclico.Columns.Add("Producto", GetType(String))
         DTInventarioDiferenciaCiclico.Columns.Add("TipoProducto", GetType(String))
+
+        DTInventarioDiferenciaCiclico.Columns.Add("UmBas", GetType(String))
+        DTInventarioDiferenciaCiclico.Columns.Add("NombrePresentacion", GetType(String))
+
         DTInventarioDiferenciaCiclico.Columns.Add("Cant.Teorica.UMBas", GetType(Double))
         DTInventarioDiferenciaCiclico.Columns.Add("Cant.Conteo.UMBas", GetType(Double))
         DTInventarioDiferenciaCiclico.Columns.Add("Cant.Reconteo.UMBas", GetType(Double))
         DTInventarioDiferenciaCiclico.Columns.Add("Dif.Cant.UMBas", GetType(Double))
+
+        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Teorica.Pres", GetType(Double))
+        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Conteo.Pres", GetType(Double))
+        DTInventarioDiferenciaCiclico.Columns.Add("Cant.Reconteo.Pres", GetType(Double))
+        DTInventarioDiferenciaCiclico.Columns.Add("Dif.Cant.Pres", GetType(Double))
+
         DTInventarioDiferenciaCiclico.Columns.Add("NombreTipoProducto", GetType(String))
         DTInventarioDiferenciaCiclico.Columns.Add("IdProductoBodega", GetType(Integer))
 
@@ -4864,6 +4879,11 @@ Public Class frmInventario
                                                   BeTransInvCiclico.Lote,
                                                   BeTransInvCiclico.Fecha_vence_stock,
                                                   BeTransInvCiclico.Fecha_vence,
+                                                  BeTransInvCiclico.Talla,
+                                                  BeTransInvCiclico.Color,
+                                                  BeTransInvCiclico.Talla_Nueva,
+                                                  BeTransInvCiclico.Color_Nuevo,
+                                                  BeTransInvCiclico.UmBas,
                                                   Cantidad_Teorica_Stock_Pres,
                                                   CantStockUM,
                                                   BeTransInvCiclico.Peso_stock,
@@ -5013,6 +5033,7 @@ Public Class frmInventario
         Dim Cantidad_Reconteo_Pres As Double = 0
         Dim AbrioWaitForm As Boolean = False
         Dim vDiferencia As Double = 0
+        Dim vDiferenciaPres As Double = 0
         Dim EstadoNuevo As String = ""
         Dim UbicacionNueva As String = ""
 
@@ -5104,16 +5125,23 @@ Public Class frmInventario
                     End If
 
                     vDiferencia = (CantStockUM - CantidadUMBas)
+                    vDiferenciaPres = Cantidad_Teorica_Stock_Pres - Cantidad_Contada_Pres
 
                     DTInventarioDiferenciaCiclico.Rows.Add(BeTransInvCiclico.IdInvCiclico,
                                                            BeTransInvCiclico.Idinventarioenc,
                                                            BeTransInvCiclico.Codigo,
                                                            BeTransInvCiclico.Producto,
                                                            BeTransInvCiclico.TipoProducto,
+                                                           BeTransInvCiclico.UnidadMedida,
+                                                           BeTransInvCiclico.Presentacion,
                                                            CantStockUM,
                                                            CantidadUMBas,
                                                            CantReUM,
                                                            vDiferencia * -1,
+                                                           Cantidad_Teorica_Stock_Pres,
+                                                           Cantidad_Contada_Pres,
+                                                           Cantidad_Reconteo_Pres,
+                                                           vDiferenciaPres * -1,
                                                            "",
                                                            BeTransInvCiclico.IdProductoBodega)
 
@@ -8750,6 +8778,11 @@ Public Class frmInventario
                                                   BeTransInvCiclico.Lote,
                                                   BeTransInvCiclico.Fecha_vence_stock,
                                                   BeTransInvCiclico.Fecha_vence,
+                                                  BeTransInvCiclico.Talla,
+                                                  BeTransInvCiclico.Color,
+                                                  BeTransInvCiclico.Talla_Nueva,
+                                                  BeTransInvCiclico.Color_Nuevo,
+                                                  BeTransInvCiclico.UmBas,
                                                   Cantidad_Teorica_Stock_Pres,
                                                   CantStockUM,
                                                   BeTransInvCiclico.Peso_stock,
