@@ -990,13 +990,10 @@ Public Class frmRecepcion
                 chkMostrarCantidadPI.Checked = gBeRecepcionEnc.Mostrar_Cantidad_Esperada
 
                 If Modo = TipoTrans.Editar Then
-                    chkHabilitaStock.Enabled = IIf(gBeRecepcionEnc.Habilitar_Stock, False, True)
+                    chkHabilitaStock.Enabled = gBeRecepcionEnc.Habilitar_Stock
                 End If
+
                 chkMostrarCantidadPI.Enabled = False
-                '#GT13012025: no aplica, ya que previamente se asigna el estado proveniente de la recepción
-                'If Modo = TipoTrans.Editar Then
-                '    chkHabilitaStock.Enabled = False
-                'End If
 
                 txtIdOrdenCompra.Enabled = False
 

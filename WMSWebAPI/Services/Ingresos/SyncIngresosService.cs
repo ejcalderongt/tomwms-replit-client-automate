@@ -42,10 +42,10 @@ namespace WMSWebAPI.Services.Ingresos
                     if (dto.Detalle == null)
                         throw new ArgumentNullException(nameof(dto.Detalle), "Detalle de la orden de compra no puede ser nulo.");
 
-                    if(dto.stockRec == null)
+                    if (dto.stockRec == null)
                         throw new ArgumentNullException(nameof(dto.Detalle), "El stock_rec recibido no puede ser nulo.");
 
-                    if(dto.movimientos == null)
+                    if (dto.movimientos == null)
                         throw new ArgumentNullException(nameof(dto.Detalle), "El movimiento no puede ser nulo.");
 
                     if (dto.Proveedores == null)
@@ -98,7 +98,7 @@ namespace WMSWebAPI.Services.Ingresos
                                        .Where(r => r.TipoRec != null)
                                        .Select(r => _mapper.Map<clsBeTrans_re_tr>(r.TipoRec))
                                        .ToList();
- 
+
                     var re_stock_rec_list = _mapper.Map<List<clsBeStock_rec>>(dto.stockRec);
 
                     List<clsBeTrans_re_det> re_det_list = new();
@@ -167,7 +167,7 @@ namespace WMSWebAPI.Services.Ingresos
                     if (re_stock_rec_list != null && re_stock_rec_list.Count > 0)
                         clsLnStock_rec.InsertarOActualizar(re_stock_rec_list, conn, tx);
 
-                    if(stock_list!=null && stock_list.Count > 0)
+                    if (stock_list != null && stock_list.Count > 0)
                         clsLnStock.InsertarOActualizar(stock_list, conn, tx);
 
                     if (re_movimientos_list != null && re_movimientos_list.Count > 0)
@@ -183,7 +183,7 @@ namespace WMSWebAPI.Services.Ingresos
         public List<clsBeVWOrdenCompra> ObtenerDocumentosDeIngreso(bool activo, DateTime fechaInicio, DateTime fechaFin, int idBodega, int idPropietario)
         {
             try
-            {                
+            {
                 return clsLnTrans_oc_enc.GetAll(_configuration, activo, fechaInicio, fechaFin, idBodega, idPropietario);
             }
             catch (Exception ex)
@@ -198,14 +198,14 @@ namespace WMSWebAPI.Services.Ingresos
             try
             {
 
-                detalles = clsLnTrans_oc_det.Get_All_By_IdOrdenCompraEnc(_configuration,IdOrdenCompraEnc);
+                detalles = clsLnTrans_oc_det.Get_All_By_IdOrdenCompraEnc(_configuration, IdOrdenCompraEnc);
 
             }
             catch (Exception ex)
             {
                 throw new Exception($"Error al obtener el detalle de la orden de compra: {ex.Message}", ex);
             }
-           
+
             return detalles;
         }
         public List<ReEncWebResponseDto> ObtenerDetalleRecepcion(int IdOrdenCompraEnc)
@@ -231,13 +231,13 @@ namespace WMSWebAPI.Services.Ingresos
                 // 2) Insert a tabla intermedia
                 if (clsLnI_nav_ped_compra_enc.Insert_Single_Pedido_From_ERP(_configuration, beINavPedCompraEnc) <= 0)
                     throw new Exception("No se pudo insertar el pedido en la tabla intermedia.");
-         
+
 
                 // 3) Procesar MI3
                 var bePedidoCompraEnc = new clsBeTrans_oc_enc();
                 string vResult = string.Empty;
 
-                bool ok = clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(_configuration, 
+                bool ok = clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(_configuration,
                                                                                ref beINavPedCompraEnc,
                                                                                ref bePedidoCompraEnc,
                                                                                ref vResult,
@@ -249,7 +249,7 @@ namespace WMSWebAPI.Services.Ingresos
                         : vResult);
 
                 return bePedidoCompraEnc.IdOrdenCompraEnc;
-            }            
+            }
             catch (Exception)
             {
                 throw; // propaga para que el controller lo maneje y responda 500 + mensaje
@@ -434,14 +434,13 @@ namespace WMSWebAPI.Services.Ingresos
         {
             var ids = idTransacciones.Where(x => x > 0).Distinct().ToList();
             if (ids.Count == 0) return 0;
-            
+
             return clsLnI_nav_transacciones_out.Marcar_Como_Enviado(_configuration, ids);
         }
-
-    }
-           public List<clsBeI_nav_transacciones_out> Get_Ingresos_Pendientes_De_Procesar()
+        public List<clsBeI_nav_transacciones_out> Get_Ingresos_Pendientes_De_Procesar()
         {
             List<clsBeI_nav_transacciones_out> detalles = clsLnI_nav_transacciones_out.Get_All_Ingresos_Pendientes_De_Envio(_configuration);
             return detalles;
         }
     }
+}
