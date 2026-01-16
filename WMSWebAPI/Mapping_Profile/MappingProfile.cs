@@ -296,6 +296,7 @@ public class MappingProfile : Profile
         CreateMap<StockRes_3plDto, clsBeStock_res_3pl>().ReverseMap();
         CreateMap<PickingDet_3plDto, clsBeTrans_picking_det_3pl>().ReverseMap();
         CreateMap<PickingUbic_3plDto, clsBeTrans_picking_ubic_3pl>().ReverseMap();
+        CreateMap<Stock_3plDto, clsBeStock_3pl>().ReverseMap();
         
     }
 }

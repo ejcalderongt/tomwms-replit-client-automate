@@ -207,9 +207,10 @@ Public Class frmRecepcion
                         Check_Reglas_Propietario_Ingreso()
 
                         '#GT13012025: asignar los estados y bloquear controles.
-                        chkRecepcionManual.Checked = True
-                        chkHabilitaStock.Checked = True
-                        chkRecepcionManual.Enabled = False
+                        '#GT14012025: aqui no se debe asignar de esta manera
+                        'chkRecepcionManual.Checked = True
+                        'chkHabilitaStock.Checked = True
+                        'chkRecepcionManual.Enabled = False
 
 
 
@@ -985,9 +986,10 @@ Public Class frmRecepcion
                 End If
 
                 '#GT13012025: asignar y bloquear controles
-                chkHabilitaStock.Checked = gBeRecepcionEnc.Habilitar_Stock
+                '#GT14012025: se mueve fuera del metodo actual se valida hasta el final.
+                'chkHabilitaStock.Checked = gBeRecepcionEnc.Habilitar_Stock
+                'chkHabilitaStock.Enabled = False
                 chkMostrarCantidadPI.Checked = gBeRecepcionEnc.Mostrar_Cantidad_Esperada
-                chkHabilitaStock.Enabled = False
                 chkMostrarCantidadPI.Enabled = False
 
                 '#GT13012025: no aplica, ya que previamente se asigna el estado proveniente de la recepción
@@ -7855,12 +7857,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                         '#GT13012025: se valida dentro de las reglas_propietario
                         chkRecepcionManual.Checked = True
-                        'chkHabilitaStock.Checked = True
+
 
                         '#CKFK 20210624 Se llama a la función creada por EJC para habilitar o no el stock basado en las reglas del propietario
+                        '#GT14012025: el método tambien valida si habilita o no habilitar stock!
                         Check_Reglas_Propietario_Ingreso()
-
-                        chkHabilitaStock.Enabled = False
 
                         If txtIdOrdenCompra.Text <> "" Then
 
@@ -7898,6 +7899,10 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                     '#EJC202405122223 Agregado por número de contenedor en Cumbre
                     grpDatosFiscalSAT.Visible = (txtNoContenedor.Text.Trim <> "" OrElse Control_Poliza)
+
+                    '#GT14012025: bloquear el control cuando es edición y el estado guardado excluye el tipo de transacción/reglas propietario que estan en cargar_datos()
+                    chkHabilitaStock.Checked = gBeRecepcionEnc.Habilitar_Stock
+                    chkHabilitaStock.Enabled = False
 
             End Select
 

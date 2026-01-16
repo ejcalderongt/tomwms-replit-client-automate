@@ -5,23 +5,23 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WMS.EntityCore.Datos_Maestros
 {
-    public class clsBeBodega_area : ICloneable
+    public class clsBeBodega_tramo : ICloneable
     {
-        [Column("IdArea")]
-        [DisplayName("IdArea")]
-        public int IdArea { get; set; } = 0;
+        [Column("IdTramo")]
+        [DisplayName("IdTramo")]
+        public int IdTramo { get; set; } = 0;
 
-        [Column("IdBodega")]
-        [DisplayName("IdBodega")]
-        public int IdBodega { get; set; } = 0;
-
-        [Column("Descripcion")]
-        [DisplayName("Descripcion")]
-        public string Descripcion { get; set; } = "";
+        [Column("IdSector")]
+        [DisplayName("IdSector")]
+        public int IdSector { get; set; } = 0;
 
         [Column("sistema")]
         [DisplayName("sistema")]
         public bool Sistema { get; set; } = false;
+
+        [Column("descripcion")]
+        [DisplayName("descripcion")]
+        public string Descripcion { get; set; } = "";
 
         [Column("user_agr")]
         [DisplayName("user_agr")]
@@ -38,10 +38,6 @@ namespace WMS.EntityCore.Datos_Maestros
         [Column("fec_mod")]
         [DisplayName("fec_mod")]
         public DateTime Fec_mod { get; set; } = DateTime.Now;
-
-        [Column("Codigo")]
-        [DisplayName("Codigo")]
-        public string Codigo { get; set; } = "";
 
         [Column("activo")]
         [DisplayName("activo")]
@@ -75,15 +71,51 @@ namespace WMS.EntityCore.Datos_Maestros
         [DisplayName("margen_inferior")]
         public double Margen_inferior { get; set; } = 0;
 
-        [Column("grupo")]
-        [DisplayName("grupo")]
-        public string Grupo { get; set; } = "";
+        [Column("Codigo")]
+        [DisplayName("Codigo")]
+        public string Codigo { get; set; } = "";
 
-        [Column("IdUbicacionRef")]
-        [DisplayName("IdUbicacionRef")]
-        public int IdUbicacionRef { get; set; } = 0;
+        [Column("Indice_x")]
+        [DisplayName("Indice_x")]
+        public int Indice_x { get; set; } = 0;
 
-        public clsBeBodega_area() { }
+        [Column("Orientacion")]
+        [DisplayName("Orientacion")]
+        public int Orientacion { get; set; } = 0;
+
+        [Column("IdTipoProductoDefault")]
+        [DisplayName("IdTipoProductoDefault")]
+        public int IdTipoProductoDefault { get; set; } = 0;
+
+        [Column("IdFontEnc")]
+        [DisplayName("IdFontEnc")]
+        public int IdFontEnc { get; set; } = 0;
+
+        [Column("IdTipoRack")]
+        [DisplayName("IdTipoRack")]
+        public int IdTipoRack { get; set; } = 0;
+
+        [Column("es_rack")]
+        [DisplayName("es_rack")]
+        public bool Es_rack { get; set; } = false;
+
+        [Column("Horizontal")]
+        [DisplayName("Horizontal")]
+        public bool Horizontal { get; set; } = false;
+
+        [Column("IdArea")]
+        [DisplayName("IdArea")]
+        public int IdArea { get; set; } = 0;
+
+        [Column("IdBodega")]
+        [DisplayName("IdBodega")]
+        public int IdBodega { get; set; } = 0;
+
+        [Column("orden_descendente")]
+        [DisplayName("orden_descendente")]
+        public bool Orden_descendente { get; set; } = false;
+
+        public clsBeBodega_tramo() { }
 
         public object Clone()
         {
