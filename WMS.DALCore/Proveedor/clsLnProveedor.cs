@@ -951,14 +951,15 @@ public class clsLnProveedor
 
                     Cargar(ref BeProveedor, lRow);
 
-                    clsBeProveedor_bodega BeProveedorBodega = new clsBeProveedor_bodega();
-                    BeProveedorBodega.IdAsignacion = BeProveedor.IdProveedor;
+                    clsBeProveedor_bodega BeProveedorBodega = new clsBeProveedor_bodega();                    
                     BeProveedorBodega.IdBodega = pIdBodega;
+                    BeProveedorBodega.IdProveedor = BeProveedor.IdProveedor;
 
                     if (!clsLnProveedor_bodega.Get_Single_By_IdBodega_And_IdAsignacion(ref BeProveedorBodega, lConection, lTransaction))
                     {
 
-                        BeProveedorBodega.IdProveedor = clsLnProveedor_bodega.MaxID(lConection, lTransaction) + 1;
+                        BeProveedorBodega.IdAsignacion = clsLnProveedor_bodega.MaxID(lConection, lTransaction) + 1;
+                        BeProveedorBodega.IdProveedor = BeProveedor.IdProveedor;
                         BeProveedorBodega.Proveedor = BeProveedor;
                         BeProveedorBodega.User_agr = BeConfigEnc.User_agr;
                         BeProveedorBodega.User_mod = BeConfigEnc.User_mod;

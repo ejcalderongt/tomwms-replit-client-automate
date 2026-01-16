@@ -4,6 +4,7 @@ Imports System.IO
 Imports System.Reflection
 Imports DevExpress.Mvvm.Native
 Imports DevExpress.Utils
+Imports DevExpress.XtraBars.Ribbon.ViewInfo
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Controls
 Imports DevExpress.XtraEditors.Repository
@@ -207,10 +208,9 @@ Public Class frmRecepcion
                         Check_Reglas_Propietario_Ingreso()
 
                         '#GT13012025: asignar los estados y bloquear controles.
-                        '#GT14012025: aqui no se debe asignar de esta manera
-                        'chkRecepcionManual.Checked = True
-                        'chkHabilitaStock.Checked = True
-                        'chkRecepcionManual.Enabled = False
+                        chkRecepcionManual.Checked = True
+                        chkHabilitaStock.Checked = True
+                        chkRecepcionManual.Enabled = False
 
 
 
@@ -986,16 +986,14 @@ Public Class frmRecepcion
                 End If
 
                 '#GT13012025: asignar y bloquear controles
-                '#GT14012025: se mueve fuera del metodo actual se valida hasta el final.
-                'chkHabilitaStock.Checked = gBeRecepcionEnc.Habilitar_Stock
-                'chkHabilitaStock.Enabled = False
+                chkHabilitaStock.Checked = gBeRecepcionEnc.Habilitar_Stock
                 chkMostrarCantidadPI.Checked = gBeRecepcionEnc.Mostrar_Cantidad_Esperada
-                chkMostrarCantidadPI.Enabled = False
 
-                '#GT13012025: no aplica, ya que previamente se asigna el estado proveniente de la recepción
-                'If Modo = TipoTrans.Editar Then
-                '    chkHabilitaStock.Enabled = False
-                'End If
+                If Modo = TipoTrans.Editar Then
+                    chkHabilitaStock.Enabled = gBeRecepcionEnc.Habilitar_Stock
+                End If
+
+                chkMostrarCantidadPI.Enabled = False
 
                 txtIdOrdenCompra.Enabled = False
 
@@ -1150,6 +1148,8 @@ Public Class frmRecepcion
     End Sub
 
     Private Sub Check_Reglas_Propietario_Ingreso()
+
+        chkHabilitaStock.Checked = True
 
         Try
 
@@ -6718,8 +6718,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
         DTGridDetalleDocIngresos.Columns.Add("ControlPeso", GetType(Boolean))
         DTGridDetalleDocIngresos.Columns.Add("PesoReferenciaUMBas", GetType(Double))
         '#GT13082025: campos talla, color y sku
-        DTGridDetalleDocIngresos.Columns.Add("Talla", GetType(Integer))
-        DTGridDetalleDocIngresos.Columns.Add("Color", GetType(Integer))
+        DTGridDetalleDocIngresos.Columns.Add("Talla", GetType(String))
+        DTGridDetalleDocIngresos.Columns.Add("Color", GetType(String))
         DTGridDetalleDocIngresos.Columns.Add("SKU", GetType(String))
 
 
@@ -7588,43 +7588,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 DTGridDetalleDocIngresos.Rows.Add(finalData)
 
 
-
-                'DTGridDetalleDocIngresos.Rows.Add(BeTransOCDet.IdPropietarioBodega,
-                '                                  BeTransOCDet.Nombre_Propietario,
-                '                                  BeTransOCDet.No_Linea,
-                '                                  BeTransOCDet.IdProductoBodega,
-                '                                  BeTransOCDet.Codigo_Producto,
-                '                                  BeTransOCDet.Nombre_producto,
-                '                                  BeTransOCDet.Nombre_unidad_medida_basica,
-                '                                  BeTransOCDet.IdUnidadMedidaBasica,
-                '                                  BeTransOCDet.IdPresentacion,
-                '                                  BeTransOCDet.Arancel.IdArancel,
-                '                                  BeTransOCDet.IdMotivoDevolucion,
-                '                                  BeTransOCDet.Cantidad,
-                '                                  BeTransOCDet.Cantidad_recibida,
-                '                                  vCantidadPendiente,
-                '                                  BeTransOCDet.Peso_Bruto,
-                '                                  BeTransOCDet.Peso_Neto,
-                '                                  BeTransOCDet.Costo,
-                '                                  BeTransOCDet.valor_aduana,
-                '                                  BeTransOCDet.valor_fob,
-                '                                  BeTransOCDet.valor_iva,
-                '                                  BeTransOCDet.valor_dai,
-                '                                  BeTransOCDet.valor_seguro,
-                '                                  BeTransOCDet.valor_flete,
-                '                                  BeTransOCDet.Total_linea,
-                '                                  BeTransOCDet.Producto.IdProducto,
-                '                                  BeTransOCDet.IsNew,
-                '                                  BeTransOCDet.IdOrdenCompraEnc,
-                '                                  BeTransOCDet.IdOrdenCompraDet,
-                '                                  False,
-                '                                  BeTransOCDet.Atributo_variante_1,
-                '                                  BeTransOCDet.Producto.Kit,
-                '                                  BeTransOCDet.IdPedidoCompraDet,
-                '                                  BeTransOCDet.IdOrdenCompraDetPadre,
-                '                                  BeTransOCDet.Producto.Control_peso,
-                '                                  BeTransOCDet.Producto.Peso_referencia)
-
                 If BeTransOCDet.lProductosHijosKit.Count > 0 Then
 
                     For Each Hijo As clsBeTrans_oc_det In BeTransOCDet.lProductosHijosKit
@@ -7857,11 +7820,12 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                         '#GT13012025: se valida dentro de las reglas_propietario
                         chkRecepcionManual.Checked = True
-
+                        'chkHabilitaStock.Checked = True
 
                         '#CKFK 20210624 Se llama a la función creada por EJC para habilitar o no el stock basado en las reglas del propietario
-                        '#GT14012025: el método tambien valida si habilita o no habilitar stock!
                         Check_Reglas_Propietario_Ingreso()
+
+                        chkHabilitaStock.Enabled = False
 
                         If txtIdOrdenCompra.Text <> "" Then
 
@@ -7899,10 +7863,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                     '#EJC202405122223 Agregado por número de contenedor en Cumbre
                     grpDatosFiscalSAT.Visible = (txtNoContenedor.Text.Trim <> "" OrElse Control_Poliza)
-
-                    '#GT14012025: bloquear el control cuando es edición y el estado guardado excluye el tipo de transacción/reglas propietario que estan en cargar_datos()
-                    chkHabilitaStock.Checked = gBeRecepcionEnc.Habilitar_Stock
-                    chkHabilitaStock.Enabled = False
 
             End Select
 
