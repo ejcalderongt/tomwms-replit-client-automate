@@ -6941,6 +6941,10 @@ Partial Public Class clsLnTrans_inv_ciclico
                                     EstadoDestino,
                                     UbicacionOrigen,
                                     UbicacionDestino,
+                                    TallaStock TallaOrigen,
+                                    ISNULL(TallaNueva, '') AS TallaDestino,
+                                    ColorStock ColorOrigen,
+                                    ISNULL(ColorNuevo, '') AS ColorDestino,
                                     Cantidad_Stock AS CantidadStock,
                                     Peso_Stock AS PesoStock,
                                     Cantidad AS CantidadConteo,
@@ -6967,11 +6971,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                                     (Peso_Stock - Peso) AS DiferenciaPeso,
                                     Cantidad_Reservada_UmBas,
                                     TieneReservaYConteoInsuficiente,  
-                                    Observacion,
-                                    TallaStock,
-                                    ColorStock,
-                                    ISNULL(TallaNueva, '') AS TallaNueva,
-                                    ISNULL(ColorNuevo, '') AS ColorNuevo
+                                    Observacion
                                 FROM 
                                     ComparacionInventario
                                 WHERE 
@@ -7085,6 +7085,10 @@ Partial Public Class clsLnTrans_inv_ciclico
                     EstadoDestino,
                     UbicacionOrigen,
                     UbicacionDestino,
+                    TallaStock TallaOrigen,
+                    ISNULL(TallaNueva, '') AS TallaDestino,
+                    ColorStock ColorOrigen,
+                    ISNULL(ColorNuevo, '') AS ColorDestino,
                     Cantidad_Stock AS CantidadStock,
                     Peso_Stock AS PesoStock,
                     Cantidad AS CantidadConteo,
@@ -7111,11 +7115,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                     (Peso_Stock - Peso) AS DiferenciaPeso,
                     Cantidad_Reservada_UmBas,
                     TieneReservaYConteoInsuficiente,  
-                    Observacion,
-                    TallaStock,
-                    ColorStock,
-                    ISNULL(TallaNueva, '') AS TallaNueva,
-                    ISNULL(ColorNuevo, '') AS ColorNuevo
+                    Observacion
                 FROM 
                     tempComparacionInventario
                 WHERE 
