@@ -3413,10 +3413,6 @@ Public Class frmPicking
                                                     MessageBoxButtons.OK,
                                                     MessageBoxIcon.Information)
 
-                                'Set_Stock_Res(pListBeStockRes(0).IdPedido)
-
-                                'Set_Formato_Grid_Picking_Ubic()
-
                                 Cargar_Datos()
 
                             Else
@@ -4755,9 +4751,10 @@ Public Class frmPicking
         cmdVerificarNuevamente.Enabled = estado
         cmdNoVerificado.Enabled = estado
         mnuDespachado.Enabled = estado
-        chkProcesarDesdeBOF.Checked = False
+        '#GT12012025: porque dejarlo en false?
+        'chkProcesarDesdeBOF.Checked = False
         chkProcesarDesdeBOF.Enabled = estado
-        chkverifica_auto.Checked = False
+        'chkverifica_auto.Checked = False
         chkverifica_auto.Enabled = estado
     End Sub
 

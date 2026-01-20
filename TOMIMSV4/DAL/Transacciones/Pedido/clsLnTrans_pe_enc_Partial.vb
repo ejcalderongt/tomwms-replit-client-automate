@@ -6332,5 +6332,93 @@ Partial Public Class clsLnTrans_pe_enc
 
     End Function
 
+    Public Shared Function Get_Single_By_NoGuia(ByVal NoGuia As String) As clsBeTrans_pe_enc
+
+        Get_Single_By_NoGuia = Nothing
+
+        Try
+
+            Const sp As String = " SELECT * FROM Trans_pe_enc " &
+                                 " Where(guia_transporte = @guia_transporte)"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+                    Dim dad As New SqlDataAdapter(cmd)
+
+                    dad.SelectCommand.Parameters.Add(New SqlParameter("@guia_transporte", NoGuia))
+
+                    Dim dt As New DataTable
+                    dad.Fill(dt)
+
+                    If dt.Rows.Count >= 1 Then
+                        Dim BePedidoEnc As New clsBeTrans_pe_enc()
+                        Cargar(BePedidoEnc, dt.Rows(0))
+                        Get_Single_By_NoGuia = BePedidoEnc
+                    End If
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function GetAll_By_Guia_Transporte(ByVal guia_Transporte As String) As DataTable
+
+        GetAll_By_Guia_Transporte = Nothing
+
+        Try
+
+            Const sp As String =
+                "SELECT IdPedidoEnc AS Correlativo " &
+                "FROM Trans_pe_enc " &
+                "WHERE guia_transporte = @guia_transporte"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+                    Dim dad As New SqlDataAdapter(cmd)
+
+                    dad.SelectCommand.Parameters.Add(New SqlParameter("@guia_transporte", guia_Transporte))
+
+                    Dim dt As New DataTable
+                    dad.Fill(dt)
+
+                    lTransaction.Commit()
+
+                    GetAll_By_Guia_Transporte = dt
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw
+        End Try
+
+    End Function
+
 
 End Class

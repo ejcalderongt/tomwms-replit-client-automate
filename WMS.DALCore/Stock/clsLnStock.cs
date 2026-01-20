@@ -147,6 +147,78 @@ public class clsLnStock
         }
     }
 
+    public static int Insertar_3pl(clsBeStock_3pl oBeStock, SqlConnection pConection, SqlTransaction pTransaction)
+    {
+        if (oBeStock == null)
+            throw new ArgumentNullException(nameof(oBeStock));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
+
+        int rowsAffected = 0;
+
+        try
+        {
+            Ins.Init("stock");
+            Ins.Add("idbodega", "@idbodega", "F");
+            Ins.Add("idstock", "@idstock", "F");
+            Ins.Add("idpropietariobodega", "@idpropietariobodega", "F");
+            Ins.Add("idproductobodega", "@idproductobodega", "F");
+            Ins.Add("idproductoestado", "@idproductoestado", "F");
+            Ins.Add("idpresentacion", "@idpresentacion", "F");
+            Ins.Add("idunidadmedida", "@idunidadmedida", "F");
+            Ins.Add("idubicacion", "@idubicacion", "F");
+            Ins.Add("idubicacion_anterior", "@idubicacion_anterior", "F");
+            Ins.Add("idrecepcionenc", "@idrecepcionenc", "F");
+            Ins.Add("idrecepciondet", "@idrecepciondet", "F");
+            Ins.Add("idpedidoenc", "@idpedidoenc", "F");
+            Ins.Add("idpickingenc", "@idpickingenc", "F");
+            Ins.Add("iddespachoenc", "@iddespachoenc", "F");
+            Ins.Add("lote", "@lote", "F");
+            Ins.Add("lic_plate", "@lic_plate", "F");
+            Ins.Add("serial", "@serial", "F");
+            Ins.Add("cantidad", "@cantidad", "F");
+            Ins.Add("fecha_ingreso", "@fecha_ingreso", "F");
+            Ins.Add("fecha_vence", "@fecha_vence", "F");
+            Ins.Add("uds_lic_plate", "@uds_lic_plate", "F");
+            Ins.Add("no_bulto", "@no_bulto", "F");
+            Ins.Add("fecha_manufactura", "@fecha_manufactura", "F");
+            Ins.Add("añada", "@añada", "F");
+            Ins.Add("user_agr", "@user_agr", "F");
+            Ins.Add("fec_agr", "@fec_agr", "F");
+            Ins.Add("user_mod", "@user_mod", "F");
+            Ins.Add("fec_mod", "@fec_mod", "F");
+            Ins.Add("activo", "@activo", "F");
+            Ins.Add("peso", "@peso", "F");
+            Ins.Add("temperatura", "@temperatura", "F");
+            Ins.Add("atributo_variante_1", "@atributo_variante_1", "F");
+            Ins.Add("pallet_no_estandar", "@pallet_no_estandar", "F");
+            Ins.Add("idpickingubicstock", "@idpickingubicstock", "F");
+            Ins.Add("idpickingubic", "@idpickingubic", "F");
+            Ins.Add("idpedidodet", "@idpedidodet", "F");
+
+            string sp = Ins.SQL();
+
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+
+                BindStockParameters_3pl(cmd, oBeStock);
+
+                rowsAffected = cmd.ExecuteNonQuery();
+            }
+
+            return rowsAffected;
+        }
+        catch (SqlException ex)
+        {
+            string errorMessage = $"Error en Insertar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
+        }
+    }
     public static int Insertar(IConfiguration config, clsBeStock oBeStock)
     {
 
@@ -304,6 +376,79 @@ public class clsLnStock
         }
     }
 
+    public static int Actualizar_3pl(clsBeStock_3pl oBeStock, SqlConnection pConection, SqlTransaction pTransaction)
+    {
+        if (oBeStock == null)
+            throw new ArgumentNullException(nameof(oBeStock));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
+
+        int rowsAffected = 0;
+
+        try
+        {
+            Upd.Init("stock");
+            Upd.Add("idbodega", "@idbodega", "F");
+            Upd.Add("idstock", "@idstock", "F");
+            Upd.Add("idpropietariobodega", "@idpropietariobodega", "F");
+            Upd.Add("idproductobodega", "@idproductobodega", "F");
+            Upd.Add("idproductoestado", "@idproductoestado", "F");
+            Upd.Add("idpresentacion", "@idpresentacion", "F");
+            Upd.Add("idunidadmedida", "@idunidadmedida", "F");
+            Upd.Add("idubicacion", "@idubicacion", "F");
+            Upd.Add("idubicacion_anterior", "@idubicacion_anterior", "F");
+            Upd.Add("idrecepcionenc", "@idrecepcionenc", "F");
+            Upd.Add("idrecepciondet", "@idrecepciondet", "F");
+            Upd.Add("idpedidoenc", "@idpedidoenc", "F");
+            Upd.Add("idpickingenc", "@idpickingenc", "F");
+            Upd.Add("iddespachoenc", "@iddespachoenc", "F");
+            Upd.Add("lote", "@lote", "F");
+            Upd.Add("lic_plate", "@lic_plate", "F");
+            Upd.Add("serial", "@serial", "F");
+            Upd.Add("cantidad", "@cantidad", "F");
+            Upd.Add("fecha_ingreso", "@fecha_ingreso", "F");
+            Upd.Add("fecha_vence", "@fecha_vence", "F");
+            Upd.Add("uds_lic_plate", "@uds_lic_plate", "F");
+            Upd.Add("no_bulto", "@no_bulto", "F");
+            Upd.Add("fecha_manufactura", "@fecha_manufactura", "F");
+            Upd.Add("añada", "@añada", "F");
+            Upd.Add("user_agr", "@user_agr", "F");
+            Upd.Add("fec_agr", "@fec_agr", "F");
+            Upd.Add("user_mod", "@user_mod", "F");
+            Upd.Add("fec_mod", "@fec_mod", "F");
+            Upd.Add("activo", "@activo", "F");
+            Upd.Add("peso", "@peso", "F");
+            Upd.Add("temperatura", "@temperatura", "F");
+            Upd.Add("atributo_variante_1", "@atributo_variante_1", "F");
+            Upd.Add("pallet_no_estandar", "@pallet_no_estandar", "F");
+            Upd.Add("idpickingubicstock", "@idpickingubicstock", "F");
+            Upd.Add("idpickingubic", "@idpickingubic", "F");
+            Upd.Add("idpedidodet", "@idpedidodet", "F");
+            Upd.Where("IdStock = @IdStock");
+
+            string sp = Upd.SQL();
+
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+
+                BindStockParameters_3pl(cmd, oBeStock);
+
+                rowsAffected = cmd.ExecuteNonQuery();
+            }
+
+            return rowsAffected;
+        }
+        catch (SqlException ex)
+        {
+            string errorMessage = $"Error en Actualizar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
+        }
+    }
     public int Eliminar(IConfiguration config, clsBeStock oBeStock, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
 
@@ -624,6 +769,50 @@ public class clsLnStock
         cmd.Parameters.AddWithValue("@IdPedidoDet", oBeStock.IdPedidoDet == 0 ? DBNull.Value : oBeStock.IdPedidoDet);
     }
 
+    public static void BindStockParameters_3pl(SqlCommand cmd, clsBeStock_3pl oBeStock)
+    {
+        cmd.Parameters.AddWithValue("@IdBodega", oBeStock.IdBodega);
+        cmd.Parameters.AddWithValue("@IdStock", oBeStock.IdStock);
+        cmd.Parameters.AddWithValue("@IdPropietarioBodega", oBeStock.IdPropietarioBodega == 0 ? DBNull.Value : oBeStock.IdPropietarioBodega);
+        cmd.Parameters.AddWithValue("@IdProductoBodega", oBeStock.IdProductoBodega == 0 ? DBNull.Value : oBeStock.IdProductoBodega);
+        cmd.Parameters.AddWithValue("@IdProductoEstado", oBeStock.IdProductoEstado == 0 ? DBNull.Value : oBeStock.IdProductoEstado);
+        cmd.Parameters.AddWithValue("@IdPresentacion", oBeStock.IdPresentacion == 0 ? DBNull.Value : oBeStock.IdPresentacion);
+        cmd.Parameters.AddWithValue("@IdUnidadMedida", oBeStock.IdUnidadMedida == 0 ? DBNull.Value : oBeStock.IdUnidadMedida);
+        cmd.Parameters.AddWithValue("@IdUbicacion", oBeStock.IdUbicacion == 0 ? DBNull.Value : oBeStock.IdUbicacion);
+        cmd.Parameters.AddWithValue("@IdUbicacion_anterior", oBeStock.IdUbicacion_anterior == 0 ? DBNull.Value : oBeStock.IdUbicacion_anterior);
+        cmd.Parameters.AddWithValue("@IdRecepcionEnc", oBeStock.IdRecepcionEnc == 0 ? DBNull.Value : oBeStock.IdRecepcionEnc);
+        cmd.Parameters.AddWithValue("@IdRecepcionDet", oBeStock.IdRecepcionDet == 0 ? DBNull.Value : oBeStock.IdRecepcionDet);
+        cmd.Parameters.AddWithValue("@IdPedidoEnc", oBeStock.IdPedidoEnc == 0 ? DBNull.Value : oBeStock.IdPedidoEnc);
+        cmd.Parameters.AddWithValue("@IdPickingEnc", oBeStock.IdPickingEnc == 0 ? DBNull.Value : oBeStock.IdPickingEnc);
+        cmd.Parameters.AddWithValue("@IdDespachoEnc", oBeStock.IdDespachoEnc == 0 ? DBNull.Value : oBeStock.IdDespachoEnc);
+        //GT01072025: borrar comentario, lote no puede insertar null
+        cmd.Parameters.AddWithValue("@lote", oBeStock.Lote);
+        cmd.Parameters.AddWithValue("@lic_plate", string.IsNullOrEmpty(oBeStock.Lic_plate) ? DBNull.Value : oBeStock.Lic_plate);
+        cmd.Parameters.AddWithValue("@serial", string.IsNullOrEmpty(oBeStock.Serial) ? DBNull.Value : oBeStock.Serial);
+
+        cmd.Parameters.AddWithValue("@cantidad", oBeStock.Cantidad);
+        cmd.Parameters.AddWithValue("@fecha_ingreso", oBeStock.Fecha_ingreso == DateTime.MinValue ? DBNull.Value : oBeStock.Fecha_ingreso);
+        cmd.Parameters.AddWithValue("@fecha_vence", oBeStock.Fecha_vence == DateTime.MinValue ? DBNull.Value : oBeStock.Fecha_vence);
+        cmd.Parameters.AddWithValue("@uds_lic_plate", oBeStock.Uds_lic_plate);
+        cmd.Parameters.AddWithValue("@no_bulto", oBeStock.No_bulto);
+        cmd.Parameters.AddWithValue("@fecha_manufactura", oBeStock.Fecha_manufactura == DateTime.MinValue ? DBNull.Value : oBeStock.Fecha_manufactura);
+        cmd.Parameters.AddWithValue("@añada", oBeStock.Añada);
+
+        cmd.Parameters.AddWithValue("@user_agr", string.IsNullOrEmpty(oBeStock.User_agr) ? DBNull.Value : oBeStock.User_agr);
+        cmd.Parameters.AddWithValue("@fec_agr", oBeStock.Fec_agr == DateTime.MinValue ? DBNull.Value : oBeStock.Fec_agr);
+        cmd.Parameters.AddWithValue("@user_mod", string.IsNullOrEmpty(oBeStock.User_mod) ? DBNull.Value : oBeStock.User_mod);
+        cmd.Parameters.AddWithValue("@fec_mod", oBeStock.Fec_mod == DateTime.MinValue ? DBNull.Value : oBeStock.Fec_mod);
+
+        cmd.Parameters.AddWithValue("@activo", oBeStock.Activo);
+        cmd.Parameters.AddWithValue("@peso", oBeStock.Peso);
+        cmd.Parameters.AddWithValue("@temperatura", oBeStock.Temperatura);
+        cmd.Parameters.AddWithValue("@atributo_variante_1", string.IsNullOrEmpty(oBeStock.Atributo_variante_1) ? DBNull.Value : oBeStock.Atributo_variante_1);
+        cmd.Parameters.AddWithValue("@pallet_no_estandar", oBeStock.Pallet_no_estandar);
+
+        cmd.Parameters.AddWithValue("@IdPickingUbicStock", oBeStock.IdPickingUbicStock == 0 ? DBNull.Value : oBeStock.IdPickingUbicStock);
+        cmd.Parameters.AddWithValue("@IdPickingUbic", oBeStock.IdPickingUbic == 0 ? DBNull.Value : oBeStock.IdPickingUbic);
+        cmd.Parameters.AddWithValue("@IdPedidoDet", oBeStock.IdPedidoDet == 0 ? DBNull.Value : oBeStock.IdPedidoDet);
+    }
     public static void InsertarOActualizar(List<clsBeStock> entities, SqlConnection conn, SqlTransaction tx)
     {
         if (entities == null)
@@ -650,6 +839,41 @@ public class clsLnStock
                         Actualizar(entity, conn, tx);
                     else
                         Insertar(entity, conn, tx);
+                }
+            }
+        }
+        catch (SqlException)
+        {
+            throw;
+        }
+    }
+
+    public static void InsertarOActualizar_3pl(List<clsBeStock_3pl> entities, SqlConnection conn, SqlTransaction tx)
+    {
+        if (entities == null)
+            throw new ArgumentNullException(nameof(entities));
+
+        if (conn == null)
+            throw new ArgumentNullException(nameof(conn));
+
+        if (tx == null)
+            throw new ArgumentNullException(nameof(tx));
+
+        try
+        {
+            foreach (var entity in entities)
+            {
+                if (entity == null)
+                    continue;
+
+                if (entity.IdStock != 0)
+                {
+                    bool existe = Existe(entity.IdStock, conn, tx);
+
+                    if (existe)
+                        Actualizar_3pl(entity, conn, tx);
+                    else
+                        Insertar_3pl(entity, conn, tx);
                 }
             }
         }

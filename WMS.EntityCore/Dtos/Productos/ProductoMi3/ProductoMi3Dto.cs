@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace WMSWebAPI.Dtos.Catalogos
+﻿namespace WMSWebAPI.Dtos.Catalogos
 {
     public class ProductoMi3Dto
     {
@@ -20,10 +17,14 @@ namespace WMSWebAPI.Dtos.Catalogos
         public bool? Genera_Lp_Old { get; set; }= false;
         public bool? Control_Vencimiento { get; set; } = false;
         public bool? Control_Lote { get; set; } = false;
-        //public bool? FechaManufactura { get; set; }        
-        public bool? Control_Peso { get; set; } = false;
-        //public int? IdTipoEtiqueta { get; set; }
+        public bool? Control_Peso { get; set; } = false;        
         public bool? activo { get; set; } = true;
 
+    }
+
+    public class ProductoBodegaRequestDto
+    {
+        public string CodigoProducto { get; set; } = string.Empty;
+        public string CodigoBodega { get; set; } = string.Empty;
     }
 }

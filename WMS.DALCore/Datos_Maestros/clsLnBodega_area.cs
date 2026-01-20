@@ -4,12 +4,42 @@ using System.Reflection;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic.CompilerServices;
-using WMSWebAPI.Be;
+using WMS.EntityCore.Datos_Maestros;
+
 public class clsLnBodega_area
 {
 
     private static clsInsert Ins = new clsInsert();
     private static clsUpdate Upd = new clsUpdate();
+
+    public static void BindingParametros(SqlCommand cmd, clsBeBodega_area oBeBodega_area)
+    {
+        if (cmd == null) throw new ArgumentNullException(nameof(cmd));
+        if (oBeBodega_area == null) throw new ArgumentNullException(nameof(oBeBodega_area));
+
+        // Recomendación práctica: evitar duplicados si el comando se reutiliza.
+        cmd.Parameters.Clear();
+
+        cmd.Parameters.Add(new SqlParameter("@IdArea", oBeBodega_area.IdArea));
+        cmd.Parameters.Add(new SqlParameter("@IdBodega", oBeBodega_area.IdBodega));
+        cmd.Parameters.Add(new SqlParameter("@Descripcion", oBeBodega_area.Descripcion));
+        cmd.Parameters.Add(new SqlParameter("@sistema", oBeBodega_area.Sistema));
+        cmd.Parameters.Add(new SqlParameter("@user_agr", oBeBodega_area.User_agr));
+        cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeBodega_area.Fec_agr));
+        cmd.Parameters.Add(new SqlParameter("@user_mod", oBeBodega_area.User_mod));
+        cmd.Parameters.Add(new SqlParameter("@fec_mod", oBeBodega_area.Fec_mod));
+        cmd.Parameters.Add(new SqlParameter("@Codigo", oBeBodega_area.Codigo));
+        cmd.Parameters.Add(new SqlParameter("@activo", oBeBodega_area.Activo));
+        cmd.Parameters.Add(new SqlParameter("@alto", oBeBodega_area.Alto));
+        cmd.Parameters.Add(new SqlParameter("@largo", oBeBodega_area.Largo));
+        cmd.Parameters.Add(new SqlParameter("@ancho", oBeBodega_area.Ancho));
+        cmd.Parameters.Add(new SqlParameter("@margen_izquierdo", oBeBodega_area.Margen_izquierdo));
+        cmd.Parameters.Add(new SqlParameter("@margen_derecho", oBeBodega_area.Margen_derecho));
+        cmd.Parameters.Add(new SqlParameter("@margen_superior", oBeBodega_area.Margen_superior));
+        cmd.Parameters.Add(new SqlParameter("@margen_inferior", oBeBodega_area.Margen_inferior));
+        cmd.Parameters.Add(new SqlParameter("@grupo", oBeBodega_area.Grupo));
+        cmd.Parameters.Add(new SqlParameter("@IdUbicacionRef", oBeBodega_area.IdUbicacionRef));
+    }
 
     public static void Cargar(ref clsBeBodega_area oBeBodega_area, DataRow dr)
     {
@@ -48,6 +78,88 @@ public class clsLnBodega_area
             MethodBase? currentMethodName = sf?.GetMethod();
             string vMsgError = string.Format("{{0}} {{1}}", currentMethodName, ex.Message);            
             throw new Exception(vMsgError);
+        }
+    }
+
+    public static void InsertarOActualizar(List<clsBeBodega_area> entities, SqlConnection conn, SqlTransaction tx)
+    {
+        foreach (var entity in entities)
+        {
+            if (entity.IdArea != 0)
+            {
+                bool existe = Existe(entity.IdArea, entity.IdBodega ,conn, tx);
+
+                if (existe)
+                    Actualizar(entity, conn, tx);
+                else
+                    Insertar(entity, conn, tx);
+            }
+        }
+    }
+
+    public static bool Existe(int IdArea, int IdBodega, SqlConnection conn, SqlTransaction tx)
+    {
+        using var cmd = new SqlCommand("SELECT COUNT(1) FROM bodega_area WHERE (IdArea = @IdArea and IdBodega=@IdBodega) ", conn, tx);
+        cmd.Parameters.AddWithValue("@IdArea", IdArea);
+        cmd.Parameters.AddWithValue("@IdBodega", IdBodega);
+
+        var count = Convert.ToInt32(cmd.ExecuteScalar());
+        return count > 0;
+    }
+
+    public static int Insertar(clsBeBodega_area oBeBodega_area, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    {
+        if (oBeBodega_area == null)
+            throw new ArgumentNullException(nameof(oBeBodega_area));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
+        int rowsAffected = 0;
+       
+        try
+        {
+            Ins.Init("bodega_area");
+            Ins.Add("idarea", "@idarea", "F");
+            Ins.Add("idbodega", "@idbodega", "F");
+            Ins.Add("descripcion", "@descripcion", "F");
+            Ins.Add("sistema", "@sistema", "F");
+            Ins.Add("user_agr", "@user_agr", "F");
+            Ins.Add("fec_agr", "@fec_agr", "F");
+            Ins.Add("user_mod", "@user_mod", "F");
+            Ins.Add("fec_mod", "@fec_mod", "F");
+            Ins.Add("codigo", "@codigo", "F");
+            Ins.Add("activo", "@activo", "F");
+            Ins.Add("alto", "@alto", "F");
+            Ins.Add("largo", "@largo", "F");
+            Ins.Add("ancho", "@ancho", "F");
+            Ins.Add("margen_izquierdo", "@margen_izquierdo", "F");
+            Ins.Add("margen_derecho", "@margen_derecho", "F");
+            Ins.Add("margen_superior", "@margen_superior", "F");
+            Ins.Add("margen_inferior", "@margen_inferior", "F");
+            Ins.Add("grupo", "@grupo", "F");
+            Ins.Add("idubicacionref", "@idubicacionref", "F");
+
+            string sp = Ins.SQL();
+
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+
+                BindingParametros(cmd, oBeBodega_area);
+
+                rowsAffected = cmd.ExecuteNonQuery();
+            }
+
+            return rowsAffected;
+
+        }
+        catch (SqlException ex)
+        {
+            string errorMessage = $"Error en Insertar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
         }
     }
 
@@ -328,6 +440,66 @@ public class clsLnBodega_area
             if (lTransaction != null) lTransaction.Dispose();
         }
         return rowsAffected;
+    }
+
+    public static int Actualizar(clsBeBodega_area oBeBodega_area, SqlConnection pConection, SqlTransaction pTransaction)
+    {
+        if (oBeBodega_area == null)
+            throw new ArgumentNullException(nameof(oBeBodega_area));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
+        int rowsAffected = 0;
+     
+        try
+        {
+
+            Upd.Init("bodega_area");
+            Upd.Add("idarea", "@idarea", "F");
+            Upd.Add("idbodega", "@idbodega", "F");
+            Upd.Add("descripcion", "@descripcion", "F");
+            Upd.Add("sistema", "@sistema", "F");
+            Upd.Add("user_agr", "@user_agr", "F");
+            Upd.Add("fec_agr", "@fec_agr", "F");
+            Upd.Add("user_mod", "@user_mod", "F");
+            Upd.Add("fec_mod", "@fec_mod", "F");
+            Upd.Add("codigo", "@codigo", "F");
+            Upd.Add("activo", "@activo", "F");
+            Upd.Add("alto", "@alto", "F");
+            Upd.Add("largo", "@largo", "F");
+            Upd.Add("ancho", "@ancho", "F");
+            Upd.Add("margen_izquierdo", "@margen_izquierdo", "F");
+            Upd.Add("margen_derecho", "@margen_derecho", "F");
+            Upd.Add("margen_superior", "@margen_superior", "F");
+            Upd.Add("margen_inferior", "@margen_inferior", "F");
+            Upd.Add("grupo", "@grupo", "F");
+            Upd.Add("idubicacionref", "@idubicacionref", "F");
+            Upd.Where("IdArea = @IdArea" +
+                " AND IdBodega = @IdBodega");
+
+            string sp = Upd.SQL();
+
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+
+                BindingParametros(cmd, oBeBodega_area);
+
+                rowsAffected = cmd.ExecuteNonQuery();
+            }
+
+            return rowsAffected;
+
+          
+        }
+        catch (SqlException ex)
+        {
+            string errorMessage = $"Error en Actualizar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
+        }
     }
 
     public int Eliminar(IConfiguration config, clsBeBodega_area oBeBodega_area, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)

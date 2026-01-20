@@ -29,19 +29,19 @@ namespace WMS.StockReservation.Compatibility
         /// <param name="pTarea_Reabasto">Indica si es tarea de reabasto (opcional)</param>
         /// <param name="pBeTrasladoDet">Detalle de traslado (opcional)</param>
         /// <returns>True si se crearon reservas exitosamente</returns>
-        public static bool Reserva_Stock_From_MI3(
-            ref clsBeStock_res pStockResSolicitud,
-            double DiasVencimiento,
-            string MaquinaQueSolicita,
-            clsBeI_nav_config_enc pBeConfigEnc,
-            ref double pCantidadDisponibleStock,
-            int pIdPropietarioBodega,
-            ref List<clsBeStock_res> pListStockResOUT,
-            SqlConnection lConnection,
-            SqlTransaction ltransaction,
-            int No_Linea = 0,
-            bool pTarea_Reabasto = false,
-            clsBeI_nav_ped_traslado_det? pBeTrasladoDet = null)
+        public static bool Reserva_Stock_From_MI3(ref clsBeStock_res pStockResSolicitud,
+                                                  double DiasVencimiento,
+                                                  string MaquinaQueSolicita,
+                                                  clsBeI_nav_config_enc pBeConfigEnc,
+                                                  ref double pCantidadDisponibleStock,
+                                                  int pIdPropietarioBodega,
+                                                  ref List<clsBeStock_res> pListStockResOUT,
+                                                  SqlConnection lConnection,
+                                                  SqlTransaction ltransaction,
+                                                  int No_Linea = 0,
+                                                  bool pTarea_Reabasto = false,
+                                                  clsBeI_nav_ped_traslado_det? pBeTrasladoDet = null,
+                                                  clsBeTrans_pe_det? pBePedidoDet = null)
         {
             try
             {
@@ -51,28 +51,29 @@ namespace WMS.StockReservation.Compatibility
                 if (lConnection == null)
                     throw new ArgumentNullException(nameof(lConnection));
 
-                // ⚠️ MAPEO DE PARÁMETROS LEGACY A REQUEST:
+                // MAPEO DE PARÁMETROS LEGACY A REQUEST:
                 // Asignar IdPropietarioBodega al request (usado en consulta de stock)
                 if (pIdPropietarioBodega > 0)
                 {
                     pStockResSolicitud.IdPropietarioBodega = pIdPropietarioBodega;
                 }
 
-                // Dejar que ValidationStep resuelva IdProductoBodega → IdProducto
-                // Pasar 0 para forzar la traducción en ValidationStep
-                var reservations = Reserva_Stock_Internal(
-                    oBeStockResRequest: pStockResSolicitud,
-                    IdProducto: 0,  // ValidationStep resolverá desde request.IdProductoBodega
-                    oBeConfigEnc: pBeConfigEnc,
-                    cnnSql: lConnection,
-                    trSql: ltransaction,
-                    oBePedidoDet: null,
-                    oBeI_nav_ped_traslado_det: pBeTrasladoDet,
-                    Tarea_Reabasto: pTarea_Reabasto,
-                    EsDevolucion: false,
-                    LineNumber: No_Linea,
-                    MachineName: MaquinaQueSolicita,
-                    DiasVencimiento: DiasVencimiento);
+                // Usar IdProductoBodega directamente (los pedidos/reservas van en función de bodega)
+                int idProductoBodega = pStockResSolicitud.IdProductoBodega;
+
+                // Llamar al pipeline interno refactorizado con DiasVencimiento
+                var reservations = Reserva_Stock_Internal(oBeStockResRequest: pStockResSolicitud,
+                                                          IdProductoBodega: idProductoBodega,
+                                                          oBeConfigEnc: pBeConfigEnc,
+                                                          cnnSql: lConnection,
+                                                          trSql: ltransaction,
+                                                          oBePedidoDet: pBePedidoDet,
+                                                          oBeI_nav_ped_traslado_det: pBeTrasladoDet,
+                                                          Tarea_Reabasto: pTarea_Reabasto,
+                                                          EsDevolucion: false,
+                                                          LineNumber: No_Linea,
+                                                          MachineName: MaquinaQueSolicita,
+                                                          DiasVencimiento: DiasVencimiento);
 
                 // Asignar resultados a parámetros de salida (ref)
                 pListStockResOUT = reservations ?? new List<clsBeStock_res>();
@@ -82,12 +83,6 @@ namespace WMS.StockReservation.Compatibility
                 foreach (var reserva in pListStockResOUT)
                 {
                     pCantidadDisponibleStock += reserva.Cantidad;
-                }
-
-                // CRÍTICO: Actualizar Qty_to_Receive en el TrasladoDet (esto es lo que lee el caller)
-                if (pBeTrasladoDet != null)
-                {
-                    pBeTrasladoDet.Qty_to_Receive = pCantidadDisponibleStock;
                 }
 
                 // Retornar éxito si hay reservas
@@ -118,49 +113,46 @@ namespace WMS.StockReservation.Compatibility
         /// <param name="LineNumber">Número de línea del pedido/traslado</param>
         /// <param name="MachineName">Nombre de la máquina que solicita la reserva</param>
         /// <returns>Lista de reservas creadas</returns>
-        public static List<clsBeStock_res> Reserva_Stock_From_MI3(
-            clsBeStock_res oBeStockResRequest,
-            int IdProducto,
-            clsBeI_nav_config_enc oBeConfigEnc,
-            SqlConnection cnnSql,
-            SqlTransaction? trSql = null,
-            clsBeTrans_pe_det? oBePedidoDet = null,
-            clsBeI_nav_ped_traslado_det? oBeI_nav_ped_traslado_det = null,
-            bool Tarea_Reabasto = false,
-            bool EsDevolucion = false,
-            int LineNumber = 0,
-            string MachineName = "")
+        public static List<clsBeStock_res> Reserva_Stock_From_MI3(clsBeStock_res oBeStockResRequest,
+                                                                  int IdProducto,
+                                                                  clsBeI_nav_config_enc oBeConfigEnc,
+                                                                  SqlConnection cnnSql,
+                                                                  SqlTransaction? trSql = null,
+                                                                  clsBeTrans_pe_det? oBePedidoDet = null,
+                                                                  clsBeI_nav_ped_traslado_det? oBeI_nav_ped_traslado_det = null,
+                                                                  bool Tarea_Reabasto = false,
+                                                                  bool EsDevolucion = false,
+                                                                  int LineNumber = 0,
+                                                                  string MachineName = "")
         {
-            return Reserva_Stock_Internal(
-                oBeStockResRequest,
-                IdProducto,
-                oBeConfigEnc,
-                cnnSql,
-                trSql,
-                oBePedidoDet,
-                oBeI_nav_ped_traslado_det,
-                Tarea_Reabasto,
-                EsDevolucion,
-                LineNumber,
-                MachineName);
+            return Reserva_Stock_Internal(oBeStockResRequest,
+                                          IdProducto,
+                                          oBeConfigEnc,
+                                          cnnSql,
+                                          trSql,
+                                          oBePedidoDet,
+                                          oBeI_nav_ped_traslado_det,
+                                          Tarea_Reabasto,
+                                          EsDevolucion,
+                                          LineNumber,
+                                          MachineName);
         }
 
         /// <summary>
         /// Implementación interna compartida que ejecuta el pipeline de reserva.
         /// </summary>
-        private static List<clsBeStock_res> Reserva_Stock_Internal(
-            clsBeStock_res oBeStockResRequest,
-            int IdProducto,
-            clsBeI_nav_config_enc oBeConfigEnc,
-            SqlConnection cnnSql,
-            SqlTransaction? trSql,
-            clsBeTrans_pe_det? oBePedidoDet,
-            clsBeI_nav_ped_traslado_det? oBeI_nav_ped_traslado_det,
-            bool Tarea_Reabasto,
-            bool EsDevolucion,
-            int LineNumber,
-            string MachineName,
-            double DiasVencimiento = 0)
+        private static List<clsBeStock_res> Reserva_Stock_Internal(clsBeStock_res oBeStockResRequest,
+                                                                   int IdProductoBodega,
+                                                                   clsBeI_nav_config_enc oBeConfigEnc,
+                                                                   SqlConnection cnnSql,
+                                                                   SqlTransaction? trSql,
+                                                                   clsBeTrans_pe_det? oBePedidoDet,
+                                                                   clsBeI_nav_ped_traslado_det? oBeI_nav_ped_traslado_det,
+                                                                   bool Tarea_Reabasto,
+                                                                   bool EsDevolucion,
+                                                                   int LineNumber,
+                                                                   string MachineName,
+                                                                   double DiasVencimiento = 0)
         {
             try
             {
@@ -175,21 +167,23 @@ namespace WMS.StockReservation.Compatibility
                 var factory = new ServiceFactory();
                 var pipeline = factory.CreateReservationPipeline();
 
+                oBeStockResRequest.IdBodega = oBeConfigEnc.Idbodega;
+
                 // Construir contexto de reserva
                 var context = new ReservationContext
                 {
                     Request = oBeStockResRequest,
-                    ProductId = IdProducto,
+                    ProductId = IdProductoBodega,
                     Configuration = oBeConfigEnc,
                     Connection = cnnSql,
                     Transaction = trSql,
                     PedidoDet = oBePedidoDet,
                     TrasladoDet = oBeI_nav_ped_traslado_det,
-                    TareaReabasto = Tarea_Reabasto,
+                    TareaReabasto = Tarea_Reabasto ? true : false,
                     EsDevolucion = EsDevolucion,
                     LineNumber = LineNumber,
                     MachineName = MachineName ?? Environment.MachineName,
-                    DiasVencimiento = DiasVencimiento
+                    DiasVencimiento = DiasVencimiento,
                 };
 
                 // Ejecutar pipeline de reserva
@@ -211,7 +205,7 @@ namespace WMS.StockReservation.Compatibility
             {
                 // Re-lanzar con contexto adicional
                 throw new Exception(
-                    $"Error ejecutando Reserva_Stock_From_MI3 para producto {IdProducto}: {ex.Message}",
+                    $"Error ejecutando Reserva_Stock_From_MI3 para producto {IdProductoBodega}: {ex.Message}",
                     ex);
             }
         }
@@ -228,14 +222,13 @@ namespace WMS.StockReservation.Compatibility
         /// <param name="connection">Conexión SQL</param>
         /// <param name="transaction">Transacción SQL (opcional)</param>
         /// <returns>Lista de reservas creadas</returns>
-        public static List<clsBeStock_res> ReservarStock(
-            int bodegaId,
-            int productoId,
-            double cantidad,
-            int presentacionId,
-            clsBeI_nav_config_enc configuracion,
-            SqlConnection connection,
-            SqlTransaction? transaction = null)
+        public static List<clsBeStock_res> ReservarStock(int bodegaId,
+                                                        int productoId,
+                                                        double cantidad,
+                                                        int presentacionId,
+                                                        clsBeI_nav_config_enc configuracion,
+                                                        SqlConnection connection,
+                                                        SqlTransaction? transaction = null)
         {
             // Construir request básico
             var request = new clsBeStock_res
@@ -247,12 +240,11 @@ namespace WMS.StockReservation.Compatibility
             };
 
             // Llamar método principal
-            return Reserva_Stock_From_MI3(
-                oBeStockResRequest: request,
-                IdProducto: productoId,
-                oBeConfigEnc: configuracion,
-                cnnSql: connection,
-                trSql: transaction);
+            return Reserva_Stock_From_MI3(oBeStockResRequest: request,
+                                          IdProducto: productoId,
+                                          oBeConfigEnc: configuracion,
+                                          cnnSql: connection,
+                                          trSql: transaction);
         }
     }
 }

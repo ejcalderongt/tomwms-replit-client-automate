@@ -5060,6 +5060,15 @@ Partial Public Class clsLnStock
                                 BeStockNuevo.User_mod = BeUsuario.IdUsuario
                             End If
 
+                            '#GT18122025: considerar que solo talla o color fue actualizado y no ambos.
+                            Dim vTalla As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Talla_destino), BeTransAjusteDet.Talla_destino, BeTransAjusteDet.Talla_origen)
+                            Dim vColor As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Color_destino), BeTransAjusteDet.Color_destino, BeTransAjusteDet.Color_origen)
+                            Dim vIdProductoTallaColor As Integer = IIf(BeTransAjusteDet.IdProductoTallaColor_destino > 0, BeTransAjusteDet.IdProductoTallaColor_destino, BeTransAjusteDet.IdProductoTallaColor_origen)
+
+                            BeStockAActualizar.IdProductoTallaColor = vIdProductoTallaColor
+                            BeStockAActualizar.Talla = vTalla
+                            BeStockAActualizar.Color = vColor
+
                             Insertar(BeStockNuevo, pConection, pTransaction)
 
                             IdStock = BeStockNuevo.IdStock
@@ -5104,6 +5113,16 @@ Partial Public Class clsLnStock
                                 If Not BeUsuario Is Nothing Then
                                     BeStockAActualizar.User_mod = BeUsuario.IdUsuario
                                 End If
+
+
+                                '#GT18122025: considerar que solo talla o color fue actualizado y no ambos.
+                                Dim vTalla As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Talla_destino), BeTransAjusteDet.Talla_destino, BeTransAjusteDet.Talla_origen)
+                                Dim vColor As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Color_destino), BeTransAjusteDet.Color_destino, BeTransAjusteDet.Color_origen)
+                                Dim vIdProductoTallaColor As Integer = IIf(BeTransAjusteDet.IdProductoTallaColor_destino > 0, BeTransAjusteDet.IdProductoTallaColor_destino, BeTransAjusteDet.IdProductoTallaColor_origen)
+
+                                BeStockAActualizar.IdProductoTallaColor = vIdProductoTallaColor
+                                BeStockAActualizar.Talla = vTalla
+                                BeStockAActualizar.Color = vColor
 
                                 If Es_Transaccion_Remota Then
                                     rowsAffected = Actualizar_Stock_Por_Ajuste(BeStockAActualizar, pConection, pTransaction)
@@ -10725,6 +10744,18 @@ Partial Public Class clsLnStock
                                                        BeMovimiento.Peso_hist,
                                                        lConnection,
                                                        lTransaction)
+
+                    BeMovimiento.IdProductoTallaColor = objStockOrigen.IdProductoTallaColor
+
+                    If objStockOrigen.IdProductoTallaColor <> 0 Then
+                        Dim BEProductoTallaColor As New clsBeProducto_talla_color
+                        BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(objStockOrigen.IdProductoTallaColor)
+                        BeMovimiento.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
+                        BeMovimiento.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+                    Else
+                        BeMovimiento.Talla = ""
+                        BeMovimiento.Color = ""
+                    End If
 
                     '#EJC20220303:Para Erik, si esto ocurre, algo se nos escapó, pero quiero prevenirte problemas así que mejor nos notifican cuando suceda esa
                     'SINGULARIDAD.-
@@ -16641,4 +16672,61 @@ Partial Public Class clsLnStock
         End Try
 
     End Function
+
+    Public Shared Function Get_All_By_IdRecepcionEnc(ByVal pIdRecepcionEnc As Integer) As List(Of clsBeVW_stock_res)
+
+        Dim lReturnList As New List(Of clsBeVW_stock_res)
+
+        Try
+
+            Dim vSQL As String = "Select * from VW_Stock_Res where IdRecepcionEnc = @IdRecepcionEnc"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", pIdRecepcionEnc)
+
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+
+                        Dim Obj As clsBeVW_stock_res
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                            For Each lRow As DataRow In lDataTable.Rows
+
+                                Obj = New clsBeVW_stock_res
+
+                                clsLnVW_stock_res.Cargar(Obj, lRow, lConnection, lTransaction)
+                                lReturnList.Add(Obj)
+
+                            Next
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 End Class

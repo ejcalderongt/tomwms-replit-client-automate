@@ -41,7 +41,7 @@
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>497</ApplicationRevision>
+    <ApplicationRevision>501</ApplicationRevision>
     <ApplicationVersion>4.7.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -791,6 +791,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>dsRepAjustes.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Reportes\Ajustes\dsRepAjustes.vb">
+      <DependentUpon>dsRepAjustes.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Reportes\Ajustes\frmReporteAjustesDet.Designer.vb">
       <DependentUpon>frmReporteAjustesDet.vb</DependentUpon>
     </Compile>
@@ -801,6 +804,12 @@
       <DependentUpon>rptAjuste.vb</DependentUpon>
     </Compile>
     <Compile Include="Reportes\Ajustes\rptAjuste.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reportes\Ajustes\rptAjuste_TallaColor.Designer.vb">
+      <DependentUpon>rptAjuste_TallaColor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Ajustes\rptAjuste_TallaColor.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reportes\Analítica\DsetAnalitica.Designer.vb">
@@ -3359,6 +3368,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Ajustes\rptAjuste.resx">
       <DependentUpon>rptAjuste.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Ajustes\rptAjuste_TallaColor.resx">
+      <DependentUpon>rptAjuste_TallaColor.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Analítica\Dashboard1.resx" />
     <EmbeddedResource Include="Reportes\Analítica\frmAnalitica1.resx">

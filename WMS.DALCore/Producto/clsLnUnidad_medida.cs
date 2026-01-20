@@ -683,4 +683,68 @@ public class clsLnUnidad_medida
             throw;
         }
     }
+
+    public static List<clsBeUnidad_medida> GetByIds(IConfiguration configuration, List<int> umIds)
+    {
+        if (umIds == null || umIds.Count == 0)
+            return new List<clsBeUnidad_medida>();
+
+        // Limpieza: sin repetidos y sin ceros/negativos
+        umIds = umIds.Where(id => id > 0).Distinct().ToList();
+        if (umIds.Count == 0)
+            return new List<clsBeUnidad_medida>();
+
+        var result = new List<clsBeUnidad_medida>();
+
+        using var lConnection = new SqlConnection(configuration.GetConnectionString("CST") ?? configuration["CST"]);
+        SqlTransaction? lTransaction = null;
+
+        try
+        {
+            lConnection.Open();
+            lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
+
+            // IN (@p0,@p1,@p2,...)
+            var paramNames = umIds.Select((_, i) => $"@p{i}").ToList();
+
+            string sql = $@"
+SELECT *
+FROM Unidad_medida
+WHERE IdUnidadMedida IN ({string.Join(",", paramNames)})";
+
+            using var cmd = new SqlCommand(sql, lConnection, lTransaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            for (int i = 0; i < umIds.Count; i++)
+            {
+                cmd.Parameters.Add(new SqlParameter(paramNames[i], SqlDbType.Int) { Value = umIds[i] });
+            }
+
+            using var dad = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            dad.Fill(dt);
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeUnidad_medida();
+                Cargar(ref be, dr);
+                result.Add(be);
+            }
+
+            lTransaction.Commit();
+            return result;
+        }
+        catch
+        {
+            lTransaction?.Rollback();
+            throw;
+        }
+        finally
+        {
+            lTransaction?.Dispose();
+        }
+    }
+
 }

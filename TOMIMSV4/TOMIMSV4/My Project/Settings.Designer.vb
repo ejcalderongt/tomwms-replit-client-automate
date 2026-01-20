@@ -15,7 +15,7 @@ Option Explicit On
 Namespace My
     
     <Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
-     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.12.0.0"),  _
+     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.14.0.0"),  _
      Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
     Partial Friend NotInheritable Class MySettings
         Inherits Global.System.Configuration.ApplicationSettingsBase
@@ -629,8 +629,8 @@ Namespace My
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=PROGRA14\SQL2022;Initial Catalog=TOMWMS_LA_CUMBRE_PRD;Persist Securit"& _ 
-            "y Info=True;User ID=sa;Encrypt=False;TrustServerCertificate=True")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=10.238.26.70;Initial Catalog=TOMWMS_MAMPA_QA;Persist Security Info=Tr"& _ 
+            "ue;User ID=sa;Encrypt=False;TrustServerCertificate=True")>  _
         Public ReadOnly Property TOMWMS_LA_CUMBRE_PRDConnectionString() As String
             Get
                 Return CType(Me("TOMWMS_LA_CUMBRE_PRDConnectionString"),String)

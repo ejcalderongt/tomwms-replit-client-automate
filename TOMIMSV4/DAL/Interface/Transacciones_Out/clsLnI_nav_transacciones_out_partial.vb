@@ -418,8 +418,8 @@ Partial Public Class clsLnI_nav_transacciones_out
                         Dim Talla = clsLnTalla.GetSingle(BeProductoTallaColor.IdTalla, lConnection, lTransaction)
                         Dim Color = clsLnColor.GetSingle(BeProductoTallaColor.IdColor, lConnection, lTransaction)
 
-                        BeInavTransaccionesOUT.Talla = Talla?.Nombre
-                        BeInavTransaccionesOUT.Color = Color?.Nombre
+                        BeInavTransaccionesOUT.Talla = Talla?.Codigo
+                        BeInavTransaccionesOUT.Color = Color?.Codigo
                     End If
                 End If
 

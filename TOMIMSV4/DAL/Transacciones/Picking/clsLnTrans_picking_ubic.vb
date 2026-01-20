@@ -128,6 +128,13 @@ Public Class clsLnTrans_picking_ubic
                     .No_Linea = IIf(IsDBNull(dr.Item("No_Linea")), 0, dr.Item("No_Linea"))
                 End If
 
+                If dr.Table.Columns.Contains("IdTalla") Then
+                    .IdTalla = IIf(IsDBNull(dr.Item("IdTalla")), 0, dr.Item("IdTalla"))
+                End If
+
+                If dr.Table.Columns.Contains("IdColor") Then
+                    .IdColor = IIf(IsDBNull(dr.Item("IdColor")), 0, dr.Item("IdColor"))
+                End If
             End With
 
         Catch ex1 As SqlException

@@ -354,5 +354,234 @@ namespace WMSWebAPI.Services.Salidas
 
             return Datos_Validos;
         }
+
+        public void ProcesarSalidaDesde_3plDto(SalidaTrans_3plDto dto, SqlConnection conn, SqlTransaction tx)
+        {
+
+            try
+            {
+                if (dto.Encabezado != null && dto.Encabezado.IdBodega != 0)
+                {
+                    var pedido = _mapper.Map<clsBeTrans_pe_enc>(dto.Encabezado);
+                    if (pedido != null)
+                    {
+                        if (!clsLnBodega.Existe(pedido.IdBodega, conn, tx))
+                        {
+                            throw new Exception($"La bodega {pedido.IdBodega} no existe.");
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            try
+            {
+                if (dto.Cliente != null && dto.Cliente.Any())
+                {
+                    var clientes = _mapper.Map<List<clsBeCliente>>(dto.Cliente);
+                    clsLnCliente.InsertarOActualizar(clientes, conn, tx);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al procesar Cliente → " + ex.Message, ex);
+            }
+
+
+            try
+            {
+                if (dto.TipoPedido != null && dto.TipoPedido.IdTipoPedido != 0)
+                {
+                    var tipo = _mapper.Map<clsBeTrans_pe_tipo>(dto.TipoPedido);
+                    clsLnTrans_pe_tipo.InsertOrUpdate(_configuration, tipo, conn, tx);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al procesar Tipo de Pedido → " + ex.Message, ex);
+            }
+
+            try
+            {
+                if (dto.BodegaMuelle != null && dto.BodegaMuelle.IdMuelle != 0)
+                {
+                    var bodega_muelle = _mapper.Map<clsBeBodega_muelles>(dto.BodegaMuelle);
+                    clsLnBodega_muelles.InsertOrUpdate(_configuration, bodega_muelle, conn, tx);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al procesar Muelle→ " + ex.Message, ex);
+            }
+
+            try
+            {
+                if (dto.Operadores != null && dto.Operadores.Any())
+                {
+                    var operador_list = _mapper.Map<List<clsBeOperador>>(dto.Operadores);
+                    clsLnOperador.InsertarOActualizar(operador_list, conn, tx);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al procesar Operador→ " + ex.Message, ex);
+            }
+
+            try
+            {
+                if (dto.OperadorBodega != null && dto.OperadorBodega.Any())
+                {
+                    var operador_bodega_list = _mapper.Map<List<clsBeOperador_bodega>>(dto.OperadorBodega);
+                    clsLnOperador_bodega.InsertarOActualizar(operador_bodega_list, conn, tx);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al procesar Operador_Bodega→ " + ex.Message, ex);
+            }
+
+            try
+            {
+                if (dto.Encabezado != null && dto.Encabezado.IdPedidoEnc != 0)
+                {
+                    var enc = _mapper.Map<clsBeTrans_pe_enc>(dto.Encabezado);
+
+                    clsLnTrans_pe_enc.InsertOrUpdate(enc, conn, tx);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al procesar Pedido Encabezado → " + ex.Message, ex);
+            }
+
+            try
+            {
+                if (dto.Detalle != null && dto.Detalle.Any())
+                {
+                    //var detalle = _mapper.Map<List<clsBeTrans_pe_det>>(dto.Detalle);
+                    var detalle = _mapper.Map<List<clsBeTrans_pe_det_3pl>>(dto.Detalle);
+                    clsLnTrans_pe_det.InsertOrUpdate_3pl(detalle, conn, tx);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al procesar Pedido Detalle → " + ex.Message, ex);
+            }
+
+            try
+            {
+                if (dto.Poliza != null && dto.Poliza.Any())
+                {
+                    var polizas = _mapper.Map<List<clsBeTrans_pe_pol>>(dto.Poliza);
+                    clsLnTrans_pe_pol.InsertOrUpdate(_configuration, polizas, conn, tx);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al procesar Polizas de Pedido → " + ex.Message, ex);
+            }
+
+            if (dto.Picking != null)
+            {
+                try
+                {
+                    if (dto.Picking.Encabezado != null && dto.Picking.Encabezado.IdPickingEnc != 0)
+                    {
+                        var pickingEnc = _mapper.Map<clsBeTrans_picking_enc>(dto.Picking.Encabezado);
+                        clsLnTrans_picking_enc.InsertOrUpdate(_configuration, pickingEnc, conn, tx);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al procesar Picking Encabezado → " + ex.Message, ex);
+                }
+
+                try
+                {
+                    if (dto.Picking.Detalle != null && dto.Picking.Detalle.Any())
+                    {
+                        var pickingDet = _mapper.Map<List<clsBeTrans_picking_det_3pl>>(dto.Picking.Detalle);
+                        //clsLnTrans_picking_det.InsertOrUpdate(pickingDet, conn, tx);
+                        clsLnTrans_picking_det.InsertOrUpdate_3pl(pickingDet, conn, tx);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al procesar Picking Detalles → " + ex.Message, ex);
+                }
+
+                try
+                {
+                    if (dto.Picking.PickingUbic != null && dto.Picking.PickingUbic.Any())
+                    {
+                        var pickingUbic = _mapper.Map<List<clsBeTrans_picking_ubic_3pl>>(dto.Picking.PickingUbic);
+                        //clsLnTrans_picking_ubic.InsertOrUpdate(pickingUbic, conn, tx);
+                        clsLnTrans_picking_ubic.InsertOrUpdate_3pl(pickingUbic, conn, tx);
+                    }
+                    { }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al procesar Ubicaciones de Picking → " + ex.Message, ex);
+                }
+
+                try
+                {
+                    if (dto.Picking.PickingUbicStock != null && dto.Picking.PickingUbicStock.Any())
+                    {
+                        var pickingUbicStock = _mapper.Map<List<clsBeTrans_picking_ubic_stock>>(dto.Picking.PickingUbicStock);
+                        clsLnTrans_picking_ubic_stock.InsertOrUpdate(pickingUbicStock, conn, tx);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al procesar Ubicaciones de Stock de Picking → " + ex.Message, ex);
+                }
+
+                try
+                {
+                    if (dto.Picking.PickingImg != null && dto.Picking.PickingImg.Any())
+                    {
+                        var pickingImg = _mapper.Map<List<clsBeTrans_picking_img>>(dto.Picking.PickingImg);
+                        clsLnTrans_picking_img.InsertOrUpdate(_configuration, pickingImg, conn, tx);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al procesar Imágenes de Picking → " + ex.Message, ex);
+                }
+
+                try
+                {
+                    if (dto.Picking.PickingOperadores != null && dto.Picking.PickingOperadores.Any())
+                    {
+                        var pickingOp = _mapper.Map<List<clsBeTrans_picking_op>>(dto.Picking.PickingOperadores);
+                        clsLnTrans_picking_op.InsertOrUpdate(_configuration, pickingOp, conn, tx);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al procesar Operadores de Picking → " + ex.Message, ex);
+                }
+
+                try
+                {
+                    if (dto.Picking.Prioridad != null && dto.Picking.Prioridad.IdPrioridadPicking != 0)
+                    {
+                        var pickingPri = _mapper.Map<clsBeTrans_picking_prioridad>(dto.Picking.Prioridad);
+                        clsLnTrans_picking_prioridad.InsertOrUpdate(_configuration, pickingPri, conn, tx);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Error al procesar Prioridad de Picking → " + ex.Message, ex);
+                }
+            }
+
+        }
     }
 }

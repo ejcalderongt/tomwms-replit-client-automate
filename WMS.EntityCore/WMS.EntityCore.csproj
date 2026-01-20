@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="Dtos\Ingresos\MarcarTransaccionesEnviadasRequestDto.cs" />
+    <None Include="Dtos\Ingresos\RecepcionSimpleReturnDto.cs" />
+  </ItemGroup>
+
 </Project>

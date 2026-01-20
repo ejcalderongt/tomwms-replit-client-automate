@@ -2,7 +2,8 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WMSWebAPI.Be
+
+namespace WMS.EntityCore.Datos_Maestros
 {
     public class clsBeBodega_area : ICloneable
     {

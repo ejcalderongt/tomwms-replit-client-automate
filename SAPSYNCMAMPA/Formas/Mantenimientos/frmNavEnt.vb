@@ -72,7 +72,7 @@ Public Class frmNavEnt
     Private Sub mnuGuardar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuGuardar.ItemClick
 
         Try
-
+            BeNavEnt = New clsBeI_nav_ent
             BeNavEnt.Idnavent = lblCod.Text
             BeNavEnt.Nombre = txtNombre.Text
             BeNavEnt.Endpoint = txtPunto.Text
@@ -130,7 +130,7 @@ Public Class frmNavEnt
     Private Sub cmdGuardarV_Click(sender As Object, e As EventArgs) Handles cmdGuardarV.Click
 
         Try
-
+            BeNavEntFiltro = New clsBeI_nav_ent_filtros
             BeNavEntFiltro.Idnaventfiltro = lblCodFiltro.Text.Trim
             BeNavEntFiltro.Idnavent = BeNavEnt.Idnavent
             BeNavEntFiltro.Valor = txtValor.Text.Trim

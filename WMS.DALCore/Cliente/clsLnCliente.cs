@@ -696,6 +696,7 @@ public class clsLnCliente
             if (!string.IsNullOrEmpty(entity.codigo))
             {
                 Cliente.IdCliente = MaxID(conn, tx) + 1;
+                Cliente.IdEmpresa = BeInavConfigEnc.Idempresa;                
                 Cliente.Codigo = entity.codigo;
                 Cliente.Nombre_comercial = entity.nombre_comercial ?? entity.codigo;
                 Cliente.User_agr = BeInavConfigEnc.IdUsuario.ToString();
@@ -724,8 +725,7 @@ public class clsLnCliente
                     Cliente_Bodega.User_mod = BeInavConfigEnc.IdUsuario.ToString();
                     Cliente_Bodega.Fec_agr = DateTime.Now;
                     Cliente_Bodega.Fec_mod = DateTime.Now;
-                    Cliente_Bodega.Activo = true;
-                    Cliente_Bodega.IdAreaDestino = 0;
+                    Cliente_Bodega.Activo = true;                    
                     clsLnCliente_bodega.Insertar(Cliente_Bodega, conn, tx);
                 }
             }

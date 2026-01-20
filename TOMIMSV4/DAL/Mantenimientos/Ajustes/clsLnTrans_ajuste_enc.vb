@@ -103,9 +103,9 @@ Public Class clsLnTrans_ajuste_enc
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            Return rowsAffected
-
             oBeTrans_ajuste_enc.Idajusteenc = CInt(cmd.Parameters("@IDAJUSTEENC").Value)
+
+            Return rowsAffected
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()

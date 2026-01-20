@@ -16,7 +16,7 @@
     {
         private static clsInsert Ins = new clsInsert();
         private static clsUpdate Upd = new clsUpdate();
-        public static void Cargar(ref clsBeI_nav_transacciones_out oBeI_nav_transacciones_out, ref DataRow dr)
+        public static void Cargar(ref clsBeI_nav_transacciones_out oBeI_nav_transacciones_out, DataRow dr)
         {
             oBeI_nav_transacciones_out.Idtransaccion = Convert.ToInt32(dr["idtransaccion"] ?? 0);
             oBeI_nav_transacciones_out.Idempresa = Convert.ToInt32(dr["idempresa"] ?? 0);
@@ -65,14 +65,14 @@
             oBeI_nav_transacciones_out.peso_bruto = Convert.ToInt32(dr["peso_bruto"] ?? 0);
             oBeI_nav_transacciones_out.fecha_despacho = dr["fecha_despacho"] == DBNull.Value ? new DateTime(1900, 1, 1) : Convert.ToDateTime(dr["fecha_despacho"]);
             oBeI_nav_transacciones_out.no_documento_salida_ref_devol = dr["no_documento_salida_ref_devol"]?.ToString() ?? "";
-            oBeI_nav_transacciones_out.IdPedidoEncDevol = Convert.ToInt32(dr["IdPedidoEncDevol"] ?? 0);
-            oBeI_nav_transacciones_out.IdDespachoDet = Convert.ToInt32(dr["IdDespachoDet"] ?? 0);
-            oBeI_nav_transacciones_out.IdRecepcionDet = Convert.ToInt32(dr["IdRecepcionDet"] ?? 0);
-            oBeI_nav_transacciones_out.Cantidad_Enviada = Convert.ToInt32(dr["Cantidad_Enviada"] ?? 0);
-            oBeI_nav_transacciones_out.Cantidad_Pendiente = Convert.ToInt32(dr["Cantidad_Pendiente"] ?? 0);
-            oBeI_nav_transacciones_out.Auditar = Convert.ToBoolean(dr["Auditar"] ?? false);
-            oBeI_nav_transacciones_out.IdProductoTallaColor = Convert.ToInt32(dr["IdProductoTallaColor"] ?? 0);
-            oBeI_nav_transacciones_out.Talla = dr["Talla"]?.ToString() ?? "";
+            oBeI_nav_transacciones_out.IdPedidoEncDevol =    dr["IdPedidoEncDevol"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdPedidoEncDevol"]);
+            oBeI_nav_transacciones_out.IdDespachoDet =dr["IdDespachoDet"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdDespachoDet"]);
+            oBeI_nav_transacciones_out.IdRecepcionDet =dr["IdRecepcionDet"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdRecepcionDet"]);
+            oBeI_nav_transacciones_out.Cantidad_Enviada =dr["Cantidad_Enviada"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Cantidad_Enviada"]);
+            oBeI_nav_transacciones_out.Cantidad_Pendiente =dr["Cantidad_Pendiente"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Cantidad_Pendiente"]);
+            oBeI_nav_transacciones_out.Auditar =dr["Auditar"] == DBNull.Value ? false : Convert.ToBoolean(dr["Auditar"]);
+            oBeI_nav_transacciones_out.IdProductoTallaColor =dr["IdProductoTallaColor"] == DBNull.Value ? 0 : Convert.ToInt32(dr["IdProductoTallaColor"]);
+            oBeI_nav_transacciones_out.Talla=oBeI_nav_transacciones_out.Talla = dr["Talla"]?.ToString() ?? "";
             oBeI_nav_transacciones_out.Color = dr["Color"]?.ToString() ?? "";
         }
 
@@ -361,7 +361,7 @@
                 if (dt.Rows.Count == 1)
                 {
                     var vrow = dt.Rows[0];
-                    Cargar(ref pBeI_nav_transacciones_out, ref vrow);
+                    Cargar(ref pBeI_nav_transacciones_out, vrow);
                     GetSingle = true;
                 }
                 lTransaction.Commit();
@@ -399,7 +399,7 @@
                 {
                     clsBeI_nav_transacciones_out pBeI_nav_transacciones_out = new clsBeI_nav_transacciones_out();
                     var vrow = dt.Rows[0];
-                    Cargar(ref pBeI_nav_transacciones_out, ref vrow);
+                    Cargar(ref pBeI_nav_transacciones_out, vrow);
                     GetSingle = pBeI_nav_transacciones_out;
                 }
                 lTransaction.Commit();
@@ -686,6 +686,124 @@
             catch (Exception)
             {
                 throw;
+            }
+        }
+        
+        public static List<clsBeI_nav_transacciones_out> Get_All_Ingresos_Pendientes_De_Envio(IConfiguration configuration)
+        {
+            SqlConnection lConnection = new SqlConnection(configuration.GetConnectionString("CST"));
+            SqlTransaction? lTransaction = null;
+
+            try
+            {
+                lConnection.Open();
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
+
+                var lReturnList = new List<clsBeI_nav_transacciones_out>();
+
+                string vSQL = "SELECT * FROM I_nav_transacciones_out " +
+                              "WHERE tipo_transaccion = 'INGRESO' AND Enviado = 0 " +
+                              "ORDER BY fec_agr";
+
+                using var cmd = new SqlCommand(vSQL, lConnection, lTransaction)
+                {
+                    CommandType = CommandType.Text
+                };
+
+                using var dad = new SqlDataAdapter(cmd);
+                var dt = new DataTable();
+                dad.Fill(dt);
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    var item = new clsBeI_nav_transacciones_out();
+                    Cargar(ref item, dr);
+                    lReturnList.Add(item);
+                }
+
+                lTransaction.Commit();
+                return lReturnList;
+            }
+            catch
+            {
+                if (lTransaction != null)
+                    lTransaction.Rollback();
+
+                throw; // NO uses "throw ex;" para no perder stacktrace
+            }
+            finally
+            {
+                if (lConnection.State == ConnectionState.Open)
+                    lConnection.Close();
+
+                lTransaction?.Dispose();
+                lConnection.Dispose();
+            }
+        }
+
+        public static int Marcar_Como_Enviado(IConfiguration configuration, List<int> ids)
+        {
+            if (ids == null || ids.Count == 0) return 0;
+
+            ids = ids.Where(x => x > 0).Distinct().ToList();
+            if (ids.Count == 0) return 0;
+
+            using var conn = new SqlConnection(configuration.GetConnectionString("CST") ?? configuration["CST"]);
+            SqlTransaction? tx = null;
+
+            try
+            {
+                conn.Open();
+                tx = conn.BeginTransaction(IsolationLevel.ReadCommitted);
+
+                // 1) Validar que EXISTAN TODOS (y sean INGRESO)
+                var pnames = ids.Select((_, i) => $"@p{i}").ToList();
+
+                string sqlCount = $@"SELECT COUNT(1)
+                                    FROM I_nav_transacciones_out
+                                    WHERE Idtransaccion IN ({string.Join(",", pnames)})
+                                      AND tipo_transaccion = 'INGRESO';";
+
+                using (var cmdCount = new SqlCommand(sqlCount, conn, tx))
+                {
+                    for (int i = 0; i < ids.Count; i++)
+                        cmdCount.Parameters.Add(new SqlParameter(pnames[i], SqlDbType.Int) { Value = ids[i] });
+
+                    int encontrados = Convert.ToInt32(cmdCount.ExecuteScalar());
+
+                    if (encontrados != ids.Count)
+                        throw new Exception("Transacción abortada: uno o más Idtransaccion no existen o no son de tipo INGRESO.");
+                }
+
+                // 2) Marcar como enviado (todo dentro de la MISMA tx)                
+                string sqlUpdate = $@"
+                                    UPDATE I_nav_transacciones_out
+                                    SET Enviado = 1,
+                                        fec_mod = GETDATE()
+                                    WHERE Idtransaccion IN ({string.Join(",", pnames)})
+                                      AND tipo_transaccion = 'INGRESO'
+                                      AND Enviado = 0;";
+
+                int updated;
+                using (var cmdUp = new SqlCommand(sqlUpdate, conn, tx))
+                {
+                    for (int i = 0; i < ids.Count; i++)
+                        cmdUp.Parameters.Add(new SqlParameter(pnames[i], SqlDbType.Int) { Value = ids[i] });
+
+                    updated = cmdUp.ExecuteNonQuery();
+                }                
+
+                tx.Commit();
+                return updated;
+            }
+            catch
+            {
+                tx?.Rollback();
+                throw;
+            }
+            finally
+            {
+                tx?.Dispose();
             }
         }
     }

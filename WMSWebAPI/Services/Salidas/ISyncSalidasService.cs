@@ -12,5 +12,6 @@ namespace WMSWebAPI.Services.Salidas
         List<clsBeTrans_pe_det> ObtenerDetallePedido(int IdOrdenCompraEnc);        
         List<PedidoSalidaDto> ObtenerDocumentosDeSalida(bool activo, DateTime fechaInicio, DateTime fechaFin, int idBodega, int idPropietario);
         void ProcesarSalidaDesdeDto(SalidaTransDto dto, SqlConnection conn, SqlTransaction tx);
+        void ProcesarSalidaDesde_3plDto(SalidaTrans_3plDto dto, SqlConnection conn, SqlTransaction tx);
     }
 }

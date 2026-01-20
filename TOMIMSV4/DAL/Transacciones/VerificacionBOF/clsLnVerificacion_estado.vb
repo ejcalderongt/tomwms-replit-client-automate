@@ -199,9 +199,9 @@ Public Class clsLnVerificacion_estado
 		Dim lReturnList As New List(Of clsBeVerificacion_estado)
 		
 		Try
-		
-			Const sp As String = "SELECT * FROM Verificacion_estado"
-		
+
+			Const sp As String = "SELECT * FROM Verificacion_estado "
+
 			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 		
 				lConnection.Open()

@@ -27,14 +27,15 @@ Partial Class frmVerificacionBOF
         Dim Label3 As System.Windows.Forms.Label
         Dim Label4 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmVerificacionBOF))
-        Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
-        Dim GridFormatRule2 As DevExpress.XtraGrid.GridFormatRule = New DevExpress.XtraGrid.GridFormatRule()
+        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim GridFormatRule1 As DevExpress.XtraGrid.GridFormatRule = New DevExpress.XtraGrid.GridFormatRule()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
-        Me.cmdEnviar = New DevExpress.XtraBars.BarButtonItem()
+        Me.cmdGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.grpScan = New DevExpress.XtraEditors.GroupControl()
+        Me.lbPedidos = New DevExpress.XtraEditors.LabelControl()
         Me.cmbMotivo = New DevExpress.XtraEditors.LookUpEdit()
         Me.cmbEstado = New DevExpress.XtraEditors.LookUpEdit()
         Me.lbOk = New DevExpress.XtraEditors.LabelControl()
@@ -51,7 +52,6 @@ Partial Class frmVerificacionBOF
         Me.peProducto = New DevExpress.XtraEditors.PictureEdit()
         Me.PanelControl2 = New DevExpress.XtraEditors.PanelControl()
         Me.TableLayoutPanel1 = New System.Windows.Forms.TableLayoutPanel()
-        Me.lbPedidos = New DevExpress.XtraEditors.LabelControl()
         Label8 = New System.Windows.Forms.Label()
         Label5 = New System.Windows.Forms.Label()
         lblScan = New System.Windows.Forms.Label()
@@ -86,7 +86,7 @@ Partial Class frmVerificacionBOF
         '
         Label8.AutoSize = True
         Label8.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label8.Location = New System.Drawing.Point(20, 81)
+        Label8.Location = New System.Drawing.Point(22, 81)
         Label8.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label8.Name = "Label8"
         Label8.Size = New System.Drawing.Size(102, 21)
@@ -97,7 +97,7 @@ Partial Class frmVerificacionBOF
         '
         Label5.AutoSize = True
         Label5.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label5.Location = New System.Drawing.Point(20, 199)
+        Label5.Location = New System.Drawing.Point(22, 199)
         Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label5.Name = "Label5"
         Label5.Size = New System.Drawing.Size(81, 21)
@@ -111,9 +111,9 @@ Partial Class frmVerificacionBOF
         lblScan.Location = New System.Drawing.Point(22, 47)
         lblScan.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         lblScan.Name = "lblScan"
-        lblScan.Size = New System.Drawing.Size(66, 21)
+        lblScan.Size = New System.Drawing.Size(46, 21)
         lblScan.TabIndex = 43
-        lblScan.Text = "Código:"
+        lblScan.Text = "SKU:"
         '
         'Label1
         '
@@ -130,7 +130,7 @@ Partial Class frmVerificacionBOF
         '
         Label2.AutoSize = True
         Label2.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label2.Location = New System.Drawing.Point(20, 161)
+        Label2.Location = New System.Drawing.Point(22, 161)
         Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label2.Name = "Label2"
         Label2.Size = New System.Drawing.Size(54, 21)
@@ -152,7 +152,7 @@ Partial Class frmVerificacionBOF
         '
         Label4.AutoSize = True
         Label4.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label4.Location = New System.Drawing.Point(22, 266)
+        Label4.Location = New System.Drawing.Point(22, 271)
         Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label4.Name = "Label4"
         Label4.Size = New System.Drawing.Size(65, 21)
@@ -162,7 +162,7 @@ Partial Class frmVerificacionBOF
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdEnviar})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdGuardar})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.MaxItemId = 2
         Me.RibbonControl.Name = "RibbonControl"
@@ -170,12 +170,12 @@ Partial Class frmVerificacionBOF
         Me.RibbonControl.Size = New System.Drawing.Size(1547, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
-        'cmdEnviar
+        'cmdGuardar
         '
-        Me.cmdEnviar.Caption = "Enviar"
-        Me.cmdEnviar.Id = 1
-        Me.cmdEnviar.ImageOptions.SvgImage = CType(resources.GetObject("cmdEnviar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdEnviar.Name = "cmdEnviar"
+        Me.cmdGuardar.Caption = "Guardar"
+        Me.cmdGuardar.Id = 1
+        Me.cmdGuardar.ImageOptions.SvgImage = CType(resources.GetObject("cmdGuardar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdGuardar.Name = "cmdGuardar"
         '
         'RibbonPage1
         '
@@ -185,12 +185,12 @@ Partial Class frmVerificacionBOF
         '
         'RibbonPageGroup1
         '
-        Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdEnviar)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdGuardar)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
         'RibbonStatusBar
         '
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 784)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 940)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
         Me.RibbonStatusBar.Size = New System.Drawing.Size(1547, 30)
@@ -219,13 +219,23 @@ Partial Class frmVerificacionBOF
         Me.grpScan.Location = New System.Drawing.Point(4, 2)
         Me.grpScan.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.grpScan.Name = "grpScan"
-        Me.grpScan.Size = New System.Drawing.Size(911, 260)
+        Me.grpScan.Size = New System.Drawing.Size(911, 330)
         Me.grpScan.TabIndex = 52
         Me.grpScan.Text = "Producto"
         '
+        'lbPedidos
+        '
+        Me.lbPedidos.Appearance.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Bold)
+        Me.lbPedidos.Appearance.Options.UseFont = True
+        Me.lbPedidos.Location = New System.Drawing.Point(820, 40)
+        Me.lbPedidos.Name = "lbPedidos"
+        Me.lbPedidos.Size = New System.Drawing.Size(86, 24)
+        Me.lbPedidos.TabIndex = 64
+        Me.lbPedidos.Text = "Pedidos:"
+        '
         'cmbMotivo
         '
-        Me.cmbMotivo.Location = New System.Drawing.Point(130, 270)
+        Me.cmbMotivo.Location = New System.Drawing.Point(130, 271)
         Me.cmbMotivo.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.cmbMotivo.MenuManager = Me.RibbonControl
         Me.cmbMotivo.Name = "cmbMotivo"
@@ -284,6 +294,7 @@ Partial Class frmVerificacionBOF
         Me.txtScanner.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtScanner.Properties.Appearance.Options.UseFont = True
         Me.txtScanner.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
+        Me.txtScanner.Properties.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper
         Me.txtScanner.Properties.MaxLength = 50
         Me.txtScanner.Size = New System.Drawing.Size(376, 28)
         Me.txtScanner.TabIndex = 42
@@ -334,10 +345,10 @@ Partial Class frmVerificacionBOF
         '
         Me.GroupControl2.Controls.Add(Me.dgridListaPedido)
         Me.GroupControl2.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupControl2.Location = New System.Drawing.Point(4, 266)
+        Me.GroupControl2.Location = New System.Drawing.Point(4, 336)
         Me.GroupControl2.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.GroupControl2.Name = "GroupControl2"
-        Me.GroupControl2.Size = New System.Drawing.Size(911, 319)
+        Me.GroupControl2.Size = New System.Drawing.Size(911, 405)
         Me.GroupControl2.TabIndex = 53
         Me.GroupControl2.Text = "Lista"
         '
@@ -346,14 +357,14 @@ Partial Class frmVerificacionBOF
         Me.dgridListaPedido.Cursor = System.Windows.Forms.Cursors.Default
         Me.dgridListaPedido.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgridListaPedido.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
-        GridLevelNode2.RelationName = "Level1"
-        Me.dgridListaPedido.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode2})
+        GridLevelNode1.RelationName = "Level1"
+        Me.dgridListaPedido.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
         Me.dgridListaPedido.Location = New System.Drawing.Point(2, 28)
         Me.dgridListaPedido.MainView = Me.gvListaPedido
         Me.dgridListaPedido.Margin = New System.Windows.Forms.Padding(4)
         Me.dgridListaPedido.MenuManager = Me.RibbonControl
         Me.dgridListaPedido.Name = "dgridListaPedido"
-        Me.dgridListaPedido.Size = New System.Drawing.Size(907, 289)
+        Me.dgridListaPedido.Size = New System.Drawing.Size(907, 375)
         Me.dgridListaPedido.TabIndex = 1
         Me.dgridListaPedido.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvListaPedido, Me.GridView6})
         '
@@ -364,9 +375,9 @@ Partial Class frmVerificacionBOF
         Me.gvListaPedido.Appearance.Row.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.gvListaPedido.Appearance.Row.Options.UseFont = True
         Me.gvListaPedido.DetailHeight = 431
-        GridFormatRule2.Name = "Format0"
-        GridFormatRule2.Rule = Nothing
-        Me.gvListaPedido.FormatRules.Add(GridFormatRule2)
+        GridFormatRule1.Name = "Format0"
+        GridFormatRule1.Rule = Nothing
+        Me.gvListaPedido.FormatRules.Add(GridFormatRule1)
         Me.gvListaPedido.GridControl = Me.dgridListaPedido
         Me.gvListaPedido.Name = "gvListaPedido"
         Me.gvListaPedido.OptionsBehavior.Editable = False
@@ -386,7 +397,7 @@ Partial Class frmVerificacionBOF
         Me.PanelControl1.Dock = System.Windows.Forms.DockStyle.Right
         Me.PanelControl1.Location = New System.Drawing.Point(923, 193)
         Me.PanelControl1.Name = "PanelControl1"
-        Me.PanelControl1.Size = New System.Drawing.Size(624, 591)
+        Me.PanelControl1.Size = New System.Drawing.Size(624, 747)
         Me.PanelControl1.TabIndex = 58
         '
         'peProducto
@@ -397,7 +408,7 @@ Partial Class frmVerificacionBOF
         Me.peProducto.Name = "peProducto"
         Me.peProducto.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.[Auto]
         Me.peProducto.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch
-        Me.peProducto.Size = New System.Drawing.Size(620, 587)
+        Me.peProducto.Size = New System.Drawing.Size(620, 743)
         Me.peProducto.TabIndex = 0
         '
         'PanelControl2
@@ -406,7 +417,7 @@ Partial Class frmVerificacionBOF
         Me.PanelControl2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.PanelControl2.Location = New System.Drawing.Point(0, 193)
         Me.PanelControl2.Name = "PanelControl2"
-        Me.PanelControl2.Size = New System.Drawing.Size(923, 591)
+        Me.PanelControl2.Size = New System.Drawing.Size(923, 747)
         Me.PanelControl2.TabIndex = 59
         '
         'TableLayoutPanel1
@@ -421,32 +432,23 @@ Partial Class frmVerificacionBOF
         Me.TableLayoutPanel1.RowCount = 2
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 45.0!))
         Me.TableLayoutPanel1.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55.0!))
-        Me.TableLayoutPanel1.Size = New System.Drawing.Size(919, 587)
+        Me.TableLayoutPanel1.Size = New System.Drawing.Size(919, 743)
         Me.TableLayoutPanel1.TabIndex = 54
-        '
-        'lbPedidos
-        '
-        Me.lbPedidos.Appearance.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Bold)
-        Me.lbPedidos.Appearance.Options.UseFont = True
-        Me.lbPedidos.Location = New System.Drawing.Point(820, 40)
-        Me.lbPedidos.Name = "lbPedidos"
-        Me.lbPedidos.Size = New System.Drawing.Size(86, 24)
-        Me.lbPedidos.TabIndex = 64
-        Me.lbPedidos.Text = "Pedidos:"
         '
         'frmVerificacionBOF
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1547, 814)
+        Me.ClientSize = New System.Drawing.Size(1547, 970)
         Me.Controls.Add(Me.PanelControl2)
         Me.Controls.Add(Me.PanelControl1)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
         Me.Name = "frmVerificacionBOF"
         Me.Ribbon = Me.RibbonControl
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.StatusBar = Me.RibbonStatusBar
-        Me.Text = "frmVerificacionBOF"
+        Me.Text = "Verificación BOF"
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.grpScan, System.ComponentModel.ISupportInitialize).EndInit()
         Me.grpScan.ResumeLayout(False)
@@ -493,7 +495,7 @@ Partial Class frmVerificacionBOF
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents peProducto As DevExpress.XtraEditors.PictureEdit
     Friend WithEvents lbOk As DevExpress.XtraEditors.LabelControl
-    Friend WithEvents cmdEnviar As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents cmdGuardar As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents cmbMotivo As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents cmbEstado As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents lbPedidos As DevExpress.XtraEditors.LabelControl

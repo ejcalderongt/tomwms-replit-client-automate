@@ -5,6 +5,7 @@ using WMSWebAPI.Dtos.Productos;
 
 namespace WMSWebAPI.Dtos.Catalogos
 {
+
     public class ProductoDto
     {
         // === EXISTENTES ===
@@ -32,12 +33,20 @@ namespace WMSWebAPI.Dtos.Catalogos
         public float? Peso_Tolerancia { get; set; }
         public float? Temperatura_Referencia { get; set; }
         public float? Temperatura_Tolerancia { get; set; }
-        public bool? Activo { get; set; }
+
+        // DUPLICADA LÓGICA de "activo" (se deja habilitada la que tiene default)
+        // public bool? Activo { get; set; }
+
         public bool? Serializado { get; set; }
-        public bool? Genera_Lote { get; set; }
-        public bool? Genera_Lp_Old { get; set; }
-        public bool? Control_Vencimiento { get; set; }
-        public bool? Control_Lote { get; set; }
+
+        // (Estas ya estaban comentadas y duplican a las de abajo con default)
+        // public bool? Genera_Lote { get; set; }
+        // public bool? Genera_Lp_Old { get; set; }
+        // public bool? Control_Vencimiento { get; set; }
+
+        // DUPLICADA LÓGICA de "control_lote" (se deja habilitada la que tiene default)
+        // public bool? Control_Lote { get; set; }
+
         public bool? Peso_Recepcion { get; set; }
         public bool? Peso_Despacho { get; set; }
         public bool? Temperatura_Recepcion { get; set; }
@@ -54,7 +63,10 @@ namespace WMSWebAPI.Dtos.Catalogos
         public string? NoParte { get; set; }
         public bool? FechaManufactura { get; set; }
         public bool? Capturar_Aniada { get; set; }
-        public bool? Control_Peso { get; set; }
+
+        // DUPLICADA LÓGICA de "control_peso" (se deja habilitada la que tiene default)
+        // public bool? Control_Peso { get; set; }
+
         public bool? Captura_Arancel { get; set; }
         public bool? Es_Hardware { get; set; }
         public float? Largo { get; set; }
@@ -67,9 +79,9 @@ namespace WMSWebAPI.Dtos.Catalogos
         public int? IDPRODUCTOPARAMETROB { get; set; }
         public int? IdTipoManufactura { get; set; }
         public byte[]? imagen { get; set; } = Array.Empty<byte>();
-        
+
         public int IdProductoBodega { get; set; }
-        
+
         // Estado/meta
         public bool IsNew { get; set; } = true;
         public object? Tag { get; set; }
@@ -81,19 +93,22 @@ namespace WMSWebAPI.Dtos.Catalogos
         public double ExistenciaUMBas { get; set; } = 0;
 
         // Indice de rotación complejo + parámetros A/B
-        public clsBeIndice_rotacion? Indice_Rotacion { get; set; }        
+        public clsBeIndice_rotacion? Indice_Rotacion { get; set; }
 
         // Campos para inventario cíclico
         public string? Lote { get; set; } = "";
         public DateTime? FechaVence { get; set; }
         public double? Cantidad { get; set; } = 0;
         public clsBeVW_stock_res? Stock { get; set; }
+
+        // Se dejan habilitadas las variantes con default
         public bool genera_lote { get; set; } = false;
         public bool genera_lp_old { get; set; } = false;
         public bool control_vencimiento { get; set; } = false;
         public bool control_lote { get; set; } = false;
         public bool control_peso { get; set; } = false;
         public bool activo { get; set; } = true;
+
         public PropietarioDto Propietario { get; set; } = new PropietarioDto();
         public ProductoPresentacionDto Presentacion { get; set; } = new ProductoPresentacionDto();
         public ProductoClasificacionDto Clasificacion { get; set; } = new ProductoClasificacionDto();
@@ -102,14 +117,15 @@ namespace WMSWebAPI.Dtos.Catalogos
         public ProductoTipoDto TipoProducto { get; set; } = new ProductoTipoDto();
         public UnidadMedidaDto UnidadMedida { get; set; } = new UnidadMedidaDto();
         public List<ProductoPresentacionDto> Presentaciones { get; set; } = new List<ProductoPresentacionDto>();
-        public List<clsBeProducto_codigos_barra> Codigos_Barra { get; set; } = new List<clsBeProducto_codigos_barra>();
+        public List<clsBeProducto_codigos_barra>? Codigos_Barra { get; set; } = new List<clsBeProducto_codigos_barra>();
         public List<clsBeProducto_parametros> Parametros { get; set; } = new List<clsBeProducto_parametros>();
-        public clsBeProducto_parametro_a ParametroA { get; set; }= new clsBeProducto_parametro_a();
+        public clsBeProducto_parametro_a ParametroA { get; set; } = new clsBeProducto_parametro_a();
         public clsBeProducto_parametro_b ParametroB { get; set; } = new clsBeProducto_parametro_b();
         public List<PropietarioBodegaDto>? PropietarioBodega { get; set; }
         public List<ProductoBodegaDto>? ProductoBodega { get; set; }
         public List<ProductoEstadoDto>? ProductoEstado { get; set; }
-    }    
+    }
+
 
     public class IndiceRotacionDto
     {

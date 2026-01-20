@@ -1,7 +1,6 @@
 ﻿using AppGlobal;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System.Reflection;
 using WMS.DALCore.Cliente;
 using WMS.DALCore.I_nav_ped_traslado_det;
 using WMS.DALCore.Road;

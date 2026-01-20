@@ -4,13 +4,11 @@ Imports System.Drawing.Imaging
 Imports System.IO
 Imports System.Reflection
 Imports System.Text
-Imports DevExpress.Xpf.Core.ConditionalFormatting.Native
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Controls
 Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraSplashScreen
-Imports TOMWMS.frmVerificacionBOF
 
 Public Class frmVerificacionBOF
     'Public pBePedidoEnc As New clsBeTrans_pe_enc
@@ -74,6 +72,7 @@ Public Class frmVerificacionBOF
 
         pBeTransPickingUbicTemp = New clsBeTrans_picking_ubic()
         plistPickingUbic = New List(Of clsBeTrans_picking_ubic)
+
         Dim clsTransaccion As New clsTransaccion()
 
         Try
@@ -89,10 +88,12 @@ Public Class frmVerificacionBOF
                 XtraMessageBox.Show("No esta definida la ruta hacia la galeria de imagenes.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             End If
 
+            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+            SplashScreenManager.Default.SetWaitFormCaption("Cargando rutas...")
+
             'Dim archivosPng() As String = Directory.GetFiles(vRutaCDN, "*.png")
             '_listaRutasPng = archivosPng.ToList()
 
-            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormCaption("Cargando datos...")
 
             'If pBePedidoEnc Is Nothing Then Exit Sub
@@ -120,7 +121,10 @@ Public Class frmVerificacionBOF
             Text,
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
-
+        Finally
+            If Not SplashScreenManager.Default Is Nothing Then
+                SplashScreenManager.Default.CloseWaitForm()
+            End If
         End Try
 
     End Sub
@@ -137,7 +141,7 @@ Public Class frmVerificacionBOF
                 .NullText = ""
                 .ShowHeader = False
                 .Columns.Clear()
-                .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Descripcion", "Estado"))
+                .Columns.Add(New LookUpColumnInfo("Descripcion", "Estado"))
             End With
 
             cmbEstado.EditValue = Nothing
@@ -347,9 +351,9 @@ Public Class frmVerificacionBOF
                         End If
 
                         pBeProducto.IdProductoBodega = clsLnProducto_bodega.Get_IdProductoBodega_By_IdProducto_And_IdBodega(pBeProducto.IdProducto,
-                                                                                                                                pPedidoEnc.IdBodega,
-                                                                                                                                lConnection,
-                                                                                                                                lTransaction)
+                                                                                                                            pPedidoEnc.IdBodega,
+                                                                                                                            lConnection,
+                                                                                                                            lTransaction)
 
 
                         If BeBodega.Control_Talla_Color Then
@@ -775,7 +779,7 @@ Public Class frmVerificacionBOF
                 XtraMessageBox.Show("No se encontró el SKU, por favor reintente: " & sku,
                                 Text,
                                 MessageBoxButtons.OK,
-                                MessageBoxIcon.Information)
+                                MessageBoxIcon.Error)
                 LimpiarControlesGrupo()
                 Exit Function
             End If
@@ -941,30 +945,6 @@ Public Class frmVerificacionBOF
             Dim talla As String = ""
             Dim color As String = ""
 
-            '#GT08122025: codigo para validar con una imagen local, el render
-            'Dim archivoDemo As String = "C:\ImagenesQA\demo.png"
-            'If File.Exists(archivoDemo) Then
-            '    peProducto.Image = Nothing
-
-            '    Using fs As New FileStream(archivoDemo, FileMode.Open, FileAccess.Read)
-            '        img = Image.FromStream(fs)
-
-            '        ' Si quieres seguir probando tu método de escalado:
-            '        'Dim imgEscalada = EscalarImagen(img, 2.0R)
-
-            '        Dim factor As Double = 2.5R
-            '        Dim nuevoAncho As Integer = CInt(img.Width * factor)
-            '        Dim nuevoAlto As Integer = CInt(img.Height * factor)
-            '        Dim imgProcesada As Image = RedimensionarAltaCalidad(img, nuevoAncho, nuevoAlto)
-
-            '        peProducto.Properties.SizeMode = PictureSizeMode.Squeeze
-            '        peProducto.Image = imgProcesada
-            '    End Using
-            'Else
-            '    ' Si no existe demo.png, limpiar la imagen
-            '    peProducto.Image = Nothing
-            'End If
-
 
             If codigoSKU.Length >= 13 Then
                 productoBase = codigoSKU.Substring(0, 10)
@@ -1011,7 +991,7 @@ Public Class frmVerificacionBOF
 
 
             If Not String.IsNullOrEmpty(archivoEncontrado) AndAlso File.Exists(archivoEncontrado) Then
-                peProducto.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Zoom
+                peProducto.Properties.SizeMode = PictureSizeMode.Zoom
                 peProducto.Image = Nothing
 
                 Using fs As New FileStream(archivoEncontrado, FileMode.Open, FileAccess.Read)
@@ -1091,44 +1071,6 @@ Public Class frmVerificacionBOF
         End With
 
     End Sub
-
-    'Private Sub txtEstado_KeyDown(sender As Object, e As KeyEventArgs) Handles txtEstado.KeyDown
-    '    Try
-
-    '        If e.KeyCode <> Keys.Enter Then Return
-
-    '        Dim valorLeido As String = txtEstado.Text.Trim()
-    '        txtEstado.Clear()
-
-    '        ' Normalizamos para comparar (ignorando mayúsculas/minúsculas y espacios)
-    '        Dim estado As String = valorLeido.ToUpperInvariant()
-
-    '        Select Case estado
-    '            Case "OK"
-    '                ' Producto confirmado correctamente
-    '                ProcesarLinea()
-
-    '            Case "PAUSA"
-    '                ' Poner en pausa: bloquear controles para impedir cerrar o escanear otro producto
-    '                'ProcesarEstadoPausa()
-
-    '            Case Else
-    '                ' Cualquier otra cosa se considera no válida
-    '                MessageBox.Show(
-    '                    $"Estado no reconocido: [{valorLeido}]. Escanee un código 'OK' o 'Pausa'.",
-    '                    "Estado inválido",
-    '                    MessageBoxButtons.OK,
-    '                    MessageBoxIcon.Warning
-    '                )
-
-    '                ' Vuelve a esperar un estado correcto
-    '                txtEstado.Focus()
-    '        End Select
-
-    '    Catch ex As Exception
-    '        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-    '    End Try
-    'End Sub
 
     Private Function EscalarImagen(ByVal imgOriginal As Image, ByVal factor As Double) As Image
         Dim nuevoAncho As Integer = CInt(imgOriginal.Width * factor)
@@ -1287,12 +1229,12 @@ Public Class frmVerificacionBOF
         txtCantidad.Text = ""
     End Sub
 
-    Private Sub cmdEnviar_ItemClick(sender As Object, e As ItemClickEventArgs) Handles cmdEnviar.ItemClick
+    Private Sub cmdEnviar_ItemClick(sender As Object, e As ItemClickEventArgs) Handles cmdGuardar.ItemClick
         Try
 
-            cmdEnviar.Enabled = False
+            cmdGuardar.Enabled = False
             Guardar_Verificacion()
-            cmdEnviar.Enabled = True
+            cmdGuardar.Enabled = True
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message,

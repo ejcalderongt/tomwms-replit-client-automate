@@ -339,6 +339,7 @@ public class clsLnProducto_clasificacion
 
         try
         {
+
             if (Existe(oBe, cn, tx))
                 return Actualizar(oBe, cn, tx);
             else

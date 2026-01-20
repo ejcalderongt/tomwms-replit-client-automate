@@ -20,7 +20,7 @@ namespace WMSWebAPI.Controllers
         }
 
         [HttpPost("documento-salida")]
-        public async Task<IActionResult> PostDocumentoSalida([FromBody] List<SalidaTransDto> dto,
+        public async Task<IActionResult> PostDocumentoSalida([FromBody] List<SalidaTrans_3plDto> dto,
                                                              [FromServices] IConfiguration configuration,
                                                              [FromServices] ILogger<SyncSalidasController> _logger)
         {
@@ -51,7 +51,7 @@ namespace WMSWebAPI.Controllers
             {
                 foreach (var salida in dto)
                 {
-                    _salidaService.ProcesarSalidaDesdeDto(salida, connection, transaction);
+                    _salidaService.ProcesarSalidaDesde_3plDto(salida, connection, transaction);
                 }
 
                 transaction.Commit();
