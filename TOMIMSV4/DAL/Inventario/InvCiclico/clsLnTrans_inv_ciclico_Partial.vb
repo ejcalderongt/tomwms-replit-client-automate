@@ -3972,18 +3972,26 @@ Partial Public Class clsLnTrans_inv_ciclico
                                                       producto_estado_1.nombre AS Estado, producto_estado.nombre AS EstadoDestino,                   
 				                                      dbo.Nombre_Completo_Ubicacion(trans_inv_ciclico.IdUbicacion,trans_inv_ciclico.IdBodega) as UbicacionOrigen,
 				                                      ISNULL(dbo.Nombre_Completo_Ubicacion(trans_inv_ciclico.IdUbicacion_nuevo,trans_inv_ciclico.IdBodega),dbo.Nombre_Completo_Ubicacion(trans_inv_ciclico.IdUbicacion,trans_inv_ciclico.IdBodega)) as UbicacionDestino,
-                                                      trans_inv_ciclico.IdUbicacion, trans_inv_ciclico.Fec_Mod
+                                                      trans_inv_ciclico.IdUbicacion, trans_inv_ciclico.Fec_Mod, color.nombre Color, talla.Codigo Talla, trans_inv_ciclico.IdProductoTallaColor, trans_inv_ciclico.IdProductoTallaColor_nuevo, 
+                                                      talla.Codigo Talla, color.nombre Color, ISNULL(t.Codigo, '') AS TallaNueva, ISNULL(c.nombre, '') AS ColorNuevo
                                   FROM     trans_inv_ciclico INNER JOIN
                                                       trans_inv_enc ON trans_inv_ciclico.idinventarioenc = trans_inv_enc.idinventarioenc AND trans_inv_ciclico.idinventarioenc = trans_inv_enc.idinventarioenc INNER JOIN
                                                       producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega AND trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
                                                       producto ON producto_bodega.IdProducto = producto.IdProducto INNER JOIN
                                                       producto_estado AS producto_estado_1 ON trans_inv_ciclico.IdProductoEstado = producto_estado_1.IdEstado INNER JOIN
-                                                      producto_estado ON trans_inv_ciclico.IdProductoEst_nuevo = producto_estado.IdEstado
+                                                      producto_estado ON trans_inv_ciclico.IdProductoEst_nuevo = producto_estado.IdEstado LEFT JOIN
+                                                      producto_talla_color ON trans_inv_ciclico.IdProductoTallaColor = producto_talla_color.IdProductoTallaColor LEFT JOIN
+                                                      talla ON talla.IdTalla = producto_talla_color.IdTalla LEFT JOIN
+                                                      color ON color.IdColor = producto_talla_color.IdColor LEFT JOIN
+                                                      producto_talla_color ptc ON trans_inv_ciclico.IdProductoTallaColor_nuevo = ptc.IdProductoTallaColor LEFT JOIN
+                                                      talla t ON t.IdTalla = ptc.IdTalla LEFT JOIN
+                                                      color c ON c.IdColor = ptc.IdColor
                                   WHERE  (trans_inv_ciclico.idinventarioenc = @idinventario)
                                   GROUP BY dbo.trans_inv_ciclico.idinventarioenc, trans_inv_ciclico.IdProductoBodega, producto.codigo, producto.nombre, trans_inv_ciclico.lote, trans_inv_ciclico.fecha_vence, trans_inv_ciclico.lic_plate, 
                                                       trans_inv_ciclico.IdProductoEstado, trans_inv_ciclico.IdProductoEst_nuevo, trans_inv_ciclico.IdUbicacion, trans_inv_ciclico.IdUbicacion_nuevo, producto_estado_1.nombre, producto_estado.nombre, 
 				                                      trans_inv_ciclico.lote_stock,trans_inv_ciclico.IdStock,
-                                                      trans_inv_ciclico.IdBodega, trans_inv_ciclico.Fec_Mod,trans_inv_ciclico.idinvciclico 
+                                                      trans_inv_ciclico.IdBodega, trans_inv_ciclico.Fec_Mod,trans_inv_ciclico.idinvciclico, color.nombre, talla.codigo, trans_inv_ciclico.IdProductoTallaColor, trans_inv_ciclico.IdProductoTallaColor_nuevo,
+                                                      talla.codigo, color.nombre, t.Codigo, c.nombre 
                                    ORDER BY producto.codigo "
 
             Dim cmd As New SqlCommand(vSQL, lConnection, lTransaction) With {.CommandType = CommandType.Text}
@@ -4044,6 +4052,12 @@ Partial Public Class clsLnTrans_inv_ciclico
                     Temp.UbicacionDestino = lRow("UbicacionDestino")
                     Temp.FechaVence = lRow("fecha_vence")
                     Temp.Licencia = lRow("Licencia")
+                    Temp.IdProductoTallaColor = lRow("IdProductoTallaColor")
+                    Temp.IdProductoTallaColor_nuevo = lRow("IdProductoTallaColor_nuevo")
+                    Temp.TallaStock = lRow("Talla")
+                    Temp.ColorStock = lRow("Color")
+                    Temp.TallaNueva = lRow("TallaNueva")
+                    Temp.ColorNuevo = lRow("ColorNuevo")
 
                     If Temp.Cantidad_Stock <> Temp.Cantidad Then
 
@@ -6908,4 +6922,223 @@ Partial Public Class clsLnTrans_inv_ciclico
 
     End Function
 
+    Public Shared Function Get_All_By_Regularizacion_Inventario(ByVal pIdInv As Integer,
+                                                                ByVal lConnection As SqlConnection,
+                                                                ByVal lTransaction As SqlTransaction) As DataTable
+
+        Get_All_By_Regularizacion_Inventario = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT 
+                                    codigo AS Código,
+                                    producto AS Producto,
+                                    LoteOrigen AS LoteOrigen,
+                                    Lote,
+                                    FechaVence,
+                                    Licencia, 
+                                    EstadoOrigen,
+                                    EstadoDestino,
+                                    UbicacionOrigen,
+                                    UbicacionDestino,
+                                    Cantidad_Stock AS CantidadStock,
+                                    Peso_Stock AS PesoStock,
+                                    Cantidad AS CantidadConteo,
+                                    Peso AS PesoConteo,
+                                    Entradas,
+                                    Salidas,
+                                    Entradas_Salidas,
+ 
+                                    -- NuevoStock con múltiples condiciones 
+                                    CASE 
+                                        WHEN Cantidad = (Cantidad_Stock + Entradas ) AND Salidas = 0  THEN Cantidad
+                                        WHEN Salidas IS NOT NULL AND Salidas < 0 THEN (Cantidad_Stock + Salidas)
+                                        ELSE (Cantidad + Entradas_Salidas + Salidas)
+                                    END AS NuevoStock,
+ 
+                                    -- DiferenciaCantidad con múltiples condiciones 
+                                    CASE 
+                                        WHEN (Cantidad = (Cantidad_Stock + Entradas)) AND Salidas = 0 THEN (Cantidad_Stock + Entradas - Cantidad)
+                                        WHEN Salidas IS NOT NULL AND Salidas < 0 THEN  (Cantidad_Stock + Salidas - Cantidad) * -1
+                                        ELSE ((Cantidad_Stock + Entradas_Salidas) - Cantidad) * -1
+                                    END AS DiferenciaCantidad,
+ 
+                                    -- DiferenciaPeso se mantiene igual
+                                    (Peso_Stock - Peso) AS DiferenciaPeso,
+                                    Cantidad_Reservada_UmBas,
+                                    TieneReservaYConteoInsuficiente,  
+                                    Observacion,
+                                    TallaStock,
+                                    ColorStock,
+                                    ISNULL(TallaNueva, '') AS TallaNueva,
+                                    ISNULL(ColorNuevo, '') AS ColorNuevo
+                                FROM 
+                                    ComparacionInventario
+                                WHERE 
+                                    IdInventario = @idinventarioenc AND TieneReservaYConteoInsuficiente = 0;"
+
+            Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+
+                lDataAdapter.SelectCommand.CommandType = CommandType.Text
+                lDataAdapter.SelectCommand.Transaction = lTransaction
+                lDataAdapter.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInv)
+
+                Dim lDataTable As New DataTable()
+                lDataAdapter.Fill(lDataTable)
+
+                If lDataTable.Rows.Count > 0 Then
+                    Return lDataTable
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_All_By_Comparacion_Inventario_No_Regularizar(ByVal pIdInv As Integer, lConnection As SqlConnection, ByVal lTransaction As SqlTransaction) As DataTable
+
+        Get_All_By_Comparacion_Inventario_No_Regularizar = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT 
+                    codigo AS Código,
+                    producto AS Producto,
+                    LoteOrigen AS LoteOrigen,
+                    Lote,
+                    FechaVence,
+                    Licencia, 
+                    EstadoOrigen,
+                    EstadoDestino,
+                    UbicacionOrigen,
+                    UbicacionDestino,
+                    Cantidad_Stock AS CantidadStock,
+                    Peso_Stock AS PesoStock,
+                    Cantidad AS CantidadConteo,
+                    Peso AS PesoConteo,
+                    Entradas,
+                    Salidas,
+                    Entradas_Salidas,
+ 
+                    -- NuevoStock con múltiples condiciones 
+                    CASE 
+                        WHEN Cantidad = (Cantidad_Stock + Entradas ) AND Salidas = 0  THEN Cantidad
+                        WHEN Salidas IS NOT NULL AND Salidas < 0 THEN (Cantidad_Stock + Salidas)
+                        ELSE (Cantidad + Entradas_Salidas + Salidas)
+                    END AS NuevoStock,
+ 
+                    -- DiferenciaCantidad con múltiples condiciones 
+                    CASE 
+                        WHEN (Cantidad = (Cantidad_Stock + Entradas)) AND Salidas = 0 THEN (Cantidad_Stock + Entradas - Cantidad)
+                        WHEN Salidas IS NOT NULL AND Salidas < 0 THEN  (Cantidad_Stock + Salidas - Cantidad) * -1
+                        ELSE ((Cantidad_Stock + Entradas_Salidas) - Cantidad) * -1
+                    END AS DiferenciaCantidad,
+ 
+                    -- DiferenciaPeso se mantiene igual
+                    (Peso_Stock - Peso) AS DiferenciaPeso,
+                    Cantidad_Reservada_UmBas,
+                    TieneReservaYConteoInsuficiente,  
+                    Observacion
+                FROM 
+                    tempComparacionInventario
+                WHERE 
+                    IdInventario = @idinventarioenc AND TieneReservaYConteoInsuficiente = 1;"
+
+            Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+
+                lDataAdapter.SelectCommand.CommandType = CommandType.Text
+                lDataAdapter.SelectCommand.Transaction = lTransaction
+                lDataAdapter.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInv)
+
+                Dim lDataTable As New DataTable()
+                lDataAdapter.Fill(lDataTable)
+
+                If lDataTable.Rows.Count > 0 Then
+                    Return lDataTable
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_All_By_Comparacion_Inventario_A_Regularizar(ByVal pIdInv As Integer, lConnection As SqlConnection, ByVal lTransaction As SqlTransaction) As DataTable
+
+        Get_All_By_Comparacion_Inventario_A_Regularizar = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT 
+                    codigo AS Código,
+                    producto AS Producto,
+                    LoteOrigen AS LoteOrigen,
+                    Lote,
+                    FechaVence,
+                    Licencia, 
+                    EstadoOrigen,
+                    EstadoDestino,
+                    UbicacionOrigen,
+                    UbicacionDestino,
+                    Cantidad_Stock AS CantidadStock,
+                    Peso_Stock AS PesoStock,
+                    Cantidad AS CantidadConteo,
+                    Peso AS PesoConteo,
+                    Entradas,
+                    Salidas,
+                    Entradas_Salidas,
+ 
+                    -- NuevoStock con múltiples condiciones 
+                    CASE 
+                        WHEN Cantidad = (Cantidad_Stock + Entradas ) AND Salidas = 0  THEN Cantidad
+                        WHEN Salidas IS NOT NULL AND Salidas < 0 THEN (Cantidad_Stock + Salidas)
+                        ELSE (Cantidad + Entradas_Salidas + Salidas)
+                    END AS NuevoStock,
+ 
+                    -- DiferenciaCantidad con múltiples condiciones 
+                    CASE 
+                        WHEN (Cantidad = (Cantidad_Stock + Entradas)) AND Salidas = 0 THEN (Cantidad_Stock + Entradas - Cantidad)
+                        WHEN Salidas IS NOT NULL AND Salidas < 0 THEN  (Cantidad_Stock + Salidas - Cantidad) * -1
+                        ELSE ((Cantidad_Stock + Entradas_Salidas) - Cantidad) * -1
+                    END AS DiferenciaCantidad,
+ 
+                    -- DiferenciaPeso se mantiene igual
+                    (Peso_Stock - Peso) AS DiferenciaPeso,
+                    Cantidad_Reservada_UmBas,
+                    TieneReservaYConteoInsuficiente,  
+                    Observacion,
+                    TallaStock,
+                    ColorStock,
+                    ISNULL(TallaNueva, '') AS TallaNueva,
+                    ISNULL(ColorNuevo, '') AS ColorNuevo
+                FROM 
+                    tempComparacionInventario
+                WHERE 
+                    IdInventario = @idinventarioenc AND TieneReservaYConteoInsuficiente = 0;"
+
+            Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+
+                lDataAdapter.SelectCommand.CommandType = CommandType.Text
+                lDataAdapter.SelectCommand.Transaction = lTransaction
+                lDataAdapter.SelectCommand.Parameters.AddWithValue("@idinventarioenc", pIdInv)
+
+                Dim lDataTable As New DataTable()
+                lDataAdapter.Fill(lDataTable)
+
+                If lDataTable.Rows.Count > 0 Then
+                    Return lDataTable
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
 End Class

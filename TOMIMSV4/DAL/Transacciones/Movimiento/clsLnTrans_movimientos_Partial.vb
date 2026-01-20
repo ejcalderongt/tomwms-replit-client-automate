@@ -1498,46 +1498,6 @@ Partial Public Class clsLnTrans_movimientos
         Dim lReturnList As New List(Of clsBeVW_Movimientos)
 
         Try
-
-            '      Dim vSQL As String = "SELECT t.codigo, t.Producto, t.EstadoOrigen,  t.EstadoDestino,
-            '                  t.TipoTarea, t.lote,t.Fecha_Vence, t.IdPresentacion, t.IdUnidadMedida, t.IdEstadoOrigen,
-            '                  t.IdProductoBodega,t.Fecha, t.Umbas, t.Presentación,t.IdTipoTarea,
-            '                  sum(t.Ingresos) as Ingresos,
-            '                  sum(t.Salidas) as Salidas,
-            '                  sum(t.Ajustes_Positivos) as Ajustes_Positivos,
-            '                  sum(t.Ajustes_Negativos) as Ajustes_Negativos,
-            'sum(t.EnMovimiento) as EnMovimiento,
-            't.IdUbicacionorigen, t.IdUbicaciondestino, t.Licencia, t.Fecha
-            '              from(SELECT Codigo,Producto, EstadoOrigen,
-            '                  EstadoDestino,
-            '                  TipoTarea, lote,Fecha_Vence, IdTipoTarea,
-            '                  IdPresentacion, IdUnidadMedida, IdEstadoOrigen,
-            '                  IdProductoBodega,Fecha,
-            '                  Umbas, Presentación,IdUbicacionorigen, IdUbicaciondestino, Licencia,
-            '                  case when IdTipoTarea = 1  then SUM(cantidad) else 0 end AS Ingresos,
-            '                  case when IdTipoTarea = 5  then SUM(cantidad) else 0 end AS Salidas,
-            '                  case when IdTipoTarea = 13 then SUM(cantidad) else 0 end AS Ajustes_Positivos,
-            '                  case when IdTipoTarea = 17 then SUM(cantidad) else 0 end AS Ajustes_Negativos,
-            '                  case when IdTipoTarea = 2 OR 
-            '                            IdTipoTarea = 3 OR 
-            '                            IdTipoTarea = 8 then SUM(cantidad) else 0 end AS EnMovimiento                        
-            '                  FROM VW_Movimientos_N
-            '                  WHERE  TIPOTAREA NOT IN ('AJCANTNI','AJCANTPI','VERI') "
-
-            '      vSQL += String.Format("And Fecha BETWEEN {0} And {1}", FormatoFechas.fFechaHora(pFechaDel), FormatoFechas.fFechaHora(pFechaAl))
-
-            '      vSQL += " GROUP BY codigo,producto,EstadoOrigen,
-            '                  EstadoDestino, IdProductoBodega,
-            '                  TipoTarea, lote,fecha_vence,
-            '                  IdTipoTarea,Fecha, IdPresentacion,
-            '                  IdUnidadMedida, IdEstadoOrigen,
-            '                  Umbas, EstadoOrigen, Presentación, IdUbicacionorigen, IdUbicaciondestino,Licencia, Fecha) AS t
-            '              group by t.codigo, t.Producto, t.EstadoOrigen,  t.EstadoDestino,
-            '                          t.TipoTarea, t.lote,t.Fecha_Vence, t.IdPresentacion, t.IdUnidadMedida,
-            '                          t.IdProductoBodega,t.Fecha, t.Umbas, t.Presentación, t.IdEstadoOrigen,t.IdTipoTarea,
-            '                          t.IdUbicacionorigen, t.IdUbicaciondestino, t.Licencia, t.Fecha
-            '              ORDER BY t.Codigo, t.Lote, t.Fecha"
-
             Dim vSQL As String = "SELECT t.codigo, t.Producto, t.EstadoOrigen,  t.EstadoDestino,
                                          t.TipoTarea, t.lote,t.Fecha_Vence, t.IdPresentacion, t.IdUnidadMedida, t.IdEstadoOrigen,
                                          t.IdProductoBodega,t.Fecha, t.Umbas, t.Presentación,t.IdTipoTarea,
@@ -4519,6 +4479,66 @@ Partial Public Class clsLnTrans_movimientos
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If lTransaction IsNot Nothing Then lTransaction.Dispose()
             If lConnection IsNot Nothing Then lConnection.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function Get_All_Movimientos_Reporte_By_Rango_Fechas_For_Inv(ByVal pFechaDel As Date,
+                                                                               ByVal pFechaAl As Date,
+                                                                               ByVal IdBodega As Integer,
+                                                                               ByVal IdInventarioEnc As Integer,
+                                                                               ByVal lConnection As SqlConnection,
+                                                                               ByVal lTransaction As SqlTransaction) As DataTable
+
+        Get_All_Movimientos_Reporte_By_Rango_Fechas_For_Inv = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT codigo as Codigo, producto as Producto, tipotarea as Tipo, cantidad as Cantidad, 
+                                         ubicorigen as Origen, ubicdestino as Destino, 
+                                         estadoorigen as EstadoOri, estadodestino as EstadoDest, fecha as Fecha, licencia as Licencia, clasificacion as Clasificacion, 
+                                         familia as Familia 
+                                  FROM VW_Movimientos_N 
+                                  WHERE IdProducto IN (
+                                      SELECT DISTINCT pb.IdProducto 
+                                      FROM trans_inv_ciclico invc
+                                      JOIN producto_bodega pb ON invc.IdProductoBodega = pb.IdProductoBodega 
+                                      WHERE invc.IdInventarioEnc = " & IdInventarioEnc.ToString() & "
+                                  )
+                                  AND (
+                                      IdUbicacionOrigen IN (
+                                          SELECT DISTINCT IdUbicacion 
+                                          FROM trans_inv_ciclico_ubic 
+                                          WHERE IdInventarioEnc = " & IdInventarioEnc & " AND IdBodega = " & IdBodega & "
+                                      )
+                                      OR 
+                                      IdUbicacionDestino IN (
+                                          SELECT DISTINCT IdUbicacion 
+                                          FROM trans_inv_ciclico_ubic 
+                                          WHERE IdInventarioEnc = " & IdInventarioEnc & " AND IdBodega = " & IdBodega & "
+                                      )
+                                  )"
+
+            ' Filtro por fecha con hora
+            vSQL += String.Format(" AND fecha BETWEEN {0} AND {1}", FormatoFechas.fFechaHora(pFechaDel), FormatoFechas.fFechaHora(pFechaAl))
+
+            ' Filtro por bodega
+            vSQL += String.Format(" AND IdBodega = {0} ", IdBodega)
+
+            ' Orden final
+            vSQL += " ORDER BY codigo, fecha"
+
+            Dim cmd As New SqlCommand(vSQL, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.CommandType = CommandType.Text
+
+            Dim lTable As New DataTable
+            dad.Fill(lTable)
+
+            Get_All_Movimientos_Reporte_By_Rango_Fechas_For_Inv = lTable
+
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
         End Try
 
     End Function
