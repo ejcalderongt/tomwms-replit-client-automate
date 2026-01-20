@@ -10562,4 +10562,41 @@ Partial Public Class clsLnProducto
 
     End Function
 
+    Public Shared Function Get_BeProducto_By_Codigo_Or_Barra(ByVal pCodigo As String, ByVal IdBodega As Integer) As clsBeProducto
+        Get_BeProducto_By_Codigo_Or_Barra = Nothing
+        Try
+            Dim oBeProducto As New clsBeProducto
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                lConnection.Open()
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                    Dim vSQL As String = "SELECT * FROM VW_ProductoSI p  
+                                         WHERE p.IdBodega = @IdBodega 
+                                         AND (p.codigo = @Codigo OR p.codigo_barra = @Codigo  
+                                         OR EXISTS (SELECT 1 FROM producto_codigos_barra pcb WHERE pcb.IdProducto = p.IdProducto AND pcb.codigo_barra = @Codigo))"
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", IdBodega)
+                        Dim lDT As New DataTable
+                        lDTA.Fill(lDT)
+                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+                            Dim lRow As DataRow = lDT.Rows(0)
+                            Cargar(oBeProducto, lRow, lConnection, lTransaction)
+                            If lRow("IdProductoBodega") IsNot DBNull.Value AndAlso lRow("IdProductoBodega") IsNot Nothing Then
+                                oBeProducto.IdProductoBodega = CType(lRow("IdProductoBodega"), Integer)
+                            End If
+                            oBeProducto.IsNew = False
+                            Get_BeProducto_By_Codigo_Or_Barra = oBeProducto
+                        End If
+                    End Using
+                    lTransaction.Commit()
+                End Using
+                lConnection.Close()
+            End Using
+        Catch ex As Exception
+            Throw ex
+        End Try
+    End Function
 End Class

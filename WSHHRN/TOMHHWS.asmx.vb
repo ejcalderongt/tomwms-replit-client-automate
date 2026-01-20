@@ -15691,6 +15691,8 @@ Public Class TOMHHWS
                 Else
                     Dim currrentContext As HttpContext = HttpContext.Current
                     Dim DT As New DataTable("CustomError")
+                    Dim errorObj As New With {.error = ex.Message}
+                    Dim strserialize As String = JsonConvert.SerializeObject(errorObj)
                     DT.Columns.Add("Error", GetType(String))
                     DT.Rows.Add(Mensaje)
                     Dim sw As New StringWriter()
@@ -15699,7 +15701,8 @@ Public Class TOMHHWS
                     HttpContext.Current.Response.StatusCode = 299
                     HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
                     HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.ContentType = "application/json"
+                    HttpContext.Current.Response.Write(strserialize)
                     HttpContext.Current.Response.End()
                 End If
 
@@ -17778,5 +17781,36 @@ Public Class TOMHHWS
 
     End Function
 
+    '#MA20260116
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Get_BeProducto_By_Codigo_Or_Barra_For_HH(ByVal pCodigo As String, ByVal IdBodega As Integer) As clsBeProducto
+        Get_BeProducto_By_Codigo_Or_Barra_For_HH = Nothing
+        Try
+            Return clsLnProducto.Get_BeProducto_By_Codigo_Or_Barra(pCodigo, IdBodega)
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+            If mArch IsNot Nothing Then
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+            End If
+        End Try
+    End Function
 
 End Class
