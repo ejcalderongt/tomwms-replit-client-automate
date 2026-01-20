@@ -1,6 +1,8 @@
-﻿Imports DevExpress.Utils
+﻿Imports System.IO
+Imports DevExpress.Utils
 Imports DevExpress.XtraCharts
 Imports DevExpress.XtraEditors
+Imports DevExpress.XtraGrid
 Public Class frmProximos_A_Vencer
 
     Public Property Modo As pModo
@@ -35,9 +37,10 @@ Public Class frmProximos_A_Vencer
             Dim rango As Integer = IIf(TrackBarControl1.Value > 0, TrackBarControl1.Value, 0)
 
             DT = clsLnStock.Get_Rpt_Horizonte_Critico_By_IdBodega_And_IdPropietarioBodega(0,
-                                                                                             IdBodega,
-                                                                                             IdPropietarioBodega,
-                                                                                             rango)
+                                                                                          IdBodega,
+                                                                                          IdPropietarioBodega,
+                                                                                          rango,
+                                                                                          chkIncluirVencidos.Checked)
 
 
             If DT.Rows.Count = 0 Then
@@ -346,5 +349,43 @@ Public Class frmProximos_A_Vencer
 
         Return Color.FromArgb(red, green, blue)
     End Function
+
+    Private Sub cmdExcel_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdExcel.ItemClick
+        Exportar_Grid_A_Excel(Dgrid, "WMS_Proximos_A_Vencer.xlsx")
+    End Sub
+
+    Private Sub Exportar_Grid_A_Excel(ByRef dGrid As GridControl, ByVal NomArchivo As String)
+
+        Try
+
+            Try
+
+                Dim myStream As Stream
+                Dim saveFileDialog1 As New SaveFileDialog()
+
+                saveFileDialog1.Filter = "xlsx files (*.xlsx)|*.xlsx"
+                saveFileDialog1.FilterIndex = 1
+                saveFileDialog1.RestoreDirectory = True
+                saveFileDialog1.FileName = NomArchivo
+
+                If saveFileDialog1.ShowDialog() = DialogResult.OK Then
+                    myStream = saveFileDialog1.OpenFile()
+                    If (myStream IsNot Nothing) Then
+                        ' Code to write the stream goes here.
+                        dGrid.ExportToXlsx(myStream)
+                        myStream.Close()
+                    End If
+                End If
+
+            Catch ex As Exception
+                XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End Try
+
+        Catch ex As Exception
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        End Try
+
+    End Sub
 
 End Class

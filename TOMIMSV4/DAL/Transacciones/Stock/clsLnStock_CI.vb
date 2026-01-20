@@ -1035,7 +1035,8 @@ Public Class clsLnStock_CI
 						   Clasificacion,
 						   IdProductoBodega,
                            IdArea,
-                           IdStock
+                           IdStock,
+                           vw_stock_res.codigo_barra
 					FROM VW_Stock_Res LEFT JOIN 
                         producto_codigos_barra pc ON VW_Stock_Res.IdProducto = pc.idproducto AND pc.codigo_barra = @pIdProducto WHERE 1 > 0 "
 
@@ -1058,7 +1059,7 @@ Public Class clsLnStock_CI
 					  Lote, fecha_vence, Nombre_Completo, lic_plate,
 					  Factor, codigo_poliza, Numero_poliza, CantidadReservada, Cantidad,
 					  CantidadSF, ubicacion_picking, Area, Factor,IdTipoEtiqueta, Clasificacion, IdUbicacion, IdProductoBodega,
-                      IdRecepcionDet, IdRecepcionEnc, IdArea, IdStock "
+                      IdRecepcionDet, IdRecepcionEnc, IdArea, IdStock, vw_stock_res.codigo_barra "
 
                 vSQL += "ORDER BY CODIGO, Nombre_Completo "
 
@@ -1094,7 +1095,8 @@ Public Class clsLnStock_CI
 						   IdTipoEtiqueta,  
 						   Clasificacion, 
 						   IdProductoBodega,
-                           IdArea
+                           IdArea,
+                           vw_stock_res.codigo_barra
 					FROM VW_Stock_Res LEFT JOIN 
                          producto_codigos_barra pc ON VW_Stock_Res.IdProducto = pc.idproducto and pc.codigo_barra = @pIdProducto
                     WHERE 1 > 0 "
@@ -1121,7 +1123,7 @@ Public Class clsLnStock_CI
 					  Nombre, Presentacion, IdPresentacion, UnidadMedida, 
 					  Lote, fecha_vence, Nombre_Completo, lic_plate,
 					  Factor, codigo_poliza, Numero_poliza,
-					  ubicacion_picking, Area, Factor,IdTipoEtiqueta, Clasificacion, IdUbicacion, IdProductoBodega, IdArea "
+					  ubicacion_picking, Area, Factor,IdTipoEtiqueta, Clasificacion, IdUbicacion, IdProductoBodega, IdArea, vw_stock_res.codigo_barra "
 
                 vSQL += "ORDER BY Codigo, Nombre_Completo, IdPresentacion "
 

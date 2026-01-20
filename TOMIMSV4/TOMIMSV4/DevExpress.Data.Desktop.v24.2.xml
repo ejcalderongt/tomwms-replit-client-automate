@@ -281,19 +281,29 @@
       </summary>
       <value>A <see cref="T:DevExpress.Data.Camera.DeviceVideoProperty"/> object that is the video property specifying the white balance, as a color temperature in degrees Kelvin.</value>
     </member>
+    <member name="T:DevExpress.Data.Controls.ControlRows">
+      <summary>
+        <para>Lists types of data rows to expose from the source control.</para>
+      </summary>
+    </member>
     <member name="F:DevExpress.Data.Controls.ControlRows.Selected">
       <summary>
-        <para>The Chart Control visualizes data rows that are selected within a source control.</para>
+        <para>The ChartControl visualizes selected data rows.</para>
       </summary>
     </member>
     <member name="F:DevExpress.Data.Controls.ControlRows.Source">
       <summary>
-        <para>The Chart Control visualizes a source control’s all data rows.</para>
+        <para>The ChartControl visualizes all data rows from the source control’s underlying data source.</para>
       </summary>
     </member>
     <member name="F:DevExpress.Data.Controls.ControlRows.Visible">
       <summary>
-        <para>The Chart Control visualizes data rows that the source control filters.</para>
+        <para>The ChartControl visualizes only visible data rows.</para>
+      </summary>
+    </member>
+    <member name="T:DevExpress.Data.Controls.ControlRowSource">
+      <summary>
+        <para>A data source for a ChartControl that retrieves row data from another UI control (for example, <see cref="T:DevExpress.XtraGrid.GridControl"/>, <see cref="T:DevExpress.XtraVerticalGrid.VGridControl"/>, <see cref="T:DevExpress.XtraTreeList.TreeList"/>, or <see cref="T:DevExpress.XtraEditors.ListBoxControl"/>).</para>
       </summary>
     </member>
     <member name="M:DevExpress.Data.Controls.ControlRowSource.#ctor">
@@ -303,15 +313,15 @@
     </member>
     <member name="P:DevExpress.Data.Controls.ControlRowSource.Control">
       <summary>
-        <para>Gets or sets the control that provides its data rows to another control.</para>
+        <para>Gets or sets the source control that provides its data rows.</para>
       </summary>
-      <value>The control that provides its data rows to another control.</value>
+      <value>The source control.</value>
     </member>
     <member name="P:DevExpress.Data.Controls.ControlRowSource.ControlRows">
       <summary>
-        <para>Gets or sets the type of rows that the source control provides.</para>
+        <para>Gets or sets the type of data rows to expose from the source control.</para>
       </summary>
-      <value>The type of rows that the source control provides.</value>
+      <value>The type of data rows to expose from the source control.</value>
     </member>
     <member name="E:DevExpress.Data.Controls.ControlRowSource.PropertyChanged">
       <summary>
@@ -322,7 +332,7 @@
       <summary>
         <para>Reloads data rows from the source control.</para>
       </summary>
-      <param name="raiseList">The value indicating whether the PropertyChanged event should be raised.</param>
+      <param name="raiseList">true to raise the <see cref="E:DevExpress.Data.Controls.ControlRowSource.PropertyChanged"/> event; otherwise, false.</param>
     </member>
     <member name="M:DevExpress.Data.Controls.ControlRowSourceChangedEventArgs.#ctor(DevExpress.Data.Controls.ControlRows)">
       <summary>
@@ -597,6 +607,26 @@
     <member name="E:DevExpress.Data.Utils.ProcessStartPolicy.Failed">
       <summary>
         <para>Allows you to respond to associated failures.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.Data.Utils.ProcessStartPolicy.InvokeConfirmedIfNotAlreadyInTrustedContext(System.Action,System.Predicate{DevExpress.Data.Utils.ProcessStartPolicy.RestrictedProcessStartConfirmationEventArgs})">
+      <summary>
+        <para>This member is for advanced configuration. It supports the internal infrastructure, and is not intended to be used directly from your code.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.Data.Utils.ProcessStartPolicy.InvokeConfirmedIfNotAlreadyInTrustedContext(System.Action,System.Predicate{System.Uri})">
+      <summary>
+        <para>This member is for advanced configuration. It supports the internal infrastructure, and is not intended to be used directly from your code.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.Data.Utils.ProcessStartPolicy.InvokeRestricted(System.Action,System.Predicate{DevExpress.Data.Utils.ProcessStartPolicy.RestrictedProcessStartConfirmationEventArgs})">
+      <summary>
+        <para>This member is for advanced configuration. It supports the internal infrastructure, and is not intended to be used directly from your code.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.Data.Utils.ProcessStartPolicy.InvokeRestricted(System.Action)">
+      <summary>
+        <para>This member is for advanced configuration. It supports the internal infrastructure, and is not intended to be used directly from your code.</para>
       </summary>
     </member>
     <member name="T:DevExpress.Data.Utils.ProcessStartPolicy.ProcessStartFailedExceptionEventArgs">

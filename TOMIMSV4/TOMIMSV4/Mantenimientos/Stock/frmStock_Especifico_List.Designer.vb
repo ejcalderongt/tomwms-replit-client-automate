@@ -33,6 +33,7 @@ Partial Class frmStock_Especifico_List
         Me.mnuTomarSeleccionados = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuExportarExcel = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuMostrarMensajePorCadaReserva = New DevExpress.XtraBars.BarToggleSwitchItem()
+        Me.BarButtonItem4 = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup2 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -53,7 +54,6 @@ Partial Class frmStock_Especifico_List
         Me.txtNombreProducto = New DevExpress.XtraEditors.TextEdit()
         Me.txtIdProducto = New DevExpress.XtraEditors.TextEdit()
         Me.lblProducto = New System.Windows.Forms.LinkLabel()
-        Me.BarButtonItem4 = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdStock, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -71,7 +71,7 @@ Partial Class frmStock_Especifico_List
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.RibbonControl.SearchEditItem, Me.BarButtonItem1, Me.BarButtonItem2, Me.BarButtonItem3, Me.lblProgress, Me.lblRegistros, Me.mnuGuardarLayoutGrid, Me.mnuEliminarLayoutGrid, Me.chkFiltroPolizaActivo, Me.chkSeleccionMultiple, Me.mnuTomarSeleccionados, Me.mnuExportarExcel, Me.mnuMostrarMensajePorCadaReserva, Me.BarButtonItem4})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.BarButtonItem1, Me.BarButtonItem2, Me.BarButtonItem3, Me.lblProgress, Me.lblRegistros, Me.mnuGuardarLayoutGrid, Me.mnuEliminarLayoutGrid, Me.chkFiltroPolizaActivo, Me.chkSeleccionMultiple, Me.mnuTomarSeleccionados, Me.mnuExportarExcel, Me.mnuMostrarMensajePorCadaReserva, Me.BarButtonItem4})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonControl.MaxItemId = 15
@@ -163,6 +163,12 @@ Partial Class frmStock_Especifico_List
         Me.mnuMostrarMensajePorCadaReserva.Id = 13
         Me.mnuMostrarMensajePorCadaReserva.Name = "mnuMostrarMensajePorCadaReserva"
         '
+        'BarButtonItem4
+        '
+        Me.BarButtonItem4.Caption = "Guardar diseño de grid"
+        Me.BarButtonItem4.Id = 14
+        Me.BarButtonItem4.Name = "BarButtonItem4"
+        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1, Me.RibbonPageGroup2})
@@ -202,12 +208,12 @@ Partial Class frmStock_Especifico_List
         '
         Me.grdStock.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grdStock.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.grdStock.Location = New System.Drawing.Point(307, 243)
+        Me.grdStock.Location = New System.Drawing.Point(374, 243)
         Me.grdStock.MainView = Me.GridView1
         Me.grdStock.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.grdStock.MenuManager = Me.RibbonControl
         Me.grdStock.Name = "grdStock"
-        Me.grdStock.Size = New System.Drawing.Size(1032, 489)
+        Me.grdStock.Size = New System.Drawing.Size(965, 489)
         Me.grdStock.TabIndex = 2
         Me.grdStock.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
         '
@@ -223,11 +229,11 @@ Partial Class frmStock_Especifico_List
         'prg
         '
         Me.prg.Dock = System.Windows.Forms.DockStyle.Top
-        Me.prg.Location = New System.Drawing.Point(307, 193)
+        Me.prg.Location = New System.Drawing.Point(374, 193)
         Me.prg.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.prg.MenuManager = Me.RibbonControl
         Me.prg.Name = "prg"
-        Me.prg.Size = New System.Drawing.Size(1032, 50)
+        Me.prg.Size = New System.Drawing.Size(965, 50)
         Me.prg.TabIndex = 5
         Me.prg.Visible = False
         '
@@ -245,7 +251,7 @@ Partial Class frmStock_Especifico_List
         Me.PanelControl1.Location = New System.Drawing.Point(0, 193)
         Me.PanelControl1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.PanelControl1.Name = "PanelControl1"
-        Me.PanelControl1.Size = New System.Drawing.Size(307, 539)
+        Me.PanelControl1.Size = New System.Drawing.Size(374, 539)
         Me.PanelControl1.TabIndex = 8
         '
         'lblSeleccion
@@ -256,14 +262,14 @@ Partial Class frmStock_Especifico_List
         Me.lblSeleccion.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.lblSeleccion.Location = New System.Drawing.Point(2, 151)
         Me.lblSeleccion.Name = "lblSeleccion"
-        Me.lblSeleccion.Size = New System.Drawing.Size(303, 44)
+        Me.lblSeleccion.Size = New System.Drawing.Size(370, 44)
         Me.lblSeleccion.TabIndex = 11
         Me.lblSeleccion.Text = "-"
         '
         'lblPoliza
         '
         Me.lblPoliza.AutoSize = True
-        Me.lblPoliza.Location = New System.Drawing.Point(15, 85)
+        Me.lblPoliza.Location = New System.Drawing.Point(15, 106)
         Me.lblPoliza.Name = "lblPoliza"
         Me.lblPoliza.Size = New System.Drawing.Size(74, 16)
         Me.lblPoliza.TabIndex = 11
@@ -271,16 +277,17 @@ Partial Class frmStock_Especifico_List
         '
         'txtNomPoliza
         '
-        Me.txtNomPoliza.Location = New System.Drawing.Point(126, 106)
+        Me.txtNomPoliza.Location = New System.Drawing.Point(126, 127)
         Me.txtNomPoliza.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtNomPoliza.MenuManager = Me.RibbonControl
         Me.txtNomPoliza.Name = "txtNomPoliza"
+        Me.txtNomPoliza.Properties.ReadOnly = True
         Me.txtNomPoliza.Size = New System.Drawing.Size(175, 22)
         Me.txtNomPoliza.TabIndex = 12
         '
         'txtNoPoliza
         '
-        Me.txtNoPoliza.Location = New System.Drawing.Point(12, 106)
+        Me.txtNoPoliza.Location = New System.Drawing.Point(12, 127)
         Me.txtNoPoliza.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtNoPoliza.MenuManager = Me.RibbonControl
         Me.txtNoPoliza.Name = "txtNoPoliza"
@@ -297,7 +304,7 @@ Partial Class frmStock_Especifico_List
         Me.GroupControl1.Location = New System.Drawing.Point(2, 195)
         Me.GroupControl1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(303, 342)
+        Me.GroupControl1.Size = New System.Drawing.Size(370, 342)
         Me.GroupControl1.TabIndex = 11
         '
         'lblDispsin
@@ -363,11 +370,12 @@ Partial Class frmStock_Especifico_List
         '
         'txtNombreProducto
         '
-        Me.txtNombreProducto.Location = New System.Drawing.Point(126, 47)
+        Me.txtNombreProducto.Location = New System.Drawing.Point(12, 73)
         Me.txtNombreProducto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtNombreProducto.MenuManager = Me.RibbonControl
         Me.txtNombreProducto.Name = "txtNombreProducto"
-        Me.txtNombreProducto.Size = New System.Drawing.Size(175, 22)
+        Me.txtNombreProducto.Properties.ReadOnly = True
+        Me.txtNombreProducto.Size = New System.Drawing.Size(289, 22)
         Me.txtNombreProducto.TabIndex = 9
         '
         'txtIdProducto
@@ -376,24 +384,18 @@ Partial Class frmStock_Especifico_List
         Me.txtIdProducto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtIdProducto.MenuManager = Me.RibbonControl
         Me.txtIdProducto.Name = "txtIdProducto"
-        Me.txtIdProducto.Size = New System.Drawing.Size(107, 22)
+        Me.txtIdProducto.Size = New System.Drawing.Size(289, 22)
         Me.txtIdProducto.TabIndex = 10
         '
         'lblProducto
         '
         Me.lblProducto.AutoSize = True
-        Me.lblProducto.Location = New System.Drawing.Point(15, 27)
+        Me.lblProducto.Location = New System.Drawing.Point(12, 27)
         Me.lblProducto.Name = "lblProducto"
         Me.lblProducto.Size = New System.Drawing.Size(57, 16)
         Me.lblProducto.TabIndex = 9
         Me.lblProducto.TabStop = True
         Me.lblProducto.Text = "Producto"
-        '
-        'BarButtonItem4
-        '
-        Me.BarButtonItem4.Caption = "Guardar diseño de grid"
-        Me.BarButtonItem4.Id = 14
-        Me.BarButtonItem4.Name = "BarButtonItem4"
         '
         'frmStock_Especifico_List
         '

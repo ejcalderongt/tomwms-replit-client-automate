@@ -648,4 +648,32 @@ Public Class clsLnTipo_etiqueta
         End Try
 
     End Function
+
+    Public Shared Function GetSingle_By_IdTipoEtiqueta(ByVal pIdTipoEtiqueta As Integer) As clsBeTipo_etiqueta
+
+        Dim Be As clsBeTipo_etiqueta = Nothing
+
+        Dim vSQL As String = "SELECT * FROM tipo_etiqueta
+                               WHERE IdTipoEtiqueta = @id_tipo_etiqueta"
+
+        Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            Using cmd As New SqlCommand(vSQL, cn)
+                cmd.Parameters.AddWithValue("@id_tipo_etiqueta", pIdTipoEtiqueta)
+
+                Dim dad As New SqlDataAdapter(cmd)
+                Dim dt As New DataTable
+                dad.Fill(dt)
+
+                If dt.Rows.Count = 1 Then
+                    Be = New clsBeTipo_etiqueta
+                    Cargar(Be, dt.Rows(0))
+                End If
+            End Using
+        End Using
+
+        Return Be
+
+    End Function
+
+
 End Class

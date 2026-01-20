@@ -322,12 +322,12 @@
     </member>
     <member name="F:DevExpress.XtraLayout.AutoSizeModes.ResizeToMinSize">
       <summary>
-        <para>The embedded LayoutControl’s size is fixed and is equal to its minimum size.</para>
+        <para>Forces the embedded LayoutControl to use its minimum size. The LayoutControl does not expand beyond this size.</para>
       </summary>
     </member>
     <member name="F:DevExpress.XtraLayout.AutoSizeModes.UseMinAndMaxSize">
       <summary>
-        <para>The embedded LayoutControl’s size can vary between its minimum and maximum sizes.</para>
+        <para>Allows the embedded LayoutControl to resize between specified minimum and maximum bounds.</para>
       </summary>
     </member>
     <member name="F:DevExpress.XtraLayout.AutoSizeModes.UseMinSizeAndGrow">
@@ -4999,9 +4999,9 @@ is dependent on the type of control embedded in this layout item.</value>
     </member>
     <member name="P:DevExpress.XtraLayout.OptionsView.AutoSizeInLayoutControl">
       <summary>
-        <para>Gets or sets how a LayoutControl’s size is changed when it is positioned within another LayoutControl.</para>
+        <para>Gets or sets how the LayoutControl adjusts its size when placed inside another LayoutControl.</para>
       </summary>
-      <value>A value that specifies how the LayoutControl’s size is changed when it is positioned within another LayoutControl.</value>
+      <value>A value that specifies how the embedded LayoutControl adjusts its dimensions.</value>
     </member>
     <member name="P:DevExpress.XtraLayout.OptionsView.AutoSizeModeInLayoutControl">
       <summary>

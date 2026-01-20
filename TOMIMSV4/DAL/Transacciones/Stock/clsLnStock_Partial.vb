@@ -1068,7 +1068,8 @@ Partial Public Class clsLnStock
                                                        ByRef TieneTiempos As Boolean,
                                                        ByVal NoPoliza As String,
                                                        ByVal IdPropietarioBodega As Integer,
-                                                       ByVal IdProductoEstadoDefault As Integer) As DataTable
+                                                       ByVal IdProductoEstadoDefault As Integer,
+                                                       ByVal IdPresentacion As Integer) As DataTable
 
         '#EJC20171112_0605PM:Agregué transacción
         Dim vSQL As String = ""
@@ -1271,6 +1272,10 @@ Partial Public Class clsLnStock
                     vSQL += " AND IdProductoEstado=@IdProductoEstadoDefault "
                 End If
 
+                If IdPresentacion > 0 Then
+                    vSQL += " AND IdPresentacion=@IdPresentacion "
+                End If
+
                 '#EJC20190311_0948PM: Excluir lo que esté en ubicaciones de tránsito.
                 vSQL += " AND IdUbicacion NOT IN (SELECT IdUbicacion
 					      FROM  bodega_ubicacion AS bodega_ubicacion 
@@ -1298,6 +1303,10 @@ Partial Public Class clsLnStock
 
                 If IdProductoEstadoDefault > 0 Then
                     lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoEstadoDefault", IdProductoEstadoDefault)
+                End If
+
+                If IdPresentacion > 0 Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdPresentacion", IdPresentacion)
                 End If
 
                 lDTA.SelectCommand.Transaction = lTransaction
@@ -5983,15 +5992,20 @@ Partial Public Class clsLnStock
                     vSQL += " ORDER BY fecha_ingreso desc,bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,bodega_ubicacion.IdTramo,indice_x,nivel,orientacion_pos,cantidad"
                 Case 3 'FEFO
                     'vSQL += " ORDER BY fecha_vence, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.idubicacion,bodega_ubicacion.idbodega),cantidad "
-                    vSQL += " ORDER BY" &
+                    If Not BeBodega.Priorizar_Cantidad_Superior Then
+                        vSQL += " ORDER BY fecha_vence, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.idubicacion,bodega_ubicacion.idbodega),cantidad "
+                    Else
+                        vSQL += " ORDER BY" &
                         " stock.fecha_vence ASC," &
                         " fecha_ingreso ASC, " &
+                        " bodega_ubicacion.ubicacion_picking desc, " &
                         " CASE" &
                         " WHEN stock.cantidad = @CantidadSolicitada THEN 0" &
                         " WHEN stock.cantidad > @CantidadSolicitada THEN 1" &
                         " ELSE 2 END," &
                         " stock.cantidad ASC," &
                         " dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) "
+                    End If
                 Case 4 'UPSR (Ubicación prioritaria sobre rotación)
                     vSQL += " ORDER BY indice_x,bodega_tramo.es_rack,bodega_ubicacion.IdTramo,nivel,orientacion_pos,cantidad"
                 Case Else 'Default
@@ -7640,7 +7654,9 @@ Partial Public Class clsLnStock
     'Se agregó indice.
     Public Shared Function Get_Rpt_Horizonte_Critico_By_IdBodega_And_IdPropietarioBodega(ByVal pIdProducto As Integer,
                                                                                          ByVal pIdBodega As Integer,
-                                                                                         ByVal pIdPropietarioBodega As Integer, ByVal pMaxRange As Integer) As DataTable
+                                                                                         ByVal pIdPropietarioBodega As Integer,
+                                                                                         ByVal pMaxRange As Integer,
+                                                                                         ByVal pIncluirVencidos As Boolean) As DataTable
 
         Get_Rpt_Horizonte_Critico_By_IdBodega_And_IdPropietarioBodega = Nothing
 
@@ -7665,19 +7681,26 @@ Partial Public Class clsLnStock
                                             FROM VW_ProximosVencimiento "
 
                     If pIdProducto <> 0 Then
-
                         vSQL += " WHERE IdBodega=@IdBodega 
-                                AND IdPropietarioBodega=@IdPropietarioBodega 
-                                AND IdProducto= @IdProducto "
+                                        AND IdPropietarioBodega=@IdPropietarioBodega 
+                                        AND IdProducto= @IdProducto "
                     Else
                         vSQL += " WHERE IdBodega=@IdBodega 
-                                 AND IdPropietarioBodega=@IdPropietarioBodega "
+                                        AND IdPropietarioBodega=@IdPropietarioBodega "
                     End If
 
-                    If pMaxRange > 0 Then
-                        vSQL += " AND Tolerancia_dias BETWEEN 0 and @MaxRange "
-                    ElseIf pMaxRange = 0 Then '#CKFK habilitamos el mínimo en 0 para que si seleccionan 0 me muestre los vencidos
-                        vSQL += " AND Tolerancia_dias < 0 "
+                    If pIncluirVencidos Then
+                        If pMaxRange = 0 Then
+                            vSQL += " AND (Tolerancia_dias < 0  )"
+                        Else
+                            vSQL += " AND (Tolerancia_dias BETWEEN 0 and @MaxRange OR Tolerancia_dias < 0  )"
+                        End If
+                    Else
+                        If pMaxRange > 0 Then
+                            vSQL += " AND Tolerancia_dias BETWEEN 0 and @MaxRange "
+                        ElseIf pMaxRange = 0 Then '#CKFK habilitamos el mínimo en 0 para que si seleccionan 0 me muestre los vencidos
+                            vSQL += " AND Tolerancia_dias < 0 "
+                        End If
                     End If
 
                     vSQL += "GROUP BY Bodega,Propietario, Codigo , nombre, UnidadMedida, 
@@ -10921,6 +10944,21 @@ Partial Public Class clsLnStock
                     clsLnResolucion_lp_operador.Actualizar_Correlativo_Actual(clsBeRes_Operador, lConnection, lTransaction)
                 End If
 
+                '#MECR25112025: Se agrego bitacora de logs para reabastecimiento
+                Dim msjInsercion As String = "Se creó reabastecimiento con licencia: " + pLic_Plate + " , Por el usuario: " + pIdUsuario.ToString
+                clsLnLog_error_wms_reab.Agregar_Error(msjInsercion,
+                                                      pIdBodega:=pIdBodega,
+                                                      pIdStock:=pIdStock,
+                                                      pIdMovimiento:=pIdMovimiento,
+                                                      pLic_Plate_Anterior:=pLic_Plate_Ant,
+                                                      pLic_Plate:=pLic_Plate,
+                                                      pIdResolucion:=pIdResolucion,
+                                                      pIdProductoBodega:=BeProdPallet.IdProductoBodega,
+                                                      pCantidad:=BeProdPallet.Cantidad,
+                                                      pUser_agr:=pIdUsuario,
+                                                      pConection:=lConnection,
+                                                      pTransaction:=lTransaction)
+
                 Actualizar_PalletId_Por_Explosion = True
 
             Else
@@ -11686,13 +11724,17 @@ Partial Public Class clsLnStock
                     If objStockOrigen.Presentacion.EsPallet Then
                         vCantidadDisponible = Math.Round((objStockOrigen.Cantidad * objStockOrigen.Presentacion.Factor * objStockOrigen.Presentacion.CamasPorTarima * objStockOrigen.Presentacion.CajasPorCama), 6)
                     Else
-                        'If (objStockOrigen.Presentacion.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion <> 0) AndAlso (objStockOrigen.Presentacion.IdPresentacion = BeTransPeDet.IdPresentacion) Then
-                        '    'Killios, Quantity 12.5 = 144, Erik. #EJC20250909
-                        '    vCantidadDisponible = Math.Round((objStockOrigen.Cantidad * objStockOrigen.Presentacion.Factor), 6)
-                        'Else
-                        '    vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
-                        'End If
-                        vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
+
+                        '#EJC20251209 Originalmente estaba asi
+                        'vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
+
+                        '#EJC20251209 Agregó validación por error reportado en el despacho
+                        If objStockOrigen.Cantidad >= objStockOrigen.Presentacion.Factor Then
+                            vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
+                        Else
+                            vCantidadDisponible = objStockOrigen.Cantidad
+                        End If
+
                     End If
 
                 End If

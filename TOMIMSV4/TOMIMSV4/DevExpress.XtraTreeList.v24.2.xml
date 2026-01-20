@@ -9447,9 +9447,9 @@ The DefaultBoolean.Default value is equivalent to DefaultBoolean.True if the sta
     </member>
     <member name="P:DevExpress.XtraTreeList.TreeListOptionsBehavior.AllowExpandOnDblClick">
       <summary>
-        <para>Gets or sets whether a node is expanded/collapsed after it has been double clicked.</para>
+        <para>Gets or sets whether a user can expand or collapse a node by double clicking it.</para>
       </summary>
-      <value>true if the node is expanded/collapsed after it has been double clicked; otherwise, false.</value>
+      <value>true if a double-click on a node expands or collapses it; otherwise, false.</value>
     </member>
     <member name="P:DevExpress.XtraTreeList.TreeListOptionsBehavior.AllowIncrementalSearch">
       <summary>

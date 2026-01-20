@@ -402,4 +402,71 @@ Public Class clsLnOperador_bodega
 
     End Function
 
+    '#MA20251204'
+    Public Shared Function Operador_Tiene_Permiso(ByVal idOperador As Integer, ByVal opcion As String) As Boolean
+        Try
+            Using conn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                conn.Open()
+
+                Const sql As String = "SELECT 1 AS TienePermiso 
+                                    FROM menu_rol_op m
+                                    INNER JOIN operador o ON o.IdRolOperador = m.IdRolOperador
+                                    WHERE o.IdOperador = @IdOperador
+                                     AND m.IdMenuSistemaOP = @Opcion"
+
+                Using cmd As New SqlCommand(sql, conn)
+                    cmd.Parameters.AddWithValue("@IdOperador", idOperador)
+                    cmd.Parameters.AddWithValue("@Opcion", opcion)
+
+                    Dim result = cmd.ExecuteScalar()
+                    Return result IsNot Nothing
+                End Using
+            End Using
+
+        Catch ex As Exception
+            clsLnLog_error_wms.Agregar_Error(ex.Message)
+            Return False
+        End Try
+    End Function
+
+    Public Shared Function Get_Nombre_By_IdOperadorBodega(ByVal pIdOperadorBodega As Integer,
+                                                          ByVal lConnection As SqlConnection,
+                                                          ByVal lTransaction As SqlTransaction) As String
+
+        Get_Nombre_By_IdOperadorBodega = ""
+
+        Try
+
+            Const vSQL As String = "SELECT nombres + ' ' + apellidos Nombre  
+                                    FROM operador o INNER JOIN operador_bodega ob ON o.IdOperador = ob.IdOperador
+                                    WHERE ob.IdOperadorBodega = @IdOperadorBodega "
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdOperadorBodega", pIdOperadorBodega)
+
+                Dim lDT As New DataTable
+
+                lDTA.Fill(lDT)
+
+                If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                    Dim lRow As DataRow = lDT.Rows(0)
+
+                    Get_Nombre_By_IdOperadorBodega = IIf(IsDBNull(lRow("Nombre")), "", lRow("Nombre"))
+
+                End If
+
+            End Using
+
+        Catch ex As Exception
+
+            Throw ex
+
+        End Try
+
+    End Function
+
 End Class
