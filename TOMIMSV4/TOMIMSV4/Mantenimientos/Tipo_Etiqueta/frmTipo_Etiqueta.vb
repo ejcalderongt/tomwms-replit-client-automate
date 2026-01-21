@@ -110,6 +110,7 @@ Public Class frmTipo_Etiqueta
             ObjTE.Idclasificacion_etiqueta = cmbClasificacionEtiqueta.EditValue
             ObjTE.Es_Inkjet = chkInkjet.Checked
 
+
             Actualizar = clsLnTipo_etiqueta.Actualizar(ObjTE) > 0
 
         Catch ex As Exception

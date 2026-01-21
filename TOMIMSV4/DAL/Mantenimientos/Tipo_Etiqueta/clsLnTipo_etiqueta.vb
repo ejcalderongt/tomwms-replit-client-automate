@@ -648,4 +648,62 @@ Public Class clsLnTipo_etiqueta
         End Try
 
     End Function
+
+
+    Public Shared Function Get_Single_By_IdTipoEtiqueta(
+    ByVal IdTipoEtiqueta As Integer,
+    ByVal IdSimbologia As Integer,
+    ByVal IdClasificacionEtiqueta As Integer,
+    ByVal lConnection As SqlConnection,
+    ByVal lTransaction As SqlTransaction) As clsBeTipo_etiqueta
+
+        Get_Single_By_IdTipoEtiqueta = Nothing
+
+        Try
+            Const sp As String =
+            "SELECT TE.* FROM TIPO_ETIQUETA TE " &
+            "LEFT OUTER JOIN PRODUCTO_CLASIFICACION_ETIQUETA CE ON " &
+            "TE.IDCLASIFICACION_ETIQUETA=CE.IDCLASIFICACION_ETIQUETA " &
+            "WHERE(IDTIPOETIQUETA = @IDTIPOETIQUETA AND CE.Idclasificacion_etiqueta = @IDCLASIDICACIONETIQUETA) "
+
+            Using cmd As New SqlCommand(sp, lConnection, lTransaction)
+                cmd.CommandType = CommandType.Text
+                cmd.Parameters.Add(New SqlParameter("@IDTIPOETIQUETA", IdTipoEtiqueta))
+                cmd.Parameters.Add(New SqlParameter("@IDCLASIDICACIONETIQUETA", IdClasificacionEtiqueta))
+
+                Using dad As New SqlDataAdapter(cmd)
+                    Dim dt As New DataTable
+                    dad.Fill(dt)
+
+                    If dt.Rows.Count = 1 Then
+                        Dim pTipoSimbologia As clsDataContractDI.tSimbologiaEtiqueta =
+                        CType(IdSimbologia, clsDataContractDI.tSimbologiaEtiqueta)
+
+                        Dim pBeTipo_etiqueta As New clsBeTipo_etiqueta
+
+                        Cargar(pBeTipo_etiqueta, dt.Rows(0))
+
+                        Select Case pTipoSimbologia
+                            Case clsDataContractDI.tSimbologiaEtiqueta.QRCode
+                                pBeTipo_etiqueta.codigo_zpl =
+                                clsPublic.Conversion_ZPL_Codabar_to_QR(pBeTipo_etiqueta.codigo_zpl)
+                            Case clsDataContractDI.tSimbologiaEtiqueta.Codabar
+                                pBeTipo_etiqueta.codigo_zpl =
+                                clsPublic.Conversion_ZPL_Codabar_to_Codabar(pBeTipo_etiqueta.codigo_zpl)
+                        End Select
+
+                        Get_Single_By_IdTipoEtiqueta = pBeTipo_etiqueta
+                    End If
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw
+        End Try
+
+    End Function
+
+
 End Class

@@ -8489,7 +8489,7 @@ MessageBoxButtons.YesNo,
                 End If
             End If
         Catch ex As Exception
-
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
@@ -8498,71 +8498,14 @@ MessageBoxButtons.YesNo,
     End Sub
 
     Private Sub cmdPreImpresionOC_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdPreImpresionOC.ItemClick
-
-    End Sub
-
-    Private Sub PreImprimir_Etiqueta(ByVal pReDet As clsBeTrans_re_det,
-                                 ByVal PrinterName As String)
-
-        Dim ZPLString As String = ""
-        Dim pTipoEtiqueta As Integer = 8
-        Dim vEmpresa As String = AP.Empresa.Nombre
-        Dim vCodigoBarra As String = "$" & pReDet.Lic_plate.Substring(0, IIf(pReDet.Lic_plate.Length < 10, pReDet.Lic_plate.Length, 9)) ' "20240123"
-        Dim vCodigoProducto As String = pReDet.Codigo_Producto ' "COD123456"
-        Dim vNombreProducto As String = pReDet.Nombre_producto.Substring(0, IIf(pReDet.Nombre_producto.Length < 47, pReDet.Nombre_producto.Length, 46)) '"PRAZOLEN 20MG CAJA X 15 CAPSULAS MUY LARGO PARA"
-        Dim vLote As String = pReDet.Lote '"LOT240123"
-        Dim vFechaVence As String = pReDet.Fecha_vence.ToString("dd/MM/yyyy") '"23/01/2025"
-
-
-        If pTipoEtiqueta = 8 Then
-
-            ZPLString = String.Format(" ^XA
-                                        ^PW784
-                                        ^LL200
-                                        ^LH0,0
-                                        ^FO30,15^A0N,15,15^FDTOMWMS - {0}^FS
-                                        ^FO30,40^BXN,3,200,,C^FD{1}^FS
-                                        ^FO80,30^A0N,13,13^FD{2}^FS
-                                        ^FO80,50^A0N,13,13^FB200,2,,^FD{3}^FS
-                                        ^FO80,80^A0N,13,13^FDLote: {4}^FS
-                                        ^FO80,95^A0N,13,13^FDFecha: {5}^FS
-                                        ^FO280,15^A0N,15,15^FDTOMWMS - {0}^FS
-                                        ^FO280,40^BXN,3,200,,C^FD{1}^FS
-                                        ^FO330,30^A0N,13,13^FD{2}^FS
-                                        ^FO330,50^A0N,13,13^FB200,2,,^FD{3}^FS
-                                        ^FO330,80^A0N,13,13^FDLote: {4}^FS
-                                        ^FO330,95^A0N,13,13^FDFecha: {5}^FS
-                                        ^FO530,15^A0N,15,15^FDTOMWMS - {0}^FS
-                                        ^FO530,40^BXN,3,200,,C^FD{1}^FS
-                                        ^FO580,30^A0N,13,13^FD{2}^FS
-                                        ^FO580,50^A0N,13,13^FB200,2,,^FD{3}^FS
-                                        ^FO580,80^A0N,13,13^FDLote: {4}^FS
-                                        ^FO580,95^A0N,13,13^FDFecha: {5}^FS
-                                        ^XZ", vEmpresa, vCodigoBarra, vCodigoProducto, vNombreProducto, vLote, vFechaVence)
-
-
-        End If
-
         Try
-
-            If ZPLString <> "" Then
-
-                RawPrinterHelper.SendStringToPrinter(PrinterName, ZPLString)
-            Else
-                XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), "No está definido el tipo de etiqueta"),
-                                        Text,
-                                        MessageBoxButtons.OK,
-                                        MessageBoxIcon.Error)
-            End If
-
-
+            With frmImpresionRecepcion_OC
+                .pTransOC_Enc = gBeOrdenCompra
+                .Show()
+                .Focus()
+            End With
         Catch ex As Exception
-
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-            "Impresión de ubicaciones",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
-
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
     End Sub
