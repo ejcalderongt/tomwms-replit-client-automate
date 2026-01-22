@@ -4691,6 +4691,9 @@ Public Class frmPedido
             pBePedidoDet.IdProductoBodega = pBeProducto.IdProductoBodega
             pBePedidoDet.IdStockEspecifico = pBeStock.IdStock
 
+            '#GT20012025: liberar_stock en false porque estan volviendo a reservar sobre una linea existente.
+            pBePedidoDet.Stock_Liberado = False
+
             pBeStockRes.IdStockRes = 0
             pBeStockRes.IdTransaccion = pBePedidoEnc.IdPedidoEnc
             pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet
