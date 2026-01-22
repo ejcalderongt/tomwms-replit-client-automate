@@ -16,8 +16,12 @@ Public Class frmImpresionRecepcion_OC
     Dim pCajasPorCama As Integer
     Dim pPresentacion As String
     Dim pBeBarra_Pallet As clsBeI_nav_barras_pallet
+    Dim BeBodega_Origen As clsBeBodega
+    Dim BeBodega_Destino As clsBeBodega
 
     Private Sub frmImpresionRecepcion_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+
+        BeBodega_Origen = New clsBeBodega()
 
         Try
 
@@ -32,6 +36,8 @@ Public Class frmImpresionRecepcion_OC
 
             cmbPrinterLicencia.EditValue = frmRecepcion.pImpresoraLicSeleccionada
             cmbPrinterBarra.EditValue = frmRecepcion.pImpresoraProdSeleccionada
+
+            BeBodega_Origen = clsLnBodega.GetSingle_By_Idbodega(pTransOC_Enc.IdBodega)
 
             EsPrimeraImpresion = True
             txtVencimiento.Enabled = False
@@ -464,11 +470,11 @@ Public Class frmImpresionRecepcion_OC
                         .Activo = 1,                       ' bit NULL
                         .Recibido = 1,                     ' int NULL
                         .IdRecepcion = Nothing,                  ' int NULL
-                        .Bodega_Origen = "BOD-ORIG-01",           ' nvarchar(100) NOT NULL
-                        .Bodega_Destino = "BOD-DEST-02",          ' nvarchar(100) NOT NULL
-                        .Codigo_barra = vCodigoBarra,          ' nvarchar(100) NOT NULL
-                        .Cantidad_UMP = Nothing,                 ' float NULL
-                        .Lote_Numerico = Nothing                ' float NUL
+                        .Bodega_Origen = BeBodega_Origen.Codigo,
+                        .Bodega_Destino = BeBodega_Origen.Codigo,
+                        .Codigo_barra = vCodigoBarra,    'lic_plate      
+                        .Cantidad_UMP = Nothing,
+                        .Lote_Numerico = Nothing
                     }
 
                 clsLnI_nav_barras_pallet.Guardar_Pallet_PreImpresion(obj, clsTransaccion.lConnection,
