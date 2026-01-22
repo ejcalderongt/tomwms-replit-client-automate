@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>WMS.StockReservation</RootNamespace>
+    <AssemblyName>WMS.StockReservation</AssemblyName>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <Authors>Tu Empresa WMS</Authors>
+    <Company>Tu Empresa WMS</Company>
+    <Product>WMS Stock Reservation Engine</Product>
+    <Description>Algoritmo de reserva de stock refactorizado para WMS. Implementa pipeline pattern y chain of responsibility para reservas FIFO/LIFO/FEFO con optimización de picking.</Description>
+    <Version>1.0.1</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Dependencias NuGet necesarias -->
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WMS.DALCore\WMS.DALCore.csproj" />
+    <ProjectReference Include="..\WMS.EntityCore\WMS.EntityCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Organización de carpetas del proyecto -->
+    <Compile Include="Core\Domain\*.cs" />
+    <Compile Include="Core\Services\*.cs" />
+    <Compile Include="Core\Interfaces\*.cs" />
+    <Compile Include="Strategies\*.cs" />
+    <Compile Include="Infrastructure\**\*.cs" />
+    <Compile Include="Compatibility\*.cs" />
+  </ItemGroup>
+
+</Project>
