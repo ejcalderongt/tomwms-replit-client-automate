@@ -105,9 +105,9 @@ Public Class frmImpresionRecepcion_OC
 
     End Sub
 
-    Private Sub Imprimir_Etiqueta(ByVal pReDet As clsBeTrans_oc_det,
-                                  ByVal PrinterName As String,
-                                  ByVal pImpresiones As Integer)
+    Private Sub Imprimir_Producto(ByVal pReDet As clsBeTrans_oc_det,
+                                           ByVal PrinterName As String,
+                                           ByVal pImpresiones As Integer)
 
         Try
 
@@ -127,8 +127,8 @@ Public Class frmImpresionRecepcion_OC
             Dim Tipo_Etiqueta = clsLnTipo_etiqueta.Get_Single_By_IdTipoEtiqueta(pTipoEtiqueta, pTipoSimbologia, 1)
 
             '#GT15022024: validamos cuantas impresiones deben realizarse, considera 3 x fila (son 3 columnas)
-            Dim vColaImpresiones As Double = Math.Truncate(pImpresiones / 3)
-            Dim vColaFraccion As Double = pImpresiones - (vColaImpresiones * 3)
+            'Dim vColaImpresiones As Double = Math.Truncate(pImpresiones / 3)
+            'im vColaFraccion As Double = pImpresiones - (vColaImpresiones * 3)
 
             If PrinterName <> "" Then
 
@@ -138,15 +138,15 @@ Public Class frmImpresionRecepcion_OC
 
                     If tmpZPLString <> "" Then
                         ZPLString = String.Format(tmpZPLString,
+                                                  BeBodega_Origen.Nombre,
                                                   vEmpresa,
-                                                  vCodigoBarra,
+                                                  vNombreProducto.Trim + " " + vCodigoProducto,
                                                   vCodigoProducto,
-                                                  vNombreProducto.Trim,
-                                                  vLote,
                                                   vFechaVence)
                     End If
 
                     If ZPLString <> "" Then
+                        Dim vColaImpresiones = pImpresiones
                         If vColaImpresiones > 0 Then
                             If vColaImpresiones = 1 Then
                                 RawPrinterHelper.SendStringToPrinter(PrinterName, ZPLString)
@@ -156,30 +156,7 @@ Public Class frmImpresionRecepcion_OC
                                 Next
                             End If
                         End If
-                        If vColaFraccion > 0 Then
-                            Select Case vColaFraccion
-                                Case 1
-                                    tmpZPLString = tmpZPLString.Substring(0, 614) & "^XZ"
-                                    ZPLString = String.Format(tmpZPLString,
-                                                  vEmpresa,
-                                                  vCodigoBarra,
-                                                  vCodigoProducto,
-                                                  vNombreProducto.Trim,
-                                                  vLote,
-                                                  vFechaVence)
-                                    RawPrinterHelper.SendStringToPrinter(PrinterName, ZPLString)
-                                Case 2
-                                    tmpZPLString = tmpZPLString.Substring(0, 1074) & "^XZ"
-                                    ZPLString = String.Format(tmpZPLString,
-                                                  vEmpresa,
-                                                  vCodigoBarra,
-                                                  vCodigoProducto,
-                                                  vNombreProducto.Trim,
-                                                  vLote,
-                                                  vFechaVence)
-                                    RawPrinterHelper.SendStringToPrinter(PrinterName, ZPLString)
-                            End Select
-                        End If
+
                     Else
                         XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), "No está definido el formato de etiqueta"),
                                             Text,
@@ -206,9 +183,9 @@ Public Class frmImpresionRecepcion_OC
         If e.KeyCode = Keys.Escape Then
             Close()
         ElseIf e.Control AndAlso e.KeyCode = Keys.P Then
-            Imprimir_Etiqueta(pTransOC_Det, pImpresoraProdSeleccionada, txtCantidadBarras.Value)
+            Imprimir_Producto(pTransOC_Det, pImpresoraProdSeleccionada, txtCantidadBarras.Value)
         ElseIf e.Control AndAlso e.KeyCode = Keys.L Then
-            Imprimir_Etiqueta(pTransOC_Det, pImpresoraLicSeleccionada, txtCantidadLicencias.Value)
+            Imprimir_Producto(pTransOC_Det, pImpresoraLicSeleccionada, txtCantidadLicencias.Value)
         End If
 
     End Sub
@@ -244,7 +221,7 @@ Public Class frmImpresionRecepcion_OC
 
         Try
 
-            Imprimir_Etiqueta(pTransOC_Det, cmbPrinterBarra.EditValue, txtCantidadBarras.Value)
+            Imprimir_Producto(pTransOC_Det, cmbPrinterBarra.EditValue, txtCantidadBarras.Value)
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -274,6 +251,7 @@ Public Class frmImpresionRecepcion_OC
                     Throw New Exception("Error_20220208_1204: el producto no es valido.")
                 Else
 
+                    pTransOC_Det.IdProductoBodega = fila.IdProductoBodega
                     pTransOC_Det.Codigo_Producto = fila.Codigo_Producto
                     pTransOC_Det.Nombre_producto = fila.Nombre_producto
                     pTransOC_Det.IdOrdenCompraDet = fila.IdOrdenCompraDet
