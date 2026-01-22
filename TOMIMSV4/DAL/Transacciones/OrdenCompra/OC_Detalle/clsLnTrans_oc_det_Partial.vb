@@ -2664,8 +2664,10 @@ Partial Public Class clsLnTrans_oc_det
 
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                    Dim vSQL As String = "SELECT No_Linea, IdProductoBodega,codigo_producto,nombre_producto,Cantidad, IdOrdenCompraDet, IdPresentacion FROM trans_oc_det 
-                        WHERE IdOrdenCompraEnc=@IdOrdenCompraEnc "
+                    Dim vSQL As String = "SELECT No_Linea, IdProductoBodega,codigo_producto,nombre_producto,Cantidad, IdOrdenCompraDet, IdPresentacion,
+                                                 IdUnidadMedidaBasica,nombre_unidad_medida_basica
+                                                 FROM trans_oc_det 
+                                          WHERE IdOrdenCompraEnc=@IdOrdenCompraEnc "
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -2714,6 +2716,14 @@ Partial Public Class clsLnTrans_oc_det
 
                                 If lRow("codigo_producto") IsNot DBNull.Value AndAlso lRow("codigo_producto") IsNot Nothing Then
                                     Obj.Codigo_Producto = lRow("codigo_producto")
+                                End If
+
+                                If lRow("nombre_unidad_medida_basica") IsNot DBNull.Value AndAlso lRow("nombre_unidad_medida_basica") IsNot Nothing Then
+                                    Obj.Nombre_unidad_medida_basica = lRow("nombre_unidad_medida_basica")
+                                End If
+
+                                If lRow("IdUnidadMedidaBasica") IsNot DBNull.Value AndAlso lRow("IdUnidadMedidaBasica") IsNot Nothing Then
+                                    Obj.IdUnidadMedidaBasica = CType(lRow("IdUnidadMedidaBasica"), Integer)
                                 End If
 
                                 Obj.IsNew = False

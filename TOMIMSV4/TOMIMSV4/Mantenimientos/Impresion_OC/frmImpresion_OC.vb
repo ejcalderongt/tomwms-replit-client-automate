@@ -1,5 +1,6 @@
 ﻿Imports System.Drawing.Printing
 Imports System.Reflection
+Imports DevExpress.DashboardWin.Commands
 Imports DevExpress.XtraEditors
 Imports TOMWMS.wsTOMHH
 
@@ -61,6 +62,8 @@ Public Class frmImpresionRecepcion_OC
                     .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("IdOrdenCompraDet", "IdOrdenCompraDet") With {.Visible = False})
                     .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("IdPresentacion", "IdPresentacion") With {.Visible = False})
                     .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Codigo_Producto", "Codigo_Producto") With {.Visible = True})
+                    .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Nombre_unidad_medida_basica", "Nombre_unidad_medida_basica") With {.Visible = False})
+                    .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("IdUnidadMedidaBasica", "IdUnidadMedidaBasica") With {.Visible = False})
                     .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Nombre_producto", "Producto", 220))
                     .Columns.Add(New DevExpress.XtraEditors.Controls.LookUpColumnInfo("Cantidad", "Cantidad", 80))
                     .NullText = ""
@@ -192,98 +195,6 @@ Public Class frmImpresionRecepcion_OC
 
     End Sub
 
-    'Private Sub Imprimir_Licencia(ByVal pReDet As clsBeTrans_oc_det,
-    '                              ByVal PrinterName As String,
-    '                              ByVal pImpresiones As Integer)
-
-
-    '    Dim clsTransaccion As New clsTransaccion
-
-    '    Try
-
-    '        '#GT15022024: valores a cargar en la etiqueta ZPL
-    '        Dim ZPLString As String = ""
-    '        Dim vEmpresa As String = AP.Empresa.Nombre
-    '        Dim vCodigoBarra As String = txtLicencia.EditValue
-    '        Dim vCodigoProducto As String = pReDet.Codigo_Producto
-    '        Dim vNombreProducto As String = pReDet.Nombre_producto.Substring(0, IIf(pReDet.Nombre_producto.Length < 45, pReDet.Nombre_producto.Length, 44)) '"PRAZOLEN 20MG CAJA X 15 CAPSULAS MUY LARGO PARA"
-    '        Dim vLote As String = cmbLote.EditValue
-    '        Dim vFechaVence As String = txtVencimiento.EditValue
-    '        pCajasPorCama = txtCajaPorCama.Value
-    '        pCamasPorTarima = txtCamaPorTarima.Value
-    '        pPresentacion = txtPresentacion.EditValue
-    '        Dim pCantidad = pCamasPorTarima * pCajasPorCama
-
-    '        Dim pTipoEtiqueta As Integer = AP.Bodega.IdTipoEtiquetaLicencia
-    '        Dim pTipoSimbologia As Integer = AP.Bodega.IdSimbologiaLicencia
-    '        Dim pClasificacion As Integer = 2
-
-    '        clsTransaccion.Begin_Transaction()
-
-    '        Dim Tipo_Etiqueta = clsLnTipo_etiqueta.Get_Single_By_IdTipoEtiqueta(pTipoEtiqueta, pTipoSimbologia, pClasificacion, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-
-    '        Dim vColaImpresiones = pImpresiones
-
-    '        If PrinterName <> "" Then
-
-    '            If Tipo_Etiqueta IsNot Nothing Then
-
-    '                Dim tmpZPLString = Tipo_Etiqueta.codigo_zpl
-
-    '                If tmpZPLString <> "" Then
-    '                    ZPLString = String.Format(tmpZPLString, AP.Bodega.Codigo + " - " + AP.Bodega.Nombre,
-    '                                              vEmpresa,
-    '                                              vCodigoProducto + " - " + vNombreProducto.Trim,
-    '                                              vCodigoBarra,
-    '                                              AP.UsuarioAp.Nombres + " " + AP.UsuarioAp.Apellidos + " / " + Now.ToString("yyyy-MM-dd HH:mm:ss"),
-    '                                              vLote,
-    '                                              vFechaVence,
-    '                                              pPresentacion,
-    '                                              pCantidad)
-    '                End If
-
-    '                If ZPLString <> "" Then
-    '                    If vColaImpresiones > 0 Then
-    '                        If vColaImpresiones = 1 Then
-    '                            RawPrinterHelper.SendStringToPrinter(PrinterName, ZPLString)
-    '                        Else
-    '                            For i = 1 To vColaImpresiones
-    '                                RawPrinterHelper.SendStringToPrinter(PrinterName, ZPLString)
-    '                            Next
-    '                        End If
-    '                    End If
-    '                Else
-    '                    XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), "No está definido el formato de etiqueta"),
-    '                                        Text,
-    '                                        MessageBoxButtons.OK,
-    '                                        MessageBoxIcon.Error)
-    '                End If
-    '            Else
-    '                Throw New Exception("GT14022024: No se cargaron las propiedades de la etiqueta.")
-    '            End If
-
-    '            Incrementar_Licencia_BOF(AP.IdBodega,
-    '                                      AP.UsuarioAp.IdUsuario,
-    '                                      clsTransaccion.lConnection,
-    '                                      clsTransaccion.lTransaction)
-
-
-    '            clsTransaccion.Commit_Transaction()
-
-    '            clsTransaccion.Close_Conection()
-
-    '        Else
-    '            DxErrorProvider1.SetError(cmbPrinterLicencia, "seleccione impresora")
-    '        End If
-
-    '    Catch ex As Exception
-    '        clsTransaccion.RollBack_Transaction()
-    '        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-    '    End Try
-
-
-    'End Sub
-
     Private Sub frmImpresionRecepcion_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
 
         If e.KeyCode = Keys.Escape Then
@@ -360,6 +271,8 @@ Public Class frmImpresionRecepcion_OC
                     pTransOC_Det.Codigo_Producto = fila.Codigo_Producto
                     pTransOC_Det.Nombre_producto = fila.Nombre_producto
                     pTransOC_Det.IdOrdenCompraDet = fila.IdOrdenCompraDet
+                    pTransOC_Det.Nombre_unidad_medida_basica = fila.Nombre_unidad_medida_basica
+                    pTransOC_Det.Cantidad = fila.Cantidad
                     pIdPresentacion = fila.IdPresentacion
                 End If
 
@@ -536,29 +449,29 @@ Public Class frmImpresionRecepcion_OC
                 End If
 
                 Dim obj As New clsBeI_nav_barras_pallet With {
-                        .IdPallet = 0,                           ' int NOT NULL
+                        .IdPallet = 0,                           'se calcula al insertar
                         .Codigo = pReDet.Codigo_Producto,
                         .Nombre = pReDet.Nombre_producto,
                         .Camas_Por_Tarima = pCamasPorTarima,
-                        .Cajas_Por_Cama = pCajasPorCama,               ' int NULL
-                        .Cantidad_Presentacion = Nothing,        ' float NULL
-                        .UM_Producto = "UND",                    ' nvarchar(100) NOT NULL
+                        .Cajas_Por_Cama = pCajasPorCama,
+                        .Cantidad_Presentacion = pCantidad,        ' float NULL
+                        .UM_Producto = pReDet.Nombre_unidad_medida_basica,
                         .Lote = cmbLote.Text,                ' nvarchar(100) NOT NULL
                         .Fecha_Agregado = Now,               ' datetime NULL
-                        .Fecha_Ingreso = Nothing,                ' date NULL
+                        .Fecha_Ingreso = New Date(1990, 1, 1),                ' date NULL
                         .Fecha_Vence = vFechaVence,                  ' date NULL
-                        .Fecha_Produccion = Nothing,             ' date NULL
+                        .Fecha_Produccion = New Date(1990, 1, 1),             ' date NULL
                         .Activo = 1,                       ' bit NULL
                         .Recibido = 1,                     ' int NULL
                         .IdRecepcion = Nothing,                  ' int NULL
                         .Bodega_Origen = "BOD-ORIG-01",           ' nvarchar(100) NOT NULL
                         .Bodega_Destino = "BOD-DEST-02",          ' nvarchar(100) NOT NULL
-                        .Codigo_barra = "7501234567890",          ' nvarchar(100) NOT NULL
+                        .Codigo_barra = vCodigoBarra,          ' nvarchar(100) NOT NULL
                         .Cantidad_UMP = Nothing,                 ' float NULL
                         .Lote_Numerico = Nothing                ' float NUL
                     }
 
-                clsLnI_nav_barras_pallet.Guardar_Pallet_PreImpresion(pBeBarra_Pallet, clsTransaccion.lConnection,
+                clsLnI_nav_barras_pallet.Guardar_Pallet_PreImpresion(obj, clsTransaccion.lConnection,
                                                                                       clsTransaccion.lTransaction)
 
                 Incrementar_Licencia_BOF(AP.IdBodega,

@@ -933,8 +933,6 @@ Public Class clsLnI_nav_barras_pallet
 
         Try
 
-            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-
             Dim lMax As Integer = MaxID(lConnection, lTransaction) + 1
             pListBarras_Pallet.IdPallet = lMax
             Insertar(pListBarras_Pallet, lConnection, lTransaction)
