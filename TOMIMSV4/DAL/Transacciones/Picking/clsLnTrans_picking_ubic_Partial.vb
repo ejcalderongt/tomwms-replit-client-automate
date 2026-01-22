@@ -4001,8 +4001,8 @@ Partial Public Class clsLnTrans_picking_ubic
                             vBePickingUbic.Fec_mod = Now
                             vBePickingUbic.User_mod = Usuario
                             Actualizar_Cantidad_Recibida(vBePickingUbic,
-                                                     If(Es_Transaccion_Remota, pConnection, lConnection),
-                                                     If(Es_Transaccion_Remota, pTransaction, ltransaction))
+                                                         If(Es_Transaccion_Remota, pConnection, lConnection),
+                                                         If(Es_Transaccion_Remota, pTransaction, ltransaction))
                             Dim vIdMovimiento As Integer = clsLnTrans_movimientos.Insertar_Movimiento_Picking(PickingUbic,
                                                                                                           IIf(vMoverProductoAMuelle, vIdUbicacionMuelle, vIdUbicacionPickingByBodega),
                                                                                                           IIf(UsarCantidad = 0, CantidadPendiente, UsarCantidad) * Factor,
@@ -4177,7 +4177,8 @@ Partial Public Class clsLnTrans_picking_ubic
 
                     End If
 
-                    If vBePickingUbic.Cantidad_Recibida > 0 AndAlso vBePickingUbic.Cantidad_Recibida <> vBePickingUbic.Cantidad_Verificada Then
+                    If vBePickingUbic.Cantidad_Recibida > 0 AndAlso vBePickingUbic.Cantidad_Recibida <> vBePickingUbic.Cantidad_Verificada AndAlso
+                        BePickingEnc.verifica_auto Then
 
                         Dim CantidadStockDestino As Double
 
@@ -5033,20 +5034,22 @@ Partial Public Class clsLnTrans_picking_ubic
             '#CKFK 20180202 Genera la tarea de cambio de estado
             '#AT En base a lo analizado creemos que aqui vamos a colocar el metodo Marcar_No_Encontrado cuando el tipo sea 2
             If Tipo = 1 Then
+
                 clsLnTrans_ubic_hh_enc.Generar_Tarea_Cambio_Estado(IdBodega,
-                                                                   IdEmpresa,
-                                                                   IdStockCambioEstado,
-                                                                   IdStockResCambioEstado,
-                                                                   UsuarioHH,
-                                                                   CantSol,
-                                                                   IdUbicDestino,
-                                                                   IdEstDestino,
-                                                                   lBeStockAReservar(0).IdPropietarioBodega,
-                                                                   pListBePickingUbic(0).IdPickingUbic,
-                                                                   lConnection,
-                                                                   lTransaction,
-                                                                   MaquinaQueSolicita,
-                                                                   EsPicking)
+                                                                       IdEmpresa,
+                                                                       IdStockCambioEstado,
+                                                                       IdStockResCambioEstado,
+                                                                       UsuarioHH,
+                                                                       CantSol,
+                                                                       IdUbicDestino,
+                                                                       IdEstDestino,
+                                                                       lBeStockAReservar(0).IdPropietarioBodega,
+                                                                       pListBePickingUbic(0).IdPickingUbic,
+                                                                       lConnection,
+                                                                       lTransaction,
+                                                                       MaquinaQueSolicita,
+                                                                       EsPicking)
+
             Else
                 Dim BePresentacion As New clsBeProducto_Presentacion
 
@@ -6289,19 +6292,6 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                      pPeso,
                                                                      clsTrans.lConnection,
                                                                      clsTrans.lTransaction)
-                ''#MA20251219
-                'If BeBodega.impresion_verificacion Then
-
-                '    pEtiqueta = New clsBeTrans_verificacion_etiqueta()
-                '    pEtiqueta =
-                '    clsLnTrans_verificacion_etiqueta.Guardar_Etiqueta_Verificacion(
-                '                                                                    vBePickingUbic,
-                '                                                                    pIdOperador,
-                '                                                                    BeBodega.IdTipoEtiquetaVerificacion,
-                '                                                                    clsTrans.lConnection,
-                '                                                                    clsTrans.lTransaction
-                '                                                                )
-                'End If
 
                 '#MECR11122025: Se agrego bitacora para logs de verificacion
                 resultado += " Codigo " & vBePickingUbic.CodigoProducto & " Pedido parámetro " & pIdPedidoEnc
@@ -8343,6 +8333,5 @@ Partial Public Class clsLnTrans_picking_ubic
         End Try
 
     End Function
-
 
 End Class

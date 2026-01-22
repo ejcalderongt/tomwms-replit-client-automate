@@ -73,13 +73,14 @@ Public Class frmPicking
         InitializeComponent()
     End Sub
 
-    Private Sub Lista_Productos_Dañados()
+    Private Sub Lista_Productos_Dañados(ByVal lConnection As SqlConnection,
+                                        ByVal lTransaction As SqlTransaction)
 
         Try
 
             Dim DT As New DataTable
 
-            DT = clsLnTrans_picking_enc.Get_Dañados_Verificacion_Picking_ByPickingEnc(BePickingEnc.IdPickingEnc)
+            DT = clsLnTrans_picking_enc.Get_Dañados_Verificacion_Picking_ByPickingEnc(BePickingEnc.IdPickingEnc, lConnection, lTransaction)
 
             If DT.Rows.Count > 0 Then
 
@@ -1797,6 +1798,8 @@ Public Class frmPicking
 
                 Cargar_Pedidos_Impresion(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
+                Lista_Productos_Dañados(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
                 If BePickingEnc.ListaPickingDet IsNot Nothing AndAlso BePickingEnc.ListaPickingDet.Count > 0 Then
 
                     dgridPedidos.Rows.Clear()
@@ -3344,8 +3347,6 @@ Public Class frmPicking
                                 txtReferencia.Text = BePickingEnc.Referencia
                             End If
                         End If
-
-                        Lista_Productos_Dañados()
 
                     End If
 
@@ -5218,7 +5219,7 @@ Public Class frmPicking
     End Sub
 
     Private Sub Cargar_Pedidos_Impresion(ByVal lConnection As SqlConnection,
-                                          ByVal lTransaction As SqlTransaction)
+                                         ByVal lTransaction As SqlTransaction)
 
         Dim dt As DataTable
 
@@ -5461,6 +5462,8 @@ Public Class frmPicking
             Dim vCantidadPickUmbas As Double = IIf(IsDBNull(Dr.Item("Cant_Pick_Umbas")), 0, Dr.Item("Cant_Pick_Umbas"))
             Dim vCantidadVeriPres As Double = IIf(IsDBNull(Dr.Item("Cant_Veri_Pres")), 0, Dr.Item("Cant_Veri_Pres"))
             Dim vCantidadVeriUmbas As Double = IIf(IsDBNull(Dr.Item("Cant_Veri_Umbas")), 0, Dr.Item("Cant_Veri_Umbas"))
+            Dim vCantidadFaltantePickingPres As Double = vCantidadSolPres - vCantidadPickPres
+            Dim vCantdidadFaltantePickingUmbas As Double = vCantidadSolUmBas - vCantidadPickUmbas
 
             If Dr Is Nothing Then Return
 
@@ -5489,19 +5492,25 @@ Public Class frmPicking
                     frmCant.BeTipoPedido = BeTipoPedido
                     frmCant.IdBodega = BePickingUbic.IdBodega
                     frmCant.Codigo_Producto = vCodigoProducto
-                    frmCant.txtCantidadReemplazo.Maximum = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
-                    frmCant.txtCantidadReemplazo.Value = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
-                    frmCant.Cantidad_Reemplazo = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
+
                     frmCant.Cantidad_Total = frmCant.Cantidad_Reemplazo
                     frmCant.IdPresentacion = BePickingUbic.IdPresentacion
                     frmCant.txtIdProducto.Text = vCodigoProducto
                     frmCant.txtNombreProducto.Text = vNombreProducto
                     frmCant.BePickingUbic = BePickingUbic
+                    frmCant.lblIdStock.Text = "IdStock: " & BePickingUbic.IdStock
+                    frmCant.txtCantidadSolicitada.Value = BePickingUbic.Cantidad_Solicitada
 
                     If (vCantidadVeriPres > 0) OrElse (vCantidadSolUmBas = vCantidadPickUmbas) Then
                         frmCant.Modo_Reemplazo = frmCantidadreemplazo.eModoReemplazo.verificacion
+                        frmCant.txtCantidadReemplazo.Maximum = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
+                        frmCant.txtCantidadReemplazo.Value = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
+                        frmCant.Cantidad_Reemplazo = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
                     Else
                         frmCant.Modo_Reemplazo = frmCantidadreemplazo.eModoReemplazo.picking
+                        frmCant.txtCantidadReemplazo.Maximum = IIf(vCantidadFaltantePickingPres = 0, vCantdidadFaltantePickingUmbas, vCantidadFaltantePickingPres)
+                        frmCant.txtCantidadReemplazo.Value = IIf(vCantidadFaltantePickingPres = 0, vCantdidadFaltantePickingUmbas, vCantidadFaltantePickingPres)
+                        frmCant.Cantidad_Reemplazo = IIf(vCantidadFaltantePickingPres = 0, vCantdidadFaltantePickingUmbas, vCantidadFaltantePickingPres)
                     End If
 
                     If frmCant.ShowDialog() = DialogResult.OK Then
