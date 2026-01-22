@@ -1,6 +1,7 @@
 ﻿Imports System.Drawing.Printing
 Imports System.Reflection
 Imports DevExpress.XtraEditors
+Imports TOMWMS.wsTOMHH
 
 Public Class frmImpresionRecepcion_OC
 
@@ -13,6 +14,7 @@ Public Class frmImpresionRecepcion_OC
     Dim pCamasPorTarima As Integer
     Dim pCajasPorCama As Integer
     Dim pPresentacion As String
+    Dim pBeBarra_Pallet As clsBeI_nav_barras_pallet
 
     Private Sub frmImpresionRecepcion_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
@@ -349,7 +351,6 @@ Public Class frmImpresionRecepcion_OC
 
             If cmbProducto.EditValue > 0 Then
                 Dim fila As Object = cmbProducto.GetSelectedDataRow
-                'Dim pIdOrdenCompraDet As Integer
                 Dim pIdPresentacion As Integer
 
                 If fila Is Nothing Then
@@ -375,9 +376,10 @@ Public Class frmImpresionRecepcion_OC
 
     End Sub
 
+    Dim pBeProductoPresentacion As New clsBeProducto_Presentacion
     Private Sub Cargar_Presentacion(pIdPresentacion As Integer)
         Try
-            Dim pBeProductoPresentacion = clsLnProducto_presentacion.Get_Single_By_IdPresentacion(pIdPresentacion)
+            pBeProductoPresentacion = clsLnProducto_presentacion.Get_Single_By_IdPresentacion(pIdPresentacion)
 
             If pBeProductoPresentacion IsNot Nothing Then
 
@@ -473,6 +475,7 @@ Public Class frmImpresionRecepcion_OC
                               ByVal pImpresiones As Integer)
 
         Dim clsTransaccion As New clsTransaccion
+        pBeBarra_Pallet = New clsBeI_nav_barras_pallet()
 
         Try
             clsTransaccion.Begin_Transaction()
@@ -531,6 +534,32 @@ Public Class frmImpresionRecepcion_OC
                 Else
                     Throw New Exception("GT14022024: No se cargaron las propiedades de la etiqueta.")
                 End If
+
+                Dim obj As New clsBeI_nav_barras_pallet With {
+                        .IdPallet = 0,                           ' int NOT NULL
+                        .Codigo = pReDet.Codigo_Producto,
+                        .Nombre = pReDet.Nombre_producto,
+                        .Camas_Por_Tarima = pCamasPorTarima,
+                        .Cajas_Por_Cama = pCajasPorCama,               ' int NULL
+                        .Cantidad_Presentacion = Nothing,        ' float NULL
+                        .UM_Producto = "UND",                    ' nvarchar(100) NOT NULL
+                        .Lote = cmbLote.Text,                ' nvarchar(100) NOT NULL
+                        .Fecha_Agregado = Now,               ' datetime NULL
+                        .Fecha_Ingreso = Nothing,                ' date NULL
+                        .Fecha_Vence = vFechaVence,                  ' date NULL
+                        .Fecha_Produccion = Nothing,             ' date NULL
+                        .Activo = 1,                       ' bit NULL
+                        .Recibido = 1,                     ' int NULL
+                        .IdRecepcion = Nothing,                  ' int NULL
+                        .Bodega_Origen = "BOD-ORIG-01",           ' nvarchar(100) NOT NULL
+                        .Bodega_Destino = "BOD-DEST-02",          ' nvarchar(100) NOT NULL
+                        .Codigo_barra = "7501234567890",          ' nvarchar(100) NOT NULL
+                        .Cantidad_UMP = Nothing,                 ' float NULL
+                        .Lote_Numerico = Nothing                ' float NUL
+                    }
+
+                clsLnI_nav_barras_pallet.Guardar_Pallet_PreImpresion(pBeBarra_Pallet, clsTransaccion.lConnection,
+                                                                                      clsTransaccion.lTransaction)
 
                 Incrementar_Licencia_BOF(AP.IdBodega,
                                      AP.UsuarioAp.IdUsuario,

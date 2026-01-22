@@ -925,5 +925,27 @@ Public Class clsLnI_nav_barras_pallet
 
     End Function
 
+    Public Shared Function Guardar_Pallet_PreImpresion(ByVal pListBarras_Pallet As clsBeI_nav_barras_pallet,
+                                                             ByVal lConnection As SqlConnection,
+                                                             ByVal lTransaction As SqlTransaction) As Boolean
+
+        Guardar_Pallet_PreImpresion = False
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+            Dim lMax As Integer = MaxID(lConnection, lTransaction) + 1
+            pListBarras_Pallet.IdPallet = lMax
+            Insertar(pListBarras_Pallet, lConnection, lTransaction)
+
+            Guardar_Pallet_PreImpresion = True
+
+        Catch ex As Exception
+            Guardar_Pallet_PreImpresion = False
+            Throw New Exception(ex.Message)
+        End Try
+
+    End Function
 
 End Class
