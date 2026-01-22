@@ -164,7 +164,9 @@ Partial Public Class clsLnTrans_Picking_Img
     '#GT23052025: obtener imagenes del picking para enviar a la nube.
     Public Shared Function Get_All_Imagen_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As List(Of clsBeTrans_picking_img)
 
-
+        Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Dim lDTA As New SqlDataAdapter
         Get_All_Imagen_By_IdPedidoEnc = Nothing
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -175,46 +177,52 @@ Partial Public Class clsLnTrans_Picking_Img
             Dim vSQL As String = "SELECT * FROM Trans_picking_img WHERE IdPedidoEnc=@pIdPedidoEnc"
 
 
+            Dim vSQL As String = "SELECT * FROM Trans_picking_img WHERE IdPedidoEnc=@pIdPedidoEnc"
+
             Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
 
-            If Not Es_Transaccion_Remota Then
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction
-            End If
-
             If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(vSQL, pConection, pTransaction) With {.CommandType = CommandType.Text}
+                lDTA = New SqlDataAdapter(vSQL, pConection)
+                lDTA.SelectCommand.Transaction = pTransaction
             Else
-                cmd = New SqlCommand(vSQL, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                lDTA = New SqlDataAdapter(vSQL, lConnection)
             End If
 
-            Dim dad As New SqlDataAdapter(cmd)
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@pIdPedidoEnc", pIdPedidoEnc))
+            lDTA.SelectCommand.CommandType = CommandType.Text
+            lDTA.SelectCommand.Parameters.AddWithValue("@pIdPedidoEnc", pIdPedidoEnc)
 
+            Dim lDataTable As New DataTable
+            lDTA.Fill(lDataTable)
 
-            Dim dt As New DataTable
-            dad.Fill(dt)
+            If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
 
-            ' Procesamos los resultados si los hay
-            If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
-                Dim pTransPicking_Img As clsBeTrans_picking_img
-                Get_All_Imagen_By_IdPedidoEnc = New List(Of clsBeTrans_picking_img)()
+                ' Procesamos los resultados si los hay
+                If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+                    Dim pTransPicking_Img As clsBeTrans_picking_img
+                    Get_All_Imagen_By_IdPedidoEnc = New List(Of clsBeTrans_picking_img)()
 
-                For Each lRow As DataRow In dt.Rows
-                    pTransPicking_Img = New clsBeTrans_picking_img
-                    Cargar(pTransPicking_Img, lRow)
-                    pTransPicking_Img.IsNew = False
-                    Get_All_Imagen_By_IdPedidoEnc.Add(pTransPicking_Img)
-                Next
-            End If
+                    For Each lRow As DataRow In lDataTable.Rows
 
-            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+                        pTransPicking_Img = New clsBeTrans_picking_img
+                        Cargar(pTransPicking_Img, lRow)
+
+                        pTransPicking_Img.IsNew = False
+                        Get_All_Imagen_By_IdPedidoEnc.Add(pTransPicking_Img)
+
+                    Next
+
+                End If
+
+                If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close() : lConnection.Dispose()
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection IsNot Nothing Then lConnection.Dispose()
         End Try
 
     End Function

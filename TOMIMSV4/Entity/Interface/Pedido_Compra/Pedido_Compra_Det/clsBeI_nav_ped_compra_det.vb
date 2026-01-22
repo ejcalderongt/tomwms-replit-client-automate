@@ -14,6 +14,9 @@ Public Class clsBeI_nav_ped_compra_det
     Public Property Line_Amount() As Decimal = 0.0
     Public Property Quantity_Received() As Decimal = 0.0
     Public Property Planed_Receipt_Date() As Date = Now.Date
+    Public Property Barcode() As String = ""
+    Public Property Size() As String = ""
+    Public Property Color() As String = ""
     Sub New()
     End Sub
 

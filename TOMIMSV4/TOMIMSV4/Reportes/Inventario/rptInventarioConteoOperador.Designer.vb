@@ -773,7 +773,7 @@ Partial Public Class rptInventarioConteoOperador
         Me.XrTableCell14.StylePriority.UseTextAlignment = False
         Me.XrTableCell14.Text = "Operador"
         Me.XrTableCell14.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft
-        Me.XrTableCell14.Weight = 1.0988062836645725R
+        Me.XrTableCell14.Weight = 1.0988062836645724R
         '
         'XrTableCell13
         '

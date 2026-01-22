@@ -33,6 +33,7 @@ Public Class clsLnTrans_inv_detalle
                 .nombre_propietario = IIf(IsDBNull(dr.Item("nombre_propietario")), "", dr.Item("nombre_propietario"))
                 .License_plate = IIf(IsDBNull(dr.Item("lic_plate")), 0, dr.Item("lic_plate"))
                 .Codigo_variante = IIf(IsDBNull(dr.Item("cod_variante")), "", dr.Item("cod_variante"))
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), "", dr.Item("IdProductoTallaColor"))
 
             End With
 
@@ -42,7 +43,7 @@ Public Class clsLnTrans_inv_detalle
 
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTrans_inv_detalle As clsBeTrans_inv_detalle, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_inv_detalle As clsBeTrans_inv_detalle, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing

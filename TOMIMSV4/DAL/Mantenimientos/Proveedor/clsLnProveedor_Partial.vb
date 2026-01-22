@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System
+Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnProveedor
@@ -1395,6 +1396,7 @@ Partial Public Class clsLnProveedor
         GetListProveedores_By_Activo_and_IdPropietario = Nothing
 
         Try
+            Dim vSQL As String = "SELECT TOP 1 * FROM proveedor WHERE Codigo=@Codigo"
 
             Dim vSQL As String = "SELECT * FROM VW_Proveedor WHERE 1 > 0 "
 
@@ -1446,6 +1448,7 @@ Partial Public Class clsLnProveedor
 
                 End If
 
+                Return (lDT IsNot Nothing AndAlso lDT.Rows.Count > 0)
             End Using
 
         Catch ex As Exception
@@ -1454,6 +1457,47 @@ Partial Public Class clsLnProveedor
 
     End Function
 
+    Public Shared Function Insert_Proveedor_Interface(INavBeProveedor As clsBeI_nav_bodega, BeConfigEnc As clsBeI_nav_config_enc, ByVal User As String) As Boolean
+        Insert_Proveedor_Interface = False
+
+
+        Try
+            Dim BeProveedor As New clsBeProveedor
+            BeProveedor.IdProveedor = MaxID() + 1
+            BeProveedor.IdEmpresa = BeConfigEnc.Idempresa
+            BeProveedor.Codigo = INavBeProveedor.Bodega_code
+            BeProveedor.Nombre = INavBeProveedor.Bodega_name
+            BeProveedor.Activo = True
+            BeProveedor.Fec_agr = Now
+            BeProveedor.Fec_mod = Now
+            BeProveedor.User_agr = User
+            BeProveedor.User_mod = User
+            BeProveedor.IdPropietario = BeConfigEnc.IdPropietario
+            Insertar(BeProveedor)
+
+            Dim lBodegas = clsLnBodega.GetAll()
+
+            For Each Bod In lBodegas
+                Dim BeProvBod As New clsBeProveedor_bodega
+                BeProvBod.IdAsignacion = clsLnProveedor_bodega.MaxID() + 1
+                BeProvBod.IdProveedor = BeProveedor.IdProveedor
+                BeProvBod.IdBodega = Bod.IdBodega
+                BeProvBod.User_agr = Now
+                BeProvBod.User_mod = Now
+                BeProvBod.Activo = True
+                clsLnProveedor_bodega.Insertar(BeProvBod)
+            Next
+
+            Insert_Proveedor_Interface = True
+
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
     Public Shared Function Get_Codigo_By_IdProveedorBodega(ByVal IdProveedorBodega As Integer, lConnection As SqlConnection, lTransaction As SqlTransaction) As String
 
         Get_Codigo_By_IdProveedorBodega = String.Empty
@@ -1481,7 +1525,25 @@ Partial Public Class clsLnProveedor
         End Try
 
     End Function
+    Public Shared Function Existe_Proveedor(ByVal pCodigo As String, ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction) As Boolean
+        Try
+            Dim vSQL As String = "SELECT TOP 1 * FROM proveedor WHERE Codigo=@Codigo"
 
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@Codigo", pCodigo)
+
+                Dim lDT As New DataTable()
+                lDTA.Fill(lDT)
+
+                Return (lDT IsNot Nothing AndAlso lDT.Rows.Count > 0)
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+    End Function
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls
 

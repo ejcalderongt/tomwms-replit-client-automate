@@ -1,7 +1,8 @@
-﻿Imports System.Reflection
+﻿Imports System
 Imports System.Data.SqlClient
-Imports DevExpress.DataAccess.Native
+Imports System.Reflection
 Imports DevExpress.DataAccess
+Imports DevExpress.DataAccess.Native
 Imports DevExpress.XtraEditors.Drawing
 
 Partial Public Class clsLnTrans_oc_enc
@@ -527,8 +528,8 @@ Partial Public Class clsLnTrans_oc_enc
                                 Obj.ProveedorBodega.IdAsignacion = CType(lRow("IdProveedorBodega"), Integer)
                                 'clsLnProveedor_bodega.Obtener(Obj.ProveedorBodega, lConnection, lTransaction)
                                 Obj.ProveedorBodega.Proveedor.TiemposProveedor = clsLnProveedor_tiempos.Get_All_Tiempos_By_IdProveedor(Obj.ProveedorBodega.IdProveedor,
-                                                                                    lConnection,
-                                                                                    lTransaction)
+                                                                                                                                       lConnection,
+                                                                                                                                       lTransaction)
                             End If
 
                             If lRow("IdTipoIngresoOC") IsNot DBNull.Value AndAlso lRow("IdTipoIngresoOC") IsNot Nothing Then
@@ -1191,6 +1192,7 @@ Partial Public Class clsLnTrans_oc_enc
 
             Guarda_Trans_OC_Enc(BeTransOcEnc, lConnection, lTransaction)
             Guarda_Trans_oc_pol(BeTransOcEnc.IdOrdenCompraEnc, pObjP, lConnection, lTransaction)
+            Valida_Talla_Color(pListObjTD, lConnection, lTransaction)
             Guarda_Trans_oc_det(BeTransOcEnc.IdOrdenCompraEnc, pListObjTD, lConnection, lTransaction)
             Guarda_Trans_oc_imagen(BeTransOcEnc.IdOrdenCompraEnc, pListObjI, lConnection, lTransaction)
             Guarda_Trans_oc_servicio(BeTransOcEnc.IdOrdenCompraEnc, pListObjServ, lConnection, lTransaction)
@@ -1220,6 +1222,68 @@ Partial Public Class clsLnTrans_oc_enc
         '
     End Function
 
+    Private Shared Sub Valida_Talla_Color(ByVal pListObjTD As List(Of clsBeTrans_oc_det),
+                                                ByRef lConnection As SqlConnection,
+                                                ByRef lTransaction As SqlTransaction)
+        Try
+
+            If pListObjTD IsNot Nothing AndAlso pListObjTD.Count > 0 Then
+
+                'el detalle de la lista debe adquirir las propiedades de IdProductoTallaColor y Codigo_producto.
+                For Each Detalle As clsBeTrans_oc_det In pListObjTD
+
+                    If Detalle.IsNew Then
+
+                        Detalle.Talla = clsLnTalla.GetSingle(Detalle.Talla.IdTalla, lConnection, lTransaction)
+                        Detalle.Color = clsLnColor.GetSingle(Detalle.Color.IdColor, lConnection, lTransaction)
+
+                        Detalle.Producto.IdProducto = clsLnProducto.Get_IdProducto_By_Codigo(Detalle.Codigo_Producto, lConnection, lTransaction)
+
+                        Dim producto_talla_color = clsLnProducto_talla_color.Get_Single_By_IdProducto(Detalle.Producto.IdProducto,
+                                                                                            Detalle.Talla.Codigo,
+                                                                                            Detalle.Color.Codigo,
+                                                                                            lConnection,
+                                                                                            lTransaction)
+
+                        If producto_talla_color Is Nothing Then
+
+                            Dim pProducto_Talla_color As New clsBeProducto_talla_color()
+                            pProducto_Talla_color.IdProductoTallaColor = clsLnProducto_talla_color.MaxID(lConnection, lTransaction) + 1
+                            pProducto_Talla_color.IdColor = Detalle.Color.IdColor
+                            pProducto_Talla_color.IdTalla = Detalle.Talla.IdTalla
+                            pProducto_Talla_color.IdProducto = Detalle.Producto.IdProducto
+                            pProducto_Talla_color.Activo = 1
+                            pProducto_Talla_color.Fec_mod = Now
+                            pProducto_Talla_color.Fec_agr = Now
+                            pProducto_Talla_color.IdCampaña = 0
+                            pProducto_Talla_color.User_agr = 1
+                            pProducto_Talla_color.User_mod = 1
+                            pProducto_Talla_color.CodigoSKU = Detalle.Codigo_Producto + Detalle.Color.Codigo + Detalle.Talla.Codigo
+
+                            clsLnProducto_talla_color.Insertar(pProducto_Talla_color, lConnection, lTransaction)
+
+                            Detalle.IdProductoTallaColor = pProducto_Talla_color.IdProductoTallaColor
+                            Detalle.Codigo_Producto = pProducto_Talla_color.CodigoSKU
+                        Else
+
+                            Dim nuevo_codigo = Detalle.Codigo_Producto + "" + Detalle.Talla.Codigo + "" + Detalle.Color.Codigo
+                            Detalle.Codigo_Producto = nuevo_codigo
+                            Detalle.IdProductoTallaColor = producto_talla_color.IdProductoTallaColor
+
+                        End If
+
+                    End If
+
+                Next
+
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        End Try
+    End Sub
 
     Public Shared Sub Cambiar_A_Estado_Asignado(ByVal No_Ticket_TMS As String,
                                                  ByVal lConnection As SqlConnection,
@@ -3731,8 +3795,7 @@ Partial Public Class clsLnTrans_oc_enc
                 lDTA = New SqlDataAdapter(vSQL, pConection)
                 lDTA.SelectCommand.Transaction = pTransaction
             Else
-                lConnection.Open()
-                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
                 lDTA = New SqlDataAdapter(vSQL, lConnection)
                 lDTA.SelectCommand.Transaction = lTransaction
             End If
@@ -3755,6 +3818,7 @@ Partial Public Class clsLnTrans_oc_enc
                     BeOcEnc.PropietarioBodega = clsLnPropietario_bodega.Get_Single_With_Propietario(BeOcEnc.IdPropietarioBodega, pConection, pTransaction)
                     GetAll_By_CDC.Add(BeOcEnc)
                 Next
+
             End If
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
@@ -3965,4 +4029,52 @@ Partial Public Class clsLnTrans_oc_enc
 
     End Function
 
+    Public Shared Function Get_Usuario_Defecto_By_IdOrdenCompraEnc(ByVal pIdOrdenCompra As Integer) As String
+
+        Get_Usuario_Defecto_By_IdOrdenCompraEnc = ""
+
+        Try
+
+            Dim vSQL As String = " select CONCAT(usuario.nombres,'',usuario.apellidos) as usuario 
+                                   from trans_oc_enc 
+                                   join usuario on usuario.IdUsuario = trans_oc_enc.User_Agr 
+                                    Where IdOrdenCompraEnc=  @IdOrdenCompraEnc "
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraEnc", pIdOrdenCompra)
+
+                        Dim lDT As New DataTable()
+                        lDTA.Fill(lDT)
+
+                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                            Dim lRow As DataRow = lDT.Rows(0)
+                            Get_Usuario_Defecto_By_IdOrdenCompraEnc = lRow.Item("usuario").ToString()
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        End Try
+
+    End Function
 End Class

@@ -141,6 +141,10 @@ Public Class frmR3Asistente
             Throw ex
         End Try
 
+
+
+
+
     End Sub
 
     Private Sub ritem_CheckedChanged(sender As Object, e As EventArgs)
@@ -189,6 +193,10 @@ Public Class frmR3Asistente
                                                  pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
+
+
+
+
 
     End Sub
 

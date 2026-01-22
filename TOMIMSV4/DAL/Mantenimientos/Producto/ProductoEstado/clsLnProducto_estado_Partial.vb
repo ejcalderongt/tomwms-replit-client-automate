@@ -1,4 +1,5 @@
-﻿Imports System.Reflection
+﻿Imports System.Data.SqlClient
+Imports System.Reflection
 Imports System.Data.SqlClient
 
 Partial Public Class clsLnProducto_estado
@@ -207,7 +208,6 @@ Partial Public Class clsLnProducto_estado
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
     End Function
@@ -248,7 +248,7 @@ Partial Public Class clsLnProducto_estado
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -294,7 +294,7 @@ Partial Public Class clsLnProducto_estado
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -366,7 +366,7 @@ Partial Public Class clsLnProducto_estado
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -450,7 +450,7 @@ Partial Public Class clsLnProducto_estado
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -530,14 +530,14 @@ Partial Public Class clsLnProducto_estado
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
 
     Public Shared Function Get_All_Stock_Con_Estado_By_IdProductoBodega(ByVal pIdProductoBodega As Integer,
-                                                                        ByVal lConnection As SqlConnection,
-                                                                        ByVal lTransaction As SqlTransaction) As List(Of clsBeProducto_estado)
+                                                   ByVal lConnection As SqlConnection,
+                                                   ByVal lTransaction As SqlTransaction) As List(Of clsBeProducto_estado)
 
         Dim lReturnList As New List(Of clsBeProducto_estado)
 
@@ -549,6 +549,7 @@ Partial Public Class clsLnProducto_estado
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
                 lDTA.SelectCommand.Transaction = lTransaction
+
                 lDTA.SelectCommand.CommandType = CommandType.Text
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pIdProductoBodega)
 
@@ -562,6 +563,7 @@ Partial Public Class clsLnProducto_estado
                     For Each lRow As DataRow In lDataTable.Rows
 
                         Obj = New clsBeProducto_estado
+
                         Obj.IdEstado = CType(lRow("IdProductoEstado"), Int32)
 
                         If lRow("IdPropietario") IsNot DBNull.Value AndAlso lRow("IdPropietario") IsNot Nothing Then
@@ -599,7 +601,7 @@ Partial Public Class clsLnProducto_estado
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -644,7 +646,7 @@ Partial Public Class clsLnProducto_estado
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -678,7 +680,7 @@ Partial Public Class clsLnProducto_estado
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Sub
@@ -707,7 +709,7 @@ Partial Public Class clsLnProducto_estado
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -755,7 +757,7 @@ Partial Public Class clsLnProducto_estado
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -806,7 +808,7 @@ Partial Public Class clsLnProducto_estado
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close() : lConnection.Dispose()
             If lTransaction IsNot Nothing Then lTransaction.Dispose()
@@ -857,7 +859,7 @@ Partial Public Class clsLnProducto_estado
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -892,7 +894,7 @@ Partial Public Class clsLnProducto_estado
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -939,7 +941,7 @@ Partial Public Class clsLnProducto_estado
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -973,7 +975,7 @@ Partial Public Class clsLnProducto_estado
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Sub
@@ -1108,7 +1110,7 @@ Partial Public Class clsLnProducto_estado
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1139,7 +1141,7 @@ Partial Public Class clsLnProducto_estado
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
@@ -1175,7 +1177,7 @@ Partial Public Class clsLnProducto_estado
 
         Catch ex As Exception
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
@@ -1206,7 +1208,7 @@ Partial Public Class clsLnProducto_estado
             Listar_By_IdPropietario = dt
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1241,7 +1243,7 @@ Partial Public Class clsLnProducto_estado
 
         Catch ex As Exception
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
@@ -1279,7 +1281,7 @@ Partial Public Class clsLnProducto_estado
 
         Catch ex As Exception
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
@@ -1320,7 +1322,7 @@ Partial Public Class clsLnProducto_estado
 
         Catch ex As Exception
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
@@ -1362,7 +1364,7 @@ Partial Public Class clsLnProducto_estado
             End If
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1394,7 +1396,7 @@ Partial Public Class clsLnProducto_estado
 
         Catch ex As Exception
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
@@ -1557,7 +1559,7 @@ Partial Public Class clsLnProducto_estado
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1587,7 +1589,7 @@ Partial Public Class clsLnProducto_estado
             Listar_By_IdPropietario_And_IdBodega = dt
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1787,7 +1789,7 @@ Partial Public Class clsLnProducto_estado
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1863,7 +1865,7 @@ Partial Public Class clsLnProducto_estado
             Return DateTime.Now >= fechaLimiteInferior AndAlso DateTime.Now <= fechaLimiteSuperior
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
 
@@ -1911,7 +1913,7 @@ Partial Public Class clsLnProducto_estado
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1948,7 +1950,7 @@ Partial Public Class clsLnProducto_estado
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1987,7 +1989,7 @@ Partial Public Class clsLnProducto_estado
 
         Catch ex As Exception
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
@@ -2045,7 +2047,7 @@ Partial Public Class clsLnProducto_estado
 
             Dim vSQL As String = "SELECT * FROM Producto_Estado WHERE IdPropietario=@IdPropietario and activo=@pActivo "
 
-            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+                Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
                 lDTA.SelectCommand.CommandType = CommandType.Text
                 lDTA.SelectCommand.Transaction = lTransaction
@@ -2068,9 +2070,9 @@ Partial Public Class clsLnProducto_estado
                     Next
                 Else
                     lReturnList = Nothing
-                End If
+                    End If
 
-            End Using
+                End Using
 
             Return lReturnList
 
@@ -2080,6 +2082,40 @@ Partial Public Class clsLnProducto_estado
 
     End Function
 
+    Public Shared Function Get_Buen_Estado_Producto_By_IdPropietario(ByVal pIdPropietario As Integer,
+                                                                     ByVal lConnection As SqlConnection,
+                                                                     ByVal lTransaction As SqlTransaction) As Integer
+
+        Get_Buen_Estado_Producto_By_IdPropietario = 0
+
+        Try
+
+            Dim sp As String = "SELECT top(1) * FROM producto_estado 
+                                WHERE ACTIVO = 1 AND DAÑADO = 0 AND UTILIZABLE = 1 and IdPropietario = @IdPropietario"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+
+            dad.SelectCommand.Parameters.AddWithValue("@IdPropietario", pIdPropietario)
+
+            Dim dt As New DataTable
+
+            dad.Fill(dt)
+            cmd.Dispose()
+            dad.Dispose()
+
+            Dim vBeProductoEstado As New clsBeProducto_estado
+
+            If dt.Rows.Count > 0 Then
+                Dim dr As DataRow = dt.Rows(0)
+                Get_Buen_Estado_Producto_By_IdPropietario = dr.Item("IdEstado")
+            End If
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
 
     Public Shared Function Existe_By_IdEstado(ByVal pIdEstado As Integer,
                                               ByVal lConnection As SqlConnection,
@@ -2180,6 +2216,5 @@ Partial Public Class clsLnProducto_estado
         End Try
 
     End Function
-
 
 End Class

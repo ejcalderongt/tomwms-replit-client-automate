@@ -85,6 +85,7 @@ Public Class frmBodegaSelUbic
                 ubicTotal = pUbicSugReq.Cantidad : lUbicSel.Clear()
 
                 Calcula_Valores()
+
                 Get_Info_Producto()
                 Get_Info_Presentacion()
                 Get_Info_Estado_Producto()
@@ -1257,7 +1258,8 @@ Public Class frmBodegaSelUbic
                 .IdUbicacionDestino = det.IdUbicacionDestino,
                 .IdPresentacion = pObjStock.IdPresentacion,
                 .IdEstadoOrigen = pObjStock.IdProductoEstado,
-                .IdEstadoDestino = pObjStock.IdProductoEstado}
+                .IdEstadoDestino = pObjStock.IdProductoEstado,
+                .IdProductoTallaColor = pObjStock.IdProductoTallaColor}
 
             If EsCambioEstado Then
                 mov.IdEstadoDestino = pObjDet.IdEstadoDestino

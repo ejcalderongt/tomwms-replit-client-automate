@@ -1,6 +1,7 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
 Imports DevExpress.Data
+Imports DevExpress.Xpf.Editors.Helpers
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Controls
 Imports DevExpress.XtraGrid
@@ -21,8 +22,7 @@ Public Class frmDespacho
     Public pListaPedidos As New List(Of Integer)
     Public Delegate Sub ListarDespacho()
     Public Property InvokeListarDespacho As ListarDespacho
-    'Private BePedidoEnc As New clsBeTrans_pe_enc
-    Public BePedidoEnc As New clsBeTrans_pe_enc
+    Private BePedidoEnc As New clsBeTrans_pe_enc
 
     Public Delegate Sub Cargar_Despacho_Pedido()
     Public Delegate Sub Actualizar_Stock_Reservado_En_Pedido()
@@ -93,7 +93,9 @@ Public Class frmDespacho
             DTStockRes.Columns.Add("Acepto", GetType(Boolean)).ReadOnly = True
             DTStockRes.Columns.Add("Fecha Ingreso", GetType(DateTime)).ReadOnly = True
             DTStockRes.Columns.Add("IdStockRes", GetType(Integer)).ReadOnly = True
-
+            DTStockRes.Columns.Add("IdProductoTallaColor", GetType(Integer)).ReadOnly = True
+            DTStockRes.Columns.Add("Talla", GetType(String)).ReadOnly = True
+            DTStockRes.Columns.Add("Color", GetType(String)).ReadOnly = True
         End If
 
     End Sub
@@ -424,7 +426,7 @@ Public Class frmDespacho
 
     Private Sub Guardar()
 
-        Dim hora_server As Date
+        Dim hora_server As DateTime
 
         Try
 
@@ -720,22 +722,26 @@ Public Class frmDespacho
 
                     End If
 
-                    For Each BePedidoDet As clsBeTrans_pe_det In vPedido.Detalle.Where(Function(x) x.Stock_Liberado = 0)
+                    Dim vPedidosConPicking = vPedido.Detalle.Where(Function(x) x.ListaPickingUbic.Count > 0 AndAlso x.Stock_Liberado = 0)
+
+                    For Each BePedidoDet As clsBeTrans_pe_det In vPedidosConPicking
                         SetProducto(BePedidoDet, clsTransaccion.lConnection, clsTransaccion.lTransaction)
                         SetProducto_By_Lista_PickingUbic(BePedidoDet.ListaPickingUbic)
-                        Get_Stock_Res(BePedidoDet, True)
-                        Application.DoEvents()
-                    Next
+                    Get_Stock_Res(BePedidoDet, True)
+                    Application.DoEvents()
+                Next
 
-                    If vPedido.IdPickingEnc <> 0 Then
+                If vPedido.IdPickingEnc <> 0 Then
 
                         Dim vTienePacking = clsLnTrans_pe_enc.Tiene_Packing(vPedido.IdPedidoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
                         If vTienePacking Then
-                            Llena_Packing(vPedido.IdPickingEnc, vPedido.IdPedidoEnc, BeDespachoEnc.IdDespachoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                        End If
-
+                        Llena_Packing(vPedido.IdPickingEnc, vPedido.IdPedidoEnc, BeDespachoEnc.IdDespachoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
                     End If
+
+                End If
+
+                'Get_Stock_Res(vPedido, True)
 
                 Next
 
@@ -894,6 +900,8 @@ Public Class frmDespacho
                 .ShowInGroupColumnFooter = grdvPickingUbic.Columns("Cant_Veri")}
             grdvPickingUbic.GroupSummary.Add(item5)
 
+            'lblRegs.Caption = String.Format("Registros: {0}", pListObjSP.Count)
+
             Dim vFontNumero As Font = New Font("Arial monospaced for SAP", 12, FontStyle.Bold)
 
             If grdvPickingUbic.Columns.Count > 0 Then
@@ -965,6 +973,8 @@ Public Class frmDespacho
         Try
 
             grdvPickingUbic.OptionsView.ShowFooter = True
+
+            'grdvPickingUbic.Columns("Código").Group()
 
             Dim item As GridGroupSummaryItem = New GridGroupSummaryItem() _
                     With {.FieldName = "Cantidad_Disp",
@@ -1417,6 +1427,16 @@ Public Class frmDespacho
             BeDespachoDet.IsNew = True
             BeDespachoDet.FechaPedido = BePedidoEnc.Fecha_Pedido
 
+            If BeTransPickingUbic.IdProductoTallaColor > 0 Then
+                BeDespachoDet.Talla = BeTransPickingUbic.Codigo_Talla
+                BeDespachoDet.Color = BeTransPickingUbic.Codigo_Color
+                BeDespachoDet.IdProductoTallaColor = BeTransPickingUbic.IdProductoTallaColor
+            Else
+                BeDespachoDet.Talla = ""
+                BeDespachoDet.Color = ""
+
+            End If
+
             BeDespachoEnc.ListaDetalle.Add(BeDespachoDet)
 
         Catch ex As Exception
@@ -1540,7 +1560,7 @@ Public Class frmDespacho
                 Dim bo As New frmPedidoDetalleBuscador() With {.Modo = frmPedidoDetalleBuscador.ProcesoSolicitante.Despacho,
                                                             .pListaPedidos = pListaPedidos,
                                                             .IdBodega = cmbBodega.EditValue,
-                                                            .IdPropietarioBodega = cmbPropietario.EditValue}
+                                                            .idPropietarioBodega = cmbPropietario.EditValue}
                 Dim Result As DialogResult = bo.ShowDialog()
 
                 If Result = DialogResult.OK Then
@@ -1943,7 +1963,10 @@ Public Class frmDespacho
                                             BeTransPickingUbic.Encontrado,
                                             BeTransPickingUbic.Acepto,
                                             "01/01/1900",
-                                            BeTransPickingUbic.IdStockRes)
+                                            BeTransPickingUbic.IdStockRes,
+                                            BeTransPickingUbic.IdProductoTallaColor,
+                                            BeTransPickingUbic.Codigo_Talla,
+                                            BeTransPickingUbic.Codigo_Color)
 
                         Application.DoEvents()
 
@@ -2222,7 +2245,10 @@ Public Class frmDespacho
                                         BeVWStockRes.encontrado,
                                         BeVWStockRes.acepto,
                                         BeVWStockRes.Fecha_ingreso,
-                                        BeVWStockRes.IdStockRes)
+                                        BeVWStockRes.IdStockRes,
+                                        BeVWStockRes.IdProductoTallaColor,
+                                        BeVWStockRes.Codigo_Talla,
+                                        BeVWStockRes.Codigo_Color)
 
                     Application.DoEvents()
 
@@ -2253,6 +2279,8 @@ Public Class frmDespacho
                                                                             lConnection,
                                                                             lTransaction)
 
+            'DTStockRes.Rows.Clear()
+
             If pListObjSP.Count > 0 Then
 
                 Dim vCantidadReservadaUMBas As Double = 0
@@ -2269,6 +2297,10 @@ Public Class frmDespacho
 
                     Set_Columns_DT_StockRes()
 
+                End If
+
+                If pBePedidoEnc.Detalle Is Nothing Then
+                    pBePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(pBePedidoEnc.IdPedidoEnc)
                 End If
 
                 For Each Obj As clsBeVW_stock_res In pListObjSP
@@ -2357,7 +2389,10 @@ Public Class frmDespacho
                                     Obj.encontrado,
                                     Obj.acepto,
                                     Obj.Fecha_ingreso,
-                                    Obj.IdStockRes)
+                                    Obj.IdStockRes,
+                                    Obj.IdProductoTallaColor,
+                                    Obj.Codigo_Talla,
+                                    Obj.Codigo_Color)
 
                     Application.DoEvents()
 
@@ -2419,6 +2454,8 @@ Public Class frmDespacho
             grdProducto.Rows(i).Cells("Cantidad").Value = pObj.Cantidad
             grdProducto.Rows(i).Cells("PedidoDet").Value = pObj.IdPedidoDet
             grdProducto.Rows(i).Cells("PedidoEnc").Value = pObj.IdPedidoEnc
+            grdProducto.Rows(i).Cells("colTalla").Value = pObj.Talla
+            grdProducto.Rows(i).Cells("colColor").Value = pObj.Color
 
             'CargarOperador(i)
 
@@ -2585,7 +2622,7 @@ Public Class frmDespacho
                         End If
 
                         Dim Rep As New rptDespacho
-                        Rep.DataSource = dt
+                        Rep.DataSource = clsLnTrans_despacho_enc.Get_Reporte_Despacho(BeDespachoEnc.IdDespachoEnc)
                         Rep.DataMember = "Result"
                         Rep.Parameters("Empresa").Value = AP.NomEmpresa
                         Rep.Parameters("Empresa").Visible = False
@@ -2644,77 +2681,101 @@ Public Class frmDespacho
                                     pProcesado_Bof = pPickingEnc.procesado_bof
                                 End If
 
+                                If pProcesado_Bof Then
 
-                                If vIdOperadorPicking > 0 Then
-                                    '#GT17072025: operado por BOF significa que el usuario es quien debe mostrarse en el reporte
-                                    If pProcesado_Bof Then
-                                        BeUsuarioEntrega = clsLnUsuario.GetSingle(vIdOperadorPicking)
-                                        If BeUsuarioEntrega IsNot Nothing Then
-                                            vNombreOperadorPickeo = BeUsuarioEntrega.Nombres + " " + BeUsuarioEntrega.Apellidos
-                                        End If
-                                    Else
-
-                                        If clsLnOperador_bodega.GetSingle(BeOperadorBodega) Then
-                                            Dim BeOperador As New clsBeOperador
-                                            BeOperador.IdOperador = BeOperadorBodega.IdOperador
-                                            If clsLnOperador.GetSingle(BeOperador) Then
-                                                vNombreOperadorPickeo = BeOperador.Nombres + " " + BeOperador.Apellidos
+                                    If vIdOperadorPicking > 0 Then
+                                        '#GT17072025: operado por BOF significa que el usuario es quien debe mostrarse en el reporte
+                                        If pProcesado_Bof Then
+                                            BeUsuarioEntrega = clsLnUsuario.GetSingle(vIdOperadorPicking)
+                                            If BeUsuarioEntrega IsNot Nothing Then
+                                                vNombreOperadorPickeo = BeUsuarioEntrega.Nombres + " " + BeUsuarioEntrega.Apellidos
                                             End If
+                                        Else
+
+                                            If clsLnOperador_bodega.GetSingle(BeOperadorBodega) Then
+
+                                                    Dim BeOperador As New clsBeOperador
+                                                    BeOperador.IdOperador = BeOperadorBodega.IdOperador
+                                                    If clsLnOperador.GetSingle(BeOperador) Then
+                                                        vNombreOperadorPickeo = BeOperador.Nombres + " " + BeOperador.Apellidos
+                                                    End If
+                                                End If
+
+                                            End If
+
                                         End If
+
+
 
                                     End If
 
                                 End If
 
-                            End If
+                                '#EJC20220301 el formato de Cealsa usa parametro UsuarioDespacho.
+                                Dim RepCealsa As New rptDespachofCealsa
+                                RepCealsa.DataSource = DT
+                                RepCealsa.DataMember = "Result"
+                                RepCealsa.Parameters("Empresa").Value = AP.NomEmpresa
+                                RepCealsa.Parameters("Empresa").Visible = False
+                                RepCealsa.Parameters("Bodega").Value = AP.NomBodega
+                                RepCealsa.Parameters("Bodega").Visible = False
+                                RepCealsa.Parameters("Entregado_Por").Value = vNombreOperadorPickeo
+                                RepCealsa.Parameters("Entregado_Por").Visible = False
+                                RepCealsa.Parameters("Autorizado_Por").Value = BeUsuario.Nombres + " " + BeUsuario.Apellidos
+                                RepCealsa.Parameters("Autorizado_Por").Visible = False
+                                RepCealsa.RequestParameters = False
 
-                        End If
+                                If clsLnEmpresa.GetImagen(AP.IdEmpresa) Is Nothing Then
+                                    RepCealsa.XrLogo.Image = Nothing
+                                Else
+                                    RepCealsa.XrLogo.Image = clsPublic.ByteArrayToImage(clsLnEmpresa.GetImagen(AP.IdEmpresa))
+                                End If
 
-                        '#EJC20220301 el formato de Cealsa usa parametro UsuarioDespacho.
-                        Dim RepCealsa As New rptDespachofCealsa
-                        RepCealsa.DataSource = DT
-                        RepCealsa.DataMember = "Result"
-                        RepCealsa.Parameters("Empresa").Value = AP.NomEmpresa
-                        RepCealsa.Parameters("Empresa").Visible = False
-                        RepCealsa.Parameters("Bodega").Value = AP.NomBodega
-                        RepCealsa.Parameters("Bodega").Visible = False
-                        RepCealsa.Parameters("Entregado_Por").Value = vNombreOperadorPickeo
-                        RepCealsa.Parameters("Entregado_Por").Visible = False
-                        RepCealsa.Parameters("Autorizado_Por").Value = BeUsuario.Nombres + " " + BeUsuario.Apellidos
-                        RepCealsa.Parameters("Autorizado_Por").Visible = False
-                        RepCealsa.RequestParameters = False
+                                RepCealsa.ShowPreview()
 
-                        If clsLnEmpresa.GetImagen(AP.IdEmpresa) Is Nothing Then
-                            RepCealsa.XrLogo.Image = Nothing
-                        Else
-                            RepCealsa.XrLogo.Image = clsPublic.ByteArrayToImage(clsLnEmpresa.GetImagen(AP.IdEmpresa))
-                        End If
+                                Case 4 '#CKFK20220801: Formato para DyD
 
-                        RepCealsa.ShowPreview()
+                                Dim Rep As New rptDespachofDyD
+                                Rep.DataSource = clsLnTrans_despacho_enc.Get_Reporte_Despacho_DyD(BeDespachoEnc.IdDespachoEnc)
+                                Rep.DataMember = "Result"
+                                Rep.Parameters("Empresa").Value = AP.NomEmpresa
+                                Rep.Parameters("Empresa").Visible = False
+                                Rep.Parameters("Bodega").Value = AP.NomBodega
+                                Rep.Parameters("Bodega").Visible = False
+                                Rep.RequestParameters = False
+                                Rep.ShowPreview()
 
-                    Case 4 '#CKFK20220801: Formato para DyD
+                                Case 5 '#MECR29082025: Formato para MAMPA
+                                Dim Rep As New rptDespachoMAMPA
+                                Rep.DataSource = clsLnTrans_despacho_enc.Get_Reporte_Despacho(BeDespachoEnc.IdDespachoEnc)
+                                Rep.DataMember = "Result"
+                                Rep.Parameters("Empresa").Value = AP.NomEmpresa
+                                Rep.Parameters("Empresa").Visible = False
+                                Rep.Parameters("Bodega").Value = AP.NomBodega
+                                Rep.Parameters("Bodega").Visible = False
+                                Rep.RequestParameters = False
 
-                        Dim Rep As New rptDespachofDyD
-                        Rep.DataSource = clsLnTrans_despacho_enc.Get_Reporte_Despacho_DyD(BeDespachoEnc.IdDespachoEnc)
-                        Rep.DataMember = "Result"
-                        Rep.Parameters("Empresa").Value = AP.NomEmpresa
-                        Rep.Parameters("Empresa").Visible = False
-                        Rep.Parameters("Bodega").Value = AP.NomBodega
-                        Rep.Parameters("Bodega").Visible = False
-                        Rep.RequestParameters = False
-                        Rep.ShowPreview()
+                                Rep.MostrarEncabezadoSoloEnPrimeraPagina = (Not mnuRepetirEncabezadoEnCadaPagina.Checked)
 
-                    Case Else
+                                If clsLnEmpresa.GetImagen(AP.IdEmpresa) Is Nothing Then
+                                    Rep.XrLogo.Image = Nothing
+                                Else
+                                    Rep.XrLogo.Image = clsPublic.ByteArrayToImage(clsLnEmpresa.GetImagen(AP.IdEmpresa))
+                                End If
 
-                        Dim Rep As New rptDespacho
-                        Rep.DataSource = clsLnTrans_despacho_enc.Get_Reporte_Despacho(BeDespachoEnc.IdDespachoEnc)
-                        Rep.DataMember = "Result"
-                        Rep.Parameters("Empresa").Value = AP.NomEmpresa
-                        Rep.Parameters("Empresa").Visible = False
-                        Rep.Parameters("Bodega").Value = AP.NomBodega
-                        Rep.Parameters("Bodega").Visible = False
-                        Rep.RequestParameters = False
-                        Rep.ShowPreview()
+                                Rep.ShowPreview()
+
+                                Case Else
+
+                                Dim Rep As New rptDespacho
+                                Rep.DataSource = clsLnTrans_despacho_enc.Get_Reporte_Despacho(BeDespachoEnc.IdDespachoEnc)
+                                Rep.DataMember = "Result"
+                                Rep.Parameters("Empresa").Value = AP.NomEmpresa
+                                Rep.Parameters("Empresa").Visible = False
+                                Rep.Parameters("Bodega").Value = AP.NomBodega
+                                Rep.Parameters("Bodega").Visible = False
+                                Rep.RequestParameters = False
+                                Rep.ShowPreview()
 
                 End Select
 
@@ -2743,18 +2804,35 @@ Public Class frmDespacho
 
                 If DT.Rows.Count > 0 Then
 
-                    Dim Rep As New rptPackingPorBarra
-                    Rep.DataSource = DT
-                    Rep.DataMember = "Result"
-                    Rep.Parameters("Empresa").Value = AP.NomEmpresa
-                    Rep.Parameters("Empresa").Visible = False
-                    Rep.Parameters("Bodega").Value = AP.NomBodega
-                    Rep.Parameters("Bodega").Visible = False
-                    Rep.RequestParameters = False
+                    If AP.Bodega.Control_Talla_Color Then
+                        Dim Rep As New rptPackingTallaColor
+                        Rep.DataSource = DT
+                        Rep.DataMember = "Result"
+                        Rep.Parameters("Empresa").Value = AP.NomEmpresa
+                        Rep.Parameters("Empresa").Visible = False
+                        Rep.Parameters("Bodega").Value = AP.NomBodega
+                        Rep.Parameters("Bodega").Visible = False
+                        Rep.RequestParameters = False
 
-                    Rep.MostrarEncabezadoSoloEnPrimeraPagina = False
+                        Rep.MostrarEncabezadoSoloEnPrimeraPagina = False
 
-                    Rep.ShowPreview()
+                        Rep.ShowPreview()
+                    Else
+                        Dim Rep As New rptPackingPorBarra
+                        Rep.DataSource = DT
+                        Rep.DataMember = "Result"
+                        Rep.Parameters("Empresa").Value = AP.NomEmpresa
+                        Rep.Parameters("Empresa").Visible = False
+                        Rep.Parameters("Bodega").Value = AP.NomBodega
+                        Rep.Parameters("Bodega").Visible = False
+                        Rep.RequestParameters = False
+
+                        Rep.MostrarEncabezadoSoloEnPrimeraPagina = False
+
+                        Rep.ShowPreview()
+                    End If
+
+
 
 
                 End If
@@ -2771,7 +2849,9 @@ Public Class frmDespacho
     End Sub
 
     Private Sub lnkPedido_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles lnkPedido.ItemClick
+        lnkPedido.Enabled = False
         Agregar_Pedido()
+        lnkPedido.Enabled = True
     End Sub
 
     Private Sub frmDespacho_Shown(sender As Object, e As EventArgs) Handles Me.Shown
@@ -2824,6 +2904,9 @@ Public Class frmDespacho
                     Case 1 '#EJC20200714: Forma
                         mnuRepetirEncabezadoEnCadaPagina.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
                         mnuRepetirEncabezadoEnCadaPagina.Checked = True
+                    Case 5 '#MECR29082025: Se agrego forma para MAMPA
+                        mnuRepetirEncabezadoEnCadaPagina.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
+                        mnuRepetirEncabezadoEnCadaPagina.Checked = True
                     Case Else
                         mnuRepetirEncabezadoEnCadaPagina.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
                         mnuRepetirEncabezadoEnCadaPagina.Checked = False
@@ -2834,14 +2917,18 @@ Public Class frmDespacho
             Select Case Modo
 
                 Case TipoTrans.Nuevo
+
                     hora_server = clsServidor.Get_Fecha_Servidor()
+
                     lblC.Text = ""
                     lblEstado.Text = "Nuevo"
                     User_agrTextEdit.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
                     Fec_agrDateEdit.Text = Now
                     User_modTextEdit.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
                     Fec_modDateEdit.Text = Now
+
                     mnuGuardar.Enabled = If(OpcionesMenu IsNot Nothing, OpcionesMenu.Modificar, True)
+
                     mnuActualizar.Enabled = False
                     mnuAnular.Enabled = False
                     mnuGuardarDatosCabecera.Enabled = False
@@ -3328,6 +3415,8 @@ Public Class frmDespacho
             grdProducto.Rows(i).Cells("Cantidad").Value = pObj.Cantidad
             grdProducto.Rows(i).Cells("PedidoDet").Value = pObj.IdPedidoDet
             grdProducto.Rows(i).Cells("PedidoEnc").Value = pObj.IdPedidoEnc
+            grdProducto.Rows(i).Cells("colTalla").Value = pObj.Talla
+            grdProducto.Rows(i).Cells("colColor").Value = pObj.Color
 
             'CargarOperador(i)
 
@@ -3367,10 +3456,10 @@ Public Class frmDespacho
             If BeDespachoEnc.Estado = "Finalizado" Then
 
                 Dim resultado As List(Of clsBeTrans_picking_ubic) = clsLnTrans_despacho_det.Get_All_PickingUbic_By_IdPedidoDet(pObj.IdPedidoDet,
-                                                                                                                              pObj.IdPedidoEnc,
-                                                                                                                              BeDespachoEnc.IdDespachoEnc,
-                                                                                                                              lConnection,
-                                                                                                                              lTransaction)
+                                                                                                                               pObj.IdPedidoEnc,
+                                                                                                                               BeDespachoEnc.IdDespachoEnc,
+                                                                                                                               lConnection,
+                                                                                                                               lTransaction)
                 If resultado IsNot Nothing Then
                     pObj.ListaPickingUbic = resultado.ToList()
                 Else
@@ -3398,7 +3487,10 @@ Public Class frmDespacho
                         .User_mod = AP.UsuarioAp.IdUsuario,
                         .Fec_mod = Now,
                         .Activo = True,
-                        .IsNew = True}
+                        .IsNew = True,
+                        .IdProductoTallaColor = bo.IdProductoTallaColor,
+                        .Codigo_Talla = bo.Codigo_Talla,
+                        .Codigo_Color = bo.Codigo_Color}
                         lTransPickingUbic.Add(ObjU)
 
                         Application.DoEvents()
@@ -3430,7 +3522,11 @@ Public Class frmDespacho
                         .User_mod = AP.UsuarioAp.IdUsuario,
                         .Fec_mod = Now,
                         .Activo = True,
-                        .IsNew = True}
+                        .IsNew = True,
+                        .IdProductoTallaColor = bo.IdProductoTallaColor,
+                        .Codigo_Talla = bo.Talla,
+                        .Nombre_Color = bo.Color}
+
                         lTransPickingUbic.Add(ObjU)
 
                         Application.DoEvents()
@@ -3521,5 +3617,6 @@ Public Class frmDespacho
         End Try
 
     End Function
+
 
 End Class

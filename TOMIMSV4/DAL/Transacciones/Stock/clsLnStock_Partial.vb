@@ -1069,7 +1069,8 @@ Partial Public Class clsLnStock
                                                        ByVal NoPoliza As String,
                                                        ByVal IdPropietarioBodega As Integer,
                                                        ByVal IdProductoEstadoDefault As Integer,
-                                                       ByVal IdPresentacion As Integer) As DataTable
+                                                       ByVal IdPresentacion As Integer,
+                                                       ByVal Mostrar_Talla_Color As Boolean) As DataTable
 
         '#EJC20171112_0605PM:Agregué transacción
         Dim vSQL As String = ""
@@ -1087,6 +1088,7 @@ Partial Public Class clsLnStock
 
             If TieneTiempos Then
 
+                '#GT27082025
                 vSQL = "SELECT producto_bodega.IdBodega, 
                         propietarios.IdPropietario, 
                         propietario_bodega.IdPropietarioBodega, 
@@ -1162,6 +1164,8 @@ Partial Public Class clsLnStock
                 If IdPropietarioBodega <> 0 Then
                     vSQL += " AND propietario_bodega.IdPropietarioBodega = @IdPropietarioBodega  "
                 End If
+
+
 
                 '#ejc20210923: agregar join con poliza antes de...
                 'If NoPoliza <> "" Then
@@ -1253,12 +1257,20 @@ Partial Public Class clsLnStock
                                familia,
                                marca,
                                st_resumen.no_linea,
-                               st_resumen.No_Contenedor
-                        FROM VW_Stock_Res st_resumen
-						inner join producto pr on st_resumen.codigo = pr.codigo  and pr.IdPropietario = st_resumen.IdPropietario
-						left join producto_clasificacion pr_clas on pr.IdClasificacion = pr_clas.IdClasificacion
+                               st_resumen.No_Contenedor "
 
-                        WHERE IdBodega=@IdBodega"
+                If Mostrar_Talla_Color Then
+                    vSQL += ",st_resumen.Codigo_Talla,
+							  st_resumen.Nombre_Talla,
+							  st_resumen.Codigo_Color,
+							  st_resumen.Nombre_Color "
+                End If
+
+                vSQL += " FROM VW_Stock_Res st_resumen
+						 inner join producto pr on st_resumen.codigo = pr.codigo  and pr.IdPropietario = st_resumen.IdPropietario
+						 left join producto_clasificacion pr_clas on pr.IdClasificacion = pr_clas.IdClasificacion
+
+                         WHERE IdBodega=@IdBodega"
 
                 If IdPropietarioBodega <> 0 Then
                     vSQL += " AND IdPropietarioBodega = @IdPropietarioBodega and disponible_umbas > 0 "
@@ -1672,6 +1684,7 @@ Partial Public Class clsLnStock
 
                     If ConsolidaFechas Then
 
+                        '#MECR27082025: Se agregaron campos de Talla y Color
                         vSQL = "SELECT codigo as Código,nombre as Producto,
 							SUM(Disponible_UMBas) AS Disponible_UMBas,
 							UnidadMedida,
@@ -1681,7 +1694,10 @@ Partial Public Class clsLnStock
 							Ubicacion_Tramo as Rack,
 							Nombre_Completo as UbicacionCompleta,IdRecepcionEnc,
 							MotivoDevolucion,codigo_poliza,numero_poliza,
-							Referencia,No_Docto AS No_Docto_Rec 
+							Referencia,No_Docto AS No_Docto_Rec,
+                            lote as Lote,
+                            Codigo_Talla as Talla,
+                            Codigo_Color as Color   
 							from VW_Stock_Res 
 							WHERE IdBodega=@IdBodega and IdPropietarioBodega=@IdPropietarioBodega 
 							and Disponible_UMBas > 0 "
@@ -1692,7 +1708,7 @@ Partial Public Class clsLnStock
 
                         vSQL += " group By Fecha_Vence,codigo,nombre,UnidadMedida,Presentacion,
 							NomEstado,Fecha_Ingreso,IdUbicacion,Ubicacion_Tramo,Nombre_Completo,IdRecepcionEnc,
-							MotivoDevolucion,codigo_poliza,numero_poliza, Referencia,No_Docto "
+							MotivoDevolucion,codigo_poliza,numero_poliza, Referencia,No_Docto, lote, Codigo_Talla, Codigo_Color "
 
 
                     Else
@@ -1727,7 +1743,7 @@ Partial Public Class clsLnStock
                         Referencia,No_Docto AS No_Docto_Rec
 						from VW_Stock_Res 
 						WHERE IdBodega=@IdBodega and IdPropietarioBodega=@IdPropietarioBodega 
-						and disponible_umbas > 0"
+						and disponible_umbas > 0 "
 
                         If Not ConFechas Then
                             vSQL += String.Format(" AND cast(Fecha_Ingreso AS DATE) BETWEEN {0} AND {1}", FormatoFechas.fFecha(pFechaDel), FormatoFechas.fFecha(pFechaAl))
@@ -2789,43 +2805,43 @@ Partial Public Class clsLnStock
                 SQL += " and (isnull(stock.lote,'') = @lote COLLATE Latin1_General_CS_AS) "
             End If
 
-            '#EJC20190311_0948PM: Excluir lo que esté en ubicaciones de tránsito.
-            SQL += " and stock.idubicacion NOT IN (SELECT IdUbicacion
+                    '#EJC20190311_0948PM: Excluir lo que esté en ubicaciones de tránsito.
+                    SQL += " and stock.idubicacion NOT IN (SELECT IdUbicacion
 							   FROM  bodega_ubicacion AS bodega_ubicacion 
 								WHERE (ubicacion_despacho = 1 and IdBodega=@IdBodega))"
 
-            Using lDTA As New SqlDataAdapter(SQL, pConnection)
+                    Using lDTA As New SqlDataAdapter(SQL, pConnection)
 
-                lDTA.SelectCommand.CommandType = CommandType.Text
-                lDTA.SelectCommand.Transaction = pTransaction
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pProducto.IdProductoBodega)
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", pProducto.IdUnidadMedida)
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = pTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pProducto.IdProductoBodega)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", pProducto.IdUnidadMedida)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
 
-                If ConEstado Then
-                    lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoEstado", pProducto.ProductoEstado.IdEstado)
-                End If
+                        If ConEstado Then
+                            lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoEstado", pProducto.ProductoEstado.IdEstado)
+                        End If
 
-                If ConLote Then
-                    lDTA.SelectCommand.Parameters.AddWithValue("@Lote", pProducto.Lote)
-                End If
+                        If ConLote Then
+                            lDTA.SelectCommand.Parameters.AddWithValue("@Lote", pProducto.Lote)
+                        End If
 
-                Dim lDataTable As New DataTable
-                lDTA.Fill(lDataTable)
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
 
-                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
 
-                    For Each lRow As DataRow In lDataTable.Rows
-                        oStock = New clsBeStock
-                        Cargar(oStock, lRow)
-                        ListStock.Add(oStock)
-                    Next
+                            For Each lRow As DataRow In lDataTable.Rows
+                                oStock = New clsBeStock
+                                Cargar(oStock, lRow)
+                                ListStock.Add(oStock)
+                            Next
 
-                End If
+                        End If
 
-            End Using
+                    End Using
 
-            Return ListStock
+                    Return ListStock
 
         Catch ex As Exception
             Throw ex
@@ -4339,10 +4355,10 @@ Partial Public Class clsLnStock
 
                     ElseIf (S.IdPresentacion > 0 AndAlso pProducto.IdPresentacion > 0) Then
 
-                        BeConversionEntrePresentaciones = clsLnProducto_Presentaciones_conversiones.GetSingle(S.IdPresentacion,
-                                                                            pProducto.IdPresentacion,
-                                                                            pConnection,
-                                                                            pTransaction)
+                        BeConversionEntrePresentaciones = clsLnProducto_presentaciones_conversiones.GetSingle(S.IdPresentacion,
+                        pProducto.IdPresentacion,
+                        pConnection,
+                        pTransaction)
 
                         If Not BeConversionEntrePresentaciones Is Nothing Then
 
@@ -4365,10 +4381,10 @@ Partial Public Class clsLnStock
 
                         Else
 
-                            BeConversionEntrePresentaciones = clsLnProducto_Presentaciones_conversiones.GetSingle(pProducto.IdPresentacion,
-                                                                            S.IdPresentacion,
-                                                                            pConnection,
-                                                                            pTransaction)
+                            BeConversionEntrePresentaciones = clsLnProducto_presentaciones_conversiones.GetSingle(pProducto.IdPresentacion,
+                            S.IdPresentacion,
+                            pConnection,
+                            pTransaction)
 
                             If Not BeConversionEntrePresentaciones Is Nothing Then
 
@@ -4527,10 +4543,10 @@ Partial Public Class clsLnStock
 
                     ElseIf (S.IdPresentacion > 0 AndAlso pProducto.IdPresentacion > 0) Then
 
-                        BeConversionEntrePresentaciones = clsLnProducto_Presentaciones_conversiones.GetSingle(S.IdPresentacion,
-                                                                            pProducto.IdPresentacion,
-                                                                            pConnection,
-                                                                            pTransaction)
+                        BeConversionEntrePresentaciones = clsLnProducto_presentaciones_conversiones.GetSingle(S.IdPresentacion,
+                        pProducto.IdPresentacion,
+                        pConnection,
+                        pTransaction)
 
                         If Not BeConversionEntrePresentaciones Is Nothing Then
 
@@ -4553,10 +4569,10 @@ Partial Public Class clsLnStock
 
                         Else
 
-                            BeConversionEntrePresentaciones = clsLnProducto_Presentaciones_conversiones.GetSingle(pProducto.IdPresentacion,
-                                                                            S.IdPresentacion,
-                                                                            pConnection,
-                                                                            pTransaction)
+                            BeConversionEntrePresentaciones = clsLnProducto_presentaciones_conversiones.GetSingle(pProducto.IdPresentacion,
+                            S.IdPresentacion,
+                            pConnection,
+                            pTransaction)
 
                             If Not BeConversionEntrePresentaciones Is Nothing Then
 
@@ -5073,6 +5089,15 @@ Partial Public Class clsLnStock
                                 BeStockNuevo.User_mod = BeUsuario.IdUsuario
                             End If
 
+                            '#GT18122025: considerar que solo talla o color fue actualizado y no ambos.
+                            Dim vTalla As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Talla_destino), BeTransAjusteDet.Talla_destino, BeTransAjusteDet.Talla_origen)
+                            Dim vColor As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Color_destino), BeTransAjusteDet.Color_destino, BeTransAjusteDet.Color_origen)
+                            Dim vIdProductoTallaColor As Integer = IIf(BeTransAjusteDet.IdProductoTallaColor_destino > 0, BeTransAjusteDet.IdProductoTallaColor_destino, BeTransAjusteDet.IdProductoTallaColor_origen)
+
+                            BeStockAActualizar.IdProductoTallaColor = vIdProductoTallaColor
+                            BeStockAActualizar.Talla = vTalla
+                            BeStockAActualizar.Color = vColor
+
                             Insertar(BeStockNuevo, pConection, pTransaction)
 
                             IdStock = BeStockNuevo.IdStock
@@ -5117,6 +5142,16 @@ Partial Public Class clsLnStock
                                 If Not BeUsuario Is Nothing Then
                                     BeStockAActualizar.User_mod = BeUsuario.IdUsuario
                                 End If
+
+
+                                '#GT18122025: considerar que solo talla o color fue actualizado y no ambos.
+                                Dim vTalla As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Talla_destino), BeTransAjusteDet.Talla_destino, BeTransAjusteDet.Talla_origen)
+                                Dim vColor As String = IIf(Not String.IsNullOrEmpty(BeTransAjusteDet.Color_destino), BeTransAjusteDet.Color_destino, BeTransAjusteDet.Color_origen)
+                                Dim vIdProductoTallaColor As Integer = IIf(BeTransAjusteDet.IdProductoTallaColor_destino > 0, BeTransAjusteDet.IdProductoTallaColor_destino, BeTransAjusteDet.IdProductoTallaColor_origen)
+
+                                BeStockAActualizar.IdProductoTallaColor = vIdProductoTallaColor
+                                BeStockAActualizar.Talla = vTalla
+                                BeStockAActualizar.Color = vColor
 
                                 If Es_Transaccion_Remota Then
                                     rowsAffected = Actualizar_Stock_Por_Ajuste(BeStockAActualizar, pConection, pTransaction)
@@ -5709,293 +5744,302 @@ Partial Public Class clsLnStock
 
         lStock = Nothing
 
-        Dim vBeStock As New clsBeStock()
-        Dim lBeStock As New List(Of clsBeStock)
-        Dim IdxProductoEnMemoria As Integer = -1
-        Dim vIdProductoBodega As Integer = 0
-        Dim lLotesPermitidos As New List(Of clsBeCliente_lotes)
-        Dim lLotesBloqueados As New List(Of clsBeCliente_lotes)
-        Dim CantidadSolicitada As Double = 0
-        Dim UmbralDiasVencimiento As Integer = 30
-
         Try
 
-            If pBeStockRes Is Nothing Then
-                '#EJC20231220
-                Exit Function
-            End If
+            Dim vBeStock As New clsBeStock()
+            Dim lBeStock As New List(Of clsBeStock)
+            Dim IdxProductoEnMemoria As Integer = -1
+            Dim vIdProductoBodega As Integer = 0
+            Dim lLotesPermitidos As New List(Of clsBeCliente_lotes)
+            Dim lLotesBloqueados As New List(Of clsBeCliente_lotes)
+            Dim CantidadSolicitada As Double = 0
+            Dim UmbralDiasVencimiento As Integer = 30
 
-            CantidadSolicitada = pBeStockRes.Cantidad
+            Try
 
-            vIdProductoBodega = pBeStockRes.IdProductoBodega
+                If pBeStockRes Is Nothing Then
+                    '#EJC20231220
+                    Exit Function
+                End If
 
-            pBeProductoOutput = New clsBeProducto()
-            pBeProductoOutput = lpBeProductoOutput.Find(Function(x) x.IdProductoBodega = vIdProductoBodega)
+                CantidadSolicitada = pBeStockRes.Cantidad
 
-            If pBeProductoOutput Is Nothing Then
+                vIdProductoBodega = pBeStockRes.IdProductoBodega
 
                 pBeProductoOutput = New clsBeProducto()
-                pBeProductoOutput = clsLnProducto.Get_Single_By_IdProductoBodega(pBeStockRes.IdProductoBodega,
-                                                                                 lConnection,
-                                                                                 ltransaction)
+                pBeProductoOutput = lpBeProductoOutput.Find(Function(x) x.IdProductoBodega = vIdProductoBodega)
 
-                If Not pBeProductoOutput Is Nothing Then
-                    pBeProductoOutput.IdProductoBodega = pBeStockRes.IdProductoBodega
-                    lpBeProductoOutput.Add(pBeProductoOutput)
+                If pBeProductoOutput Is Nothing Then
+
+                    pBeProductoOutput = New clsBeProducto()
+                    pBeProductoOutput = clsLnProducto.Get_Single_By_IdProductoBodega(pBeStockRes.IdProductoBodega,
+                                                                                     lConnection,
+                                                                                     ltransaction)
+
+                    If Not pBeProductoOutput Is Nothing Then
+                        pBeProductoOutput.IdProductoBodega = pBeStockRes.IdProductoBodega
+                        lpBeProductoOutput.Add(pBeProductoOutput)
+                    End If
+
                 End If
 
-            End If
+                Dim BeBodega As New clsBeBodega
+                BeBodega = lBeBodega.Find(Function(x) x.IdBodega = pBeConfigEnc.Idbodega)
 
-            Dim BeBodega As New clsBeBodega
-            BeBodega = lBeBodega.Find(Function(x) x.IdBodega = pBeConfigEnc.Idbodega)
+                If BeBodega Is Nothing Then
 
-            If BeBodega Is Nothing Then
+                    BeBodega = clsLnBodega.GetSingle_By_Idbodega(pBeConfigEnc.Idbodega,
+                                                                 lConnection,
+                                                                 ltransaction)
 
-                BeBodega = clsLnBodega.GetSingle_By_Idbodega(pBeConfigEnc.Idbodega,
-                                                             lConnection,
-                                                             ltransaction)
+                    If Not lBeBodega Is Nothing Then
+                        lBeBodega.Add(BeBodega)
+                    End If
 
-                If Not lBeBodega Is Nothing Then
-                    lBeBodega.Add(BeBodega)
                 End If
 
-            End If
+                '#EJC20180420: Mejora en consulta por ordenamiento lógico para picking.
+                '     Dim vSQL As String = "SELECT stock.*,
+                '            bodega_ubicacion.indice_x, 
+                '            bodega_ubicacion.nivel, 
+                '            bodega_ubicacion.orientacion_pos, 
+                '            bodega_tramo.descripcion AS Nombre_Tramo,
+                '                           bodega_ubicacion.ubicacion_picking
+                '            FROM stock INNER JOIN
+                '            producto_bodega ON stock.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
+                '            bodega_ubicacion ON stock.IdUbicacion = bodega_ubicacion.IdUbicacion 
+                '            AND stock.IdUbicacion = bodega_ubicacion.IdUbicacion 
+                '                           AND stock.IdBodega = bodega_ubicacion.IdBodega
+                '            INNER JOIN
+                '            bodega_tramo ON bodega_ubicacion.IdTramo = bodega_tramo.IdTramo 
+                '                           AND bodega_ubicacion.IdBodega = bodega_tramo.IdBodega
+                '                           AND bodega_ubicacion.IdSector = bodega_tramo.IdSector "
 
-            '#EJC20180420: Mejora en consulta por ordenamiento lógico para picking.
-            '     Dim vSQL As String = "SELECT stock.*,
-            '            bodega_ubicacion.indice_x, 
-            '            bodega_ubicacion.nivel, 
-            '            bodega_ubicacion.orientacion_pos, 
-            '            bodega_tramo.descripcion AS Nombre_Tramo,
-            '                           bodega_ubicacion.ubicacion_picking
-            '            FROM stock INNER JOIN
-            '            producto_bodega ON stock.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
-            '            bodega_ubicacion ON stock.IdUbicacion = bodega_ubicacion.IdUbicacion 
-            '            AND stock.IdUbicacion = bodega_ubicacion.IdUbicacion 
-            '                           AND stock.IdBodega = bodega_ubicacion.IdBodega
-            '            INNER JOIN
-            '            bodega_tramo ON bodega_ubicacion.IdTramo = bodega_tramo.IdTramo 
-            '                           AND bodega_ubicacion.IdBodega = bodega_tramo.IdBodega
-            '                           AND bodega_ubicacion.IdSector = bodega_tramo.IdSector "
+                '     If pBeStockRes.Control_Ultimo_Lote Then
+                '         vSQL += " LEFT OUTER JOIN
+                'trans_re_det_lote_num ON stock.IdProductoBodega = trans_re_det_lote_num.IdProductoBodega 
+                'AND stock.lote = trans_re_det_lote_num.Lote "
+                '     End If
 
-            '     If pBeStockRes.Control_Ultimo_Lote Then
-            '         vSQL += " LEFT OUTER JOIN
-            'trans_re_det_lote_num ON stock.IdProductoBodega = trans_re_det_lote_num.IdProductoBodega 
-            'AND stock.lote = trans_re_det_lote_num.Lote "
-            '     End If
+                '     vSQL += " WHERE bodega_ubicacion.activo = 1 
+                '               and bodega_ubicacion.bloqueada = 0
+                '               and producto_bodega.idproductobodega=@idproductobodega                     
+                'and stock.idunidadmedida =@idunidadmedida  "
 
-            '     vSQL += " WHERE bodega_ubicacion.activo = 1 
-            '               and bodega_ubicacion.bloqueada = 0
-            '               and producto_bodega.idproductobodega=@idproductobodega                     
-            'and stock.idunidadmedida =@idunidadmedida  "
+                Dim vSQL As String = ""
 
-            Dim vSQL As String = ""
-
-            If pBeProductoOutput.Control_vencimiento Then
-                vSQL += "WITH FechaBase AS (" &
+                If pBeProductoOutput.Control_vencimiento Then
+                    vSQL += "WITH FechaBase AS (" &
                     " SELECT MIN(stock.fecha_vence) AS FechaVencimientoBase" &
                     " FROM stock" &
                     " WHERE stock.idproductobodega = @IdProductoBodega" &
                     " AND stock.idunidadmedida = @IdUnidadMedida" &
                     " AND stock.idproductoestado = @IdProductoEstado)" & vbCrLf
-            End If
-
-            vSQL += " SELECT stock.*," &
-                " dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) AS NombreUbicacion," &
-                " bodega_ubicacion.indice_x, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos," &
-                " bodega_tramo.descripcion AS Nombre_Tramo, bodega_ubicacion.ubicacion_picking" &
-                " FROM stock" &
-                " INNER JOIN producto_bodega ON stock.IdProductoBodega = producto_bodega.IdProductoBodega" &
-                " INNER JOIN bodega_ubicacion ON stock.IdUbicacion = bodega_ubicacion.IdUbicacion AND stock.IdBodega = bodega_ubicacion.IdBodega" &
-                " INNER JOIN bodega_tramo ON bodega_ubicacion.IdTramo = bodega_tramo.IdTramo AND bodega_ubicacion.IdBodega = bodega_tramo.IdBodega AND bodega_ubicacion.IdSector = bodega_tramo.IdSector"
-
-            If pBeProductoOutput.Control_vencimiento Then
-                vSQL += " CROSS APPLY (SELECT FechaVencimientoBase FROM FechaBase) fb" & vbCrLf
-            End If
-
-            vSQL += " WHERE bodega_ubicacion.activo = 1" &
-                " AND bodega_ubicacion.bloqueada = 0" &
-                " AND producto_bodega.idproductobodega = @IdProductoBodega" &
-                " AND stock.IdUnidadMedida = @IdUnidadMedida "
-
-            '#CKFK20240528 Agregué esta validación para cuando sea devolución a proveedor
-            If Not pEs_Devolucion AndAlso pBeStockRes.IdUbicacionAbastecerCon = 0 Then
-                vSQL += " and stock.idproductoestado=@idproductoestado "
-            End If
-
-            If Not BeBodega.Permitir_Decimales Then
-
-                If pBeStockRes.IdPresentacion <> 0 OrElse Not pBeStockRes.Atributo_Variante_1 Is Nothing Then
-                    If Not pBeStockRes.Atributo_Variante_1 Is Nothing Then
-                        If pBeStockRes.Atributo_Variante_1 <> "" OrElse pBeStockRes.IdPresentacion <> 0 Then
-                            vSQL += "and (stock.idpresentacion =@idpresentacion) "
-                        Else
-                            If (pBeConfigEnc.Explosion_Automatica OrElse pBeConfigEnc.Explosion_Automatica_Desde_Ubicacion_Picking _
-                                OrElse pBeStockRes.IdPresentacion = 0) Then
-                                vSQL += "and (stock.idpresentacion is null or stock.idpresentacion = 0) "
-                            End If
-                            If Not Conmutar_Umbas_A_Presentacion Then
-                                vSQL += "and (stock.idpresentacion is null or stock.idpresentacion = 0) "
-                            End If
-                        End If
-                    End If
-                Else
-                    '#EJC20220315:BYB, reservar UMBAS aunque solo tenga producto en PRES ¬¬'
-                    If Not Conmutar_Umbas_A_Presentacion Then
-                        '#EJC20200129:Parametrizar....
-                        vSQL += "and (stock.idpresentacion is null or stock.idpresentacion =0) "
-                    End If
                 End If
 
-            End If
+                vSQL += " SELECT stock.*," &
+                    " dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) AS NombreUbicacion," &
+                    " bodega_ubicacion.indice_x, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos," &
+                    " bodega_tramo.descripcion AS Nombre_Tramo, bodega_ubicacion.ubicacion_picking" &
+                    " FROM stock" &
+                    " INNER JOIN producto_bodega ON stock.IdProductoBodega = producto_bodega.IdProductoBodega" &
+                    " INNER JOIN bodega_ubicacion ON stock.IdUbicacion = bodega_ubicacion.IdUbicacion AND stock.IdBodega = bodega_ubicacion.IdBodega" &
+                    " INNER JOIN bodega_tramo ON bodega_ubicacion.IdTramo = bodega_tramo.IdTramo AND bodega_ubicacion.IdBodega = bodega_tramo.IdBodega AND bodega_ubicacion.IdSector = bodega_tramo.IdSector"
 
-            If DiasVencimiento <> 0 Then
-                vSQL += " And DATEDIFF (DAY,GETDATE(),stock.fecha_vence) >=@DiasVencimientoCliente "
-            End If
+                If pBeProductoOutput.Control_vencimiento Then
+                    vSQL += " CROSS APPLY (SELECT FechaVencimientoBase FROM FechaBase) fb" & vbCrLf
+                End If
 
-            '#EJC20220620:Temporal, averiguar si aquí vienen los días de vencimiento del cliente.
-            Dim vMsgError As String = String.Format("DIAS_VENCIMIENTO_CLI: Días: {0} IdProductoBodega: {1}", DiasVencimiento, pBeStockRes.IdProductoBodega)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                vSQL += " WHERE bodega_ubicacion.activo = 1" &
+                    " AND bodega_ubicacion.bloqueada = 0" &
+                    " AND producto_bodega.idproductobodega = @IdProductoBodega" &
+                    " AND stock.IdUnidadMedida = @IdUnidadMedida "
 
-            If pBeStockRes.IdUbicacionAbastecerCon = 0 Then
-                If Not BeBodega Is Nothing Then
+                '#CKFK20240528 Agregué esta validación para cuando sea devolución a proveedor
+                If Not pEs_Devolucion AndAlso pBeStockRes.IdUbicacionAbastecerCon = 0 Then
+                    vSQL += " and stock.idproductoestado=@idproductoestado "
+                End If
 
-                    If pBeProductoOutput.Control_vencimiento Then
+                If Not BeBodega.Permitir_Decimales Then
 
-                        '#CKFK20240528 Agregué esta validación para cuando sea devolución a proveedor  AndAlso Not pEs_Devolucion
-                        If Not BeBodega.despachar_producto_vencido AndAlso Not pEs_Devolucion Then
-                            vSQL += " And stock.fecha_vence > GETDATE() "
+                    If pBeStockRes.IdPresentacion <> 0 OrElse Not pBeStockRes.Atributo_Variante_1 Is Nothing Then
+                        If Not pBeStockRes.Atributo_Variante_1 Is Nothing Then
+                            If pBeStockRes.Atributo_Variante_1 <> "" OrElse pBeStockRes.IdPresentacion <> 0 Then
+                                vSQL += "and (stock.idpresentacion =@idpresentacion) "
+                            Else
+                                If (pBeConfigEnc.Explosion_Automatica OrElse pBeConfigEnc.Explosion_Automatica_Desde_Ubicacion_Picking _
+                                    OrElse pBeStockRes.IdPresentacion = 0) Then
+                                    vSQL += "and (stock.idpresentacion is null or stock.idpresentacion = 0) "
+                                End If
+                                If Not Conmutar_Umbas_A_Presentacion Then
+                                    vSQL += "and (stock.idpresentacion is null or stock.idpresentacion = 0) "
+                                End If
+                            End If
                         End If
-
+                    Else
+                        '#EJC20220315:BYB, reservar UMBAS aunque solo tenga producto en PRES ¬¬'
+                        If Not Conmutar_Umbas_A_Presentacion Then
+                            '#EJC20200129:Parametrizar....
+                            vSQL += "and (stock.idpresentacion is null or stock.idpresentacion =0) "
+                        End If
                     End If
 
                 End If
-            End If
 
-            '#EJC20190311_0948PM: Abastecer el pedido con IdUbicacion configurada en cliente.
-            If pBeStockRes.IdUbicacionAbastecerCon = 0 Then
-                '"#EJC20190312:Excluir el inventario en tránsito al momento de listar stock para reservar.
-                vSQL += " AND stock.IdUbicacion NOT IN (SELECT bu.IdUbicacion
-    			   FROM bodega_ubicacion bu
-    			   WHERE (bu.ubicacion_despacho = 1) AND (bu.IdBodega = @IdBodega))"
-            End If
+                If DiasVencimiento <> 0 Then
+                    vSQL += " And DATEDIFF (DAY,GETDATE(),stock.fecha_vence) >=@DiasVencimientoCliente "
+                End If
 
-            If pExcluirUbicacionPicking Then
-                '"#EJC20190312:Excluir el inventario en tránsito al momento de litar stock para reservar.
-                vSQL += " AND stock.IdUbicacion NOT IN (SELECT bu.IdUbicacion
-    			                           FROM bodega_ubicacion bu
-    			                           WHERE (bu.ubicacion_picking = 1) AND (bu.IdBodega = @IdBodega))"
-            End If
+                '#EJC20220620:Temporal, averiguar si aquí vienen los días de vencimiento del cliente.
+                Dim vMsgError As String = String.Format("DIAS_VENCIMIENTO_CLI: Días: {0} IdProductoBodega: {1}", DiasVencimiento, pBeStockRes.IdProductoBodega)
+                'clsLnLog_error_wms.Agregar_Error(vMsgError)
 
-            If pBeConfigEnc.Excluir_Recepcion_Picking Then
-                '"#CKFK20250610:Excluir el inventario de la ubicacion de recepcion
-                vSQL += " AND stock.IdUbicacion NOT IN (SELECT bu.IdUbicacion
-    			                           FROM bodega_ubicacion bu
-    			                           WHERE (bu.ubicacion_recepcion = 1) AND (bu.IdBodega = @IdBodega))"
-            End If
+                If pBeStockRes.IdUbicacionAbastecerCon = 0 Then
+                    If Not BeBodega Is Nothing Then
 
-            '#CKFK20230208 Excluir ubicaciones de reabasto
-            If pTarea_Reabasto Then
-                If pBeConfigEnc.Excluir_Ubicaciones_Reabasto Then
-                    vSQL += " AND stock.IdUbicacion NOT IN (SELECT pr.IdUbicacion
+                        If pBeProductoOutput.Control_vencimiento Then
+
+                            '#CKFK20240528 Agregué esta validación para cuando sea devolución a proveedor  AndAlso Not pEs_Devolucion
+                            If Not BeBodega.despachar_producto_vencido AndAlso Not pEs_Devolucion Then
+                                vSQL += " And stock.fecha_vence > GETDATE() "
+                            End If
+
+                        End If
+
+                    End If
+                End If
+
+                '#EJC20190311_0948PM: Abastecer el pedido con IdUbicacion configurada en cliente.
+                If pBeStockRes.IdUbicacionAbastecerCon = 0 Then
+                    '"#EJC20190312:Excluir el inventario en tránsito al momento de listar stock para reservar.
+                    vSQL += " AND stock.IdUbicacion NOT IN (SELECT bu.IdUbicacion
+							   FROM bodega_ubicacion bu
+							   WHERE (bu.ubicacion_despacho = 1) AND (bu.IdBodega = @IdBodega))"
+                End If
+
+                If pExcluirUbicacionPicking Then
+                    '"#EJC20190312:Excluir el inventario en tránsito al momento de litar stock para reservar.
+                    vSQL += " AND stock.IdUbicacion NOT IN (SELECT bu.IdUbicacion
+							                           FROM bodega_ubicacion bu
+							                           WHERE (bu.ubicacion_picking = 1) AND (bu.IdBodega = @IdBodega))"
+                End If
+
+                If pBeConfigEnc.Excluir_Recepcion_Picking Then
+                    '"#CKFK20250610:Excluir el inventario de la ubicacion de recepcion
+                    vSQL += " AND stock.IdUbicacion NOT IN (SELECT bu.IdUbicacion
+							                           FROM bodega_ubicacion bu
+							                           WHERE (bu.ubicacion_recepcion = 1) AND (bu.IdBodega = @IdBodega))"
+                End If
+
+                '#CKFK20230208 Excluir ubicaciones de reabasto
+                If pTarea_Reabasto Then
+                    If pBeConfigEnc.Excluir_Ubicaciones_Reabasto Then
+                        vSQL += " AND stock.IdUbicacion NOT IN (SELECT pr.IdUbicacion
                             FROM  producto_rellenado pr
                             WHERE (pr.IdBodega = @IdBodega) AND (pr.Activo = 1))"
-                End If
-            End If
-
-            '#EJC20190313: Excluir el último lote despachado u obtener uno mayor
-            If pBeStockRes.Control_Ultimo_Lote Then
-
-                If IsNumeric(pBeStockRes.Ultimo_Lote) Then
-                    vSQL += " And (trans_re_det_lote_num.lote_numerico >= @UltimoLote)"
-                End If
-
-            End If
-
-            '#EJC20190311_0948PM: Abastecer el pedido con IdUbicacion configurada en cliente.
-            If pBeStockRes.IdUbicacionAbastecerCon <> 0 Then
-                If pBeStockRes.IdUbicacionAbastecerCon = 563 Then
-                    vSQL += " and stock.idubicacion in (select IdUbicacion from bodega_ubicacion where IdBodega = 1 And IdTramo = 21)"
-                Else
-                    vSQL += " and stock.idubicacion = @IdUbicacionAbastecerCon "
-                End If
-
-            End If
-
-            '#EJC20220523: Evitar que se explosione producto desde los niveles superiores a nivel (1 PEJ.) o ubicaciones de picking.
-            If Conmutar_Umbas_A_Presentacion OrElse pBeStockRes.IdPresentacion = 0 Then
-
-                If Not pExcluirUbicacionPicking Then
-                    If pBeConfigEnc.Explosion_Automatica_Desde_Ubicacion_Picking Then
-                        vSQL += " and bodega_ubicacion.ubicacion_picking= 1 "
                     End If
                 End If
 
-                If pBeConfigEnc.Explosion_Automatica_Nivel_Max > 0 Then
-                    vSQL += " and bodega_ubicacion.nivel=  " & pBeConfigEnc.Explosion_Automatica_Nivel_Max
+                '#EJC20190313: Excluir el último lote despachado u obtener uno mayor
+                If pBeStockRes.Control_Ultimo_Lote Then
+
+                    If IsNumeric(pBeStockRes.Ultimo_Lote) Then
+                        vSQL += " And (trans_re_det_lote_num.lote_numerico >= @UltimoLote)"
+                    End If
+
                 End If
 
-            End If
+                '#EJC20190311_0948PM: Abastecer el pedido con IdUbicacion configurada en cliente.
+                If pBeStockRes.IdUbicacionAbastecerCon <> 0 Then
+                    If pBeStockRes.IdUbicacionAbastecerCon = 563 Then
+                        vSQL += " and stock.idubicacion in (select IdUbicacion from bodega_ubicacion where IdBodega = 1 And IdTramo = 21)"
+                    Else
+                        vSQL += " and stock.idubicacion = @IdUbicacionAbastecerCon "
+                    End If
 
-            '#EJC20250713: Control por lotes avanzado para Killios.
-            Dim vIdCliente As Integer = 0
-            vIdCliente = clsLnTrans_pe_enc.GetIdCliente(pBeStockRes.IdPedido, lConnection, ltransaction)
-            Dim vIdProducto As Integer = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(pBeStockRes.IdProductoBodega, lConnection, ltransaction)
-            Dim lLotes As List(Of clsBeCliente_lotes) = clsLnCliente_lotes.Get_All_By_IdCliente(vIdCliente, lConnection, ltransaction)
+                End If
 
-            If lLotes IsNot Nothing Then
+                '#EJC20220523: Evitar que se explosione producto desde los niveles superiores a nivel (1 PEJ.) o ubicaciones de picking.
+                If Conmutar_Umbas_A_Presentacion OrElse pBeStockRes.IdPresentacion = 0 Then
 
-                lLotesPermitidos = lLotes.FindAll(Function(x) x.Bloquear = False)
-                If lLotesPermitidos IsNot Nothing AndAlso lLotesPermitidos.Count > 0 Then
-                    vSQL += " AND stock.Lote IN (SELECT cl.Lote
+                    If Not pExcluirUbicacionPicking Then
+                        If pBeConfigEnc.Explosion_Automatica_Desde_Ubicacion_Picking Then
+                            vSQL += " and bodega_ubicacion.ubicacion_picking= 1 "
+                        End If
+                    End If
+
+                    If pBeConfigEnc.Explosion_Automatica_Nivel_Max > 0 Then
+                        vSQL += " and bodega_ubicacion.nivel=  " & pBeConfigEnc.Explosion_Automatica_Nivel_Max
+                    End If
+
+                End If
+
+                '#EJC20250713: Control por lotes avanzado para Killios.
+                Dim vIdCliente As Integer = 0
+                vIdCliente = clsLnTrans_pe_enc.GetIdCliente(pBeStockRes.IdPedido, lConnection, ltransaction)
+                Dim vIdProducto As Integer = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(pBeStockRes.IdProductoBodega, lConnection, ltransaction)
+                Dim lLotes As List(Of clsBeCliente_lotes) = clsLnCliente_lotes.Get_All_By_IdCliente(vIdCliente, lConnection, ltransaction)
+
+                If lLotes IsNot Nothing Then
+
+                    lLotesPermitidos = lLotes.FindAll(Function(x) x.Bloquear = False)
+                    If lLotesPermitidos IsNot Nothing AndAlso lLotesPermitidos.Count > 0 Then
+                        vSQL += " AND stock.Lote IN (SELECT cl.Lote
                             FROM  cliente_lotes cl
                             WHERE (cl.IdCliente = @IdCliente AND cl.Activo = 1 AND IdProducto = @IdProducto and cl.bloquear = 0 )) "
-                End If
+                    End If
 
-                lLotesBloqueados = lLotes.FindAll(Function(x) x.Bloquear = True)
-                If lLotesBloqueados IsNot Nothing AndAlso lLotesBloqueados.Count > 0 Then
-                    vSQL += " AND stock.Lote NOT IN (SELECT cl.Lote
+                    lLotesBloqueados = lLotes.FindAll(Function(x) x.Bloquear = True)
+                    If lLotesBloqueados IsNot Nothing AndAlso lLotesBloqueados.Count > 0 Then
+                        vSQL += " AND stock.Lote NOT IN (SELECT cl.Lote
                             FROM  cliente_lotes cl
                             WHERE (cl.IdCliente = @IdCliente AND cl.Activo = 1 AND IdProducto = @IdProducto and cl.bloquear = 1)) "
+                    End If
+
+                End If
+                If BeBodega.Control_Talla_Color Then
+
+                    If Not pBeStockRes.IdProductoTallaColor = 0 Then
+                        vSQL += " and stock.IdProductoTallaColor= @IdProductoTallaColor"
+                    End If
+
                 End If
 
-            End If
+                '#EJC20200204: Mejora por nuevo tipo de rotación
+                Dim IdTipoRotacion As Integer = 0
+                Dim vIdxTipoRotacion As Integer = 0
+                vIdxTipoRotacion = lTipoRotacion.FindIndex(Function(x) x.IdProductoBodega = vIdProductoBodega)
+                Dim BeTipoRotacion As New clsBeTipo_rotacion()
 
-            '#EJC20200204: Mejora por nuevo tipo de rotación
-            Dim IdTipoRotacion As Integer = 0
-            Dim vIdxTipoRotacion As Integer = 0
-            vIdxTipoRotacion = lTipoRotacion.FindIndex(Function(x) x.IdProductoBodega = vIdProductoBodega)
-            Dim BeTipoRotacion As New clsBeTipo_rotacion()
-
-            If vIdxTipoRotacion = -1 Then
-                IdTipoRotacion = clsLnProducto.Get_Tipo_Rotacion_By_IdProductoBodega(vIdProductoBodega, lConnection, ltransaction)
-                BeTipoRotacion.IdTipoRotacion = IdTipoRotacion
-                BeTipoRotacion.IdProductoBodega = vIdProductoBodega
-                BeTipoRotacion.Activo = True
-                lTipoRotacion.Add(BeTipoRotacion.Clone())
-            Else
-                IdTipoRotacion = lTipoRotacion(vIdxTipoRotacion).IdTipoRotacion
-            End If
-
-            If Not pBeStockRes.IdPresentacion = 0 Then
-                Dim beProductoPresentacion = clsLnProducto_presentacion.GetSingle(pBeStockRes.IdPresentacion, lConnection, ltransaction)
-                If Not beProductoPresentacion Is Nothing Then
-                    CantidadSolicitada = pBeStockRes.Cantidad * beProductoPresentacion.Factor
+                If vIdxTipoRotacion = -1 Then
+                    IdTipoRotacion = clsLnProducto.Get_Tipo_Rotacion_By_IdProductoBodega(vIdProductoBodega, lConnection, ltransaction)
+                    BeTipoRotacion.IdTipoRotacion = IdTipoRotacion
+                    BeTipoRotacion.IdProductoBodega = vIdProductoBodega
+                    BeTipoRotacion.Activo = True
+                    lTipoRotacion.Add(BeTipoRotacion.Clone())
+                Else
+                    IdTipoRotacion = lTipoRotacion(vIdxTipoRotacion).IdTipoRotacion
                 End If
-            End If
 
-            '#EJC20200204: Modifiqué el ordenamiento (quité nombre_tramo del orden)
-            Select Case IdTipoRotacion
-                Case 1 'FIFO                    
-                    vSQL += " ORDER BY fecha_ingreso asc, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,bodega_ubicacion.IdTramo,indice_x,nivel,orientacion_pos,cantidad"
-                Case 2 'LIFO
-                    vSQL += " ORDER BY fecha_ingreso desc,bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,bodega_ubicacion.IdTramo,indice_x,nivel,orientacion_pos,cantidad"
-                Case 3 'FEFO
-                    'vSQL += " ORDER BY fecha_vence, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.idubicacion,bodega_ubicacion.idbodega),cantidad "
-                    If Not BeBodega.Priorizar_Cantidad_Superior Then
-                        vSQL += " ORDER BY fecha_vence, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.idubicacion,bodega_ubicacion.idbodega),cantidad "
-                    Else
-                        vSQL += " ORDER BY" &
+                If Not pBeStockRes.IdPresentacion = 0 Then
+                    Dim beProductoPresentacion = clsLnProducto_presentacion.GetSingle(pBeStockRes.IdPresentacion, lConnection, ltransaction)
+                    If Not beProductoPresentacion Is Nothing Then
+                        CantidadSolicitada = pBeStockRes.Cantidad * beProductoPresentacion.Factor
+                    End If
+                End If
+
+                '#EJC20200204: Modifiqué el ordenamiento (quité nombre_tramo del orden)
+                Select Case IdTipoRotacion
+                    Case 1 'FIFO                    
+                        vSQL += " ORDER BY fecha_ingreso asc, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,bodega_ubicacion.IdTramo,indice_x,nivel,orientacion_pos,cantidad"
+                    Case 2 'LIFO
+                        vSQL += " ORDER BY fecha_ingreso desc,bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,bodega_ubicacion.IdTramo,indice_x,nivel,orientacion_pos,cantidad"
+                    Case 3 'FEFO
+                        'vSQL += " ORDER BY fecha_vence, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.idubicacion,bodega_ubicacion.idbodega),cantidad "
+                        If Not BeBodega.Priorizar_Cantidad_Superior Then
+                            vSQL += " ORDER BY fecha_vence, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.idubicacion,bodega_ubicacion.idbodega),cantidad "
+                        Else
+                            vSQL += " ORDER BY" &
                         " stock.fecha_vence ASC," &
                         " fecha_ingreso ASC, " &
                         " bodega_ubicacion.ubicacion_picking desc, " &
@@ -6005,118 +6049,123 @@ Partial Public Class clsLnStock
                         " ELSE 2 END," &
                         " stock.cantidad ASC," &
                         " dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) "
-                    End If
-                Case 4 'UPSR (Ubicación prioritaria sobre rotación)
-                    vSQL += " ORDER BY indice_x,bodega_tramo.es_rack,bodega_ubicacion.IdTramo,nivel,orientacion_pos,cantidad"
-                Case Else 'Default
-                    vSQL += " ORDER BY fecha_ingreso asc, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,bodega_ubicacion.IdTramo,indice_x,nivel,orientacion_pos,cantidad"
+                        End If
+                    Case 4 'UPSR (Ubicación prioritaria sobre rotación)
+                        vSQL += " ORDER BY indice_x,bodega_tramo.es_rack,bodega_ubicacion.IdTramo,nivel,orientacion_pos,cantidad"
+                    Case Else 'Default
+                        vSQL += " ORDER BY fecha_ingreso asc, bodega_ubicacion.ubicacion_picking desc, bodega_tramo.es_rack,bodega_ubicacion.IdTramo,indice_x,nivel,orientacion_pos,cantidad"
 
-            End Select
+                End Select
 
-            Using lCommand As New SqlCommand(vSQL, lConnection, ltransaction) With {.CommandType = CommandType.Text}
+                Using lCommand As New SqlCommand(vSQL, lConnection, ltransaction) With {.CommandType = CommandType.Text}
 
-                lCommand.Parameters.AddWithValue("@IdProductoBodega", pBeStockRes.IdProductoBodega)
+                    lCommand.Parameters.AddWithValue("@IdProductoBodega", pBeStockRes.IdProductoBodega)
 
-                If Not pBeStockRes.Atributo_Variante_1 Is Nothing OrElse pBeStockRes.IdPresentacion >= 0 Then
-                    lCommand.Parameters.AddWithValue("@IdPresentacion", pBeStockRes.IdPresentacion)
-                End If
-
-                lCommand.Parameters.AddWithValue("@IdUnidadMedida", pBeStockRes.IdUnidadMedida)
-                lCommand.Parameters.AddWithValue("@IdProductoEstado", pBeStockRes.IdProductoEstado)
-                lCommand.Parameters.AddWithValue("@IdBodega", pBeConfigEnc.Idbodega)
-
-                If DiasVencimiento <> 0 Then
-                    lCommand.Parameters.AddWithValue("@DiasVencimientoCliente", DiasVencimiento)
-                End If
-
-                If pBeStockRes.Control_Ultimo_Lote AndAlso pBeStockRes.Ultimo_Lote <> "" Then
-                    lCommand.Parameters.AddWithValue("@UltimoLote", Val(pBeStockRes.Ultimo_Lote))
-                End If
-
-                If pBeStockRes.IdUbicacionAbastecerCon <> 0 Then
-                    lCommand.Parameters.AddWithValue("@IdUbicacionAbastecerCon", pBeStockRes.IdUbicacionAbastecerCon)
-                End If
-
-                If lLotes IsNot Nothing Then
-                    If vIdCliente <> 0 Then
-                        lCommand.Parameters.AddWithValue("@IdCliente", vIdCliente)
+                    If Not pBeStockRes.Atributo_Variante_1 Is Nothing OrElse pBeStockRes.IdPresentacion >= 0 Then
+                        lCommand.Parameters.AddWithValue("@IdPresentacion", pBeStockRes.IdPresentacion)
                     End If
 
-                    If vIdProducto <> 0 Then
-                        lCommand.Parameters.AddWithValue("@IdProducto", vIdProducto)
+                    lCommand.Parameters.AddWithValue("@IdUnidadMedida", pBeStockRes.IdUnidadMedida)
+                    lCommand.Parameters.AddWithValue("@IdProductoEstado", pBeStockRes.IdProductoEstado)
+                    lCommand.Parameters.AddWithValue("@IdBodega", pBeConfigEnc.Idbodega)
+
+                    If DiasVencimiento <> 0 Then
+                        lCommand.Parameters.AddWithValue("@DiasVencimientoCliente", DiasVencimiento)
                     End If
-                End If
 
-                If CantidadSolicitada > 0 Then
-                    lCommand.Parameters.AddWithValue("@CantidadSolicitada", CantidadSolicitada)
-                End If
+                    If pBeStockRes.Control_Ultimo_Lote AndAlso pBeStockRes.Ultimo_Lote <> "" Then
+                        lCommand.Parameters.AddWithValue("@UltimoLote", Val(pBeStockRes.Ultimo_Lote))
+                    End If
 
-                If UmbralDiasVencimiento > 0 Then
-                    lCommand.Parameters.AddWithValue("@UmbralDiasVencimiento", UmbralDiasVencimiento)
-                End If
+                    If pBeStockRes.IdUbicacionAbastecerCon <> 0 Then
+                        lCommand.Parameters.AddWithValue("@IdUbicacionAbastecerCon", pBeStockRes.IdUbicacionAbastecerCon)
+                    End If
 
-                Using dr = lCommand.ExecuteReader()
+                    If lLotes IsNot Nothing Then
+                        If vIdCliente <> 0 Then
+                            lCommand.Parameters.AddWithValue("@IdCliente", vIdCliente)
+                        End If
 
-                    While dr.Read()
+                        If vIdProducto <> 0 Then
+                            lCommand.Parameters.AddWithValue("@IdProducto", vIdProducto)
+                        End If
+                    End If
 
-                        vBeStock = New clsBeStock
+                    If CantidadSolicitada > 0 Then
+                        lCommand.Parameters.AddWithValue("@CantidadSolicitada", CantidadSolicitada)
+                    End If
 
-                        With vBeStock
+                    If UmbralDiasVencimiento > 0 Then
+                        lCommand.Parameters.AddWithValue("@UmbralDiasVencimiento", UmbralDiasVencimiento)
+                    End If
+                    If Not pBeStockRes.IdProductoTallaColor = 0 Then
+                        lCommand.Parameters.AddWithValue("@IdProductoTallaColor", pBeStockRes.IdProductoTallaColor)
+                    End If
 
-                            .IdBodega = IIf(IsDBNull(dr.Item("IdBodega")), 0, dr.Item("IdBodega"))
-                            .IdStock = IIf(IsDBNull(dr.Item("IdStock")), 0, dr.Item("IdStock"))
-                            .IdPropietarioBodega = IIf(IsDBNull(dr.Item("IdPropietarioBodega")), 0, dr.Item("IdPropietarioBodega"))
-                            .IdProductoBodega = IIf(IsDBNull(dr.Item("IdProductoBodega")), 0, dr.Item("IdProductoBodega"))
-                            .IdProductoEstado = IIf(IsDBNull(dr.Item("IdProductoEstado")), 0, dr.Item("IdProductoEstado")) '#CKFK 20180109 07:17 AM Agregué ésta línea para que se llene el Id del estado del producto
-                            .ProductoEstado.IdEstado = IIf(IsDBNull(dr.Item("IdProductoEstado")), 0, dr.Item("IdProductoEstado"))
-                            .Presentacion.IdPresentacion = IIf(IsDBNull(dr.Item("IdPresentacion")), 0, dr.Item("IdPresentacion"))
-                            .IdPresentacion = IIf(IsDBNull(dr.Item("IdPresentacion")), 0, dr.Item("IdPresentacion"))
-                            .IdUnidadMedida = IIf(IsDBNull(dr.Item("IdUnidadMedida")), 0, dr.Item("IdUnidadMedida"))
-                            .IdUbicacion = IIf(IsDBNull(dr.Item("IdUbicacion")), 0, dr.Item("IdUbicacion"))
-                            .IdUbicacion_anterior = IIf(IsDBNull(dr.Item("IdUbicacion_anterior")), 0, dr.Item("IdUbicacion_anterior"))
-                            .IdRecepcionEnc = IIf(IsDBNull(dr.Item("IdRecepcionEnc")), 0, dr.Item("IdRecepcionEnc"))
-                            .IdRecepcionDet = IIf(IsDBNull(dr.Item("IdRecepcionDet")), 0, dr.Item("IdRecepcionDet"))
-                            .IdPedidoEnc = IIf(IsDBNull(dr.Item("IdPedidoEnc")), 0, dr.Item("IdPedidoEnc"))
-                            .IdPickingEnc = IIf(IsDBNull(dr.Item("IdPickingEnc")), 0, dr.Item("IdPickingEnc"))
-                            .IdDespachoEnc = IIf(IsDBNull(dr.Item("IdDespachoEnc")), 0, dr.Item("IdDespachoEnc"))
-                            .Lote = IIf(IsDBNull(dr.Item("lote")), "", dr.Item("lote"))
-                            .Lic_plate = IIf(IsDBNull(dr.Item("lic_plate")), 0, dr.Item("lic_plate"))
-                            .Serial = IIf(IsDBNull(dr.Item("serial")), "", dr.Item("serial"))
-                            .Cantidad = IIf(IsDBNull(dr.Item("cantidad")), 0.0, dr.Item("cantidad"))
-                            .Fecha_Ingreso = IIf(IsDBNull(dr.Item("fecha_ingreso")), Date.Now, dr.Item("fecha_ingreso"))
-                            .Fecha_vence = IIf(IsDBNull(dr.Item("fecha_vence")), New Date(1900, 1, 1), dr.Item("fecha_vence"))
-                            .Uds_lic_plate = IIf(IsDBNull(dr.Item("uds_lic_plate")), 0, dr.Item("uds_lic_plate"))
-                            .No_bulto = IIf(IsDBNull(dr.Item("no_bulto")), 0, dr.Item("no_bulto")) '#CKFK 20180405 Modifiqué la inicializacion cuando el campo es nulo por 0
-                            .Fecha_Manufactura = IIf(IsDBNull(dr.Item("fecha_manufactura")), New Date(1900, 1, 1), dr.Item("fecha_manufactura"))
-                            .Añada = IIf(IsDBNull(dr.Item("añada")), 0, dr.Item("añada"))
-                            .User_agr = IIf(IsDBNull(dr.Item("user_agr")), "", dr.Item("user_agr"))
-                            .Fec_agr = IIf(IsDBNull(dr.Item("fec_agr")), Date.Now, dr.Item("fec_agr"))
-                            .User_mod = IIf(IsDBNull(dr.Item("user_mod")), "", dr.Item("user_mod"))
-                            .Fec_mod = IIf(IsDBNull(dr.Item("fec_mod")), Date.Now, dr.Item("fec_mod"))
-                            .Activo = IIf(IsDBNull(dr.Item("activo")), False, dr.Item("activo"))
-                            .Peso = IIf(IsDBNull(dr.Item("Peso")), 0.0, dr.Item("Peso"))
-                            .Temperatura = IIf(IsDBNull(dr.Item("temperatura")), 0.0, dr.Item("temperatura"))
-                            .UbicacionPicking = IIf(IsDBNull(dr.Item("ubicacion_picking")), False, dr.Item("ubicacion_picking"))
-                            .UbicacionNivel = IIf(IsDBNull(dr.Item("nivel")), 0, dr.Item("nivel"))
+                    Using dr = lCommand.ExecuteReader()
 
-                        End With
+                        While dr.Read()
 
-                        lBeStock.Add(vBeStock)
+                            vBeStock = New clsBeStock
 
-                    End While
+                            With vBeStock
+
+                                .IdBodega = IIf(IsDBNull(dr.Item("IdBodega")), 0, dr.Item("IdBodega"))
+                                .IdStock = IIf(IsDBNull(dr.Item("IdStock")), 0, dr.Item("IdStock"))
+                                .IdPropietarioBodega = IIf(IsDBNull(dr.Item("IdPropietarioBodega")), 0, dr.Item("IdPropietarioBodega"))
+                                .IdProductoBodega = IIf(IsDBNull(dr.Item("IdProductoBodega")), 0, dr.Item("IdProductoBodega"))
+                                .IdProductoEstado = IIf(IsDBNull(dr.Item("IdProductoEstado")), 0, dr.Item("IdProductoEstado")) '#CKFK 20180109 07:17 AM Agregué ésta línea para que se llene el Id del estado del producto
+                                .ProductoEstado.IdEstado = IIf(IsDBNull(dr.Item("IdProductoEstado")), 0, dr.Item("IdProductoEstado"))
+                                .Presentacion.IdPresentacion = IIf(IsDBNull(dr.Item("IdPresentacion")), 0, dr.Item("IdPresentacion"))
+                                .IdPresentacion = IIf(IsDBNull(dr.Item("IdPresentacion")), 0, dr.Item("IdPresentacion"))
+                                .IdUnidadMedida = IIf(IsDBNull(dr.Item("IdUnidadMedida")), 0, dr.Item("IdUnidadMedida"))
+                                .IdUbicacion = IIf(IsDBNull(dr.Item("IdUbicacion")), 0, dr.Item("IdUbicacion"))
+                                .IdUbicacion_anterior = IIf(IsDBNull(dr.Item("IdUbicacion_anterior")), 0, dr.Item("IdUbicacion_anterior"))
+                                .IdRecepcionEnc = IIf(IsDBNull(dr.Item("IdRecepcionEnc")), 0, dr.Item("IdRecepcionEnc"))
+                                .IdRecepcionDet = IIf(IsDBNull(dr.Item("IdRecepcionDet")), 0, dr.Item("IdRecepcionDet"))
+                                .IdPedidoEnc = IIf(IsDBNull(dr.Item("IdPedidoEnc")), 0, dr.Item("IdPedidoEnc"))
+                                .IdPickingEnc = IIf(IsDBNull(dr.Item("IdPickingEnc")), 0, dr.Item("IdPickingEnc"))
+                                .IdDespachoEnc = IIf(IsDBNull(dr.Item("IdDespachoEnc")), 0, dr.Item("IdDespachoEnc"))
+                                .Lote = IIf(IsDBNull(dr.Item("lote")), "", dr.Item("lote"))
+                                .Lic_plate = IIf(IsDBNull(dr.Item("lic_plate")), 0, dr.Item("lic_plate"))
+                                .Serial = IIf(IsDBNull(dr.Item("serial")), "", dr.Item("serial"))
+                                .Cantidad = IIf(IsDBNull(dr.Item("cantidad")), 0.0, dr.Item("cantidad"))
+                                .Fecha_Ingreso = IIf(IsDBNull(dr.Item("fecha_ingreso")), Date.Now, dr.Item("fecha_ingreso"))
+                                .Fecha_vence = IIf(IsDBNull(dr.Item("fecha_vence")), New Date(1900, 1, 1), dr.Item("fecha_vence"))
+                                .Uds_lic_plate = IIf(IsDBNull(dr.Item("uds_lic_plate")), 0, dr.Item("uds_lic_plate"))
+                                .No_bulto = IIf(IsDBNull(dr.Item("no_bulto")), 0, dr.Item("no_bulto")) '#CKFK 20180405 Modifiqué la inicializacion cuando el campo es nulo por 0
+                                .Fecha_Manufactura = IIf(IsDBNull(dr.Item("fecha_manufactura")), New Date(1900, 1, 1), dr.Item("fecha_manufactura"))
+                                .Añada = IIf(IsDBNull(dr.Item("añada")), 0, dr.Item("añada"))
+                                .User_agr = IIf(IsDBNull(dr.Item("user_agr")), "", dr.Item("user_agr"))
+                                .Fec_agr = IIf(IsDBNull(dr.Item("fec_agr")), Date.Now, dr.Item("fec_agr"))
+                                .User_mod = IIf(IsDBNull(dr.Item("user_mod")), "", dr.Item("user_mod"))
+                                .Fec_mod = IIf(IsDBNull(dr.Item("fec_mod")), Date.Now, dr.Item("fec_mod"))
+                                .Activo = IIf(IsDBNull(dr.Item("activo")), False, dr.Item("activo"))
+                                .Peso = IIf(IsDBNull(dr.Item("Peso")), 0.0, dr.Item("Peso"))
+                                .Temperatura = IIf(IsDBNull(dr.Item("temperatura")), 0.0, dr.Item("temperatura"))
+                                .UbicacionPicking = IIf(IsDBNull(dr.Item("ubicacion_picking")), False, dr.Item("ubicacion_picking"))
+                                .UbicacionNivel = IIf(IsDBNull(dr.Item("nivel")), 0, dr.Item("nivel"))
+                                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+
+                            End With
+
+                            lBeStock.Add(vBeStock)
+
+                        End While
+
+                    End Using
 
                 End Using
 
-            End Using
+                Return lBeStock
 
-            Return lBeStock
-
-        Catch ex As Exception
-            Throw ex
-        End Try
+            Catch ex As Exception
+                Throw ex
+            End Try
 
     End Function
 
+    ' #AT 20211228 Copia de la función lstock para devolverla como un datatable
     Public Shared Function lStock_DT(ByRef pBeStockRes As clsBeStock_res,
                                      ByRef pBeProductoOutput As clsBeProducto,
                                      ByVal DiasVencimiento As Integer,
@@ -6128,15 +6177,17 @@ Partial Public Class clsLnStock
 
         lStock_DT = Nothing
 
-        Dim vBeStock As New clsBeStock
-        Dim lBeStock As New List(Of clsBeStock)
-        Dim IdxProductoEnMemoria As Integer = -1
-        Dim vIdProductoBodega As Integer = 0
-        Dim DTStock As New DataTable
-        Dim lLotesPermitidos As New List(Of clsBeCliente_lotes)
-        Dim lLotesBloqueados As New List(Of clsBeCliente_lotes)
-
         Try
+
+            Dim vBeStock As New clsBeStock
+            Dim lBeStock As New List(Of clsBeStock)
+            Dim IdxProductoEnMemoria As Integer = -1
+            Dim vIdProductoBodega As Integer = 0
+            Dim DTStock As New DataTable
+            Dim lLotesPermitidos As New List(Of clsBeCliente_lotes)
+            Dim lLotesBloqueados As New List(Of clsBeCliente_lotes)
+
+            Try
 
             vIdProductoBodega = pBeStockRes.IdProductoBodega
 
@@ -6186,7 +6237,12 @@ Partial Public Class clsLnStock
 		                            bodega_ubicacion.ubicacion_picking,
 		                            bodega_tramo.es_rack,
 		                            bodega_ubicacion.IdTramo, IdStock,                                  
-                                    dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) as NombUbic
+                                    dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) as NombUbic,
+                                    ptc.IdProductoTallaColor, 
+                                    t.Codigo as Codigo_Talla, 
+                                    t.Nombre Nombre_Talla, 
+                                    c.Codigo Codigo_Color, 
+                                    c.Nombre Nombre_Color
 					FROM stock INNER JOIN
 		            producto_bodega ON stock.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
 		            producto on producto.IdProducto = producto_bodega.IdProducto AND
@@ -6199,9 +6255,12 @@ Partial Public Class clsLnStock
                     AND bodega_ubicacion.IdSector = bodega_tramo.IdSector inner join
 		            producto_estado on producto_estado.IdEstado = stock.IdProductoEstado inner join
 		            unidad_medida on unidad_medida.IdUnidadMedida = producto.IdUnidadMedidaBasica left outer join
-		            producto_presentacion on producto_presentacion.IdProducto = producto.IdProducto and stock.IdPresentacion = producto_presentacion.IdPresentacion"
+		            producto_presentacion on producto_presentacion.IdProducto = producto.IdProducto and stock.IdPresentacion = producto_presentacion.IdPresentacion
+                    LEFT JOIN producto_talla_color AS ptc ON ptc.IdProductoTallaColor = stock.IdProductoTallaColor
+                    LEFT JOIN talla AS t on t.IdTalla = ptc.IdTalla
+                    LEFT JOIN color AS c on c.IdColor = ptc.IdColor "
 
-            If pBeStockRes.Control_Ultimo_Lote Then
+                If pBeStockRes.Control_Ultimo_Lote Then
                 vSQL += " LEFT OUTER JOIN
 						 trans_re_det_lote_num ON stock.IdProductoBodega = trans_re_det_lote_num.IdProductoBodega 
 						 AND stock.lote = trans_re_det_lote_num.Lote "
@@ -6501,7 +6560,12 @@ Partial Public Class clsLnStock
 		                            bodega_tramo.es_rack,
 		                            bodega_ubicacion.IdTramo, IdStock,                                  
                                     dbo.Nombre_Completo_Ubicacion(stock.IdUbicacion, stock.IdBodega) as UbicacionActual,
-                                    ISNULL(producto_presentacion.factor,0) Factor
+                                    ISNULL(producto_presentacion.factor,0) Factor,
+                                    ISNULL(stock.IdProductoTallaColor, 0) IdProductoTallaColor,
+                                    ISNULL(t.Codigo, '') AS Codigo_Talla,
+                                    ISNULL(t.Nombre, '') AS Nombre_Talla,
+                                    ISNULL(c.Codigo, '') AS Codigo_Color,
+                                    ISNULL(c.Nombre, '') AS Nombre_Color
 					FROM stock INNER JOIN
 		            producto_bodega ON stock.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
 		            producto on producto.IdProducto = producto_bodega.IdProducto AND
@@ -6514,7 +6578,10 @@ Partial Public Class clsLnStock
                     AND bodega_ubicacion.IdSector = bodega_tramo.IdSector inner join
 		            producto_estado on producto_estado.IdEstado = stock.IdProductoEstado inner join
 		            unidad_medida on unidad_medida.IdUnidadMedida = producto.IdUnidadMedidaBasica left outer join
-		            producto_presentacion on producto_presentacion.IdProducto = producto.IdProducto and stock.IdPresentacion = producto_presentacion.IdPresentacion "
+		            producto_presentacion on producto_presentacion.IdProducto = producto.IdProducto and stock.IdPresentacion = producto_presentacion.IdPresentacion
+                    left join producto_talla_color ptc on ptc.IdProductoTallaColor = stock.IdProductoTallaColor
+                    left join talla t on t.IdTalla = ptc.IdTalla
+                    left join color c on c.IdColor = ptc.IdColor "
 
             If pBeStockRes.Control_Ultimo_Lote Then
                 vSQL += " LEFT OUTER JOIN
@@ -6730,7 +6797,12 @@ Partial Public Class clsLnStock
                                                           Key .ubicacion_picking = drs("ubicacion_picking"),
                                                           Key .es_rack = drs("es_rack"),
                                                           Key .IdTramo = drs("IdTramo"),
-                                                          Key .NombUbic = drs("NombUbic")}
+                                                          Key .NombUbic = drs("NombUbic"),
+                                                          Key .IdProductoTallaColor = drs("IdProductoTallaColor"),
+                                                          Key .Codigo_Talla = drs("Codigo_Talla"),
+                                                          Key .Nombre_Talla = drs("Nombre_Talla"),
+                                                          Key .Codigo_Color = drs("Codigo_Color"),
+                                                          Key .Nombre_Color = drs("Nombre_Color")}
                             Into Group Select New With {Key .codigo = keys.codigo,
                                                         Key .producto = keys.producto,
                                                         Key .presentacion = keys.presentacion,
@@ -6755,7 +6827,12 @@ Partial Public Class clsLnStock
                                                         Key .ubicacion_picking = keys.ubicacion_picking,
                                                         Key .es_rack = keys.es_rack,
                                                         Key .IdTramo = keys.IdTramo,
-                                                        Key .NombUbic = keys.NombUbic})
+                                                        Key .NombUbic = keys.NombUbic,
+                                                        Key .IdProductoTallaColor = keys.IdProductoTallaColor,
+                                                        Key .Codigo_Talla = keys.Codigo_Talla,
+                                                        Key .Nombre_Talla = keys.Nombre_Talla,
+                                                        Key .Codigo_Color = keys.Codigo_Color,
+                                                        Key .Nombre_Color = keys.Nombre_Color})
 
             If resultado IsNot Nothing Then
                 Dim row As DataRow
@@ -6820,6 +6897,11 @@ Partial Public Class clsLnStock
                     row("es_rack") = dr.es_rack
                     row("IdTramo") = dr.IdTramo
                     row("NombUbic") = dr.NombUbic
+                    row("IdProductoTallaColor") = dr.IdProductoTallaColor
+                    row("Codigo_Talla") = dr.Codigo_Talla
+                    row("Nombre_Talla") = dr.Nombre_Talla
+                    row("Codigo_Color") = dr.Codigo_Color
+                    row("Nombre_Color") = dr.Nombre_Color
 
                     RDatos.Rows.Add(row)
 
@@ -7082,6 +7164,7 @@ Partial Public Class clsLnStock
                 .Peso = IIf(IsDBNull(dr.Item("Peso")), 0.0, dr.Item("Peso"))
                 .Atributo_Variante_1 = IIf(IsDBNull(dr.Item("atributo_variante_1")), "", dr.Item("atributo_variante_1"))
                 .Pallet_No_Estandar = IIf(IsDBNull(dr.Item("Pallet_No_Estandar")), False, dr.Item("Pallet_No_Estandar"))
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0.0, dr.Item("IdProductoTallaColor"))
 
                 Try
                     .Parametros = clsLnStock_parametro.Get_All_By_IdStock(.IdStock, lConnection, lTransaction)
@@ -7681,12 +7764,13 @@ Partial Public Class clsLnStock
                                             FROM VW_ProximosVencimiento "
 
                     If pIdProducto <> 0 Then
+
                         vSQL += " WHERE IdBodega=@IdBodega 
-                                        AND IdPropietarioBodega=@IdPropietarioBodega 
-                                        AND IdProducto= @IdProducto "
+                                AND IdPropietarioBodega=@IdPropietarioBodega 
+                                AND IdProducto= @IdProducto "
                     Else
                         vSQL += " WHERE IdBodega=@IdBodega 
-                                        AND IdPropietarioBodega=@IdPropietarioBodega "
+                                 AND IdPropietarioBodega=@IdPropietarioBodega "
                     End If
 
                     If pIncluirVencidos Then
@@ -8144,8 +8228,8 @@ Partial Public Class clsLnStock
     End Function
 
     Public Shared Function Get_All_By_IdProductoBodega(ByVal pIdProductoBodega As Integer,
-                                      ByRef lConnection As SqlConnection,
-                                      ByRef lTransaction As SqlTransaction) As List(Of clsBeVW_stock_res)
+                                                      ByRef lConnection As SqlConnection,
+                                                      ByRef lTransaction As SqlTransaction) As List(Of clsBeVW_stock_res)
 
         Get_All_By_IdProductoBodega = Nothing
 
@@ -10072,7 +10156,7 @@ Partial Public Class clsLnStock
                                          ByRef lConnection As SqlConnection,
                                          ByRef lTransaction As SqlTransaction) As Boolean
 
-        Existe_Stock = True
+        Existe_Stock = False
 
         Try
 
@@ -10083,7 +10167,7 @@ Partial Public Class clsLnStock
 								AND lote = @lote
 								AND IdUnidadMedida = @IdUnidadMedida 
 								AND ISNULL(IdPresentacion,0) = @IdPresentacion 
-								AND fecha_vence = @fecha_vence
+								AND (fecha_vence  IS NULL OR fecha_vence = @fecha_vence)
 								AND IdRecepcionEnc = @IdRecepcionEnc
 								AND IdRecepcionDet = @IdRecepcionDet "
 
@@ -10109,6 +10193,7 @@ Partial Public Class clsLnStock
 
             If dt.Rows.Count > 0 Then
                 pBeStockOriginal.IdStock = dt.Rows(0).Item("IdStock")
+                Existe_Stock = True
             End If
 
             Return dt.Rows.Count > 0
@@ -10213,20 +10298,24 @@ Partial Public Class clsLnStock
                                      ByRef lConnection As SqlConnection,
                                      ByRef lTransaction As SqlTransaction) As Boolean
 
-        Get_Stock = True
+        Get_Stock = False
 
         Try
 
-            Dim sp As String = "SELECT * FROM stock 
-								WHERE IdProductoBodega = @IdProductoBodega 
-								AND cantidad = @cantidad 
-								AND IdProductoEstado = @IdProductoEstado 
-								AND lote = @lote
-								AND IdUnidadMedida = @IdUnidadMedida 
-								AND ISNULL(IdPresentacion,0) = @IdPresentacion 
-								AND CAST(fecha_vence AS DATE) = @fecha_vence
-								AND IdRecepcionEnc = @IdRecepcionEnc
-								AND IdRecepcionDet = @IdRecepcionDet "
+            Dim sp As String = "SELECT * FROM stock
+                                WHERE IdProductoBodega = @IdProductoBodega
+                                  AND cantidad = @cantidad
+                                  AND IdProductoEstado = @IdProductoEstado
+                                  AND lote = @lote
+                                  AND IdUnidadMedida = @IdUnidadMedida
+                                  AND ISNULL(IdPresentacion, 0) = @IdPresentacion
+                                  AND (
+                                      (fecha_vence IS NULL) OR
+                                      (CAST(fecha_vence AS DATE) = @fecha_vence)
+                                  )
+                                  AND IdRecepcionEnc = @IdRecepcionEnc
+                                  AND IdRecepcionDet = @IdRecepcionDet"
+
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
@@ -11159,6 +11248,7 @@ Partial Public Class clsLnStock
                                         objStockHist.IdDespachoEnc = 0
                                         objStockHist.Fec_agr = Now
                                         objStockHist.Fec_mod = Now
+                                        objStockHist.IdProductoTallaColor = ObjStockDestino.IdProductoTallaColor
                                         clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                                         '#EJC20180625:1036AM => Fin_Stock_Hist
 
@@ -11210,6 +11300,7 @@ Partial Public Class clsLnStock
                                     objStockHist.IdDespachoEnc = 0
                                     objStockHist.Fec_agr = Now
                                     objStockHist.Fec_mod = Now
+                                    objStockHist.IdProductoTallaColor = ObjStockDestino.IdProductoTallaColor
                                     clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                                     '#EJC20180625:1036AM => Fin_Stock_Hist
                                     'file.WriteLine("Stock History inserted: " & objStockOrigen.IdStock)
@@ -11598,6 +11689,7 @@ Partial Public Class clsLnStock
                                         objStockHist.IdDespachoEnc = 0
                                         objStockHist.Fec_agr = Now
                                         objStockHist.Fec_mod = Now
+                                        objStockHist.IdProductoTallaColor = ObjStockDestino.IdProductoTallaColor
                                         clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                                         '#EJC20180625:1036AM => Fin_Stock_Hist
 
@@ -11642,6 +11734,7 @@ Partial Public Class clsLnStock
                                     objStockHist.IdDespachoEnc = 0
                                     objStockHist.Fec_agr = Now
                                     objStockHist.Fec_mod = Now
+                                    objStockHist.IdProductoTallaColor = ObjStockDestino.IdProductoTallaColor
                                     clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                                     '#EJC20180625:1036AM => Fin_Stock_Hist
 
@@ -11773,9 +11866,9 @@ Partial Public Class clsLnStock
                     If (pPickingUbic.IdPresentacion <> 0) AndAlso (BeTransPeDet.IdPresentacion = 0) Then
                         Dim vFactor As Integer
                         vFactor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
-                                                                                                             pPickingUbic.IdPresentacion,
-                                                                                                             lConnection,
-                                                                                                             lTransaction)
+                                                                                                         pPickingUbic.IdPresentacion,
+                                                                                                         lConnection,
+                                                                                                         lTransaction)
                         Dim vCantidadVerificada As Double = pPickingUbic.Cantidad_Verificada * vFactor
 
                         If (vCantidadVerificada > vCantidadSolicitadaPedido) AndAlso Not AllowNegativeExceptionOnStock Then
@@ -11840,6 +11933,7 @@ Partial Public Class clsLnStock
                                 objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
                                 objStockHist.Fec_agr = Now
                                 objStockHist.Fec_mod = Now
+                                objStockHist.IdProductoTallaColor = pPickingUbic.IdProductoTallaColor
                                 clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                                 '#EJC20180625:1036AM => Fin_Stock_Hist
 
@@ -11869,6 +11963,7 @@ Partial Public Class clsLnStock
                                     objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
                                     objStockHist.Fec_agr = Now
                                     objStockHist.Fec_mod = Now
+                                    objStockHist.IdProductoTallaColor = pPickingUbic.IdProductoTallaColor
                                     clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                                     '#EJC20180625:1036AM => Fin_Stock_Hist
                                 End If
@@ -11897,9 +11992,9 @@ Partial Public Class clsLnStock
 
                         If pPickingUbic.IdPresentacion <> 0 Then
                             vFactorPres = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(pPickingUbic.IdProductoBodega,
-                                                                                                                 pPickingUbic.IdPresentacion,
-                                                                                                                 lConnection,
-                                                                                                                 lTransaction)
+                                                                                                             pPickingUbic.IdPresentacion,
+                                                                                                             lConnection,
+                                                                                                             lTransaction)
                             If vFactorPres = 0 Then
                                 Throw New Exception("El factor de la presentación es 0 no se puede continuar el proceso de actualización de Stock")
                             End If
@@ -11937,6 +12032,7 @@ Partial Public Class clsLnStock
                             objStockHist.Fec_agr = Now
                             objStockHist.Fec_mod = Now
                             objStockHist.Posiciones = vCantPosiciones
+                            objStockHist.IdProductoTallaColor = pPickingUbic.IdProductoTallaColor
                             clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                             '#EJC20180625:1036AM => Fin_Stock_Hist
 
@@ -11989,6 +12085,7 @@ Partial Public Class clsLnStock
                                 objStockHist.Peso += Math.Round(pPickingUbic.Peso_verificado, 6)
                                 objStockHist.Fec_agr = Now
                                 objStockHist.Fec_mod = Now
+                                objStockHist.IdProductoTallaColor = pPickingUbic.IdProductoTallaColor
                                 clsLnStock_hist.Insertar(objStockHist, lConnection, lTransaction)
                                 '#EJC20180625:1036AM => Fin_Stock_Hist
                             End If
@@ -12524,8 +12621,9 @@ Partial Public Class clsLnStock
                                        CASE WHEN v.IdPresentacion IS NULL THEN ISNULL(t.Cant_Pickeada,0)ELSE 0 END Cant_Pickeada_UMBas,
 	                                   CASE WHEN v.IdPresentacion IS NULL THEN v.CantidadReservadaUmBas - ISNULL(t.Cant_Pickeada,0)ELSE 0 END Cant_No_Pickeada_UMBas,
 	                                   CASE WHEN v.IdPresentacion IS NOT NULL THEN ISNULL(t.Cant_Pickeada,0)ELSE 0 END Cant_Pickeada_Presentacion,
-	                                   CASE WHEN v.IdPresentacion IS NOT NULL THEN v.Cantidad_Reservada_Pres - ISNULL(t.Cant_Pickeada,0)ELSE 0 END Cant_No_Pickeada_Presentacion	   
-                                from VW_Stock_Res v left outer join 
+	                                   CASE WHEN v.IdPresentacion IS NOT NULL THEN v.Cantidad_Reservada_Pres - ISNULL(t.Cant_Pickeada,0)ELSE 0 END Cant_No_Pickeada_Presentacion,
+                                v.Codigo_Talla as Talla, v.Codigo_Color as Color 
+                                FROM VW_Stock_Res v left outer join 
                                      (SELECT r.IdStock, sum(u.cantidad_recibida) Cant_Pickeada
 	                                  FROM trans_picking_ubic u inner join
 			                                trans_pe_enc e ON e.IdPedidoEnc = u.IdPedidoEnc right outer join 
@@ -12549,7 +12647,9 @@ Partial Public Class clsLnStock
 					  v.Lote,v.fecha_vence, v.Nombre_Completo,v.lic_plate,
 				      v.Factor,v.codigo_poliza,v.Numero_poliza, v.CantidadReservada,Cantidad,
                       v.CantidadSF,v.ubicacion_picking,v.Area, v.Factor, 
-                      v.IdUbicacion, v.IdTramo, v.IdBodega, t.Cant_Pickeada,v.CantidadReservadaUmBas,v.Cantidad_Reservada_Pres  "
+                      v.IdUbicacion, v.IdTramo, v.IdBodega, 
+                      v.Codigo_Talla, v.Codigo_Color, 
+                      t.Cant_Pickeada,v.CantidadReservadaUmBas,v.Cantidad_Reservada_Pres  "
 
             If ExcluirSinExistencia Then
                 vSQL += "HAVING SUM(ISNULL(v.Disponible_UMBas, 0)) > 0 "
@@ -12776,6 +12876,7 @@ Partial Public Class clsLnStock
 
                     '#GT07032022_1115: se agrega el embarcador, la clasificación y el TO de la poliza
                     '#GT26092022_1100: se agregan los parametros para DyD
+                    '#MECR27082025: Se agrego columna de talla y color
                     Dim vSQL As String = "SELECT IdProducto,Propietario,Codigo,nombre as Producto,Presentacion,IdPresentacion,
                                                  sum(isnull(Cantidad,0)) as CantidadPresentacion,sum(isnull(CantidadSF,0)) as CantidadUMBas,
                                                  SUM(isnull(CantidadReservada,0)) as Cantidad_Reservada, 
@@ -12783,7 +12884,7 @@ Partial Public Class clsLnStock
                                                  UnidadMedida,Peso,Lote,lic_plate as Licencia,Fecha_Ingreso,Fecha_Vence, 
                                                  Nombre_Completo AS [Ubicación],
                                                  Numero_poliza  numero_orden,codigo_poliza,NoTO,clasificacion,Embarcador,Area,
-                                                 parametro_a,parametro_b,marca,tipo,familia
+                                                 parametro_a,parametro_b,marca,tipo,familia, Codigo_Talla as Talla, Codigo_Color as Color
                                           FROM VW_Stock_Res WHERE 1 > 0 "
 
                     If pIdBodega <> 0 Then
@@ -12797,7 +12898,7 @@ Partial Public Class clsLnStock
                     vSQL += " Group by IdProducto,Codigo,nombre,lic_plate,Presentacion,IdPresentacion,UnidadMedida,peso, 
                               lote,fecha_vence, Nombre_Completo,Fecha_Ingreso,Numero_poliza,codigo_poliza,
                               Propietario,clasificacion,Embarcador,NoTO,Area, 
-                              parametro_a,parametro_b,marca,tipo,familia "
+                              parametro_a,parametro_b,marca,tipo,familia, Codigo_Talla, Codigo_Color "
 
                     vSQL += "ORDER BY CODIGO, Nombre_Completo "
 
@@ -12917,6 +13018,7 @@ Partial Public Class clsLnStock
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
                     'GT26092022_1530: se agregan campos para uso DyD (fam,marca, clasificacion, parametros)
+                    '#MECR27092025: Se agrego columna de talla y color
                     Dim vSQL As String = "SELECT Codigo,nombre as Producto,Presentacion,
                                                 IdPresentacion, 
                                                 sum(isnull(CantidadSF,0)) as CantidadUMBas,
@@ -12926,14 +13028,16 @@ Partial Public Class clsLnStock
                                                 Fecha_Vence, NombreTipoProducto As Tipo, 
                                                 IdProducto,
                                                 Familia,Marca,Clasificacion,
-                                                parametro_a,parametro_b
+                                                parametro_a,parametro_b,
+                                                Codigo_Talla as Talla,
+                                                Codigo_Color as Color
 						                  from VW_Stock_Res_Tipo_Producto 
 						                  Group by IdProducto,Codigo,nombre,
                                                    Presentacion,IdPresentacion,
                                                    UnidadMedida,peso, lote,fecha_vence, 
                                                    NombreTipoProducto,fecha_ingreso,
                                                    Familia,Marca,Clasificacion,
-                                                   parametro_a,parametro_b"
+                                                   parametro_a,parametro_b, Codigo_Talla, Codigo_Color"
 
                     Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
 
@@ -12975,6 +13079,7 @@ Partial Public Class clsLnStock
 
             If FechaVence Then
 
+                '#MECR27092025: Se agrego columna de talla y color
                 vSQL = "SELECT vw.IdProducto,vw.Codigo,nombre as Producto,vw.IdPresentacion, sum(isnull(vw.CantidadSF,0)) as CantidadUMBas,vw.UnidadMedida,sum(isnull(vw.Cantidad,0)) as CantidadPresentacion,vw.Presentacion,
                         sum(isnull(vw.CantidadReservada,0)) as Cantidad_Reservada, sum(isnull(vw.CantidadSF,0)) - sum(isnull(vw.CantidadReservada,0)) as Disponible, 
                         vw.Peso,vw.Lote,vw.lic_plate as Licencia,vw.Fecha_Ingreso,vw.Fecha_Vence,
@@ -12991,7 +13096,9 @@ Partial Public Class clsLnStock
                                 ROUND(isnull(Cantidad,0) - isnull(CantidadReservada/Factor,0),6)
 							ELSE
 								0
-							END AS Disponible_Presentacion
+							END AS Disponible_Presentacion,
+                        vw.Codigo_Talla as Talla,
+                        vw.Codigo_Color as Color
                         FROM VW_Stock_Res vw INNER JOIN
                         bodega_tramo bt ON vw.idtramo = bt.IdTramo and vw.idbodega=bt.idbodega INNER JOIN
                         bodega_ubicacion ON vw.IdUbicacion = bodega_ubicacion.IdUbicacion and vw.idbodega=bodega_ubicacion.IdBodega
@@ -12999,7 +13106,7 @@ Partial Public Class clsLnStock
                         Group by vw.lic_plate,vw.IdProducto,vw.Codigo,vw.nombre,vw.Presentacion,vw.IdPresentacion,vw.UnidadMedida,vw.peso, vw.lote,vw.fecha_vence,
                         bt.es_rack, bt.descripcion, bodega_ubicacion.indice_x, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos, 
                         bodega_ubicacion.idubicacion,vw.IdBodega,vw.IdPropietarioBodega,vw.Fecha_Ingreso,vw.codigo_poliza,vw.Numero_poliza,vw.Nombre_Completo,
-                        vw.Factor,vw.Cantidad,vw.CantidadReservada "
+                        vw.Factor,vw.Cantidad,vw.CantidadReservada, Codigo_Talla, Codigo_Color "
 
             Else
 
@@ -13125,7 +13232,7 @@ Partial Public Class clsLnStock
             End If
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0}", ex.Message & " " & CadenaResultado))
+            Throw ex
         End Try
 
     End Function
@@ -13815,32 +13922,34 @@ Partial Public Class clsLnStock
         Try
 
             Dim vSQL As String = "SELECT 
-                                  Propietario, 
-                                  IdProducto,
-                                  Codigo, 
-                                  Codigo_barra,                                  
-                                  Nombre,                                  
-                                  UnidadMedida,
-                                  IdPresentacion,
-                                  Presentacion,
-                                  NomEstado as Estado,
-                                  Sum(isnull(CantidadSF,0)) as CantidadUMBas,
-							      SUM(isnull(Cantidad,0)) as CantidadPresentacion,
-							      SUM(isnull(CantidadReservada,0)) as Cantidad_Reservada_UMBas, 
+                                    Propietario, 
+                                    IdProducto,
+                                    Codigo, 
+                                    Codigo_barra,                                  
+                                    Nombre,                                  
+                                    UnidadMedida,
+                                    IdPresentacion,
+                                    Presentacion,
+                                    NomEstado as Estado,
+                                    Sum(isnull(CantidadSF,0)) as CantidadUMBas,
+							        SUM(isnull(Cantidad,0)) as CantidadPresentacion,
+							        SUM(isnull(CantidadReservada,0)) as Cantidad_Reservada_UMBas, 
 							        CASE WHEN FACTOR > 0
-							        THEN 
-								        ROUND(SUM(isnull(CantidadReservada/Factor,0)),6)
-							        ELSE
-								        0
+							            THEN 
+								            ROUND(SUM(isnull(CantidadReservada/Factor,0)),6)
+							            ELSE
+								            0
 							        END AS Cantidad_Reservada_Pres,
 							        ROUND(SUM(isnull(CantidadSF,0)) - SUM(isnull(CantidadReservada,0)),6)  as Disponible_UMBas, 
 							        CASE WHEN FACTOR > 0
-							        THEN 
-								        ROUND(SUM(isnull(Cantidad,0)) - SUM(isnull(CantidadReservada/Factor,0)),6)
-							        ELSE
-								        0
+							            THEN 
+								            ROUND(SUM(isnull(Cantidad,0)) - SUM(isnull(CantidadReservada/Factor,0)),6)
+							            ELSE
+								            0
 							        END AS Disponible_Presentación,
-							        SUM(isnull(Peso,0)) as Peso, Lic_plate,Lote,Fecha_Vence
+							        SUM(isnull(Peso,0)) as Peso, Lic_plate,Lote,Fecha_Vence,
+                                    Codigo_Talla as Talla,
+                                    Codigo_Color as Color
 							        FROM VW_Stock_Res WHERE 1 > 0 "
 
             If pIdBodega <> 0 Then
@@ -13849,7 +13958,7 @@ Partial Public Class clsLnStock
 
             vSQL += " Group by IdProducto,NomEstado,Codigo,
 						  Nombre,Presentacion,IdPresentacion,UnidadMedida, 
-						  Factor, Propietario, codigo_barra, lic_plate,lote,fecha_vence "
+						  Factor, Propietario, codigo_barra, lic_plate,lote,fecha_vence, Codigo_Talla, Codigo_Color "
 
             vSQL += "ORDER BY CODIGO, Nombre "
 
@@ -13897,6 +14006,7 @@ Partial Public Class clsLnStock
 
         Try
             'GT 230720211523: Campos de poliza para mejorar busqueda cealsa
+            '#MECR27082025: Se agregaron campos de talla y color
             Dim vSQL As String = "SELECT IdProducto,Codigo,
 							nombre as Producto,NomEstado as Estado,
 							IdPresentacion,sum(isnull(CantidadSF,0)) as CantidadUMBas,
@@ -13920,7 +14030,9 @@ Partial Public Class clsLnStock
 							END AS Disponible_Presentación,
 							Peso,Lote,lic_plate as Licencia,Fecha_Ingreso,Fecha_Vence, 
                             Nombre_Completo AS [Ubicación],Posiciones,pallet_no_estandar AS Pallet_No_Estandard,IdStock,
-                            Numero_poliza as Numero_Orden,codigo_poliza as Codigo_Poliza,Documento_Ingreso,clasificacion as Clasificacion
+                            Numero_poliza as Numero_Orden,codigo_poliza as Codigo_Poliza,Documento_Ingreso,clasificacion as Clasificacion,
+                            Codigo_Talla as Talla,
+                            Codigo_Color as Color
 							FROM VW_Stock_Res WHERE 1 > 0 "
 
             If pIdBodega <> 0 Then
@@ -13935,7 +14047,7 @@ Partial Public Class clsLnStock
 						  Nombre,Presentacion,IdPresentacion,UnidadMedida,peso, 
 						  Lote,fecha_vence, Nombre_Completo,lic_plate,
 						  Factor,Posiciones,pallet_no_estandar,IdStock,Numero_poliza,codigo_poliza,Documento_Ingreso
-                          ,CantidadReservada,Cantidad,clasificacion "
+                          ,CantidadReservada,Cantidad,clasificacion, Codigo_Talla, Codigo_Color "
 
             vSQL += "ORDER BY CODIGO, Nombre_Completo "
 
@@ -15030,6 +15142,7 @@ Partial Public Class clsLnStock
 
         Try
 
+            '#MECR04092025: Se agrego columna de Talla y Color
             Dim vSQL As String = "SELECT Bodega,Propietario,IdProducto,Codigo,
 							      nombre as Producto,NomEstado as Estado,
 							      IdPresentacion,sum(isnull(CantidadSF,0)) as CantidadUMBas,
@@ -15044,7 +15157,7 @@ Partial Public Class clsLnStock
                                   Fecha_Ingreso,
                                   Fecha_Vence, Nombre_Completo AS [Ubicación],
                                   codigo_poliza,Numero_poliza numero_orden,ubicacion_picking, Area, Factor, IdUbicacion, 
-                                  dbo.Nombre_Tramo(IdTramo, IdBodega) Tramo,IdStock
+                                  dbo.Nombre_Tramo(IdTramo, IdBodega) Tramo,IdStock, Codigo_Talla as Talla, Codigo_Color as Color
 							      FROM VW_Stock_Res WHERE 1 > 0 "
 
             If pIdBodega <> 0 Then
@@ -15059,7 +15172,7 @@ Partial Public Class clsLnStock
 					  Nombre,Presentacion,IdPresentacion,UnidadMedida,peso, 
 					  Lote,fecha_vence, Nombre_Completo,lic_plate,
 				      Factor,codigo_poliza,Numero_poliza, CantidadReservada,Cantidad,
-                      CantidadSF,ubicacion_picking,Area, Factor, IdUbicacion, IdTramo, IdBodega, IdStock "
+                      CantidadSF,ubicacion_picking,Area, Factor, IdUbicacion, IdTramo, IdBodega, IdStock, Codigo_Talla, Codigo_Color "
 
             vSQL += "ORDER BY CODIGO, Nombre_Completo, IdStock "
 
@@ -16187,14 +16300,15 @@ Partial Public Class clsLnStock
 
         Try
 
-            Dim vSQL As String = "select Noenc as Pedido, no Código, p.nombre as Nombre, dbo.Nombre_Area(u.IdArea, s.IdBodega) Area, Sum(cantidad) Cantidad
-                                    from stock s inner join 
-                                        producto_bodega pb on s.IdProductoBodega = pb.IdProductoBodega inner join
-	                                    producto p on pb.IdProducto = p.IdProducto inner join 
-	                                    i_nav_ped_traslado_det i on p.codigo = i.No inner join 
-	                                    bodega_ubicacion u on s.IdUbicacion = u.IdUbicacion and s.IdBodega = u.IdBodega
-                                    WHERE Process_Result<>'OK' AND NoEnc = @Referencia
-                                    Group by Noenc, no, dbo.Nombre_Area(u.IdArea, s.IdBodega), p.nombre"
+            Dim vSQL As String = "select Noenc as Pedido, no Código, p.nombre as Nombre, dbo.Nombre_Area(u.IdArea, s.IdBodega) Area, Sum(cantidad) Cantidad, 
+                                    size as Talla, color as Color
+            From stock s inner Join
+                producto_bodega pb on s.IdProductoBodega = pb.IdProductoBodega inner Join
+                producto p on pb.IdProducto = p.IdProducto inner Join
+                i_nav_ped_traslado_det i on p.codigo = i.No inner Join
+                bodega_ubicacion u on s.IdUbicacion = u.IdUbicacion And s.IdBodega = u.IdBodega
+                                    Where Process_Result <>'OK' AND NoEnc = @Referencia
+                                    Group by Noenc, no, dbo.Nombre_Area(u.IdArea, s.IdBodega), p.nombre, size, color  "
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 

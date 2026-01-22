@@ -26,13 +26,17 @@ Public Class clsLnTrans_despacho_det
                 .CantidadDespachada = IIf(IsDBNull(dr.Item("CantidadDespachada")), 0.0, dr.Item("CantidadDespachada"))
                 .PesoDespachado = IIf(IsDBNull(dr.Item("PesoDespachado")), 0.0, dr.Item("PesoDespachado"))
                 .IdProductoEstado = IIf(IsDBNull(dr.Item("IdProductoEstado")), 0, dr.Item("IdProductoEstado"))
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                .Talla = IIf(IsDBNull(dr.Item("Talla")), "", dr.Item("Talla"))
+                .Color = IIf(IsDBNull(dr.Item("Color")), "", dr.Item("Color"))
+
             End With
         Catch ex As Exception
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTrans_despacho_det As clsBeTrans_despacho_det, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_despacho_det As clsBeTrans_despacho_det, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -60,6 +64,9 @@ Public Class clsLnTrans_despacho_det
             Ins.Add("cantidaddespachada", "@cantidaddespachada", DataType.Parametro)
             Ins.Add("pesodespachado", "@pesodespachado", DataType.Parametro)
             Ins.Add("idproductoestado", "@idproductoestado", DataType.Parametro)
+            Ins.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
+            Ins.Add("talla", "@talla", DataType.Parametro)
+            Ins.Add("color", "@color", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -94,6 +101,9 @@ Public Class clsLnTrans_despacho_det
             cmd.Parameters.Add(New SqlParameter("@CANTIDADDESPACHADA", oBeTrans_despacho_det.CantidadDespachada))
             cmd.Parameters.Add(New SqlParameter("@PESODESPACHADO", oBeTrans_despacho_det.PesoDespachado))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", oBeTrans_despacho_det.IdProductoEstado))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_despacho_det.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@TALLA", oBeTrans_despacho_det.Talla))
+            cmd.Parameters.Add(New SqlParameter("@COLOR", oBeTrans_despacho_det.Color))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -141,6 +151,9 @@ Public Class clsLnTrans_despacho_det
             Upd.Add("cantidaddespachada", "@cantidaddespachada", DataType.Parametro)
             Upd.Add("pesodespachado", "@pesodespachado", DataType.Parametro)
             Upd.Add("idproductoestado", "@idproductoestado", DataType.Parametro)
+            Upd.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
+            Upd.Add("talla", "@talla", DataType.Parametro)
+            Upd.Add("color", "@color", DataType.Parametro)
             Upd.Where("IdDespachoDet = @IdDespachoDet")
 
             Dim sp As String = Upd.SQL()
@@ -176,6 +189,9 @@ Public Class clsLnTrans_despacho_det
             cmd.Parameters.Add(New SqlParameter("@CANTIDADDESPACHADA", oBeTrans_despacho_det.CantidadDespachada))
             cmd.Parameters.Add(New SqlParameter("@PESODESPACHADO", oBeTrans_despacho_det.PesoDespachado))
             cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", oBeTrans_despacho_det.IdProductoEstado))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_despacho_det.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@TALLA", oBeTrans_despacho_det.Talla))
+            cmd.Parameters.Add(New SqlParameter("@COLOR", oBeTrans_despacho_det.Color))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -384,7 +400,8 @@ Public Class clsLnTrans_despacho_det
         End Try
 
     End Function
-    Public Shared Function MaxID() as Integer
+
+    Public Shared Function MaxID() As Integer
 
         Try
 

@@ -151,6 +151,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                     Select(Function(g) New With {
                         .Idordencompra = g.Key.Idordencompra,
                         .No_Pedido = g.Key.No_pedido,
+                        .IdPresentacion = g.Key.Idpresentacion,
                         .Productos = g.Select(Function(p) New With {
                             .Codigo_Producto = p.Codigo_producto,
                             .Cantidad_Total = p.Cantidad,
@@ -565,6 +566,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                                                                End If
                                                            End Sub)
 
+                        lTransaccionesSalidaSingle = lTransaccionesSalida.FindAll(Function(x) x.No_pedido = PT.No_pedido AndAlso x.Idpedidoenc = PT.Idpedidoenc)
 
                         Dim vResult As Boolean = Enviar_Traslado_Desde_Solicitud_SAP(vDocEntrySAP,
                                                                                      PT.No_pedido,
@@ -673,7 +675,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
             Dim vNoLineaAnterior As Integer = -1
 
             Dim ProductosAgrupadosParaSolicitud = lINavTransaccionesOut.Where(Function(x) x.IdPedidoEnc = IdPedidoEnc).
-            GroupBy(Function(p) New With {Key p.CodigoProductoSAP, Key p.CodigoProductoWMS, Key p.No_Linea, Key p.CodigoPresentacion}).
+                                GroupBy(Function(p) New With {Key p.CodigoProductoSAP, Key p.CodigoProductoWMS, Key p.No_Linea, Key p.CodigoPresentacion}).
                                 Select(Function(g) New With {
                                     g.Key.No_Linea,
                                     g.Key.CodigoProductoSAP,
@@ -772,9 +774,9 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
         Catch ex As Exception
             clsLnI_nav_ejecucion_det_error.Inserta_Log($"Error al enviar traslado entre almacenes a SAP: {MethodBase.GetCurrentMethod.Name()} {ex.Message}",
-                                                        "",
-                                                        BeNavEjecucionEnc.IdEjecucionEnc,
-                                                        BeConfigDet.Idnavconfigdet)
+            "",
+            BeNavEjecucionEnc.IdEjecucionEnc,
+            BeConfigDet.Idnavconfigdet)
 
             clsPublic.Actualizar_Progreso(lblprg, $"Error al enviar solicitud de traslado entre almacenes a SAP:{vbNewLine}{ex.Message}")
             Throw New Exception($"Error al enviar solicitud de traslado entre almacenes a SAP:{vbNewLine}{ex.Message}")
@@ -1265,6 +1267,8 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                 '    End If
                 'End If
             End If
+            End If
+            End If
 
             Dim oTransfer As StockTransfer = CType(oCompany.GetBusinessObject(BoObjectTypes.oStockTransfer), StockTransfer)
             Configurar_Encabezado_Transferencia(oTransfer, oTransferRequest, BePedidoEnc, BeDespacho)
@@ -1427,14 +1431,14 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
             Else
                 ' Crear nuevo agrupado
                 ProductosParaSAP.Add(New ProductoTransferSAP With {
-                    .IdPedidoEnc = item.Idpedidoenc,
-                    .CodigoProductoSAP = CodigoSAP,
-                    .CodigoProductoWMS = item.CodigoProducto,
+            .IdPedidoEnc = item.Idpedidoenc,
+            .CodigoProductoSAP = CodigoSAP,
+            .CodigoProductoWMS = item.CodigoProducto,
                     .Cantidad_Total = CantidadBase,
-                    .CodigoPresentacion = CodigoPresentacion,
-                    .No_Pedido = item.No_pedido,
-                    .No_Linea = item.No_linea
-                })
+            .CodigoPresentacion = CodigoPresentacion,
+            .No_Pedido = item.No_pedido,
+            .No_Linea = item.No_linea
+        })
             End If
 
 
@@ -1564,18 +1568,18 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
             ' Enviar traslado final si aplica
             If Not String.IsNullOrEmpty(bodegaDestinoFinal) Then
                 solicitudTraslado = Enviar_Solicitud_Traslado_SAP(productosAgrupados,
-                                                                  bodegaIntermedia,
-                                                                  bodegaDestinoFinal,
-                                                                  nuevoDocEntry,
-                                                                  pedidoEnc.IdPedidoEnc,
-                                                                  solicitudTransfer,
-                                                                  despachoEnc,
-                                                                  oCompany,
-                                                                  empresa,
-                                                                  clsTrans.lConnection,
-                                                                  clsTrans.lTransaction,
-                                                                  lblprg,
-                                                                  prg)
+                                              bodegaIntermedia,
+                                              bodegaDestinoFinal,
+                                              nuevoDocEntry,
+                                              pedidoEnc.IdPedidoEnc,
+                                              solicitudTransfer,
+                                              despachoEnc,
+                                              oCompany,
+                                              empresa,
+                                              clsTrans.lConnection,
+                                              clsTrans.lTransaction,
+                                              lblprg,
+                                              prg)
             End If
 
             If Not String.IsNullOrEmpty(bodegaDestinoFinal) Then
@@ -1653,41 +1657,47 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
                 For Each prod In productosLinea
 
-                    If prod.Cantidad <= solicitudTransfer.Lines.Quantity Then
+                    If Not solicitudTransfer.Lines.LineStatus = BoStatus.bost_Close Then
 
-                        ' Solo agregamos línea si es un nuevo producto
-                        If vCodigoAnterior <> prod.CodigoProductoSAP Then
-                            transferencia.Lines.SetCurrentLine(noLineaTransfer)
-                            transferencia.Lines.BaseType = InvBaseDocTypeEnum.InventoryTransferRequest
-                            transferencia.Lines.BaseEntry = solicitudTransfer.DocEntry
-                            transferencia.Lines.BaseLine = lineaSAP
-                            transferencia.Lines.ItemCode = codigoProductoSAP
-                            transferencia.Lines.Quantity = prod.Cantidad
-                            transferencia.Lines.FromWarehouseCode = solicitudTransfer.FromWarehouse
-                            transferencia.Lines.WarehouseCode = pedidoEnc.Cliente.Codigo
+                        If prod.Cantidad <= solicitudTransfer.Lines.Quantity Then
 
-                            transferencia.Lines.Add()
-                            noLineaTransfer += 1
+                            ' Solo agregamos línea si es un nuevo producto
+                            If vCodigoAnterior <> prod.CodigoProductoSAP Then
+                                transferencia.Lines.SetCurrentLine(noLineaTransfer)
+                                transferencia.Lines.BaseType = InvBaseDocTypeEnum.InventoryTransferRequest
+                                transferencia.Lines.BaseEntry = solicitudTransfer.DocEntry
+                                transferencia.Lines.BaseLine = lineaSAP
+                                transferencia.Lines.ItemCode = codigoProductoSAP
+                                transferencia.Lines.Quantity = prod.Cantidad
+                                transferencia.Lines.FromWarehouseCode = solicitudTransfer.FromWarehouse
+                                transferencia.Lines.WarehouseCode = pedidoEnc.Cliente.Codigo
 
-                            vCodigoAnterior = prod.CodigoProductoSAP
-                            lineasAgregadas = True
-                        End If
+                                transferencia.Lines.Add()
+                                noLineaTransfer += 1
 
-                        ' Marcar transacciones relacionadas para actualizar
-                        Dim transaccionesActualizar = transaccionesOut.
+                                vCodigoAnterior = prod.CodigoProductoSAP
+                                lineasAgregadas = True
+                            End If
+
+                            ' Marcar transacciones relacionadas para actualizar
+                            Dim transaccionesActualizar = transaccionesOut.
                             Where(Function(x) x.Codigo_producto = prod.CodigoProductoWMS AndAlso
                                               x.No_pedido = noReferenciaWMS AndAlso
                                               x.No_linea = lineaSAP AndAlso
                                               x.Enviado = False).ToList()
 
-                        If transaccionesActualizar.Any() Then
-                            For Each tx In transaccionesActualizar
-                                tx.Enviado = True
-                            Next
+                            If transaccionesActualizar.Any() Then
+                                For Each tx In transaccionesActualizar
+                                    tx.Enviado = True
+                                Next
+                            End If
+
+                        Else
+                            Throw New Exception($"Cantidad WMS ({prod.Cantidad}) excede cantidad SAP ({solicitudTransfer.Lines.Quantity}) para producto: {codigoProductoSAP}")
                         End If
 
                     Else
-                        Throw New Exception($"Cantidad WMS ({prod.Cantidad}) excede cantidad SAP ({solicitudTransfer.Lines.Quantity}) para producto: {codigoProductoSAP}")
+                        clsPublic.Actualizar_Progreso(lblprg, $"La línea {codigoProductoSAP} ya fue completada en SAP.")
                     End If
 
                 Next
@@ -1732,5 +1742,19 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
         Return prod.Cantidad_Total
     End Function
+    Public Class ProductoTransferSAPProrrateo
+        Public Property IdPedidoEnc As Integer
+        Public Property CodigoProductoSAP As String
+        Public Property CodigoProductoWMS As String
+        Public Property CantidadBase As Decimal
+        Public Property CodigoPresentacion As String
+        Public Property No_Pedido As String
+        Public Property No_Linea As Integer
+        Public Property Factor As Double = 1
+    End Class
+    Public Class clsBeInfoBodegaByIdPedidoEnc
+        Public Property Codigo_Bodega_Origen As String = ""
+        Public Property Codigo_Bodega_Destino As String = ""
+    End Class
 
 End Class

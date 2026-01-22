@@ -23,5 +23,11 @@
     Public Property NombreArea As String = ""
     Public Property NombreClasificacion As String = ""
     Public Property Bono As String = ""
+    Public Property IdProductoTallaColor As Integer = 0
+    Public Property Codigo_Talla As String = ""
+    Public Property Nombre_Talla As String = ""
+    Public Property Codigo_Color As String = ""
+    Public Property Nombre_Color As String = ""
+    Public Property CodigoSKU As String = ""
 
 End Class

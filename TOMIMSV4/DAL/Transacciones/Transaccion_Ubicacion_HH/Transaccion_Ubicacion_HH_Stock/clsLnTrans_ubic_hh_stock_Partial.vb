@@ -187,17 +187,17 @@ Partial Public Class clsLnTrans_ubic_hh_stock
     End Function
 
     '#EJC20171025_1149AM: Se convirtió en transaccional función GetIdStockTransUbicHHDet
-    Public Shared Function GetIdStockTransUbicHHDet(ByRef pBeTrans_ubic_hh_stock As clsBeTrans_ubic_hh_stock, _
-                                                     ByRef lConnection As SqlConnection, _
+    Public Shared Function GetIdStockTransUbicHHDet(ByRef pBeTrans_ubic_hh_stock As clsBeTrans_ubic_hh_stock,
+                                                     ByRef lConnection As SqlConnection,
                                                      ByRef lTransaction As SqlTransaction) As Integer
 
         GetIdStockTransUbicHHDet = 0
 
         Try
 
-            Const sp As String = "SELECT IdStockTransUbicHHDet FROM Trans_ubic_hh_stock" & _
-            " Where(IdTareaUbicacionEnc = @IdTareaUbicacionEnc)" & _
-            " And (IdTareaUbicacionDet = @IdTareaUbicacionDet) " & _
+            Const sp As String = "SELECT IdStockTransUbicHHDet FROM Trans_ubic_hh_stock" &
+            " Where(IdTareaUbicacionEnc = @IdTareaUbicacionEnc)" &
+            " And (IdTareaUbicacionDet = @IdTareaUbicacionDet) " &
             " And (IdStock = @IdStock)"
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}

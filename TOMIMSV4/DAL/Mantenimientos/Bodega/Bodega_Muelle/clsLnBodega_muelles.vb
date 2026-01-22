@@ -31,7 +31,7 @@ Public Class clsLnBodega_muelles
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeBodega_muelles As clsBeBodega_muelles, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeBodega_muelles As clsBeBodega_muelles, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -455,7 +455,7 @@ Public Class clsLnBodega_muelles
 
     End Function
 
-    Public Shared Function MaxID() as Integer
+    Public Shared Function MaxID() As Integer
 
         Try
 
@@ -623,6 +623,38 @@ Public Class clsLnBodega_muelles
                 Dim pBeBodega_muelles As New clsBeBodega_muelles
                 Cargar(pBeBodega_muelles, dt.Rows(0))
                 Return pBeBodega_muelles
+            End If
+
+        Catch ex1 As SqlException
+            Throw ex1
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_IdMuelle_By_IdBodega(ByVal IdBodega As Integer,
+                                                    ByVal lConnection As SqlConnection,
+                                                    ByVal lTransaction As SqlTransaction) As Integer
+
+
+        Get_IdMuelle_By_IdBodega = 0
+
+        Try
+
+            Const sp As String = "SELECT IdMuelle FROM Bodega_muelles 
+                                  Where(IdBodega= @IdBodega)"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDBODEGA", IdBodega))
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Return IIf(IsDBNull(dt.Rows(0).Item("IdMuelle")), 0, dt.Rows(0).Item("IdMuelle"))
             End If
 
         Catch ex1 As SqlException

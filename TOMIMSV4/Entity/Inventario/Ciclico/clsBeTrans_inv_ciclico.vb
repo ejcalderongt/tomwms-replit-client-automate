@@ -60,6 +60,8 @@ Public Class clsBeTrans_inv_ciclico
     Public Property Contado() As Boolean = False
     Public Property Cantidad_Reservada_UMBas() As Double = 0
 
+    Public Property IdProductoTallaColor As Integer = 0
+    Public Property Gondola As String = ""
     Sub New()
     End Sub
 

@@ -1,7 +1,8 @@
+Imports System
 Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
-Imports DevExpress.XtraEditors.Filtering.Templates
+Imports TOMWMS.clsDataContractDI
 
 Partial Public Class clsLnI_nav_transacciones_out
 
@@ -179,6 +180,18 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                         End If
 
+                    End If
+
+                    BeTransaccionesOut.IdProductoTallaColor = BeTransReDet.IdProductoTallaColor
+
+                    '#EJC20210923: Obtener talla y color.   
+                    Dim DtPtc = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(BeTransReDet.IdProductoBodega)
+
+                    If Not DtPtc Is Nothing Then
+                        If DtPtc.Rows.Count > 0 Then
+                            BeTransaccionesOut.Talla = DtPtc.Rows(0).Item("talla").ToString()
+                            BeTransaccionesOut.Color = DtPtc.Rows(0).Item("color").ToString()
+                        End If
                     End If
 
                     Insertar(BeTransaccionesOut,
@@ -396,6 +409,22 @@ Partial Public Class clsLnI_nav_transacciones_out
                     BeInavTransaccionesOUT.Enviado = Enviado
                 End If
 
+                BeInavTransaccionesOUT.IdProductoTallaColor = BeTransReDet.IdProductoTallaColor
+
+                If BeTransOcDet.IdProductoTallaColor <> 0 Then
+                    Dim BeProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransOcDet.IdProductoTallaColor,
+                                                                                   lConnection,
+                                                                                   lTransaction)
+
+                    If BeProductoTallaColor IsNot Nothing Then
+                        Dim Talla = clsLnTalla.GetSingle(BeProductoTallaColor.IdTalla, lConnection, lTransaction)
+                        Dim Color = clsLnColor.GetSingle(BeProductoTallaColor.IdColor, lConnection, lTransaction)
+
+                        BeInavTransaccionesOUT.Talla = Talla?.Nombre
+                        BeInavTransaccionesOUT.Color = Color?.Nombre
+                    End If
+                End If
+
                 Insertar(BeInavTransaccionesOUT,
                          lConnection,
                          lTransaction)
@@ -501,8 +530,8 @@ Partial Public Class clsLnI_nav_transacciones_out
                     End If
 
                     For Each BeDespachoDet As clsBeTrans_despacho_det In pBeDespachoEnc.ListaDetalle.Where(Function(x) (x.IdPedidoEnc = BePedidoEnc.IdPedidoEnc AndAlso
-                                                                                                                        x.CantidadDespachada > 0 AndAlso
-                                                                                                                        x.IdDespachoEnc = pBeDespachoEnc.IdDespachoEnc))
+                                                                                                               x.CantidadDespachada > 0 AndAlso
+                                                                                                               x.IdDespachoEnc = pBeDespachoEnc.IdDespachoEnc))
 
                         Dim BePickingUbic As New clsBeTrans_picking_ubic
                         BePickingUbic = clsLnTrans_picking_ubic.Get_PickingUbic_By_IdPickingUbic(BeDespachoDet.IdPickingUbic, lConnection, lTransaction)
@@ -607,6 +636,9 @@ Partial Public Class clsLnI_nav_transacciones_out
                             .Fec_agr = Now
                             .User_agr = pBeDespachoEnc.User_agr
                             .User_mod = pBeDespachoEnc.User_mod
+                            .IdProductoTallaColor = BeDespachoDet.IdProductoTallaColor
+                            .Talla = BeDespachoDet.Talla
+                            .Color = BeDespachoDet.Color
 
                         End With
 
@@ -2524,6 +2556,9 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Seccion = AjDet.Seccion
                                         BeAjusteMI3.IdCentroCosto = AjEnc.IdCentroCosto
                                         BeAjusteMI3.Codigo_Centro_Costo = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(AjEnc.IdCentroCosto)
+                                        BeAjusteMI3.Centro_Costo_Erp = AjEnc.Centro_Costo_Erp
+                                        BeAjusteMI3.Centro_Costo_Dep_Erp = AjEnc.Centro_Costo_Dep_Erp
+                                        BeAjusteMI3.Centro_Costo_Dir_Erp = AjEnc.Centro_Costo_Dir_Erp
                                         lAjustesMI3.Add(BeAjusteMI3)
 
                                         clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste negativo para: " & AjDet.Codigo_Producto & " " & AjDet.Nombre_Producto)
@@ -2566,6 +2601,9 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Seccion = AjDet.Seccion
                                         BeAjusteMI3.IdCentroCosto = AjEnc.IdCentroCosto
                                         BeAjusteMI3.Codigo_Centro_Costo = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(AjEnc.IdCentroCosto)
+                                        BeAjusteMI3.Centro_Costo_Erp = AjEnc.Centro_Costo_Erp
+                                        BeAjusteMI3.Centro_Costo_Dep_Erp = AjEnc.Centro_Costo_Dep_Erp
+                                        BeAjusteMI3.Centro_Costo_Dir_Erp = AjEnc.Centro_Costo_Dir_Erp
                                         lAjustesMI3.Add(BeAjusteMI3)
 
                                         clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste positivo para: " & AjDet.Codigo_Producto & " " & AjDet.Nombre_Producto)
@@ -2722,6 +2760,12 @@ Partial Public Class clsLnI_nav_transacciones_out
                                 clsPublic.Actualizar_Progreso(lblprg, "#EJC20200219_2214: No se encontró cliente/Serie para IdBodega: " & AjEnc.IdBodega)
                                 vSerieBodega = ""
                                 vCodigoBodegaERP = ""
+
+                                If BeBodega.Interface_SAP Then
+                                    vCodigoBodegaERP = BeBodega.Codigo
+                                Else
+
+                                End If
                             Else
                                 vSerieBodega = BeCliente.Referencia
                                 vCodigoBodegaERP = BeCliente.Codigo
@@ -2779,7 +2823,13 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Observacion = AjDet.Observacion
                                         BeAjusteMI3.Seccion = AjDet.Seccion
                                         BeAjusteMI3.IdCentroCosto = AjEnc.IdCentroCosto
-                                        BeAjusteMI3.Codigo_Centro_Costo = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(AjEnc.IdCentroCosto)
+                                        BeAjusteMI3.Codigo_Centro_Costo = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(AjEnc.IdCentroCosto, lConnection, lTransaction)
+                                        BeAjusteMI3.Talla = AjDet.Talla
+                                        BeAjusteMI3.Color = AjDet.Color
+                                        BeAjusteMI3.Centro_Costo_Erp = AjEnc.Centro_Costo_Erp
+                                        BeAjusteMI3.Centro_Costo_Dep_Erp = AjEnc.Centro_Costo_Dep_Erp
+                                        BeAjusteMI3.Centro_Costo_Dir_Erp = AjEnc.Centro_Costo_Dir_Erp
+
                                         lAjustesMI3.Add(BeAjusteMI3)
 
                                         clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste negativo para: " & AjDet.Codigo_Producto & " " & AjDet.Nombre_Producto)
@@ -2821,7 +2871,12 @@ Partial Public Class clsLnI_nav_transacciones_out
                                         BeAjusteMI3.Observacion = AjDet.Observacion
                                         BeAjusteMI3.Seccion = AjDet.Seccion
                                         BeAjusteMI3.IdCentroCosto = AjEnc.IdCentroCosto
-                                        BeAjusteMI3.Codigo_Centro_Costo = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(AjEnc.IdCentroCosto)
+                                        BeAjusteMI3.Codigo_Centro_Costo = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(AjEnc.IdCentroCosto, lConnection, lTransaction)
+                                        BeAjusteMI3.Talla = AjDet.Talla
+                                        BeAjusteMI3.Color = AjDet.Color
+                                        BeAjusteMI3.Centro_Costo_Erp = AjEnc.Centro_Costo_Erp
+                                        BeAjusteMI3.Centro_Costo_Dep_Erp = AjEnc.Centro_Costo_Dep_Erp
+                                        BeAjusteMI3.Centro_Costo_Dir_Erp = AjEnc.Centro_Costo_Dir_Erp
                                         lAjustesMI3.Add(BeAjusteMI3)
 
                                         clsPublic.Actualizar_Progreso(lblprg, "Procesando ajuste positivo para: " & AjDet.Codigo_Producto & " " & AjDet.Nombre_Producto)
@@ -3361,6 +3416,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
     Public Shared Function Eliminar_By_IdRecepcionEnc_And_IdRecepcionDet(ByVal pIdRecepcionEnc As Integer,
                                                                          ByVal pIdRecepcionDet As Integer,
+                                                                         ByVal pIdBodega As Integer,
+                                                                         ByVal pIdProductoBodega As Integer,
+                                                                         ByVal pLic_Plate As String,
+                                                                         ByVal pNoLinea As String,
+                                                                         ByVal pLote As String,
+                                                                         ByVal pFechaVence As Date,
                                                                          Optional ByVal pConection As SqlConnection = Nothing,
                                                                          Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
@@ -3385,6 +3446,12 @@ Partial Public Class clsLnI_nav_transacciones_out
 
             cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONENC", pIdRecepcionEnc))
             cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONDET", pIdRecepcionDet))
+            cmd.Parameters.Add(New SqlParameter("@IDBODEGA", pIdBodega))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOBODEGA", pIdProductoBodega))
+            cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", pLic_Plate))
+            cmd.Parameters.Add(New SqlParameter("@NO_LINEA", pNoLinea))
+            cmd.Parameters.Add(New SqlParameter("@LOTE", pLote))
+            cmd.Parameters.Add(New SqlParameter("@FECHA_VENCE", pFechaVence))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -3426,6 +3493,58 @@ Partial Public Class clsLnI_nav_transacciones_out
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             cmd.Parameters.AddWithValue("@idBodega", pIdBodega)
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+
+            dad.Fill(dt)
+
+            Dim vBeI_nav_transacciones_out As New clsBeI_nav_transacciones_out
+
+            For Each dr As DataRow In dt.Rows
+                vBeI_nav_transacciones_out = New clsBeI_nav_transacciones_out
+                Cargar(vBeI_nav_transacciones_out, dr)
+                lReturnList.Add(vBeI_nav_transacciones_out)
+            Next
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Lotes_Ingreso_Pendientes_Envio_By_Tipo(ByVal pTipo As tTipoDocumentoIngreso,
+                                                                      ByVal lConnection As SqlConnection,
+                                                                      ByVal lTransaction As SqlTransaction,
+                                                                      ByVal IdBodegaOrigen As Integer) As List(Of clsBeI_nav_transacciones_out)
+
+        Dim lReturnList As New List(Of clsBeI_nav_transacciones_out)
+
+        Try
+
+            '#CKFK20251011 Modifiqué el query para que tome la talla y el color de las tablas maestras
+            Dim sp As String = "SELECT idtransaccion, idempresa, idbodega, o.idpropietario, idpropietariobodega, idordencompra, idrecepcionenc, idpedidoenc, iddespachoenc, 
+                                       idproductobodega, idproducto, idunidadmedida, idpresentacion, idproductoestado, cantidad, peso, lote, fecha_vence, fecha_recepcion, 
+	                                   no_pedido, no_linea, codigo_producto, nombre_producto, codigo_variante, unidad_medida, tipo_transaccion, enviado, 
+	                                   o.fec_agr, o.user_agr, o.fec_mod, o.user_mod, Cantidad_Esperada, lic_plate, uds_lic_plate, cantidad_presentacion, IdTipoDocumento, 
+	                                   es_servicio, codigo_barra, valor_aduana, valor_fob, valor_iva, valor_dai, valor_seguro, valor_flete, peso_neto, peso_bruto, 
+	                                   fecha_despacho, no_documento_salida_ref_devol, IdPedidoEncDevol, IdDespachoDet, IdRecepcionDet, cantidad_enviada, 
+	                                   cantidad_pendiente, auditar, IdProductoTallaColor, t.Codigo Talla, c.Codigo Color
+                                 FROM I_nav_transacciones_out o INNER JOIN
+                                      talla t ON o.Talla = t.Nombre INNER JOIN
+	                                  color c ON o.Color = c.Nombre 
+                                 WHERE tipo_transaccion = 'INGRESO' 
+                                       AND enviado = 0 
+                                       AND IdTipoDocumento = @IdTipoDocumento 
+                                       AND IdBodega = @IdBodega 
+                                       AND idrecepcionenc in (SELECT IdRecepcionEnc 
+                                                              FROM trans_re_enc  
+                                                              WHERE estado = 'Cerrado')"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            cmd.Parameters.AddWithValue("@idBodega", IdBodegaOrigen)
+            cmd.Parameters.AddWithValue("@IdTipoDocumento", pTipo)
             Dim dad As New SqlDataAdapter(cmd)
             Dim dt As New DataTable
 
@@ -4004,6 +4123,7 @@ Partial Public Class clsLnI_nav_transacciones_out
         Get_Ajustes_Auditados_Pendientes_Envio_MI3_By_Inventario = Nothing
 
         Dim lAjustesMI3 As New List(Of clsBeAjustesMI3)
+        Dim lblprg As New RichTextBox
         Dim vNDoc As String = ""
         Dim lVistaAjustesPendientesEnvio As New List(Of clsBe_vw_ajustes)
         Dim vDif As Double = 0
@@ -4281,6 +4401,57 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                 lReturnList.Add(vBeI_nav_transacciones_out)
 
+            Next
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Lotes_Ingreso_Pendientes_Envio(ByVal IdTipoIngresoOC As Int16,
+                                                              ByVal lConnection As SqlConnection,
+                                                              ByVal lTransaction As SqlTransaction,
+                                                              ByVal pIdBodega As Integer) As List(Of clsBeI_nav_transacciones_out)
+
+        Dim lReturnList As New List(Of clsBeI_nav_transacciones_out)
+
+        Try
+
+            Dim sql As String = "SELECT 
+                                    oc.IdTipoIngresoOC, 
+                                    ino.*
+                                FROM i_nav_transacciones_out AS ino
+                                INNER JOIN trans_re_oc AS ro 
+                                    ON ino.idrecepcionenc = ro.IdRecepcionEnc
+                                INNER JOIN trans_oc_enc AS oc 
+                                    ON ro.IdOrdenCompraEnc = oc.IdOrdenCompraEnc
+                                WHERE ino.tipo_transaccion = 'INGRESO'
+                                  AND oc.IdTipoIngresoOC = @IdTipoIngresoOC
+                                  AND ino.Enviado =0 
+                                  AND ino.idrecepcionenc IN (
+                                      SELECT IdRecepcionEnc
+                                      FROM trans_re_enc
+                                      WHERE estado = 'Cerrado'
+                                        AND IdBodega = @IdBodega
+                                );"
+
+            Dim cmd As New SqlCommand(sql, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            cmd.Parameters.AddWithValue("@idBodega", pIdBodega)
+            cmd.Parameters.AddWithValue("@IdTipoIngresoOC", IdTipoIngresoOC)
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+
+            dad.Fill(dt)
+
+            Dim vBeI_nav_transacciones_out As New clsBeI_nav_transacciones_out
+
+            For Each dr As DataRow In dt.Rows
+                vBeI_nav_transacciones_out = New clsBeI_nav_transacciones_out
+                Cargar(vBeI_nav_transacciones_out, dr)
+                lReturnList.Add(vBeI_nav_transacciones_out)
             Next
 
             Return lReturnList

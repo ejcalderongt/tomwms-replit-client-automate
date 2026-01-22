@@ -77,6 +77,8 @@ Public Class clsLnVW_Despacho_Rep
                 .codigo_regimen_salida = IIf(IsDBNull(dr.Item("codigo_regimen_salida")), "", dr.Item("codigo_regimen_salida"))
                 .placa_contenedor_salida = IIf(IsDBNull(dr.Item("placa_contenedor_salida")), "", dr.Item("placa_contenedor_salida"))
                 .Dua_salida = IIf(IsDBNull(dr.Item("dua_salida")), "", dr.Item("dua_salida"))
+                .Talla = IIf(IsDBNull(dr.Item("Talla")), "", dr.Item("Talla"))
+                .Color = IIf(IsDBNull(dr.Item("Color")), "", dr.Item("Color"))
 
             End With
 

@@ -39,6 +39,9 @@ Public Class clsBeStock_rec
     Public Property Atributo_Variante_1 As String = ""
     Public Property Pallet_No_Estandar As Boolean = False
     Public Property Impreso As Boolean = False '#GT13052025 campo definido en la tabla pero no en la clase
+    Public Property IdProductoTallaColor As Integer = 0
+    Public Property Talla As String = ""
+    Public Property Color As String = ""
 
     Sub New()
     End Sub

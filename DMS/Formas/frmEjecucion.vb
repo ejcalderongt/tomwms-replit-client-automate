@@ -380,6 +380,55 @@ Public Class frmEjecucion
         cmdProductos.Enabled = pVal
         cmdIngresos.Enabled = pVal
         cmdSalidas.Enabled = pVal
+        cmdPropietarios.Enabled = pVal
+        cmdFechaBaseSync.Enabled = Not pVal
+    End Sub
+
+
+    Private Sub cmdProductos_ItemClickAsync(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdProductos.ItemClick
+        Try
+
+            cmdProductos.Enabled = False
+            clsLnProductoDMS.Exportacion_ProductosAsync(lblprg)
+            cmdProductos.Enabled = True
+
+        Catch ex As Exception
+            clsHelper.LogMensaje(lblprg, "Error en exportación de productos.", clsHelper.TipoMensaje.Error_)
+            MessageBox.Show("Error al llamar a la API: " & ex.Message)
+        Finally
+            cmdIngresos.Enabled = True
+        End Try
+    End Sub
+
+    Private Sub cmdIngresos_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdIngresos.ItemClick
+        Try
+
+            cmdIngresos.Enabled = False
+            clsLnTrans_oc_encDMS.Exportacion_IngresosAsync(lblprg)
+            cmdIngresos.Enabled = True
+
+        Catch ex As Exception
+            clsHelper.LogMensaje(lblprg, "Error en exportación de ingresos.", clsHelper.TipoMensaje.Error_)
+            MessageBox.Show("Error al llamar a la API: " & ex.Message)
+        Finally
+            cmdIngresos.Enabled = True
+        End Try
+    End Sub
+
+    Private Sub cmdSalidas_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdSalidas.ItemClick
+        Try
+
+            cmdIngresos.Enabled = False
+            clsLnTrans_pe_encDMS.Exportacion_PedidosAsync(lblprg)
+            cmdIngresos.Enabled = True
+
+        Catch ex As Exception
+
+            clsHelper.LogMensaje(lblprg, "Error en exportación de pedidos.", clsHelper.TipoMensaje.Error_)
+            MessageBox.Show("Error al llamar a la API: " & ex.Message)
+        Finally
+            cmdIngresos.Enabled = True
+        End Try
     End Sub
 
     Private Sub cmdFechaBaseSync_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdFechaBaseSync.ItemClick
@@ -494,6 +543,8 @@ Public Class frmEjecucion
             .VistaTimeProperties.EditFormat.FormatString = "HH:mm"
         End With
 
+        Dim tablas As List(Of String) = clsHelper.GetTablasSincronizables()
+        Dim contador As Integer = 0
 
         Dim args As New XtraInputBoxArgs()
         args.Caption = "Fecha y hora de sincronización"
@@ -507,6 +558,7 @@ Public Class frmEjecucion
         If result Is Nothing OrElse String.IsNullOrWhiteSpace(result.ToString()) Then
             Return Nothing
         End If
+        Next
 
         Dim fecha As DateTime
         If DateTime.TryParse(result.ToString(), fecha) Then
@@ -550,21 +602,22 @@ Public Class frmEjecucion
                   "Seleccione la fecha y hora base para iniciar la sincronización:"
         args.DefaultButtonIndex = 0
         args.Editor = dateEdit
+        'args.Width = 450
 
         ' Mostrar cuadro
         Dim result = XtraInputBox.Show(args)
 
-        If result Is Nothing OrElse String.IsNullOrWhiteSpace(result.ToString()) Then
-            Return Nothing
-        End If
+    If result Is Nothing OrElse String.IsNullOrWhiteSpace(result.ToString()) Then
+    Return Nothing
+    End If
 
-        ' Convertir resultado
-        Dim fecha As DateTime
-        If DateTime.TryParse(result.ToString(), fecha) Then
-            Return fecha
-        Else
-            Return Nothing
-        End If
+    ' Convertir resultado
+    Dim fecha As DateTime
+    If DateTime.TryParse(result.ToString(), fecha) Then
+    Return fecha
+    Else
+    Return Nothing
+    End If
     End Function
 
 

@@ -68,24 +68,24 @@ Public Class frmLicGen
                 Dim s As String
                 If conUx Then
                     s = String.Format("{0},{1},{2},{3},{4},{5}",
-                                                                    cbo,
-                                                                    chh,
-                                                                    ux,
-                                                                    yy,
-                                                                    mm,
-                                                                    dd)
+                cbo,
+                chh,
+                                    ux,
+                yy,
+                mm,
+                dd)
                 Else
-                    s = String.Format("{0},{1},{2},{3},{4}",
-                                                                    cbo,
-                                                                    chh,
-                                                                    yy,
-                                                                    mm,
-                                                                    dd)
-                End If
+                s = String.Format("{0},{1},{2},{3},{4}",
+                                                                cbo,
+                                                                chh,
+                                                                yy,
+                                                                mm,
+                                                                dd)
+            End If
 
-                txtLlave.Text = EncodeString(s)
-                txtLlave.SelectAll()
-                txtLlave.Focus()
+            txtLlave.Text = EncodeString(s)
+            txtLlave.SelectAll()
+            txtLlave.Focus()
 
             End If
 
@@ -109,7 +109,7 @@ Public Class frmLicGen
             Text,
             MessageBoxButtons.OK,
             MessageBoxIcon.Exclamation)
-            txtSolicitudCliente.focus()
+            txtSolicitudCliente.Focus()
             Exit Sub
         End If
 

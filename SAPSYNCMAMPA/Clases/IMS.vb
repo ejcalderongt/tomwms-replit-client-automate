@@ -1019,7 +1019,7 @@ Public Class IMS
 
         Listar_FontTramo = False
 
-        Dim DT As New List(Of clsBeFont_enc)
+        Dim DT As New List(Of clsBeFont_Enc)
 
         Try
 

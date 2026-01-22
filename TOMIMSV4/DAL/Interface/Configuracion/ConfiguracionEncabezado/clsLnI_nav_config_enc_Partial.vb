@@ -631,6 +631,7 @@ Partial Public Class clsLnI_nav_config_enc
 
     End Function
 
+
     Public Shared Function Get_Existe_by_Ejecutable(ByVal pEjecutable As String) As Boolean
 
         Get_Existe_by_Ejecutable = False
@@ -671,5 +672,6 @@ Partial Public Class clsLnI_nav_config_enc
         End Try
 
     End Function
+
 
 End Class

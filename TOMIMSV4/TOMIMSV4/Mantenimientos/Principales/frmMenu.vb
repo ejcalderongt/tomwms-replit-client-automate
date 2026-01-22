@@ -1042,6 +1042,8 @@ Public Class frmMenu
             If Not permiteMenu(e.Link) Then Return
         End If
 
+        Cierra_Instancia_Previa(frmPedido_List)
+
         With frmPedido_List
             .Modo = frmPedido_List.pModo.Lista
             If Not e Is Nothing Then
@@ -4852,6 +4854,8 @@ Public Class frmMenu
             .Focus()
         End With
 
+        SplashScreenManager.CloseForm(False)
+
     End Sub
 
     Private Sub mnuTamañoTablas_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuTamañoTablas.ItemClick
@@ -5256,14 +5260,14 @@ Public Class frmMenu
         Try
             If Not permiteMenu(e.Link) Then Return
 
-            'With frmProducto_TallaList
-            '    .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
-            '    .cmdNuevo.Enabled = .OpcionesMenu.Modificar
-            '    .cmdActualizar.Enabled = .OpcionesMenu.Leer
-            '    .WindowState = FormWindowState.Maximized
-            '    .Show()
-            '    .Focus()
-            'End With
+            With frmProducto_TallaList
+                .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
+                .cmdNuevo.Enabled = .OpcionesMenu.Modificar
+                .cmdActualizar.Enabled = .OpcionesMenu.Leer
+                .WindowState = FormWindowState.Maximized
+                .Show()
+                .Focus()
+            End With
 
             SplashScreenManager.CloseForm(False)
 
@@ -5279,14 +5283,14 @@ Public Class frmMenu
         Try
             If Not permiteMenu(e.Link) Then Return
 
-            'With frmProducto_ColorList
-            '    .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
-            '    .cmdNuevo.Enabled = .OpcionesMenu.Modificar
-            '    .cmdActualizar.Enabled = .OpcionesMenu.Leer
-            '    .WindowState = FormWindowState.Maximized
-            '    .Show()
-            '    .Focus()
-            'End With
+            With frmProducto_ColorList
+                .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
+                .cmdNuevo.Enabled = .OpcionesMenu.Modificar
+                .cmdActualizar.Enabled = .OpcionesMenu.Leer
+                .WindowState = FormWindowState.Maximized
+                .Show()
+                .Focus()
+            End With
 
             SplashScreenManager.CloseForm(False)
 
@@ -5348,32 +5352,11 @@ Public Class frmMenu
         Try
             If Not permiteMenu(e.Link) Then Return
 
-            'With frmCampaña_List
-            '    .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
-            '    .cmdNuevo.Enabled = .OpcionesMenu.Modificar
-            '    .cmdActualizar.Enabled = .OpcionesMenu.Leer
-            '    .WindowState = FormWindowState.Maximized
-            '    .Show()
-            '    .Focus()
-            'End With
-
-            SplashScreenManager.CloseForm(False)
-
-        Catch ex As Exception
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Exclamation)
-        End Try
-    End Sub
-
-    Private Sub cmdIA_ItemClick_1(sender As Object, e As ItemClickEventArgs) Handles cmdIA.ItemClick
-        If Not permiteMenu(e.Link) Then Return
-
-        Try
-
-            With frmIA_Chat
-                .MdiParent = Me
+            With frmCampaña_List
+                .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
+                .cmdNuevo.Enabled = .OpcionesMenu.Modificar
+                .cmdActualizar.Enabled = .OpcionesMenu.Leer
+                .WindowState = FormWindowState.Maximized
                 .Show()
                 .Focus()
             End With
@@ -5388,24 +5371,91 @@ Public Class frmMenu
         End Try
     End Sub
 
+    Private Sub mnuInterfaceDMS_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuInterfaceDMS.ItemClick
+        If Not permiteMenu(e.Link) Then Return
 
-    'Public Sub Task_DMS()
+        Try
 
-    '    Dim pEjecutable As String = "DMS.exe"
+    Dim pEjecutable As String = "DMS.exe"
 
-    '    If AP.IdConfiguracionInterface <> 0 Then
+    If AP.IdConfiguracionInterface <> 0 Then
 
-    '        Ejecutar_Interface_Exe("-1 /auto", Me, pEjecutable)
+                Ejecutar_Interface(" -" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-0-0" & "-" & clsBD.Instancia.NombreInstancia, Me, pEjecutable)
 
-    '    Else
+            Else
 
-    '        XtraMessageBox.Show(String.Format("La Bodega {0} de la Empresa {1} no  tiene definida configuración para interface", AP.NomBodega, AP.NomEmpresa),
-    '        Text,
-    '        MessageBoxButtons.OK,
-    '        MessageBoxIcon.Exclamation)
+                XtraMessageBox.Show(String.Format("La Bodega {0} de la Empresa {1} no  tiene definida configuración para interface", AP.NomBodega, AP.NomEmpresa),
+                Text,
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Exclamation)
 
-    '    End If
+            End If
 
-    'End Sub
+    Catch ex As Exception
+    Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        End Try
+
+    End Sub
+
+    Private Sub frmMenu_Closing(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles Me.Closing
+        If XtraMessageBox.Show("¿Está seguro de salir de la aplicación?",
+                       Text,
+                       MessageBoxButtons.YesNo,
+                       MessageBoxIcon.Question) = DialogResult.No Then
+            e.Cancel = True
+        End If
+    End Sub
+
+    Private Sub mnuVerificacionBOF_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuVerificacionBOF.ItemClick
+        If Not permiteMenu(e.Link) Then Return
+        Try
+
+            Cierra_Instancia_Previa(frmPedido_List)
+
+
+            With frmPedido_List
+                .MdiParent = Me : .OpcionesMenu = clsLnRol.Get_MenuRol_Opciones(AP.UsuarioAp.IdRol, e.Link.KeyTip)
+                .Modo = frmPedido_List.pModo.verificacion
+                .WindowState = FormWindowState.Maximized
+                .Show()
+                .Focus()
+            End With
+
+            SplashScreenManager.CloseForm(False)
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("La Bodega {0} de la Empresa {1} no  tiene definida configuración para interface", AP.NomBodega, AP.NomEmpresa),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+    End Sub
+
+    Public Sub Cierra_Instancia_Previa(ByRef Myform As Form)
+
+        Try
+
+            For Each objForm In My.Application.OpenForms
+                If (Trim(objForm.Name) = Trim(Myform.Name)) Then
+                    Myform.Close()
+                    Exit For
+                End If
+            Next
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
 
 End Class

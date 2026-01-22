@@ -28,5 +28,7 @@
     Public Property FechaVerifica As Date
     Public Property Lote As String
     Public Property UMBas As String
+    Public Property Codigo_Color As String
+    Public Property Codigo_Talla As String
 
 End Class

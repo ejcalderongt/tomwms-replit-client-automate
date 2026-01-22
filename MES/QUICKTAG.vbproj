@@ -365,6 +365,8 @@
   <ItemGroup>
     <PublishFile Include="PerceptronUbicacion">
       <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>

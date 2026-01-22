@@ -25,7 +25,7 @@ Public Class clsLnI_nav_config_ent
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeI_nav_config_ent As clsBeI_nav_config_ent, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeI_nav_config_ent As clsBeI_nav_config_ent, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -259,7 +259,7 @@ Public Class clsLnI_nav_config_ent
 
         Try
 
-            Const sp As String = "SELECT * FROM I_nav_config_ent" & _
+            Const sp As String = "SELECT * FROM I_nav_config_ent" &
             " Where(idnavconfigent = @idnavconfigent)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -331,7 +331,7 @@ Public Class clsLnI_nav_config_ent
 
         Try
 
-            Const sp As String = "SELECT * FROM I_nav_config_ent" & _
+            Const sp As String = "SELECT * FROM I_nav_config_ent" &
             " Where(idnavconfigent = @idnavconfigent)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -359,7 +359,7 @@ Public Class clsLnI_nav_config_ent
 
     End Function
 
-    Public Shared Function MaxID() as Integer
+    Public Shared Function MaxID() As Integer
 
         Try
 

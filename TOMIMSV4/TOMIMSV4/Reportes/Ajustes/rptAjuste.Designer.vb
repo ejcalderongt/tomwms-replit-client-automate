@@ -77,7 +77,7 @@ Partial Public Class rptAjuste
         Me.Detail.Controls.AddRange(New DevExpress.XtraReports.UI.XRControl() {Me.XrTable2})
         Me.Detail.HeightF = 26.04167!
         Me.Detail.Name = "Detail"
-        Me.Detail.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(0), CInt(0), CInt(0), CInt(0), CSng(100.0!))
+        Me.Detail.Padding = New DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100.0!)
         Me.Detail.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft
         '
         'XrTable2
@@ -109,7 +109,7 @@ Partial Public Class rptAjuste
         '
         Me.XrTableCell5.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding("Text", Nothing, "trans_ajuste_det.Producto")})
         Me.XrTableCell5.Name = "XrTableCell5"
-        Me.XrTableCell5.Weight = 1.2740373947533648R
+        Me.XrTableCell5.Weight = 1.2740373947533647R
         '
         'XrTableCell6
         '
@@ -157,14 +157,14 @@ Partial Public Class rptAjuste
         '
         Me.TopMargin.HeightF = 2.0!
         Me.TopMargin.Name = "TopMargin"
-        Me.TopMargin.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(0), CInt(0), CInt(0), CInt(0), CSng(100.0!))
+        Me.TopMargin.Padding = New DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100.0!)
         Me.TopMargin.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft
         '
         'BottomMargin
         '
         Me.BottomMargin.HeightF = 31.0!
         Me.BottomMargin.Name = "BottomMargin"
-        Me.BottomMargin.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(0), CInt(0), CInt(0), CInt(0), CSng(100.0!))
+        Me.BottomMargin.Padding = New DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100.0!)
         Me.BottomMargin.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft
         '
         'Trans_ajuste_detTableAdapter
@@ -297,7 +297,7 @@ Partial Public Class rptAjuste
         Me.XrLabel6.Font = New DevExpress.Drawing.DXFont("Arial", 8.0!)
         Me.XrLabel6.LocationFloat = New DevExpress.Utils.PointFloat(47.33334!, 110.9167!)
         Me.XrLabel6.Name = "XrLabel6"
-        Me.XrLabel6.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
+        Me.XrLabel6.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel6.SizeF = New System.Drawing.SizeF(718.6664!, 23.0!)
         Me.XrLabel6.StylePriority.UseFont = False
         '
@@ -313,7 +313,7 @@ Partial Public Class rptAjuste
         Me.XrLabel5.Font = New DevExpress.Drawing.DXFont("Arial", 8.0!)
         Me.XrLabel5.LocationFloat = New DevExpress.Utils.PointFloat(47.33334!, 133.9167!)
         Me.XrLabel5.Name = "XrLabel5"
-        Me.XrLabel5.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
+        Me.XrLabel5.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel5.SizeF = New System.Drawing.SizeF(718.6665!, 23.0!)
         Me.XrLabel5.StylePriority.UseFont = False
         '
@@ -329,7 +329,7 @@ Partial Public Class rptAjuste
         Me.XrLabel4.Font = New DevExpress.Drawing.DXFont("Arial", 8.0!)
         Me.XrLabel4.LocationFloat = New DevExpress.Utils.PointFloat(47.33334!, 87.91668!)
         Me.XrLabel4.Name = "XrLabel4"
-        Me.XrLabel4.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
+        Me.XrLabel4.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel4.SizeF = New System.Drawing.SizeF(718.6665!, 23.0!)
         Me.XrLabel4.StylePriority.UseFont = False
         '
@@ -345,7 +345,7 @@ Partial Public Class rptAjuste
         Me.XrLabel3.Font = New DevExpress.Drawing.DXFont("Arial", 8.0!)
         Me.XrLabel3.LocationFloat = New DevExpress.Utils.PointFloat(10.00001!, 0!)
         Me.XrLabel3.Name = "XrLabel3"
-        Me.XrLabel3.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
+        Me.XrLabel3.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel3.SizeF = New System.Drawing.SizeF(389.9999!, 23.0!)
         Me.XrLabel3.StylePriority.UseFont = False
         Me.XrLabel3.Text = "XrLabel3"
@@ -356,7 +356,7 @@ Partial Public Class rptAjuste
         Me.XrLabel1.Font = New DevExpress.Drawing.DXFont("Arial", 8.0!)
         Me.XrLabel1.LocationFloat = New DevExpress.Utils.PointFloat(47.33334!, 64.91667!)
         Me.XrLabel1.Name = "XrLabel1"
-        Me.XrLabel1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
+        Me.XrLabel1.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel1.SizeF = New System.Drawing.SizeF(718.6664!, 23.00001!)
         Me.XrLabel1.StylePriority.UseFont = False
         Me.XrLabel1.StylePriority.UseTextAlignment = False
@@ -375,7 +375,7 @@ Partial Public Class rptAjuste
         Me.XrLabel2.LocationFloat = New DevExpress.Utils.PointFloat(10.00036!, 0.6250222!)
         Me.XrLabel2.Multiline = True
         Me.XrLabel2.Name = "XrLabel2"
-        Me.XrLabel2.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
+        Me.XrLabel2.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrLabel2.SizeF = New System.Drawing.SizeF(708.6663!, 36.24998!)
         Me.XrLabel2.StylePriority.UseFont = False
         Me.XrLabel2.StylePriority.UseTextAlignment = False
@@ -387,7 +387,7 @@ Partial Public Class rptAjuste
         Me.XrPageInfo1.Font = New DevExpress.Drawing.DXFont("Arial", 8.0!)
         Me.XrPageInfo1.LocationFloat = New DevExpress.Utils.PointFloat(534.3752!, 2.333339!)
         Me.XrPageInfo1.Name = "XrPageInfo1"
-        Me.XrPageInfo1.Padding = New DevExpress.XtraPrinting.PaddingInfo(CInt(2), CInt(2), CInt(0), CInt(0), CSng(100.0!))
+        Me.XrPageInfo1.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
         Me.XrPageInfo1.PageInfo = DevExpress.XtraPrinting.PageInfo.DateTime
         Me.XrPageInfo1.SizeF = New System.Drawing.SizeF(231.6248!, 23.0!)
         Me.XrPageInfo1.StylePriority.UseFont = False

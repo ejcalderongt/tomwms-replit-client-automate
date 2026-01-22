@@ -48,6 +48,7 @@ Public Class clsLnTrans_re_det
                 .IdOrdenCompraEnc = IIf(IsDBNull(dr.Item("IdOrdenCompraEnc")), 0, dr.Item("IdOrdenCompraEnc"))
                 .IdOrdenCompraDet = IIf(IsDBNull(dr.Item("IdOrdenCompraDet")), 0, dr.Item("IdOrdenCompraDet"))
                 .IdJornadaSistema = IIf(IsDBNull(dr.Item("IdJornadaSistema")), 0, dr.Item("IdJornadaSistema"))
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
 
             End With
 
@@ -103,6 +104,7 @@ Public Class clsLnTrans_re_det
             Ins.Add("IdOrdenCompraDet", "@IdOrdenCompraDet", DataType.Parametro)
             Ins.Add("IdJornadaSistema", "@IdJornadaSistema", DataType.Parametro)
             Ins.Add("Host", "@Host", DataType.Parametro)
+            Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
 
@@ -154,6 +156,7 @@ Public Class clsLnTrans_re_det
             cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADET", oBeTrans_re_det.IdOrdenCompraDet))
             cmd.Parameters.Add(New SqlParameter("@IDJORNADASISTEMA", oBeTrans_re_det.IdJornadaSistema))
             cmd.Parameters.Add(New SqlParameter("@HOST", oBeTrans_re_det.Host))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_re_det.IdProductoTallaColor))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -214,6 +217,7 @@ Public Class clsLnTrans_re_det
             Upd.Add("IdOrdenCompraEnc", "@IdOrdenCompraEnc", DataType.Parametro)
             Upd.Add("IdOrdenCompraDet", "@IdOrdenCompraDet", DataType.Parametro)
             Upd.Add("IdJornadaSistema", "@IdJornadaSistema", DataType.Parametro)
+            Upd.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
             Upd.Where("IdRecepcionDet = @IdRecepcionDet " &
                 "AND IdRecepcionEnc = @IdRecepcionEnc")
 
@@ -266,6 +270,7 @@ Public Class clsLnTrans_re_det
             cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRAENC", oBeTrans_re_det.IdOrdenCompraEnc))
             cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADET", oBeTrans_re_det.IdOrdenCompraDet))
             cmd.Parameters.Add(New SqlParameter("@IDJORNADASISTEMA", oBeTrans_re_det.IdJornadaSistema))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_re_det.IdProductoTallaColor))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

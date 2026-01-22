@@ -2432,6 +2432,7 @@ Public Class clsSyncNavEnvioAlm : Inherits clsInterfaceBase
                 pBeStockRes.IdUbicacionAbastecerCon = 0
             End If
 
+
             Try
                 '#CKFK20221012 Agregué la función que devuelve el stock reservado
                 If clsLnTrans_pe_det.Reservar_Stock_Por_Linea_Interface(pDiasVencimientoCliente,

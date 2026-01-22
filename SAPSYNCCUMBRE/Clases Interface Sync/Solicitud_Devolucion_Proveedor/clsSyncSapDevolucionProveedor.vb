@@ -155,6 +155,7 @@ Public Class clsSyncSapDevolucionProveedor : Inherits clsInterfaceBase : Impleme
                                                       Optional pPedidoCliente As String = "") As Boolean
         Procesar_Devolucion_Mercancia_SAP = False
 
+        Dim Resultado As String = ""
         Dim CnnLog As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
         Dim BeBodega As New clsBeBodega
         Dim lConnection As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
@@ -213,9 +214,9 @@ Public Class clsSyncSapDevolucionProveedor : Inherits clsInterfaceBase : Impleme
                         End If
 
                         Dim BePedidoEncResult As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(PedidoClienteSAP,
-                                                                                                                                            lblprg,
-                                                                                                                                            lConnection,
-                                                                                                                                            lTransaction)
+                        lblprg,
+                        lConnection,
+                        lTransaction)
 
                         If Not BePedidoEncResult Is Nothing Then
 
@@ -230,6 +231,8 @@ Public Class clsSyncSapDevolucionProveedor : Inherits clsInterfaceBase : Impleme
                             clsLnLog_error_wms.Agregar_Error("#IF_SAP_DEVOL_SAP_PROV: Se importó el documento: " & PedidoClienteSAP.No)
 
                         End If
+
+                        clsPublic.Actualizar_Progreso(lblprg, Resultado)
 
                     Next
 

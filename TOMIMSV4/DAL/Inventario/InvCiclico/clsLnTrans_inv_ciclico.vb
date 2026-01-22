@@ -40,6 +40,7 @@ Public Class clsLnTrans_inv_ciclico
                 .Regularizar = IIf(IsDBNull(dr.Item("Regularizar")), True, dr.Item("Regularizar"))
                 .Nuevo_Stock = IIf(IsDBNull(dr.Item("Nuevo_Stock")), True, dr.Item("Nuevo_Stock"))
                 .Cantidad_Reservada_UMBas = IIf(IsDBNull(dr.Item("Cantidad_Reservada_UMBas")), True, dr.Item("Cantidad_Reservada_UMBas"))
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
 
             End With
 
@@ -92,6 +93,8 @@ Public Class clsLnTrans_inv_ciclico
             Ins.Add("nuevo_stock", "@nuevo_stock", DataType.Parametro)
             Ins.Add("contado", "@contado", DataType.Parametro)
             Ins.Add("Cantidad_Reservada_UMBas", "@Cantidad_Reservada_UMBas", DataType.Parametro)
+            Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
+            Ins.Add("gondola", "@Gondola", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -146,6 +149,8 @@ Public Class clsLnTrans_inv_ciclico
             cmd.Parameters.Add(New SqlParameter("@NUEVO_STOCK", oBeTrans_inv_ciclico.Nuevo_Stock))
             cmd.Parameters.Add(New SqlParameter("@CONTADO", oBeTrans_inv_ciclico.Contado))
             cmd.Parameters.Add(New SqlParameter("@CANTIDAD_RESERVADA_UMBAS", oBeTrans_inv_ciclico.Cantidad_Reservada_UMBas))
+            cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor", oBeTrans_inv_ciclico.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@GONDOLA", oBeTrans_inv_ciclico.Gondola))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -206,6 +211,8 @@ Public Class clsLnTrans_inv_ciclico
             Upd.Add("nuevo_stock", "@nuevo_stock", DataType.Parametro)
             Upd.Add("contado", "@contado", DataType.Parametro)
             Upd.Add("Cantidad_Reservada_UMBas", "@Cantidad_Reservada_UMBas", DataType.Parametro)
+            Upd.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
+            Upd.Add("gondola", "@gondola", DataType.Parametro)
             Upd.Where("idinvciclico = @idinvciclico")
 
             Dim sp As String = Upd.SQL()
@@ -254,6 +261,8 @@ Public Class clsLnTrans_inv_ciclico
             cmd.Parameters.Add(New SqlParameter("@NUEVO_STOCK", oBeTrans_inv_ciclico.Nuevo_Stock))
             cmd.Parameters.Add(New SqlParameter("@CONTADO", oBeTrans_inv_ciclico.Contado))
             cmd.Parameters.Add(New SqlParameter("@CANTIDAD_RESERVADA_UMBAS", oBeTrans_inv_ciclico.Cantidad_Reservada_UMBas))
+            cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor", oBeTrans_inv_ciclico.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@GONDOLA", oBeTrans_inv_ciclico.Gondola))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -867,8 +876,8 @@ Public Class clsLnTrans_inv_ciclico
     End Function
 
     Public Shared Function Actualizar_Regularizar_By_IdInventarioEnc_And_IdInvCiclico(ByRef oBeTrans_inv_ciclico As clsBeTrans_inv_ciclico,
-                                                                                   Optional ByVal pConection As SqlConnection = Nothing,
-                                                                                   Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+                                                                                      Optional ByVal pConection As SqlConnection = Nothing,
+                                                                                      Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -962,7 +971,7 @@ Public Class clsLnTrans_inv_ciclico
 
             Upd.Init("trans_inv_ciclico")
             Upd.Add("regularizar", "@regularizar", DataType.Parametro)
-            Upd.Where("idinventarioenc=@idinventarioenc")
+            Upd.Where("IdInvCiclico = @IdInvCiclico and idinventarioenc=@idinventarioenc")
 
             Dim sp As String = Upd.SQL()
 
@@ -977,8 +986,9 @@ Public Class clsLnTrans_inv_ciclico
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
             End If
 
-            cmd.Parameters.Add(New SqlParameter("@REGULARIZAR", pRegularizar))
-            cmd.Parameters.Add(New SqlParameter("@IDINVENTARIOENC", pIdInventarioEnc))
+            cmd.Parameters.Add(New SqlParameter("@REGULARIZAR", oBeTrans_inv_ciclico.Regularizar))
+            cmd.Parameters.Add(New SqlParameter("@IDINVCICLICO", oBeTrans_inv_ciclico.IdInvCiclico))
+            cmd.Parameters.Add(New SqlParameter("@IDINVENTARIOENC", oBeTrans_inv_ciclico.Idinventarioenc))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -998,10 +1008,10 @@ Public Class clsLnTrans_inv_ciclico
 
     End Function
 
-    Public Shared Function Actualizar_NuevoStock_By_IdInventarioEnc(ByVal pIdInventarioEnc As Integer,
-                                                                    ByVal pNuevoStock As Boolean,
-                                                                    Optional ByVal pConection As SqlConnection = Nothing,
-                                                                    Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+    Public Shared Function Actualizar_Regularizar_By_IdInventarioEnc(ByVal pIdInventarioEnc As Integer,
+                                                                     ByVal pRegularizar As Boolean,
+                                                                     Optional ByVal pConection As SqlConnection = Nothing,
+                                                                     Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -1009,7 +1019,7 @@ Public Class clsLnTrans_inv_ciclico
         Try
 
             Upd.Init("trans_inv_ciclico")
-            Upd.Add("nuevo_stock", "@nuevo_stock", DataType.Parametro)
+            Upd.Add("regularizar", "@regularizar", DataType.Parametro)
             Upd.Where("idinventarioenc=@idinventarioenc")
 
             Dim sp As String = Upd.SQL()
@@ -1025,7 +1035,7 @@ Public Class clsLnTrans_inv_ciclico
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
             End If
 
-            cmd.Parameters.Add(New SqlParameter("@NUEVO_STOCK", pNuevoStock))
+            cmd.Parameters.Add(New SqlParameter("@REGULARIZAR", pRegularizar))
             cmd.Parameters.Add(New SqlParameter("@IDINVENTARIOENC", pIdInventarioEnc))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
@@ -1328,5 +1338,53 @@ Public Class clsLnTrans_inv_ciclico
     '    End Try
 
     'End Function
+
+    Public Shared Function Actualizar_NuevoStock_By_IdInventarioEnc(ByVal pIdInventarioEnc As Integer,
+                                                                    ByVal pNuevoStock As Boolean,
+                                                                    Optional ByVal pConection As SqlConnection = Nothing,
+                                                                    Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Upd.Init("trans_inv_ciclico")
+            Upd.Add("nuevo_stock", "@nuevo_stock", DataType.Parametro)
+            Upd.Where("idinventarioenc=@idinventarioenc")
+
+            Dim sp As String = Upd.SQL()
+
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection)
+                cmd.Transaction = pTransaction
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
+
+            cmd.Parameters.Add(New SqlParameter("@NUEVO_STOCK", pNuevoStock))
+            cmd.Parameters.Add(New SqlParameter("@IDINVENTARIOENC", pIdInventarioEnc))
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            cmd.Dispose()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
 
 End Class

@@ -15,10 +15,12 @@ Module m_Global
     Public Property pConfigInterface As NombreInterface = NombreInterface.Becofarma
     Public Property NoDocEntrySAP As Integer = 0
     Public Property EstadoEnviadoSAP As clsDataContractDI.Estado_Enviado_SAP? = 0
-    Public Property gVersionApp As String = "6.9.7"
-    Public Property gFechaVersion As Date = New Date(2025, 5, 13)
+    Public Property gVersionApp As String = "7.8.8"
+    Public Property gFechaVersion As Date = New Date(2025, 12, 8)
     Public Property gNombreInstancia As String = ""
     Public Property gConnectionStringSAPHana As String = ""
+
+    Private Const connectionString As String = "Server=10.238.26.76:30015; UserID=DEVDTS; Password=Solutions2025."
 
     Public Enum NombreInterface
         Becofarma = 0
@@ -54,6 +56,7 @@ Module m_Global
         Cerrar_Documento_Salida_SAP = 21
 
     End Enum
+
     Public Sub CopyObject(Of tom)(ByVal ObjOrigen As Object, ByRef ObjDestino As tom)
 
         Dim pName As String = ""
@@ -87,6 +90,7 @@ Module m_Global
         End Try
 
     End Sub
+
     Public Function ToDataTable(Of T)(items As List(Of T)) As DataTable
         Dim dataTable As New DataTable(GetType(T).Name)
 
@@ -107,6 +111,7 @@ Module m_Global
         'put a breakpoint here and check datatable
         Return dataTable
     End Function
+
     Public Function Existe_Ini() As Boolean
 
         If IO.File.Exists(CurDir() & "\Conn.ini") Then

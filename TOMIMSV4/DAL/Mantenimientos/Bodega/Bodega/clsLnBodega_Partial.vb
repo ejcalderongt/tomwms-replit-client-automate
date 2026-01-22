@@ -105,7 +105,7 @@ Partial Public Class clsLnBodega
             For Each T As DataRow In Dt.Rows
                 vBeTramo = New clsBeBodega_tramo
                 clsLnBodega_tramo.Cargar(vBeTramo, T)
-                vBeTramo.pFont = New clsBeFont_enc
+                vBeTramo.pFont = New clsBeFont_Enc
                 vBeTramo.pFont.IdFontEnc = vBeTramo.IdFontEnc
                 vBeTramo.pFont = clsLnFont_enc.GetSingleByIdFontEnc(vBeTramo.IdFontEnc, lConnection, lTransaction)
                 lTramos.Add(vBeTramo)
@@ -1595,9 +1595,9 @@ Partial Public Class clsLnBodega
 
     End Function
 
-    Public Shared Function Exists(ByVal pCodigo As String,
-                                  ByRef lConnection As SqlConnection,
-                                  ByRef lTransaction As SqlTransaction) As Boolean
+    Public Shared Function Exists_By_Codigo(ByVal pCodigo As String,
+                                            ByRef lConnection As SqlConnection,
+                                            ByRef lTransaction As SqlTransaction) As Boolean
         Try
 
             Dim lExists As Boolean = False

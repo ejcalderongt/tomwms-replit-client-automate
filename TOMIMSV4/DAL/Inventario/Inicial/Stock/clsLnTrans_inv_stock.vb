@@ -47,7 +47,7 @@ Public Class clsLnTrans_inv_stock
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTrans_inv_stock As clsBeTrans_inv_stock, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_inv_stock As clsBeTrans_inv_stock, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -604,7 +604,7 @@ Public Class clsLnTrans_inv_stock
 
     End Function
 
-    Public Shared Function MaxID() as Integer
+    Public Shared Function MaxID() As Integer
 
         Try
 

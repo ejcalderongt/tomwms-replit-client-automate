@@ -156,6 +156,14 @@ Public Class clsBeBodega : Inherits clsBeBodegaBase
     Public Property Rango_Dias_Documentos As Integer = 0
     Public Property Agrupar_Sin_Lic_Veri_No_Cons As Boolean = False
     Public Property Advertir_Mpq_Umbas As Boolean = False
+    ''' <summary>
+    ''' #CKFK20251030 Agregamos estos tres campos para la integración con ERP 
+    ''' ya que  centro de costo maneja centro de costo dirección y departamento
+    ''' </summary>
+    ''' <returns></returns>
+    Public Property Centro_Costo_Erp As String = ""
+    Public Property Centro_Costo_Dir_Erp As String = ""
+    Public Property Centro_Costo_Dep_Erp As String = ""
     Public Property Priorizar_Cantidad_Superior As Boolean = False
 
 
@@ -351,5 +359,8 @@ Public Class clsBeBodegaBase
     Public Property Permitir_Reemplazo_Verificacion As Boolean = False
     Public Property Permitir_Reemplazo_Picking_Misma_Licencia As Boolean = False
     Public Property Liberar_Stock_Despachos_Parciales As Boolean = False
+    Public Property Control_Talla_Color As Boolean = False
+    Public Property Control_Gondola As Boolean = False
+    Public Property Packing_Consolidado_Guia As Boolean = False
 
 End Class

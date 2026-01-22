@@ -64,6 +64,8 @@ Partial Class frmRptStockParametro
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.cmbBodega = New DevExpress.XtraEditors.LookUpEdit()
+        Me.colTalla = New DevExpress.XtraGrid.Columns.GridColumn()
+        Me.colColor = New DevExpress.XtraGrid.Columns.GridColumn()
         CType(Me.GridView2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdParametros, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.StockBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -83,6 +85,7 @@ Partial Class frmRptStockParametro
         Me.GridView2.GridControl = Me.grdParametros
         Me.GridView2.Name = "GridView2"
         Me.GridView2.OptionsBehavior.Editable = False
+        Me.GridView2.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridView2.VertScrollVisibility = DevExpress.XtraGrid.Views.Base.ScrollVisibility.Never
         '
         'grdParametros
@@ -123,6 +126,7 @@ Partial Class frmRptStockParametro
         Me.GridView1.GridControl = Me.grdParametros
         Me.GridView1.Name = "GridView1"
         Me.GridView1.OptionsBehavior.ReadOnly = True
+        Me.GridView1.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridView1.OptionsFind.AlwaysVisible = True
         Me.GridView1.OptionsView.ColumnAutoWidth = False
         Me.GridView1.OptionsView.ShowAutoFilterRow = True
@@ -284,12 +288,14 @@ Partial Class frmRptStockParametro
         '
         'RibbonControl1
         '
+        Me.RibbonControl1.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(26, 24, 26, 24)
         Me.RibbonControl1.ExpandCollapseItem.Id = 0
         Me.RibbonControl1.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl1.ExpandCollapseItem, Me.RibbonControl1.SearchEditItem, Me.btnImprimir, Me.btnActualizar, Me.btnSalir, Me.lblRegs, Me.mnuGuardarLayoutGrid, Me.mnuEliminarLayoutGrid})
         Me.RibbonControl1.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonControl1.MaxItemId = 7
         Me.RibbonControl1.Name = "RibbonControl1"
+        Me.RibbonControl1.OptionsMenuMinWidth = 283
         Me.RibbonControl1.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl1.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.RibbonControl1.Size = New System.Drawing.Size(1294, 193)
@@ -419,6 +425,24 @@ Partial Class frmRptStockParametro
         Me.cmbBodega.Size = New System.Drawing.Size(295, 22)
         Me.cmbBodega.TabIndex = 6
         '
+        'colTalla
+        '
+        Me.colTalla.Caption = "Talla"
+        Me.colTalla.FieldName = "Talla"
+        Me.colTalla.Name = "colTalla"
+        Me.colTalla.Visible = True
+        Me.colTalla.VisibleIndex = 17
+        Me.colTalla.Width = 64
+        '
+        'colColor
+        '
+        Me.colColor.Caption = "Color"
+        Me.colColor.FieldName = "Color"
+        Me.colColor.Name = "colColor"
+        Me.colColor.Visible = True
+        Me.colColor.VisibleIndex = 18
+        Me.colColor.Width = 64
+        '
         'frmRptStockParametro
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -490,4 +514,6 @@ Partial Class frmRptStockParametro
     Friend WithEvents mnuGuardarLayoutGrid As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuEliminarLayoutGrid As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents colLicPlate As DevExpress.XtraGrid.Columns.GridColumn
+    Friend WithEvents colTalla As DevExpress.XtraGrid.Columns.GridColumn
+    Friend WithEvents colColor As DevExpress.XtraGrid.Columns.GridColumn
 End Class

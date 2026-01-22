@@ -62,7 +62,7 @@ Public Class clsLnTrans_ubic_hh_stock
         Dim lTransaction As SqlTransaction = Nothing
 
         Try
-
+            '#MECR05092025: Se agregaron campos de "IdProductoTallaColor", "Talla" y "Color"
             Ins.Init("trans_ubic_hh_stock")
             Ins.Add("idstocktransubichhdet", "@idstocktransubichhdet", DataType.Parametro)
             Ins.Add("idtareaubicacionenc", "@idtareaubicacionenc", DataType.Parametro)
@@ -99,6 +99,9 @@ Public Class clsLnTrans_ubic_hh_stock
             Ins.Add("temperatura", "@temperatura", DataType.Parametro)
             Ins.Add("fecha_mov_hist", "@fecha_mov_hist", DataType.Parametro)
             Ins.Add("atributo_variante_1", "@atributo_variante_1", DataType.Parametro)
+            Ins.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
+            Ins.Add("talla", "@talla", DataType.Parametro)
+            Ins.Add("color", "@color", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
@@ -147,6 +150,9 @@ Public Class clsLnTrans_ubic_hh_stock
             cmd.Parameters.Add(New SqlParameter("@TEMPERATURA", oBeTrans_ubic_hh_stock.Temperatura))
             cmd.Parameters.Add(New SqlParameter("@FECHA_MOV_HIST", oBeTrans_ubic_hh_stock.Fecha_mov_hist))
             cmd.Parameters.Add(New SqlParameter("@ATRIBUTO_VARIANTE_1", oBeTrans_ubic_hh_stock.Atributo_variante_1))
+            cmd.Parameters.Add(New SqlParameter("@idproductotallacolor", oBeTrans_ubic_hh_stock.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@talla", oBeTrans_ubic_hh_stock.Talla))
+            cmd.Parameters.Add(New SqlParameter("@color", oBeTrans_ubic_hh_stock.Color))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

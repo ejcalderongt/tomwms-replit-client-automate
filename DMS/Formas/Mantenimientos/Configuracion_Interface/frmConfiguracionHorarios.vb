@@ -1021,18 +1021,6 @@ Public Class frmConfiguracionHorarios
 
         Try
 
-            If Not (checBoxLunes.Checked OrElse
-            checBoxMartes.Checked OrElse
-            checBoxMiercoles.Checked OrElse
-            checBoxJueves.Checked OrElse
-            checBoxViernes.Checked OrElse
-            checBoxSabado.Checked OrElse
-            checBoxDomingo.Checked) Then
-
-                XtraMessageBox.Show("Debe seleccionar al menos un día de la semana.", Text, MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                Exit Sub
-            End If
-
             If checBoxLunes.Checked Then
                 GuardarHorarioLaboral(1)
             End If

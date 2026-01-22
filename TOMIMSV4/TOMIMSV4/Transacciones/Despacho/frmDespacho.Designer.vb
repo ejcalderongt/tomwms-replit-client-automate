@@ -55,16 +55,16 @@ Partial Class frmDespacho
         Dim Label9 As System.Windows.Forms.Label
         Dim Label11 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmDespacho))
-        Dim DataGridViewCellStyle11 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle13 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle17 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle14 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle15 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle16 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle18 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle20 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle19 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuActualizar = New DevExpress.XtraBars.BarButtonItem()
@@ -174,6 +174,19 @@ Partial Class frmDespacho
         Me.hideContainerBottom = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
+        Me.PedidoEnc = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.CodigoPedido = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ProductoDetalle = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.PresentacionDetalle = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.UMDetalle = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.EstadoDetalle = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Cantidad = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ClienteDias = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.CantidadRecibida = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.Operador = New System.Windows.Forms.DataGridViewComboBoxColumn()
+        Me.PedidoDet = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colTalla = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.xtpDifPickVrsPack = New DevExpress.XtraTab.XtraTabPage()
         Label10 = New System.Windows.Forms.Label()
         Label12 = New System.Windows.Forms.Label()
@@ -469,7 +482,7 @@ Partial Class frmDespacho
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1042, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(1291, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'mnuGuardar
@@ -582,7 +595,7 @@ Partial Class frmDespacho
         Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1042, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1291, 30)
         Me.RibbonStatusBar.Visible = False
         '
         'XtraTabControl1
@@ -596,7 +609,7 @@ Partial Class frmDespacho
         Me.XtraTabControl1.Name = "XtraTabControl1"
         Me.XtraTabControl1.Padding = New System.Windows.Forms.Padding(12)
         Me.XtraTabControl1.SelectedTabPage = Me.tbPagina1
-        Me.XtraTabControl1.Size = New System.Drawing.Size(1042, 537)
+        Me.XtraTabControl1.Size = New System.Drawing.Size(1291, 537)
         Me.XtraTabControl1.TabIndex = 0
         Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tbPagina1, Me.tbPedido, Me.tbDetalleProducto, Me.tbUbicPicking, Me.tbPagina2, Me.XtraTabPage1, Me.xtpDifPickVrsPack})
         '
@@ -1022,14 +1035,14 @@ Partial Class frmDespacho
         Me.grdPedido.AllowUserToResizeRows = False
         Me.grdPedido.BackgroundColor = System.Drawing.Color.AliceBlue
         Me.grdPedido.BorderStyle = System.Windows.Forms.BorderStyle.None
-        DataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle11.BackColor = System.Drawing.Color.AliceBlue
-        DataGridViewCellStyle11.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        DataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.grdPedido.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle11
+        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle1.BackColor = System.Drawing.Color.AliceBlue
+        DataGridViewCellStyle1.Font = New System.Drawing.Font("Tahoma", 7.8!)
+        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.grdPedido.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.grdPedido.ColumnHeadersHeight = 40
         Me.grdPedido.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Pedido, Me.Referencia, Me.Bodega, Me.Cliente, Me.Propietario, Me.FechaPedido})
         Me.grdPedido.Dock = System.Windows.Forms.DockStyle.Fill
@@ -1107,7 +1120,7 @@ Partial Class frmDespacho
         Me.tbDetalleProducto.Controls.Add(Me.grdProducto)
         Me.tbDetalleProducto.Margin = New System.Windows.Forms.Padding(4)
         Me.tbDetalleProducto.Name = "tbDetalleProducto"
-        Me.tbDetalleProducto.Size = New System.Drawing.Size(1040, 507)
+        Me.tbDetalleProducto.Size = New System.Drawing.Size(1289, 507)
         Me.tbDetalleProducto.Text = "Detalle Producto"
         '
         'grdProducto
@@ -1115,16 +1128,16 @@ Partial Class frmDespacho
         Me.grdProducto.AllowUserToResizeRows = False
         Me.grdProducto.BackgroundColor = System.Drawing.Color.AliceBlue
         Me.grdProducto.BorderStyle = System.Windows.Forms.BorderStyle.None
-        DataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle13.BackColor = System.Drawing.Color.AliceBlue
-        DataGridViewCellStyle13.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        DataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.grdProducto.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle13
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle3.BackColor = System.Drawing.Color.AliceBlue
+        DataGridViewCellStyle3.Font = New System.Drawing.Font("Tahoma", 7.8!)
+        DataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.grdProducto.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
         Me.grdProducto.ColumnHeadersHeight = 40
-        Me.grdProducto.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.PedidoEnc, Me.CodigoPedido, Me.ProductoDetalle, Me.PresentacionDetalle, Me.UMDetalle, Me.EstadoDetalle, Me.Cantidad, Me.ClienteDias, Me.CantidadRecibida, Me.Operador, Me.PedidoDet})
+        Me.grdProducto.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.PedidoEnc, Me.CodigoPedido, Me.ProductoDetalle, Me.PresentacionDetalle, Me.UMDetalle, Me.EstadoDetalle, Me.Cantidad, Me.ClienteDias, Me.CantidadRecibida, Me.Operador, Me.PedidoDet, Me.colTalla, Me.colColor})
         Me.grdProducto.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grdProducto.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.grdProducto.EnableHeadersVisualStyles = False
@@ -1133,18 +1146,18 @@ Partial Class frmDespacho
         Me.grdProducto.Margin = New System.Windows.Forms.Padding(4)
         Me.grdProducto.MultiSelect = False
         Me.grdProducto.Name = "grdProducto"
-        DataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle17.BackColor = System.Drawing.Color.Chocolate
-        DataGridViewCellStyle17.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        DataGridViewCellStyle17.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle17.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.grdProducto.RowHeadersDefaultCellStyle = DataGridViewCellStyle17
+        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle7.BackColor = System.Drawing.Color.Chocolate
+        DataGridViewCellStyle7.Font = New System.Drawing.Font("Tahoma", 7.8!)
+        DataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.grdProducto.RowHeadersDefaultCellStyle = DataGridViewCellStyle7
         Me.grdProducto.RowHeadersVisible = False
         Me.grdProducto.RowHeadersWidth = 40
         Me.grdProducto.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.grdProducto.Size = New System.Drawing.Size(1040, 507)
+        Me.grdProducto.Size = New System.Drawing.Size(1289, 507)
         Me.grdProducto.TabIndex = 1
         '
         'PedidoEnc
@@ -1328,14 +1341,14 @@ Partial Class frmDespacho
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.grdListaDespacho.BackgroundColor = System.Drawing.Color.AliceBlue
         Me.grdListaDespacho.BorderStyle = System.Windows.Forms.BorderStyle.None
-        DataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle18.BackColor = System.Drawing.Color.AliceBlue
-        DataGridViewCellStyle18.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        DataGridViewCellStyle18.ForeColor = System.Drawing.Color.MidnightBlue
-        DataGridViewCellStyle18.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle18.SelectionForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.grdListaDespacho.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle18
+        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle8.BackColor = System.Drawing.Color.AliceBlue
+        DataGridViewCellStyle8.Font = New System.Drawing.Font("Tahoma", 7.8!)
+        DataGridViewCellStyle8.ForeColor = System.Drawing.Color.MidnightBlue
+        DataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.grdListaDespacho.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle8
         Me.grdListaDespacho.ColumnHeadersHeight = 40
         Me.grdListaDespacho.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.IdPickingUbic, Me.Codigo, Me.Producto, Me.Presentacion, Me.Estado, Me.UnidadMedida, Me.Ubicacion, Me.IdDespachoDet, Me.CantidadPedido, Me.CantidadPicking, Me.CantidadVerificada, Me.Fecha, Me.IdProductoBodega, Me.IdProductoEstado, Me.IdPresentacion, Me.IdUnidadMedida, Me.IdPickingEnc})
         Me.grdListaDespacho.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
@@ -1345,6 +1358,14 @@ Partial Class frmDespacho
         Me.grdListaDespacho.Margin = New System.Windows.Forms.Padding(4)
         Me.grdListaDespacho.MultiSelect = False
         Me.grdListaDespacho.Name = "grdListaDespacho"
+        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle10.BackColor = System.Drawing.Color.Chocolate
+        DataGridViewCellStyle10.Font = New System.Drawing.Font("Tahoma", 7.8!)
+        DataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.grdListaDespacho.RowHeadersDefaultCellStyle = DataGridViewCellStyle10
         DataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
         DataGridViewCellStyle20.BackColor = System.Drawing.Color.Chocolate
         DataGridViewCellStyle20.Font = New System.Drawing.Font("Tahoma", 7.8!)
@@ -1616,7 +1637,7 @@ Partial Class frmDespacho
         Me.hideContainerBottom.Location = New System.Drawing.Point(0, 730)
         Me.hideContainerBottom.Margin = New System.Windows.Forms.Padding(4)
         Me.hideContainerBottom.Name = "hideContainerBottom"
-        Me.hideContainerBottom.Size = New System.Drawing.Size(1042, 26)
+        Me.hideContainerBottom.Size = New System.Drawing.Size(1291, 26)
         '
         'DockPanel1
         '
@@ -1649,17 +1670,129 @@ Partial Class frmDespacho
         Me.DockPanel1_Container.Size = New System.Drawing.Size(1704, 46)
         Me.DockPanel1_Container.TabIndex = 0
         '
-        'xtpDifPickVrsPack
+        'PedidoEnc
         '
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
+        DataGridViewCellStyle4.Format = "N0"
+        Me.PedidoEnc.DefaultCellStyle = DataGridViewCellStyle4
+        Me.PedidoEnc.HeaderText = "Pedido"
+        Me.PedidoEnc.MinimumWidth = 6
+        Me.PedidoEnc.Name = "PedidoEnc"
+        Me.PedidoEnc.ReadOnly = True
+        Me.PedidoEnc.Width = 125
+        '
+        'CodigoPedido
+        '
+        Me.CodigoPedido.HeaderText = "Código"
+        Me.CodigoPedido.MinimumWidth = 6
+        Me.CodigoPedido.Name = "CodigoPedido"
+        Me.CodigoPedido.ReadOnly = True
+        Me.CodigoPedido.Width = 125
+        '
+        'ProductoDetalle
+        '
+        Me.ProductoDetalle.HeaderText = "Producto"
+        Me.ProductoDetalle.MinimumWidth = 6
+        Me.ProductoDetalle.Name = "ProductoDetalle"
+        Me.ProductoDetalle.ReadOnly = True
+        Me.ProductoDetalle.Width = 125
+        '
+        'PresentacionDetalle
+        '
+        Me.PresentacionDetalle.HeaderText = "Presentación"
+        Me.PresentacionDetalle.MinimumWidth = 6
+        Me.PresentacionDetalle.Name = "PresentacionDetalle"
+        Me.PresentacionDetalle.ReadOnly = True
+        Me.PresentacionDetalle.Width = 125
+        '
+        'UMDetalle
         Me.xtpDifPickVrsPack.Name = "xtpDifPickVrsPack"
         Me.xtpDifPickVrsPack.Size = New System.Drawing.Size(1040, 507)
         Me.xtpDifPickVrsPack.Text = "Diferencia Packing"
+        '
+        Me.UMDetalle.HeaderText = "Unidad Medida"
+        Me.UMDetalle.MinimumWidth = 6
+        Me.UMDetalle.Name = "UMDetalle"
+        Me.UMDetalle.ReadOnly = True
+        Me.UMDetalle.Width = 125
+        '
+        'EstadoDetalle
+        '
+        Me.EstadoDetalle.HeaderText = "Estado"
+        Me.EstadoDetalle.MinimumWidth = 6
+        Me.EstadoDetalle.Name = "EstadoDetalle"
+        Me.EstadoDetalle.ReadOnly = True
+        Me.EstadoDetalle.Width = 125
+        '
+        'Cantidad
+        '
+        DataGridViewCellStyle5.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold)
+        DataGridViewCellStyle5.Format = "N2"
+        Me.Cantidad.DefaultCellStyle = DataGridViewCellStyle5
+        Me.Cantidad.HeaderText = "Cantidad"
+        Me.Cantidad.MinimumWidth = 6
+        Me.Cantidad.Name = "Cantidad"
+        Me.Cantidad.ReadOnly = True
+        Me.Cantidad.Width = 125
+        '
+        'ClienteDias
+        '
+        Me.ClienteDias.HeaderText = "Cliente Días"
+        Me.ClienteDias.MinimumWidth = 6
+        Me.ClienteDias.Name = "ClienteDias"
+        Me.ClienteDias.ReadOnly = True
+        Me.ClienteDias.Width = 125
+        '
+        'CantidadRecibida
+        '
+        DataGridViewCellStyle6.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold)
+        DataGridViewCellStyle6.Format = "N2"
+        DataGridViewCellStyle6.NullValue = "0.0"
+        Me.CantidadRecibida.DefaultCellStyle = DataGridViewCellStyle6
+        Me.CantidadRecibida.HeaderText = "Cantidad Recibida"
+        Me.CantidadRecibida.MinimumWidth = 6
+        Me.CantidadRecibida.Name = "CantidadRecibida"
+        Me.CantidadRecibida.ReadOnly = True
+        Me.CantidadRecibida.Visible = False
+        Me.CantidadRecibida.Width = 125
+        '
+        'Operador
+        '
+        Me.Operador.HeaderText = "Operador"
+        Me.Operador.MinimumWidth = 6
+        Me.Operador.Name = "Operador"
+        Me.Operador.Visible = False
+        Me.Operador.Width = 125
+        '
+        'PedidoDet
+        '
+        Me.PedidoDet.HeaderText = "Pedido Det"
+        Me.PedidoDet.MinimumWidth = 6
+        Me.PedidoDet.Name = "PedidoDet"
+        Me.PedidoDet.Visible = False
+        Me.PedidoDet.Width = 125
+        '
+        'colTalla
+        '
+        Me.colTalla.HeaderText = "Talla"
+        Me.colTalla.MinimumWidth = 6
+        Me.colTalla.Name = "colTalla"
+        Me.colTalla.ReadOnly = True
+        Me.colTalla.Width = 125
+        '
+        'colColor
+        '
+        Me.colColor.HeaderText = "Color"
+        Me.colColor.MinimumWidth = 6
+        Me.colColor.Name = "colColor"
+        Me.colColor.ReadOnly = True
+        Me.colColor.Width = 125
         '
         'frmDespacho
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1042, 786)
+        Me.ClientSize = New System.Drawing.Size(1291, 786)
         Me.Controls.Add(Me.XtraTabControl1)
         Me.Controls.Add(Me.hideContainerBottom)
         Me.Controls.Add(Me.RibbonStatusBar)
@@ -1854,5 +1987,17 @@ Partial Class frmDespacho
     Friend WithEvents mnuRepetirEncabezadoEnCadaPagina As DevExpress.XtraBars.BarToggleSwitchItem
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents txtDocumentoExterno As TextBox
-    Friend WithEvents xtpDifPickVrsPack As DevExpress.XtraTab.XtraTabPage
+    Friend WithEvents PedidoEnc As DataGridViewTextBoxColumn
+    Friend WithEvents CodigoPedido As DataGridViewTextBoxColumn
+    Friend WithEvents ProductoDetalle As DataGridViewTextBoxColumn
+    Friend WithEvents PresentacionDetalle As DataGridViewTextBoxColumn
+    Friend WithEvents UMDetalle As DataGridViewTextBoxColumn
+    Friend WithEvents EstadoDetalle As DataGridViewTextBoxColumn
+    Friend WithEvents Cantidad As DataGridViewTextBoxColumn
+    Friend WithEvents ClienteDias As DataGridViewTextBoxColumn
+    Friend WithEvents CantidadRecibida As DataGridViewTextBoxColumn
+    Friend WithEvents Operador As DataGridViewComboBoxColumn
+    Friend WithEvents PedidoDet As DataGridViewTextBoxColumn
+    Friend WithEvents colTalla As DataGridViewTextBoxColumn
+    Friend WithEvents colColor As DataGridViewTextBoxColumn
 End Class

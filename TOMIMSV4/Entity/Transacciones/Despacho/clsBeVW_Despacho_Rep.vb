@@ -127,6 +127,8 @@ Public Class clsBeVW_Despacho_Rep
     Public Property codigo_regimen_salida As String = ""
     Public Property placa_contenedor_salida As String = ""
     Public Property Dua_salida As String = ""
+    Public Property Talla As String = ""
+    Public Property Color As String = ""
 
     Sub New()
     End Sub

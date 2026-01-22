@@ -67,7 +67,9 @@ Public Class clsBeStock_res
     ''' </summary>
     ''' <returns></returns>
     Public Property IdUbicacionAbastecerCon As Integer = 0
-
+    Public Property Talla As String = ""
+    Public Property Color As String = ""
+    Public Property IdProductoTallaColor As Integer = 0
     Sub New()
     End Sub
 

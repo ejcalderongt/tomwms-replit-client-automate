@@ -1,41 +1,166 @@
+##############################################################
 # Visual Studio
+##############################################################
 .vs/
-.vscode/
+*.user
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
+*.cache
+*.dbmdl
+*.log
+*.bak
+*.tmp
+*.pidb
+*.sdf
+*.VC.db
+*.opendb
+*.opensdf
+*.plg
+*.opt
+*.tlog
+*.pdb
+*.ilk
+*.rsp
+*.pch
+*.sbr
 
-# Compilación
-bin/
-obj/
+##############################################################
+# Compilación / Binarios
+##############################################################
+[Bb]in/
+[Oo]bj/
 [Bb]uild/
-[Ll]og/
-[Ll]ogs/
+bld/
+*.exe
+*.dll
+*.lib
+*.so
+*.a
 
+##############################################################
+# Plataformas específicas y otras herramientas
+##############################################################
 # NuGet
 *.nupkg
-*.snupkg
-*.nuspec
-packages/
+*.nuget.props
+*.nuget.targets
+**/packages/*
+!**/packages/build/
 
-# Publicaciones
-*.pubxml
-*.publish.xml
-*.pubxml.user
+# MSBuild
+*.build.csdef
+*.publishproj
 
-# Archivos temporales
-*.tmp
-*.temp
-*.bak
-*.swp
-*.log
+# Azure
+*.azurePubxml
+ecf/
+rcf/
+ApplicationInsights.config
 
-# Configuración local
-appsettings.*.json
-secrets.json
+# Click-Once / Publicación
+publish/
+*.[Pp]ublish.xml
 
-# Archivos de bases de datos locales
+# MSTest / NUnit / Test
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.VisualState.xml
+TestResult.xml
+
+# ReSharper / JustCode / NCrunch / MightyMoose
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+.JustCode
+_NCrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+*.mm.*
+
+# Web / Node
+node_modules/
+.sass-cache/
+
+##############################################################
+# Carpetas temporales y archivos generados
+##############################################################
+*.aps
+*.ncb
+*.obj
+*.meta
+*.tlb
+*.tli
+*.tlh
+*.svclog
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# Documentación y herramientas de ayuda
+*.GhostDoc.xml
+*.docstates
+*.gpState
+
+# Fakes
+FakesAssemblies/
+
+# SQL Server / BI
 *.mdf
 *.ldf
-/IAService/IAService.csproj
+*.rdl.data
+*.bim.layout
+*.bim_*.settings
+
+##############################################################
+# LightSwitch / Silverlight / RIA / AutoGen
+Generated_Code/
+GeneratedArtifacts/
+ModelManifest.xml
+_Pvt_Extensions
+
+# Otros temporales
+~$*
+*~
+*.tmp_proj
+*.publishsettings
+*.pfx
+
+##############################################################
+# Archivos específicos del proyecto (EXCLUIDOS explícitamente)
+##############################################################
+/GenCodeSQL.exe
+/TOMIMSV4/TOMIMSV4/My Project/licenses.licx
+/TOMIMSV4/TOMIMSV4/SAPBOSyncCumbre.pdb
+/TOMIMSV4/DAL/DAL.vbproj.bak
+/AppGlobal/AppGlobal.vbproj.bak
+/SAPSYNCMAMPA/SAPSYNCMAMPA.vbproj
+/WSHHRN/WSHHRN.vbproj
+# Cache de diseño de Visual Studio
+**/obj/**/*.cache
+/TOMIMSV4/TOMIMSV4/PerceptronUbicacion.exe
+/TOMIMSV4/TOMIMSV4/SAPBOSyncMampa.application
+/TOMIMSV4/TOMIMSV4/SAPBOSyncMampa.exe.manifest
+/TOMIMSV4/TOMIMSV4/SAPBOSyncMampa.xml
+/TOMIMSV4/TOMIMSV4/NavSync.exe.config
+/TOMIMSV4/TOMIMSV4/NavSync.exe.manifest
+/TOMIMSV4/TOMIMSV4/NavSync.xml
+/TOMIMSV4/TOMIMSV4/SAPBOSync.application
+/TOMIMSV4/TOMIMSV4/SAPBOSync.exe.config
+/TOMIMSV4/TOMIMSV4/SAPBOSync.exe.manifest
+/TOMIMSV4/TOMIMSV4/SAPBOSync.xml
+/TOMIMSV4/TOMIMSV4/SAPBOSyncCumbre.application
+/TOMIMSV4/TOMIMSV4/SAPBOSyncCumbre.exe.config
+/TOMIMSV4/TOMIMSV4/SAPBOSyncCumbre.exe.manifest
+/TOMIMSV4/TOMIMSV4/SAPBOSyncCumbre.xml
+/TOMIMSV4/TOMIMSV4/SAPBOSyncKillios.exe.CodeAnalysisLog.xml
+/TOMIMSV4/TOMIMSV4/SAPBOSyncKillios.exe.config
+/TOMIMSV4/TOMIMSV4/SAPBOSyncKillios.exe.lastcodeanalysissucceeded
+/TOMIMSV4/TOMIMSV4/SAPBOSyncKillios.xml
+/TOMIMSV4/TOMIMSV4/app.config
+/TOMIMSV4/TOMIMSV4/CEALSASync.exe.config
+/TOMIMSV4/TOMIMSV4/CEALSASync.xml
+/TOMIMSV4/TOMIMSV4/ConnDev.ini
+/TOMIMSV4/TOMIMSV4/NavSync.application

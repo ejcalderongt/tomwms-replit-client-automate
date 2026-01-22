@@ -135,6 +135,7 @@
     <Reference Include="Interop.SAPbobsCOM">
       <HintPath>..\SAPMI3PC\Interop.SAPbobsCOM.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\TOMIMSV4\TOMIMSV4\Interop.SAPbobsCOM.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
@@ -292,6 +293,7 @@
     <EmbeddedResource Include="Formas\Reportes\frmRegistrosInterface.resx">
       <DependentUpon>frmRegistrosInterface.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
@@ -383,6 +385,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+
   <ItemGroup>
     <Analyzer Include="C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll" Visible="false" Condition="Exists('C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll')" />
   </ItemGroup>

@@ -13,22 +13,24 @@ Public Class clsBeReglas_recepcion
     Public Property User_mod() As String = ""
     Public Property Fec_mod() As Date = Date.Now
     Public Property Activo() As Boolean = False
+    Public Property Es_Proceso() As Boolean = False
+    Public Property TipoRegla() As String = ""
 
     Sub New()
     End Sub
 
     Sub New(ByRef IdReglaRecepcion As Integer, ByVal codigo As String, ByVal nombre As String, ByVal descripcion As String, ByVal Rechazar As Boolean, ByVal StockNoDisponible As Boolean, ByVal user_agr As String, ByVal fec_agr As Date, ByVal user_mod As String, ByVal fec_mod As Date, ByVal activo As Boolean)
         Me.IdReglaRecepcion = IdReglaRecepcion
-        Me.Codigo = Codigo
-        Me.Nombre = Nombre
-        Me.Descripcion = Descripcion
+        Me.Codigo = codigo
+        Me.Nombre = nombre
+        Me.Descripcion = descripcion
         Me.Rechazar = Rechazar
         Me.StockNoDisponible = StockNoDisponible
-        Me.User_agr = User_agr
-        Me.Fec_agr = Fec_agr
-        Me.User_mod = User_mod
-        Me.Fec_mod = Fec_mod
-        Me.Activo = Activo
+        Me.User_agr = user_agr
+        Me.Fec_agr = fec_agr
+        Me.User_mod = user_mod
+        Me.Fec_mod = fec_mod
+        Me.Activo = activo
     End Sub
 
     Public Function Clone() As Object Implements System.ICloneable.Clone

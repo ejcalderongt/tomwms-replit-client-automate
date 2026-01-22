@@ -55,12 +55,14 @@ Partial Class frmrptUbicacionesVacias
         '
         'RibbonControl
         '
+        Me.RibbonControl.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(26, 24, 26, 24)
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdImprimir, Me.cmdActualizar, Me.cmdSalir, Me.lblRegs, Me.cmdExToExcel, Me.mnuEliminarLayoutGrid, Me.mnuGuardarLayoutGrid, Me.chkUbicaciones, Me.chkTodas, Me.chkDetallado})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.RibbonControl.MaxItemId = 17
         Me.RibbonControl.Name = "RibbonControl"
+        Me.RibbonControl.OptionsMenuMinWidth = 283
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.OpcionesLista})
         Me.RibbonControl.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemProgressBar1, Me.RepositoryItemProgressBar2, Me.RepositoryItemMarqueeProgressBar1, Me.RepositoryItemProgressBar3})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
@@ -177,6 +179,7 @@ Partial Class frmrptUbicacionesVacias
         '
         'GridView1
         '
+        Me.GridView1.DetailHeight = 284
         Me.GridView1.GridControl = Me.dgAuditoriaPicking
         Me.GridView1.Name = "GridView1"
         Me.GridView1.OptionsBehavior.ReadOnly = True

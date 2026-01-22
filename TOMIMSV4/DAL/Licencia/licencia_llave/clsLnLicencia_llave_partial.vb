@@ -50,7 +50,7 @@ Partial Public Class clsLnLicencia_llave
             If vClaveDesencriptada.Length < 10 Then
                 '#EJC20171108_REF02_0605PM: Mensaje explicito en error de desencripción < 10 
                 Throw New Exception("El valor obtenido de la licencia no es válido")
-            ElseIf vClaveDesencriptada.StartsWith("SERVLIC") 'Es una licencia de server
+            ElseIf vClaveDesencriptada.StartsWith("SERVLIC") Then 'Es una licencia de server
 
                 Dim vLlave As String = vClaveDesencriptada.Remove(0, 7) 'Remover identificador lic: SERVLIC
                 Dim vMacServer As String = mid(vLlave, 1, vLlave.IndexOf("#")) 'Remover identificador lic: SERVLIC

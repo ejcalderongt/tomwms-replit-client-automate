@@ -2,6 +2,7 @@
 Imports System.IO
 Imports System.Reflection
 Imports DevExpress.Data
+Imports DevExpress.Xpf.Bars
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Repository
 Imports DevExpress.XtraGrid
@@ -279,11 +280,13 @@ Public Class frmPropietario
             DT.Columns.Add("Regla", GetType(String))
             DT.Columns.Add("Propietario", GetType(String))
             DT.Columns.Add("Mensaje", GetType(String))
+            '#GT14112025: nueva columna para diferenciar sobre que aplica la regla
+            DT.Columns.Add("TipoRegla", GetType(String))
 
             If pListObjRE IsNot Nothing AndAlso pListObjRE.Count > 0 Then
 
                 For Each r As clsBePropietario_reglas_enc In pListObjRE.FindAll(Function(b) b.Activo = chkActivoM.Checked)
-                    DT.Rows.Add(r.IdReglaPropietarioEnc, r.Regla.Nombre, r.Propietario, r.Mensaje.Nombre)
+                    DT.Rows.Add(r.IdReglaPropietarioEnc, r.Regla.Nombre, r.Propietario, r.Mensaje.Nombre, r.TipoRegla)
                 Next
 
             End If
@@ -292,6 +295,7 @@ Public Class frmPropietario
             ViewMensaje.Columns("Propietario").Visible = False
             ViewMensaje.Columns(0).GroupIndex = 0
             ViewMensaje.OptionsBehavior.AutoExpandAllGroups = True
+            ViewMensaje.BestFitColumns()
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -764,6 +768,15 @@ Public Class frmPropietario
             BePropietario.Fec_mod = Now
             BePropietario.Actualiza_costo_oc = chkActualizarPrecioOC.Checked
 
+            If Not txtCodigoAcceso.Text = "" AndAlso Not txtClaveAcceso.Text = "" Then
+                If txtClaveAcceso.Text = txtConfirmarClave.Text Then
+                    BePropietario.Codigo_Acceso = txtCodigoAcceso.Text.Trim()
+                    BePropietario.Clave_Acceso = clsPublic.Encriptar(txtClaveAcceso.Text.Trim())
+                Else
+                    Throw New Exception("Las claves de acceso para TOMWMSUX no coinciden.")
+                End If
+            End If
+
             pBePropietario.IdPropietario = BePropietario.IdPropietario
 
             BePropietario.Es_Consolidador = chkEsConsolidador.Checked
@@ -869,6 +882,15 @@ Public Class frmPropietario
                 pBePropietario.Actualiza_costo_oc = chkActualizarPrecioOC.Checked
                 pBePropietario.Es_Consolidador = chkEsConsolidador.Checked
 
+                If Not txtCodigoAcceso.Text = "" AndAlso Not txtClaveAcceso.Text = "" Then
+                    If txtClaveAcceso.Text = txtConfirmarClave.Text Then
+                        pBePropietario.Codigo_Acceso = txtCodigoAcceso.Text.Trim()
+                        pBePropietario.Clave_Acceso = clsPublic.Encriptar(txtClaveAcceso.Text.Trim())
+                    Else
+                        Throw New Exception("Las claves de acceso para TOMWMSUX no coinciden.")
+                    End If
+                End If
+
                 Return clsLnPropietarios.ActualizarDatos(pBePropietario, gBePropietarioBodegaList, pListDestinatarios)
 
             End If
@@ -949,7 +971,7 @@ Public Class frmPropietario
         gFile.Filter = "All Images|*.BMP;*.DIB;*.RLE;*.JPG;*.JPEG;*.JPE;*.JFIF;*.GIF;*.TIF;*.TIFF;*.PNG;*.ico|JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg|GIF Files (*.gif)|*.gif|All Files|*.*"
         gFile.ShowDialog()
         If gFile.FileName.Length <> 0 Then
-            picFoto.Image = System.Drawing.Image.FromFile(gFile.FileName)
+            picFoto.Image = Image.FromFile(gFile.FileName)
         End If
     End Sub
 
@@ -1262,10 +1284,39 @@ Public Class frmPropietario
         Try
 
             If ViewMensaje.RowCount > 0 Then
-
                 Dim Dr As DataRowView = ViewMensaje.GetFocusedRow
-                Dim i As Integer = ViewMensaje.FocusedRowHandle
-                Dim Edit As New frmPropietarioReglaRecepcion(frmPropietarioReglaRecepcion.TipoTrans.Editar)
+
+                Dim Es_Proceso As Boolean
+
+                Dim pReglaEnc = clsLnPropietario_reglas_enc.GetSingle(CInt(Dr.Item("Código")))
+                If pReglaEnc IsNot Nothing Then
+                    Dim regla_recepcion = New clsBeReglas_recepcion()
+                    regla_recepcion.IdReglaRecepcion = pReglaEnc.IdReglaRecepcion
+
+                    If clsLnReglas_recepcion.GetSingle(regla_recepcion) Then
+                        Es_Proceso = regla_recepcion.Es_Proceso
+                    End If
+                End If
+
+
+                If Es_Proceso Then
+
+                    Dim i As Integer = ViewMensaje.FocusedRowHandle
+                    Dim FrmPropietarioProcesos As New frmPropietarioReglasMensajes(frmPropietarioReglasMensajes.TipoTrans.Editar)
+                    FrmPropietarioProcesos.pIdReglaPropietarioEnc = CInt(Dr.Item("Código"))
+                    'Edit.pNombrePropietario = Nombre_comercialTextEdit.Text.Trim
+                    FrmPropietarioProcesos.pBePropietario = pBePropietario
+                    FrmPropietarioProcesos.ShowDialog()
+                    pListObjRE = clsLnPropietario_reglas_enc.Get_All_By_IdPropietario(pBePropietario.IdPropietario).ToList
+                    'Listar_Reglas()
+                    'pListObjRD = clsLnPropietario_reglas_det.GetAll().ToList
+                    'GetDatos()
+                    ViewMensaje.FocusedRowHandle = i
+
+                Else
+
+                    Dim i As Integer = ViewMensaje.FocusedRowHandle
+                    Dim Edit As New frmPropietarioReglaRecepcion(frmPropietarioReglaRecepcion.TipoTrans.Editar)
                 Edit.pIdReglaPropietarioEnc = CInt(Dr.Item("Código"))
                 Edit.pNombrePropietario = Nombre_comercialTextEdit.Text.Trim
                 Edit.pIdPropietario = pBePropietario.IdPropietario
@@ -1275,6 +1326,9 @@ Public Class frmPropietario
                 pListObjRD = clsLnPropietario_reglas_det.GetAll().ToList
                 GetDatos()
                 ViewMensaje.FocusedRowHandle = i
+
+            End If
+
             End If
 
         Catch ex As Exception
@@ -1544,4 +1598,29 @@ Public Class frmPropietario
 
     End Sub
 
+    Private Sub cmdAlertas_Click(sender As Object, e As EventArgs) Handles cmdAlertas.Click
+        Try
+
+            Dim Add As New frmPropietarioReglasMensajes(frmPropietarioReglasMensajes.TipoTrans.Nuevo)
+            Add.pIdReglaPropietarioEnc = 0
+            Add.pBePropietario = pBePropietario
+            Add.ShowDialog()
+
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+    End Sub
+
+    Private Sub GrpEmpresaTB_Paint(sender As Object, e As PaintEventArgs) Handles GrpEmpresaTB.Paint
+
+    End Sub
 End Class

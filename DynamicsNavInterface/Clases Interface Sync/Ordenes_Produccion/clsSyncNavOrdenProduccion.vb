@@ -957,7 +957,10 @@ Public Class clsSyncNavOrdenProduccion : Inherits clsInterfaceBase
                                 gBeOrdenCompra.Fec_Mod = Now
                                 gBeOrdenCompra.Procedencia = ""
                                 gBeOrdenCompra.No_Marchamo = ""
-                                gBeOrdenCompra.Referencia = navOrdenProduccionEnc.No
+                                Dim v As String = navOrdenProduccionEnc.Vendor_Invoice_No
+                                gBeOrdenCompra.Referencia = If(String.IsNullOrWhiteSpace(v),
+                               navOrdenProduccionEnc.No,
+                               v)
                                 gBeOrdenCompra.Observacion = navOrdenProduccionEnc.Posting_Description
                                 gBeOrdenCompra.Control_Poliza = False
                                 gBeOrdenCompra.Push_To_NAV = True

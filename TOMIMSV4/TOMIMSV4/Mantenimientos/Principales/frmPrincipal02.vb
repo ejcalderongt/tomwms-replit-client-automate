@@ -1244,15 +1244,15 @@ Public Class frmPrincipal02
                         End If
 
                         DTTareas.Rows.Add(vIdTransaccion,
-                                          r("Tarea"),
-                                          r("Inicio"),
-                                          r("Ult_Revision"),
-                                          r("TTM"),
-                                          r("Propietario"),
-                                          r("Estado"),
-                                          r("IdTareaHH"),
-                                          vOrigen,
-                                          vDestino,
+                                                r("Tarea"),
+                                                r("Inicio"),
+                                                r("Ult_Revision"),
+                                                r("TTM"),
+                                                r("Propietario"),
+                                                r("Estado"),
+                                                r("IdTareaHH"),
+                                                vOrigen,
+                                                vDestino,
                                           vProgreso,
                                           r("Observacion"))
 
@@ -3613,8 +3613,8 @@ Public Class frmPrincipal02
             ArcScaleComponent1.Value = perc
             ArcScaleComponent1.EndInit()
         Catch
-            ' Silencioso
-        End Try
+    ' Silencioso
+    End Try
     End Sub
 
 

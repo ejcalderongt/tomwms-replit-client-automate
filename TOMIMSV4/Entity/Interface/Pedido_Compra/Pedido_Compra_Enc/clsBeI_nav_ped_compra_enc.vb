@@ -112,14 +112,14 @@ Public Class clsBeI_nav_ped_compra_enc
     Public Property Is_Internal_Transfer As Boolean = False
 
     ''' <summary>
-    ''' código de Propietario.
+    ''' c�digo de Propietario.
     ''' </summary>
     ''' <returns></returns>
     Public Property Product_Owner_Code As String = ""
 
-    '#EJC20190709: Implementado para el control de transferencias y stock en trónsito.
+    '#EJC20190709: Implementado para el control de transferencias y stock en tr�nsito.
     ''' <summary>
-    ''' número de referencia del pedido de cliente en la bodega origen (Emisora) de merncancías.
+    ''' n�mero de referencia del pedido de cliente en la bodega origen (Emisora) de merncanc�as.
     ''' </summary>
     ''' <returns></returns>
     Public Property Internal_Transfer_Document_No As String = ""
@@ -127,7 +127,7 @@ Public Class clsBeI_nav_ped_compra_enc
     Public Property Document_Type As clsDataContractDI.tTipoDocumentoIngreso = clsDataContractDI.tTipoDocumentoIngreso.Ingreso
 
     ''' <summary>
-    ''' #EJC20231027: Determina si el documento de ingreso es o no una importación para considerar la generación de NC en SAP.
+    ''' #EJC20231027: Determina si el documento de ingreso es o no una importaci�n para considerar la generaci�n de NC en SAP.
     ''' </summary>
     ''' <returns></returns>
     Public Property IsImport As Boolean = False
@@ -138,14 +138,13 @@ Public Class clsBeI_nav_ped_compra_enc
     ''' <returns></returns>
     Public Property Company_Code As String = ""
     ''' <summary>
-    ''' #EJC20250428: Identifica el número de campaña (SAP Mampa)
+    ''' #EJC20250428: Identifica el n�mero de campa�a (SAP Mampa)
     ''' </summary>
     ''' <returns></returns>
     Public Property Campaign_No As String = ""
-
-    ''' <summary>
-    ''' Initializes a new instance of the <see cref="clsBeI_nav_ped_compra_enc"/> class.
-    ''' </summary>
+    Public Property Comments As String = ""
+    Public Property Series As String = ""
+    Public Property User_Document As String = ""
     Sub New()
     End Sub
 

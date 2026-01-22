@@ -15,7 +15,7 @@ Public Class clsLnTrans_inv_ciclico_ubic
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTrans_inv_ciclico_ubic As clsBeTrans_inv_ciclico_ubic, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_inv_ciclico_ubic As clsBeTrans_inv_ciclico_ubic, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing

@@ -93,6 +93,7 @@ Public Class frmInventarioConteo
         Finally
             CargandoDatos = False
         End Try
+
     End Sub
 
     Private Sub mnuActualizar_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuActualizar.ItemClick
@@ -119,6 +120,7 @@ Public Class frmInventarioConteo
                 gBeTransInvConteo.IdPresentacion = CInt(cmbPresentacion.EditValue)
             End If
 
+            gBeTransInvConteo.IdPresentacion = cmbPresentacion.EditValue
             gBeTransInvConteo.Idunidadmedida = cmbUM.EditValue
             gBeTransInvConteo.Lote = txtLote.Text.Trim
             gBeTransInvConteo.Fecha_vence = dtFechaVence.EditValue

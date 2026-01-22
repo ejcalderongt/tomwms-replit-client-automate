@@ -37,7 +37,7 @@ Public Class clsBeStock
     Public Property Atributo_Variante_1 As String = ""
     Public Property Pallet_No_Estandar As Boolean = False
     Public Property Cantidad_Reservada As Double = 0
-
+    Public Property IdProductoTallaColor As Integer = 0
     Sub New()
     End Sub
 

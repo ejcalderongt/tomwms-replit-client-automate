@@ -1397,4 +1397,5 @@ Partial Public Class clsLnStock_rec
 
     End Function
 
+
 End Class

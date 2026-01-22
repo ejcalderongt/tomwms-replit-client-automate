@@ -47,6 +47,9 @@ Partial Class frmPropietario
         Dim Label11 As System.Windows.Forms.Label
         Dim Label14 As System.Windows.Forms.Label
         Dim Label15 As System.Windows.Forms.Label
+        Dim lblCodigoAcceso As System.Windows.Forms.Label
+        Dim lblClaveAcceso As System.Windows.Forms.Label
+        Dim lblConfirmarClaveAcceso As System.Windows.Forms.Label
         Dim Label16 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPropietario))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
@@ -60,7 +63,10 @@ Partial Class frmPropietario
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
         Me.GroupControl2 = New DevExpress.XtraEditors.GroupControl()
-        Me.chkUx = New DevExpress.XtraEditors.CheckEdit()
+        Me.chkActivarUX = New DevExpress.XtraEditors.CheckEdit()
+        Me.txtConfirmarClave = New DevExpress.XtraEditors.TextEdit()
+        Me.txtClaveAcceso = New DevExpress.XtraEditors.TextEdit()
+        Me.txtCodigoAcceso = New DevExpress.XtraEditors.TextEdit()
         Me.chkEsConsolidador = New DevExpress.XtraEditors.CheckEdit()
         Me.txtNIT = New DevExpress.XtraEditors.TextEdit()
         Me.Label13 = New System.Windows.Forms.Label()
@@ -119,6 +125,7 @@ Partial Class frmPropietario
         Me.ViewDestinatario = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.GridView6 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.cmdAlertas = New DevExpress.XtraEditors.SimpleButton()
         Me.cmdAgregar = New DevExpress.XtraEditors.SimpleButton()
         Me.cmdEliminar = New DevExpress.XtraEditors.SimpleButton()
         Me.GroupControl6 = New DevExpress.XtraEditors.GroupControl()
@@ -182,13 +189,19 @@ Partial Class frmPropietario
         Label11 = New System.Windows.Forms.Label()
         Label14 = New System.Windows.Forms.Label()
         Label15 = New System.Windows.Forms.Label()
+        lblCodigoAcceso = New System.Windows.Forms.Label()
+        lblClaveAcceso = New System.Windows.Forms.Label()
+        lblConfirmarClaveAcceso = New System.Windows.Forms.Label()
         Label16 = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl1.SuspendLayout()
         CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl2.SuspendLayout()
-        CType(Me.chkUx.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.chkActivarUX.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtConfirmarClave.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtClaveAcceso.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtCodigoAcceso.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkEsConsolidador.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtNIT.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCodigo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -311,7 +324,7 @@ Partial Class frmPropietario
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         ImagenLabel.AutoSize = True
-        ImagenLabel.Location = New System.Drawing.Point(479, 69)
+        ImagenLabel.Location = New System.Drawing.Point(26, 411)
         ImagenLabel.Name = "ImagenLabel"
         ImagenLabel.Size = New System.Drawing.Size(55, 16)
         ImagenLabel.TabIndex = 19
@@ -383,7 +396,7 @@ Partial Class frmPropietario
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         lblControlLote.AutoSize = True
-        lblControlLote.Location = New System.Drawing.Point(26, 328)
+        lblControlLote.Location = New System.Drawing.Point(26, 320)
         lblControlLote.Name = "lblControlLote"
         lblControlLote.Size = New System.Drawing.Size(123, 16)
         lblControlLote.TabIndex = 14
@@ -477,7 +490,7 @@ Partial Class frmPropietario
         '
         Label2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Label2.AutoSize = True
-        Label2.Location = New System.Drawing.Point(1175, 32)
+        Label2.Location = New System.Drawing.Point(1252, 32)
         Label2.Name = "Label2"
         Label2.Size = New System.Drawing.Size(46, 16)
         Label2.TabIndex = 0
@@ -499,7 +512,7 @@ Partial Class frmPropietario
         Label10.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Label10.AutoSize = True
         Label10.BackColor = System.Drawing.Color.Transparent
-        Label10.Location = New System.Drawing.Point(437, 31)
+        Label10.Location = New System.Drawing.Point(850, 31)
         Label10.Name = "Label10"
         Label10.Size = New System.Drawing.Size(52, 16)
         Label10.TabIndex = 0
@@ -547,7 +560,7 @@ Partial Class frmPropietario
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Label8.AutoSize = True
-        Label8.Location = New System.Drawing.Point(26, 431)
+        Label8.Location = New System.Drawing.Point(26, 384)
         Label8.Name = "Label8"
         Label8.Size = New System.Drawing.Size(46, 16)
         Label8.TabIndex = 17
@@ -583,11 +596,47 @@ Partial Class frmPropietario
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Label15.AutoSize = True
-        Label15.Location = New System.Drawing.Point(26, 360)
+        Label15.Location = New System.Drawing.Point(458, 66)
         Label15.Name = "Label15"
         Label15.Size = New System.Drawing.Size(103, 16)
         Label15.TabIndex = 86
         Label15.Text = "Es Consolidador:"
+        '
+        'lblCodigoAcceso
+        '
+        lblCodigoAcceso.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        lblCodigoAcceso.AutoSize = True
+        lblCodigoAcceso.Location = New System.Drawing.Point(34, 73)
+        lblCodigoAcceso.Name = "lblCodigoAcceso"
+        lblCodigoAcceso.Size = New System.Drawing.Size(94, 16)
+        lblCodigoAcceso.TabIndex = 12
+        lblCodigoAcceso.Text = "Código acceso:"
+        '
+        'lblClaveAcceso
+        '
+        lblClaveAcceso.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        lblClaveAcceso.AutoSize = True
+        lblClaveAcceso.Location = New System.Drawing.Point(34, 101)
+        lblClaveAcceso.Name = "lblClaveAcceso"
+        lblClaveAcceso.Size = New System.Drawing.Size(86, 16)
+        lblClaveAcceso.TabIndex = 14
+        lblClaveAcceso.Text = "Clave acceso:"
+        '
+        'lblConfirmarClaveAcceso
+        '
+        lblConfirmarClaveAcceso.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        lblConfirmarClaveAcceso.AutoSize = True
+        lblConfirmarClaveAcceso.Location = New System.Drawing.Point(34, 129)
+        lblConfirmarClaveAcceso.Name = "lblConfirmarClaveAcceso"
+        lblConfirmarClaveAcceso.Size = New System.Drawing.Size(104, 16)
+        lblConfirmarClaveAcceso.TabIndex = 16
+        lblConfirmarClaveAcceso.Text = "Confirmar Clave:"
         '
         'Label16
         '
@@ -595,11 +644,11 @@ Partial Class frmPropietario
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Label16.AutoSize = True
-        Label16.Location = New System.Drawing.Point(15, 60)
+        Label16.Location = New System.Drawing.Point(35, 44)
         Label16.Name = "Label16"
         Label16.Size = New System.Drawing.Size(71, 16)
-        Label16.TabIndex = 19
-        Label16.Text = "Control Ux:"
+        Label16.TabIndex = 89
+        Label16.Text = "Activar UX:"
         '
         'RibbonControl
         '
@@ -611,7 +660,7 @@ Partial Class frmPropietario
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1268, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(1345, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'mnuGuardar
@@ -673,7 +722,7 @@ Partial Class frmPropietario
         Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1268, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1345, 30)
         '
         'GroupControl1
         '
@@ -710,32 +759,67 @@ Partial Class frmPropietario
         Me.GroupControl1.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(1266, 607)
+        Me.GroupControl1.Size = New System.Drawing.Size(1343, 607)
         Me.GroupControl1.TabIndex = 0
         '
         'GroupControl2
         '
         Me.GroupControl2.Controls.Add(Label16)
-        Me.GroupControl2.Controls.Add(Me.chkUx)
-        Me.GroupControl2.Location = New System.Drawing.Point(554, 247)
+        Me.GroupControl2.Controls.Add(Me.chkActivarUX)
+        Me.GroupControl2.Controls.Add(lblConfirmarClaveAcceso)
+        Me.GroupControl2.Controls.Add(Me.txtConfirmarClave)
+        Me.GroupControl2.Controls.Add(lblClaveAcceso)
+        Me.GroupControl2.Controls.Add(Me.txtClaveAcceso)
+        Me.GroupControl2.Controls.Add(lblCodigoAcceso)
+        Me.GroupControl2.Controls.Add(Me.txtCodigoAcceso)
+        Me.GroupControl2.Location = New System.Drawing.Point(461, 105)
         Me.GroupControl2.Name = "GroupControl2"
-        Me.GroupControl2.Size = New System.Drawing.Size(241, 129)
+        Me.GroupControl2.Size = New System.Drawing.Size(440, 207)
         Me.GroupControl2.TabIndex = 88
-        Me.GroupControl2.Text = "Ux"
+        Me.GroupControl2.Text = "WMSUX"
         '
-        'chkUx
+        'chkActivarUX
         '
-        Me.chkUx.Location = New System.Drawing.Point(101, 56)
-        Me.chkUx.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.chkUx.MenuManager = Me.RibbonControl
-        Me.chkUx.Name = "chkUx"
-        Me.chkUx.Properties.Caption = ""
-        Me.chkUx.Size = New System.Drawing.Size(41, 24)
-        Me.chkUx.TabIndex = 20
+        Me.chkActivarUX.Location = New System.Drawing.Point(143, 40)
+        Me.chkActivarUX.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.chkActivarUX.MenuManager = Me.RibbonControl
+        Me.chkActivarUX.Name = "chkActivarUX"
+        Me.chkActivarUX.Properties.Caption = ""
+        Me.chkActivarUX.Size = New System.Drawing.Size(41, 24)
+        Me.chkActivarUX.TabIndex = 90
+        '
+        'txtConfirmarClave
+        '
+        Me.txtConfirmarClave.Location = New System.Drawing.Point(143, 125)
+        Me.txtConfirmarClave.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtConfirmarClave.MenuManager = Me.RibbonControl
+        Me.txtConfirmarClave.Name = "txtConfirmarClave"
+        Me.txtConfirmarClave.Properties.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
+        Me.txtConfirmarClave.Size = New System.Drawing.Size(241, 22)
+        Me.txtConfirmarClave.TabIndex = 17
+        '
+        'txtClaveAcceso
+        '
+        Me.txtClaveAcceso.Location = New System.Drawing.Point(143, 99)
+        Me.txtClaveAcceso.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtClaveAcceso.MenuManager = Me.RibbonControl
+        Me.txtClaveAcceso.Name = "txtClaveAcceso"
+        Me.txtClaveAcceso.Properties.PasswordChar = Global.Microsoft.VisualBasic.ChrW(42)
+        Me.txtClaveAcceso.Size = New System.Drawing.Size(241, 22)
+        Me.txtClaveAcceso.TabIndex = 15
+        '
+        'txtCodigoAcceso
+        '
+        Me.txtCodigoAcceso.Location = New System.Drawing.Point(143, 72)
+        Me.txtCodigoAcceso.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtCodigoAcceso.MenuManager = Me.RibbonControl
+        Me.txtCodigoAcceso.Name = "txtCodigoAcceso"
+        Me.txtCodigoAcceso.Size = New System.Drawing.Size(241, 22)
+        Me.txtCodigoAcceso.TabIndex = 13
         '
         'chkEsConsolidador
         '
-        Me.chkEsConsolidador.Location = New System.Drawing.Point(154, 356)
+        Me.chkEsConsolidador.Location = New System.Drawing.Point(566, 62)
         Me.chkEsConsolidador.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.chkEsConsolidador.MenuManager = Me.RibbonControl
         Me.chkEsConsolidador.Name = "chkEsConsolidador"
@@ -772,7 +856,7 @@ Partial Class frmPropietario
         '
         'cmbTipoActualizacion
         '
-        Me.cmbTipoActualizacion.Location = New System.Drawing.Point(154, 388)
+        Me.cmbTipoActualizacion.Location = New System.Drawing.Point(154, 348)
         Me.cmbTipoActualizacion.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.cmbTipoActualizacion.MenuManager = Me.RibbonControl
         Me.cmbTipoActualizacion.Name = "cmbTipoActualizacion"
@@ -795,7 +879,7 @@ Partial Class frmPropietario
         'chkActivo
         '
         Me.chkActivo.EditValue = True
-        Me.chkActivo.Location = New System.Drawing.Point(154, 427)
+        Me.chkActivo.Location = New System.Drawing.Point(154, 380)
         Me.chkActivo.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.chkActivo.MenuManager = Me.RibbonControl
         Me.chkActivo.Name = "chkActivo"
@@ -806,7 +890,7 @@ Partial Class frmPropietario
         'chkActualizarPrecioOC
         '
         Me.chkActualizarPrecioOC.EditValue = True
-        Me.chkActualizarPrecioOC.Location = New System.Drawing.Point(154, 324)
+        Me.chkActualizarPrecioOC.Location = New System.Drawing.Point(154, 316)
         Me.chkActualizarPrecioOC.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.chkActualizarPrecioOC.MenuManager = Me.RibbonControl
         Me.chkActualizarPrecioOC.Name = "chkActualizarPrecioOC"
@@ -825,7 +909,7 @@ Partial Class frmPropietario
         '
         'btnExaminar
         '
-        Me.btnExaminar.Location = New System.Drawing.Point(554, 183)
+        Me.btnExaminar.Location = New System.Drawing.Point(154, 528)
         Me.btnExaminar.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.btnExaminar.Name = "btnExaminar"
         Me.btnExaminar.Size = New System.Drawing.Size(241, 30)
@@ -835,7 +919,7 @@ Partial Class frmPropietario
         'picFoto
         '
         Me.picFoto.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.picFoto.Location = New System.Drawing.Point(554, 66)
+        Me.picFoto.Location = New System.Drawing.Point(154, 411)
         Me.picFoto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.picFoto.Name = "picFoto"
         Me.picFoto.Size = New System.Drawing.Size(241, 110)
@@ -943,7 +1027,7 @@ Partial Class frmPropietario
         Me.GrpEmpresaTB.Location = New System.Drawing.Point(0, 0)
         Me.GrpEmpresaTB.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GrpEmpresaTB.Name = "GrpEmpresaTB"
-        Me.GrpEmpresaTB.Size = New System.Drawing.Size(1266, 607)
+        Me.GrpEmpresaTB.Size = New System.Drawing.Size(1343, 607)
         Me.GrpEmpresaTB.TabIndex = 0
         Me.GrpEmpresaTB.Tag = ""
         '
@@ -954,7 +1038,7 @@ Partial Class frmPropietario
         Me.GroupControl3.Location = New System.Drawing.Point(2, 28)
         Me.GroupControl3.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl3.Name = "GroupControl3"
-        Me.GroupControl3.Size = New System.Drawing.Size(1262, 577)
+        Me.GroupControl3.Size = New System.Drawing.Size(1339, 577)
         Me.GroupControl3.TabIndex = 0
         Me.GroupControl3.Text = "Selección de Bodega"
         '
@@ -969,7 +1053,7 @@ Partial Class frmPropietario
         Me.Grid.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Grid.Name = "Grid"
         Me.Grid.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemCheckEdit1, Me.RepositoryItemCheckEdit2})
-        Me.Grid.Size = New System.Drawing.Size(1258, 547)
+        Me.Grid.Size = New System.Drawing.Size(1335, 547)
         Me.Grid.TabIndex = 0
         Me.Grid.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gridView1})
         '
@@ -1065,7 +1149,7 @@ Partial Class frmPropietario
         Me.txtCorreoElectronico.Location = New System.Drawing.Point(0, 0)
         Me.txtCorreoElectronico.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtCorreoElectronico.Name = "txtCorreoElectronico"
-        Me.txtCorreoElectronico.Size = New System.Drawing.Size(1266, 607)
+        Me.txtCorreoElectronico.Size = New System.Drawing.Size(1343, 607)
         Me.txtCorreoElectronico.TabIndex = 0
         '
         'chkActivoDest
@@ -1085,7 +1169,7 @@ Partial Class frmPropietario
         Me.ToolStrip.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdNewPR, Me.cmdGuardar, Me.cmdDelete})
         Me.ToolStrip.Location = New System.Drawing.Point(2, 28)
         Me.ToolStrip.Name = "ToolStrip"
-        Me.ToolStrip.Size = New System.Drawing.Size(1262, 27)
+        Me.ToolStrip.Size = New System.Drawing.Size(1339, 27)
         Me.ToolStrip.TabIndex = 0
         Me.ToolStrip.Text = "ToolStrip4"
         '
@@ -1124,7 +1208,7 @@ Partial Class frmPropietario
         Me.GroupControl4.Location = New System.Drawing.Point(2, 347)
         Me.GroupControl4.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl4.Name = "GroupControl4"
-        Me.GroupControl4.Size = New System.Drawing.Size(1262, 258)
+        Me.GroupControl4.Size = New System.Drawing.Size(1339, 258)
         Me.GroupControl4.TabIndex = 17
         Me.GroupControl4.Text = "Destinatarios"
         '
@@ -1140,7 +1224,7 @@ Partial Class frmPropietario
         Me.grdDetalle.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.grdDetalle.MenuManager = Me.RibbonControl
         Me.grdDetalle.Name = "grdDetalle"
-        Me.grdDetalle.Size = New System.Drawing.Size(1258, 197)
+        Me.grdDetalle.Size = New System.Drawing.Size(1335, 197)
         Me.grdDetalle.TabIndex = 2
         Me.grdDetalle.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridViewDet, Me.GridView4})
         '
@@ -1160,7 +1244,7 @@ Partial Class frmPropietario
         '
         Me.chkDestinatarioActivo.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.chkDestinatarioActivo.EditValue = True
-        Me.chkDestinatarioActivo.Location = New System.Drawing.Point(1230, 28)
+        Me.chkDestinatarioActivo.Location = New System.Drawing.Point(1307, 28)
         Me.chkDestinatarioActivo.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.chkDestinatarioActivo.MenuManager = Me.RibbonControl
         Me.chkDestinatarioActivo.Name = "chkDestinatarioActivo"
@@ -1243,7 +1327,7 @@ Partial Class frmPropietario
         Me.GroupControl5.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl5.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl5.Name = "GroupControl5"
-        Me.GroupControl5.Size = New System.Drawing.Size(1266, 607)
+        Me.GroupControl5.Size = New System.Drawing.Size(1679, 759)
         Me.GroupControl5.TabIndex = 0
         '
         'GroupControl7
@@ -1257,7 +1341,7 @@ Partial Class frmPropietario
         Me.GroupControl7.Location = New System.Drawing.Point(730, 28)
         Me.GroupControl7.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl7.Name = "GroupControl7"
-        Me.GroupControl7.Size = New System.Drawing.Size(530, 577)
+        Me.GroupControl7.Size = New System.Drawing.Size(943, 729)
         Me.GroupControl7.TabIndex = 2
         Me.GroupControl7.Text = "Destinatarios"
         '
@@ -1265,7 +1349,7 @@ Partial Class frmPropietario
         '
         Me.chkActivoD.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.chkActivoD.EditValue = True
-        Me.chkActivoD.Location = New System.Drawing.Point(497, 27)
+        Me.chkActivoD.Location = New System.Drawing.Point(910, 27)
         Me.chkActivoD.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.chkActivoD.MenuManager = Me.RibbonControl
         Me.chkActivoD.Name = "chkActivoD"
@@ -1285,7 +1369,7 @@ Partial Class frmPropietario
         Me.GridDestinatario.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GridDestinatario.MenuManager = Me.RibbonControl
         Me.GridDestinatario.Name = "GridDestinatario"
-        Me.GridDestinatario.Size = New System.Drawing.Size(528, 515)
+        Me.GridDestinatario.Size = New System.Drawing.Size(941, 667)
         Me.GridDestinatario.TabIndex = 2
         Me.GridDestinatario.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.ViewDestinatario, Me.GridView6})
         '
@@ -1305,13 +1389,25 @@ Partial Class frmPropietario
         '
         Me.Panel1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.Panel1.Controls.Add(Me.cmdAlertas)
         Me.Panel1.Controls.Add(Me.cmdAgregar)
         Me.Panel1.Controls.Add(Me.cmdEliminar)
         Me.Panel1.Location = New System.Drawing.Point(667, 28)
         Me.Panel1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(56, 579)
+        Me.Panel1.Size = New System.Drawing.Size(56, 731)
         Me.Panel1.TabIndex = 1
+        '
+        'cmdAlertas
+        '
+        Me.cmdAlertas.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.cmdAlertas.ImageOptions.SvgImage = CType(resources.GetObject("cmdAlertas.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdAlertas.Location = New System.Drawing.Point(3, 79)
+        Me.cmdAlertas.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.cmdAlertas.Name = "cmdAlertas"
+        Me.cmdAlertas.Size = New System.Drawing.Size(48, 48)
+        Me.cmdAlertas.TabIndex = 2
+        Me.cmdAlertas.ToolTip = "Envío de mensajes por proceso"
         '
         'cmdAgregar
         '
@@ -1322,13 +1418,13 @@ Partial Class frmPropietario
         Me.cmdAgregar.Name = "cmdAgregar"
         Me.cmdAgregar.Size = New System.Drawing.Size(48, 48)
         Me.cmdAgregar.TabIndex = 0
-        Me.cmdAgregar.ToolTip = "Añadir un mensaje por regla de excepción"
+        Me.cmdAgregar.ToolTip = "Envío de mensajes por excepción"
         '
         'cmdEliminar
         '
         Me.cmdEliminar.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.cmdEliminar.ImageOptions.SvgImage = CType(resources.GetObject("cmdEliminar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdEliminar.Location = New System.Drawing.Point(3, 144)
+        Me.cmdEliminar.Location = New System.Drawing.Point(5, 147)
         Me.cmdEliminar.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.cmdEliminar.Name = "cmdEliminar"
         Me.cmdEliminar.Size = New System.Drawing.Size(48, 48)
@@ -1345,7 +1441,7 @@ Partial Class frmPropietario
         Me.GroupControl6.Location = New System.Drawing.Point(2, 28)
         Me.GroupControl6.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl6.Name = "GroupControl6"
-        Me.GroupControl6.Size = New System.Drawing.Size(658, 583)
+        Me.GroupControl6.Size = New System.Drawing.Size(658, 735)
         Me.GroupControl6.TabIndex = 0
         Me.GroupControl6.Text = "Mensajes"
         '
@@ -1373,7 +1469,7 @@ Partial Class frmPropietario
         Me.GridMensaje.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GridMensaje.MenuManager = Me.RibbonControl
         Me.GridMensaje.Name = "GridMensaje"
-        Me.GridMensaje.Size = New System.Drawing.Size(653, 530)
+        Me.GridMensaje.Size = New System.Drawing.Size(653, 682)
         Me.GridMensaje.TabIndex = 2
         Me.GridMensaje.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.ViewMensaje, Me.GridView3})
         '
@@ -1406,7 +1502,7 @@ Partial Class frmPropietario
         Me.hideContainerBottom.Location = New System.Drawing.Point(0, 830)
         Me.hideContainerBottom.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.hideContainerBottom.Name = "hideContainerBottom"
-        Me.hideContainerBottom.Size = New System.Drawing.Size(1268, 26)
+        Me.hideContainerBottom.Size = New System.Drawing.Size(1345, 26)
         '
         'DockPanel1
         '
@@ -1419,7 +1515,7 @@ Partial Class frmPropietario
         Me.DockPanel1.OriginalSize = New System.Drawing.Size(200, 97)
         Me.DockPanel1.SavedDock = DevExpress.XtraBars.Docking.DockingStyle.Bottom
         Me.DockPanel1.SavedIndex = 0
-        Me.DockPanel1.Size = New System.Drawing.Size(1268, 121)
+        Me.DockPanel1.Size = New System.Drawing.Size(1345, 121)
         Me.DockPanel1.Text = "Bitácora"
         Me.DockPanel1.Visibility = DevExpress.XtraBars.Docking.DockVisibility.AutoHide
         '
@@ -1436,7 +1532,7 @@ Partial Class frmPropietario
         Me.DockPanel1_Container.Location = New System.Drawing.Point(4, 34)
         Me.DockPanel1_Container.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.DockPanel1_Container.Name = "DockPanel1_Container"
-        Me.DockPanel1_Container.Size = New System.Drawing.Size(1260, 83)
+        Me.DockPanel1_Container.Size = New System.Drawing.Size(1337, 83)
         Me.DockPanel1_Container.TabIndex = 0
         '
         'xtraPropietario
@@ -1446,7 +1542,7 @@ Partial Class frmPropietario
         Me.xtraPropietario.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.xtraPropietario.Name = "xtraPropietario"
         Me.xtraPropietario.SelectedTabPage = Me.DatosPropietario
-        Me.xtraPropietario.Size = New System.Drawing.Size(1268, 637)
+        Me.xtraPropietario.Size = New System.Drawing.Size(1345, 637)
         Me.xtraPropietario.TabIndex = 6
         Me.xtraPropietario.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.DatosPropietario, Me.PropietarioBodega, Me.Destinatarios, Me.Reglas, Me.tabUM, Me.TabEstados, Me.TabProductos, Me.TabStock, Me.tabMovimientos})
         '
@@ -1455,7 +1551,7 @@ Partial Class frmPropietario
         Me.DatosPropietario.Controls.Add(Me.GroupControl1)
         Me.DatosPropietario.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.DatosPropietario.Name = "DatosPropietario"
-        Me.DatosPropietario.Size = New System.Drawing.Size(1266, 607)
+        Me.DatosPropietario.Size = New System.Drawing.Size(1343, 607)
         Me.DatosPropietario.Text = "Datos Propietario"
         '
         'PropietarioBodega
@@ -1463,7 +1559,7 @@ Partial Class frmPropietario
         Me.PropietarioBodega.Controls.Add(Me.GrpEmpresaTB)
         Me.PropietarioBodega.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.PropietarioBodega.Name = "PropietarioBodega"
-        Me.PropietarioBodega.Size = New System.Drawing.Size(1266, 607)
+        Me.PropietarioBodega.Size = New System.Drawing.Size(1343, 607)
         Me.PropietarioBodega.Text = "Propietario Bodega"
         '
         'Destinatarios
@@ -1471,7 +1567,7 @@ Partial Class frmPropietario
         Me.Destinatarios.Controls.Add(Me.txtCorreoElectronico)
         Me.Destinatarios.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Destinatarios.Name = "Destinatarios"
-        Me.Destinatarios.Size = New System.Drawing.Size(1266, 607)
+        Me.Destinatarios.Size = New System.Drawing.Size(1343, 607)
         Me.Destinatarios.Text = "Destinatarios"
         '
         'Reglas
@@ -1479,14 +1575,14 @@ Partial Class frmPropietario
         Me.Reglas.Controls.Add(Me.GroupControl5)
         Me.Reglas.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Reglas.Name = "Reglas"
-        Me.Reglas.Size = New System.Drawing.Size(1266, 607)
-        Me.Reglas.Text = "Reglas"
+        Me.Reglas.Size = New System.Drawing.Size(1343, 607)
+        Me.Reglas.Text = "Mensajes"
         '
         'tabUM
         '
         Me.tabUM.Controls.Add(Me.dgridUM)
         Me.tabUM.Name = "tabUM"
-        Me.tabUM.Size = New System.Drawing.Size(1266, 607)
+        Me.tabUM.Size = New System.Drawing.Size(1343, 607)
         Me.tabUM.Text = "Unidades de medida"
         '
         'dgridUM
@@ -1499,7 +1595,7 @@ Partial Class frmPropietario
         Me.dgridUM.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridUM.MenuManager = Me.RibbonControl
         Me.dgridUM.Name = "dgridUM"
-        Me.dgridUM.Size = New System.Drawing.Size(1583, 759)
+        Me.dgridUM.Size = New System.Drawing.Size(1679, 759)
         Me.dgridUM.TabIndex = 3
         Me.dgridUM.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView2, Me.GridView5})
         '
@@ -1521,7 +1617,7 @@ Partial Class frmPropietario
         '
         Me.TabEstados.Controls.Add(Me.dgridEstados)
         Me.TabEstados.Name = "TabEstados"
-        Me.TabEstados.Size = New System.Drawing.Size(1266, 607)
+        Me.TabEstados.Size = New System.Drawing.Size(1343, 607)
         Me.TabEstados.Text = "Estados"
         '
         'dgridEstados
@@ -1534,7 +1630,7 @@ Partial Class frmPropietario
         Me.dgridEstados.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridEstados.MenuManager = Me.RibbonControl
         Me.dgridEstados.Name = "dgridEstados"
-        Me.dgridEstados.Size = New System.Drawing.Size(1583, 759)
+        Me.dgridEstados.Size = New System.Drawing.Size(1679, 759)
         Me.dgridEstados.TabIndex = 4
         Me.dgridEstados.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gvEstados, Me.GridView8})
         '
@@ -1556,7 +1652,7 @@ Partial Class frmPropietario
         '
         Me.TabProductos.Controls.Add(Me.dgridProductos)
         Me.TabProductos.Name = "TabProductos"
-        Me.TabProductos.Size = New System.Drawing.Size(1266, 607)
+        Me.TabProductos.Size = New System.Drawing.Size(1343, 607)
         Me.TabProductos.Text = "Productos"
         '
         'dgridProductos
@@ -1569,7 +1665,7 @@ Partial Class frmPropietario
         Me.dgridProductos.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridProductos.MenuManager = Me.RibbonControl
         Me.dgridProductos.Name = "dgridProductos"
-        Me.dgridProductos.Size = New System.Drawing.Size(1583, 759)
+        Me.dgridProductos.Size = New System.Drawing.Size(1679, 759)
         Me.dgridProductos.TabIndex = 5
         Me.dgridProductos.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView9, Me.GridView10})
         '
@@ -1591,7 +1687,7 @@ Partial Class frmPropietario
         '
         Me.TabStock.Controls.Add(Me.dgridStock)
         Me.TabStock.Name = "TabStock"
-        Me.TabStock.Size = New System.Drawing.Size(1266, 607)
+        Me.TabStock.Size = New System.Drawing.Size(1343, 607)
         Me.TabStock.Text = "Stock"
         '
         'dgridStock
@@ -1604,7 +1700,7 @@ Partial Class frmPropietario
         Me.dgridStock.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridStock.MenuManager = Me.RibbonControl
         Me.dgridStock.Name = "dgridStock"
-        Me.dgridStock.Size = New System.Drawing.Size(1583, 759)
+        Me.dgridStock.Size = New System.Drawing.Size(1679, 759)
         Me.dgridStock.TabIndex = 6
         Me.dgridStock.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.grdvStock, Me.GridView12})
         '
@@ -1627,7 +1723,7 @@ Partial Class frmPropietario
         '
         Me.tabMovimientos.Controls.Add(Me.dgridMovimientos)
         Me.tabMovimientos.Name = "tabMovimientos"
-        Me.tabMovimientos.Size = New System.Drawing.Size(1266, 607)
+        Me.tabMovimientos.Size = New System.Drawing.Size(1343, 607)
         Me.tabMovimientos.Text = "Movimientos"
         '
         'dgridMovimientos
@@ -1640,7 +1736,7 @@ Partial Class frmPropietario
         Me.dgridMovimientos.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridMovimientos.MenuManager = Me.RibbonControl
         Me.dgridMovimientos.Name = "dgridMovimientos"
-        Me.dgridMovimientos.Size = New System.Drawing.Size(1583, 759)
+        Me.dgridMovimientos.Size = New System.Drawing.Size(1679, 759)
         Me.dgridMovimientos.TabIndex = 7
         Me.dgridMovimientos.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.gviewMovimientos, Me.GridView14})
         '
@@ -1663,7 +1759,7 @@ Partial Class frmPropietario
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1268, 886)
+        Me.ClientSize = New System.Drawing.Size(1345, 886)
         Me.Controls.Add(Me.xtraPropietario)
         Me.Controls.Add(Me.hideContainerBottom)
         Me.Controls.Add(Me.RibbonStatusBar)
@@ -1683,7 +1779,10 @@ Partial Class frmPropietario
         CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl2.ResumeLayout(False)
         Me.GroupControl2.PerformLayout()
-        CType(Me.chkUx.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.chkActivarUX.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtConfirmarClave.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtClaveAcceso.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtCodigoAcceso.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkEsConsolidador.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtNIT.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCodigo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -1890,5 +1989,9 @@ Partial Class frmPropietario
     Friend WithEvents mnuMovimientos As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents chkEsConsolidador As DevExpress.XtraEditors.CheckEdit
     Friend WithEvents GroupControl2 As DevExpress.XtraEditors.GroupControl
-    Friend WithEvents chkUx As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents txtConfirmarClave As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents txtClaveAcceso As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents txtCodigoAcceso As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents chkActivarUX As DevExpress.XtraEditors.CheckEdit
+    Friend WithEvents cmdAlertas As DevExpress.XtraEditors.SimpleButton
 End Class

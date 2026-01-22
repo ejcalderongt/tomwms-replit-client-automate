@@ -50,12 +50,12 @@ Partial Class frmJornadaSistema
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.lblUsuario, Me.lblServer, Me.lblBD, Me.lblEmpresa, Me.mnuActualizar})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.RibbonControl.MaxItemId = 8
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.OptionsMenuMinWidth = 283
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
-        Me.RibbonControl.Size = New System.Drawing.Size(1238, 158)
+        Me.RibbonControl.Size = New System.Drawing.Size(1444, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'lblUsuario
@@ -118,11 +118,11 @@ Partial Class frmJornadaSistema
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblServer)
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblBD)
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblEmpresa)
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 514)
-        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 632)
+        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1238, 24)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1444, 30)
         '
         'SchedulerDataStorage1
         '
@@ -149,13 +149,13 @@ Partial Class frmJornadaSistema
         '
         Me.TabPane1.Controls.Add(Me.TabNavigationPage1)
         Me.TabPane1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.TabPane1.Location = New System.Drawing.Point(0, 158)
-        Me.TabPane1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.TabPane1.Location = New System.Drawing.Point(0, 193)
+        Me.TabPane1.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.TabPane1.Name = "TabPane1"
         Me.TabPane1.Pages.AddRange(New DevExpress.XtraBars.Navigation.NavigationPageBase() {Me.TabNavigationPage1})
-        Me.TabPane1.RegularSize = New System.Drawing.Size(1238, 356)
+        Me.TabPane1.RegularSize = New System.Drawing.Size(1444, 439)
         Me.TabPane1.SelectedPage = Me.TabNavigationPage1
-        Me.TabPane1.Size = New System.Drawing.Size(1238, 356)
+        Me.TabPane1.Size = New System.Drawing.Size(1444, 439)
         Me.TabPane1.TabIndex = 5
         Me.TabPane1.Text = "TabPane1"
         '
@@ -164,9 +164,9 @@ Partial Class frmJornadaSistema
         Me.TabNavigationPage1.Caption = "Log. Jornada de sistema"
         Me.TabNavigationPage1.Controls.Add(Me.lblprg)
         Me.TabNavigationPage1.Controls.Add(Me.prg)
-        Me.TabNavigationPage1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.TabNavigationPage1.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.TabNavigationPage1.Name = "TabNavigationPage1"
-        Me.TabNavigationPage1.Size = New System.Drawing.Size(1238, 323)
+        Me.TabNavigationPage1.Size = New System.Drawing.Size(1444, 398)
         '
         'lblprg
         '
@@ -176,19 +176,19 @@ Partial Class frmJornadaSistema
         Me.lblprg.Font = New System.Drawing.Font("Consolas", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblprg.ForeColor = System.Drawing.Color.Black
         Me.lblprg.Location = New System.Drawing.Point(0, 0)
-        Me.lblprg.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.lblprg.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblprg.Name = "lblprg"
-        Me.lblprg.Size = New System.Drawing.Size(990, 234)
+        Me.lblprg.Size = New System.Drawing.Size(1444, 361)
         Me.lblprg.TabIndex = 1
         Me.lblprg.Text = ""
         '
         'prg
         '
         Me.prg.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.prg.Location = New System.Drawing.Point(0, 228)
-        Me.prg.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.prg.Location = New System.Drawing.Point(0, 361)
+        Me.prg.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.prg.Name = "prg"
-        Me.prg.Size = New System.Drawing.Size(990, 30)
+        Me.prg.Size = New System.Drawing.Size(1444, 37)
         Me.prg.TabIndex = 2
         '
         'BW
@@ -202,13 +202,13 @@ Partial Class frmJornadaSistema
         '
         'frmJornadaSistema
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1238, 538)
+        Me.ClientSize = New System.Drawing.Size(1444, 662)
         Me.Controls.Add(Me.TabPane1)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
-        Me.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.Name = "frmJornadaSistema"
         Me.Ribbon = Me.RibbonControl
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent

@@ -235,6 +235,13 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         ISNULL(e.nombre, '') as nuevo_estado,
 	                    trans_inv_ciclico.IdStock,
                         trans_inv_ciclico.idinvciclico,
+                        ISNULL(trans_inv_ciclico.IdProductoTallaColor,0) IdProductoTallaColor,
+                        ISNULL(c.Codigo, '') as Codigo_Color,
+                        ISNULL(c.Nombre, '') as Nombre_Color,
+                        ISNULL(t.Codigo, '') as Codigo_Talla,
+                        ISNULL(t.Nombre, '') as Nombre_Talla,
+                        producto.IdProducto,
+                        trans_inv_ciclico.gondola,
                         trans_inv_ciclico.fec_mod,
                         trans_inv_ciclico.contado
                         FROM unidad_medida RIGHT OUTER JOIN
@@ -248,7 +255,11 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         LEFT OUTER JOIN
                         producto_presentacion ON trans_inv_ciclico.IdPresentacion = producto_presentacion.IdPresentacion
                         LEFT JOIN producto_estado e on e.IdEstado = trans_inv_ciclico.IdProductoEst_nuevo
-                        WHERE (trans_inv_ciclico.idinventarioenc=@idinventarioenc AND trans_inv_ciclico.idoperador=@idoperador and IdStock <>0) 
+                        LEFT JOIN stock s ON s.IdStock = trans_inv_ciclico.IdStock
+                        LEFT JOIN producto_talla_color ptc ON ptc.IdProductoTallaColor = trans_inv_ciclico.IdProductoTallaColor
+                        LEFT JOIN color c ON c.IdColor = ptc.IdColor
+                        LEFT JOIN talla t ON t.IdTalla= ptc.IdTalla
+                        WHERE (trans_inv_ciclico.idinventarioenc=@idinventarioenc AND trans_inv_ciclico.idoperador=@idoperador and trans_inv_ciclico.IdStock <>0) 
 						GROUP BY trans_inv_ciclico.idinventarioenc,					    
                         trans_inv_ciclico.IdProductoBodega,
                         trans_inv_ciclico.IdProductoEstado,
@@ -283,6 +294,13 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         e.nombre,       
                         trans_inv_ciclico.IdStock,
                         trans_inv_ciclico.idinvciclico,
+                        trans_inv_ciclico.IdProductoTallaColor,
+                        c.Codigo,
+                        c.Nombre,
+                        t.Codigo,
+                        t.Nombre,
+                        producto.IdProducto,
+                        trans_inv_ciclico.gondola,
                         trans_inv_ciclico.fec_mod, 
                         trans_inv_ciclico.fec_agr,
                         trans_inv_ciclico.contado
@@ -330,6 +348,13 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         '' as nuevo_estado,
                         0 as IdStock,
                         0 as idinvciclico,
+                        0 IdProductoTallaColor,
+                        '' as Codigo_Color,
+                        '' as Nombre_Color,
+                        '' as Codigo_Talla,
+                        '' as Nombre_Talla,
+                        0 as IdProducto,
+                        '' as gondola,
                         '19000101' fec_mod,
                         0 as contado
                         FROM  trans_inv_enc_reconteo INNER JOIN
@@ -394,6 +419,13 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         ISNULL(e.nombre, '') as nuevo_estado,
                         trans_inv_ciclico.IdStock,
                         trans_inv_ciclico.idinvciclico,
+                        ISNULL(trans_inv_ciclico.IdProductoTallaColor,0) IdProductoTallaColor,
+                        ISNULL(c.Codigo, '') as Codigo_Color,
+                        ISNULL(c.Nombre, '') as Nombre_Color,
+                        ISNULL(t.Codigo, '') as Codigo_Talla,
+                        ISNULL(t.Nombre, '') as Nombre_Talla,
+                        producto.IdProducto,
+                        trans_inv_ciclico.gondola,
                         trans_inv_ciclico.fec_mod,
                         trans_inv_ciclico.contado
                         FROM  trans_inv_ciclico INNER JOIN
@@ -405,6 +437,10 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
 						INNER JOIN bodega_ubicacion ON trans_inv_ciclico.IdUbicacion = bodega_ubicacion.IdUbicacion INNER JOIN
                         bodega ON producto_bodega.IdBodega = bodega.IdBodega AND bodega_ubicacion.IdBodega = bodega.IdBodega
                         LEFT JOIN producto_estado e on e.IdEstado = trans_inv_ciclico.IdProductoEst_nuevo
+                        LEFT JOIN stock s ON s.IdStock = trans_inv_ciclico.IdStock
+                        LEFT JOIN producto_talla_color ptc ON ptc.IdProductoTallaColor = trans_inv_ciclico.IdProductoTallaColor
+                        LEFT JOIN color c ON c.IdColor = ptc.IdColor
+                        LEFT JOIN talla t ON t.IdTalla= ptc.IdTalla
 						WHERE trans_inv_ciclico.idinventarioenc=@idinventarioenc  AND trans_inv_ciclico.idoperador = @idoperador 
 						AND	trans_inv_ciclico.IdStock = 0
 						GROUP BY trans_inv_ciclico.idinventarioenc,trans_inv_ciclico.IdProductoBodega, trans_inv_ciclico.IdProductoEstado, 
@@ -426,6 +462,13 @@ Partial Public Class clsLnTrans_inv_ciclico_vw
                         e.nombre,
                         trans_inv_ciclico.IdStock,
                         trans_inv_ciclico.idinvciclico,
+                        trans_inv_ciclico.IdProductoTallaColor,
+                        c.Codigo,
+                        c.Nombre,
+                        t.Codigo,
+                        t.Nombre,
+                        producto.IdProducto,
+                        trans_inv_ciclico.gondola,
                         trans_inv_ciclico.fec_mod, 
                         trans_inv_ciclico.fec_agr,
                         trans_inv_ciclico.contado

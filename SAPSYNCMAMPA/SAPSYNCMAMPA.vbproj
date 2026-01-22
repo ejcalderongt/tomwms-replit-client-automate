@@ -34,7 +34,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <DefineDebug>true</DefineDebug>
@@ -102,7 +102,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.Drawing.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
@@ -144,26 +144,57 @@
     <Reference Include="DevExpress.XtraPrinting.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="Interop.SAPbobsCOM">
-      <HintPath>..\SAPMI3PC\Interop.SAPbobsCOM.dll</HintPath>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.6\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="Sap.Data.Hana.v4.5, Version=1.0.120.0, Culture=neutral, PublicKeyToken=0326b8ea63db4bc4, processorArchitecture=MSIL" />
+    <Reference Include="RestSharp, Version=112.1.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.112.1.0\lib\net48\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Sap.Data.Hana.v4.5, Version=1.0.120.0, Culture=neutral, PublicKeyToken=0326b8ea63db4bc4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Program Files\SAP\hdbclient\Sap.Data.Hana.v4.5.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.6.1\lib\net462\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.IO.Pipelines, Version=9.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Pipelines.9.0.6\lib\net462\System.IO.Pipelines.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.6.3\lib\net462\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.6.1\lib\net462\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
     <Reference Include="System.Printing" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Text.Encodings.Web, Version=9.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.9.0.6\lib\net462\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=9.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.9.0.6\lib\net462\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.6.3\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
@@ -189,10 +220,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ajuste de inventario\clsSyncAjusteInventario.vb" />
-    <Compile Include="Clases Interface Sync\Ajustes\clsSyncSAPAjustes.vb" />
-    <Compile Include="Clases Interface Sync\Auto_Config\clsSAP_Config.vb" />
-    <Compile Include="Clases Interface Sync\Bodega\clsSyncSAPBodega.vb" />
+    <Compile Include="Clases Interface Sync\Ajustes\clsSyncSapAjustes.vb" />
+    <Compile Include="Clases Interface Sync\Campaña\clsSyncSAPCampaña.vb" />
     <Compile Include="Clases Interface Sync\Centros_Costo\clsSyncSapCentrosCosto.vb" />
+    <Compile Include="Clases Interface Sync\Devolucion_Proveedor\clsSyncSapDevolProveedor.vb" />
+    <Compile Include="Clases Interface Sync\Factura_Deudor_Cliente\clsSyncSapFacturaDeudor.vb" />
+    <Compile Include="Clases Interface Sync\Factura_Reserva\FacturaReservaMapper.vb" />
+    <Compile Include="Clases Interface Sync\Factura_Reserva_Cliente\clsSyncSapFacturaReservaCliente.vb" />
+    <Compile Include="Clases Interface Sync\Producto\Codigos_Barra\clsSyncSAPCodigosBarra_SL.vb" />
+    <Compile Include="Clases Interface Sync\Transacciones_WMS\DevolucionTransacWMS_Mapper.vb" />
+    <Compile Include="Clases Interface Sync\Traslados_Envio\clsSyncSapTrasladosEnvio.vb" />
+    <Compile Include="Clases Interface Sync\Traslados_Recepcion\clsSyncSapSolTrasladoRec.vb" />
+    <Compile Include="Clases Interface Sync\Transacciones_WMS\clsSyncTransacWMS.vb" />
+    <Compile Include="Clases Interface Sync\Transacciones_WMS\dto_TransacWMS.vb" />
+    <Compile Include="Clases\SapServiceBase.vb" />
+    <Compile Include="Dtos\BusinessPartnerDto.vb" />
+    <Compile Include="Dtos\LoginResponseDto.vb" />
+    <Compile Include="Clases\SapServiceLayerClient.vb" />
+    <Compile Include="Clases Interface Sync\Talla\clsSyncSapTalla.vb" />
+    <Compile Include="Clases Interface Sync\Bodega\clsSyncSAPBodega.vb" />
     <Compile Include="Clases Interface Sync\Color\clsSyncSapColor.vb" />
     <Compile Include="Clases Interface Sync\Devolucion Mercancia Cliente\clsSyncSAPDevolucionMeracnciaCliente.vb" />
     <Compile Include="Clases Interface Sync\Devolucion_Mercancia\clsSyncSAPDevolucionMercancia.vb" />
@@ -216,6 +262,8 @@
     <Compile Include="Clases\HanaHelper.vb" />
     <Compile Include="Clases\IMS.vb" />
     <Compile Include="Clases\ModuleMain.vb" />
+    <Compile Include="Dtos\FacturaReservaDto.vb" />
+    <Compile Include="Dtos\FacturaReservaEntregaDto.vb" />
     <Compile Include="Formas\frmTestCon.Designer.vb">
       <DependentUpon>frmTestCon.vb</DependentUpon>
     </Compile>
@@ -442,6 +490,13 @@
     </PublishFile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets'))" />
+  </Target>
   <!--<Import Project="..\packages\EmptyLicensesLicx.1.1.0\build\EmptyLicensesLicx.targets" Condition="Exists('..\packages\EmptyLicensesLicx.1.1.0\build\EmptyLicensesLicx.targets')" />-->
   <!--<Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

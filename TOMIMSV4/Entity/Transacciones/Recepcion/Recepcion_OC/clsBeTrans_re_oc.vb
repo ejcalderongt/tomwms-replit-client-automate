@@ -13,6 +13,10 @@ Public Class clsBeTrans_re_oc
     Public Property User_agr() As String = ""
     Public Property Fec_agr() As Date = Date.Now
     Public Property Firma_operador() As Byte() = Nothing
+    Public Property No_Erp_Docentry_Entrega() As String = ""
+    Public Property No_Erp_Docnum_Entrega() As String = ""
+    Public Property No_Erp_Docentry_Faltante() As String = ""
+    Public Property No_Erp_Docnum_Faltante() As String = ""
 
     Sub New()
     End Sub

@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmLicGen
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,15 +17,19 @@ Partial Class frmLicGen
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmLicGen))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGenerarLic = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
+        Me.mnuGenerarLic = New DevExpress.XtraBars.BarButtonItem()
         Me.TabLic = New DevExpress.XtraBars.Navigation.TabPane()
         Me.TabServer = New DevExpress.XtraBars.Navigation.TabNavigationPage()
+        Me.TabCliente = New DevExpress.XtraBars.Navigation.TabNavigationPage()
+        Me.TabAntidoto = New DevExpress.XtraBars.Navigation.TabNavigationPage()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.numUx = New System.Windows.Forms.NumericUpDown()
@@ -49,6 +53,8 @@ Partial Class frmLicGen
         Me.txtSolicitudAntidoto = New System.Windows.Forms.TextBox()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.TabActivarServer = New DevExpress.XtraBars.Navigation.TabNavigationPage()
+        Me.txtServ = New System.Windows.Forms.TextBox()
+        Me.Label9 = New System.Windows.Forms.Label()
         Me.txtSolicitudActivacionServer = New System.Windows.Forms.TextBox()
         Me.Label10 = New System.Windows.Forms.Label()
         Me.Label9 = New System.Windows.Forms.Label()
@@ -108,6 +114,14 @@ Partial Class frmLicGen
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
         Me.RibbonStatusBar.Size = New System.Drawing.Size(1116, 30)
         '
+        'mnuGenerarLic
+        '
+        Me.mnuGenerarLic.Caption = "Generar"
+        Me.mnuGenerarLic.Id = 1
+        Me.mnuGenerarLic.ImageOptions.Image = CType(resources.GetObject("BarButtonItem1.ImageOptions.Image"), System.Drawing.Image)
+        Me.mnuGenerarLic.ImageOptions.LargeImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.LargeImage"), System.Drawing.Image)
+        Me.mnuGenerarLic.Name = "mnuGenerarLic"
+        '
         'TabLic
         '
         Me.TabLic.Controls.Add(Me.TabServer)
@@ -132,6 +146,23 @@ Partial Class frmLicGen
         Me.TabServer.Margin = New System.Windows.Forms.Padding(4)
         Me.TabServer.Name = "TabServer"
         Me.TabServer.Size = New System.Drawing.Size(1116, 356)
+        '
+        'TabCliente
+        '
+        Me.TabCliente.Caption = "Cliente"
+        Me.TabCliente.Controls.Add(Me.GroupBox2)
+        Me.TabCliente.Name = "TabCliente"
+        Me.TabCliente.Size = New System.Drawing.Size(939, 285)
+        '
+        'TabAntidoto
+        '
+        Me.TabAntidoto.Caption = "Antídoto"
+        Me.TabAntidoto.Controls.Add(Me.Label8)
+        Me.TabAntidoto.Controls.Add(Me.txtCon)
+        Me.TabAntidoto.Controls.Add(Me.txtSolicitudAntidoto)
+        Me.TabAntidoto.Controls.Add(Me.Label6)
+        Me.TabAntidoto.Name = "TabAntidoto"
+        Me.TabAntidoto.Size = New System.Drawing.Size(939, 285)
         '
         'GroupBox1
         '
@@ -473,7 +504,7 @@ Partial Class frmLicGen
         Me.ResumeLayout(False)
         Me.PerformLayout
 
-End Sub
+    End Sub
 
     Friend WithEvents RibbonControl As DevExpress.XtraBars.Ribbon.RibbonControl
     Friend WithEvents RibbonPage1 As DevExpress.XtraBars.Ribbon.RibbonPage

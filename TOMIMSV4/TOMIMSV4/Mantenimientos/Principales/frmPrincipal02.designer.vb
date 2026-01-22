@@ -1148,6 +1148,7 @@ Partial Class frmPrincipal02
         Me.tabIndicadoresBodProp.Caption = "Indicadores"
         Me.tabIndicadoresBodProp.Controls.Add(Me.TableLayoutPanel1)
         Me.tabIndicadoresBodProp.Controls.Add(Me.GroupControl2)
+        Me.tabIndicadoresBodProp.Margin = New System.Windows.Forms.Padding(4)
         Me.tabIndicadoresBodProp.Name = "tabIndicadoresBodProp"
         Me.tabIndicadoresBodProp.PageVisible = False
         Me.tabIndicadoresBodProp.Size = New System.Drawing.Size(1113, 483)
@@ -1620,6 +1621,7 @@ Partial Class frmPrincipal02
         Me.Controls.Add(Me.TabPane1)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
+        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "frmPrincipal02"
         Me.Ribbon = Me.RibbonControl
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen

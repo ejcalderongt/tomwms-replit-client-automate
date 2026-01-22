@@ -403,7 +403,7 @@ Public Class clsLnVW_Doc_con_Diferencias
 					cantidad as Solicitado, cantidad_recibida as Recibido, diferencia as Diferencia,
 					Referencia as Referencia,
 					NOMBRE_INGRESOOC as TipoDocumento, Fecha_Creacion as Fecha_Documento, 
-                    ESTADO as Estado_Documento, Enviado_A_ERP MI3_Estatus, Observacion
+                    ESTADO as Estado_Documento, Enviado_A_ERP MI3_Estatus, Talla, Color, Observacion 
 					FROM VW_Doc_Con_Diferencias
                     WHERE DIFERENCIA <> 0 "
 

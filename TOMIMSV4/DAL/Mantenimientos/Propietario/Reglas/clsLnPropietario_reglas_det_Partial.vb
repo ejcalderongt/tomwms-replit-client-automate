@@ -221,6 +221,54 @@ Partial Public Class clsLnPropietario_reglas_det
 
     End Sub
 
+    Public Shared Function MaxID(ByVal pConnection As SqlConnection,
+                             ByVal pTransaction As SqlTransaction) As Integer
+        Dim lMax As Integer = 0
+        Dim mustCloseConn As Boolean = False
+
+        Try
+            Dim vSQL As String = "SELECT ISNULL(MAX(IdReglaPropietarioDet),0) FROM propietario_reglas_det"
+
+            ' Tomamos la conexión externa si viene, si no creamos una interna
+            Dim conn As SqlConnection = pConnection
+            If conn Is Nothing Then
+                conn = New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                mustCloseConn = True
+            End If
+
+            Using cmd As New SqlCommand(vSQL, conn)
+                cmd.CommandType = CommandType.Text
+
+                ' Si viene una transacción externa, la usamos
+                If pTransaction IsNot Nothing Then
+                    cmd.Transaction = pTransaction
+                End If
+
+                ' Abrimos sólo si está cerrada
+                If conn.State = ConnectionState.Closed Then
+                    conn.Open()
+                End If
+
+                Dim lReturnValue As Object = cmd.ExecuteScalar()
+
+                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                    lMax = CInt(lReturnValue)
+                End If
+            End Using
+
+            ' Si la conexión la creamos nosotros, la cerramos nosotros
+            If mustCloseConn AndAlso conn IsNot Nothing AndAlso conn.State <> ConnectionState.Closed Then
+                conn.Close()
+            End If
+
+            Return lMax
+
+        Catch ex As Exception
+            Throw
+        End Try
+    End Function
+
+
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls
 

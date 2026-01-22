@@ -147,6 +147,7 @@
     <Reference Include="Interop.SAPbobsCOM">
       <HintPath>..\SAPMI3PC\Interop.SAPbobsCOM.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\TOMIMSV4\TOMIMSV4\Interop.SAPbobsCOM.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -327,6 +328,7 @@
     <EmbeddedResource Include="Formas\Reportes\frmRegistrosInterface.resx">
       <DependentUpon>frmRegistrosInterface.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
@@ -432,6 +434,8 @@
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>Assembly</FileType>
     </PublishFile>
   </ItemGroup>

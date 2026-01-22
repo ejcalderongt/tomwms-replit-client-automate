@@ -25,7 +25,7 @@ Public Class clsLnOperador_bodega
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeOperador_bodega As clsBeOperador_bodega, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeOperador_bodega As clsBeOperador_bodega, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -262,7 +262,7 @@ Public Class clsLnOperador_bodega
 
         Try
 
-            Const sp As String = "SELECT * FROM Operador_bodega" & _
+            Const sp As String = "SELECT * FROM Operador_bodega" &
             " Where(IdOperadorBodega = @IdOperadorBodega)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -370,7 +370,7 @@ Public Class clsLnOperador_bodega
 
     End Function
 
-    Public Shared Function MaxID() as Integer
+    Public Shared Function MaxID() As Integer
 
         Try
 
@@ -403,16 +403,17 @@ Public Class clsLnOperador_bodega
     End Function
 
     '#MA20251204'
+
     Public Shared Function Operador_Tiene_Permiso(ByVal idOperador As Integer, ByVal opcion As String) As Boolean
         Try
             Using conn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
                 conn.Open()
 
                 Const sql As String = "SELECT 1 AS TienePermiso 
-                                    FROM menu_rol_op m
-                                    INNER JOIN operador o ON o.IdRolOperador = m.IdRolOperador
-                                    WHERE o.IdOperador = @IdOperador
-                                     AND m.IdMenuSistemaOP = @Opcion"
+                                       FROM menu_rol_op m
+                                       INNER JOIN operador o ON o.IdRolOperador = m.IdRolOperador
+                                       WHERE o.IdOperador = @IdOperador
+                                        AND m.IdMenuSistemaOP = @Opcion"
 
                 Using cmd As New SqlCommand(sql, conn)
                     cmd.Parameters.AddWithValue("@IdOperador", idOperador)

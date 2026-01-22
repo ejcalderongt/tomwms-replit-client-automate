@@ -57,6 +57,9 @@ Public Class clsBeTrans_movimientos
     ''' </summary>
     ''' <returns></returns>
     Public Property IdDespachoDet() As Integer = 0
+    Public Property IdProductoTallaColor() As Integer = 0
+    Public Property Talla() As String = ""
+    Public Property Color() As String = ""
 
     Sub New()
     End Sub
@@ -77,19 +80,19 @@ Public Class clsBeTrans_movimientos
         Me.IdTipoTarea = IdTipoTarea
         Me.IdBodegaDestino = IdBodegaDestino
         Me.IdRecepcion = IdRecepcion
-        Me.Cantidad = Cantidad
-        Me.Serie = Serie
-        Me.Peso = Peso
-        Me.Lote = Lote
-        Me.Fecha_vence = Fecha_vence
-        Me.Fecha = Fecha
-        Me.Barra_pallet = Barra_pallet
-        Me.Hora_ini = Hora_ini
-        Me.Hora_fin = Hora_fin
-        Me.Fecha_agr = Fecha_agr
-        Me.Usuario_agr = Usuario_agr
-        Me.Cantidad_hist = Cantidad_hist
-        Me.Peso_hist = Peso_hist
+        Me.Cantidad = cantidad
+        Me.Serie = serie
+        Me.Peso = peso
+        Me.Lote = lote
+        Me.Fecha_vence = fecha_vence
+        Me.Fecha = fecha
+        Me.Barra_pallet = barra_pallet
+        Me.Hora_ini = hora_ini
+        Me.Hora_fin = hora_fin
+        Me.Fecha_agr = fecha_agr
+        Me.Usuario_agr = usuario_agr
+        Me.Cantidad_hist = cantidad_hist
+        Me.Peso_hist = peso_hist
     End Sub
 
     Public Function Clone() As Object Implements System.ICloneable.Clone

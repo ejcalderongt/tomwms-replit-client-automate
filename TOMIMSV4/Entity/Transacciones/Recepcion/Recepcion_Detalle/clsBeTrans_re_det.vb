@@ -37,7 +37,7 @@ Public Class clsBeTrans_re_det
     Public Property Pallet_No_Estandar As Boolean = False
     Public Property Posiciones As Integer = 0
 
-
+    Public IdProductoTallaColor As Integer = 0
     Sub New()
     End Sub
 

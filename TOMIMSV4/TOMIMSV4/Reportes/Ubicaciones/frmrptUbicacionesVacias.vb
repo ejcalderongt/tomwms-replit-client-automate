@@ -51,6 +51,7 @@ Public Class frmrptUbicacionesVacias
 
                     GridView1.OptionsView.ShowFooter = True
 
+                    Set_LayOut_Grid()
                     GridView1.Columns("Ubicacion").SummaryItem.SummaryType = SummaryItemType.Count
                     GridView1.Columns("Ubicacion").SummaryItem.DisplayFormat = "{0:n6}"
                     GridView1.Columns("Ubicacion").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric

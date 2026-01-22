@@ -14,7 +14,7 @@ Partial Public Class clsBeLicencia_llave
         Get
             Return (Vence >= Today)
         End Get
-    End property
+    End Property
 
 
 End Class

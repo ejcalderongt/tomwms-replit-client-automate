@@ -1,0 +1,21 @@
+﻿@page
+@model TOMWMSUX.Pages.DocumentosIngresoModel
+@{
+    ViewData["Title"] = "Documentos de Ingreso";
+}
+
+<div class="content-block">
+    <h2>Documentos de Ingreso</h2>
+
+    <div id="filtros" style="margin-bottom: 15px;">
+        <div id="fechaInicioBox" style="display: inline-block; margin-right: 10px;"></div>
+        <div id="fechaFinBox" style="display: inline-block; margin-right: 10px;"></div>
+        <div id="btnFiltrar" style="display: inline-block; margin-right: 10px;"></div>
+    </div>
+
+    <div id="gridContainer"></div>
+</div>
+
+@section Scripts {
+    <script src="~/js/documentosIngreso.js"></script>
+}

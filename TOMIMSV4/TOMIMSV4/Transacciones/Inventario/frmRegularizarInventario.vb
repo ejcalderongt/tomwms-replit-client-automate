@@ -70,8 +70,8 @@ Public Class frmRegularizarInventario
             lblPrg.Refresh()
 
             grdRegularizar.DataSource = clsLnTrans_inv_ciclico.Get_All_By_Comparacion_Inventario_A_Regularizar(gBeInventario.Idinventarioenc,
-                                                                                                               clsTransaccion.lConnection,
-                                                                                                               clsTransaccion.lTransaction)
+            clsTransaccion.lConnection,
+            clsTransaccion.lTransaction)
 
             If GridView1.RowCount > 0 Then
 
@@ -88,66 +88,66 @@ Public Class frmRegularizarInventario
                 GridView1.GroupSummary.Add(item)
 
                 Dim item1 As New GridGroupSummaryItem() _
-                With {.FieldName = "PesoConteo",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = GridView1.Columns("PesoConteo")}
+                    With {.FieldName = "PesoConteo",
+                    .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                    .DisplayFormat = "{0:n6}",
+                    .ShowInGroupColumnFooter = GridView1.Columns("PesoConteo")}
                 GridView1.GroupSummary.Add(item1)
 
                 Dim item2 As New GridGroupSummaryItem() _
-                With {.FieldName = "CantidadStock",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = GridView1.Columns("CantidadStock")}
+                        With {.FieldName = "CantidadStock",
+                        .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                        .DisplayFormat = "{0:n6}",
+                        .ShowInGroupColumnFooter = GridView1.Columns("CantidadStock")}
                 GridView1.GroupSummary.Add(item2)
 
                 Dim item3 As New GridGroupSummaryItem() _
-                With {.FieldName = "PesoStock",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = GridView1.Columns("PesoStock")}
+                            With {.FieldName = "PesoStock",
+                            .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                            .DisplayFormat = "{0:n6}",
+                            .ShowInGroupColumnFooter = GridView1.Columns("PesoStock")}
                 GridView1.GroupSummary.Add(item3)
 
                 Dim item4 As New GridGroupSummaryItem() _
-                With {.FieldName = "Entradas_Salidas",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = GridView1.Columns("Entradas_Salidas")}
+                                With {.FieldName = "Entradas_Salidas",
+                                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                                .DisplayFormat = "{0:n6}",
+                                .ShowInGroupColumnFooter = GridView1.Columns("Entradas_Salidas")}
                 GridView1.GroupSummary.Add(item4)
 
                 Dim item5 As New GridGroupSummaryItem() _
-                With {.FieldName = "NuevoStock",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = GridView1.Columns("NuevoStock")}
+                                    With {.FieldName = "NuevoStock",
+                                    .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                                    .DisplayFormat = "{0:n6}",
+                                    .ShowInGroupColumnFooter = GridView1.Columns("NuevoStock")}
                 GridView1.GroupSummary.Add(item5)
 
                 Dim item6 As New GridGroupSummaryItem() _
-                With {.FieldName = "DiferenciaCantidad",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = GridView1.Columns("DiferenciaCantidad")}
+                                        With {.FieldName = "DiferenciaCantidad",
+                                        .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                                        .DisplayFormat = "{0:n6}",
+                                        .ShowInGroupColumnFooter = GridView1.Columns("DiferenciaCantidad")}
                 GridView1.GroupSummary.Add(item6)
 
                 Dim item7 As New GridGroupSummaryItem() _
-                With {.FieldName = "DiferenciaPeso",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = GridView1.Columns("DiferenciaPeso")}
+                                            With {.FieldName = "DiferenciaPeso",
+                                            .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                                            .DisplayFormat = "{0:n6}",
+                                            .ShowInGroupColumnFooter = GridView1.Columns("DiferenciaPeso")}
                 GridView1.GroupSummary.Add(item7)
 
                 Dim item8 As New GridGroupSummaryItem() _
-                With {.FieldName = "Entradas",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = GridView1.Columns("Entradas")}
+                                                With {.FieldName = "Entradas",
+                                                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                                                .DisplayFormat = "{0:n6}",
+                                                .ShowInGroupColumnFooter = GridView1.Columns("Entradas")}
                 GridView1.GroupSummary.Add(item8)
 
                 Dim item9 As New GridGroupSummaryItem() _
-                With {.FieldName = "Salidas",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = GridView1.Columns("Salidas")}
+                                                    With {.FieldName = "Salidas",
+                                                    .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                                                    .DisplayFormat = "{0:n6}",
+                                                    .ShowInGroupColumnFooter = GridView1.Columns("Salidas")}
                 GridView1.GroupSummary.Add(item9)
 
                 Dim item10 As New GridGroupSummaryItem() _
@@ -899,8 +899,8 @@ Public Class frmRegularizarInventario
 
             ' Carga datos del inventario cíclico
             ListCiclico = clsLnTrans_inv_ciclico.Get_All_By_IdInventarioEncAgrupado(gBeInventario.Idinventarioenc,
-                                                                                    clsTrans.lConnection,
-                                                                                    clsTrans.lTransaction)
+            clsTrans.lConnection,
+            clsTrans.lTransaction)
 
             Dim vIdPropietarioBodega As Integer = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(gBeInventario.IdBodega,
                                                                                                                           gBeInventario.Idpropietario,
@@ -909,9 +909,9 @@ Public Class frmRegularizarInventario
             Dim vIdProducto As Integer = 0
 
             Dim ajustesCantidad = ListCiclico.Where(Function(x) (((x.Cant_stock <> x.Cantidad) And
-                                                                x.Fecha_vence = x.Fecha_vence_stock AndAlso
-                                                                (x.Lote = x.Lote_stock) AndAlso
-                                                                (x.IdProductoEstado = x.IdProductoEst_nuevo OrElse
+            x.Fecha_vence = x.Fecha_vence_stock AndAlso
+            (x.Lote = x.Lote_stock) AndAlso
+            (x.IdProductoEstado = x.IdProductoEst_nuevo OrElse
                                                                 x.IdProductoEst_nuevo = 0) AndAlso x.Regularizar = True AndAlso
                                                                  x.Cantidad >= x.Cantidad_Reservada_UMBas)) OrElse
                                                                 (x.Cant_stock = x.Cantidad AndAlso
@@ -1415,191 +1415,191 @@ Public Class frmRegularizarInventario
                     End If
                     pBeMovsInverso.IdUnidadMedida = Producto.IdUnidadMedidaBasica
                     pBeMovsInverso.IdTipoTarea = IdTipoTarea
-                    pBeMovsInverso.IdBodegaDestino = AP.IdBodega
-                    pBeMovsInverso.IdRecepcion = 0
-                    pBeMovsInverso.IdRecepcionDet = 0
-                    pBeMovsInverso.Serie = ""
-                    If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Lote Then
-                        pBeMovsInverso.Lote = BeTransInvCiclico.Lote
+                        pBeMovsInverso.IdBodegaDestino = AP.IdBodega
+                        pBeMovsInverso.IdRecepcion = 0
+                        pBeMovsInverso.IdRecepcionDet = 0
+                        pBeMovsInverso.Serie = ""
+                        If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Lote Then
+                            pBeMovsInverso.Lote = BeTransInvCiclico.Lote
+                        Else
+                            pBeMovsInverso.Lote = BeTransInvCiclico.Lote_stock
+                        End If
+                        If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Vencimiento Then
+                            pBeMovsInverso.Fecha_vence = BeTransInvCiclico.Fecha_vence
+                        Else
+                            pBeMovsInverso.Fecha_vence = BeTransInvCiclico.Fecha_vence_stock
+                        End If
+                        pBeMovsInverso.Fecha = Now
+                        pBeMovsInverso.Barra_pallet = BeTransInvCiclico.lic_plate
+                        pBeMovsInverso.Hora_ini = Now
+                        pBeMovsInverso.Hora_fin = Now
+                        pBeMovsInverso.Fecha_agr = Now
+                        pBeMovsInverso.Usuario_agr = AP.UsuarioAp.IdUsuario
+
+                        pBeMovsInverso.Cantidad = BeTransInvCiclico.Cantidad
+
+                        If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Lote Then
+                            pBeMovsInverso.IdTipoTarea = clsDataContractDI.tTipoTarea.AJLOTENI
+                        ElseIf pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Vencimiento Then
+                            pBeMovsInverso.IdTipoTarea = clsDataContractDI.tTipoTarea.AJVENCENI
+                        ElseIf pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Estado Then
+                            pBeMovsInverso.IdTipoTarea = clsDataContractDI.tTipoTarea.AJCANTNI
+                        End If
+
+                        pBeMovsInverso.Cantidad_hist = BeTransInvCiclico.Cant_stock
+                        pBeMovsInverso.Peso = vPeso
+                        pBeMovsInverso.Peso_hist = BeTransInvCiclico.Peso_stock
+                        pBeMovsInverso.IdUnidadMedida = BeTransInvCiclico.IdUnidadMedida
+                        pBeMovsInverso.IdPresentacion = BeTransInvCiclico.IdPresentacion
+
+                        clsLnTrans_movimientos.Insertar(pBeMovsInverso, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    End If
+
+                    '****************************
+
+                    If BeTransInvCiclico.Lote_stock <> BeTransInvCiclico.Lote AndAlso BeTransInvCiclico.Lote <> "" Then
+
+                        Dim pBeMovsLote As New clsBeTrans_movimientos
+
+                        clsPublic.CopyObject(pBeMovs, pBeMovsLote)
+
+                        pBeMovsLote.IdMovimiento = clsLnTrans_movimientos.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
+                        pBeMovsLote.IdTipoTarea = clsDataContractDI.tTipoTarea.AJLOTEPI
+
+                        clsLnTrans_movimientos.Insertar(pBeMovsLote, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    End If
+
+                    If BeTransInvCiclico.IdProductoEstado <> BeTransInvCiclico.IdProductoEst_nuevo AndAlso BeTransInvCiclico.IdProductoEst_nuevo <> 0 Then
+
+                        Dim pBeMovsEstado As New clsBeTrans_movimientos
+
+                        clsPublic.CopyObject(pBeMovs, pBeMovsEstado)
+
+                        pBeMovsEstado.IdMovimiento = clsLnTrans_movimientos.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
+                        pBeMovsEstado.IdTipoTarea = clsDataContractDI.tTipoTarea.CESTI
+
+                        clsLnTrans_movimientos.Insertar(pBeMovsEstado, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    End If
+
+                    If BeTransInvCiclico.IdUbicacion <> BeTransInvCiclico.IdUbicacion_nuevo AndAlso
+                        BeTransInvCiclico.IdUbicacion_nuevo <> 0 Then
+
+                        Dim pBeMovsUbicacion As New clsBeTrans_movimientos
+
+                        clsPublic.CopyObject(pBeMovs, pBeMovsUbicacion)
+
+                        pBeMovsUbicacion.IdMovimiento = clsLnTrans_movimientos.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
+                        pBeMovsUbicacion.IdTipoTarea = clsDataContractDI.tTipoTarea.CUBII
+
+                        pBeMovsUbicacion.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion_nuevo
+
+                        clsLnTrans_movimientos.Insertar(pBeMovsUbicacion, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    End If
+
+                    If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Positivo Then
+
+                        Dim pBeMovsPositivos As New clsBeTrans_movimientos
+
+                        clsPublic.CopyObject(pBeMovs, pBeMovsPositivos)
+
+                        pBeMovsPositivos.IdMovimiento = clsLnTrans_movimientos.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
+                        pBeMovsPositivos.IdTipoTarea = clsDataContractDI.tTipoTarea.AJCANTPI
+
+                        clsLnTrans_movimientos.Insertar(pBeMovsPositivos, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    End If
+
+                    If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Negativo Then
+
+                        Dim pBeMovsNegativos As New clsBeTrans_movimientos
+
+                        clsPublic.CopyObject(pBeMovs, pBeMovsNegativos)
+
+                        pBeMovsNegativos.IdMovimiento = clsLnTrans_movimientos.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
+                        pBeMovsNegativos.IdTipoTarea = clsDataContractDI.tTipoTarea.AJCANTNI
+
+                        clsLnTrans_movimientos.Insertar(pBeMovsNegativos, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    End If
+
+                    ' Llenar lista de stock
+                    Dim pBeStock As New clsBeStock()
+                    pBeStock = clsLnStock.GetSingle(BeTransInvCiclico.IdStock, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    If pBeStock IsNot Nothing Then
+
+                        pBeStock.IdStock = BeTransInvCiclico.IdStock
+                        pBeStock.IdProductoBodega = BeTransInvCiclico.IdProductoBodega
+
+                        pBeStock.Cantidad = BeTransInvCiclico.Cantidad
+
+                        If BeTransInvCiclico.IdProductoEst_nuevo <> 0 Then
+                            pBeStock.ProductoEstado.IdEstado = BeTransInvCiclico.IdProductoEst_nuevo
+                            pBeStock.IdProductoEstado = BeTransInvCiclico.IdProductoEst_nuevo
+                        Else
+                            pBeStock.ProductoEstado.IdEstado = BeTransInvCiclico.IdProductoEstado
+                            pBeStock.IdProductoEstado = BeTransInvCiclico.IdProductoEstado
+                        End If
+
+                        If BeTransInvCiclico.IdUbicacion_nuevo <> 0 Then
+                            pBeStock.IdUbicacion = BeTransInvCiclico.IdUbicacion_nuevo
+                        Else
+                            pBeStock.IdUbicacion = BeTransInvCiclico.IdUbicacion
+                        End If
+
+                        If BeTransInvCiclico.Fecha_vence_stock <> BeTransInvCiclico.Fecha_vence Then
+                            pBeStock.Fecha_vence = BeTransInvCiclico.Fecha_vence
+                        Else
+                            pBeStock.Fecha_vence = BeTransInvCiclico.Fecha_vence_stock
+                        End If
+
+                        If BeTransInvCiclico.Lote <> BeTransInvCiclico.Lote_stock AndAlso BeTransInvCiclico.Lote <> "" Then
+                            pBeStock.Lote = BeTransInvCiclico.Lote
+                        End If
+
+                        lOperaciones.Add(New KeyValuePair(Of Integer, Integer)(pBeStock.IdStock, tipoAjuste))
+
                     Else
-                        pBeMovsInverso.Lote = BeTransInvCiclico.Lote_stock
-                    End If
-                    If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Vencimiento Then
-                        pBeMovsInverso.Fecha_vence = BeTransInvCiclico.Fecha_vence
-                    Else
-                        pBeMovsInverso.Fecha_vence = BeTransInvCiclico.Fecha_vence_stock
-                    End If
-                    pBeMovsInverso.Fecha = Now
-                    pBeMovsInverso.Barra_pallet = BeTransInvCiclico.lic_plate
-                    pBeMovsInverso.Hora_ini = Now
-                    pBeMovsInverso.Hora_fin = Now
-                    pBeMovsInverso.Fecha_agr = Now
-                    pBeMovsInverso.Usuario_agr = AP.UsuarioAp.IdUsuario
 
-                    pBeMovsInverso.Cantidad = BeTransInvCiclico.Cantidad
-
-                    If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Lote Then
-                        pBeMovsInverso.IdTipoTarea = clsDataContractDI.tTipoTarea.AJLOTENI
-                    ElseIf pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Vencimiento Then
-                        pBeMovsInverso.IdTipoTarea = clsDataContractDI.tTipoTarea.AJVENCENI
-                    ElseIf pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Estado Then
-                        pBeMovsInverso.IdTipoTarea = clsDataContractDI.tTipoTarea.AJCANTNI
-                    End If
-
-                    pBeMovsInverso.Cantidad_hist = BeTransInvCiclico.Cant_stock
-                    pBeMovsInverso.Peso = vPeso
-                    pBeMovsInverso.Peso_hist = BeTransInvCiclico.Peso_stock
-                    pBeMovsInverso.IdUnidadMedida = BeTransInvCiclico.IdUnidadMedida
-                    pBeMovsInverso.IdPresentacion = BeTransInvCiclico.IdPresentacion
-
-                    clsLnTrans_movimientos.Insertar(pBeMovsInverso, clsTrans.lConnection, clsTrans.lTransaction)
-
-                End If
-
-                '****************************
-
-                If BeTransInvCiclico.Lote_stock <> BeTransInvCiclico.Lote AndAlso BeTransInvCiclico.Lote <> "" Then
-
-                    Dim pBeMovsLote As New clsBeTrans_movimientos
-
-                    clsPublic.CopyObject(pBeMovs, pBeMovsLote)
-
-                    pBeMovsLote.IdMovimiento = clsLnTrans_movimientos.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
-                    pBeMovsLote.IdTipoTarea = clsDataContractDI.tTipoTarea.AJLOTEPI
-
-                    clsLnTrans_movimientos.Insertar(pBeMovsLote, clsTrans.lConnection, clsTrans.lTransaction)
-
-                End If
-
-                If BeTransInvCiclico.IdProductoEstado <> BeTransInvCiclico.IdProductoEst_nuevo AndAlso BeTransInvCiclico.IdProductoEst_nuevo <> 0 Then
-
-                    Dim pBeMovsEstado As New clsBeTrans_movimientos
-
-                    clsPublic.CopyObject(pBeMovs, pBeMovsEstado)
-
-                    pBeMovsEstado.IdMovimiento = clsLnTrans_movimientos.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
-                    pBeMovsEstado.IdTipoTarea = clsDataContractDI.tTipoTarea.CESTI
-
-                    clsLnTrans_movimientos.Insertar(pBeMovsEstado, clsTrans.lConnection, clsTrans.lTransaction)
-
-                End If
-
-                If BeTransInvCiclico.IdUbicacion <> BeTransInvCiclico.IdUbicacion_nuevo AndAlso
-                    BeTransInvCiclico.IdUbicacion_nuevo <> 0 Then
-
-                    Dim pBeMovsUbicacion As New clsBeTrans_movimientos
-
-                    clsPublic.CopyObject(pBeMovs, pBeMovsUbicacion)
-
-                    pBeMovsUbicacion.IdMovimiento = clsLnTrans_movimientos.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
-                    pBeMovsUbicacion.IdTipoTarea = clsDataContractDI.tTipoTarea.CUBII
-
-                    pBeMovsUbicacion.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion_nuevo
-
-                    clsLnTrans_movimientos.Insertar(pBeMovsUbicacion, clsTrans.lConnection, clsTrans.lTransaction)
-
-                End If
-
-                If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Positivo Then
-
-                    Dim pBeMovsPositivos As New clsBeTrans_movimientos
-
-                    clsPublic.CopyObject(pBeMovs, pBeMovsPositivos)
-
-                    pBeMovsPositivos.IdMovimiento = clsLnTrans_movimientos.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
-                    pBeMovsPositivos.IdTipoTarea = clsDataContractDI.tTipoTarea.AJCANTPI
-
-                    clsLnTrans_movimientos.Insertar(pBeMovsPositivos, clsTrans.lConnection, clsTrans.lTransaction)
-
-                End If
-
-                If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Negativo Then
-
-                    Dim pBeMovsNegativos As New clsBeTrans_movimientos
-
-                    clsPublic.CopyObject(pBeMovs, pBeMovsNegativos)
-
-                    pBeMovsNegativos.IdMovimiento = clsLnTrans_movimientos.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
-                    pBeMovsNegativos.IdTipoTarea = clsDataContractDI.tTipoTarea.AJCANTNI
-
-                    clsLnTrans_movimientos.Insertar(pBeMovsNegativos, clsTrans.lConnection, clsTrans.lTransaction)
-
-                End If
-
-                ' Llenar lista de stock
-                Dim pBeStock As New clsBeStock()
-                pBeStock = clsLnStock.GetSingle(BeTransInvCiclico.IdStock, clsTrans.lConnection, clsTrans.lTransaction)
-
-                If pBeStock IsNot Nothing Then
-
-                    pBeStock.IdStock = BeTransInvCiclico.IdStock
-                    pBeStock.IdProductoBodega = BeTransInvCiclico.IdProductoBodega
-
-                    pBeStock.Cantidad = BeTransInvCiclico.Cantidad
-
-                    If BeTransInvCiclico.IdProductoEst_nuevo <> 0 Then
+                        pBeStock = New clsBeStock()
+                        pBeStock.IdBodega = BeTransInvCiclico.IdBodega
+                        pBeStock.IdStock = clsLnStock.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
+                        pBeStock.IdProductoBodega = BeTransInvCiclico.IdProductoBodega
+                        pBeStock.Cantidad = BeTransInvCiclico.Cantidad
+                        pBeStock.IdUbicacion = BeTransInvCiclico.IdUbicacion
+                        pBeStock.Fecha_vence = BeTransInvCiclico.Fecha_vence
                         pBeStock.ProductoEstado.IdEstado = BeTransInvCiclico.IdProductoEst_nuevo
                         pBeStock.IdProductoEstado = BeTransInvCiclico.IdProductoEst_nuevo
-                    Else
-                        pBeStock.ProductoEstado.IdEstado = BeTransInvCiclico.IdProductoEstado
-                        pBeStock.IdProductoEstado = BeTransInvCiclico.IdProductoEstado
-                    End If
-
-                    If BeTransInvCiclico.IdUbicacion_nuevo <> 0 Then
-                        pBeStock.IdUbicacion = BeTransInvCiclico.IdUbicacion_nuevo
-                    Else
-                        pBeStock.IdUbicacion = BeTransInvCiclico.IdUbicacion
-                    End If
-
-                    If BeTransInvCiclico.Fecha_vence_stock <> BeTransInvCiclico.Fecha_vence Then
-                        pBeStock.Fecha_vence = BeTransInvCiclico.Fecha_vence
-                    Else
-                        pBeStock.Fecha_vence = BeTransInvCiclico.Fecha_vence_stock
-                    End If
-
-                    If BeTransInvCiclico.Lote <> BeTransInvCiclico.Lote_stock AndAlso BeTransInvCiclico.Lote <> "" Then
                         pBeStock.Lote = BeTransInvCiclico.Lote
+                        pBeStock.IdUbicacion = BeTransInvCiclico.IdUbicacion
+
+                        pBeStock.IdPropietarioBodega = vIdPropietarioBodega
+                        pBeStock.Presentacion.IdPresentacion = BeTransInvCiclico.IdPresentacion
+                        pBeStock.IdUnidadMedida = BeTransInvCiclico.IdUnidadMedida
+                        pBeStock.IdUbicacion = BeTransInvCiclico.IdUbicacion
+                        pBeStock.IdUbicacion_anterior = BeTransInvCiclico.IdUbicacion
+                        pBeStock.Fecha_Ingreso = Now
+                        pBeStock.Activo = True
+                        pBeStock.Peso = 0
+                        pBeStock.Temperatura = 0
+                        pBeStock.Fec_agr = Now
+                        pBeStock.Fec_mod = Now
+                        pBeStock.User_agr = BeTransInvCiclico.User_agr
+                        pBeStock.User_mod = BeTransInvCiclico.User_agr
+                        pBeStock.Pallet_No_Estandar = False
+                        pBeStock.Lic_plate = BeTransInvCiclico.lic_plate
+
+                        clsLnStock.Insertar(pBeStock, clsTrans.lConnection, clsTrans.lTransaction)
+
+                        lOperaciones.Add(New KeyValuePair(Of Integer, Integer)(pBeStock.IdStock, tipoAjuste))
+
                     End If
 
-                    lOperaciones.Add(New KeyValuePair(Of Integer, Integer)(pBeStock.IdStock, tipoAjuste))
-
-                Else
-
-                    pBeStock = New clsBeStock()
-                    pBeStock.IdBodega = BeTransInvCiclico.IdBodega
-                    pBeStock.IdStock = clsLnStock.MaxID(clsTrans.lConnection, clsTrans.lTransaction) + 1
-                    pBeStock.IdProductoBodega = BeTransInvCiclico.IdProductoBodega
-                    pBeStock.Cantidad = BeTransInvCiclico.Cantidad
-                    pBeStock.IdUbicacion = BeTransInvCiclico.IdUbicacion
-                    pBeStock.Fecha_vence = BeTransInvCiclico.Fecha_vence
-                    pBeStock.ProductoEstado.IdEstado = BeTransInvCiclico.IdProductoEst_nuevo
-                    pBeStock.IdProductoEstado = BeTransInvCiclico.IdProductoEst_nuevo
-                    pBeStock.Lote = BeTransInvCiclico.Lote
-                    pBeStock.IdUbicacion = BeTransInvCiclico.IdUbicacion
-
-                    pBeStock.IdPropietarioBodega = vIdPropietarioBodega
-                    pBeStock.Presentacion.IdPresentacion = BeTransInvCiclico.IdPresentacion
-                    pBeStock.IdUnidadMedida = BeTransInvCiclico.IdUnidadMedida
-                    pBeStock.IdUbicacion = BeTransInvCiclico.IdUbicacion
-                    pBeStock.IdUbicacion_anterior = BeTransInvCiclico.IdUbicacion
-                    pBeStock.Fecha_Ingreso = Now
-                    pBeStock.Activo = True
-                    pBeStock.Peso = 0
-                    pBeStock.Temperatura = 0
-                    pBeStock.Fec_agr = Now
-                    pBeStock.Fec_mod = Now
-                    pBeStock.User_agr = BeTransInvCiclico.User_agr
-                    pBeStock.User_mod = BeTransInvCiclico.User_agr
-                    pBeStock.Pallet_No_Estandar = False
-                    pBeStock.Lic_plate = BeTransInvCiclico.lic_plate
-
-                    clsLnStock.Insertar(pBeStock, clsTrans.lConnection, clsTrans.lTransaction)
-
-                    lOperaciones.Add(New KeyValuePair(Of Integer, Integer)(pBeStock.IdStock, tipoAjuste))
-
-                End If
-
-                ListStockNuevo.Add(pBeStock)
+                    ListStockNuevo.Add(pBeStock)
 
             Next
 

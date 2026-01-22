@@ -62,6 +62,9 @@ Public Class clsLnI_nav_transacciones_out
                 .Cantidad_Enviada = IIf(IsDBNull(dr.Item("Cantidad_Enviada")), 0, dr.Item("Cantidad_Enviada"))
                 .Cantidad_Pendiente = IIf(IsDBNull(dr.Item("Cantidad_Pendiente")), 0, dr.Item("Cantidad_Pendiente"))
                 .Auditar = IIf(IsDBNull(dr.Item("Auditar")), False, dr.Item("Auditar"))
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                .Talla = IIf(IsDBNull(dr.Item("Talla")), "", dr.Item("Talla"))
+                .Color = IIf(IsDBNull(dr.Item("Color")), "", dr.Item("Color"))
 
             End With
 
@@ -127,7 +130,7 @@ Public Class clsLnI_nav_transacciones_out
             Ins.Add("peso_neto", "@peso_neto", DataType.Parametro)
             Ins.Add("peso_bruto", "@peso_bruto", DataType.Parametro)
             Ins.Add("fecha_despacho", "@fecha_despacho", DataType.Parametro)
-            '#EJC20210617:Devolución Idealsa con referencia.
+            '#EJC20210617:Devoluci�n Idealsa con referencia.
             Ins.Add("no_documento_salida_ref_devol", "@no_documento_salida_ref_devol", DataType.Parametro)
             Ins.Add("IdPedidoEncDevol", "@IdPedidoEncDevol", DataType.Parametro)
             Ins.Add("IdDespachoDet", "@IdDespachoDet", DataType.Parametro)
@@ -135,6 +138,9 @@ Public Class clsLnI_nav_transacciones_out
             Ins.Add("cantidad_enviada", "@cantidad_enviada", DataType.Parametro)
             Ins.Add("cantidad_pendiente", "@cantidad_pendiente", DataType.Parametro)
             Ins.Add("auditar", "@auditar", DataType.Parametro)
+            Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
+            Ins.Add("Talla", "@Talla", DataType.Parametro)
+            Ins.Add("Color", "@Color", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -202,6 +208,9 @@ Public Class clsLnI_nav_transacciones_out
             cmd.Parameters.Add(New SqlParameter("@CANTIDAD_ENVIADA", oBeI_nav_transacciones_out.Cantidad_Enviada))
             cmd.Parameters.Add(New SqlParameter("@CANTIDAD_PENDIENTE", oBeI_nav_transacciones_out.Cantidad_Pendiente))
             cmd.Parameters.Add(New SqlParameter("@AUDITAR", oBeI_nav_transacciones_out.Auditar))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeI_nav_transacciones_out.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@TALLA", oBeI_nav_transacciones_out.Talla))
+            cmd.Parameters.Add(New SqlParameter("@COLOR", oBeI_nav_transacciones_out.Color))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -280,6 +289,9 @@ Public Class clsLnI_nav_transacciones_out
             Upd.Add("cantidad_enviada", "@cantidad_enviada", DataType.Parametro)
             Upd.Add("cantidad_pendiente", "@cantidad_pendiente", DataType.Parametro)
             Upd.Add("auditar", "@auditar", DataType.Parametro)
+            Upd.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
+            Upd.Add("talla", "@talla", DataType.Parametro)
+            Upd.Add("color", "@color", DataType.Parametro)
             Upd.Where("idtransaccion = @idtransaccion")
 
             Dim sp As String = Upd.SQL()
@@ -347,6 +359,9 @@ Public Class clsLnI_nav_transacciones_out
             cmd.Parameters.Add(New SqlParameter("@CANTIDAD_ENVIADA", oBeI_nav_transacciones_out.Cantidad_Enviada))
             cmd.Parameters.Add(New SqlParameter("@CANTIDAD_PENDIENTE", oBeI_nav_transacciones_out.Cantidad_Pendiente))
             cmd.Parameters.Add(New SqlParameter("@AUDITAR", oBeI_nav_transacciones_out.Auditar))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeI_nav_transacciones_out.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@TALLA", oBeI_nav_transacciones_out.Talla))
+            cmd.Parameters.Add(New SqlParameter("@COLOR", oBeI_nav_transacciones_out.Color))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

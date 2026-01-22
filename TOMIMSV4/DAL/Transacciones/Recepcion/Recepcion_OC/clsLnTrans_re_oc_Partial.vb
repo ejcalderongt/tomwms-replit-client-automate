@@ -1,4 +1,5 @@
-﻿Imports System.Data.Common
+﻿Imports System
+Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
 
@@ -114,6 +115,7 @@ Partial Public Class clsLnTrans_re_oc
     ''' </summary>
     ''' <param name="pIdOrdenCompraEnc"></param>
     ''' <returns>Lista de Recepciones solamente Ids</returns>
+
     Public Shared Function Get_IdRecepcionEnc_By_IdOrdenCompraEnc(ByVal pIdOrdenCompraEnc As Integer) As List(Of Integer)
 
         Dim lReturnList As New List(Of Integer)
@@ -169,6 +171,7 @@ Partial Public Class clsLnTrans_re_oc
         End Try
 
     End Function
+
 
     Public Shared Function Get_IdOrdenCompraEnc_By_IdRecepcionEnc(ByVal pIdRecepcionEnc As Integer) As List(Of Integer)
 
@@ -770,6 +773,101 @@ Partial Public Class clsLnTrans_re_oc
 
     End Function
 
+    ''' <summary>
+    ''' #EJC20250902: Creada para la interface de mampa.
+    ''' </summary>
+    ''' <param name="pIdRecepcionEnc"></param>
+    ''' <param name="pIdOrdenCompraEnc"></param>
+    ''' <param name="lConnection"></param>
+    ''' <param name="lTransaction"></param>
+    ''' <returns></returns>
+    Public Shared Function GetSingle(ByVal pIdRecepcionEnc As Integer,
+                                     ByVal pIdOrdenCompraEnc As Integer,
+                                     ByRef lConnection As SqlConnection,
+                                     ByRef lTransaction As SqlTransaction) As clsBeTrans_re_oc
+
+        GetSingle = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT TOP 1 * FROM Trans_re_oc WHERE IdRecepcionEnc=@IdRecepcionEnc AND IdOrdenCompraEnc = @IdOrdenCompraEnc"
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", pIdRecepcionEnc)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraEnc", pIdOrdenCompraEnc)
+
+                Dim lDT As New DataTable()
+                lDTA.Fill(lDT)
+
+                        Tiene_Recepciones = lDT.Rows.Count > 0
+
+                        lDT.Dispose()
+
+                        lDTA.Dispose()
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+                lConnection.Dispose()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_IdRecepcionEnc_By_IdOrdenCompraEnc(ByVal pIdOrdenCompraEnc As Integer,
+                                                                  ByVal pConnection As SqlConnection,
+                                                                  ByVal pTransaction As SqlTransaction) As List(Of Integer)
+
+        Dim lReturnList As New List(Of Integer)
+
+        Try
+
+            Dim vSQL As String = "SELECT IdRecepcionEnc FROM trans_re_oc WHERE IdOrdenCompraEnc=" & pIdOrdenCompraEnc
+
+            Using lDTA As New SqlDataAdapter(vSQL, pConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = pTransaction
+
+                Dim lDT As New DataTable()
+                lDTA.Fill(lDT)
+
+                If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                    Dim lRow As DataRow = lDT.Rows(0)
+                    Dim BeTransReOC As New clsBeTrans_re_oc()
+                    Cargar(BeTransReOC, lRow)
+                    BeTransReOC.IsNew = False
+                    BeTransReOC.OC.IdOrdenCompraEnc = BeTransReOC.IdOrdenCompraEnc
+                    Return BeTransReOC
+
+                End If
+
+                lDT.Dispose()
+                lDTA.Dispose()
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
     Public Shared Function Tiene_Recepciones(ByVal pIdOrdenCompraEnc As Integer) As Boolean
 
         Tiene_Recepciones = False
@@ -819,49 +917,4 @@ Partial Public Class clsLnTrans_re_oc
         End Try
 
     End Function
-
-    Public Shared Function Get_IdRecepcionEnc_By_IdOrdenCompraEnc(ByVal pIdOrdenCompraEnc As Integer,
-                                                                  ByVal pConnection As SqlConnection,
-                                                                  ByVal pTransaction As SqlTransaction) As List(Of Integer)
-
-        Dim lReturnList As New List(Of Integer)
-
-        Try
-
-            Dim vSQL As String = "SELECT IdRecepcionEnc FROM trans_re_oc WHERE IdOrdenCompraEnc=" & pIdOrdenCompraEnc
-
-            Using lDTA As New SqlDataAdapter(vSQL, pConnection)
-
-                lDTA.SelectCommand.CommandType = CommandType.Text
-                lDTA.SelectCommand.Transaction = pTransaction
-
-                Dim lDT As New DataTable()
-                lDTA.Fill(lDT)
-
-                If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
-
-                    For Each lRow As DataRow In lDT.Rows
-
-                        Dim lIdRecepcion As Integer = lRow("IdRecepcionEnc")
-
-                        lReturnList.Add(lIdRecepcion)
-
-                    Next
-
-                End If
-
-                lDT.Dispose()
-                lDTA.Dispose()
-
-            End Using
-
-            Return lReturnList
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
-
 End Class

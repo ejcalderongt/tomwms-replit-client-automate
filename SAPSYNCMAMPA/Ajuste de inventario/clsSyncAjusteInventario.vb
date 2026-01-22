@@ -210,7 +210,7 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
     '        If Not CnnLog Is Nothing AndAlso CnnLog.State = ConnectionState.Open Then CnnLog.Close()
     '    End Try
 
-    'End Sub
+    'End Sub    
 
     Public Sub Sync_Ajustes1(ByVal lblprg As RichTextBox,
                             ByRef prg As System.Windows.Forms.ProgressBar)
@@ -422,18 +422,8 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
         Public Property ItemCode As String
         Public Property Cantidad As Integer
     End Class
-
-    Private Function Ajuste_Afecta_Inventario(ByVal IdAjsuteEnc As Integer) As BoObjectTypes
-
-        Try
-
-        Catch ex As Exception
-
-        End Try
-
-    End Function
-    Public Sub Sync_Ajustes(ByVal lblprg As RichTextBox,
-                            ByRef prg As System.Windows.Forms.ProgressBar)
+    Public Shared Sub Sync_Ajustes(ByVal lblprg As RichTextBox,
+                                   ByRef prg As System.Windows.Forms.ProgressBar)
 
         Dim CnnLog As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
         Dim TransLog As SqlTransaction = Nothing
@@ -442,7 +432,7 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
 
         Try
 
-            CnnLog.Open() : TransLog = CnnLog.BeginTransaction(IsolationLevel.ReadUncommitted)
+            CnnLog.Open()  TransLog = CnnLog.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             clsPublic.Actualizar_Progreso(lblprg, "Consultando ajustes pendientes de envío.")
 
@@ -457,8 +447,8 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                 Dim vCuentaIngresos As String = BeBodega.Cuenta_Ingreso_Mercancias
                 Dim vCuentaEgresos As String = BeBodega.Cuenta_Egreso_Mercancias
 
-                URLServicioEntrada = BD.Instancia.URL_ENTRADA_AJUSTE_POST
-                URLServicioSalida = BD.Instancia.URL_SALIDA_AJUSTE_POST
+                'URLServicioEntrada = BD.Instancia.URL_ENTRADA_AJUSTE_POST
+                'URLServicioSalida = BD.Instancia.URL_SALIDA_AJUSTE_POST
 
                 ' Agrupar ajustes por IdAjusteEnc
                 Dim ajustesAgrupados = lAjustesPendEnvioInv.GroupBy(Function(a) a.IdAjusteEnc)
@@ -497,17 +487,17 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                         .Entries = ajustesPositivos
                     }
                         Dim entradaJson = JsonConvert.SerializeObject(entradaBody)
-                        Dim entradaResponse = SendPostRequest(URLServicioEntrada, entradaJson)
+                        'Dim entradaResponse = SendPostRequest(URLServicioEntrada, entradaJson)
 
                         clsPublic.Actualizar_Progreso(lblprg, "Ajuste positivo enviado a SAP para IdAjusteEnc: " & IdAjusteEncActual)
-                        clsPublic.Actualizar_Progreso(lblprg, entradaResponse.ToString())
+                        'clsPublic.Actualizar_Progreso(lblprg, entradaResponse.ToString())
 
                         ' Marcar ajustes positivos como enviados
-                        If entradaResponse.ToString.Contains("""status"":1") Then
-                            For Each ajuste In grupo.Where(Function(x) x.TipoAjusteWMS = "Ajuste Positivo")
-                                ajuste.Observacion = "Enviado"
-                            Next
-                        End If
+                        'If entradaResponse.ToString.Contains("""status"":1") Then
+                        '    For Each ajuste In grupo.Where(Function(x) x.TipoAjusteWMS = "Ajuste Positivo")
+                        '        ajuste.Observacion = "Enviado"
+                        '    Next
+                        'End If
                     End If
 
                     ' Enviar un solo documento para todos los productos negativos en el grupo actual
@@ -519,18 +509,18 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                         .Entries = ajustesNegativos
                     }
                         Dim salidaJson = JsonConvert.SerializeObject(salidaBody)
-                        Dim salidaResponse = SendPostRequest(URLServicioSalida, salidaJson)
+                        'Dim salidaResponse = SendPostRequest(URLServicioSalida, salidaJson)
 
                         clsPublic.Actualizar_Progreso(lblprg, "Ajuste negativo enviado a SAP para IdAjusteEnc: " & IdAjusteEncActual)
-                        clsPublic.Actualizar_Progreso(lblprg, salidaResponse.ToString())
+                        'clsPublic.Actualizar_Progreso(lblprg, salidaResponse.ToString())
 
                         ' Marcar ajustes negativos como enviados
-                        Dim SalidaToParse = salidaResponse
-                        If salidaResponse.ToString.Contains("""status"":1") Then
-                            For Each ajuste In grupo.Where(Function(x) x.TipoAjusteWMS = "Ajuste Negativo")
-                                ajuste.Observacion = "Enviado"
-                            Next
-                        End If
+                        'Dim SalidaToParse = salidaResponse
+                        'If salidaResponse.ToString.Contains("""status"":1") Then
+                        '    For Each ajuste In grupo.Where(Function(x) x.TipoAjusteWMS = "Ajuste Negativo")
+                        '        ajuste.Observacion = "Enviado"
+                        '    Next
+                        'End If
                     End If
                 Next
 
@@ -568,8 +558,8 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                 Dim vCuentaIngresos As String = BeBodega.Cuenta_Ingreso_Mercancias
                 Dim vCuentaEgresos As String = BeBodega.Cuenta_Egreso_Mercancias
 
-                URLServicioEntrada = BD.Instancia.URL_ENTRADA_AJUSTE_POST
-                URLServicioSalida = BD.Instancia.URL_SALIDA_AJUSTE_POST
+                'URLServicioEntrada = BD.Instancia.URL_ENTRADA_AJUSTE_POST
+                'URLServicioSalida = BD.Instancia.URL_SALIDA_AJUSTE_POST
 
                 ' Agrupar ajustes por IdAjusteEnc
                 Dim ajustesAgrupados = lAjustesPendEnvio.GroupBy(Function(a) a.IdAjusteEnc)
@@ -608,17 +598,17 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                         .Entries = ajustesPositivos
                     }
                         Dim entradaJson = JsonConvert.SerializeObject(entradaBody)
-                        Dim entradaResponse = SendPostRequest(URLServicioEntrada, entradaJson)
+                        'Dim entradaResponse = SendPostRequest(URLServicioEntrada, entradaJson)
 
                         clsPublic.Actualizar_Progreso(lblprg, "Ajuste positivo enviado a SAP para IdAjusteEnc: " & IdAjusteEncActual)
-                        clsPublic.Actualizar_Progreso(lblprg, entradaResponse.ToString())
+                        'clsPublic.Actualizar_Progreso(lblprg, entradaResponse.ToString())
 
                         ' Marcar ajustes positivos como enviados
-                        If entradaResponse.ToString.Contains("""status"":1") Then
-                            For Each ajuste In grupo.Where(Function(x) x.TipoAjusteWMS = "Ajuste Positivo")
-                                ajuste.Observacion = "Enviado"
-                            Next
-                        End If
+                        'If entradaResponse.ToString.Contains("""status"":1") Then
+                        '    For Each ajuste In grupo.Where(Function(x) x.TipoAjusteWMS = "Ajuste Positivo")
+                        '        ajuste.Observacion = "Enviado"
+                        '    Next
+                        'End If
                     End If
 
                     ' Enviar un solo documento para todos los productos negativos en el grupo actual
@@ -630,32 +620,32 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                         .Entries = ajustesNegativos
                     }
                         Dim salidaJson = JsonConvert.SerializeObject(salidaBody)
-                        Dim salidaResponse = SendPostRequest(URLServicioSalida, salidaJson)
+                        'Dim salidaResponse = SendPostRequest(URLServicioSalida, salidaJson)
 
                         clsPublic.Actualizar_Progreso(lblprg, "Ajuste negativo enviado a SAP para IdAjusteEnc: " & IdAjusteEncActual)
-                        clsPublic.Actualizar_Progreso(lblprg, salidaResponse.ToString())
+                        'clsPublic.Actualizar_Progreso(lblprg, salidaResponse.ToString())
 
                         ' Marcar ajustes negativos como enviados
-                        Dim SalidaToParse = salidaResponse
-                        If salidaResponse.ToString.Contains("""status"":1") Then
-                            For Each ajuste In grupo.Where(Function(x) x.TipoAjusteWMS = "Ajuste Negativo")
-                                ajuste.Observacion = "Enviado"
-                            Next
-                        End If
+                        'Dim SalidaToParse = salidaResponse
+                        'If salidaResponse.ToString.Contains("""status"":1") Then
+                        '    For Each ajuste In grupo.Where(Function(x) x.TipoAjusteWMS = "Ajuste Negativo")
+                        '        ajuste.Observacion = "Enviado"
+                        '    Next
+                        'End If
                     End If
                 Next
 
-                ' Actualizar ajustes como enviados en la base de datos
-                For Each grupo In ajustesAgrupados
-                    For Each ajuste In grupo
-                        If ajuste.Observacion.Contains("Enviado") Then
+    ' Actualizar ajustes como enviados en la base de datos
+    For Each grupo In ajustesAgrupados
+    For Each ajuste In grupo
+    If ajuste.Observacion.Contains("Enviado") Then
                             clsLnTrans_ajuste_det.Actualizar_Estado_Enviado_A_ERP(ajuste.IdAjusteDet,
                                                                                   True,
                                                                                   CnnLog,
                                                                                   TransLog)
                         End If
-                    Next
-                Next
+    Next
+    Next
 
                 clsPublic.Actualizar_Progreso(lblprg, "Fin de sincronización de ajustes.")
 
@@ -665,7 +655,7 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                 clsPublic.Actualizar_Progreso(lblprg, "No hay ajustes pendientes de envío.")
             End If
 
-        Catch ex As Exception
+    Catch ex As Exception
             clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al enviar ajustes a SAP: {0}{1}", vbNewLine, ex.Message))
             If Not TransLog Is Nothing Then TransLog.Rollback()
 
@@ -677,8 +667,8 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
 
             Throw New Exception(String.Format(" (M) {0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
 
-        Finally
-            If Not CnnLog Is Nothing AndAlso CnnLog.State = ConnectionState.Open Then CnnLog.Close()
+    Finally
+    If Not CnnLog Is Nothing AndAlso CnnLog.State = ConnectionState.Open Then CnnLog.Close()
         End Try
 
     End Sub

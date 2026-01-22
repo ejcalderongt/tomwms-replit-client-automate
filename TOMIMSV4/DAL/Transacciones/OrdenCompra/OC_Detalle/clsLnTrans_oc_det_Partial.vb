@@ -13,15 +13,16 @@ Partial Public Class clsLnTrans_oc_det
         Try
 
             '#CKFK20250526 Quité lo de tomar el codigo del producto del campo noparte cuando la empresa fuera Killios
+            '#AT20250610 Espero que no ocurra nada malo... p.codigo codigo_producto a det.codigo_producto
             Dim vSQL As String = "SELECT p.IdProducto,det.IdOrdenCompraEnc, det.IdOrdenCompraDet, det.IdProductoBodega, det.IdArancel, det.IdPresentacion, 
                                          det.IdUnidadMedidaBasica, det.IdMotivoDevolucion, det.No_Linea, det.nombre_producto, det.nombre_presentacion, 
 	                                     det.nombre_arancel, det.porcentaje_arancel, det.nombre_unidad_medida_basica, det.cantidad, det.cantidad_recibida, 
 	                                     det.costo, det.total_linea, det.user_agr, det.fec_agr, det.user_mod, det.fec_mod, det.activo, det.peso, 
 	                                     det.peso_recibido, det.atributo_variante_1,	   
-	                                     p.codigo codigo_producto,	   
+	                                     det.codigo_producto,	   
 	                                     det.valor_aduana, det.valor_fob, det.valor_iva, 
 	                                     det.valor_dai, det.valor_seguro, det.valor_flete, det.peso_neto, det.peso_bruto, det.IdPropietarioBodega, 
-	                                     det.nombre_propietario, det.IdOrdenCompraDetPadre, det.IdEmbarcador
+	                                     det.nombre_propietario, det.IdOrdenCompraDetPadre, det.IdEmbarcador, det.IdProductoTallaColor
                                   FROM trans_oc_enc as enc  inner join trans_oc_det AS det ON enc.IdOrdenCompraEnc = det.IdOrdenCompraEnc INNER JOIN 
                                        producto_bodega AS pb ON det.IdProductoBodega = pb.IdProductoBodega INNER JOIN 
                                        producto AS p ON pb.IdProducto = p.IdProducto  
@@ -48,12 +49,13 @@ Partial Public Class clsLnTrans_oc_det
                         BeTransOcDet.Producto.IdProducto = CType(lRow("IdProducto"), Integer)
                         clsLnProducto.Obtener_SO(BeTransOcDet.Producto, lConnection, lTransaction)
                         '#CKFK20241031 Aquí se envía el código del producto del objeto del producto
-                        BeTransOcDet.Codigo_Producto = BeTransOcDet.Producto.Codigo
+                        '#AT20250610 Espero que no ocurra nada malo...
+                        'BeTransOcDet.Codigo_Producto = BeTransOcDet.Producto.Codigo
 
                         If (BeTransOcDet.Producto.IdClasificacion <> 0) Then
                             BeTransOcDet.Producto.Clasificacion = clsLnProducto_clasificacion.GetSingle(BeTransOcDet.Producto.IdClasificacion,
-                                                                                               lConnection,
-                                                                                               lTransaction)
+                                                                                                       lConnection,
+                                                                                                       lTransaction)
                         End If
 
                         If lRow("IdProductoBodega") IsNot DBNull.Value AndAlso lRow("IdProductoBodega") IsNot Nothing Then
@@ -93,6 +95,21 @@ Partial Public Class clsLnTrans_oc_det
                                 BeTransOcDet.Nombre_Embarcador = pBeTrans_oc_embarcador.Nombre
                             End If
 
+                        End If
+
+                        If BeTransOcDet.IdProductoTallaColor <> 0 Then
+                            Dim BeProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransOcDet.IdProductoTallaColor,
+                                                                                           lConnection,
+                                                                                           lTransaction)
+                            If Not BeProductoTallaColor Is Nothing Then
+                                BeTransOcDet.Talla = clsLnTalla.GetSingle(BeProductoTallaColor.IdTalla,
+                                                                          lConnection,
+                                                                          lTransaction)
+
+                                BeTransOcDet.Color = clsLnColor.GetSingle(BeProductoTallaColor.IdColor,
+                                                                          lConnection,
+                                                                          lTransaction)
+                            End If
                         End If
 
                         If Not BeTransOcDet.IdOrdenCompraDetPadre = 0 Then
@@ -2203,6 +2220,21 @@ Partial Public Class clsLnTrans_oc_det
                                     BeTransOcDet.IdMotivoDevolucion = CType(lRow("IdMotivoDevolucion"), Integer)
                                 End If
 
+                                If BeTransOcDet.IdProductoTallaColor <> 0 Then
+                                    Dim BeProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransOcDet.IdProductoTallaColor,
+                                                                                           lConnection,
+                                                                                           lTransaction)
+                                    If Not BeProductoTallaColor Is Nothing Then
+                                        BeTransOcDet.Talla = clsLnTalla.GetSingle(BeProductoTallaColor.IdTalla,
+                                                                                  lConnection,
+                                                                                  lTransaction)
+
+                                        BeTransOcDet.Color = clsLnColor.GetSingle(BeProductoTallaColor.IdColor,
+                                                                                  lConnection,
+                                                                                  lTransaction)
+                                    End If
+                                End If
+
                                 BeTransOcDet.IsNew = False
 
                                 lReturnList.Add(BeTransOcDet)
@@ -2612,6 +2644,47 @@ Partial Public Class clsLnTrans_oc_det
                 End Try
             End Using
         End Using
+    End Function
+
+    Public Shared Function Get_Single_By_Recepcion_Det_For_Inav(ByVal IdOrdenCompraEnc As Integer,
+                                                                ByVal IdProductoBodega As Integer,
+                                                                ByVal No_Linea As Integer,
+                                                                ByVal Codigo_Producto As String,
+                                                                ByRef lConnection As SqlConnection,
+                                                                ByRef lTransaction As SqlTransaction) As clsBeTrans_oc_det
+
+        Get_Single_By_Recepcion_Det_For_Inav = Nothing
+
+        Try
+
+            Const sp As String = "SELECT * FROM Trans_oc_det 
+             Where(No_Linea = @No_Linea             
+             AND IdProductoBodega = @IdProductoBodega
+             AND Codigo_Producto = @Codigo_Producto
+             AND IdOrdenCompraEnc = @IdOrdenCompraEnc)"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdOrdenCompraEnc", IdOrdenCompraEnc))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@No_Linea", No_Linea))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdProductoBodega", IdProductoBodega))
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@Codigo_Producto", Codigo_Producto))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Dim pBeTrans_oc_det As New clsBeTrans_oc_det
+                Cargar(pBeTrans_oc_det, dt.Rows(0), lConnection, lTransaction)
+                Return pBeTrans_oc_det
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
     End Function
 
 End Class

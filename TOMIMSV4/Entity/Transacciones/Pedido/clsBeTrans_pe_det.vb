@@ -54,7 +54,9 @@ Public Class clsBeTrans_pe_det
     ''' </summary>
     ''' <returns></returns>
     Public Property IdCliente As Integer = 0
-
+    Public Property Talla As String = ""
+    Public Property Color As String = ""
+    Public Property IdProductoTallaColor As Integer = 0
     Sub New()
     End Sub
 

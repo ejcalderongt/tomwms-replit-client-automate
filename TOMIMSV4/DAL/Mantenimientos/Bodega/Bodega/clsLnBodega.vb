@@ -110,9 +110,15 @@ Public Class clsLnBodega
                 .Limpiar_Campos = IIf(IsDBNull(dr.Item("limpiar_campos")), False, dr.Item("limpiar_campos"))
                 .Permitir_Cambio_Ubic_Recepcion = IIf(IsDBNull(dr.Item("Permitir_Cambio_Ubic_Recepcion")), False, dr.Item("Permitir_Cambio_Ubic_Recepcion"))
                 .Ruta_CDN = IIf(IsDBNull(dr.Item("Ruta_CDN")), "", dr.Item("Ruta_CDN"))
+                .Control_Talla_Color = IIf(IsDBNull(dr.Item("Control_Talla_Color")), False, dr.Item("Control_Talla_Color"))
                 .Rango_Dias_Documentos = IIf(IsDBNull(dr.Item("Rango_Dias_Documentos")), 0, dr.Item("Rango_Dias_Documentos"))
-                .Agrupar_Sin_Lic_Veri_No_Cons = IIf(IsDBNull(dr.Item("agrupar_sin_lic_veri_no_cons")), False, dr.Item("agrupar_sin_lic_veri_no_cons"))
-                .Advertir_Mpq_Umbas = IIf(IsDBNull(dr.Item("advertir_mpq_umbas")), False, dr.Item("advertir_mpq_umbas"))
+                .Agrupar_Sin_Lic_Veri_No_Cons = IIf(IsDBNull(dr.Item("Agrupar_Sin_Lic_Veri_No_Cons")), False, dr.Item("Agrupar_Sin_Lic_Veri_No_Cons"))
+                .Advertir_Mpq_Umbas = IIf(IsDBNull(dr.Item("Advertir_Mpq_Umbas")), False, dr.Item("Advertir_Mpq_Umbas"))
+                .Centro_Costo_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Erp")), "", dr.Item("Centro_Costo_Erp"))
+                .Centro_Costo_Dir_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Dir_Erp")), "", dr.Item("Centro_Costo_Dir_Erp"))
+                .Centro_Costo_Dep_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Dep_Erp")), "", dr.Item("Centro_Costo_Dep_Erp"))
+                .Control_Gondola = IIf(IsDBNull(dr.Item("control_gondola")), False, dr.Item("control_gondola"))
+                .Packing_Consolidado_Guia = IIf(IsDBNull(dr.Item("packing_consolidado_guia")), False, dr.Item("packing_consolidado_guia"))                
                 .Priorizar_Cantidad_Superior = IIf(IsDBNull(dr.Item("Priorizar_Cantidad_Superior")), False, dr.Item("Priorizar_Cantidad_Superior"))
                 .impresion_verificacion = IIf(IsDBNull(dr.Item("impresion_verificacion")), False, dr.Item("impresion_verificacion"))
 
@@ -235,8 +241,12 @@ Public Class clsLnBodega
             Ins.Add("permitir_cambio_ubic_recepcion", "@permitir_cambio_ubic_recepcion", DataType.Parametro)
             Ins.Add("ruta_cdn", "@ruta_cdn", DataType.Parametro)
             Ins.Add("rango_dias_documentos", "@rango_dias_documentos", DataType.Parametro)
-            Ins.Add("agrupar_sin_lic_veri_no_cons", "@agrupar_sin_lic_veri_no_cons", DataType.Parametro)
-            Ins.Add("advertir_mpq_umbas", "@advertir_mpq_umbas", DataType.Parametro)
+            Ins.Add("Agrupar_Sin_Lic_Veri_No_Cons", "@Agrupar_Sin_Lic_Veri_No_Cons", DataType.Parametro)
+            Ins.Add("Advertir_Mpq_Umbas", "@Advertir_Mpq_Umbas", DataType.Parametro)
+            Ins.Add("Centro_Costo_Erp", "@Centro_Costo_Erp", DataType.Parametro)
+            Ins.Add("Centro_Costo_Dir_Erp", "@Centro_Costo_Dir_Erp", DataType.Parametro)
+            Ins.Add("Centro_Costo_Dep_Erp", "@Centro_Costo_Dep_Erp", DataType.Parametro)
+            Ins.Add("control_gondola", "@Control_Gondola", DataType.Parametro)                        
             Ins.Add("priorizar_cantidad_superior", "@priorizar_cantidad_superior", DataType.Parametro)
             Ins.Add("impresion_verificacion", "@impresion_verificacion", DataType.Parametro)
 
@@ -351,9 +361,14 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@LIMPIAR_CAMPOS", oBeBodega.Limpiar_Campos))
             cmd.Parameters.Add(New SqlParameter("@PERMITIR_CAMBIO_UBIC_RECEPCION", oBeBodega.Permitir_Cambio_Ubic_Recepcion))
             cmd.Parameters.Add(New SqlParameter("@RUTA_CDN", oBeBodega.Ruta_CDN))
+            cmd.Parameters.Add(New SqlParameter("@CONTROL_TALLA_COLOR", oBeBodega.Control_Talla_Color))
             cmd.Parameters.Add(New SqlParameter("@RANGO_DIAS_DOCUMENTOS", oBeBodega.Rango_Dias_Documentos))
             cmd.Parameters.Add(New SqlParameter("@AGRUPAR_SIN_LIC_VERI_NO_CONS", oBeBodega.Agrupar_Sin_Lic_Veri_No_Cons))
             cmd.Parameters.Add(New SqlParameter("@ADVERTIR_MPQ_UMBAS", oBeBodega.Advertir_Mpq_Umbas))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_ERP", oBeBodega.Centro_Costo_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DIR_ERP", oBeBodega.Centro_Costo_Dir_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DEP_ERP", oBeBodega.Centro_Costo_Dep_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CONTROL_GONDOLA", oBeBodega.Control_Gondola))
             cmd.Parameters.Add(New SqlParameter("@PRIORIZAR_CANTIDAD_SUPERIOR", oBeBodega.Priorizar_Cantidad_Superior))
             cmd.Parameters.Add(New SqlParameter("@IMPRESION_VERIFICACION", oBeBodega.impresion_verificacion))
 
@@ -482,9 +497,14 @@ Public Class clsLnBodega
             Upd.Add("limpiar_campos", "@limpiar_campos", DataType.Parametro)
             Upd.Add("permitir_cambio_ubic_recepcion", "@permitir_cambio_ubic_recepcion", DataType.Parametro)
             Upd.Add("ruta_cdn", "@ruta_cdn", DataType.Parametro)
+            Upd.Add("control_talla_color", "@control_talla_color", DataType.Parametro)
             Upd.Add("rango_dias_documentos", "@rango_dias_documentos", DataType.Parametro)
-            Upd.Add("agrupar_sin_lic_veri_no_cons", "@agrupar_sin_lic_veri_no_cons", DataType.Parametro)
-            Upd.Add("advertir_mpq_umbas", "@advertir_mpq_umbas", DataType.Parametro)
+            Upd.Add("Agrupar_Sin_Lic_Veri_No_Cons", "@Agrupar_Sin_Lic_Veri_No_Cons", DataType.Parametro)
+            Upd.Add("Advertir_Mpq_Umbas", "@Advertir_Mpq_Umbas", DataType.Parametro)
+            Upd.Add("Centro_Costo_Erp", "@Centro_Costo_Erp", DataType.Parametro)
+            Upd.Add("Centro_Costo_Dir_Erp", "@Centro_Costo_Dir_Erp", DataType.Parametro)
+            Upd.Add("Centro_Costo_Dep_Erp", "@Centro_Costo_Dep_Erp", DataType.Parametro)
+            Upd.Add("control_gondola", "@Control_Gondola", DataType.Parametro)            
             Upd.Add("priorizar_cantidad_superior", "@priorizar_cantidad_superior", DataType.Parametro)
             Upd.Add("impresion_verificacion", "@impresion_verificacion", DataType.Parametro)
             Upd.Where("IdBodega = @IdBodega")
@@ -599,9 +619,14 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@LIMPIAR_CAMPOS", oBeBodega.Limpiar_Campos))
             cmd.Parameters.Add(New SqlParameter("@PERMITIR_CAMBIO_UBIC_RECEPCION", oBeBodega.Permitir_Cambio_Ubic_Recepcion))
             cmd.Parameters.Add(New SqlParameter("@RUTA_CDN", oBeBodega.Ruta_CDN))
+            cmd.Parameters.Add(New SqlParameter("@CONTROL_TALLA_COLOR", oBeBodega.Control_Talla_Color))
             cmd.Parameters.Add(New SqlParameter("@RANGO_DIAS_DOCUMENTOS", oBeBodega.Rango_Dias_Documentos))
             cmd.Parameters.Add(New SqlParameter("@AGRUPAR_SIN_LIC_VERI_NO_CONS", oBeBodega.Agrupar_Sin_Lic_Veri_No_Cons))
             cmd.Parameters.Add(New SqlParameter("@ADVERTIR_MPQ_UMBAS", oBeBodega.Advertir_Mpq_Umbas))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_ERP", oBeBodega.Centro_Costo_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DIR_ERP", oBeBodega.Centro_Costo_Dir_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DEP_ERP", oBeBodega.Centro_Costo_Dep_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CONTROL_GONDOLA", oBeBodega.Control_Gondola))
             cmd.Parameters.Add(New SqlParameter("@PRIORIZAR_CANTIDAD_SUPERIOR", oBeBodega.Priorizar_Cantidad_Superior))
             cmd.Parameters.Add(New SqlParameter("@IMPRESION_VERIFICACION", oBeBodega.impresion_verificacion))
 
@@ -1158,6 +1183,41 @@ Public Class clsLnBodega
         End Try
 
     End Function
+
+    Public Shared Function GetSingle_By_IdBodega_SL(pIdBodega As Integer) As clsBeBodega
+        Try
+            Const sql As String = "SELECT TOP 1 * FROM Bodega WHERE IdBodega = @IdBodega"
+
+            Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                Using cmd As New SqlCommand(sql, cn)
+                    cmd.CommandType = CommandType.Text
+                    cmd.Parameters.Add("@IdBodega", SqlDbType.Int).Value = pIdBodega
+
+                    cn.Open()
+
+                    Using rd As SqlDataReader = cmd.ExecuteReader(CommandBehavior.SingleRow)
+                        If rd.Read() Then
+                            ' Si tu Cargar usa DataRow, puedes seguir con DataTable, o crear un CargarDesdeReader.
+                            ' Aquí te dejo opción DataTable rápida:
+                            Dim dt As New DataTable()
+                            dt.Load(rd)
+
+                            If dt.Rows.Count = 1 Then
+                                Dim be As New clsBeBodega()
+                                Cargar(be, dt.Rows(0))
+                                Return be
+                            End If
+                        End If
+                    End Using
+                End Using
+            End Using
+
+            Return Nothing
+        Catch
+            Throw
+        End Try
+    End Function
+
     Public Shared Function GetSingle_By_Idbodega(ByVal pIdBodega As Integer,
                                                  ByVal lConnection As SqlConnection,
                                                  ByVal lTransaction As SqlTransaction) As clsBeBodega
@@ -1497,35 +1557,37 @@ Public Class clsLnBodega
 
     End Function
 
-    Public Shared Function GetIdBodegaGeneral() As Integer
+    Public Shared Function GetRutaCDN_By_Idbodega(ByVal pIdBodega As Integer,
+                                              ByVal lConnection As SqlConnection,
+                                              ByVal lTransaction As SqlTransaction) As String
 
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-        Dim lTransaction As SqlTransaction = Nothing
+        GetRutaCDN_By_Idbodega = ""
 
 
         Try
 
-            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+            Const sp As String = "SELECT RUTA_CDN FROM Bodega 
+                              Where(IdBodega = @IdBodega)"
 
             Const sp As String = "SELECT * FROM Bodega " &
                                  " Where(es_bodega_fiscal =0 )"
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdBodega", pIdBodega))
 
             Dim dt As New DataTable
             dad.Fill(dt)
 
             If dt.Rows.Count = 1 Then
-                Dim pBeBodega As New clsBeBodega
-                Cargar(pBeBodega, dt.Rows(0))
-                GetIdBodegaGeneral = pBeBodega.IdBodega
+                GetRutaCDN_By_Idbodega = IIf(IsDBNull(dt.Rows(0).Item("RUTA_CDN")), "", dt.Rows(0).Item("RUTA_CDN"))
             End If
 
             lTransaction.Commit()
 
         Catch ex As Exception
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
@@ -1558,6 +1620,44 @@ Public Class clsLnBodega
                 Dim pBeBodega As New clsBeBodega
                 Cargar(pBeBodega, dt.Rows(0))
                 GetIdBodegaFiscal = pBeBodega.IdBodega
+            End If
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            lTransaction.Dispose()
+            lConnection.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function GetIdBodegaGeneral() As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Const sp As String = "SELECT * FROM Bodega " &
+                                 " Where(es_bodega_fiscal =0 )"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Dim pBeBodega As New clsBeBodega
+                Cargar(pBeBodega, dt.Rows(0))
+                GetIdBodegaGeneral = pBeBodega.IdBodega
             End If
 
             lTransaction.Commit()

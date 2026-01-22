@@ -1676,5 +1676,43 @@ Partial Public Class clsLnUnidad_medida
 
     End Function
 
+    Public Shared Function Get_All_By_IdPropietario_And_Activo(ByVal pIdPropietario As Integer) As DataTable
+
+        Dim lDataTable As New DataTable("UMBas")
+
+        Get_All_By_IdPropietario_And_Activo = Nothing
+
+        Try
+
+            Dim vSQL As String = ""
+
+            vSQL = "SELECT IdUnidadMedida, Codigo, Nombre  FROM VW_UnidadMedida WHERE es_um_cobro=0 and activo=1 "
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.Fill(lDataTable)
+                        Get_All_By_IdPropietario_And_Activo = lDataTable
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
 
 End Class

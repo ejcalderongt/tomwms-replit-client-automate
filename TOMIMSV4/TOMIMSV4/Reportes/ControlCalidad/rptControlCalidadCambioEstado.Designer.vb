@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Public Class rptControlCalidadCambioEstado
     Inherits DevExpress.XtraReports.UI.XtraReport
 
     'XtraReport overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,7 +17,7 @@ Partial Public Class rptControlCalidadCambioEstado
     'NOTE: The following procedure is required by the Designer
     'It can be modified using the Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim XrSummary1 As DevExpress.XtraReports.UI.XRSummary = New DevExpress.XtraReports.UI.XRSummary()
@@ -146,7 +146,9 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.GrandTotalBackground1 = New DevExpress.XtraReports.UI.XRControlStyle()
         Me.PageInfo = New DevExpress.XtraReports.UI.XRControlStyle()
         Me.Empresa = New DevExpress.XtraReports.Parameters.Parameter()
+        Me.XrLabel11 = New DevExpress.XtraReports.UI.XRLabel()
         Me.Bodega = New DevExpress.XtraReports.Parameters.Parameter()
+        Me.XrLabel12 = New DevExpress.XtraReports.UI.XRLabel()
         CType(Me.table1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.table2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -775,10 +777,30 @@ Partial Public Class rptControlCalidadCambioEstado
         Me.Empresa.Description = "Empresa"
         Me.Empresa.Name = "Empresa"
         '
+        'XrLabel11
+        '
+        Me.XrLabel11.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "?Empresa")})
+        Me.XrLabel11.LocationFloat = New DevExpress.Utils.PointFloat(431.8732!, 34.19434!)
+        Me.XrLabel11.Multiline = True
+        Me.XrLabel11.Name = "XrLabel11"
+        Me.XrLabel11.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96.0!)
+        Me.XrLabel11.SizeF = New System.Drawing.SizeF(135.0!, 23.0!)
+        Me.XrLabel11.Text = "XrLabel11"
+        '
         'Bodega
         '
         Me.Bodega.Description = "Bodega"
         Me.Bodega.Name = "Bodega"
+        '
+        'XrLabel12
+        '
+        Me.XrLabel12.ExpressionBindings.AddRange(New DevExpress.XtraReports.UI.ExpressionBinding() {New DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "?Bodega")})
+        Me.XrLabel12.LocationFloat = New DevExpress.Utils.PointFloat(431.8732!, 57.19437!)
+        Me.XrLabel12.Multiline = True
+        Me.XrLabel12.Name = "XrLabel12"
+        Me.XrLabel12.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96.0!)
+        Me.XrLabel12.SizeF = New System.Drawing.SizeF(135.0001!, 23.0!)
+        Me.XrLabel12.Text = "XrLabel12"
         '
         'rptControlCalidadCambioEstado
         '

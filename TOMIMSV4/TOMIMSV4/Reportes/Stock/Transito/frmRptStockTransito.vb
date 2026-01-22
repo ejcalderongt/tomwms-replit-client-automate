@@ -36,7 +36,7 @@ Public Class frmRptStockTransito
 
         Try
 
-            grd.DataSource = clsLnStock.Get_Stock_Transito(cmbBodega.EditValue)
+            Grd.DataSource = clsLnStock.Get_Stock_Transito(cmbBodega.EditValue)
 
             'GridView.Columns(0).GroupIndex = 0
             GridView1.OptionsView.ShowFooter = True

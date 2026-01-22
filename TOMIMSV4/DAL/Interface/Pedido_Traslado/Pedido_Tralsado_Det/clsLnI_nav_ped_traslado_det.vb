@@ -28,6 +28,8 @@ Public Class clsLnI_nav_ped_traslado_det
                 .IdPedidoDet = IIf(IsDBNull(dr.Item("IdPedidoDet")), 0, dr.Item("IdPedidoDet"))
                 .Is_Partially_Processed = IIf(IsDBNull(dr.Item("Is_Partially_Processed")), False, dr.Item("Is_Partially_Processed"))
                 .Scan_Type = IIf(IsDBNull(dr.Item("Scan_Type")), "", dr.Item("Scan_Type"))
+                .Color = IIf(IsDBNull(dr.Item("Color")), "", dr.Item("Color"))
+                .Size = IIf(IsDBNull(dr.Item("Size")), "", dr.Item("Size"))
 
             End With
 
@@ -65,6 +67,8 @@ Public Class clsLnI_nav_ped_traslado_det
             Ins.Add("is_partially_processed", "@is_partially_processed", DataType.Parametro)
             Ins.Add("transfer_from_codefield", "@transfer_from_codefield", DataType.Parametro)
             Ins.Add("scan_type", "@scan_type", DataType.Parametro)
+            Ins.Add("Color", "@Color", DataType.Parametro)
+            Ins.Add("Size", "@Size", DataType.Parametro)
 
             If Not oBeI_nav_ped_traslado_det.Source_ID Is Nothing Then Ins.Add("source_id", "@source_id", DataType.Parametro)
 
@@ -99,6 +103,8 @@ Public Class clsLnI_nav_ped_traslado_det
             cmd.Parameters.Add(New SqlParameter("@IS_PARTIALLY_PROCESSED", oBeI_nav_ped_traslado_det.Is_Partially_Processed))
             cmd.Parameters.Add(New SqlParameter("@TRANSFER_FROM_CODEFIELD", oBeI_nav_ped_traslado_det.Transfer_From_CodeField))
             cmd.Parameters.Add(New SqlParameter("@SCAN_TYPE", oBeI_nav_ped_traslado_det.Scan_Type))
+            cmd.Parameters.Add(New SqlParameter("@Color", oBeI_nav_ped_traslado_det.Color))
+            cmd.Parameters.Add(New SqlParameter("@Size", oBeI_nav_ped_traslado_det.Size))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -147,6 +153,8 @@ Public Class clsLnI_nav_ped_traslado_det
             Upd.Add("is_partially_processed", "@is_partially_processed", DataType.Parametro)
             Ins.Add("transfer_from_codefield", "@transfer_from_codefield", DataType.Parametro)
             Ins.Add("scan_type", "@scan_type", DataType.Parametro)
+            Upd.Add("Color", "@Color", DataType.Parametro)
+            Upd.Add("Size", "@Size", DataType.Parametro)
             Upd.Where("NoEnc = @NoEnc" &
                 " AND No = @No")
 
@@ -182,6 +190,8 @@ Public Class clsLnI_nav_ped_traslado_det
             cmd.Parameters.Add(New SqlParameter("@IS_PARTIALLY_PROCESSED", oBeI_nav_ped_traslado_det.Is_Partially_Processed))
             cmd.Parameters.Add(New SqlParameter("@TRANSFER_FROM_CODEFIELD", oBeI_nav_ped_traslado_det.Transfer_From_CodeField))
             cmd.Parameters.Add(New SqlParameter("@SCAN_TYPE", oBeI_nav_ped_traslado_det.Scan_Type))
+            cmd.Parameters.Add(New SqlParameter("@Color", oBeI_nav_ped_traslado_det.Color))
+            cmd.Parameters.Add(New SqlParameter("@Size", oBeI_nav_ped_traslado_det.Size))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -602,7 +612,7 @@ Public Class clsLnI_nav_ped_traslado_det
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             Const sp As String = "SELECT DISTINCT transfer_to_codefield FROM I_nav_ped_traslado_det 
-                                  Where(NoEnc = @NoEnc) "
+            Where(NoEnc = @NoEnc) "
 
 
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
@@ -637,7 +647,7 @@ Public Class clsLnI_nav_ped_traslado_det
 
     '    Try
 
-    '        Const sp As String = "SELECT DISTINCT transfer_to_codefield FROM I_nav_ped_traslado_det 
+    '        Const sp As String = "Select DISTINCT transfer_to_codefield FROM I_nav_ped_traslado_det 
     '                              Where(NoEnc = @NoEnc) "
 
 

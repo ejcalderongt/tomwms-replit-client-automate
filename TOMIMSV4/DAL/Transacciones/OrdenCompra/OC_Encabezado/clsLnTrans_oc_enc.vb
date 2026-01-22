@@ -53,6 +53,8 @@ Public Class clsLnTrans_oc_enc
                 .PutAway_Registrado = IIf(IsDBNull(dr.Item("PutAway_Registrado")), False, dr.Item("PutAway_Registrado"))
                 .Codigo_Empresa_ERP = IIf(IsDBNull(dr.Item("Codigo_Empresa_ERP")), 0, dr.Item("Codigo_Empresa_ERP"))
                 .IdCampaña = IIf(IsDBNull(dr.Item("IdCampaña")), 0, dr.Item("IdCampaña"))
+                .usr_documento = IIf(IsDBNull(dr.Item("usr_documento")), "", dr.Item("usr_documento"))
+                .comentarios = IIf(IsDBNull(dr.Item("comentarios")), "", dr.Item("comentarios"))
 
             End With
 
@@ -62,7 +64,7 @@ Public Class clsLnTrans_oc_enc
 
     End Sub
 
-    Public shared Function Insertar(ByRef oBeTrans_oc_enc As clsBeTrans_oc_enc, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_oc_enc As clsBeTrans_oc_enc, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -112,6 +114,8 @@ Public Class clsLnTrans_oc_enc
             If oBeTrans_oc_enc.No_Documento_Recepcion_ERP.Trim <> "" Then Ins.Add("no_documento_recepcion_erp", "@no_documento_recepcion_erp", DataType.Parametro)
             If oBeTrans_oc_enc.No_Documento_Ubicacion_ERP.Trim <> "" Then Ins.Add("no_documento_ubicacion_erp", "@no_documento_ubicacion_erp", DataType.Parametro)
             If oBeTrans_oc_enc.IdCampaña <> 0 Then Ins.Add("IdCampaña", "@IdCampaña", DataType.Parametro)
+            If oBeTrans_oc_enc.Usr_Documento.Trim <> "" Then Ins.Add("usr_documento", "@usr_documento", DataType.Parametro)
+            If oBeTrans_oc_enc.Comentarios.Trim <> "" Then Ins.Add("comentarios", "@comentarios", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
 
@@ -166,6 +170,8 @@ Public Class clsLnTrans_oc_enc
             If oBeTrans_oc_enc.No_Documento_Recepcion_ERP.Trim <> "" Then cmd.Parameters.Add(New SqlParameter("@NO_DOCUMENTO_RECEPCION_ERP", oBeTrans_oc_enc.No_Documento_Recepcion_ERP))
             If oBeTrans_oc_enc.No_Documento_Ubicacion_ERP.Trim <> "" Then cmd.Parameters.Add(New SqlParameter("@NO_DOCUMENTO_UBICACION_ERP", oBeTrans_oc_enc.No_Documento_Ubicacion_ERP))
             If oBeTrans_oc_enc.IdCampaña <> 0 Then cmd.Parameters.Add(New SqlParameter("@IdCampaña", oBeTrans_oc_enc.IdCampaña))
+            If oBeTrans_oc_enc.Usr_Documento.Trim <> "" Then cmd.Parameters.Add(New SqlParameter("@Usr_Documento", oBeTrans_oc_enc.Usr_Documento))
+            If oBeTrans_oc_enc.Comentarios.Trim <> "" Then cmd.Parameters.Add(New SqlParameter("@Comentarios", oBeTrans_oc_enc.Comentarios))
 
             cmd.Parameters.Add(New SqlParameter("@PUTAWAY_REGISTRADO", oBeTrans_oc_enc.PutAway_Registrado))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_EMPRESA_ERP", oBeTrans_oc_enc.Codigo_Empresa_ERP))
@@ -233,6 +239,8 @@ Public Class clsLnTrans_oc_enc
             If oBeTrans_oc_enc.No_Documento_Recepcion_ERP.Trim <> "" Then Upd.Add("no_documento_recepcion_erp", "@no_documento_recepcion_erp", DataType.Parametro)
             If oBeTrans_oc_enc.No_Documento_Ubicacion_ERP.Trim <> "" Then Upd.Add("no_documento_ubicacion_erp", "@no_documento_ubicacion_erp", DataType.Parametro)
             If oBeTrans_oc_enc.IdCampaña <> 0 Then Upd.Add("IdCampaña", "@IdCampaña", DataType.Parametro)
+            If oBeTrans_oc_enc.Usr_Documento.Trim <> "" Then Upd.Add("usr_documento", "@usr_documento", DataType.Parametro)
+            If oBeTrans_oc_enc.Comentarios.Trim <> "" Then Upd.Add("comentarios", "@comentarios", DataType.Parametro)
 
             Upd.Add("putaway_registrado", "@putaway_registrado", DataType.Parametro)
             Upd.Where("IdOrdenCompraEnc = @IdOrdenCompraEnc")
@@ -287,6 +295,8 @@ Public Class clsLnTrans_oc_enc
             cmd.Parameters.Add(New SqlParameter("@PUTAWAY_REGISTRADO", oBeTrans_oc_enc.PutAway_Registrado))
             cmd.Parameters.Add(New SqlParameter("@CODIGO_EMPRESA_ERP", oBeTrans_oc_enc.Codigo_Empresa_ERP))
             If oBeTrans_oc_enc.IdCampaña <> 0 Then cmd.Parameters.Add(New SqlParameter("@IdCampaña", oBeTrans_oc_enc.IdCampaña))
+            If oBeTrans_oc_enc.Usr_Documento.Trim <> "" Then cmd.Parameters.Add(New SqlParameter("@Usr_Documento", oBeTrans_oc_enc.Usr_Documento))
+            If oBeTrans_oc_enc.Comentarios.Trim <> "" Then cmd.Parameters.Add(New SqlParameter("@Comentarios", oBeTrans_oc_enc.Comentarios))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

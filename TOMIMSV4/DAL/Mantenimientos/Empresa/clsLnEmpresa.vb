@@ -581,8 +581,8 @@ Public Class clsLnEmpresa
     End Function
 
     Public Shared Function GetSingle(ByRef pBeEmpresa As clsBeEmpresa,
-                                               ByVal lConnection As SqlConnection,
-                                               ByVal lTransaction As SqlTransaction)
+                                     ByVal lConnection As SqlConnection,
+                                     ByVal lTransaction As SqlTransaction)
 
         GetSingle = Nothing
 

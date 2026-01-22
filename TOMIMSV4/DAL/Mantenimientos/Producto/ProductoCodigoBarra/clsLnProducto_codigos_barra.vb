@@ -14,13 +14,15 @@ Public Class clsLnProducto_codigos_barra
                 .Fec_mod = IIf(IsDBNull(dr.Item("fec_mod")), Date.Now, dr.Item("fec_mod"))
                 .User_agr = IIf(IsDBNull(dr.Item("user_agr")), "", dr.Item("user_agr"))
                 .Activo = IIf(IsDBNull(dr.Item("activo")), False, dr.Item("activo"))
+                .IdColor = IIf(IsDBNull(dr.Item("IdColor")), 0, dr.Item("IdColor"))
+                .IdTalla = IIf(IsDBNull(dr.Item("IdTalla")), 0, dr.Item("IdTalla"))
             End With
         Catch ex As Exception
             Throw New Exception("Producto_codigos_barra_Cargar: " & ex.message)
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeProducto_codigos_barra As clsBeProducto_codigos_barra, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeProducto_codigos_barra As clsBeProducto_codigos_barra, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -38,6 +40,8 @@ Public Class clsLnProducto_codigos_barra
             Ins.Add("fec_mod", "@fec_mod", DataType.Parametro)
             Ins.Add("user_agr", "@user_agr", DataType.Parametro)
             Ins.Add("activo", "@activo", DataType.Parametro)
+            Ins.Add("idcolor", "@idcolor", DataType.Parametro)
+            Ins.Add("idtalla", "@idtalla", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
 
@@ -62,7 +66,8 @@ Public Class clsLnProducto_codigos_barra
             cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeProducto_codigos_barra.Fec_mod))
             cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeProducto_codigos_barra.User_agr))
             cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeProducto_codigos_barra.Activo))
-
+            cmd.Parameters.Add(New SqlParameter("@IDCOLOR", oBeProducto_codigos_barra.IdColor))
+            cmd.Parameters.Add(New SqlParameter("@IDTALLA", oBeProducto_codigos_barra.IdTalla))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -96,6 +101,8 @@ Public Class clsLnProducto_codigos_barra
             Upd.Add("fec_mod", "@fec_mod", DataType.Parametro)
             Upd.Add("user_agr", "@user_agr", DataType.Parametro)
             Upd.Add("activo", "@activo", DataType.Parametro)
+            Upd.Add("idcolor", "@idcolor", DataType.Parametro)
+            Upd.Add("idtalla", "@idtalla", DataType.Parametro)
             Upd.Where("IdProductoCodigoBarra = @IdProductoCodigoBarra")
 
             Dim sp As String = Upd.SQL()
@@ -120,6 +127,8 @@ Public Class clsLnProducto_codigos_barra
             cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeProducto_codigos_barra.Fec_mod))
             cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeProducto_codigos_barra.User_agr))
             cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeProducto_codigos_barra.Activo))
+            cmd.Parameters.Add(New SqlParameter("@IDCOLOR", oBeProducto_codigos_barra.IdColor))
+            cmd.Parameters.Add(New SqlParameter("@IDTALLA", oBeProducto_codigos_barra.IdTalla))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

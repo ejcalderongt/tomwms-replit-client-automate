@@ -29,8 +29,8 @@ Public Class clsLnCliente_tiempos
     End Sub
 
     Public Shared Function Insertar(ByRef oBeCliente_tiempos As clsBeCliente_tiempos,
-                                    Optional ByVal pConection As SqlConnection = Nothing,
-                                    Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+                                        Optional ByVal pConection As SqlConnection = Nothing,
+                                        Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -177,7 +177,7 @@ Public Class clsLnCliente_tiempos
         Try
 
             Const sp As String = " Delete from Cliente_tiempos" &
-             "  Where(IdTiempoCliente = @IdTiempoCliente)"
+                 "  Where(IdTiempoCliente = @IdTiempoCliente)"
 
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -283,7 +283,7 @@ Public Class clsLnCliente_tiempos
         Try
 
             Const sp As String = "SELECT * FROM Cliente_tiempos" &
-            " Where(IdTiempoCliente = @IdTiempoCliente)"
+                " Where(IdTiempoCliente = @IdTiempoCliente)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -353,7 +353,7 @@ Public Class clsLnCliente_tiempos
         Try
 
             Const sp As String = "SELECT * FROM Cliente_tiempos" &
-            " Where(IdTiempoCliente = @IdTiempoCliente)"
+                " Where(IdTiempoCliente = @IdTiempoCliente)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -411,7 +411,7 @@ Public Class clsLnCliente_tiempos
     End Function
 
     Public Shared Function MaxID(ByRef lConnection As SqlConnection,
-                                 ByRef lTransaction As SqlTransaction) As Integer
+                                     ByRef lTransaction As SqlTransaction) As Integer
 
         Try
 
@@ -445,7 +445,7 @@ Public Class clsLnCliente_tiempos
         Try
 
             Const sp As String = "SELECT * FROM Cliente_tiempos" &
-            " Where(IdTiempoCliente = @IdTiempoCliente)"
+                " Where(IdTiempoCliente = @IdTiempoCliente)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -473,8 +473,8 @@ Public Class clsLnCliente_tiempos
     End Function
 
     Public Shared Function Cliente_Tiene_Tiempos(ByVal IdCliente As Integer,
-                                                 ByRef lConnection As SqlConnection,
-                                                 ByRef lTransaction As SqlTransaction) As Boolean
+                                                     ByRef lConnection As SqlConnection,
+                                                     ByRef lTransaction As SqlTransaction) As Boolean
 
         Try
 

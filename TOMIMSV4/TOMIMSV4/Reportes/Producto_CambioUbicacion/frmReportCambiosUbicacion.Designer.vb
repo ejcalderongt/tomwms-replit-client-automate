@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmReportCambiosUbicacion
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,7 +17,7 @@ Partial Class frmReportCambiosUbicacion
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmReportCambiosUbicacion))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
@@ -79,12 +79,13 @@ Partial Class frmReportCambiosUbicacion
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdActualizar, Me.cmdImprimir, Me.cmdSalir, Me.lblRegs, Me.cmdExToExcel})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
+        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonControl.MaxItemId = 6
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.OptionsMenuMinWidth = 283
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(1271, 158)
+        Me.RibbonControl.Size = New System.Drawing.Size(1483, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'cmdActualizar
@@ -138,19 +139,22 @@ Partial Class frmReportCambiosUbicacion
         'RibbonStatusBar
         '
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegs)
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 570)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 701)
+        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1271, 24)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1483, 30)
         '
         'grdCambiosUbic
         '
         Me.grdCambiosUbic.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.grdCambiosUbic.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.grdCambiosUbic.Location = New System.Drawing.Point(0, 0)
         Me.grdCambiosUbic.MainView = Me.GridView1
+        Me.grdCambiosUbic.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.grdCambiosUbic.MenuManager = Me.RibbonControl
         Me.grdCambiosUbic.Name = "grdCambiosUbic"
-        Me.grdCambiosUbic.Size = New System.Drawing.Size(1177, 387)
+        Me.grdCambiosUbic.Size = New System.Drawing.Size(1219, 478)
         Me.grdCambiosUbic.TabIndex = 2
         Me.grdCambiosUbic.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
         '
@@ -174,17 +178,18 @@ Partial Class frmReportCambiosUbicacion
         Me.GroupControl1.Controls.Add(Me.cmbBodega)
         Me.GroupControl1.Controls.Add(Me.lblBodega)
         Me.GroupControl1.Dock = System.Windows.Forms.DockStyle.Left
-        Me.GroupControl1.Location = New System.Drawing.Point(0, 158)
+        Me.GroupControl1.Location = New System.Drawing.Point(0, 193)
+        Me.GroupControl1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(92, 412)
+        Me.GroupControl1.Size = New System.Drawing.Size(262, 508)
         Me.GroupControl1.TabIndex = 8
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(5, 85)
+        Me.Label1.Location = New System.Drawing.Point(6, 105)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(63, 13)
+        Me.Label1.Size = New System.Drawing.Size(74, 16)
         Me.Label1.TabIndex = 7
         Me.Label1.Text = "Propietario:"
         '
@@ -192,12 +197,13 @@ Partial Class frmReportCambiosUbicacion
         '
         Me.cmbPropietario.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmbPropietario.Location = New System.Drawing.Point(5, 102)
+        Me.cmbPropietario.Location = New System.Drawing.Point(6, 126)
+        Me.cmbPropietario.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.cmbPropietario.MenuManager = Me.RibbonControl
         Me.cmbPropietario.Name = "cmbPropietario"
         Me.cmbPropietario.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbPropietario.Properties.NullText = ""
-        Me.cmbPropietario.Size = New System.Drawing.Size(82, 20)
+        Me.cmbPropietario.Size = New System.Drawing.Size(251, 22)
         Me.cmbPropietario.TabIndex = 6
         '
         'GroupControl3
@@ -207,34 +213,37 @@ Partial Class frmReportCambiosUbicacion
         Me.GroupControl3.Controls.Add(Me.txtNombreProducto)
         Me.GroupControl3.Controls.Add(Me.txtIdProducto)
         Me.GroupControl3.Controls.Add(Me.lblProducto)
-        Me.GroupControl3.Location = New System.Drawing.Point(5, 136)
+        Me.GroupControl3.Location = New System.Drawing.Point(6, 168)
+        Me.GroupControl3.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl3.Name = "GroupControl3"
-        Me.GroupControl3.Size = New System.Drawing.Size(82, 70)
+        Me.GroupControl3.Size = New System.Drawing.Size(251, 86)
         Me.GroupControl3.TabIndex = 5
         Me.GroupControl3.Text = "Producto"
         '
         'txtNombreProducto
         '
         Me.txtNombreProducto.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtNombreProducto.Location = New System.Drawing.Point(68, 46)
+        Me.txtNombreProducto.Location = New System.Drawing.Point(79, 57)
+        Me.txtNombreProducto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtNombreProducto.Name = "txtNombreProducto"
-        Me.txtNombreProducto.Size = New System.Drawing.Size(143, 21)
+        Me.txtNombreProducto.Size = New System.Drawing.Size(167, 23)
         Me.txtNombreProducto.TabIndex = 9
         '
         'txtIdProducto
         '
         Me.txtIdProducto.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtIdProducto.Location = New System.Drawing.Point(5, 46)
+        Me.txtIdProducto.Location = New System.Drawing.Point(6, 57)
+        Me.txtIdProducto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtIdProducto.Name = "txtIdProducto"
-        Me.txtIdProducto.Size = New System.Drawing.Size(58, 21)
+        Me.txtIdProducto.Size = New System.Drawing.Size(67, 23)
         Me.txtIdProducto.TabIndex = 8
         '
         'lblProducto
         '
         Me.lblProducto.AutoSize = True
-        Me.lblProducto.Location = New System.Drawing.Point(7, 29)
+        Me.lblProducto.Location = New System.Drawing.Point(8, 36)
         Me.lblProducto.Name = "lblProducto"
-        Me.lblProducto.Size = New System.Drawing.Size(50, 13)
+        Me.lblProducto.Size = New System.Drawing.Size(57, 16)
         Me.lblProducto.TabIndex = 7
         Me.lblProducto.TabStop = True
         Me.lblProducto.Text = "Producto"
@@ -247,9 +256,10 @@ Partial Class frmReportCambiosUbicacion
         Me.GroupControl2.Controls.Add(Me.dtpFechaDel)
         Me.GroupControl2.Controls.Add(Me.lblAl)
         Me.GroupControl2.Controls.Add(Me.lblDel)
-        Me.GroupControl2.Location = New System.Drawing.Point(5, 223)
+        Me.GroupControl2.Location = New System.Drawing.Point(6, 274)
+        Me.GroupControl2.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.GroupControl2.Name = "GroupControl2"
-        Me.GroupControl2.Size = New System.Drawing.Size(82, 101)
+        Me.GroupControl2.Size = New System.Drawing.Size(251, 124)
         Me.GroupControl2.TabIndex = 4
         Me.GroupControl2.Text = "Rango de Fechas"
         '
@@ -258,9 +268,10 @@ Partial Class frmReportCambiosUbicacion
         Me.dtpFechaAl.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dtpFechaAl.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpFechaAl.Location = New System.Drawing.Point(32, 70)
+        Me.dtpFechaAl.Location = New System.Drawing.Point(37, 86)
+        Me.dtpFechaAl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dtpFechaAl.Name = "dtpFechaAl"
-        Me.dtpFechaAl.Size = New System.Drawing.Size(47, 21)
+        Me.dtpFechaAl.Size = New System.Drawing.Size(209, 23)
         Me.dtpFechaAl.TabIndex = 4
         '
         'dtpFechaDel
@@ -268,26 +279,27 @@ Partial Class frmReportCambiosUbicacion
         Me.dtpFechaDel.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dtpFechaDel.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
-        Me.dtpFechaDel.Location = New System.Drawing.Point(32, 34)
+        Me.dtpFechaDel.Location = New System.Drawing.Point(37, 42)
+        Me.dtpFechaDel.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dtpFechaDel.Name = "dtpFechaDel"
-        Me.dtpFechaDel.Size = New System.Drawing.Size(47, 21)
+        Me.dtpFechaDel.Size = New System.Drawing.Size(209, 23)
         Me.dtpFechaDel.TabIndex = 4
         '
         'lblAl
         '
         Me.lblAl.AutoSize = True
-        Me.lblAl.Location = New System.Drawing.Point(6, 76)
+        Me.lblAl.Location = New System.Drawing.Point(7, 94)
         Me.lblAl.Name = "lblAl"
-        Me.lblAl.Size = New System.Drawing.Size(20, 13)
+        Me.lblAl.Size = New System.Drawing.Size(23, 16)
         Me.lblAl.TabIndex = 4
         Me.lblAl.Text = "Al:"
         '
         'lblDel
         '
         Me.lblDel.AutoSize = True
-        Me.lblDel.Location = New System.Drawing.Point(7, 40)
+        Me.lblDel.Location = New System.Drawing.Point(8, 49)
         Me.lblDel.Name = "lblDel"
-        Me.lblDel.Size = New System.Drawing.Size(26, 13)
+        Me.lblDel.Size = New System.Drawing.Size(30, 16)
         Me.lblDel.TabIndex = 4
         Me.lblDel.Text = "Del:"
         '
@@ -295,31 +307,31 @@ Partial Class frmReportCambiosUbicacion
         '
         Me.cmbBodega.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.cmbBodega.Location = New System.Drawing.Point(5, 53)
+        Me.cmbBodega.Location = New System.Drawing.Point(6, 65)
+        Me.cmbBodega.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.cmbBodega.MenuManager = Me.RibbonControl
         Me.cmbBodega.Name = "cmbBodega"
         Me.cmbBodega.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbBodega.Properties.NullText = ""
-        Me.cmbBodega.Size = New System.Drawing.Size(82, 20)
+        Me.cmbBodega.Size = New System.Drawing.Size(251, 22)
         Me.cmbBodega.TabIndex = 4
         '
         'lblBodega
         '
         Me.lblBodega.AutoSize = True
-        Me.lblBodega.Location = New System.Drawing.Point(5, 37)
+        Me.lblBodega.Location = New System.Drawing.Point(6, 46)
         Me.lblBodega.Name = "lblBodega"
-        Me.lblBodega.Size = New System.Drawing.Size(47, 13)
+        Me.lblBodega.Size = New System.Drawing.Size(54, 16)
         Me.lblBodega.TabIndex = 4
         Me.lblBodega.Text = "Bodega:"
         '
         'XtraTabControl1
         '
         Me.XtraTabControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.XtraTabControl1.Location = New System.Drawing.Point(92, 158)
-        Me.XtraTabControl1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.XtraTabControl1.Location = New System.Drawing.Point(262, 193)
         Me.XtraTabControl1.Name = "XtraTabControl1"
         Me.XtraTabControl1.SelectedTabPage = Me.tabDetalle
-        Me.XtraTabControl1.Size = New System.Drawing.Size(1179, 412)
+        Me.XtraTabControl1.Size = New System.Drawing.Size(1221, 508)
         Me.XtraTabControl1.TabIndex = 11
         Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tabDetalle, Me.tabResumen, Me.tabGrafo})
         '
@@ -328,7 +340,7 @@ Partial Class frmReportCambiosUbicacion
         Me.tabDetalle.Controls.Add(Me.grdCambiosUbic)
         Me.tabDetalle.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.tabDetalle.Name = "tabDetalle"
-        Me.tabDetalle.Size = New System.Drawing.Size(1177, 387)
+        Me.tabDetalle.Size = New System.Drawing.Size(1219, 478)
         Me.tabDetalle.Text = "Detalle"
         '
         'tabResumen
@@ -336,17 +348,19 @@ Partial Class frmReportCambiosUbicacion
         Me.tabResumen.Controls.Add(Me.dgridResumen)
         Me.tabResumen.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.tabResumen.Name = "tabResumen"
-        Me.tabResumen.Size = New System.Drawing.Size(1045, 388)
+        Me.tabResumen.Size = New System.Drawing.Size(1219, 478)
         Me.tabResumen.Text = "Resumen"
         '
         'dgridResumen
         '
         Me.dgridResumen.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgridResumen.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridResumen.Location = New System.Drawing.Point(0, 0)
         Me.dgridResumen.MainView = Me.GridView2
+        Me.dgridResumen.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgridResumen.MenuManager = Me.RibbonControl
         Me.dgridResumen.Name = "dgridResumen"
-        Me.dgridResumen.Size = New System.Drawing.Size(836, 310)
+        Me.dgridResumen.Size = New System.Drawing.Size(1219, 478)
         Me.dgridResumen.TabIndex = 3
         Me.dgridResumen.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView2})
         '
@@ -366,7 +380,7 @@ Partial Class frmReportCambiosUbicacion
         Me.tabGrafo.Controls.Add(Me.ChartControl1)
         Me.tabGrafo.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.tabGrafo.Name = "tabGrafo"
-        Me.tabGrafo.Size = New System.Drawing.Size(1045, 388)
+        Me.tabGrafo.Size = New System.Drawing.Size(1219, 478)
         Me.tabGrafo.Text = "Gráfico"
         '
         'ChartControl1
@@ -376,18 +390,19 @@ Partial Class frmReportCambiosUbicacion
         Me.ChartControl1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.ChartControl1.Name = "ChartControl1"
         Me.ChartControl1.SeriesSerializable = New DevExpress.XtraCharts.Series(-1) {}
-        Me.ChartControl1.Size = New System.Drawing.Size(836, 310)
+        Me.ChartControl1.Size = New System.Drawing.Size(1219, 478)
         Me.ChartControl1.TabIndex = 1
         '
         'frmReportCambiosUbicacion
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1271, 594)
+        Me.ClientSize = New System.Drawing.Size(1483, 731)
         Me.Controls.Add(Me.XtraTabControl1)
         Me.Controls.Add(Me.GroupControl1)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
+        Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Name = "frmReportCambiosUbicacion"
         Me.Ribbon = Me.RibbonControl
         Me.StatusBar = Me.RibbonStatusBar

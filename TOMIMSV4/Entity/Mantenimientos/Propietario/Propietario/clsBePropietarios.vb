@@ -23,6 +23,8 @@ Public Class clsBePropietarios
     Public Property Codigo As String = ""
     Public Property Sistema As Boolean = False
     Public Property Es_Consolidador As Boolean = False
+    Public Property Codigo_Acceso As String = ""
+    Public Property Clave_Acceso As String = ""
     Public Property ControlUx As Boolean = False
 
     Sub New()

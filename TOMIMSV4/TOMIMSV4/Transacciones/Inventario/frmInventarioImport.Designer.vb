@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmInventarioImport
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class frmInventarioImport
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmInventarioImport))
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
@@ -84,7 +84,10 @@ Partial Class frmInventarioImport
         Me.colParametro_a = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colParametro_b = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ColCodigo_Area = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColTalla = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colError = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ColIdProductoTallaColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.DsExcel = New TOMWMS.DsExcel()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemCheckEdit1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -534,6 +537,20 @@ Partial Class frmInventarioImport
         Me.ColCodigo_Area.Name = "ColCodigo_Area"
         Me.ColCodigo_Area.Width = 125
         '
+        'ColColor
+        '
+        Me.ColColor.HeaderText = "Color"
+        Me.ColColor.MinimumWidth = 6
+        Me.ColColor.Name = "ColColor"
+        Me.ColColor.Width = 125
+        '
+        'ColTalla
+        '
+        Me.ColTalla.HeaderText = "Talla"
+        Me.ColTalla.MinimumWidth = 6
+        Me.ColTalla.Name = "ColTalla"
+        Me.ColTalla.Width = 125
+        '
         'colError
         '
         Me.colError.HeaderText = "Error"
@@ -541,6 +558,14 @@ Partial Class frmInventarioImport
         Me.colError.Name = "colError"
         Me.colError.ReadOnly = True
         Me.colError.Width = 125
+        '
+        'ColIdProductoTallaColor
+        '
+        Me.ColIdProductoTallaColor.HeaderText = "IdProductoTallaColor"
+        Me.ColIdProductoTallaColor.MinimumWidth = 6
+        Me.ColIdProductoTallaColor.Name = "ColIdProductoTallaColor"
+        Me.ColIdProductoTallaColor.Visible = False
+        Me.ColIdProductoTallaColor.Width = 125
         '
         'DsExcel
         '
@@ -572,7 +597,7 @@ Partial Class frmInventarioImport
         Me.ResumeLayout(False)
         Me.PerformLayout
 
-End Sub
+    End Sub
 
     Friend WithEvents RibbonControl As DevExpress.XtraBars.Ribbon.RibbonControl
     Friend WithEvents mnuAplicar As DevExpress.XtraBars.BarButtonItem
@@ -627,5 +652,8 @@ End Sub
     Friend WithEvents colParametro_a As DataGridViewTextBoxColumn
     Friend WithEvents colParametro_b As DataGridViewTextBoxColumn
     Friend WithEvents ColCodigo_Area As DataGridViewTextBoxColumn
+    Friend WithEvents ColColor As DataGridViewTextBoxColumn
+    Friend WithEvents ColTalla As DataGridViewTextBoxColumn
     Friend WithEvents colError As DataGridViewTextBoxColumn
+    Friend WithEvents ColIdProductoTallaColor As DataGridViewTextBoxColumn
 End Class

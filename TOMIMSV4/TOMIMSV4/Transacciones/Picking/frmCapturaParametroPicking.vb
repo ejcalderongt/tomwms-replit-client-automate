@@ -329,6 +329,10 @@ Public Class frmCapturaParametroPicking
             Throw ex
         End Try
 
+
+
+
+
     End Function
 
 
@@ -382,6 +386,10 @@ Public Class frmCapturaParametroPicking
                                                   pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
+
+
+
+
 
     End Function
 

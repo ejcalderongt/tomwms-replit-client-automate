@@ -75,10 +75,20 @@ Public Class frmRecepcion
     Private ProductoLoteGridLookUpEdit As New RepositoryItemGridLookUpEdit
     Private MotivoDevolcuionGridLookUpEdit As New RepositoryItemGridLookUpEdit
 
+    '#GT13082025: talla color en recepción manual nuevo grid
+    Private TallaGridLookUpEdit As New RepositoryItemGridLookUpEdit
+    Private ColorGridLookUpEdit As New RepositoryItemGridLookUpEdit
+    Private txtSKUGrid As New RepositoryItemTextEdit
+
     Private EstadoGridLookUpEdit As New RepositoryItemGridLookUpEdit
     Private txtNoLineaGrid As New RepositoryItemTextEdit
+    Private txtTalla As New RepositoryItemTextEdit
+    Private txtColor As New RepositoryItemTextEdit
+    Private txtSKU As New RepositoryItemTextEdit
     Private IdUmBasGridLookUpEdit As New RepositoryItemGridLookUpEdit
     Private txtCantidadGrid As New RepositoryItemSpinEdit
+    Private txtCantidadSolicitadaGrid As New RepositoryItemSpinEdit
+    Private txtCantidadPendienteGrid As New RepositoryItemSpinEdit
     Private txtLoteGrid As New RepositoryItemTextEdit
     Private txtObservacionGrid As New RepositoryItemTextEdit
     Private txtLicPlateGrid As New RepositoryItemTextEdit
@@ -976,11 +986,18 @@ Public Class frmRecepcion
 
                         BeTipoDocumento = clsLnTrans_oc_ti.GetSingle(BeTransOcEnc.IdTipoIngresoOC)
 
+                        txtno_erp_docentry_entrega.Text = gBeRecepcionEnc.OrdenCompraRec.No_Erp_Docentry_Entrega
+                        txtno_erp_docnum_entrega.Text = gBeRecepcionEnc.OrdenCompraRec.No_Erp_Docnum_Entrega
+
                     End If
 
                 End If
 
                 Application.DoEvents()
+
+                If gBeRecepcionEnc Is Nothing Then
+                    Exit Sub
+                End If
 
                 chkHabilitaStock.Checked = gBeRecepcionEnc.Habilitar_Stock
 
@@ -2025,6 +2042,16 @@ Public Class frmRecepcion
                 End If
 
             End If
+
+            '#GT02122025: no se ha determinado que hace el operador de HH para duplicar la tarea
+            'aqui removemos duplicados y se mantienen las variantes.
+            pListOpe = pListOpe _
+             .GroupBy(Function(o) New With {
+                 Key .IdRecepcionEnc = o.IdRecepcionEnc,
+                 Key .IdOperadorBodega = o.IdOperadorBodega
+             }) _
+             .Select(Function(g) g.First()) _
+             .ToList()
 
             clsLnTrans_re_enc.Guardar(BeTareaHH,
                                       gBeRecepcionEnc,
@@ -3183,6 +3210,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
@@ -4435,16 +4463,16 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                                             Dim ReOperador As New clsBeTrans_re_op() With {
                                                 .IdOperadorBodega = tmpIdOperadorBodega,
-                                                .User_agr = AP.UsuarioAp.IdUsuario,
-                                                .Fec_agr = Now,
-                                                .User_mod = AP.UsuarioAp.IdUsuario,
-                                                .Fec_mod = Now,
-                                                .IsNew = True,
+                                             .User_agr = AP.UsuarioAp.IdUsuario,
+                                             .Fec_agr = Now,
+                                             .User_mod = AP.UsuarioAp.IdUsuario,
+                                             .Fec_mod = Now,
+                                             .IsNew = True,
                                                 .UsaHH = DTOperadores(i)(2)
                                                 }
                                             pListOpe.Add(ReOperador)
 
-                                        End If
+                                    End If
 
                                         'Dim Obj As New clsBeTrans_re_op() With
                                         '  {.IdOperadorBodega = DTOperadores(i)(0),
@@ -4465,7 +4493,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                         Dim tmpReOperador = DTOperadores(i)(0)
                                         If Not pListOpe.Any(Function(x) x.IdOperadorBodega = tmpReOperador) Then
 
-                                            Dim Obj As New clsBeTrans_re_op() With
+                                        Dim Obj As New clsBeTrans_re_op() With
                                                                               {.IdOperadorBodega = tmpReOperador,
                                                                               .User_agr = AP.UsuarioAp.IdUsuario,
                                                                               .Fec_agr = Now,
@@ -4473,9 +4501,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                                                               .Fec_mod = Now,
                                                                               .IsNew = True,
                                                                               .UsaHH = DTOperadores(i)(2)}
-                                            pListOpe.Add(Obj)
+                                        pListOpe.Add(Obj)
 
-                                        End If
+                                    End If
 
 
                                         'Dim Obj As New clsBeTrans_re_op() With
@@ -4488,8 +4516,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                         '                                      .UsaHH = DTOperadores(i)(2)}
                                         'pListOpe.Add(Obj)
 
-                                    End If
                                 End If
+                            End If
                             End If
                         Else
                             lRow.Item("IdOperadorRec") = 0
@@ -4595,6 +4623,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                     If XtraMessageBox.Show(String.Format("¿Desea eliminar el Producto {0}?", DgridDetalleRec.CurrentRow.Cells("ProductoP").Value) _
                                           , Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+
 
                         Dim selectedRow As DataGridViewRow = DgridDetalleRec.SelectedRows(0)
 
@@ -6054,6 +6083,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
@@ -6298,6 +6328,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             MessageBoxIcon.Error)
 
             Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
@@ -6771,7 +6802,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                     '#GT23092025: evita duplicar al operador en la lista
                     If Not pListOpe.Any(Function(x) x.IdOperadorBodega = pIdOperadorBodega) Then
-                        Dim Obj As New clsBeTrans_re_op() With
+                    Dim Obj As New clsBeTrans_re_op() With
                         {.IdOperadorBodega = pIdOperadorBodega,
                         .User_agr = AP.UsuarioAp.IdUsuario,
                         .Fec_agr = Now,
@@ -6779,8 +6810,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                         .Fec_mod = Now,
                         .IsNew = True,
                         .UsaHH = pUsaHH}
-                        pListOpe.Add(Obj)
-                    End If
+                    pListOpe.Add(Obj)
+                End If
 
                 End If
             End If
@@ -6887,15 +6918,15 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                         If Not pListOpe.Any(Function(x) x.IdOperadorBodega = tmpOperadorBodega) Then
 
-                            Dim Obj As New clsBeTrans_re_op() With
-                                {.IdOperadorBodega = Dr.Item("IdOperadorBodega"),
-                                .User_agr = AP.UsuarioAp.IdUsuario,
-                                .Fec_agr = Now,
-                                .User_mod = AP.UsuarioAp.IdUsuario,
-                                .Fec_mod = Now,
-                                .IsNew = True,
-                                .UsaHH = Dr.Item("colUsaHH")}
-                            pListOpe.Add(Obj)
+                        Dim Obj As New clsBeTrans_re_op() With
+                        {.IdOperadorBodega = Dr.Item("IdOperadorBodega"),
+                        .User_agr = AP.UsuarioAp.IdUsuario,
+                        .Fec_agr = Now,
+                        .User_mod = AP.UsuarioAp.IdUsuario,
+                        .Fec_mod = Now,
+                        .IsNew = True,
+                        .UsaHH = Dr.Item("colUsaHH")}
+                        pListOpe.Add(Obj)
                         End If
 
                     End If
@@ -6981,6 +7012,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
         DTGridDetalleDocIngresos.Columns.Add("IdOrdenCompraDetPadre", GetType(Integer))
         DTGridDetalleDocIngresos.Columns.Add("ControlPeso", GetType(Boolean))
         DTGridDetalleDocIngresos.Columns.Add("PesoReferenciaUMBas", GetType(Double))
+        '#GT13082025: campos talla, color y sku
+        DTGridDetalleDocIngresos.Columns.Add("Talla", GetType(Integer))
+        DTGridDetalleDocIngresos.Columns.Add("Color", GetType(Integer))
+        DTGridDetalleDocIngresos.Columns.Add("SKU", GetType(String))
+
 
     End Sub
 
@@ -7646,6 +7682,113 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
 #End Region
 
+
+#Region "Talla_Color"
+
+            If BeBodega.Control_Talla_Color Then
+
+                TallaGridLookUpEdit.View.Columns.Clear()
+                TallaGridLookUpEdit.View.Columns.AddRange(New GridColumn() {
+                                                          New GridColumn With {.FieldName = "IdTalla", .Caption = "IdTalla", .Visible = False},
+                                                          New GridColumn With {.FieldName = "Codigo", .Caption = "Codigo", .Visible = True}
+                })
+
+                TallaGridLookUpEdit.ValueMember = "IdTalla"
+                TallaGridLookUpEdit.DisplayMember = "Codigo"
+                TallaGridLookUpEdit.NullText = String.Empty
+                TallaGridLookUpEdit.DataSource = clsLnTalla.Listar_For_Combo()
+
+                TallaGridLookUpEdit.TextEditStyle = TextEditStyles.Standard
+                TallaGridLookUpEdit.SearchMode = SearchMode.AutoSuggest
+                TallaGridLookUpEdit.View.OptionsFind.AlwaysVisible = True
+                TallaGridLookUpEdit.View.OptionsFind.FindMode = FindMode.Always
+                TallaGridLookUpEdit.View.OptionsFind.SearchInPreview = False
+                TallaGridLookUpEdit.View.OptionsFind.FindFilterColumns = "*"
+
+                TallaGridLookUpEdit.View.BestFitColumns()
+
+                TallaGridLookUpEdit.View.OptionsView.ShowAutoFilterRow = True
+
+#Region "Columna - Talla"
+
+                Dim ColTalla As New GridColumn With {
+                .FieldName = "Talla",
+                .Caption = "Talla",
+                .Width = 150,
+                .ColumnEdit = TallaGridLookUpEdit,
+                .VisibleIndex = ColIndexAux + 1
+            }
+
+                ColTalla.OptionsColumn.AllowEdit = True
+                ColTalla.Visible = True
+                gvDetalleDocIngreso.Columns.Add(ColTalla)
+
+                ColIndexAux += 1
+#End Region
+
+#Region "Columna - Color"
+
+                ColorGridLookUpEdit.View.Columns.Clear()
+                ColorGridLookUpEdit.View.Columns.AddRange(New GridColumn() {
+                                                          New GridColumn With {.FieldName = "IdColor", .Caption = "IdColor", .Visible = False},
+                                                          New GridColumn With {.FieldName = "Codigo", .Caption = "Codigo", .Visible = True},
+                                                          New GridColumn With {.FieldName = "Nombre", .Caption = "Nombre", .Visible = True}
+                })
+
+                ColorGridLookUpEdit.ValueMember = "IdColor"
+                ColorGridLookUpEdit.DisplayMember = "Codigo"
+                ColorGridLookUpEdit.NullText = String.Empty
+                ColorGridLookUpEdit.DataSource = clsLnColor.Listar_For_Combo()
+
+                ColorGridLookUpEdit.TextEditStyle = TextEditStyles.Standard
+                ColorGridLookUpEdit.SearchMode = SearchMode.AutoSuggest
+                ColorGridLookUpEdit.View.OptionsFind.AlwaysVisible = True
+                ColorGridLookUpEdit.View.OptionsFind.FindMode = FindMode.Always
+                ColorGridLookUpEdit.View.OptionsFind.SearchInPreview = False
+                ColorGridLookUpEdit.View.OptionsFind.FindFilterColumns = "*"
+
+                ColorGridLookUpEdit.View.BestFitColumns()
+
+                ColorGridLookUpEdit.View.OptionsView.ShowAutoFilterRow = True
+
+
+                Dim ColColor As New GridColumn With {
+                .FieldName = "Color",
+                .Caption = "Color",
+                .Width = 150,
+                .ColumnEdit = ColorGridLookUpEdit,
+                .VisibleIndex = ColIndexAux + 1
+            }
+
+                ColColor.OptionsColumn.AllowEdit = True
+                ColColor.Visible = True
+                gvDetalleDocIngreso.Columns.Add(ColColor)
+
+                ColIndexAux += 1
+#End Region
+
+#Region "Columna - SKU"
+
+                Dim ColSKU As New GridColumn With {
+                .FieldName = "SKU",
+                .Caption = "SKU",
+                .Visible = True,
+                .Width = 150,
+                .ColumnEdit = txtSKUGrid,
+                .VisibleIndex = ColIndexAux + 1
+            }
+
+                ColSKU.OptionsColumn.AllowEdit = False
+                ColSKU.Visible = True
+                gvDetalleDocIngreso.Columns.Add(ColSKU)
+
+                ColIndexAux += 1
+#End Region
+
+            End If
+
+#End Region
+
             gvDetalleDocIngreso.OptionsView.NewItemRowPosition = NewItemRowPosition.Bottom
 
         Catch ex As Exception
@@ -7663,6 +7806,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             DTGridDetalleDocIngresos.Clear()
             lOCDet = BeTransOcEnc.DetalleOC
             gBeOrdenCompra.DetalleOC = BeTransOcEnc.DetalleOC
+            Dim vTalla As String = ""
+            Dim vColor As String = ""
+            Dim vSKU As String = ""
 
             Dim i As Integer = -1
 
@@ -7670,9 +7816,27 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             For Each BeTransOCDet As clsBeTrans_oc_det In lOCDet
 
+                Dim BeProductoTallaColor As New clsBeProducto_talla_color
+                BeProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransOCDet.IdProductoTallaColor)
+
+                If Not BeProductoTallaColor Is Nothing Then
+
+                    '#GT13082025: se deben asignar los Ids, no los códigos en el grid
+                    Dim objTalla = clsLnTalla.GetSingle_By_IdTalla(BeProductoTallaColor.IdTalla)
+                    vTalla = If(objTalla IsNot Nothing, objTalla.IdTalla, "")
+
+                    Dim objColor = clsLnColor.GetSingle_By_IdColor(BeProductoTallaColor.IdColor)
+                    vColor = If(objColor IsNot Nothing, objColor.IdColor, "")
+
+                    vSKU = BeProductoTallaColor.CodigoSKU
+
+                End If
+
+
                 Dim vCantidadPendiente As Double = Math.Round(BeTransOCDet.Cantidad_recibida - BeTransOCDet.Cantidad, 6)
 
-                DTGridDetalleDocIngresos.Rows.Add(BeTransOCDet.IdPropietarioBodega,
+                Dim commonData As Object() = {
+                                                  BeTransOCDet.IdPropietarioBodega,
                                                   BeTransOCDet.Nombre_Propietario,
                                                   BeTransOCDet.No_Linea,
                                                   BeTransOCDet.IdProductoBodega,
@@ -7706,7 +7870,55 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                                   BeTransOCDet.IdPedidoCompraDet,
                                                   BeTransOCDet.IdOrdenCompraDetPadre,
                                                   BeTransOCDet.Producto.Control_peso,
-                                                  BeTransOCDet.Producto.Peso_referencia)
+                                                  BeTransOCDet.Producto.Peso_referencia
+                }
+
+                Dim finalData As Object()
+                If BeBodega.Control_Talla_Color Then
+                    finalData = commonData.Concat({vTalla, vColor, vSKU}).ToArray()
+                Else
+                    finalData = commonData
+                End If
+
+                DTGridDetalleDocIngresos.Rows.Add(finalData)
+
+
+
+                'DTGridDetalleDocIngresos.Rows.Add(BeTransOCDet.IdPropietarioBodega,
+                '                                  BeTransOCDet.Nombre_Propietario,
+                '                                  BeTransOCDet.No_Linea,
+                '                                  BeTransOCDet.IdProductoBodega,
+                '                                  BeTransOCDet.Codigo_Producto,
+                '                                  BeTransOCDet.Nombre_producto,
+                '                                  BeTransOCDet.Nombre_unidad_medida_basica,
+                '                                  BeTransOCDet.IdUnidadMedidaBasica,
+                '                                  BeTransOCDet.IdPresentacion,
+                '                                  BeTransOCDet.Arancel.IdArancel,
+                '                                  BeTransOCDet.IdMotivoDevolucion,
+                '                                  BeTransOCDet.Cantidad,
+                '                                  BeTransOCDet.Cantidad_recibida,
+                '                                  vCantidadPendiente,
+                '                                  BeTransOCDet.Peso_Bruto,
+                '                                  BeTransOCDet.Peso_Neto,
+                '                                  BeTransOCDet.Costo,
+                '                                  BeTransOCDet.valor_aduana,
+                '                                  BeTransOCDet.valor_fob,
+                '                                  BeTransOCDet.valor_iva,
+                '                                  BeTransOCDet.valor_dai,
+                '                                  BeTransOCDet.valor_seguro,
+                '                                  BeTransOCDet.valor_flete,
+                '                                  BeTransOCDet.Total_linea,
+                '                                  BeTransOCDet.Producto.IdProducto,
+                '                                  BeTransOCDet.IsNew,
+                '                                  BeTransOCDet.IdOrdenCompraEnc,
+                '                                  BeTransOCDet.IdOrdenCompraDet,
+                '                                  False,
+                '                                  BeTransOCDet.Atributo_variante_1,
+                '                                  BeTransOCDet.Producto.Kit,
+                '                                  BeTransOCDet.IdPedidoCompraDet,
+                '                                  BeTransOCDet.IdOrdenCompraDetPadre,
+                '                                  BeTransOCDet.Producto.Control_peso,
+                '                                  BeTransOCDet.Producto.Peso_referencia)
 
                 If BeTransOCDet.lProductosHijosKit.Count > 0 Then
 
@@ -8161,6 +8373,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
         DTTransReDet2.Columns.Add("Total", GetType(Double))
         DTTransReDet2.Columns.Add("IsNewR", GetType(Boolean))
         DTTransReDet2.Columns.Add("Bono", GetType(Boolean))
+        DTTransReDet2.Columns.Add("Talla", GetType(String))
+        DTTransReDet2.Columns.Add("Color", GetType(String))
+        DTTransReDet2.Columns.Add("SKU", GetType(String))
 
     End Sub
 
@@ -8242,33 +8457,50 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
             ProductoGridLookUpEditRec.View.Columns.Clear()
 
-            ProductoGridLookUpEditRec.View.Columns.AddRange(New GridColumn() {
-                New GridColumn With {.FieldName = "IdProductoBodega", .Caption = "IdProductoBodega", .Visible = False},
-                New GridColumn With {.FieldName = "No_Linea", .Caption = "Línea", .Visible = True, .Width = 80},
-                New GridColumn With {.FieldName = "Codigo", .Caption = "Código", .Visible = True, .Width = 100},
-                New GridColumn With {.FieldName = "CodigoBarra", .Caption = "CodigoBarra", .Visible = True},
-                New GridColumn With {.FieldName = "Nombre", .Caption = "Nombre", .Visible = True, .Width = 200},
-                New GridColumn With {.FieldName = "UMBas", .Caption = "UMBas", .Visible = True},
-                New GridColumn With {.FieldName = "IdUmBas", .Caption = "IdUmBas", .Visible = False},
-                New GridColumn With {.FieldName = "ControlPeso", .Caption = "ControlPeso", .Visible = False},
-                New GridColumn With {.FieldName = "Presentacion", .Caption = "Presentación", .Visible = True}})
+            Dim columnas As New List(Of GridColumn) From {
+    New GridColumn With {.FieldName = "IdProductoBodega", .Caption = "IdProductoBodega", .Visible = False},
+    New GridColumn With {.FieldName = "No_Linea", .Caption = "Línea", .Visible = True, .Width = 80},
+    New GridColumn With {.FieldName = "Codigo", .Caption = "Código", .Visible = True, .Width = 100},
+    New GridColumn With {.FieldName = "CodigoBarra", .Caption = "CodigoBarra", .Visible = True},
+    New GridColumn With {.FieldName = "Nombre", .Caption = "Nombre", .Visible = True, .Width = 200},
+    New GridColumn With {.FieldName = "UMBas", .Caption = "UMBas", .Visible = True},
+    New GridColumn With {.FieldName = "IdUmBas", .Caption = "IdUmBas", .Visible = False},
+    New GridColumn With {.FieldName = "ControlPeso", .Caption = "ControlPeso", .Visible = False},
+    New GridColumn With {.FieldName = "Presentacion", .Caption = "Presentación", .Visible = True}
+}
 
+            If BeBodega.Control_Talla_Color Then
+                columnas.AddRange({
+        New GridColumn With {.FieldName = "Talla", .Caption = "Talla", .Visible = True, .Width = 80},
+        New GridColumn With {.FieldName = "Color", .Caption = "Color", .Visible = True, .Width = 80},
+        New GridColumn With {.FieldName = "SKU", .Caption = "SKU", .Visible = True, .Width = 120}
+    })
+            End If
+
+            ProductoGridLookUpEditRec.View.Columns.AddRange(columnas.ToArray())
             ProductoGridLookUpEditRec.ValueMember = "No_Linea"
             ProductoGridLookUpEditRec.DisplayMember = "Codigo"
             ProductoGridLookUpEditRec.NullText = "-> Producto"
             ProductoGridLookUpEditRec.PopupFormWidth = 1000
             ProductoGridLookUpEditRec.ImmediatePopup = True
 
-            '#EJC20240122
-            If (txtIdTipoTR.Text = clsDataContractDI.tTipo_Rec.HCOC00.ToString()) OrElse (gBeRecepcionEnc.IdTipoTransaccion = clsDataContractDI.tTipo_Rec.HSOC00.ToString()) Then
-                If Not gBeRecepcionEnc Is Nothing Then
-                    If Not gBeRecepcionEnc.OrdenCompraRec Is Nothing Then
-                        If Not gBeRecepcionEnc.OrdenCompraRec.OC Is Nothing Then
-                            ProductoGridLookUpEditRec.DataSource = clsLnProducto.Get_Lista_By_IdOrdenCompraEnc(gBeRecepcionEnc.OrdenCompraRec.OC.IdOrdenCompraEnc, cmbBodega.EditValue)
-                        End If
-                    End If
-                End If
-            Else
+            Dim tipoOk As Boolean =
+    txtIdTipoTR.Text = clsDataContractDI.tTipo_Rec.HCOC00.ToString() OrElse
+    gBeRecepcionEnc.IdTipoTransaccion = clsDataContractDI.tTipo_Rec.HSOC00.ToString()
+
+            Dim ocEncId As Integer = 0
+
+            If gBeRecepcionEnc.OrdenCompraRec IsNot Nothing AndAlso
+   gBeRecepcionEnc.OrdenCompraRec.OC IsNot Nothing Then
+
+                ocEncId = gBeRecepcionEnc.OrdenCompraRec.OC.IdOrdenCompraEnc
+            End If
+
+            If tipoOk OrElse ocEncId > 0 Then
+                If BeBodega.Control_Talla_Color Then
+                    ProductoGridLookUpEditRec.DataSource =
+            clsLnProducto.Get_Lista_By_IdOrdenCompraEnc_Talla_Color(ocEncId, cmbBodega.EditValue)
+                Else
                 If gBeRecepcionEnc.OrdenCompraRec IsNot Nothing Then
                     If gBeRecepcionEnc.OrdenCompraRec.OC.IdOrdenCompraEnc > 0 Then
                         ProductoGridLookUpEditRec.DataSource = clsLnProducto.Get_Lista_By_IdOrdenCompraEnc(gBeRecepcionEnc.OrdenCompraRec.OC.IdOrdenCompraEnc, cmbBodega.EditValue)
@@ -8317,11 +8549,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 Case TipoTrans.Editar
 
                     If Not gBeRecepcionEnc Is Nothing Then
-                        If gBeRecepcionEnc.Estado.ToUpper = "CERRADO" Or gBeRecepcionEnc.Estado.ToUpper = "ANULADO" Then
-                            ColIdProductoBodega.OptionsColumn.AllowEdit = False
-                        Else
-                            ColIdProductoBodega.OptionsColumn.AllowEdit = True
-                        End If
+                    If gBeRecepcionEnc.Estado.ToUpper = "CERRADO" Or gBeRecepcionEnc.Estado.ToUpper = "ANULADO" Then
+                        ColIdProductoBodega.OptionsColumn.AllowEdit = False
+                    Else
+                        ColIdProductoBodega.OptionsColumn.AllowEdit = True
+                    End If
                     End If
 
             End Select
@@ -8403,11 +8635,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     ColPresentacion.OptionsColumn.AllowEdit = True
                 Case TipoTrans.Editar
                     If Not gBeRecepcionEnc Is Nothing Then
-                        If gBeRecepcionEnc.Estado.ToUpper = "CERRADO" Or gBeRecepcionEnc.Estado.ToUpper = "ANULADO" Then
-                            ColPresentacion.OptionsColumn.AllowEdit = False
-                        Else
-                            ColPresentacion.OptionsColumn.AllowEdit = True
-                        End If
+                    If gBeRecepcionEnc.Estado.ToUpper = "CERRADO" Or gBeRecepcionEnc.Estado.ToUpper = "ANULADO" Then
+                        ColPresentacion.OptionsColumn.AllowEdit = False
+                    Else
+                        ColPresentacion.OptionsColumn.AllowEdit = True
+                    End If
                     Else
                         ColPresentacion.OptionsColumn.AllowEdit = True
                     End If
@@ -8461,7 +8693,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 .Caption = "Solicitado",
                 .Visible = True,
                 .Width = 150,
-                 .ColumnEdit = txtCantidadGrid,
+                 .ColumnEdit = txtCantidadSolicitadaGrid,
                 .VisibleIndex = ColIndexAux
             }
 
@@ -8506,7 +8738,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 .Caption = "Pendiente",
                 .Visible = True,
                 .Width = 150,
-                 .ColumnEdit = txtCantidadGrid,
+                 .ColumnEdit = txtCantidadPendienteGrid,
                 .VisibleIndex = ColIndexAux
             }
 
@@ -8956,6 +9188,171 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
 #End Region
 
+
+#Region "Talla_Color"
+
+            If BeBodega.Control_Talla_Color Then
+
+                TallaGridLookUpEdit.View.Columns.Clear()
+                TallaGridLookUpEdit.View.Columns.AddRange(New GridColumn() {
+                                                          New GridColumn With {.FieldName = "IdTalla", .Caption = "IdTalla", .Visible = False},
+                                                          New GridColumn With {.FieldName = "Codigo", .Caption = "Codigo", .Visible = True}
+                })
+
+                TallaGridLookUpEdit.ValueMember = "IdTalla"
+                TallaGridLookUpEdit.DisplayMember = "Codigo"
+                TallaGridLookUpEdit.NullText = String.Empty
+                TallaGridLookUpEdit.DataSource = clsLnTalla.Listar_For_Combo()
+
+                TallaGridLookUpEdit.TextEditStyle = TextEditStyles.Standard
+                TallaGridLookUpEdit.SearchMode = SearchMode.AutoSuggest
+                TallaGridLookUpEdit.View.OptionsFind.AlwaysVisible = True
+                TallaGridLookUpEdit.View.OptionsFind.FindMode = FindMode.Always
+                TallaGridLookUpEdit.View.OptionsFind.SearchInPreview = False
+                TallaGridLookUpEdit.View.OptionsFind.FindFilterColumns = "*"
+
+                TallaGridLookUpEdit.View.BestFitColumns()
+
+                TallaGridLookUpEdit.View.OptionsView.ShowAutoFilterRow = True
+
+
+#Region "Columna - Talla"
+
+                Dim ColTalla As New GridColumn With {
+                .FieldName = "Talla",
+                .Caption = "Talla",
+                .Width = 150,
+                .ColumnEdit = TallaGridLookUpEdit,
+                .VisibleIndex = ColIndexAux + 1
+                }
+
+                ColTalla.OptionsColumn.AllowEdit = True
+                ColTalla.Visible = True
+                gvDetalleRec2.Columns.Add(ColTalla)
+
+                ColIndexAux += 1
+#End Region
+
+#Region "Columna - Color"
+
+                ColorGridLookUpEdit.View.Columns.Clear()
+                ColorGridLookUpEdit.View.Columns.AddRange(New GridColumn() {
+                                                          New GridColumn With {.FieldName = "IdColor", .Caption = "IdColor", .Visible = False},
+                                                          New GridColumn With {.FieldName = "Codigo", .Caption = "Codigo", .Visible = True},
+                                                          New GridColumn With {.FieldName = "Nombre", .Caption = "Nombre", .Visible = True}
+                })
+
+                ColorGridLookUpEdit.ValueMember = "IdColor"
+                ColorGridLookUpEdit.DisplayMember = "Codigo"
+                ColorGridLookUpEdit.NullText = String.Empty
+                ColorGridLookUpEdit.DataSource = clsLnColor.Listar_For_Combo()
+
+                ColorGridLookUpEdit.TextEditStyle = TextEditStyles.Standard
+                ColorGridLookUpEdit.SearchMode = SearchMode.AutoSuggest
+                ColorGridLookUpEdit.View.OptionsFind.AlwaysVisible = True
+                ColorGridLookUpEdit.View.OptionsFind.FindMode = FindMode.Always
+                ColorGridLookUpEdit.View.OptionsFind.SearchInPreview = False
+                ColorGridLookUpEdit.View.OptionsFind.FindFilterColumns = "*"
+
+                ColorGridLookUpEdit.View.BestFitColumns()
+
+
+                ColorGridLookUpEdit.View.OptionsView.ShowAutoFilterRow = True
+
+
+                Dim ColColor As New GridColumn With {
+                .FieldName = "Color",
+                .Caption = "Color",
+                .Width = 150,
+                .ColumnEdit = ColorGridLookUpEdit,
+                .VisibleIndex = ColIndexAux + 1
+            }
+
+                ColColor.OptionsColumn.AllowEdit = True
+                ColColor.Visible = True
+                gvDetalleRec2.Columns.Add(ColColor)
+
+                ColIndexAux += 1
+#End Region
+
+#Region "Columna - SKU"
+
+                Dim ColSKU As New GridColumn With {
+                .FieldName = "SKU",
+                .Caption = "SKU",
+                .Visible = True,
+                .Width = 150,
+                .ColumnEdit = txtSKU,
+                .VisibleIndex = ColIndexAux + 1
+            }
+
+                ColSKU.OptionsColumn.AllowEdit = False
+                ColSKU.Visible = True
+                gvDetalleRec2.Columns.Add(ColSKU)
+
+                ColIndexAux += 1
+#End Region
+
+
+            End If
+
+#End Region
+
+
+            '#Region "Columna - Talla"
+
+            '            Dim ColTalla As New GridColumn With {
+            '                .FieldName = "Talla",
+            '                .Caption = "Talla",
+            '                .Visible = True,
+            '                .Width = 80,
+            '                .ColumnEdit = txtTalla,
+            '                .VisibleIndex = ColIndexAux
+            '            }
+
+            '            ColTalla.OptionsColumn.AllowEdit = False
+            '            gvDetalleRec2.Columns.Add(ColTalla)
+
+            '            ColIndexAux += 1
+
+            '#End Region
+
+            '#Region "Columna - Color"
+
+            '            Dim ColColor As New GridColumn With {
+            '                .FieldName = "Color",
+            '                .Caption = "Color",
+            '                .Visible = True,
+            '                .Width = 80,
+            '                .ColumnEdit = txtColor,
+            '                .VisibleIndex = ColIndexAux
+            '            }
+
+            '            ColColor.OptionsColumn.AllowEdit = False
+            '            gvDetalleRec2.Columns.Add(ColColor)
+
+            '            ColIndexAux += 1
+
+            '#End Region
+
+            '#Region "Columna - SKU"
+
+            '            Dim ColSKU As New GridColumn With {
+            '                .FieldName = "SKU",
+            '                .Caption = "SKU",
+            '                .Visible = True,
+            '                .Width = 80,
+            '                .ColumnEdit = txtSKU,
+            '                .VisibleIndex = ColIndexAux
+            '            }
+
+            '            ColSKU.OptionsColumn.AllowEdit = False
+            '            gvDetalleRec2.Columns.Add(ColSKU)
+
+            '            ColIndexAux += 1
+
+            '#End Region
+
             gvDetalleRec2.OptionsView.NewItemRowPosition = NewItemRowPosition.Top
             gvDetalleRec2.OptionsNavigation.AutoFocusNewRow = True
 
@@ -9133,6 +9530,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
     '            lista = TryCast(sender, GridLookUpEdit)
     '            Dim ColProducto As GridColumn = View.Columns("IdProductoBodega")
     '            Dim ColNoLinea As GridColumn = View.Columns("No_Linea")
+    '            Dim nolineaSeleccionada As String = ""
 
     '            If lista Is Nothing Then Return
 
@@ -9208,6 +9606,29 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
     '                    If Not cmbView Is Nothing Then
     '                        vCantPorProducto = cmbView.RowCount
+    '                    End If
+
+    '                    If lista.EditValue Is Nothing Then
+    '                        If Not vCodigoBarra.Trim = "" Then
+    '                            codigoIngresadoString = vCodigoBarra.Trim()
+    '                            _filtroCodigoBarra = codigoIngresadoString
+    '                        End If
+    '                    Else
+
+    '                        Dim selectedDataRow = lista.GetSelectedDataRow()
+
+    '                        If selectedDataRow IsNot Nothing Then
+    '                            codigoIngresadoString = IIf(IsDBNull(selectedDataRow("Codigo")), "", selectedDataRow("Codigo"))
+    '                            nolineaSeleccionada = IIf(IsDBNull(selectedDataRow("No_Linea")), "-1", selectedDataRow("No_Linea"))
+    '                        Else
+    '                            PopupTieneErrores = True
+    '                            View.SetColumnError(ColNoLinea, "Seleccione un registro.")
+    '                        End If
+
+    '                    End If
+
+    '                    If ColNoLinea Is Nothing Then
+    '                        ColNoLinea = View.Columns(1)
     '                    End If
 
     '                    If nolineaSeleccionada = "" Then
@@ -9399,6 +9820,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
     Private NoLineaActualFilaGrid As Integer = 0
     Private Sub ProductoGridLookUpEditRec_Leave(ByVal sender As Object, ByVal e As EventArgs)
 
+        Dim clsTransaccion As New clsTransaccion
+
         Try
 
             Dim pIdOrdenCompradet As Integer = 0
@@ -9419,6 +9842,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             lista = TryCast(sender, GridLookUpEdit)
             Dim ColLote As GridColumn = View.Columns("lote")
             Dim ColNoLinea As GridColumn = View.Columns("No_Linea")
+
+            'Dim ColTalla As GridColumn = View.Columns("Talla")
+            'Dim ColColor As GridColumn = View.Columns("Color")
 
             If PopupTieneErrores Then
                 View.SetColumnError(ColNoLinea, "Código de barra duplicado, seleccione uno de la lista.")
@@ -9442,6 +9868,18 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     BeProducto.IdProductoBodega = IdProductoBodega
                     Dim IdRecepcionDet As Integer = IIf(IsDBNull(gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "IdRecepcionDet")), 0, gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "IdRecepcionDet"))
                     Dim vNoLinea As Integer = NoLineaActualFilaGrid 'IIf(IsDBNull(gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "No_Linea")), 0, gvDetalleRec2.GetRowCellValue(gvDetalleRec2.FocusedRowHandle, "No_Linea"))
+                    Dim vTalla As String = IIf(IsDBNull(drArticulo("Talla")), "", drArticulo("Talla"))
+                    Dim vColor As String = IIf(IsDBNull(drArticulo("Color")), "", drArticulo("Color"))
+                    Dim vSKU As String = IIf(IsDBNull(drArticulo("SKU")), "", drArticulo("SKU"))
+
+                    clsTransaccion.Begin_Transaction()
+
+                    '#GT13082025: obtener los Ids, el codigo no se asigna
+                    Dim vIdTalla = clsLnTalla.Get_Single_By_Codigo(vTalla, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                    Dim vIdColor = clsLnColor.Get_Single_By_Codigo(vColor, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                    clsTransaccion.Commit_Transaction()
+                    clsTransaccion.Close_Conection()
 
                     '#GT01022024: si es el mismo producto en el productolockup, no alteramos los datos del grid
                     pExisteLinea = Existe_Producto_en_Grid(vNoLinea, IdRecepcionDet, BeProducto.IdProductoBodega)
@@ -9465,6 +9903,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                         drLineaGrid("No_Linea") = vNoLinea
                         drLineaGrid("Costo") = 0.1
                         drLineaGrid("costo_oc") = 0.1
+                        drLineaGrid("Talla") = vIdTalla.IdTalla
+                        drLineaGrid("Color") = vIdColor.IdColor
+                        drLineaGrid("SKU") = vSKU
 
                         '#GT30012024: Set de OC_ENC y OC_DET al grid
                         If gBeOrdenCompra.IdOrdenCompraEnc > 0 Then
@@ -9481,7 +9922,14 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                                 If gBeOrdenCompra.DetalleOC.Count > 0 Then
 
-                                    BeCompraDet = gBeOrdenCompra.DetalleOC.Find(Function(x) x.Codigo_Producto = BeProducto.Codigo AndAlso x.No_Linea = NoLineaActualFilaGrid)
+                                    If BeBodega.Control_Talla_Color Then
+                                        Dim codigoProducto = BeProducto.Codigo + "" + vIdTalla.Codigo + "" + vIdColor.Codigo
+                                        BeCompraDet = gBeOrdenCompra.DetalleOC.Find(Function(x) x.Codigo_Producto = codigoProducto AndAlso x.No_Linea = NoLineaActualFilaGrid)
+                                    Else
+                                        BeCompraDet = gBeOrdenCompra.DetalleOC.Find(Function(x) x.Codigo_Producto = BeProducto.Codigo AndAlso x.No_Linea = NoLineaActualFilaGrid)
+                                    End If
+
+
 
                                     If Not BeCompraDet Is Nothing Then
 
@@ -9833,11 +10281,13 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 Return
             End If
 
-            If Not clsLnProducto.Existe_Codigo(newValue) Then
-                e.Handled = False
+            If PopupTieneErrores Then
+                If Not clsLnProducto.Existe_Codigo(newValue) Then
+                    e.Handled = False
+                End If
             End If
 
-            Application.DoEvents()
+            'Application.DoEvents()
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -10034,6 +10484,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             Dim vIdPresentacion As Integer = IIf(IsDBNull(View.GetRowCellValue(e.RowHandle, "IdPresentacion")), 0, View.GetRowCellValue(e.RowHandle, "IdPresentacion"))
             Dim vIsNewRow As Boolean = IIf(IsDBNull(View.GetRowCellValue(e.RowHandle, "IsNewR")), False, View.GetRowCellValue(e.RowHandle, "IsNewR"))
             Dim vTieneBono As Boolean = IIf(IsDBNull(View.GetRowCellValue(e.RowHandle, "Bono")), False, View.GetRowCellValue(e.RowHandle, "Bono"))
+            Dim vTalla As String = IIf(IsDBNull(View.GetRowCellValue(e.RowHandle, "Talla")), False, View.GetRowCellValue(e.RowHandle, "Talla"))
+            Dim vColor As String = IIf(IsDBNull(View.GetRowCellValue(e.RowHandle, "Color")), False, View.GetRowCellValue(e.RowHandle, "Color"))
+            Dim vSKU As String = IIf(IsDBNull(View.GetRowCellValue(e.RowHandle, "SKU")), False, View.GetRowCellValue(e.RowHandle, "SKU"))
 
             Dim Etapa_Uno_Correcta As Boolean = False
             Dim Etapa_Tres_Correcta As Boolean = False
@@ -10090,6 +10543,16 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                             View.SetColumnError(ColProducto, "")
                             isValidIdProductoBodega = True
                             ColPeso.OptionsColumn.ReadOnly = Not BeProducto.Control_peso
+
+                            If BeBodega.Control_Talla_Color Then
+                                Dim BeProductoTallaColor As New clsBeProducto_talla_color
+                                BeProductoTallaColor = clsLnProducto_talla_color.Get_Single_By_IdParameters(BeProducto.IdProducto, vTalla, vColor, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                                If Not BeProductoTallaColor Is Nothing Then
+                                    If Not BeProductoTallaColor Is Nothing Then
+                                        pBeTransReDet.IdProductoTallaColor = BeProductoTallaColor.IdProductoTallaColor
+                                    End If
+                                End If
+                            End If
                         End If
 
                     End If
@@ -10286,7 +10749,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                     '#GT10102025: si producto maneja LP, hacer incremento a usuario BOF
                     If BeProducto.Genera_lp Or BeProducto.Presentacion.Genera_lp_auto Then
-                        Incrementar_Licencia_BOF(AP.IdBodega,
+                    Incrementar_Licencia_BOF(AP.IdBodega,
                                              AP.UsuarioAp.IdUsuario,
                                              clsTransaccion.lConnection,
                                              clsTransaccion.lTransaction)
@@ -10332,11 +10795,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                         Else
 
                             If BeProducto.Genera_lp OrElse BeProducto.Presentacion.Genera_lp_auto Then
-                                Dim Impresion As New frmImpresionRecepcion
-                                Impresion.pTransReDet = ObjTransReDet
-                                Impresion.ShowDialog()
-                                Impresion.Dispose()
-                            End If
+                            Dim Impresion As New frmImpresionRecepcion
+                            Impresion.pTransReDet = ObjTransReDet
+                            Impresion.ShowDialog()
+                            Impresion.Dispose()
+                        End If
 
 
                         End If
@@ -11084,6 +11547,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     Dim vLic_plate As String = IIf(IsDBNull(currentView.GetRowCellValue(currentView.FocusedRowHandle, "lic_plate")), "", currentView.GetRowCellValue(currentView.FocusedRowHandle, "lic_plate"))
                     Dim vIdPresentacion As String = IIf(IsDBNull(currentView.GetRowCellValue(currentView.FocusedRowHandle, "IdPresentacion")), "", currentView.GetRowCellValue(currentView.FocusedRowHandle, "IdPresentacion"))
                     Dim vIdProductoEstado As String = IIf(IsDBNull(currentView.GetRowCellValue(currentView.FocusedRowHandle, "IdProductoEstado")), "", currentView.GetRowCellValue(currentView.FocusedRowHandle, "IdProductoEstado"))
+                    Dim vTalla As String = IIf(IsDBNull(currentView.GetRowCellValue(currentView.FocusedRowHandle, "Talla")), "", currentView.GetRowCellValue(currentView.FocusedRowHandle, "Talla"))
+                    Dim vColor As String = IIf(IsDBNull(currentView.GetRowCellValue(currentView.FocusedRowHandle, "Talla")), "", currentView.GetRowCellValue(currentView.FocusedRowHandle, "Color"))
 
                     BeStock_rec.Presentacion.IdPresentacion = 0
                     BeStock_rec.Lic_plate = vLic_plate
@@ -11099,6 +11564,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     BeStock_rec.IdPropietarioBodega = pIdPropietarioBodega
                     BeStock_rec.IdProductoBodega = pObjProducto.IdProductoBodega
                     BeStock_rec.No_linea = vNoLinea
+                    BeStock_rec.Talla = vTalla
+                    BeStock_rec.Color = vColor
                     pListBeStockRec.Add(BeStock_rec)
 
                 Else
@@ -11266,6 +11733,10 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 Dim vNoLineaControl As Integer = 0
                 Dim vTotal As Double = 0
                 Dim BeProductoRecibido As New clsBeProductosRecepcion
+                Dim BeProductoTallaColor As New clsBeProducto_talla_color
+                Dim vTalla As String = ""
+                Dim vColor As String = ""
+                Dim vSKU As String = ""
                 Dim vIndiceLista As Integer = -1
                 Dim TieneBono As Boolean = False
 
@@ -11303,6 +11774,30 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     TieneBono = clsLnProducto.Get_Control_Manufactura_By_IdProductoBodega(BeTransReDet.IdProductoBodega,
                                                                                           clsTransaccion.lConnection,
                                                                                           clsTransaccion.lTransaction)
+
+                    'Dim dt = clsLnProducto_talla_color.Get_All_Dt_By_IdProductoTallaColor(BeTransReDet.IdProductoTallaColor, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                    BeProductoTallaColor = New clsBeProducto_talla_color()
+                    BeProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransReDet.IdProductoTallaColor, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                    If Not BeProductoTallaColor Is Nothing Then
+                        '#GT13082025: se deben asignar los Ids, no los códigos en el grid
+                        Dim objTalla = clsLnTalla.GetSingle_By_IdTalla(BeProductoTallaColor.IdTalla)
+                        vTalla = If(objTalla IsNot Nothing, objTalla.IdTalla, "")
+
+                        Dim objColor = clsLnColor.GetSingle_By_IdColor(BeProductoTallaColor.IdColor)
+                        vColor = If(objColor IsNot Nothing, objColor.IdColor, "")
+                        vSKU = BeProductoTallaColor.CodigoSKU
+                    End If
+
+                    'Dim vTalla As String = ""
+                    'Dim vColor As String = ""
+                    'Dim vSKU As String = ""
+
+                    'If Not dt Is Nothing AndAlso dt.Rows.Count > 0 Then
+                    '    vTalla = IIf(IsDBNull(dt.Rows(0).Item("Talla")), "", dt.Rows(0).Item("Talla"))
+                    '    vColor = IIf(IsDBNull(dt.Rows(0).Item("Color")), "", dt.Rows(0).Item("Color"))
+                    '    vSKU = IIf(IsDBNull(dt.Rows(0).Item("SKU")), "", dt.Rows(0).Item("SKU"))
+                    'End If
 
                     DTTransReDet2.Rows.Add(BeTransReDet.IdRecepcionDet,
                                            BeTransReDet.IdRecepcionEnc,
@@ -11344,7 +11839,10 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                            BeTransReDet.IdJornadaSistema,
                                            vTotal,
                                            False,
-                                           TieneBono)
+                                           TieneBono,
+                                           vTalla,
+                                           vColor,
+                                           vSKU)
 
                 Next
 
@@ -11470,6 +11968,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                         clsLnTrans_re_det.Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet(pIdOrdenCompraEnc,
                                                                                           IdRecepcionEnc,
                                                                                           IdRecepcionDet, AP.HostName)
+
 
                         pListBeStockRec.RemoveAt(lIndex)
                         currentView.DeleteRow(currentView.FocusedRowHandle)
@@ -11709,9 +12208,9 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                 If pIsNewRow Then
 
-                    pBeTransReDet.IdPropietarioBodega = cmbPropietario.EditValue
                     pBeTransReDet.Producto = New clsBeProducto()
                     pBeTransReDet.Producto = clsLnProducto.Get_Single_By_IdProductoBodega(pBeProducto.IdProductoBodega, lConnection, lTransaction)
+                    pBeTransReDet.IdPropietarioBodega = cmbPropietario.EditValue
                     pBeTransReDet.Producto.Codigo = vCodigoProducto
                     pBeTransReDet.Codigo_Producto = vCodigoProducto
                     pBeTransReDet.IdProductoBodega = pBeProducto.IdProductoBodega
@@ -11914,6 +12413,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                         pListBeStockRec(vIndice).User_agr = AP.UsuarioAp.IdUsuario
                         pListBeStockRec(vIndice).IdUnidadMedida = vIdUnidadMedida
                         pListBeStockRec(vIndice).IdProductoBodega = IdProductoBodega
+                        pListBeStockRec(vIndice).IdProductoTallaColor = pBeTransReDet.IdProductoTallaColor
 
                         pBeTransReDet.ProductoEstado = New clsBeProducto_estado
                         pBeTransReDet.ProductoEstado.IdEstado = vIdProductoEstado
@@ -12135,9 +12635,10 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                         pBeTransReDet.User_agr = AP.UsuarioAp.IdUsuario
                         pListBeStockRec(vIndice).IdRecepcionDet = vIdRecepcionDet
+                        gBeRecepcionEnc.Detalle = New List(Of clsBeTrans_re_det) From {
+                            pBeTransReDet
+                        }
 
-                        gBeRecepcionEnc.Detalle = New List(Of clsBeTrans_re_det)
-                        gBeRecepcionEnc.Detalle.Add(pBeTransReDet)
 
                     End If
 
@@ -12146,7 +12647,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             End If
 
         Catch ex As Exception
-            Dim vMsgError As String = ex.Message
 
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
@@ -12156,6 +12656,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                                  pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
                                                  pStackTrace:=ex.StackTrace)
 
+            Dim vMsgError As String = ex.Message
             Throw ex
         End Try
 
@@ -12476,8 +12977,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                 estadoprod = clsLnProducto_estado.Get_Single_By_IdEstado(gBeRecepcionEnc.IdEstado_Defecto_Recepcion)
 
                 If Not estadoprod Is Nothing Then
-                    Dim ubicacion As Integer = estadoprod.IdUbicacionDefecto
                     If (estadoprod.IdUbicacionDefecto > 0) Then
+                        Dim ubicacion As Integer = estadoprod.IdUbicacionDefecto
                         txtIdUbicacion.Text = estadoprod.IdUbicacionDefecto
                         Valida_Ubicacion()
                     End If
@@ -12488,4 +12989,132 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
         End Try
     End Sub
+    Private Sub ProductoGridLookUpEditRec_KeyDown(sender As Object, e As KeyEventArgs)
+
+        Dim lista As GridLookUpEdit = TryCast(sender, GridLookUpEdit)
+        Dim vCodigoProducto As String = ""
+        Dim vSKU As String = ""
+        Dim encontrado As Boolean = False
+
+        If e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
+
+            Try
+
+                Dim View As GridView = CType(DgridDetalleRec2.DefaultView, GridView)
+                If lista Is Nothing Then Return
+
+                If lista IsNot Nothing Then
+                    Dim view2 As GridView = lista.Properties.View
+                    Dim row As DataRowView = TryCast(view2.GetFocusedRow(), DataRowView)
+
+                    If row IsNot Nothing Then
+                        vSKU = row("SKU").ToString()
+                    End If
+                End If
+
+                Dim ColNoLinea As GridColumn = View.Columns("No_Linea")
+                Dim nolineaSeleccionada As String = ""
+
+                vCodigoProducto = If(IsDBNull(lista.Text), "", lista.Text.Trim())
+
+                If String.IsNullOrEmpty(vCodigoProducto) Then Return
+
+                Dim drLineaGrid As DataRow = View.GetFocusedDataRow()
+                If drLineaGrid Is Nothing AndAlso Not View.IsNewItemRow(View.FocusedRowHandle) Then Return
+
+                Dim codigoIngresadoString As String = vCodigoProducto
+
+                View.SetColumnError(ColNoLinea, "") : PopupTieneErrores = False
+
+                'Lógica para búsqueda por SKU solo si está habilitado el control de talla/color
+                If BeBodega.Control_Talla_Color Then
+
+                    Dim vIdProductoBodega As Integer = 0
+                    Dim cmbView As GridView = TryCast(lista.Properties.View, GridView)
+
+                    If cmbView IsNot Nothing Then
+                        For i As Integer = 0 To cmbView.RowCount - 1
+                            Dim skuActual As String = If(IsDBNull(cmbView.GetRowCellValue(i, "SKU")), "", cmbView.GetRowCellValue(i, "SKU").ToString().Trim())
+
+                            If skuActual.Equals(vSKU, StringComparison.OrdinalIgnoreCase) Then
+                                Dim selectedDataRow As DataRowView = TryCast(cmbView.GetRow(i), DataRowView)
+                                If selectedDataRow IsNot Nothing Then
+                                    cmbView.FocusedRowHandle = 0
+                                    codigoIngresadoString = IIf(IsDBNull(selectedDataRow("Codigo")), "", selectedDataRow("Codigo"))
+                                    nolineaSeleccionada = IIf(IsDBNull(selectedDataRow("No_Linea")), "-1", selectedDataRow("No_Linea").ToString())
+                                    vIdProductoBodega = clsLnProducto.Get_IdProductoBodega_By_Codigo(selectedDataRow("Codigo").ToString(), AP.IdBodega)
+                                    lista.BeginInvoke(Sub()
+                                                          Dim primeraFila = TryCast(cmbView.GetRow(0), DataRowView)
+                                                          If primeraFila IsNot Nothing Then
+                                                              lista.EditValue = primeraFila("No_Linea")
+                                                              View.PostEditor()
+                                                              View.CloseEditor()
+                                                              View.FocusedColumn = View.VisibleColumns(View.VisibleColumns.IndexOf(View.FocusedColumn) + 1)
+                                                          End If
+                                                      End Sub)
+                                    encontrado = True
+                                    Exit For
+                                End If
+                            End If
+                        Next
+                    End If
+
+                    If Not encontrado Then
+                        View.SetColumnError(ColNoLinea, "SKU no válido o no encontrado.")
+                        PopupTieneErrores = True
+                        Exit Sub
+                    End If
+
+                    'Continua con la lógica original usando el código obtenido por SKU
+                Else
+                    'Lógica original: obtiene el ID usando el código ingresado directamente
+                    Dim vIdProductoBodega As Integer = clsLnProducto.Get_IdProductoBodega_By_Codigo(codigoIngresadoString, AP.IdBodega)
+                    If vIdProductoBodega = 0 Then
+                        View.SetColumnError(ColNoLinea, "Código no válido.")
+                        PopupTieneErrores = True
+                        Exit Sub
+                    End If
+                End If
+
+                ' 🟡 Resto de tu lógica original para validaciones y preguntas si hay varias líneas
+                If ColNoLinea Is Nothing Then
+                    ColNoLinea = View.Columns(1)
+                End If
+
+                If nolineaSeleccionada = "" Then
+                    Dim vCantPorProducto As Integer = 0
+                    Dim cmbView As GridView = TryCast(lista.Properties.View, GridView)
+                    If cmbView IsNot Nothing Then
+                        vCantPorProducto = cmbView.RowCount
+                    End If
+
+                    If vCantPorProducto > 1 Then
+                        _filtroCodigoBarra = codigoIngresadoString
+                        PopupTieneErrores = True
+                        View.SetColumnError(ColNoLinea, "Código de barra duplicado, seleccione uno de la lista.")
+                    End If
+
+                Else
+
+                    If BeBodega.Control_Talla_Color AndAlso Not encontrado Then
+                        Dim vCantPorProducto As Integer = clsLnTrans_oc_det.Get_Count_By_Producto_En_OC(txtIdOrdenCompra.Text, clsLnProducto.Get_IdProductoBodega_By_Codigo(codigoIngresadoString, AP.IdBodega))
+
+                        If vCantPorProducto > 1 Then
+                            If XtraMessageBox.Show("¿La línea del documento de ingreso que quiere recepcionar es la " & nolineaSeleccionada & "?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
+                                Eliminar_Fila(Nothing)
+                                Exit Sub
+                            End If
+                        End If
+                    End If
+
+                End If
+
+            Catch ex As Exception
+                XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            End Try
+
+        End If
+
+    End Sub
+
 End Class

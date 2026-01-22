@@ -11,7 +11,7 @@
     <OutputType>WinExe</OutputType>
     <StartupObject>TOMWMS.My.MyApplication</StartupObject>
     <RootNamespace>TOMWMS</RootNamespace>
-    <AssemblyName>WMS_PRD</AssemblyName>
+    <AssemblyName>WMS_QAS</AssemblyName>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileUpgradeFlags>
@@ -24,7 +24,7 @@
     <TargetFrameworkProfile />
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <PublishUrl>C:\inetpub\wwwroot\WMS_PRD\</PublishUrl>
+    <PublishUrl>C:\inetpub\wwwroot\WMS_QAS\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Unc</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -34,15 +34,15 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>\\192.168.2.204\WMS_PRD\</InstallUrl>
-    <UpdateUrl>\\192.168.2.204\WMS_PRD\</UpdateUrl>
-    <ProductName>WMS_PRD</ProductName>
+    <InstallUrl>\\10.238.26.70\WMS_QAS\</InstallUrl>
+    <UpdateUrl>\\10.238.26.70\WMS_QAS\</UpdateUrl>
+    <ProductName>WMS_QAS</ProductName>
     <PublisherName>DTSolutions</PublisherName>
-    <SuiteName>WMS_PRD</SuiteName>
+    <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>44</ApplicationRevision>
-    <ApplicationVersion>6.0.1.%2a</ApplicationVersion>
+    <ApplicationRevision>499</ApplicationRevision>
+    <ApplicationVersion>4.7.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -55,7 +55,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>WMS_PRD.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -67,7 +67,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>WMS_PRD.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <CodeAnalysisRuleSet>
     </CodeAnalysisRuleSet>
@@ -92,7 +92,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DocumentationFile>WMS_PRD.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -107,7 +107,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DocumentationFile>WMS_PRD.xml</DocumentationFile>
+    <DocumentationFile>WMS_QAS.xml</DocumentationFile>
     <Optimize>true</Optimize>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <DebugType>pdbonly</DebugType>
@@ -648,6 +648,12 @@
     <Compile Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Mantenimientos\Propietarios_Reglas_Mensajes\frmPropietarioReglasMensajes.Designer.vb">
+      <DependentUpon>frmPropietarioReglasMensajes.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Propietarios_Reglas_Mensajes\frmPropietarioReglasMensajes.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Mantenimientos\Regimen_Fiscal\frmRegimenFiscal.Designer.vb">
       <DependentUpon>frmRegimenFiscal.vb</DependentUpon>
     </Compile>
@@ -796,6 +802,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>dsRepAjustes.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Reportes\Ajustes\dsRepAjustes.vb">
+      <DependentUpon>dsRepAjustes.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Reportes\Ajustes\frmReporteAjustesDet.Designer.vb">
       <DependentUpon>frmReporteAjustesDet.vb</DependentUpon>
     </Compile>
@@ -806,6 +815,12 @@
       <DependentUpon>rptAjuste.vb</DependentUpon>
     </Compile>
     <Compile Include="Reportes\Ajustes\rptAjuste.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reportes\Ajustes\rptAjuste_TallaColor.Designer.vb">
+      <DependentUpon>rptAjuste_TallaColor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Ajustes\rptAjuste_TallaColor.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reportes\Analítica\DsetAnalitica.Designer.vb">
@@ -833,6 +848,12 @@
     </Compile>
     <Compile Include="Reportes\Analítica\frmIndicadores.vb">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Reportes\ControlCalidad\rptControlCalidadCambioEstadoMampa.Designer.vb">
+      <DependentUpon>rptControlCalidadCambioEstadoMampa.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\ControlCalidad\rptControlCalidadCambioEstadoMampa.vb">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reportes\ControlCalidad\rptControlCalidadCambioEstado.Designer.vb">
       <DependentUpon>rptControlCalidadCambioEstado.vb</DependentUpon>
@@ -869,6 +890,12 @@
     </Compile>
     <Compile Include="Reportes\Despacho\Packing\frmPackingDespachado.vb">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Reportes\Despacho\rptDespachoMampa.Designer.vb">
+      <DependentUpon>rptDespachoMampa.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Despacho\rptDespachoMampa.vb">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reportes\Despacho\rptDespachofCealsa.Designer.vb">
       <DependentUpon>rptDespachofCealsa.vb</DependentUpon>
@@ -1092,6 +1119,12 @@
     </Compile>
     <Compile Include="Reportes\Movimiento\frmMovimientosPoliza.vb">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Reportes\Packing\rptPackingTallaColor.Designer.vb">
+      <DependentUpon>rptPackingTallaColor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Reportes\Packing\rptPackingTallaColor.vb">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reportes\Packing\rptPackingPorBarra.Designer.vb">
       <DependentUpon>rptPackingPorBarra.vb</DependentUpon>
@@ -3096,6 +3129,12 @@
     <Compile Include="Transacciones\Recepcion\frmRecepcion_List.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Transacciones\Verificacion_BOF\frmVerificacionBOF.Designer.vb">
+      <DependentUpon>frmVerificacionBOF.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Transacciones\Verificacion_BOF\frmVerificacionBOF.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="WaitForm.Designer.vb">
       <DependentUpon>WaitForm.vb</DependentUpon>
     </Compile>
@@ -3269,6 +3308,9 @@
     <EmbeddedResource Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx">
       <DependentUpon>frmProducto_TallaList.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Propietarios_Reglas_Mensajes\frmPropietarioReglasMensajes.resx">
+      <DependentUpon>frmPropietarioReglasMensajes.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Regimen_Fiscal\frmRegimenFiscal.resx">
       <DependentUpon>frmRegimenFiscal.vb</DependentUpon>
       <SubType>Designer</SubType>
@@ -3359,6 +3401,9 @@
     <EmbeddedResource Include="Reportes\Ajustes\rptAjuste.resx">
       <DependentUpon>rptAjuste.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Ajustes\rptAjuste_TallaColor.resx">
+      <DependentUpon>rptAjuste_TallaColor.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Analítica\Dashboard1.resx" />
     <EmbeddedResource Include="Reportes\Analítica\frmAnalitica1.resx">
       <DependentUpon>frmAnalitica1.vb</DependentUpon>
@@ -3370,6 +3415,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Analítica\frmIndicadores.resx">
       <DependentUpon>frmIndicadores.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\ControlCalidad\rptControlCalidadCambioEstadoMampa.resx">
+      <DependentUpon>rptControlCalidadCambioEstadoMampa.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\ControlCalidad\rptControlCalidadCambioEstado.resx">
       <DependentUpon>rptControlCalidadCambioEstado.vb</DependentUpon>
@@ -3388,6 +3436,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Despacho\Packing\frmPackingDespachado.resx">
       <DependentUpon>frmPackingDespachado.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Despacho\rptDespachoMampa.resx">
+      <DependentUpon>rptDespachoMampa.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Despacho\rptDespachofCealsa.resx">
       <DependentUpon>rptDespachofCealsa.vb</DependentUpon>
@@ -3489,6 +3540,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Movimiento\frmMovimientosPoliza.resx">
       <DependentUpon>frmMovimientosPoliza.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Packing\rptPackingTallaColor.resx">
+      <DependentUpon>rptPackingTallaColor.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Packing\rptPackingPorBarra.resx">
       <DependentUpon>rptPackingPorBarra.vb</DependentUpon>
@@ -4373,6 +4427,9 @@
     <EmbeddedResource Include="Transacciones\Recepcion\frmRecepcion_List.resx">
       <DependentUpon>frmRecepcion_List.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Transacciones\Verificacion_BOF\frmVerificacionBOF.resx">
+      <DependentUpon>frmVerificacionBOF.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WaitForm.resx">
       <DependentUpon>WaitForm.vb</DependentUpon>
     </EmbeddedResource>
@@ -4399,7 +4456,8 @@
       <DependentUpon>Configuracion_QADataSet.xsd</DependentUpon>
     </None>
     <Content Include="Conn - Cumbre.ini" />
-    <None Include="Conn - MC.ini" />
+    <Content Include="ConnMHS.ini" />
+    <None Include="ConnDev.ini" />
     <None Include="Conn_GT.ini" />
     <None Include="Conn_Inelac.ini" />
     <None Include="Conn_Killios.ini" />
@@ -4415,6 +4473,9 @@
     <Content Include="Mantenimientos\plantillas\WMS_plantilla_Inventario_Inicial.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="DMS.exe.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Dset_Regla_Vence.xsc">
       <DependentUpon>Dset_Regla_Vence.xsd</DependentUpon>
     </None>
@@ -4455,8 +4516,11 @@
     </Content>
     <None Include="Mantenimientos\Producto_Color\frmProducto_Color.resx.bak" />
     <None Include="Mantenimientos\Producto_Color\frmProducto_ColorList.resx.bak" />
+    <None Include="Mantenimientos\Producto_Estado\frmProducto_Estado.resx.bak" />
+    <None Include="Mantenimientos\Producto_Estado\frmProducto_EstadoList.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_Talla.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx.bak" />
+    <None Include="SAPBOSyncMampa.exe.config" />
     <None Include="SAPBOSyncKillios.exe.config" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho11.wsdl" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho33.xsd">
@@ -5490,19 +5554,19 @@
       <Version>6.1.1</Version>
     </PackageReference>
     <PackageReference Include="System.IO.Packaging">
-      <Version>8.0.1</Version>
+      <Version>9.0.8</Version>
     </PackageReference>
     <PackageReference Include="System.Management">
-      <Version>8.0.0</Version>
+      <Version>9.0.8</Version>
     </PackageReference>
     <PackageReference Include="System.Memory">
-      <Version>4.5.5</Version>
+      <Version>4.6.3</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
-      <Version>6.0.0</Version>
+      <Version>6.1.2</Version>
     </PackageReference>
     <PackageReference Include="System.ValueTuple">
-      <Version>4.5.0</Version>
+      <Version>4.6.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

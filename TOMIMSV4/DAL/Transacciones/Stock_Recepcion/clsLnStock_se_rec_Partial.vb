@@ -90,8 +90,8 @@ Partial Public Class clsLnStock_se_rec
     End Function
 
     Public Shared Function GetAllSerieByIdStockRec(ByVal pIdStockRec As Integer,
-                                     ByRef lConnection As SqlConnection,
-                                     ByRef lTransaction As SqlTransaction) As List(Of clsBeStock_se_rec)
+                                                   ByRef lConnection As SqlConnection,
+                                                   ByRef lTransaction As SqlTransaction) As List(Of clsBeStock_se_rec)
 
         Dim lReturnList As New List(Of clsBeStock_se_rec)
 
@@ -239,9 +239,9 @@ Partial Public Class clsLnStock_se_rec
 
     End Function
 
-    Public Shared Sub Insertar_Stock_Serializado_Recepcion(ByVal bo As clsBeStock_rec, _
-                                                         ByVal IdStock As Integer, _
-                                                         ByRef lConnection As SqlConnection, _
+    Public Shared Sub Insertar_Stock_Serializado_Recepcion(ByVal bo As clsBeStock_rec,
+                                                         ByVal IdStock As Integer,
+                                                         ByRef lConnection As SqlConnection,
                                                          ByRef lTransaction As SqlTransaction)
 
         Try

@@ -2,6 +2,7 @@ Imports System
 Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
+Imports System
 
 Public Class clsLnTrans_picking_prioridad
 
@@ -135,23 +136,25 @@ Public Class clsLnTrans_picking_prioridad
 			If Not lConnection Is Nothing Then lConnection.Dispose()
 			If Not lTransaction Is Nothing Then lTransaction.Dispose()
 		End Try
+
 	End Function
 
-	Public Shared Function Eliminar(ByRef oBeTrans_picking_prioridad As clsBeTrans_picking_prioridad,Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+
+	Public Shared Function Eliminar(ByRef oBeTrans_picking_prioridad As clsBeTrans_picking_prioridad, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
 		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 		Dim lTransaction As SqlTransaction = Nothing
 
 		Try
 
-			Const sp As String = " Delete from Trans_picking_prioridad" & _ 
+			Const sp As String = " Delete from Trans_picking_prioridad" &
 			 "  Where(IdPrioridadPicking = @IdPrioridadPicking)"
 
-			Dim cmd As New SqlCommand With {.CommandType=CommandType.Text}
+			Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
 
 			Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
 
-			If Es_Transaccion_Remota then 
+			If Es_Transaccion_Remota Then
 				cmd = New SqlCommand(sp, pConection, pTransaction)
 			Else
 				lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
@@ -170,25 +173,25 @@ Public Class clsLnTrans_picking_prioridad
 
 		Catch ex As Exception
 			If Not lTransaction Is Nothing Then lTransaction.Rollback()
-			Throw New Exception (String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
 		Finally
-			If lConnection.State =ConnectionState.Open Then lConnection.Close
-			If Not lConnection is Nothing Then lConnection.Dispose()
-			If Not lTransaction is Nothing Then lTransaction.Dispose()
+			If lConnection.State = ConnectionState.Open Then lConnection.Close
+			If Not lConnection Is Nothing Then lConnection.Dispose()
+			If Not lTransaction Is Nothing Then lTransaction.Dispose()
 		End Try
 
 	End Function
 
 	Public Shared Function Listar() As DataTable
 
-			Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 		Dim lTransaction As SqlTransaction = Nothing
 
 		Try
 
 			Const sp As String = "SELECT * FROM Trans_picking_prioridad"
-				lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
-			Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType=CommandType.Text}
+			lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
+			Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
 			Dim dad As New SqlDataAdapter(cmd)
 			Dim dt As New DataTable
 			dad.Fill(dt)
@@ -199,74 +202,74 @@ Public Class clsLnTrans_picking_prioridad
 
 		Catch ex As Exception
 			If Not lTransaction Is Nothing Then lTransaction.Rollback()
-			Throw New Exception (String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
 		Finally
-			If lConnection.State =ConnectionState.Open Then lConnection.Close
-			If Not lConnection is Nothing Then lConnection.Dispose()
-			If Not lTransaction is Nothing Then lTransaction.Dispose()
+			If lConnection.State = ConnectionState.Open Then lConnection.Close
+			If Not lConnection Is Nothing Then lConnection.Dispose()
+			If Not lTransaction Is Nothing Then lTransaction.Dispose()
 		End Try
 
 	End Function
 
 	Public Shared Function Get_All() As List(Of clsBeTrans_picking_prioridad)
-		
+
 		Dim lReturnList As New List(Of clsBeTrans_picking_prioridad)
-		
+
 		Try
-		
+
 			Const sp As String = "SELECT * FROM Trans_picking_prioridad"
-		
+
 			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
-		
+
 				lConnection.Open()
-		
+
 				Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
-		
+
 					Using lDTA As New SqlDataAdapter(sp, lConnection)
-		
-					lDTA.SelectCommand.CommandType = CommandType.Text
+
+						lDTA.SelectCommand.CommandType = CommandType.Text
 						lDTA.SelectCommand.Transaction = lTransaction
 						Dim lDataTable As New DataTable
-					lDTA.Fill(lDataTable)
-		
-					Dim vBeTrans_picking_prioridad As New clsBeTrans_picking_prioridad
+						lDTA.Fill(lDataTable)
+
+						Dim vBeTrans_picking_prioridad As New clsBeTrans_picking_prioridad
 
 						For Each dr As DataRow In lDataTable.Rows
-						vBeTrans_picking_prioridad = New clsBeTrans_picking_prioridad()
-						Cargar(vBeTrans_picking_prioridad, dr)
-						lReturnList.Add(vBeTrans_picking_prioridad)
+							vBeTrans_picking_prioridad = New clsBeTrans_picking_prioridad()
+							Cargar(vBeTrans_picking_prioridad, dr)
+							lReturnList.Add(vBeTrans_picking_prioridad)
 						Next
-		
+
 					End Using
-		
+
 					lTransaction.Commit()
-		
+
 				End Using
-		
+
 				lConnection.Close()
-		
+
 			End Using
 
 			Return lReturnList
 
 		Catch ex As Exception
-			Throw New Exception (String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
 		End Try
 
 	End Function
 
-	Public Shared Sub GetSingle(ByRef pBeTrans_picking_prioridad As clsBeTrans_picking_prioridad) 
-		
+	Public Shared Sub GetSingle(ByRef pBeTrans_picking_prioridad As clsBeTrans_picking_prioridad)
+
 		Try
 
 			Const sp As String = "SELECT * FROM Trans_picking_prioridad Where(IdPrioridadPicking = @IdPrioridadPicking)"
 
 			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
-		
+
 				lConnection.Open()
-		
+
 				Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
-		
+
 					Using lDTA As New SqlDataAdapter(sp, lConnection)
 
 						lDTA.SelectCommand.CommandType = CommandType.Text
@@ -274,36 +277,36 @@ Public Class clsLnTrans_picking_prioridad
 						lDTA.SelectCommand.Parameters.AddWithValue("@IdPrioridadPicking", pBeTrans_picking_prioridad.IdPrioridadPicking)
 
 						Dim lDataTable As New DataTable
-					lDTA.Fill(lDataTable)
-		
-					Dim vBeTrans_picking_prioridad As New clsBeTrans_picking_prioridad
+						lDTA.Fill(lDataTable)
 
-					If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
-						Cargar(vBeTrans_picking_prioridad, lDataTable.Rows(0))
-					End If
-		
+						Dim vBeTrans_picking_prioridad As New clsBeTrans_picking_prioridad
+
+						If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+							Cargar(vBeTrans_picking_prioridad, lDataTable.Rows(0))
+						End If
+
 					End Using
-		
+
 					lTransaction.Commit()
-		
+
 				End Using
-		
+
 				lConnection.Close()
-		
+
 			End Using
 
 		Catch ex As Exception
-			Throw New Exception (String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
 		End Try
 
 	End Sub
 
-	Public Shared Function MaxID() as Integer 
-		
+	Public Shared Function MaxID() As Integer
+
 		Try
-		
+
 			Dim lMax As Integer = 0
-		
+
 			Const sp As String = "SELECT ISNULL(Max(IdPrioridadPicking),0) FROM Trans_picking_prioridad"
 
 			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
@@ -312,16 +315,16 @@ Public Class clsLnTrans_picking_prioridad
 
 				Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
 
-				Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType=CommandType.Text}
+					Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
 
-					Dim lReturnValue As Object = lCommand.ExecuteScalar()
-					If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-						lMax = CInt(lReturnValue)
-					End If
+						Dim lReturnValue As Object = lCommand.ExecuteScalar()
+						If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+							lMax = CInt(lReturnValue)
+						End If
 
-				End Using
+					End Using
 
-				lTransaction.Commit()
+					lTransaction.Commit()
 
 				End Using
 
@@ -332,13 +335,16 @@ Public Class clsLnTrans_picking_prioridad
 			Return lMax
 
 		Catch ex As Exception
-			Throw New Exception (String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
 		End Try
 
 	End Function
 
-	Public Shared Function GetSingle_By_IdPickingPrioridad(ByVal pIdPickingPrioridad As Integer, Optional ByRef pConection As SqlConnection = Nothing, Optional ByRef pTransaction As SqlTransaction = Nothing) As clsBeTrans_picking_prioridad
+	Public Shared Function GetSingle_By_IdPickingPrioridad(ByVal pIdPickingPrioridad As Integer, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As clsBeTrans_picking_prioridad
 
+		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+		Dim lTransaction As SqlTransaction = Nothing
+		Dim lDTA As New SqlDataAdapter
 		GetSingle_By_IdPickingPrioridad = Nothing
 		Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 		Dim lTransaction As SqlTransaction = Nothing
@@ -348,28 +354,29 @@ Public Class clsLnTrans_picking_prioridad
 			' Definir la consulta SQL
 			Const sp As String = "SELECT top 1 * FROM Trans_picking_prioridad WHERE IdPrioridadPicking = @pIdPickingPrioridad"
 
+			Const sp As String = "SELECT * FROM Trans_picking_prioridad Where(IdPrioridadPicking = @pIdPickingPrioridad)"
+
 			Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
 
-			If Not Es_Transaccion_Remota Then
-				lConnection.Open() : lTransaction = lConnection.BeginTransaction
-			End If
-
 			If Es_Transaccion_Remota Then
-				cmd = New SqlCommand(sp, pConection, pTransaction) With {.CommandType = CommandType.Text}
+				lDTA = New SqlDataAdapter(sp, pConection)
+				lDTA.SelectCommand.Transaction = pTransaction
 			Else
-				cmd = New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+				lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+				lDTA = New SqlDataAdapter(sp, lConnection)
 			End If
 
-			Dim dad As New SqlDataAdapter(cmd)
-			dad.SelectCommand.Parameters.Add(New SqlParameter("@pIdPickingPrioridad", pIdPickingPrioridad))
+			lDTA.SelectCommand.CommandType = CommandType.Text
+			lDTA.SelectCommand.Parameters.AddWithValue("@pIdPickingPrioridad", pIdPickingPrioridad)
 
-			Dim dt As New DataTable
-			dad.Fill(dt)
+			Dim lDataTable As New DataTable
+			lDTA.Fill(lDataTable)
 
-			' Procesar los datos si hay resultados
-			If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
-				GetSingle_By_IdPickingPrioridad = New clsBeTrans_picking_prioridad
-				Cargar(GetSingle_By_IdPickingPrioridad, dt.Rows(0))
+			If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+				Dim vBeTrans_picking_prioridad As New clsBeTrans_picking_prioridad
+
+				Cargar(vBeTrans_picking_prioridad, lDataTable.Rows(0))
+				GetSingle_By_IdPickingPrioridad = vBeTrans_picking_prioridad
 			End If
 
 			If Not Es_Transaccion_Remota Then lTransaction.Commit()
@@ -380,6 +387,7 @@ Public Class clsLnTrans_picking_prioridad
 		Finally
 			If lConnection.State = ConnectionState.Open Then lConnection.Close() : lConnection.Dispose()
 			If lTransaction IsNot Nothing Then lTransaction.Dispose()
+			If lConnection IsNot Nothing Then lConnection.Dispose()
 		End Try
 
 	End Function

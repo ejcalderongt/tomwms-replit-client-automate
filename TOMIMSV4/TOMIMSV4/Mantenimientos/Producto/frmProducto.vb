@@ -652,18 +652,55 @@ Public Class frmProducto
 
             If pBeProductoCodigosBarraList.Count > 0 Then
 
+                Dim pBeTalla As New clsBeTalla()
+                Dim pBeColor As New clsBeColor()
+                Dim pCodigoTalla As String = ""
+                Dim pDescripcionTalla As String = ""
+                Dim pCodigoColor As String = ""
+                Dim pDescripcionColor As String = ""
+
+
                 Dim DT As New DataTable("CodigoBarra")
                 DT.Columns.Add("Código", GetType(Integer))
                 DT.Columns.Add("IdProveedor", GetType(Integer))
                 DT.Columns.Add("Proveedor", GetType(String))
                 DT.Columns.Add("Código de Barra", GetType(String))
+                '#GT05122025: campos para talla color
+                DT.Columns.Add("Código talla", GetType(String))
+                DT.Columns.Add("Descripción talla", GetType(String))
+                DT.Columns.Add("Código color", GetType(String))
+                DT.Columns.Add("Descripción color", GetType(String))
 
-                For Each Obj As clsBeProducto_codigos_barra In pBeProductoCodigosBarraList.FindAll(Function(b) b.Activo = chkActivoCB.Checked)
+                For Each BeCodigoBarra As clsBeProducto_codigos_barra In pBeProductoCodigosBarraList.FindAll(Function(b) b.Activo = chkActivoCB.Checked)
+
+                    If BeCodigoBarra.IdTalla Then
+                        pBeTalla = clsLnTalla.GetSingle_By_IdTalla(BeCodigoBarra.IdTalla)
+                        If pBeTalla IsNot Nothing Then
+                            pCodigoTalla = pBeTalla.Codigo
+                            pDescripcionTalla = pBeTalla.Descripcion
+                        End If
+                    End If
+
+                    If BeCodigoBarra.IdColor Then
+                        pBeColor = clsLnColor.GetSingle_By_IdColor(BeCodigoBarra.IdColor)
+                        If pBeColor IsNot Nothing Then
+                            pCodigoColor = pBeColor.Codigo
+                            pDescripcionColor = pBeColor.Nombre
+                        End If
+                    End If
+
+
                     Dim lRow As DataRow = DT.NewRow()
-                    lRow(0) = Obj.IdProductoCodigoBarra
-                    lRow(1) = Obj.IdProveedor
-                    lRow(2) = Obj.Proveedor.Nombre
-                    lRow(3) = Obj.Codigo_barra
+                    lRow(0) = BeCodigoBarra.IdProductoCodigoBarra
+                    lRow(1) = BeCodigoBarra.IdProveedor
+                    lRow(2) = BeCodigoBarra.Proveedor.Nombre
+                    lRow(3) = BeCodigoBarra.Codigo_barra
+                    '#GT05122025: campos para talla color
+                    lRow(4) = pCodigoTalla
+                    lRow(5) = pDescripcionTalla
+                    lRow(6) = pCodigoColor
+                    lRow(7) = pDescripcionColor
+
                     DT.Rows.Add(lRow)
                 Next
 
@@ -7019,5 +7056,6 @@ Public Class frmProducto
             previewForm.ShowDialog()
         End If
     End Sub
+
 
 End Class

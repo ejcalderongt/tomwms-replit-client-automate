@@ -60,6 +60,9 @@ Partial Class frmPedido_List
         Me.gviewEncabezadoPedido = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.RepositoryItemPictureEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemPictureEdit()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.lbGuia = New DevExpress.XtraEditors.LabelControl()
+        Me.lbOk = New DevExpress.XtraEditors.LabelControl()
+        Me.txtGuia = New DevExpress.XtraEditors.TextEdit()
         Me.lblHasta = New System.Windows.Forms.Label()
         Me.lbldesde = New System.Windows.Forms.Label()
         Me.dtpFechaAl = New System.Windows.Forms.DateTimePicker()
@@ -80,6 +83,7 @@ Partial Class frmPedido_List
         CType(Me.gviewEncabezadoPedido, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemPictureEdit1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
+        CType(Me.txtGuia.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ImageCollection1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgridDetalle, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.gviewDetallePedido, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -88,6 +92,7 @@ Partial Class frmPedido_List
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
+        CType(Me.ToastNotificationsManager1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'RibbonControl
@@ -330,6 +335,9 @@ Partial Class frmPedido_List
         '
         'GroupBox1
         '
+        Me.GroupBox1.Controls.Add(Me.lbGuia)
+        Me.GroupBox1.Controls.Add(Me.lbOk)
+        Me.GroupBox1.Controls.Add(Me.txtGuia)
         Me.GroupBox1.Controls.Add(Me.lblHasta)
         Me.GroupBox1.Controls.Add(Me.lbldesde)
         Me.GroupBox1.Controls.Add(Me.dtpFechaAl)
@@ -344,6 +352,37 @@ Partial Class frmPedido_List
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Tag = ""
         Me.GroupBox1.Text = "Filtro por Fecha"
+        '
+        'lbGuia
+        '
+        Me.lbGuia.Location = New System.Drawing.Point(438, 27)
+        Me.lbGuia.Name = "lbGuia"
+        Me.lbGuia.Size = New System.Drawing.Size(25, 16)
+        Me.lbGuia.TabIndex = 59
+        Me.lbGuia.Text = "Guia"
+        '
+        'lbOk
+        '
+        Me.lbOk.Appearance.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lbOk.Appearance.Image = CType(resources.GetObject("lbOk.Appearance.Image"), System.Drawing.Image)
+        Me.lbOk.Appearance.Options.UseFont = True
+        Me.lbOk.Appearance.Options.UseImage = True
+        Me.lbOk.ImageOptions.Image = CType(resources.GetObject("lbOk.ImageOptions.Image"), System.Drawing.Image)
+        Me.lbOk.Location = New System.Drawing.Point(666, 18)
+        Me.lbOk.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.lbOk.Name = "lbOk"
+        Me.lbOk.Size = New System.Drawing.Size(32, 32)
+        Me.lbOk.TabIndex = 58
+        '
+        'txtGuia
+        '
+        Me.txtGuia.Location = New System.Drawing.Point(469, 22)
+        Me.txtGuia.MenuManager = Me.RibbonControl
+        Me.txtGuia.Name = "txtGuia"
+        Me.txtGuia.Properties.Appearance.Font = New System.Drawing.Font("Tahoma", 10.0!)
+        Me.txtGuia.Properties.Appearance.Options.UseFont = True
+        Me.txtGuia.Size = New System.Drawing.Size(190, 28)
+        Me.txtGuia.TabIndex = 4
         '
         'lblHasta
         '
@@ -419,10 +458,10 @@ Partial Class frmPedido_List
         '
         'prg
         '
-        Me.prg.Location = New System.Drawing.Point(915, 140)
+        Me.prg.Location = New System.Drawing.Point(1140, 145)
         Me.prg.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.prg.Name = "prg"
-        Me.prg.Size = New System.Drawing.Size(257, 23)
+        Me.prg.Size = New System.Drawing.Size(161, 23)
         Me.prg.TabIndex = 4
         Me.prg.Visible = False
         '
@@ -518,6 +557,7 @@ Partial Class frmPedido_List
         CType(Me.RepositoryItemPictureEdit1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
+        CType(Me.txtGuia.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ImageCollection1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.dgridDetalle, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.gviewDetallePedido, System.ComponentModel.ISupportInitialize).EndInit()
@@ -526,6 +566,7 @@ Partial Class frmPedido_List
         Me.SplitContainer1.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer1.ResumeLayout(False)
+        CType(Me.ToastNotificationsManager1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -575,5 +616,9 @@ Partial Class frmPedido_List
     Friend WithEvents mnuExportarExcel As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents chkSinExistencias As DevExpress.XtraBars.BarCheckItem
     Friend WithEvents chkSinExistenciasERP As DevExpress.XtraBars.BarCheckItem
+    Friend WithEvents txtGuia As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents lbOk As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents lbGuia As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents ToastNotificationsManager1 As DevExpress.XtraBars.ToastNotifications.ToastNotificationsManager
     Friend WithEvents chkTemporales As DevExpress.XtraBars.BarCheckItem
 End Class

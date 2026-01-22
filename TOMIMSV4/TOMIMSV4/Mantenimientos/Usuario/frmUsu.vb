@@ -644,12 +644,12 @@ Public Class frmUsu
                             Exit Function
                         ElseIf txtClaveAutoriza.Text.Trim <> txtReptClaveAuto.Text.Trim Then
                             XtraMessageBox.Show("Las claves de autorización no coinciden", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                            txtClaveAutoriza.Focus()
-                            Exit Function
-                        End If
+                        txtClaveAutoriza.Focus()
+                        Exit Function
+                    End If
                     End If
 
-                Next
+            Next
 
             End If
 

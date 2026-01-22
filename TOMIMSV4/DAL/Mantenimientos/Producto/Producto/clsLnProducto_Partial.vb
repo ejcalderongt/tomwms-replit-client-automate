@@ -1,4 +1,6 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System
+Imports System.Collections.Generic
+Imports System.Data.SqlClient
 Imports System.Reflection
 Imports System.Threading.Tasks
 
@@ -887,7 +889,7 @@ Partial Public Class clsLnProducto
                 lDTA.SelectCommand.Transaction = lTransaction
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
                 If pIdPropietario > 0 Then
-                    lDTA.SelectCommand.Parameters.AddWithValue("@IdPropietario", pIdPropietario)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPropietario", pIdPropietario)
                 End If
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdInventarioEnc", pIdInventarioEnc)
 
@@ -3916,6 +3918,11 @@ Partial Public Class clsLnProducto
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
 
+                    'Dim vSQL As String = "SELECT * FROM VW_ProductoSI  " &
+                    '                 " WHERE IdBodega = @IdBodega " &
+                    '                 " And ((codigo =@Codigo) Or (codigo_barra=@Codigo) Or (codigo_barra_pcb =@Codigo) Or (codigo_barra_presentacion =@Codigo)) "
+
+
                     Dim vSQL As String = "SELECT * FROM VW_ProductoSI  " &
                                      " WHERE IdBodega = @IdBodega " &
                                      " And ((codigo =@Codigo) Or (codigo_barra=@Codigo) Or (codigo_barra_pcb =@Codigo) Or (codigo_barra_presentacion =@Codigo)) "
@@ -4629,8 +4636,9 @@ Partial Public Class clsLnProducto
             Dim lReturnList As New List(Of clsBeProducto_codigos_barra)
 
             Dim vSQL As String = String.Format("SELECT pcb.IdProductoCodigoBarra,pcb.IdProducto,pcb.IdProveedor,
-                                                pr.nombre AS Producto,'' AS Proveedor,pcb.codigo_barra,pcb.activo,pcb.user_agr,
-                                                pcb.fec_agr,pcb.user_mod,pcb.fec_mod FROM producto_codigos_barra AS pcb 
+                                                       pr.nombre AS Producto,'' AS Proveedor,pcb.codigo_barra,pcb.activo,pcb.user_agr,
+                                                       pcb.fec_agr,pcb.user_mod,pcb.fec_mod, pcb.IdColor, pcb.IdTalla
+                                                FROM producto_codigos_barra AS pcb 
                                                 INNER JOIN  producto AS pr ON pcb.IdProducto = pr.IdProducto 
                                                 WHERE pcb.IdProducto={0}", pIdProducto)
 
@@ -8142,6 +8150,100 @@ Partial Public Class clsLnProducto
 
     End Function
 
+    '#AT20251211 Funcion para codigos de barra en picking
+    Public Shared Function Get_List_Product_By_CodigoBarra_By_Picking(ByVal pCodigoBarra As String,
+                                                                             ByVal pIdBodega As Integer,
+                                                                             ByVal pIdPickingEnc As Integer) As List(Of clsBeProducto)
+
+        Get_List_Product_By_CodigoBarra_By_Picking = Nothing
+
+        Try
+            Dim vSQL As String = "SELECT DISTINCT IdBodega, IdProductoBodega, IdProducto, IdPropietario, IdClasificacion, IdFamilia, IdMarca, 
+                                         IdTipoProducto, IdUnidadMedidaBasica, IdCamara, IdTipoRotacion, IdPerfilSerializado, IdIndiceRotacion, 
+                                         IdSimbologia, IdArancel, codigo, nombre, codigo_barra, precio, existencia_min, existencia_max, costo, 
+                                         peso_referencia, peso_tolerancia, noparte, noserie, control_peso, ciclo_vida, tolerancia, kit, materia_prima, 
+                                         control_lote, control_vencimiento, genera_lote, serializado, codigo_barra_presentacion, '' codigo_barra_pcb, 
+                                         '' NomPresentacion, activopp, 0 IdPresentacion, 0 factor, peso_recepcion, peso_despacho, temperatura_referencia, 
+                                         temperatura_tolerancia, temperatura_recepcion, temperatura_despacho, fechamanufactura, capturar_aniada, 
+                                         Arancel, user_agr, fec_agr, user_mod, fec_mod, captura_arancel, es_hardware, activo, imagen, largo, ancho,  
+                                         alto, genera_lp_old, IdUnidadMedidaCobro, IdTipoEtiqueta, dias_inventario_promedio, IdProductoParametroA, 
+                                         IdProductoParametroB, IdTipoManufactura, Margen_Impresion
+                                  FROM VW_ProductoSI v
+                                  WHERE (IdBodega = @IdBodega) and 
+                                        (codigo_barra_pcb = @CodigoBarra or 
+                                         codigo_barra_presentacion = @CodigoBarra or 
+                                         codigo_barra = @CodigoBarra or 
+                                         codigo = @CodigoBarra) AND
+                                         EXISTS (SELECT * 
+                                                FROM trans_picking_ubic d
+                                                WHERE d.IdPickingEnc = @IdPickingEnc AND 
+                                                      d.IdProductoBodega = v.IdProductoBodega AND 
+                                                      d.IdUnidadMedida = v.IdUnidadMedidaBasica)"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@CodigoBarra", pCodigoBarra)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdPickingEnc", pIdPickingEnc)
+
+                        Dim lDT As New DataTable
+                        lDTA.Fill(lDT)
+
+                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                            Dim oBeProducto As New clsBeProducto()
+                            Dim lBeProducto As New List(Of clsBeProducto)
+
+                            For Each lRow In lDT.Rows
+
+                                oBeProducto = New clsBeProducto
+
+                                Cargar(oBeProducto, lRow, lConnection, lTransaction)
+
+                                If lRow("IdProductoBodega") IsNot DBNull.Value AndAlso lRow("IdProductoBodega") IsNot Nothing Then
+                                    oBeProducto.IdProductoBodega = CType(lRow("IdProductoBodega"), Integer)
+                                End If
+
+                                oBeProducto.IsNew = False
+
+                                lBeProducto.Add(oBeProducto)
+
+                            Next
+
+                            If Not lBeProducto Is Nothing Then
+
+                                lBeProducto = lBeProducto.Distinct.ToList()
+
+                                Get_List_Product_By_CodigoBarra_By_Picking = lBeProducto
+
+                            End If
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
     Public Shared Function GetSingle_For_HH(ByVal pIdProducto As Integer,
                                             ByRef lConnection As SqlConnection,
                                             ByRef lTransaction As SqlTransaction) As clsBeProducto
@@ -10423,53 +10525,55 @@ Partial Public Class clsLnProducto
 
     End Function
 
+    Public Shared Function Get_Lista_By_IdOrdenCompraEnc_Talla_Color(ByVal pIdOrdenCompraEnc As Integer,
+                                                                    ByVal pIdBodega As Integer) As DataTable
 
     Public Shared Function Get_All_By_Activo(ByVal pActivo As Boolean) As List(Of clsBeProducto)
 
-        Get_All_By_Activo = Nothing
+        Get_Lista_By_IdOrdenCompraEnc_Talla_Color = Nothing
 
         Try
 
-            Dim vSQL As String = "SELECT * FROM producto WHERE activo=@pActivo "
+            Dim vSQL As String = "SELECT prb.IdProductoBodega, oc.No_Linea, pd.codigo AS Codigo, pd.codigo_barra AS CodigoBarra, pd.nombre AS Nombre, u.Nombre AS UMBas, pd.IdUnidadMedidaBasica AS IdUmBas, pd.costo AS Costo, pd.kit AS Kit, pd.IdProducto, pd.control_peso AS ControlPeso, ISNULL(pp.nombre, '') 
+                                    AS Presentacion, producto_talla_color.CodigoSKU as SKU, talla.Codigo AS Talla, color.Codigo AS Color
+                                    FROM producto AS pd INNER JOIN
+                                    unidad_medida AS u ON pd.IdUnidadMedidaBasica = u.IdUnidadMedida INNER JOIN
+                                    producto_bodega AS prb ON pd.IdProducto = prb.IdProducto INNER JOIN
+                                    propietario_bodega ON pd.IdPropietario = propietario_bodega.IdPropietario AND prb.IdBodega = propietario_bodega.IdBodega INNER JOIN
+                                    trans_oc_det AS oc ON oc.IdProductoBodega = prb.IdProductoBodega INNER JOIN
+                                    producto_talla_color ON oc.IdProductoTallaColor = producto_talla_color.IdProductoTallaColor INNER JOIN
+                                    talla ON producto_talla_color.IdTalla = talla.IdTalla INNER JOIN
+                                    color ON producto_talla_color.IdColor = color.IdColor LEFT OUTER JOIN
+                                    producto_presentacion AS pp ON pp.IdPresentacion = oc.IdPresentacion
+                                  WHERE oc.IdOrdenCompraEnc = @IdOrdenCompraEnc AND 
+                                        prb.IdBodega = @IdBodega 
+                                  ORDER BY pd.codigo "
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
                 lConnection.Open()
 
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                Using ltransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
                         lDTA.SelectCommand.CommandType = CommandType.Text
-                        lDTA.SelectCommand.Transaction = lTransaction
-                        lDTA.SelectCommand.Parameters.AddWithValue("@pActivo", pActivo)
+                        lDTA.SelectCommand.Transaction = ltransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraEnc", pIdOrdenCompraEnc)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
 
-                        Dim lDT As New DataTable
-                        lDTA.Fill(lDT)
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
 
-                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
-
-                            Dim oBeProducto As New clsBeProducto()
-                            Dim lBeProducto As New List(Of clsBeProducto)
-
-                            For Each lRow In lDT.Rows
-
-                                oBeProducto = New clsBeProducto
-                                Cargar(oBeProducto, lRow, lConnection, lTransaction)
-                                oBeProducto.IsNew = False
-                                lBeProducto.Add(oBeProducto)
-                            Next
-
-                            If Not lBeProducto Is Nothing Then
-                                lBeProducto = lBeProducto.Distinct.ToList()
-                                Get_All_By_Activo = lBeProducto
-                            End If
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                            Get_Lista_By_IdOrdenCompraEnc_Talla_Color = lDataTable
+                        End If
 
                         End If
 
                     End Using
 
-                    lTransaction.Commit()
+                    ltransaction.Commit()
 
                 End Using
 
@@ -10478,7 +10582,7 @@ Partial Public Class clsLnProducto
             End Using
 
         Catch ex As Exception
-            Throw ex
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         End Try
 
     End Function
@@ -10538,6 +10642,7 @@ Partial Public Class clsLnProducto
 
             ' Ejecutar la consulta SQL
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
                 lDTA.SelectCommand.CommandType = CommandType.Text
                 lDTA.SelectCommand.Transaction = lTransaction
                 lDTA.SelectCommand.Parameters.AddWithValue("@pActivo", pActivo)
@@ -10568,7 +10673,9 @@ Partial Public Class clsLnProducto
                         lBeProducto = lBeProducto.Distinct().ToList()
                         Get_All_By_Activo = lBeProducto
                     End If
+
                 End If
+
             End Using
 
         Catch ex As Exception
@@ -10577,67 +10684,100 @@ Partial Public Class clsLnProducto
 
     End Function
 
+    Public Shared Function Get_All_By_Activo(ByVal pActivo As Boolean) As List(Of clsBeProducto)
 
+        Get_All_By_Activo = Nothing
 
-    'Public Shared Function Get_All_By_Activo(ByVal pUltimaFechaSincro As Date, ByVal pActivo As Boolean,
-    '                                                                           ByVal listPropietarios As List(Of Integer),
-    '                                                                           ByVal lConnection As SqlConnection,
-    '                                                                           ByVal lTransaction As SqlTransaction) As List(Of clsBeProducto)
+        Try
 
-    '    Get_All_By_Activo = Nothing
+            Dim vSQL As String = "SELECT * FROM producto WHERE activo=@pActivo "
 
-    '    Try
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
-    '        Dim vSQL As String = "SELECT * FROM producto WHERE (activo=@pActivo and fec_mod>=@pUltimaFechaSincro)"
+                lConnection.Open()
 
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-    '        If listPropietarios IsNot Nothing AndAlso listPropietarios.Count > 0 Then
-    '            Dim propietarioIds As String = String.Join(",", listPropietarios.Select(Function(p) p.IdPropietario.ToString()))
-    '            vSQL &= " AND IdPropietario IN (" & propietarioIds & ")"
-    '        End If
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
-    '        ' Ejecutar la consulta SQL
-    '        Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@pActivo", pActivo)
 
-    '            lDTA.SelectCommand.CommandType = CommandType.Text
-    '            lDTA.SelectCommand.Transaction = lTransaction
-    '            lDTA.SelectCommand.Parameters.AddWithValue("@pActivo", pActivo)
-    '            lDTA.SelectCommand.Parameters.AddWithValue("@pUltimaFechaSincro", pUltimaFechaSincro)
+                        Dim lDT As New DataTable
+                        lDTA.Fill(lDT)
 
-    '            Dim lDT As New DataTable
-    '            lDTA.Fill(lDT)
+                        If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
 
-    '            ' Verificar si existen resultados
-    '            If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+                            Dim oBeProducto As New clsBeProducto()
+                            Dim lBeProducto As New List(Of clsBeProducto)
 
-    '                Dim oBeProducto As clsBeProducto
-    '                Dim lBeProducto As New List(Of clsBeProducto)
+                            For Each lRow In lDT.Rows
 
-    '                ' Procesar cada registro
-    '                For Each lRow In lDT.Rows
-    '                    oBeProducto = New clsBeProducto
-    '                    Cargar(oBeProducto, lRow, lConnection, lTransaction)
-    '                    oBeProducto.IsNew = False
-    '                    lBeProducto.Add(oBeProducto)
-    '                Next
+                                oBeProducto = New clsBeProducto
+                                Cargar(oBeProducto, lRow, lConnection, lTransaction)
+                                oBeProducto.IsNew = False
+                                lBeProducto.Add(oBeProducto)
+                            Next
 
-    '                ' Eliminar duplicados
-    '                If Not lBeProducto Is Nothing Then
-    '                    lBeProducto = lBeProducto.Distinct.ToList()
-    '                    Get_All_By_Activo = lBeProducto
-    '                End If
-    '            End If
-    '        End Using
+                            If Not lBeProducto Is Nothing Then
+                                lBeProducto = lBeProducto.Distinct.ToList()
+                                Get_All_By_Activo = lBeProducto
+                            End If
 
-    '    Catch ex As Exception
-    '        Throw ex
-    '    End Try
+                        End If
 
-    'End Function
+                    End Using
 
+                    lTransaction.Commit()
 
+                End Using
 
+                lConnection.Close()
 
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+    Public Shared Function Get_Codigo_By_IdProducto(ByVal pIdProducto As Integer, ByRef lConnection As SqlConnection, ByRef lTransaction As SqlTransaction) As String
+
+        Get_Codigo_By_IdProducto = ""
+
+        Try
+
+            Dim vSQL As String = "SELECT p.Codigo
+                        FROM producto p                        
+                        WHERE (p.IdProducto=@IdProducto)"
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdProducto", pIdProducto)
+
+                Dim lDT As New DataTable
+                lDTA.Fill(lDT)
+
+                If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+
+                    Dim lRow As DataRow = lDT.Rows(0)
+                    Get_Codigo_By_IdProducto = CType(lRow("Codigo"), String)
+
+                    End Sub)
+                End If
+
+                Get_All_By_IdPedidoEnc = lReturnList
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
     Public Shared Function Get_All_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer, lConnection As SqlConnection, ltransaction As SqlTransaction) As List(Of clsBeProducto)
 
         Get_All_By_IdPedidoEnc = Nothing
@@ -10772,5 +10912,4 @@ Partial Public Class clsLnProducto
         End Try
 
     End Function
-
 End Class

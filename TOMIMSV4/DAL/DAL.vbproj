@@ -95,12 +95,14 @@
     <Reference Include="DevExpress.Data.Desktop.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Utils.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.Xpo.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="DevExpress.XtraEditors.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SqlClient, Version=4.6.1.6, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Data.SqlClient.4.8.6\lib\net461\System.Data.SqlClient.dll</HintPath>
+    <Reference Include="System.Data.SqlClient, Version=4.6.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Data.SqlClient.4.9.0\lib\net462\System.Data.SqlClient.dll</HintPath>
     </Reference>
     <Reference Include="System.Deployment" />
     <Reference Include="System.DirectoryServices" />
@@ -182,10 +184,13 @@
     <Compile Include="Log\clsLnDMS_Log_sincronizacion_nube.vb" />
     <Compile Include="Log\clsLnLog_importacion_excel_partial.vb" />
     <Compile Include="Log\clsLnLog_importacion_excel.vb" />
+    <Compile Include="Log\clsLnLog_sincronizacion_fallos.vb" />
+    <Compile Include="Log\clsLnLog_sincronizacion_nube.vb" />
     <Compile Include="Mantenimientos\Ajustes\clsLnAjuste_motivo_Partial.vb" />
     <Compile Include="Mantenimientos\Ajustes\clsLnTrans_ajuste_det_doc.vb" />
     <Compile Include="Mantenimientos\Ajustes\clsLnTrans_ajuste_det_doc_partial.vb" />
     <Compile Include="Mantenimientos\Bodega\Importacion\clsLnTrans_bodega_ubicaciones_excel.vb" />
+    <Compile Include="Mantenimientos\Bodega\Smtp_Configuracion\ConfigManager.vb" />
     <Compile Include="Mantenimientos\Campaña\clsLnCampaña.vb" />
     <Compile Include="Mantenimientos\Centro_Costo\clsLnCentro_costo.vb" />
     <Compile Include="Mantenimientos\Cliente\clsLnCliente_lotes.vb" />
@@ -323,6 +328,7 @@
     <Compile Include="Transacciones\Packing\clsLnTrans_packing_enc_Partial.vb" />
     <Compile Include="Transacciones\Pedido\clsLnTrans_pe_docu_ref.vb" />
     <Compile Include="Transacciones\Pedido\clsLnTrans_pe_docu_ref_det.vb" />
+    <Compile Include="Transacciones\Pedido\clsLnTrans_pe_ref_mi3.vb" />
     <Compile Include="Transacciones\Pedido\Log_Liberacion\clsLnTrans_log_pedido_liberacion_partial.vb" />
     <Compile Include="Transacciones\Pedido\Log_Liberacion\clsLnTrans_log_pedido_liberacion.vb" />
     <Compile Include="Transacciones\Pedido\Log_Reserva\clsLnTrans_pe_det_log_reserva.vb" />
@@ -760,6 +766,9 @@
     <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_HH_Stock\clsLnTrans_ubic_hh_stock.vb" />
     <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Tarima\clsLnTrans_ubic_tarima.vb" />
     <Compile Include="Transacciones\Transaccion_Ubicacion_HH\Transaccion_Ubicacion_Tarima\clsLnTrans_ubic_tarima_partial.vb" />
+    <Compile Include="Transacciones\VerificacionBOF\clsLnLog_verificacion_bof.vb" />
+    <Compile Include="Transacciones\VerificacionBOF\clsLnVerificacion_estado.vb" />
+    <Compile Include="Transacciones\VerificacionBOF\clsLnVerificacion_motivo.vb" />
     <Compile Include="Ubicacion_Sugerida\clsLnUbicacionSugerida.vb" />
   </ItemGroup>
   <ItemGroup>

@@ -152,6 +152,16 @@ Public Class clsBeTrans_ajuste_det
     Public Property referencia_ajuste_erp As String = ""
     Public Property estado_ajuste_erp As Boolean = False
 
+    '#GT28082025: control de producto por talla/color
+    Public Property IdProductoTallaColor_origen As Integer = 0
+    Public Property Talla_origen As String = ""
+    Public Property Color_origen As String = ""
+
+    '#GT17122025: se agregan propiedades para poder dar traza si una talla cambio a otra, igual con color
+    Public Property Talla_destino As String = ""
+    Public Property Color_destino As String = ""
+    Public Property IdProductoTallaColor_destino As Integer = 0
+
     Sub New()
     End Sub
     ''' <summary>
@@ -182,8 +192,8 @@ Public Class clsBeTrans_ajuste_det
     ''' <param name="codigo_ajuste">The codigo_ajuste.</param>
     ''' <param name="enviado">if set to <c>true</c> [enviado].</param>
     Sub New(ByRef idajustedet As Integer, ByVal idajusteenc As Integer, ByVal IdStock As Integer, ByVal IdPropietarioBodega As Integer, ByVal IdProductoBodega As Integer, ByVal IdProductoEstado As Integer, ByVal IdPresentacion As Integer, ByVal IdUnidadMedida As Integer, ByVal IdUbicacion As Integer, ByVal lote_original As String, ByVal lote_nuevo As String, ByVal fecha_vence_original As Date, ByVal fecha_vence_nueva As Date, ByVal peso_original As Double, ByVal peso_nuevo As Double, ByVal cantidad_original As Double, ByVal cantidad_nueva As Double, ByVal codigo_producto As String, ByVal nombre_producto As String, ByVal idtipoajuste As Integer, ByVal idmotivoajuste As Integer, ByVal observacion As String, ByVal codigo_ajuste As String, ByVal enviado As Boolean)
-        Me.IdAjusteDet = Idajustedet
-        Me.IdAjusteEnc = Idajusteenc
+        Me.IdAjusteDet = idajustedet
+        Me.IdAjusteEnc = idajusteenc
         Me.IdStock = IdStock
         Me.IdPropietarioBodega = IdPropietarioBodega
         Me.IdProductoBodega = IdProductoBodega
@@ -191,21 +201,21 @@ Public Class clsBeTrans_ajuste_det
         Me.IdPresentacion = IdPresentacion
         Me.IdUnidadMedida = IdUnidadMedida
         Me.IdUbicacion = IdUbicacion
-        Me.Lote_original = Lote_original
-        Me.Lote_nuevo = Lote_nuevo
-        Me.Fecha_vence_original = Fecha_vence_original
-        Me.Fecha_vence_nueva = Fecha_vence_nueva
-        Me.Peso_original = Peso_original
-        Me.Peso_nuevo = Peso_nuevo
-        Me.Cantidad_original = Cantidad_original
-        Me.Cantidad_nueva = Cantidad_nueva
-        Me.Codigo_producto = Codigo_producto
-        Me.Nombre_producto = Nombre_producto
-        Me.Idtipoajuste = Idtipoajuste
-        Me.IdMotivoAjuste = Idmotivoajuste
-        Me.Observacion = Observacion
-        Me.Codigo_ajuste = Codigo_ajuste
-        Me.Enviado = Enviado
+        Me.Lote_original = lote_original
+        Me.Lote_nuevo = lote_nuevo
+        Me.Fecha_vence_original = fecha_vence_original
+        Me.Fecha_vence_nueva = fecha_vence_nueva
+        Me.Peso_original = peso_original
+        Me.Peso_nuevo = peso_nuevo
+        Me.Cantidad_original = cantidad_original
+        Me.Cantidad_nueva = cantidad_nueva
+        Me.Codigo_producto = codigo_producto
+        Me.Nombre_producto = nombre_producto
+        Me.Idtipoajuste = idtipoajuste
+        Me.IdMotivoAjuste = idmotivoajuste
+        Me.Observacion = observacion
+        Me.Codigo_ajuste = codigo_ajuste
+        Me.Enviado = enviado
     End Sub
     ''' <summary>
     ''' Creates a new object that is a copy of the current instance.

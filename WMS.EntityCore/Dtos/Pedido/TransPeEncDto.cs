@@ -1,0 +1,87 @@
+﻿using WMSWebAPI.Dtos.Catalogos;
+using WMSWebAPI.Dtos.Datos_Maestros;
+using WMSWebAPI.Dtos.Picking;
+
+namespace WMSWebAPI.Dtos.Pedido
+{
+    public class TransPeEncDto
+    {
+        public int IdPedidoEnc { get; set; } = 0;
+        public int IdBodega { get; set; } = 0;
+        public int IdCliente { get; set; } = 0;
+        public int IdMuelle { get; set; } = 0;
+        public int IdPropietarioBodega { get; set; } = 0;
+        public int IdTipoPedido { get; set; } = 0;
+        public int IdPickingEnc { get; set; } = 0;
+        public DateTime Fecha_Pedido { get; set; } = DateTime.Now;
+        public DateTime Hora_ini { get; set; } = DateTime.Now;
+        public DateTime Hora_fin { get; set; } = DateTime.Now;
+        public string Ubicacion { get; set; } = string.Empty;
+        public string Estado { get; set; } = string.Empty;
+        public int No_despacho { get; set; } = 0;
+        public bool Activo { get; set; } = false;
+        public string User_agr { get; set; } = string.Empty;
+        public DateTime Fec_agr { get; set; } = DateTime.Now;
+        public string User_mod { get; set; } = string.Empty;
+        public DateTime Fec_mod { get; set; } = DateTime.Now;
+        public int No_documento { get; set; } = 0;
+        public bool Local { get; set; } = false;
+        public bool Pallet_primero { get; set; } = false;
+        public double Dias_cliente { get; set; } = 0;
+        public bool Anulado { get; set; } = false;
+        public double RoadKilometraje { get; set; } = 0;
+        public DateTime RoadFechaEntr { get; set; } = DateTime.Now;
+        public string RoadDirEntrega { get; set; } = string.Empty;
+        public double RoadTotal { get; set; } = 0;
+        public double RoadDesMonto { get; set; } = 0;
+        public double RoadImpMonto { get; set; } = 0;
+        public double RoadPeso { get; set; } = 0;
+        public string RoadBandera { get; set; } = string.Empty;
+        public string RoadStatCom { get; set; } = string.Empty;
+        public string RoadCalcoBJ { get; set; } = string.Empty;
+        public int RoadImpres { get; set; } = 0;
+        public string RoadADD1 { get; set; } = string.Empty;
+        public string RoadADD2 { get; set; } = string.Empty;
+        public string RoadADD3 { get; set; } = string.Empty;
+        public string RoadStatProc { get; set; } = string.Empty;
+        public bool RoadRechazado { get; set; } = false;
+        public string RoadRazon_Rechazado { get; set; } = string.Empty;
+        public bool RoadInformado { get; set; } = false;
+        public string RoadSucursal { get; set; } = string.Empty;
+        public int RoadIdDespacho { get; set; } = 0;
+        public int RoadIdFacturacion { get; set; } = 0;
+        public int RoadIdRuta { get; set; } = 0;
+        public int RoadIdVendedor { get; set; } = 0;
+        public int RoadIdRutaDespacho { get; set; } = 0;
+        public int RoadIdVendedorDespacho { get; set; } = 0;
+        public string Observacion { get; set; } = string.Empty;
+        public bool PedidoRoad { get; set; } = false;
+        public DateTime HoraEntregaDesde { get; set; } = DateTime.Now;
+        public DateTime HoraEntregaHasta { get; set; } = DateTime.Now;
+        public string Referencia { get; set; } = string.Empty;
+        public int IdMotivoAnulacionBodega { get; set; } = 0;
+        public bool Enviado_A_ERP { get; set; } = false;
+        public bool Control_ultimo_lote { get; set; } = false;
+        public string Serie { get; set; } = string.Empty;
+        public int Correlativo { get; set; } = 0;
+        public string Referencia_Documento_Ingreso_Bodega_Destino { get; set; } = string.Empty;
+        public bool Sync_mi3 { get; set; } = false;
+        public string No_Picking_ERP { get; set; } = string.Empty;
+        public string No_documento_externo { get; set; } = string.Empty;
+        public bool Requiere_tarimas { get; set; } = false;
+        public DateTime Fecha_preparacion { get; set; } = DateTime.Now;
+        public int IdTipoManufactura { get; set; } = 0;
+        public string Bodega_origen { get; set; } = string.Empty;
+        public string Bodega_destino { get; set; } = string.Empty;
+        public int IdMotivoDevolucion { get; set; } = 0;
+        public bool IsNew { get; set; } = true;
+        public List<TransPeDetDto> Detalle { get; set; } = new List<TransPeDetDto>();
+        public List<PickingDto> Picking { get; set; } = new List<PickingDto>();
+        public PropietarioBodegaDto PropietarioBodega { get; set; } = new PropietarioBodegaDto();
+        public ClienteDto Cliente { get; set; } = new ClienteDto();
+        public TransPeTipoDto TipoPedido { get; set; } = new TransPeTipoDto();
+        public TransPePolDto ObjPoliza { get; set; } = new TransPePolDto();
+        public string Codigo_Empresa_ERP { get; set; } = string.Empty;
+        public bool EsExportacion { get; set; } = false;
+    }
+}

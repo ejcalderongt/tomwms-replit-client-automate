@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmCampaña
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,7 +17,7 @@ Partial Class frmCampaña
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim Label1 As System.Windows.Forms.Label
         Dim lblNombreCampaña As System.Windows.Forms.Label
@@ -25,6 +25,7 @@ Partial Class frmCampaña
         Dim lblIdCampañaCorrelativo As System.Windows.Forms.Label
         Dim Label2 As System.Windows.Forms.Label
         Dim Label3 As System.Windows.Forms.Label
+        Dim lblCodigo As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCampaña))
         Dim lblCodigo As System.Windows.Forms.Label
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
@@ -35,12 +36,17 @@ Partial Class frmCampaña
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
+        Me.txtCodigo = New DevExpress.XtraEditors.TextEdit()
         Me.dtpFechaHasta = New System.Windows.Forms.DateTimePicker()
         Me.dtpFechaDesde = New System.Windows.Forms.DateTimePicker()
         Me.txtNombreCampaña = New DevExpress.XtraEditors.TextEdit()
         Me.chkActivo = New DevExpress.XtraEditors.CheckEdit()
         Me.lblIdCampaña = New System.Windows.Forms.Label()
-        Me.txtCodigo = New DevExpress.XtraEditors.TextEdit()
+        Me.XtraTabControl1 = New DevExpress.XtraTab.XtraTabControl()
+        Me.xtpGeneral = New DevExpress.XtraTab.XtraTabPage()
+        Me.xtpDetalle = New DevExpress.XtraTab.XtraTabPage()
+        Me.dgridTallaColor = New DevExpress.XtraGrid.GridControl()
+        Me.GridView7 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Label1 = New System.Windows.Forms.Label()
         lblNombreCampaña = New System.Windows.Forms.Label()
         Label37 = New System.Windows.Forms.Label()
@@ -51,8 +57,15 @@ Partial Class frmCampaña
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl1.SuspendLayout()
+        CType(Me.txtCodigo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtNombreCampaña.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkActivo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.XtraTabControl1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.XtraTabControl1.SuspendLayout()
+        Me.xtpGeneral.SuspendLayout()
+        Me.xtpDetalle.SuspendLayout()
+        CType(Me.dgridTallaColor, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GridView7, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCodigo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -126,6 +139,16 @@ Partial Class frmCampaña
         Label3.TabIndex = 20
         Label3.Text = "Campaña hasta:"
         '
+        'lblCodigo
+        '
+        lblCodigo.AutoSize = True
+        lblCodigo.Location = New System.Drawing.Point(29, 197)
+        lblCodigo.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        lblCodigo.Name = "lblCodigo"
+        lblCodigo.Size = New System.Drawing.Size(57, 16)
+        lblCodigo.TabIndex = 22
+        lblCodigo.Text = "Nombre:"
+        '
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
@@ -134,7 +157,7 @@ Partial Class frmCampaña
         Me.RibbonControl.MaxItemId = 4
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
-        Me.RibbonControl.Size = New System.Drawing.Size(794, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(1113, 193)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'cmdGuardar
@@ -173,10 +196,10 @@ Partial Class frmCampaña
         '
         'RibbonStatusBar
         '
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 489)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 651)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(794, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1113, 30)
         '
         'GroupControl1
         '
@@ -194,12 +217,21 @@ Partial Class frmCampaña
         Me.GroupControl1.Controls.Add(Me.lblIdCampaña)
         Me.GroupControl1.Controls.Add(lblIdCampañaCorrelativo)
         Me.GroupControl1.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupControl1.Location = New System.Drawing.Point(0, 193)
+        Me.GroupControl1.Location = New System.Drawing.Point(0, 0)
         Me.GroupControl1.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(794, 296)
+        Me.GroupControl1.Size = New System.Drawing.Size(1111, 428)
         Me.GroupControl1.TabIndex = 2
         Me.GroupControl1.Text = "Datos Campaña"
+        '
+        'txtCodigo
+        '
+        Me.txtCodigo.Location = New System.Drawing.Point(162, 194)
+        Me.txtCodigo.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtCodigo.MenuManager = Me.RibbonControl
+        Me.txtCodigo.Name = "txtCodigo"
+        Me.txtCodigo.Size = New System.Drawing.Size(241, 22)
+        Me.txtCodigo.TabIndex = 21
         '
         'dtpFechaHasta
         '
@@ -250,8 +282,15 @@ Partial Class frmCampaña
         Me.lblIdCampaña.TabIndex = 1
         Me.lblIdCampaña.Text = "-"
         '
-        'txtCodigo
+        'XtraTabControl1
         '
+        Me.XtraTabControl1.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.XtraTabControl1.Location = New System.Drawing.Point(0, 193)
+        Me.XtraTabControl1.Name = "XtraTabControl1"
+        Me.XtraTabControl1.SelectedTabPage = Me.xtpGeneral
+        Me.XtraTabControl1.Size = New System.Drawing.Size(1113, 458)
+        Me.XtraTabControl1.TabIndex = 5
+        Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.xtpGeneral, Me.xtpDetalle})
         Me.txtCodigo.Location = New System.Drawing.Point(162, 194)
         Me.txtCodigo.Margin = New System.Windows.Forms.Padding(4)
         Me.txtCodigo.MenuManager = Me.RibbonControl
@@ -259,8 +298,45 @@ Partial Class frmCampaña
         Me.txtCodigo.Size = New System.Drawing.Size(241, 22)
         Me.txtCodigo.TabIndex = 21
         '
-        'lblCodigo
+        'xtpGeneral
         '
+        Me.xtpGeneral.Controls.Add(Me.GroupControl1)
+        Me.xtpGeneral.Name = "xtpGeneral"
+        Me.xtpGeneral.Size = New System.Drawing.Size(1111, 428)
+        Me.xtpGeneral.Text = "General"
+        '
+        'xtpDetalle
+        '
+        Me.xtpDetalle.Controls.Add(Me.dgridTallaColor)
+        Me.xtpDetalle.Name = "xtpDetalle"
+        Me.xtpDetalle.Size = New System.Drawing.Size(1111, 428)
+        Me.xtpDetalle.Text = "Detalle"
+        '
+        'dgridTallaColor
+        '
+        Me.dgridTallaColor.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.dgridTallaColor.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridTallaColor.Location = New System.Drawing.Point(0, 0)
+        Me.dgridTallaColor.MainView = Me.GridView7
+        Me.dgridTallaColor.Margin = New System.Windows.Forms.Padding(4)
+        Me.dgridTallaColor.Name = "dgridTallaColor"
+        Me.dgridTallaColor.Size = New System.Drawing.Size(1111, 428)
+        Me.dgridTallaColor.TabIndex = 21
+        Me.dgridTallaColor.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView7})
+        '
+        'GridView7
+        '
+        Me.GridView7.Appearance.HeaderPanel.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GridView7.Appearance.HeaderPanel.Options.UseFont = True
+        Me.GridView7.Appearance.Row.Font = New System.Drawing.Font("Tahoma", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GridView7.Appearance.Row.Options.UseFont = True
+        Me.GridView7.DetailHeight = 437
+        Me.GridView7.GridControl = Me.dgridTallaColor
+        Me.GridView7.Name = "GridView7"
+        Me.GridView7.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.[True]
+        Me.GridView7.OptionsBehavior.Editable = False
+        Me.GridView7.OptionsView.ShowAutoFilterRow = True
+        Me.GridView7.OptionsView.ShowGroupPanel = False
         lblCodigo.AutoSize = True
         lblCodigo.Location = New System.Drawing.Point(29, 197)
         lblCodigo.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
@@ -273,8 +349,8 @@ Partial Class frmCampaña
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(794, 519)
-        Me.Controls.Add(Me.GroupControl1)
+        Me.ClientSize = New System.Drawing.Size(1113, 681)
+        Me.Controls.Add(Me.XtraTabControl1)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
         Me.Name = "frmCampaña"
@@ -285,8 +361,15 @@ Partial Class frmCampaña
         CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl1.ResumeLayout(False)
         Me.GroupControl1.PerformLayout()
+        CType(Me.txtCodigo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtNombreCampaña.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkActivo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.XtraTabControl1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.XtraTabControl1.ResumeLayout(False)
+        Me.xtpGeneral.ResumeLayout(False)
+        Me.xtpDetalle.ResumeLayout(False)
+        CType(Me.dgridTallaColor, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView7, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCodigo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -307,4 +390,9 @@ Partial Class frmCampaña
     Friend WithEvents cmdActualizar As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents cmdEliminar As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents txtCodigo As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents XtraTabControl1 As DevExpress.XtraTab.XtraTabControl
+    Friend WithEvents xtpGeneral As DevExpress.XtraTab.XtraTabPage
+    Friend WithEvents xtpDetalle As DevExpress.XtraTab.XtraTabPage
+    Friend WithEvents dgridTallaColor As DevExpress.XtraGrid.GridControl
+    Friend WithEvents GridView7 As DevExpress.XtraGrid.Views.Grid.GridView
 End Class

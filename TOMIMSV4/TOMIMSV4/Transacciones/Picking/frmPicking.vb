@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System
+Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Reflection
 Imports DevExpress.Mvvm.Native
@@ -87,6 +88,7 @@ Public Class frmPicking
 
                 GridView1.Columns("CantidadDañada").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
                 GridView1.Columns("CantidadDañada").DisplayFormat.FormatString = "{0:n6}"
+
                 GridView1.Columns("CantidadDañada").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
                 GridView1.Columns("CantidadDañada").DisplayFormat.FormatString = "{0:n6}"
 
@@ -169,6 +171,8 @@ Public Class frmPicking
         DTStockRes.Columns.Add("IdStockRes", GetType(Int32)).ReadOnly = True
         DTStockRes.Columns.Add("Operador_Asignado", GetType(String)).ReadOnly = False
         DTStockRes.Columns.Add("Manufactura", GetType(Boolean)).ReadOnly = True
+        DTStockRes.Columns.Add("Talla", GetType(String)).ReadOnly = True
+        DTStockRes.Columns.Add("Color", GetType(String)).ReadOnly = True
 
     End Sub
 
@@ -293,6 +297,7 @@ Public Class frmPicking
             Pedidos_Tienen_Picking_Asociado = False
 
         Catch ex As Exception
+            SplashScreenManager.CloseForm(False)
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
 
@@ -1074,6 +1079,7 @@ Public Class frmPicking
                                     .Fec_mod = Now
                                     .Activo = True
                                     .IsNew = True
+                                    .IdProductoTallaColor = bo.IdProductoTallaColor
 
                                 End If
 
@@ -1961,6 +1967,17 @@ Public Class frmPicking
                                                                                       AP.HostName,
                                                                                       vNombreArchivoLayOutGrid)
 
+                '#GT01122025: Estoy infiriendo que mampa no trabaja picking consolidados.
+                Dim tmpPedido = lPedidosPicking(0)
+                Dim BePedido = clsLnTrans_pe_enc.Get_Single_Without_Picking(tmpPedido.IdPedidoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                If BePedido IsNot Nothing Then
+                    If BePedido.TipoPedido.Verificar_con_imagen Then
+                        BloquearControles_Por_VerificacionBOF(False)
+                    Else
+                        BloquearControles_Por_VerificacionBOF(True)
+                    End If
+                End If
 
                 If Not BeConfiguracionUsuarioDet Is Nothing Then
                     grdvPickingUbic.RestoreLayoutFromStream(BeConfiguracionUsuarioDet.Stream_Template)
@@ -2513,7 +2530,9 @@ Public Class frmPicking
                                         ObjStock.Fecha_ingreso,
                                         ObjStock.IdStockRes,
                                         vNombreOperadorAsingadoAuto,
-                                        vTieneManufactura)
+                                        vTieneManufactura,
+                                        ObjStock.Codigo_Talla,
+                                        ObjStock.Codigo_Color)
 
                 Next
 
@@ -2778,7 +2797,30 @@ Public Class frmPicking
                 End If
 
                 If Modal Then
+
                     DialogResult = DialogResult.OK '#EJC20171021_0437PM: Cerrar forma después de procesar
+
+                    If BePickingEnc.procesado_bof Then
+
+                        Dim vPedidos = BeListPickingDet _
+                                        .Where(Function(x) x IsNot Nothing) _
+                                        .Select(Function(x) x.IdPedidoEnc) _
+                                        .Distinct() _
+                                        .ToList()
+
+                        ' Ejemplo de uso con If como pediste
+                        If vPedidos.Count() = 1 Then
+                            Dim IdPedidoEnc = vPedidos(0)
+                            Dim BePedidoEnc As clsBeTrans_pe_enc = clsLnTrans_pe_enc.GetSingle(IdPedidoEnc)
+                            If XtraMessageBox.Show("¿Generar Despacho?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                                BePedidoEnc.Picking = clsLnTrans_picking_enc.GetSingle(BePickingEnc.IdPickingEnc)
+                                Nuevo_Despacho(BePedidoEnc)
+                            End If
+                        End If
+
+
+                    End If
+
                 Else
                     Close()
                 End If
@@ -3636,47 +3678,49 @@ Public Class frmPicking
             '#GT02102025: se añade el etado Pendiente
             If BePickingEnc.Estado = "Verificado" OrElse BePickingEnc.Estado = "Procesado" OrElse BePickingEnc.Estado = "Pendiente" Then
 
-                If XtraMessageBox.Show("¿Modificar picking a estado despachado?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                If BePickingEnc.Estado = "Verificado" OrElse BePickingEnc.Estado = "Procesado" Then
+
+                    If XtraMessageBox.Show("¿Modificar picking a estado despachado?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
 
 
 
-                    '#GT02102025: validación especial para PENDIENTE,, requiere confirmar que no tenga reserva el pedido y por lo tanto que no sea pedido consolidado
-                    If BePickingEnc.Estado = "Pendiente" Then
+                        '#GT02102025: validación especial para PENDIENTE,, requiere confirmar que no tenga reserva el pedido y por lo tanto que no sea pedido consolidado
+                        If BePickingEnc.Estado = "Pendiente" Then
 
-                        Dim listaPickingDet = BePickingEnc.ListaPickingDet
-                        'Dim EsPickingConsolidado As Boolean = listaPickingDet _
-                        '                                    .GroupBy(Function(x) x.IdPedidoEnc) _
-                        '                                    .Any(Function(g) g.Count() > 1)
+                            Dim listaPickingDet = BePickingEnc.ListaPickingDet
+                            'Dim EsPickingConsolidado As Boolean = listaPickingDet _
+                            '                                    .GroupBy(Function(x) x.IdPedidoEnc) _
+                            '                                    .Any(Function(g) g.Count() > 1)
 
-                        Dim EsPickingConsolidado As Boolean = listaPickingDet _
-                                                               .Select(Function(x) x.IdPedidoEnc) _
-                                                               .Distinct() _
-                                                               .Count() > 1
+                            Dim EsPickingConsolidado As Boolean = listaPickingDet _
+                                                                   .Select(Function(x) x.IdPedidoEnc) _
+                                                                   .Distinct() _
+                                                                   .Count() > 1
 
 
-                        If Not EsPickingConsolidado Then
+                            If Not EsPickingConsolidado Then
 
-                            Dim IdPedidoEnc As Integer? = listaPickingDet _
-                                                            .Select(Function(x) x.IdPedidoEnc) _
-                                                            .Distinct() _
-                                                            .SingleOrDefault()
+                                Dim IdPedidoEnc As Integer? = listaPickingDet _
+                                                                .Select(Function(x) x.IdPedidoEnc) _
+                                                                .Distinct() _
+                                                                .SingleOrDefault()
 
-                            Dim stockres As Integer = clsLnTrans_pe_enc.Get_StockRes_By_IdPedido(IdPedidoEnc)
+                                Dim stockres As Integer = clsLnTrans_pe_enc.Get_StockRes_By_IdPedido(IdPedidoEnc)
 
-                            If stockres > 0 Then
-                                XtraMessageBox.Show("No se puede cambiar a estado despachado, hay reserva asociada.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                If stockres > 0 Then
+                                    XtraMessageBox.Show("No se puede cambiar a estado despachado, hay reserva asociada.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                    Exit Sub
+                                End If
+
+                            Else
+                                XtraMessageBox.Show("No se puede cambiar a estado despachado, el picking pertenece a un pedido consolidado.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                                 Exit Sub
                             End If
-
-                        Else
-                            XtraMessageBox.Show("No se puede cambiar a estado despachado, el picking pertenece a un pedido consolidado.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                            Exit Sub
                         End If
 
-                    End If
+                        If clsLnTrans_picking_enc.Actualizar_Estado(BePickingEnc) > 0 Then
 
-
-                    BePickingEnc.Estado = "Despachado"
+                            BePickingEnc.Estado = "Despachado"
 
                     If clsLnTrans_picking_enc.Actualizar_Estado(BePickingEnc) > 0 Then
 
@@ -5602,5 +5646,69 @@ Public Class frmPicking
                                                   pIdPickingEnc:=BePickingEnc.IdPickingEnc,
                                                   pStackTrace:=ex.StackTrace)
         End Try
+    End Sub
+    Private Sub Nuevo_Despacho(BePedidoEnc As clsBeTrans_pe_enc)
+
+        Try
+
+            Cierra_Instancia_Previa(frmDespacho)
+
+            With frmDespacho
+                .Modo = frmDespacho.TipoTrans.Nuevo
+                .WindowState = FormWindowState.Maximized
+                .Activate()
+                .Show()
+                .Agregar_Pedido(BePedidoEnc)
+                .InvokeCargarPedido = AddressOf Cargar_Datos
+                .Focus()
+                .BringToFront()
+            End With
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+
+    End Sub
+    Public Sub Cierra_Instancia_Previa(ByRef Myform As Form)
+
+        Try
+
+            For Each objForm In My.Application.OpenForms
+                If (Trim(objForm.Name) = Trim(Myform.Name)) Then
+                    Myform.Close()
+                    Exit For
+                End If
+            Next
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
+    '#GT01122025: si tipo pedido es verificar por bof, bloquear controles que permiten modificar la verificación en la HH
+    Public Sub BloquearControles_Por_VerificacionBOF(ByVal estado As Boolean)
+        'cmdNoPickeado.Enabled = estado
+        mnuProcesarLinea.Enabled = estado
+        mnuProcesar.Enabled = estado
+        mnuVerificarPickeados.Enabled = estado
+        cmdVerificarNuevamente.Enabled = estado
+        cmdNoVerificado.Enabled = estado
+        mnuDespachado.Enabled = estado
+        chkProcesarDesdeBOF.Checked = False
+        chkProcesarDesdeBOF.Enabled = estado
+        chkverifica_auto.Checked = False
+        chkverifica_auto.Enabled = estado
     End Sub
 End Class

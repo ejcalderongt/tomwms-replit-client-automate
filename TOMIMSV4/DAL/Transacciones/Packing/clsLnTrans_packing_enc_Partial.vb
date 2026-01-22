@@ -286,6 +286,16 @@ Partial Public Class clsLnTrans_packing_enc
         Dim lReturnList As New List(Of clsBeTrans_packing_enc)
 
         Try
+            Const sp As String = "SELECT a.*, 
+                                c.Codigo Codigo_Talla, 
+                                c.Nombre Nombre_Talla, 
+                                d.Codigo Codigo_Color, 
+                                d.Nombre Nombre_Color  
+                                FROM Trans_packing_enc a 
+                                left join producto_talla_color b On b.IdProductoTallaColor = a.IdProductoTallaColor
+                                left join talla c On c.IdTalla = b.IdTalla 
+                                left join color d On d.IdColor = b.IdColor " &
+                                " Where (a.idpickingenc = @idpickingenc) AND (a.iddespachoenc=0) AND (a.IdPedidoEnc = @IdPedidoEnc) "
 
             Const sp As String = "SELECT * FROM Trans_packing_enc " &
             " Where (idpickingenc = @idpickingenc) AND (iddespachoenc=0) AND (IdPedidoEnc = @IdPedidoEnc) "
@@ -514,8 +524,13 @@ Partial Public Class clsLnTrans_packing_enc
 
         Try
 
-            Const sp As String = "SELECT * FROM Trans_packing_enc " &
-            " Where (idpickingenc = @idpickingenc) AND (iddespachoenc=0) "
+            Const sp As String = "SELECT p.*, ISNULL(c.Codigo,'') Codigo_Color, ISNULL(c.Nombre,'') Nombre_Color, 
+                                         ISNULL(t.Codigo,'') Codigo_Talla, ISNULL(t.Nombre,'') Nombre_Talla
+                                  FROM Trans_packing_enc p LEFT JOIN 
+                                       producto_talla_color ptc ON p.IdProductoTallaColor = ptc.IdProductoTallaColor LEFT JOIN
+	                                   talla t ON ptc.IdTalla = t.IdTalla LEFT JOIN
+	                                   color c ON ptc.IdColor = c.IdColor
+                                  WHERE (idpickingenc = @idpickingenc) AND (iddespachoenc=0) "
 
             Using lDTA As New SqlDataAdapter(sp, lConnection)
 

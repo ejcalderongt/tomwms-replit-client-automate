@@ -105,6 +105,8 @@ Public Class frmMenu
             lblNombrePC.Caption = Net.Dns.GetHostName()
             lblEmpresa.Caption += " " & BD.Instancia.SAP_COMPANY_DB
 
+
+
             If Not BeConfigEnc Is Nothing Then
                 lblBodega.Caption += " " & clsLnBodega.Get_Nombre_Bodega_By_IdBodega(BeConfigEnc.Idbodega)
             End If

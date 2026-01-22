@@ -78,7 +78,11 @@ Public Class clsBeVW_stock_res
 
     Public Property IdOperadorBodega_Asignado As Integer = 0
     Public Property IdRecepcionDet As Integer = 0
-
+    Public Property Codigo_Talla As String = ""
+    Public Property Nombre_Talla As String = ""
+    Public Property Codigo_Color As String = ""
+    Public Property Nombre_Color As String = ""
+    Public Property IdProductoTallaColor As Integer = 0
     Sub New()
     End Sub
     Sub New(ByRef IdBodega As Integer, ByVal IdPropietario As Integer, ByVal IdPropietarioBodega As Integer, ByVal IdProducto As Integer, ByVal IdProductoBodega As Integer, ByVal IdStock As Integer,

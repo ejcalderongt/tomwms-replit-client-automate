@@ -17,6 +17,8 @@ Public Class clsLnReglas_recepcion
                 .User_mod = IIf(IsDBNull(dr.Item("user_mod")), "", dr.Item("user_mod"))
                 .Fec_mod = IIf(IsDBNull(dr.Item("fec_mod")), Date.Now, dr.Item("fec_mod"))
                 .Activo = IIf(IsDBNull(dr.Item("activo")), False, dr.Item("activo"))
+                .Es_Proceso = IIf(IsDBNull(dr.Item("es_proceso")), False, dr.Item("es_proceso"))
+                .TipoRegla = IIf(IsDBNull(dr.Item("TipoRegla")), "", dr.Item("TipoRegla"))
             End With
 
         Catch ex1 As SQLException
@@ -30,7 +32,7 @@ Public Class clsLnReglas_recepcion
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeReglas_recepcion As clsBeReglas_recepcion, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeReglas_recepcion As clsBeReglas_recepcion, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing

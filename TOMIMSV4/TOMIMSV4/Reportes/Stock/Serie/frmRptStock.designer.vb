@@ -66,6 +66,8 @@ Partial Class frmRptStock
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.cmbBodega = New DevExpress.XtraEditors.LookUpEdit()
+        Me.colTalla = New DevExpress.XtraGrid.Columns.GridColumn()
+        Me.colColor = New DevExpress.XtraGrid.Columns.GridColumn()
         CType(Me.GridView2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdSeries, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.StockBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -86,6 +88,7 @@ Partial Class frmRptStock
         Me.GridView2.GridControl = Me.grdSeries
         Me.GridView2.Name = "GridView2"
         Me.GridView2.OptionsBehavior.Editable = False
+        Me.GridView2.OptionsEditForm.PopupEditFormWidth = 686
         '
         'grdSeries
         '
@@ -94,11 +97,11 @@ Partial Class frmRptStock
         Me.grdSeries.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         GridLevelNode1.RelationName = "Stock_stock_se"
         Me.grdSeries.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
-        Me.grdSeries.Location = New System.Drawing.Point(238, 193)
+        Me.grdSeries.Location = New System.Drawing.Point(204, 158)
         Me.grdSeries.MainView = Me.GridView1
         Me.grdSeries.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.grdSeries.Name = "grdSeries"
-        Me.grdSeries.Size = New System.Drawing.Size(1029, 459)
+        Me.grdSeries.Size = New System.Drawing.Size(882, 372)
         Me.grdSeries.TabIndex = 10
         Me.grdSeries.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1, Me.GridView2})
         '
@@ -119,11 +122,11 @@ Partial Class frmRptStock
         '
         'GridView1
         '
-        Me.GridView1.Columns.AddRange(New DevExpress.XtraGrid.Columns.GridColumn() {Me.colPropietario, Me.colProducto, Me.colEstado, Me.colLote, Me.colSerial, Me.colCantidad, Me.colCódigo_Barra, Me.colUM_Bas, Me.colFecha_Ingreso, Me.colFecha_Vence, Me.colRecepción, Me.colStockId, Me.colCódigo, Me.colPresentación, Me.colCant_Presentación, Me.colUbicación, Me.codigo_poliza, Me.numero_orden})
-        Me.GridView1.DetailHeight = 431
+        Me.GridView1.Columns.AddRange(New DevExpress.XtraGrid.Columns.GridColumn() {Me.colPropietario, Me.colProducto, Me.colEstado, Me.colLote, Me.colSerial, Me.colCantidad, Me.colCódigo_Barra, Me.colUM_Bas, Me.colFecha_Ingreso, Me.colFecha_Vence, Me.colRecepción, Me.colStockId, Me.colCódigo, Me.colPresentación, Me.colCant_Presentación, Me.colUbicación, Me.codigo_poliza, Me.numero_orden, Me.colTalla, Me.colColor})
         Me.GridView1.GridControl = Me.grdSeries
         Me.GridView1.Name = "GridView1"
         Me.GridView1.OptionsBehavior.ReadOnly = True
+        Me.GridView1.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridView1.OptionsFind.AlwaysVisible = True
         Me.GridView1.OptionsFind.FindNullPrompt = "Ingrese texto para buscar..."
         Me.GridView1.OptionsView.ColumnAutoWidth = False
@@ -278,33 +281,35 @@ Partial Class frmRptStock
         '
         Me.codigo_poliza.Caption = "codigo poliza"
         Me.codigo_poliza.FieldName = "codigo_poliza"
-        Me.codigo_poliza.MinWidth = 25
+        Me.codigo_poliza.MinWidth = 21
         Me.codigo_poliza.Name = "codigo_poliza"
         Me.codigo_poliza.Visible = True
         Me.codigo_poliza.VisibleIndex = 16
-        Me.codigo_poliza.Width = 94
+        Me.codigo_poliza.Width = 81
         '
         'numero_orden
         '
         Me.numero_orden.Caption = "número orden"
         Me.numero_orden.FieldName = "numero_orden"
-        Me.numero_orden.MinWidth = 25
+        Me.numero_orden.MinWidth = 21
         Me.numero_orden.Name = "numero_orden"
         Me.numero_orden.Visible = True
         Me.numero_orden.VisibleIndex = 17
-        Me.numero_orden.Width = 94
+        Me.numero_orden.Width = 81
         '
         'RibbonControl1
         '
+        Me.RibbonControl1.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(26, 24, 26, 24)
         Me.RibbonControl1.ExpandCollapseItem.Id = 0
-        Me.RibbonControl1.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl1.ExpandCollapseItem, Me.RibbonControl1.SearchEditItem, Me.btnActualizar, Me.btnImprimir, Me.btnSalir, Me.lblRegs, Me.mnuEliminarLayoutGrid, Me.mnuGuardarLayoutGrid})
+        Me.RibbonControl1.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl1.ExpandCollapseItem, Me.btnActualizar, Me.btnImprimir, Me.btnSalir, Me.lblRegs, Me.mnuEliminarLayoutGrid, Me.mnuGuardarLayoutGrid})
         Me.RibbonControl1.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonControl1.MaxItemId = 10
         Me.RibbonControl1.Name = "RibbonControl1"
+        Me.RibbonControl1.OptionsMenuMinWidth = 283
         Me.RibbonControl1.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl1.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl1.Size = New System.Drawing.Size(1267, 193)
+        Me.RibbonControl1.Size = New System.Drawing.Size(1086, 158)
         Me.RibbonControl1.StatusBar = Me.RibbonStatusBar1
         '
         'btnActualizar
@@ -366,11 +371,10 @@ Partial Class frmRptStock
         'RibbonStatusBar1
         '
         Me.RibbonStatusBar1.ItemLinks.Add(Me.lblRegs)
-        Me.RibbonStatusBar1.Location = New System.Drawing.Point(0, 652)
-        Me.RibbonStatusBar1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.RibbonStatusBar1.Location = New System.Drawing.Point(0, 530)
         Me.RibbonStatusBar1.Name = "RibbonStatusBar1"
         Me.RibbonStatusBar1.Ribbon = Me.RibbonControl1
-        Me.RibbonStatusBar1.Size = New System.Drawing.Size(1267, 30)
+        Me.RibbonStatusBar1.Size = New System.Drawing.Size(1086, 24)
         '
         'GalleryDropDown1
         '
@@ -389,58 +393,72 @@ Partial Class frmRptStock
         Me.GroupBox1.Controls.Add(Me.Label1)
         Me.GroupBox1.Controls.Add(Me.cmbBodega)
         Me.GroupBox1.Dock = System.Windows.Forms.DockStyle.Left
-        Me.GroupBox1.Location = New System.Drawing.Point(0, 193)
-        Me.GroupBox1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.GroupBox1.Location = New System.Drawing.Point(0, 158)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Padding = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.GroupBox1.Size = New System.Drawing.Size(238, 459)
+        Me.GroupBox1.Size = New System.Drawing.Size(204, 372)
         Me.GroupBox1.TabIndex = 13
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Filtros"
         '
         'cmbPropietario
         '
-        Me.cmbPropietario.Location = New System.Drawing.Point(7, 123)
-        Me.cmbPropietario.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.cmbPropietario.Location = New System.Drawing.Point(6, 100)
         Me.cmbPropietario.Name = "cmbPropietario"
         Me.cmbPropietario.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbPropietario.Properties.NullText = ""
-        Me.cmbPropietario.Size = New System.Drawing.Size(224, 22)
+        Me.cmbPropietario.Size = New System.Drawing.Size(192, 20)
         Me.cmbPropietario.TabIndex = 6
         '
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(7, 103)
+        Me.Label2.Location = New System.Drawing.Point(6, 84)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(78, 17)
+        Me.Label2.Size = New System.Drawing.Size(63, 13)
         Me.Label2.TabIndex = 6
         Me.Label2.Text = "Propietario:"
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(7, 38)
+        Me.Label1.Location = New System.Drawing.Point(6, 31)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(59, 17)
+        Me.Label1.Size = New System.Drawing.Size(47, 13)
         Me.Label1.TabIndex = 6
         Me.Label1.Text = "Bodega:"
         '
         'cmbBodega
         '
-        Me.cmbBodega.Location = New System.Drawing.Point(7, 58)
-        Me.cmbBodega.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.cmbBodega.Location = New System.Drawing.Point(6, 47)
         Me.cmbBodega.Name = "cmbBodega"
         Me.cmbBodega.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbBodega.Properties.NullText = ""
-        Me.cmbBodega.Size = New System.Drawing.Size(224, 22)
+        Me.cmbBodega.Size = New System.Drawing.Size(192, 20)
         Me.cmbBodega.TabIndex = 6
+        '
+        'colTalla
+        '
+        Me.colTalla.Caption = "Talla"
+        Me.colTalla.FieldName = "Talla"
+        Me.colTalla.Name = "colTalla"
+        Me.colTalla.Visible = True
+        Me.colTalla.VisibleIndex = 18
+        Me.colTalla.Width = 64
+        '
+        'colColor
+        '
+        Me.colColor.Caption = "Color"
+        Me.colColor.FieldName = "Color"
+        Me.colColor.Name = "colColor"
+        Me.colColor.Visible = True
+        Me.colColor.VisibleIndex = 19
+        Me.colColor.Width = 64
         '
         'frmRptStock
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1267, 682)
+        Me.ClientSize = New System.Drawing.Size(1086, 554)
         Me.Controls.Add(Me.grdSeries)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.RibbonStatusBar1)
@@ -510,4 +528,6 @@ Partial Class frmRptStock
     Friend WithEvents mnuGuardarLayoutGrid As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents codigo_poliza As DevExpress.XtraGrid.Columns.GridColumn
     Friend WithEvents numero_orden As DevExpress.XtraGrid.Columns.GridColumn
+    Friend WithEvents colTalla As DevExpress.XtraGrid.Columns.GridColumn
+    Friend WithEvents colColor As DevExpress.XtraGrid.Columns.GridColumn
 End Class

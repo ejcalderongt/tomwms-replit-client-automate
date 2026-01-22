@@ -54,7 +54,7 @@ Public Class clsLnTrans_ubic_hh_enc
 
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTrans_ubic_hh_enc As clsBeTrans_ubic_hh_enc, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_ubic_hh_enc As clsBeTrans_ubic_hh_enc, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing

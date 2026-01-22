@@ -100,7 +100,7 @@ Public Class SapHelper
         End Try
     End Function
     Public Shared Function Obtener_UoMEntry_De_InventoryUOM(ByVal ItemCode As String,
-                                                            ByRef oCompany As Company) As (UoMEntry As Integer, Factor As Integer)
+                                                    ByRef oCompany As Company) As (UoMEntry As Integer, Factor As Integer)
 
         Dim oRS As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
 

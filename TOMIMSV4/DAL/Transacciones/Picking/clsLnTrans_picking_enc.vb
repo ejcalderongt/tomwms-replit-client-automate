@@ -89,6 +89,7 @@ Public Class clsLnTrans_picking_enc
             Ins.Add("IdTipoPicking", "@IdTipoPicking", DataType.Parametro)
             Ins.Add("Observacion", "@Observacion", DataType.Parametro)
 
+
             If Not oBeTrans_picking_enc.IdBodegaMuelle = 0 Then Ins.Add("idbodegamuelle", "@idbodegamuelle", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
@@ -515,7 +516,7 @@ Public Class clsLnTrans_picking_enc
 
     End Function
 
-    Public Shared Function MaxID() as Integer
+    Public Shared Function MaxID() As Integer
 
         Try
 

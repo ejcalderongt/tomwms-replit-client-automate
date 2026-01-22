@@ -147,6 +147,7 @@
     <Reference Include="Interop.SAPbobsCOM">
       <HintPath>.\Interop.SAPbobsCOM.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\TOMIMSV4\TOMIMSV4\Interop.SAPbobsCOM.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />

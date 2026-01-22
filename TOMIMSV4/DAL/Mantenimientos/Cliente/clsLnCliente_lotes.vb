@@ -5,336 +5,365 @@ Imports TOMWMS.WMSTipoDato
 
 Public Class clsLnCliente_lotes
 
-    Public Shared Sub Cargar(ByRef oBeCliente_lotes As clsBeCliente_lotes, ByRef dr As DataRow)
-        Try
-            With oBeCliente_lotes
-                .IdClienteLote = IIf(IsDBNull(dr.Item("IdClienteLote")), 0, dr.Item("IdClienteLote"))
-                .IdCliente = IIf(IsDBNull(dr.Item("IdCliente")), 0, dr.Item("IdCliente"))
-                .Lote = IIf(IsDBNull(dr.Item("Lote")), "", dr.Item("Lote"))
-                .IdProductoEstado = IIf(IsDBNull(dr.Item("IdProductoEstado")), 0, dr.Item("IdProductoEstado"))
-                .IdProducto = IIf(IsDBNull(dr.Item("IdProducto")), 0, dr.Item("IdProducto"))
-                .User_agr = IIf(IsDBNull(dr.Item("user_agr")), "", dr.Item("user_agr"))
-                .Fec_agr = IIf(IsDBNull(dr.Item("fec_agr")), Date.Now, dr.Item("fec_agr"))
-                .User_mod = IIf(IsDBNull(dr.Item("user_mod")), "", dr.Item("user_mod"))
-                .Fec_mod = IIf(IsDBNull(dr.Item("fec_mod")), Date.Now, dr.Item("fec_mod"))
-                .Activo = IIf(IsDBNull(dr.Item("activo")), False, dr.Item("activo"))
-                .Bloquear = IIf(IsDBNull(dr.Item("bloquear")), False, dr.Item("bloquear"))
-            End With
-        Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-        End Try
-    End Sub
-
-    Public Shared Function Insertar(ByRef oBeCliente_lotes As clsBeCliente_lotes, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
-
-        Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
-        Dim lTransaction As SqlTransaction = Nothing
-
-        Try
-
-            Ins.Init("cliente_lotes")
-            Ins.Add("idclientelote", "@idclientelote", Tipo.Parametro)
-            Ins.Add("idcliente", "@idcliente", Tipo.Parametro)
-            Ins.Add("lote", "@lote", Tipo.Parametro)
-            Ins.Add("idproductoestado", "@idproductoestado", Tipo.Parametro)
-            Ins.Add("user_agr", "@user_agr", Tipo.Parametro)
-            Ins.Add("fec_agr", "@fec_agr", Tipo.Parametro)
-            Ins.Add("user_mod", "@user_mod", Tipo.Parametro)
-            Ins.Add("fec_mod", "@fec_mod", Tipo.Parametro)
-            Ins.Add("activo", "@activo", Tipo.Parametro)
-            Ins.Add("bloquear", "@bloquear", Tipo.Parametro)
-            Ins.Add("idproducto", "@idproducto", Tipo.Parametro)
-
-            Dim sp As String = Ins.SQL()
-            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
-
-            Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
-
-            If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(sp, pConection, pTransaction)
-            Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-                cmd = New SqlCommand(sp, lConnection, lTransaction)
-            End If
-
-            cmd.Parameters.Add(New SqlParameter("@IDCLIENTELOTE", oBeCliente_lotes.IdClienteLote))
-            cmd.Parameters.Add(New SqlParameter("@IDCLIENTE", oBeCliente_lotes.IdCliente))
-            cmd.Parameters.Add(New SqlParameter("@LOTE", oBeCliente_lotes.Lote))
-            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", oBeCliente_lotes.IdProductoEstado))
-            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTO", oBeCliente_lotes.IdProducto))
-            cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeCliente_lotes.User_agr))
-            cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeCliente_lotes.Fec_agr))
-            cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeCliente_lotes.User_mod))
-            cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeCliente_lotes.Fec_mod))
-            cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeCliente_lotes.Activo))
-            cmd.Parameters.Add(New SqlParameter("@BLOQUEAR", oBeCliente_lotes.Bloquear))
-
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
-
-            cmd.Dispose()
-
-            If Not Es_Transaccion_Remota Then lTransaction.Commit()
-
-            Return rowsAffected
-
-        Catch ex As Exception
-            If Not lTransaction Is Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-        Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If Not lConnection Is Nothing Then lConnection.Dispose()
-            If Not lTransaction Is Nothing Then lTransaction.Dispose()
-        End Try
-
-    End Function
-
-    Public Shared Function Actualizar(ByRef oBeCliente_lotes As clsBeCliente_lotes, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
-
-        Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
-        Dim lTransaction As SqlTransaction = Nothing
-
-        Try
-
-            Upd.Init("cliente_lotes")
-            Upd.Add("idclientelote", "@idclientelote", Tipo.Parametro)
-            Upd.Add("idcliente", "@idcliente", Tipo.Parametro)
-            Upd.Add("lote", "@lote", Tipo.Parametro)
-            Upd.Add("idproductoestado", "@idproductoestado", Tipo.Parametro)
-            Upd.Add("idproducto", "@idproducto", Tipo.Parametro)
-            Upd.Add("user_agr", "@user_agr", Tipo.Parametro)
-            Upd.Add("fec_agr", "@fec_agr", Tipo.Parametro)
-            Upd.Add("user_mod", "@user_mod", Tipo.Parametro)
-            Upd.Add("fec_mod", "@fec_mod", Tipo.Parametro)
-            Upd.Add("activo", "@activo", Tipo.Parametro)
-            Upd.Add("bloquear", "@bloquear", Tipo.Parametro)
-            Upd.Where("IdClienteLote = @IdClienteLote")
+	Public Shared Sub Cargar(ByRef oBeCliente_lotes As clsBeCliente_lotes, ByRef dr As DataRow)
+		Try
+			With oBeCliente_lotes
+				.IdClienteLote = IIf(IsDBNull(dr.Item("IdClienteLote")), 0, dr.Item("IdClienteLote"))
+				.IdCliente = IIf(IsDBNull(dr.Item("IdCliente")), 0, dr.Item("IdCliente"))
+				.Lote = IIf(IsDBNull(dr.Item("Lote")), "", dr.Item("Lote"))
+				.IdProductoEstado = IIf(IsDBNull(dr.Item("IdProductoEstado")), 0, dr.Item("IdProductoEstado"))
+				.IdProducto = IIf(IsDBNull(dr.Item("IdProducto")), 0, dr.Item("IdProducto"))
+				.User_agr = IIf(IsDBNull(dr.Item("user_agr")), "", dr.Item("user_agr"))
+				.Fec_agr = IIf(IsDBNull(dr.Item("fec_agr")), Date.Now, dr.Item("fec_agr"))
+				.User_mod = IIf(IsDBNull(dr.Item("user_mod")), "", dr.Item("user_mod"))
+				.Fec_mod = IIf(IsDBNull(dr.Item("fec_mod")), Date.Now, dr.Item("fec_mod"))
+				.Activo = IIf(IsDBNull(dr.Item("activo")), False, dr.Item("activo"))
+				.Bloquear = IIf(IsDBNull(dr.Item("bloquear")), False, dr.Item("bloquear"))
+			End With
+		Catch ex As Exception
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		End Try
+	End Sub
+
+	Public Shared Function Insertar(ByRef oBeCliente_lotes As clsBeCliente_lotes, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+		Dim lTransaction As SqlTransaction = Nothing
+
+		Try
+
+			Ins.Init("cliente_lotes")
+			Ins.Add("idclientelote", "@idclientelote", Tipo.Parametro)
+			Ins.Add("idcliente", "@idcliente", Tipo.Parametro)
+			Ins.Add("lote", "@lote", Tipo.Parametro)
+			Ins.Add("idproductoestado", "@idproductoestado", Tipo.Parametro)
+			Ins.Add("user_agr", "@user_agr", Tipo.Parametro)
+			Ins.Add("fec_agr", "@fec_agr", Tipo.Parametro)
+			Ins.Add("user_mod", "@user_mod", Tipo.Parametro)
+			Ins.Add("fec_mod", "@fec_mod", Tipo.Parametro)
+			Ins.Add("activo", "@activo", Tipo.Parametro)
+			Ins.Add("bloquear", "@bloquear", Tipo.Parametro)
+			Ins.Add("idproducto", "@idproducto", Tipo.Parametro)
+
+			Dim sp As String = Ins.SQL()
+			Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+
+			Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
+
+			If Es_Transaccion_Remota Then
+				cmd = New SqlCommand(sp, pConection, pTransaction)
+			Else
+				lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+				cmd = New SqlCommand(sp, lConnection, lTransaction)
+			End If
+
+			cmd.Parameters.Add(New SqlParameter("@IDCLIENTELOTE", oBeCliente_lotes.IdClienteLote))
+			cmd.Parameters.Add(New SqlParameter("@IDCLIENTE", oBeCliente_lotes.IdCliente))
+			cmd.Parameters.Add(New SqlParameter("@LOTE", oBeCliente_lotes.Lote))
+			cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", oBeCliente_lotes.IdProductoEstado))
+			cmd.Parameters.Add(New SqlParameter("@IDPRODUCTO", oBeCliente_lotes.IdProducto))
+			cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeCliente_lotes.User_agr))
+			cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeCliente_lotes.Fec_agr))
+			cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeCliente_lotes.User_mod))
+			cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeCliente_lotes.Fec_mod))
+			cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeCliente_lotes.Activo))
+			cmd.Parameters.Add(New SqlParameter("@BLOQUEAR", oBeCliente_lotes.Bloquear))
+
+			Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+			cmd.Dispose()
+
+			If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+			Return rowsAffected
+
+		Catch ex As Exception
+			If Not lTransaction Is Nothing Then lTransaction.Rollback()
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		Finally
+			If lConnection.State = ConnectionState.Open Then lConnection.Close()
+			If Not lConnection Is Nothing Then lConnection.Dispose()
+			If Not lTransaction Is Nothing Then lTransaction.Dispose()
+		End Try
+
+	End Function
+
+	Public Shared Function Actualizar(ByRef oBeCliente_lotes As clsBeCliente_lotes, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+		Dim lTransaction As SqlTransaction = Nothing
+
+		Try
+
+			Upd.Init("cliente_lotes")
+			Upd.Add("idclientelote", "@idclientelote", Tipo.Parametro)
+			Upd.Add("idcliente", "@idcliente", Tipo.Parametro)
+			Upd.Add("lote", "@lote", Tipo.Parametro)
+			Upd.Add("idproductoestado", "@idproductoestado", Tipo.Parametro)
+			Upd.Add("idproducto", "@idproducto", Tipo.Parametro)
+			Upd.Add("user_agr", "@user_agr", Tipo.Parametro)
+			Upd.Add("fec_agr", "@fec_agr", Tipo.Parametro)
+			Upd.Add("user_mod", "@user_mod", Tipo.Parametro)
+			Upd.Add("fec_mod", "@fec_mod", Tipo.Parametro)
+			Upd.Add("activo", "@activo", Tipo.Parametro)
+			Upd.Add("bloquear", "@bloquear", Tipo.Parametro)
+			Upd.Where("IdClienteLote = @IdClienteLote")
 
-            Dim sp As String = Upd.SQL()
+			Dim sp As String = Upd.SQL()
 
-            Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
+			Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
 
-            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+			Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
 
-            If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(sp, pConection, pTransaction)
-            Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-                cmd = New SqlCommand(sp, lConnection, lTransaction)
-            End If
+			If Es_Transaccion_Remota Then
+				cmd = New SqlCommand(sp, pConection, pTransaction)
+			Else
+				lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+				cmd = New SqlCommand(sp, lConnection, lTransaction)
+			End If
 
-            cmd.Parameters.Add(New SqlParameter("@IDCLIENTELOTE", oBeCliente_lotes.IdClienteLote))
-            cmd.Parameters.Add(New SqlParameter("@IDCLIENTE", oBeCliente_lotes.IdCliente))
-            cmd.Parameters.Add(New SqlParameter("@LOTE", oBeCliente_lotes.Lote))
-            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", oBeCliente_lotes.IdProductoEstado))
-            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTO", oBeCliente_lotes.IdProducto))
-            cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeCliente_lotes.User_agr))
-            cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeCliente_lotes.Fec_agr))
-            cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeCliente_lotes.User_mod))
-            cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeCliente_lotes.Fec_mod))
-            cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeCliente_lotes.Activo))
-            cmd.Parameters.Add(New SqlParameter("@BLOQUEAR", oBeCliente_lotes.Bloquear))
+			cmd.Parameters.Add(New SqlParameter("@IDCLIENTELOTE", oBeCliente_lotes.IdClienteLote))
+			cmd.Parameters.Add(New SqlParameter("@IDCLIENTE", oBeCliente_lotes.IdCliente))
+			cmd.Parameters.Add(New SqlParameter("@LOTE", oBeCliente_lotes.Lote))
+			cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", oBeCliente_lotes.IdProductoEstado))
+			cmd.Parameters.Add(New SqlParameter("@IDPRODUCTO", oBeCliente_lotes.IdProducto))
+			cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeCliente_lotes.User_agr))
+			cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeCliente_lotes.Fec_agr))
+			cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeCliente_lotes.User_mod))
+			cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeCliente_lotes.Fec_mod))
+			cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeCliente_lotes.Activo))
+			cmd.Parameters.Add(New SqlParameter("@BLOQUEAR", oBeCliente_lotes.Bloquear))
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+			Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
-            cmd.Dispose()
+			cmd.Dispose()
 
-            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+			If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            Return rowsAffected
+			Return rowsAffected
 
-        Catch ex As Exception
-            If Not lTransaction Is Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-        Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If Not lConnection Is Nothing Then lConnection.Dispose()
-            If Not lTransaction Is Nothing Then lTransaction.Dispose()
-        End Try
+		Catch ex As Exception
+			If Not lTransaction Is Nothing Then lTransaction.Rollback()
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		Finally
+			If lConnection.State = ConnectionState.Open Then lConnection.Close()
+			If Not lConnection Is Nothing Then lConnection.Dispose()
+			If Not lTransaction Is Nothing Then lTransaction.Dispose()
+		End Try
 
-    End Function
+	End Function
 
 
-    Public Shared Function Eliminar(ByVal IdClienteLote As Integer, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+	Public Shared Function Eliminar(ByVal IdClienteLote As Integer, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
-        Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
-        Dim lTransaction As SqlTransaction = Nothing
+		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+		Dim lTransaction As SqlTransaction = Nothing
 
-        Try
+		Try
 
-            Const sp As String = " Delete from Cliente_lotes" &
-             "  Where(IdClienteLote = @IdClienteLote)"
+			Const sp As String = " Delete from Cliente_lotes" &
+			 "  Where(IdClienteLote = @IdClienteLote)"
 
-            Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
+			Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
 
-            Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
+			Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
 
-            If Es_Transaccion_Remota Then
-                cmd = New SqlCommand(sp, pConection, pTransaction)
-            Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-                cmd = New SqlCommand(sp, lConnection, lTransaction)
-            End If
+			If Es_Transaccion_Remota Then
+				cmd = New SqlCommand(sp, pConection, pTransaction)
+			Else
+				lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+				cmd = New SqlCommand(sp, lConnection, lTransaction)
+			End If
 
-            cmd.Parameters.Add(New SqlParameter("@IDCLIENTELOTE", IdClienteLote))
+			cmd.Parameters.Add(New SqlParameter("@IDCLIENTELOTE", IdClienteLote))
 
-            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+			Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
-            cmd.Dispose()
+			cmd.Dispose()
 
-            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+			If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            Return rowsAffected
+			Return rowsAffected
 
-        Catch ex As Exception
-            If Not lTransaction Is Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-        Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If Not lConnection Is Nothing Then lConnection.Dispose()
-            If Not lTransaction Is Nothing Then lTransaction.Dispose()
-        End Try
+		Catch ex As Exception
+			If Not lTransaction Is Nothing Then lTransaction.Rollback()
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		Finally
+			If lConnection.State = ConnectionState.Open Then lConnection.Close()
+			If Not lConnection Is Nothing Then lConnection.Dispose()
+			If Not lTransaction Is Nothing Then lTransaction.Dispose()
+		End Try
 
-    End Function
+	End Function
 
-    Public Shared Function Get_All_By_IdCliente(ByVal IdCliente As Integer) As List(Of clsBeCliente_lotes)
+	Public Shared Function Get_All_By_IdCliente(ByVal IdCliente As Integer) As List(Of clsBeCliente_lotes)
 
-        Dim lReturnList As New List(Of clsBeCliente_lotes)
+		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+		Dim lTransaction As SqlTransaction = Nothing
 
-        Try
+		Try
 
-            Const sp As String = "SELECT * FROM Cliente_lotes WHERE IdCliente = @IdCliente "
+			Const sp As String = "SELECT * FROM Cliente_lotes"
+			lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
+			Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+			Dim dad As New SqlDataAdapter(cmd)
+			Dim dt As New DataTable
+			dad.Fill(dt)
 
-            Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+			lTransaction.Commit()
 
-                lConnection.Open()
+			Return dt
 
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+		Catch ex As Exception
+			If Not lTransaction Is Nothing Then lTransaction.Rollback()
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		Finally
+			If lConnection.State = ConnectionState.Open Then lConnection.Close
+			If Not lConnection Is Nothing Then lConnection.Dispose()
+			If Not lTransaction Is Nothing Then lTransaction.Dispose()
+		End Try
 
-                    Using lDTA As New SqlDataAdapter(sp, lConnection)
+	End Function
 
-                        lDTA.SelectCommand.CommandType = CommandType.Text
-                        lDTA.SelectCommand.Transaction = lTransaction
-                        lDTA.SelectCommand.Parameters.AddWithValue("@IdCliente", IdCliente)
+	Public Shared Function Get_All() As List(Of clsBeCliente_lotes)
 
-                        Dim lDataTable As New DataTable
-                        lDTA.Fill(lDataTable)
+		Dim lReturnList As New List(Of clsBeCliente_lotes)
 
-                        Dim vBeCliente_lotes As New clsBeCliente_lotes
+		Try
 
-                        For Each dr As DataRow In lDataTable.Rows
-                            vBeCliente_lotes = New clsBeCliente_lotes()
-                            Cargar(vBeCliente_lotes, dr)
-                            lReturnList.Add(vBeCliente_lotes)
-                        Next
+			Const sp As String = "SELECT * FROM Cliente_lotes WHERE IdCliente = @IdCliente "
 
-                    End Using
+			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 
-                    lTransaction.Commit()
+				lConnection.Open()
 
-                End Using
+				Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                lConnection.Close()
+					Using lDTA As New SqlDataAdapter(sp, lConnection)
 
-            End Using
+						lDTA.SelectCommand.CommandType = CommandType.Text
+						lDTA.SelectCommand.Transaction = lTransaction
+						lDTA.SelectCommand.Parameters.AddWithValue("@IdCliente", IdCliente)
 
-            Return lReturnList
+						Dim lDataTable As New DataTable
+						lDTA.Fill(lDataTable)
 
-        Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-        End Try
+						Dim vBeCliente_lotes As New clsBeCliente_lotes
 
-    End Function
+						For Each dr As DataRow In lDataTable.Rows
+							vBeCliente_lotes = New clsBeCliente_lotes()
+							Cargar(vBeCliente_lotes, dr)
+							lReturnList.Add(vBeCliente_lotes)
+						Next
 
-    Public Shared Sub GetSingle(ByRef pBeCliente_lotes As clsBeCliente_lotes)
+					End Using
 
-        Try
+					lTransaction.Commit()
 
-            Const sp As String = "SELECT * FROM Cliente_lotes" &
-            " Where(IdClienteLote = @IdClienteLote)"
+				End Using
 
+				lConnection.Close()
 
-            Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+			End Using
 
-                lConnection.Open()
+			Return lReturnList
 
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+		Catch ex As Exception
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		End Try
 
-                    Using lDTA As New SqlDataAdapter(sp, lConnection)
+	End Function
 
-                        lDTA.SelectCommand.CommandType = CommandType.Text
-                        lDTA.SelectCommand.Transaction = lTransaction
-                        Dim lDataTable As New DataTable
-                        lDTA.Fill(lDataTable)
+	Public Shared Sub GetSingle(ByRef pBeCliente_lotes As clsBeCliente_lotes)
 
-                        Dim vBeCliente_lotes As New clsBeCliente_lotes
+		Try
 
-                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
-                            Cargar(vBeCliente_lotes, lDataTable.Rows(0))
-                        End If
+			Const sp As String = "SELECT * FROM Cliente_lotes" &
+			" Where(IdClienteLote = @IdClienteLote)"
 
-                    End Using
 
-                    lTransaction.Commit()
+			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 
-                End Using
+				lConnection.Open()
 
-                lConnection.Close()
+				Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-            End Using
+					Using lDTA As New SqlDataAdapter(sp, lConnection)
 
-        Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-        End Try
+						lDTA.SelectCommand.CommandType = CommandType.Text
+						lDTA.SelectCommand.Transaction = lTransaction
+						Dim lDataTable As New DataTable
+						lDTA.Fill(lDataTable)
 
-    End Sub
+						Dim vBeCliente_lotes As New clsBeCliente_lotes
 
-    Public Shared Function MaxID() As Integer
+						If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+							Cargar(vBeCliente_lotes, lDataTable.Rows(0))
+						End If
 
-        Try
+					End Using
 
-            Dim lMax As Integer = 0
+					lTransaction.Commit()
 
-            Const sp As String = "SELECT ISNULL(Max(IdClienteLote),0) FROM Cliente_lotes"
+				End Using
 
-            Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+				lConnection.Close()
 
-                lConnection.Open()
+			End Using
 
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+		Catch ex As Exception
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		End Try
 
-                    Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+	End Sub
 
-                        Dim lReturnValue As Object = lCommand.ExecuteScalar()
-                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                            lMax = CInt(lReturnValue)
-                        End If
+	Public Shared Function MaxID() As Integer
 
-                    End Using
+		Try
 
-                    lTransaction.Commit()
+			Dim lMax As Integer = 0
 
-                End Using
+			Const sp As String = "SELECT ISNULL(Max(IdClienteLote),0) FROM Cliente_lotes"
 
-                lConnection.Close()
+			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 
-            End Using
+				lConnection.Open()
 
-            Return lMax
+				Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-        Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-        End Try
+					Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
 
-    End Function
+						Dim lReturnValue As Object = lCommand.ExecuteScalar()
+						If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+							lMax = CInt(lReturnValue)
+						End If
 
-    Public Shared Function Get_Lotes_By_IdCliente(IdCliente As Integer, bloqueados As Boolean) As DataTable
+					End Using
 
-        Get_Lotes_By_IdCliente = Nothing
+					lTransaction.Commit()
 
-        Dim lDataTable As New DataTable
+				End Using
 
-        Try
-            Dim vSQL As String = "
+				lConnection.Close()
+
+			End Using
+
+			Return lMax
+
+		Catch ex As Exception
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		End Try
+
+	End Function
+
+	Public Shared Function Get_Lotes_By_IdCliente(IdCliente As Integer, bloqueados As Boolean) As DataTable
+
+		Get_Lotes_By_IdCliente = Nothing
+
+		Dim lDataTable As New DataTable
+
+		Try
+			Dim vSQL As String = "
             SELECT
 				cl.IdClienteLote,	
 				p.codigo,
@@ -350,110 +379,110 @@ Public Class clsLnCliente_lotes
             WHERE cl.bloquear = @Bloquear AND cl.IdCliente = @IdCliente 
 			ORDER BY cl.fec_agr DESC"
 
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-                lConnection.Open()
+			Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+				lConnection.Open()
 
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+				Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+					Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
-                        lDTA.SelectCommand.CommandType = CommandType.Text
-                        lDTA.SelectCommand.Transaction = lTransaction
-                        lDTA.SelectCommand.Parameters.AddWithValue("@IdCliente", IdCliente)
-                        lDTA.SelectCommand.Parameters.AddWithValue("@Bloquear", If(bloqueados, 1, 0))
+						lDTA.SelectCommand.CommandType = CommandType.Text
+						lDTA.SelectCommand.Transaction = lTransaction
+						lDTA.SelectCommand.Parameters.AddWithValue("@IdCliente", IdCliente)
+						lDTA.SelectCommand.Parameters.AddWithValue("@Bloquear", If(bloqueados, 1, 0))
 
-                        lDTA.Fill(lDataTable)
+						lDTA.Fill(lDataTable)
 
-                    End Using
+					End Using
 
-                    lTransaction.Commit()
-                End Using
+					lTransaction.Commit()
+				End Using
 
-                lConnection.Close()
-            End Using
+				lConnection.Close()
+			End Using
 
-            Return lDataTable
+			Return lDataTable
 
-        Catch ex As Exception
-            Throw ex
-        End Try
+		Catch ex As Exception
+			Throw ex
+		End Try
 
-    End Function
-    Public Shared Function GetSingle_By_IdClienteLote(ByVal IdClienteLote As Integer) As clsBeCliente_lotes
+	End Function
+	Public Shared Function GetSingle_By_IdClienteLote(ByVal IdClienteLote As Integer) As clsBeCliente_lotes
 
-        Dim vBeCliente_lotes As New clsBeCliente_lotes
+		Dim vBeCliente_lotes As New clsBeCliente_lotes
 
-        Try
-            Const sp As String = "
+		Try
+			Const sp As String = "
             SELECT * 
             FROM Cliente_lotes 
             WHERE IdClienteLote = @IdClienteLote"
 
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-                lConnection.Open()
+			Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+				lConnection.Open()
 
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-                    Using lDTA As New SqlDataAdapter(sp, lConnection)
+				Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+					Using lDTA As New SqlDataAdapter(sp, lConnection)
 
-                        lDTA.SelectCommand.CommandType = CommandType.Text
-                        lDTA.SelectCommand.Transaction = lTransaction
-                        lDTA.SelectCommand.Parameters.AddWithValue("@IdClienteLote", IdClienteLote)
+						lDTA.SelectCommand.CommandType = CommandType.Text
+						lDTA.SelectCommand.Transaction = lTransaction
+						lDTA.SelectCommand.Parameters.AddWithValue("@IdClienteLote", IdClienteLote)
 
-                        Dim lDataTable As New DataTable
-                        lDTA.Fill(lDataTable)
+						Dim lDataTable As New DataTable
+						lDTA.Fill(lDataTable)
 
-                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
-                            Cargar(vBeCliente_lotes, lDataTable.Rows(0))
-                        End If
+						If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+							Cargar(vBeCliente_lotes, lDataTable.Rows(0))
+						End If
 
-                    End Using
+					End Using
 
-                    lTransaction.Commit()
-                End Using
+					lTransaction.Commit()
+				End Using
 
-                lConnection.Close()
-            End Using
+				lConnection.Close()
+			End Using
 
-            Return vBeCliente_lotes
+			Return vBeCliente_lotes
 
-        Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name, ex.Message))
-        End Try
+		Catch ex As Exception
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name, ex.Message))
+		End Try
 
-    End Function
+	End Function
 
-    Public Shared Function Get_All_By_IdCliente(ByVal IdCliente As Integer, lConnection As SqlConnection, lTransaction As SqlTransaction) As List(Of clsBeCliente_lotes)
+	Public Shared Function Get_All_By_IdCliente(ByVal IdCliente As Integer, lConnection As SqlConnection, lTransaction As SqlTransaction) As List(Of clsBeCliente_lotes)
 
-        Dim lReturnList As New List(Of clsBeCliente_lotes)
+		Dim lReturnList As New List(Of clsBeCliente_lotes)
 
-        Try
+		Try
 
-            Const sp As String = "SELECT * FROM Cliente_lotes WHERE IdCliente = @IdCliente "
+			Const sp As String = "SELECT * FROM Cliente_lotes WHERE IdCliente = @IdCliente "
 
-            Using lDTA As New SqlDataAdapter(sp, lConnection)
+			Using lDTA As New SqlDataAdapter(sp, lConnection)
 
-                lDTA.SelectCommand.CommandType = CommandType.Text
-                lDTA.SelectCommand.Transaction = lTransaction
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdCliente", IdCliente)
+				lDTA.SelectCommand.CommandType = CommandType.Text
+				lDTA.SelectCommand.Transaction = lTransaction
+				lDTA.SelectCommand.Parameters.AddWithValue("@IdCliente", IdCliente)
 
-                Dim lDataTable As New DataTable
-                lDTA.Fill(lDataTable)
+				Dim lDataTable As New DataTable
+				lDTA.Fill(lDataTable)
 
-                Dim vBeCliente_lotes As New clsBeCliente_lotes
+				Dim vBeCliente_lotes As New clsBeCliente_lotes
 
-                For Each dr As DataRow In lDataTable.Rows
-                    vBeCliente_lotes = New clsBeCliente_lotes()
-                    Cargar(vBeCliente_lotes, dr)
-                    lReturnList.Add(vBeCliente_lotes)
-                Next
+				For Each dr As DataRow In lDataTable.Rows
+					vBeCliente_lotes = New clsBeCliente_lotes()
+					Cargar(vBeCliente_lotes, dr)
+					lReturnList.Add(vBeCliente_lotes)
+				Next
 
-            End Using
+			End Using
 
-            Return lReturnList
+			Return lReturnList
 
-        Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-        End Try
+		Catch ex As Exception
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+		End Try
 
-    End Function
+	End Function
 
 End Class

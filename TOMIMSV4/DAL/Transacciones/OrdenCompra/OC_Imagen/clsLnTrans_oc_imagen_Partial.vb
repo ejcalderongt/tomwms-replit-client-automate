@@ -52,8 +52,8 @@ Partial Public Class clsLnTrans_oc_imagen
     End Function
 
     Public Shared Function Get_Imagenes_By_IdOrdenCompraEnc(ByVal pIdOrdenCompraEnc As Integer,
-                                     ByRef lConnection As SqlConnection,
-                                     ByRef lTransaction As SqlTransaction) As List(Of clsBeTrans_oc_imagen)
+                                                            ByRef lConnection As SqlConnection,
+                                                            ByRef lTransaction As SqlTransaction) As List(Of clsBeTrans_oc_imagen)
 
         Dim lReturnList As New List(Of clsBeTrans_oc_imagen)
 

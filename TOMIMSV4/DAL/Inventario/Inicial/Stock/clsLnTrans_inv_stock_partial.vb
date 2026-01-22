@@ -283,6 +283,7 @@ Partial Public Class clsLnTrans_inv_stock
 
             cmd.Parameters.Add(New SqlParameter("@IDINVENTARIO", IdInventarioEnc))
 
+
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
             cmd.Dispose()
@@ -946,7 +947,7 @@ Partial Public Class clsLnTrans_inv_stock
                                          trans_inv_stock.IdStock, trans_inv_stock.lic_plate Licencia, pt.NombreTipoProducto AS TipoProducto,  
                                          trans_inv_stock.IdUbicacion, trans_inv_stock.IdProductoBodega,
                                          ISNULL(trans_inv_stock.cantidad_reservada_umbas,0) AS Cantidad_Reservada_UmBas
-                                   FROM trans_inv_stock INNER JOIN
+            From trans_inv_stock INNER Join
                                          producto_bodega ON trans_inv_stock.IdProductoBodega = producto_bodega.IdProductoBodega  INNER JOIN  
                                          producto ON producto_bodega.IdProducto = producto.IdProducto  LEFT OUTER JOIN  
                                          producto_presentacion ON trans_inv_stock.IdPresentacion = producto_presentacion.IdPresentacion LEFT OUTER JOIN

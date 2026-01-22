@@ -599,7 +599,7 @@ Partial Class frmProducto
         Me.TabDatos.SuspendLayout()
         Me.TabProducto.SuspendLayout()
         CType(Me.GrpProducto, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GrpProducto.SuspendLayout
+        Me.GrpProducto.SuspendLayout()
         CType(Me.SplitContainer3, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer3.Panel1.SuspendLayout()
         Me.SplitContainer3.Panel2.SuspendLayout()
@@ -626,22 +626,22 @@ Partial Class frmProducto
         CType(Me.txtCodigo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkActivo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grpDimensionesUMBas, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.grpDimensionesUMBas.SuspendLayout
+        Me.grpDimensionesUMBas.SuspendLayout()
         CType(Me.txtMargen, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtAnchoUB, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtLargoUB, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtAltoUB, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grpImagenProducto, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.grpImagenProducto.SuspendLayout
+        Me.grpImagenProducto.SuspendLayout()
         CType(Me.picFoto, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbSymbology.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbEtiqueta.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabAtributo.SuspendLayout()
         CType(Me.GrpAtributo, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GrpAtributo.SuspendLayout
+        Me.GrpAtributo.SuspendLayout()
         CType(Me.chkGeneraLicAutoP.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl14, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl14.SuspendLayout
+        Me.GroupControl14.SuspendLayout()
         CType(Me.picFormulaIndiceRotacionWMS, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbIndiceRotacionWMS.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtDiasPromedioInventario, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -683,12 +683,12 @@ Partial Class frmProducto
         CType(Me.txtExitenciaMinima, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabParametros.SuspendLayout()
         CType(Me.GprParametro, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GprParametro.SuspendLayout
+        Me.GprParametro.SuspendLayout()
         CType(Me.cmbParametro.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkActivarParametro.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ToolStripP.SuspendLayout()
         CType(Me.GrpParametro, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GrpParametro.SuspendLayout
+        Me.GrpParametro.SuspendLayout()
         CType(Me.DgridParametros, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridViewP, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView9, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -696,7 +696,7 @@ Partial Class frmProducto
         CType(Me.txtTipo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabCodigoBarra.SuspendLayout()
         CType(Me.GrpCodigoBarra, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GrpCodigoBarra.SuspendLayout
+        Me.GrpCodigoBarra.SuspendLayout()
         CType(Me.cmbProveedor.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GrdCodigoBarra, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridViewCB, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -704,14 +704,14 @@ Partial Class frmProducto
         CType(Me.chkActivarCB.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ToolStripC.SuspendLayout()
         CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl1.SuspendLayout
+        Me.GroupControl1.SuspendLayout()
         CType(Me.chkActivoCB.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCodigoBarraL.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabProductoBodega.SuspendLayout()
         CType(Me.GrpPB, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GrpPB.SuspendLayout
+        Me.GrpPB.SuspendLayout()
         CType(Me.GroupControl3, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl3.SuspendLayout
+        Me.GroupControl3.SuspendLayout()
         CType(Me.dgridProductoBodega, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GrdProductoBodega, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemCheckEdit1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -723,7 +723,7 @@ Partial Class frmProducto
         Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
         CType(Me.GrpPresentacion, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GrpPresentacion.SuspendLayout
+        Me.GrpPresentacion.SuspendLayout()
         CType(Me.chkSistema.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkGeneraLPAuto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkPermitirPaletizar.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -748,14 +748,14 @@ Partial Class frmProducto
         CType(Me.txtAlto, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtPeso, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl5, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl5.SuspendLayout
+        Me.GroupControl5.SuspendLayout()
         CType(Me.dGridPresentacion, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GrdPresentacion, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView6, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkActivoPR.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tabPresentacionTarima.SuspendLayout()
         CType(Me.GroupControl8, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl8.SuspendLayout
+        Me.GroupControl8.SuspendLayout()
         CType(Me.cmbTipoTarima.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbPresentacionTarima.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCantidadPorCama, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -763,14 +763,14 @@ Partial Class frmProducto
         CType(Me.chkActivoPT2.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCantidad, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl9, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl9.SuspendLayout
+        Me.GroupControl9.SuspendLayout()
         CType(Me.GridPresentacionTarima, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ViewPT, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView5, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkActivoPT.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabProductoSustituto.SuspendLayout()
         CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl4.SuspendLayout
+        Me.GroupControl4.SuspendLayout()
         CType(Me.cmbPresentacionR.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbProductoP.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkActivarPS.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -778,20 +778,20 @@ Partial Class frmProducto
         CType(Me.txtIdProductoR.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtNombrePR.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GrpProductoReeemplazo, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GrpProductoReeemplazo.SuspendLayout
+        Me.GrpProductoReeemplazo.SuspendLayout()
         CType(Me.GrdProductoS, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridViewProductoS, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView4, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkActivoPS.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabProductoRellenado.SuspendLayout()
         CType(Me.GroupControl6, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl6.SuspendLayout
+        Me.GroupControl6.SuspendLayout()
         CType(Me.splitContainerReabasto, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.splitContainerReabasto.Panel1.SuspendLayout()
         Me.splitContainerReabasto.Panel2.SuspendLayout()
         Me.splitContainerReabasto.SuspendLayout()
         CType(Me.grpReabastecimiento, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.grpReabastecimiento.SuspendLayout
+        Me.grpReabastecimiento.SuspendLayout()
         CType(Me.SplitContainer2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer2.Panel1.SuspendLayout()
         Me.SplitContainer2.Panel2.SuspendLayout()
@@ -817,15 +817,15 @@ Partial Class frmProducto
         Me.ToolStripPRL.SuspendLayout()
         Me.tabProductoKit.SuspendLayout()
         CType(Me.PanelControl1, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.PanelControl1.SuspendLayout
+        Me.PanelControl1.SuspendLayout()
         CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl2.SuspendLayout
+        Me.GroupControl2.SuspendLayout()
         CType(Me.GroupControl12, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl12.SuspendLayout
+        Me.GroupControl12.SuspendLayout()
         CType(Me.grdPrdKit, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView11, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl13, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl13.SuspendLayout
+        Me.GroupControl13.SuspendLayout()
         CType(Me.txtCodPrdHijo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtCantPrdHijo, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtNombrePrdHijo.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -835,7 +835,7 @@ Partial Class frmProducto
         Me.tabStock.SuspendLayout()
         Me.Conversion.SuspendLayout()
         CType(Me.GroupControl10, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl10.SuspendLayout
+        Me.GroupControl10.SuspendLayout()
         CType(Me.cmbInversa.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbOriginal.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.CheckEdit1.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -843,15 +843,15 @@ Partial Class frmProducto
         CType(Me.chkActivarConver.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ToolStrip1.SuspendLayout()
         CType(Me.GroupControl11, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl11.SuspendLayout
+        Me.GroupControl11.SuspendLayout()
         CType(Me.GridControl1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkActivosCn.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.XtraTabPage1.SuspendLayout()
         CType(Me.GrpImagen, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GrpImagen.SuspendLayout
+        Me.GrpImagen.SuspendLayout()
         CType(Me.GroupControl15, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl15.SuspendLayout
+        Me.GroupControl15.SuspendLayout()
         CType(Me.GrdImagen, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridViewImg, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.ToolStrip.SuspendLayout()
@@ -859,7 +859,7 @@ Partial Class frmProducto
         CType(Me.PicImg, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tabTallaColor.SuspendLayout()
         CType(Me.GroupControl7, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl7.SuspendLayout
+        Me.GroupControl7.SuspendLayout()
         CType(Me.dgridTallaColor, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView12, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView13, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -3562,7 +3562,7 @@ Partial Class frmProducto
         Me.ToolStripP.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripP.Name = "ToolStripP"
         Me.ToolStripP.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStripP.Size = New System.Drawing.Size(1548, 31)
+        Me.ToolStripP.Size = New System.Drawing.Size(1548, 27)
         Me.ToolStripP.TabIndex = 0
         Me.ToolStripP.Text = "ToolStrip1"
         '
@@ -3571,7 +3571,7 @@ Partial Class frmProducto
         Me.cmdNewP.Image = CType(resources.GetObject("cmdNewP.Image"), System.Drawing.Image)
         Me.cmdNewP.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdNewP.Name = "cmdNewP"
-        Me.cmdNewP.Size = New System.Drawing.Size(76, 28)
+        Me.cmdNewP.Size = New System.Drawing.Size(76, 24)
         Me.cmdNewP.Text = "Nuevo"
         '
         'cmdSaveP
@@ -3579,7 +3579,7 @@ Partial Class frmProducto
         Me.cmdSaveP.Image = CType(resources.GetObject("cmdSaveP.Image"), System.Drawing.Image)
         Me.cmdSaveP.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdSaveP.Name = "cmdSaveP"
-        Me.cmdSaveP.Size = New System.Drawing.Size(86, 28)
+        Me.cmdSaveP.Size = New System.Drawing.Size(86, 24)
         Me.cmdSaveP.Text = "Guardar"
         '
         'cmdDesactivarParametro
@@ -3587,7 +3587,7 @@ Partial Class frmProducto
         Me.cmdDesactivarParametro.Image = CType(resources.GetObject("cmdDesactivarParametro.Image"), System.Drawing.Image)
         Me.cmdDesactivarParametro.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDesactivarParametro.Name = "cmdDesactivarParametro"
-        Me.cmdDesactivarParametro.Size = New System.Drawing.Size(102, 28)
+        Me.cmdDesactivarParametro.Size = New System.Drawing.Size(102, 24)
         Me.cmdDesactivarParametro.Text = "Desactivar"
         '
         'cmdNuevoParametro
@@ -3786,7 +3786,7 @@ Partial Class frmProducto
         Me.ToolStripC.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripC.Name = "ToolStripC"
         Me.ToolStripC.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStripC.Size = New System.Drawing.Size(1548, 31)
+        Me.ToolStripC.Size = New System.Drawing.Size(1548, 27)
         Me.ToolStripC.TabIndex = 0
         Me.ToolStripC.Text = "ToolStrip2"
         '
@@ -3795,7 +3795,7 @@ Partial Class frmProducto
         Me.cmdNewC.Image = CType(resources.GetObject("cmdNewC.Image"), System.Drawing.Image)
         Me.cmdNewC.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdNewC.Name = "cmdNewC"
-        Me.cmdNewC.Size = New System.Drawing.Size(76, 28)
+        Me.cmdNewC.Size = New System.Drawing.Size(76, 24)
         Me.cmdNewC.Text = "Nuevo"
         '
         'cmdSaveC
@@ -3803,7 +3803,7 @@ Partial Class frmProducto
         Me.cmdSaveC.Image = CType(resources.GetObject("cmdSaveC.Image"), System.Drawing.Image)
         Me.cmdSaveC.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdSaveC.Name = "cmdSaveC"
-        Me.cmdSaveC.Size = New System.Drawing.Size(86, 28)
+        Me.cmdSaveC.Size = New System.Drawing.Size(86, 24)
         Me.cmdSaveC.Text = "Guardar"
         '
         'cmdDesactivarCodigoBarra
@@ -3811,7 +3811,7 @@ Partial Class frmProducto
         Me.cmdDesactivarCodigoBarra.Image = CType(resources.GetObject("cmdDesactivarCodigoBarra.Image"), System.Drawing.Image)
         Me.cmdDesactivarCodigoBarra.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDesactivarCodigoBarra.Name = "cmdDesactivarCodigoBarra"
-        Me.cmdDesactivarCodigoBarra.Size = New System.Drawing.Size(102, 28)
+        Me.cmdDesactivarCodigoBarra.Size = New System.Drawing.Size(102, 24)
         Me.cmdDesactivarCodigoBarra.Text = "Desactivar"
         '
         'GroupControl1
@@ -4498,7 +4498,7 @@ Partial Class frmProducto
         Me.ToolStripPT.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripPT.Name = "ToolStripPT"
         Me.ToolStripPT.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStripPT.Size = New System.Drawing.Size(1548, 31)
+        Me.ToolStripPT.Size = New System.Drawing.Size(1548, 27)
         Me.ToolStripPT.TabIndex = 0
         Me.ToolStripPT.Text = "ToolStrip2"
         '
@@ -4507,7 +4507,7 @@ Partial Class frmProducto
         Me.cmdNewPT.Image = CType(resources.GetObject("cmdNewPT.Image"), System.Drawing.Image)
         Me.cmdNewPT.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdNewPT.Name = "cmdNewPT"
-        Me.cmdNewPT.Size = New System.Drawing.Size(76, 28)
+        Me.cmdNewPT.Size = New System.Drawing.Size(76, 24)
         Me.cmdNewPT.Text = "Nuevo"
         '
         'cmdSavePT
@@ -4515,7 +4515,7 @@ Partial Class frmProducto
         Me.cmdSavePT.Image = CType(resources.GetObject("cmdSavePT.Image"), System.Drawing.Image)
         Me.cmdSavePT.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdSavePT.Name = "cmdSavePT"
-        Me.cmdSavePT.Size = New System.Drawing.Size(86, 28)
+        Me.cmdSavePT.Size = New System.Drawing.Size(86, 24)
         Me.cmdSavePT.Text = "Guardar"
         '
         'cmdDesactivarPresentacionTarima
@@ -4523,7 +4523,7 @@ Partial Class frmProducto
         Me.cmdDesactivarPresentacionTarima.Image = CType(resources.GetObject("cmdDesactivarPresentacionTarima.Image"), System.Drawing.Image)
         Me.cmdDesactivarPresentacionTarima.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDesactivarPresentacionTarima.Name = "cmdDesactivarPresentacionTarima"
-        Me.cmdDesactivarPresentacionTarima.Size = New System.Drawing.Size(102, 28)
+        Me.cmdDesactivarPresentacionTarima.Size = New System.Drawing.Size(102, 24)
         Me.cmdDesactivarPresentacionTarima.Text = "Desactivar"
         '
         'chkActivoPT2
@@ -4688,7 +4688,7 @@ Partial Class frmProducto
         Me.ToolStripPS.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripPS.Name = "ToolStripPS"
         Me.ToolStripPS.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStripPS.Size = New System.Drawing.Size(1548, 31)
+        Me.ToolStripPS.Size = New System.Drawing.Size(1548, 27)
         Me.ToolStripPS.TabIndex = 0
         Me.ToolStripPS.Text = "ToolStrip2"
         '
@@ -4697,7 +4697,7 @@ Partial Class frmProducto
         Me.cmdNewPS.Image = CType(resources.GetObject("cmdNewPS.Image"), System.Drawing.Image)
         Me.cmdNewPS.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdNewPS.Name = "cmdNewPS"
-        Me.cmdNewPS.Size = New System.Drawing.Size(76, 28)
+        Me.cmdNewPS.Size = New System.Drawing.Size(76, 24)
         Me.cmdNewPS.Text = "Nuevo"
         '
         'cmdSavePS
@@ -4705,7 +4705,7 @@ Partial Class frmProducto
         Me.cmdSavePS.Image = CType(resources.GetObject("cmdSavePS.Image"), System.Drawing.Image)
         Me.cmdSavePS.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdSavePS.Name = "cmdSavePS"
-        Me.cmdSavePS.Size = New System.Drawing.Size(86, 28)
+        Me.cmdSavePS.Size = New System.Drawing.Size(86, 24)
         Me.cmdSavePS.Text = "Guardar"
         '
         'cmdDesactivarProductoSustituto
@@ -4713,7 +4713,7 @@ Partial Class frmProducto
         Me.cmdDesactivarProductoSustituto.Image = CType(resources.GetObject("cmdDesactivarProductoSustituto.Image"), System.Drawing.Image)
         Me.cmdDesactivarProductoSustituto.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDesactivarProductoSustituto.Name = "cmdDesactivarProductoSustituto"
-        Me.cmdDesactivarProductoSustituto.Size = New System.Drawing.Size(102, 28)
+        Me.cmdDesactivarProductoSustituto.Size = New System.Drawing.Size(102, 24)
         Me.cmdDesactivarProductoSustituto.Text = "Desactivar"
         '
         'lblNombreProductoO
@@ -4845,7 +4845,7 @@ Partial Class frmProducto
         'splitContainerReabasto
         '
         Me.splitContainerReabasto.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.splitContainerReabasto.Location = New System.Drawing.Point(2, 59)
+        Me.splitContainerReabasto.Location = New System.Drawing.Point(2, 55)
         Me.splitContainerReabasto.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.splitContainerReabasto.Name = "splitContainerReabasto"
         Me.splitContainerReabasto.Orientation = System.Windows.Forms.Orientation.Horizontal
@@ -4858,8 +4858,8 @@ Partial Class frmProducto
         '
         Me.splitContainerReabasto.Panel2.Controls.Add(Me.GridProductoRellenado)
         Me.splitContainerReabasto.Panel2.Controls.Add(Me.chkProductoPRL)
-        Me.splitContainerReabasto.Size = New System.Drawing.Size(1548, 542)
-        Me.splitContainerReabasto.SplitterDistance = 261
+        Me.splitContainerReabasto.Size = New System.Drawing.Size(1548, 546)
+        Me.splitContainerReabasto.SplitterDistance = 263
         Me.splitContainerReabasto.TabIndex = 1
         '
         'grpReabastecimiento
@@ -4869,7 +4869,7 @@ Partial Class frmProducto
         Me.grpReabastecimiento.Location = New System.Drawing.Point(0, 0)
         Me.grpReabastecimiento.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.grpReabastecimiento.Name = "grpReabastecimiento"
-        Me.grpReabastecimiento.Size = New System.Drawing.Size(1548, 261)
+        Me.grpReabastecimiento.Size = New System.Drawing.Size(1548, 263)
         Me.grpReabastecimiento.TabIndex = 0
         Me.grpReabastecimiento.Text = "Regla de reabastecimiento"
         '
@@ -4917,7 +4917,7 @@ Partial Class frmProducto
         Me.SplitContainer2.Panel2.Controls.Add(Me.cmbPresentacionAbastecerCon)
         Me.SplitContainer2.Panel2.Controls.Add(Me.txtNombreUMBasReabastecerCon)
         Me.SplitContainer2.Panel2.Controls.Add(Me.txtIdUMBasReabastecerCon)
-        Me.SplitContainer2.Size = New System.Drawing.Size(1544, 231)
+        Me.SplitContainer2.Size = New System.Drawing.Size(1544, 233)
         Me.SplitContainer2.SplitterDistance = 824
         Me.SplitContainer2.TabIndex = 7
         '
@@ -5203,7 +5203,7 @@ Partial Class frmProducto
         Me.GridProductoRellenado.Margin = New System.Windows.Forms.Padding(4)
         Me.GridProductoRellenado.MenuManager = Me.RibbonControl
         Me.GridProductoRellenado.Name = "GridProductoRellenado"
-        Me.GridProductoRellenado.Size = New System.Drawing.Size(1548, 253)
+        Me.GridProductoRellenado.Size = New System.Drawing.Size(1548, 255)
         Me.GridProductoRellenado.TabIndex = 2
         Me.GridProductoRellenado.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.ViewProductoRellenado, Me.GridView3})
         '
@@ -5243,7 +5243,7 @@ Partial Class frmProducto
         Me.ToolStripPRL.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripPRL.Name = "ToolStripPRL"
         Me.ToolStripPRL.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStripPRL.Size = New System.Drawing.Size(1548, 31)
+        Me.ToolStripPRL.Size = New System.Drawing.Size(1548, 27)
         Me.ToolStripPRL.TabIndex = 0
         Me.ToolStripPRL.Text = "ToolStrip2"
         '
@@ -5252,7 +5252,7 @@ Partial Class frmProducto
         Me.cmdNewPRL.Image = CType(resources.GetObject("cmdNewPRL.Image"), System.Drawing.Image)
         Me.cmdNewPRL.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdNewPRL.Name = "cmdNewPRL"
-        Me.cmdNewPRL.Size = New System.Drawing.Size(76, 28)
+        Me.cmdNewPRL.Size = New System.Drawing.Size(76, 24)
         Me.cmdNewPRL.Text = "Nuevo"
         '
         'cmdSavePRL
@@ -5260,7 +5260,7 @@ Partial Class frmProducto
         Me.cmdSavePRL.Image = CType(resources.GetObject("cmdSavePRL.Image"), System.Drawing.Image)
         Me.cmdSavePRL.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdSavePRL.Name = "cmdSavePRL"
-        Me.cmdSavePRL.Size = New System.Drawing.Size(86, 28)
+        Me.cmdSavePRL.Size = New System.Drawing.Size(86, 24)
         Me.cmdSavePRL.Text = "Guardar"
         '
         'cmdDesactivarProductoRellenado
@@ -5268,7 +5268,7 @@ Partial Class frmProducto
         Me.cmdDesactivarProductoRellenado.Image = CType(resources.GetObject("cmdDesactivarProductoRellenado.Image"), System.Drawing.Image)
         Me.cmdDesactivarProductoRellenado.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDesactivarProductoRellenado.Name = "cmdDesactivarProductoRellenado"
-        Me.cmdDesactivarProductoRellenado.Size = New System.Drawing.Size(102, 28)
+        Me.cmdDesactivarProductoRellenado.Size = New System.Drawing.Size(102, 24)
         Me.cmdDesactivarProductoRellenado.Text = "Desactivar"
         '
         'tabProductoKit
@@ -5352,7 +5352,7 @@ Partial Class frmProducto
         Me.GroupControl13.Controls.Add(Me.txtIdUMBHijo)
         Me.GroupControl13.Controls.Add(Me.lblProdPadre)
         Me.GroupControl13.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupControl13.Location = New System.Drawing.Point(2, 59)
+        Me.GroupControl13.Location = New System.Drawing.Point(2, 55)
         Me.GroupControl13.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupControl13.Name = "GroupControl13"
         Me.GroupControl13.Size = New System.Drawing.Size(1544, 162)
@@ -5454,7 +5454,7 @@ Partial Class frmProducto
         Me.ToolStrip2.Location = New System.Drawing.Point(2, 28)
         Me.ToolStrip2.Name = "ToolStrip2"
         Me.ToolStrip2.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStrip2.Size = New System.Drawing.Size(1544, 31)
+        Me.ToolStrip2.Size = New System.Drawing.Size(1544, 27)
         Me.ToolStrip2.TabIndex = 0
         Me.ToolStrip2.Text = "ToolStrip2"
         '
@@ -5462,7 +5462,7 @@ Partial Class frmProducto
         '
         Me.cmdAggPrK.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAggPrK.Name = "cmdAggPrK"
-        Me.cmdAggPrK.Size = New System.Drawing.Size(56, 28)
+        Me.cmdAggPrK.Size = New System.Drawing.Size(56, 24)
         Me.cmdAggPrK.Text = "Nuevo"
         '
         'cmdGuardarPrk
@@ -5470,7 +5470,7 @@ Partial Class frmProducto
         Me.cmdGuardarPrk.Image = Global.TOMWMS.My.Resources.Resources.greencheck
         Me.cmdGuardarPrk.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdGuardarPrk.Name = "cmdGuardarPrk"
-        Me.cmdGuardarPrk.Size = New System.Drawing.Size(86, 28)
+        Me.cmdGuardarPrk.Size = New System.Drawing.Size(86, 24)
         Me.cmdGuardarPrk.Text = "Guardar"
         '
         'cmdEliminarPrk
@@ -5478,7 +5478,7 @@ Partial Class frmProducto
         Me.cmdEliminarPrk.Image = Global.TOMWMS.My.Resources.Resources.desactivar
         Me.cmdEliminarPrk.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdEliminarPrk.Name = "cmdEliminarPrk"
-        Me.cmdEliminarPrk.Size = New System.Drawing.Size(87, 28)
+        Me.cmdEliminarPrk.Size = New System.Drawing.Size(87, 24)
         Me.cmdEliminarPrk.Text = "Eliminar"
         '
         'tabStock
@@ -5593,7 +5593,7 @@ Partial Class frmProducto
         Me.ToolStrip1.Location = New System.Drawing.Point(2, 28)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Padding = New System.Windows.Forms.Padding(0, 0, 2, 0)
-        Me.ToolStrip1.Size = New System.Drawing.Size(1548, 31)
+        Me.ToolStrip1.Size = New System.Drawing.Size(1548, 27)
         Me.ToolStrip1.TabIndex = 0
         Me.ToolStrip1.Text = "ToolStrip2"
         '
@@ -5602,7 +5602,7 @@ Partial Class frmProducto
         Me.cmdNuevoCn.Image = CType(resources.GetObject("cmdNuevoCn.Image"), System.Drawing.Image)
         Me.cmdNuevoCn.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdNuevoCn.Name = "cmdNuevoCn"
-        Me.cmdNuevoCn.Size = New System.Drawing.Size(76, 28)
+        Me.cmdNuevoCn.Size = New System.Drawing.Size(76, 24)
         Me.cmdNuevoCn.Text = "Nuevo"
         '
         'cmdSaveCn
@@ -5610,7 +5610,7 @@ Partial Class frmProducto
         Me.cmdSaveCn.Image = CType(resources.GetObject("cmdSaveCn.Image"), System.Drawing.Image)
         Me.cmdSaveCn.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdSaveCn.Name = "cmdSaveCn"
-        Me.cmdSaveCn.Size = New System.Drawing.Size(86, 28)
+        Me.cmdSaveCn.Size = New System.Drawing.Size(86, 24)
         Me.cmdSaveCn.Text = "Guardar"
         '
         'cmdDesactivarCn
@@ -5618,7 +5618,7 @@ Partial Class frmProducto
         Me.cmdDesactivarCn.Image = CType(resources.GetObject("cmdDesactivarCn.Image"), System.Drawing.Image)
         Me.cmdDesactivarCn.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdDesactivarCn.Name = "cmdDesactivarCn"
-        Me.cmdDesactivarCn.Size = New System.Drawing.Size(102, 28)
+        Me.cmdDesactivarCn.Size = New System.Drawing.Size(102, 24)
         Me.cmdDesactivarCn.Text = "Desactivar"
         '
         'Label32
@@ -5970,21 +5970,21 @@ Partial Class frmProducto
         CType(Me.chkActivo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.grpDimensionesUMBas, System.ComponentModel.ISupportInitialize).EndInit()
         Me.grpDimensionesUMBas.ResumeLayout(False)
-        Me.grpDimensionesUMBas.PerformLayout
+        Me.grpDimensionesUMBas.PerformLayout()
         CType(Me.txtMargen, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtAnchoUB, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtLargoUB, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtAltoUB, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.grpImagenProducto, System.ComponentModel.ISupportInitialize).EndInit()
         Me.grpImagenProducto.ResumeLayout(False)
-        Me.grpImagenProducto.PerformLayout
+        Me.grpImagenProducto.PerformLayout()
         CType(Me.picFoto, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbSymbology.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbEtiqueta.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabAtributo.ResumeLayout(False)
         CType(Me.GrpAtributo, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GrpAtributo.ResumeLayout(False)
-        Me.GrpAtributo.PerformLayout
+        Me.GrpAtributo.PerformLayout()
         CType(Me.chkGeneraLicAutoP.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GroupControl14, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl14.ResumeLayout(False)
@@ -6037,14 +6037,14 @@ Partial Class frmProducto
         Me.TabParametros.ResumeLayout(False)
         CType(Me.GprParametro, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GprParametro.ResumeLayout(False)
-        Me.GprParametro.PerformLayout
+        Me.GprParametro.PerformLayout()
         CType(Me.cmbParametro.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkActivarParametro.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ToolStripP.ResumeLayout(False)
         Me.ToolStripP.PerformLayout()
         CType(Me.GrpParametro, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GrpParametro.ResumeLayout(False)
-        Me.GrpParametro.PerformLayout
+        Me.GrpParametro.PerformLayout()
         CType(Me.DgridParametros, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridViewP, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView9, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6053,7 +6053,7 @@ Partial Class frmProducto
         Me.TabCodigoBarra.ResumeLayout(False)
         CType(Me.GrpCodigoBarra, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GrpCodigoBarra.ResumeLayout(False)
-        Me.GrpCodigoBarra.PerformLayout
+        Me.GrpCodigoBarra.PerformLayout()
         CType(Me.cmbProveedor.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GrdCodigoBarra, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridViewCB, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6063,7 +6063,7 @@ Partial Class frmProducto
         Me.ToolStripC.PerformLayout()
         CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl1.ResumeLayout(False)
-        Me.GroupControl1.PerformLayout
+        Me.GroupControl1.PerformLayout()
         CType(Me.chkActivoCB.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCodigoBarraL.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabProductoBodega.ResumeLayout(False)
@@ -6083,7 +6083,7 @@ Partial Class frmProducto
         Me.SplitContainer1.ResumeLayout(False)
         CType(Me.GrpPresentacion, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GrpPresentacion.ResumeLayout(False)
-        Me.GrpPresentacion.PerformLayout
+        Me.GrpPresentacion.PerformLayout()
         CType(Me.chkSistema.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkGeneraLPAuto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkPermitirPaletizar.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6119,7 +6119,7 @@ Partial Class frmProducto
         Me.tabPresentacionTarima.ResumeLayout(False)
         CType(Me.GroupControl8, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl8.ResumeLayout(False)
-        Me.GroupControl8.PerformLayout
+        Me.GroupControl8.PerformLayout()
         CType(Me.cmbTipoTarima.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbPresentacionTarima.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCantidadPorCama, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6129,7 +6129,7 @@ Partial Class frmProducto
         CType(Me.txtCantidad, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GroupControl9, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl9.ResumeLayout(False)
-        Me.GroupControl9.PerformLayout
+        Me.GroupControl9.PerformLayout()
         CType(Me.GridPresentacionTarima, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ViewPT, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView5, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6137,7 +6137,7 @@ Partial Class frmProducto
         Me.TabProductoSustituto.ResumeLayout(False)
         CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl4.ResumeLayout(False)
-        Me.GroupControl4.PerformLayout
+        Me.GroupControl4.PerformLayout()
         CType(Me.cmbPresentacionR.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbProductoP.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkActivarPS.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6147,7 +6147,7 @@ Partial Class frmProducto
         CType(Me.txtNombrePR.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GrpProductoReeemplazo, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GrpProductoReeemplazo.ResumeLayout(False)
-        Me.GrpProductoReeemplazo.PerformLayout
+        Me.GrpProductoReeemplazo.PerformLayout()
         CType(Me.GrdProductoS, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridViewProductoS, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView4, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6155,7 +6155,7 @@ Partial Class frmProducto
         Me.TabProductoRellenado.ResumeLayout(False)
         CType(Me.GroupControl6, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl6.ResumeLayout(False)
-        Me.GroupControl6.PerformLayout
+        Me.GroupControl6.PerformLayout()
         Me.splitContainerReabasto.Panel1.ResumeLayout(False)
         Me.splitContainerReabasto.Panel2.ResumeLayout(False)
         CType(Me.splitContainerReabasto, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6193,14 +6193,14 @@ Partial Class frmProducto
         Me.PanelControl1.ResumeLayout(False)
         CType(Me.GroupControl2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl2.ResumeLayout(False)
-        Me.GroupControl2.PerformLayout
+        Me.GroupControl2.PerformLayout()
         CType(Me.GroupControl12, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl12.ResumeLayout(False)
         CType(Me.grdPrdKit, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView11, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GroupControl13, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl13.ResumeLayout(False)
-        Me.GroupControl13.PerformLayout
+        Me.GroupControl13.PerformLayout()
         CType(Me.txtCodPrdHijo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtCantPrdHijo, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtNombrePrdHijo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6212,7 +6212,7 @@ Partial Class frmProducto
         Me.Conversion.ResumeLayout(False)
         CType(Me.GroupControl10, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl10.ResumeLayout(False)
-        Me.GroupControl10.PerformLayout
+        Me.GroupControl10.PerformLayout()
         CType(Me.cmbInversa.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbOriginal.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.CheckEdit1.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6222,7 +6222,7 @@ Partial Class frmProducto
         Me.ToolStrip1.PerformLayout()
         CType(Me.GroupControl11, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl11.ResumeLayout(False)
-        Me.GroupControl11.PerformLayout
+        Me.GroupControl11.PerformLayout()
         CType(Me.GridControl1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkActivosCn.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6231,7 +6231,7 @@ Partial Class frmProducto
         Me.GrpImagen.ResumeLayout(False)
         CType(Me.GroupControl15, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl15.ResumeLayout(False)
-        Me.GroupControl15.PerformLayout
+        Me.GroupControl15.PerformLayout()
         CType(Me.GrdImagen, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GridViewImg, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ToolStrip.ResumeLayout(False)

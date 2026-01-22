@@ -13,6 +13,10 @@
     Public Property FechaPedido As DateTime
     Public Property Lote As String = ""
     Public Property Lic_plate As String = ""
+    Public Property IdProductoTallaColor As Integer = 0
+    Public Property Talla As String = ""
+    Public Property Color As String = ""
+
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls

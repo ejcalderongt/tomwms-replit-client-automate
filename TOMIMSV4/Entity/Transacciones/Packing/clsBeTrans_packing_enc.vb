@@ -25,6 +25,8 @@ Public Class clsBeTrans_packing_enc
     Public Property Usr_agr As String = ""
     Public Property Fec_mod As String = New Date(1900, 1, 1)
     Public Property Usr_mod As String = ""
+    Public Property IdProductoTallaColor As Integer = 0
+    Public Property Guia_Transporte As String = ""
 
     Sub New()
         '#EJC: Add your constructor here... 

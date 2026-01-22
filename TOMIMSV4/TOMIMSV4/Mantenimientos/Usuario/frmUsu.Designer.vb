@@ -44,6 +44,8 @@ Partial Class frmUsu
         Dim lblCorrelativoInicial As System.Windows.Forms.Label
         Dim Label2 As System.Windows.Forms.Label
         Dim lblSerie As System.Windows.Forms.Label
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmUsu))
+        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim Label3 As System.Windows.Forms.Label
         Dim Label4 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmUsu))
@@ -277,7 +279,7 @@ Partial Class frmUsu
         'CodigoLabel
         '
         CodigoLabel.AutoSize = True
-        CodigoLabel.Location = New System.Drawing.Point(11, 47)
+        CodigoLabel.Location = New System.Drawing.Point(19, 18)
         CodigoLabel.Name = "CodigoLabel"
         CodigoLabel.Size = New System.Drawing.Size(50, 16)
         CodigoLabel.TabIndex = 0
@@ -286,7 +288,7 @@ Partial Class frmUsu
         'ClaveLabel
         '
         ClaveLabel.AutoSize = True
-        ClaveLabel.Location = New System.Drawing.Point(12, 79)
+        ClaveLabel.Location = New System.Drawing.Point(20, 50)
         ClaveLabel.Name = "ClaveLabel"
         ClaveLabel.Size = New System.Drawing.Size(77, 16)
         ClaveLabel.TabIndex = 2
@@ -295,7 +297,7 @@ Partial Class frmUsu
         'lblConfirmarClave
         '
         lblConfirmarClave.AutoSize = True
-        lblConfirmarClave.Location = New System.Drawing.Point(12, 114)
+        lblConfirmarClave.Location = New System.Drawing.Point(20, 85)
         lblConfirmarClave.Name = "lblConfirmarClave"
         lblConfirmarClave.Size = New System.Drawing.Size(120, 16)
         lblConfirmarClave.TabIndex = 4
@@ -304,7 +306,7 @@ Partial Class frmUsu
         'Ultimo_loginLabel
         '
         Ultimo_loginLabel.AutoSize = True
-        Ultimo_loginLabel.Location = New System.Drawing.Point(12, 146)
+        Ultimo_loginLabel.Location = New System.Drawing.Point(20, 117)
         Ultimo_loginLabel.Name = "Ultimo_loginLabel"
         Ultimo_loginLabel.Size = New System.Drawing.Size(94, 16)
         Ultimo_loginLabel.TabIndex = 6
@@ -679,29 +681,39 @@ Partial Class frmUsu
         'TabPage3
         '
         Me.TabPage3.BackColor = System.Drawing.Color.FromArgb(CType(CType(235, Byte), Integer), CType(CType(236, Byte), Integer), CType(CType(239, Byte), Integer))
-        Me.TabPage3.Controls.Add(Me.GroupControl3)
-        Me.TabPage3.Controls.Add(Me.GroupControl1)
+        Me.TabPage3.Controls.Add(Me.lblReptClaAut)
+        Me.TabPage3.Controls.Add(Me.txtReptClaveAuto)
+        Me.TabPage3.Controls.Add(Me.txtClaveAutoriza)
+        Me.TabPage3.Controls.Add(Me.lblClaveAuto)
+        Me.TabPage3.Controls.Add(Me.ConfirmarClaveTextEdit)
+        Me.TabPage3.Controls.Add(Ultimo_loginLabel)
+        Me.TabPage3.Controls.Add(Me.Ultimo_loginDateEdit)
+        Me.TabPage3.Controls.Add(lblConfirmarClave)
+        Me.TabPage3.Controls.Add(ClaveLabel)
+        Me.TabPage3.Controls.Add(Me.ClaveTextEdit)
+        Me.TabPage3.Controls.Add(CodigoLabel)
+        Me.TabPage3.Controls.Add(Me.CodigoTextEdit)
         Me.TabPage3.Location = New System.Drawing.Point(4, 25)
         Me.TabPage3.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.TabPage3.Name = "TabPage3"
         Me.TabPage3.Padding = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.TabPage3.Size = New System.Drawing.Size(1159, 346)
         Me.TabPage3.TabIndex = 0
-        Me.TabPage3.Text = "Ingreso a TOM WMS"
+        Me.TabPage3.Text = "Ingreso a TOM IMS"
         '
         'lblReptClaAut
         '
         Me.lblReptClaAut.AutoSize = True
-        Me.lblReptClaAut.Location = New System.Drawing.Point(12, 217)
+        Me.lblReptClaAut.Location = New System.Drawing.Point(20, 188)
         Me.lblReptClaAut.Name = "lblReptClaAut"
         Me.lblReptClaAut.Size = New System.Drawing.Size(82, 48)
         Me.lblReptClaAut.TabIndex = 26
-        Me.lblReptClaAut.Text = "Confirmar " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Clave de " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Autorización:"
+        Me.lblReptClaAut.Text = "Repetir " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Clave de " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Autorización:"
         Me.lblReptClaAut.Visible = False
         '
         'txtReptClaveAuto
         '
-        Me.txtReptClaveAuto.Location = New System.Drawing.Point(139, 239)
+        Me.txtReptClaveAuto.Location = New System.Drawing.Point(147, 210)
         Me.txtReptClaveAuto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtReptClaveAuto.Name = "txtReptClaveAuto"
         Me.txtReptClaveAuto.PasswordChar = Global.Microsoft.VisualBasic.ChrW(35)
@@ -711,7 +723,7 @@ Partial Class frmUsu
         '
         'txtClaveAutoriza
         '
-        Me.txtClaveAutoriza.Location = New System.Drawing.Point(139, 178)
+        Me.txtClaveAutoriza.Location = New System.Drawing.Point(147, 149)
         Me.txtClaveAutoriza.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtClaveAutoriza.Name = "txtClaveAutoriza"
         Me.txtClaveAutoriza.PasswordChar = Global.Microsoft.VisualBasic.ChrW(35)
@@ -722,7 +734,7 @@ Partial Class frmUsu
         'lblClaveAuto
         '
         Me.lblClaveAuto.AutoSize = True
-        Me.lblClaveAuto.Location = New System.Drawing.Point(11, 182)
+        Me.lblClaveAuto.Location = New System.Drawing.Point(19, 153)
         Me.lblClaveAuto.Name = "lblClaveAuto"
         Me.lblClaveAuto.Size = New System.Drawing.Size(117, 16)
         Me.lblClaveAuto.TabIndex = 23
@@ -731,7 +743,7 @@ Partial Class frmUsu
         '
         'ConfirmarClaveTextEdit
         '
-        Me.ConfirmarClaveTextEdit.Location = New System.Drawing.Point(139, 110)
+        Me.ConfirmarClaveTextEdit.Location = New System.Drawing.Point(147, 81)
         Me.ConfirmarClaveTextEdit.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ConfirmarClaveTextEdit.MenuManager = Me.RibbonControl
         Me.ConfirmarClaveTextEdit.Name = "ConfirmarClaveTextEdit"
@@ -743,7 +755,7 @@ Partial Class frmUsu
         '
         Me.Ultimo_loginDateEdit.EditValue = Nothing
         Me.Ultimo_loginDateEdit.Enabled = False
-        Me.Ultimo_loginDateEdit.Location = New System.Drawing.Point(139, 142)
+        Me.Ultimo_loginDateEdit.Location = New System.Drawing.Point(147, 113)
         Me.Ultimo_loginDateEdit.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Ultimo_loginDateEdit.MenuManager = Me.RibbonControl
         Me.Ultimo_loginDateEdit.Name = "Ultimo_loginDateEdit"
@@ -756,7 +768,7 @@ Partial Class frmUsu
         '
         'ClaveTextEdit
         '
-        Me.ClaveTextEdit.Location = New System.Drawing.Point(139, 76)
+        Me.ClaveTextEdit.Location = New System.Drawing.Point(147, 47)
         Me.ClaveTextEdit.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.ClaveTextEdit.MenuManager = Me.RibbonControl
         Me.ClaveTextEdit.Name = "ClaveTextEdit"
@@ -766,7 +778,7 @@ Partial Class frmUsu
         '
         'CodigoTextEdit
         '
-        Me.CodigoTextEdit.Location = New System.Drawing.Point(139, 44)
+        Me.CodigoTextEdit.Location = New System.Drawing.Point(147, 15)
         Me.CodigoTextEdit.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.CodigoTextEdit.MenuManager = Me.RibbonControl
         Me.CodigoTextEdit.Name = "CodigoTextEdit"
@@ -1124,74 +1136,31 @@ Partial Class frmUsu
         Me.DockPanel1_Container.Size = New System.Drawing.Size(951, 89)
         Me.DockPanel1_Container.TabIndex = 0
         '
-        'GroupControl1
+        'Label3
         '
-        Me.GroupControl1.Controls.Add(Me.txtReptClaveAuto)
-        Me.GroupControl1.Controls.Add(Me.CodigoTextEdit)
-        Me.GroupControl1.Controls.Add(Me.lblReptClaAut)
-        Me.GroupControl1.Controls.Add(CodigoLabel)
-        Me.GroupControl1.Controls.Add(Me.ClaveTextEdit)
-        Me.GroupControl1.Controls.Add(Me.txtClaveAutoriza)
-        Me.GroupControl1.Controls.Add(ClaveLabel)
-        Me.GroupControl1.Controls.Add(Me.lblClaveAuto)
-        Me.GroupControl1.Controls.Add(lblConfirmarClave)
-        Me.GroupControl1.Controls.Add(Me.ConfirmarClaveTextEdit)
-        Me.GroupControl1.Controls.Add(Me.Ultimo_loginDateEdit)
-        Me.GroupControl1.Controls.Add(Ultimo_loginLabel)
-        Me.GroupControl1.Location = New System.Drawing.Point(23, 18)
-        Me.GroupControl1.Name = "GroupControl1"
-        Me.GroupControl1.Size = New System.Drawing.Size(410, 305)
-        Me.GroupControl1.TabIndex = 27
-        Me.GroupControl1.Text = "WMS"
+        Label3.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label3.AutoSize = True
+        Label3.ForeColor = System.Drawing.Color.Red
+        Label3.Location = New System.Drawing.Point(449, 202)
+        Label3.Name = "Label3"
+        Label3.Size = New System.Drawing.Size(112, 16)
+        Label3.TabIndex = 32
+        Label3.Text = "*máximo 9 digitos"
         '
-        'GroupControl3
+        'Label4
         '
-        Me.GroupControl3.Controls.Add(Me.txtUsuarioSap)
-        Me.GroupControl3.Controls.Add(lblUsuarioSap)
-        Me.GroupControl3.Controls.Add(Me.txtClaveSap)
-        Me.GroupControl3.Controls.Add(lblClaveSap)
-        Me.GroupControl3.Location = New System.Drawing.Point(464, 18)
-        Me.GroupControl3.Name = "GroupControl3"
-        Me.GroupControl3.Size = New System.Drawing.Size(345, 305)
-        Me.GroupControl3.TabIndex = 28
-        Me.GroupControl3.Text = "SAP"
-        '
-        'txtUsuarioSap
-        '
-        Me.txtUsuarioSap.Location = New System.Drawing.Point(144, 44)
-        Me.txtUsuarioSap.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.txtUsuarioSap.MenuManager = Me.RibbonControl
-        Me.txtUsuarioSap.Name = "txtUsuarioSap"
-        Me.txtUsuarioSap.Size = New System.Drawing.Size(181, 22)
-        Me.txtUsuarioSap.TabIndex = 5
-        '
-        'lblUsuarioSap
-        '
-        lblUsuarioSap.AutoSize = True
-        lblUsuarioSap.Location = New System.Drawing.Point(16, 47)
-        lblUsuarioSap.Name = "lblUsuarioSap"
-        lblUsuarioSap.Size = New System.Drawing.Size(50, 16)
-        lblUsuarioSap.TabIndex = 4
-        lblUsuarioSap.Text = "Usuario"
-        '
-        'txtClaveSap
-        '
-        Me.txtClaveSap.Location = New System.Drawing.Point(144, 76)
-        Me.txtClaveSap.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.txtClaveSap.MenuManager = Me.RibbonControl
-        Me.txtClaveSap.Name = "txtClaveSap"
-        Me.txtClaveSap.Properties.PasswordChar = Global.Microsoft.VisualBasic.ChrW(35)
-        Me.txtClaveSap.Size = New System.Drawing.Size(181, 22)
-        Me.txtClaveSap.TabIndex = 7
-        '
-        'lblClaveSap
-        '
-        lblClaveSap.AutoSize = True
-        lblClaveSap.Location = New System.Drawing.Point(17, 79)
-        lblClaveSap.Name = "lblClaveSap"
-        lblClaveSap.Size = New System.Drawing.Size(77, 16)
-        lblClaveSap.TabIndex = 6
-        lblClaveSap.Text = "Contraseña:"
+        Label4.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Label4.AutoSize = True
+        Label4.ForeColor = System.Drawing.Color.Red
+        Label4.Location = New System.Drawing.Point(449, 142)
+        Label4.Name = "Label4"
+        Label4.Size = New System.Drawing.Size(135, 16)
+        Label4.TabIndex = 33
+        Label4.Text = "*máximo 3 caracteres"
         '
         'frmUsu
         '
@@ -1226,6 +1195,7 @@ Partial Class frmUsu
         CType(Me.chkActivo.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.TabControl2.ResumeLayout(False)
         Me.TabPage3.ResumeLayout(False)
+        Me.TabPage3.PerformLayout()
         CType(Me.ConfirmarClaveTextEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.Ultimo_loginDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.Ultimo_loginDateEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()

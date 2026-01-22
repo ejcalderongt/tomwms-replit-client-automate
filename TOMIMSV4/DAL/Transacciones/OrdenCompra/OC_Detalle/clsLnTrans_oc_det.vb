@@ -63,6 +63,7 @@ Public Class clsLnTrans_oc_det
                 '#EJC20220224_2144: Cealsa.
                 .IdEmbarcador = IIf(IsDBNull(dr.Item("IdEmbarcador")), 0, dr.Item("IdEmbarcador"))
 
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
             End With
 
         Catch ex As Exception
@@ -136,6 +137,7 @@ Public Class clsLnTrans_oc_det
             If Not oBeTrans_oc_det.IdOrdenCompraDetPadre = 0 Then Ins.Add("IdOrdenCompraDetPadre", "@IdOrdenCompraDetPadre", DataType.Parametro)
 
             If Not oBeTrans_oc_det.IdEmbarcador = 0 Then Ins.Add("IdEmbarcador", "@IdEmbarcador", DataType.Parametro)
+            If Not oBeTrans_oc_det.IdProductoTallaColor = 0 Then Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
 
@@ -200,14 +202,9 @@ Public Class clsLnTrans_oc_det
                 cmd.Parameters.Add(New SqlParameter("@NOMBRE_PROPIETARIO", oBeTrans_oc_det.Nombre_Propietario))
             End If
 
-            '#EJC20210403: Agregado para el manejo de producto kit.
-            If Not oBeTrans_oc_det.IdOrdenCompraDetPadre = 0 Then
-                cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADETPADRE", oBeTrans_oc_det.IdOrdenCompraDetPadre))
-            End If
-
-            If Not oBeTrans_oc_det.IdEmbarcador = 0 Then
-                cmd.Parameters.Add(New SqlParameter("@IDEMBARCADOR", oBeTrans_oc_det.IdEmbarcador))
-            End If
+            If Not oBeTrans_oc_det.IdOrdenCompraDetPadre = 0 Then cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADETPADRE", oBeTrans_oc_det.IdOrdenCompraDetPadre))
+            If Not oBeTrans_oc_det.IdEmbarcador = 0 Then cmd.Parameters.Add(New SqlParameter("@IDEMBARCADOR", oBeTrans_oc_det.IdEmbarcador))
+            If Not oBeTrans_oc_det.IdProductoTallaColor = 0 Then cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_oc_det.IdProductoTallaColor))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -349,14 +346,9 @@ Public Class clsLnTrans_oc_det
                 cmd.Parameters.Add(New SqlParameter("@NOMBRE_PROPIETARIO", oBeTrans_oc_det.Nombre_Propietario))
             End If
 
-            '#EJC20210403: Agregado para el manejo de producto kit.
-            If Not oBeTrans_oc_det.IdOrdenCompraDetPadre = 0 Then
-                cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADETPADRE", oBeTrans_oc_det.IdOrdenCompraDetPadre))
-            End If
-
-            If Not oBeTrans_oc_det.IdEmbarcador = 0 Then
-                cmd.Parameters.Add(New SqlParameter("@IDEMBARCADOR", oBeTrans_oc_det.IdEmbarcador))
-            End If
+            If Not oBeTrans_oc_det.IdOrdenCompraDetPadre = 0 Then cmd.Parameters.Add(New SqlParameter("@IDORDENCOMPRADETPADRE", oBeTrans_oc_det.IdOrdenCompraDetPadre))
+            If Not oBeTrans_oc_det.IdEmbarcador = 0 Then cmd.Parameters.Add(New SqlParameter("@IDEMBARCADOR", oBeTrans_oc_det.IdEmbarcador))
+            If Not oBeTrans_oc_det.IdProductoTallaColor = 0 Then cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_oc_det.IdProductoTallaColor))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

@@ -1,4 +1,5 @@
-﻿Imports System.Reflection
+﻿Imports System.Data.SqlClient
+Imports System.Reflection
 Imports System.Data.SqlClient
 Imports DevExpress.DataAccess.Native
 Imports System.Data.Common

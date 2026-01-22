@@ -207,8 +207,8 @@ Partial Public Class clsLnI_nav_config_det
 
     End Function
 
-    Public Shared Function MaxID(ByRef lConnection As SqlConnection, _
-                                     ByRef lTransaction As SqlTransaction) as Integer
+    Public Shared Function MaxID(ByRef lConnection As SqlConnection,
+                                     ByRef lTransaction As SqlTransaction) As Integer
 
         Try
 

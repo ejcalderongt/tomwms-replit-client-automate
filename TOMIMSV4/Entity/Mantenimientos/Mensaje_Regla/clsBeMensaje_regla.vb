@@ -8,6 +8,7 @@ Public Class clsBeMensaje_regla
     Private mFec_mod As Date = Date.Now
     Private mUser_mod As String = ""
     Private mActivo As Boolean = False
+    Private mIdReglaRecepcion As Integer = 0
 
     Public Property IdMensajeRegla() As Integer
         Get
@@ -72,17 +73,26 @@ Public Class clsBeMensaje_regla
         End Set
     End Property
 
+    Public Property IdReglaRecepcion() As Integer
+        Get
+            Return mIdReglaRecepcion
+        End Get
+        Set(ByVal Value As Integer)
+            mIdReglaRecepcion = Value
+        End Set
+    End Property
+
     Sub New()
     End Sub
 
     Sub New(ByRef IdMensajeRegla As Integer, ByVal Nombre As String, ByVal fec_agr As Date, ByVal user_agr As String, ByVal fec_mod As Date, ByVal user_mod As String, ByVal activo As Boolean)
         mIdMensajeRegla = IdMensajeRegla
         mNombre = Nombre
-        mFec_agr = Fec_agr
-        mUser_agr = User_agr
-        mFec_mod = Fec_mod
-        mUser_mod = User_mod
-        mActivo = Activo
+        mFec_agr = fec_agr
+        mUser_agr = user_agr
+        mFec_mod = fec_mod
+        mUser_mod = user_mod
+        mActivo = activo
     End Sub
 
     Public Function Clone() As Object Implements System.ICloneable.Clone

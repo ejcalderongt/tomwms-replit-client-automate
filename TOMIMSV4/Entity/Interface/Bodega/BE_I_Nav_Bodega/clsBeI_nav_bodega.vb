@@ -18,44 +18,8 @@
 Public Class clsBeI_nav_bodega
     Implements ICloneable
 
-    ''' <summary>
-    ''' The m bodega_code
-    ''' </summary>
-    Private mBodega_code As String = ""
-    ''' <summary>
-    ''' The m bodega_name
-    ''' </summary>
-    Private mBodega_name As String = ""
-
-    ''' <summary>
-    ''' Gets or sets the bodega_code.
-    ''' </summary>
-    ''' <value>The bodega_code.</value>
-    Public Property Bodega_code() As String
-        Get
-            Return mBodega_code
-        End Get
-        Set(ByVal Value As String)
-            mBodega_code = Value
-        End Set
-    End Property
-
-    ''' <summary>
-    ''' Gets or sets the bodega_name.
-    ''' </summary>
-    ''' <value>The bodega_name.</value>
-    Public Property Bodega_name() As String
-        Get
-            Return mBodega_name
-        End Get
-        Set(ByVal Value As String)
-            mBodega_name = Value
-        End Set
-    End Property
-
-    ''' <summary>
-    ''' Initializes a new instance of the <see cref="clsBeI_nav_bodega"/> class.
-    ''' </summary>
+    Public Property Bodega_code() As String = ""
+    Public Property Bodega_name() As String = ""
     Sub New()
     End Sub
 
@@ -65,8 +29,8 @@ Public Class clsBeI_nav_bodega
     ''' <param name="bodega_code">The bodega_code.</param>
     ''' <param name="bodega_name">The bodega_name.</param>
     Sub New(ByRef bodega_code As String, ByVal bodega_name As String)
-        mBodega_code = Bodega_code
-        mBodega_name = Bodega_name
+        Me.Bodega_code = bodega_code
+        Me.Bodega_name = bodega_name
     End Sub
 
     ''' <summary>

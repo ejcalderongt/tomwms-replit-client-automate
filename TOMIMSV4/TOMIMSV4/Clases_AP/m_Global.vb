@@ -22,7 +22,7 @@ Module m_Global
     Public Property gVersionApp As String = "7.9.6"
 
     Public gVersionBD As String = "1"
-    Public Property gFechaVersion As Date = New Date(2025, 12, 3)
+    Public Property gFechaVersion As Date = New Date(2025, 12, 8)
     Public Property wsTOMHHInstance As TOMHHWSSoapClient
 
     Public gIndiceInstancia As Integer = -1
@@ -194,6 +194,59 @@ Module m_Global
 
     End Sub
 
+    Public Function Ejecutar_Interface(ByVal ParametroEjecucion As String, ByVal frm As RibbonForm, Optional pEjecutable As String = "") As Boolean
+
+        Dim vRutaInterface As String = ""
+        Dim vNombre_Ejecutable As String = ""
+
+        Ejecutar_Interface = False
+
+        Try
+
+            If Not String.IsNullOrEmpty(pEjecutable) Then
+
+                If clsLnI_nav_config_enc.Get_Existe_by_Ejecutable(pEjecutable) Then
+                    vNombre_Ejecutable = pEjecutable
+                End If
+
+            Else
+                vNombre_Ejecutable = clsLnI_nav_config_enc.Get_Nombre_Ejecutable(AP.IdConfiguracionInterface)
+            End If
+
+
+            If Not vNombre_Ejecutable = "" Then
+
+                vRutaInterface = CurDir() & "\" & vNombre_Ejecutable
+
+                If IO.File.Exists(vRutaInterface) Then
+
+                    If ParametroEjecucion <> "" Then
+                        ShellandWait(vRutaInterface, ParametroEjecucion, frm)
+                    Else
+                        Dim startInfo As New ProcessStartInfo() With {.FileName = vRutaInterface,
+                                                                      .Arguments = ParametroEjecucion}
+                        Process.Start(startInfo)
+                    End If
+
+                    Ejecutar_Interface = True
+
+                Else
+                    MessageBox.Show("No existe archivo de interface " & vRutaInterface,
+                                    "Exec_MI3_Sync",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Exclamation)
+                End If
+
+            End If
+
+        Catch ex As Exception
+            MessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            "Exec_MI3_Sync",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+
+    End Function
     Public Function Ejecutar_Servicio(ByVal ParametroEjecucion As String, ByVal frm As RibbonForm) As Boolean
 
         Ejecutar_Servicio = False
@@ -260,6 +313,12 @@ Module m_Global
             SplashScreenManager.ShowForm(frm, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormCaption("Esperando a que la interface se cierre...")
 
+            'Wait until the process passes back an exit code 
+            'objProcess.WaitForExit()
+
+            'Free resources associated with this process
+            'objProcess.Close()
+
         Catch
             MessageBox.Show("Could not start process " & ProcessPath, "Error")
         Finally
@@ -267,6 +326,115 @@ Module m_Global
         End Try
 
     End Sub
+
+    'Public Function Genera_Licencia_BOF(ByVal IdBodega As Integer) As String
+
+    '    '#GT26012024: Obtener al operador para resolucion lp en BOF
+    '    Dim Operador As New clsBeOperador()
+    '    Dim lResolucionesLP As New clsBeResolucion_lp_operador()
+    '    Genera_Licencia_BOF = ""
+
+    '    Try
+
+    '        Operador = clsLnOperador.GetSingle_By_BOF()
+
+    '        If Operador IsNot Nothing Then
+
+    '            lResolucionesLP = clsLnResolucion_lp_operador.Get_Resolucion_By_IdOperador_And_IdBodega(Operador.IdOperador,
+    '                                                                                                    IdBodega)
+
+    '            If lResolucionesLP IsNot Nothing Then
+    '                Genera_Licencia_BOF = clsLnResolucion_lp_operador.Get_Nuevo_Correlativo_LP_BOF(lResolucionesLP)
+    '            Else
+    '                Throw New Exception("No esta definida la resolución de licencia para recepción en BOF")
+    '            End If
+
+    '        Else
+    '            Throw New Exception("No esta definido un operador con resolución de licencia.")
+    '        End If
+
+    '    Catch ex As Exception
+    '        Throw ex
+    '    End Try
+
+    'End Function
+
+    'Public Function Genera_Licencia_BOF(ByVal IdBodega As Integer,
+    '                                    ByVal lConnection As SqlConnection,
+    '                                    ByVal lTransaction As SqlTransaction) As String
+
+    '    Dim Operador As New clsBeOperador()
+    '    Dim lResolucionesLP As New clsBeResolucion_lp_operador()
+    '    Genera_Licencia_BOF = ""
+
+    '    Try
+
+    '        Operador = clsLnOperador.GetSingle_By_BOF(lConnection, lTransaction)
+
+    '        If Operador IsNot Nothing Then
+
+    '            lResolucionesLP = clsLnResolucion_lp_operador.Get_Resolucion_By_IdOperador_And_IdBodega(Operador.IdOperador,
+    '                                                                                                    IdBodega,
+    '                                                                                                    lConnection,
+    '                                                                                                    lTransaction)
+
+    '            If lResolucionesLP IsNot Nothing Then
+    '                Genera_Licencia_BOF = clsLnResolucion_lp_operador.Get_Nuevo_Correlativo_LP_BOF(lResolucionesLP)
+    '                lResolucionesLP.Correlativo_Actual += 1
+    'clsLnResolucion_lp_operador.Actualizar_Correlativo_Actual(lResolucionesLP)
+    '            Else
+    '                Throw New Exception("No esta definida la resolución de licencia para recepción en BOF")
+    '            End If
+
+    '        Else
+    '            Throw New Exception("No esta definido un operador con resolución de licencia.")
+    '        End If
+
+    '    Catch ex As Exception
+    '        Throw ex
+    '    End Try
+
+    'End Function
+
+    'Public Function Incrementar_Licencia_BOF(ByVal IdBodega As Integer,
+    '                                         ByVal lConnection As SqlConnection,
+    '                                         ByVal lTransaction As SqlTransaction) As String
+
+    '    Dim Operador As New clsBeOperador()
+    '    Dim lResolucionesLP As New clsBeResolucion_lp_operador()
+
+    '    Incrementar_Licencia_BOF = ""
+
+    '    Dim vLicenciaStr As String = ""
+
+    '    Try
+
+    '        Operador = clsLnOperador.GetSingle_By_BOF(lConnection, lTransaction)
+
+    '        If Operador IsNot Nothing Then
+
+    '            lResolucionesLP = clsLnResolucion_lp_operador.Get_Resolucion_By_IdOperador_And_IdBodega(Operador.IdOperador,
+    '                                                                                                    IdBodega,
+    '                                                                                                    lConnection,
+    '                                                                                                    lTransaction)
+
+    '            If lResolucionesLP IsNot Nothing Then
+    '                vLicenciaStr = clsLnResolucion_lp_operador.Get_Nuevo_Correlativo_LP_BOF(lResolucionesLP)
+    '                lResolucionesLP.Correlativo_Actual += 1
+    '                clsLnResolucion_lp_operador.Actualizar_Correlativo_Actual(lResolucionesLP, lConnection, lTransaction)
+    '            Else
+    '                Throw New Exception("No esta definida la resolución de licencia para recepción en BOF")
+    '            End If
+
+    '        Else
+    '            Throw New Exception("No esta definido un operador con resolución de licencia.")
+    '        End If
+
+    '    Catch ex As Exception
+    '        Throw ex
+    '    End Try
+
+    'End Function
 
     Public Function permiteMenu(menu As String) As Boolean
 
@@ -632,5 +800,6 @@ Public Module SqlDashboardHelper
         End Try
 
     End Function
+
 
 End Module

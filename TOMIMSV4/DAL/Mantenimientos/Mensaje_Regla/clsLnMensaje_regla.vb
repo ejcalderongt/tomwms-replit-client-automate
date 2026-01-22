@@ -24,7 +24,7 @@ Public Class clsLnMensaje_regla
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeMensaje_regla As clsBeMensaje_regla, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeMensaje_regla As clsBeMensaje_regla, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -39,6 +39,7 @@ Public Class clsLnMensaje_regla
             Ins.Add("fec_mod", "@fec_mod", DataType.Parametro)
             Ins.Add("user_mod", "@user_mod", DataType.Parametro)
             Ins.Add("activo", "@activo", DataType.Parametro)
+            Ins.Add("IdreglaRecepcion", "@IdreglaRecepcion", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -60,6 +61,7 @@ Public Class clsLnMensaje_regla
             cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeMensaje_regla.Fec_mod))
             cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeMensaje_regla.User_mod))
             cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeMensaje_regla.Activo))
+            cmd.Parameters.Add(New SqlParameter("@IDREGLARECEPCION", oBeMensaje_regla.IdReglaRecepcion))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -254,7 +256,7 @@ Public Class clsLnMensaje_regla
 
         Try
 
-            Const sp As String = "SELECT * FROM Mensaje_regla" & _
+            Const sp As String = "SELECT * FROM Mensaje_regla" &
             " Where(IdMensajeRegla = @IdMensajeRegla)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -324,7 +326,7 @@ Public Class clsLnMensaje_regla
 
         Try
 
-            Const sp As String = "SELECT * FROM Mensaje_regla" & _
+            Const sp As String = "SELECT * FROM Mensaje_regla" &
             " Where(IdMensajeRegla = @IdMensajeRegla)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -352,7 +354,7 @@ Public Class clsLnMensaje_regla
 
     End Function
 
-    Public Shared Function MaxID() as Integer
+    Public Shared Function MaxID() As Integer
 
         Try
 

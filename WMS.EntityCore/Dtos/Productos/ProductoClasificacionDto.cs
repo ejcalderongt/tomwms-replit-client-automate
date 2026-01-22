@@ -1,0 +1,18 @@
+﻿namespace WMSWebAPI.Dtos.Catalogos
+{
+    public class ProductoClasificacionDto
+    {
+        public int IdClasificacion { get; set; }
+        public string? Nombre { get; set; }
+        public bool? Activo { get; set; }
+        public bool? Sistema { get; set; }
+        public string? User_Agr { get; set; }
+        public DateTime? Fec_Agr { get; set; }
+        public string? User_Mod { get; set; }
+        public DateTime Fec_Mod { get; set; }
+        public string? Codigo { get; set; }
+        public int IdPropietario { get; set; } = 0;
+        public PropietarioDto Propietario { get; set; } = new();
+
+    }
+}

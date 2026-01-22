@@ -28,9 +28,7 @@ Public Class clsPublic
             Return StrEncripted
 
         Catch ex As Exception
-            'Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -48,8 +46,8 @@ Public Class clsPublic
 
         Try
 
-            Dim IV() As Byte = Encoding.ASCII.GetBytes(clsPublic.Iv) 'La clave debe ser de 8 caracteres
-            Dim EncryptionKey() As Byte = Convert.FromBase64String(Ek64) 'No se puede alterar la cantidad de caracteres pero si la clave
+            Dim IV() As Byte = Encoding.ASCII.GetBytes(clsPublic.Iv)
+            Dim EncryptionKey() As Byte = Convert.FromBase64String(Ek64)
             Dim buffer() As Byte = Convert.FromBase64String(Input)
             Dim des As TripleDESCryptoServiceProvider = New TripleDESCryptoServiceProvider() With {.Key = EncryptionKey, .IV = IV}
 
@@ -57,9 +55,7 @@ Public Class clsPublic
 
             'Length >= 12
         Catch ex As Exception
-            'Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -616,7 +612,12 @@ Public Class clsPublic
                             If Integer.TryParse(value, vIdTMS) Then
                                 InstanciaBD.ID_EMPRESA_TMS = vIdTMS
                             End If
-
+                        Case "HANA_SL"
+                            InstanciaBD.HANA_SL = value
+                        Case "HANA_SL_USR"
+                            InstanciaBD.HANA_SL_USR = value
+                        Case "HANA_SL_PWD"
+                            InstanciaBD.HANA_SL_PWD = value
                     End Select
 
                 End While
@@ -690,22 +691,26 @@ Public Class clsPublic
 
     End Function
 
-    Public Shared Sub Actualizar_Progreso(lbl As RichTextBox, mensaje As String)
-        If lbl.InvokeRequired Then
-            lbl.Invoke(New MethodInvoker(Sub()
-                                             AppendProgreso(lbl, mensaje)
-                                         End Sub))
-        Else
-            AppendProgreso(lbl, mensaje)
-        End If
-    End Sub
-
-    Private Shared Sub AppendProgreso(lbl As RichTextBox, mensaje As String)
-        lbl.AppendText(mensaje & Environment.NewLine)
-        lbl.Refresh()
-        lbl.SelectionStart = lbl.TextLength
-        lbl.ScrollToCaret()
-    End Sub
+    'Public Shared Sub Actualizar_Progreso(ByRef lblPrg As RichTextBox, mensaje As String)
+    '    If Not lblPrg Is Nothing Then
+    '        If lblPrg.InvokeRequired Then
+    '            Dim control = lblPrg
+    '            control.Invoke(New MethodInvoker(Sub()
+    '                                                 control.AppendText(mensaje & vbNewLine)
+    '                                                 control.SelectionStart = control.TextLength
+    '                                                 control.ScrollToCaret()
+    '                                                 control.Refresh()
+    '                                                 Application.DoEvents()
+    '                                             End Sub))
+    '        Else
+    '            lblPrg.AppendText(mensaje & vbNewLine)
+    '            lblPrg.SelectionStart = lblPrg.TextLength
+    '            lblPrg.ScrollToCaret()
+    '            lblPrg.Refresh()
+    '            Application.DoEvents()
+    '        End If
+    '    End If
+    'End Sub
 
 
     Public Shared Sub Actualizar_Progreso_CR(ByRef lblPrg As RichTextBox)
@@ -715,13 +720,36 @@ Public Class clsPublic
         lblPrg.ScrollToCaret()
     End Sub
 
-    Public Shared Sub Actualizar_Progreso(ByRef lblPrg As RichTextBox, mensaje As String, ByVal CRAntesYDespues As Boolean)
-        If CRAntesYDespues Then Actualizar_Progreso_CR(lblPrg)
-        lblPrg.AppendText(mensaje & vbNewLine)
-        lblPrg.Refresh()
-        lblPrg.SelectionStart = lblPrg.TextLength
-        lblPrg.ScrollToCaret()
-        Actualizar_Progreso_CR(lblPrg)
+    'Public Shared Sub Actualizar_Progreso(ByRef lblPrg As RichTextBox, mensaje As String, ByVal CRAntesYDespues As Boolean)
+    '    If CRAntesYDespues Then Actualizar_Progreso_CR(lblPrg)
+    '    lblPrg.AppendText(mensaje & vbNewLine)
+    '    lblPrg.Refresh()
+    '    lblPrg.SelectionStart = lblPrg.TextLength
+    '    lblPrg.ScrollToCaret()
+    '    Actualizar_Progreso_CR(lblPrg)
+    'End Sub
+    Public Shared Sub Actualizar_Progreso(ByRef lblPrg As RichTextBox, mensaje As String, Optional limpiar As Boolean = False)
+        If lblPrg IsNot Nothing Then
+            If limpiar Then lblPrg.Clear()
+
+            If lblPrg.InvokeRequired Then
+                Dim control = lblPrg
+                control.Invoke(New MethodInvoker(Sub()
+                                                     control.AppendText(mensaje & vbNewLine)
+                                                     control.SelectionStart = control.TextLength
+                                                     control.ScrollToCaret()
+                                                     control.Refresh()
+                                                     'Application.DoEvents()
+                                                 End Sub))
+            Else
+                lblPrg.AppendText(mensaje & vbNewLine)
+                lblPrg.Refresh()
+                lblPrg.SelectionStart = lblPrg.TextLength
+                lblPrg.ScrollToCaret()
+                lblPrg.Refresh()
+                'Application.DoEvents()
+            End If
+        End If
     End Sub
 
 End Class

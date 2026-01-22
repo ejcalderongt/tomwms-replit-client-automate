@@ -119,6 +119,7 @@ Public Class frmCambioUbicacion
 
 #End Region
 
+    Dim Bodega As New clsBeBodega
     Private Sub frmCambioUbicacion_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
         Try
@@ -158,6 +159,9 @@ Public Class frmCambioUbicacion
 
                 Case TipoTrans.Nuevo
 
+                    Bodega = New clsBeBodega
+                    Bodega = AP.Bodega
+
                     User_agrTextEdit.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
                     Fec_agrDateEdit.Text = Now
                     User_modTextEdit.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
@@ -187,6 +191,13 @@ Public Class frmCambioUbicacion
                         Text = "Cambio de estado"
                         RibbonPage1.Text = "Cambio de estado"
                         Es_Seleccion_Multiple = False
+                    End If
+
+                    If Not Bodega.Control_Talla_Color Then
+                        lblTalla.Visible = False
+                        lblColor.Visible = False
+                        txtTalla.Visible = False
+                        txtColor.Visible = False
                     End If
 
                 Case TipoTrans.Editar
@@ -231,6 +242,8 @@ Public Class frmCambioUbicacion
 
                     '#CM_20092018_1142AM: se busca la bodega por el IdPropietarioBodega ya que no está en la tabla de encabezado.
                     Bodega = clsLnPropietario_bodega.GetBodegaByIdPropietarioBodega(gBeTransubicacionHHEnc.IdPropietarioBodega)
+                    clsLnBodega.GetSingle(Bodega)
+
 
                     If Bodega IsNot Nothing Then
                         cmbBodega.EditValue = Bodega.IdBodega
@@ -518,6 +531,12 @@ Public Class frmCambioUbicacion
             DT.Columns.Add("Lote", GetType(String))
             DT.Columns.Add("FechaVence", GetType(Date))
             DT.Columns.Add("No_Linea", GetType(Integer))
+            '#GT08092025: campos talla/color
+
+            If Bodega.Control_Talla_Color Then
+                DT.Columns.Add("Talla", GetType(String))
+                DT.Columns.Add("Color", GetType(String))
+            End If
 
             grdDetalle.DataSource = Nothing
 
@@ -537,6 +556,21 @@ Public Class frmCambioUbicacion
                 lRow.Item("Licencia") = Obj.Stock.Lic_plate
                 lRow.Item("Lote") = Obj.Stock.Lote
                 lRow.Item("FechaVence") = Obj.Stock.Fecha_vence
+
+                '#GT08092025: valida si mostrar talla/color
+                If Bodega.Control_Talla_Color Then
+
+                    Dim pProductoTallaColor = clsLnProducto_talla_color.GetSingle(Obj.Stock.IdProductoTallaColor)
+                    Dim tmpTalla As New clsBeTalla
+                    Dim tmpColor As New clsBeColor
+
+                    tmpTalla = clsLnTalla.GetSingle_By_IdTalla(pProductoTallaColor.IdTalla)
+                    tmpColor = clsLnColor.GetSingle_By_IdColor(pProductoTallaColor.IdColor)
+
+                    lRow.Item("Talla") = tmpTalla.Codigo
+                    lRow.Item("Color") = tmpColor.Codigo
+
+                End If
 
                 If Obj.IdUbicacionOrigen <> Nothing AndAlso Obj.IdUbicacionOrigen <> 0 Then
                     lRow("IdUbicacionOrigen") = Obj.IdUbicacionOrigen
@@ -1302,9 +1336,14 @@ Public Class frmCambioUbicacion
                     BU.Tramo.IdTramo = BU.IdTramo
                     clsLnBodega_tramo.GetSingle(BU.Tramo)
 
+                    'txtIdOrigen.Text = String.Format("{0} - {1}", Stock.pObjStock.IdUbicacionActual, BU.Descripcion)
                     txtIdOrigen.Text = BU.NombreCompleto
                     txtIdOrigen.Tag = Stock.pObjStock.IdUbicacion
+                    'txtProducto.Text = String.Format("{0} {1}", Stock.pObjStock.Codigo, Stock.pObjStock.Nombre)
                     txtProducto.Text = String.Format("{0}", Stock.pObjStock.Nombre_Producto)
+
+                    '******************
+                    'Stock.pObjStock.CantidadPresentacion = Stock.pObjStock.CantidadUmBas
 
                     txtVence.Text = Stock.pObjStock.Fecha_Vence
                     txtEstado.Text = Stock.pObjStock.NomEstado
@@ -1315,6 +1354,10 @@ Public Class frmCambioUbicacion
                     txtIngreso.Text = Stock.pObjStock.Fecha_ingreso
                     txtLote.Text = Stock.pObjStock.Lote
                     txtLicPlate.Text = Stock.pObjStock.Lic_plate
+
+                    '#EJC20171015_1127PM_R03:
+                    'Deshabilitado por esto -> '#EJC20171015_1121PM_R01:
+                    'pCantidadReservada = clsLnStock_res.GetCantidadReservadaByIdStock(Stock.pObjStock.IdStock)
 
                     '#EJC2017090901 Desplegar cantidad en base a la presentación
                     Dim vCantidadAUbicar As Double = 0
@@ -1334,7 +1377,9 @@ Public Class frmCambioUbicacion
                     Stock.pObjStock.CantidadPresentacion = vCantidadAUbicar
                     txtCantidad.Minimum = 0
                     txtCantidad.Value = 0
-                    txtCantidad.Maximum = Stock.pObjStock.CantidadPresentacion '- pCantidadReservada                    
+                    txtCantidad.Maximum = Stock.pObjStock.CantidadPresentacion '- pCantidadReservada
+                    'txtCantidad.Maximum = Stock.pObjStock.Cantidad
+                    'txtCantidad.Minimum = ? #EJC20170909 -> No sé como calcular el mínimo aún.
                     txtCantidad.Value = Stock.pObjStock.CantidadPresentacion '- pCantidadReservada
                     txtCantidad.Tag = Stock.pObjStock.CantidadPresentacion '- pCantidadReservada
                     txtCantidad.Refresh()
@@ -1356,6 +1401,7 @@ Public Class frmCambioUbicacion
                     Dañado = Stock.pObjStock.Dañado
                     Utilizable = Stock.pObjStock.EstadoUtilizable
                     IdIndiceRotacion = Stock.pObjStock.IdIndiceRotacion
+                    'pDimensionProducoSeleccionado = Val(Stock.pObjStock.CantidadPresentacion - pCantidadReservada) * Stock.pObjStock.AltoUbicacion * Stock.pObjStock.LargoUbicacion * Stock.pObjStock.AnchoUbicacion
                     pDimensionProducoSeleccionado = Val(Stock.pObjStock.CantidadPresentacion) * Stock.pObjStock.AltoUbicacion * Stock.pObjStock.LargoUbicacion * Stock.pObjStock.AnchoUbicacion
 
                     lblVolumenProducto.Text = String.Format("{0} * ({1} x {2} x {3}) = {4}", Val(lblCantRef.Text), Stock.pObjStock.AltoUbicacion, Stock.pObjStock.LargoUbicacion, Stock.pObjStock.AnchoUbicacion, pDimensionProducoSeleccionado) & " m3"
@@ -1367,6 +1413,12 @@ Public Class frmCambioUbicacion
                     pUbicSugReq.IdEstadoProd = Stock.pObjStock.IdProductoEstado
                     pUbicSugReq.Lote = Stock.pObjStock.Lote
                     pUbicSugReq.IdUbicStock = Stock.pObjStock.IdStock
+
+                    '#GT08092025: mostrar descriptores talla/color si la bodega tiene el parametro.
+                    If Bodega.Control_Talla_Color Then
+                        txtTalla.Text = Stock.pObjStock.Codigo_Talla
+                        txtColor.Text = Stock.pObjStock.Codigo_Color
+                    End If
 
                 ElseIf (Stock.listaStockSeleccionado.Count > 0) Then
 
@@ -1983,6 +2035,10 @@ Public Class frmCambioUbicacion
 
             lblItemBandera.Visible = False
 
+            txtTalla.Text = String.Empty
+            txtColor.Text = String.Empty
+            txtLicPlate.Text = String.Empty
+
         Catch ex As Exception
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
@@ -2340,6 +2396,9 @@ Public Class frmCambioUbicacion
 
         Try
 
+            Bodega = New clsBeBodega
+            Bodega = clsLnBodega.GetSingle_By_Idbodega(cmbBodega.EditValue)
+
             If Not IMS.Listar_Propietarios_By_IdBodega(cmbPropietarioBodega, cmbBodega.EditValue) Then
                 XtraMessageBox.Show("No hay propietarios definidos para la bodega", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
@@ -2611,6 +2670,7 @@ Public Class frmCambioUbicacion
     End Sub
 
 #End Region
+
 
     Private Sub Cargar_Datos_Stock_Reservado(ByVal vIdTran As Integer)
 

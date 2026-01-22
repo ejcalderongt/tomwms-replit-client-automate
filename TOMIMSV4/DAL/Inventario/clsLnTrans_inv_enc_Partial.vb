@@ -2330,7 +2330,8 @@ Partial Public Class clsLnTrans_inv_enc
             Dim vSQL As String = "SELECT trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion AS Tramo, producto_presentacion.nombre AS Presentacion, 
                                     SUM(trans_inv_resumen.cantidad) AS Resumen, trans_inv_tramo.res_estado AS EstadoResumen, 
                                     trans_inv_resumen.nom_operador AS OperadorVerifica, producto.IdProducto, producto.IdPropietario, producto.codigo, 
-                                    producto.nombre AS Producto, trans_inv_resumen.fecha_captura,trans_inv_resumen.idinventariores,producto_presentacion.IdPresentacion, "
+                                    producto.nombre AS Producto, trans_inv_resumen.fecha_captura,trans_inv_resumen.idinventariores,producto_presentacion.IdPresentacion, 
+                                    talla.Codigo AS Codigo_Talla, color.Codigo + ' - ' + color.Nombre AS Codigo_Color, "
 
 
             vSQL += " dbo.Nombre_Completo_Ubicacion(trans_inv_resumen.idubicacion, " & pIdBodega & " ) as Ubicacion,trans_inv_resumen.idubicacion,trans_inv_resumen.lic_plate Licencia  "
@@ -2348,11 +2349,14 @@ Partial Public Class clsLnTrans_inv_enc
                                      dbo.trans_inv_resumen.idinventarioenct = dbo.trans_inv_enc.idinventarioenc AND dbo.bodega_tramo.IdBodega = dbo.trans_inv_enc.idbodega 
                                     LEFT OUTER JOIN
                                     producto_presentacion ON trans_inv_resumen.idpresentacion = producto_presentacion.IdPresentacion
+                                    LEFT JOIN producto_talla_color ON trans_inv_resumen.IdProductoTallaColor = producto_talla_color.IdProductoTallaColor
+                                    LEFT JOIN talla ON talla.IdTalla = producto_talla_color.IdTalla
+                                    LEFT JOIN color ON color.IdColor = producto_talla_color.IdColor
                                     WHERE (trans_inv_tramo.idinventario = @idinventario)
                                     GROUP BY trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion, producto_presentacion.nombre, 
                                     trans_inv_tramo.res_estado, trans_inv_resumen.nom_operador, producto.IdProducto, producto.IdPropietario, producto.codigo, 
                                     producto.nombre, trans_inv_resumen.fecha_captura,trans_inv_resumen.idinventariores,producto_presentacion.IdPresentacion,
-                                    trans_inv_resumen.idubicacion,trans_inv_resumen.lic_plate "
+                                    trans_inv_resumen.idubicacion,trans_inv_resumen.lic_plate, talla.Codigo, color.Codigo, color.Nombre "
 
             Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
 
@@ -2439,6 +2443,14 @@ Partial Public Class clsLnTrans_inv_enc
                             'clsLnBodega_ubicacion.ObtenerWithTramo(BeTransInvEnc.Ubicacion, lConnection, lTransaction)
                         End If
 
+                        If lRow("Codigo_Talla") IsNot DBNull.Value AndAlso lRow("Codigo_Talla") IsNot Nothing Then
+                            BeTransInvEnc.Codigo_Talla = CType(lRow("Codigo_Talla"), String)
+                        End If
+
+                        If lRow("Codigo_Color") IsNot DBNull.Value AndAlso lRow("Codigo_Color") IsNot Nothing Then
+                            BeTransInvEnc.Codigo_Color = CType(lRow("Codigo_Color"), String)
+                        End If
+
                         lReturnList.Add(BeTransInvEnc)
 
                     Next
@@ -2467,7 +2479,7 @@ Partial Public Class clsLnTrans_inv_enc
                                    trans_inv_detalle.fecha_vence, trans_inv_detalle.lote, trans_inv_detalle.IdUbicacion, trans_inv_detalle.fecha_captura, 
                                    producto.IdProducto, producto.nombre AS Producto, producto.codigo, producto.IdPropietario, trans_inv_detalle.idinventariodet,
                                    dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.IdUbicacion, bodega_ubicacion.IdBodega) AS Nombre_Completo, trans_inv_detalle.lic_plate AS Licencia,
-                                   trans_inv_detalle.cantidad
+                                   trans_inv_detalle.cantidad, talla.Codigo AS Codigo_Talla, color.Codigo + ' - ' + color.Nombre AS Codigo_Color
                             FROM trans_inv_tramo 
                             INNER JOIN trans_inv_detalle ON trans_inv_tramo.idinventario = trans_inv_detalle.idinventarioenc 
                                                         AND trans_inv_tramo.idtramo = trans_inv_detalle.idtramo 
@@ -2480,12 +2492,15 @@ Partial Public Class clsLnTrans_inv_enc
                                                            AND trans_inv_detalle.idtramo = bodega_ubicacion.IdTramo 
                                                            AND trans_inv_detalle.idbodega = bodega_ubicacion.IdBodega 
                             LEFT OUTER JOIN producto_presentacion ON trans_inv_detalle.IdPresentacion = producto_presentacion.IdPresentacion
+                            LEFT JOIN producto_talla_color ON trans_inv_detalle.IdProductoTallaColor = producto_talla_color.IdProductoTallaColor
+                            LEFT JOIN talla ON talla.IdTalla = producto_talla_color.IdTalla
+                            LEFT JOIN color ON color.IdColor = producto_talla_color.IdColor
                             WHERE trans_inv_tramo.idinventario = @idinventario
                             GROUP BY trans_inv_tramo.idtramo, trans_inv_tramo.idinventario, bodega_tramo.descripcion, producto_presentacion.nombre, trans_inv_tramo.det_estado, 
                                      trans_inv_detalle.nom_operador, trans_inv_detalle.fecha_vence, trans_inv_detalle.lote, trans_inv_detalle.IdUbicacion, trans_inv_detalle.fecha_captura, 
                                      producto.IdProducto, producto.nombre, producto.codigo, producto.IdPropietario, trans_inv_detalle.idinventariodet, bodega_tramo.es_rack, 
                                      bodega_tramo.Indice_x, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos, bodega_ubicacion.IdUbicacion, bodega_ubicacion.indice_x, 
-                                     bodega_ubicacion.IdBodega, trans_inv_detalle.lic_plate, trans_inv_detalle.cantidad"
+                                     bodega_ubicacion.IdBodega, trans_inv_detalle.lic_plate, trans_inv_detalle.cantidad, talla.Codigo, color.Codigo, color.Nombre"
 
 
             Using lDataAdapter As New SqlDataAdapter(vsql, lConnection)
@@ -2578,6 +2593,14 @@ Partial Public Class clsLnTrans_inv_enc
                             BeTransInvEnc.Licencia = CType(lRow("Licencia"), String)
                         End If
 
+                        If lRow("Codigo_Talla") IsNot DBNull.Value AndAlso lRow("Codigo_Talla") IsNot Nothing Then
+                            BeTransInvEnc.Codigo_Talla = CType(lRow("Codigo_Talla"), String)
+                        End If
+
+                        If lRow("Codigo_Color") IsNot DBNull.Value AndAlso lRow("Codigo_Color") IsNot Nothing Then
+                            BeTransInvEnc.Codigo_Color = CType(lRow("Codigo_Color"), String)
+                        End If
+
                         lReturnList.Add(BeTransInvEnc)
 
                     Next
@@ -2614,7 +2637,7 @@ Partial Public Class clsLnTrans_inv_enc
                                      SUM(t.Stock) AS Stock, 
                                      SUM(t.Inventario) - SUM(t.Stock) AS Dif, t.lote AS Lote, t.fecha_vence AS Fecha_Vence,t.ubicacion,
                                      t.UMBas,t.Presentacion, t.factor,IIF(t.factor>0,t.factor*SUM(t.Inventario),sum(t.Inventario)) as Inv_UM,
-                                     IIF(t.factor>0,t.factor*SUM(t.Stock),sum(t.Stock)) as Stock_UM, t.Licencia
+                                     IIF(t.factor>0,t.factor*SUM(t.Stock),sum(t.Stock)) as Stock_UM, t.Licencia, t.Codigo_Talla, t.Codigo_Color
                                      FROM (
                                      SELECT idinventarioenc AS IdInventario,producto.codigo,producto.IdProducto,  
                                      producto.nombre AS Producto,
@@ -2628,7 +2651,7 @@ Partial Public Class clsLnTrans_inv_enc
                 vSQL += " dbo.Nombre_Completo_Ubicacion(" & vIdUbicacionRecepcion & "," & pIdBodega & ") as ubicacion, "
             End If
 
-            vSQL += "unidad_medida.Nombre UMBas, producto_presentacion.factor, trans_inv_detalle.Lic_Plate AS Licencia
+            vSQL += "unidad_medida.Nombre UMBas, producto_presentacion.factor, trans_inv_detalle.Lic_Plate AS Licencia, '' Codigo_Talla, '' Codigo_Color
                      FROM trans_inv_detalle
                         INNER JOIN
                         producto ON trans_inv_detalle.idproducto = producto.IdProducto INNER JOIN
@@ -2653,7 +2676,7 @@ Partial Public Class clsLnTrans_inv_enc
                         ISNULL(producto_presentacion.nombre,'') AS Presentacion,producto_presentacion.IdPresentacion ,
                         0 AS Detalle,SUM(cant) AS Stock,0 AS Peso, trans_inv_stock_prod.Lote, trans_inv_stock_prod.Fecha_Vence,
 	                    dbo.Nombre_Completo_Ubicacion(trans_inv_stock_prod.idubicacion,trans_inv_stock_prod.idbodega)  as ubicacion,
-	                    unidad_medida.Nombre UMBas, producto_presentacion.factor, Lic_Plate AS Licencia
+	                    unidad_medida.Nombre UMBas, producto_presentacion.factor, Lic_Plate AS Licencia, Codigo_Talla, Codigo_Color
                         FROM trans_inv_stock_prod INNER JOIN 
                         producto ON trans_inv_stock_prod.idproducto = producto.IdProducto INNER JOIN
 	                    unidad_medida ON producto.IdUnidadMedidaBasica = producto.IdUnidadMedidaBasica AND 
@@ -2664,8 +2687,9 @@ Partial Public Class clsLnTrans_inv_enc
                         GROUP BY idinventario,producto.codigo,  
                         producto.nombre,producto_presentacion.nombre,producto_presentacion.IdPresentacion,producto.IdProducto,
                         trans_inv_stock_prod.Lote, trans_inv_stock_prod.Fecha_Vence, trans_inv_stock_prod.idubicacion,
-                        trans_inv_stock_prod.idbodega,unidad_medida.Nombre, producto_presentacion.factor,trans_inv_stock_prod.Lic_Plate) AS T                                     
-                        GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.ubicacion, t.UMBas, t.Presentacion,t.factor, t.Licencia
+                        trans_inv_stock_prod.idbodega,unidad_medida.Nombre, producto_presentacion.factor,trans_inv_stock_prod.Lic_Plate, 
+                        trans_inv_stock_prod.codigo_talla, trans_inv_stock_prod.codigo_color) AS T                                     
+                        GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.ubicacion, t.UMBas, t.Presentacion,t.factor, t.Licencia, t.Codigo_Talla, t.Codigo_Color
                         ORDER BY T.codigo "
 
             Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
@@ -3080,56 +3104,11 @@ Partial Public Class clsLnTrans_inv_enc
             If Not ConUbicacion Then
 
                 vSQL = "SELECT T.IDINVENTARIO, T.IDTRAMO, T.TRAMO, T.PRESENTACION, T.IDPRESENTACION, SUM(T.DETALLE) AS DETALLE, SUM(T.RESUMEN) AS RESUMEN, 
-	                    T.IDPRODUCTO, T.PRODUCTO,T.CODIGO as Codigo, tit.det_estado as EstadoConteo, tit.res_estado as EstadoResumen, T.IdPropietario,T.UMBas
-	                    FROM (SELECT trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion AS Tramo, producto_presentacion.nombre AS Presentacion,producto_presentacion.IdPresentacion,
-	                    SUM(trans_inv_detalle.cantidad) AS Detalle,0 AS Resumen, 
-	                    producto.IdProducto, producto.nombre AS Producto, producto.codigo, producto.IdPropietario,unidad_medida.Nombre as UMBas, trans_inv_detalle.idoperador,trans_inv_enc.idbodega
-	                    FROM trans_inv_tramo INNER JOIN
-	                    trans_inv_detalle ON trans_inv_tramo.idinventario = trans_inv_detalle.idinventarioenc AND 
-	                    trans_inv_tramo.idtramo = trans_inv_detalle.idtramo INNER JOIN
-	                    bodega_tramo ON trans_inv_tramo.idtramo = bodega_tramo.IdTramo INNER JOIN
-	                    producto ON trans_inv_detalle.idproducto = producto.IdProducto LEFT OUTER JOIN
-	                    producto_presentacion ON trans_inv_detalle.IdPresentacion = producto_presentacion.IdPresentacion INNER JOIN
-	                    unidad_medida On  unidad_medida.IdUnidadMedida = producto.IdUnidadMedidaBasica INNER JOIN
-                         dbo.trans_inv_enc ON dbo.trans_inv_tramo.idinventario = dbo.trans_inv_enc.idinventarioenc AND 
-                         dbo.trans_inv_detalle.idinventarioenc = dbo.trans_inv_enc.idinventarioenc AND dbo.bodega_tramo.IdBodega = dbo.trans_inv_enc.idbodega
-	                    WHERE (trans_inv_tramo.idinventario = @idinventario)
-	                    GROUP BY trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion, producto_presentacion.nombre, 
-	                    trans_inv_tramo.det_estado, trans_inv_detalle.nom_operador, producto.IdProducto, producto.nombre, producto.codigo, 
-	                    producto.IdPropietario,producto_presentacion.IdPresentacion,unidad_medida.Nombre, trans_inv_detalle.idoperador,trans_inv_enc.idbodega
-	                    UNION
-	                    SELECT trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion AS Tramo, producto_presentacion.nombre AS Presentacion,producto_presentacion.IdPresentacion,0 As Detalle,
-	                    SUM(trans_inv_resumen.cantidad) AS Resumen, 
-	                    producto.IdProducto, producto.nombre AS Producto, producto.codigo, producto.IdPropietario,unidad_medida.Nombre as UMBas, trans_inv_resumen.idoperador,trans_inv_enc.idbodega
-	                    FROM trans_inv_tramo INNER JOIN
-	                    trans_inv_resumen ON trans_inv_tramo.idinventario = trans_inv_resumen.idinventarioenct AND 
-	                    trans_inv_tramo.idtramo = trans_inv_resumen.idtramo INNER JOIN
-	                    bodega_tramo ON trans_inv_tramo.idtramo = bodega_tramo.IdTramo INNER JOIN
-	                    producto ON trans_inv_resumen.idproducto = producto.IdProducto LEFT OUTER JOIN
-	                    producto_presentacion ON trans_inv_resumen.idpresentacion = producto_presentacion.IdPresentacion INNER JOIN
-	                    unidad_medida On  unidad_medida.IdUnidadMedida = producto.IdUnidadMedidaBasica  INNER JOIN
-                         dbo.trans_inv_enc ON dbo.trans_inv_tramo.idinventario = dbo.trans_inv_enc.idinventarioenc AND 
-                         dbo.trans_inv_resumen.idinventarioenct = dbo.trans_inv_enc.idinventarioenc  AND 
-                         dbo.trans_inv_resumen.idinventarioenct = dbo.trans_inv_enc.idinventarioenc AND dbo.bodega_tramo.IdBodega = dbo.trans_inv_enc.idbodega
-	                    WHERE(trans_inv_tramo.idinventario = @idinventario)
-	                    GROUP BY trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion, producto_presentacion.nombre, 
-	                    trans_inv_tramo.det_estado, trans_inv_resumen.nom_operador, producto.IdProducto, producto.nombre, producto.codigo, 
-	                    producto.IdPropietario,producto_presentacion.IdPresentacion,unidad_medida.Nombre, trans_inv_resumen.idoperador,trans_inv_enc.idbodega ) AS T
-	                    LEFT JOIN trans_inv_tramo tit ON T.idtramo = tit.idtramo and T.idinventario=tit.idinventario
-						inner join trans_inv_enc enc on enc.idinventarioenc = tit.idinventario  
-						inner join bodega_tramo bt on bt.IdTramo = tit.idtramo and bt.IdBodega = enc.idbodega and tit.idbodega=enc.idbodega
-						
-						GROUP BY T.IDINVENTARIO, T.IDTRAMO, T.TRAMO, T.PRESENTACION, T.IDPRESENTACION, T.IDPRODUCTO, T.PRODUCTO,
-	                    tit.det_estado, tit.res_estado, T.CODIGO,T.IdPropietario,T.UMBas"
-
-            Else
-
-                vSQL = "SELECT T.IDINVENTARIO, T.IDTRAMO, T.TRAMO, T.PRESENTACION, T.IDPRESENTACION, SUM(T.DETALLE) AS DETALLE, SUM(T.RESUMEN) AS RESUMEN, 
-	                    T.IDPRODUCTO, T.PRODUCTO,T.CODIGO as Codigo, tit.det_estado as EstadoConteo, tit.res_estado as EstadoResumen,T.IdPropietario,T.UMBas,t.Ubicacion_Conteo, t.IdUbicacion
+	                    T.IDPRODUCTO, T.PRODUCTO,T.CODIGO as Codigo, tit.det_estado as EstadoConteo, tit.res_estado as EstadoResumen, T.IdPropietario,T.UMBas, T.Codigo_Talla, T.Codigo_Color
 	                    FROM (SELECT trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion AS Tramo, producto_presentacion.nombre AS Presentacion,producto_presentacion.IdPresentacion,
 	                    SUM(trans_inv_detalle.cantidad) AS Detalle,0 AS Resumen, 
 	                    producto.IdProducto, producto.nombre AS Producto, producto.codigo, producto.IdPropietario,unidad_medida.Nombre as UMBas, trans_inv_detalle.idoperador,trans_inv_enc.idbodega,
-                        dbo.Nombre_Completo_Ubicacion(trans_inv_detalle.IdUbicacion,trans_inv_enc.idbodega) as Ubicacion_Conteo,trans_inv_detalle.IdUbicacion
+                        talla.Codigo as Codigo_Talla, color.Codigo +' - '+ color.Nombre as Codigo_Color 
 	                    FROM trans_inv_tramo INNER JOIN
 	                    trans_inv_detalle ON trans_inv_tramo.idinventario = trans_inv_detalle.idinventarioenc AND 
 	                    trans_inv_tramo.idtramo = trans_inv_detalle.idtramo INNER JOIN
@@ -3137,18 +3116,21 @@ Partial Public Class clsLnTrans_inv_enc
 	                    producto ON trans_inv_detalle.idproducto = producto.IdProducto LEFT OUTER JOIN
 	                    producto_presentacion ON trans_inv_detalle.IdPresentacion = producto_presentacion.IdPresentacion INNER JOIN
 	                    unidad_medida On  unidad_medida.IdUnidadMedida = producto.IdUnidadMedidaBasica INNER JOIN
-                         dbo.trans_inv_enc ON dbo.trans_inv_tramo.idinventario = dbo.trans_inv_enc.idinventarioenc AND 
-                         dbo.trans_inv_detalle.idinventarioenc = dbo.trans_inv_enc.idinventarioenc AND dbo.bodega_tramo.IdBodega = dbo.trans_inv_enc.idbodega
+                        dbo.trans_inv_enc ON dbo.trans_inv_tramo.idinventario = dbo.trans_inv_enc.idinventarioenc AND 
+                        dbo.trans_inv_detalle.idinventarioenc = dbo.trans_inv_enc.idinventarioenc AND dbo.bodega_tramo.IdBodega = dbo.trans_inv_enc.idbodega LEFT JOIN
+                        producto_talla_color ON producto_talla_color.IdProductoTallaColor = trans_inv_detalle.IdProductoTallaColor LEFT JOIN
+						talla ON talla.IdTalla = producto_talla_color.IdTalla LEFT JOIN
+						color ON color.IdColor = producto_talla_color.IdColor
 	                    WHERE (trans_inv_tramo.idinventario = @idinventario)
 	                    GROUP BY trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion, producto_presentacion.nombre, 
 	                    trans_inv_tramo.det_estado, trans_inv_detalle.nom_operador, producto.IdProducto, producto.nombre, producto.codigo, 
 	                    producto.IdPropietario,producto_presentacion.IdPresentacion,unidad_medida.Nombre, trans_inv_detalle.idoperador,trans_inv_enc.idbodega,
-                        trans_inv_detalle.IdUbicacion
+                        talla.Codigo, color.Nombre, color.Codigo
 	                    UNION
 	                    SELECT trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion AS Tramo, producto_presentacion.nombre AS Presentacion,producto_presentacion.IdPresentacion,0 As Detalle,
 	                    SUM(trans_inv_resumen.cantidad) AS Resumen, 
 	                    producto.IdProducto, producto.nombre AS Producto, producto.codigo, producto.IdPropietario,unidad_medida.Nombre as UMBas, trans_inv_resumen.idoperador,trans_inv_enc.idbodega,
-                        dbo.Nombre_Completo_Ubicacion(trans_inv_resumen.IdUbicacion,trans_inv_enc.idbodega) as Ubicacion_Conteo,trans_inv_resumen.IdUbicacion
+                        talla.Codigo as Codigo_Talla, color.Codigo +' - '+ color.Nombre as Codigo_Color 
 	                    FROM trans_inv_tramo INNER JOIN
 	                    trans_inv_resumen ON trans_inv_tramo.idinventario = trans_inv_resumen.idinventarioenct AND 
 	                    trans_inv_tramo.idtramo = trans_inv_resumen.idtramo INNER JOIN
@@ -3158,18 +3140,75 @@ Partial Public Class clsLnTrans_inv_enc
 	                    unidad_medida On  unidad_medida.IdUnidadMedida = producto.IdUnidadMedidaBasica  INNER JOIN
                          dbo.trans_inv_enc ON dbo.trans_inv_tramo.idinventario = dbo.trans_inv_enc.idinventarioenc AND 
                          dbo.trans_inv_resumen.idinventarioenct = dbo.trans_inv_enc.idinventarioenc  AND 
-                         dbo.trans_inv_resumen.idinventarioenct = dbo.trans_inv_enc.idinventarioenc AND dbo.bodega_tramo.IdBodega = dbo.trans_inv_enc.idbodega
+                         dbo.trans_inv_resumen.idinventarioenct = dbo.trans_inv_enc.idinventarioenc AND dbo.bodega_tramo.IdBodega = dbo.trans_inv_enc.idbodega LEFT JOIN
+                        producto_talla_color ON producto_talla_color.IdProductoTallaColor = trans_inv_resumen.IdProductoTallaColor LEFT JOIN
+						talla ON talla.IdTalla = producto_talla_color.IdTalla LEFT JOIN
+						color ON color.IdColor = producto_talla_color.IdColor
 	                    WHERE(trans_inv_tramo.idinventario = @idinventario)
 	                    GROUP BY trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion, producto_presentacion.nombre, 
 	                    trans_inv_tramo.det_estado, trans_inv_resumen.nom_operador, producto.IdProducto, producto.nombre, producto.codigo, 
-	                    producto.IdPropietario,producto_presentacion.IdPresentacion,unidad_medida.Nombre, trans_inv_resumen.idoperador,trans_inv_enc.idbodega,
-                        trans_inv_resumen.IdUbicacion) AS T
+	                    producto.IdPropietario,producto_presentacion.IdPresentacion,unidad_medida.Nombre, trans_inv_resumen.idoperador,trans_inv_enc.idbodega,talla.Codigo, color.Nombre, color.Codigo ) AS T
 	                    LEFT JOIN trans_inv_tramo tit ON T.idtramo = tit.idtramo and T.idinventario=tit.idinventario
 						inner join trans_inv_enc enc on enc.idinventarioenc = tit.idinventario  
 						inner join bodega_tramo bt on bt.IdTramo = tit.idtramo and bt.IdBodega = enc.idbodega and tit.idbodega=enc.idbodega
 						
 						GROUP BY T.IDINVENTARIO, T.IDTRAMO, T.TRAMO, T.PRESENTACION, T.IDPRESENTACION, T.IDPRODUCTO, T.PRODUCTO,
-	                    tit.det_estado, tit.res_estado,T.CODIGO,T.IdPropietario,T.UMBas,t.Ubicacion_Conteo, t.IdUbicacion "
+	                    tit.det_estado, tit.res_estado, T.CODIGO,T.IdPropietario,T.UMBas, T.Codigo_Talla, T.Codigo_Color"
+
+            Else
+
+                vSQL = "SELECT T.IDINVENTARIO, T.IDTRAMO, T.TRAMO, T.PRESENTACION, T.IDPRESENTACION, SUM(T.DETALLE) AS DETALLE, SUM(T.RESUMEN) AS RESUMEN, 
+	                    T.IDPRODUCTO, T.PRODUCTO,T.CODIGO as Codigo, tit.det_estado as EstadoConteo, tit.res_estado as EstadoResumen,T.IdPropietario,T.UMBas,t.Ubicacion_Conteo, t.IdUbicacion,T.Codigo_Talla, T.Codigo_Color 
+	                    FROM (SELECT trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion AS Tramo, producto_presentacion.nombre AS Presentacion,producto_presentacion.IdPresentacion,
+	                    SUM(trans_inv_detalle.cantidad) AS Detalle,0 AS Resumen, 
+	                    producto.IdProducto, producto.nombre AS Producto, producto.codigo, producto.IdPropietario,unidad_medida.Nombre as UMBas, trans_inv_detalle.idoperador,trans_inv_enc.idbodega,
+                        dbo.Nombre_Completo_Ubicacion(trans_inv_detalle.IdUbicacion,trans_inv_enc.idbodega) as Ubicacion_Conteo,trans_inv_detalle.IdUbicacion, talla.Codigo as Codigo_Talla, color.Codigo +' - '+ color.Nombre as Codigo_Color 
+	                    FROM trans_inv_tramo INNER JOIN
+	                    trans_inv_detalle ON trans_inv_tramo.idinventario = trans_inv_detalle.idinventarioenc AND 
+	                    trans_inv_tramo.idtramo = trans_inv_detalle.idtramo INNER JOIN
+	                    bodega_tramo ON trans_inv_tramo.idtramo = bodega_tramo.IdTramo INNER JOIN
+	                    producto ON trans_inv_detalle.idproducto = producto.IdProducto LEFT OUTER JOIN
+	                    producto_presentacion ON trans_inv_detalle.IdPresentacion = producto_presentacion.IdPresentacion INNER JOIN
+	                    unidad_medida On  unidad_medida.IdUnidadMedida = producto.IdUnidadMedidaBasica INNER JOIN
+                         dbo.trans_inv_enc ON dbo.trans_inv_tramo.idinventario = dbo.trans_inv_enc.idinventarioenc AND 
+                         dbo.trans_inv_detalle.idinventarioenc = dbo.trans_inv_enc.idinventarioenc AND dbo.bodega_tramo.IdBodega = dbo.trans_inv_enc.idbodega LEFT JOIN
+                        producto_talla_color ON producto_talla_color.IdProductoTallaColor = trans_inv_detalle.IdProductoTallaColor LEFT JOIN
+                        talla ON talla.IdTalla = producto_talla_color.IdTalla LEFT JOIN
+                        color ON color.IdColor = producto_talla_color.IdColor
+	                    WHERE (trans_inv_tramo.idinventario = @idinventario)
+	                    GROUP BY trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion, producto_presentacion.nombre, 
+	                    trans_inv_tramo.det_estado, trans_inv_detalle.nom_operador, producto.IdProducto, producto.nombre, producto.codigo, 
+	                    producto.IdPropietario,producto_presentacion.IdPresentacion,unidad_medida.Nombre, trans_inv_detalle.idoperador,trans_inv_enc.idbodega,
+                        trans_inv_detalle.IdUbicacion, talla.Codigo, color.Nombre, color.Codigo
+	                    UNION
+	                    SELECT trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion AS Tramo, producto_presentacion.nombre AS Presentacion,producto_presentacion.IdPresentacion,0 As Detalle,
+	                    SUM(trans_inv_resumen.cantidad) AS Resumen, 
+	                    producto.IdProducto, producto.nombre AS Producto, producto.codigo, producto.IdPropietario,unidad_medida.Nombre as UMBas, trans_inv_resumen.idoperador,trans_inv_enc.idbodega,
+                        dbo.Nombre_Completo_Ubicacion(trans_inv_resumen.IdUbicacion,trans_inv_enc.idbodega) as Ubicacion_Conteo,trans_inv_resumen.IdUbicacion, talla.Codigo as Codigo_Talla, color.Codigo +' - '+ color.Nombre as Codigo_Color 
+	                    FROM trans_inv_tramo INNER JOIN
+	                    trans_inv_resumen ON trans_inv_tramo.idinventario = trans_inv_resumen.idinventarioenct AND 
+	                    trans_inv_tramo.idtramo = trans_inv_resumen.idtramo INNER JOIN
+	                    bodega_tramo ON trans_inv_tramo.idtramo = bodega_tramo.IdTramo INNER JOIN
+	                    producto ON trans_inv_resumen.idproducto = producto.IdProducto LEFT OUTER JOIN
+	                    producto_presentacion ON trans_inv_resumen.idpresentacion = producto_presentacion.IdPresentacion INNER JOIN
+	                    unidad_medida On  unidad_medida.IdUnidadMedida = producto.IdUnidadMedidaBasica  INNER JOIN
+                         dbo.trans_inv_enc ON dbo.trans_inv_tramo.idinventario = dbo.trans_inv_enc.idinventarioenc AND 
+                         dbo.trans_inv_resumen.idinventarioenct = dbo.trans_inv_enc.idinventarioenc  AND 
+                         dbo.trans_inv_resumen.idinventarioenct = dbo.trans_inv_enc.idinventarioenc AND dbo.bodega_tramo.IdBodega = dbo.trans_inv_enc.idbodega LEFT JOIN
+                        producto_talla_color ON producto_talla_color.IdProductoTallaColor = trans_inv_resumen.IdProductoTallaColor LEFT JOIN
+                        talla ON talla.IdTalla = producto_talla_color.IdTalla LEFT JOIN
+                        color ON color.IdColor = producto_talla_color.IdColor
+	                    WHERE(trans_inv_tramo.idinventario = @idinventario)
+	                    GROUP BY trans_inv_tramo.idinventario, trans_inv_tramo.idtramo, bodega_tramo.descripcion, producto_presentacion.nombre, 
+	                    trans_inv_tramo.det_estado, trans_inv_resumen.nom_operador, producto.IdProducto, producto.nombre, producto.codigo, 
+	                    producto.IdPropietario,producto_presentacion.IdPresentacion,unidad_medida.Nombre, trans_inv_resumen.idoperador,trans_inv_enc.idbodega,
+                        trans_inv_resumen.IdUbicacion, talla.Codigo, color.Nombre, color.Codigo) AS T
+	                    LEFT JOIN trans_inv_tramo tit ON T.idtramo = tit.idtramo and T.idinventario=tit.idinventario
+						inner join trans_inv_enc enc on enc.idinventarioenc = tit.idinventario  
+						inner join bodega_tramo bt on bt.IdTramo = tit.idtramo and bt.IdBodega = enc.idbodega and tit.idbodega=enc.idbodega
+						
+						GROUP BY T.IDINVENTARIO, T.IDTRAMO, T.TRAMO, T.PRESENTACION, T.IDPRESENTACION, T.IDPRODUCTO, T.PRODUCTO,
+	                    tit.det_estado, tit.res_estado,T.CODIGO,T.IdPropietario,T.UMBas,t.Ubicacion_Conteo, t.IdUbicacion, T.Codigo_Talla, T.Codigo_Color "
 
             End If
 
@@ -3243,6 +3282,14 @@ Partial Public Class clsLnTrans_inv_enc
 
                         If lRow("UMBas") IsNot DBNull.Value AndAlso lRow("UMBas") IsNot Nothing Then
                             Obj.UMBas = CType(lRow("UMBas"), String)
+                        End If
+
+                        If lRow("Codigo_Talla") IsNot DBNull.Value AndAlso lRow("Codigo_Talla") IsNot Nothing Then
+                            Obj.Codigo_Talla = CType(lRow("Codigo_Talla"), String)
+                        End If
+
+                        If lRow("Codigo_Color") IsNot DBNull.Value AndAlso lRow("Codigo_Color") IsNot Nothing Then
+                            Obj.Codigo_Color = CType(lRow("Codigo_Color"), String)
                         End If
 
                         If ConUbicacion Then

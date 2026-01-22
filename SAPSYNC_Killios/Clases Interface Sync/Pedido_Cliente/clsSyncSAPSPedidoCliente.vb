@@ -24,13 +24,13 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
             Dim RsEnc As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
             Dim queryEnc As String = "SELECT T0.DocEntry, T0.DocNum, T0.DocDate, T0.CardCode AS CARDCODE, T0.CardName AS CARDNAME, " &
-                                     "T0.DocCur, T0.DocTotal, T0.JrnlMemo, T0.Canceled, T0.DocStatus, " &
-                                     "CASE WHEN T0.DocType = 'I' THEN 'ARTICULO' ELSE 'SERVICIO' END AS TIPO_ORDEN_VENTA, " &
-                                     "(SELECT TOP 1 D0.WhsCode FROM RDR1 D0 WHERE D0.DocEntry = T0.DocEntry) AS BODEGA, " &
-                                     "T0.Comments, T0.NumAtCard, " &
-                                     "ISNULL(T1.Street,'') + ' ' + ISNULL(T1.City,'') + ' ' + ISNULL(T1.U_DiaEntrega,'') + ' ' + ISNULL(T1.U_HorarioEntrega,'') AS Direccion, " &
-                                     "T0.U_EsExport FROM ORDR T0 LEFT JOIN CRD1 T1 ON T0.CardCode = T1.CardCode " &
-                                     "WHERE T0.DocStatus = 'O' AND T0.CreateDate >= '2024-01-01 00:00:00.000' AND T0.U_Enviado_WMS = 2 AND T1.Address = 'Entrega' "
+                                  "T0.DocCur, T0.DocTotal, T0.JrnlMemo, T0.Canceled, T0.DocStatus, " &
+                                  "CASE WHEN T0.DocType = 'I' THEN 'ARTICULO' ELSE 'SERVICIO' END AS TIPO_ORDEN_VENTA, " &
+                                  "(SELECT TOP 1 D0.WhsCode FROM RDR1 D0 WHERE D0.DocEntry = T0.DocEntry) AS BODEGA, " &
+                                  "T0.Comments, T0.NumAtCard, " &
+                                  "ISNULL(T1.Street,'') + ' ' + ISNULL(T1.City,'') + ' ' + ISNULL(T1.U_DiaEntrega,'') + ' ' + ISNULL(T1.U_HorarioEntrega,'') AS Direccion, " &
+                                  "T0.U_EsExport FROM ORDR T0 LEFT JOIN CRD1 T1 ON T0.CardCode = T1.CardCode " &
+                                  "WHERE T0.DocStatus = 'O' AND T0.CreateDate >= '2024-01-01 00:00:00.000' AND T0.U_Enviado_WMS = 2 AND T1.Address = 'Entrega' "
 
             If Not String.IsNullOrEmpty(pPedidoCliente) Then
                 queryEnc &= " AND T0.DocNum = " & pPedidoCliente
@@ -228,7 +228,10 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
                     If Not Enviado_A_Erp Then
 
+                        lTransaccionesSalidaSingle = lTransaccionesSalida.FindAll(Function(x) x.No_pedido = PT.No_pedido)
+
                         Dim vvEmpresa As pEmpresa = [Enum].Parse(GetType(pEmpresa), vCodEmpresaPed)
+                        Dim vNoPedidoSap As Integer = 0
 
                         Dim vNoPedidoSap As String = If(PT.No_pedido.StartsWith("K") OrElse PT.No_pedido.StartsWith("G"), PT.No_pedido.Substring(1), PT.No_pedido)
 
@@ -454,8 +457,8 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
             ' Configuración de interface
             BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface,
-                                                          clsTransaccion.lConnection,
-                                                          clsTransaccion.lTransaction)
+                                                      clsTransaccion.lConnection,
+                                                      clsTransaccion.lTransaction)
 
             If BeConfigEnc Is Nothing Then
                 Throw New Exception("No está definida la configuración de interface para el identificador: " & BD.Instancia.IdConfiguracionInterface)
@@ -468,14 +471,14 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
                 ' Genera transferencia de stock
                 lResultProductosTransferSap = Enviar_Transferencia_Stock_SAP(_Docentry,
-                                                                             lINavTransaccionesOut,
-                                                                             lblprg,
-                                                                             prg,
-                                                                             BePedido,
-                                                                             clsTransaccion,
-                                                                             oCompany,
-                                                                             BeConfigEnc,
-                                                                             vEmpresa)
+                                           lINavTransaccionesOut,
+                                           lblprg,
+                                           prg,
+                                           BePedido,
+                                           clsTransaccion,
+                                           oCompany,
+                                           BeConfigEnc,
+                                           vEmpresa)
 
             Else
 
@@ -496,14 +499,14 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
                 Dim generoentregaOV As Boolean = False
 
                 generoentregaOV = Generar_Entrega_OV(_Docentry,
-                                                     BePedido,
-                                                     clsTransaccion,
-                                                     lblprg,
-                                                     lINavTransaccionesOut,
-                                                     lResultProductosTransferSap,
-                                                     vEmpresa,
-                                                     oCompany,
-                                                     BeConfigEnc)
+                                   BePedido,
+                                   clsTransaccion,
+                                   lblprg,
+                                   lINavTransaccionesOut,
+                                   lResultProductosTransferSap,
+                                   vEmpresa,
+                                   oCompany,
+                                   BeConfigEnc)
             End If
 
             ' Confirmar transacciones
@@ -514,7 +517,7 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
         Catch errMsg As Exception
             Dim vMensaje As String = String.Format("{1} {0} {1} DocumentoSAP {2} PedidoWMS {3}",
-                                                    errMsg.Message, vbNewLine, _Docentry, If(BePedido IsNot Nothing, BePedido.IdPedidoEnc.ToString(), "N/D"))
+                                               errMsg.Message, vbNewLine, _Docentry, If(BePedido IsNot Nothing, BePedido.IdPedidoEnc.ToString(), "N/D"))
 
             clsLnI_nav_ejecucion_det_error.Inserta_Log(vMensaje,
                                                    "",
@@ -847,6 +850,7 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
         Marcar_Documento_Sincronizado_SAP = False
 
         Try
+
             conn = sapPool.GetConnection(pCompany)
             Dim oCompany As Company = conn.Company
 
@@ -898,6 +902,7 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
         End Try
     End Function
 
+    End Function
     Public Shared Function Enviar_Transferencia_Stock_SAP(ByVal _DocEntry As Integer,
                                                            ByVal lINavTransaccionesOut As List(Of clsBeI_nav_transacciones_out),
                                                            ByRef lblprg As RichTextBox,
@@ -982,13 +987,13 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
                     End If
 
                     productos.Add(New ProductoTransferSAP With {.IdPedidoEnc = trans.Idpedidoenc,
-                                                                .CodigoProductoSAP = codigoSAP,
-                                                                .CodigoProductoWMS = prod.Codigo,
-                                                                .Cantidad_Total = cantidad,
+                    .CodigoProductoSAP = codigoSAP,
+                    .CodigoProductoWMS = prod.Codigo,
+                    .Cantidad_Total = cantidad,
                                                                 .CodigoPresentacion = trans.Codigo_variante,
-                                                                .No_Pedido = trans.No_pedido,
-                                                                .No_Linea = trans.No_linea
-                                                            })
+                    .No_Pedido = trans.No_pedido,
+                    .No_Linea = trans.No_linea
+                })
 
                 End If
             Next
@@ -1017,14 +1022,14 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
     End Function
 
     Private Shared Function Procesar_Transferencias_SAP(docEntry As Integer,
-                                                        productos As List(Of ProductoTransferSAP),
+                                                         productos As List(Of ProductoTransferSAP),
                                                         ByRef BePedido As clsBeTrans_pe_enc,
-                                                        clsTrans As clsTransaccion,
-                                                        oCompany As Company,
-                                                        BeConfigEnc As clsBeI_nav_config_enc,
-                                                        lblprg As RichTextBox,
-                                                        pCompany As pEmpresa,
-                                                        oOrderSales As Documents) As List(Of ProductoTransferSAP)
+                                                         clsTrans As clsTransaccion,
+                                                         oCompany As Company,
+                                                         BeConfigEnc As clsBeI_nav_config_enc,
+                                                         lblprg As RichTextBox,
+                                                         pCompany As pEmpresa,
+                                                         oOrderSales As Documents) As List(Of ProductoTransferSAP)
 
         Dim oOrdenVenta As Documents = CType(oCompany.GetBusinessObject(BoObjectTypes.oOrders), Documents)
         If Not oOrdenVenta.GetByKey(docEntry) Then Throw New Exception("No se encontró la orden de venta: " & docEntry)
@@ -1214,6 +1219,14 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
         Return clsLnCliente.Existe_By_Codigo_And_Company(codigoWMS, companyCode)
 
     End Function
+    Private Class clsBeI_nav_transacciones_out_agrupado
+        Public Property Idpedidoenc As Integer
+        Public Property Codigo_producto As String
+        Public Property No_linea As Integer
+        Public Property IdPresentacion As Integer
+        Public Property IdDespachoDet As Integer
+        Public Property Cantidad_Total As Decimal
+    End Class
     Public Class clsBeInfoBodegaByIdPedidoEnc
         Public Property Codigo_Bodega_Origen As String = ""
         Public Property Codigo_Bodega_Destino As String = ""
@@ -1224,4 +1237,5 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
         Return Decimal.TryParse(value, Globalization.NumberStyles.Any, Globalization.CultureInfo.InvariantCulture, result)
     End Function
 
+    End Class
 End Class

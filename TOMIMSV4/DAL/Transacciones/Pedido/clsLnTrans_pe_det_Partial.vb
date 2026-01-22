@@ -1,4 +1,6 @@
-﻿Imports System.Data.Common
+﻿Imports System
+Imports System.Collections.Generic
+Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
 
@@ -175,11 +177,23 @@ Partial Public Class clsLnTrans_pe_det
                             vIdxProducto = lProductosInMemory.FindIndex(Function(x) x.IdProducto = vIdProducto)
 
                             If vIdxProducto = -1 Then
-                                .Producto = lProductos.Find(Function(x) x.IdProducto = vIdProducto)
+
+                                Dim pCampos(6) As clsBeProducto.ProdPropiedades
+                                pCampos(0) = clsBeProducto.ProdPropiedades.Codigo
+                                pCampos(1) = clsBeProducto.ProdPropiedades.Nombre
+                                pCampos(2) = clsBeProducto.ProdPropiedades.Control_lote
+                                pCampos(3) = clsBeProducto.ProdPropiedades.Control_Peso
+                                pCampos(4) = clsBeProducto.ProdPropiedades.Control_vencimiento
+                                pCampos(5) = clsBeProducto.ProdPropiedades.Codigos_Barra
+                                .Producto = clsLnProducto.GetSingle(.Producto.IdProducto, pCampos, lConnection, lTransaction)
                                 lProductosInMemory.Add(.Producto.Clone())
+
                             Else
                                 .Producto = lProductosInMemory(vIdxProducto).Clone()
                             End If
+
+                            '#EJC20190214_0116PM: Comentariado por rendimiento, obtener solo lo necesario..
+                            'clsLnProducto.Obtener(.Producto, lConnection, lTransaction)
 
                             .IdEstado = IIf(IsDBNull(lRow.Item("IdEstado")), 0, lRow.Item("IdEstado"))
                             .IdPresentacion = IIf(IsDBNull(lRow.Item("IdPresentacion")), 0, lRow.Item("IdPresentacion"))
@@ -205,20 +219,23 @@ Partial Public Class clsLnTrans_pe_det
                             .RoadVAL1 = IIf(IsDBNull(lRow.Item("RoadVAL1")), 0.0, lRow.Item("RoadVAL1"))
                             .RoadVAL2 = IIf(IsDBNull(lRow.Item("RoadVAL2")), "", lRow.Item("RoadVAL2"))
                             .RoadCantProc = IIf(IsDBNull(lRow.Item("RoadCantProc")), 0.0, lRow.Item("RoadCantProc"))
+
+                            '#EJC20180114: Agruegué No_Linea y Atributo_Variante_1 en GetByPedidoEnc
                             .No_linea = IIf(IsDBNull(lRow.Item("No_linea")), 0.0, lRow.Item("No_linea"))
                             .Atributo_Variante_1 = IIf(IsDBNull(lRow.Item("Atributo_Variante_1")), 0.0, lRow.Item("Atributo_Variante_1"))
+                            '#CM_17092019_453PM: Agruegué IdStockEspecifico en GetByPedidoEnc
                             .IdStockEspecifico = IIf(IsDBNull(lRow.Item("IdStockEspecifico")), 0, lRow.Item("IdStockEspecifico"))
                             .EsPadre = IIf(IsDBNull(lRow.Item("EsPadre")), False, lRow.Item("EsPadre"))
                             .IdPedidoDetPadre = IIf(IsDBNull(lRow.Item("IdPedidoDetPadre")), 0, lRow.Item("IdPedidoDetPadre"))
                             .IdCliente = IIf(IsDBNull(lRow.Item("IdCliente")), 0, lRow.Item("IdCliente"))
+                            .Talla = IIf(IsDBNull(lRow.Item("talla")), "", lRow.Item("talla"))
+                            .Color = IIf(IsDBNull(lRow.Item("color")), "", lRow.Item("color"))
+                            .IdProductoTallaColor = IIf(IsDBNull(lRow.Item("IdProductoTallaColor")), 0, lRow.Item("IdProductoTallaColor"))
                             .Stock_Liberado = IIf(IsDBNull(lRow.Item("stock_liberado")), False, lRow.Item("stock_liberado"))
 
                         End With
 
-                        '#GT16092025:si la linea del pedido no tiene stock liberado, se infiere que esta asociada a una linea de despacho
-                        'If Not BeTransPeDet.Stock_Liberado Then
-                        '    lReturnList.Add(BeTransPeDet)
-                        'End If
+                        lReturnList.Add(BeTransPeDet)
 
                     Next
 
@@ -465,6 +482,9 @@ Partial Public Class clsLnTrans_pe_det
                             .No_linea = IIf(IsDBNull(lRow.Item("No_linea")), 0.0, lRow.Item("No_linea"))
                             .Atributo_Variante_1 = IIf(IsDBNull(lRow.Item("Atributo_Variante_1")), 0.0, lRow.Item("Atributo_Variante_1"))
                             .IdStockEspecifico = IIf(IsDBNull(lRow.Item("IdStockEspecifico")), 0, lRow.Item("IdStockEspecifico"))
+                            .Talla = IIf(IsDBNull(lRow.Item("Talla")), "", lRow.Item("Talla"))
+                            .Color = IIf(IsDBNull(lRow.Item("Color")), "", lRow.Item("Color"))
+                            .IdProductoTallaColor = IIf(IsDBNull(lRow.Item("IdProductoTallaColor")), 0, lRow.Item("IdProductoTallaColor"))
 
                             '#GT17092025: cargar propiedad de stock_liberado en la linea de detalle
                             .Stock_Liberado = IIf(IsDBNull(lRow.Item("stock_liberado")), False, lRow.Item("stock_liberado"))
@@ -615,6 +635,7 @@ Partial Public Class clsLnTrans_pe_det
         End Try
 
     End Function
+
     Public Shared Function Get_Referencias_By_IdPedidoDet(ByVal pIdPedidoDet As Integer) As String
 
         Try
@@ -778,7 +799,9 @@ Partial Public Class clsLnTrans_pe_det
                     0)) AS Cantidad_Despachada, 
                     ISNULL(dbo.trans_picking_ubic.encontrado, 0) AS Encontrado, 
                     dbo.Nombre_Completo_Ubicacion(res.IdUbicacion, res.IDBODEGA) AS NomUbic,
-                    s.IdRecepcionEnc, s.IdRecepcionDet
+                    s.IdRecepcionEnc, s.IdRecepcionDet,
+                    col.Codigo AS Color,
+                    tal.Codigo AS Talla
                     FROM  stock_res AS res INNER JOIN
                     propietario_bodega AS prb ON res.IdPropietarioBodega = prb.IdPropietarioBodega INNER JOIN
                     producto_bodega AS pb ON pb.IdProductoBodega = res.IdProductoBodega INNER JOIN
@@ -793,6 +816,12 @@ Partial Public Class clsLnTrans_pe_det
                     res.IdStockRes = trans_picking_ubic.IdStockRes LEFT OUTER JOIN
                     stock AS s ON res.IdStock = s.IdStock LEFT OUTER JOIN
                     producto_presentacion AS pp ON res.IdPresentacion = pp.IdPresentacion
+                    LEFT JOIN producto_talla_color AS ptc
+                        ON ptc.IdProductoTallaColor = res.IdProductoTallaColor   
+                    LEFT JOIN color AS col
+                        ON col.IdColor = ptc.IdColor
+                    LEFT JOIN talla AS tal
+                        ON tal.IdTalla = ptc.IdTalla
                     WHERE(Res.IdPedido = @IdPedido) AND (ISNULL(trans_picking_ubic.dañado_verificacion, 0) = 0) AND (ISNULL(trans_picking_ubic.dañado_picking, 0) = 0) AND (ISNULL(trans_picking_ubic.no_encontrado, 0) = 0) "
 
             If PendientesDeDespacho Then
@@ -809,7 +838,7 @@ Partial Public Class clsLnTrans_pe_det
                         Res.ubicacion_ant, Res.no_bulto, Res.IdRecepcion, Res.IdPicking, Res.IdPedido, Res.IdDespacho,
                         res.añada, res.fecha_manufactura,
                         ISNULL(trans_picking_ubic.acepto, 0), 
-                        ISNULL(trans_picking_ubic.encontrado, 0),bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion, res.IdBodega, s.IdRecepcionEnc, s.IdRecepcionDet  "
+                        ISNULL(trans_picking_ubic.encontrado, 0),bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion, res.IdBodega, s.IdRecepcionEnc, s.IdRecepcionDet,col.Codigo, tal.Codigo  "
 
             vSQL += " ORDER BY bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion"
 
@@ -897,6 +926,16 @@ Partial Public Class clsLnTrans_pe_det
 
     End Function
 
+    ''' <summary>
+    ''' #EJC202508111059: Este query se debe unificar.
+    ''' </summary>
+    ''' <param name="pIdPedidoEnc"></param>
+    ''' <param name="PendientesDeDespacho"></param>
+    ''' <param name="EsPickingNuevo"></param>
+    ''' <param name="EsPicking"></param>
+    ''' <param name="lConnection"></param>
+    ''' <param name="lTransaction"></param>
+    ''' <returns></returns>
     Public Shared Function Get_All_Stock_Res_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer,
                                                             ByVal PendientesDeDespacho As Boolean,
                                                             ByVal EsPickingNuevo As Boolean,
@@ -931,7 +970,7 @@ Partial Public Class clsLnTrans_pe_det
                         SUM(ISNULL(trans_picking_ubic.cantidad_recibida, 0)) AS cantidad_recibida,
                         SUM(ISNULL(trans_picking_ubic.cantidad_verificada, 0)) As cantidad_verificada,
                         SUM(ISNULL(trans_picking_ubic.cantidad_despachada, 0)) as Cantidad_Despachada, 
-                        ISNULL(trans_picking_ubic.encontrado, 0) As Encontrado
+                        ISNULL(trans_picking_ubic.encontrado, 0) As Encontrado, trans_picking_ubic.IdProductoTallaColor
                         FROM trans_picking_det INNER JOIN 
                         trans_picking_ubic ON trans_picking_det.IdPickingDet = trans_picking_ubic.IdPickingDet RIGHT OUTER JOIN 
                         stock_res AS res INNER JOIN 
@@ -962,9 +1001,11 @@ Partial Public Class clsLnTrans_pe_det
                         Res.ubicacion_ant, Res.no_bulto, Res.IdRecepcion, Res.IdPicking, Res.IdPedido, Res.IdDespacho,
                         res.añada, res.fecha_manufactura,
                         ISNULL(trans_picking_ubic.acepto, 0), 
-                        ISNULL(trans_picking_ubic.encontrado, 0),bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion, s.IdRecepcionEnc, s.IdRecepcionDet "
+                        ISNULL(trans_picking_ubic.encontrado, 0),
+                        bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion, 
+                        s.IdRecepcionEnc, s.IdRecepcionDet,trans_picking_ubic.IdProductoTallaColor "
 
-            vSQL += " ORDER BY bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion"
+            vSQL += " ORDER BY bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion "
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -2006,22 +2047,12 @@ Partial Public Class clsLnTrans_pe_det
             Dim ResultadoInsert As Integer = 0
 
             If pBePedidoDet.IsNew Then
-                If IdPedidoDetMaxId = 0 Then
-                    IdPedidoDetMaxId = MaxID() + 1
-                Else
-                    IdPedidoDetMaxId += 1
-                End If
-                pBePedidoDet.IdPedidoDet = IdPedidoDetMaxId
+                pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1
                 pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet
                 ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
             Else
                 If Not Existe(pBePedidoDet.IdPedidoDet, pBePedidoDet.IdPedidoEnc, lConnection, lTransaction) Then
-                    If IdPedidoDetMaxId = 0 Then
-                        IdPedidoDetMaxId = MaxID(lConnection, lTransaction) + 1
-                    Else
-                        IdPedidoDetMaxId += 1
-                    End If
-                    pBePedidoDet.IdPedidoDet = IdPedidoDetMaxId
+                    pBePedidoDet.IdPedidoDet = MaxID(lConnection, lTransaction) + 1
                     pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet
                     ResultadoInsert = Insertar(pBePedidoDet, lConnection, lTransaction)
                 Else
@@ -2493,53 +2524,54 @@ Partial Public Class clsLnTrans_pe_det
                                         Sr.IdPresentacion = 0
                                     End If
                                 End If
+                                End If
 
-                                If clsLnTrans_picking_ubic.Insertar_PickingUbic(Sr,
+                        If clsLnTrans_picking_ubic.Insertar_PickingUbic(Sr,
                                                                                 vIdPickingDet,
                                                                                 lConnection,
                                                                                 lTransaction) Then
 
-                                    If clsLnTrans_picking_det_parametros.Insertar_Parametros_Stock_Para_Picking(Sr.IdStock,
+                            If clsLnTrans_picking_det_parametros.Insertar_Parametros_Stock_Para_Picking(Sr.IdStock,
                                                                                                             vIdPickingDet,
                                                                                                             lConnection,
                                                                                                             lTransaction) Then
-                                        vDetalleActualizadoCorrectamente = True
+                                vDetalleActualizadoCorrectamente = True
 
-                                    End If
-
-                                End If
-
-                            Next
-
+                            End If
 
                         End If
 
-                        If BeTransPickingEnc.Estado = "Despachado" Then
+                        Next
 
-                            BeTransPickingEnc.Estado = "Pendiente"
 
-                            clsLnTrans_picking_enc.Actualizar_Estado(BeTransPickingEnc,
+                    End If
+
+                    If BeTransPickingEnc.Estado = "Despachado" Then
+
+                        BeTransPickingEnc.Estado = "Pendiente"
+
+                        clsLnTrans_picking_enc.Actualizar_Estado(BeTransPickingEnc,
                                                                      lConnection,
                                                                      lTransaction)
 
-                        End If
+                    End If
 
-                        If Not BeTransPeEnc Is Nothing Then
+                    If Not BeTransPeEnc Is Nothing Then
 
-                            If BeTransPeEnc.Enviado_A_ERP Then
+                        If BeTransPeEnc.Enviado_A_ERP Then
 
-                                clsLnTrans_pe_enc.Actualizar_Estado_Enviado_A_ERP_By_IdPedidoEnc_Single(BeTransPeEnc.IdPedidoEnc,
+                            clsLnTrans_pe_enc.Actualizar_Estado_Enviado_A_ERP_By_IdPedidoEnc_Single(BeTransPeEnc.IdPedidoEnc,
                                                                                                         False,
                                                                                                         BeTransPeEnc.User_agr,
                                                                                                         lConnection,
                                                                                                         lTransaction)
-                            End If
-
                         End If
 
                     End If
 
                 End If
+
+            End If
 
             End If
 
@@ -2993,6 +3025,7 @@ Partial Public Class clsLnTrans_pe_det
                     peso_despachado =  @peso_despachado
                     Where(IdPedidoDet = @IdPedidoDet)"
 
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
             Dim cmd As New SqlCommand(vSQL, lConnection) With {.CommandType = CommandType.Text}
 
             If Es_Transaccion_Remota Then
@@ -3016,10 +3049,10 @@ Partial Public Class clsLnTrans_pe_det
             Return rowsAffected
 
         Catch ex1 As SqlException
-            If Not Es_Transaccion_Remota Then If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
             Throw ex1
         Catch ex As Exception
-            If Not Es_Transaccion_Remota Then If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
             Throw ex
         Finally
             If Not Es_Transaccion_Remota Then
@@ -3169,7 +3202,10 @@ Partial Public Class clsLnTrans_pe_det
                     ISNULL(dbo.trans_picking_ubic.encontrado, 0) AS Encontrado, 
                     dbo.Nombre_Completo_Ubicacion(res.IdUbicacion, res.IDBODEGA) AS NomUbic,
                     res.IDBODEGA,
-                    res.fecha_ingreso, s.IdRecepcionEnc, s.IdRecepcionDet
+                    res.fecha_ingreso, s.IdRecepcionEnc, s.IdRecepcionDet,
+                    res.IdProductoTallaColor,
+                    col.Codigo AS Color,
+                    tal.Codigo AS Talla
                     FROM  stock_res AS res INNER JOIN
                     propietario_bodega AS prb ON res.IdPropietarioBodega = prb.IdPropietarioBodega INNER JOIN
                     producto_bodega AS pb ON pb.IdProductoBodega = res.IdProductoBodega INNER JOIN
@@ -3184,6 +3220,12 @@ Partial Public Class clsLnTrans_pe_det
                     res.IdStockRes = trans_picking_ubic.IdStockRes LEFT OUTER JOIN
                     stock AS s ON res.IdStock = s.IdStock LEFT OUTER JOIN
                     producto_presentacion AS pp ON res.IdPresentacion = pp.IdPresentacion
+                    LEFT JOIN producto_talla_color AS ptc
+                        ON ptc.IdProductoTallaColor = res.IdProductoTallaColor   
+                    LEFT JOIN color AS col
+                        ON col.IdColor = ptc.IdColor
+                    LEFT JOIN talla AS tal
+                        ON tal.IdTalla = ptc.IdTalla
                     WHERE(Res.IdPedido = @IdPedido) 
                     AND (ISNULL(trans_picking_ubic.dañado_verificacion, 0) = 0) 
                     AND (ISNULL(trans_picking_ubic.dañado_picking, 0) = 0) 
@@ -3207,7 +3249,8 @@ Partial Public Class clsLnTrans_pe_det
                         Res.ubicacion_ant, Res.no_bulto, Res.IdRecepcion, Res.IdPicking, Res.IdPedido, Res.IdDespacho,
                         res.añada, res.fecha_manufactura,
                         ISNULL(trans_picking_ubic.acepto, 0), 
-                        ISNULL(trans_picking_ubic.encontrado, 0),bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion, res.IdBodega, res.fecha_ingreso, s.IdRecepcionEnc, s.IdRecepcionDet "
+                        ISNULL(trans_picking_ubic.encontrado, 0),bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion, res.IdBodega, res.fecha_ingreso, s.IdRecepcionEnc, s.IdRecepcionDet, 
+                        res.IdProductoTallaColor,col.Codigo, tal.Codigo "
 
             vSQL += " ORDER BY bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion"
 
@@ -4794,6 +4837,9 @@ Partial Public Class clsLnTrans_pe_det
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
                 lDTA.SelectCommand.Transaction = lTransaction
                 lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = pTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoDet", pIdPedidoDet)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", IdPedidoEnc)
 
                 Dim lDataTable As New DataTable
                 lDTA.Fill(lDataTable)
@@ -4878,7 +4924,50 @@ Partial Public Class clsLnTrans_pe_det
         End Try
 
     End Function
+    Public Shared Function Get_All_Stock_Res_By_IdPedidoDet(ByVal pIdPedidoDet As Integer,
+                                                            ByVal IdPedidoEnc As Integer,
+                                                            ByVal pConnection As SqlConnection,
+                                                            ByVal pTransaction As SqlTransaction) As List(Of clsBeStock_res)
 
+        Dim lReturnList As New List(Of clsBeStock_res)
+
+        Try
+
+            Dim vSQL As String = "SELECT * FROM stock_res WHERE IdPedidoDet = @IdPedidoDet AND IdPedido = @IdPedidoEnc"
+
+            Using lDTA As New SqlDataAdapter(vSQL, pConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = pTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoDet", pIdPedidoDet)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", IdPedidoEnc)
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                Dim Obj As clsBeStock_res
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                    For Each lRow As DataRow In lDataTable.Rows
+
+                        Obj = New clsBeStock_res
+                        clsLnStock_res.Cargar(Obj, lRow)
+                        lReturnList.Add(Obj)
+
+                    Next
+
+                End If
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
     Public Shared Function Get_IdPresentacion_By_IdPedidoDet(ByVal pIdPedidoEnc As Integer, ByVal pIdPedidoDet As Integer) As Integer
 
         Dim idPresentacion As Integer = 0

@@ -41,6 +41,9 @@ Public Class frmStock_Especifico_List
     Public IdProductoEstadoDefault As Integer = 0
     Public Property IdPresentacion As Integer = 0
 
+    '#GT27082025: bandera para mostrar talla-color
+    Public Mostrar_Talla_Color As Boolean = False
+
     Public Sub New()
         InitializeComponent()
         'Listar_Stock_DesdeHilo()
@@ -118,6 +121,11 @@ Public Class frmStock_Especifico_List
                             GridView1.Columns("IndiceRotacion").Visible = False
                             GridView1.Columns("IdUbicacion").Visible = False
                             GridView1.Columns("IdUbicacion").Visible = False
+
+                            If Mostrar_Talla_Color Then
+
+                            End If
+
 
                             If Not GridView1.Columns.ColumnByFieldName("IdClasificacion") Is Nothing Then
                                 GridView1.Columns("IdClasificacion").Visible = False
@@ -378,6 +386,7 @@ Public Class frmStock_Especifico_List
                                                              IdProductoEstadoDefault,
                                                              IdPresentacion)
 
+            End If
 
             If Not ProductoEspecifico Is Nothing Then
 
@@ -471,6 +480,10 @@ Public Class frmStock_Especifico_List
             Dim watch As Stopwatch = Stopwatch.StartNew()
 
             Listar_Stock_With_DT()
+
+            'BeginInvoke(CallBindProductos_To_Grid)
+
+            'BindProductos_To_Grid()
 
             watch.Stop()
 
@@ -695,8 +708,11 @@ Public Class frmStock_Especifico_List
             grdStock.DataSource = Nothing
 
             If Rec.pObjProducto IsNot Nothing AndAlso Rec.pObjProducto.IdProducto <> 0 Then
+
                 ProductoEspecifico = Nothing
+
                 txtIdProducto.Text = Rec.pObjProducto.Codigo
+                'ProductoEspecifico.Codigo = Rec.pObjProducto.Codigo
                 ProductoEspecifico = Rec.pObjProducto
                 txtNombreProducto.Text = Rec.pObjProducto.Nombre
                 ForceUpdateList = True

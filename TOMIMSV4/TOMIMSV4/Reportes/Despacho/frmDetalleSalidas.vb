@@ -81,6 +81,9 @@ Public Class frmDetalleSalidas
             DT.Columns.Add("placa_contenedor_salida", GetType(String))
             DT.Columns.Add("dua_salida", GetType(String))
 
+            DT.Columns.Add("Talla", GetType(String))
+            DT.Columns.Add("Color", GetType(String))
+
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
             clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -104,6 +107,7 @@ Public Class frmDetalleSalidas
             listarDespacho = New List(Of clsBeVW_Despacho_Rep)
 
             pBodega = AP.Bodega
+
 
             listarDespacho = clsLnVW_Despacho_Rep.Get_All_By_Rango_Fechas(dtpFechaDel.Value, dtpFechaAl.Value, pBodega)
 
@@ -156,7 +160,9 @@ Public Class frmDetalleSalidas
                                 Obj.codigo_poliza_pedido,
                                 Obj.codigo_regimen_salida,
                                 Obj.placa_contenedor_salida,
-                                Obj.Dua_salida)
+                                Obj.Dua_salida,
+                                Obj.Talla,
+                                Obj.Color)
 
 
                 Next

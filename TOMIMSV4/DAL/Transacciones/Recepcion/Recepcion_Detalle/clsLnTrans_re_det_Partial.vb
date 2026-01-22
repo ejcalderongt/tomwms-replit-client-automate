@@ -490,6 +490,21 @@ Partial Public Class clsLnTrans_re_det
                                     clsLnMotivo_devolucion.GetSingle(Obj.MotivoDevolucion, lConnection, lTransaction)
                                 End If
 
+                                If Obj.IdProductoTallaColor <> 0 Then
+                                    Dim BeProductoTallaColor = clsLnProducto_talla_color.GetSingle(Obj.IdProductoTallaColor,
+                                                                                           lConnection,
+                                                                                           lTransaction)
+                                    If Not BeProductoTallaColor Is Nothing Then
+                                        Obj.Talla = clsLnTalla.GetSingle(BeProductoTallaColor.IdTalla,
+                                                                                  lConnection,
+                                                                                  lTransaction)
+
+                                        Obj.Color = clsLnColor.GetSingle(BeProductoTallaColor.IdColor,
+                                                                                  lConnection,
+                                                                                  lTransaction)
+                                    End If
+                                End If
+
                                 Obj.IsNew = False
 
                                 lReturnList.Add(Obj)
@@ -1097,9 +1112,9 @@ Partial Public Class clsLnTrans_re_det
                 Else
                     '#EJC20190325: Carol: No consideraste la presentación, por lo tanto la cantidad no encaja.
                     clsLnStock.Get_Stock(pRecDet,
-                                         pBeStockAnt,
-                                         IIf(Es_Transaccion_Remota, pConnection, lConnection),
-                                         IIf(Es_Transaccion_Remota, pTransaction, lTrans))
+                                             pBeStockAnt,
+                                             IIf(Es_Transaccion_Remota, pConnection, lConnection),
+                                             IIf(Es_Transaccion_Remota, pTransaction, lTrans))
 
                     '#CKFK 20181107 0653PM Aquí voy a llamar a la función que me va a eliminar el Stock antes de insertarlo nuevamente
                     If Not clsLnStock.Elimina_Stock_Anterior(pBeStockAnt, Resultado, IIf(Es_Transaccion_Remota, pConnection, lConnection), IIf(Es_Transaccion_Remota, pTransaction, lTrans)) Then
@@ -1141,6 +1156,12 @@ Partial Public Class clsLnTrans_re_det
 
             clsLnI_nav_transacciones_out.Eliminar_By_IdRecepcionEnc_And_IdRecepcionDet(pIdRecepcionEnc,
                                                                                        pIdRecepcionDet,
+                                                                                       pRecEnc.IdBodega,
+                                                                                       pRecDet.IdProductoBodega,
+                                                                                       pRecDet.Lic_plate,
+                                                                                       pRecDet.No_Linea,
+                                                                                       pRecDet.Lote,
+                                                                                       pRecDet.Fecha_vence,
                                                                                        IIf(Es_Transaccion_Remota, pConnection, lConnection),
                                                                                        IIf(Es_Transaccion_Remota, pTransaction, lTrans))
 
@@ -2025,14 +2046,17 @@ Partial Public Class clsLnTrans_re_det
                     Dim vSQL As String = "SELECT det.IdRecepcionDet, det.IdProductoBodega, ISNULL(det.IdPresentacion, '') AS IdPresentacion, det.No_Linea, det.nombre_producto, det.nombre_presentacion, 
                       det.nombre_unidad_medida, det.nombre_producto_estado, det.lote, det.fecha_vence, ISNULL(det.peso, 0) AS peso, det.observacion, det.costo, ISNULL(det.costo_oc, 
                       0) AS costo_oc, ISNULL(det.costo_estadistico, 0) AS costo_estadistico, re.IdRecepcionEnc, SUM(det.cantidad_recibida) AS CantidadRecibida, det.codigo_producto,
-                    det.lic_plate
+                    det.lic_plate, ISNULL(c.Codigo,'') codigo_color, ISNULL(t.Codigo,'') codigo_talla
                     FROM trans_re_enc AS re INNER JOIN
                       trans_re_det AS det ON re.IdRecepcionEnc = det.IdRecepcionEnc INNER JOIN
-                      trans_re_oc AS oc ON re.IdRecepcionEnc = oc.IdRecepcionEnc
+                      trans_re_oc AS oc ON re.IdRecepcionEnc = oc.IdRecepcionEnc LEFT JOIN
+					  producto_talla_color ptc on ptc.IdProductoTallaColor = det.IdProductoTallaColor LEFT JOIN
+					  talla t on ptc.IdTalla = t.IdTalla LEFT JOIN
+					  color c on ptc.IdColor = c.IdColor
                     WHERE (oc.IdOrdenCompraEnc = @IdOrdenCompraEnc)
                     GROUP BY det.IdProductoBodega, det.IdPresentacion, det.No_Linea, det.nombre_producto, det.nombre_presentacion, det.nombre_unidad_medida, 
                       det.nombre_producto_estado, det.lote, det.fecha_vence, det.peso, det.observacion, det.costo, det.costo_oc, det.costo_estadistico, re.IdRecepcionEnc, 
-                      det.IdRecepcionDet,det.codigo_producto, det.lic_plate "
+                      det.IdRecepcionDet,det.codigo_producto, det.lic_plate, c.Codigo, t.Codigo  "
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -2128,6 +2152,15 @@ Partial Public Class clsLnTrans_re_det
                                     Obj.Lic_plate = CType(lRow("lic_plate"), String)
                                 End If
 
+                                If lRow("codigo_talla") IsNot DBNull.Value AndAlso lRow("codigo_talla") IsNot Nothing Then
+                                    Obj.Talla.Codigo = CType(lRow("codigo_talla"), String)
+                                End If
+
+                                If lRow("codigo_color") IsNot DBNull.Value AndAlso lRow("codigo_color") IsNot Nothing Then
+                                    Obj.Color.Codigo = CType(lRow("codigo_color"), String)
+                                End If
+
+
                                 lReturnList.Add(Obj)
 
                             Next
@@ -2151,6 +2184,210 @@ Partial Public Class clsLnTrans_re_det
         End Try
 
     End Function
+
+    Public Shared Function Get_Detalle_Rec_By_IdCompra_Licencia(pIdOrdenCompraEnc As Integer,
+                                                                pLicencia As String) As List(Of clsBeTrans_re_det)
+
+        Dim lReturnList As List(Of clsBeTrans_re_det) = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT 
+                                    0 AS IdRecepcionDet,
+                                    det.IdProductoBodega,
+                                    ISNULL(det.IdPresentacion, '') AS IdPresentacion,
+                                    0 AS No_Linea,
+                                    det.nombre_producto,
+                                    det.nombre_presentacion,
+                                    det.nombre_unidad_medida,
+                                    det.nombre_producto_estado,
+                                    det.lote,
+                                    det.fecha_vence,
+                                    ISNULL(det.peso, 0) AS peso,
+                                    det.observacion,
+                                    det.costo,
+                                    ISNULL(det.costo_oc, 0) AS costo_oc,
+                                    ISNULL(det.costo_estadistico, 0) AS costo_estadistico,
+                                    re.IdRecepcionEnc,
+                                    SUM(det.cantidad_recibida) AS CantidadRecibida,
+                                    det.lic_plate,
+                                    trans_oc_det.codigo_producto,
+                                    color.Codigo AS codigo_color,
+                                    talla.Codigo AS codigo_talla
+                                FROM 
+                                    trans_re_enc AS re
+                                    INNER JOIN trans_re_det AS det 
+                                        ON re.IdRecepcionEnc = det.IdRecepcionEnc
+                                    INNER JOIN trans_re_oc AS oc 
+                                        ON re.IdRecepcionEnc = oc.IdRecepcionEnc
+                                    INNER JOIN trans_oc_det 
+                                        ON det.IdOrdenCompraEnc = trans_oc_det.IdOrdenCompraEnc 
+                                        AND det.IdOrdenCompraDet = trans_oc_det.IdOrdenCompraDet
+                                    LEFT JOIN producto_talla_color 
+                                        ON det.IdProductoTallaColor = producto_talla_color.IdProductoTallaColor
+                                    LEFT JOIN talla 
+                                        ON producto_talla_color.IdTalla = talla.IdTalla
+                                    LEFT JOIN color 
+                                        ON producto_talla_color.IdColor = color.IdColor
+                                WHERE 
+                                    oc.IdOrdenCompraEnc = @IdOrdenCompraEnc
+                                    AND det.lic_plate = @Licencia
+                                GROUP BY 
+                                    det.IdProductoBodega,
+                                    det.IdPresentacion,
+                                    det.nombre_producto,
+                                    det.nombre_presentacion,
+                                    det.nombre_unidad_medida,
+                                    det.nombre_producto_estado,
+                                    det.lote,
+                                    det.fecha_vence,
+                                    det.peso,
+                                    det.observacion,
+                                    det.costo,
+                                    det.costo_oc,
+                                    det.costo_estadistico,
+                                    re.IdRecepcionEnc,
+                                    det.lic_plate,
+                                    trans_oc_det.codigo_producto,
+                                    color.Codigo,
+                                    talla.Codigo "
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraEnc", pIdOrdenCompraEnc)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@Licencia", pLicencia)
+
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+
+                        Dim Obj As clsBeTrans_re_det
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                            lReturnList = New List(Of clsBeTrans_re_det)
+
+                            For Each lRow As DataRow In lDataTable.Rows
+
+                                Obj = New clsBeTrans_re_det
+
+                                If lRow("IdRecepcionDet") IsNot DBNull.Value AndAlso lRow("IdRecepcionDet") IsNot Nothing Then
+                                    Obj.IdRecepcionDet = CType(lRow("IdRecepcionDet"), Integer)
+                                End If
+
+                                If lRow("IdProductoBodega") IsNot DBNull.Value AndAlso lRow("IdProductoBodega") IsNot Nothing Then
+                                    Obj.IdProductoBodega = CType(lRow("IdProductoBodega"), Integer)
+                                End If
+
+                                If lRow("IdPresentacion") IsNot DBNull.Value AndAlso lRow("IdPresentacion") IsNot Nothing Then
+                                    Obj.IdPresentacion = CType(lRow("IdPresentacion"), Integer)
+                                End If
+
+                                If lRow("No_Linea") IsNot DBNull.Value AndAlso lRow("No_Linea") IsNot Nothing Then
+                                    Obj.No_Linea = CType(lRow("No_Linea"), Integer)
+                                End If
+
+                                If lRow("nombre_producto") IsNot DBNull.Value AndAlso lRow("nombre_producto") IsNot Nothing Then
+                                    Obj.Nombre_producto = CType(lRow("nombre_producto"), String)
+                                End If
+
+                                If lRow("nombre_presentacion") IsNot DBNull.Value AndAlso lRow("nombre_presentacion") IsNot Nothing Then
+                                    Obj.Nombre_presentacion = CType(lRow("nombre_presentacion"), String)
+                                End If
+
+                                If lRow("nombre_unidad_medida") IsNot DBNull.Value AndAlso lRow("nombre_unidad_medida") IsNot Nothing Then
+                                    Obj.Nombre_unidad_medida = CType(lRow("nombre_unidad_medida"), String)
+                                End If
+
+                                If lRow("nombre_producto_estado") IsNot DBNull.Value AndAlso lRow("nombre_producto_estado") IsNot Nothing Then
+                                    Obj.Nombre_producto_estado = CType(lRow("nombre_producto_estado"), String)
+                                End If
+
+                                If lRow("lote") IsNot DBNull.Value AndAlso lRow("lote") IsNot Nothing Then
+                                    Obj.Lote = CType(lRow("lote"), String)
+                                End If
+
+                                If lRow("fecha_vence") IsNot DBNull.Value AndAlso lRow("fecha_vence") IsNot Nothing Then
+                                    Obj.Fecha_vence = CType(lRow("fecha_vence"), Date)
+                                End If
+
+                                If lRow("peso") IsNot DBNull.Value AndAlso lRow("peso") IsNot Nothing Then
+                                    Obj.Peso = CType(lRow("peso"), Double)
+                                End If
+
+                                If lRow("observacion") IsNot DBNull.Value AndAlso lRow("observacion") IsNot Nothing Then
+                                    Obj.Observacion = CType(lRow("observacion"), String)
+                                End If
+
+                                If lRow("costo") IsNot DBNull.Value AndAlso lRow("costo") IsNot Nothing Then
+                                    Obj.Costo = CType(lRow("costo"), Double)
+                                End If
+
+                                If lRow("costo_oc") IsNot DBNull.Value AndAlso lRow("costo_oc") IsNot Nothing Then
+                                    Obj.Costo_Oc = CType(lRow("costo_oc"), Double)
+                                End If
+
+                                If lRow("costo_estadistico") IsNot DBNull.Value AndAlso lRow("costo_estadistico") IsNot Nothing Then
+                                    Obj.Costo_Estadistico = CType(lRow("costo_estadistico"), Double)
+                                End If
+
+                                If lRow("IdRecepcionEnc") IsNot DBNull.Value AndAlso lRow("IdRecepcionEnc") IsNot Nothing Then
+                                    Obj.IdRecepcionEnc = CType(lRow("IdRecepcionEnc"), Integer)
+                                End If
+
+                                If lRow("CantidadRecibida") IsNot DBNull.Value AndAlso lRow("CantidadRecibida") IsNot Nothing Then
+                                    Obj.cantidad_recibida = CType(lRow("CantidadRecibida"), Double)
+                                End If
+
+                                If lRow("codigo_producto") IsNot DBNull.Value AndAlso lRow("codigo_producto") IsNot Nothing Then
+                                    Obj.Codigo_Producto = CType(lRow("codigo_producto"), String)
+                                End If
+
+                                '#EJC20190624: Idealsa, lic_plate
+                                If lRow("lic_plate") IsNot DBNull.Value AndAlso lRow("lic_plate") IsNot Nothing Then
+                                    Obj.Lic_plate = CType(lRow("lic_plate"), String)
+                                End If
+
+                                If lRow("codigo_talla") IsNot DBNull.Value AndAlso lRow("codigo_talla") IsNot Nothing Then
+                                    Obj.Talla.Codigo = CType(lRow("codigo_talla"), String)
+                                End If
+
+                                If lRow("codigo_color") IsNot DBNull.Value AndAlso lRow("codigo_color") IsNot Nothing Then
+                                    Obj.Color.Codigo = CType(lRow("codigo_color"), String)
+                                End If
+
+
+                                lReturnList.Add(Obj)
+
+                            Next
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 
     Public Shared Function Get_Recepciones_By_IdOrdenCompraEnc(ByVal pIdOrdenCompraEnc As Integer, ByVal pIdBodega As Integer) As List(Of clsBeTrans_re_det)
 
@@ -2557,6 +2794,7 @@ Partial Public Class clsLnTrans_re_det
 
         Try
 
+
             If Existe(BeRecDet, lConnection, lTransaction) Then
 
                 Eliminar_Detalle = Delete(pIdOrdenCompra,
@@ -2767,6 +3005,7 @@ Partial Public Class clsLnTrans_re_det
         End Try
     End Function
 
+
     Public Shared Function Delete_Det_By_IdRecepcionEnc_And_IdRecpecionDet_hh(ByVal IdOrdenCompraEnc As Integer,
                                                                               ByVal pIdRecepcionEnc As Integer,
                                                                               ByVal pIdRecepcionDet As Integer,
@@ -2900,9 +3139,15 @@ Partial Public Class clsLnTrans_re_det
                 If pRecEnc.Habilitar_Stock Then
 
                     Dim pFilasAfectadas = clsLnI_nav_transacciones_out.Eliminar_By_IdRecepcionEnc_And_IdRecepcionDet(pIdRecepcionEnc,
-                                                                                                                     pIdRecepcionDet,
-                                                                                                                     lConnection,
-                                                                                                                     lTrans)
+                                                                                                                pIdRecepcionDet,
+                                                                                                                pRecEnc.IdBodega,
+                                                                                                                pRecDet.IdProductoBodega,
+                                                                                                                pRecDet.Lic_plate,
+                                                                                                                pRecDet.No_Linea,
+                                                                                                                pRecDet.Lote,
+                                                                                                                pRecDet.Fecha_vence,
+                                                                                                                lConnection,
+                                                                                                                lTrans)
 
                     If pFilasAfectadas = 0 Then
                         '#MECR23092025: Se agrego nueva opcion de log para recepciones.
@@ -2945,6 +3190,7 @@ Partial Public Class clsLnTrans_re_det
                 Throw New Exception("ERROR_DE_PROCESO_20241205_HH: La recepción " & pIdRecepcionEnc & " fue previamente finalizada.")
             End If
 
+
             lTrans.Commit()
 
             Return Resultado
@@ -2965,11 +3211,12 @@ Partial Public Class clsLnTrans_re_det
         End Try
 
     End Function
+
     Public Shared Function Get_Detalle_By_IdRecepcionEnc_And_Codigo(ByVal pIdRecepcionEnc As Integer,
-                                                                     ByVal pIdBodega As Integer,
-                                                                     ByVal CodigoProducto As String,
-                                                                     ByRef lConnection As SqlConnection,
-                                                                     ByRef lTransaction As SqlTransaction) As List(Of clsBeTrans_re_det)
+                                                                   ByVal pIdBodega As Integer,
+                                                                   ByVal CodigoProducto As String,
+                                                                   ByRef lConnection As SqlConnection,
+                                                                   ByRef lTransaction As SqlTransaction) As List(Of clsBeTrans_re_det)
 
         Get_Detalle_By_IdRecepcionEnc_And_Codigo = Nothing
 
@@ -2978,7 +3225,7 @@ Partial Public Class clsLnTrans_re_det
         Try
 
             Dim vSQL As String = "SELECT * FROM VW_Get_Detalle_By_IdRecepcionEnc 
-                                  WHERE IdRecepcionEnc=@IdRecepcionEnc AND IdBodega = @IdBodega AND codigo_producto = @CodigoProducto"
+                                WHERE IdRecepcionEnc=@IdRecepcionEnc AND IdBodega = @IdBodega AND codigo_producto = @CodigoProducto"
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -3046,6 +3293,54 @@ Partial Public Class clsLnTrans_re_det
 
         Catch ex As Exception
             Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_IdOperadorDefecto_By_IdRecepcionEnc(ByVal pIdRecepcionEnc As Integer) As String
+
+        Get_IdOperadorDefecto_By_IdRecepcionEnc = "N/D"
+
+        Try
+
+            Dim vSQL As String = "SELECT top(1)  CONCAT(nombres,' ', op.apellidos) AS Operador
+                                    from trans_re_det rdet
+                                    join operador_bodega opb on  rdet.IdOperadorBodega = opb.IdOperadorBodega
+                                    join operador op on opb.IdOperador = op.IdOperador
+                                    WHERE IdRecepcionEnc = @IdRecepcionEnc"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", pIdRecepcionEnc)
+
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                            Get_IdOperadorDefecto_By_IdRecepcionEnc = lDataTable.Rows(0).Item("Operador").ToString()
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+
         End Try
 
     End Function

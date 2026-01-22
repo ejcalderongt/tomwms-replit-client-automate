@@ -1,0 +1,30 @@
+<%@ Master Language="VB" MasterPageFile="~/Root.master" AutoEventWireup="true" CodeBehind="Main.master.vb" Inherits="GoCloudy.MainMaster" %>
+
+<%-- DXCOMMENT: Page Main.master is a master page that contains central area layout --%>
+<asp:Content ID="Content2" ContentPlaceHolderID="Content" runat="server">
+        <dx:ASPxPanel ID="LeftPane" runat="server" FixedPosition="WindowLeft" ClientInstanceName="leftPane" CssClass="leftPane" Collapsible="true">
+            <SettingsAdaptivity CollapseAtWindowInnerWidth="1023" />
+            <Styles>
+                <Panel CssClass="panel"></Panel>
+            </Styles>
+            <PanelCollection>
+                <dx:PanelContent runat="server" SupportsDisabledAttribute="True">                                       
+                        <div class="leftPanel">
+                            <%-- DXCOMMENT: Configure the left panel's ASPxMenu --%>
+                            <dx:ASPxMenu ID="ASPxMenu2" DataSourceID="XmlDataSourceLeft" runat="server" Orientation="Vertical" Width="100%">
+                                <Border BorderWidth="0px" />
+                            </dx:ASPxMenu>
+                        </div>
+                </dx:PanelContent>
+            </PanelCollection>
+        </dx:ASPxPanel>
+
+        <div class="contentPane">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+        </div>
+                
+<%-- DXCOMMENT: Configure a datasource for the left panel's ASPxMenu --%>
+<asp:XmlDataSource ID="XmlDataSourceLeft" runat="server" DataFile="~/App_Data/SideMenu.xml"
+    XPath="/menu/*"></asp:XmlDataSource>
+    
+</asp:Content>

@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "WMSPortal",
+    "Projects": [
+      {
+        "Path": "WMSWebAPI\\WMSWebAPI.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "TOMWMSUX\\TOMWMSUX.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

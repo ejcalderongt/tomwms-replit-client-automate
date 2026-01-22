@@ -7,6 +7,7 @@ Public Class frmMensajeRegla_List
     Public Property Modo As pModo
     Public Property OpcionesMenu As New clsBeOpcionesMenuRol
     Public pObjMensaje As clsBeMensaje_regla
+    Public IdReglaRecepcion As Integer
 
     Enum pModo
         Lista = 1
@@ -73,6 +74,7 @@ Public Class frmMensajeRegla_List
                 .mnuActualizar.Enabled = .OpcionesMenu.Modificar
                 .mnuEliminar.Enabled = .OpcionesMenu.Eliminar
                 .InvokeListarMensajes = AddressOf ListarMensajes
+                .IdReglaRecepcion = IdReglaRecepcion
                 .WindowState = FormWindowState.Normal
                 .Show()
                 .Focus()

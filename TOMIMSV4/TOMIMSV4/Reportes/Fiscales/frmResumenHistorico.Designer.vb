@@ -42,6 +42,8 @@ Partial Class frmResumenHistorico
         Me.lblDel = New System.Windows.Forms.Label()
         Me.grdExistenciasConLp = New DevExpress.XtraGrid.GridControl()
         Me.GridView1 = New DevExpress.XtraGrid.Views.Grid.GridView()
+        Me.dtpfechaHasta = New System.Windows.Forms.DateTimePicker()
+        Me.dtpFechaDesde = New System.Windows.Forms.DateTimePicker()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grpFechas, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpFechas.SuspendLayout()
@@ -243,6 +245,7 @@ Partial Class frmResumenHistorico
         Me.grdExistenciasConLp.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grdExistenciasConLp.Location = New System.Drawing.Point(421, 158)
         Me.grdExistenciasConLp.MainView = Me.GridView1
+        Me.grdExistenciasConLp.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grdExistenciasConLp.MenuManager = Me.RibbonControl
         Me.grdExistenciasConLp.Name = "grdExistenciasConLp"
         Me.grdExistenciasConLp.Size = New System.Drawing.Size(858, 474)
@@ -251,11 +254,33 @@ Partial Class frmResumenHistorico
         '
         'GridView1
         '
+        Me.GridView1.DetailHeight = 431
         Me.GridView1.GridControl = Me.grdExistenciasConLp
         Me.GridView1.Name = "GridView1"
         Me.GridView1.OptionsBehavior.ReadOnly = True
+        Me.GridView1.OptionsEditForm.PopupEditFormWidth = 933
         Me.GridView1.OptionsFind.AlwaysVisible = True
         Me.GridView1.OptionsView.ColumnAutoWidth = False
+        '
+        'dtpfechaHasta
+        '
+        Me.dtpfechaHasta.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.dtpfechaHasta.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpfechaHasta.Location = New System.Drawing.Point(52, 151)
+        Me.dtpfechaHasta.Margin = New System.Windows.Forms.Padding(4)
+        Me.dtpfechaHasta.Name = "dtpfechaHasta"
+        Me.dtpfechaHasta.Size = New System.Drawing.Size(244, 26)
+        Me.dtpfechaHasta.TabIndex = 74
+        '
+        'dtpFechaDesde
+        '
+        Me.dtpFechaDesde.Font = New System.Drawing.Font("Tahoma", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.dtpFechaDesde.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpFechaDesde.Location = New System.Drawing.Point(52, 111)
+        Me.dtpFechaDesde.Margin = New System.Windows.Forms.Padding(4)
+        Me.dtpFechaDesde.Name = "dtpFechaDesde"
+        Me.dtpFechaDesde.Size = New System.Drawing.Size(244, 26)
+        Me.dtpFechaDesde.TabIndex = 73
         '
         'frmResumenHistorico
         '

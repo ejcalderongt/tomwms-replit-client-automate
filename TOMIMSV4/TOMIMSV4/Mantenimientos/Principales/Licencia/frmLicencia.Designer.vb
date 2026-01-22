@@ -491,9 +491,11 @@ Partial Class frmLicencia
         '
         'GridViewPend
         '
+        Me.GridViewPend.DetailHeight = 284
         Me.GridViewPend.GridControl = Me.grdPend
         Me.GridViewPend.Name = "GridViewPend"
         Me.GridViewPend.OptionsBehavior.Editable = False
+        Me.GridViewPend.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridViewPend.OptionsSelection.EnableAppearanceFocusedCell = False
         Me.GridViewPend.OptionsSelection.EnableAppearanceHideSelection = False
         Me.GridViewPend.OptionsView.ColumnAutoWidth = False
@@ -502,12 +504,14 @@ Partial Class frmLicencia
         '
         'RibbonControl
         '
+        Me.RibbonControl.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(26, 24, 26, 24)
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuGuardar, Me.mnuActualizar, Me.mnuSalir, Me.mnuAsignacion, Me.BarButtonItem2})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.RibbonControl.MaxItemId = 7
         Me.RibbonControl.Name = "RibbonControl"
+        Me.RibbonControl.OptionsMenuMinWidth = 283
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.RibbonControl.Size = New System.Drawing.Size(1539, 193)
@@ -594,10 +598,12 @@ Partial Class frmLicencia
         '
         'GridViewAct
         '
+        Me.GridViewAct.DetailHeight = 284
         Me.GridViewAct.GridControl = Me.grdLic
         Me.GridViewAct.HorzScrollVisibility = DevExpress.XtraGrid.Views.Base.ScrollVisibility.Always
         Me.GridViewAct.Name = "GridViewAct"
         Me.GridViewAct.OptionsBehavior.Editable = False
+        Me.GridViewAct.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridViewAct.OptionsSelection.EnableAppearanceFocusedCell = False
         Me.GridViewAct.OptionsSelection.EnableAppearanceHideSelection = False
         Me.GridViewAct.OptionsView.ColumnAutoWidth = False
@@ -606,8 +612,10 @@ Partial Class frmLicencia
         '
         'GridView4
         '
+        Me.GridView4.DetailHeight = 284
         Me.GridView4.GridControl = Me.grdLic
         Me.GridView4.Name = "GridView4"
+        Me.GridView4.OptionsEditForm.PopupEditFormWidth = 686
         '
         'Grp
         '

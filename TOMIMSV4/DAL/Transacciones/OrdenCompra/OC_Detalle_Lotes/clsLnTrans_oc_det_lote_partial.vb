@@ -822,7 +822,9 @@ Partial Public Class clsLnTrans_oc_det_lote
 
                 Dim lRow As DataRow = dt.Rows(0)
                 Dim ObjOCDetLote As New clsBeTrans_oc_det_lote()
+
                 Cargar(ObjOCDetLote, lRow)
+
                 Return ObjOCDetLote
 
             End If
@@ -849,9 +851,9 @@ Partial Public Class clsLnTrans_oc_det_lote
         Try
 
             Const sp As String = "Select * from trans_oc_det_lote
-                                    Where IdOrdenCompraEnc = @pOCEncabezado  
-                                    And No_Linea = @No_Linea
-                                    And Lote = @Lote"
+                        Where IdOrdenCompraEnc = @pOCEncabezado  
+                        And No_Linea = @No_Linea
+                        And Lote = @Lote"
 
             Dim cmd As New SqlCommand(sp, pConnection) With {.CommandType = CommandType.Text, .Transaction = pTransaction}
             Dim dad As New SqlDataAdapter(cmd)
@@ -867,7 +869,9 @@ Partial Public Class clsLnTrans_oc_det_lote
 
                 Dim lRow As DataRow = dt.Rows(0)
                 Dim ObjOCDetLote As New clsBeTrans_oc_det_lote()
+
                 Cargar(ObjOCDetLote, lRow)
+
                 Return ObjOCDetLote
 
             End If
@@ -915,7 +919,9 @@ Partial Public Class clsLnTrans_oc_det_lote
 
                 Dim lRow As DataRow = dt.Rows(0)
                 Dim ObjOCDetLote As New clsBeTrans_oc_det_lote()
+
                 Cargar(ObjOCDetLote, lRow)
+
                 Return ObjOCDetLote
 
             End If

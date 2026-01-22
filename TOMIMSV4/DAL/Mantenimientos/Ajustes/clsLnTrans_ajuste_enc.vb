@@ -24,6 +24,9 @@ Public Class clsLnTrans_ajuste_enc
                 .Ajuste_Por_Inventario = IIf(IsDBNull(dr.Item("ajuste_por_inventario")), 0, dr.Item("ajuste_por_inventario"))
                 .IdCentroCosto = IIf(IsDBNull(dr.Item("IdCentroCosto")), 0, dr.Item("IdCentroCosto"))
                 .Auditado = IIf(IsDBNull(dr.Item("Auditado")), 0, dr.Item("Auditado"))
+                .Centro_Costo_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Erp")), "", dr.Item("Centro_Costo_Erp"))
+                .Centro_Costo_Dir_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Dir_Erp")), "", dr.Item("Centro_Costo_Dir_Erp"))
+                .Centro_Costo_Dep_Erp = IIf(IsDBNull(dr.Item("Centro_Costo_Dep_Erp")), "", dr.Item("Centro_Costo_Dep_Erp"))
 
             End With
 
@@ -58,6 +61,9 @@ Public Class clsLnTrans_ajuste_enc
             Ins.Add("ajuste_por_inventario", "@ajuste_por_inventario", DataType.Parametro)
             Ins.Add("idcentrocosto", "@idcentrocosto", DataType.Parametro)
             Ins.Add("auditado", "@auditado", DataType.Parametro)
+            Ins.Add("Centro_Costo_Erp", "@Centro_Costo_Erp", DataType.Parametro)
+            Ins.Add("Centro_Costo_Dir_Erp", "@Centro_Costo_Dir_Erp", DataType.Parametro)
+            Ins.Add("Centro_Costo_Dep_Erp", "@Centro_Costo_Dep_Erp", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -87,12 +93,17 @@ Public Class clsLnTrans_ajuste_enc
             cmd.Parameters.Add(New SqlParameter("@AJUSTE_POR_INVENTARIO", oBeTrans_ajuste_enc.Ajuste_Por_Inventario))
             cmd.Parameters.Add(New SqlParameter("@IDCENTROCOSTO", oBeTrans_ajuste_enc.IdCentroCosto))
             cmd.Parameters.Add(New SqlParameter("@AUDITADO", oBeTrans_ajuste_enc.Auditado))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_ERP", oBeTrans_ajuste_enc.Centro_Costo_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DIR_ERP", oBeTrans_ajuste_enc.Centro_Costo_Dir_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DEP_ERP", oBeTrans_ajuste_enc.Centro_Costo_Dep_Erp))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
             cmd.Dispose()
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            oBeTrans_ajuste_enc.Idajusteenc = CInt(cmd.Parameters("@IDAJUSTEENC").Value)
 
             Return rowsAffected
 
@@ -130,6 +141,9 @@ Public Class clsLnTrans_ajuste_enc
             Upd.Add("ajuste_por_inventario", "@ajuste_por_inventario", DataType.Parametro)
             Upd.Add("idcentrocosto", "@idcentrocosto", DataType.Parametro)
             Upd.Add("auditado", "@auditado", DataType.Parametro)
+            Upd.Add("Centro_Costo_Erp", "@Centro_Costo_Erp", DataType.Parametro)
+            Upd.Add("Centro_Costo_Dir_Erp", "@Centro_Costo_Dir_Erp", DataType.Parametro)
+            Upd.Add("Centro_Costo_Dep_Erp", "@Centro_Costo_Dep_Erp", DataType.Parametro)
             Upd.Where("idajusteenc = @idajusteenc")
 
             Dim sp As String = Upd.SQL()
@@ -160,6 +174,9 @@ Public Class clsLnTrans_ajuste_enc
             cmd.Parameters.Add(New SqlParameter("@AJUSTE_POR_INVENTARIO", oBeTrans_ajuste_enc.Ajuste_Por_Inventario))
             cmd.Parameters.Add(New SqlParameter("@IDCENTROCOSTO", oBeTrans_ajuste_enc.IdCentroCosto))
             cmd.Parameters.Add(New SqlParameter("@AUDITADO", oBeTrans_ajuste_enc.Auditado))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_ERP", oBeTrans_ajuste_enc.Centro_Costo_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DIR_ERP", oBeTrans_ajuste_enc.Centro_Costo_Dir_Erp))
+            cmd.Parameters.Add(New SqlParameter("@CENTRO_COSTO_DEP_ERP", oBeTrans_ajuste_enc.Centro_Costo_Dep_Erp))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

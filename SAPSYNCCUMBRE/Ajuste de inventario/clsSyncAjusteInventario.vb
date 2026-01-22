@@ -490,11 +490,11 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                     ' Enviar un solo documento para todos los productos positivos en el grupo actual
                     If ajustesPositivos.Count > 0 Then
                         Dim entradaBody = New With {
-                        .Bodega = grupo.First().Codigo_Bodega,
-                        .RemarkCode = grupo.First().Codigo_Centro_Costo,
-                        .NombreUsuario = "TOMWMS",
-                        .Entries = ajustesPositivos
-                    }
+                .Bodega = grupo.First().Codigo_Bodega,
+                .RemarkCode = grupo.First().Codigo_Centro_Costo,
+                .NombreUsuario = "TOMWMS",
+                .Entries = ajustesPositivos
+            }
                         Dim entradaJson = JsonConvert.SerializeObject(entradaBody)
                         Dim entradaResponse = SendPostRequest(URLServicioEntrada, entradaJson)
 
@@ -513,11 +513,11 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                     ' Enviar un solo documento para todos los productos negativos en el grupo actual
                     If ajustesNegativos.Count > 0 Then
                         Dim salidaBody = New With {
-                        .Bodega = grupo.First().Codigo_Bodega,
-                        .RemarkCode = grupo.First().Codigo_Centro_Costo,
-                        .NombreUsuario = "TOMWMS",
-                        .Entries = ajustesNegativos
-                    }
+                .Bodega = grupo.First().Codigo_Bodega,
+                .RemarkCode = grupo.First().Codigo_Centro_Costo,
+                .NombreUsuario = "TOMWMS",
+                .Entries = ajustesNegativos
+            }
                         Dim salidaJson = JsonConvert.SerializeObject(salidaBody)
                         Dim salidaResponse = SendPostRequest(URLServicioSalida, salidaJson)
 
@@ -547,10 +547,10 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                             vIdStock = clsLnTrans_ajuste_det.Get_IdStock_By_IdAjusteDet(ajuste.IdAjusteDet, CnnLog, TransLog)
                             vIdnventarioEnc = clsLnTrans_ajuste_det.Get_IdInventarioEnc_By_IdAjusteDet(ajuste.IdAjusteDet, CnnLog, TransLog)
                             clsLnTrans_ajuste_det.Actualizar_Estado_Enviado_A_ERP_By_Inventario(vIdStock,
-                                                                                                vIdnventarioEnc,
-                                                                                                True,
-                                                                                                CnnLog,
-                                                                                                TransLog)
+                                                                                            vIdnventarioEnc,
+                                                                                            True,
+                                                                                            CnnLog,
+                                                                                            TransLog)
                         End If
                     Next
                 Next
@@ -595,6 +595,7 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                     ' Agrupar los productos dentro del grupo por tipo de ajuste
                     Dim ajustesPositivos = New List(Of Object)()
                     Dim ajustesNegativos = New List(Of Object)()
+                    Dim BeLogError = New clsBeLog_error_wms
 
                     For Each ajuste In grupo
 
@@ -701,6 +702,8 @@ Public Class clsSyncAjusteInventario : Inherits clsInterfaceBase
                 End Try
 
                 clsPublic.Actualizar_Progreso(lblprg, "Fin de sincronización de ajustes.")
+
+                TransLog.Commit()
 
             Else
                 clsPublic.Actualizar_Progreso(lblprg, "No hay ajustes pendientes de envío.")

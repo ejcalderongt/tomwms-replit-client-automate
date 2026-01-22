@@ -46,6 +46,9 @@ Public Class clsLnStock_res
                 .añada = IIf(IsDBNull(dr.Item("añada")), 0, dr.Item("añada"))
                 .Fecha_manufactura = IIf(IsDBNull(dr.Item("fecha_manufactura")), Date.Now, dr.Item("fecha_manufactura"))
                 .Pallet_no_estandar = IIf(IsDBNull(dr.Item("Pallet_no_estandar")), 0, dr.Item("Pallet_no_estandar"))
+                .Talla = IIf(IsDBNull(dr.Item("Talla")), "", dr.Item("Talla"))
+                .Color = IIf(IsDBNull(dr.Item("Color")), "", dr.Item("Color"))
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
 
             End With
 
@@ -103,6 +106,14 @@ Public Class clsLnStock_res
             Ins.Add("añada", "@añada", DataType.Parametro)
             Ins.Add("fecha_manufactura", "@fecha_manufactura", DataType.Parametro)
             Ins.Add("Pallet_no_estandar", "@Pallet_no_estandar", DataType.Parametro)
+            '#GT29082025: sin talla color, no insertar valor 0 para mantener consistencia
+            If oBeStock_res.IdProductoTallaColor > 0 Then
+                Ins.Add("Talla", "@Talla", DataType.Parametro)
+                Ins.Add("Color", "@Color", DataType.Parametro)
+                Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
+            End If
+
+
 
             Dim sp As String = Ins.SQL()
             Dim cmd As SqlCommand
@@ -151,7 +162,11 @@ Public Class clsLnStock_res
             cmd.Parameters.Add(New SqlParameter("@AÑADA", oBeStock_res.añada))
             cmd.Parameters.Add(New SqlParameter("@FECHA_MANUFACTURA", oBeStock_res.Fecha_manufactura))
             cmd.Parameters.Add(New SqlParameter("@PALLET_NO_ESTANDAR", oBeStock_res.Pallet_no_estandar))
-
+            If oBeStock_res.IdProductoTallaColor > 0 Then
+                cmd.Parameters.Add(New SqlParameter("@TALLA", oBeStock_res.Talla))
+                cmd.Parameters.Add(New SqlParameter("@COLOR", oBeStock_res.Color))
+                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeStock_res.IdProductoTallaColor))
+            End If
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -218,8 +233,14 @@ Public Class clsLnStock_res
             Upd.Add("añada", "@añada", DataType.Parametro)
             Upd.Add("fecha_manufactura", "@fecha_manufactura", DataType.Parametro)
             Upd.Add("Pallet_no_estandar", "@Pallet_no_estandar", DataType.Parametro)
-            Upd.Where("IdStockRes = @IdStockRes")
+            '#GT29082025: sin talla color, no insertar valor 0, para mantener consistencia
+            If oBeStock_res.IdProductoTallaColor > 0 Then
+                Upd.Add("Talla", "@Talla", DataType.Parametro)
+                Upd.Add("Color", "@Color", DataType.Parametro)
+                Upd.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
+            End If
 
+            Upd.Where("IdStockRes = @IdStockRes")
 
             Dim sp As String = Upd.SQL()
 
@@ -270,7 +291,11 @@ Public Class clsLnStock_res
             cmd.Parameters.Add(New SqlParameter("@AÑADA", oBeStock_res.añada))
             cmd.Parameters.Add(New SqlParameter("@FECHA_MANUFACTURA", oBeStock_res.Fecha_manufactura))
             cmd.Parameters.Add(New SqlParameter("@PALLET_NO_ESTANDAR", oBeStock_res.Pallet_no_estandar))
-
+            If oBeStock_res.IdProductoTallaColor > 0 Then
+                cmd.Parameters.Add(New SqlParameter("@TALLA", oBeStock_res.Talla))
+                cmd.Parameters.Add(New SqlParameter("@COLOR", oBeStock_res.Color))
+                cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeStock_res.IdProductoTallaColor))
+            End If
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

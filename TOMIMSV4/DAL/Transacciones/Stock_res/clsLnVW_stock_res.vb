@@ -103,11 +103,13 @@ Public Class clsLnVW_stock_res
                 If dr.Table.Columns.Contains("Fecha_Preparacion") Then .Fecha_Preparacion = IIf(IsDBNull(dr.Item("Fecha_Preparacion")), New Date(1900, 1, 1), dr.Item("Fecha_Preparacion"))
                 If dr.Table.Columns.Contains("Fecha_Pedido") Then .Fecha_Pedido = IIf(IsDBNull(dr.Item("Fecha_Pedido")), New Date(1900, 1, 1), dr.Item("Fecha_Pedido"))
 
-                'If dr.Table.Columns.Contains("Control_vencimiento") Then .Control_vencimiento = IIf(IsDBNull(dr.Item("Control_vencimiento")), False, dr.Item("Control_vencimiento"))
-                'If dr.Table.Columns.Contains("Control_peso") Then .Control_peso = IIf(IsDBNull(dr.Item("Control_peso")), False, dr.Item("Control_peso"))
-                'If dr.Table.Columns.Contains("Nombre_UnidadMedida") Then .Nombre_UnidadMedida = IIf(IsDBNull(dr.Item("Nombre_UnidadMedida")), "", dr.Item("Nombre_UnidadMedida"))
-                'If dr.Table.Columns.Contains("Peso_referencia") Then .Peso_referencia = IIf(IsDBNull(dr.Item("Peso_referencia")), 0, dr.Item("Peso_referencia"))
-                'If dr.Table.Columns.Contains("IdTipoEtiqueta") Then .IdTipoEtiqueta = IIf(IsDBNull(dr.Item("IdTipoEtiqueta")), 0, dr.Item("IdTipoEtiqueta"))
+                If dr.Table.Columns.Contains("Codigo_Talla") Then .Codigo_Talla = IIf(IsDBNull(dr.Item("Codigo_Talla")), "", dr.Item("Codigo_Talla"))
+                If dr.Table.Columns.Contains("Nombre_Talla") Then .Nombre_Talla = IIf(IsDBNull(dr.Item("Nombre_Talla")), "", dr.Item("Nombre_Talla"))
+                If dr.Table.Columns.Contains("Codigo_Color") Then .Codigo_Color = IIf(IsDBNull(dr.Item("Codigo_Color")), "", dr.Item("Codigo_Color"))
+                If dr.Table.Columns.Contains("Nombre_Color") Then .Nombre_Color = IIf(IsDBNull(dr.Item("Nombre_Color")), "", dr.Item("Nombre_Color"))
+                If dr.Table.Columns.Contains("IdProductoTallaColor") Then .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                If dr.Table.Columns.Contains("Talla") Then .Codigo_Talla = IIf(IsDBNull(dr.Item("Talla")), 0, dr.Item("Talla"))
+                If dr.Table.Columns.Contains("Color") Then .Codigo_Color = IIf(IsDBNull(dr.Item("Color")), 0, dr.Item("Color"))
 
             End With
 
@@ -156,6 +158,11 @@ Public Class clsLnVW_stock_res
                 If dr.Table.Columns.Contains("IdPresentacion") Then .IdPresentacion = IIf(IsDBNull(dr.Item("IdPresentacion")), 0, dr.Item("IdPresentacion"))
                 '#AT20240805 Agregue el campo IdStock para la consulta detallada de existencia
                 If dr.Table.Columns.Contains("IdStock") Then .IdStock = IIf(IsDBNull(dr.Item("IdStock")), 0, dr.Item("IdStock"))
+                If dr.Table.Columns.Contains("Codigo_Talla") Then .Codigo_Talla = IIf(IsDBNull(dr.Item("Codigo_Talla")), "", dr.Item("Codigo_Talla"))
+                If dr.Table.Columns.Contains("Nombre_Talla") Then .Nombre_Talla = IIf(IsDBNull(dr.Item("Nombre_Talla")), "", dr.Item("Nombre_Talla"))
+                If dr.Table.Columns.Contains("Codigo_Color") Then .Codigo_Color = IIf(IsDBNull(dr.Item("Codigo_Color")), "", dr.Item("Codigo_Color"))
+                If dr.Table.Columns.Contains("Nombre_Color") Then .Nombre_Color = IIf(IsDBNull(dr.Item("Nombre_Color")), "", dr.Item("Nombre_Color"))
+                If dr.Table.Columns.Contains("CodigoSKU") Then .CodigoSKU = IIf(IsDBNull(dr.Item("CodigoSKU")), "", dr.Item("CodigoSKU"))
 
                 If dr.Table.Columns.Contains("IdUbicacion_anterior") Then .IdStock = IIf(IsDBNull(dr.Item("IdUbicacion_anterior")), 0, dr.Item("IdUbicacion_anterior"))
                 If dr.Table.Columns.Contains("Codigo_Barra") Then .Codigo_Barra = IIf(IsDBNull(dr.Item("Codigo_Barra")), "", dr.Item("Codigo_Barra"))
@@ -208,6 +215,26 @@ Public Class clsLnVW_stock_res
                 If dr.Table.Columns.Contains("Fecha_Preparacion") Then .Fecha_Preparacion = IIf(IsDBNull(dr.Item("Fecha_Preparacion")), New Date(1900, 1, 1), dr.Item("Fecha_Preparacion"))
                 If dr.Table.Columns.Contains("Fecha_Pedido") Then .Fecha_Pedido = IIf(IsDBNull(dr.Item("Fecha_Pedido")), New Date(1900, 1, 1), dr.Item("Fecha_Pedido"))
 
+                If dr.Table.Columns.Contains("Codigo_Talla") Then
+                    .Codigo_Talla = IIf(IsDBNull(dr.Item("Codigo_Talla")), "", dr.Item("Codigo_Talla"))
+                End If
+
+                If dr.Table.Columns.Contains("Nombre_Talla") Then
+                    .Nombre_Talla = IIf(IsDBNull(dr.Item("Nombre_Talla")), "", dr.Item("Nombre_Talla"))
+                End If
+
+                If dr.Table.Columns.Contains("Codigo_Color") Then
+                    .Codigo_Color = IIf(IsDBNull(dr.Item("Codigo_Color")), "", dr.Item("Codigo_Color"))
+                End If
+
+                If dr.Table.Columns.Contains("Nombre_Color") Then
+                    .Nombre_Color = IIf(IsDBNull(dr.Item("Nombre_Color")), "", dr.Item("Nombre_Color"))
+                End If
+
+                If dr.Table.Columns.Contains("IdProductoTallaColor") Then
+                    .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                End If
+
             End With
 
         Catch ex As Exception
@@ -255,6 +282,26 @@ Public Class clsLnVW_stock_res
                 If dr.Table.Columns.Contains("Fecha_Preparacion") Then .Fecha_Preparacion = IIf(IsDBNull(dr.Item("Fecha_Preparacion")), New Date(1900, 1, 1), dr.Item("Fecha_Preparacion"))
                 If dr.Table.Columns.Contains("Fecha_Pedido") Then .Fecha_Pedido = IIf(IsDBNull(dr.Item("Fecha_Pedido")), New Date(1900, 1, 1), dr.Item("Fecha_Pedido"))
                 If dr.Table.Columns.Contains("IdPropietarioBodega") Then .IdPropietarioBodega = IIf(IsDBNull(dr.Item("IdPropietarioBodega")), 0, dr.Item("IdPropietarioBodega"))
+
+                If dr.Table.Columns.Contains("Codigo_Talla") Then
+                    .Codigo_Talla = IIf(IsDBNull(dr.Item("Codigo_Talla")), "", dr.Item("Codigo_Talla"))
+                End If
+
+                If dr.Table.Columns.Contains("Nombre_Talla") Then
+                    .Nombre_Talla = IIf(IsDBNull(dr.Item("Nombre_Talla")), "", dr.Item("Nombre_Talla"))
+                End If
+
+                If dr.Table.Columns.Contains("Codigo_Color") Then
+                    .Codigo_Color = IIf(IsDBNull(dr.Item("Codigo_Color")), "", dr.Item("Codigo_Color"))
+                End If
+
+                If dr.Table.Columns.Contains("Nombre_Color") Then
+                    .Nombre_Color = IIf(IsDBNull(dr.Item("Nombre_Color")), "", dr.Item("Nombre_Color"))
+                End If
+
+                If dr.Table.Columns.Contains("IdProductoTallaColor") Then
+                    .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                End If
 
             End With
 
@@ -655,7 +702,7 @@ Public Class clsLnVW_stock_res
                 vSQL += " AND CONVERT(DATE, Fecha_Vence) = CONVERT(DATE, @Fecha_Vence) "
             End If
 
-            vSQL += " Order By Nombre_Completo "
+            vSQL += " Order By NombreUbicacion "
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -1013,7 +1060,12 @@ Public Class clsLnVW_stock_res
 		                                 stock.IdPresentacion, 
                                          '1900-01-01T00:00:01' as Fecha_Pedido,
                                          '1900-01-01T00:00:01' as Fecha_Preparacion,
-                                         stock.fec_agr
+                                         stock.fec_agr,
+                                         ISNULL(stock.IdProductoTallaColor, 0) IdProductoTallaColor,
+                                         ISNULL(t.Codigo, '') AS Codigo_Talla,
+                                         ISNULL(t.Nombre, '') AS Nombre_Talla,
+                                         ISNULL(c.Codigo, '') AS Codigo_Color,
+                                         ISNULL(c.Nombre, '') AS Nombre_Color
                                   FROM   stock INNER JOIN 
                                          producto_bodega ON stock.IdProductoBodega = producto_bodega.IdProductoBodega AND 
                                                             stock.IdBodega = producto_bodega.IdBodega INNER JOIN
@@ -1029,6 +1081,9 @@ Public Class clsLnVW_stock_res
 	                                                         unidad_medida.IdUnidadMedida = stock.IdUnidadMedida LEFT OUTER JOIN
 	                                     producto_presentacion ON producto.IdProducto = producto_presentacion.IdProducto AND
 	                                                                producto_presentacion.IdPresentacion = stock.IdPresentacion
+                                         left join producto_talla_color ptc on ptc.IdProductoTallaColor = stock.IdProductoTallaColor
+                                         left join talla t on t.IdTalla = ptc.IdTalla
+                                         left join color c on c.IdColor = ptc.IdColor
                                   WHERE IdStock IN ( SELECT  IdStock
                                                     FROM    VW_Stock_Res_Pedido  
                                                     WHERE   IdBodega = @IdBodega AND 

@@ -347,6 +347,7 @@ Public Class clsSyncSAPTrasladoStock : Inherits clsInterfaceBase
                     Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(solicitud, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
                     clsPublic.Actualizar_Progreso(lblprg, Resultado)
                     If pedidoEnc IsNot Nothing AndAlso Marcar_PI_Sincronizado_SAP(solicitud.No, empresa, oCompany) Then
+                        clsPublic.Actualizar_Progreso(lblprg, Resultado)
                         Return True
                     End If
                 End If
@@ -356,6 +357,7 @@ Public Class clsSyncSAPTrasladoStock : Inherits clsInterfaceBase
                     Dim pedidoEnc As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(solicitud, lblprg, clsTrans.lConnection, clsTrans.lTransaction)
                     clsPublic.Actualizar_Progreso(lblprg, Resultado)
                     If pedidoEnc IsNot Nothing AndAlso Marcar_PI_Sincronizado_SAP(solicitud.No, empresa, oCompany) Then
+                        clsPublic.Actualizar_Progreso(lblprg, Resultado)
                         Return True
                     End If
                 End If
@@ -422,7 +424,7 @@ Public Class clsSyncSAPTrasladoStock : Inherits clsInterfaceBase
                 .User_mod = BeConfigEnc.IdUsuario,
                 .Fec_agr = Now,
                 .Fec_mod = Now,
-                .Cliente = cliente
+                .cliente = cliente
             }
 
                 clsLnCliente_bodega.Insertar_From_Interface(clienteBodega, conn, trx)

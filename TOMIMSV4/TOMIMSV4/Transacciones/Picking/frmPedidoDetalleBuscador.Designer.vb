@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmPedidoDetalleBuscador
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing Then
             If components IsNot Nothing Then
@@ -23,7 +23,7 @@ Partial Class frmPedidoDetalleBuscador
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPedidoDetalleBuscador))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
@@ -49,10 +49,12 @@ Partial Class frmPedidoDetalleBuscador
         Me.lbldesde = New System.Windows.Forms.Label()
         Me.dtpFechaAl = New System.Windows.Forms.DateTimePicker()
         Me.dtpFechaDel = New System.Windows.Forms.DateTimePicker()
+        Me.tsAnulados = New DevExpress.XtraEditors.ToggleSwitch()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Dgrid, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
+        CType(Me.tsAnulados.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'RibbonControl
@@ -270,11 +272,26 @@ Partial Class frmPedidoDetalleBuscador
         Me.dtpFechaDel.Size = New System.Drawing.Size(123, 23)
         Me.dtpFechaDel.TabIndex = 1
         '
+        'tsAnulados
+        '
+        Me.tsAnulados.EditValue = True
+        Me.tsAnulados.Location = New System.Drawing.Point(295, 149)
+        Me.tsAnulados.MenuManager = Me.RibbonControl
+        Me.tsAnulados.Name = "tsAnulados"
+        Me.tsAnulados.Properties.Appearance.BackColor = System.Drawing.Color.Gainsboro
+        Me.tsAnulados.Properties.Appearance.Options.UseBackColor = True
+        Me.tsAnulados.Properties.OffText = "Mostrar anulados"
+        Me.tsAnulados.Properties.OnText = "Mostrar activos"
+        Me.tsAnulados.RightToLeft = System.Windows.Forms.RightToLeft.Yes
+        Me.tsAnulados.Size = New System.Drawing.Size(231, 24)
+        Me.tsAnulados.TabIndex = 4
+        '
         'frmPedidoDetalleBuscador
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1024, 629)
+        Me.Controls.Add(Me.tsAnulados)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.Dgrid)
         Me.Controls.Add(Me.RibbonStatusBar)
@@ -292,6 +309,7 @@ Partial Class frmPedidoDetalleBuscador
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
+        CType(Me.tsAnulados.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

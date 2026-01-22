@@ -1,4 +1,5 @@
-﻿Imports System.Reflection
+﻿Imports System.Data.SqlClient
+Imports System.Reflection
 Imports System.Data.SqlClient
 
 Partial Public Class clsLnTrans_movimientos
@@ -33,7 +34,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lMax
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -62,7 +63,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lMax
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -76,9 +77,16 @@ Partial Public Class clsLnTrans_movimientos
 
         Try
             Dim query As String = "SELECT Propietario,IdBodega,Poliza,Producto,Presentación,
-            [Estado Origen],[Estado Destino],[Unidad de Medida],cantidad,peso,lote,Origen,Destino,
-            [Tipo Tarea],IdBodegaOrigen,fecha,IdProducto,codigo,codigo_barra,barra_pallet,
-            fecha_vence,Cantidad_Presentacion,IdDocIngreso,IdDocSalida,IdTransaccion,Clasificacion,
+                        [Estado Origen],[Estado Destino],[Unidad de Medida],cantidad,peso,lote,Origen,Destino,
+                        [Tipo Tarea],IdBodegaOrigen,fecha,IdProducto,codigo,codigo_barra,barra_pallet,
+                        fecha_vence, Cantidad_Presentacion, IdDocIngreso, IdDocSalida, IdTransaccion, Clasificacion,
+                        Area_Origen, Operador, Codigo_Talla As Talla, Codigo_Color as Color 
+                        From VW_Movimientos Where IdBodegaOrigen =@IdBodegaOrigen"
+            Else
+                vSQL = "Select Propietario, IdBodega, Poliza, Producto, Presentación,
+                        [Estado Origen],[Estado Destino],[Unidad de Medida], cantidad, peso, lote, Origen, Destino,
+                        [Tipo Tarea], IdBodegaOrigen, fecha, IdProducto, codigo, codigo_barra, barra_pallet,
+                        fecha_vence, Cantidad_Presentacion, IdDocIngreso, IdDocSalida, IdTransaccion, Clasificacion,
             Area_Origen, Operador FROM VW_Movimientos WHERE "
 
             If pIdBodegaOrigen > 0 Then
@@ -118,7 +126,7 @@ Partial Public Class clsLnTrans_movimientos
             Return resultTable
 
         Catch ex As Exception
-            Throw New Exception($"{MethodBase.GetCurrentMethod().Name} - {ex.Message}", ex)
+            Throw ex
         End Try
 
     End Function
@@ -154,7 +162,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lTable
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -231,7 +239,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -290,7 +298,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -360,7 +368,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -461,7 +469,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -548,7 +556,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -639,7 +647,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -677,7 +685,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lTable
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -773,13 +781,13 @@ Partial Public Class clsLnTrans_movimientos
 
                                 If lRow("IdUbicacionOrigen") IsNot DBNull.Value AndAlso lRow("IdUbicacionOrigen") IsNot Nothing Then
                                     Dim Ubicacion As New clsBeBodega_ubicacion
-                                    Ubicacion = clsLnBodega_ubicacion.GetSingle(CType(lRow("IdUbicacionOrigen"), Integer), CType(lRow("IdBodegaOrigen"), Integer))
+                                    Ubicacion = clsLnBodega_ubicacion.GetSingle(lRow("IdUbicacionOrigen"), lRow("IdBodegaOrigen"))
                                     Obj.UbicOrigen = Ubicacion.NombreCompleto
                                 End If
 
                                 If lRow("IdUbicacionDestino") IsNot DBNull.Value AndAlso lRow("IdUbicacionDestino") IsNot Nothing Then
                                     Dim Ubicacion As New clsBeBodega_ubicacion
-                                    Ubicacion = clsLnBodega_ubicacion.GetSingle(CType(lRow("IdUbicacionDestino"), Integer), CType(lRow("IdBodegaDestino"), Integer))
+                                    Ubicacion = clsLnBodega_ubicacion.GetSingle(lRow("IdUbicacionDestino"), lRow("IdBodegaDestino"))
                                     Obj.UbicDestino = Ubicacion.NombreCompleto
                                 End If
 
@@ -806,7 +814,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -874,7 +882,7 @@ Partial Public Class clsLnTrans_movimientos
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -944,7 +952,7 @@ Partial Public Class clsLnTrans_movimientos
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1091,7 +1099,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1127,7 +1135,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lTable
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1180,7 +1188,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lTable
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1234,7 +1242,7 @@ Partial Public Class clsLnTrans_movimientos
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1325,7 +1333,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1411,7 +1419,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1491,7 +1499,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1696,7 +1704,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1795,7 +1803,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1862,7 +1870,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -1884,7 +1892,7 @@ Partial Public Class clsLnTrans_movimientos
                      AND lote = @Lote
                      AND IdUnidadMedida = @IdUnidadMedida 
                      AND ISNULL(IdPresentacion,0) = @IdPresentacion 
-                     AND fecha_vence = @FechaVence
+                     AND (fecha_vence IS NULL OR fecha_vence = @FechaVence)
                      AND IdRecepcion = @IdRecepcionEnc
                      AND IdRecepcionDet=@IdRecepcioDet"
 
@@ -1922,7 +1930,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -2020,7 +2028,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -2065,7 +2073,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lMax
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -2112,7 +2120,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lMax
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -2162,7 +2170,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lMax
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -2210,7 +2218,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lTable
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -2364,7 +2372,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -2490,6 +2498,7 @@ Partial Public Class clsLnTrans_movimientos
             BeStockNuevo.IdUbicacion_anterior = BeStockOrigen.IdUbicacion
             BeStockNuevo.Cantidad = Math.Round(Cantidad, 6)
             BeStockNuevo.Pallet_No_Estandar = BeStockOrigen.Pallet_No_Estandar
+            BeStockNuevo.IdProductoTallaColor = BeStockOrigen.IdProductoTallaColor
 
             pp = 6
 
@@ -3094,7 +3103,7 @@ Partial Public Class clsLnTrans_movimientos
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Sub
@@ -3137,6 +3146,9 @@ Partial Public Class clsLnTrans_movimientos
             BeTransMovimiento.Fecha_agr = Now
             BeTransMovimiento.Usuario_agr = pIdUsuario
             BeTransMovimiento.IdOperadorBodega = IdOperadorBodega
+            BeTransMovimiento.IdProductoTallaColor = BeStockRec.IdProductoTallaColor
+            BeTransMovimiento.Talla = BeStockRec.Talla
+            BeTransMovimiento.Color = BeStockRec.Color
 
             clsLnStock.Get_Existencia_By_IdProductoBodega(BeStockRec,
                                                           lConnection,
@@ -3212,7 +3224,7 @@ Partial Public Class clsLnTrans_movimientos
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -3274,7 +3286,7 @@ Partial Public Class clsLnTrans_movimientos
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -3334,7 +3346,7 @@ Partial Public Class clsLnTrans_movimientos
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -3392,7 +3404,7 @@ Partial Public Class clsLnTrans_movimientos
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -3460,7 +3472,7 @@ Partial Public Class clsLnTrans_movimientos
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -3524,7 +3536,7 @@ Partial Public Class clsLnTrans_movimientos
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -3604,7 +3616,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -3706,7 +3718,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -4064,7 +4076,7 @@ Partial Public Class clsLnTrans_movimientos
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -4156,7 +4168,7 @@ Partial Public Class clsLnTrans_movimientos
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -4212,7 +4224,7 @@ Partial Public Class clsLnTrans_movimientos
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -4280,7 +4292,7 @@ Partial Public Class clsLnTrans_movimientos
             Return lReturnList
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -4321,7 +4333,7 @@ Partial Public Class clsLnTrans_movimientos
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If lTransaction IsNot Nothing Then lTransaction.Dispose()
@@ -4365,7 +4377,7 @@ Partial Public Class clsLnTrans_movimientos
             End Using
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -4431,7 +4443,7 @@ Partial Public Class clsLnTrans_movimientos
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If lTransaction IsNot Nothing Then lTransaction.Dispose()

@@ -262,24 +262,31 @@
   <ItemGroup>
     <EmbeddedResource Include="Formas\frmEjecucion.resx">
       <DependentUpon>frmEjecucion.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\Mantenimientos\frmNavEnt.resx">
       <DependentUpon>frmNavEnt.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\Mantenimientos\frmNavEnt_List.resx">
       <DependentUpon>frmNavEnt_List.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\Principal\frmMenu.resx">
       <DependentUpon>frmMenu.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\Reportes\frmEjecuciones.resx">
       <DependentUpon>frmEjecuciones.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\Reportes\frmRegistroInter.resx">
       <DependentUpon>frmRegistroInter.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Formas\Reportes\frmRegistrosInterface.resx">
       <DependentUpon>frmRegistrosInterface.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\licenses.licx" />
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -392,4 +399,11 @@
   <ItemGroup>
     <Analyzer Include="C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll" Visible="false" Condition="Exists('C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll')" />
   </ItemGroup>
+  <Import Project="..\packages\EmptyLicensesLicx.3.0.0\build\EmptyLicensesLicx.targets" Condition="Exists('..\packages\EmptyLicensesLicx.3.0.0\build\EmptyLicensesLicx.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EmptyLicensesLicx.3.0.0\build\EmptyLicensesLicx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EmptyLicensesLicx.3.0.0\build\EmptyLicensesLicx.targets'))" />
+  </Target>
 </Project>

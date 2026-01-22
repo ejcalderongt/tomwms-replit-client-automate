@@ -7,7 +7,7 @@
 <DiagramLayout xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ex:showrelationlabel="False" ViewPortX="-10" ViewPortY="60" xmlns:ex="urn:schemas-microsoft-com:xml-msdatasource-layout-extended" xmlns="urn:schemas-microsoft-com:xml-msdatasource-layout">
   <Shapes>
     <Shape ID="DesignTable:Encabezado" ZOrder="3" X="193" Y="132" Height="356" Width="176" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="24" SplitterPosition="352" />
-    <Shape ID="DesignTable:Detalle" ZOrder="2" X="584" Y="111" Height="609" Width="223" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="605" />
+    <Shape ID="DesignTable:Detalle" ZOrder="2" X="584" Y="111" Height="609" Width="200" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="605" />
   </Shapes>
   <Connectors>
     <Connector ID="DesignRelation:Encabezado_Detalle" ZOrder="1" LineWidth="11">

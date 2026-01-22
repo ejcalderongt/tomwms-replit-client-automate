@@ -41,7 +41,9 @@ Public Class clsLnTrans_picking_det
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTrans_picking_det As clsBeTrans_picking_det, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_picking_det As clsBeTrans_picking_det,
+                                    Optional ByVal pConection As SqlConnection = Nothing,
+                                    Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -99,6 +101,8 @@ Public Class clsLnTrans_picking_det
             cmd.Dispose()
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            oBeTrans_picking_det.IdPickingDet = CInt(cmd.Parameters("@IDPICKINGDET").Value)
 
             Return rowsAffected
 
@@ -606,7 +610,7 @@ Public Class clsLnTrans_picking_det
 
     End Function
 
-    Public Shared Function MaxID() as Integer
+    Public Shared Function MaxID() As Integer
 
         Try
 

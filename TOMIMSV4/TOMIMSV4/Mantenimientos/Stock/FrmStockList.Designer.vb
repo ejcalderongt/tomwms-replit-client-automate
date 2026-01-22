@@ -57,7 +57,9 @@ Partial Class FrmStockList
         Me.RepositoryItemCheckEdit4 = New DevExpress.XtraEditors.Repository.RepositoryItemCheckEdit()
         Me.DsetSeleccionStockBindingSource = New System.Windows.Forms.BindingSource(Me.components)
         Me.DsetSeleccionStock = New TOMWMS.DsetSeleccionStock()
+        Me.GroupControl1 = New DevExpress.XtraEditors.GroupControl()
         Me.prg = New DevExpress.XtraEditors.ProgressBarControl()
+        Me.mnuTomarSeleccionados = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DGrid, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdvStock, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -65,6 +67,8 @@ Partial Class FrmStockList
         CType(Me.RepositoryItemCheckEdit4, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DsetSeleccionStockBindingSource, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DsetSeleccionStock, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.GroupControl1.SuspendLayout()
         CType(Me.prg.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -186,12 +190,12 @@ Partial Class FrmStockList
         Me.DGrid.Cursor = System.Windows.Forms.Cursors.Default
         Me.DGrid.Dock = System.Windows.Forms.DockStyle.Fill
         Me.DGrid.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.DGrid.Location = New System.Drawing.Point(0, 227)
+        Me.DGrid.Location = New System.Drawing.Point(0, 271)
         Me.DGrid.MainView = Me.grdvStock
         Me.DGrid.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.DGrid.Name = "DGrid"
         Me.DGrid.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemCheckEdit3, Me.RepositoryItemCheckEdit4})
-        Me.DGrid.Size = New System.Drawing.Size(957, 440)
+        Me.DGrid.Size = New System.Drawing.Size(957, 396)
         Me.DGrid.TabIndex = 0
         Me.DGrid.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.grdvStock})
         '
@@ -226,15 +230,33 @@ Partial Class FrmStockList
         Me.DsetSeleccionStock.DataSetName = "DsetSeleccionStock"
         Me.DsetSeleccionStock.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema
         '
+        'GroupControl1
+        '
+        Me.GroupControl1.Controls.Add(Me.prg)
+        Me.GroupControl1.Dock = System.Windows.Forms.DockStyle.Top
+        Me.GroupControl1.Location = New System.Drawing.Point(0, 193)
+        Me.GroupControl1.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.GroupControl1.Name = "GroupControl1"
+        Me.GroupControl1.Size = New System.Drawing.Size(957, 78)
+        Me.GroupControl1.TabIndex = 3
+        '
         'prg
         '
-        Me.prg.Dock = System.Windows.Forms.DockStyle.Top
-        Me.prg.Location = New System.Drawing.Point(0, 193)
+        Me.prg.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.prg.Location = New System.Drawing.Point(2, 28)
         Me.prg.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.prg.MenuManager = Me.RibbonControl
         Me.prg.Name = "prg"
-        Me.prg.Size = New System.Drawing.Size(957, 34)
+        Me.prg.Size = New System.Drawing.Size(953, 48)
         Me.prg.TabIndex = 0
+        Me.prg.Visible = False
+        '
+        'mnuTomarSeleccionados
+        '
+        Me.mnuTomarSeleccionados.Caption = "Aplicar Selección"
+        Me.mnuTomarSeleccionados.Id = 19
+        Me.mnuTomarSeleccionados.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuTomarSeleccionados.Name = "mnuTomarSeleccionados"
         '
         'FrmStockList
         '
@@ -242,7 +264,7 @@ Partial Class FrmStockList
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(957, 697)
         Me.Controls.Add(Me.DGrid)
-        Me.Controls.Add(Me.prg)
+        Me.Controls.Add(Me.GroupControl1)
         Me.Controls.Add(Me.RibbonStatusBar1)
         Me.Controls.Add(Me.RibbonControl)
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
@@ -258,6 +280,8 @@ Partial Class FrmStockList
         CType(Me.RepositoryItemCheckEdit4, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DsetSeleccionStockBindingSource, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DsetSeleccionStock, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.GroupControl1.ResumeLayout(False)
         CType(Me.prg.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -282,6 +306,7 @@ Partial Class FrmStockList
     Friend WithEvents lblRegistros As DevExpress.XtraBars.BarStaticItem
     Friend WithEvents RibbonStatusBar1 As DevExpress.XtraBars.Ribbon.RibbonStatusBar
     Friend WithEvents lblProgress As DevExpress.XtraBars.BarStaticItem
+    Friend WithEvents GroupControl1 As DevExpress.XtraEditors.GroupControl
     Friend WithEvents prg As DevExpress.XtraEditors.ProgressBarControl
     Friend WithEvents chkSeleccionMultiple As DevExpress.XtraBars.BarToggleSwitchItem
     Friend WithEvents RibbonPageGroup2 As DevExpress.XtraBars.Ribbon.RibbonPageGroup

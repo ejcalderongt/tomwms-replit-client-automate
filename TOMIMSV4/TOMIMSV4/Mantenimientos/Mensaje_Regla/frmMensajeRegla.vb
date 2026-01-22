@@ -4,6 +4,8 @@ Public Class frmMensajeRegla
     Public pObjBEJ As New clsBeMensaje_regla
     Public Delegate Sub ListarMensajes()
     Public Property InvokeListarMensajes As ListarMensajes
+    Public Property IdReglaRecepcion As Integer = 0
+
 
     Public Enum TipoTrans
         Nuevo = 1
@@ -118,6 +120,7 @@ Public Class frmMensajeRegla
                 .Fec_agr = Now,
                 .User_mod = AP.UsuarioAp.IdUsuario,
                 .Fec_mod = Now,
+                .IdReglaRecepcion = IdReglaRecepcion,
                 .Activo = True}
             Guardar = clsLnMensaje_regla.Insertar(pObjBEJ) > 0
 

@@ -12,6 +12,8 @@
     Public Property lProductosHijosKit As New List(Of clsBeTrans_oc_det)
     Public Property lProductoComposicionKit As New List(Of clsBeProducto_kit_composicion)
     Public Property Nombre_Propietario As String = ""
+    Public Property Talla As clsBeTalla = New clsBeTalla()
+    Public Property Color As clsBeColor = New clsBeColor()
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls

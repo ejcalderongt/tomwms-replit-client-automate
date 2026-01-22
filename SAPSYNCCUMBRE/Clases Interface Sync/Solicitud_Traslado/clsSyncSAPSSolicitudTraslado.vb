@@ -42,35 +42,35 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                 Throw New Exception(sErrMsg)
             Else
 
-                If BeConfigEnc Is Nothing Then
-                    BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface)
-                End If
+            If BeConfigEnc Is Nothing Then
+                BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface)
+            End If
 
-                BePropietario = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario)
+            BePropietario = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario)
 
-                Dim oRecSet As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
-                Dim RsEnc As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
+            Dim oRecSet As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
+            Dim RsEnc As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
 
-                Dim lFiltros As New List(Of clsBeI_nav_ent_filtros)
-                lFiltros = clsLnI_nav_ent_filtros.Get_All_By_IdNavEnt(clsLnI_nav_ent_filtros.pEntidadesSycn.Traslado_SAP)
+            Dim lFiltros As New List(Of clsBeI_nav_ent_filtros)
+            lFiltros = clsLnI_nav_ent_filtros.Get_All_By_IdNavEnt(clsLnI_nav_ent_filtros.pEntidadesSycn.Traslado_SAP)
 
-                Dim StartDate As String = "12142022"
-                Dim vCriteria As String = ""
-                Dim isFirstCriterion As Boolean = True
+            Dim StartDate As String = "12142022"
+            Dim vCriteria As String = ""
+            Dim isFirstCriterion As Boolean = True
 
-                For Each FiltroCategoria In lFiltros
-                    If FiltroCategoria.Tipo_Filtro = "" OrElse FiltroCategoria.Tipo_Filtro = "BODEGA" Then
-                        If Not isFirstCriterion Then
-                            vCriteria += ", "
-                        End If
-                        vCriteria += "'" & FiltroCategoria.Valor & "'"
-                        isFirstCriterion = False
-                    ElseIf FiltroCategoria.Tipo_Filtro = "FECHA_INICIO" Then
-                        StartDate = FiltroCategoria.Valor
+            For Each FiltroCategoria In lFiltros
+                If FiltroCategoria.Tipo_Filtro = "" OrElse FiltroCategoria.Tipo_Filtro = "BODEGA" Then
+                    If Not isFirstCriterion Then
+                        vCriteria += ", "
                     End If
-                Next
+                    vCriteria += "'" & FiltroCategoria.Valor & "'"
+                    isFirstCriterion = False
+                ElseIf FiltroCategoria.Tipo_Filtro = "FECHA_INICIO" Then
+                    StartDate = FiltroCategoria.Valor
+                End If
+            Next
 
-                Dim SAP_Traslados As String = "SELECT DISTINCT T0.DocEntry,
+            Dim SAP_Traslados As String = "SELECT DISTINCT T0.DocEntry,
                                                                T0.DocNum,
                                                                T0.DocDate, 
                                                                T0.CardName, 
@@ -90,50 +90,50 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                                                WHERE T0.DOCSTATUS = 'O' AND 
                                                      T0.U_Enviado_WMS = 2 "
 
-                If pPedidoCliente <> "" Then
-                    SAP_Traslados += " AND T0.docnum = " & pPedidoCliente
-                End If
+            If pPedidoCliente <> "" Then
+                SAP_Traslados += " AND T0.docnum = " & pPedidoCliente
+            End If
 
-                If Not String.IsNullOrEmpty(vCriteria) Then
-                    SAP_Traslados += " AND (T1.FromWhsCod IN (" & vCriteria & ")
+            If Not String.IsNullOrEmpty(vCriteria) Then
+                SAP_Traslados += " AND (T1.FromWhsCod IN (" & vCriteria & ")
                                OR T1.WhsCode IN (" & vCriteria & ")) 
                           ORDER BY T0.DocEntry DESC"
-                Else
-                    ' Asumiendo que pCodigoBodegaInterface es una variable ya definida en otro lugar del código
-                    SAP_Traslados += " AND (T1.FromWhsCod = " & pCodigoBodegaInterface &
-                            " OR T1.WhsCode = " & pCodigoBodegaInterface & ") 
+            Else
+                ' Asumiendo que pCodigoBodegaInterface es una variable ya definida en otro lugar del código
+                SAP_Traslados += " AND (T1.FromWhsCod = " & pCodigoBodegaInterface &
+                        " OR T1.WhsCode = " & pCodigoBodegaInterface & ") 
                           ORDER BY T0.DocEntry DESC "
-                End If
+            End If
 
-                RsEnc.DoQuery(SAP_Traslados)
+            RsEnc.DoQuery(SAP_Traslados)
 
-                Dim BePedidoWMS As clsBeI_nav_ped_traslado_enc = New clsBeI_nav_ped_traslado_enc()
+            Dim BePedidoWMS As clsBeI_nav_ped_traslado_enc = New clsBeI_nav_ped_traslado_enc()
 
-                While RsEnc.EoF = False
+            While RsEnc.EoF = False
 
-                    BePedidoWMS = New clsBeI_nav_ped_traslado_enc()
-                    BePedidoWMS.No = RsEnc.Fields.Item("DOCENTRY").Value
-                    BePedidoWMS.Posting_Date = RsEnc.Fields.Item("DOCDATE").Value
-                    BePedidoWMS.Receipt_Date = RsEnc.Fields.Item("DOCDATE").Value
-                    BePedidoWMS.Shipment_Date = RsEnc.Fields.Item("DOCDATE").Value
-                    BePedidoWMS.Status = 1
-                    BePedidoWMS.Transfer_from_Code = RsEnc.Fields.Item("CODIGO_BODEGA_ORIGEN").Value
-                    BePedidoWMS.Transfer_from_Contact = "MI3_NAME"
-                    BePedidoWMS.Transfer_from_Name = RsEnc.Fields.Item("NOMBRE_BODEGA_ORIGEN").Value
-                    BePedidoWMS.Transfer_to_Code = RsEnc.Fields.Item("CODIGO_BODEGA_DESTINO").Value
-                    BePedidoWMS.Transfer_to_Contact = RsEnc.Fields.Item("CARDNAME").Value
-                    BePedidoWMS.Transfer_to_Name = RsEnc.Fields.Item("NOMBRE_BODEGA_DESTINO").Value
-                    BePedidoWMS.Transfer_to_CodeField = RsEnc.Fields.Item("U_ALMDEST").Value
-                    BePedidoWMS.Product_Owner_Code = BePropietario.Codigo
-                    BePedidoWMS.Receipt_Document_Reference = RsEnc.Fields.Item("DOCNUM").Value
-                    BePedidoWMS.Manufacturing_Process = 0
-                    BePedidoWMS.Document_Type = tTipoDocumentoSalida.Traslado_Por_Estados_SAP
+                BePedidoWMS = New clsBeI_nav_ped_traslado_enc()
+                BePedidoWMS.No = RsEnc.Fields.Item("DOCENTRY").Value
+                BePedidoWMS.Posting_Date = RsEnc.Fields.Item("DOCDATE").Value
+                BePedidoWMS.Receipt_Date = RsEnc.Fields.Item("DOCDATE").Value
+                BePedidoWMS.Shipment_Date = RsEnc.Fields.Item("DOCDATE").Value
+                BePedidoWMS.Status = 1
+                BePedidoWMS.Transfer_from_Code = RsEnc.Fields.Item("CODIGO_BODEGA_ORIGEN").Value
+                BePedidoWMS.Transfer_from_Contact = "MI3_NAME"
+                BePedidoWMS.Transfer_from_Name = RsEnc.Fields.Item("NOMBRE_BODEGA_ORIGEN").Value
+                BePedidoWMS.Transfer_to_Code = RsEnc.Fields.Item("CODIGO_BODEGA_DESTINO").Value
+                BePedidoWMS.Transfer_to_Contact = RsEnc.Fields.Item("CARDNAME").Value
+                BePedidoWMS.Transfer_to_Name = RsEnc.Fields.Item("NOMBRE_BODEGA_DESTINO").Value
+                BePedidoWMS.Transfer_to_CodeField = RsEnc.Fields.Item("U_ALMDEST").Value
+                BePedidoWMS.Product_Owner_Code = BePropietario.Codigo
+                BePedidoWMS.Receipt_Document_Reference = RsEnc.Fields.Item("DOCNUM").Value
+                BePedidoWMS.Manufacturing_Process = 0
+                BePedidoWMS.Document_Type = tTipoDocumentoSalida.Traslado_Por_Estados_SAP
 
-                    Dim n As Integer = 1
-                    Dim RsDet As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
-                    Dim query_det As String
+                Dim n As Integer = 1
+                Dim RsDet As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
+                Dim query_det As String
 
-                    query_det = "SELECT 
+                query_det = "SELECT 
                                  T0.LineNum, 
                                  T0.ITEMCODE, 
                                  T0.DSCRIPTION, 
@@ -147,38 +147,38 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                                  FROM WTQ1 T0 INNER JOIN OITM T1 ON T1.ItemCode= T0.ItemCode    
                                  WHERE T0.DOCENTRY = '" & BePedidoWMS.No & "'"
 
-                    RsDet.DoQuery(query_det)
+                RsDet.DoQuery(query_det)
 
-                    BePedidoWMS.Lineas_Detalle = New List(Of clsBeI_nav_ped_traslado_det)
+                BePedidoWMS.Lineas_Detalle = New List(Of clsBeI_nav_ped_traslado_det)
 
-                    While RsDet.EoF = False
+                While RsDet.EoF = False
 
-                        BePedidoDetWMS = New clsBeI_nav_ped_traslado_det()
-                        BePedidoDetWMS.NoEnc = BePedidoWMS.No
-                        BePedidoDetWMS.No = clsLnTrans_pe_det.MaxID() + 1
-                        BePedidoDetWMS.Item_No = RsDet.Fields.Item("ITEMCODE").Value.ToString()
-                        BePedidoDetWMS.Line_No = RsDet.Fields.Item("LINENUM").Value.ToString()
-                        BePedidoDetWMS.Shipment_Date = Date.Now
-                        BePedidoDetWMS.Quantity = Convert.ToDecimal(RsDet.Fields.Item("QUANTITY").Value)
-                        BePedidoDetWMS.Description = RsDet.Fields.Item("DSCRIPTION").Value.ToString()
-                        BePedidoDetWMS.Unit_of_Measure_Code = RsDet.Fields.Item("UNIDAD_MEDIDA").Value.ToString()
-                        BePedidoDetWMS.Status = 1
-                        BePedidoDetWMS.Variant_Code = Nothing
-                        BePedidoDetWMS.Transfer_to_CodeField = RsDet.Fields.Item("WHSCODE").Value.ToString()
-                        BePedidoDetWMS.Price = Convert.ToDouble(RsDet.Fields.Item("PRICE").Value)
-                        BePedidoWMS.Lineas_Detalle.Add(BePedidoDetWMS)
+                    BePedidoDetWMS = New clsBeI_nav_ped_traslado_det()
+                    BePedidoDetWMS.NoEnc = BePedidoWMS.No
+                    BePedidoDetWMS.No = clsLnTrans_pe_det.MaxID() + 1
+                    BePedidoDetWMS.Item_No = RsDet.Fields.Item("ITEMCODE").Value.ToString()
+                    BePedidoDetWMS.Line_No = RsDet.Fields.Item("LINENUM").Value.ToString()
+                    BePedidoDetWMS.Shipment_Date = Date.Now
+                    BePedidoDetWMS.Quantity = Convert.ToDecimal(RsDet.Fields.Item("QUANTITY").Value)
+                    BePedidoDetWMS.Description = RsDet.Fields.Item("DSCRIPTION").Value.ToString()
+                    BePedidoDetWMS.Unit_of_Measure_Code = RsDet.Fields.Item("UNIDAD_MEDIDA").Value.ToString()
+                    BePedidoDetWMS.Status = 1
+                    BePedidoDetWMS.Variant_Code = Nothing
+                    BePedidoDetWMS.Transfer_to_CodeField = RsDet.Fields.Item("WHSCODE").Value.ToString()
+                    BePedidoDetWMS.Price = Convert.ToDouble(RsDet.Fields.Item("PRICE").Value)
+                    BePedidoWMS.Lineas_Detalle.Add(BePedidoDetWMS)
 
-                        n += 1
+                    n += 1
 
-                        RsDet.MoveNext()
-
-                    End While
-
-                    lPedidosCliente.Add(BePedidoWMS)
-
-                    RsEnc.MoveNext()
+                    RsDet.MoveNext()
 
                 End While
+
+                lPedidosCliente.Add(BePedidoWMS)
+
+                RsEnc.MoveNext()
+
+            End While
 
             End If
 
@@ -203,6 +203,7 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                                                       Optional pPedidoCliente As String = "") As Boolean
         Procesar_Solicitudes_Traslado_SAP = False
 
+        Dim Resultado As String = ""
         Dim BeBodega As New clsBeBodega
         Dim lPedidosTrasladoSAP As New List(Of clsBeI_nav_ped_traslado_enc)
 
@@ -257,6 +258,8 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                                 clsLnLog_error_wms.Agregar_Error(String.Format("#IF_SAP_SOL_TRAS: Se importó el pedido de cliente con Solicitud de Traslado (OWTQ):{0}/{1}", PedidoClienteSAP.No, PedidoClienteSAP.Receipt_Document_Reference))
 
                             End If
+
+                            clsPublic.Actualizar_Progreso(lblprg, Resultado)
 
                         Next
 
@@ -2319,6 +2322,8 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                                 clsLnLog_error_wms.Agregar_Error("#IF_SAP_SOL_DEVOL_PROV: Se importó el documento: " & PedidoClienteSAP.No)
 
                             End If
+
+                            clsPublic.Actualizar_Progreso(lblprg, Resultado)
 
                         Next
 

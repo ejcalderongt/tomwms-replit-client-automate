@@ -27,7 +27,7 @@ Public Class clsLnTrans_inv_resumen
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTrans_inv_resumen As clsBeTrans_inv_resumen, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_inv_resumen As clsBeTrans_inv_resumen, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -51,6 +51,7 @@ Public Class clsLnTrans_inv_resumen
             Ins.Add("idubicacion", "@idubicacion", DataType.Parametro)
             Ins.Add("idbodega", "@idbodega", DataType.Parametro)
             Ins.Add("lic_plate", "@lic_plate", DataType.Parametro)
+            Ins.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -83,6 +84,7 @@ Public Class clsLnTrans_inv_resumen
             cmd.Parameters.Add(New SqlParameter("@IDUBICACION", oBeTrans_inv_resumen.IdUbicacion))
             cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeTrans_inv_resumen.IdBodega))
             cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", oBeTrans_inv_resumen.Lic_plate))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_inv_resumen.IdProductoTallaColor))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

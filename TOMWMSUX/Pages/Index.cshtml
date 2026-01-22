@@ -12,7 +12,8 @@
     .FocusedRowIndex(0)
     .ColumnAutoWidth(true)
     .ColumnHidingEnabled(true)
-    .Columns(columns => {
+    .Columns(columns =>
+    {
         columns.AddFor(m => m.OrderID);
         columns.AddFor(m => m.OrderDate);
         columns.AddFor(m => m.CustomerName);

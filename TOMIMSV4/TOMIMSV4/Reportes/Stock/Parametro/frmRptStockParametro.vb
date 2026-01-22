@@ -29,7 +29,7 @@ Public Class frmRptStockParametro
 
             Const rightColumn As String = "Fecha: [Date Printed] [Time Printed] "
 
-            Dim phf As DevExpress.XtraPrinting.PageHeaderFooter = _
+            Dim phf As DevExpress.XtraPrinting.PageHeaderFooter =
             TryCast(printLink.PageHeaderFooter, DevExpress.XtraPrinting.PageHeaderFooter)
 
             phf.Header.Content.Clear()
@@ -62,7 +62,7 @@ Public Class frmRptStockParametro
 
     End Sub
 
-    Private Sub Cargar_Datos
+    Private Sub Cargar_Datos()
 
         Try
 
@@ -153,6 +153,7 @@ Public Class frmRptStockParametro
 
                     BeUbicacionActual = clsLnBodega_ubicacion.GetSingleWithTramoAndSector(BeUbicacionActual.IdUbicacion, cmbBodega.EditValue)
 
+                    '#MECR27082025: Se agrega columna de talla y color
                     lRow.Item("Stock Id") = Obj.IdStock
                     lRow.Item("Código") = Obj.Codigo_Producto
                     lRow.Item("Propietario") = Obj.Propietario
@@ -170,6 +171,8 @@ Public Class frmRptStockParametro
                     lRow.Item("Fecha_Vence") = Obj.Fecha_Vence
                     lRow.Item("Recepción") = Obj.IdRecepcionEnc
                     lRow.Item("Ubicación") = BeUbicacionActual.NombreCompleto
+                    lRow.Item("Talla") = Obj.Codigo_Talla
+                    lRow.Item("Color") = Obj.Codigo_Color
 
                 End If
 

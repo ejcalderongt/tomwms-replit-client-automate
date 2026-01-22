@@ -2273,100 +2273,102 @@ Public Class frmCargaExcel_DI
 
                     poliza.Numero_Orden = barra_poliza.Substring(0, 10)
                     poliza.Numero_DUCA = barra_poliza.Substring(10, 20)
-                    Fecha_string = barra_poliza.Substring(30, 8)
-                    poliza.Clave_aduana_despacho_destino = barra_poliza.Substring(38, 7)
-                    poliza.NIT_Importador = barra_poliza.Substring(45, 25).Trim()
-                    poliza.Regimen = barra_poliza.Substring(70, 5).ToUpper()
-                    poliza.Clase = barra_poliza.Substring(75, 3).Trim()
-                    poliza.Pais_procedencia = barra_poliza.Substring(78, 2)
-                    poliza.Modo_transporte = barra_poliza.Substring(80, 1)
-                    poliza.Tipo_cambio = Convert.ToDouble(barra_poliza.Substring(81, 7))
-                    poliza.Total_valor_aduana = Convert.ToDouble(barra_poliza.Substring(88, 16))
-                    poliza.Total_bultos_Peso_Bruto = Convert.ToDouble(barra_poliza.Substring(104, 15))
-                    poliza.TotalFOBUSD = Convert.ToDouble(barra_poliza.Substring(119, 16))
-                    poliza.Total_Flete_USD = Convert.ToDouble(barra_poliza.Substring(135, 15))
-                    poliza.Total_Seguro_USD = Convert.ToDouble(barra_poliza.Substring(150, 15))
-                    poliza.TotalOtrosgastosUSD = Convert.ToDouble(barra_poliza.Substring(165, 15))
-                    poliza.Total_Liquidar = Convert.ToDouble(barra_poliza.Substring(180, 15))
-                    poliza.Total_General = Convert.ToDouble(barra_poliza.Substring(195, 15))
-                    poliza.Codigo_Poliza = barra_poliza.Substring(210, 9)
-
-                    Dim comodin As String = "/"
-                    Dim dd As String = ""
-                    Dim mm As String = ""
-                    Dim anio As String = ""
-                    dd = Fecha_string.ToString.Substring(0, 2)
-                    mm = Fecha_string.ToString.Substring(2, 2)
-                    anio = Fecha_string.ToString.Substring(4, 4)
-                    poliza.Fecha_Aceptacion = New Date(anio, mm, dd)
-
-                    Scan_Poliza = poliza
-
-                Else
-
-                    Scan_Poliza = Nuevo_Formato_Duca
-
-                End If
-
-
-                '#GT: metodo original para obtener campos de la poliza
-                'poliza.Numero_Orden = barra_poliza.Substring(0, 10)
-                'poliza.Numero_DUCA = barra_poliza.Substring(10, 20)
-                'Dim Fecha_string = barra_poliza.Substring(30, 8)
-                'poliza.Clave_aduana_despacho_destino = barra_poliza.Substring(38, 7)
-                'poliza.NIT_Importador = barra_poliza.Substring(45, 25).Trim()
-                'poliza.Regimen = barra_poliza.Substring(70, 5).ToUpper()
-                'poliza.Clase = barra_poliza.Substring(75, 3).Trim()
-                'poliza.Pais_procedencia = barra_poliza.Substring(78, 2)
-                'poliza.Modo_transporte = barra_poliza.Substring(80, 1)
-                'poliza.Tipo_cambio = Convert.ToDouble(barra_poliza.Substring(81, 7))
-                'poliza.Total_valor_aduana = Convert.ToDouble(barra_poliza.Substring(88, 16))
-                'poliza.Total_bultos_Peso_Bruto = Convert.ToDouble(barra_poliza.Substring(104, 15))
-                'poliza.TotalFOBUSD = Convert.ToDouble(barra_poliza.Substring(119, 16))
-                'poliza.Total_Flete_USD = Convert.ToDouble(barra_poliza.Substring(135, 15))
-                'poliza.Total_Seguro_USD = Convert.ToDouble(barra_poliza.Substring(150, 15))
-                'poliza.TotalOtrosgastosUSD = Convert.ToDouble(barra_poliza.Substring(165, 15))
-                'poliza.Total_Liquidar = Convert.ToDouble(barra_poliza.Substring(180, 15))
-                'poliza.Total_General = Convert.ToDouble(barra_poliza.Substring(195, 15))
-                'poliza.Codigo_Poliza = barra_poliza.Substring(210, 9)
-
-
-                '#GT: metodo nuevo para obtener campos de la poliza
-                'poliza.Numero_Orden = barra_poliza.Substring(0, 15)
-                'poliza.Numero_DUCA = barra_poliza.Substring(15, 20)
-
-                'Dim Fecha_string = barra_poliza.Substring(35, 8)
-                'poliza.Clave_aduana_despacho_destino = barra_poliza.Substring(43, 7)
-                'poliza.NIT_Importador = barra_poliza.Substring(50, 25).Trim()
-                'poliza.Regimen = barra_poliza.Substring(75, 5).ToUpper()
-                'poliza.Clase = barra_poliza.Substring(80, 3).Trim()
-                'poliza.Pais_procedencia = barra_poliza.Substring(83, 2)
-                'poliza.Modo_transporte = barra_poliza.Substring(85, 1)
-                'poliza.Tipo_cambio = Convert.ToDouble(barra_poliza.Substring(86, 7))
-
-                'poliza.Total_valor_aduana = Convert.ToDouble(barra_poliza.Substring(93, 15))
-                'poliza.Total_bultos_Peso_Bruto = Convert.ToDouble(barra_poliza.Substring(108, 16))
-                'poliza.TotalFOBUSD = Convert.ToDouble(barra_poliza.Substring(124, 15))
-                'poliza.Total_Flete_USD = Convert.ToDouble(barra_poliza.Substring(139, 15))
-                'poliza.Total_Seguro_USD = Convert.ToDouble(barra_poliza.Substring(154, 15))
-                'poliza.TotalOtrosgastosUSD = Convert.ToDouble(barra_poliza.Substring(169, 15))
-                'poliza.Total_Liquidar = Convert.ToDouble(barra_poliza.Substring(184, 15))
-                'poliza.Total_General = Convert.ToDouble(barra_poliza.Substring(199, 15))
-                'poliza.Codigo_Poliza = barra_poliza.Substring(214, 9)
-
+                Fecha_string = barra_poliza.Substring(30, 8)
+                poliza.Clave_aduana_despacho_destino = barra_poliza.Substring(38, 7)
+                poliza.NIT_Importador = barra_poliza.Substring(45, 25).Trim()
+                poliza.Regimen = barra_poliza.Substring(70, 5).ToUpper()
+                poliza.Clase = barra_poliza.Substring(75, 3).Trim()
+                poliza.Pais_procedencia = barra_poliza.Substring(78, 2)
+                poliza.Modo_transporte = barra_poliza.Substring(80, 1)
+                poliza.Tipo_cambio = Convert.ToDouble(barra_poliza.Substring(81, 7))
+                poliza.Total_valor_aduana = Convert.ToDouble(barra_poliza.Substring(88, 16))
+                poliza.Total_bultos_Peso_Bruto = Convert.ToDouble(barra_poliza.Substring(104, 15))
+                poliza.TotalFOBUSD = Convert.ToDouble(barra_poliza.Substring(119, 16))
+                poliza.Total_Flete_USD = Convert.ToDouble(barra_poliza.Substring(135, 15))
+                poliza.Total_Seguro_USD = Convert.ToDouble(barra_poliza.Substring(150, 15))
+                poliza.TotalOtrosgastosUSD = Convert.ToDouble(barra_poliza.Substring(165, 15))
+                poliza.Total_Liquidar = Convert.ToDouble(barra_poliza.Substring(180, 15))
+                poliza.Total_General = Convert.ToDouble(barra_poliza.Substring(195, 15))
+                poliza.Codigo_Poliza = barra_poliza.Substring(210, 9)
 
                 'concatenación para fecha dd/mm/yyyy
-                'Dim comodin As String = "/"
-                'Dim dd As String = ""
-                'Dim mm As String = ""
-                'Dim anio As String = ""
+                Dim comodin As String = "/"
+                Dim dd As String = ""
+                Dim mm As String = ""
+                Dim anio As String = ""
 
-                'dd = Fecha_string.ToString.Substring(0, 2)
-                'mm = Fecha_string.ToString.Substring(2, 2)
-                'anio = Fecha_string.ToString.Substring(4, 4)
-                'poliza.Fecha_Aceptacion = New Date(anio, mm, dd)
+                dd = Fecha_string.ToString.Substring(0, 2)
+                mm = Fecha_string.ToString.Substring(2, 2)
+                anio = Fecha_string.ToString.Substring(4, 4)
+                poliza.Fecha_Aceptacion = New Date(anio, mm, dd)
 
-                'Scan_Poliza = poliza
+                Scan_Poliza = poliza
+
+            Else
+
+                Scan_Poliza = Nuevo_Formato_Duca
+
+            End If
+
+
+            '#GT: metodo original para obtener campos de la poliza
+            'poliza.Numero_Orden = barra_poliza.Substring(0, 10)
+            'poliza.Numero_DUCA = barra_poliza.Substring(10, 20)
+            'Dim Fecha_string = barra_poliza.Substring(30, 8)
+            'poliza.Clave_aduana_despacho_destino = barra_poliza.Substring(38, 7)
+            'poliza.NIT_Importador = barra_poliza.Substring(45, 25).Trim()
+            'poliza.Regimen = barra_poliza.Substring(70, 5).ToUpper()
+            'poliza.Clase = barra_poliza.Substring(75, 3).Trim()
+            'poliza.Pais_procedencia = barra_poliza.Substring(78, 2)
+            'poliza.Modo_transporte = barra_poliza.Substring(80, 1)
+            'poliza.Tipo_cambio = Convert.ToDouble(barra_poliza.Substring(81, 7))
+            'poliza.Total_valor_aduana = Convert.ToDouble(barra_poliza.Substring(88, 16))
+            'poliza.Total_bultos_Peso_Bruto = Convert.ToDouble(barra_poliza.Substring(104, 15))
+            'poliza.TotalFOBUSD = Convert.ToDouble(barra_poliza.Substring(119, 16))
+            'poliza.Total_Flete_USD = Convert.ToDouble(barra_poliza.Substring(135, 15))
+            'poliza.Total_Seguro_USD = Convert.ToDouble(barra_poliza.Substring(150, 15))
+            'poliza.TotalOtrosgastosUSD = Convert.ToDouble(barra_poliza.Substring(165, 15))
+            'poliza.Total_Liquidar = Convert.ToDouble(barra_poliza.Substring(180, 15))
+            'poliza.Total_General = Convert.ToDouble(barra_poliza.Substring(195, 15))
+            'poliza.Codigo_Poliza = barra_poliza.Substring(210, 9)
+
+
+            '#GT: metodo nuevo para obtener campos de la poliza
+            'poliza.Numero_Orden = barra_poliza.Substring(0, 15)
+            'poliza.Numero_DUCA = barra_poliza.Substring(15, 20)
+
+            'Dim Fecha_string = barra_poliza.Substring(35, 8)
+            'poliza.Clave_aduana_despacho_destino = barra_poliza.Substring(43, 7)
+            'poliza.NIT_Importador = barra_poliza.Substring(50, 25).Trim()
+            'poliza.Regimen = barra_poliza.Substring(75, 5).ToUpper()
+            'poliza.Clase = barra_poliza.Substring(80, 3).Trim()
+            'poliza.Pais_procedencia = barra_poliza.Substring(83, 2)
+            'poliza.Modo_transporte = barra_poliza.Substring(85, 1)
+            'poliza.Tipo_cambio = Convert.ToDouble(barra_poliza.Substring(86, 7))
+
+            'poliza.Total_valor_aduana = Convert.ToDouble(barra_poliza.Substring(93, 15))
+            'poliza.Total_bultos_Peso_Bruto = Convert.ToDouble(barra_poliza.Substring(108, 16))
+            'poliza.TotalFOBUSD = Convert.ToDouble(barra_poliza.Substring(124, 15))
+            'poliza.Total_Flete_USD = Convert.ToDouble(barra_poliza.Substring(139, 15))
+            'poliza.Total_Seguro_USD = Convert.ToDouble(barra_poliza.Substring(154, 15))
+            'poliza.TotalOtrosgastosUSD = Convert.ToDouble(barra_poliza.Substring(169, 15))
+            'poliza.Total_Liquidar = Convert.ToDouble(barra_poliza.Substring(184, 15))
+            'poliza.Total_General = Convert.ToDouble(barra_poliza.Substring(199, 15))
+            'poliza.Codigo_Poliza = barra_poliza.Substring(214, 9)
+
+
+            'concatenación para fecha dd/mm/yyyy
+            'Dim comodin As String = "/"
+            'Dim dd As String = ""
+            'Dim mm As String = ""
+            'Dim anio As String = ""
+
+            'dd = Fecha_string.ToString.Substring(0, 2)
+            'mm = Fecha_string.ToString.Substring(2, 2)
+            'anio = Fecha_string.ToString.Substring(4, 4)
+            'poliza.Fecha_Aceptacion = New Date(anio, mm, dd)
+
+            'Scan_Poliza = poliza
 
             End If
 

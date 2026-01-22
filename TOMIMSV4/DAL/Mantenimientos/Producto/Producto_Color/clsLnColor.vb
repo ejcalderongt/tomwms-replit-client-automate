@@ -1,5 +1,6 @@
 Imports System.Data.SqlClient
 Imports System.Reflection
+Imports DevExpress.Data.Linq.Helpers
 Public Class clsLnColor
 
     Public Shared Sub Cargar(ByRef oBeColor As clsBeColor, ByRef dr As DataRow)
@@ -21,7 +22,7 @@ Public Class clsLnColor
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeColor As clsBeColor, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeColor As clsBeColor, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -108,10 +109,10 @@ Public Class clsLnColor
 
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
 
-            If Es_Transaccion_Remota then
+            If Es_Transaccion_Remota Then
                 cmd = New SqlCommand(sp, pConection, pTransaction)
             Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
             End If
 
@@ -128,7 +129,7 @@ Public Class clsLnColor
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
-            cmd.Dispose
+            cmd.Dispose()
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
@@ -138,32 +139,32 @@ Public Class clsLnColor
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close
-            If Not lConnection is Nothing Then lConnection.Dispose()
-            If Not lTransaction is Nothing Then lTransaction.Dispose()
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If Not lConnection Is Nothing Then lConnection.Dispose()
+            If Not lTransaction Is Nothing Then lTransaction.Dispose()
         End Try
 
     End Function
 
 
-    Public Shared Function Eliminar(ByRef oBeColor As clsBeColor, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Eliminar(ByRef oBeColor As clsBeColor, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
         Try
 
-            Const sp As String = " Delete from Color" & _
+            Const sp As String = " Delete from Color" &
              "  Where(IdColor = @IdColor)"
 
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
 
             Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
 
-            If Es_Transaccion_Remota then
+            If Es_Transaccion_Remota Then
                 cmd = New SqlCommand(sp, pConection, pTransaction)
             Else
-                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
             End If
 
@@ -171,7 +172,7 @@ Public Class clsLnColor
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
-            cmd.Dispose
+            cmd.Dispose()
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
@@ -181,9 +182,9 @@ Public Class clsLnColor
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close
-            If Not lConnection is Nothing Then lConnection.Dispose()
-            If Not lTransaction is Nothing Then lTransaction.Dispose()
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If Not lConnection Is Nothing Then lConnection.Dispose()
+            If Not lTransaction Is Nothing Then lTransaction.Dispose()
         End Try
 
     End Function
@@ -196,7 +197,7 @@ Public Class clsLnColor
         Try
 
             Const sp As String = "SELECT * FROM Color"
-            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
             Dim dt As New DataTable
@@ -210,9 +211,30 @@ Public Class clsLnColor
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close
-            If Not lConnection is Nothing Then lConnection.Dispose()
-            If Not lTransaction is Nothing Then lTransaction.Dispose()
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If Not lConnection Is Nothing Then lConnection.Dispose()
+            If Not lTransaction Is Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function Listar(ByVal pActivo As Boolean, ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction) As DataTable
+
+        Try
+
+            Const sp As String = "SELECT * FROM Color where Activo=@pActivo"
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            cmd.Parameters.Add(New SqlParameter("@PACTIVO", pActivo))
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            Return dt
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
         End Try
 
     End Function
@@ -259,7 +281,7 @@ Public Class clsLnColor
 
                 lConnection.Open()
 
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
                     Using lDTA As New SqlDataAdapter(sp, lConnection)
 
@@ -385,7 +407,7 @@ Public Class clsLnColor
 
     End Function
 
-    Public Shared Function MaxID() as Integer
+    Public Shared Function MaxID() As Integer
 
         Try
 
@@ -397,7 +419,7 @@ Public Class clsLnColor
 
                 lConnection.Open()
 
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
                     Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
 
@@ -506,4 +528,247 @@ Public Class clsLnColor
 
     End Function
 
+    Public Shared Function GetSingle(IdColor As Integer, lConnection As SqlConnection, lTransaction As SqlTransaction) As clsBeColor
+
+        GetSingle = Nothing
+
+        Try
+
+            Const sp As String = " SELECT * FROM color " &
+                                 " Where(IdColor = @IdColor)"
+
+            Using lDTA As New SqlDataAdapter(sp, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("IdColor", IdColor)
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                Dim BeColor As New clsBeColor
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                    Cargar(BeColor, lDataTable.Rows(0))
+                    GetSingle = BeColor
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Listar_For_Combo() As List(Of clsBeColor)
+
+        Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Listar_For_Combo = Nothing
+        Try
+
+            Const sp As String = "SELECT * FROM Color where Activo=1 "
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+
+                Listar_For_Combo = New List(Of clsBeColor)
+
+                For Each Row In dt.Rows
+                    Dim pColor = New clsBeColor()
+                    Cargar(pColor, Row)
+                    Listar_For_Combo.Add(pColor)
+                Next
+
+            End If
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If Not lConnection Is Nothing Then lConnection.Dispose()
+            If Not lTransaction Is Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Colores_By_IdColores(ByVal listColores As List(Of Integer)) As List(Of clsBeColor)
+
+        Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Get_Colores_By_IdColores = Nothing
+        Try
+
+            'Const sp As String = "SELECT  FROM Color where Activo=1 "
+
+            Dim ids As String = String.Join(",", listColores.Distinct())
+            Dim sp As String = $"SELECT IdColor, concat('C',Codigo) as Codigo, Nombre,
+                                        CodigoHex,
+                                        IdPropietario,
+                                        fec_agr,
+                                        user_agr,
+                                        fec_mod,
+                                        user_mod,
+                                        Activo
+                                        FROM Color WHERE activo=1 AND IdColor IN ({ids})"
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+
+                Get_Colores_By_IdColores = New List(Of clsBeColor)
+
+                For Each Row In dt.Rows
+                    Dim pColor = New clsBeColor()
+                    Cargar(pColor, Row)
+                    Get_Colores_By_IdColores.Add(pColor)
+                Next
+
+            End If
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If Not lConnection Is Nothing Then lConnection.Dispose()
+            If Not lTransaction Is Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Colores_By_IdColoresDT(ByVal listColores As List(Of Integer)) As DataTable
+
+        Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Get_Colores_By_IdColoresDT = Nothing
+        Try
+
+            'Const sp As String = "SELECT  FROM Color where Activo=1 "
+
+            Dim ids As String = String.Join(",", listColores.Distinct())
+            Dim sp As String = $"SELECT IdColor, Codigo 
+                                 FROM Color WHERE activo=1 AND IdColor IN ({ids})"
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            Get_Colores_By_IdColoresDT = dt
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If Not lConnection Is Nothing Then lConnection.Dispose()
+            If Not lTransaction Is Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Codigo_By_Nombre(ByVal pNombre As String) As String
+
+        Try
+
+            Dim lCodigo As String = ""
+
+            Const sp As String = "select Codigo from color where Nombre = @Nombre"
+
+            Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lCommand As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+
+                        lCommand.Parameters.AddWithValue("@Nombre", pNombre)
+
+                        Dim lReturnValue As Object = lCommand.ExecuteScalar()
+                        If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                            lCodigo = CStr(lReturnValue)
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lCodigo
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function GetSingle_By_CodigoColor(pCodigoColor As String) As clsBeColor
+
+        GetSingle_By_CodigoColor = Nothing
+
+        Try
+
+            Const sp As String = "SELECT * FROM Color Where (Codigo = @CodigoColor) "
+
+            Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(sp, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.Add(New SqlParameter("@CodigoColor", pCodigoColor))
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+
+                        Dim vBeColor As New clsBeColor
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                            Cargar(vBeColor, lDataTable.Rows(0))
+                            GetSingle_By_CodigoColor = vBeColor
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
 End Class

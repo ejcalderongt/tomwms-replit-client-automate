@@ -17,8 +17,9 @@ Public Class frmReglas_recepcion_List
     Private Sub listar_Reglas_Recepcion()
 
         Try
-
-            Dgrid.DataSource = clsLnReglas_recepcion.GetAll(chkActivos.Checked)
+            '#GT14112025: mostrar reglas para ingresos
+            'Dgrid.DataSource = clsLnReglas_recepcion.GetAll(chkActivos.Checked)
+            Dgrid.DataSource = clsLnReglas_recepcion.GetAll_By_Ingreso(chkActivos.Checked)
 
             lblRegs.Caption = String.Format("Registros: {0}", GridView1.RowCount)
 

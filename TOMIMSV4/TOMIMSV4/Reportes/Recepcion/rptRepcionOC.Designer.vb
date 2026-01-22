@@ -388,6 +388,9 @@ Partial Public Class rptRepcionOC
         Me.GroupHeader1 = New DevExpress.XtraReports.UI.GroupHeaderBand()
         Me.SqlDataSource2 = New DevExpress.DataAccess.Sql.SqlDataSource(Me.components)
         Me.Diferencia = New DevExpress.XtraReports.UI.CalculatedField()
+        Me.Factura = New DevExpress.XtraReports.Parameters.Parameter()
+        Me.XrLabel39 = New DevExpress.XtraReports.UI.XRLabel()
+        Me.XrLabel40 = New DevExpress.XtraReports.UI.XRLabel()
         CType(Me.XrTable1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.XrTable2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ImageCollection1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1730,6 +1733,31 @@ Partial Public Class rptRepcionOC
         Me.Diferencia.DataMember = "VW_REC_CON_OC"
         Me.Diferencia.Name = "Diferencia"
         '
+        'Factura
+        '
+        Me.Factura.Description = "Factura"
+        Me.Factura.Name = "Factura"
+        '
+        'XrLabel39
+        '
+        Me.XrLabel39.DataBindings.AddRange(New DevExpress.XtraReports.UI.XRBinding() {New DevExpress.XtraReports.UI.XRBinding(Me.Factura, "Text", "")})
+        Me.XrLabel39.LocationFloat = New DevExpress.Utils.PointFloat(562.0867!, 233.4167!)
+        Me.XrLabel39.Multiline = True
+        Me.XrLabel39.Name = "XrLabel39"
+        Me.XrLabel39.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel39.SizeF = New System.Drawing.SizeF(174.9132!, 44.99992!)
+        Me.XrLabel39.Text = "XrLabel39"
+        '
+        'XrLabel40
+        '
+        Me.XrLabel40.Font = New DevExpress.Drawing.DXFont("Times New Roman", 9.75!, DevExpress.Drawing.DXFontStyle.Bold)
+        Me.XrLabel40.LocationFloat = New DevExpress.Utils.PointFloat(400.9201!, 233.4167!)
+        Me.XrLabel40.Name = "XrLabel40"
+        Me.XrLabel40.Padding = New DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100.0!)
+        Me.XrLabel40.SizeF = New System.Drawing.SizeF(120.7916!, 22.99998!)
+        Me.XrLabel40.StylePriority.UseFont = False
+        Me.XrLabel40.Text = "Facturas:"
+        '
         'rptRepcionOC
         '
         Me.Bands.AddRange(New DevExpress.XtraReports.UI.Band() {Me.Detail, Me.TopMargin, Me.BottomMargin, Me.ReportHeaderBand1, Me.PageHeader, Me.GroupFooter1, Me.GroupHeader1})
@@ -1743,7 +1771,7 @@ Partial Public Class rptRepcionOC
         Me.Parameters.AddRange(New DevExpress.XtraReports.Parameters.Parameter() {Me.Empresa, Me.Bodega, Me.Tipo, Me.Factura})
         Me.ScriptLanguage = DevExpress.XtraReports.ScriptLanguage.VisualBasic
         Me.StyleSheet.AddRange(New DevExpress.XtraReports.UI.XRControlStyle() {Me.Title, Me.DetailData3_Odd, Me.PageInfo})
-        Me.Version = "25.1"
+        Me.Version = "24.1"
         XrWatermark1.Id = "Watermark1"
         Me.Watermarks.AddRange(New DevExpress.XtraPrinting.Drawing.Watermark() {XrWatermark1})
         CType(Me.XrTable1, System.ComponentModel.ISupportInitialize).EndInit()

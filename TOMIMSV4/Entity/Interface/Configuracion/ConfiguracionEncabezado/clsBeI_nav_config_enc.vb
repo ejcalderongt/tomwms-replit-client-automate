@@ -79,7 +79,7 @@ Public Class clsBeI_nav_config_enc
     Public Property Interface_SAP As Boolean = False
 
     Public Property Valida_Solo_Codigo As Boolean = False
-
+    Public Property Bodega_Faltante As String = ""
     ''' <summary>
     ''' #EJC20190702: Condición de procesamiento de pedido en interface.
     ''' </summary>
@@ -196,6 +196,16 @@ Public Class clsBeI_nav_config_enc
     Public Property Excluir_Recepcion_Picking As Boolean = False
     Public Property Bodega_Prorrateo As String = ""
     Public Property Bodega_Prorrateo1 As String = ""
+
+    Public Property Codigo_Cliente_Virtual As String = ""
+    ''' <summary>
+    ''' #CKFK20251030 Agregamos estos tres campos para la integración con ERP 
+    ''' ya que  centro de costo maneja centro de costo dirección y departamento
+    ''' </summary>
+    ''' <returns></returns>
+    Public Property Centro_Costo_Erp As Integer = 0
+    Public Property Centro_Costo_Dir_Erp As Integer = 0
+    Public Property Centro_Costo_Dep_Erp As Integer = 0
 
     Sub New()
     End Sub

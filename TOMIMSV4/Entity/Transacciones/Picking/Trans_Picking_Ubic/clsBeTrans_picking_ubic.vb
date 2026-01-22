@@ -43,6 +43,7 @@ Public Class clsBeTrans_picking_ubic
     ''' </summary>
     ''' <returns></returns>
     Public Property IdOperadorBodega_Asignado As Integer = 0
+    Public Property IdProductoTallaColor As Integer = 0
     Public Function Clone() As Object Implements ICloneable.Clone
         Return MyBase.MemberwiseClone()
     End Function

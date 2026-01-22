@@ -1,3 +1,4 @@
+Imports System
 Imports System.Data.SqlClient
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Controls
@@ -1327,7 +1328,7 @@ Public Class IMS
     End Function
 
 
-    Public Shared Function Listar_Tipo_Ajuste_Activo(ByRef Cmb As LookUpEdit) As Boolean
+    Public Shared Function Listar_Tipo_Ajuste_Activo(ByRef Cmb As LookUpEdit, ByVal Mostrar_Talla_Color As Boolean) As Boolean
 
         Listar_Tipo_Ajuste_Activo = False
 
@@ -1335,7 +1336,7 @@ Public Class IMS
 
         Try
 
-            DT = clsLnAjuste_tipo.Get_All_ForCombo_Activo()
+            DT = clsLnAjuste_tipo.Get_All_ForCombo_Activo(Mostrar_Talla_Color)
 
             If DT.Rows.Count > 0 Then
                 Cmb.Properties.DisplayMember = "Nombre"
@@ -3122,7 +3123,7 @@ Public Class IMS
 
     End Function
 
-    Public Overloads Shared Function Listar_Productos(ByRef Cmb As DevExpress.XtraEditors.GridLookUpEdit, IdBodega As Integer) As Boolean
+    Public Overloads Shared Function Listar_Productos(ByRef Cmb As LookUpEdit, IdBodega As Integer) As Boolean
 
         Listar_Productos = False
 
@@ -3401,10 +3402,46 @@ Public Class IMS
         End Try
 
     End Function
+
+    Public Shared Sub Llena_Empresas_Transporte(ByRef cmbEmpresaTransporte As LookUpEdit,
+                                                ByVal pIdBodega As Integer,
+                                                ByVal pConnection As SqlConnection,
+                                                ByVal pTransaction As SqlTransaction)
+
+        Listar_Clientes_By_IdCliente = False
+
+        Try
+
+            cmbEmpresaTransporte.Properties.DataSource = Nothing
+
+            Dim dt As New DataTable
+
+            dt = clsLnEmpresa_transporte_bodega.Get_All_By_IdBodega(pIdBodega, pConnection, pTransaction)
+
+            If dt.Rows.Count > 0 Then
+                cmbEmpresaTransporte.Properties.ValueMember = "IdEmpresaTransporte"
+                cmbEmpresaTransporte.Properties.DisplayMember = "Nombre"
+                cmbEmpresaTransporte.Properties.DataSource = dt
+                cmbEmpresaTransporte.ItemIndex = 0
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            "Llena_Empresas_Transporte",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
     Public Shared Function Listar_Clientes_By_IdCliente(ByRef Cmb As GridLookUpEdit,
-                                                            ByVal pIdPropietario As Integer,
-                                                            ByVal pIdBodega As Integer,
-                                                            ByVal IdCliente As Integer) As Boolean
+                                                           ByVal pIdPropietario As Integer,
+                                                           ByVal pIdBodega As Integer,
+                                                           ByVal IdCliente As Integer) As Boolean
 
         Listar_Clientes_By_IdCliente = False
 
@@ -3434,8 +3471,39 @@ Public Class IMS
             XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End Try
 
-    End Function
+    Public Shared Sub Llena_Pilotos(ByRef cmbPiloto As LookUpEdit,
+                                    ByVal pIdEmpresaTransporte As Integer,
+                                    ByVal pConnection As SqlConnection,
+                                    ByVal pTransaction As SqlTransaction)
 
+        Try
+
+            cmbPiloto.Properties.DataSource = Nothing
+
+            Dim dt As New DataTable
+
+            dt = clsLnEmpresa_transporte_pilotos.Get_All_By_IdEmpresaTransporte(pIdEmpresaTransporte, pConnection, pTransaction)
+
+            If dt.Rows.Count > 0 Then
+                cmbPiloto.Properties.ValueMember = "IdPiloto"
+                cmbPiloto.Properties.DisplayMember = "Nombre"
+                cmbPiloto.Properties.DataSource = dt
+                cmbPiloto.ItemIndex = 0
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            "Llena_Pilotos",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
     Public Shared Function Listar_Producto_Estado_Grid(ByRef Cmb As GridLookUpEdit) As Boolean
 
         Listar_Producto_Estado_Grid = False
@@ -3466,5 +3534,4 @@ Public Class IMS
         End Try
 
     End Function
-
 End Class

@@ -104,7 +104,9 @@ Public Class clsBeI_nav_transacciones_out
     ''' </summary>
     ''' <returns></returns>
     Public Property Cantidad_Pendiente As Double = 0
-
+    Public Property IdProductoTallaColor As Integer = 0
+    Public Property Talla As String = ""
+    Public Property Color As String = ""
     Sub New()
     End Sub
 

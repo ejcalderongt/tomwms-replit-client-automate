@@ -153,6 +153,10 @@ Partial Class frmCambioUbicacion
         Me.lnkCambioDeEstado = New System.Windows.Forms.LinkLabel()
         Me.txtNombreEstado = New DevExpress.XtraEditors.TextEdit()
         Me.GroupControl4 = New DevExpress.XtraEditors.GroupControl()
+        Me.lblColor = New DevExpress.XtraEditors.LabelControl()
+        Me.lblTalla = New DevExpress.XtraEditors.LabelControl()
+        Me.txtColor = New DevExpress.XtraEditors.TextEdit()
+        Me.txtTalla = New DevExpress.XtraEditors.TextEdit()
         Me.txtLicPlate = New DevExpress.XtraEditors.TextEdit()
         Me.cmbOperadores = New DevExpress.XtraEditors.LookUpEdit()
         Me.lblCantRef = New System.Windows.Forms.Label()
@@ -280,6 +284,8 @@ Partial Class frmCambioUbicacion
         CType(Me.txtNombreEstado.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl4.SuspendLayout()
+        CType(Me.txtColor.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtTalla.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtLicPlate.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbOperadores.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtLote.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1105,6 +1111,10 @@ Partial Class frmCambioUbicacion
         '
         'GroupControl4
         '
+        Me.GroupControl4.Controls.Add(Me.lblColor)
+        Me.GroupControl4.Controls.Add(Me.lblTalla)
+        Me.GroupControl4.Controls.Add(Me.txtColor)
+        Me.GroupControl4.Controls.Add(Me.txtTalla)
         Me.GroupControl4.Controls.Add(Me.txtLicPlate)
         Me.GroupControl4.Controls.Add(Label26)
         Me.GroupControl4.Controls.Add(Me.cmbOperadores)
@@ -1141,6 +1151,44 @@ Partial Class frmCambioUbicacion
         Me.GroupControl4.Size = New System.Drawing.Size(740, 401)
         Me.GroupControl4.TabIndex = 1
         Me.GroupControl4.Text = "Origen"
+        '
+        'lblColor
+        '
+        Me.lblColor.Location = New System.Drawing.Point(12, 321)
+        Me.lblColor.Name = "lblColor"
+        Me.lblColor.Size = New System.Drawing.Size(30, 16)
+        Me.lblColor.TabIndex = 36
+        Me.lblColor.Text = "Color"
+        '
+        'lblTalla
+        '
+        Me.lblTalla.Location = New System.Drawing.Point(12, 283)
+        Me.lblTalla.Name = "lblTalla"
+        Me.lblTalla.Size = New System.Drawing.Size(28, 16)
+        Me.lblTalla.TabIndex = 35
+        Me.lblTalla.Text = "Talla"
+        '
+        'txtColor
+        '
+        Me.txtColor.Location = New System.Drawing.Point(135, 313)
+        Me.txtColor.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtColor.MenuManager = Me.RibbonControl
+        Me.txtColor.Name = "txtColor"
+        Me.txtColor.Properties.MaskSettings.Set("mask", "n0")
+        Me.txtColor.Properties.ReadOnly = True
+        Me.txtColor.Size = New System.Drawing.Size(219, 22)
+        Me.txtColor.TabIndex = 34
+        '
+        'txtTalla
+        '
+        Me.txtTalla.Location = New System.Drawing.Point(135, 277)
+        Me.txtTalla.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtTalla.MenuManager = Me.RibbonControl
+        Me.txtTalla.Name = "txtTalla"
+        Me.txtTalla.Properties.MaskSettings.Set("mask", "n0")
+        Me.txtTalla.Properties.ReadOnly = True
+        Me.txtTalla.Size = New System.Drawing.Size(219, 22)
+        Me.txtTalla.TabIndex = 32
         '
         'txtLicPlate
         '
@@ -1999,6 +2047,8 @@ Partial Class frmCambioUbicacion
         CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl4.ResumeLayout(False)
         Me.GroupControl4.PerformLayout()
+        CType(Me.txtColor.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtTalla.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtLicPlate.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbOperadores.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtLote.Properties, System.ComponentModel.ISupportInitialize).EndInit()

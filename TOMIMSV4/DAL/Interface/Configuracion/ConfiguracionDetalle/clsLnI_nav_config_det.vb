@@ -29,7 +29,7 @@ Public Class clsLnI_nav_config_det
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeI_nav_config_det As clsBeI_nav_config_det, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeI_nav_config_det As clsBeI_nav_config_det, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -271,7 +271,7 @@ Public Class clsLnI_nav_config_det
 
         Try
 
-            Const sp As String = "SELECT * FROM I_nav_config_det" & _
+            Const sp As String = "SELECT * FROM I_nav_config_det" &
             " Where(idnavconfigdet = @idnavconfigdet)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -398,10 +398,10 @@ Public Class clsLnI_nav_config_det
         Catch ex1 As SqlException
             Throw ex1
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+    Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
-        End Try
+    End Try
 
     End Function
 

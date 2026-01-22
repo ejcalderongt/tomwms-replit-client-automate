@@ -298,7 +298,7 @@ Public Class frmLicSolicitud
                 Exit Sub
             End If
 
-            If vFechaVence <= clsServidor.Get_Fecha_Servidor()
+            If vFechaVence <= clsServidor.Get_Fecha_Servidor() Then
                 XtraMessageBox.Show("La licencia vence hoy, no se puede aplicar",
                 Text,
                 MessageBoxButtons.OK,

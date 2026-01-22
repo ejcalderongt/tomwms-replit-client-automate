@@ -43,6 +43,8 @@ Public Class clsLnTrans_movimientos
                 .IdPedidoDet = IIf(IsDBNull(dr.Item("IdPedidoDet")), 0, dr.Item("IdPedidoDet"))
                 .IdDespachoEnc = IIf(IsDBNull(dr.Item("IdDespachoEnc")), 0, dr.Item("IdDespachoEnc"))
                 .IdDespachoDet = IIf(IsDBNull(dr.Item("IdDespachoDet")), 0, dr.Item("IdDespachoDet"))
+                .Talla = IIf(IsDBNull(dr.Item("Talla")), 0, dr.Item("Talla"))
+                .Color = IIf(IsDBNull(dr.Item("Color")), 0, dr.Item("Color"))
 
             End With
 
@@ -98,6 +100,9 @@ Public Class clsLnTrans_movimientos
             Ins.Add("IdPedidoDet", "@IdPedidoDet", DataType.Parametro)
             Ins.Add("IdDespachoEnc", "@IdDespachoEnc", DataType.Parametro)
             Ins.Add("IdDespachoDet", "@IdDespachoDet", DataType.Parametro)
+            Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
+            Ins.Add("Talla", "@Talla", DataType.Parametro)
+            Ins.Add("Color", "@Color", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
 
@@ -147,13 +152,16 @@ Public Class clsLnTrans_movimientos
             cmd.Parameters.Add(New SqlParameter("@IDPEDIDODET", oBeTrans_movimientos.IdPedidoDet))
             cmd.Parameters.Add(New SqlParameter("@IDDESPACHOENC", oBeTrans_movimientos.IdDespachoEnc))
             cmd.Parameters.Add(New SqlParameter("@IDDESPACHODET", oBeTrans_movimientos.IdDespachoDet))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_movimientos.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@TALLA", oBeTrans_movimientos.Talla))
+            cmd.Parameters.Add(New SqlParameter("@COLOR", oBeTrans_movimientos.Color))
 
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
-            'Return rowsAffected
+            Return rowsAffected
 
             If rowsAffected = 1 Then
                 Return 1
@@ -256,6 +264,8 @@ Public Class clsLnTrans_movimientos
             Upd.Add("IdPedidoDet", "@IdPedidoDet", DataType.Parametro)
             Upd.Add("IdDespachoEnc", "@IdDespachoEnc", DataType.Parametro)
             Upd.Add("IdDespachoDet", "@IdDespachoDet", DataType.Parametro)
+            Upd.Add("Talla", "@Talla", DataType.Parametro)
+            Upd.Add("Color", "@Color", DataType.Parametro)
             Upd.Where("IdMovimiento = @IdMovimiento " &
                 "AND IdEmpresa = @IdEmpresa " &
                 "AND IdBodegaOrigen = @IdBodegaOrigen " &
@@ -308,6 +318,8 @@ Public Class clsLnTrans_movimientos
             cmd.Parameters.Add(New SqlParameter("@IDPEDIDODET", oBeTrans_movimientos.IdPedidoDet))
             cmd.Parameters.Add(New SqlParameter("@IDDESPACHOENC", oBeTrans_movimientos.IdDespachoEnc))
             cmd.Parameters.Add(New SqlParameter("@IDDESPACHODET", oBeTrans_movimientos.IdDespachoDet))
+            cmd.Parameters.Add(New SqlParameter("@TALLA", oBeTrans_movimientos.Talla))
+            cmd.Parameters.Add(New SqlParameter("@COLOR", oBeTrans_movimientos.Color))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

@@ -1948,6 +1948,9 @@ Public Class frmCargaExcel
         lInvenarioTeorico.Columns.Add("Parametro_a", GetType(String))
         lInvenarioTeorico.Columns.Add("Parametro_b", GetType(String))
         lInvenarioTeorico.Columns.Add("Codigo_Area", GetType(String))
+        lInvenarioTeorico.Columns.Add("Talla", GetType(String))
+        lInvenarioTeorico.Columns.Add("Color", GetType(String))
+        lInvenarioTeorico.Columns.Add("IdProductoTallaColor", GetType(Integer))
 
     End Sub
 
@@ -1974,6 +1977,9 @@ Public Class frmCargaExcel
         Dim vParametro_a As String = ""
         Dim vParametro_b As String = ""
         Dim Codigo_Area_SAP As String = ""
+        Dim Color As String = ""
+        Dim Talla As String = ""
+        Dim IdProductoTallaColor As Integer
 
         Try
 
@@ -2034,6 +2040,7 @@ Public Class frmCargaExcel
                         If Not clsLnProducto.Exist_by_Codigo(pDT(i)(0)) Then
                             errorCampos = True
                             clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "El código del producto " & pDT(i)(0) & "en la fila " & i + 1 & " no existe en la bd.")
+                            Continue For
                         End If
                         vCodigoProducto = pDT(i)(0)
                     End If
@@ -2071,11 +2078,11 @@ Public Class frmCargaExcel
                 End If
 
                 'GT 17052021 se valida que exista al menos un string para la Unidad Medida
-                If pDT(i)(4) Is DBNull.Value AndAlso pDT(i)(4) Is Nothing Then
+                If pDT(i)(4) Is DBNull.Value OrElse pDT(i)(4) Is Nothing OrElse pDT(i)(4).ToString().Trim() = "" Then
                     errorCampos = True
                     clsPublic.Actualizar_Progreso(lblPrg, "Error : " & "Falta nombre de la unidad de medida (UM) para el producto. Fila " & i + 1)
                 Else
-                    vNomUM = pDT(i)(4)
+                vNomUM = pDT(i)(4)
                 End If
 
                 'EFREN 17052021 se asigna lote, este puede ir vacio.
@@ -2147,6 +2154,43 @@ Public Class frmCargaExcel
                 vParametro_b = IIf(pDT(i)(13) Is DBNull.Value, "", Convert.ToString(pDT(i)(13)))
                 Codigo_Area_SAP = IIf(pDT(i)(14) Is DBNull.Value, "", Convert.ToString(pDT(i)(14)))
 
+                If AP.Bodega.Control_Talla_Color Then
+                    Talla = IIf(pDT(i)(15) Is DBNull.Value, "", Convert.ToString(pDT(i)(15)))
+                    Color = IIf(pDT(i)(16) Is DBNull.Value, "", Convert.ToString(pDT(i)(16)))
+
+                    Dim BeTalla = clsLnTalla.GetSingleCodigo(Talla)
+                    Dim BeColor = clsLnColor.GetSingle_By_CodigoColor(Color)
+                    Dim BeProducto = clsLnProducto.Get_Single_By_Codigo_And_Codigo_Barra(vCodigoProducto)
+
+                    If BeTalla IsNot Nothing AndAlso BeColor IsNot Nothing Then
+                        Dim TallaColor = clsLnProducto_talla_color.Get_Single_By_IdColor_IdTalla(BeProducto.IdProducto,
+                                                                                                 BeTalla.IdTalla,
+                                                                                                 BeColor.IdColor)
+
+                        If TallaColor IsNot Nothing Then
+                            IdProductoTallaColor = TallaColor.IdProductoTallaColor
+                        Else
+                            Dim BeTallaColorNuevo As New clsBeProducto_talla_color
+
+                            BeTallaColorNuevo.IdProductoTallaColor = clsLnProducto_talla_color.MaxID() + 1
+                            BeTallaColorNuevo.IdProducto = BeProducto.IdProducto
+                            BeTallaColorNuevo.IdTalla = BeTalla.IdTalla
+                            BeTallaColorNuevo.IdColor = BeColor.IdColor
+                            BeTallaColorNuevo.IdCampaña = 63
+                            BeTallaColorNuevo.CodigoSKU = BeProducto.Codigo + BeColor.Codigo + BeTalla.Codigo
+                            BeTallaColorNuevo.User_agr = AP.UsuarioAp.IdUsuario
+                            BeTallaColorNuevo.User_mod = AP.UsuarioAp.IdUsuario
+                            BeTallaColorNuevo.Fec_agr = Date.Today
+                            BeTallaColorNuevo.Fec_mod = Date.Today
+
+                            If clsLnProducto_talla_color.Insertar(BeTallaColorNuevo) > 0 Then
+                                IdProductoTallaColor = BeTallaColorNuevo.IdProductoTallaColor
+                            End If
+
+                        End If
+                    End If
+                End If
+
                 If Not errorCampos Then
 
                     lInvenarioTeorico.Rows.Add(vContador,
@@ -2165,7 +2209,10 @@ Public Class frmCargaExcel
                                                vPrecio,
                                                vParametro_a,
                                                vParametro_b,
-                                               Codigo_Area_SAP)
+                                               Codigo_Area_SAP,
+                                               Talla,
+                                               Color,
+                                               IdProductoTallaColor)
 
                 End If
 

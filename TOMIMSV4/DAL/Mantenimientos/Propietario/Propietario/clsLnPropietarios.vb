@@ -83,7 +83,7 @@ Public Class clsLnPropietarios
 
     End Sub
 
-    Public Shared Function Insertar(ByRef oBePropietarios As clsBePropietarios, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBePropietarios As clsBePropietarios, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -609,7 +609,7 @@ Public Class clsLnPropietarios
 
     End Function
 
-    Public Shared Function MaxID() as Integer
+    Public Shared Function MaxID() As Integer
 
         Try
 

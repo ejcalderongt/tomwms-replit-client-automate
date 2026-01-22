@@ -1093,6 +1093,88 @@ Public Class clsLnReportesFiscales
 
         Try
 
+
+
+            'If pEs_fiscal Then
+
+            '    '#GT30072024: valido si incluyo producto en la consulta y agrupacion
+            '    If pAgrupaPorProducto Then
+
+            '        vSQL = "select numero_orden,Fecha,sum(cantidad) unidades,sum(total_valor) valor_total,codigo_barra 
+            '                   FROM dbo.VW_Fiscal_historico WHERE 1 = 1 "
+
+            '    Else
+            '        vSQL = "select numero_orden,Fecha,sum(cantidad) unidades,sum(total_valor) valor_total 
+            '                   FROM dbo.VW_Fiscal_historico WHERE 1 = 1 "
+            '    End If
+
+            'Else
+
+            '    '#GT30072024: valido si incluyo producto en la consulta y agrupacion
+            '    If pAgrupaPorProducto Then
+
+            '        vSQL = "select referencia,Fecha,sum(cantidad) unidades,sum(total_valor) valor_total,codigo_barra 
+            '                   FROM dbo.VW_Fiscal_historico WHERE 1 = 1 "
+
+            '    Else
+            '        vSQL = "select referencia,Fecha,sum(cantidad) unidades,sum(total_valor) valor_total 
+            '                   FROM dbo.VW_Fiscal_historico WHERE 1 = 1 "
+            '    End If
+
+            'End If
+
+            'Dim vSQL As String = ""
+            'Dim baseQuery As String = "SELECT {0}, IdOrdenCompraEnc,Fecha, SUM(cantidad) unidades, SUM(total_valor) valor_total{1} FROM dbo.VW_Fiscal_historico WHERE 1 = 1"
+            '' Columnas dinámicas según las condiciones
+            'Dim referenciaColumna As String = If(pEs_fiscal, "numero_orden", "referencia")
+            'Dim productoColumna As String = If(pAgrupaPorProducto, ", codigo_barra", "")
+            '' Construir la consulta final
+            'vSQL = String.Format(baseQuery, referenciaColumna, productoColumna)
+
+
+            'If pEs_fiscal Then
+
+            '    vSQL += "AND es_bodega_fiscal = 1 "
+
+            '    If Not String.IsNullOrEmpty(pNumero_orden) Then
+            '        vSQL += " AND numero_orden=@pNumeroOrden "
+            '    End If
+
+            'Else
+            '    vSQL += "AND es_bodega_fiscal = 0 "
+
+            '    If Not String.IsNullOrEmpty(pNumero_orden) Then
+            '        vSQL += " AND referencia=@pNumeroOrden "
+            '    End If
+            'End If
+
+            'If pIdOrdenCompraEnc > 0 Then
+            '    vSQL += " AND IdOrdenCompraEnc=@pIdOrdenCompraEnc "
+            'End If
+
+
+            'If pIdPropietario <> 0 Then
+            '    vSQL += "AND Idpropietario = @pIdPropietario "
+            'End If
+
+            'vSQL += String.Format(" AND FECHA BETWEEN {0} AND {1} ", FormatoFechas.fFecha(pFechaDel), FormatoFechas.fFecha(pFechaAl))
+
+            'If pEs_fiscal Then
+
+            '    If pAgrupaPorProducto Then
+            '        vSQL += "GROUP BY numero_orden,IdOrdenCompraEnc,Fecha,codigo_barra Order BY numero_orden,codigo_barra "
+            '    Else
+            '        vSQL += "GROUP BY numero_orden,IdOrdenCompraEnc,Fecha Order BY numero_orden "
+            '    End If
+
+            'Else
+            '    If pAgrupaPorProducto Then
+            '        vSQL += "GROUP BY referencia,IdOrdenCompraEnc,Fecha,codigo_barra Order BY referencia,codigo_barra "
+            '    Else
+            '        vSQL += "GROUP BY referencia,IdOrdenCompraEnc, Fecha Order BY referencia "
+            '    End If
+            'End If
+
             Dim vSQL As New StringBuilder()
 
             ' Definir partes dinámicas según las condiciones

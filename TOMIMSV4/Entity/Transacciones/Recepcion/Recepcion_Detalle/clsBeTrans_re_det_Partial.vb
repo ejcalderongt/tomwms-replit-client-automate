@@ -25,6 +25,8 @@
     '#EJC202302210910: Identificar si ya ejecutó proceso de retroactivo.
     Public Property IdJornadaSistema As Integer = 0
     Public Property Host As String = ""
+    Public Property Talla As clsBeTalla = New clsBeTalla()
+    Public Property Color As clsBeColor = New clsBeColor()
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls

@@ -1,5 +1,6 @@
 ﻿Imports System.IO
 Imports System.Reflection
+Imports DevExpress.DashboardCommon
 Imports DevExpress.Data
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraGrid
@@ -481,6 +482,18 @@ Public Class frmListaStockControlCalidad
 
         Try
 
+            'If cmbBodega.Text = "" Then
+            '    XtraMessageBox.Show("Falta definir la bodega", Text, MessageBoxButtons.OK, MessageBoxIcon.Information) : Return False
+            'End If
+
+            'If cmbPropietarioBodega.ItemIndex < 0 Then
+            '    XtraMessageBox.Show("Falta definir el propietario", Text, MessageBoxButtons.OK, MessageBoxIcon.Information) : Return False
+            'End If
+
+            'If txtIdMotivoUbicacion.Text = "" Then
+            '    XtraMessageBox.Show("Falta motivo de ubicacion", Text, MessageBoxButtons.OK, MessageBoxIcon.Information) : Return False
+            'End If
+
             If listaStockSeleccionado.Count = 0 Then
                 XtraMessageBox.Show("Transaccion no tiene detalle.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information) : Return False
             End If
@@ -525,16 +538,16 @@ Public Class frmListaStockControlCalidad
             pTrans_ubic_hh_enc.IsNew = 1
 
             clsLnTrans_ubic_hh_enc.Guardar_Transaccion(pTrans_ubic_hh_enc,
-                                                       pListUbicHHDet,
-                                                       pListjOperador,
-                                                       pListMovimiento,
-                                                       0,
-                                                       IdPropietario_,
-                                                       pListStockMov,
-                                                       pListTransUbicTarimaDisponibles,
-                                                       pListTransUbicTarimaUsadas,
-                                                       pTrans_ubic_hh_enc.IdTareaUbicacionEnc,
-                                                       AP.HostName
+                                                      pListUbicHHDet,
+                                                      pListjOperador,
+                                                      pListMovimiento,
+                                                      0,
+                                                      IdPropietario_,
+                                                      pListStockMov,
+                                                      pListTransUbicTarimaDisponibles,
+                                                      pListTransUbicTarimaUsadas,
+                                                      pTrans_ubic_hh_enc.IdTareaUbicacionEnc,
+                                                      AP.HostName
                                                       )
 
             Guardar = True
@@ -693,6 +706,16 @@ Public Class frmListaStockControlCalidad
                         clsLnStock.GetSingle(pObjStockMov)
                         pObjStockMov.IdUbicacion_anterior = Stock.IdUbicacion
                         pObjStockMov.IdProductoEstado = Stock.IdProductoEstado
+
+                        '#MECR05092025: se agrego columna de "IdProductoTallaColor", "Talla" y "Color"
+                        If Stock.IdProductoTallaColor > 0 Then
+                            Dim DtPtc = clsLnProducto_talla_color.Get_Single_Dt_By_IdProductoTallaColor(Stock.IdProductoTallaColor)
+                            If DtPtc.Rows.Count > 0 Then
+                                pObjStockMov.Talla = DtPtc.Rows(0)("Talla")
+                                pObjStockMov.Color = DtPtc.Rows(0)("Color")
+                            End If
+                        End If
+
                         pListStockMov.Add(pObjStockMov)
 
                         '#GT02012023: creamos la tarea detalle de la HH
@@ -989,6 +1012,8 @@ Public Class frmListaStockControlCalidad
                 Dim IdEmpresa As Integer = clsLnBodega.Get_IdEmpresa_By_IdBodega(idBodega)
                 Dim vNombreEmpresa As String = clsLnEmpresa.Get_Nombre_Empresa_By_IdEmpresa(IdEmpresa)
 
+                Rep.ShowPreview()
+            Else
                 Dim Rep As New rptControlCalidadCambioEstado
                 Rep.DataSource = DT
                 Rep.DataMember = "Result"
@@ -1005,6 +1030,7 @@ Public Class frmListaStockControlCalidad
                 End If
 
                 Rep.ShowPreview()
+            End If
 
             End If
 

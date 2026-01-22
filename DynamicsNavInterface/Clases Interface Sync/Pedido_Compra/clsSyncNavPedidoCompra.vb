@@ -721,10 +721,23 @@ Public Class clsSyncNavPedidoCompra : Inherits clsInterfaceBase
 
                     If navPedidoCompraEnc.Status <> 0 Then
 
+                        If Not navPedidoCompraEnc.No = "OP-00047234" Then
+                            Debug.Print("ESPERA")
+                            'Continue For
+                        End If
+
                         lblprg.AppendText(String.Format("Procesando D.I.: {0} ", navPedidoCompraEnc.No, vbNewLine))
                         lblprg.AppendText(vbNewLine)
                         lblprg.SelectionStart = lblprg.TextLength
                         lblprg.ScrollToCaret()
+
+                        If navPedidoCompraEnc.No = "PC-096587" Then
+                            Debug.Print("Hola")
+                        End If
+
+                        If navPedidoCompraEnc.No = "PC-098135" Then
+                            Debug.Print("Hola")
+                        End If
 
                         gBeOrdenCompra = New clsBeTrans_oc_enc() With {.Referencia = navPedidoCompraEnc.No,
                                                                        .IdTipoIngresoOC = navPedidoCompraEnc.Document_Type}

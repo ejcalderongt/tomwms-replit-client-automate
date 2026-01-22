@@ -16,13 +16,17 @@ Public Class clsLnTrans_re_oc
                 .User_agr = IIf(IsDBNull(dr.Item("user_agr")), "", dr.Item("user_agr"))
                 .Fec_agr = IIf(IsDBNull(dr.Item("fec_agr")), Date.Now, dr.Item("fec_agr"))
                 .Firma_operador = IIf(IsDBNull(dr.Item("firma_operador")), Nothing, dr.Item("firma_operador"))
+                .No_Erp_Docentry_Entrega = IIf(IsDBNull(dr.Item("No_Erp_Docentry_Entrega")), "", dr.Item("No_Erp_Docentry_Entrega"))
+                .No_Erp_Docnum_Entrega = IIf(IsDBNull(dr.Item("No_Erp_Docnum_Entrega")), "", dr.Item("No_Erp_Docnum_Entrega"))
+                .No_Erp_Docentry_Faltante = IIf(IsDBNull(dr.Item("No_Erp_Docentry_Faltante")), "", dr.Item("No_Erp_Docentry_Faltante"))
+                .No_Erp_Docnum_Faltante = IIf(IsDBNull(dr.Item("No_Erp_Docnum_Faltante")), "", dr.Item("No_Erp_Docnum_Faltante"))
             End With
         Catch ex As Exception
             Throw ex
         End Try
     End Sub
 
-    Public shared Function Insertar(ByRef oBeTrans_re_oc As clsBeTrans_re_oc, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_re_oc As clsBeTrans_re_oc, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -42,6 +46,10 @@ Public Class clsLnTrans_re_oc
             Ins.Add("user_agr", "@user_agr", DataType.Parametro)
             Ins.Add("fec_agr", "@fec_agr", DataType.Parametro)
             Ins.Add("firma_operador", "@firma_operador", DataType.Parametro)
+            Ins.Add("No_Erp_Docentry_Entrega", "@No_Erp_Docentry_Entrega", DataType.Parametro)
+            Ins.Add("No_Erp_Docnum_Entrega", "@No_Erp_Docnum_Entrega", DataType.Parametro)
+            Ins.Add("No_Erp_Docentry_Faltante", "@No_Erp_Docentry_Faltante", DataType.Parametro)
+            Ins.Add("No_Erp_Docnum_Faltante", "@No_Erp_Docnum_Faltante", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
 
@@ -67,6 +75,10 @@ Public Class clsLnTrans_re_oc
             cmd.Parameters.Add(New SqlParameter("@HORA_FIN_HH", oBeTrans_re_oc.Hora_fin_hh))
             cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeTrans_re_oc.User_agr))
             cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeTrans_re_oc.Fec_agr))
+            cmd.Parameters.Add(New SqlParameter("@NO_ERP_DOCENTRY_ENTREGA", oBeTrans_re_oc.No_Erp_Docentry_Entrega))
+            cmd.Parameters.Add(New SqlParameter("@NO_ERP_DOCNUM_ENTREGA", oBeTrans_re_oc.No_Erp_Docnum_Entrega))
+            cmd.Parameters.Add(New SqlParameter("@NO_ERP_DOCENTRY_FALTANTE", oBeTrans_re_oc.No_Erp_Docentry_Faltante))
+            cmd.Parameters.Add(New SqlParameter("@NO_ERP_DOCNUM_FALTANTE", oBeTrans_re_oc.No_Erp_Docnum_Faltante))
 
             If oBeTrans_re_oc.Firma_operador IsNot Nothing Then
                 cmd.Parameters.Add(New SqlParameter("@firma_operador", oBeTrans_re_oc.Firma_operador))
@@ -108,6 +120,10 @@ Public Class clsLnTrans_re_oc
             Upd.Add("recepcion_manual", "@recepcion_manual", DataType.Parametro)
             Upd.Add("no_docto", "@no_docto", DataType.Parametro)
             Upd.Add("firma_operador", "@firma_operador", DataType.Parametro)
+            Upd.Add("No_Erp_Docentry_Entrega", "@No_Erp_Docentry_Entrega", DataType.Parametro)
+            Upd.Add("No_Erp_Docnum_Entrega", "@No_Erp_Docnum_Entrega", DataType.Parametro)
+            Upd.Add("No_Erp_Docentry_Faltante", "@No_Erp_Docentry_Faltante", DataType.Parametro)
+            Upd.Add("No_Erp_Docnum_Faltante", "@No_Erp_Docnum_Faltante", DataType.Parametro)
             Upd.Where("IdRecepcionOc = @IdRecepcionOc " &
                       "AND IdRecepcionEnc = @IdRecepcionEnc")
 
@@ -131,6 +147,10 @@ Public Class clsLnTrans_re_oc
             cmd.Parameters.Add(New SqlParameter("@RECEPCION_CIEGA", oBeTrans_re_oc.Recepcion_ciega))
             cmd.Parameters.Add(New SqlParameter("@RECEPCION_MANUAL", oBeTrans_re_oc.Recepcion_manual))
             cmd.Parameters.Add(New SqlParameter("@NO_DOCTO", oBeTrans_re_oc.No_docto))
+            cmd.Parameters.Add(New SqlParameter("@NO_ERP_DOCENTRY_ENTREGA", oBeTrans_re_oc.No_Erp_Docentry_Entrega))
+            cmd.Parameters.Add(New SqlParameter("@NO_ERP_DOCNUM_ENTREGA", oBeTrans_re_oc.No_Erp_Docnum_Entrega))
+            cmd.Parameters.Add(New SqlParameter("@NO_ERP_DOCENTRY_FALTANTE", oBeTrans_re_oc.No_Erp_Docentry_Faltante))
+            cmd.Parameters.Add(New SqlParameter("@NO_ERP_DOCNUM_FALTANTE", oBeTrans_re_oc.No_Erp_Docnum_Faltante))
 
             If oBeTrans_re_oc.Firma_operador IsNot Nothing Then
                 cmd.Parameters.Add(New SqlParameter("@firma_operador", oBeTrans_re_oc.Firma_operador))
@@ -397,5 +417,64 @@ Public Class clsLnTrans_re_oc
         End Try
 
     End Function
+
+    Public Shared Function Actualizar_No_Entrega_ERP(ByRef oBeTrans_re_oc As clsBeTrans_re_oc,
+                                                     Optional ByVal pConection As SqlConnection = Nothing,
+                                                     Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Dim cmd As New SqlCommand
+
+        Try
+            ' Build UPDATE
+            Upd.Init("trans_re_oc")
+            Upd.Add("no_erp_docentry_entrega", "@no_erp_docentry_entrega", DataType.Parametro)
+            Upd.Add("no_erp_docnum_entrega", "@no_erp_docnum_entrega", DataType.Parametro)
+            Upd.Where("IdRecepcionOc = @IdRecepcionOc AND IdRecepcionEnc = @IdRecepcionEnc")
+
+            Dim sp As String = Upd.SQL()
+
+            ' Transacción remota/local
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+            cmd.CommandType = CommandType.Text
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection, pTransaction)
+            Else
+                lConnection.Open()
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
+
+            ' Parámetros clave
+            cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONOC", oBeTrans_re_oc.IdRecepcionOc))
+            cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONENC", oBeTrans_re_oc.IdRecepcionEnc))
+
+            ' Parámetros de los NVARCHAR(50) con manejo de nulos
+            Dim pDocEntry As Object = If(String.IsNullOrWhiteSpace(oBeTrans_re_oc.No_Erp_Docentry_Entrega), CType(DBNull.Value, Object), oBeTrans_re_oc.No_Erp_Docentry_Entrega)
+            Dim pDocNum As Object = If(String.IsNullOrWhiteSpace(oBeTrans_re_oc.No_Erp_Docnum_Entrega), CType(DBNull.Value, Object), oBeTrans_re_oc.No_Erp_Docnum_Entrega)
+
+            cmd.Parameters.Add(New SqlParameter("@NO_ERP_DOCENTRY_ENTREGA", pDocEntry))
+            cmd.Parameters.Add(New SqlParameter("@NO_ERP_DOCNUM_ENTREGA", pDocNum))
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection IsNot Nothing Then lConnection.Dispose()
+            cmd.Dispose()
+        End Try
+
+    End Function
+
 
 End Class

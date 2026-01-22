@@ -38,7 +38,7 @@ Public Class clsLnUsuario
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeUsuario As clsBeUsuario, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeUsuario As clsBeUsuario, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -535,7 +535,7 @@ Public Class clsLnUsuario
     End Function
 
 
-    Public Shared Function MaxID() as Integer
+    Public Shared Function MaxID() As Integer
 
         Try
 

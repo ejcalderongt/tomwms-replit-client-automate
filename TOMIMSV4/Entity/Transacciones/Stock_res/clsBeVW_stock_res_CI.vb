@@ -30,6 +30,11 @@ Public Class clsBeVW_stock_res_CI
     Public Property IdArea As Integer = 0
     '#AT20240805 Agregue el campo IdStock para la consulta detallada de existencia
     Public Property IdStock As Integer = 0
+    Public Property Codigo_Talla As String = ""
+    Public Property Nombre_Talla As String = ""
+    Public Property Codigo_Color As String = ""
+    Public Property Nombre_Color As String = ""
+    Public Property CodigoSKU As String = ""
     '#GT25072025: campo para la HH en existencias
     Public Property IdUbicacionAnterior As Integer = 0
     Public Property Codigo_Barra As String = ""

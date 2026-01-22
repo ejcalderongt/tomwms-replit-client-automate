@@ -122,11 +122,13 @@ Partial Class frmHorario_Laboral
         CType(Me.txtMMS1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtMMI2, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtMMI1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.Fec_agrDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Fec_agrDateEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Fec_agrDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.User_agrTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Fec_modDateEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Fec_modDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.Fec_modDateEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.User_modTextEdit.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.groupDetalle, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.groupDetalle.SuspendLayout()
@@ -338,7 +340,7 @@ Partial Class frmHorario_Laboral
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuGuardar, Me.mnuActualizar, Me.mnuEliminar})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.RibbonControl.SearchEditItem, Me.mnuGuardar, Me.mnuActualizar, Me.mnuEliminar})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonControl.MaxItemId = 5
@@ -883,42 +885,42 @@ Partial Class frmHorario_Laboral
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.StatusBar = Me.RibbonStatusBar
         Me.Text = "Mantenimiento horario laboral"
-        CType(Me.RibbonControl,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.GroupControl1,System.ComponentModel.ISupportInitialize).EndInit
-        Me.GroupControl1.ResumeLayout(false)
+        CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GroupControl1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.GroupControl1.ResumeLayout(False)
         Me.GroupControl1.PerformLayout
-        CType(Me.cmbTurno.Properties,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.cmdJornada.Properties,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.cmbBodega.Properties,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.txtNombre.Properties,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.txtTiempoRetraso,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.txtMMS2,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.txtMMS1,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.txtMMI2,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.txtMMI1,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.Fec_agrDateEdit.Properties.CalendarTimeProperties,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.Fec_agrDateEdit.Properties,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.User_agrTextEdit.Properties,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.Fec_modDateEdit.Properties.CalendarTimeProperties,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.Fec_modDateEdit.Properties,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.User_modTextEdit.Properties,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.groupDetalle,System.ComponentModel.ISupportInitialize).EndInit
-        Me.groupDetalle.ResumeLayout(false)
+        CType(Me.cmbTurno.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmdJornada.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.cmbBodega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtNombre.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtTiempoRetraso, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtMMS2, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtMMS1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtMMI2, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtMMI1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.Fec_agrDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.Fec_agrDateEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.User_agrTextEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.Fec_modDateEdit.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.Fec_modDateEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.User_modTextEdit.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.groupDetalle, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.groupDetalle.ResumeLayout(False)
         Me.groupDetalle.PerformLayout
-        CType(Me.chkActivos.Properties,System.ComponentModel.ISupportInitialize).EndInit
-        Me.ToolStrip.ResumeLayout(false)
+        CType(Me.chkActivos.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.ToolStrip.ResumeLayout(False)
         Me.ToolStrip.PerformLayout
-        CType(Me.Dgrid,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.GridView1,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.dkHorarioLaboral,System.ComponentModel.ISupportInitialize).EndInit
-        Me.hideContainerBottom.ResumeLayout(false)
-        Me.DockPanel1.ResumeLayout(false)
-        Me.DockPanel1_Container.ResumeLayout(false)
+        CType(Me.Dgrid, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dkHorarioLaboral, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.hideContainerBottom.ResumeLayout(False)
+        Me.DockPanel1.ResumeLayout(False)
+        Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout
-        Me.ResumeLayout(false)
+        Me.ResumeLayout(False)
         Me.PerformLayout
 
-End Sub
+    End Sub
 
     Friend WithEvents RibbonControl As DevExpress.XtraBars.Ribbon.RibbonControl
     Friend WithEvents RibbonPage1 As DevExpress.XtraBars.Ribbon.RibbonPage

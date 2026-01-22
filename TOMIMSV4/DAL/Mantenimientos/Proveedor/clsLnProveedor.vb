@@ -44,7 +44,7 @@ Public Class clsLnProveedor
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Sub
@@ -81,8 +81,9 @@ Public Class clsLnProveedor
             Ins.Add("sistema", "@sistema", DataType.Parametro)
             Ins.Add("idconfiguracionbarrapallet", "@idconfiguracionbarrapallet", DataType.Parametro)
             Ins.Add("es_proveedor_servicio", "@es_proveedor_servicio", DataType.Parametro)
-            If Not oBeProveedor.IdBodegaAreaSAP = 0 Then  Ins.Add("idbodegaareasap", "@idbodegaareasap", DataType.Parametro)
-            If Not oBeProveedor.idPais = 0 Then Ins.Add("idpais", "@idpais", DataType.Parametro)
+            If Not oBeProveedor.IdBodegaAreaSAP = 0 Then Ins.Add("idbodegaareasap", "@idbodegaareasap", DataType.Parametro)
+            If Not oBeProveedor.IdPais = 0 Then Ins.Add("idpais", "@idpais", DataType.Parametro)
+            Ins.Add("codigo_empresa_erp", "@codigo_empresa_erp", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -122,7 +123,8 @@ Public Class clsLnProveedor
             cmd.Parameters.Add(New SqlParameter("@IDCONFIGURACIONBARRAPALLET", oBeProveedor.IdConfiguracionBarraPallet))
             cmd.Parameters.Add(New SqlParameter("@ES_PROVEEDOR_SERVICIO", oBeProveedor.Es_Proveedor_Servicio))
             If Not oBeProveedor.IdBodegaAreaSAP = 0 Then cmd.Parameters.Add(New SqlParameter("@IDBODEGAAREASAP", oBeProveedor.IdBodegaAreaSAP))
-            If Not oBeProveedor.idPais = 0 Then cmd.Parameters.Add(New SqlParameter("@IDPAIS", oBeProveedor.idPais))
+            If Not oBeProveedor.IdPais = 0 Then cmd.Parameters.Add(New SqlParameter("@IDPAIS", oBeProveedor.IdPais))
+            cmd.Parameters.Add(New SqlParameter("@CODIGO_EMPRESA_ERP", oBeProveedor.Codigo_Empresa_ERP))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -137,7 +139,7 @@ Public Class clsLnProveedor
             Throw ex1
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If lTransaction IsNot Nothing Then lTransaction.Dispose()
@@ -179,7 +181,8 @@ Public Class clsLnProveedor
             Upd.Add("idconfiguracionbarrapallet", "@IdConfiguracionBarraPallet", DataType.Parametro)
             Upd.Add("es_proveedor_servicio", "@es_proveedor_servicio", DataType.Parametro)
             If Not oBeProveedor.IdBodegaAreaSAP = 0 Then Upd.Add("idbodegaareasap", "@idbodegaareasap", DataType.Parametro)
-            If Not oBeProveedor.idPais = 0 Then Upd.Add("idpais", "@idpais", DataType.Parametro)
+            If Not oBeProveedor.IdPais = 0 Then Upd.Add("idpais", "@idpais", DataType.Parametro)
+            Upd.Add("codigo_empresa_erp", "@codigo_empresa_erp", DataType.Parametro)
             Upd.Where("IdProveedor = @IdProveedor")
 
             Dim sp As String = Upd.SQL()
@@ -221,7 +224,8 @@ Public Class clsLnProveedor
             cmd.Parameters.Add(New SqlParameter("@IDCONFIGURACIONBARRAPALLET", oBeProveedor.IdConfiguracionBarraPallet))
             cmd.Parameters.Add(New SqlParameter("@ES_PROVEEDOR_SERVICIO", oBeProveedor.Es_Proveedor_Servicio))
             If Not oBeProveedor.IdBodegaAreaSAP = 0 Then cmd.Parameters.Add(New SqlParameter("@IDBODEGAAREASAP", oBeProveedor.IdBodegaAreaSAP))
-            If Not oBeProveedor.idPais = 0 Then cmd.Parameters.Add(New SqlParameter("@IDPAIS", oBeProveedor.idPais))
+            If Not oBeProveedor.IdPais = 0 Then cmd.Parameters.Add(New SqlParameter("@IDPAIS", oBeProveedor.IdPais))
+            cmd.Parameters.Add(New SqlParameter("@CODIGO_EMPRESA_ERP", oBeProveedor.Codigo_Empresa_ERP))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -236,7 +240,7 @@ Public Class clsLnProveedor
             Throw ex1
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If lTransaction IsNot Nothing Then lTransaction.Dispose()
@@ -281,7 +285,7 @@ Public Class clsLnProveedor
             Throw ex1
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
             If lTransaction IsNot Nothing Then lTransaction.Dispose()
@@ -318,7 +322,7 @@ Public Class clsLnProveedor
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
@@ -355,10 +359,36 @@ Public Class clsLnProveedor
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            Throw ex
         End Try
 
     End Function
 
+    Public Shared Function Get_Codigo_By_IdProveedorBodega(ByVal IdProveedorBodega As Integer, lConnection As SqlConnection, lTransaction As SqlTransaction) As String
 
+        Get_Codigo_By_IdProveedorBodega = String.Empty
+
+        Try
+
+            Const sp As String = "SELECT Codigo FROM Proveedor p JOIN proveedor_bodega pb ON p.IdProveedor = pb.IdProveedor
+                                  WHERE(pb.IdAsignacion= @IdProveedorBodega)"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdProveedorBodega", IdProveedorBodega))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt.Rows.Count = 1 Then
+                Get_Codigo_By_IdProveedorBodega = IIf(IsDBNull(dt.Rows(0).Item("Codigo")), "", dt.Rows(0).Item("Codigo"))
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
 End Class

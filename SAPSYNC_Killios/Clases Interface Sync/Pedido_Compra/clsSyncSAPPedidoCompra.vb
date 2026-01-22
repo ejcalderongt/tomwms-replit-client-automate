@@ -587,6 +587,7 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
                                 oEntrega.Lines.SetCurrentLine(NoLineaEntrega)
                                 oEntrega.Lines.BaseType = Convert.ToInt32(BoAPARDocumentTypes.bodt_PurchaseOrder)
                                 oEntrega.Lines.BaseEntry = oOrderPurchase.DocEntry
+                                oEntrega.Lines.ItemCode = vCodigoProductoSAP
                                 oEntrega.Lines.BaseLine = vNoLineaOCSAP
                                 oEntrega.Lines.ItemCode = vCodigoProductoSAP
                                 oEntrega.Lines.TaxCode = vTipoImpuesto
@@ -610,15 +611,23 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
                                         End If
                                     End If
 
+                                    '#EJC20250616: Copiar gastos (expenses) desde el documento base
+                                    For k As Integer = 0 To oOrderPurchase.Expenses.Count - 1
+                                        oOrderPurchase.Expenses.SetCurrentLine(k)
+                                        oEntrega.Expenses.ExpenseCode = oOrderPurchase.Expenses.ExpenseCode
+                                        oEntrega.Expenses.LineTotal = oOrderPurchase.Expenses.LineTotal
+                                        oEntrega.Expenses.Add()
+                                    Next
+
                                 End If
 
                                 vCodigoAnterior = oEntrega.Lines.ItemCode
                                 vNoLineaAnterior = oEntrega.Lines.LineNum
 
                                 Sublista_A_Actualizar = lINavTransaccionesOut.FindAll(Function(x) x.No_pedido = oOrderPurchase.DocEntry _
-                                                                                      AndAlso x.No_linea = vNoLineaOCSAP _
-                                                                                      AndAlso x.Codigo_producto = vCodigoProductoWMS _
-                                                                                      AndAlso x.Enviado = False)
+                                                                          AndAlso x.No_linea = vNoLineaOCSAP _
+                                                                          AndAlso x.Codigo_producto = vCodigoProductoWMS _
+                                                                          AndAlso x.Enviado = False)
 
                                 If Sublista_A_Actualizar IsNot Nothing AndAlso Sublista_A_Actualizar.Count > 0 Then
                                     Lista_A_Actualizar.AddRange(Sublista_A_Actualizar)
@@ -710,9 +719,9 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
                     Procesar_Detalle_Ingreso = True
 
                     clsLnTrans_oc_enc.Actualizar_No_Documento_Recepcion_ERP(vDocNum,
-                                                                            Lista_A_Actualizar.FirstOrDefault.Idordencompra,
-                                                                            lConnection,
-                                                                            lTransaction)
+                                                                                Lista_A_Actualizar.FirstOrDefault.Idordencompra,
+                                                                                lConnection,
+                                                                                lTransaction)
 
                     clsPublic.Actualizar_Progreso(lblPrg, vbTab & vbTab & " ✔️ Se generó la entrega: " & vDocNum & " Documento SAP: " & oOrderPurchase.DocNum & " IdOrdenCompraEnc_WMS: " & beTransOCEnc.IdOrdenCompraEnc & " - " & beTransOCEnc.Codigo_Empresa_ERP.ToString())
 
@@ -803,51 +812,53 @@ Public Class clsSyncSAPPedidoCompra : Inherits clsInterfaceBase
 
                         For Each ProductoIngreso In agrupadas
 
-                            nuevaLineaEntrega = (vCodigoAnterior <> ProductoIngreso.Codigo_producto OrElse vNoLineaAnterior <> ProductoIngreso.No_linea)
+                            For Each ProductoIngreso In DistinctProductosLineas
 
-                            If nuevaLineaEntrega Then
+                                nuevaLineaEntrega = (vCodigoAnterior <> ProductoIngreso.Codigo_producto OrElse vNoLineaAnterior <> ProductoIngreso.No_linea)
 
-                                Dim resultado = SapHelper.Obtener_UoMEntry_De_InventoryUOM(vCodigoProductoSAP, oCompany)
-                                Dim umEntryOrdenVenta As Integer = Buscar_UoMEntry_DocumentoIngreso(oReturnRequest, vCodigoProductoSAP)
-                                If resultado.UoMEntry > 0 Then
-                                    If resultado.UoMEntry <> umEntryOrdenVenta Then
-                                        oReturn.Lines.Quantity = Math.Round(ProductoIngreso.Cantidad_Total / resultado.Factor, 6)
+                                If nuevaLineaEntrega Then
+
+                                    Dim resultado = SapHelper.Obtener_UoMEntry_De_InventoryUOM(vCodigoProductoSAP, oCompany)
+                                    Dim umEntryOrdenVenta As Integer = Buscar_UoMEntry_DocumentoIngreso(oReturnRequest, vCodigoProductoSAP)
+                                    If resultado.UoMEntry > 0 Then
+                                        If resultado.UoMEntry <> umEntryOrdenVenta Then
+                                            oReturn.Lines.Quantity = Math.Round(ProductoIngreso.Cantidad_Total / resultado.Factor, 6)
+                                        End If
+                                        oReturn.Lines.UoMEntry = resultado.UoMEntry
                                     End If
-                                    oReturn.Lines.UoMEntry = resultado.UoMEntry
+
+                                    Dim vTipoImpuesto As String = oReturnRequest.Lines.TaxCode
+                                    oReturn.Lines.SetCurrentLine(NoLineaEntrega)
+                                    oReturn.Lines.BaseType = BoObjectTypes.oReturnRequest
+                                    oReturn.Lines.BaseEntry = oReturnRequest.DocEntry
+                                    oReturn.Lines.BaseLine = vNoLineaOCSAP
+                                    oReturn.Lines.ItemCode = vCodigoProductoSAP
+                                    oReturn.Lines.TaxCode = vTipoImpuesto
+                                    oReturn.Lines.UserFields.Fields.Item("U_Enviado_WMS").Value = "1"
+                                    oReturn.Lines.Quantity = ProductoIngreso.Cantidad_Total
+
+                                    vCodigoAnterior = oReturn.Lines.ItemCode
+                                    vNoLineaAnterior = oReturn.Lines.LineNum
+
+                                    Sublista_A_Actualizar = lINavTransaccionesOut.FindAll(Function(x) x.No_pedido = oReturnRequest.DocEntry _
+                                                                                  AndAlso x.No_linea = vNoLineaOCSAP _
+                                                                                  AndAlso x.Codigo_producto = vCodigoProductoWMS _
+                                                                                  AndAlso x.Enviado = False)
+
+                                    If Sublista_A_Actualizar IsNot Nothing AndAlso Sublista_A_Actualizar.Count > 0 Then
+                                        Lista_A_Actualizar.AddRange(Sublista_A_Actualizar)
+                                    End If
+
+                                    oReturn.Lines.Add() : NoLineaEntrega += 1
+
                                 End If
 
-                                Dim vTipoImpuesto As String = oReturnRequest.Lines.TaxCode
-                                oReturn.Lines.SetCurrentLine(NoLineaEntrega)
-                                oReturn.Lines.BaseType = BoObjectTypes.oReturnRequest
-                                oReturn.Lines.BaseEntry = oReturnRequest.DocEntry
-                                oReturn.Lines.BaseLine = vNoLineaOCSAP
-                                oReturn.Lines.ItemCode = vCodigoProductoSAP
-                                oReturn.Lines.TaxCode = vTipoImpuesto
-                                oReturn.Lines.UserFields.Fields.Item("U_Enviado_WMS").Value = "1"
-                                oReturn.Lines.Quantity = ProductoIngreso.Cantidad_Total
+                            Next
 
-                                vCodigoAnterior = oReturn.Lines.ItemCode
-                                vNoLineaAnterior = oReturn.Lines.LineNum
+                            vAgregarEntrega = True
 
-                                Sublista_A_Actualizar = lINavTransaccionesOut.FindAll(Function(x) x.No_pedido = oReturnRequest.DocEntry _
-                                                                                      AndAlso x.No_linea = vNoLineaOCSAP _
-                                                                                      AndAlso x.Codigo_producto = vCodigoProductoWMS _
-                                                                                      AndAlso x.Enviado = False)
-
-                                If Sublista_A_Actualizar IsNot Nothing AndAlso Sublista_A_Actualizar.Count > 0 Then
-                                    Lista_A_Actualizar.AddRange(Sublista_A_Actualizar)
-                                End If
-
-                                oReturn.Lines.Add() : NoLineaEntrega += 1
-
-                            End If
-
-                        Next
-
-                        vAgregarEntrega = True
-
-                    Else
-                        clsPublic.Actualizar_Progreso(lblPrg, "No se encontraron registros de recepción para el código de producto SAP: " & vCodigoProductoSAP)
+                            Else
+                            clsPublic.Actualizar_Progreso(lblPrg, "No se encontraron registros de recepción para el código de producto SAP: " & vCodigoProductoSAP)
                     End If
 
                 Else

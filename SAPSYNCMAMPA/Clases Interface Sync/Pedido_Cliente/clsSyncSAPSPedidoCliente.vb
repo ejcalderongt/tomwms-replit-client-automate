@@ -8,18 +8,17 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
     Implements IDisposable
 
-    Dim VContadorBitacoraTOMWMS As Integer = 0
-    Dim VContadorBitacoraIntermedia As Integer = 0
-    Private oCompany As Company
-    Dim lRetCode, lErrCode As Long
-    Dim sErrMsg As String = ""
+    Shared VContadorBitacoraTOMWMS As Integer = 0
+    Shared VContadorBitacoraIntermedia As Integer = 0
+    Shared lRetCode, lErrCode As Long
+    Shared sErrMsg As String = ""
 
     Public Sub Dispose() Implements IDisposable.Dispose
     End Sub
 
-    Dim BeNavEjecRes As clsBeI_nav_ejecucion_res = Nothing
+    Shared BeNavEjecRes As clsBeI_nav_ejecucion_res = Nothing
 
-    Private Function Get_Pedidos_Cliente_SAP(Optional ByVal pPedidoCliente As String = "") As List(Of clsBeI_nav_ped_traslado_enc)
+    Private Shared Function Get_Pedidos_Cliente_SAP(Optional ByVal pPedidoCliente As String = "") As List(Of clsBeI_nav_ped_traslado_enc)
 
         Get_Pedidos_Cliente_SAP = Nothing
 
@@ -31,125 +30,125 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
         Try
 
-            Conectar_A_SAP(oCompany, False, lErrCode, sErrMsg)
+            'Conectar_A_SAP(oCompany, False, lErrCode, sErrMsg)
 
-            If lRetCode <> 0 Then
-                oCompany.GetLastError(lErrCode, sErrMsg)
-                Throw New Exception(sErrMsg)
-            Else
+            'If lRetCode <> 0 Then
+            '    oCompany.GetLastError(lErrCode, sErrMsg)
+            '    Throw New Exception(sErrMsg)
+            'Else
 
-                If BeConfigEnc Is Nothing Then
-                    BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface)
-                End If
+            '    If BeConfigEnc Is Nothing Then
+            '        BeConfigEnc = clsLnI_nav_config_enc.GetSingle(BD.Instancia.IdConfiguracionInterface)
+            '    End If
 
-                BePropietario = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario)
+            '    BePropietario = clsLnPropietarios.GetSingle(BeConfigEnc.IdPropietario)
 
-                Dim oRecSet As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
-                Dim RsEnc As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
+            '    Dim oRecSet As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
+            '    Dim RsEnc As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
 
-                Dim SAP_OV As String = "SELECT 
-                                        T0.DocEntry,
-                                        T0.DocNum,
-                                        T0.DocDate,
-                                        T0.CardCode AS CARDCODE,
-                                        T0.CardName AS CARDNAME,
-                                        T0.DocCur,
-                                        T0.DocTotal,
-                                        T0.JrnlMemo,
-                                        T0.Canceled,
-                                        T0.DocStatus,
-                                        CASE 
-                                            WHEN T0.DocType = 'I' THEN 'ARTICULO'    
-                                            ELSE 'SERVICIO'    
-                                        END AS TIPO_ORDEN_VENTA,
-                                        (SELECT TOP 1 D0.WhsCode 
-                                            FROM RDR1 D0 
-                                            WHERE D0.DocEntry = T0.DocEntry) AS BODEGA,
-                                        T0.Comments,
-                                        T0.NumAtCard                                        
-                                    FROM ORDR T0 
-                                    WHERE T0.DocStatus = 'O' 
-                                    AND T0.CreateDate >= '2024-01-01 00:00:00.000' 
-                                    AND T0.U_Enviado_WMS = 2 " &
-                                    IIf(pPedidoCliente <> "", " AND T0.DocNum  = " & pPedidoCliente, "") & "                                    
-                                    ORDER BY T0.DocEntry DESC"
+            '    Dim SAP_OV As String = "SELECT 
+            '                            T0.DocEntry,
+            '                            T0.DocNum,
+            '                            T0.DocDate,
+            '                            T0.CardCode AS CARDCODE,
+            '                            T0.CardName AS CARDNAME,
+            '                            T0.DocCur,
+            '                            T0.DocTotal,
+            '                            T0.JrnlMemo,
+            '                            T0.Canceled,
+            '                            T0.DocStatus,
+            '                            CASE 
+            '                                WHEN T0.DocType = 'I' THEN 'ARTICULO'    
+            '                                ELSE 'SERVICIO'    
+            '                            END AS TIPO_ORDEN_VENTA,
+            '                            (SELECT TOP 1 D0.WhsCode 
+            '                                FROM RDR1 D0 
+            '                                WHERE D0.DocEntry = T0.DocEntry) AS BODEGA,
+            '                            T0.Comments,
+            '                            T0.NumAtCard                                        
+            '                        FROM ORDR T0 
+            '                        WHERE T0.DocStatus = 'O' 
+            '                        AND T0.CreateDate >= '2024-01-01 00:00:00.000' 
+            '                        AND T0.U_Enviado_WMS = 2 " &
+            '                        IIf(pPedidoCliente <> "", " AND T0.DocNum  = " & pPedidoCliente, "") & "                                    
+            '                        ORDER BY T0.DocEntry DESC"
 
-                RsEnc.DoQuery(SAP_OV)
+            '    RsEnc.DoQuery(SAP_OV)
 
-                Dim BePedidoWMS As clsBeI_nav_ped_traslado_enc = New clsBeI_nav_ped_traslado_enc()
+            '    Dim BePedidoWMS As clsBeI_nav_ped_traslado_enc = New clsBeI_nav_ped_traslado_enc()
 
-                While RsEnc.EoF = False
+            '    While RsEnc.EoF = False
 
-                    '#CKFK20240528 Cambiando DOCENTRY por DOCNUM 
-                    BePedidoWMS = New clsBeI_nav_ped_traslado_enc()
-                    BePedidoWMS.No = RsEnc.Fields.Item("DOCENTRY").Value
-                    BePedidoWMS.Posting_Date = RsEnc.Fields.Item("DOCDATE").Value
-                    BePedidoWMS.Receipt_Date = RsEnc.Fields.Item("DOCDATE").Value
-                    BePedidoWMS.Shipment_Date = RsEnc.Fields.Item("DOCDATE").Value
-                    BePedidoWMS.Status = 1
-                    BePedidoWMS.Transfer_from_Code = RsEnc.Fields.Item("BODEGA").Value
-                    BePedidoWMS.Transfer_from_Contact = "MI3_NAME"
-                    BePedidoWMS.Transfer_from_Name = "MI3_NAME"
-                    BePedidoWMS.Transfer_to_Code = RsEnc.Fields.Item("CARDCODE").Value
-                    BePedidoWMS.Transfer_to_Contact = RsEnc.Fields.Item("CARDNAME").Value
-                    BePedidoWMS.Transfer_to_Name = RsEnc.Fields.Item("CARDNAME").Value
-                    BePedidoWMS.Product_Owner_Code = BePropietario.Codigo
-                    BePedidoWMS.Receipt_Document_Reference = RsEnc.Fields.Item("DOCNUM").Value
-                    BePedidoWMS.Manufacturing_Process = 0
+            '        '#CKFK20240528 Cambiando DOCENTRY por DOCNUM 
+            '        BePedidoWMS = New clsBeI_nav_ped_traslado_enc()
+            '        BePedidoWMS.No = RsEnc.Fields.Item("DOCENTRY").Value
+            '        BePedidoWMS.Posting_Date = RsEnc.Fields.Item("DOCDATE").Value
+            '        BePedidoWMS.Receipt_Date = RsEnc.Fields.Item("DOCDATE").Value
+            '        BePedidoWMS.Shipment_Date = RsEnc.Fields.Item("DOCDATE").Value
+            '        BePedidoWMS.Status = 1
+            '        BePedidoWMS.Transfer_from_Code = RsEnc.Fields.Item("BODEGA").Value
+            '        BePedidoWMS.Transfer_from_Contact = "MI3_NAME"
+            '        BePedidoWMS.Transfer_from_Name = "MI3_NAME"
+            '        BePedidoWMS.Transfer_to_Code = RsEnc.Fields.Item("CARDCODE").Value
+            '        BePedidoWMS.Transfer_to_Contact = RsEnc.Fields.Item("CARDNAME").Value
+            '        BePedidoWMS.Transfer_to_Name = RsEnc.Fields.Item("CARDNAME").Value
+            '        BePedidoWMS.Product_Owner_Code = BePropietario.Codigo
+            '        BePedidoWMS.Receipt_Document_Reference = RsEnc.Fields.Item("DOCNUM").Value
+            '        BePedidoWMS.Manufacturing_Process = 0
 
-                    Dim n As Integer = 1
-                    Dim RsDet As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
-                    Dim query_det As String
+            '        Dim n As Integer = 1
+            '        Dim RsDet As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
+            '        Dim query_det As String
 
-                    '#CKFK20240528 Cambiando DOCENTRY por DOCNUM 
-                    query_det = "SELECT 
-                                 T0.LineNum, 
-                                 T0.ITEMCODE, 
-                                 T0.DSCRIPTION, 
-                                 T0.QUANTITY, 
-                                 T0.PRICE, 
-                                 T0.LINETOTAL, 
-                                 T0.VATSUM, 
-                                 T0.DOCENTRY,  
-                                 T0.WHSCODE, 
-                                 T1.U_Um_Prod AS UNIDAD_MEDIDA   
-                                 FROM RDR1 T0 INNER JOIN OITM T1 ON T1.ItemCode= T0.ItemCode    
-                                 WHERE T0.DOCENTRY = '" & BePedidoWMS.No & "'"
+            '        '#CKFK20240528 Cambiando DOCENTRY por DOCNUM 
+            '        query_det = "SELECT 
+            '                     T0.LineNum, 
+            '                     T0.ITEMCODE, 
+            '                     T0.DSCRIPTION, 
+            '                     T0.QUANTITY, 
+            '                     T0.PRICE, 
+            '                     T0.LINETOTAL, 
+            '                     T0.VATSUM, 
+            '                     T0.DOCENTRY,  
+            '                     T0.WHSCODE, 
+            '                     T1.U_Um_Prod AS UNIDAD_MEDIDA   
+            '                     FROM RDR1 T0 INNER JOIN OITM T1 ON T1.ItemCode= T0.ItemCode    
+            '                     WHERE T0.DOCENTRY = '" & BePedidoWMS.No & "'"
 
-                    RsDet.DoQuery(query_det)
+            '        RsDet.DoQuery(query_det)
 
-                    BePedidoWMS.Lineas_Detalle = New List(Of clsBeI_nav_ped_traslado_det)
+            '        BePedidoWMS.Lineas_Detalle = New List(Of clsBeI_nav_ped_traslado_det)
 
-                    While RsDet.EoF = False
+            '        While RsDet.EoF = False
 
-                        BePedidoDetWMS = New clsBeI_nav_ped_traslado_det()
-                        BePedidoDetWMS.NoEnc = BePedidoWMS.No
-                        BePedidoDetWMS.No = clsLnTrans_pe_det.MaxID() + 1
-                        BePedidoDetWMS.Item_No = RsDet.Fields.Item("ITEMCODE").Value.ToString()
-                        BePedidoDetWMS.Line_No = RsDet.Fields.Item("LINENUM").Value.ToString()
-                        BePedidoDetWMS.Shipment_Date = Date.Now
-                        BePedidoDetWMS.Quantity = Convert.ToDecimal(RsDet.Fields.Item("QUANTITY").Value)
-                        BePedidoDetWMS.Description = RsDet.Fields.Item("dscription").Value.ToString()
-                        BePedidoDetWMS.Unit_of_Measure_Code = RsDet.Fields.Item("UNIDAD_MEDIDA").Value.ToString()
-                        BePedidoDetWMS.Status = 1
-                        BePedidoDetWMS.Variant_Code = Nothing
-                        BePedidoDetWMS.Transfer_to_CodeField = RsDet.Fields.Item("WHSCODE").Value.ToString()
-                        BePedidoDetWMS.Price = Convert.ToDouble(RsDet.Fields.Item("PRICE").Value)
-                        BePedidoWMS.Lineas_Detalle.Add(BePedidoDetWMS)
+            '            BePedidoDetWMS = New clsBeI_nav_ped_traslado_det()
+            '            BePedidoDetWMS.NoEnc = BePedidoWMS.No
+            '            BePedidoDetWMS.No = clsLnTrans_pe_det.MaxID() + 1
+            '            BePedidoDetWMS.Item_No = RsDet.Fields.Item("ITEMCODE").Value.ToString()
+            '            BePedidoDetWMS.Line_No = RsDet.Fields.Item("LINENUM").Value.ToString()
+            '            BePedidoDetWMS.Shipment_Date = Date.Now
+            '            BePedidoDetWMS.Quantity = Convert.ToDecimal(RsDet.Fields.Item("QUANTITY").Value)
+            '            BePedidoDetWMS.Description = RsDet.Fields.Item("dscription").Value.ToString()
+            '            BePedidoDetWMS.Unit_of_Measure_Code = RsDet.Fields.Item("UNIDAD_MEDIDA").Value.ToString()
+            '            BePedidoDetWMS.Status = 1
+            '            BePedidoDetWMS.Variant_Code = Nothing
+            '            BePedidoDetWMS.Transfer_to_CodeField = RsDet.Fields.Item("WHSCODE").Value.ToString()
+            '            BePedidoDetWMS.Price = Convert.ToDouble(RsDet.Fields.Item("PRICE").Value)
+            '            BePedidoWMS.Lineas_Detalle.Add(BePedidoDetWMS)
 
-                        n += 1
+            '            n += 1
 
-                        RsDet.MoveNext()
+            '            RsDet.MoveNext()
 
-                    End While
+            '        End While
 
-                    lPedidosCliente.Add(BePedidoWMS)
+            '        lPedidosCliente.Add(BePedidoWMS)
 
-                    RsEnc.MoveNext()
+            '        RsEnc.MoveNext()
 
-                End While
+            '    End While
 
-            End If
+            'End If
 
             Return lPedidosCliente
 
@@ -161,11 +160,10 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
     End Function
 
-    Public Function Procesar_Pedidos_Cliente_SAP(ByVal lblprg As RichTextBox,
-                                                 ByRef prg As Windows.Forms.ProgressBar,
-                                                 ByRef cnnLog As SqlConnection,
-                                                 Optional pPedidoCliente As String = "") As Boolean
-        Procesar_Pedidos_Cliente_SAP = False
+    Public Shared Async Function Procesar_Pedidos_Cliente_SAP(ByVal lblprg As RichTextBox,
+                                                             ByVal prg As Windows.Forms.ProgressBar,
+                                                             ByVal cnnLog As SqlConnection,
+                                                             Optional pPedidoCliente As String = "") As Task(Of Boolean)
 
         Dim Resultado As String = ""
 
@@ -197,14 +195,14 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
                         If BeClienteWMS Is Nothing Then
 
-                            If Inserta_Cliente_SAP(PedidoClienteSAP.Transfer_to_Code) Then
+                            If Await Inserta_Cliente_SAP(PedidoClienteSAP.Transfer_to_Code) Then
                                 clsPublic.Actualizar_Progreso(lblprg, "El cliente: " & PedidoClienteSAP.Transfer_to_Code & " No existía en WMS y fue insertado.")
                             End If
 
                         End If
 
-                        Dim BePedidoEncResult As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia(PedidoClienteSAP,
-                                                                                                                                            Resultado)
+                        Dim BePedidoEncResult As clsBeTrans_pe_enc = clsLnI_nav_ped_traslado_enc.Importar_Pedido_Cliente_A_Tabla_Intermedia_If(PedidoClienteSAP,
+                                                                                                                                               Resultado)
 
                         If Not BePedidoEncResult Is Nothing Then
 
@@ -227,7 +225,7 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
             End If
 
-            Procesar_Pedidos_Cliente_SAP = True
+            Return True
 
         Catch ex As Exception
 
@@ -242,23 +240,22 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
     End Function
 
-    Public Function Importar_Pedido_Cliente_SAP(ByRef lblprg As RichTextBox,
-                                                ByRef prg As Windows.Forms.ProgressBar,
-                                                Optional ByVal ForzarEjecucion As Boolean = False,
-                                                Optional ByVal Pregunta_Si_LLena_Intermedia As Boolean = False,
-                                                Optional ByVal pPedidoCliente As String = "") As Boolean
-        Importar_Pedido_Cliente_SAP = False
+    Public Shared Async Function Importar_Pedido_Cliente_SAP(ByVal lblprg As RichTextBox,
+                                                         ByVal prg As Windows.Forms.ProgressBar,
+                                                         Optional ByVal ForzarEjecucion As Boolean = False,
+                                                         Optional ByVal Pregunta_Si_LLena_Intermedia As Boolean = False,
+                                                         Optional ByVal pPedidoCliente As String = "") As Task(Of Boolean)
 
         Dim CnnLog As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)
-        Dim Resultado As String = ""
+        Dim resultadoFinal As Boolean = False
 
         Try
 
             If Not ForzarEjecucion Then
 
                 If Not Ejecutar_Interfaz("Pedido traslado") Then
-                    clsPublic.Actualizar_Progreso(lblprg, "La configuración de la interface indica que no se debe ejecutar en este momento. ")
-                    Exit Function
+                    clsPublic.Actualizar_Progreso(lblprg, "La configuración de la interface indica que no se debe ejecutar en este momento.")
+                    Return False
                 End If
 
             End If
@@ -287,46 +284,99 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
             clsPublic.Actualizar_Progreso(lblprg, vbNewLine)
 
+            Dim ejecucionExitosa As Boolean = False
+
             If Not Pregunta_Si_LLena_Intermedia Then
-
-                If Not Procesar_Pedidos_Cliente_SAP(lblprg, prg, CnnLog, pPedidoCliente) Then
-                    Exit Function
-                End If
-
+                ejecucionExitosa = Await Procesar_Pedidos_Cliente_SAP(lblprg, prg, CnnLog, pPedidoCliente)
             Else
 
                 If XtraMessageBox.Show("¿Llenar tabla intermedia desde SAP?", "Interface", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    If Not Procesar_Pedidos_Cliente_SAP(lblprg, prg, CnnLog, pPedidoCliente) Then
-                        Exit Function
-                    End If
+                    ejecucionExitosa = Await Procesar_Pedidos_Cliente_SAP(lblprg, prg, CnnLog, pPedidoCliente)
                 End If
-
             End If
 
+            If Not ejecucionExitosa Then
+                Return False
+            End If
+
+            BeNavEjecucionRes.Exitosa = True
             clsLnI_nav_ejecucion_res.Actualizar(BeNavEjecucionRes, CnnLog)
+            resultadoFinal = True
 
         Catch ex As Exception
-
-            '#EJC20171105_1259AM_REF01: Agregar excepción a log.
-            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message,
-                                                      "",
-                                                      BeNavEjecucionEnc.IdEjecucionEnc,
-                                                      BeConfigDet.Idnavconfigdet,
-                                                      CnnLog)
-
+            clsLnI_nav_ejecucion_det_error.Inserta_Log(ex.Message, "", BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet, CnnLog)
             clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al insertar pedido de cliente a tabla de TOMWMS: {1} {0} {1}", ex.Message, vbNewLine))
-
-            Throw ex
-
+            resultadoFinal = False
         Finally
             If CnnLog.State = ConnectionState.Open Then CnnLog.Close()
             prg.Value = 0
         End Try
 
+        Return resultadoFinal
     End Function
 
-    Public Sub Enviar_Transacciones_De_Salida(ByRef lblprg As RichTextBox,
-                                              ByRef prg As Windows.Forms.ProgressBar)
+    Public Shared Function Marcar_Pedido_Cliente_Sincronizado_SAP(ByVal pNoDocumento As String,
+                                                                   ByVal EstadoEnvio As Estado_Enviado_SAP,
+                                                                   ByVal lblprg As RichTextBox) As Boolean
+
+        Marcar_Pedido_Cliente_Sincronizado_SAP = False
+
+        Try
+
+            clsPublic.Actualizar_Progreso(lblprg, $"Actualizando el estado enviado = {EstadoEnvio} para permitir importación nuevamente en pedido de cliente: {pNoDocumento}")
+
+            Dim updateQuery As String = $"UPDATE ORDR 
+                                        SET ""U_EnviadoWMS"" = '{CInt(EstadoEnvio)}'
+                                        WHERE ""DocEntry"" = '{pNoDocumento}'"
+
+            Dim filasAfectadas As Integer = HanaHelper.Xcute(updateQuery)
+
+            If filasAfectadas > 0 Then
+                clsPublic.Actualizar_Progreso(lblprg, "Se actualizó el estado del documento.")
+                Marcar_Pedido_Cliente_Sincronizado_SAP = True
+            Else
+                clsPublic.Actualizar_Progreso(lblprg, "No se encontró ningún documento con el DocEntry proporcionado.")
+            End If
+
+        Catch ex As Exception
+            Throw New Exception($"{MethodBase.GetCurrentMethod.Name()} {ex.Message}")
+        End Try
+
+    End Function
+
+    Public Function Cerrar_Lineas_Documento_Salida(ByVal _Docentry As Integer,
+                                                ByRef lblprg As RichTextBox) As Boolean
+
+        Cerrar_Lineas_Documento_Salida = False
+
+        Try
+            clsPublic.Actualizar_Progreso(lblprg, $"Cerrando documento de traslado SAP con DocEntry = {_Docentry}...")
+
+            Dim updateQuery As String = $"
+            UPDATE WTQ1
+            SET ""LineStatus"" = 'C'
+            WHERE ""DocEntry"" = {_Docentry}"
+
+            Dim filasAfectadas As Integer = HanaHelper.Xcute(updateQuery)
+
+            If filasAfectadas > 0 Then
+                clsPublic.Actualizar_Progreso(lblprg, "Documento de traslado cerrado exitosamente.")
+                Cerrar_Lineas_Documento_Salida = True
+            Else
+                clsPublic.Actualizar_Progreso(lblprg, $"No se encontró el documento SAP con DocEntry: {_Docentry}")
+            End If
+
+        Catch errMsg As Exception
+            clsLnI_nav_ejecucion_det_error.Inserta_Log($"Error al cerrar líneas de traslado en SAP HANA: {MethodBase.GetCurrentMethod.Name()} {errMsg.Message}",
+                                                  "", BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet)
+            clsPublic.Actualizar_Progreso(lblprg, $"Error al cerrar líneas de traslado SAP: {vbNewLine}{errMsg.Message}{vbNewLine}")
+            Throw New Exception($"{MethodBase.GetCurrentMethod.Name()} {errMsg.Message}")
+        End Try
+
+    End Function
+
+    Public Shared Sub Enviar_Transacciones_De_Salida(ByRef lblprg As RichTextBox,
+                                                     ByRef prg As Windows.Forms.ProgressBar)
 
         Dim lTransaccionesSalida As New List(Of clsBeI_nav_transacciones_out)
         Dim lTransaccionesSalidaSingle As New List(Of clsBeI_nav_transacciones_out)
@@ -401,13 +451,13 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
     End Sub
 
-    Public Function Enviar_Entrega_Mercancia_OV_SAP(ByVal _Docentry As Integer,
-                                                    ByVal lINav_Transaccioens_Out As List(Of clsBeI_nav_transacciones_out),
-                                                    ByRef lblprg As RichTextBox,
-                                                    ByRef prg As Windows.Forms.ProgressBar) As Boolean
+    Public Shared Function Enviar_Entrega_Mercancia_OV_SAP2(ByVal _Docentry As Integer,
+                                                            ByVal lINavTransaccionesOut As List(Of clsBeI_nav_transacciones_out),
+                                                            ByRef lblprg As RichTextBox,
+                                                            ByRef prg As Windows.Forms.ProgressBar) As Boolean
 
-
-        prg.Maximum = lINav_Transaccioens_Out.Count
+        Enviar_Entrega_Mercancia_OV_SAP2 = False
+        prg.Maximum = lINavTransaccionesOut.Count
         prg.Visible = True
 
         Dim lINav_Transaccioens_Out_Enviadas As New List(Of clsBeI_nav_transacciones_out)
@@ -418,89 +468,45 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
             Application.DoEvents()
 
-            If lRetCode <> 0 Then
-                If sErrMsg = " - The specified resource name cannot be found in the image file." Then
-                    Throw New Exception("El servidor de SAP no respondió la solicitud de conexión: " & sErrMsg)
-                Else
-                    Throw New Exception("Error al conectar a SAP: " & sErrMsg)
-                End If
-            Else
+            clsPublic.Actualizar_Progreso(lblprg, $"Generando entrega mediante Service Layer para OV DocEntry = {_Docentry}...")
 
-                Dim oEntrega As Documents
-                Dim oOrderSales As Documents
-                Dim BaseLine As Integer = 0
+            Dim lineas = lINavTransaccionesOut.
+                GroupBy(Function(x) New With {x.Codigo_producto, x.No_linea}).
+                Select(Function(g) New With {
+                    .ItemCode = g.Key.Codigo_producto,
+                    .BaseLine = g.Key.No_linea,
+                    .Quantity = g.Sum(Function(x) x.Cantidad),
+                    .BaseEntry = _Docentry,
+                    .BaseType = 17
+                }).ToList()
 
-                oEntrega = CType(oCompany.GetBusinessObject(BoObjectTypes.oDeliveryNotes), Documents)
-                oOrderSales = CType(oCompany.GetBusinessObject(BoObjectTypes.oOrders), Documents)
+            Dim dtOV As DataTable = HanaHelper.OpenDT($"SELECT ""CardCode"" FROM ORDR WHERE ""DocEntry"" = {_Docentry}")
+            If dtOV.Rows.Count = 0 Then
+                Throw New Exception("No se encontró la orden de venta para generar la entrega.")
+            End If
 
-                If oOrderSales.GetByKey(_Docentry) Then
+            Dim cardCode As String = dtOV.Rows(0)("CardCode").ToString()
 
-                    Console.WriteLine(oOrderSales.DocumentStatus)
+            Dim payload As New With {
+                .CardCode = cardCode,
+                .DocDate = DateTime.Today.ToString("yyyy-MM-dd"),
+                .DocDueDate = DateTime.Today.ToString("yyyy-MM-dd"),
+                .DocumentLines = lineas
+            }
 
-                    oEntrega.CardCode = oOrderSales.CardCode
-                    oEntrega.DocDate = Date.Today
-                    oEntrega.DocObjectCode = BoObjectTypes.oDeliveryNotes
+            Dim client As New SapServiceLayerClient()
+            'Dim result = client.PostDeliveryAsync(payload)
+            clsPublic.Actualizar_Progreso(lblprg, "Entrega generada exitosamente en SAP a través de Service Layer.")
 
-                    For j As Integer = 0 To oOrderSales.Lines.Count - 1
+            Dim IResult As Integer = clsLnI_nav_transacciones_out.Actualizar_Bandera_Enviado(
+                lINavTransaccionesOut.Where(Function(x) Not x.Enviado).ToList())
+            If IResult = 0 Then
+                Throw New Exception("Se generó la entrega pero no se actualizaron los registros como enviados.")
+            End If
 
-                        oOrderSales.Lines.SetCurrentLine(j)
+            End If
 
-                        clsPublic.Actualizar_Progreso(lblprg, String.Format("Procesando Producto: {0} ", oOrderSales.Lines.ItemCode.ToString()))
-
-                        Dim BeInavTransaccioensOut As clsBeI_nav_transacciones_out = New clsBeI_nav_transacciones_out()
-                        BeInavTransaccioensOut = lINav_Transaccioens_Out.Find(Function(x) x.Codigo_producto = oOrderSales.Lines.ItemCode.ToString())
-
-                        If Not BeInavTransaccioensOut Is Nothing Then
-
-                            If Not oOrderSales.Lines.LineStatus = BoStatus.bost_Close Then
-
-                                If BeInavTransaccioensOut.Cantidad <= oOrderSales.Lines.Quantity Then
-
-                                    Dim vTipoImpuesto As String = oOrderSales.Lines.TaxCode
-
-                                    oEntrega.Lines.BaseType = Convert.ToInt32(BoAPARDocumentTypes.bodt_Order)
-                                    oEntrega.Lines.ItemCode = oOrderSales.Lines.ItemCode
-                                    oEntrega.Lines.BaseEntry = _Docentry
-                                    oEntrega.Lines.BaseLine = BaseLine
-                                    oEntrega.Lines.TaxCode = vTipoImpuesto
-                                    oEntrega.Lines.UserFioEntregaelds.Fields.Item("U_Tipo").Value = "B"
-                                    oEntrega.Lines.Quantity = BeInavTransaccioensOut.Cantidad
-                                    oEntrega.Lines.Add()
-
-                                Else
-                                    Throw New Exception("WMS está intentando generar una entrega por: " & BeInavTransaccioensOut.Cantidad & " en una línea de SAP para el material: " & oOrderSales.Lines.ItemCode & " que refleja una cantidad de: " & BeInavTransaccioensOut.Cantidad & " probablemente esto no sea posible.")
-                                End If
-
-                            Else
-
-                                clsPublic.Actualizar_Progreso(lblprg, String.Format("El Producto: {0} ya fue completado. ", oOrderSales.Lines.ItemCode.ToString()))
-
-                            End If
-
-                            lINav_Transaccioens_Out_Enviadas.Add(BeInavTransaccioensOut)
-
-                            BaseLine += 1
-
-                        End If
-
-                    Next
-
-                    Dim oResultado As Integer
-                    oResultado = oEntrega.Add()
-
-                    If oResultado <> 0 Then
-                        Throw New Exception(oCompany.GetLastErrorDescription())
-                    Else
-
-                        Dim IResult As Integer = clsLnI_nav_transacciones_out.Actualizar_Bandera_Enviado(lINav_Transaccioens_Out_Enviadas)
-
-                        If IResult = 0 Then
-                            Throw New Exception("Se envió la entrada de mercancía a SAP pero no se pudieron marcar los registros como enviados en WMS.")
-                        End If
-
-                    End If
-
-                End If
+            End If
 
             End If
 
@@ -546,12 +552,15 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
             MsgBox(Estado_Linea)
 
         Catch ex As Exception
-            Throw ex
+            clsLnI_nav_ejecucion_det_error.Inserta_Log($"Error en Service Layer: {MethodBase.GetCurrentMethod.Name()} {ex.Message}",
+                                                      "", BeNavEjecucionEnc.IdEjecucionEnc, BeConfigDet.Idnavconfigdet)
+            clsPublic.Actualizar_Progreso(lblprg, $"Error Service Layer: {vbNewLine}{ex.Message}{vbNewLine}")
+            Throw
         End Try
 
     End Function
 
-    Private Function Inserta_Cliente_SAP(ByVal pCodigo As String) As Boolean
+    Public Shared Async Function Inserta_Cliente_SAP(ByVal pCodigo As String) As Task(Of Boolean)
 
         Inserta_Cliente_SAP = False
 
@@ -563,79 +572,61 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
         Dim clsTransaccion As New clsTransaccion
 
         Try
+            Dim client = New SapServiceLayerClient()
+            Dim bp As BusinessPartnerDto = Await client.GetBusinessPartnerAsync(pCodigo)
 
-            Conectar_A_SAP(oCompany, False, lErrCode, sErrMsg)
+            If bp Is Nothing Then
+                Throw New Exception("No se encontró el cliente en SAP HANA con CardCode: " & pCodigo)
+            End If
 
-            If lRetCode <> 0 Then
-                oCompany.GetLastError(lErrCode, sErrMsg)
-                Throw New Exception(sErrMsg)
-            Else
+            clsTransaccion.Open_Connection()
 
-                Dim query_sap As String
+            Dim BeCliente As New clsBeCliente With {
+                .IdCliente = clsLnCliente.MaxID(clsTransaccion.lConnection, clsTransaccion.lTransaction) + 1,
+                .IdPropietario = BeConfigEnc.IdPropietario,
+                .Codigo = bp.CardCode,
+                .Nombre_comercial = bp.CardName,
+                .Sistema = True,
+                .Activo = True,
+                .IdEmpresa = BeConfigEnc.Idempresa,
+                .Nit = bp.CardCode,
+                .IdTipoCliente = 1,
+                .Es_bodega_recepcion = False,
+                .Es_Bodega_Traslado = False
+            }
 
-                query_sap = "SELECT top 1 T0.CARDCODE AS CODIGO,
-                             T0.CARDNAME AS NOMBRE_COMERCIAL,
-                             T0.Phone1, 'TEST' AS CONTACTO ,
-                             T0.u_nit AS NIT, 
-                             T0.Address AS DIRECCION, 
-                             T0.E_Mail FROM OCRD T0 
-                             WHERE T0.CARDTYPE = 'C'  
-                             AND (t0.CARDCODE)= '" & pCodigo & "'"
+            clsLnCliente.Insertar(BeCliente, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
+            Dim BeClienteBodega As New clsBeCliente_bodega With {
+                .IdClienteBodega = clsLnCliente_bodega.MaxID(clsTransaccion.lConnection, clsTransaccion.lTransaction) + 1,
+                .IdCliente = BeCliente.IdCliente,
+                .IdBodega = BeConfigEnc.Idbodega,
+                .Activo = True,
+                .User_agr = BeConfigEnc.IdUsuario,
+                .User_mod = BeConfigEnc.IdUsuario,
+                .Fec_agr = Now,
+                .Fec_mod = Now,
+                .Cliente = BeCliente
+            }
 
-                Dim rs As Recordset = CType(oCompany.GetBusinessObject(BoObjectTypes.BoRecordset), Recordset)
-                rs.DoQuery(query_sap)
+            clsLnCliente_bodega.Insertar_From_Interface(BeClienteBodega,
+                                                        clsTransaccion.lConnection,
+                                                        clsTransaccion.lTransaction)
 
-                clsTransaccion.Open_Connection()
+            clsTransaccion.Commit_Transaction()
 
-                Dim BeCliente As New clsBeCliente
+            Dim oBusinessPartnerSBO As BusinessPartners = CType(oCompany.GetBusinessObject(BoObjectTypes.oBusinessPartners), SAPbobsCOM.BusinessPartners)
 
-                While Not rs.EoF
+            If oBusinessPartnerSBO.GetByKey(pCodigo) Then
+                oBusinessPartnerSBO.UserFields.Fields.Item("U_Enviado_WMS").Value = "1"
+                oBusinessPartnerSBO.Update()
+            End If
 
-                    BeCliente.IdCliente = clsLnCliente.MaxID(clsTransaccion.lConnection, clsTransaccion.lTransaction) + 1
-                    BeCliente.IdPropietario = BeConfigEnc.IdPropietario
-                    BeCliente.Codigo = rs.Fields.Item("CODIGO").Value.ToString()
-                    BeCliente.Nombre_comercial = rs.Fields.Item("NOMBRE_COMERCIAL").Value.ToString()
-                    BeCliente.Sistema = True
-                    BeCliente.Activo = True
-                    BeCliente.IdEmpresa = BeConfigEnc.Idempresa
-                    BeCliente.Nit = rs.Fields.Item("NIT").Value.ToString()
-                    BeCliente.IdTipoCliente = 1
-                    BeCliente.Es_bodega_recepcion = False
-                    BeCliente.Es_Bodega_Traslado = False
+            Inserta_Cliente_SAP = True
 
-                    clsLnCliente.Insertar(BeCliente, clsTransaccion.lConnection, clsTransaccion.lTransaction)
+            rs.MoveNext()
 
-                    Dim BeClienteBodega As New clsBeCliente_bodega
-                    BeClienteBodega = New clsBeCliente_bodega()
-                    BeClienteBodega.IdClienteBodega = clsLnCliente_bodega.MaxID(clsTransaccion.lConnection, clsTransaccion.lTransaction) + 1
-                    BeClienteBodega.IdCliente = BeCliente.IdCliente
-                    BeClienteBodega.IdBodega = BeConfigEnc.Idbodega
-                    BeClienteBodega.Activo = True
-                    BeClienteBodega.User_agr = BeConfigEnc.IdUsuario '1 Esto debería ser parametrizable?
-                    BeClienteBodega.User_mod = BeConfigEnc.IdUsuario  '1 Esto debería ser parametrizable?
-                    BeClienteBodega.Fec_agr = Now
-                    BeClienteBodega.Fec_mod = Now
-                    BeClienteBodega.Cliente = BeCliente
-
-                    clsLnCliente_bodega.Insertar_From_Interface(BeClienteBodega,
-                                                                clsTransaccion.lConnection,
-                                                                clsTransaccion.lTransaction)
-
-                    clsTransaccion.Commit_Transaction()
-
-                    Dim oBusinessPartnerSBO As BusinessPartners = CType(oCompany.GetBusinessObject(BoObjectTypes.oBusinessPartners), SAPbobsCOM.BusinessPartners)
-
-                    If oBusinessPartnerSBO.GetByKey(pCodigo) Then
-                        oBusinessPartnerSBO.UserFields.Fields.Item("U_Enviado_WMS").Value = "1"
-                        oBusinessPartnerSBO.Update()
-                    End If
-
-                    Inserta_Cliente_SAP = True
-
-                    rs.MoveNext()
-
-                End While
+            End While
 
             End If
 
@@ -1047,16 +1038,7 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
         Catch errMsg As Exception
 
             clsTransaccion.RollBack_Transaction()
-
-            clsLnI_nav_ejecucion_det_error.Inserta_Log(String.Format("Error al enviar entrada de mercancía a SAP: {0} {1}", MethodBase.GetCurrentMethod.Name(), errMsg.Message),
-                                                       "",
-                                                       BeNavEjecucionEnc.IdEjecucionEnc,
-                                                       BeConfigDet.Idnavconfigdet)
-
-            clsPublic.Actualizar_Progreso(lblprg, String.Format("Error al enviar entrada de mercancía a SAP: {1} {0} {1}", errMsg.Message, vbNewLine))
-
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), errMsg.Message))
-
+            Throw New Exception("No se pudo insertar el cliente nuevo proveniente de SAP: " & ex.Message)
         Finally
             Desconectar_SAP(oCompany)
             clsTransaccion.Close_Conection()

@@ -37,6 +37,7 @@ Public Class clsLnTrans_pe_tipo
                 .Mover_Producto_Zona_Muelle = IIf(IsDBNull(dr.Item("mover_producto_zona_muelle")), False, dr.Item("mover_producto_zona_muelle"))
                 .Escanear_Muelle_Picking = IIf(IsDBNull(dr.Item("escanear_muelle_picking")), False, dr.Item("escanear_muelle_picking"))
                 .Transferir_Ubicacion = IIf(IsDBNull(dr.Item("transferir_ubicacion")), False, dr.Item("transferir_ubicacion"))
+                .Verificar_con_imagen = IIf(IsDBNull(dr.Item("verificar_con_imagen")), False, dr.Item("verificar_con_imagen"))
                 .Genera_Guia_Remision = IIf(IsDBNull(dr.Item("genera_guia_remision")), False, dr.Item("genera_guia_remision"))
 
             End With
@@ -51,7 +52,7 @@ Public Class clsLnTrans_pe_tipo
 
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeTrans_pe_tipo As clsBeTrans_pe_tipo, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeTrans_pe_tipo As clsBeTrans_pe_tipo, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -380,7 +381,7 @@ Public Class clsLnTrans_pe_tipo
 
         Try
 
-            Const sp As String = "SELECT * FROM Trans_pe_tipo" & _
+            Const sp As String = "SELECT * FROM Trans_pe_tipo" &
             " Where(IdTipoPedido = @IdTipoPedido)"
 
             Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
@@ -486,7 +487,7 @@ Public Class clsLnTrans_pe_tipo
 
     End Function
 
-    Public Shared Function MaxID() as Integer
+    Public Shared Function MaxID() As Integer
 
         Try
 

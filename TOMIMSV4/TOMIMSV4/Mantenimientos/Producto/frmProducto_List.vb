@@ -394,8 +394,12 @@ Public Class frmProductoList
                 pObjProducto = New clsBeProducto
 
                 If pIdBodega = 0 AndAlso pIdPropietarioBodega = 0 Then
-                    Dim IdProducto As Integer = Integer.Parse(Dr.Item("Correlativo"))
-                    pObjProducto = clsLnProducto.Get_Single_By_IdProducto(IdProducto)
+
+                    If Dr.Item("Correlativo") IsNot Nothing Then
+                        Dim IdProducto As Integer = Integer.Parse(Dr.Item("Correlativo"))
+                        pObjProducto = clsLnProducto.Get_Single_By_IdProducto(IdProducto)
+                    End If
+
                 Else
                     Dim IdProducto As Integer = Integer.Parse(Dr.Item("Correlativo"))
                     pObjProducto = clsLnProducto.Get_Single_By_IdProductoBodega(IdProducto)

@@ -97,6 +97,45 @@ Public Class clsLnTrans_picking_ubic
                     .Referencia = IIf(IsDBNull(dr.Item("referencia")), "", dr.Item("referencia"))
                 End If
 
+                If dr.Table.Columns.Contains("IdProductoTallaColor") Then
+                    .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                End If
+
+                If dr.Table.Columns.Contains("Codigo_Talla") Then
+                    .Codigo_Talla = IIf(IsDBNull(dr.Item("Codigo_Talla")), "", dr.Item("Codigo_Talla"))
+                End If
+
+                If dr.Table.Columns.Contains("Nombre_Talla") Then
+                    .Nombre_Talla = IIf(IsDBNull(dr.Item("Nombre_Talla")), "", dr.Item("Nombre_Talla"))
+                End If
+
+                If dr.Table.Columns.Contains("Codigo_Color") Then
+                    .Codigo_Color = IIf(IsDBNull(dr.Item("Codigo_Color")), "", dr.Item("Codigo_Color"))
+                End If
+
+                If dr.Table.Columns.Contains("Nombre_Color") Then
+                    .Nombre_Color = IIf(IsDBNull(dr.Item("Nombre_Color")), "", dr.Item("Nombre_Color"))
+                End If
+
+                If dr.Table.Columns.Contains("CodigoSKU") Then
+                    .CodigoSKU = IIf(IsDBNull(dr.Item("CodigoSKU")), "", dr.Item("CodigoSKU"))
+                End If
+
+                If dr.Table.Columns.Contains("IdProductoTallaColor") Then
+                    .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                End If
+
+                If dr.Table.Columns.Contains("No_Linea") Then
+                    .No_Linea = IIf(IsDBNull(dr.Item("No_Linea")), 0, dr.Item("No_Linea"))
+                End If
+
+                If dr.Table.Columns.Contains("IdTalla") Then
+                    .IdTalla = IIf(IsDBNull(dr.Item("IdTalla")), 0, dr.Item("IdTalla"))
+                End If
+
+                If dr.Table.Columns.Contains("IdColor") Then
+                    .IdColor = IIf(IsDBNull(dr.Item("IdColor")), 0, dr.Item("IdColor"))
+                End If
             End With
 
         Catch ex1 As SqlException
@@ -179,6 +218,7 @@ Public Class clsLnTrans_picking_ubic
             Ins.Add("no_encontrado", "@no_encontrado", DataType.Parametro)
             Ins.Add("idubicaciontemporal", "@idubicaciontemporal", DataType.Parametro)
             Ins.Add("IdOperadorBodega_Asignado", "@IdOperadorBodega_Asignado", DataType.Parametro)
+            Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -246,6 +286,7 @@ Public Class clsLnTrans_picking_ubic
             cmd.Parameters.Add(New SqlParameter("@NO_ENCONTRADO", oBeTrans_picking_ubic.No_encontrado))
             cmd.Parameters.Add(New SqlParameter("@IDUBICACIONTEMPORAL", oBeTrans_picking_ubic.IdUbicacionTemporal))
             cmd.Parameters.Add(New SqlParameter("@IDOPERADORBODEGA_ASIGNADO", oBeTrans_picking_ubic.IdOperadorBodega_Asignado))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_picking_ubic.IdProductoTallaColor))
 
             CantidadStockDestino = oBeTrans_picking_ubic.Cantidad_Solicitada
 
@@ -338,6 +379,7 @@ Public Class clsLnTrans_picking_ubic
             Upd.Add("no_encontrado", "@no_encontrado", DataType.Parametro) '#AT 20220118 Nuevo campo agregado 
             Upd.Add("idubicaciontemporal", "@idubicaciontemporal", DataType.Parametro) '#AT 20220118 Nuevo campo agregado 
             Upd.Add("IdOperadorBodega_Asignado", "@IdOperadorBodega_Asignado", DataType.Parametro)
+            Upd.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
             Upd.Where("IdPickingUbic = @IdPickingUbic")
 
             Dim sp As String = Upd.SQL()
@@ -405,7 +447,7 @@ Public Class clsLnTrans_picking_ubic
             cmd.Parameters.Add(New SqlParameter("@NO_ENCONTRADO", oBeTrans_picking_ubic.No_encontrado))
             cmd.Parameters.Add(New SqlParameter("@IDUBICACIONTEMPORAL", oBeTrans_picking_ubic.IdUbicacionTemporal))
             cmd.Parameters.Add(New SqlParameter("@IDOPERADORBODEGA_ASIGNADO", oBeTrans_picking_ubic.IdOperadorBodega_Asignado))
-
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_picking_ubic.IdProductoTallaColor))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

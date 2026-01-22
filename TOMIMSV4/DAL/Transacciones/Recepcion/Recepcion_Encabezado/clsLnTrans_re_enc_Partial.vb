@@ -3,6 +3,7 @@ Imports System.Data.SqlClient
 Imports System.Reflection
 Imports DevExpress.Utils.Drawing.Helpers
 Imports DevExpress.XtraEditors
+Imports TOMWMS.clsDataContractDI
 
 <Runtime.InteropServices.Guid("D88A0426-FE42-4D97-ACA3-E0BFE164A94D")>
 Partial Public Class clsLnTrans_re_enc
@@ -1375,99 +1376,99 @@ Partial Public Class clsLnTrans_re_enc
                 '#GT10102025: validar que no este anulada (concurrencia donde en una pc anulan, pero en otra dejan abierta la tarea ;( )
                 If Not Anulada(pRecEnc.IdRecepcionEnc, lConnection, lTransaction) Then
 
-                    Dim pRecEnc1 As New clsBeTrans_re_enc
-                    pRecEnc1 = Get_Single_By_IdREcepcionEnc_Sin_Det(pRecEnc.IdRecepcionEnc,
+                Dim pRecEnc1 As New clsBeTrans_re_enc
+                pRecEnc1 = Get_Single_By_IdREcepcionEnc_Sin_Det(pRecEnc.IdRecepcionEnc,
                                                                 lConnection,
                                                                 lTransaction)
 
-                    '#EJC202303021159: Mantener el último estado con el que fue actualizada la recepción. (Por si dejaron la pantalla abierta)
-                    If Not pRecEnc1 Is Nothing Then
-                        If pRecEnc1.Estado <> "Nuevo" AndAlso pRecEnc.Estado = "Nuevo" Then
-                            pRecEnc.Estado = pRecEnc1.Estado
-                        End If
+                '#EJC202303021159: Mantener el último estado con el que fue actualizada la recepción. (Por si dejaron la pantalla abierta)
+                If Not pRecEnc1 Is Nothing Then
+                    If pRecEnc1.Estado <> "Nuevo" AndAlso pRecEnc.Estado = "Nuevo" Then
+                        pRecEnc.Estado = pRecEnc1.Estado
                     End If
+                End If
 
-                    ' Recepción Encabezado
-                    Guarda_Trans_re_enc(pRecEnc,
-                                        lConnection,
-                                        lTransaction)
+                ' Recepción Encabezado
+                Guarda_Trans_re_enc(pRecEnc,
+                                    lConnection,
+                                    lTransaction)
 
-                    ' Recepción Orden Compra
-                    clsLnTrans_re_oc.Guarda_Trans_Re_OC(pRecEnc,
-                                                        pRecOrdenCompra,
-                                                        lConnection,
-                                                        lTransaction)
-
-                    ' Recepción Detalle
-                    clsLnTrans_re_det.Guarda_Trans_re_det(pListRecDet,
-                                                          True,
-                                                          pRecEnc,
-                                                          lConnection,
-                                                          lTransaction)
-
-                    If pRecEnc.IdTipoTransaccion <> clsBeTrans_re_enc.pTipoTrans.PICH000.ToString() Then 'Si no es pre-ingreso, actualizar cantidad_recibida en O.C.
-                        'Actualiza cantidad recibida OC.
-                        clsLnTrans_oc_det.Actualiza_Cantidad_Recibida_OC(pRecOrdenCompra,
-                                                                         pListRecDet,
-                                                                         lConnection,
-                                                                         lTransaction)
-                    End If
-
-                    'Guarda parámetros de productos.
-                    clsLnTrans_re_det_parametros.Guarda_Trans_Re_Det_Parametros(pRecEnc.IdRecepcionEnc,
-                                                                                pListRecDet,
-                                                                                pListRecDetParam,
-                                                                                lConnection,
-                                                                                lTransaction)
-
-                    'Recepción Operadores
-                    clsLnTrans_re_op.Guarda_Trans_Re_Op(pRecEnc.IdRecepcionEnc,
-                                                        pListRecOpe,
-                                                        lConnection,
-                                                        lTransaction)
-
-                    ' Imagenes
-                    clsLnTrans_re_img.Guarda_Trans_Re_Img(pRecEnc.IdRecepcionEnc,
-                                                          pListRecImg,
-                                                          lConnection,
-                                                          lTransaction)
-
-                    ' Facturas asociadas
-                    clsLnTrans_re_fact.Guarda_facturas_asoc(pRecEnc.IdRecepcionEnc,
-                                                            pListRecFact,
-                                                            lConnection,
-                                                            lTransaction)
-
-                    ' Stock Rec
-                    clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
-                                                    IdBodega,
-                                                    pListStockRec,
+                ' Recepción Orden Compra
+                clsLnTrans_re_oc.Guarda_Trans_Re_OC(pRecEnc,
+                                                    pRecOrdenCompra,
                                                     lConnection,
                                                     lTransaction)
 
-                    ' Producto_pallet
-                    clsLnProducto_pallet.Guarda_Producto_Pallet(pRecEnc.IdRecepcionEnc,
-                                                                pListProductoPallet,
-                                                                lConnection,
-                                                                lTransaction)
+                ' Recepción Detalle
+                clsLnTrans_re_det.Guarda_Trans_re_det(pListRecDet,
+                                                      True,
+                                                      pRecEnc,
+                                                      lConnection,
+                                                      lTransaction)
 
-                    ' Stock Serializado Rec
-                    clsLnStock_se_rec.Guarda_Stock_Se_Rec(pListStockRecSer,
-                                                          pListStockRec,
-                                                          lConnection,
-                                                          lTransaction)
+                If pRecEnc.IdTipoTransaccion <> clsBeTrans_re_enc.pTipoTrans.PICH000.ToString() Then 'Si no es pre-ingreso, actualizar cantidad_recibida en O.C.
+                    'Actualiza cantidad recibida OC.
+                    clsLnTrans_oc_det.Actualiza_Cantidad_Recibida_OC(pRecOrdenCompra,
+                                                                     pListRecDet,
+                                                                     lConnection,
+                                                                     lTransaction)
+                End If
 
-                    'Tarea de recepción para la HH.
-                    clsLnTarea_hh.Guardar_Tarea_Recepcion_HH(pObjTareaHH,
+                'Guarda parámetros de productos.
+                clsLnTrans_re_det_parametros.Guarda_Trans_Re_Det_Parametros(pRecEnc.IdRecepcionEnc,
+                                                                            pListRecDet,
+                                                                            pListRecDetParam,
+                                                                            lConnection,
+                                                                            lTransaction)
+
+                'Recepción Operadores
+                clsLnTrans_re_op.Guarda_Trans_Re_Op(pRecEnc.IdRecepcionEnc,
+                                                    pListRecOpe,
+                                                    lConnection,
+                                                    lTransaction)
+
+                ' Imagenes
+                clsLnTrans_re_img.Guarda_Trans_Re_Img(pRecEnc.IdRecepcionEnc,
+                                                      pListRecImg,
+                                                      lConnection,
+                                                      lTransaction)
+
+                ' Facturas asociadas
+                clsLnTrans_re_fact.Guarda_facturas_asoc(pRecEnc.IdRecepcionEnc,
+                                                        pListRecFact,
+                                                        lConnection,
+                                                        lTransaction)
+
+                ' Stock Rec
+                clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
+                                                IdBodega,
+                                                pListStockRec,
+                                                lConnection,
+                                                lTransaction)
+
+                ' Producto_pallet
+                clsLnProducto_pallet.Guarda_Producto_Pallet(pRecEnc.IdRecepcionEnc,
+                                                            pListProductoPallet,
+                                                            lConnection,
+                                                            lTransaction)
+
+                ' Stock Serializado Rec
+                clsLnStock_se_rec.Guarda_Stock_Se_Rec(pListStockRecSer,
+                                                      pListStockRec,
+                                                      lConnection,
+                                                      lTransaction)
+
+                'Tarea de recepción para la HH.
+                clsLnTarea_hh.Guardar_Tarea_Recepcion_HH(pObjTareaHH,
+                                                         lConnection,
+                                                         lTransaction)
+
+                'Tarea de actualizar el estado de un ticket existente
+                clsLnTrans_oc_enc.Cambiar_A_Estado_Procesado(No_Ticket_Tms,
                                                              lConnection,
                                                              lTransaction)
 
-                    'Tarea de actualizar el estado de un ticket existente
-                    clsLnTrans_oc_enc.Cambiar_A_Estado_Procesado(No_Ticket_Tms,
-                                                                 lConnection,
-                                                                 lTransaction)
-
-                End If
+            End If
 
             End If
 
@@ -1669,64 +1670,64 @@ Partial Public Class clsLnTrans_re_enc
 
                 If Not Anulada(pRecEnc.IdRecepcionEnc, lConnection, lTransaction) Then
 
-                    If pRecOrdenCompra IsNot Nothing Then
+                If pRecOrdenCompra IsNot Nothing Then
 
-                        If pListStockRec.Count > 0 Then
+                    If pListStockRec.Count > 0 Then
 
-                            For Each StockRec In pListStockRec
+                        For Each StockRec In pListStockRec
 
-                                pNuevoBeTransOcDet = clsLnTrans_oc_det.Crear_Linea_Unidades(pBeTransOcDet,
-                                                                                            pListRecDet(0).cantidad_recibida,
-                                                                                            pListRecDet(0).cantidad_recibida,
-                                                                                            pIdBodega,
-                                                                                            pListRecDet,
-                                                                                            lConnection,
-                                                                                            lTransaction)
-                            Next
-
-                        End If
-
-                        pIdOrdenCompraEnc = pRecOrdenCompra.IdOrdenCompraEnc
-                        IdTipoDocumento = clsLnTrans_oc_enc.Get_IdTipoDocumento_By_IdOrdenCompraEnc(pIdOrdenCompraEnc,
-                                                                                                    lConnection,
-                                                                                                    lTransaction)
-
-                        pRecOrdenCompra.Hora_fin_hh = Date.Now()
-
-                        vResultadoGuarda_Trans_Re_OC = clsLnTrans_re_oc.Guarda_Trans_Re_OC(pRecEnc,
-                                                                                           pRecOrdenCompra,
-                                                                                           lConnection,
-                                                                                           lTransaction)
-
-                        If vResultadoGuarda_Trans_Re_OC > 0 Then
-                            CadenaResultado += "Guarda_Trans_Re_OC " & vResultadoGuarda_Trans_Re_OC
-                        Else
-                            Throw New Exception("ERROR_202210051158: No se pudo insertar la cabecera de la recepción.")
-                        End If
-
-                        vResultadoActualiza_Cantidad_Recibida_OC = clsLnTrans_oc_det.Actualiza_Cantidad_Recibida_OC(pRecOrdenCompra,
-                                                                                                                    pListRecDet,
-                                                                                                                    lConnection,
-                                                                                                                    lTransaction)
-
-                        If vResultadoActualiza_Cantidad_Recibida_OC > 0 Then
-                            CadenaResultado += "Actualiza_Cantidad_Recibida_OC " & vResultadoActualiza_Cantidad_Recibida_OC
-                        Else
-                            Throw New Exception("ERROR_202210051210: No se pudo actualizar la cantidad recibida del documento de ingreso.")
-                        End If
-
+                            pNuevoBeTransOcDet = clsLnTrans_oc_det.Crear_Linea_Unidades(pBeTransOcDet,
+                                                                                        pListRecDet(0).cantidad_recibida,
+                                                                                        pListRecDet(0).cantidad_recibida,
+                                                                                        pIdBodega,
+                                                                                        pListRecDet,
+                                                                                        lConnection,
+                                                                                        lTransaction)
+                        Next
 
                     End If
 
-                    '#EJC20220908:Consultar configuración de bodega antes de proceso.
-                    Dim BeBodega As New clsBeBodega()
-                    BeBodega = clsLnBodega.GetSingle_By_Idbodega(pRecEnc.IdBodega,
-                                                                 lConnection,
-                                                                 lTransaction)
+                    pIdOrdenCompraEnc = pRecOrdenCompra.IdOrdenCompraEnc
+                    IdTipoDocumento = clsLnTrans_oc_enc.Get_IdTipoDocumento_By_IdOrdenCompraEnc(pIdOrdenCompraEnc,
+                                                                                                lConnection,
+                                                                                                lTransaction)
 
-                    If BeBodega Is Nothing Then
-                        Throw New Exception("ERROR_202210051121: No se obtuvo el código de la bodega para el IdBodega: " & pRecEnc.IdBodega)
+                    pRecOrdenCompra.Hora_fin_hh = Date.Now()
+
+                    vResultadoGuarda_Trans_Re_OC = clsLnTrans_re_oc.Guarda_Trans_Re_OC(pRecEnc,
+                                                                                       pRecOrdenCompra,
+                                                                                       lConnection,
+                                                                                       lTransaction)
+
+                    If vResultadoGuarda_Trans_Re_OC > 0 Then
+                        CadenaResultado += "Guarda_Trans_Re_OC " & vResultadoGuarda_Trans_Re_OC
+                    Else
+                        Throw New Exception("ERROR_202210051158: No se pudo insertar la cabecera de la recepción.")
                     End If
+
+                    vResultadoActualiza_Cantidad_Recibida_OC = clsLnTrans_oc_det.Actualiza_Cantidad_Recibida_OC(pRecOrdenCompra,
+                                                                                                                pListRecDet,
+                                                                                                                lConnection,
+                                                                                                                lTransaction)
+
+                    If vResultadoActualiza_Cantidad_Recibida_OC > 0 Then
+                        CadenaResultado += "Actualiza_Cantidad_Recibida_OC " & vResultadoActualiza_Cantidad_Recibida_OC
+                    Else
+                        Throw New Exception("ERROR_202210051210: No se pudo actualizar la cantidad recibida del documento de ingreso.")
+                    End If
+
+
+                End If
+
+                '#EJC20220908:Consultar configuración de bodega antes de proceso.
+                Dim BeBodega As New clsBeBodega()
+                BeBodega = clsLnBodega.GetSingle_By_Idbodega(pRecEnc.IdBodega,
+                                                             lConnection,
+                                                             lTransaction)
+
+                If BeBodega Is Nothing Then
+                    Throw New Exception("ERROR_202210051121: No se obtuvo el código de la bodega para el IdBodega: " & pRecEnc.IdBodega)
+                End If
 
 
                     vBeRecepcionEncabezado = New clsBeTrans_re_enc
@@ -1740,168 +1741,168 @@ Partial Public Class clsLnTrans_re_enc
 
 
 
-                    'Recepción Encabezado
-                    If pRecEnc.IsNew Then
+                'Recepción Encabezado
+                If pRecEnc.IsNew Then
 
-                        vResultadoInsertReEnc = Insertar(pRecEnc, lConnection, lTransaction)
+                    vResultadoInsertReEnc = Insertar(pRecEnc, lConnection, lTransaction)
 
-                        If vResultadoInsertReEnc > 0 Then
-                            CadenaResultado += "Inserté encabezado recepción " & vResultadoInsertReEnc
-                        Else
-                            Throw New Exception("ERROR_202210051158: No se pudo insertar la cabecera de la recepción.")
-                        End If
-
+                    If vResultadoInsertReEnc > 0 Then
+                        CadenaResultado += "Inserté encabezado recepción " & vResultadoInsertReEnc
+                    Else
+                        Throw New Exception("ERROR_202210051158: No se pudo insertar la cabecera de la recepción.")
                     End If
 
-                    If Not pListRecDet Is Nothing Then
+                End If
 
-                        If pListRecDet.Count > 0 Then
+                If Not pListRecDet Is Nothing Then
 
-                            For Each det In pListRecDet
-                                det.No_Linea = pNuevoBeTransOcDet.No_Linea
-                                det.IdOrdenCompraDet = pNuevoBeTransOcDet.IdOrdenCompraDet
-                            Next
+                    If pListRecDet.Count > 0 Then
 
-                            vResultadoEliminar_Detalle = clsLnTrans_re_det.Eliminar_Detalle(pIdOrdenCompraEnc,
-                                                                                            pListRecDet,
-                                                                                            lConnection,
-                                                                                            lTransaction)
+                        For Each det In pListRecDet
+                            det.No_Linea = pNuevoBeTransOcDet.No_Linea
+                            det.IdOrdenCompraDet = pNuevoBeTransOcDet.IdOrdenCompraDet
+                        Next
 
-                            If vResultadoEliminar_Detalle <> "" Then
-                                CadenaResultado += "Eliminar_Detalle_Recepción " & vResultadoEliminar_Detalle
+                        vResultadoEliminar_Detalle = clsLnTrans_re_det.Eliminar_Detalle(pIdOrdenCompraEnc,
+                                                                                        pListRecDet,
+                                                                                        lConnection,
+                                                                                        lTransaction)
+
+                        If vResultadoEliminar_Detalle <> "" Then
+                            CadenaResultado += "Eliminar_Detalle_Recepción " & vResultadoEliminar_Detalle
+                        End If
+
+                        vResultadoGuarda_Trans_re_det = clsLnTrans_re_det.Guarda_Trans_re_det(pListRecDet,
+                                                                                              pListStockRec,
+                                                                                              lConnection,
+                                                                                              lTransaction)
+
+                        If vResultadoGuarda_Trans_re_det > 0 Then
+                            CadenaResultado += "Guarda_Trans_re_det: " & vResultadoGuarda_Trans_re_det
+                        Else
+                            Throw New Exception("ERROR_202210051158: No se pudo insertar el detalle de la recepción.")
+                        End If
+
+                        If Not pLotesRec Is Nothing Then
+
+                            Dim TieneLotes As Boolean = clsLnTrans_oc_det_lote.Get_By_IdOrdenCompraEnc(pRecOrdenCompra.IdOrdenCompraEnc,
+                                                                                                       lConnection,
+                                                                                                       lTransaction).ToList.Count > 0
+
+                            If TieneLotes Then
+                                pLotesRec.No_linea = pNuevoBeTransOcDet.No_Linea
+                                pLotesRec.IdOrdenCompraDet = pNuevoBeTransOcDet.IdOrdenCompraDet
+
+                                '#EJC20210412:Agregado para BYB, actualizar la cantidad recibida por lote.
+                                vResultadoGuarda_Trans_re_det_lote = clsLnTrans_oc_det_lote.Guarda_Trans_re_det_lote(pLotesRec,
+                                                                                                                    lConnection,
+                                                                                                                    lTransaction)
+
+                                If vResultadoGuarda_Trans_re_det_lote > 0 Then
+                                    CadenaResultado += "Guarda_Trans_re_det_lote: " & vResultadoGuarda_Trans_re_det_lote
+                                Else
+                                    Throw New Exception("ERROR_202210051158: No se pudo actualizar la información de ltoes.")
+                                End If
                             End If
 
-                            vResultadoGuarda_Trans_re_det = clsLnTrans_re_det.Guarda_Trans_re_det(pListRecDet,
-                                                                                                  pListStockRec,
+                        End If
+
+                        vResultadoGuarda_Trans_Re_Det_Parametros = clsLnTrans_re_det_parametros.Guarda_Trans_Re_Det_Parametros(pRecEnc.IdRecepcionEnc,
+                                                                                                                               pListRecDet,
+                                                                                                                               pListRecDetParam,
+                                                                                                                               lConnection,
+                                                                                                                               lTransaction)
+
+                        If vResultadoGuarda_Trans_Re_Det_Parametros > 0 Then
+                            CadenaResultado += "Guarda_Trans_Re_Det_Parametros " & vResultadoGuarda_Trans_Re_Det_Parametros
+                        End If
+
+                        If Not pListStockRec Is Nothing Then
+
+                            If pListStockRec.Count > 0 Then
+
+                                For Each pBeStockRec In pListStockRec
+
+                                    If BeBodega.bloquear_lp_hh Then
+
+                                        Dim vLPExiste As Boolean = False
+
+                                        vLPExiste = clsLnStock.Existe_Lp_In_Stock_By_IdBodega(pBeStockRec.Lic_plate,
+                                                                                      pIdBodega,
+                                                                                      lConnection,
+                                                                                      lTransaction)
+
+                                        If vLPExiste Then
+                                            Throw New Exception("ERROR_20220823_1604: La licencia: " & pBeStockRec.Lic_plate & " ya existe.")
+                                        End If
+
+                                    End If
+
+                                Next
+
+                                For Each stockrec In pListStockRec
+                                    stockrec.No_linea = pNuevoBeTransOcDet.No_Linea
+                                Next
+
+                                '#EJC20210504: Incrementar contador de LP.
+                                If pIdResolucionLp <> 0 Then
+
+                                    Dim BeResolLp As New clsBeResolucion_lp_operador()
+                                    BeResolLp = clsLnResolucion_lp_operador.GetSingle(pIdResolucionLp,
+                                                                                      lConnection,
+                                                                                      lTransaction)
+
+                                    If Not BeResolLp Is Nothing Then
+                                        BeResolLp.Correlativo_Actual += 1
+                                        clsLnResolucion_lp_operador.Actualizar_Correlativo_Actual(BeResolLp,
                                                                                                   lConnection,
                                                                                                   lTransaction)
-
-                            If vResultadoGuarda_Trans_re_det > 0 Then
-                                CadenaResultado += "Guarda_Trans_re_det: " & vResultadoGuarda_Trans_re_det
-                            Else
-                                Throw New Exception("ERROR_202210051158: No se pudo insertar el detalle de la recepción.")
-                            End If
-
-                            If Not pLotesRec Is Nothing Then
-
-                                Dim TieneLotes As Boolean = clsLnTrans_oc_det_lote.Get_By_IdOrdenCompraEnc(pRecOrdenCompra.IdOrdenCompraEnc,
-                                                                                                           lConnection,
-                                                                                                           lTransaction).ToList.Count > 0
-
-                                If TieneLotes Then
-                                    pLotesRec.No_linea = pNuevoBeTransOcDet.No_Linea
-                                    pLotesRec.IdOrdenCompraDet = pNuevoBeTransOcDet.IdOrdenCompraDet
-
-                                    '#EJC20210412:Agregado para BYB, actualizar la cantidad recibida por lote.
-                                    vResultadoGuarda_Trans_re_det_lote = clsLnTrans_oc_det_lote.Guarda_Trans_re_det_lote(pLotesRec,
-                                                                                                                        lConnection,
-                                                                                                                        lTransaction)
-
-                                    If vResultadoGuarda_Trans_re_det_lote > 0 Then
-                                        CadenaResultado += "Guarda_Trans_re_det_lote: " & vResultadoGuarda_Trans_re_det_lote
-                                    Else
-                                        Throw New Exception("ERROR_202210051158: No se pudo actualizar la información de ltoes.")
                                     End If
+
                                 End If
 
-                            End If
+                                vResultadoGuarda_Stock_Rec = clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
+                                                                                             pIdBodega,
+                                                                                             pListStockRec,
+                                                                                             lConnection,
+                                                                                             lTransaction)
 
-                            vResultadoGuarda_Trans_Re_Det_Parametros = clsLnTrans_re_det_parametros.Guarda_Trans_Re_Det_Parametros(pRecEnc.IdRecepcionEnc,
-                                                                                                                                   pListRecDet,
-                                                                                                                                   pListRecDetParam,
-                                                                                                                                   lConnection,
-                                                                                                                                   lTransaction)
+                                If vResultadoGuarda_Stock_Rec > 0 Then
 
-                            If vResultadoGuarda_Trans_Re_Det_Parametros > 0 Then
-                                CadenaResultado += "Guarda_Trans_Re_Det_Parametros " & vResultadoGuarda_Trans_Re_Det_Parametros
-                            End If
+                                    CadenaResultado += "Guarda_Stock_Rec: " & vResultadoGuarda_Stock_Rec
 
-                            If Not pListStockRec Is Nothing Then
+                                    clsLnStock_se_rec.Guarda_Stock_Se_Rec(pListStockRecSer,
+                                                                          pListStockRec,
+                                                                          lConnection,
+                                                                          lTransaction)
 
-                                If pListStockRec.Count > 0 Then
+                                    CadenaResultado += "Guarda_Stock_Se_Rec "
 
-                                    For Each pBeStockRec In pListStockRec
+                                Else
+                                    Throw New Exception("ERROR_202210051158: No se pudo insertar el stock de la recepción.")
+                                End If
 
-                                        If BeBodega.bloquear_lp_hh Then
+                                If Not pListProductoPallet Is Nothing Then
 
-                                            Dim vLPExiste As Boolean = False
+                                    If pListProductoPallet.Count > 0 Then
 
-                                            vLPExiste = clsLnStock.Existe_Lp_In_Stock_By_IdBodega(pBeStockRec.Lic_plate,
-                                                                                          pIdBodega,
-                                                                                          lConnection,
-                                                                                          lTransaction)
+                                        vResultadoGuarda_Producto_Pallet = clsLnProducto_pallet.Guarda_Producto_Pallet(pRecEnc.IdRecepcionEnc,
+                                                                                                                       pListProductoPallet,
+                                                                                                                       lConnection,
+                                                                                                                       lTransaction)
 
-                                            If vLPExiste Then
-                                                Throw New Exception("ERROR_20220823_1604: La licencia: " & pBeStockRec.Lic_plate & " ya existe.")
-                                            End If
-
-                                        End If
-
-                                    Next
-
-                                    For Each stockrec In pListStockRec
-                                        stockrec.No_linea = pNuevoBeTransOcDet.No_Linea
-                                    Next
-
-                                    '#EJC20210504: Incrementar contador de LP.
-                                    If pIdResolucionLp <> 0 Then
-
-                                        Dim BeResolLp As New clsBeResolucion_lp_operador()
-                                        BeResolLp = clsLnResolucion_lp_operador.GetSingle(pIdResolucionLp,
-                                                                                          lConnection,
-                                                                                          lTransaction)
-
-                                        If Not BeResolLp Is Nothing Then
-                                            BeResolLp.Correlativo_Actual += 1
-                                            clsLnResolucion_lp_operador.Actualizar_Correlativo_Actual(BeResolLp,
-                                                                                                      lConnection,
-                                                                                                      lTransaction)
+                                        If vResultadoGuarda_Producto_Pallet > 0 Then
+                                            CadenaResultado += "Guarda_Producto_Pallet: " & vResultadoGuarda_Producto_Pallet
+                                        Else
+                                            Throw New Exception("ERROR_202210051158: No se pudo guardar la información relacionada a la licencia (Guarda_Producto_Pallet).")
                                         End If
 
                                     End If
 
-                                    vResultadoGuarda_Stock_Rec = clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
-                                                                                                 pIdBodega,
-                                                                                                 pListStockRec,
-                                                                                                 lConnection,
-                                                                                                 lTransaction)
-
-                                    If vResultadoGuarda_Stock_Rec > 0 Then
-
-                                        CadenaResultado += "Guarda_Stock_Rec: " & vResultadoGuarda_Stock_Rec
-
-                                        clsLnStock_se_rec.Guarda_Stock_Se_Rec(pListStockRecSer,
-                                                                              pListStockRec,
-                                                                              lConnection,
-                                                                              lTransaction)
-
-                                        CadenaResultado += "Guarda_Stock_Se_Rec "
-
-                                    Else
-                                        Throw New Exception("ERROR_202210051158: No se pudo insertar el stock de la recepción.")
-                                    End If
-
-                                    If Not pListProductoPallet Is Nothing Then
-
-                                        If pListProductoPallet.Count > 0 Then
-
-                                            vResultadoGuarda_Producto_Pallet = clsLnProducto_pallet.Guarda_Producto_Pallet(pRecEnc.IdRecepcionEnc,
-                                                                                                                           pListProductoPallet,
-                                                                                                                           lConnection,
-                                                                                                                           lTransaction)
-
-                                            If vResultadoGuarda_Producto_Pallet > 0 Then
-                                                CadenaResultado += "Guarda_Producto_Pallet: " & vResultadoGuarda_Producto_Pallet
-                                            Else
-                                                Throw New Exception("ERROR_202210051158: No se pudo guardar la información relacionada a la licencia (Guarda_Producto_Pallet).")
-                                            End If
-
-                                        End If
-
-                                    End If
+                                End If
 
 
-                                    Dim BeStock As New clsBeStock()
+                                Dim BeStock As New clsBeStock()
 
                                     '#GT22102025: validar contra nuevo objeto, el anterior podria estar inconsistente.
                                     'If pRecEnc.Habilitar_Stock Then
@@ -1909,186 +1910,186 @@ Partial Public Class clsLnTrans_re_enc
 
                                         Dim pBeINavBarraPallet As New clsBeI_nav_barras_pallet
 
-                                        For Each pBeStockRec As clsBeStock_rec In pListStockRec
+                                    For Each pBeStockRec As clsBeStock_rec In pListStockRec
 
-                                            BeStock = New clsBeStock
+                                        BeStock = New clsBeStock
 
-                                            pBeStockRec.IdBodega = pIdBodega
+                                        pBeStockRec.IdBodega = pIdBodega
 
                                             '#EJC20200207: Para evitar fechas malas de la HH
-                                            pBeStockRec.Fecha_Ingreso = Now
-                                            pBeStockRec.Fec_agr = Now
-                                            pBeStockRec.Fec_mod = Now
-                                            clsPublic.CopyObject(pBeStockRec, BeStock)
+                                        pBeStockRec.Fecha_Ingreso = Now
+                                        pBeStockRec.Fec_agr = Now
+                                        pBeStockRec.Fec_mod = Now
+                                        clsPublic.CopyObject(pBeStockRec, BeStock)
 
-                                            Dim lMaxS As Integer = clsLnStock.MaxID(lConnection, lTransaction)
-                                            lMaxS += 1
+                                        Dim lMaxS As Integer = clsLnStock.MaxID(lConnection, lTransaction)
+                                        lMaxS += 1
 
-                                            BeStock.IdStock = lMaxS
+                                        BeStock.IdStock = lMaxS
 
-                                            vResultadoInsertar_Movimientos_Recepcion = clsLnTrans_movimientos.Insertar_Movimientos_Recepcion(pIdEmpresa,
-                                                                                                                                             pIdBodega,
-                                                                                                                                             pIdUsuario,
-                                                                                                                                             pBeStockRec,
-                                                                                                                                             lConnection,
-                                                                                                                                             lTransaction)
+                                        vResultadoInsertar_Movimientos_Recepcion = clsLnTrans_movimientos.Insertar_Movimientos_Recepcion(pIdEmpresa,
+                                                                                                                                         pIdBodega,
+                                                                                                                                         pIdUsuario,
+                                                                                                                                         pBeStockRec,
+                                                                                                                                         lConnection,
+                                                                                                                                         lTransaction)
 
-                                            If vResultadoInsertar_Movimientos_Recepcion > 0 Then
+                                        If vResultadoInsertar_Movimientos_Recepcion > 0 Then
 
                                                 CadenaResultado += "Insertar_Movimiento_Recepcion: IdMovimiento" & vResultadoInsertar_Movimientos_Recepcion
 
                                                 '#EJC20191218: IdBodega2Stock
                                                 vResultadoInsertarStock = clsLnStock.Insertar(BeStock,
-                                                                                              lConnection,
-                                                                                              lTransaction)
+                                                                                          lConnection,
+                                                                                          lTransaction)
+
+                                            If vResultadoInsertarStock > 0 Then
+
+                                                CadenaResultado += "clsLnStock.Insertar: " & vResultadoInsertarStock
+
+                                                vResultadoInsertar_Stock_Parametro_Recepcion = clsLnStock_parametro.Insertar_Stock_Parametro_Recepcion(pBeStockRec,
+                                                                                                                                                       lMaxS,
+                                                                                                                                                       lConnection,
+                                                                                                                                                       lTransaction)
 
                                                 If vResultadoInsertarStock > 0 Then
+                                                    CadenaResultado += "clsLnStock_parametro.Insertar_Stock_Parametro_Recepcion: " & vResultadoInsertar_Stock_Parametro_Recepcion
+                                                End If
 
-                                                    CadenaResultado += "clsLnStock.Insertar: " & vResultadoInsertarStock
+                                                vResultadoInsertar_Stock_Serializado_Recepcion = clsLnStock_se.Insertar_Stock_Serializado_Recepcion(pBeStockRec,
+                                                                                                                                                    lMaxS,
+                                                                                                                                                    lConnection,
+                                                                                                                                                    lTransaction)
 
-                                                    vResultadoInsertar_Stock_Parametro_Recepcion = clsLnStock_parametro.Insertar_Stock_Parametro_Recepcion(pBeStockRec,
-                                                                                                                                                           lMaxS,
-                                                                                                                                                           lConnection,
-                                                                                                                                                           lTransaction)
+                                                If vResultadoInsertar_Stock_Serializado_Recepcion > 0 Then
+                                                    CadenaResultado += "Insertar_Stock_Serializado_Recepcion: " & vResultadoInsertar_Stock_Serializado_Recepcion
+                                                End If
 
-                                                    If vResultadoInsertarStock > 0 Then
-                                                        CadenaResultado += "clsLnStock_parametro.Insertar_Stock_Parametro_Recepcion: " & vResultadoInsertar_Stock_Parametro_Recepcion
+                                                '#EJC20190329_0538PM: Marcar el pallet como recibido.
+                                                If pBeStockRec.Lic_plate <> "" Then
+                                                    pBeINavBarraPallet.Recibido = True
+                                                    pBeINavBarraPallet.IdRecepcion = pRecEnc.IdRecepcionEnc
+                                                    pBeINavBarraPallet.Codigo_barra = pBeStockRec.Lic_plate
+                                                    pBeINavBarraPallet.Fecha_Ingreso = Now
+                                                    pBeINavBarraPallet.Fecha_Agregado = Now
+
+                                                    pBeINavBarraPallet.Bodega_Destino = clsLnBodega.Get_Codigo_By_IdBodega(pIdBodega,
+                                                                                                                           lConnection,
+                                                                                                                           lTransaction)
+
+                                                    If Not pBeINavBarraPallet.Bodega_Destino Is Nothing Then
+                                                        CadenaResultado += "Get_Codigo_By_IdBodega: " & pBeINavBarraPallet.Bodega_Destino
+                                                    Else
+                                                        Throw New Exception("ERROR_202210051226: No se pudo obtener la bodega destino con el IdBodega: " & pIdBodega)
                                                     End If
 
-                                                    vResultadoInsertar_Stock_Serializado_Recepcion = clsLnStock_se.Insertar_Stock_Serializado_Recepcion(pBeStockRec,
-                                                                                                                                                        lMaxS,
-                                                                                                                                                        lConnection,
-                                                                                                                                                        lTransaction)
+                                                    vResultadoActualiza_Estado_Barras_Pallet = clsLnI_nav_barras_pallet.Actualiza_Estado_Barras_Pallet(pBeINavBarraPallet,
+                                                                                                                                                       lConnection,
+                                                                                                                                                       lTransaction)
 
-                                                    If vResultadoInsertar_Stock_Serializado_Recepcion > 0 Then
-                                                        CadenaResultado += "Insertar_Stock_Serializado_Recepcion: " & vResultadoInsertar_Stock_Serializado_Recepcion
+                                                    If vResultadoActualiza_Estado_Barras_Pallet > 0 Then
+                                                        CadenaResultado += "Actualiza_Estado_Barras_Pallet: " & vResultadoActualiza_Estado_Barras_Pallet
                                                     End If
 
-                                                    '#EJC20190329_0538PM: Marcar el pallet como recibido.
-                                                    If pBeStockRec.Lic_plate <> "" Then
-                                                        pBeINavBarraPallet.Recibido = True
-                                                        pBeINavBarraPallet.IdRecepcion = pRecEnc.IdRecepcionEnc
-                                                        pBeINavBarraPallet.Codigo_barra = pBeStockRec.Lic_plate
-                                                        pBeINavBarraPallet.Fecha_Ingreso = Now
-                                                        pBeINavBarraPallet.Fecha_Agregado = Now
+                                                End If
 
-                                                        pBeINavBarraPallet.Bodega_Destino = clsLnBodega.Get_Codigo_By_IdBodega(pIdBodega,
-                                                                                                                               lConnection,
-                                                                                                                               lTransaction)
+                                                If Not pListRecDet Is Nothing Then
 
-                                                        If Not pBeINavBarraPallet.Bodega_Destino Is Nothing Then
-                                                            CadenaResultado += "Get_Codigo_By_IdBodega: " & pBeINavBarraPallet.Bodega_Destino
-                                                        Else
-                                                            Throw New Exception("ERROR_202210051226: No se pudo obtener la bodega destino con el IdBodega: " & pIdBodega)
-                                                        End If
+                                                    If pListRecDet.Count > 0 Then
 
-                                                        vResultadoActualiza_Estado_Barras_Pallet = clsLnI_nav_barras_pallet.Actualiza_Estado_Barras_Pallet(pBeINavBarraPallet,
-                                                                                                                                                           lConnection,
-                                                                                                                                                           lTransaction)
+                                                        '#EJC20190607: Insertar stock parcial (no con pallet) en interface.
+                                                        For Each pBeTransReDet As clsBeTrans_re_det In pListRecDet
 
-                                                        If vResultadoActualiza_Estado_Barras_Pallet > 0 Then
-                                                            CadenaResultado += "Actualiza_Estado_Barras_Pallet: " & vResultadoActualiza_Estado_Barras_Pallet
-                                                        End If
+                                                            If pBeTransReDet.IsNew Then
 
-                                                    End If
+                                                                CadenaResultado += "Inserta transacciones out"
 
-                                                    If Not pListRecDet Is Nothing Then
+                                                                Dim vResultado As String = clsLnI_nav_transacciones_out.Insertar_Ingreso_Parcial(pIdEmpresa,
+                                                                                                                                                 pIdBodega,
+                                                                                                                                                 IdTipoDocumento,
+                                                                                                                                                 pBeTransReDet,
+                                                                                                                                                 pIdOrdenCompraEnc,
+                                                                                                                                                 pIdUsuario,
+                                                                                                                                                 False,
+                                                                                                                                                 lConnection,
+                                                                                                                                                 lTransaction)
 
-                                                        If pListRecDet.Count > 0 Then
+                                                                CadenaResultado += "Insertar_Ingreso_Parcial: " & vResultado
 
-                                                            '#EJC20190607: Insertar stock parcial (no con pallet) en interface.
-                                                            For Each pBeTransReDet As clsBeTrans_re_det In pListRecDet
+                                                                Dim BeLoteNum As New clsBeTrans_re_det_lote_num
+                                                                BeLoteNum.IdLoteNum = clsLnTrans_re_det_lote_num.MaxID(lConnection, lTransaction) + 1
+                                                                BeLoteNum.IdProductoBodega = pBeTransReDet.IdProductoBodega
+                                                                BeLoteNum.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
+                                                                BeLoteNum.Codigo = pBeINavBarraPallet.Codigo
+                                                                BeLoteNum.Lote = pBeINavBarraPallet.Lote
+                                                                BeLoteNum.Lote_Numerico = pBeINavBarraPallet.Lote_Numerico
+                                                                BeLoteNum.Cantidad = pBeTransReDet.cantidad_recibida
+                                                                BeLoteNum.FechaIngreso = Now
+                                                                clsLnTrans_re_det_lote_num.Insertar(BeLoteNum, lConnection, lTransaction)
 
-                                                                If pBeTransReDet.IsNew Then
+                                                            End If
 
-                                                                    CadenaResultado += "Inserta transacciones out"
+                                                            Dim vPosiciones As Integer = 0
 
-                                                                    Dim vResultado As String = clsLnI_nav_transacciones_out.Insertar_Ingreso_Parcial(pIdEmpresa,
-                                                                                                                                                     pIdBodega,
-                                                                                                                                                     IdTipoDocumento,
-                                                                                                                                                     pBeTransReDet,
-                                                                                                                                                     pIdOrdenCompraEnc,
-                                                                                                                                                     pIdUsuario,
-                                                                                                                                                     False,
-                                                                                                                                                     lConnection,
-                                                                                                                                                     lTransaction)
+                                                            If pBeTransReDet.Pallet_No_Estandar Then
 
-                                                                    CadenaResultado += "Insertar_Ingreso_Parcial: " & vResultado
+                                                                Dim BeStockDet As New clsBeStock_det
+                                                                BeStockDet.IdStock = BeStock.IdStock
+                                                                BeStockDet.Posiciones = pBeTransReDet.Posiciones
 
-                                                                    Dim BeLoteNum As New clsBeTrans_re_det_lote_num
-                                                                    BeLoteNum.IdLoteNum = clsLnTrans_re_det_lote_num.MaxID(lConnection, lTransaction) + 1
-                                                                    BeLoteNum.IdProductoBodega = pBeTransReDet.IdProductoBodega
-                                                                    BeLoteNum.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
-                                                                    BeLoteNum.Codigo = pBeINavBarraPallet.Codigo
-                                                                    BeLoteNum.Lote = pBeINavBarraPallet.Lote
-                                                                    BeLoteNum.Lote_Numerico = pBeINavBarraPallet.Lote_Numerico
-                                                                    BeLoteNum.Cantidad = pBeTransReDet.cantidad_recibida
-                                                                    BeLoteNum.FechaIngreso = Now
-                                                                    clsLnTrans_re_det_lote_num.Insertar(BeLoteNum, lConnection, lTransaction)
-
+                                                                If clsLnStock_det.Get_Single_By_IdStock(BeStockDet, lConnection, lTransaction) Then
+                                                                    '#EJC20220505: Porqué ya existe?
+                                                                    BeStockDet.Posiciones = vPosiciones
+                                                                    clsLnStock_det.Actualizar(BeStockDet, lConnection, lTransaction)
+                                                                Else
+                                                                    clsLnStock_det.Insertar(BeStockDet, lConnection, lTransaction)
                                                                 End If
 
-                                                                Dim vPosiciones As Integer = 0
 
-                                                                If pBeTransReDet.Pallet_No_Estandar Then
+                                                            End If
 
-                                                                    Dim BeStockDet As New clsBeStock_det
-                                                                    BeStockDet.IdStock = BeStock.IdStock
-                                                                    BeStockDet.Posiciones = pBeTransReDet.Posiciones
-
-                                                                    If clsLnStock_det.Get_Single_By_IdStock(BeStockDet, lConnection, lTransaction) Then
-                                                                        '#EJC20220505: Porqué ya existe?
-                                                                        BeStockDet.Posiciones = vPosiciones
-                                                                        clsLnStock_det.Actualizar(BeStockDet, lConnection, lTransaction)
-                                                                    Else
-                                                                        clsLnStock_det.Insertar(BeStockDet, lConnection, lTransaction)
-                                                                    End If
-
-
-                                                                End If
-
-                                                            Next
-
-                                                        Else
-                                                            Throw New Exception("ERROR_202210051228: El count del detalle de la recepción es 0.")
-                                                        End If
+                                                        Next
 
                                                     Else
-                                                        Throw New Exception("ERROR_202210051228: El detalle de la recepción es nothing.")
+                                                        Throw New Exception("ERROR_202210051228: El count del detalle de la recepción es 0.")
                                                     End If
 
                                                 Else
-                                                    Throw New Exception("ERROR_202210051223: No se pudo insertar el stock.")
+                                                    Throw New Exception("ERROR_202210051228: El detalle de la recepción es nothing.")
                                                 End If
 
                                             Else
-                                                Throw New Exception("ERROR_202210051221: No se pudo guardar el movimiento (Insertar_Movimientos_Recepcion).")
+                                                Throw New Exception("ERROR_202210051223: No se pudo insertar el stock.")
                                             End If
 
-                                        Next
+                                        Else
+                                            Throw New Exception("ERROR_202210051221: No se pudo guardar el movimiento (Insertar_Movimientos_Recepcion).")
+                                        End If
 
-                                    End If
+                                    Next
 
-                                    CadenaResultado += " Terminé la recepción " & pRecEnc.IdRecepcionEnc.ToString()
-
-                                Else
-                                    Throw New Exception("#ERR20200317A: La lista de stock no tiene registros.")
                                 End If
 
+                                CadenaResultado += " Terminé la recepción " & pRecEnc.IdRecepcionEnc.ToString()
+
                             Else
-                                Throw New Exception("#ERR20200317B: La lista de stock para recepción está vacía.")
+                                Throw New Exception("#ERR20200317A: La lista de stock no tiene registros.")
                             End If
 
                         Else
-                            Throw New Exception("ERROR_202210051158A: El count del detalle de la recepción es 0.")
+                            Throw New Exception("#ERR20200317B: La lista de stock para recepción está vacía.")
                         End If
 
                     Else
-                        Throw New Exception("ERROR_202210051158B: El detalle de la recepción es Nothing.")
+                        Throw New Exception("ERROR_202210051158A: El count del detalle de la recepción es 0.")
                     End If
 
-
                 Else
+                    Throw New Exception("ERROR_202210051158B: El detalle de la recepción es Nothing.")
+                End If
+
+
+            Else
                     Throw New Exception("ERROR_DE_PROCESO_202302221011: La recepción fue anulada previamente, regrese al menú principal.")
                 End If
 
@@ -2737,7 +2738,10 @@ Partial Public Class clsLnTrans_re_enc
                                      ByVal pIdBodega As Integer,
                                      ByVal pIdUsuario As Integer,
                                      ByVal pIdResolucionLp As Integer,
-                                     Optional pIdOperadorBodega As Integer = 0) As String
+                                     Optional pIdOperadorBodega As Integer = 0,
+                                     Optional pRecepcionCajaMaster As Boolean = False) As String
+
+
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -2822,6 +2826,8 @@ Partial Public Class clsLnTrans_re_enc
 
                         If pListStockRec.Count > 0 Then
 
+                            Dim vCantStock As Integer = 0
+
                             For Each pBeStockRec In pListStockRec
 
                                 Dim vLPExiste As Boolean = False
@@ -2839,25 +2845,27 @@ Partial Public Class clsLnTrans_re_enc
                                 vLPexisteEnRec = clsLnTrans_re_det.Existe_By_IdRecepcionEnc_And_IdRecepcionDet(objRecepcion, lConnection, lTransaction)
                                 vLPExiste = clsLnStock.Existe_Lp_In_Stock_By_IdBodega(pBeStockRec.Lic_plate, pIdBodega, lConnection, lTransaction)
 
-                                If vLPExiste OrElse vLPexisteEnRec Then
+                                If (vLPExiste OrElse vLPexisteEnRec) AndAlso Not pRecepcionCajaMaster Then
                                     Throw New Exception("ERROR_20220823C_HH_GuardarRecepcion: La licencia: " & pBeStockRec.Lic_plate & " fue registrada previamente.")
                                 Else
-                                    '#CKFK20250205 Agregué este sino para que se actualice la resolicop
-                                    If pIdResolucionLp <> 0 Then
+                                    If (pRecepcionCajaMaster AndAlso vCantStock = 0) OrElse Not pRecepcionCajaMaster Then
+                                        '#CKFK20250205 Agregué este sino para que se actualice la resolicop
+                                        If pIdResolucionLp <> 0 Then
 
-                                        Dim BeResolLp As New clsBeResolucion_lp_operador()
-                                        BeResolLp = clsLnResolucion_lp_operador.GetSingle(pIdResolucionLp, lConnection, lTransaction)
+                                            Dim BeResolLp As New clsBeResolucion_lp_operador()
+                                            BeResolLp = clsLnResolucion_lp_operador.GetSingle(pIdResolucionLp, lConnection, lTransaction)
 
-                                        If Not BeResolLp Is Nothing Then
-                                            BeResolLp.Correlativo_Actual += 1
-                                            clsLnResolucion_lp_operador.Actualizar_Correlativo_Actual(BeResolLp,
-                                                                                                  lConnection,
-                                                                                                  lTransaction)
+                                            If Not BeResolLp Is Nothing Then
+                                                BeResolLp.Correlativo_Actual += 1
+                                                clsLnResolucion_lp_operador.Actualizar_Correlativo_Actual(BeResolLp,
+                                                                                                      lConnection,
+                                                                                                      lTransaction)
+                                            End If
+
                                         End If
-
                                     End If
                                 End If
-
+                                vCantStock += 1
                             Next
 
                             If vGenera_LP AndAlso pIdResolucionLp <= 0 Then
@@ -2987,10 +2995,10 @@ Partial Public Class clsLnTrans_re_enc
                                 If pListStockRec.Count > 0 Then
 
                                     vResultadoStockRec = clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
-                                                                                 pIdBodega,
-                                                                                 pListStockRec,
-                                                                                 lConnection,
-                                                                                 lTransaction)
+                                                                                     pIdBodega,
+                                                                                     pListStockRec,
+                                                                                     lConnection,
+                                                                                     lTransaction)
 
                                     If vResultadoStockRec > 0 Then
                                         CadenaResultado += " Guarda_Stock_Rec " & vResultadoStockRec
@@ -2999,9 +3007,9 @@ Partial Public Class clsLnTrans_re_enc
                                     End If
 
                                     vResultadoStockSeRec = clsLnStock_se_rec.Guarda_Stock_Se_Rec(pListStockRecSer,
-                                                                                         pListStockRec,
-                                                                                         lConnection,
-                                                                                         lTransaction)
+                                                                                             pListStockRec,
+                                                                                             lConnection,
+                                                                                             lTransaction)
 
                                     If vResultadoStockSeRec > 0 Then
                                         CadenaResultado += "Guarda_Stock_Se_Rec " & vResultadoStockSeRec
@@ -3018,9 +3026,9 @@ Partial Public Class clsLnTrans_re_enc
                             If Not pListProductoPallet Is Nothing Then
 
                                 vResultGuarda_Producto_Pallet = clsLnProducto_pallet.Guarda_Producto_Pallet(pRecEnc.IdRecepcionEnc,
-                                                                                                     pListProductoPallet,
-                                                                                                     lConnection,
-                                                                                                     lTransaction)
+                                                                                                         pListProductoPallet,
+                                                                                                         lConnection,
+                                                                                                         lTransaction)
 
                                 If vResultGuarda_Producto_Pallet > 0 Then
                                     CadenaResultado += "Guarda_Producto_Pallet " & vResultGuarda_Producto_Pallet
@@ -3057,12 +3065,12 @@ Partial Public Class clsLnTrans_re_enc
                                             clsPublic.CopyObject(pBeStockRec, BeStock)
 
                                             vResultadoInsertMovimientos = clsLnTrans_movimientos.Insertar_Movimientos_Recepcion(pIdEmpresa,
-                                                                                                                        pIdBodega,
-                                                                                                                        pIdUsuario,
-                                                                                                                        pBeStockRec,
-                                                                                                                        lConnection,
-                                                                                                                        lTransaction,
-                                                                                                                        pIdOperadorBodega)
+                                                                                                                            pIdBodega,
+                                                                                                                            pIdUsuario,
+                                                                                                                            pBeStockRec,
+                                                                                                                            lConnection,
+                                                                                                                            lTransaction,
+                                                                                                                            pIdOperadorBodega)
 
                                             If vResultadoInsertMovimientos > 0 Then
 
@@ -3084,9 +3092,9 @@ Partial Public Class clsLnTrans_re_enc
 
 
                                                     vResultadoStockParametroRec = clsLnStock_parametro.Insertar_Stock_Parametro_Recepcion(pBeStockRec,
-                                                                                                                                  BeStock.IdStock,
-                                                                                                                                  lConnection,
-                                                                                                                                  lTransaction)
+                                                                                                                                      BeStock.IdStock,
+                                                                                                                                      lConnection,
+                                                                                                                                      lTransaction)
 
                                                     If vResultadoStockParametroRec > 0 Then
                                                         CadenaResultado += "Insertar_Stock_Parametro_Recepcion " & vResultadoStockParametroRec
@@ -3096,9 +3104,9 @@ Partial Public Class clsLnTrans_re_enc
 
 
                                                     vResultadoInsertar_Stock_Serializado_Recepcion = clsLnStock_se.Insertar_Stock_Serializado_Recepcion(pBeStockRec,
-                                                                                                                                                BeStock.IdStock,
-                                                                                                                                                lConnection,
-                                                                                                                                                lTransaction)
+                                                                                                                                                    BeStock.IdStock,
+                                                                                                                                                    lConnection,
+                                                                                                                                                    lTransaction)
 
                                                     If vResultadoInsertar_Stock_Serializado_Recepcion > 0 Then
                                                         CadenaResultado += "Insertar_Stock_Serializado_Recepcion: " & vResultadoInsertar_Stock_Serializado_Recepcion
@@ -3122,8 +3130,8 @@ Partial Public Class clsLnTrans_re_enc
                                                 pBeINavBarraPallet.Fecha_Ingreso = Now
                                                 pBeINavBarraPallet.Fecha_Agregado = Now
                                                 pBeINavBarraPallet.Bodega_Destino = clsLnBodega.Get_Codigo_By_IdBodega(pIdBodega,
-                                                                                                               lConnection,
-                                                                                                               lTransaction)
+                                                                                                                   lConnection,
+                                                                                                                   lTransaction)
 
                                                 If Not pBeINavBarraPallet.Bodega_Destino Is Nothing Then
                                                     CadenaResultado += "Get_Codigo_By_IdBodega: " & pBeINavBarraPallet.Bodega_Destino
@@ -3132,8 +3140,8 @@ Partial Public Class clsLnTrans_re_enc
                                                 End If
 
                                                 vResultadoActualiza_Estado_Barras_Pallet = clsLnI_nav_barras_pallet.Actualiza_Estado_Barras_Pallet(pBeINavBarraPallet,
-                                                                                                                                           lConnection,
-                                                                                                                                           lTransaction)
+                                                                                                                                               lConnection,
+                                                                                                                                               lTransaction)
 
                                                 If vResultadoActualiza_Estado_Barras_Pallet > 0 Then
                                                     CadenaResultado += "Actualiza_Estado_Barras_Pallet: " & vResultadoActualiza_Estado_Barras_Pallet
@@ -3161,14 +3169,14 @@ Partial Public Class clsLnTrans_re_enc
                                             CadenaResultado += "Inserta transacciones out"
 
                                             Dim vResultado As String = clsLnI_nav_transacciones_out.Insertar_Ingreso_Parcial(pIdEmpresa,
-                                                                                                                     pIdBodega,
-                                                                                                                     IdTipoDocumento,
-                                                                                                                     pBeTransReDet,
-                                                                                                                     pIdOrdenCompraEnc,
-                                                                                                                     pIdUsuario,
-                                                                                                                     False,
-                                                                                                                     lConnection,
-                                                                                                                     lTransaction)
+                                                                                                                         pIdBodega,
+                                                                                                                         IdTipoDocumento,
+                                                                                                                         pBeTransReDet,
+                                                                                                                         pIdOrdenCompraEnc,
+                                                                                                                         pIdUsuario,
+                                                                                                                         False,
+                                                                                                                         lConnection,
+                                                                                                                         lTransaction)
 
                                             CadenaResultado += "Insertar_Ingreso_Parcial: " & vResultado
 
@@ -3263,7 +3271,7 @@ Partial Public Class clsLnTrans_re_enc
 
             If Not pRecEnc.OrdenCompraRec Is Nothing Then
 
-                If Not pRecEnc.OrdenCompraRec.OC.IdTipoIngresoOC = clsDataContractDI.tTipoDocumentoIngreso.Ingreso_Inventario_Inicial Then
+                If Not pRecEnc.OrdenCompraRec.OC.IdTipoIngresoOC = tTipoDocumentoIngreso.Ingreso_Inventario_Inicial Then
 
                     Dim vReglaProp As New clsBePropietario_reglas_enc
 
@@ -3588,10 +3596,10 @@ Partial Public Class clsLnTrans_re_enc
                 If Not Anulada(pIdRecepcionEnc, lConnection, lTransaction) Then
 
 
-                    '#EJC20220121_1102: Cambiar el estado primero.
-                    Actualizar_Estado_Cerrado_Recepcion(pIdRecepcionEnc,
-                                                        lConnection,
-                                                        lTransaction)
+                '#EJC20220121_1102: Cambiar el estado primero.
+                Actualizar_Estado_Cerrado_Recepcion(pIdRecepcionEnc,
+                                                    lConnection,
+                                                    lTransaction)
 
                     Dim BeOc As New clsBeTrans_oc_enc
                     BeOc = clsLnTrans_oc_enc.GetSingle(pIdOrdenCompraEnc,
@@ -3620,18 +3628,18 @@ Partial Public Class clsLnTrans_re_enc
                                                      pConection:=lConnection,
                                                      pTransaction:=lTransaction)
 
-                    If Not Registros_Pendientes_Push(pIdRecepcionEnc, lConnection, lTransaction) Then
+                If Not Registros_Pendientes_Push(pIdRecepcionEnc, lConnection, lTransaction) Then
 
-                        If Reglas_De_Recepcion_Permiten_Ingreso(pRecEnc,
-                                                                lConnection,
-                                                                lTransaction) Then
+                    If Reglas_De_Recepcion_Permiten_Ingreso(pRecEnc,
+                                                            lConnection,
+                                                            lTransaction) Then
 
-                            Dim lMaxS As Integer = clsLnStock.MaxID(lConnection,
-                                                                    lTransaction)
+                        Dim lMaxS As Integer = clsLnStock.MaxID(lConnection,
+                                                                lTransaction)
 
-                            If listaStockRec IsNot Nothing AndAlso listaStockRec.Count > 0 Then
+                        If listaStockRec IsNot Nothing AndAlso listaStockRec.Count > 0 Then
 
-                                If Not pHabilitarStock Then
+                            If Not pHabilitarStock Then
 
                                     '#MECR23092025: Se agrego bitacora de logs para recepciones
                                     Dim msjAdvertencia1 As String = "ADVERTENCIA_202302230102:  Se está finalizando la recepción: " & pIdRecepcionEnc & " con Habilitar_Stock = False, Usuario: " & pIdUsuario
@@ -3645,90 +3653,90 @@ Partial Public Class clsLnTrans_re_enc
                                                                          pTransaction:=lTransaction)
 
                                     Habilitar_Stock_Desde_StockRec(pIdEmpresa,
-                                                                   pIdBodega,
-                                                                   pIdOrdenCompraEnc,
-                                                                   pIdUsuario,
-                                                                   listaStockRec,
-                                                                   pListObjDetR,
-                                                                   lConnection,
-                                                                   lTransaction)
-                                Else
-
-                                    Habilitar_Stock_Desde_Detalle_Recepcion(pIdRecepcionEnc,
-                                                                            pIdOrdenCompraEnc,
-                                                                            pIdUsuario,
-                                                                            pIdEmpresa,
-                                                                            pIdBodega,
-                                                                            pRecEnc,
-                                                                            lConnection,
-                                                                            lTransaction)
-
-                                End If
-
-                            End If
-
-                            clsLnStock_rec.Actualiza_Stock_Rec(listaStockRec,
+                                                               pIdBodega,
+                                                               pIdOrdenCompraEnc,
+                                                               pIdUsuario,
+                                                               listaStockRec,
+                                                               pListObjDetR,
                                                                lConnection,
                                                                lTransaction)
+                            Else
 
-                            Actualizar_Estado_Pedido_Ingreso(pIdOrdenCompraEnc,
-                                                             pIdRecepcionEnc,
-                                                             lConnection,
-                                                             lTransaction,
-                                                             backOrder)
-
-                            Actualizar_Hora_Fin_Recepcion(pIdOrdenCompraEnc,
-                                                          pIdRecepcionEnc,
-                                                          lConnection,
-                                                          lTransaction)
-
-
-                            Dim BeTareaHH As New clsBeTarea_hh
-                            BeTareaHH = clsLnTarea_hh.GetSingle(1,
-                                                                pIdRecepcionEnc,
-                                                                pRecEnc.PropietarioBodega.IdPropietario,
-                                                                lConnection,
-                                                                lTransaction)
-
-                            If Not BeTareaHH Is Nothing Then
-
-                                If Not BeTareaHH.IdEstado = 4 Then
-
-                                    clsLnTarea_hh.Finalizar_Tarea_Recepcion(pIdRecepcionEnc,
-                                                                            lConnection,
-                                                                            lTransaction)
-
-                                Else
-                                    Throw New Exception("Error_202211011918: Al parecer la recepción ya fue finalizada.")
-                                End If
-
-                            End If
-
-                            If Not pIdOrdenCompraEnc = 0 Then
-
-                                '#EJC20220803_1536: Validar que si tiene documento de ingreso si tiene o no ticket de TMS.
-                                BeTMSTicket = clsLnTrans_oc_enc.Get_BeTicket_By_IdOrdenCompraEnc(pIdOrdenCompraEnc,
-                                                                                                 lConnection,
-                                                                                                 lTransaction)
-
-                                'Si tiene ticket de TMS el documento de ingreso.
-                                If Not BeTMSTicket Is Nothing Then
-
-                                    clsLnTms_ticket.Actualizar_Tms_Ticket_Finalizado(BeTMSTicket.IdTicket,
-                                                                                     lConnection,
-                                                                                     lTransaction)
-
-                                End If
+                                Habilitar_Stock_Desde_Detalle_Recepcion(pIdRecepcionEnc,
+                                                                        pIdOrdenCompraEnc,
+                                                                        pIdUsuario,
+                                                                        pIdEmpresa,
+                                                                        pIdBodega,
+                                                                        pRecEnc,
+                                                                        lConnection,
+                                                                        lTransaction)
 
                             End If
 
                         End If
 
-                    Else
-                        Throw New Exception("Error_20220308: La recepción tiene registros pendientes de push")
+                        clsLnStock_rec.Actualiza_Stock_Rec(listaStockRec,
+                                                           lConnection,
+                                                           lTransaction)
+
+                        Actualizar_Estado_Pedido_Ingreso(pIdOrdenCompraEnc,
+                                                         pIdRecepcionEnc,
+                                                         lConnection,
+                                                         lTransaction,
+                                                         backOrder)
+
+                        Actualizar_Hora_Fin_Recepcion(pIdOrdenCompraEnc,
+                                                      pIdRecepcionEnc,
+                                                      lConnection,
+                                                      lTransaction)
+
+
+                        Dim BeTareaHH As New clsBeTarea_hh
+                        BeTareaHH = clsLnTarea_hh.GetSingle(1,
+                                                            pIdRecepcionEnc,
+                                                            pRecEnc.PropietarioBodega.IdPropietario,
+                                                            lConnection,
+                                                            lTransaction)
+
+                        If Not BeTareaHH Is Nothing Then
+
+                            If Not BeTareaHH.IdEstado = 4 Then
+
+                                clsLnTarea_hh.Finalizar_Tarea_Recepcion(pIdRecepcionEnc,
+                                                                        lConnection,
+                                                                        lTransaction)
+
+                            Else
+                                Throw New Exception("Error_202211011918: Al parecer la recepción ya fue finalizada.")
+                            End If
+
+                        End If
+
+                        If Not pIdOrdenCompraEnc = 0 Then
+
+                            '#EJC20220803_1536: Validar que si tiene documento de ingreso si tiene o no ticket de TMS.
+                            BeTMSTicket = clsLnTrans_oc_enc.Get_BeTicket_By_IdOrdenCompraEnc(pIdOrdenCompraEnc,
+                                                                                             lConnection,
+                                                                                             lTransaction)
+
+                            'Si tiene ticket de TMS el documento de ingreso.
+                            If Not BeTMSTicket Is Nothing Then
+
+                                clsLnTms_ticket.Actualizar_Tms_Ticket_Finalizado(BeTMSTicket.IdTicket,
+                                                                                 lConnection,
+                                                                                 lTransaction)
+
+                            End If
+
+                        End If
+
                     End If
 
                 Else
+                    Throw New Exception("Error_20220308: La recepción tiene registros pendientes de push")
+                End If
+
+            Else
                     Throw New Exception("Error_20220121_0004: La recepción fue anulada previamente.")
                 End If
 
@@ -3920,6 +3928,8 @@ Partial Public Class clsLnTrans_re_enc
 
         Try
 
+            Dim BeRecOrdenCompra As New clsBeTrans_re_oc
+
             BeRecOrdenCompra = clsLnTrans_re_oc.Get_Single_By_IdOrdenCompraEnc_And_IdRecepcionEnc(pIdOrdenCompraEnc,
                                                                                                   pIdRecepcionEnc,
                                                                                                   lConnection,
@@ -3957,6 +3967,7 @@ Partial Public Class clsLnTrans_re_enc
 
         Try
 
+            Dim BeTransReOC As New clsBeTrans_re_oc
             BeTransReOC = clsLnTrans_re_oc.Get_Single_By_IdOrdenCompraEnc_And_IdRecepcionEnc(pIdOrdenCompraEnc,
                                                                                               pIdRecepcionEnc,
                                                                                               lConnection,
@@ -4145,6 +4156,7 @@ Partial Public Class clsLnTrans_re_enc
                                                      pConection:=lConnection,
                                                      pTransaction:=lTransaction)
 
+
                 If Reglas_De_Recepcion_Permiten_Ingreso(pRecEnc,
                                                         lConnection,
                                                         lTransaction) Then
@@ -4227,6 +4239,7 @@ Partial Public Class clsLnTrans_re_enc
 
                                 Throw New Exception("ERROR_30012025: Por una razón desconocida no se insertola recepción de la pallet " & pBeINavBarraPallet.Codigo_barra)
                             End If
+
 
                             pBeStockRec.IdRecepcionDet = pBeTransReDet.IdRecepcionDet
 
@@ -4435,6 +4448,7 @@ Partial Public Class clsLnTrans_re_enc
                                                                                                                 pIdRecepcionEnc,
                                                                                                                 lConnection,
                                                                                                                 lTransaction)
+
                         If Not lBeStockEnTransito Is Nothing Then
 
                             lBeStockTransitoFilter = lBeStockEnTransito.FindAll(Function(x) x.IdProductoBodegaDestino = pBeStockRec.IdProductoBodega _
@@ -5034,16 +5048,16 @@ Partial Public Class clsLnTrans_re_enc
 
                 OutBeRecepcionEnc = BeRecepcionEnc
 
+                clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pIdRecEnc:=OutBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
+
 
             End If
 
         Catch ex As Exception
             '#MECR23092025: Se agrego nueva opcion de bitacora de logs de recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdRecEnc:=OutBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
-
             Throw ex
         End Try
 
@@ -5093,16 +5107,16 @@ Partial Public Class clsLnTrans_re_enc
                     End If
 
                 Next
+                clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pIdRecEnc:=pListRecDet.FirstOrDefault().IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
+
 
             End If
 
         Catch ex As Exception
             '#MECR23092025: Se agrego nueva bitacora de logs para recepcion.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdRecEnc:=pListRecDet.FirstOrDefault().IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
-
             Throw ex
         End Try
 
@@ -5367,12 +5381,6 @@ Partial Public Class clsLnTrans_re_enc
             pRecEnc.Estado = "Cerrado" 'Corresponde a cerrado porque el proceso es automatico, y no requiere proceso en la HH
             Actualizar(pRecEnc, lConnection, lTransaction)
             'GT20012022: se cierra el estado de las tareas, porque el proceso es automatico, no requiere proceso en la HH
-            pObjTareaHH.IdEstado = 4
-            clsLnTarea_hh.Actualizar(pObjTareaHH, lConnection, lTransaction)
-
-        Catch ex As Exception
-            '#MECR23092025: Se agrego nueva opcion de bitacora de logs en recepciones.
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                  pIdEmpresa:=pIdEmpresa,
                                                  pIdBodega:=pIdBodega,
@@ -5380,6 +5388,12 @@ Partial Public Class clsLnTrans_re_enc
                                                  pIdRecEnc:=pRecEnc.IdRecepcionEnc,
                                                  pStackTrace:=ex.StackTrace)
 
+            pObjTareaHH.IdEstado = 4
+            clsLnTarea_hh.Actualizar(pObjTareaHH, lConnection, lTransaction)
+
+        Catch ex As Exception
+            '#MECR23092025: Se agrego nueva opcion de bitacora de logs en recepciones.
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             Throw ex
         End Try
 
@@ -5677,17 +5691,17 @@ Partial Public Class clsLnTrans_re_enc
 
                 OutBeRecepcionEnc = BeRecepcionEnc
 
+                clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pIdBodega:=BeOrdenCompraEnc.IdBodega,
+                                                 pIdUsuarioAgr:=BeOrdenCompraEnc.User_Agr,
+                                                 pIdRecEnc:=OutBeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
             End If
 
         Catch ex As Exception
             '#MECR23092025: Se agrego bitacora de los para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdBodega:=BeOrdenCompraEnc.IdBodega,
-                                                 pIdUsuarioAgr:=BeOrdenCompraEnc.User_Agr,
-                                                 pIdRecEnc:=OutBeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -5699,13 +5713,14 @@ Partial Public Class clsLnTrans_re_enc
                                        ByVal pListRecDetParam As List(Of clsBeTrans_re_det_parametros),
                                        ByVal pListStockRecSer As List(Of clsBeStock_se_rec),
                                        ByVal pListStockRec As List(Of clsBeStock_rec),
+                                       Optional pIdOperadorBodega As Integer = 0,
+                                       Optional EsCajaMaster As Boolean = False) As String
                                        ByVal pListProductoPallet As List(Of clsBeProducto_pallet),
                                        ByVal pLotesRec As clsBeTrans_oc_det_lote,
                                        ByVal pIdEmpresa As Integer,
                                        ByVal pIdBodega As Integer,
                                        ByVal pIdUsuario As Integer,
                                        ByVal pIdResolucionLp As Integer,
-                                       Optional pIdOperadorBodega As Integer = 0) As String
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -5729,6 +5744,7 @@ Partial Public Class clsLnTrans_re_enc
         Dim Guarda_Trans_Re_Det_Parametros As Integer = 0
         Dim pIdStock As Integer = 0
         Dim Stock_Disponible As Boolean = False
+        'Dim vControlLp As Boolean = False
 
         '#GT02122024: variable de control en genera LP
         Dim vGenera_LP As Boolean = False
@@ -5737,15 +5753,16 @@ Partial Public Class clsLnTrans_re_enc
         Dim pRecEnc As New clsBeTrans_re_enc
 
         Try
+            '#GT01102025: validar que no este anulada
+            If Not Anulada(pIdRecepcionEnc, lConnection, lTransaction) Then
 
-            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             '#EJC20220121: Validar que no haya sido Finalizada previamente.
             If Not Finalizada(pIdRecepcionEnc, lConnection, lTransaction) Then
 
-                '#GT01102025: validar que no este anulada
-                If Not Anulada(pIdRecepcionEnc, lConnection, lTransaction) Then
 
+                If pIdOrdenCompraEnc > 0 Then
 
                     '#GT21102025: validar que los objetos no vengan vacios o con valores que no podran insertarse
                     If pListStockRec.Count = 0 Then
@@ -5754,96 +5771,91 @@ Partial Public Class clsLnTrans_re_enc
 
 
                     If pIdOrdenCompraEnc > 0 Then
-                        IdTipoDocumento = clsLnTrans_oc_enc.Get_IdTipoDocumento_By_IdOrdenCompraEnc(pIdOrdenCompraEnc,
-                                                                                                    lConnection,
-                                                                                                    lTransaction)
-                    End If
+                    IdTipoDocumento = clsLnTrans_oc_enc.Get_IdTipoDocumento_By_IdOrdenCompraEnc(pIdOrdenCompraEnc,
+                                                                                                lConnection,
+                                                                                                lTransaction)
 
-                    '#GT19012023: bandera para aplicar historico 
-                    Dim BeEmpresa As New clsBeEmpresa
-                    BeEmpresa.IdEmpresa = pIdEmpresa
-                    BeEmpresa = clsLnEmpresa.GetSingle(BeEmpresa,
-                                                       lConnection,
-                                                       lTransaction)
+                End If
+
+                '#GT19012023: bandera para aplicar historico 
+                Dim BeEmpresa As New clsBeEmpresa
+                BeEmpresa.IdEmpresa = pIdEmpresa
+                BeEmpresa = clsLnEmpresa.GetSingle(BeEmpresa,
+                                                   lConnection,
+                                                   lTransaction)
 
 
                     '#EJC20220908:Consultar configuración de bodega antes de proceso.
-                    Dim BeBodega As New clsBeBodega()
-                    BeBodega = clsLnBodega.GetSingle_By_Idbodega(pIdBodega,
-                                                                 lConnection,
-                                                                 lTransaction)
+                Dim BeBodega As New clsBeBodega()
+                BeBodega = clsLnBodega.GetSingle_By_Idbodega(pIdBodega,
+                                                             lConnection,
+                                                             lTransaction)
 
 
-                    If BeBodega Is Nothing Then
-                        Throw New Exception("ERROR_202210051121: No se obtuvo el código de la bodega para el IdBodega: " & pIdBodega)
-                    End If
+                If BeBodega Is Nothing Then
+                    Throw New Exception("ERROR_202210051121: No se obtuvo el código de la bodega para el IdBodega: " & pIdBodega)
+                End If
 
 
-                    '#GT02122024: variable para saber si producto genera LP
-                    If Not BeTransReDet.Presentacion Is Nothing Then
-                        vGenera_LP = BeTransReDet.Producto.Genera_lp Or BeTransReDet.Presentacion.Genera_lp_auto
-                    Else
-                        vGenera_LP = BeTransReDet.Producto.Genera_lp
-                    End If
+                        '#GT02122024: variable para saber si producto genera LP
 
+                        pRecEnc = New clsBeTrans_re_enc
+                        If Not BeTransReDet.Presentacion Is Nothing Then
+                            vGenera_LP = BeTransReDet.Producto.Genera_lp Or BeTransReDet.Presentacion.Genera_lp_auto
+                        Else
+                            vGenera_LP = BeTransReDet.Producto.Genera_lp
+                End If
 
-                    pRecEnc = New clsBeTrans_re_enc
-                    pRecEnc = Get_Single_By_IdREcepcionEnc_Sin_Det(pIdRecepcionEnc,
-                                                                   lConnection,
-                                                                   lTransaction)
+                pRecEnc = Get_Single_By_IdREcepcionEnc_Sin_Det(pIdRecepcionEnc,
+                                                               lConnection,
+                                                               lTransaction)
 
                     If pRecEnc Is Nothing Then
                         Throw New Exception("ERROR_211020252000: No se obtuvo la recepción asociada al documento de ingreso.")
                     End If
 
 
-                    If Not pListStockRec Is Nothing Then
+                If Not pListStockRec Is Nothing Then
 
-                        If pListStockRec.Count > 0 Then
+                    If pListStockRec.Count > 0 Then
 
-                            For Each pBeStockRec In pListStockRec
+                        For Each pBeStockRec In pListStockRec
 
-                                If BeBodega.bloquear_lp_hh Then
+                            If BeBodega.bloquear_lp_hh Then
 
-                                    Dim vLPExiste As Boolean = False
-                                    Dim vLPexisteEnRec = False
+                                Dim vLPExiste As Boolean = False
+                                Dim vLPexisteEnRec = False
 
-                                    If vGenera_LP AndAlso String.IsNullOrEmpty(pBeStockRec.Lic_plate) Then
-                                        Throw New Exception("ERROR_02122024A_HH_GuardarRecepcion_S: La licencia en stock esta vacia!.")
-                                    End If
-
-                                    If vGenera_LP AndAlso String.IsNullOrEmpty(BeTransReDet.Lic_plate) Then
-                                        Throw New Exception("ERROR_02122024B_HH_GuardarRecepcion_S: La licencia en la recepciòn esta vacia!.")
-                                    End If
-
-                                    '#GT04122024: validar en recepcion y stock que la licencia no exista, hacerlo solo en una causa inconsistencia
-                                    vLPexisteEnRec = clsLnTrans_re_det.Existe_By_IdRecepcionEnc_And_IdRecepcionDet(BeTransReDet, lConnection, lTransaction)
-                                    vLPExiste = clsLnStock.Existe_Lp_In_Stock_By_IdBodega(pBeStockRec.Lic_plate, pIdBodega, lConnection, lTransaction)
-
-                                    If vLPExiste OrElse vLPexisteEnRec Then
-                                        Throw New Exception("ERROR_20220823C_HH_GuardarRecepcion_S: La licencia: " & pBeStockRec.Lic_plate & " fue registrada previamente.")
-                                    End If
-
+                                If vGenera_LP AndAlso String.IsNullOrEmpty(pBeStockRec.Lic_plate) Then
+                                    Throw New Exception("ERROR_02122024A_HH_GuardarRecepcion_S: La licencia en stock esta vacia!.")
                                 End If
 
-                            Next
+                                If vGenera_LP AndAlso String.IsNullOrEmpty(BeTransReDet.Lic_plate) Then
+                                    Throw New Exception("ERROR_02122024B_HH_GuardarRecepcion_S: La licencia en la recepciòn esta vacia!.")
+                                End If
 
-                            '#GT02122024: valido resolucion y si producto genera LP
-                            If pIdResolucionLp > 0 AndAlso vGenera_LP Then
+                                    '#GT04122024: validar en recepcion y stock que la licencia no exista, hacerlo solo en una causa inconsistencia
+                                vLPexisteEnRec = clsLnTrans_re_det.Existe_By_IdRecepcionEnc_And_IdRecepcionDet(BeTransReDet, lConnection, lTransaction)
+                                vLPExiste = clsLnStock.Existe_Lp_In_Stock_By_IdBodega(pBeStockRec.Lic_plate, pIdBodega, lConnection, lTransaction)
 
-                                Dim BeResolLp As New clsBeResolucion_lp_operador()
-                                BeResolLp = clsLnResolucion_lp_operador.GetSingle(pIdResolucionLp,
-                                                                                  lConnection,
-                                                                                  lTransaction)
+                                If vLPExiste OrElse vLPexisteEnRec Then
+                                    Throw New Exception("ERROR_20220823C_HH_GuardarRecepcion_S: La licencia: " & pBeStockRec.Lic_plate & " fue registrada previamente.")
+                                            '#AT20250915 Agregue EsCajaMaster a la validacion
+                                            If pIdResolucionLp > 0 AndAlso vGenera_LP AndAlso Not EsCajaMaster Then
+                                            End If
 
-                                If Not BeResolLp Is Nothing Then
-                                    BeResolLp.Correlativo_Actual += 1
-                                    clsLnResolucion_lp_operador.Actualizar_Correlativo_Actual(BeResolLp,
-                                                                                              lConnection,
-                                                                                              lTransaction)
+                                        End If
 
-                                    '#MECR23092025: Se agrego bitacora de logs para recepciones.
-                                    '#GT02122024: nuevo punto de control
+                        Next
+
+
+                            Dim BeResolLp As New clsBeResolucion_lp_operador()
+                            BeResolLp = clsLnResolucion_lp_operador.GetSingle(pIdResolucionLp,
+                                                                              lConnection,
+                                                                              lTransaction)
+
+                            If Not BeResolLp Is Nothing Then
+                                BeResolLp.Correlativo_Actual += 1
                                     Dim vMsgError As String = "AVISO_20242211_HH: Guardar_Recepcion_s resolucion serie " & BeResolLp.Serie & " y correlativo " & BeResolLp.Correlativo_Actual
                                     'clsLnLog_error_wms.Agregar_Error(vMsgError)
                                     clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
@@ -5854,17 +5866,18 @@ Partial Public Class clsLnTrans_re_enc
                                                                          pConection:=lConnection,
                                                                          pTransaction:=lTransaction)
 
-                                Else
-                                    Throw New Exception("ERROR_02122024D_HH_GuardarRecepcion_S: No se obtuvo la resolucion de LP para el producto!.")
-                                End If
+                                    clsLnResolucion_lp_operador.Actualizar_Correlativo_Actual(BeResolLp,
+                                                                                          lConnection,
+                                                                                          lTransaction)
 
-                            Else
+                                    '#MECR23092025: Se agrego bitacora de logs para recepciones.
+                                    '#AT20250915 Solo si escajamaster = false
+                                    If Not EsCajaMaster Then
+                                        '#GT02122024: nuevo punto de control
+                                    Else
+                                Throw New Exception("ERROR_02122024D_HH_GuardarRecepcion_S: No se obtuvo la resolucion de LP para el producto!.")
+                            End If
 
-                                If vGenera_LP AndAlso pIdResolucionLp <= 0 Then
-                                    Throw New Exception("ERROR_02122024_HH_GuardarRecepcion: El producto maneja lic_plate, pero la resoluciòn no es correcta!." & pIdResolucionLp)
-                                End If
-
-                                If Not vGenera_LP And pIdResolucionLp <= 0 Then
                                     '#MECR23092025: Se agrego bitacora de logs para recepciones.
                                     '#GT02122024: nuevo punto de control
                                     Dim vMsgError As String = "AVISO_20242211_HH: GuardarRecepcion_S recepcion sin licencia: " & pRecEnc.IdRecepcionEnc
@@ -5877,50 +5890,56 @@ Partial Public Class clsLnTrans_re_enc
                                                                          pConection:=lConnection,
                                                                          pTransaction:=lTransaction)
 
-                                End If
-                            End If
-
-                            Dim vResultInsertEncabezadoRec As Integer = 0
-
-                            If pRecEnc.IsNew Then
-
-                                vResultInsertEncabezadoRec = Insertar(pRecEnc,
-                                                                      lConnection,
-                                                                      lTransaction)
-
-                                If vResultInsertEncabezadoRec > 0 Then
-                                    CadenaResultado += "Inserté encabezado recepción " & vResultInsertEncabezadoRec
                                 Else
-                                    Throw New Exception("ERROR_202210051030F_HH_GuardarRecepcion_S: No se pudo insertar el encabezado de la recepción")
+                                    If vGenera_LP AndAlso pIdResolucionLp <= 0 Then
+                                    Throw New Exception("ERROR_02122024_HH_GuardarRecepcion: El producto maneja lic_plate, pero la resoluciòn no es correcta!." & pIdResolucionLp)
                                 End If
 
+                                If Not vGenera_LP And pIdResolucionLp <= 0 Then
+                            End If
+                        End If
+
+                        Dim vResultInsertEncabezadoRec As Integer = 0
+
+                        If pRecEnc.IsNew Then
+
+                            vResultInsertEncabezadoRec = Insertar(pRecEnc,
+                                                                  lConnection,
+                                                                  lTransaction)
+
+                            If vResultInsertEncabezadoRec > 0 Then
+                                CadenaResultado += "Inserté encabezado recepción " & vResultInsertEncabezadoRec
+                            Else
+                                Throw New Exception("ERROR_202210051030F_HH_GuardarRecepcion_S: No se pudo insertar el encabezado de la recepción")
                             End If
 
-                            If Not BeTransReDet Is Nothing Then
+                        End If
 
-                                vResultadoEliminar = clsLnTrans_re_det.Eliminar_Detalle(pIdOrdenCompraEnc,
-                                                                                        BeTransReDet,
-                                                                                        lConnection,
-                                                                                        lTransaction)
+                        If Not BeTransReDet Is Nothing Then
 
-                                If vResultadoEliminar <> "" Then
-                                    CadenaResultado += "Eliminar_Detalle_Recepción: " & vResultadoEliminar
-                                End If
+                            vResultadoEliminar = clsLnTrans_re_det.Eliminar_Detalle(pIdOrdenCompraEnc,
+                                                                                    BeTransReDet,
+                                                                                    lConnection,
+                                                                                    lTransaction)
+
+                            If vResultadoEliminar <> "" Then
+                                CadenaResultado += "Eliminar_Detalle_Recepción: " & vResultadoEliminar
+                            End If
 
                                 '#validar AQUI que la lp si la tuviera en eliminar detalle, no exista antes de hacer la nueva inserción
-                                If clsLnTrans_re_det.Existe_By_BeRecepcionDet(BeTransReDet, lConnection, lTransaction) Then
-                                    Throw New Exception("ERROR_19122024_HH_GuardarRecepcion_S: La linea de recepcion existe, no se puede guardar nuevamente.")
-                                End If
+                            If clsLnTrans_re_det.Existe_By_BeRecepcionDet(BeTransReDet, lConnection, lTransaction) Then
+                                Throw New Exception("ERROR_19122024_HH_GuardarRecepcion_S: La linea de recepcion existe, no se puede guardar nuevamente.")
+                            End If
 
                                 '#GT02122024: parece redundante, pero validar que exista una LP en recepcion antes de guardar el registro
-                                If vGenera_LP AndAlso String.IsNullOrEmpty(BeTransReDet.Lic_plate) Then
-                                    Throw New Exception("ERROR_02122024_1929_HH_GuardarRecepcion_S: La linea de recepcion no tiene una LP asignada!.")
-                                End If
+                            If vGenera_LP AndAlso String.IsNullOrEmpty(BeTransReDet.Lic_plate) Then
+                                Throw New Exception("ERROR_02122024_1929_HH_GuardarRecepcion_S: La linea de recepcion no tiene una LP asignada!.")
+                            End If
 
-                                vResultadoGuardarReDet = clsLnTrans_re_det.Guarda_Trans_re_det(BeTransReDet,
-                                                                                               pListStockRec,
-                                                                                               lConnection,
-                                                                                               lTransaction)
+                            vResultadoGuardarReDet = clsLnTrans_re_det.Guarda_Trans_re_det(BeTransReDet,
+                                                                                           pListStockRec,
+                                                                                           lConnection,
+                                                                                           lTransaction)
 
                                 '#GTZ_nuevo control
                                 '#MECR23092025: Se agrego bitacora de logs para recepciones.
@@ -5934,41 +5953,41 @@ Partial Public Class clsLnTrans_re_enc
                                                                      pConection:=lConnection,
                                                                      pTransaction:=lTransaction)
 
-                                If vResultadoGuardarReDet > 0 Then
-                                    CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet
-                                End If
-
-                                '#EJC20210412:Agregado para actualizar la cantidad recibida por lote.
-                                vResultadoGuardaLotes = clsLnTrans_oc_det_lote.Guarda_Trans_re_det_lote(pLotesRec,
-                                                                                                        lConnection,
-                                                                                                        lTransaction)
-
-                                If vResultadoGuardaLotes > 0 Then
-                                    CadenaResultado += "clsLnTrans_oc_det_lote " & vResultadoGuardaLotes
-                                End If
-
-                                Guarda_Trans_Re_Det_Parametros = clsLnTrans_re_det_parametros.Guarda_Trans_Re_Det_Parametros(pRecEnc.IdRecepcionEnc,
-                                                                                                                             BeTransReDet,
-                                                                                                                             pListRecDetParam,
-                                                                                                                             lConnection,
-                                                                                                                             lTransaction)
-
-                                If Guarda_Trans_Re_Det_Parametros > 0 Then
-                                    CadenaResultado += "Guarda_Trans_Re_Det_Parametros " & Guarda_Trans_Re_Det_Parametros
-                                End If
-
-                            Else
-                                Throw New Exception("ERROR_202210051030E: La lista de RecDet Is Nothing.")
+                            If vResultadoGuardarReDet > 0 Then
+                                CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet
                             End If
 
-                            If pIdOrdenCompraEnc > 0 Then
+                            '#EJC20210412:Agregado para actualizar la cantidad recibida por lote.
+                            vResultadoGuardaLotes = clsLnTrans_oc_det_lote.Guarda_Trans_re_det_lote(pLotesRec,
+                                                                                                    lConnection,
+                                                                                                    lTransaction)
 
-                                If Not BeTransReDet Is Nothing Then
+                            If vResultadoGuardaLotes > 0 Then
+                                CadenaResultado += "clsLnTrans_oc_det_lote " & vResultadoGuardaLotes
+                            End If
 
-                                    vResultadoActualizarCantidadRecibidaDI = clsLnTrans_oc_det.Actualiza_Cantidad_Recibida_OC(pIdOrdenCompraEnc,
-                                                                                                                              BeTransReDet,
-                                                                                                                              lConnection,
-                                                                                                                              lTransaction)
+                            Guarda_Trans_Re_Det_Parametros = clsLnTrans_re_det_parametros.Guarda_Trans_Re_Det_Parametros(pRecEnc.IdRecepcionEnc,
+                                                                                                                         BeTransReDet,
+                                                                                                                         pListRecDetParam,
+                                                                                                                         lConnection,
+                                                                                                                         lTransaction)
+
+                            If Guarda_Trans_Re_Det_Parametros > 0 Then
+                                CadenaResultado += "Guarda_Trans_Re_Det_Parametros " & Guarda_Trans_Re_Det_Parametros
+                            End If
+
+                        Else
+                            Throw New Exception("ERROR_202210051030E: La lista de RecDet Is Nothing.")
+                        End If
+
+                        If pIdOrdenCompraEnc > 0 Then
+
+                            If Not BeTransReDet Is Nothing Then
+
+                                vResultadoActualizarCantidadRecibidaDI = clsLnTrans_oc_det.Actualiza_Cantidad_Recibida_OC(pIdOrdenCompraEnc,
+                                                                                                                          BeTransReDet,
+                                                                                                                          lConnection,
+                                                                                                                          lTransaction)
 
                                     '#GTZ_nuevo control
                                     '#MECR23092025: Se agrego bitacora de logs para recepciones.
@@ -5982,37 +6001,37 @@ Partial Public Class clsLnTrans_re_enc
                                                                          pConection:=lConnection,
                                                                          pTransaction:=lTransaction)
 
-                                    If vResultadoActualizarCantidadRecibidaDI > 0 Then
-                                        CadenaResultado += "Actualiza_Cantidad_Recibida_OC " & vResultadoActualizarCantidadRecibidaDI
-                                    Else
-                                        Throw New Exception("ERROR_202210051030G: No se pudo actualizar la cantidad recibida en el documento de ingreso.")
-                                    End If
-
+                                If vResultadoActualizarCantidadRecibidaDI > 0 Then
+                                    CadenaResultado += "Actualiza_Cantidad_Recibida_OC " & vResultadoActualizarCantidadRecibidaDI
+                                Else
+                                    Throw New Exception("ERROR_202210051030G: No se pudo actualizar la cantidad recibida en el documento de ingreso.")
                                 End If
 
                             End If
 
+                        End If
+
                             '#GT21102025: aqui inserta stock_rec
-                            If Not pListStockRec Is Nothing Then
+                        If Not pListStockRec Is Nothing Then
 
-                                If pListStockRec.Count > 0 Then
+                            If pListStockRec.Count > 0 Then
 
-                                    'ESTE CODIGO GENERA UN BUG, AYUDA A VALIDAR EN LA HH QUE DEBE HACER EN CASO DE NO PODER GUARDAR.
-                                    'Dim pExisteLicencia = pListStockRec.Find(Function(x) x.Lic_plate).Lic_plate
+                                        'ESTE CODIGO GENERA UN BUG, AYUDA A VALIDAR EN LA HH QUE DEBE HACER EN CASO DE NO PODER GUARDAR.
+                                        'Dim pExisteLicencia = pListStockRec.Find(Function(x) x.Lic_plate).Lic_plate
 
-                                    'GT02122024: antes de insertar stock validar que genera LP y el stock maneje una LP
-                                    Dim pExisteLicencia = pListStockRec.Find(Function(x) Not String.IsNullOrEmpty(x.Lic_plate))
+                                        'GT02122024: antes de insertar stock validar que genera LP y el stock maneje una LP
+                                        '#GT21102025: envío IdStockInsertado para saber si retorna el id y no solo si inserto o no
+                                        Dim pExisteLicencia = pListStockRec.Find(Function(x) Not String.IsNullOrEmpty(x.Lic_plate))
 
-                                    If vGenera_LP AndAlso pExisteLicencia Is Nothing Then
-                                        Throw New Exception("ERROR_02122024_1950_HH_GuardarRecepcion_S: No se puede registrar stock_rec sin licencia.")
-                                    End If
+                                        If vGenera_LP AndAlso pExisteLicencia Is Nothing Then
+                                    Throw New Exception("ERROR_02122024_1950_HH_GuardarRecepcion_S: No se puede registrar stock_rec sin licencia.")
+                                End If
 
-                                    '#GT21102025: envío IdStockInsertado para saber si retorna el id y no solo si inserto o no
-                                    vResultadoStockRec = clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
-                                                                                         pIdBodega,
-                                                                                         pListStockRec,
-                                                                                         lConnection,
-                                                                                         lTransaction)
+                                vResultadoStockRec = clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
+                                                                                     pIdBodega,
+                                                                                     pListStockRec,
+                                                                                     lConnection,
+                                                                                     lTransaction)
 
                                     '#MECR23092025: Se agrego bitacora de logs para recepciones.
                                     Dim vMsgError As String = "AVISO_20242211_HH: GuardarRecepcion_S guardar stock_rec con re_enc: " & pListStockRec(0).IdRecepcionEnc & " oc_det: " & pListStockRec(0).IdRecepcionDet & " lp: " & pListStockRec(0).Lic_plate
@@ -6025,75 +6044,75 @@ Partial Public Class clsLnTrans_re_enc
                                                                          pConection:=lConnection,
                                                                          pTransaction:=lTransaction)
 
-                                    If vResultadoStockRec > 0 Then
-                                        CadenaResultado += " Guarda_Stock_Rec " & vResultadoStockRec
-                                    Else
-                                        Throw New Exception("ERROR_202210051058: No se pudo insertar en stock_rec.")
-                                    End If
-
-
-                                    vResultadoStockSeRec = clsLnStock_se_rec.Guarda_Stock_Se_Rec(pListStockRecSer,
-                                                                                                 pListStockRec,
-                                                                                                 lConnection,
-                                                                                                 lTransaction)
-
-                                    If vResultadoStockSeRec > 0 Then
-                                        CadenaResultado += "Guarda_Stock_Se_Rec " & vResultadoStockSeRec
-                                    End If
-
+                                If vResultadoStockRec > 0 Then
+                                    CadenaResultado += " Guarda_Stock_Rec " & vResultadoStockRec
                                 Else
-                                    Throw New Exception("#ERR20200317A: La lista de stock no tiene registros.")
+                                    Throw New Exception("ERROR_202210051058: No se pudo insertar en stock_rec.")
+                                End If
+
+
+                                vResultadoStockSeRec = clsLnStock_se_rec.Guarda_Stock_Se_Rec(pListStockRecSer,
+                                                                                             pListStockRec,
+                                                                                             lConnection,
+                                                                                             lTransaction)
+
+                                If vResultadoStockSeRec > 0 Then
+                                    CadenaResultado += "Guarda_Stock_Se_Rec " & vResultadoStockSeRec
                                 End If
 
                             Else
-                                Throw New Exception("#ERR20200317B: La lista de stock para recepción está vacía.")
-                            End If
+                                Throw New Exception("#ERR20200317A: La lista de stock no tiene registros.")
+                                        '#GT21102025: aqui inserta producto pallet
+                                    End If
 
-                            '#GT21102025: aqui inserta producto pallet
-                            If Not pListProductoPallet Is Nothing Then
+                                Else
+                            Throw New Exception("#ERR20200317B: La lista de stock para recepción está vacía.")
+                        End If
 
-                                vResultGuarda_Producto_Pallet = clsLnProducto_pallet.Guarda_Producto_Pallet(pRecEnc.IdRecepcionEnc,
-                                                                                                            pListProductoPallet,
-                                                                                                            lConnection,
-                                                                                                            lTransaction)
+                        If Not pListProductoPallet Is Nothing Then
 
-                                If vResultGuarda_Producto_Pallet > 0 Then
-                                    CadenaResultado += "Guarda_Producto_Pallet " & vResultGuarda_Producto_Pallet
+                            vResultGuarda_Producto_Pallet = clsLnProducto_pallet.Guarda_Producto_Pallet(pRecEnc.IdRecepcionEnc,
+                                                                                                        pListProductoPallet,
+                                                                                                        lConnection,
+                                                                                                        lTransaction)
+
+                                    '#GT21102025: aqui inserta movimiento y stock
+                                    If vResultGuarda_Producto_Pallet > 0 Then
+                                        CadenaResultado += "Guarda_Producto_Pallet " & vResultGuarda_Producto_Pallet
+                                    End If
+
                                 End If
 
-                            End If
+                        If pRecEnc.Habilitar_Stock Then
 
-                            '#GT21102025: aqui inserta movimiento y stock
-                            If pRecEnc.Habilitar_Stock Then
+                            Dim pBeINavBarraPallet As New clsBeI_nav_barras_pallet
 
-                                Dim pBeINavBarraPallet As New clsBeI_nav_barras_pallet
+                            If Not pListStockRec Is Nothing Then
 
-                                If Not pListStockRec Is Nothing Then
+                                If pListStockRec.Count > 0 Then
 
-                                    If pListStockRec.Count > 0 Then
+                                    For Each pBeStockRec As clsBeStock_rec In pListStockRec
 
-                                        For Each pBeStockRec As clsBeStock_rec In pListStockRec
-
-                                            BeStock = New clsBeStock
-                                            pBeStockRec.IdBodega = pIdBodega
-                                            vResultadoInsertMovimientos = 0
-                                            pBeStockRec.Fecha_Ingreso = Now
-                                            pBeStockRec.Fec_agr = Now
-                                            pBeStockRec.Fec_mod = Now
-                                            clsPublic.CopyObject(pBeStockRec, BeStock)
-
-                                            If vGenera_LP AndAlso String.IsNullOrEmpty(pBeStockRec.Lic_plate) Then
+                                        BeStock = New clsBeStock
+                                        pBeStockRec.IdBodega = pIdBodega
+                                        vResultadoInsertMovimientos = 0
                                                 Throw New Exception("ERROR_02122024_1955_HH: GuardarRecepcion_S No se puede registrar el movimiento sin licencia.")
-                                            End If
+                                                pBeStockRec.Fecha_Ingreso = Now
+                                                pBeStockRec.Fec_agr = Now
+                                        pBeStockRec.Fec_mod = Now
+                                        clsPublic.CopyObject(pBeStockRec, BeStock)
+
+                                        If vGenera_LP AndAlso String.IsNullOrEmpty(pBeStockRec.Lic_plate) Then
+                                        End If
 
                                             '#GT21102025: retorna el idmovimiento, ya no solo si inserto o no con 1/0
-                                            vResultadoInsertMovimientos = clsLnTrans_movimientos.Insertar_Movimientos_Recepcion(pIdEmpresa,
-                                                                                                                                pIdBodega,
-                                                                                                                                pIdUsuario,
-                                                                                                                                pBeStockRec,
-                                                                                                                                lConnection,
-                                                                                                                                lTransaction,
-                                                                                                                                pIdOperadorBodega)
+                                        vResultadoInsertMovimientos = clsLnTrans_movimientos.Insertar_Movimientos_Recepcion(pIdEmpresa,
+                                                                                                                            pIdBodega,
+                                                                                                                            pIdUsuario,
+                                                                                                                            pBeStockRec,
+                                                                                                                            lConnection,
+                                                                                                                            lTransaction,
+                                                                                                                            pIdOperadorBodega)
 
                                             '#MECR23092025: Se agrego bitacora de logs para recepciones.
                                             '#GT02122024: nuevo punto de control
@@ -6107,7 +6126,7 @@ Partial Public Class clsLnTrans_re_enc
                                                                                  pConection:=lConnection,
                                                                                  pTransaction:=lTransaction)
 
-                                            If vResultadoInsertMovimientos > 0 Then
+                                        If vResultadoInsertMovimientos > 0 Then
 
                                                 '#MECR23092025: Se agrego bitacora de logs para recepciones.
                                                 CadenaResultado += "Insertar_Movimientos_Recepcion IdMovimiento: " & vResultadoInsertMovimientos
@@ -6120,15 +6139,15 @@ Partial Public Class clsLnTrans_re_enc
                                                                                      pConection:=lConnection,
                                                                                      pTransaction:=lTransaction)
 
-                                                BeStock.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+                                            BeStock.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
 
-                                                If vGenera_LP AndAlso String.IsNullOrEmpty(BeStock.Lic_plate) Then
-                                                    Throw New Exception("ERROR_02122024_2000_HH_GuardarRecepcion_S: No se puede registrar el stock sin licencia.")
-                                                End If
+                                            If vGenera_LP AndAlso String.IsNullOrEmpty(BeStock.Lic_plate) Then
+                                                Throw New Exception("ERROR_02122024_2000_HH_GuardarRecepcion_S: No se puede registrar el stock sin licencia.")
+                                            End If
 
-                                                vResultadoInsertStock = clsLnStock.Insertar(BeStock,
-                                                                                            lConnection,
-                                                                                            lTransaction)
+                                            vResultadoInsertStock = clsLnStock.Insertar(BeStock,
+                                                                                        lConnection,
+                                                                                        lTransaction)
 
                                                 '#GT02122024: nuevo punto de control
                                                 '#MECR23092025: Se agrego bitacora de logs para recepciones.
@@ -6142,83 +6161,596 @@ Partial Public Class clsLnTrans_re_enc
                                                                                      pConection:=lConnection,
                                                                                      pTransaction:=lTransaction)
 
-                                                If vResultadoInsertStock > 0 Then
-                                                    '#GT31012023 confirma stock disponible y el idstock para generar historico.
-                                                    Stock_Disponible = True
-                                                    pIdStock = 0
-                                                    pIdStock = BeStock.IdStock
+                                            If vResultadoInsertStock > 0 Then
+                                                '#GT31012023 confirma stock disponible y el idstock para generar historico.
+                                                Stock_Disponible = True
+                                                pIdStock = 0
+                                                pIdStock = BeStock.IdStock
 
-                                                    CadenaResultado += " Inserta_Stock: " & vResultadoInsertStock
+                                                CadenaResultado += " Inserta_Stock: " & vResultadoInsertStock
 
-                                                    vResultadoStockParametroRec = clsLnStock_parametro.Insertar_Stock_Parametro_Recepcion(pBeStockRec,
-                                                                                                                                          BeStock.IdStock,
-                                                                                                                                          lConnection,
-                                                                                                                                          lTransaction)
+                                                vResultadoStockParametroRec = clsLnStock_parametro.Insertar_Stock_Parametro_Recepcion(pBeStockRec,
+                                                                                                                                      BeStock.IdStock,
+                                                                                                                                      lConnection,
+                                                                                                                                      lTransaction)
 
-                                                    If vResultadoStockParametroRec > 0 Then
-                                                        CadenaResultado += " Insertar_Stock_Parametro_Recepcion: " & vResultadoStockParametroRec
-                                                    End If
+                                                If vResultadoStockParametroRec > 0 Then
+                                                    CadenaResultado += " Insertar_Stock_Parametro_Recepcion: " & vResultadoStockParametroRec
+                                                End If
 
 
-                                                    vResultadoInsertar_Stock_Serializado_Recepcion = clsLnStock_se.Insertar_Stock_Serializado_Recepcion(pBeStockRec,
-                                                                                                                                                        BeStock.IdStock,
-                                                                                                                                                        lConnection,
-                                                                                                                                                        lTransaction)
+                                                vResultadoInsertar_Stock_Serializado_Recepcion = clsLnStock_se.Insertar_Stock_Serializado_Recepcion(pBeStockRec,
+                                                                                                                                                    BeStock.IdStock,
+                                                                                                                                                    lConnection,
+                                                                                                                                                    lTransaction)
 
-                                                    If vResultadoInsertar_Stock_Serializado_Recepcion > 0 Then
-                                                        CadenaResultado += " Insertar_Stock_Serializado_Recepcion: " & vResultadoInsertar_Stock_Serializado_Recepcion
-                                                    End If
-
-                                                Else
-                                                    '#GT21102022_1600: sino inserta stock se lanza excepción
-                                                    Throw New Exception("ERROR_202210211600: No se pudo insertar el stock.")
+                                                If vResultadoInsertar_Stock_Serializado_Recepcion > 0 Then
+                                                    CadenaResultado += " Insertar_Stock_Serializado_Recepcion: " & vResultadoInsertar_Stock_Serializado_Recepcion
                                                 End If
 
                                             Else
-                                                Throw New Exception("ERROR_202210051111: No se pudo insertar el movimiento.")
+                                                '#GT21102022_1600: sino inserta stock se lanza excepción
+                                                Throw New Exception("ERROR_202210211600: No se pudo insertar el stock.")
                                             End If
 
+                                        Else
+                                            Throw New Exception("ERROR_202210051111: No se pudo insertar el movimiento.")
+                                        End If
 
-                                            '#EJC20190329_0538PM: Marcar el pallet como recibido.
-                                            If pBeStockRec.Lic_plate <> "" Then
 
-                                                pBeINavBarraPallet.Recibido = True
-                                                pBeINavBarraPallet.IdRecepcion = pRecEnc.IdRecepcionEnc
-                                                pBeINavBarraPallet.Codigo_barra = pBeStockRec.Lic_plate
-                                                pBeINavBarraPallet.Fecha_Ingreso = Now
-                                                pBeINavBarraPallet.Fecha_Agregado = Now
-                                                pBeINavBarraPallet.Bodega_Destino = clsLnBodega.Get_Codigo_By_IdBodega(pIdBodega,
-                                                                                                                       lConnection,
-                                                                                                                       lTransaction)
+                                        '#EJC20190329_0538PM: Marcar el pallet como recibido.
+                                        If pBeStockRec.Lic_plate <> "" Then
 
-                                                If Not pBeINavBarraPallet.Bodega_Destino Is Nothing Then
-                                                    CadenaResultado += "Get_Codigo_By_IdBodega: " & pBeINavBarraPallet.Bodega_Destino
-                                                Else
-                                                    Throw New Exception("ERROR_202210051121: No se obtuvo el código de la bodega destino para el IdBodega: " & pIdBodega)
-                                                End If
+                                            pBeINavBarraPallet.Recibido = True
+                                            pBeINavBarraPallet.IdRecepcion = pRecEnc.IdRecepcionEnc
+                                            pBeINavBarraPallet.Codigo_barra = pBeStockRec.Lic_plate
+                                            pBeINavBarraPallet.Fecha_Ingreso = Now
+                                            pBeINavBarraPallet.Fecha_Agregado = Now
+                                            pBeINavBarraPallet.Bodega_Destino = clsLnBodega.Get_Codigo_By_IdBodega(pIdBodega,
+                                                                                                                   lConnection,
+                                                                                                                   lTransaction)
 
-                                                vResultadoActualiza_Estado_Barras_Pallet = clsLnI_nav_barras_pallet.Actualiza_Estado_Barras_Pallet(pBeINavBarraPallet,
-                                                                                                                                                   lConnection,
-                                                                                                                                                   lTransaction)
-
-                                                If vResultadoActualiza_Estado_Barras_Pallet > 0 Then
-                                                    CadenaResultado += "Actualiza_Estado_Barras_Pallet: " & vResultadoActualiza_Estado_Barras_Pallet
-                                                End If
-
+                                            If Not pBeINavBarraPallet.Bodega_Destino Is Nothing Then
+                                                CadenaResultado += "Get_Codigo_By_IdBodega: " & pBeINavBarraPallet.Bodega_Destino
+                                            Else
+                                                Throw New Exception("ERROR_202210051121: No se obtuvo el código de la bodega destino para el IdBodega: " & pIdBodega)
                                             End If
 
-                                        Next
+                                            vResultadoActualiza_Estado_Barras_Pallet = clsLnI_nav_barras_pallet.Actualiza_Estado_Barras_Pallet(pBeINavBarraPallet,
+                                                                                                                                               lConnection,
+                                                                                                                                               lTransaction)
 
-                                    Else
-                                        Throw New Exception("ERROR_20220914_1048: Se encontró una inconsistencia al procesar el registro de ingreso el count() de la lista de stock es 0.")
-                                    End If
+                                            If vResultadoActualiza_Estado_Barras_Pallet > 0 Then
+                                                CadenaResultado += "Actualiza_Estado_Barras_Pallet: " & vResultadoActualiza_Estado_Barras_Pallet
+                                            End If
+
+                                        End If
+
+                                    Next
 
                                 Else
-                                    Throw New Exception("ERROR_20220914_1047: Se encontró una inconsistencia al procesar el registro de ingreso la lista de stock está vacía.")
+                                    Throw New Exception("ERROR_20220914_1048: Se encontró una inconsistencia al procesar el registro de ingreso el count() de la lista de stock es 0.")
                                 End If
 
-                                If Not BeTransReDet Is Nothing Then
+                            Else
+                                Throw New Exception("ERROR_20220914_1047: Se encontró una inconsistencia al procesar el registro de ingreso la lista de stock está vacía.")
+                            End If
 
+                            If Not BeTransReDet Is Nothing Then
+
+                                If BeTransReDet.IsNew Then
+
+                                    CadenaResultado += "Inserta transacciones out"
+
+                                    Dim vResultado As String = clsLnI_nav_transacciones_out.Insertar_Ingreso_Parcial(pIdEmpresa,
+                                                                                                                     pIdBodega,
+                                                                                                                     IdTipoDocumento,
+                                                                                                                     BeTransReDet,
+                                                                                                                     pIdOrdenCompraEnc,
+                                                                                                                     pIdUsuario,
+                                                                                                                     False,
+                                                                                                                     lConnection,
+                                                                                                                     lTransaction)
+
+                                    CadenaResultado += " Insertar_Ingreso_Parcial: " & vResultado
+
+                                    Dim BeLoteNum As New clsBeTrans_re_det_lote_num
+                                    BeLoteNum.IdLoteNum = clsLnTrans_re_det_lote_num.MaxID(lConnection, lTransaction) + 1
+                                    BeLoteNum.IdProductoBodega = BeTransReDet.IdProductoBodega
+                                    BeLoteNum.IdRecepcionEnc = pRecEnc.IdRecepcionEnc
+                                    BeLoteNum.Codigo = pBeINavBarraPallet.Codigo
+                                    BeLoteNum.Lote = pBeINavBarraPallet.Lote
+                                    BeLoteNum.Lote_Numerico = pBeINavBarraPallet.Lote_Numerico
+                                    BeLoteNum.Cantidad = BeTransReDet.cantidad_recibida
+                                    BeLoteNum.FechaIngreso = Now
+                                    clsLnTrans_re_det_lote_num.Insertar(BeLoteNum,
+                                                                            lConnection,
+                                                                            lTransaction)
+
+                                End If
+
+                                Dim vPosiciones As Integer = 0
+
+                                If BeTransReDet.Pallet_No_Estandar Then
+
+                                    Dim BeStockDet As New clsBeStock_det
+                                    BeStockDet.IdStock = BeStock.IdStock
+                                    BeStockDet.Posiciones = BeTransReDet.Posiciones
+
+                                    If clsLnStock_det.Get_Single_By_IdStock(BeStockDet, lConnection, lTransaction) Then
+                                        BeStockDet.Posiciones = vPosiciones
+                                        clsLnStock_det.Actualizar(BeStockDet, lConnection, lTransaction)
+                                    Else
+                                        clsLnStock_det.Insertar(BeStockDet, lConnection, lTransaction)
+                                    End If
+
+                                            '#MECR23092025: Se agrego bitacora de logs para recepciones.
+                                            Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S: no_habilitar_stock en re_enc: " & pRecEnc.IdRecepcionEnc
+                                            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                                     pIdEmpresa:=pIdEmpresa,
+                                                                     pIdBodega:=pIdBodega,
+                                                                     pIdUsuarioAgr:=pIdUsuario,
+                                                                     pIdRecEnc:=pIdRecepcionEnc,
+                                                                     pConection:=lConnection,
+                                                                     pTransaction:=lTransaction)
+
+                                        End If
+
+                                    End If
+
+                        Else
+                            '#GTZ_nuevo control
+                        End If
+
+                        'Dim vMsgErrorGuardarStock As String = "AVISO_20242211_HH_GuardarRecepcion_S: timer_GuardarStock " & stopwatch.ElapsedMilliseconds
+                        'clsLnLog_error_wms.Agregar_Error(vMsgErrorGuardarStock, lConnection, lTransaction)
+
+                        CadenaResultado += " Terminé la recepción " & pRecEnc.IdRecepcionEnc.ToString
+
+                    Else
+                        Throw New Exception("ERROR_202210051030A: El count de la lista de stock es 0.")
+                    End If
+
+                Else
+                    Throw New Exception("ERROR_202210051030B: La lista de stock Is Nothing.")
+                End If
+
+            Else
+                Throw New Exception("ERROR_DE_PROCESO_202302221004: La recepción fue previamente finalizada.")
+            End If
+
+            lTransaction.Commit()
+
+            Return CadenaResultado
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw New Exception(String.Format("{0} {1}", ex.Message, CadenaResultado))
+        Finally
+            If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Function
+
+    Public Shared Function GuardarHH_CM(ByVal pIdRecepcionEnc As Integer,
+                                        ByVal pIdOrdenCompraEnc As Integer,
+                                        ByVal pIdEmpresa As Integer,
+                                        ByVal pIdBodega As Integer,
+                                        ByVal pIdUsuario As Integer,
+                                        ByVal pIdOperadorBodega As Integer,
+                                        ByVal pListStockRec As List(Of clsBeStock_rec),
+                                        ByVal pListaDetLote As List(Of clsBeTrans_oc_det_lote),
+                                        ByVal pListaRecDet As List(Of clsBeTrans_re_det)) As String
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Dim pListRecDetParam As New List(Of clsBeTrans_re_det_parametros)
+        Dim pListStockRecSer As New List(Of clsBeStock_se_rec)
+        Dim pListProductoPallet As New List(Of clsBeProducto_pallet)
+        'Dim BeTransReDet As clsBeTrans_re_det
+        Dim pIdResolucionLp As Integer
+        Dim EsCajaMaster As Boolean = False
+
+        Dim CadenaResultado As String = ""
+        Dim IdTipoDocumento As Integer = 0
+        Dim vResultadoOc As Integer = 0
+        Dim vResultadoGuardarReDet As Integer = 0
+        Dim vResultadoEliminar As String = ""
+        Dim vResultadoActualizarCantidadRecibidaDI As Integer = 0
+        Dim vResultadoStockSeRec As Integer = 0
+        Dim vResultadoStockRec As Integer = 0
+        Dim vResultGuarda_Producto_Pallet As Integer = 0
+        Dim vResultadoInsertMovimientos As Integer = 0
+        Dim vResultadoInsertStock As Integer = 0
+        Dim vResultadoStockParametroRec As Integer = 0
+        Dim vResultadoInsertar_Stock_Serializado_Recepcion As Integer = 0
+        Dim vResultadoActualiza_Estado_Barras_Pallet As Integer = 0
+        Dim vResultadoGuardaLotes As Integer = 0
+        Dim Guarda_Trans_Re_Det_Parametros As Integer = 0
+        Dim pIdStock As Integer = 0
+        Dim Stock_Disponible As Boolean = False
+        'Dim vControlLp As Boolean = False
+
+        '#GT02122024: variable de control en genera LP
+        Dim vGenera_LP As Boolean = False
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            '#EJC20220121: Validar que no haya sido Finalizada previamente.
+            If Not Finalizada(pIdRecepcionEnc, lConnection, lTransaction) Then
+
+                'Dim stopwatch As Stopwatch = Stopwatch.StartNew()
+
+                If pIdOrdenCompraEnc > 0 Then
+
+                    IdTipoDocumento = clsLnTrans_oc_enc.Get_IdTipoDocumento_By_IdOrdenCompraEnc(pIdOrdenCompraEnc,
+                                                                                                lConnection,
+                                                                                                lTransaction)
+
+                End If
+
+                '#GT19012023: bandera para aplicar historico 
+                Dim BeEmpresa As New clsBeEmpresa
+                BeEmpresa.IdEmpresa = pIdEmpresa
+                BeEmpresa = clsLnEmpresa.GetSingle(BeEmpresa,
+                                                   lConnection,
+                                                   lTransaction)
+
+                Dim BeBodega As New clsBeBodega()
+                BeBodega = clsLnBodega.GetSingle_By_Idbodega(pIdBodega,
+                                                             lConnection,
+                                                             lTransaction)
+
+                If BeBodega Is Nothing Then
+                    Throw New Exception("ERROR_202210051121: No se obtuvo el código de la bodega para el IdBodega: " & pIdBodega)
+                End If
+
+                '#GT02122024: variable para saber si producto genera LP
+                '#AT CajaMaster
+                'If Not BeTransReDet.Presentacion Is Nothing Then
+                '    vGenera_LP = BeTransReDet.Producto.Genera_lp Or BeTransReDet.Presentacion.Genera_lp_auto
+                'Else
+                '    vGenera_LP = BeTransReDet.Producto.Genera_lp
+                'End If
+
+                Dim pRecEnc As New clsBeTrans_re_enc
+                pRecEnc = Get_Single_By_IdREcepcionEnc_Sin_Det(pIdRecepcionEnc,
+                                                               lConnection,
+                                                               lTransaction)
+
+                If Not pListStockRec Is Nothing Then
+
+                    If pListStockRec.Count > 0 Then
+
+                        For Each pBeStockRec In pListStockRec
+
+                            If BeBodega.bloquear_lp_hh Then
+
+                                Dim vLPExiste As Boolean = False
+                                Dim vLPexisteEnRec = False
+
+                                If vGenera_LP AndAlso String.IsNullOrEmpty(pBeStockRec.Lic_plate) Then
+                                    Throw New Exception("ERROR_02122024A_HH_GuardarRecepcion_S: La licencia en stock esta vacia!.")
+                                End If
+
+                                '#AT CajaMaster
+                                'If vGenera_LP AndAlso String.IsNullOrEmpty(BeTransReDet.Lic_plate) Then
+                                '    Throw New Exception("ERROR_02122024B_HH_GuardarRecepcion_S: La licencia en la recepciòn esta vacia!.")
+                                'End If
+
+                                '#AT CajaMaster
+                                'vLPexisteEnRec = clsLnTrans_re_det.Existe_By_IdRecepcionEnc_And_IdRecepcionDet(BeTransReDet, lConnection, lTransaction)
+                                vLPExiste = clsLnStock.Existe_Lp_In_Stock_By_IdBodega(pBeStockRec.Lic_plate, pIdBodega, lConnection, lTransaction)
+
+                                If vLPExiste OrElse vLPexisteEnRec Then
+                                    Throw New Exception("ERROR_20220823C_HH_GuardarRecepcion_S: La licencia: " & pBeStockRec.Lic_plate & " fue registrada previamente.")
+                                End If
+
+                            End If
+
+                        Next
+
+                        '#AT20250915 Agregue EsCajaMaster a la validacion
+                        If pIdResolucionLp > 0 AndAlso vGenera_LP Then
+
+                            Dim BeResolLp As New clsBeResolucion_lp_operador()
+                            BeResolLp = clsLnResolucion_lp_operador.GetSingle(pIdResolucionLp,
+                                                                              lConnection,
+                                                                              lTransaction)
+
+                            If Not BeResolLp Is Nothing Then
+                                BeResolLp.Correlativo_Actual += 1
+                                clsLnResolucion_lp_operador.Actualizar_Correlativo_Actual(BeResolLp,
+                                                                                          lConnection,
+                    Throw New Exception("ERROR_DE_PROCESO_20251001: La recepción fue previamente anulada, regrese al menu principal.")
+                                lTransaction)
+
+                                '#GT02122024: nuevo punto de control
+                                Dim vMsgError As String = "AVISO_20242211_HH resolucion serie : " & BeResolLp.Serie & " y correlativo: " & BeResolLp.Correlativo_Actual
+                                clsLnLog_error_wms.Agregar_Error(vMsgError)
+                            Else
+                        End If
+
+                        Dim vResultInsertEncabezadoRec As Integer = 0
+
+                        If pRecEnc.IsNew Then
+
+                                vResultInsertEncabezadoRec = Insertar(pRecEnc,
+                                    Throw New Exception("ERROR_202210051030F_HH_GuardarRecepcion_S: No se pudo insertar el encabezado de la recepción")
+                            End If
+
+                        End If
+
+                        If Not pListaRecDet Is Nothing Then
+
+                            For Each BeTransReDet In pListaRecDet
+                                vResultadoEliminar = clsLnTrans_re_det.Eliminar_Detalle(pIdOrdenCompraEnc,
+                                                                                    BeTransReDet,
+                                                                                    lConnection,
+                                                                                    lTransaction)
+
+                                If vResultadoEliminar <> "" Then
+                                    CadenaResultado += "Eliminar_Detalle_Recepción: " & vResultadoEliminar
+                                End If
+
+                                If clsLnTrans_re_det.Existe_By_BeRecepcionDet(BeTransReDet, lConnection, lTransaction) Then
+                                    Throw New Exception("ERROR_19122024_HH_GuardarRecepcion_S: La linea de recepcion existe, no se puede guardar nuevamente.")
+                                End If
+
+                                If vGenera_LP AndAlso String.IsNullOrEmpty(BeTransReDet.Lic_plate) Then
+                                    Throw New Exception("ERROR_02122024_1929_HH_GuardarRecepcion_S: La linea de recepcion no tiene una LP asignada!.")
+                                End If
+
+                                vResultadoGuardarReDet = clsLnTrans_re_det.Guarda_Trans_re_det(BeTransReDet,
+                                                                                               pListStockRec,
+                                                                                               lConnection,
+                                                                                               lTransaction)
+
+                                If vResultadoGuardarReDet > 0 Then
+                                    CadenaResultado += "Guarda_Trans_re_det " & vResultadoGuardarReDet
+                                End If
+
+                                '#EJC20210412:Agregado para actualizar la cantidad recibida por lote.
+
+                                Dim Obj As clsBeTrans_oc_det_lote = pListaDetLote.
+                                        FirstOrDefault(Function(x) x.IdOrdenCompraDet = BeTransReDet.IdOrdenCompraDet And x.IdProductoBodega = BeTransReDet.IdProductoBodega)
+
+                                If Obj IsNot Nothing Then
+                                    vResultadoGuardaLotes = clsLnTrans_oc_det_lote.Guarda_Trans_re_det_lote(Obj,
+                                                                                                            lConnection,
+                                                                                                            lTransaction)
+
+                                    Obj.Cantidad_recibida = BeTransReDet.cantidad_recibida
+                                    clsLnTrans_oc_det_lote.Actualizar_Parcial(Obj, lConnection, lTransaction)
+
+                                End If
+
+                                If vResultadoGuardaLotes > 0 Then
+                                    CadenaResultado += "clsLnTrans_oc_det_lote " & vResultadoGuardaLotes
+                                    lConnection,
+                                    lTransaction)
+                                    End If
+
+                                If vResultInsertEncabezadoRec > 0 Then
+                                    CadenaResultado += "Inserté encabezado recepción " & vResultInsertEncabezadoRec
+                                Else
+                                End If
+
+                                Guarda_Trans_Re_Det_Parametros = clsLnTrans_re_det_parametros.Guarda_Trans_Re_Det_Parametros(pRecEnc.IdRecepcionEnc,
+                                                                                                                             BeTransReDet,
+                                                                                                                             pListRecDetParam,
+                                                                                                                             lConnection,
+                                                                                                                             lTransaction)
+
+                                If Guarda_Trans_Re_Det_Parametros > 0 Then
+                                    CadenaResultado += "Guarda_Trans_Re_Det_Parametros " & Guarda_Trans_Re_Det_Parametros
+                                End If
+                            Next
+                        Else
+                            Throw New Exception("ERROR_202210051030E: La lista de RecDet Is Nothing.")
+                        End If
+
+                        If pIdOrdenCompraEnc > 0 Then
+                            If Not pListaRecDet Is Nothing Then
+                                For Each BeTransReDet In pListaRecDet
+                                    vResultadoActualizarCantidadRecibidaDI = clsLnTrans_oc_det.Actualiza_Cantidad_Recibida_OC(pIdOrdenCompraEnc,
+                                                                                                                          BeTransReDet,
+                                                                                                                          lConnection,
+                                                                                                                          lTransaction)
+
+                                    If vResultadoActualizarCantidadRecibidaDI > 0 Then
+                                        CadenaResultado += "Actualiza_Cantidad_Recibida_OC " & vResultadoActualizarCantidadRecibidaDI
+                                    Else
+                                        Throw New Exception("ERROR_202210051030G: No se pudo actualizar la cantidad recibida en el documento de ingreso.")
+                                    End If
+                                Next
+                            End If
+                        End If
+
+                        If Not pListStockRec Is Nothing Then
+
+                            If pListStockRec.Count > 0 Then
+
+                                'GT02122024: antes de insertar stock validar que genera LP y el stock maneje una LP
+                                Dim pExisteLicencia = pListStockRec.Find(Function(x) Not String.IsNullOrEmpty(x.Lic_plate))
+
+                                If vGenera_LP AndAlso pExisteLicencia Is Nothing Then
+                                    Throw New Exception("ERROR_02122024_1950_HH_GuardarRecepcion_S: No se puede registrar stock_rec sin licencia.")
+                                End If
+
+                                '#GT22112024: aqui es donde se ha dado error de log, validamos que datos viene antes de intentar guardar
+                                vResultadoStockRec = clsLnStock_rec.Guarda_Stock_Rec(pRecEnc.IdRecepcionEnc,
+                                                                                     pIdBodega,
+                                                                                     pListStockRec,
+                                                                                     lConnection,
+                                                                                     lTransaction)
+
+                                If vResultadoStockRec > 0 Then
+                                    CadenaResultado += " Guarda_Stock_Rec " & vResultadoStockRec
+                                Else
+                                    Throw New Exception("ERROR_202210051058: No se pudo insertar en stock_rec.")
+                                End If
+
+                                vResultadoStockSeRec = clsLnStock_se_rec.Guarda_Stock_Se_Rec(pListStockRecSer,
+                                                                                             pListStockRec,
+                                                                                             lConnection,
+                                                                                             lTransaction)
+
+                                If vResultadoStockSeRec > 0 Then
+                                    CadenaResultado += "Guarda_Stock_Se_Rec " & vResultadoStockSeRec
+                                End If
+
+                            Else
+                                Throw New Exception("#ERR20200317A: La lista de stock no tiene registros.")
+                            End If
+
+                        Else
+                            Throw New Exception("#ERR20200317B: La lista de stock para recepción está vacía.")
+                        End If
+
+
+                        If Not pListProductoPallet Is Nothing Then
+
+                            vResultGuarda_Producto_Pallet = clsLnProducto_pallet.Guarda_Producto_Pallet(pRecEnc.IdRecepcionEnc,
+                                                                                                        pListProductoPallet,
+                                                                                                        lConnection,
+                                                                                                        lTransaction)
+
+                            If vResultGuarda_Producto_Pallet > 0 Then
+                                CadenaResultado += "Guarda_Producto_Pallet " & vResultGuarda_Producto_Pallet
+                            End If
+
+                        End If
+
+                        Dim BeStock As New clsBeStock()
+
+                        If pRecEnc.Habilitar_Stock Then
+
+                            Dim pBeINavBarraPallet As New clsBeI_nav_barras_pallet
+
+                            If Not pListStockRec Is Nothing Then
+
+                                If pListStockRec.Count > 0 Then
+
+                                    For Each pBeStockRec As clsBeStock_rec In pListStockRec
+
+                                        BeStock = New clsBeStock
+                                        pBeStockRec.IdBodega = pIdBodega
+                                        vResultadoInsertMovimientos = 0
+                                        pBeStockRec.Fecha_Ingreso = Now
+                                        pBeStockRec.Fec_agr = Now
+                                        pBeStockRec.Fec_mod = Now
+                                        clsPublic.CopyObject(pBeStockRec, BeStock)
+
+                                        If vGenera_LP AndAlso String.IsNullOrEmpty(pBeStockRec.Lic_plate) Then
+                                            Throw New Exception("ERROR_02122024_1955_HH_GuardarRecepcion_S: No se puede registrar el movimiento sin licencia.")
+                                        End If
+
+                                        vResultadoInsertMovimientos = clsLnTrans_movimientos.Insertar_Movimientos_Recepcion(pIdEmpresa,
+                                                                                                                            pIdBodega,
+                                                                                                                            pIdUsuario,
+                                                                                                                            pBeStockRec,
+                                                                                                                            lConnection,
+                                                                                                                            lTransaction,
+                                                                                                                            pIdOperadorBodega)
+
+
+                                        If vResultadoInsertMovimientos > 0 Then
+
+                                            BeStock.IdStock = clsLnStock.MaxID(lConnection, lTransaction) + 1
+
+                                            If vGenera_LP AndAlso String.IsNullOrEmpty(BeStock.Lic_plate) Then
+                                                Throw New Exception("ERROR_02122024_2000_HH_GuardarRecepcion_S: No se puede registrar el stock sin licencia.")
+                                            End If
+
+                                            vResultadoInsertStock = clsLnStock.Insertar(BeStock,
+                                                                                        lConnection,
+                                                                                        lTransaction)
+
+                                            If vResultadoInsertStock > 0 Then
+                                                '#GT31012023 confirma stock disponible y el idstock para generar historico.
+                                                Stock_Disponible = True
+                                                pIdStock = 0
+                                                pIdStock = BeStock.IdStock
+
+                                                CadenaResultado += " Inserta_Stock: " & vResultadoInsertStock
+
+                                                vResultadoStockParametroRec = clsLnStock_parametro.Insertar_Stock_Parametro_Recepcion(pBeStockRec,
+                                                                                                                                      BeStock.IdStock,
+                                                                                                                                      lConnection,
+                                                                                                                                      lTransaction)
+
+                                                If vResultadoStockParametroRec > 0 Then
+                                                    CadenaResultado += " Insertar_Stock_Parametro_Recepcion: " & vResultadoStockParametroRec
+                                                End If
+
+
+                                                vResultadoInsertar_Stock_Serializado_Recepcion = clsLnStock_se.Insertar_Stock_Serializado_Recepcion(pBeStockRec,
+                                                                                                                                                    BeStock.IdStock,
+                                                                                                                                                    lConnection,
+                                                                                                                                                    lTransaction)
+
+                                                If vResultadoInsertar_Stock_Serializado_Recepcion > 0 Then
+                                                    CadenaResultado += " Insertar_Stock_Serializado_Recepcion: " & vResultadoInsertar_Stock_Serializado_Recepcion
+                                                End If
+
+                                            Else
+                                                '#GT21102022_1600: sino inserta stock se lanza excepción
+                                                Throw New Exception("ERROR_202210211600: No se pudo insertar el stock.")
+                                            End If
+
+                                        Else
+                                            Throw New Exception("ERROR_202210051111: No se pudo insertar el movimiento.")
+                                        End If
+
+
+                                        '#EJC20190329_0538PM: Marcar el pallet como recibido.
+                                        If pBeStockRec.Lic_plate <> "" Then
+
+                                            pBeINavBarraPallet.Recibido = True
+                                            pBeINavBarraPallet.IdRecepcion = pRecEnc.IdRecepcionEnc
+                                            pBeINavBarraPallet.Codigo_barra = pBeStockRec.Lic_plate
+                                            pBeINavBarraPallet.Fecha_Ingreso = Now
+                                            pBeINavBarraPallet.Fecha_Agregado = Now
+                                            pBeINavBarraPallet.Bodega_Destino = clsLnBodega.Get_Codigo_By_IdBodega(pIdBodega,
+                                                                                                                   lConnection,
+                                                                                                                   lTransaction)
+
+                                            If Not pBeINavBarraPallet.Bodega_Destino Is Nothing Then
+                                                CadenaResultado += "Get_Codigo_By_IdBodega: " & pBeINavBarraPallet.Bodega_Destino
+                                            Else
+                                                Throw New Exception("ERROR_202210051121: No se obtuvo el código de la bodega destino para el IdBodega: " & pIdBodega)
+                                            End If
+
+                                            vResultadoActualiza_Estado_Barras_Pallet = clsLnI_nav_barras_pallet.Actualiza_Estado_Barras_Pallet(pBeINavBarraPallet,
+                                                                                                                                               lConnection,
+                                                                                                                                               lTransaction)
+
+                                            If vResultadoActualiza_Estado_Barras_Pallet > 0 Then
+                                                CadenaResultado += "Actualiza_Estado_Barras_Pallet: " & vResultadoActualiza_Estado_Barras_Pallet
+                                            End If
+
+                                        End If
+
+                                    Next
+
+                                Else
+                                    Throw New Exception("ERROR_20220914_1048: Se encontró una inconsistencia al procesar el registro de ingreso el count() de la lista de stock es 0.")
+                                End If
+
+                            Else
+                                Throw New Exception("ERROR_20220914_1047: Se encontró una inconsistencia al procesar el registro de ingreso la lista de stock está vacía.")
+                            End If
+
+                            If Not pListaRecDet Is Nothing Then
+
+                                For Each BeTransReDet In pListaRecDet
                                     If BeTransReDet.IsNew Then
 
                                         CadenaResultado += "Inserta transacciones out"
@@ -6245,8 +6777,8 @@ Partial Public Class clsLnTrans_re_enc
                                         BeLoteNum.Cantidad = BeTransReDet.cantidad_recibida
                                         BeLoteNum.FechaIngreso = Now
                                         clsLnTrans_re_det_lote_num.Insertar(BeLoteNum,
-                                                                            lConnection,
-                                                                            lTransaction)
+                                                                                lConnection,
+                                                                                lTransaction)
 
                                     End If
 
@@ -6266,51 +6798,34 @@ Partial Public Class clsLnTrans_re_enc
                                         End If
 
                                     End If
-
-                                End If
-
-                            Else
-                                '#GTZ_nuevo control
-                                '#MECR23092025: Se agrego bitacora de logs para recepciones.
-                                Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S: no_habilitar_stock en re_enc: " & pRecEnc.IdRecepcionEnc
-                                'clsLnLog_error_wms.Agregar_Error(vMsgError)
-                                clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                                     pIdEmpresa:=pIdEmpresa,
-                                                                     pIdBodega:=pIdBodega,
-                                                                     pIdUsuarioAgr:=pIdUsuario,
-                                                                     pIdRecEnc:=pIdRecepcionEnc,
-                                                                     pConection:=lConnection,
-                                                                     pTransaction:=lTransaction)
-
+                                Next
                             End If
-
-                            CadenaResultado += " Terminé la recepción " & pRecEnc.IdRecepcionEnc.ToString
-
                         Else
-                            Throw New Exception("ERROR_202210051030A: El count de la lista de stock es 0.")
+                            '#GTZ_nuevo control
+                            Dim vMsgError As String = "AVISO_20242211_HH_GuardarRecepcion_S: no_habilitar_stock re_enc: " & pRecEnc.IdRecepcionEnc
+                            clsLnLog_error_wms.Agregar_Error(vMsgError)
                         End If
 
+                        'Dim vMsgErrorGuardarStock As String = "AVISO_20242211_HH_GuardarRecepcion_S: timer_GuardarStock " & stopwatch.ElapsedMilliseconds
+                        'clsLnLog_error_wms.Agregar_Error(vMsgErrorGuardarStock, lConnection, lTransaction)
+
+                        CadenaResultado += " Terminé la recepción " & pRecEnc.IdRecepcionEnc.ToString
+
                     Else
-                        Throw New Exception("ERROR_202210051030B: La lista de stock Is Nothing.")
+                        Throw New Exception("ERROR_202210051030A: El count de la lista de stock es 0.")
                     End If
 
                 Else
-                    Throw New Exception("ERROR_DE_PROCESO_20251001: La recepción fue previamente anulada, regrese al menu principal.")
+                    Throw New Exception("ERROR_202210051030B: La lista de stock Is Nothing.")
                 End If
 
             Else
-                Throw New Exception("ERROR_DE_PROCESO_202302221004: La recepción fue previamente finalizada, regrese al menu principal.")
+                Throw New Exception("ERROR_DE_PROCESO_202302221004: La recepción fue previamente finalizada.")
             End If
 
             lTransaction.Commit()
 
             Return CadenaResultado
-
-        Catch ex As Exception
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
-
-            '#MECR23092025: Se agrego bitacora de logs para recepciones
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                  pIdEmpresa:=pIdEmpresa,
                                                  pIdBodega:=pIdBodega,
@@ -6318,6 +6833,12 @@ Partial Public Class clsLnTrans_re_enc
                                                  pIdRecEnc:=pIdRecepcionEnc,
                                                  pStackTrace:=ex.StackTrace)
 
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+
+            '#MECR23092025: Se agrego bitacora de logs para recepciones
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             Throw New Exception(String.Format("{0} {1}", ex.Message, CadenaResultado))
         Finally
             If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
@@ -6396,13 +6917,8 @@ Partial Public Class clsLnTrans_re_enc
                                                                          lTransaction2,
                                                                          1) Then
 
+
                         Recepcion_genera_historico = True
-
-                    Else
-
-                        '#MECR23092025: Se agrego bitacora de logs para recepciones.
-                        Dim message = "No inserte historico para idstock: " & pIdStock & " y user: " & pIdusuario
-                        Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), message)
                         'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdusuario)
                         clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                              pIdEmpresa:=pIdEmpresa,
@@ -6411,6 +6927,12 @@ Partial Public Class clsLnTrans_re_enc
                                                              pConection:=lConnection2,
                                                              pTransaction:=lTransaction2)
 
+                    Else
+
+                        '#MECR23092025: Se agrego bitacora de logs para recepciones.
+                        Dim message = "No inserte historico para idstock: " & pIdStock & " y user: " & pIdusuario
+                        Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), message)
+
                     End If
 
                 End If
@@ -6418,18 +6940,18 @@ Partial Public Class clsLnTrans_re_enc
             End If
 
             lTransaction2.Commit()
-            Return Recepcion_genera_historico
-
-        Catch ex As Exception
-            If Not lTransaction2 Is Nothing Then lTransaction2.Rollback()
-            '#MECR23092025: Se agrego bitacora de logs para recepciones
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                  pIdEmpresa:=pIdEmpresa,
                                                  pIdBodega:=pIdBodega,
                                                  pIdUsuarioAgr:=pIdusuario,
                                                  pStackTrace:=ex.StackTrace)
 
+            Return Recepcion_genera_historico
+
+        Catch ex As Exception
+            If Not lTransaction2 Is Nothing Then lTransaction2.Rollback()
+            '#MECR23092025: Se agrego bitacora de logs para recepciones
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             Throw ex
         Finally
             If lConnection2.State = ConnectionState.Open Then lConnection2.Close()
@@ -6473,12 +6995,6 @@ Partial Public Class clsLnTrans_re_enc
                                                                          lconnection2,
                                                                          ltransaction2,
                                                                          1) Then
-
-                        Recepcion_genera_historico = True
-                    Else
-
-                        Dim message = "No inserte historico stock_no_dispoible para idstock: " & pIdStock & " y user: " & pIdusuario
-                        Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), message)
                         'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdusuario)
                         clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                              pIdEmpresa:=pIdEmpresa,
@@ -6487,23 +7003,30 @@ Partial Public Class clsLnTrans_re_enc
                                                              pConection:=lconnection2,
                                                              pTransaction:=ltransaction2)
 
+                        Recepcion_genera_historico = True
+                    Else
+
+                        Dim message = "No inserte historico stock_no_dispoible para idstock: " & pIdStock & " y user: " & pIdusuario
+                        Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), message)
+
+
                     End If
 
                 End If
 
             End If
 
+            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pIdEmpresa:=pIdEmpresa,
+                                                 pIdBodega:=pIdBodega,
+                                                 pIdUsuarioAgr:=pIdusuario,
+                                                 pStackTrace:=ex.StackTrace)
             Return Recepcion_genera_historico
 
         Catch ex As Exception
             'If Not ltransaction2 Is Nothing Then ltransaction2.Rollback()
             '#MECR23092025: Se agrego bitacora de logs para recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdEmpresa:=pIdEmpresa,
-                                                 pIdBodega:=pIdBodega,
-                                                 pIdUsuarioAgr:=pIdusuario,
-                                                 pStackTrace:=ex.StackTrace)
             Throw ex
         End Try
 
@@ -6511,8 +7034,8 @@ Partial Public Class clsLnTrans_re_enc
     End Function
 
     Public Shared Function Get_Single_By_IdREcepcionEnc_Sin_Det(ByVal pIdRecepcionEnc As Integer,
-                                                                ByRef lConnection As SqlConnection,
-                                                                ByRef lTransaction As SqlTransaction) As clsBeTrans_re_enc
+ByRef lConnection As SqlConnection,
+ByRef lTransaction As SqlTransaction) As clsBeTrans_re_enc
 
         Get_Single_By_IdREcepcionEnc_Sin_Det = Nothing
         Try
@@ -6539,6 +7062,8 @@ Partial Public Class clsLnTrans_re_enc
 
                     Obj.IsNew = False
                     Get_Single_By_IdREcepcionEnc_Sin_Det = Obj
+
+                    Return Obj
 
                 End If
 
@@ -6573,12 +7098,6 @@ Partial Public Class clsLnTrans_re_enc
 
             '#EJC20220121: Validar que no haya sido Finalizada previamente.
             If Not Finalizada(pIdRecepcionEnc, lConnection, lTransaction) Then
-
-                '#EJC20220121_1102: Cambiar el estado primero.
-                Actualizar_Estado_Cerrado_Recepcion(pIdRecepcionEnc,
-                                                    lConnection,
-                                                    lTransaction)
-
                 '#MECR23092025: se agrego bitacora de logs para recepciones.
                 Dim msjAdvertencia As String = "#240313: Se cerró la recepción: " & pIdRecepcionEnc & " IdUsuario_HH: " & pIdUsuario
                 'clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
@@ -6589,6 +7108,12 @@ Partial Public Class clsLnTrans_re_enc
                                                      pIdRecEnc:=pIdRecepcionEnc,
                                                      pConection:=lConnection,
                                                      pTransaction:=lTransaction)
+
+                '#EJC20220121_1102: Cambiar el estado primero.
+                Actualizar_Estado_Cerrado_Recepcion(pIdRecepcionEnc,
+                                                    lConnection,
+                                                    lTransaction)
+
 
                 BeReEnc = Get_Single_By_IdREcepcionEnc(pIdRecepcionEnc,
                                                        lConnection,
@@ -6704,12 +7229,6 @@ Partial Public Class clsLnTrans_re_enc
                 Throw New Exception("Error_20220121_0004: La recepción fue finalizada previamente.")
             End If
 
-            lTransaction.Commit()
-
-        Catch ex As Exception
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            '#MECR23092025: Se agrego bitacora de logs para recepciones
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                  pIdEmpresa:=pIdEmpresa,
                                                  pIdBodega:=pIdBodega,
@@ -6717,6 +7236,12 @@ Partial Public Class clsLnTrans_re_enc
                                                  pIdRecEnc:=pIdRecepcionEnc,
                                                  pStackTrace:=ex.StackTrace)
 
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            '#MECR23092025: Se agrego bitacora de logs para recepciones
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             Throw ex
         Finally
             If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
@@ -6950,18 +7475,18 @@ Partial Public Class clsLnTrans_re_enc
                     End If
 
                 End If
+                '#MECR23092025: Se agrego bitacora de logs para recepciones
+
+                clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pIdRecEnc:=BeTransReDet.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
 
             End Using
 
 
 
         Catch ex As Exception
-            '#MECR23092025: Se agrego bitacora de logs para recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdRecEnc:=BeTransReDet.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
-
             Throw ex
         End Try
 
@@ -7065,33 +7590,33 @@ Partial Public Class clsLnTrans_re_enc
                             End If
 
                             '#GT23012023: validamos que ambos objetos tengan la misma LP y que para LP recepcion detalle no vaya vacia.
+                            'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
+                            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                                         pIdEmpresa:=pIdEmpresa,
+                                                                         pIdBodega:=pIdBodega,
+                                                                         pIdUsuarioAgr:=pIdUsuario,
+                                                                         pIdRecEnc:=pIdRecepcionEnc,
+                                                                         pConection:=lConnection,
+                                                                         pTransaction:=lTransaction)
+
                             If pBeStockRec.Lic_plate <> BeTransReDet.Lic_plate Then
                                 If BeTransReDet.Lic_plate.Equals("") Then
                                     BeTransReDet.Lic_plate = pBeStockRec.Lic_plate
+                                    'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
+                                    clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                                         pIdEmpresa:=pIdEmpresa,
+                                                                         pIdBodega:=pIdBodega,
+                                                                         pIdUsuarioAgr:=pIdUsuario,
+                                                                         pIdRecEnc:=pIdRecepcionEnc,
+                                                                         pConection:=lConnection,
+                                                                         pTransaction:=lTransaction)
+
 
                                     '#MECR23092025: Se agrego bitacora de logs para recepcion
                                     Dim vMsgError As String = " lp_vacia en obj recepcion_enc:" & BeTransReDet.IdRecepcionEnc & "y recepcion_det:" & BeTransReDet.IdRecepcionDet
-                                    'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
-                                    clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                                         pIdEmpresa:=pIdEmpresa,
-                                                                         pIdBodega:=pIdBodega,
-                                                                         pIdUsuarioAgr:=pIdUsuario,
-                                                                         pIdRecEnc:=pIdRecepcionEnc,
-                                                                         pConection:=lConnection,
-                                                                         pTransaction:=lTransaction)
-
                                 ElseIf pBeStockRec.Lic_plate.Equals("") Then
                                     '#MECR23092025: Se agrego bitacora de logs para recepcion
                                     Dim vMsgError As String = " lp_vacia en obj StockRec:" & pBeStockRec.IdStockRec
-                                    'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
-                                    clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                                         pIdEmpresa:=pIdEmpresa,
-                                                                         pIdBodega:=pIdBodega,
-                                                                         pIdUsuarioAgr:=pIdUsuario,
-                                                                         pIdRecEnc:=pIdRecepcionEnc,
-                                                                         pConection:=lConnection,
-                                                                         pTransaction:=lTransaction)
-
                                 End If
                             End If
 
@@ -7118,14 +7643,8 @@ Partial Public Class clsLnTrans_re_enc
                             vResultadoEliminar = clsLnTrans_re_det.Eliminar_Detalle(pIdOrdenCompraEnc,
                                                                                     BeTransReDet,
                                                                                     lConnection,
-                                                                                    lTransaction)
-
-
-                            If BeTransReDet.Lic_plate = "" Then
-                                '#MECR23092025: Se agrego bitacora de logs para recepciones
-                                Dim vMsgError As String = " GT_26072024_GuardarHH_BOF LP vacia en IdRecepcionEnc:" & BeTransReDet.IdRecepcionEnc & " ,IdRecepciondet: " & BeTransReDet.IdRecepcionDet
                                 'clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
-                                clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                                      pIdEmpresa:=pIdEmpresa,
                                                                      pIdBodega:=pIdBodega,
                                                                      pIdUsuarioAgr:=pIdUsuario,
@@ -7133,6 +7652,12 @@ Partial Public Class clsLnTrans_re_enc
                                                                      pConection:=lConnection,
                                                                      pTransaction:=lTransaction)
 
+                            lTransaction)
+
+
+                            If BeTransReDet.Lic_plate = "" Then
+                                '#MECR23092025: Se agrego bitacora de logs para recepciones
+                                Dim vMsgError As String = " GT_26072024_GuardarHH_BOF LP vacia en IdRecepcionEnc:" & BeTransReDet.IdRecepcionEnc & " ,IdRecepciondet: " & BeTransReDet.IdRecepcionDet
                             End If
 
 
@@ -7442,21 +7967,21 @@ Partial Public Class clsLnTrans_re_enc
 
             Else
                 Throw New Exception("ERROR_DE_PROCESO_202302221004: La recepción fue previamente finalizada.")
-            End If
-
-            'Return CadenaResultado
-
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            '#MECR22092025: Se agrego nueva opcion de registro de logs para recepciones.
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                '#MECR22092025: Se agrego nueva opcion de registro de logs para recepciones.
+                'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                  pIdEmpresa:=pIdEmpresa,
                                                  pIdBodega:=pIdBodega,
                                                  pIdUsuarioAgr:=pIdUsuario,
                                                  pIdRecEnc:=pIdRecepcionEnc,
                                                  pStackTrace:=ex.StackTrace)
 
+            End If
+
+            'Return CadenaResultado
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             Throw New Exception(String.Format("{0} {1}", ex.Message, CadenaResultado))
         End Try
 
@@ -7469,13 +7994,14 @@ Partial Public Class clsLnTrans_re_enc
                                                                            ByVal lTransaction As SqlTransaction) As Boolean
 
         Dim lProductosConDiferencia As New List(Of String)
-        Reglas_De_Recepcion_Permiten_Ingreso_By_LineaOC = True
+        If Not BeTransOCEnc.IdTipoIngresoOC = tTipoDocumentoIngreso.Ingreso_Inventario_Inicial Then
 
-        'Dim clsTransaction As New clsTransaccion
+            Reglas_De_Recepcion_Permiten_Ingreso_By_LineaOC = True
 
-        Try
+            'Dim clsTransaction As New clsTransaccion
 
-            If Not BeTransOCEnc.IdTipoIngresoOC = clsDataContractDI.tTipoDocumentoIngreso.Ingreso_Inventario_Inicial Then
+            Try
+
                 Dim vReglaProp As New clsBePropietario_reglas_enc
                 Dim ListaRegla As New List(Of clsBePropietario_reglas_enc)
                 Dim vPresRec As New clsBeProducto_Presentacion
@@ -7676,16 +8202,16 @@ Partial Public Class clsLnTrans_re_enc
                     End If
 
                 End Using
+                clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pIdRecEnc:=BeTransReDet.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
+
 
             End If
 
         Catch ex As Exception
             '#MECR23092025: se agrego bitacora de logs para recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdRecEnc:=BeTransReDet.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
-
             Throw ex
         End Try
 
@@ -7868,18 +8394,18 @@ Partial Public Class clsLnTrans_re_enc
                 Generar_Tarea_Recepcion_By_OrdenCompraEnc_For_SAP = 1
 
                 OutBeRecepcionEnc = BeRecepcionEnc
+                clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pIdBodega:=BeRecepcionEnc.IdBodega,
+                                                 pIdUsuarioAgr:=BeRecepcionEnc.User_agr,
+                                                 pIdRecEnc:=BeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
+
 
             End If
 
         Catch ex As Exception
             '#MECR23092025: Se agrego bitacora de logs para recepciones.
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdBodega:=BeRecepcionEnc.IdBodega,
-                                                 pIdUsuarioAgr:=BeRecepcionEnc.User_agr,
-                                                 pIdRecEnc:=BeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
-
             Throw ex
         End Try
 
@@ -7916,13 +8442,13 @@ Partial Public Class clsLnTrans_re_enc
             lCommand.Parameters.Add(New SqlParameter("@IdPiloto", pIdPiloto))
             lCommand.Parameters.Add(New SqlParameter("@IdRecepcionEnc", pIdRecepcionEnc))
 
+            If Not lTransaction Is Nothing Then lTransaction.Rollback()
             lCommand.ExecuteNonQuery()
 
             If Not Es_Transaccion_Remota Then
                 lTransaction.Commit()
             End If
         Catch ex As Exception
-            If Not lTransaction Is Nothing Then lTransaction.Rollback()
             Throw ex
         Finally
             lCommand.Dispose()
@@ -8369,13 +8895,13 @@ Partial Public Class clsLnTrans_re_enc
                             BeStockRec.IdUbicacion = clsLnBodega.Get_IdUbicacion_Recepcion_By_IdBodega(BeOrdenCompraEnc.IdBodega,
                                                                                                        lConnection,
                                                                                                        lTransaction)
+                            BeStockRec.Cantidad = PickingUbic.Cantidad_despachada * vFactor
                             BeStockRec.IdUbicacion_anterior = PickingUbic.IdUbicacion
                             BeStockRec.IdRecepcionEnc = BeRecepcionEnc.IdRecepcionEnc
                             BeStockRec.IdRecepcionDet = BeTransReDet.IdRecepcionDet
                             BeStockRec.Lote = PickingUbic.Lote
                             BeStockRec.Lic_plate = PickingUbic.Lic_plate
                             BeStockRec.Serial = PickingUbic.Serial
-                            BeStockRec.Cantidad = PickingUbic.Cantidad_despachada * vFactor
                             BeStockRec.Fecha_Ingreso = Now
                             BeStockRec.Fecha_vence = PickingUbic.Fecha_Vence
                             BeStockRec.User_agr = BeOrdenCompraEnc.User_Agr
@@ -8428,18 +8954,18 @@ Partial Public Class clsLnTrans_re_enc
                 Generar_Tarea_Recepcion_By_OrdenCompraEnc_And_Pedido = 1
 
                 OutBeRecepcionEnc = BeRecepcionEnc
+                clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                                                 pIdBodega:=BeRecepcionEnc.IdBodega,
+                                                 pIdUsuarioAgr:=BeRecepcionEnc.User_agr,
+                                                 pIdRecEnc:=BeRecepcionEnc.IdRecepcionEnc,
+                                                 pStackTrace:=ex.StackTrace)
+
 
             End If
 
         Catch ex As Exception
             '#MECR23092025: se agrego bitacora de logs para recepciones
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
-                                                 pIdBodega:=BeRecepcionEnc.IdBodega,
-                                                 pIdUsuarioAgr:=BeRecepcionEnc.User_agr,
-                                                 pIdRecEnc:=BeRecepcionEnc.IdRecepcionEnc,
-                                                 pStackTrace:=ex.StackTrace)
-
             Throw ex
         End Try
 
@@ -8467,12 +8993,6 @@ Partial Public Class clsLnTrans_re_enc
 
             '#EJC20220121: Validar que no haya sido Finalizada previamente.
             If Not Finalizada(pIdRecepcionEnc, lConnection, lTransaction) Then
-
-                '#EJC20220121_1102: Cambiar el estado primero.
-                Actualizar_Estado_Cerrado_Recepcion(pIdRecepcionEnc,
-                                                    lConnection,
-                                                    lTransaction)
-
                 '#MECR23092025: Se agrego bitacora de logs para recepciones.
                 Dim msjInfo As String = "#240313A: Se cerró la recepción: " & pIdRecepcionEnc & " IdUsuario_BOF: " & pIdUsuario
                 'clsLnLog_error_wms_rec.Agregar_Error(msjInfo, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
@@ -8484,6 +9004,12 @@ Partial Public Class clsLnTrans_re_enc
                                                      pConection:=lConnection,
                                                      pTransaction:=lTransaction)
 
+                '#EJC20220121_1102: Cambiar el estado primero.
+                Actualizar_Estado_Cerrado_Recepcion(pIdRecepcionEnc,
+                                                    lConnection,
+                                                    lTransaction)
+
+
                 If Not Registros_Pendientes_Push(pIdRecepcionEnc, lConnection, lTransaction) Then
 
                     If Reglas_De_Recepcion_Permiten_Ingreso(pRecEnc,
@@ -8491,22 +9017,22 @@ Partial Public Class clsLnTrans_re_enc
                                                             lTransaction) Then
 
                         Dim lMaxS As Integer = clsLnStock.MaxID(lConnection,
-                                                                lTransaction)
-
-                        If listaStockRec IsNot Nothing AndAlso listaStockRec.Count > 0 Then
-
-                            If Not pHabilitarStock Then
-
                                 '#MECR23092025: Se agrego bitacora de logs para recepciones
-                                Dim msjAdvertencia As String = "ADVERTENCIA_202302230102:  Se está finalizando la recepción: " & pIdRecepcionEnc & " con Habilitar_Stock = False, Usuario: " & pIdUsuario
-                                'clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
-                                clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia,
+                        Dim msjAdvertencia As String = "ADVERTENCIA_202302230102:  Se está finalizando la recepción: " & pIdRecepcionEnc & " con Habilitar_Stock = False, Usuario: " & pIdUsuario
+                        'clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia, pIdEmpresa, pIdBodega, pIdUsuario, pIdRecEnc:=pIdRecepcionEnc)
+                        clsLnLog_error_wms_rec.Agregar_Error(msjAdvertencia,
                                                                      pIdEmpresa:=pIdEmpresa,
                                                                      pIdBodega:=pIdBodega,
                                                                      pIdUsuarioAgr:=pIdUsuario,
                                                                      pIdRecEnc:=pIdRecepcionEnc,
                                                                      pConection:=lConnection,
                                                                      pTransaction:=lTransaction)
+                        lTransaction)
+
+                        If listaStockRec IsNot Nothing AndAlso listaStockRec.Count > 0 Then
+
+                            If Not pHabilitarStock Then
+
 
                                 Habilitar_Stock_Desde_StockRec(pIdEmpresa,
                                                                pIdBodega,
@@ -8593,19 +9119,19 @@ Partial Public Class clsLnTrans_re_enc
                 End If
 
             Else
-                Throw New Exception("Error_20220121_0004: La recepción fue finalizada previamente.")
-            End If
-
-        Catch ex As Exception
-            '#MECR23092025: Se agrego bitacora de logs para recepciones
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
+                clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                  pIdEmpresa:=pIdEmpresa,
                                                  pIdBodega:=pIdBodega,
                                                  pIdUsuarioAgr:=pIdUsuario,
                                                  pIdRecEnc:=pIdRecepcionEnc,
                                                  pStackTrace:=ex.StackTrace)
 
+                Throw New Exception("Error_20220121_0004: La recepción fue finalizada previamente.")
+            End If
+
+        Catch ex As Exception
+            '#MECR23092025: Se agrego bitacora de logs para recepciones
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             Throw ex
         End Try
 
@@ -8823,6 +9349,283 @@ Partial Public Class clsLnTrans_re_enc
             End Using
 
         Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Generar_Tarea_Recepcion_By_OrdenCompraEnc_Doc_Devolucion(ByRef BeOrdenCompraEnc As clsBeTrans_oc_enc,
+                                                                                    ByRef Resultado As String,
+                                                                                    ByVal CrearRecepcionPorDefecto As Boolean,
+                                                                                    ByVal BeMI3Config As clsBeI_nav_config_enc,
+                                                                                    ByRef OutBeRecepcionEnc As clsBeTrans_re_enc,
+                                                                                    ByRef lConnection As SqlConnection,
+                                                                                    ByRef lTransaction As SqlTransaction) As Integer
+
+
+        Generar_Tarea_Recepcion_By_OrdenCompraEnc_Doc_Devolucion = 0
+        OutBeRecepcionEnc = Nothing
+
+        Dim RegistrosAfectados As Integer = 0
+        Dim lblResult As New RichTextBox
+        Dim OrdenCompraReOc As New clsBeTrans_re_oc
+        Dim BeTareaHH As New clsBeTarea_hh
+        Dim BeRecepcionEnc As New clsBeTrans_re_enc
+        Dim IdBodegaDestino As Integer = 0
+        Dim IdPropietario As Integer = 0
+        Dim TiempoMedioIngresoMinutos As Double
+        Dim lBeRecDet As New List(Of clsBeTrans_re_det)
+        Dim lBeStockRec As New List(Of clsBeStock_rec)
+        Dim BeProductoEstado As New clsBeProducto_estado
+
+        Try
+
+            If Not clsLnTrans_re_oc.Existe_Documento_By_IdOrdenCompraEnc(BeOrdenCompraEnc.IdOrdenCompraEnc, lConnection, lTransaction) Then
+
+                IdBodegaDestino = BeOrdenCompraEnc.IdBodega
+                BeProductoEstado = clsLnProducto_estado.GetSingleByIdEstado(BeMI3Config.IdProductoEstado_NC, lConnection, lTransaction)
+
+                BeRecepcionEnc.IsNew = True
+                BeRecepcionEnc.IdRecepcionEnc = MaxID(lConnection, lTransaction) + 1
+                BeRecepcionEnc.PropietarioBodega = New clsBePropietario_bodega
+                BeRecepcionEnc.PropietarioBodega.IdBodega = BeOrdenCompraEnc.IdBodega
+                '#EJC20210715: IdBodega se comparte a la tarea de recepción en generación automática de tarea..
+                BeRecepcionEnc.IdBodega = BeOrdenCompraEnc.IdBodega
+                BeRecepcionEnc.PropietarioBodega.IdPropietarioBodega = BeOrdenCompraEnc.IdPropietarioBodega
+                BeRecepcionEnc.User_agr = BeMI3Config.IdUsuario
+                BeRecepcionEnc.Fec_agr = Now
+                BeRecepcionEnc.Activo = True
+                BeRecepcionEnc.Estado = "Nuevo"
+
+                BeRecepcionEnc.OrdenCompraRec = New clsBeTrans_re_oc
+                BeRecepcionEnc.OrdenCompraRec.IsNew = True
+                '#EJC20200120: Lo hace más tarde en el guardar...
+                'BeRecepcionEnc.OrdenCompraRec.IdRecepcionOc = clsLnTrans_re_oc.MaxID(BeOrdenCompraEnc.IdOrdenCompraEnc, lConnection, lTransaction) + 1
+                BeRecepcionEnc.OrdenCompraRec.IdRecepcionEnc = BeRecepcionEnc.IdRecepcionEnc
+
+                If BeRecepcionEnc.PropietarioBodega Is Nothing OrElse BeRecepcionEnc.PropietarioBodega.IdPropietarioBodega <= 0 Then
+                    Throw New Exception("Propietario no válido al crear la recepción")
+                End If
+
+                'Ingreso con referenci a orden de compra para procesar en HH
+                BeRecepcionEnc.IdTipoTransaccion = "HCOC00"
+
+                BeRecepcionEnc.IdMuelle = clsLnBodega_muelles.Get_IdMuelle_Default_By_IdBodega(IdBodegaDestino, lConnection, lTransaction)
+
+                If BeRecepcionEnc.IdMuelle = 0 Then
+                    Throw New Exception("No existe ningún muelle por defecto para el IdBodegaDestino: " & IdBodegaDestino)
+                End If
+
+                BeRecepcionEnc.IdUbicacionRecepcion = clsLnBodega.Get_IdUbicacion_Recepcion_By_IdBodega(IdBodegaDestino, lConnection, lTransaction)
+
+                If BeRecepcionEnc.IdUbicacionRecepcion = 0 Then
+                    Throw New Exception("No está configurada la ubicación por defecto para recepción para el IdBodegaDestino: " & IdBodegaDestino)
+                End If
+
+                TiempoMedioIngresoMinutos = clsLnTarea_hh.Get_Tiempo_Medio_Tarea_Ingreso_Minutos(lConnection, lTransaction)
+
+                BeRecepcionEnc.Fecha_recepcion = Now.Date
+                BeRecepcionEnc.Hora_ini_pc = Now
+                BeRecepcionEnc.Hora_fin_pc = Now.AddMinutes(TiempoMedioIngresoMinutos)
+                BeRecepcionEnc.Muestra_precio = False
+                BeRecepcionEnc.Fec_mod = Now
+                BeRecepcionEnc.User_mod = BeMI3Config.IdUsuario
+                BeRecepcionEnc.Fecha_tarea = Now
+                BeRecepcionEnc.Tomar_fotos = False
+                BeRecepcionEnc.Escanear_rec_ubic = False
+                BeRecepcionEnc.Para_por_codigo = False
+                BeRecepcionEnc.Observacion = "FROMMI3"
+                BeRecepcionEnc.IdPiloto = 0
+                BeRecepcionEnc.IdVehiculo = 0
+                BeRecepcionEnc.Habilitar_Stock = False
+                BeRecepcionEnc.IdBodega = IdBodegaDestino
+
+                OrdenCompraReOc.IdRecepcionEnc = BeRecepcionEnc.IdRecepcionEnc
+                OrdenCompraReOc.IdOrdenCompraEnc = BeOrdenCompraEnc.IdOrdenCompraEnc
+                OrdenCompraReOc.IsNew = True
+                OrdenCompraReOc.No_docto = BeOrdenCompraEnc.Referencia
+                OrdenCompraReOc.OC = BeOrdenCompraEnc
+                OrdenCompraReOc.Recepcion_ciega = False
+                OrdenCompraReOc.Recepcion_manual = False
+                OrdenCompraReOc.User_agr = BeMI3Config.IdUsuario
+
+                BeRecepcionEnc.OrdenCompraRec = OrdenCompraReOc
+
+                Dim pListOperadorRecepcion As New List(Of clsBeTrans_re_op)
+                Dim pListOperadorBodega As New List(Of clsBeOperador_bodega)
+
+                '#EJC20190711: Broadcast a todos los operadores de la bodega con la tarea.
+                pListOperadorBodega = clsLnOperador_bodega.Get_All_By_IdBodega(IdBodegaDestino, lConnection, lTransaction)
+
+                If Not pListOperadorBodega Is Nothing Then
+
+                    Dim BeTransReOp As New clsBeTrans_re_op()
+
+                    For Each Op In pListOperadorBodega
+
+                        BeTransReOp = New clsBeTrans_re_op()
+                        BeTransReOp.IdOperadorBodega = Op.IdOperadorBodega
+                        BeTransReOp.User_agr = BeMI3Config.IdUsuario
+                        BeTransReOp.Fec_agr = Now
+                        BeTransReOp.User_mod = BeMI3Config.IdUsuario
+                        BeTransReOp.Fec_mod = Now
+                        BeTransReOp.IsNew = True
+                        BeTransReOp.UsaHH = True
+                        pListOperadorRecepcion.Add(BeTransReOp)
+
+                    Next
+
+                End If
+
+                BeTareaHH = New clsBeTarea_hh
+                BeTareaHH.IdPropietario = clsLnPropietarios.Get_IdPropietario(IdBodegaDestino, BeOrdenCompraEnc.IdPropietarioBodega)
+                BeTareaHH.IdBodega = IdBodegaDestino
+                BeTareaHH.IdMuelle = BeRecepcionEnc.IdMuelle
+                BeTareaHH.IdEstado = 1
+                BeTareaHH.IdPrioridad = 1
+                BeTareaHH.IdTipoTarea = 1
+                BeTareaHH.IdTransaccion = BeRecepcionEnc.IdRecepcionEnc
+                BeTareaHH.Tipo = 0
+                BeTareaHH.FechaInicio = Now
+                BeTareaHH.FechaFin = Now.AddHours(2)
+                BeTareaHH.DiaCompleto = False
+                BeTareaHH.Descripcion = ""
+                BeTareaHH.CreaTarea = True
+                BeTareaHH.IsNew = True
+
+                Select Case BeRecepcionEnc.IdTipoTransaccion.ToString()
+                    Case "HSOC00"
+                        BeTareaHH.Asunto = "Ingreso sin Orden de Compra "
+                    Case "HSOD00"
+                        BeTareaHH.Asunto = "Ingreso de Devolución sin referencia"
+                    Case "HCOC00"
+                        BeTareaHH.Asunto = "Ingreso con Orden de Compra"
+                    Case "HCOD00"
+                        BeTareaHH.Asunto = "Devolución de Pedido"
+                    Case "HHSR00"
+                        BeTareaHH.Asunto = "Ingreso sin referencia"
+                    Case "PICH000"
+                        BeTareaHH.Asunto = "Pre-ingreso con HH"
+                    Case Else
+                        Exit Select
+                End Select
+
+                Dim i As Integer = 0
+
+                BeOrdenCompraEnc.DetalleOC = clsLnTrans_oc_det.Get_All_By_IdOrdenCompraEnc(BeOrdenCompraEnc.IdOrdenCompraEnc, lConnection, lTransaction)
+
+                '#EJC20190719: Se verifica si en la lista de pedidos del despacho hay pedidos para sucursales WMS.
+                For Each BeOCDet As clsBeTrans_oc_det In BeOrdenCompraEnc.DetalleOC
+
+                    Dim BeTransReDet As New clsBeTrans_re_det
+                    Dim BeINavBarraPallet As New clsBeI_nav_barras_pallet
+                    Dim BeINavBarraPalletOriginal As New clsBeI_nav_barras_pallet
+                    Dim BeStock As New clsBeStock
+                    Dim BeStockRec As New clsBeStock_rec
+                    i += 1
+                    BeTransReDet = New clsBeTrans_re_det()
+                    BeTransReDet.IdRecepcionEnc = BeRecepcionEnc.IdRecepcionEnc
+                    BeTransReDet.IdRecepcionDet = clsLnTrans_re_det.MaxID(BeRecepcionEnc.IdRecepcionEnc, lConnection, lTransaction) + i
+                    BeTransReDet.IdProductoBodega = BeOCDet.IdProductoBodega
+                    BeTransReDet.IdPresentacion = BeOCDet.IdPresentacion
+                    BeTransReDet.IdUnidadMedida = BeOCDet.IdUnidadMedidaBasica
+                    BeTransReDet.UnidadMedida.IdUnidadMedida = BeOCDet.IdUnidadMedidaBasica
+                    BeTransReDet.IdProductoEstado = BeProductoEstado.IdEstado
+                    BeTransReDet.ProductoEstado.IdEstado = BeProductoEstado.IdEstado
+                    BeTransReDet.IdOperadorBodega = 1 'corregir después.
+                    BeTransReDet.No_Linea = BeOCDet.No_Linea
+                    BeTransReDet.cantidad_recibida = BeOCDet.Cantidad
+                    BeTransReDet.Nombre_producto = BeOCDet.Nombre_producto
+                    BeTransReDet.Nombre_presentacion = BeOCDet.Nombre_presentacion
+                    BeTransReDet.Nombre_unidad_medida = BeOCDet.Nombre_unidad_medida_basica
+                    BeTransReDet.Nombre_producto_estado = BeProductoEstado.Nombre
+                    BeTransReDet.Lote = BeOCDet.Talla.Codigo & " " & BeOCDet.Color.Codigo
+                    BeTransReDet.Fecha_vence = New Date(1900, 1, 1)
+                    BeTransReDet.Fecha_ingreso = Now
+                    BeTransReDet.Peso = 0
+                    BeTransReDet.peso_unitario = 0
+                    BeTransReDet.User_agr = OrdenCompraReOc.User_agr
+                    BeTransReDet.Fec_agr = Now
+                    BeTransReDet.Observacion = "Nota de crédito: " & BeOrdenCompraEnc.No_Documento
+                    BeTransReDet.Codigo_Producto = BeOCDet.Codigo_Producto
+                    BeTransReDet.Lic_plate = ""
+                    BeTransReDet.Pallet_No_Estandar = False
+                    BeTransReDet.IdOrdenCompraEnc = BeOrdenCompraEnc.IdOrdenCompraEnc
+                    BeTransReDet.IdOrdenCompraDet = BeOCDet.IdOrdenCompraDet
+                    BeTransReDet.IdJornadaSistema = 0
+                    lBeRecDet.Add(BeTransReDet)
+
+                    BeStockRec.IdStockRec = clsLnStock_rec.MaxID(lConnection, lTransaction)
+                    BeStockRec.IdPropietarioBodega = BeOrdenCompraEnc.IdPropietarioBodega
+                    BeStockRec.IdProductoBodega = BeOCDet.IdProductoBodega
+                    BeStockRec.IdProductoEstado = BeTransReDet.IdProductoEstado
+                    BeStockRec.ProductoEstado.IdEstado = BeTransReDet.IdProductoEstado
+                    BeStockRec.IdPresentacion = BeOCDet.IdPresentacion
+                    BeStockRec.IdUnidadMedida = BeOCDet.IdUnidadMedidaBasica
+                    BeStockRec.IdUbicacion = clsLnBodega.Get_IdUbicacion_Recepcion_By_IdBodega(BeOrdenCompraEnc.IdBodega,
+                                                                                                       lConnection,
+                                                                                                       lTransaction)
+                    BeStockRec.IdUbicacion_anterior = 0
+                    BeStockRec.IdRecepcionEnc = BeRecepcionEnc.IdRecepcionEnc
+                    BeStockRec.IdRecepcionDet = BeTransReDet.IdRecepcionDet
+                    BeStockRec.Lote = BeTransReDet.Lote
+                    BeStockRec.Lic_plate = BeTransReDet.Lic_plate
+                    BeStockRec.Serial = ""
+                    BeStockRec.Cantidad = BeTransReDet.cantidad_recibida
+                    BeStockRec.Fecha_Ingreso = Now
+                    BeStockRec.Fecha_vence = BeTransReDet.Fecha_vence
+                    BeStockRec.User_agr = BeOrdenCompraEnc.User_Agr
+                    BeStockRec.Fec_agr = Now
+                    BeStockRec.User_mod = BeOrdenCompraEnc.User_Agr
+                    BeStockRec.Fec_mod = Now
+                    BeStockRec.Activo = 1
+                    BeStockRec.Peso = BeTransReDet.Peso
+                    BeStockRec.No_linea = BeTransReDet.No_Linea
+                    BeStockRec.Atributo_Variante_1 = BeTransReDet.Atributo_Variante_1
+                    BeStockRec.IdBodega = BeRecepcionEnc.IdBodega
+                    BeStockRec.Pallet_No_Estandar = False
+                    lBeStockRec.Add(BeStockRec)
+
+                Next
+
+                Guardar(BeOrdenCompraEnc.IdBodega,
+                        BeTareaHH,
+                        BeRecepcionEnc,
+                        BeRecepcionEnc.OrdenCompraRec,
+                        lBeRecDet,
+                        Nothing,
+                        pListOperadorRecepcion,
+                        Nothing,
+                        Nothing,
+                        Nothing,
+                        lBeStockRec,
+                        Nothing,
+                        lConnection,
+                        lTransaction)
+
+                Dim vIdEmpresa As Integer = clsLnBodega.Get_IdEmpresa_By_IdBodega(BeRecepcionEnc.IdBodega, lConnection, lTransaction)
+
+                Finalizar_Recepcion(BeRecepcionEnc,
+                                    False,
+                                    BeOrdenCompraEnc.IdOrdenCompraEnc,
+                                    BeRecepcionEnc.IdRecepcionEnc,
+                                    vIdEmpresa,
+                                    BeRecepcionEnc.IdBodega,
+                                    BeRecepcionEnc.User_agr,
+                                    lBeRecDet,
+                                    False,
+                                    lConnection,
+                                    lTransaction)
+
+                Generar_Tarea_Recepcion_By_OrdenCompraEnc_Doc_Devolucion = 1
+
+                OutBeRecepcionEnc = BeRecepcionEnc
+
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 

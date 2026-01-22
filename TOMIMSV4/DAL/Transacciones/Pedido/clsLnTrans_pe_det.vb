@@ -57,6 +57,9 @@ Public Class clsLnTrans_pe_det
 
                 '#EJC20220307: IdCliente detalle para BYB.
                 .IdCliente = IIf(IsDBNull(dr.Item("IdCliente")), 0, dr.Item("IdCliente"))
+                .Talla = IIf(IsDBNull(dr.Item("Talla")), "", dr.Item("Talla"))
+                .Color = IIf(IsDBNull(dr.Item("Color")), "", dr.Item("Color"))
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
 
             End With
 
@@ -123,6 +126,9 @@ Public Class clsLnTrans_pe_det
                 '#EJC20220307: IdCliente detalle para BYB.
                 .IdCliente = IIf(IsDBNull(dr.Item("IdCliente")), 0, dr.Item("IdCliente"))
                 .No_linea = IIf(IsDBNull(dr.Item("No_linea")), 0, dr.Item("No_linea"))
+                .Talla = IIf(IsDBNull(dr.Item("Talla")), "", dr.Item("Talla"))
+                .Color = IIf(IsDBNull(dr.Item("Color")), "", dr.Item("Color"))
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
 
             End With
 
@@ -185,6 +191,9 @@ Public Class clsLnTrans_pe_det
             Ins.Add("valor_flete", "@valor_flete", DataType.Parametro)
             Ins.Add("Total_linea", "@Total_linea", DataType.Parametro)
             Ins.Add("IdCliente", "@IdCliente", DataType.Parametro)
+            Ins.Add("Talla", "@Talla", DataType.Parametro)
+            Ins.Add("Color", "@Color", DataType.Parametro)
+            Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
@@ -245,6 +254,9 @@ Public Class clsLnTrans_pe_det
             cmd.Parameters.Add(New SqlParameter("@VALOR_FLETE", oBeTrans_pe_det.valor_flete))
             cmd.Parameters.Add(New SqlParameter("@TOTAL_LINEA", oBeTrans_pe_det.Total_linea))
             cmd.Parameters.Add(New SqlParameter("@IDCLIENTE", oBeTrans_pe_det.IdCliente))
+            cmd.Parameters.Add(New SqlParameter("@TALLA", oBeTrans_pe_det.Talla))
+            cmd.Parameters.Add(New SqlParameter("@COLOR", oBeTrans_pe_det.Color))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_pe_det.IdProductoTallaColor))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -324,7 +336,10 @@ Public Class clsLnTrans_pe_det
             Upd.Add("valor_flete", "@valor_flete", DataType.Parametro)
             Upd.Add("Total_linea", "@Total_linea", DataType.Parametro)
             Upd.Add("IdCliente", "@IdCliente", DataType.Parametro)
-            Upd.Where("IdPedidoDet = @IdPedidoDet")
+            Upd.Add("Talla", "@Talla", DataType.Parametro)
+            Upd.Add("Color", "@Color", DataType.Parametro)
+            Upd.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
+            Upd.Where(" IdPedidoDet = @IdPedidoDet")
 
             Dim sp As String = Upd.SQL()
 
@@ -384,6 +399,9 @@ Public Class clsLnTrans_pe_det
             cmd.Parameters.Add(New SqlParameter("@VALOR_FLETE", oBeTrans_pe_det.valor_flete))
             cmd.Parameters.Add(New SqlParameter("@TOTAL_LINEA", oBeTrans_pe_det.Total_linea))
             cmd.Parameters.Add(New SqlParameter("@IDCLIENTE", oBeTrans_pe_det.IdCliente))
+            cmd.Parameters.Add(New SqlParameter("@TALLA", oBeTrans_pe_det.Talla))
+            cmd.Parameters.Add(New SqlParameter("@COLOR", oBeTrans_pe_det.Color))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_pe_det.IdProductoTallaColor))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -460,6 +478,9 @@ Public Class clsLnTrans_pe_det
             Upd.Add("valor_flete", "@valor_flete", DataType.Parametro)
             Upd.Add("Total_linea", "@Total_linea", DataType.Parametro)
             Upd.Add("IdCliente", "@IdCliente", DataType.Parametro)
+            Upd.Add("Talla", "@Talla", DataType.Parametro)
+            Upd.Add("Color", "@Color", DataType.Parametro)
+            Upd.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
             Upd.Where("IdPedidoDet = @IdPedidoDet")
 
             Dim sp As String = Upd.SQL()
@@ -513,6 +534,9 @@ Public Class clsLnTrans_pe_det
             cmd.Parameters.Add(New SqlParameter("@VALOR_FLETE", oBeTrans_pe_det.valor_flete))
             cmd.Parameters.Add(New SqlParameter("@TOTAL_LINEA", oBeTrans_pe_det.Total_linea))
             cmd.Parameters.Add(New SqlParameter("@IDCLIENTE", oBeTrans_pe_det.IdCliente))
+            cmd.Parameters.Add(New SqlParameter("@TALLA", oBeTrans_pe_det.Talla))
+            cmd.Parameters.Add(New SqlParameter("@COLOR", oBeTrans_pe_det.Color))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_pe_det.IdProductoTallaColor))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -648,7 +672,7 @@ Public Class clsLnTrans_pe_det
                                                  ByRef pTransaction As SqlTransaction) As clsBeTrans_pe_det
 
         If pConection Is Nothing OrElse pTransaction Is Nothing Then
-            Throw New ArgumentNullException("La conexi�n y la transacci�n no pueden ser nulas.")
+            Throw New ArgumentNullException("La conexión y la transacción no pueden ser nulas.")
         End If
 
         Dim resultado As clsBeTrans_pe_det = Nothing

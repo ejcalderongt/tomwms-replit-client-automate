@@ -126,6 +126,10 @@ Public Class clsBeI_nav_ped_traslado_det
     Public Property Quantity_Reserved_WMS As Double = 0
 
     Public Property Scan_Type As String = ""
+    Public Property Color As String = ""
+    Public Property Size As String = ""
+    Public Property DocEntry As Integer = 0
+
     ''' <summary>
     ''' Initializes a new instance of the <see cref="clsBeI_nav_ped_traslado_det"/> class.
     ''' </summary>

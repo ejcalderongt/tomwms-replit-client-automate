@@ -233,6 +233,18 @@ Partial Public Class clsLnTrans_despacho_det
                             Obj.Activo = CType(lRow("Activo"), Boolean)
                         End If
 
+                        If lRow("IdProductoTallaColor") IsNot DBNull.Value AndAlso lRow("IdProductoTallaColor") IsNot Nothing Then
+                            Obj.IdProductoTallaColor = CType(lRow("IdProductoTallaColor"), Integer)
+                        End If
+
+                        If lRow("talla") IsNot DBNull.Value AndAlso lRow("talla") IsNot Nothing Then
+                            Obj.Talla = CType(lRow("talla"), String)
+                        End If
+
+                        If lRow("color") IsNot DBNull.Value AndAlso lRow("color") IsNot Nothing Then
+                            Obj.Color = CType(lRow("color"), String)
+                        End If
+
                         Obj.IsNew = False
 
                         lReturnList.Add(Obj)
@@ -455,7 +467,7 @@ Partial Public Class clsLnTrans_despacho_det
                               trans_despacho_det.IdUnidadMedidaBasica, trans_despacho_det.IdPresentacion, trans_despacho_det.Codigo, 
                               trans_despacho_det.NombreProducto, trans_despacho_det.NombreEstado, trans_despacho_det.CantidadDespachada, 
                               trans_despacho_det.PesoDespachado, trans_despacho_det.IdProductoEstado, trans_picking_ubic.lote, trans_picking_ubic.lic_plate,
-                              producto_presentacion.Nombre as Presentacion  
+                              producto_presentacion.Nombre as Presentacion , trans_despacho_det.IdProductoTallaColor, trans_despacho_det.Talla, trans_despacho_det.Color 
                               FROM  trans_pe_det INNER JOIN
                               trans_pe_enc ON trans_pe_det.IdPedidoEnc = trans_pe_enc.IdPedidoEnc INNER JOIN
                               trans_despacho_det ON trans_pe_det.IdPedidoDet = trans_despacho_det.IdPedidoDet INNER JOIN
@@ -538,7 +550,8 @@ Partial Public Class clsLnTrans_despacho_det
 		                                    no_encontrado, IdUbicacionTemporal, IdOperadorBodega_Asignado,
 		                                    dbo.Nombre_Completo_Ubicacion(pu.IdUbicacion, pu.IdBodega) Nombre_Ubicacion,producto.codigo Codigo_Producto,
 		                                    producto.nombre Nombre_Producto, dbo.producto_presentacion.nombre nom_presentacion,
-		                                    dbo.unidad_medida.Nombre nom_unid_med, dbo.producto_estado.nombre nom_Estado, pu.IdUnidadMedida IdUnidadMedidaBasica
+		                                    dbo.unidad_medida.Nombre nom_unid_med, dbo.producto_estado.nombre nom_Estado, pu.IdUnidadMedida IdUnidadMedidaBasica,
+                                            pu.IdProductoTallaColor, d.Talla, d.Color
                                     FROM dbo.trans_pe_det INNER JOIN
 	                                     dbo.producto INNER JOIN
 	                                     dbo.producto_bodega ON dbo.producto.IdProducto = dbo.producto_bodega.IdProducto 
@@ -608,6 +621,9 @@ Partial Public Class clsLnTrans_despacho_det
                             .IdStockRes = IIf(IsDBNull(lRow.Item("IdStockRes")), 0, lRow.Item("IdStockRes"))
                             .IdStock = IIf(IsDBNull(lRow.Item("IdStock")), 0, lRow.Item("IdStock"))
                             .IdPedidoEnc = IIf(IsDBNull(lRow.Item("IdPedidoEnc")), 0, lRow.Item("IdPedidoEnc"))
+                            .IdProductoTallaColor = IIf(IsDBNull(lRow.Item("IdProductoTallaColor")), 0, lRow.Item("IdProductoTallaColor"))
+                            .Codigo_Talla = IIf(IsDBNull(lRow.Item("Talla")), "", lRow.Item("Talla"))
+                            .Codigo_Color = IIf(IsDBNull(lRow.Item("Color")), "", lRow.Item("Color"))
                             .IsNew = False
 
                         End With

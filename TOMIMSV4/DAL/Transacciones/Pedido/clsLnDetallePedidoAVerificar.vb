@@ -29,6 +29,13 @@ Public Class clsLnDetallePedidoAVerificar
                 .NombreArea = IIf(IsDBNull(dr.Item("NombreArea")), "", dr.Item("NombreArea"))
                 .NombreClasificacion = IIf(IsDBNull(dr.Item("NombreClasificacion")), "", dr.Item("NombreClasificacion"))
                 .Bono = IIf(IsDBNull(dr.Item("Bono")), "", dr.Item("Bono"))
+                '#AT20250624 Talla Color
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                .Codigo_Talla = IIf(IsDBNull(dr.Item("Codigo_Talla")), "", dr.Item("Codigo_Talla"))
+                .Nombre_Talla = IIf(IsDBNull(dr.Item("Nombre_Talla")), "", dr.Item("Nombre_Talla"))
+                .Codigo_Color = IIf(IsDBNull(dr.Item("Codigo_Color")), "", dr.Item("Codigo_Color"))
+                .Nombre_Color = IIf(IsDBNull(dr.Item("Nombre_Color")), "", dr.Item("Nombre_Color"))
+                .CodigoSKU = IIf(IsDBNull(dr.Item("CodigoSKU")), "", dr.Item("CodigoSKU"))
 
             End With
 

@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmOrdenCompra_List
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing Then
             If components IsNot Nothing Then
@@ -27,7 +27,7 @@ Partial Class frmOrdenCompra_List
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmOrdenCompra_List))
@@ -58,6 +58,7 @@ Partial Class frmOrdenCompra_List
         Me.dtpFechaAl = New System.Windows.Forms.DateTimePicker()
         Me.dtpFechaDel = New System.Windows.Forms.DateTimePicker()
         Me.mnuEliminarDocumentoIngreso = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuEliminarLayoutGrid = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.ImageCollection1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.Dgrid, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -195,7 +196,7 @@ Partial Class frmOrdenCompra_List
         '
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegs)
         Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 585)
-        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4)
+        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
         Me.RibbonStatusBar.Size = New System.Drawing.Size(1015, 30)
@@ -204,12 +205,12 @@ Partial Class frmOrdenCompra_List
         '
         Me.Dgrid.Cursor = System.Windows.Forms.Cursors.Default
         Me.Dgrid.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Dgrid.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4)
+        Me.Dgrid.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         GridLevelNode1.RelationName = "Level1"
         Me.Dgrid.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
         Me.Dgrid.Location = New System.Drawing.Point(0, 272)
         Me.Dgrid.MainView = Me.GridView1
-        Me.Dgrid.Margin = New System.Windows.Forms.Padding(4)
+        Me.Dgrid.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Dgrid.MenuManager = Me.RibbonControl
         Me.Dgrid.Name = "Dgrid"
         Me.Dgrid.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemPictureEdit1})
@@ -242,9 +243,9 @@ Partial Class frmOrdenCompra_List
         Me.GroupBox1.Controls.Add(Me.dtpFechaDel)
         Me.GroupBox1.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupBox1.Location = New System.Drawing.Point(0, 193)
-        Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4)
+        Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4)
+        Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.GroupBox1.Size = New System.Drawing.Size(1015, 79)
         Me.GroupBox1.TabIndex = 0
         Me.GroupBox1.TabStop = False
@@ -275,7 +276,7 @@ Partial Class frmOrdenCompra_List
         '
         Me.dtpFechaAl.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
         Me.dtpFechaAl.Location = New System.Drawing.Point(217, 27)
-        Me.dtpFechaAl.Margin = New System.Windows.Forms.Padding(4)
+        Me.dtpFechaAl.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dtpFechaAl.Name = "dtpFechaAl"
         Me.dtpFechaAl.Size = New System.Drawing.Size(123, 23)
         Me.dtpFechaAl.TabIndex = 3
@@ -284,13 +285,18 @@ Partial Class frmOrdenCompra_List
         '
         Me.dtpFechaDel.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
         Me.dtpFechaDel.Location = New System.Drawing.Point(47, 27)
-        Me.dtpFechaDel.Margin = New System.Windows.Forms.Padding(4)
+        Me.dtpFechaDel.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.dtpFechaDel.Name = "dtpFechaDel"
         Me.dtpFechaDel.Size = New System.Drawing.Size(123, 23)
         Me.dtpFechaDel.TabIndex = 1
         '
+        'mnuEliminarLayoutGrid
         'BarButtonItem1
         '
+        Me.mnuEliminarLayoutGrid.Caption = "Eliminar diseño de grid"
+        Me.mnuEliminarLayoutGrid.Id = 13
+        Me.mnuEliminarLayoutGrid.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuEliminarLayoutGrid.Name = "mnuEliminarLayoutGrid"
         Me.mnuEliminarDocumentoIngreso.Caption = "Eliminar documento"
         Me.mnuEliminarDocumentoIngreso.Id = 14
         Me.mnuEliminarDocumentoIngreso.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
@@ -306,23 +312,23 @@ Partial Class frmOrdenCompra_List
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
         Me.KeyPreview = True
-        Me.Margin = New System.Windows.Forms.Padding(4)
+        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Name = "frmOrdenCompra_List"
         Me.Ribbon = Me.RibbonControl
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.StatusBar = Me.RibbonStatusBar
         Me.Text = "Listado de documentos de ingreso"
-        CType(Me.ImageCollection1,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.RibbonControl,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.Dgrid,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.GridView1,System.ComponentModel.ISupportInitialize).EndInit
-        CType(Me.RepositoryItemPictureEdit1,System.ComponentModel.ISupportInitialize).EndInit
-        Me.GroupBox1.ResumeLayout(false)
+        CType(Me.ImageCollection1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.Dgrid, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.GridView1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.RepositoryItemPictureEdit1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout
-        Me.ResumeLayout(false)
+        Me.ResumeLayout(False)
         Me.PerformLayout
 
-End Sub
+    End Sub
 
     Friend WithEvents RibbonControl As DevExpress.XtraBars.Ribbon.RibbonControl
     Friend WithEvents RibbonPage1 As DevExpress.XtraBars.Ribbon.RibbonPage

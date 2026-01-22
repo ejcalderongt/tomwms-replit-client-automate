@@ -1,5 +1,10 @@
 ﻿Imports System.Data.SqlClient
+Imports System.Net
+Imports System.Net.Http
+Imports System.Net.Http.Headers
 Imports System.Reflection
+Imports System.Text
+Imports Newtonsoft.Json.Linq
 Imports Sap.Data.Hana
 Public Class clsSyncSAPProveedor
     Implements IDisposable
@@ -491,6 +496,116 @@ Public Class clsSyncSAPProveedor
         End Try
 
         Return proveedorBodega
+    End Function
+
+    Public Shared Async Function Get_Proveedor_SAP_SLAsync(codigo As String, sessionCookie As String, baseUrl As String) As Task(Of clsBeI_nav_proveedor)
+
+        Try
+            If String.IsNullOrWhiteSpace(codigo) Then Return Nothing
+
+            ' Filtro OData para proveedores activos
+            Dim filtro = $"CardType eq 'cCustomer' and CardCode eq '{codigo}' and Valid eq 'tYES'"
+            Dim requestUrl As String = $"BusinessPartners?$filter={Uri.EscapeDataString(filtro)}"
+
+            Using handler As New HttpClientHandler()
+                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
+                handler.UseCookies = False
+
+                Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.ConnectionClose = True
+
+                    Using request As New HttpRequestMessage(HttpMethod.Get, baseUrl & requestUrl)
+                        request.Headers.ConnectionClose = True
+                        request.Headers.Add("Cookie", sessionCookie)
+                        request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+
+                        Dim response = Await client.SendAsync(request).ConfigureAwait(False)
+
+                        If Not response.IsSuccessStatusCode Then
+                            Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                            Throw New Exception($"Error al obtener proveedor. Código: {response.StatusCode}, Detalle: {errContent}")
+                        End If
+
+                        Dim jsonResponse = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                        Dim obj = JObject.Parse(jsonResponse)
+                        Dim rows = obj("value")
+
+                        If rows Is Nothing OrElse Not rows.HasValues Then
+                            Return Nothing
+                        End If
+
+                        Dim proveedorJson = rows.First()
+
+                        Dim proveedor As New clsBeI_nav_proveedor With {
+                            .No = proveedorJson.Value(Of String)("CardCode"),
+                            .Name = proveedorJson.Value(Of String)("CardName"),
+                            .Adress = proveedorJson.Value(Of String)("Address"),
+                            .City = proveedorJson.Value(Of String)("City"),
+                            .Country = proveedorJson.Value(Of String)("Country"),
+                            .Phone_No = proveedorJson.Value(Of String)("Phone1"),
+                            .VAT_Registratrion_No = proveedorJson.Value(Of String)("FederalTaxID"),
+                            .Search_Name = proveedorJson.Value(Of String)("AliasName"),
+                            .Location_Code = proveedorJson.Value(Of String)("U_LocationCode")
+                        }
+
+                        ' Obtener contacto (si existe)
+                        Dim contactos = proveedorJson("ContactEmployees")
+                        If contactos IsNot Nothing AndAlso contactos.HasValues Then
+                            proveedor.Contact = contactos.First.Value(Of String)("FirstName")
+                        Else
+                            proveedor.Contact = ""
+                        End If
+
+                        Return proveedor
+                    End Using
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception("Error en Get_Proveedor_SAP_SLAsync: " & ex.Message, ex)
+        End Try
+
+    End Function
+    Public Shared Async Function Marcar_Proveedor_Sincronizado_SLAsync(codigo As String,
+                                                                       sessionCookie As String,
+                                                                       baseUrl As String) As Task(Of Boolean)
+        Try
+            If String.IsNullOrWhiteSpace(codigo) Then Return False
+
+            Dim requestUrl As String = $"BusinessPartners('{codigo}')"
+            Dim payload As String = "{""U_ENVIADO_WMS"": ""1""}"
+            Dim httpPatch As New HttpMethod("PATCH")
+
+            Using handler As New HttpClientHandler()
+                handler.AutomaticDecompression = DecompressionMethods.GZip Or DecompressionMethods.Deflate
+                handler.ServerCertificateCustomValidationCallback = Function(sender, cert, chain, errors) True
+                handler.UseCookies = False
+
+                Using client As New HttpClient(handler)
+                    client.DefaultRequestHeaders.ConnectionClose = True
+
+                    Using request As New HttpRequestMessage(httpPatch, baseUrl & requestUrl)
+                        request.Headers.ConnectionClose = True
+                        request.Headers.Add("Cookie", sessionCookie)
+                        request.Headers.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+                        request.Content = New StringContent(payload, Encoding.UTF8, "application/json")
+
+                        Dim response = Await client.SendAsync(request).ConfigureAwait(False)
+
+                        If response.IsSuccessStatusCode Then
+                            Return True
+                        Else
+                            Dim errContent = Await response.Content.ReadAsStringAsync().ConfigureAwait(False)
+                            Throw New Exception($"Error al actualizar OCRD. Código: {response.StatusCode}, Detalle: {errContent}")
+                        End If
+                    End Using
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception($"Error al marcar proveedor como sincronizado (SL): {ex.Message}", ex)
+        End Try
     End Function
 
 End Class

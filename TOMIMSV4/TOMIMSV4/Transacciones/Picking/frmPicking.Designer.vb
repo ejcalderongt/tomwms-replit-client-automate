@@ -124,6 +124,7 @@ Partial Class frmPicking
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.RibbonStatusBar1 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.RibbonStatusBar2 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
+        Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.PopupMenu1 = New DevExpress.XtraBars.PopupMenu(Me.components)
         Me.xtpDatosPicking = New DevExpress.XtraTab.XtraTabControl()
         Me.XtratabPageDato = New DevExpress.XtraTab.XtraTabPage()
@@ -944,6 +945,16 @@ Partial Class frmPicking
         Me.RibbonStatusBar2.Name = "RibbonStatusBar2"
         Me.RibbonStatusBar2.Ribbon = Me.RibbonControl
         Me.RibbonStatusBar2.Size = New System.Drawing.Size(1153, 33)
+        '
+        'RibbonStatusBar
+        '
+        Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegistros)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 930)
+        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4)
+        Me.RibbonStatusBar.Name = "RibbonStatusBar"
+        Me.RibbonStatusBar.Ribbon = Me.RibbonControl
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(1762, 30)
+        Me.RibbonStatusBar.Visible = False
         '
         'PopupMenu1
         '

@@ -43,8 +43,12 @@ Public Class clsLnStock_rec
                 .Regularizado = IIf(IsDBNull(dr.Item("regularizado")), False, dr.Item("regularizado"))
                 .Fecha_regularizacion = IIf(IsDBNull(dr.Item("fecha_regularizacion")), Date.Now, dr.Item("fecha_regularizacion"))
                 .Atributo_Variante_1 = IIf(IsDBNull(dr.Item("Atributo_Variante_1")), "", dr.Item("Atributo_Variante_1"))
-                .No_linea = IIf(IsDBNull(dr.Item("No_linea")), 0, dr.Item("No_linea")) '#CKFK 20180113 11:27PM Agregue el No_linea
+                .No_linea = IIf(IsDBNull(dr.Item("No_linea")), 0, dr.Item("No_linea"))
                 .Pallet_No_Estandar = IIf(IsDBNull(dr.Item("pallet_no_estandar")), False, dr.Item("pallet_no_estandar"))
+                .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                .Talla = IIf(IsDBNull(dr.Item("Talla")), "", dr.Item("Talla"))
+                .Color = IIf(IsDBNull(dr.Item("Color")), "", dr.Item("Color"))
+
             End With
 
         Catch ex As Exception
@@ -53,7 +57,7 @@ Public Class clsLnStock_rec
 
     End Sub
 
-    Public shared Function Insertar(ByRef oBeStock_rec As clsBeStock_rec, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeStock_rec As clsBeStock_rec, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -96,8 +100,11 @@ Public Class clsLnStock_rec
             Ins.Add("regularizado", "@regularizado", DataType.Parametro)
             Ins.Add("fecha_regularizacion", "@fecha_regularizacion", DataType.Parametro)
             Ins.Add("Atributo_Variante_1", "@Atributo_Variante_1", DataType.Parametro)
-            Ins.Add("No_Linea", "@No_Linea", DataType.Parametro) '#CKFK 20180113 11:27PM Agregue el No_linea
+            Ins.Add("No_Linea", "@No_Linea", DataType.Parametro)
             Ins.Add("pallet_no_estandar", "@pallet_no_estandar", DataType.Parametro)
+            Ins.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
+            Ins.Add("Talla", "@Talla", DataType.Parametro)
+            Ins.Add("Color", "@Color", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
 
@@ -112,43 +119,7 @@ Public Class clsLnStock_rec
                 cmd = New SqlCommand(sp, lConnection, lTransaction)
             End If
 
-            cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeStock_rec.IdBodega))
-            cmd.Parameters.Add(New SqlParameter("@IDSTOCKREC", oBeStock_rec.IdStockRec))
-            cmd.Parameters.Add(New SqlParameter("@IDPROPIETARIOBODEGA", oBeStock_rec.IdPropietarioBodega))
-            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOBODEGA", oBeStock_rec.IdProductoBodega))
-            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", IIf(oBeStock_rec.ProductoEstado.IdEstado = 0, DBNull.Value, oBeStock_rec.ProductoEstado.IdEstado)))
-            'cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION", IIf(oBeStock_rec.Presentacion.IdPresentacion = 0, DBNull.Value, oBeStock_rec.Presentacion.IdPresentacion)))
-            cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION", IIf(oBeStock_rec.IdPresentacion = 0, DBNull.Value, oBeStock_rec.IdPresentacion)))
-            cmd.Parameters.Add(New SqlParameter("@IDUNIDADMEDIDA", IIf(oBeStock_rec.IdUnidadMedida = 0, DBNull.Value, oBeStock_rec.IdUnidadMedida)))
-            cmd.Parameters.Add(New SqlParameter("@IDUBICACION", oBeStock_rec.IdUbicacion))
-            cmd.Parameters.Add(New SqlParameter("@IDUBICACION_ANTERIOR", IIf(oBeStock_rec.IdUbicacion_anterior = 0, DBNull.Value, oBeStock_rec.IdUbicacion_anterior)))
-            cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONENC", IIf(oBeStock_rec.IdRecepcionEnc = 0, DBNull.Value, oBeStock_rec.IdRecepcionEnc)))
-            cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONDET", IIf(oBeStock_rec.IdRecepcionDet = 0, DBNull.Value, oBeStock_rec.IdRecepcionDet)))
-            cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", IIf(oBeStock_rec.IdPedidoEnc = 0, DBNull.Value, oBeStock_rec.IdPedidoEnc)))
-            cmd.Parameters.Add(New SqlParameter("@IDPICKINGENC", IIf(oBeStock_rec.IdPickingEnc = 0, DBNull.Value, oBeStock_rec.IdPickingEnc)))
-            cmd.Parameters.Add(New SqlParameter("@IDDESPACHOENC", IIf(oBeStock_rec.IdDespachoEnc = 0, DBNull.Value, oBeStock_rec.IdDespachoEnc)))
-            cmd.Parameters.Add(New SqlParameter("@LOTE", IIf(oBeStock_rec.Lote = Nothing, "", oBeStock_rec.Lote))) '#CKFK 20181011 0311PM Se quitó el DBNull.Value por "" 
-            cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", IIf(oBeStock_rec.Lic_plate = Nothing, DBNull.Value, oBeStock_rec.Lic_plate)))
-            cmd.Parameters.Add(New SqlParameter("@SERIAL", IIf(oBeStock_rec.Serial = Nothing, DBNull.Value, oBeStock_rec.Serial)))
-            cmd.Parameters.Add(New SqlParameter("@CANTIDAD", IIf(oBeStock_rec.Cantidad = 0, DBNull.Value, oBeStock_rec.Cantidad)))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_INGRESO", IIf(oBeStock_rec.Fecha_Ingreso = Nothing, DBNull.Value, oBeStock_rec.Fecha_Ingreso)))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_VENCE", IIf(oBeStock_rec.Fecha_vence = Nothing, DBNull.Value, oBeStock_rec.Fecha_vence)))
-            cmd.Parameters.Add(New SqlParameter("@UDS_LIC_PLATE", IIf(oBeStock_rec.Uds_lic_plate = Nothing, DBNull.Value, oBeStock_rec.Uds_lic_plate)))
-            cmd.Parameters.Add(New SqlParameter("@NO_BULTO", oBeStock_rec.No_bulto))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_MANUFACTURA", IIf(oBeStock_rec.Fecha_Manufactura = Nothing, DBNull.Value, oBeStock_rec.Fecha_Manufactura)))
-            cmd.Parameters.Add(New SqlParameter("@AÑADA", oBeStock_rec.Añada))
-            cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeStock_rec.User_agr))
-            cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeStock_rec.Fec_agr))
-            cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeStock_rec.User_mod))
-            cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeStock_rec.Fec_mod))
-            cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeStock_rec.Activo))
-            cmd.Parameters.Add(New SqlParameter("@PESO", oBeStock_rec.Peso))
-            cmd.Parameters.Add(New SqlParameter("@TEMPERATURA", oBeStock_rec.Temperatura))
-            cmd.Parameters.Add(New SqlParameter("@REGULARIZADO", IIf(oBeStock_rec.Regularizado = Nothing, DBNull.Value, oBeStock_rec.Regularizado)))
-            cmd.Parameters.Add(New SqlParameter("@FECHA_REGULARIZACION", IIf(oBeStock_rec.Fecha_regularizacion = Nothing, DBNull.Value, oBeStock_rec.Fecha_regularizacion)))
-            cmd.Parameters.Add(New SqlParameter("@ATRIBUTO_VARIANTE_1", IIf(oBeStock_rec.Atributo_Variante_1 = String.Empty, DBNull.Value, oBeStock_rec.Atributo_Variante_1)))
-            cmd.Parameters.Add(New SqlParameter("@NO_LINEA", oBeStock_rec.No_linea)) '#CKFK 20180113 11:27PM Agregue el No_linea
-            cmd.Parameters.Add(New SqlParameter("@PALLET_NO_ESTANDAR", oBeStock_rec.Pallet_No_Estandar))
+            Bind(cmd, oBeStock_rec)
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -213,6 +184,9 @@ Public Class clsLnStock_rec
             Upd.Add("Atributo_Variante_1", "@Atributo_Variante_1", DataType.Parametro)
             Upd.Add("No_Linea", "@No_Linea", DataType.Parametro)
             Upd.Add("pallet_no_estandar", "@pallet_no_estandar", DataType.Parametro)
+            Upd.Add("idproductotallacolor", "@idproductotallacolor", DataType.Parametro)
+            Upd.Add("Talla", "@Talla", DataType.Parametro)
+            Upd.Add("Color", "@Color", DataType.Parametro)
             Upd.Where("IdStockRec = @IdStockRec")
 
             Dim sp As String = Upd.SQL()
@@ -265,6 +239,9 @@ Public Class clsLnStock_rec
             cmd.Parameters.Add(New SqlParameter("@ATRIBUTO_VARIANTE_1", IIf(oBeStock_rec.Atributo_Variante_1 = String.Empty, DBNull.Value, oBeStock_rec.Atributo_Variante_1)))
             cmd.Parameters.Add(New SqlParameter("@NO_LINEA", oBeStock_rec.No_linea))
             cmd.Parameters.Add(New SqlParameter("@PALLET_NO_ESTANDAR", oBeStock_rec.Pallet_No_Estandar))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeStock_rec.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@TALLA", oBeStock_rec.Talla))
+            cmd.Parameters.Add(New SqlParameter("@COLOR", oBeStock_rec.Color))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -367,5 +344,49 @@ Public Class clsLnStock_rec
         End Try
 
     End Function
+
+    Public Shared Sub Bind(cmd As SqlCommand, oBeStock_rec As clsBeStock_rec)
+
+        cmd.Parameters.Add(New SqlParameter("@IDBODEGA", oBeStock_rec.IdBodega))
+        cmd.Parameters.Add(New SqlParameter("@IDSTOCKREC", oBeStock_rec.IdStockRec))
+        cmd.Parameters.Add(New SqlParameter("@IDPROPIETARIOBODEGA", oBeStock_rec.IdPropietarioBodega))
+        cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOBODEGA", oBeStock_rec.IdProductoBodega))
+        cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOESTADO", IIf(oBeStock_rec.ProductoEstado.IdEstado = 0, DBNull.Value, oBeStock_rec.ProductoEstado.IdEstado)))
+        cmd.Parameters.Add(New SqlParameter("@IDPRESENTACION", IIf(oBeStock_rec.IdPresentacion = 0, DBNull.Value, oBeStock_rec.IdPresentacion)))
+        cmd.Parameters.Add(New SqlParameter("@IDUNIDADMEDIDA", IIf(oBeStock_rec.IdUnidadMedida = 0, DBNull.Value, oBeStock_rec.IdUnidadMedida)))
+        cmd.Parameters.Add(New SqlParameter("@IDUBICACION", oBeStock_rec.IdUbicacion))
+        cmd.Parameters.Add(New SqlParameter("@IDUBICACION_ANTERIOR", IIf(oBeStock_rec.IdUbicacion_anterior = 0, DBNull.Value, oBeStock_rec.IdUbicacion_anterior)))
+        cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONENC", IIf(oBeStock_rec.IdRecepcionEnc = 0, DBNull.Value, oBeStock_rec.IdRecepcionEnc)))
+        cmd.Parameters.Add(New SqlParameter("@IDRECEPCIONDET", IIf(oBeStock_rec.IdRecepcionDet = 0, DBNull.Value, oBeStock_rec.IdRecepcionDet)))
+        cmd.Parameters.Add(New SqlParameter("@IDPEDIDOENC", IIf(oBeStock_rec.IdPedidoEnc = 0, DBNull.Value, oBeStock_rec.IdPedidoEnc)))
+        cmd.Parameters.Add(New SqlParameter("@IDPICKINGENC", IIf(oBeStock_rec.IdPickingEnc = 0, DBNull.Value, oBeStock_rec.IdPickingEnc)))
+        cmd.Parameters.Add(New SqlParameter("@IDDESPACHOENC", IIf(oBeStock_rec.IdDespachoEnc = 0, DBNull.Value, oBeStock_rec.IdDespachoEnc)))
+        cmd.Parameters.Add(New SqlParameter("@LOTE", IIf(oBeStock_rec.Lote = Nothing, "", oBeStock_rec.Lote))) '#CKFK 20181011 0311PM Se quitó el DBNull.Value por "" 
+        cmd.Parameters.Add(New SqlParameter("@LIC_PLATE", IIf(oBeStock_rec.Lic_plate = Nothing, DBNull.Value, oBeStock_rec.Lic_plate)))
+        cmd.Parameters.Add(New SqlParameter("@SERIAL", IIf(oBeStock_rec.Serial = Nothing, DBNull.Value, oBeStock_rec.Serial)))
+        cmd.Parameters.Add(New SqlParameter("@CANTIDAD", IIf(oBeStock_rec.Cantidad = 0, DBNull.Value, oBeStock_rec.Cantidad)))
+        cmd.Parameters.Add(New SqlParameter("@FECHA_INGRESO", IIf(oBeStock_rec.Fecha_Ingreso = Nothing, DBNull.Value, oBeStock_rec.Fecha_Ingreso)))
+        cmd.Parameters.Add(New SqlParameter("@FECHA_VENCE", IIf(oBeStock_rec.Fecha_vence = Nothing, DBNull.Value, oBeStock_rec.Fecha_vence)))
+        cmd.Parameters.Add(New SqlParameter("@UDS_LIC_PLATE", IIf(oBeStock_rec.Uds_lic_plate = Nothing, DBNull.Value, oBeStock_rec.Uds_lic_plate)))
+        cmd.Parameters.Add(New SqlParameter("@NO_BULTO", oBeStock_rec.No_bulto))
+        cmd.Parameters.Add(New SqlParameter("@FECHA_MANUFACTURA", IIf(oBeStock_rec.Fecha_Manufactura = Nothing, DBNull.Value, oBeStock_rec.Fecha_Manufactura)))
+        cmd.Parameters.Add(New SqlParameter("@AÑADA", oBeStock_rec.Añada))
+        cmd.Parameters.Add(New SqlParameter("@USER_AGR", oBeStock_rec.User_agr))
+        cmd.Parameters.Add(New SqlParameter("@FEC_AGR", oBeStock_rec.Fec_agr))
+        cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeStock_rec.User_mod))
+        cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeStock_rec.Fec_mod))
+        cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeStock_rec.Activo))
+        cmd.Parameters.Add(New SqlParameter("@PESO", oBeStock_rec.Peso))
+        cmd.Parameters.Add(New SqlParameter("@TEMPERATURA", oBeStock_rec.Temperatura))
+        cmd.Parameters.Add(New SqlParameter("@REGULARIZADO", IIf(oBeStock_rec.Regularizado = Nothing, DBNull.Value, oBeStock_rec.Regularizado)))
+        cmd.Parameters.Add(New SqlParameter("@FECHA_REGULARIZACION", IIf(oBeStock_rec.Fecha_regularizacion = Nothing, DBNull.Value, oBeStock_rec.Fecha_regularizacion)))
+        cmd.Parameters.Add(New SqlParameter("@ATRIBUTO_VARIANTE_1", IIf(oBeStock_rec.Atributo_Variante_1 = String.Empty, DBNull.Value, oBeStock_rec.Atributo_Variante_1)))
+        cmd.Parameters.Add(New SqlParameter("@NO_LINEA", oBeStock_rec.No_linea))
+        cmd.Parameters.Add(New SqlParameter("@PALLET_NO_ESTANDAR", oBeStock_rec.Pallet_No_Estandar))
+        cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeStock_rec.IdProductoTallaColor))
+        cmd.Parameters.Add(New SqlParameter("@TALLA", oBeStock_rec.Talla))
+        cmd.Parameters.Add(New SqlParameter("@COLOR", oBeStock_rec.Color))
+
+    End Sub
 
 End Class

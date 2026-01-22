@@ -79,6 +79,8 @@ Public Class frmIngreso_List
         DT.Columns.Add("Placa_Contenedor_Ingreso", GetType(String))
         DT.Columns.Add("Poliza_Activa", GetType(String))
         DT.Columns.Add("Dua_Ingreso", GetType(String))
+        DT.Columns.Add("Talla", GetType(String))
+        DT.Columns.Add("Color", GetType(String))
 
     End Sub
 

@@ -65,6 +65,9 @@ Public Class clsBeTrans_oc_enc
     Public Property PutAway_Registrado As Boolean = False
     Public Property Codigo_Empresa_ERP As String = ""
     Public Property IdCampaña As Integer = 0
+    Public Property Usr_Documento As String = ""
+    Public Property Comentarios As String = ""
+
     Sub New()
     End Sub
 

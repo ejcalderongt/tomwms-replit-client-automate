@@ -392,9 +392,10 @@ Public Class frmImprimir_Etiqueta
 
                     End If
 
-                    '#GT28032025: si es reimpresion no se guarda el lote                    
+                    '#GT28032025: si es reimpresion no se guarda el lote
+                    Dim pValorLote = CInt(pLote)
                     If Not ImpresionIndividual Then
-                        File.WriteAllText(rutaArchivo, pLote)
+                        File.WriteAllText(rutaArchivo, pValorLote)
                     End If
 
                     '#GT06032025: log de impresiones para estimar consumo de etiquetas y rendimiento del toner
@@ -408,10 +409,10 @@ Public Class frmImprimir_Etiqueta
                     pImpresion.IdColaImpresion = 1
 
                     If ImpresionIndividual Then
-                        Dim msg As String = String.Format("Impresion_Parcial lote: " & pLote & "  pallet: " & pPallet & " caja: " & pCaja)
+                        Dim msg As String = String.Format("Impresion_Parcial lote: " & pValorLote & "  pallet: " & pPallet & " caja: " & pCaja)
                         pImpresion.Descripcion = msg
                     Else
-                        pImpresion.Descripcion = "Impresion_Rollo lote: " & pLote & " Pallet: " & pPallet & " caja: " & pCaja
+                        pImpresion.Descripcion = "Impresion_Rollo lote: " & pValorLote & " Pallet: " & pPallet & " caja: " & pCaja
                     End If
 
                     clsLnImpresion_log.Insertar(pImpresion)
@@ -832,8 +833,15 @@ Public Class frmImprimir_Etiqueta
         Dim rutaArchivo As String = Path.Combine(rutaCarpeta, "lote.txt")
         Dim nuevoLote As String = "000001"
 
+        Get_Lote_Archivo = "0"
+
+        rutaCarpeta = "C:\DTS_QuickTag_Lote"
+        rutaArchivo = Path.Combine(rutaCarpeta, "lote.txt")
+
         If Directory.Exists(rutaCarpeta) Then
+
             If File.Exists(rutaArchivo) Then
+
                 Dim contenido As String = File.ReadAllText(rutaArchivo).Trim()
                 Dim longitudOriginal As Integer = contenido.Length
                 Dim valorNumerico As Integer
@@ -842,7 +850,9 @@ Public Class frmImprimir_Etiqueta
                     valorNumerico += 1
                     nuevoLote = valorNumerico.ToString().PadLeft(longitudOriginal, "0"c)
                 End If
+
             End If
+
         End If
 
         txtLoteTxt.Text = nuevoLote

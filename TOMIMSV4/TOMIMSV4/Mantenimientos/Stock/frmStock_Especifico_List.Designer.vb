@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmStock_Especifico_List
     Inherits DevExpress.XtraBars.Ribbon.RibbonForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,7 +17,7 @@ Partial Class frmStock_Especifico_List
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmStock_Especifico_List))
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
@@ -54,6 +54,7 @@ Partial Class frmStock_Especifico_List
         Me.txtNombreProducto = New DevExpress.XtraEditors.TextEdit()
         Me.txtIdProducto = New DevExpress.XtraEditors.TextEdit()
         Me.lblProducto = New System.Windows.Forms.LinkLabel()
+        Me.BarButtonItem4 = New DevExpress.XtraBars.BarButtonItem()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.grdStock, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -396,6 +397,12 @@ Partial Class frmStock_Especifico_List
         Me.lblProducto.TabIndex = 9
         Me.lblProducto.TabStop = True
         Me.lblProducto.Text = "Producto"
+        '
+        'BarButtonItem4
+        '
+        Me.BarButtonItem4.Caption = "Guardar diseño de grid"
+        Me.BarButtonItem4.Id = 14
+        Me.BarButtonItem4.Name = "BarButtonItem4"
         '
         'frmStock_Especifico_List
         '

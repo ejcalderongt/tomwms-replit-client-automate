@@ -1,83 +1,21 @@
-﻿Imports System.Reflection
+﻿Imports System.Net
+Imports System.Net.Security
+Imports System.Reflection
+Imports System.Security.Cryptography.X509Certificates
 Imports DevExpress.XtraBars
 Imports DevExpress.XtraBars.Ribbon
 Imports DevExpress.XtraEditors
-Imports DevExpress.XtraRichEdit.API.Native
+Imports TOMWMS.clsDataContractDI
 
 Public Class frmEjecucion
     Public Property Interface_A_Ejecutar As Integer = -1
+    Public procesoEnEjecucion As Boolean = False
 
     Public Sub New()
         InitializeComponent()
     End Sub
 
-    Public Sub Ejecuta_interface_Traslados_SAP(Optional ByVal Preguntar As Boolean = True,
-                                               Optional ByVal pTraslado As String = "")
-
-        Dim MostrarMensaje As Boolean = False
-
-        Try
-
-            prg.Visible = True
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Importar traslados?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            If Ejecutar Then
-                Using sPT As New clsSyncSAPSSolicitudTraslado()
-                    sPT.Importar_Solicitud_Traslado_SAP(lblprg, prg, False, True, Preguntar, pTraslado)
-                End Using
-            End If
-
-        Catch ex As Exception
-            If MostrarMensaje Then
-                XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End If
-        End Try
-
-    End Sub
-
-    Public Sub Ejecuta_interface_Traslado_Mercancias_SAP(Optional ByVal Preguntar As Boolean = True,
-                                                         Optional ByVal pTraslado As String = "")
-
-        Dim MostrarMensaje As Boolean = False
-
-        Try
-
-            prg.Visible = True
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Importar traslados?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            If Ejecutar Then
-                Using sPC As New clsSyncSAPTrasladoStock()
-                    sPC.Importar_Trasladados_SAP(lblprg, prg, True, Preguntar, pTraslado)
-                End Using
-            End If
-
-        Catch ex As Exception
-            If MostrarMensaje Then
-                XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End If
-        End Try
-
-    End Sub
-
-    Public Sub Ejecuta_Interface_Bodegas(Optional ByVal Preguntar As Boolean = True)
+    Public Async Sub Ejecuta_Interface_Bodegas(Optional ByVal Preguntar As Boolean = True)
 
         Try
 
@@ -94,17 +32,12 @@ Public Class frmEjecucion
             End If
 
             If Ejecutar Then
-                Using sBod As New clsSyncSAPBodega()
-                    sBod.Insertar_Bodegas_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lblprg, prg, True, Preguntar)
-                End Using
+                Await clsSyncSAPBodega.Insertar_Bodegas_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lblprg, prg, True, Preguntar)
             End If
 
         Catch ex As Exception
-
-            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-
+            Dim vMensaje As String = ex.Message
             clsPublic.Actualizar_Progreso(lblprg, vMensaje)
-
         Finally
             prg.Visible = False
         End Try
@@ -145,70 +78,6 @@ Public Class frmEjecucion
         Ejecuta_Interface_Proveedores(True)
     End Sub
 
-    Private Sub Ejecuta_Interface_Pedidos_Compra_SAP(Optional ByVal Preguntar As Boolean = True,
-                                                     Optional ByVal pNoDocumentoCompraSAP As String = "")
-
-        Try
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Actualizar pedidos de compra?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            If Ejecutar Then
-                Using sPc As New clsSyncSAPPedidoCompra()
-                    sPc.Insertar_Pedidosdecompra_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lblprg, prg, True, Preguntar, pNoDocumentoCompraSAP)
-                End Using
-            End If
-
-        Catch ex As Exception
-
-            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
-
-        End Try
-
-    End Sub
-
-    Public Sub Ejecuta_Interface_Productos(Optional ByVal Preguntar As Boolean = True)
-
-        Try
-
-            prg.Visible = True
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Actualizar Productos?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            If Ejecutar Then
-                Using sProd As New clsSyncSAPProducto()
-                    sProd.Ejecutar_Interfaz("Producto")
-                    sProd.Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lblprg, prg, True, Preguntar)
-                End Using
-            End If
-
-        Catch ex As Exception
-
-            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
-
-        Finally
-            prg.Visible = False
-        End Try
-
-    End Sub
-
     Private tiempoProductos As Double = 0
     Dim frecuencia As Double = 0
 
@@ -220,19 +89,6 @@ Public Class frmEjecucion
         Else
             tiempoProductos += 1
         End If
-    End Sub
-
-    ' Timer para correr el proceso de producto
-    Private Sub BwProducto_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles BwProducto.DoWork
-
-        Try
-            Using sProd As New clsSyncSAPProducto()
-                sProd.Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lblprg, prg)
-            End Using
-        Catch ex As Exception
-            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-
     End Sub
 
     Private Sub BwProducto_RunWorkerCompleted(sender As Object, e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles BwProducto.RunWorkerCompleted
@@ -247,52 +103,6 @@ Public Class frmEjecucion
             .Show()
             .Focus()
         End With
-
-    End Sub
-
-    Private Sub mnuProductosI_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuProductosI.ItemClick
-        Ejecuta_Interface_Productos(True)
-    End Sub
-
-    Private Sub Enviar_Pedidos_Compra(Optional ByVal Preguntar As Boolean = True)
-
-        Dim MostrarMensajeError As Boolean = False
-
-        Try
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Enviar registros de ingreso?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            lblprg.Text = ""
-
-            If Ejecutar Then
-                Using sPc As New clsSyncSAPPedidoCompra()
-                    sPc.Ejecutar_Interfaz("Envio ingresos")
-                    clsSyncSAPPedidoCompra.Enviar_Transacciones_De_Ingreso_SAP(lblprg, prg)
-                End Using
-            End If
-
-        Catch ex As Exception
-
-            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-
-            If MostrarMensajeError Then
-                XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-                Text,
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error)
-            Else
-                clsPublic.Actualizar_Progreso(lblprg, vMensaje)
-            End If
-
-        End Try
 
     End Sub
     Private Sub frmEjecucion_Shown(sender As Object, e As EventArgs) Handles Me.Shown
@@ -352,34 +162,17 @@ Public Class frmEjecucion
 
                 Case pInterfaceAEjecutar.Importar_Productos
                     mnuProductosI.Visibility = BarItemVisibility.Always
-                    Ejecuta_Interface_Productos(False)
-
                 Case pInterfaceAEjecutar.Importar_Pedidos_De_Compra
                     mnuProductosI.Visibility = BarItemVisibility.Always
-                    Ejecuta_Interface_Pedidos_Compra_SAP(False)
-
                 Case pInterfaceAEjecutar.Importar_Pedidos_De_Transferencia
-                    Ejecuta_interface_Traslados_Entrada_SAP(False)
                 Case pInterfaceAEjecutar.Enviar_Pedidos_Compra
                     mnuEnviarPedidosCompra.Visibility = BarItemVisibility.Always
-                    Enviar_Pedidos_Compra(False)
                 Case pInterfaceAEjecutar.Enviar_Pedidos_Transferencia
                     mnuEnviarPedidosTransferencia.Visibility = BarItemVisibility.Always
-                    Enviar_Traslado_Stock(False)
-                Case pInterfaceAEjecutar.Enviar_Traslados_SAP
-                    mnuEnviarTrasladosMercancia.Visibility = BarItemVisibility.Always
-                    Enviar_Traslado_Desde_Solicitud(False)
-                Case pInterfaceAEjecutar.Enviar_Devolucion_Proveedor_SAP
-                    mnuEnviarSolicitudDevolucion.Visibility = BarItemVisibility.Always
-                    Enviar_Solicitud_Devolucion_Proveedor(False)
-                Case pInterfaceAEjecutar.Actualizar_Traslado_No_Enviado
-                    Actualizar_Estado_Traslado(NoDocEntrySAP, EstadoEnviadoSAP)
                 Case pInterfaceAEjecutar.Actualizar_Pedido_Cliente_No_Enviado
                     If Actualizar_Estado_Pedido_Cliente(NoDocEntrySAP, EstadoEnviadoSAP) Then
                         Close()
                     End If
-                Case pInterfaceAEjecutar.Enviar_Ajustes_Inventario
-                    Enviar_Ajustes(True)
                 Case pInterfaceAEjecutar.Cerrar_Documento_Salida_SAP
                     If Cerrar_Solicitud_Traslado(NoDocEntrySAP) Then
                         Close()
@@ -389,94 +182,13 @@ Public Class frmEjecucion
 
             End Select
 
+            CheckForIllegalCrossThreadCalls = False
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
 
     End Sub
-    Private Sub Enviar_Pedidos_Transferencia(Optional ByVal Preguntar As Boolean = True)
-
-        Dim MostrarMensaje As Boolean = False
-
-        Try
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Enviar registros de traslados?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            If Ejecutar Then
-                Using sPT As New clsSyncSAPPedidoTraslado()
-                    sPT.Ejecutar_Interfaz("Salida_Mercancia")
-                    sPT.Enviar_Transacciones_De_Salida(lblprg, prg)
-                End Using
-            End If
-
-        Catch ex As Exception
-
-            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-
-            If MostrarMensaje Then
-                XtraMessageBox.Show(vMensaje,
-                                    Text,
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error)
-            Else
-                clsPublic.Actualizar_Progreso(lblprg, vMensaje)
-            End If
-
-        End Try
-
-    End Sub
-
-    Private Sub Enviar_Ajustes(Optional ByVal Preguntar As Boolean = True)
-
-        Dim MostrarMensaje As Boolean = False
-
-        Try
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Enviar ajustes?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            If Ejecutar Then
-                Using sPT As New clsSyncAjusteInventario()
-                    sPT.Ejecutar_Interfaz("Sync_Ajustes")
-                    Try
-                        sPT.Sync_Ajustes(lblprg, prg)
-                    Catch ex As Exception
-                        MsgBox(ex.Message)
-                    End Try
-                End Using
-            End If
-
-        Catch ex As Exception
-            If MostrarMensaje Then
-                XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
-            End If
-        End Try
-
-    End Sub
-
-    Private Sub mnuEnviarPedidosTransferencia_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuEnviarPedidosTransferencia.ItemClick
-        Enviar_Pedidos_Transferencia(True)
-    End Sub
-
     Private Sub cmdRptTransac_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdRptTransac.ItemClick
 
         Try
@@ -492,10 +204,6 @@ Public Class frmEjecucion
             MsgBox(ex.Message)
         End Try
 
-    End Sub
-
-    Private Sub BarButtonItem1_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles BarButtonItem1.ItemClick
-        Enviar_Ajustes(True)
     End Sub
     Private Sub Args_Showing(ByVal sender As Object, ByVal e As XtraMessageShowingArgs)
         e.Form.Icon = Me.Icon
@@ -562,10 +270,7 @@ Public Class frmEjecucion
             End If
 
             If Ejecutar Then
-                Using sPT As New clsSyncSAPDevolucionMercancia()
-                    sPT.Ejecutar_Interfaz("Pedido_transferencia_envío")
-                    sPT.Insertar_Solicitud_Devol_Cli_A_TOMWMS(lblprg, prg, True, Preguntar)
-                End Using
+                clsSyncSAPDevolucionMercancia.Insertar_Solicitud_Devol_Cli_A_TOMWMS(lblprg, prg, True, Preguntar)
             End If
 
         Catch ex As Exception
@@ -576,236 +281,19 @@ Public Class frmEjecucion
 
     End Sub
 
-    Private Sub Ejecuta_Interface_NC_Cliente(Optional ByVal Preguntar As Boolean = True)
-
-        Try
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Actualizar devoluciones de clientes ( Trans -> pedidos de ingrseo)?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            If Ejecutar Then
-                Using sPc As New clsSyncSAPDevolucionMeracnciaCliente()
-                    sPc.Ejecutar_Interfaz("Pedido compra Devolucion Cliente")
-                    sPc.Insertar_NC_Cliente_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lblprg, prg, True, Preguntar)
-                End Using
-            End If
-
-        Catch ex As Exception
-            'XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-
-    End Sub
-
-    Private Sub mnuPedidosCompra_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuPedidosCompra.ItemClick
-
-
-        Dim args As New XtraInputBoxArgs()
-        Dim tmpResult As Object
-        Dim pPedidoCompra As String = ""
-
-        Try
-
-            args.Caption = "Ingrese Factura de Reserva"
-            args.Prompt = "Factura No."
-
-            Dim editor As New TextEdit
-            args.Editor = editor
-
-            args.DefaultButtonIndex = 0
-            args.DefaultResponse = ""
-            AddHandler args.Showing, AddressOf Args_Showing
-
-            tmpResult = XtraInputBox.Show(args)
-
-            lblprg.Text = ""
-
-            If Not tmpResult Is Nothing Then
-
-                pPedidoCompra = tmpResult.ToString
-
-                Ejecuta_Interface_Facturas_Reserva_SAP_Hana(True, pPedidoCompra)
-
-            End If
-
-        Catch ex As Exception
-
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-       Text,
-       MessageBoxButtons.OK,
-       MessageBoxIcon.Error)
-
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-
-        End Try
-
-    End Sub
-
     Private Sub mnuBodegas_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuBodegas.ItemClick
         Ejecuta_Interface_Bodegas(True)
-    End Sub
-
-    Private Sub mnuPedidosTransferencia_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuSolicitudTraslado.ItemClick
-
-        Dim args As New XtraInputBoxArgs()
-        Dim tmpResult As Object
-        Dim pTraslado As String = ""
-
-        Try
-
-            args.Caption = "Ingrese número de traslado"
-            args.Prompt = "Traslado No."
-
-            Dim editor As New TextEdit
-            args.Editor = editor
-
-            args.DefaultButtonIndex = 0
-            args.DefaultResponse = ""
-            AddHandler args.Showing, AddressOf Args_Showing
-
-            tmpResult = XtraInputBox.Show(args)
-
-            If Not tmpResult Is Nothing Then
-
-                pTraslado = tmpResult.ToString
-                'Ejecuta_interface_Traslado_Mercancias_SAP(True, pTraslado)
-                Ejecuta_interface_Traslados_SAP(True, pTraslado)
-            End If
-
-        Catch ex As Exception
-
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
-
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-
-        End Try
-
-    End Sub
-
-    Private Sub BarButtonItem4_ItemClick_1(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs)
-
-        Dim args As New XtraInputBoxArgs()
-        Dim tmpResult As Object
-        Dim pTraslado As String = ""
-
-        Try
-
-            args.Caption = "Ingrese número de traslado"
-            args.Prompt = "Traslado No."
-
-            Dim editor As New TextEdit
-            args.Editor = editor
-
-            args.DefaultButtonIndex = 0
-            args.DefaultResponse = ""
-            AddHandler args.Showing, AddressOf Args_Showing
-
-            tmpResult = XtraInputBox.Show(args)
-
-            If Not tmpResult Is Nothing Then
-
-                pTraslado = tmpResult.ToString
-
-                Ejecuta_interface_Traslados_SAP(True, pTraslado)
-
-            End If
-
-        Catch ex As Exception
-
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
-
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-
-        End Try
-
-    End Sub
-
-    Private Sub mnuPedidosCompraDevolucionCliente_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs)
-        Ejecuta_Interface_NC_Cliente(True)
     End Sub
 
     Private Sub mnuDevolucionMercancia_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs)
         Ejecuta_interface_Devolucion_Mercancia(True)
     End Sub
-
-    Private Sub mnuEntradaMerncacia_ItemClick_1(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs)
-        Ejecuta_Interface_Entrada_Mercancia()
-    End Sub
-
-    Private Sub Ejecuta_Interface_Entrada_Mercancia()
-
-        Dim MostrarMensajeError As Boolean = False
-        Dim Preguntar As Boolean = False
-
-        Try
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Enviar registros de ingreso?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            If Ejecutar Then
-                Using sPc As New clsSyncSAPEntradaMercancia()
-                    sPc.Insertar_Entrada_Mercancia_Desde_SAP(lblprg, prg, True)
-                End Using
-            End If
-
-        Catch ex As Exception
-
-            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
-
-        End Try
-
-    End Sub
-
-    Private Sub mnuEnviarPedidosCompra_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuEnviarPedidosCompra.ItemClick
-        Enviar_Pedidos_Compra(True)
-    End Sub
-
-    Private Sub mnuEnviarAjustes_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuEnviarAjustes.ItemClick
-        Enviar_Ajustes(True)
-    End Sub
-
     Private Sub BarButtonItem4_ItemClick_2(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs)
         Enviar_Documentos_Salida(True)
     End Sub
 
-    Private Sub mnuTestConexion_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuTestConexion.ItemClick
-
-        Try
-
-            Dim TestCon As New frmTestCon
-            TestCon.ShowDialog()
-
-        Catch ex As Exception
-            clsPublic.Actualizar_Progreso(lblprg, "Error: " & ex.Message)
-        End Try
-
-    End Sub
-
-    Public Sub Ejecuta_interface_Pedido_Cliente(Optional ByVal Preguntar As Boolean = True,
-                                                Optional ByVal pPedidoCliente As String = "")
+    Public Async Sub Ejecuta_interface_Pedido_Cliente(Optional ByVal Preguntar As Boolean = True,
+                                                      Optional ByVal pPedidoCliente As String = "")
 
         Dim MostrarMensaje As Boolean = False
 
@@ -824,10 +312,7 @@ Public Class frmEjecucion
             End If
 
             If Ejecutar Then
-                Using sPC As New clsSyncSAPSPedidoCliente()
-                    sPC.Ejecutar_Interfaz("Pedido_Cliente")
-                    sPC.Importar_Pedido_Cliente_SAP(lblprg, prg, True, Preguntar, pPedidoCliente)
-                End Using
+                Await clsSyncSAPSPedidoCliente.Importar_Pedido_Cliente_SAP(lblprg, prg, True, Preguntar, pPedidoCliente)
             End If
 
         Catch ex As Exception
@@ -857,10 +342,7 @@ Public Class frmEjecucion
             End If
 
             If Ejecutar Then
-                Using sPT As New clsSyncSAPSPedidoCliente()
-                    sPT.Ejecutar_Interfaz("Salida_Mercancia")
-                    sPT.Enviar_Transacciones_De_Salida(lblprg, prg)
-                End Using
+                clsSyncSAPSPedidoCliente.Enviar_Transacciones_De_Salida(lblprg, prg)
             End If
 
         Catch ex As Exception
@@ -880,72 +362,13 @@ Public Class frmEjecucion
 
     End Sub
 
-    Private Sub mnuImportarAjustes_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs)
-        Ejecuta_interface_Ajustes()
-    End Sub
-
-    Public Sub Ejecuta_interface_Ajustes(Optional ByVal Preguntar As Boolean = True,
-                                         Optional ByVal pNoAjuste As String = "")
-
-        Dim MostrarMensaje As Boolean = False
-
-        Try
-
-            prg.Visible = True
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Importar ajustes?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            If Ejecutar Then
-                Using sPC As New clsSyncSAPAjustes()
-                    sPC.Ejecutar_Interfaz("Pedido_Cliente")
-                    sPC.Importar_Ajustes_SAP(lblprg, prg, True, Preguntar)
-                End Using
-            End If
-
-        Catch ex As Exception
-            If MostrarMensaje Then
-                XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Else
-                clsPublic.Actualizar_Progreso(lblprg, "Error: " & ex.Message)
-            End If
-        End Try
-
-    End Sub
-
-    Private Function Actualizar_Estado_Traslado(ByVal pNoDocEntrySAP As Integer, EstadoEnvio As clsDataContractDI.Estado_Enviado_SAP) As Boolean
-
-        Actualizar_Estado_Traslado = False
-
-        Try
-
-            Dim SapTrasladoSync As New clsSyncSAPTrasladoStock
-            SapTrasladoSync.Marcar_Trasladado_Sincronizado_SAP(pNoDocEntrySAP, EstadoEnvio)
-
-            Actualizar_Estado_Traslado = True
-
-        Catch ex As Exception
-            clsPublic.Actualizar_Progreso(lblprg, "Error: " & ex.Message)
-        End Try
-
-    End Function
-
     Private Function Actualizar_Estado_Pedido_Cliente(ByVal pNoDocEntrySAP As Integer, EstadoEnvio As clsDataContractDI.Estado_Enviado_SAP) As Boolean
 
         Actualizar_Estado_Pedido_Cliente = False
 
         Try
 
-            Dim SapTrasladoSync As New clsSyncSAPSPedidoCliente
-
-            If SapTrasladoSync.Marcar_Pedido_Cliente_Sincronizado_SAP(pNoDocEntrySAP, EstadoEnvio, lblprg) Then
+            If clsSyncSAPSPedidoCliente.Marcar_Pedido_Cliente_Sincronizado_SAP(pNoDocEntrySAP, EstadoEnvio, lblprg) Then
                 Actualizar_Estado_Pedido_Cliente = True
             End If
 
@@ -955,342 +378,15 @@ Public Class frmEjecucion
 
     End Function
 
-    Private Sub mnuActualizarCodigosBarra_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuActualizarCodigosBarra.ItemClick
+    Private Async Sub mnuActualizarCodigosBarra_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuActualizarCodigosBarra.ItemClick
 
         Try
 
             Dim SapProductoCodigosBarra As New clsSyncSapCodigosBarra
-            SapProductoCodigosBarra.Importar_Codigos_Barra_Productos(lblprg, prg)
+            Await SapProductoCodigosBarra.Importar_Codigos_Barra_Productos_SL(lblprg, prg)
 
         Catch ex As Exception
             clsPublic.Actualizar_Progreso(lblprg, "Error: " & ex.Message)
-        End Try
-
-
-    End Sub
-
-    Private Sub mnuCentrosCosto_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuCentrosCosto.ItemClick
-
-        Try
-
-
-            Dim SAPCentrosCosto As New clsSyncSapCentrosCosto
-            SAPCentrosCosto.Importar_Centros_Costos_From_SAP(lblprg, prg)
-
-        Catch ex As Exception
-            clsPublic.Actualizar_Progreso(lblprg, "Error: " & ex.Message)
-        End Try
-
-    End Sub
-
-    Private Sub mnuPresentaciones_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuPresentaciones.ItemClick
-
-        Try
-
-
-            Dim SAPPresentaciones As New clsSyncSAPPresentaciones
-            SAPPresentaciones.Importar_Presentaciones_Productos(lblprg, prg)
-
-        Catch ex As Exception
-            clsPublic.Actualizar_Progreso(lblprg, "Error: " & ex.Message)
-        End Try
-
-    End Sub
-
-    Private Sub mnuEnviarTrasladosMercancia_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuEnviarTrasladosMercancia.ItemClick
-        Enviar_Traslado_Stock(True)
-    End Sub
-
-    Private Sub Enviar_Traslado_Stock(Optional ByVal Preguntar As Boolean = True)
-
-        Dim MostrarMensaje As Boolean = False
-
-        Try
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Generar traslados de stock?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            If Ejecutar Then
-                lblprg.Text = ""
-                Using sPT As New clsSyncSAPSSolicitudTraslado()
-                    sPT.Ejecutar_Interfaz("Devolución_Mercancia")
-                    sPT.Enviar_Transacciones_De_Salida(lblprg,
-                                                       prg,
-                                                       clsDataContractDI.tTipoDocumentoSalida.Transferencia_Directa)
-                End Using
-            End If
-
-        Catch ex As Exception
-
-            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-
-            If MostrarMensaje Then
-                XtraMessageBox.Show(vMensaje,
-                                    Text,
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error)
-            Else
-                clsPublic.Actualizar_Progreso(lblprg, vMensaje)
-            End If
-
-        End Try
-
-    End Sub
-
-    Private Sub mnuTrasladoDesdeSolicitud_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuTrasladoDesdeSolicitud.ItemClick
-        Enviar_Traslado_Desde_Solicitud(True)
-    End Sub
-
-    Private Sub Enviar_Traslado_Desde_Solicitud(Optional ByVal Preguntar As Boolean = True)
-
-        Dim MostrarMensaje As Boolean = False
-
-        Try
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Generar traslados de stock desde solicitud?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            If Ejecutar Then
-                lblprg.Text = ""
-                Using sPT As New clsSyncSAPSSolicitudTraslado()
-                    sPT.Ejecutar_Interfaz("Traslado_Mercancia")
-                    sPT.Enviar_Traslados_Desde_Solicitud(lblprg,
-                                                         prg,
-                                                         clsDataContractDI.tTipoDocumentoSalida.Traslado_Por_Estados_SAP)
-                End Using
-            End If
-
-        Catch ex As Exception
-
-            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-
-            If MostrarMensaje Then
-                XtraMessageBox.Show(vMensaje,
-                                    Text,
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error)
-            Else
-                clsPublic.Actualizar_Progreso(lblprg, vMensaje)
-            End If
-
-        End Try
-
-    End Sub
-
-    Private Sub mnuSolicitudTrasladoEntrada_ItemClick(sender As Object,
-                                                      e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuSolicitudTrasladoEntrada.ItemClick
-
-
-        Dim args As New XtraInputBoxArgs()
-        Dim tmpResult As Object
-        Dim pTraslado As String = ""
-
-        Try
-
-            args.Caption = "Ingrese número de traslado de entrada"
-            args.Prompt = "Traslado No."
-
-            Dim editor As New TextEdit
-            args.Editor = editor
-
-            args.DefaultButtonIndex = 0
-            args.DefaultResponse = ""
-            AddHandler args.Showing, AddressOf Args_Showing
-
-            tmpResult = XtraInputBox.Show(args)
-
-            If Not tmpResult Is Nothing Then
-                pTraslado = tmpResult.ToString
-                Ejecuta_interface_Traslados_Entrada_SAP(True, pTraslado)
-            End If
-
-        Catch ex As Exception
-
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
-
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-
-        End Try
-
-    End Sub
-
-    Public Sub Ejecuta_interface_Traslados_Entrada_SAP(Optional ByVal Preguntar As Boolean = True,
-                                                       Optional ByVal pTraslado As String = "")
-
-        Dim MostrarMensaje As Boolean = False
-
-        Try
-
-            prg.Visible = True
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Importar traslados de entrada?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            If Ejecutar Then
-                Using sPT As New clsSyncSAPSSolicitudTraslado()
-                    sPT.Ejecutar_Interfaz("Transferencia_Stock")
-                    sPT.Importar_Solicitud_Traslado_Entrada_SAP(lblprg, prg, True, Preguntar, pTraslado)
-                End Using
-            End If
-
-        Catch ex As Exception
-            If MostrarMensaje Then
-                XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End If
-        End Try
-
-    End Sub
-
-    Private Sub mnuDevolucionProveedor_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuDevolucionProveedor.ItemClick
-
-
-        Dim args As New XtraInputBoxArgs()
-        Dim tmpResult As Object
-        Dim pPedidoCliente As String = ""
-
-        Try
-
-            args.Caption = "Ingrese No. de devolución"
-            args.Prompt = "Solicitud No."
-
-            Dim editor As New TextEdit
-            args.Editor = editor
-
-            args.DefaultButtonIndex = 0
-            args.DefaultResponse = ""
-            AddHandler args.Showing, AddressOf Args_Showing
-
-            tmpResult = XtraInputBox.Show(args)
-
-            If Not tmpResult Is Nothing Then
-
-                pPedidoCliente = tmpResult.ToString
-
-                lblprg.Text = ""
-
-                Ejecuta_interface_Devolucion(True, pPedidoCliente)
-
-            End If
-
-        Catch ex As Exception
-
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
-
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-
-        End Try
-
-
-    End Sub
-
-    Public Sub Ejecuta_interface_Devolucion(Optional ByVal Preguntar As Boolean = True,
-                                            Optional ByVal pPedidoCliente As String = "")
-
-        Dim MostrarMensaje As Boolean = False
-
-        Try
-
-            prg.Visible = True
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Importar devolución a proveedor?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            If Ejecutar Then
-                Using sPC As New clsSyncSapDevolucionProveedor()
-                    sPC.Ejecutar_Interfaz("Devolucion_Proveedor")
-                    sPC.Procesar_Devolucion_Mercancia_SAP(lblprg, prg, pPedidoCliente)
-                End Using
-            End If
-
-        Catch ex As Exception
-            If MostrarMensaje Then
-                XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Else
-                clsPublic.Actualizar_Progreso(lblprg, "Error: " & ex.Message)
-            End If
-        End Try
-
-    End Sub
-
-    Private Sub mnuEnviarSolicitudDevolucion_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuEnviarSolicitudDevolucion.ItemClick
-        Enviar_Solicitud_Devolucion_Proveedor(True)
-    End Sub
-
-    Private Sub Enviar_Solicitud_Devolucion_Proveedor(Optional ByVal Preguntar As Boolean = True)
-
-        Dim MostrarMensaje As Boolean = False
-
-        Try
-
-            Dim Ejecutar As Boolean = False
-
-            If Preguntar Then
-                If XtraMessageBox.Show("¿Generar solicitud de devolución a proveedor?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                    Ejecutar = True
-                End If
-            Else
-                Ejecutar = True
-            End If
-
-            If Ejecutar Then
-                lblprg.Text = ""
-                Using sPT As New clsSyncSAPSSolicitudTraslado()
-                    sPT.Ejecutar_Interfaz("Traslado_Mercancia")
-                    sPT.Enviar_Solicitud_Devolucion_Proveedor(lblprg,
-                                                              prg,
-                                                              clsDataContractDI.tTipoDocumentoSalida.Devolucion_Proveedor)
-                End Using
-            End If
-
-        Catch ex As Exception
-
-            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-
-            If MostrarMensaje Then
-                XtraMessageBox.Show(vMensaje,
-                                    Text,
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error)
-            Else
-                clsPublic.Actualizar_Progreso(lblprg, vMensaje)
-            End If
-
         End Try
 
     End Sub
@@ -1545,10 +641,6 @@ Public Class frmEjecucion
 
     End Sub
 
-    Private Sub mnuEnvioPedidosCompra_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnvioPedidosCompra.ItemClick
-        Enviar_Pedidos_Compra(True)
-    End Sub
-
     Private Sub mnuReporteComparativoWMSvrsERP_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuReporteComparativoWMSvrsERP.ItemClick
 
         Try
@@ -1598,45 +690,6 @@ Public Class frmEjecucion
         End Try
 
     End Function
-
-    Private Sub mnuCerrarDocumentoSAP_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuCerrarDocumentoSAP.ItemClick
-
-        Dim args As New XtraInputBoxArgs()
-        Dim tmpResult As Object
-        Dim pTraslado As String = ""
-
-        Try
-
-            args.Caption = "Ingrese número de pedido (DocNum)"
-            args.Prompt = "Pedido No."
-
-            Dim editor As New TextEdit
-            args.Editor = editor
-
-            args.DefaultButtonIndex = 0
-            args.DefaultResponse = ""
-            AddHandler args.Showing, AddressOf Args_Showing
-
-            tmpResult = XtraInputBox.Show(args)
-
-            If Not tmpResult Is Nothing Then
-                pTraslado = tmpResult.ToString
-                Cerrar_Solicitud_Traslado(pTraslado)
-            End If
-
-        Catch ex As Exception
-
-            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
-
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-
-        End Try
-
-    End Sub
 
     Private Sub mnuTallas_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuTallas.ItemClick
         Ejecuta_Interface_Tallas(True)
@@ -1710,9 +763,7 @@ Public Class frmEjecucion
 
                 If BeConfigEnc IsNot Nothing Then
 
-                    Using sColor As New clsSyncSapColor()
-                        sColor.Get_Colores_From_Sap_Hana(BeConfigEnc, lblprg, prg)
-                    End Using
+                    clsSyncSapColor.Get_Colores_From_Sap_Hana(BeConfigEnc, lblprg, prg)
 
                 Else
                     Throw New Exception("#Error_20250304: No se definió la configuración de interface.")
@@ -1746,9 +797,7 @@ Public Class frmEjecucion
             End If
 
             If Ejecutar Then
-                Using sPc As New clsSyncSapFacturaReserva()
-                    sPc.Insertar_Facturas_Reserva_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lblprg, prg, True, Preguntar, pNoDocumentoCompraSAP)
-                End Using
+                Dim unused = clsSyncSapFacturaReserva.Insertar_Facturas_Reserva_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lblprg, prg, True, Preguntar, pNoDocumentoCompraSAP)
             End If
 
         Catch ex As Exception
@@ -1760,4 +809,910 @@ Public Class frmEjecucion
 
     End Sub
 
+    Private Sub frmEjecucion_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls Or
+                                               SecurityProtocolType.Tls11 Or
+                                               SecurityProtocolType.Tls12
+        ServicePointManager.ServerCertificateValidationCallback = AddressOf AcceptAllCertifications
+
+    End Sub
+    Private Function AcceptAllCertifications(sender As Object, cert As X509Certificate, chain As X509Chain, sslPolicyErrors As SslPolicyErrors) As Boolean
+        Return True
+    End Function
+
+    Private Async Sub Ejecuta_Interface_Traslados_Sap_Hana(Optional ByVal Preguntar As Boolean = True,
+                                                           Optional ByVal pNoDocumentoSolTraslado As String = "",
+                                                           Optional ByVal pEsProrrateo As Boolean = True,
+                                                           Optional ByVal pEsTrasladoBodegaVirtual As Boolean = False)
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Actualizar solicitudes de traslado?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                Await clsSyncSapTrasladosEnvio.Procesar_Solicitud_Traslado_SAP(lblprg, prg, pNoDocumentoSolTraslado, pEsProrrateo, pEsTrasladoBodegaVirtual)
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        End Try
+
+    End Sub
+
+    Private Sub Ejecuta_Interface_Sol_Devol_Prov_SAP_Hana(Optional ByVal Preguntar As Boolean = True,
+                                                          Optional ByVal pNoDocumentoSolTraslado As String = "")
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Actualizar Solicitudes de devolución a Proveedor?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                Dim unused = clsSyncSapDevolProveedor.Procesar_Solicitud_Devol_Prov_SAP(lblprg, prg, pNoDocumentoSolTraslado)
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        End Try
+
+    End Sub
+
+    Private Sub mnuRecibirFacturaReservaProv_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuRecibirFacturaReservaProv.ItemClick
+
+        Dim args As New XtraInputBoxArgs()
+        Dim tmpResult As Object
+        Dim pPedidoCompra As String = ""
+
+        Try
+
+            args.Caption = "Ingrese Factura de Reserva"
+            args.Prompt = "Factura No."
+
+            Dim editor As New TextEdit
+            args.Editor = editor
+
+            args.DefaultButtonIndex = 0
+            args.DefaultResponse = ""
+            AddHandler args.Showing, AddressOf Args_Showing
+
+            tmpResult = XtraInputBox.Show(args)
+
+            lblprg.Text = ""
+
+            If Not tmpResult Is Nothing Then
+
+                pPedidoCompra = tmpResult.ToString
+
+                Ejecuta_Interface_Facturas_Reserva_SAP_Hana(True, pPedidoCompra)
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                               Text,
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
+    Private Sub mnuEnviarFacturaReservaIngreso_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarFacturaReservaIngreso.ItemClick
+
+        Try
+            mnuEnviarPedidosCompra.Enabled = False
+            clsSyncSapFacturaReserva.Enviar_Facturas_Reserva_Prov_Ingreso(lblprg, prg)
+        Catch ex As Exception
+            clsPublic.Actualizar_Progreso(lblprg, "Error: " & ex.Message)
+        Finally
+            mnuEnviarPedidosCompra.Enabled = True
+            prg.Visible = False
+        End Try
+
+    End Sub
+
+    Private Sub mnuRecibirTrasladosCedis_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuRecibirTrasladosCedis.ItemClick
+
+
+        Dim args As New XtraInputBoxArgs()
+        Dim tmpResult As Object
+        Dim pPedidoCompra As String = ""
+
+        mnuRecibirTrasladosCedis.Enabled = False
+
+        Try
+
+            args.Caption = "Ingrese Traslado"
+            args.Prompt = "Traslado No."
+
+            Dim editor As New TextEdit
+            args.Editor = editor
+
+            args.DefaultButtonIndex = 0
+            args.DefaultResponse = ""
+            AddHandler args.Showing, AddressOf Args_Showing
+
+            tmpResult = XtraInputBox.Show(args)
+
+            lblprg.Text = ""
+
+            If Not tmpResult Is Nothing Then
+
+                pPedidoCompra = tmpResult.ToString
+
+                Ejecuta_Interface_Traslados_Sap_Hana(True, pPedidoCompra, True, False)
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                               Text,
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        Finally
+            mnuRecibirTrasladosCedis.Enabled = True
+            prg.Visible = False
+        End Try
+
+    End Sub
+
+    Private Sub BarButtonItem5_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuImportarSolDevolProv.ItemClick
+
+        Dim args As New XtraInputBoxArgs()
+        Dim tmpResult As Object
+        Dim pSolDevolProveedor As String = ""
+
+        mnuImportarSolDevolProv.Enabled = False
+
+        Try
+
+            args.Caption = "Ingrese Sol. Devolución"
+            args.Prompt = "Devolución No."
+
+            Dim editor As New TextEdit
+            args.Editor = editor
+
+            args.DefaultButtonIndex = 0
+            args.DefaultResponse = ""
+            AddHandler args.Showing, AddressOf Args_Showing
+
+            tmpResult = XtraInputBox.Show(args)
+
+            lblprg.Text = ""
+
+            If Not tmpResult Is Nothing Then
+
+                pSolDevolProveedor = tmpResult.ToString
+
+                Ejecuta_Interface_Sol_Devol_Prov_SAP_Hana(True, pSolDevolProveedor)
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                               Text,
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        Finally
+            mnuImportarSolDevolProv.Enabled = True
+            prg.Visible = False
+        End Try
+
+
+    End Sub
+
+    Private Sub mnuEnviarSolDevolProv_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarSolDevolProv.ItemClick
+
+
+        Try
+
+            Enviar_Solicitudes_Devol_Prov(True)
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        End Try
+
+    End Sub
+
+    Private Sub Enviar_Solicitudes_Devol_Prov(Optional ByVal Preguntar As Boolean = True)
+
+        Dim MostrarMensajeError As Boolean = False
+        procesoEnEjecucion = True
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Enviar Solicitudes de devolución de proveedor?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                clsSyncSapDevolProveedor.Enviar_Transacciones_De_Salida(lblprg, prg, tTipoDocumentoSalida.Devolucion_Proveedor)
+            End If
+
+        Catch ex As Exception
+            clsPublic.Actualizar_Progreso(lblprg, ex.Message)
+        Finally
+            procesoEnEjecucion = False
+        End Try
+
+    End Sub
+
+    Private Sub mnuEnviarTrasladosCedis_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarTrasladosCedis.ItemClick
+        mnuEnviarTrasladosCedis.Visibility = BarItemVisibility.Never
+        Enviar_Traslado_Desde_Solicitud_Prorrateo(True)
+        mnuEnviarTrasladosCedis.Visibility = BarItemVisibility.Always
+    End Sub
+
+    Private Async Sub Enviar_Traslado_Desde_Solicitud_Prorrateo(Optional ByVal Preguntar As Boolean = True)
+
+        Dim MostrarMensaje As Boolean = False
+        procesoEnEjecucion = True
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Generar traslados de stock desde solicitud?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                lblprg.Text = ""
+                Await clsSyncSapTrasladosEnvio.Enviar_Traslados_Salida_Desde_Solicitud_Prorrateo(lblprg,
+                                                                                                 prg,
+                                                                                                 tTipoDocumentoSalida.Transferencia_Directa)
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        Finally
+            procesoEnEjecucion = False
+        End Try
+
+    End Sub
+
+    Private Sub mnuRecibirTrasladosTienda_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuRecibirTrasladosTienda.ItemClick
+
+        Dim args As New XtraInputBoxArgs()
+        Dim tmpResult As Object
+        Dim pSolTrasladoTienda As String = ""
+
+        mnuImportarSolDevolProv.Enabled = False
+
+        Try
+
+            args.Caption = "Ingrese Sol. Traslado"
+            args.Prompt = "Solicitud Traslado No."
+
+            Dim editor As New TextEdit
+            args.Editor = editor
+
+            args.DefaultButtonIndex = 0
+            args.DefaultResponse = ""
+            AddHandler args.Showing, AddressOf Args_Showing
+
+            tmpResult = XtraInputBox.Show(args)
+
+            lblprg.Text = ""
+
+            If Not tmpResult Is Nothing Then
+
+                pSolTrasladoTienda = tmpResult.ToString
+
+                Ejecuta_Interface_Sol_Traslado_Tienda_SAP_Hana(True, pSolTrasladoTienda)
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                               Text,
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        Finally
+            mnuImportarSolDevolProv.Enabled = True
+            prg.Visible = False
+        End Try
+
+    End Sub
+
+    Private Sub Ejecuta_Interface_Sol_Traslado_Tienda_SAP_Hana(Optional ByVal Preguntar As Boolean = True,
+                                                               Optional ByVal pNoDocumentoSolTraslado As String = "")
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Actualizar Solicitudes de traslado a Tienda?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                Dim unused = clsSyncSapSolTrasladoRec.Procesar_Solicitud_Traslado_Tienda_SAP(lblprg, prg, pNoDocumentoSolTraslado)
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        End Try
+
+    End Sub
+
+    Private Sub mnuEnviarTrasladosTienda_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarTrasladosTienda.ItemClick
+        mnuEnviarTrasladosTienda.Visibility = BarItemVisibility.Never
+        Enviar_Traslado_Ingreso_Desde_Solicitud_Tiendas(True)
+        mnuEnviarTrasladosTienda.Visibility = BarItemVisibility.Always
+    End Sub
+
+    Private Async Sub Enviar_Traslado_Ingreso_Desde_Solicitud_Tiendas(Optional ByVal Preguntar As Boolean = True)
+
+        Dim MostrarMensaje As Boolean = False
+        procesoEnEjecucion = True
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Enviar traslados de puntos de servicio a SAP?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                lblprg.Text = ""
+
+                Dim BeConfiEnc = clsLnI_nav_config_enc.GetSingle(IdConfiguracion)
+
+                If BeConfiEnc IsNot Nothing Then
+                    Await clsSyncSapTrasladosEnvio.Enviar_Traslados_Ingreso_Desde_Solicitud_Tiendas(lblprg,
+                                                                                                    prg,
+                                                                                                    tTipoDocumentoIngreso.Transferencia_de_Ingreso,
+                                                                                                    BeConfiEnc)
+                Else
+                    clsPublic.Actualizar_Progreso(lblprg, "No está definida la configuración de interface para el identificador: " & IdConfiguracion)
+                End If
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        Finally
+            procesoEnEjecucion = False
+        End Try
+
+    End Sub
+
+    Private Sub mnuEnviarAjustes_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarAjustes.ItemClick
+
+        Try
+
+            Enviar_Ajustes(True)
+
+        Catch ex As Exception
+            clsPublic.Actualizar_Progreso(lblprg, ex.Message)
+        End Try
+
+    End Sub
+
+    Private Async Sub Enviar_Ajustes(Optional ByVal Preguntar As Boolean = True)
+
+        Dim MostrarMensaje As Boolean = False
+        procesoEnEjecucion = True
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Enviar ajustes a SAP?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+
+                lblprg.Text = ""
+
+                Dim BeConfiEnc = clsLnI_nav_config_enc.GetSingle(IdConfiguracion)
+
+                If BeConfiEnc IsNot Nothing Then
+                    Await clsSyncSapAjustes.Enviar_Ajustes_WMS_SAP(lblprg)
+                Else
+                    clsPublic.Actualizar_Progreso(lblprg, "No está definida la configuración de interface para el identificador: " & IdConfiguracion)
+                End If
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        Finally
+            procesoEnEjecucion = False
+        End Try
+
+    End Sub
+
+    Private Sub mnuRecibirSolTraTi_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuRecibirSolTraTi.ItemClick
+
+
+        Dim args As New XtraInputBoxArgs()
+        Dim tmpResult As Object
+        Dim pPedidoCompra As String = ""
+
+        mnuRecibirSolTraTi.Enabled = False
+
+        Try
+
+            args.Caption = "Ingrese Traslado"
+            args.Prompt = "Traslado No."
+
+            Dim editor As New TextEdit
+            args.Editor = editor
+
+            args.DefaultButtonIndex = 0
+            args.DefaultResponse = ""
+            AddHandler args.Showing, AddressOf Args_Showing
+
+            tmpResult = XtraInputBox.Show(args)
+
+            lblprg.Text = ""
+
+            If Not tmpResult Is Nothing Then
+
+                pPedidoCompra = tmpResult.ToString
+
+                Ejecuta_Interface_Traslados_Sap_Hana(True, pPedidoCompra, False, True)
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                               Text,
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+        Finally
+            mnuRecibirSolTraTi.Enabled = True
+            prg.Visible = False
+        End Try
+
+    End Sub
+
+    Private Sub mnuEnviarSolTraTi_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarSolTraTi.ItemClick
+        Enviar_Traslado_Desde_Solicitud_Tiendas()
+    End Sub
+
+    Private Async Sub Enviar_Traslado_Desde_Solicitud_Tiendas(Optional ByVal Preguntar As Boolean = True)
+
+        Dim MostrarMensaje As Boolean = False
+        procesoEnEjecucion = True
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Generar traslados de stock desde solicitud?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                lblprg.Text = ""
+                Await clsSyncSapTrasladosEnvio.Enviar_Traslados_Salida_Desde_Solicitud_Tienda(lblprg,
+                                                                                              prg,
+                                                                                              tTipoDocumentoSalida.Transferencia_Interna_WMS)
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        Finally
+            procesoEnEjecucion = False
+        End Try
+
+    End Sub
+
+    Private Sub GetToken_ItemClick(sender As Object, e As ItemClickEventArgs) Handles GetToken.ItemClick
+        Dim vHanaService As SapServiceLayerClient
+
+        vHanaService = New SapServiceLayerClient()
+        Dim loginResponse As LoginResponseDto = vHanaService.LoginAsync().GetAwaiter().GetResult()
+
+        If loginResponse Is Nothing OrElse String.IsNullOrEmpty(loginResponse.SessionId) Then
+            clsPublic.Actualizar_Progreso(lblprg, "No se pudo obtener sesión.")
+        Else
+            clsPublic.Actualizar_Progreso(lblprg, "Conexión correcta. Token: " & vHanaService.SessionCookie)
+            Debug.WriteLine(vHanaService.SessionCookie)
+        End If
+
+    End Sub
+
+    Private Sub mnuProductosI_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuProductosI.ItemClick
+        Ejecuta_Interface_Productos(True)
+    End Sub
+
+    Public Async Sub Ejecuta_Interface_Centros_Costo(Optional ByVal Preguntar As Boolean = True)
+
+        Try
+
+            prg.Visible = True
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Actualizar registros?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                Await clsSyncSapCentrosCosto.Importar_Centros_Costo_Desde_SAP(lblprg, prg)
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+            prg.Visible = False
+
+        End Try
+
+    End Sub
+
+    Private Sub mnuCentroCosto_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuCentroCosto.ItemClick
+        Ejecuta_Interface_Centros_Costo(True)
+    End Sub
+
+    Private Sub mnuRecibirFactReservaCliente_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuRecibirFactReservaCliente.ItemClick
+
+        Dim args As New XtraInputBoxArgs()
+        Dim tmpResult As Object
+        Dim pFacturaReserva As String = ""
+
+        Try
+
+            args.Caption = "Ingrese Factura de Reserva Cliente"
+            args.Prompt = "Factura No."
+
+            Dim editor As New TextEdit
+            args.Editor = editor
+
+            args.DefaultButtonIndex = 0
+            args.DefaultResponse = ""
+            AddHandler args.Showing, AddressOf Args_Showing
+
+            tmpResult = XtraInputBox.Show(args)
+
+            lblprg.Text = ""
+
+            If Not tmpResult Is Nothing Then
+
+                pFacturaReserva = tmpResult.ToString
+
+                Ejecuta_Interface_Facturas_Reserva_Cliente_SAP_Hana(True, pFacturaReserva)
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                               Text,
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
+    Private Sub mnuRecibirFactDeudor_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuRecibirFactDeudor.ItemClick
+
+        Dim args As New XtraInputBoxArgs()
+        Dim tmpResult As Object
+        Dim pFacturaDeudor As String = ""
+
+        Try
+
+            args.Caption = "Ingrese Factura de Deudor"
+            args.Prompt = "Factura No."
+
+            Dim editor As New TextEdit
+            args.Editor = editor
+
+            args.DefaultButtonIndex = 0
+            args.DefaultResponse = ""
+            AddHandler args.Showing, AddressOf Args_Showing
+
+            tmpResult = XtraInputBox.Show(args)
+
+            lblprg.Text = ""
+
+            If Not tmpResult Is Nothing Then
+
+                pFacturaDeudor = tmpResult.ToString
+
+                Ejecuta_Interface_Facturas_Deudor_Cliente_SAP_Hana(True, pFacturaDeudor)
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+                               Text,
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
+    Private Sub Ejecuta_Interface_Facturas_Deudor_Cliente_SAP_Hana(Optional ByVal Preguntar As Boolean = True,
+                                                                   Optional ByVal pNoDocumentoCompraSAP As String = "")
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Actualizar Facturas de Deudor?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                '#CKFK20251101: Llamado al método para procesar las facturas de deudor cliente
+                Dim unused = clsSyncSapFacturaDeudor.Procesar_Facturas_de_Deudor_SAP(lblprg, prg, pNoDocumentoCompraSAP)
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        End Try
+
+    End Sub
+
+    Private Sub Ejecuta_Interface_Facturas_Reserva_Cliente_SAP_Hana(Optional ByVal Preguntar As Boolean = True,
+                                                                    Optional ByVal pNoDocumentoCompraSAP As String = "")
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Actualizar Facturas de Reserva Cliente?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                '#CKFK20251101: Llamado al método para procesar las facturas de reserva de cliente
+                Dim unused = clsSyncSapFacturaReservaCliente.Procesar_Facturas_de_Reserva_Cliente_SAP(lblprg, prg, pNoDocumentoCompraSAP)
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        End Try
+
+    End Sub
+
+    Private Sub mnuEnviarFactDeudor_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarFactDeudor.ItemClick
+        '#CKFK20251105: Llamado al método para enviar las facturas de deudor cliente a SAP
+        'Solo se enviarán los campos de usuario
+
+    End Sub
+
+    Private Sub mnuEnviarFactReservaCliente_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEnviarFactReservaCliente.ItemClick
+        Enviar_Facturas_Reserva_Cliente(True)
+    End Sub
+
+    Private Sub Enviar_Facturas_Reserva_Cliente(Optional ByVal Preguntar As Boolean = True)
+
+        Dim MostrarMensaje As Boolean = False
+        procesoEnEjecucion = True
+
+        Try
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Enviar facturas de reserva de cliente?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                Dim unused = clsSyncSapFacturaReservaCliente.Enviar_Factura_Reserva_ClienteAsync(BeConfigEnc.Idbodega,
+                                                                                                 lblprg, prg)
+            End If
+
+        Catch ex As Exception
+            clsPublic.Actualizar_Progreso(lblprg, ex.Message)
+        Finally
+            procesoEnEjecucion = False
+        End Try
+
+    End Sub
+
+    Private Async Sub mnuSincronizarTienda_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuSincronizarTienda.ItemClick
+        Try
+
+            Dim Ejecutar As Boolean = False
+            Dim Preguntar As Boolean = True
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Actualizar transacciones de TMK y tiendas virtuales?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                lblprg.Clear()
+                'Dim unused = Await ProcesarTodoAsync()
+
+                '#CKFK20251101: Llamado al método para procesar las facturas de reserva de cliente
+                Await clsSyncTransacWMS.Procesar_Ajustes_SAP(lblprg, prg) 'Ajustes
+                Await clsSyncTransacWMS.Procesar_Devoluciones_de_Cliente_SAP(lblprg, prg) 'Devoluciones de cliente 
+                Await clsSyncTransacWMS.Procesar_Pedido_de_Cliente_SAP(lblprg, prg) 'Pedidos de cliente
+                Await clsSyncTransacWMS.Procesar_Anulacion_Devolucion_SAP(lblprg, prg) 'Anulaciones de notas de crédito
+                Await clsSyncTransacWMS.Procesar_Anulacion_Ventas_SAP(lblprg, prg) 'Anulaciones de ventas
+
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+
+        End Try
+    End Sub
+
+    Public Async Sub Ejecuta_Interface_Productos(Optional ByVal Preguntar As Boolean = True)
+
+        Try
+
+            prg.Visible = True
+
+            Dim Ejecutar As Boolean = False
+
+            If Preguntar Then
+                If XtraMessageBox.Show("¿Actualizar registros?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    Ejecutar = True
+                End If
+            Else
+                Ejecutar = True
+            End If
+
+            If Ejecutar Then
+                lblprg.Clear()
+                Await clsSyncSAPProducto.Insertar_Productos_Desde_Tabla_Intermedia_A_Tabla_TOMWMS(lblprg, prg)
+            End If
+
+        Catch ex As Exception
+
+            Dim vMensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsPublic.Actualizar_Progreso(lblprg, vMensaje)
+            prg.Visible = False
+
+        End Try
+
+    End Sub
+
+    Private Sub cmdFiltros_ItemClick(sender As Object, e As ItemClickEventArgs) Handles cmdFiltros.ItemClick
+
+        Try
+
+            With frmNavEnt_List
+                .WindowState = FormWindowState.Maximized
+                .Show()
+                .Focus()
+            End With
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
 End Class

@@ -143,8 +143,8 @@ Public Class clsSyncSAPProveedor : Inherits clsInterfaceBase
     End Function
 
     Private Shared Function Importar_Proveedores_Desde_SAP_A_TablaIntermedia(ByVal lblprg As RichTextBox,
-                                                                       ByRef prg As ProgressBar,
-                                                                       ByRef cnnLog As SqlConnection) As Boolean
+                                                                             ByRef prg As ProgressBar,
+                                                                             ByRef cnnLog As SqlConnection) As Boolean
         Importar_Proveedores_Desde_SAP_A_TablaIntermedia = False
 
         Dim lConnection As New SqlConnection(BD.Instancia.CadenaConexionSQLClient)

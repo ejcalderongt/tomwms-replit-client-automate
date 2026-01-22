@@ -162,7 +162,7 @@ Public Class frmFactura
 
             End If
 
-                Limpiar()
+            Limpiar()
 
         Catch ex As Exception
             Me.Cursor = Cursors.Default

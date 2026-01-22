@@ -334,7 +334,7 @@ Public Class clsLnTrans_re_det_lote_num
 
     End Function
 
-    Public Shared Function MaxID() as Integer
+    Public Shared Function MaxID() As Integer
 
         Try
 

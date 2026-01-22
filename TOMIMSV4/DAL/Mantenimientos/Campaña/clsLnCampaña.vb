@@ -22,7 +22,7 @@ Public Class clsLnCampaña
         End Try
     End Sub
 
-    Public Shared Function Insertar(ByRef oBeCampaña As clsBeCampaña, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Insertar(ByRef oBeCampaña As clsBeCampaña, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
@@ -106,7 +106,7 @@ Public Class clsLnCampaña
 
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
 
-            If Es_Transaccion_Remota then
+            If Es_Transaccion_Remota Then
                 cmd = New SqlCommand(sp, pConection, pTransaction)
             Else
                 lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
@@ -135,28 +135,28 @@ Public Class clsLnCampaña
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close
-            If Not lConnection is Nothing Then lConnection.Dispose()
-            If Not lTransaction is Nothing Then lTransaction.Dispose()
+            If Not lConnection Is Nothing Then lConnection.Dispose()
+            If Not lTransaction Is Nothing Then lTransaction.Dispose()
         End Try
 
     End Function
 
 
-    Public Shared Function Eliminar(ByRef oBeCampaña As clsBeCampaña, Optional ByVal pConection as SqlConnection = Nothing, Optional Byval pTransaction as SqlTransaction = Nothing) As Integer
+    Public Shared Function Eliminar(ByRef oBeCampaña As clsBeCampaña, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
         Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
 
         Try
 
-            Const sp As String = " Delete from Campaña" & _
+            Const sp As String = " Delete from Campaña" &
              "  Where(IdCampaña = @IdCampaña)"
 
             Dim cmd As New SqlCommand With {.CommandType = CommandType.Text}
 
             Dim Es_Transaccion_Remota As Boolean = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
 
-            If Es_Transaccion_Remota then
+            If Es_Transaccion_Remota Then
                 cmd = New SqlCommand(sp, pConection, pTransaction)
             Else
                 lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
@@ -178,8 +178,8 @@ Public Class clsLnCampaña
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close
-            If Not lConnection is Nothing Then lConnection.Dispose()
-            If Not lTransaction is Nothing Then lTransaction.Dispose()
+            If Not lConnection Is Nothing Then lConnection.Dispose()
+            If Not lTransaction Is Nothing Then lTransaction.Dispose()
         End Try
 
     End Function
@@ -207,8 +207,8 @@ Public Class clsLnCampaña
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close
-            If Not lConnection is Nothing Then lConnection.Dispose()
-            If Not lTransaction is Nothing Then lTransaction.Dispose()
+            If Not lConnection Is Nothing Then lConnection.Dispose()
+            If Not lTransaction Is Nothing Then lTransaction.Dispose()
         End Try
 
     End Function
@@ -598,6 +598,38 @@ Public Class clsLnCampaña
                 End Using
 
                 lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Single_By_IdCampaña(IdCampaña As Integer, lConnection As SqlConnection, lTransaction As SqlTransaction) As clsBeCampaña
+
+        Get_Single_By_IdCampaña = Nothing
+
+        Try
+
+            Const sp As String = "SELECT * FROM Campaña " &
+            " Where(IdCampaña = @IdCampaña)"
+
+            Using lDTA As New SqlDataAdapter(sp, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdCampaña", IdCampaña)
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                Dim vBeCampaña As New clsBeCampaña
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                    Cargar(vBeCampaña, lDataTable.Rows(0))
+                    Get_Single_By_IdCampaña = vBeCampaña
+                End If
 
             End Using
 

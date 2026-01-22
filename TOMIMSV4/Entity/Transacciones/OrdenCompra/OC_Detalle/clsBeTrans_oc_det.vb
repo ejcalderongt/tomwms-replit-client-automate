@@ -57,6 +57,7 @@ Public Class clsBeTrans_oc_det
     Public Property Nombre_Embarcador As String = ""
 
     Public Property Nombre_Clasificacion As String = ""
+    Public Property IdProductoTallaColor As Integer = 0
 
     Sub New()
     End Sub

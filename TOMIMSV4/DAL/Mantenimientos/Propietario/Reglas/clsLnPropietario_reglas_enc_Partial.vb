@@ -203,6 +203,10 @@ Partial Public Class clsLnPropietario_reglas_enc
                                     Obj.Activo = CType(lRow("Activo"), System.Boolean)
                                 End If
 
+                                If lRow("TipoRegla") IsNot DBNull.Value AndAlso lRow("TipoRegla") IsNot Nothing Then
+                                    Obj.TipoRegla = CType(lRow("TipoRegla"), String)
+                                End If
+
                                 Obj.IsNew = False
 
                                 Lista.Add(Obj)
@@ -275,8 +279,8 @@ Partial Public Class clsLnPropietario_reglas_enc
     End Function
 
     Public Shared Function Get_All_By_IdPropietario(ByVal pIdPropietario As Integer,
-                                  ByRef lConnection As SqlConnection,
-                                  ByRef lTransaction As SqlTransaction) As List(Of clsBePropietario_reglas_enc)
+                                                    ByRef lConnection As SqlConnection,
+                                                    ByRef lTransaction As SqlTransaction) As List(Of clsBePropietario_reglas_enc)
 
         Dim Lista As New List(Of clsBePropietario_reglas_enc)
 
@@ -431,6 +435,112 @@ Partial Public Class clsLnPropietario_reglas_enc
         End Try
 
     End Sub
+
+    Public Shared Function MaxID(ByVal pConnection As SqlConnection,
+                             ByVal pTransaction As SqlTransaction) As Integer
+        Dim mustCloseConn As Boolean = False
+        Dim lMax As Integer = 0
+
+        Try
+            Dim vSQL As String = "SELECT ISNULL(MAX(IdReglaPropietarioEnc),0) FROM propietario_reglas_enc"
+
+            Dim conn As SqlConnection = pConnection
+
+            ' Si la conexión externa es Nothing, crear una interna
+            If conn Is Nothing Then
+                conn = New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                mustCloseConn = True
+            End If
+
+            Using cmd As New SqlCommand(vSQL, conn)
+                cmd.CommandType = CommandType.Text
+
+                ' Si hay transacción externa, se usa
+                If pTransaction IsNot Nothing Then
+                    cmd.Transaction = pTransaction
+                End If
+
+                ' Abrir conexión solo si fue creada internamente
+                If conn.State = ConnectionState.Closed Then
+                    conn.Open()
+                    mustCloseConn = True
+                End If
+
+                Dim lReturnValue As Object = cmd.ExecuteScalar()
+
+                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                    lMax = CInt(lReturnValue)
+                End If
+            End Using
+
+            ' Cerrar si la conexión fue creada internamente
+            If mustCloseConn AndAlso conn IsNot Nothing Then
+                conn.Close()
+            End If
+
+            Return lMax
+
+        Catch ex As Exception
+            Throw
+        End Try
+    End Function
+
+
+    '#GT14112025: guardar lista de reglas por proceso.
+
+    Public Shared Sub Guarda_Procesos(ByVal pObjRE As List(Of clsBePropietario_reglas_enc))
+
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Dim ObjReglaENC As New clsLnPropietario_reglas_enc()
+        Dim ObjReglaDET As New clsLnPropietario_reglas_det()
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            If pObjRE IsNot Nothing AndAlso pObjRE.Count > 0 Then
+
+                Dim lMaxReglaEnc As Integer = clsLnPropietario_reglas_enc.MaxID(lConnection, lTransaction)
+
+                For Each Regla_Enc In pObjRE
+                    If Regla_Enc.IsNew Then
+                        lMaxReglaEnc += 1
+                        Regla_Enc.IdReglaPropietarioEnc = lMaxReglaEnc
+                        ObjReglaENC.Insertar(Regla_Enc, lConnection, lTransaction)
+
+                        Dim lMaxReglaDet As Integer = clsLnPropietario_reglas_det.MaxID(lConnection, lTransaction)
+
+                        For Each Detalle In Regla_Enc.ReglasDet
+                            If Detalle.IsNew Then
+                                lMaxReglaDet += 1
+                                Detalle.IdReglaPropietarioDet = lMaxReglaDet
+                                Detalle.IdReglaPropietarioEnc = Regla_Enc.IdReglaPropietarioEnc
+                                ObjReglaDET.Insertar(Detalle, lConnection, lTransaction)
+                            Else
+                                ObjReglaDET.Actualizar(Detalle, lConnection, lTransaction)
+                            End If
+                        Next
+                    Else
+                        ObjReglaENC.Actualizar(Regla_Enc, lConnection, lTransaction)
+                    End If
+
+                Next
+
+            End If
+
+            lTransaction.Commit()
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw New Exception(ex.Message)
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Sub
+
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls

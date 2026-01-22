@@ -148,7 +148,8 @@ Public Class clsLnVW_Stock_Res_Pedido
             '#EJC20211221: Ordenar por fecha descendente para ver las reservas mas recientes.
             'GT06012022: Se agrega opcional IdTran para mostrar stock reservado en tareas de ubicacion dirigida
             'GT25012022: Se agrega dbo.Nombre_Completo_Ubicacion en lugar de la descripcion
-            Dim vSQL As String = "SELECT 
+            Dim vSQL As String = "
+                                SELECT 
                                     sr.IdStockRes, 
                                     sr.IdStock, 
                                     sr.IdTransaccion, 
@@ -187,15 +188,19 @@ Public Class clsLnVW_Stock_Res_Pedido
                                     sr.Columna,
                                     sr.Nivel,
                                     sr.Tramo,
-                                    sr.Estructura,                                    
-                                    pe.bodega_destino as Bodega_Destino,
+                                    sr.Estructura,
+                                    sr.Color,
+                                    sr.Talla,
+                                    pe.bodega_destino AS Bodega_Destino,
                                     cli.nombre_comercial AS Cliente
                                 FROM VW_Stock_Res_Pedido sr                                
                                 LEFT JOIN trans_pe_enc pe 
                                     ON sr.Indicador = 'PED' AND sr.IdTransaccion = pe.IdPedidoEnc
                                 LEFT JOIN cliente cli 
                                     ON pe.IdCliente = cli.IdCliente
-                                WHERE sr.IdBodega = @IdBodega"
+                                WHERE sr.IdBodega = @IdBodega
+                                "
+
 
 
             If IdTran > 0 Then

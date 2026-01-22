@@ -34,6 +34,14 @@ Public Class clsLnTrans_ajuste_det
                 .lic_plate = IIf(IsDBNull(dr.Item("lic_plate")), "", dr.Item("lic_plate"))
                 .referencia_ajuste_erp = IIf(IsDBNull(dr.Item("referencia_ajuste_erp")), "", dr.Item("referencia_ajuste_erp"))
                 .estado_ajuste_erp = IIf(IsDBNull(dr.Item("estado_ajuste_erp")), False, dr.Item("estado_ajuste_erp"))
+                .IdProductoTallaColor_origen = IIf(IsDBNull(dr.Item("IdProductoTallaColor_origen")), 0, dr.Item("IdProductoTallaColor_origen"))
+                .Talla_origen = IIf(IsDBNull(dr.Item("Talla_origen")), "", dr.Item("Talla_origen"))
+                .Color_origen = IIf(IsDBNull(dr.Item("Color_origen")), "", dr.Item("Color_origen"))
+
+                .IdProductoTallaColor_destino = IIf(IsDBNull(dr.Item("IdProductoTallaColor_destino")), 0, dr.Item("IdProductoTallaColor_destino"))
+                .Talla_destino = IIf(IsDBNull(dr.Item("Talla_destino")), "", dr.Item("Talla_destino"))
+                .Color_destino = IIf(IsDBNull(dr.Item("Talla_destino")), "", dr.Item("Talla_destino"))
+
             End With
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
@@ -78,6 +86,18 @@ Public Class clsLnTrans_ajuste_det
             Ins.Add("referencia_ajuste_erp", "@referencia_ajuste_erp", DataType.Parametro)
             Ins.Add("estado_ajuste_erp", "@estado_ajuste_erp", DataType.Parametro)
 
+            If oBeTrans_ajuste_det.IdProductoTallaColor_origen > 0 Then
+                Ins.Add("IdProductoTallaColor_origen", "@IdProductoTallaColor_origen", DataType.Parametro)
+                Ins.Add("talla_origen", "@talla_origen", DataType.Parametro)
+                Ins.Add("color_origen", "@color_origen", DataType.Parametro)
+            End If
+
+            If oBeTrans_ajuste_det.IdProductoTallaColor_destino > 0 Then
+                Ins.Add("IdProductoTallaColor_destino", "@IdProductoTallaColor_destino", DataType.Parametro)
+                Ins.Add("talla_destino", "@talla_destino", DataType.Parametro)
+                Ins.Add("color_destino", "@color_destino", DataType.Parametro)
+            End If
+
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
 
@@ -120,6 +140,17 @@ Public Class clsLnTrans_ajuste_det
             cmd.Parameters.Add(New SqlParameter("@REFERENCIA_AJUSTE_ERP", oBeTrans_ajuste_det.referencia_ajuste_erp))
             cmd.Parameters.Add(New SqlParameter("@ESTADO_AJUSTE_ERP", oBeTrans_ajuste_det.estado_ajuste_erp))
 
+            If oBeTrans_ajuste_det.IdProductoTallaColor_origen > 0 Then
+                cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor_origen", oBeTrans_ajuste_det.IdProductoTallaColor_origen))
+                cmd.Parameters.Add(New SqlParameter("@Talla_origen", oBeTrans_ajuste_det.Talla_origen))
+                cmd.Parameters.Add(New SqlParameter("@Color_origen", oBeTrans_ajuste_det.Color_origen))
+            End If
+
+            If oBeTrans_ajuste_det.IdProductoTallaColor_destino > 0 Then
+                cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor_destino", oBeTrans_ajuste_det.IdProductoTallaColor_destino))
+                cmd.Parameters.Add(New SqlParameter("@Talla_destino", oBeTrans_ajuste_det.Talla_destino))
+                cmd.Parameters.Add(New SqlParameter("@Color_destino", oBeTrans_ajuste_det.Color_destino))
+            End If
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -176,6 +207,19 @@ Public Class clsLnTrans_ajuste_det
             Upd.Add("lic_plate", "@lic_plate", DataType.Parametro)
             Upd.Add("referencia_ajuste_erp", "@referencia_ajuste_erp", DataType.Parametro)
             Upd.Add("estado_ajuste_erp", "@estado_ajuste_erp", DataType.Parametro)
+
+            If oBeTrans_ajuste_det.IdProductoTallaColor_origen > 0 Then
+                Upd.Add("IdProductoTallaColor_origen", "@IdProductoTallaColor_origen", DataType.Parametro)
+                Upd.Add("talla_origen", "@talla_origen", DataType.Parametro)
+                Upd.Add("color_origen", "@color_origen", DataType.Parametro)
+            End If
+
+            If oBeTrans_ajuste_det.IdProductoTallaColor_destino > 0 Then
+                Upd.Add("IdProductoTallaColor_destino", "@IdProductoTallaColor_destino", DataType.Parametro)
+                Upd.Add("talla_destino", "@talla_destino", DataType.Parametro)
+                Upd.Add("color_destion", "@color_destion", DataType.Parametro)
+            End If
+
             Upd.Where("idajustedet = @idajustedet")
 
             Dim sp As String = Upd.SQL()
@@ -220,6 +264,17 @@ Public Class clsLnTrans_ajuste_det
             cmd.Parameters.Add(New SqlParameter("@REFERENCIA_AJUSTE_ERP", oBeTrans_ajuste_det.referencia_ajuste_erp))
             cmd.Parameters.Add(New SqlParameter("@ESTADO_AJUSTE_ERP", oBeTrans_ajuste_det.estado_ajuste_erp))
 
+            If oBeTrans_ajuste_det.IdProductoTallaColor_origen > 0 Then
+                cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor_origen", oBeTrans_ajuste_det.IdProductoTallaColor_origen))
+                cmd.Parameters.Add(New SqlParameter("@Talla_origen", oBeTrans_ajuste_det.Talla_origen))
+                cmd.Parameters.Add(New SqlParameter("@Color_origen", oBeTrans_ajuste_det.Color_origen))
+            End If
+
+            If oBeTrans_ajuste_det.IdProductoTallaColor_destino > 0 Then
+                cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor_destino", oBeTrans_ajuste_det.IdProductoTallaColor_destino))
+                cmd.Parameters.Add(New SqlParameter("@Talla_destino", oBeTrans_ajuste_det.Talla_destino))
+                cmd.Parameters.Add(New SqlParameter("@Color_destino", oBeTrans_ajuste_det.Color_destino))
+            End If
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

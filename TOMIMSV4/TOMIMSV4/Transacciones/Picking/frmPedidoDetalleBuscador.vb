@@ -112,7 +112,7 @@ Public Class frmPedidoDetalleBuscador
                                                            EstadoDespachado,
                                                            IdPropietarioBodega,
                                                            vIdUsuarioAgregoDocumento,
-                                                           tsAnulados.Checked)
+                                                           tsAnulados.IsOn)
 
                 Else
                     Dt = clsLnTrans_pe_enc.Get_All_Activos(dtpFechaDel.Value,
@@ -123,7 +123,7 @@ Public Class frmPedidoDetalleBuscador
                                                            EstadoDespachado,
                                                            IdPropietarioBodega,
                                                            vIdUsuarioAgregoDocumento,
-                                                           tsAnulados.Checked)
+                                                           tsAnulados.IsOn)
                 End If
             End If
 

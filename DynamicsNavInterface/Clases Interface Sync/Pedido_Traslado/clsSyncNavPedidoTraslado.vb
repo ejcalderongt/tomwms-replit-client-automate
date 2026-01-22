@@ -1571,6 +1571,7 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                                 '#EJC20171106_1023AM_REF02: El valor nothing indica el final de la vista.
                                 If Not L.Item_No Is Nothing Then
 
+
                                     BeProductoBodega = clsLnProducto_bodega.Existe(L.Item_No, BeConfigEnc.Idbodega, lConnection, lTransaction)
 
                                     'Existe el producto en el maestro?
@@ -2741,6 +2742,7 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                                             .Url = vURLEnviosAlm
                                         }
 
+
                                     Dim BePedidoEnc As New clsBeTrans_pe_enc
                                     Dim BePickingUbic As New List(Of clsBeTrans_picking_ubic)
 
@@ -3258,7 +3260,7 @@ Public Class clsSyncNavPedidoTraslado : Inherits clsInterfaceBase
                 '#CKFK 20211121 Agregué el campo IdTipoDocumento
                 Dim ListaPedidosTransf = (From i In lTransaccionesSalida
                                           Group i By Keys = New With {Key i.No_pedido, Key i.Idpedidoenc, Key i.Codigo_Bodega_Origen, i.IdTipoDocumento} Into Group
-                                          Select New With {Key Keys.No_pedido, Key Keys.IdPedidoEnc, Key Keys.Codigo_Bodega_Origen, Key Keys.IdTipoDocumento})
+                                          Select New With {Key Keys.No_pedido, Key Keys.Idpedidoenc, Key Keys.Codigo_Bodega_Origen, Key Keys.IdTipoDocumento})
                 Dim Enviado_A_Erp As Boolean = False '#CKFK 20180518 10:20 PM Agregué la validación de si el registro ya fue enviado o no a NAV
 
                 For Each PT In ListaPedidosTransf

@@ -13,17 +13,17 @@ Option Explicit On
 
 
 Namespace My
-    
-    <Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
-     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.12.0.0"),  _
-     Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
+
+    <Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),
+     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.14.0.0"),
+     Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>
     Partial Friend NotInheritable Class MySettings
         Inherits Global.System.Configuration.ApplicationSettingsBase
-        
-        Private Shared defaultInstance As MySettings = CType(Global.System.Configuration.ApplicationSettingsBase.Synchronized(New MySettings()),MySettings)
-        
+
+        Private Shared defaultInstance As MySettings = CType(Global.System.Configuration.ApplicationSettingsBase.Synchronized(New MySettings()), MySettings)
+
 #Region "My.Settings Auto-Save Functionality"
-#If _MyType = "WindowsForms" Then
+#If _MYTYPE = "WindowsForms" Then
     Private Shared addedHandler As Boolean
 
     Private Shared addedHandlerLockObject As New Object
@@ -36,11 +36,11 @@ Namespace My
     End Sub
 #End If
 #End Region
-        
+
         Public Shared ReadOnly Property [Default]() As MySettings
             Get
-                
-#If _MyType = "WindowsForms" Then
+
+#If _MYTYPE = "WindowsForms" Then
                If Not addedHandler Then
                     SyncLock addedHandlerLockObject
                         If Not addedHandler Then
@@ -53,600 +53,600 @@ Namespace My
                 Return defaultInstance
             End Get
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=PROGRAX\SQLEXPRESS;Initial Catalog=IMS4MB_MERHONSA_QA;Persist Securit"& _ 
-            "y Info=True;User ID=sa;Password=sysadm")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=PROGRAX\SQLEXPRESS;Initial Catalog=IMS4MB_MERHONSA_QA;Persist Securit" &
+            "y Info=True;User ID=sa;Password=sysadm")>
         Public Property IMS4MB_QAConnectionStringPrograN() As String
             Get
-                Return CType(Me("IMS4MB_QAConnectionStringPrograN"),String)
+                Return CType(Me("IMS4MB_QAConnectionStringPrograN"), String)
             End Get
             Set
-                Me("IMS4MB_QAConnectionStringPrograN") = value
+                Me("IMS4MB_QAConnectionStringPrograN") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=PROGRAN;Initial Catalog=IMS4MB_QA;Persist Security Info=True;User ID="& _ 
-            "sa;Password=sysadm")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=PROGRAN;Initial Catalog=IMS4MB_QA;Persist Security Info=True;User ID=" &
+            "sa;Password=sysadm")>
         Public Property IMS4MB_ConnectionStringConfigurable() As String
             Get
-                Return CType(Me("IMS4MB_ConnectionStringConfigurable"),String)
+                Return CType(Me("IMS4MB_ConnectionStringConfigurable"), String)
             End Get
             Set
-                Me("IMS4MB_ConnectionStringConfigurable") = value
+                Me("IMS4MB_ConnectionStringConfigurable") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=PROGRAX\SQLEXPRESS;Initial Catalog=IMS4MB_MERHONSA_QA;Persist Securit"& _ 
-            "y Info=True;User ID=sa;Password=sysadm")>  _
+
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=PROGRAX\SQLEXPRESS;Initial Catalog=IMS4MB_MERHONSA_QA;Persist Securit" &
+            "y Info=True;User ID=sa;Password=sysadm")>
         Public ReadOnly Property IMS4MB_QA_EJCConnectionString() As String
             Get
-                Return CType(Me("IMS4MB_QA_EJCConnectionString"),String)
+                Return CType(Me("IMS4MB_QA_EJCConnectionString"), String)
             End Get
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Basic")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("Basic")>
         Public Property SkinWMS() As String
             Get
-                Return CType(Me("SkinWMS"),String)
+                Return CType(Me("SkinWMS"), String)
             End Get
             Set
-                Me("SkinWMS") = value
+                Me("SkinWMS") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("<?xml version=""1.0"" encoding=""utf-16""?>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"<SerializableConnectionString xmlns:xsi="& _ 
-            """http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XM"& _ 
-            "LSchema"">"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <ConnectionString>Data Source=192.168.126.80;Initial Catalog=IMS4MB"& _ 
-            "_IDEALSA_PRD_20210906;Persist Security Info=True;User ID=mi3_user;Password=mi3_u"& _ 
-            "ser2018</ConnectionString>"&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"  <ProviderName>System.Data.SqlClient</ProviderName>"& _ 
-            ""&Global.Microsoft.VisualBasic.ChrW(13)&Global.Microsoft.VisualBasic.ChrW(10)&"</SerializableConnectionString>")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("<?xml version=""1.0"" encoding=""utf-16""?>" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "<SerializableConnectionString xmlns:xsi=" &
+            """http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XM" &
+            "LSchema"">" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "  <ConnectionString>Data Source=192.168.126.80;Initial Catalog=IMS4MB" &
+            "_IDEALSA_PRD_20210906;Persist Security Info=True;User ID=mi3_user;Password=mi3_u" &
+            "ser2018</ConnectionString>" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "  <ProviderName>System.Data.SqlClient</ProviderName>" &
+            "" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "</SerializableConnectionString>")>
         Public Property IMS4MB_PRDConnectionString() As String
             Get
-                Return CType(Me("IMS4MB_PRDConnectionString"),String)
+                Return CType(Me("IMS4MB_PRDConnectionString"), String)
             End Get
             Set
-                Me("IMS4MB_PRDConnectionString") = value
+                Me("IMS4MB_PRDConnectionString") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Page/Ficha_Bodegas")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Page/Ficha_Bodegas")>
         Public Property DynamicsNavInterface_WSFichaBodegas_Ficha_Bodegas_Service() As String
             Get
-                Return CType(Me("DynamicsNavInterface_WSFichaBodegas_Ficha_Bodegas_Service"),String)
+                Return CType(Me("DynamicsNavInterface_WSFichaBodegas_Ficha_Bodegas_Service"), String)
             End Get
             Set
-                Me("DynamicsNavInterface_WSFichaBodegas_Ficha_Bodegas_Service") = value
+                Me("DynamicsNavInterface_WSFichaBodegas_Ficha_Bodegas_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Page/Proveedores")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Page/Proveedores")>
         Public Property DynamicsNavInterface_WSProveedores_Proveedores_Service() As String
             Get
-                Return CType(Me("DynamicsNavInterface_WSProveedores_Proveedores_Service"),String)
+                Return CType(Me("DynamicsNavInterface_WSProveedores_Proveedores_Service"), String)
             End Get
             Set
-                Me("DynamicsNavInterface_WSProveedores_Proveedores_Service") = value
+                Me("DynamicsNavInterface_WSProveedores_Proveedores_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Page/Pedidos_Compra")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Page/Pedidos_Compra")>
         Public Property DynamicsNavInterface_WSPedidoCompra_Pedidos_Compra_Service() As String
             Get
-                Return CType(Me("DynamicsNavInterface_WSPedidoCompra_Pedidos_Compra_Service"),String)
+                Return CType(Me("DynamicsNavInterface_WSPedidoCompra_Pedidos_Compra_Service"), String)
             End Get
             Set
-                Me("DynamicsNavInterface_WSPedidoCompra_Pedidos_Compra_Service") = value
+                Me("DynamicsNavInterface_WSPedidoCompra_Pedidos_Compra_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Pedidos_Transferencia")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Pedidos_Transferencia")>
         Public Property DynamicsNavInterface_WsPedidoTransferencia_Pedidos_Transferencia_Service() As String
             Get
-                Return CType(Me("DynamicsNavInterface_WsPedidoTransferencia_Pedidos_Transferencia_Service"),String)
+                Return CType(Me("DynamicsNavInterface_WsPedidoTransferencia_Pedidos_Transferencia_Service"), String)
             End Get
             Set
-                Me("DynamicsNavInterface_WsPedidoTransferencia_Pedidos_Transferencia_Service") = value
+                Me("DynamicsNavInterface_WsPedidoTransferencia_Pedidos_Transferencia_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Page/Categorias_Productos")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Page/Categorias_Productos")>
         Public Property DynamicsNavInterface_wsCategoriasProductos_Categorias_Productos_Service() As String
             Get
-                Return CType(Me("DynamicsNavInterface_wsCategoriasProductos_Categorias_Productos_Service"),String)
+                Return CType(Me("DynamicsNavInterface_wsCategoriasProductos_Categorias_Productos_Service"), String)
             End Get
             Set
-                Me("DynamicsNavInterface_wsCategoriasProductos_Categorias_Productos_Service") = value
+                Me("DynamicsNavInterface_wsCategoriasProductos_Categorias_Productos_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Page/Grupos_Productos")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Page/Grupos_Productos")>
         Public Property DynamicsNavInterface_WSGruposProductos_Grupos_Productos_Service() As String
             Get
-                Return CType(Me("DynamicsNavInterface_WSGruposProductos_Grupos_Productos_Service"),String)
+                Return CType(Me("DynamicsNavInterface_WSGruposProductos_Grupos_Productos_Service"), String)
             End Get
             Set
-                Me("DynamicsNavInterface_WSGruposProductos_Grupos_Productos_Service") = value
+                Me("DynamicsNavInterface_WSGruposProductos_Grupos_Productos_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/Registra_Recepcion"& _ 
-            "_Compra")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/Registra_Recepcion" &
+            "_Compra")>
         Public Property DynamicsNavInterface_WSRegistraRecepcionCompra_Registra_Recepcion_Compra() As String
             Get
-                Return CType(Me("DynamicsNavInterface_WSRegistraRecepcionCompra_Registra_Recepcion_Compra"),String)
+                Return CType(Me("DynamicsNavInterface_WSRegistraRecepcionCompra_Registra_Recepcion_Compra"), String)
             End Get
             Set
-                Me("DynamicsNavInterface_WSRegistraRecepcionCompra_Registra_Recepcion_Compra") = value
+                Me("DynamicsNavInterface_WSRegistraRecepcionCompra_Registra_Recepcion_Compra") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/Registra_Transfer_"& _ 
-            "Envio")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/Registra_Transfer_" &
+            "Envio")>
         Public Property DynamicsNavInterface_WSRegistraTransferEnvio_Registra_Transfer_Envio() As String
             Get
-                Return CType(Me("DynamicsNavInterface_WSRegistraTransferEnvio_Registra_Transfer_Envio"),String)
+                Return CType(Me("DynamicsNavInterface_WSRegistraTransferEnvio_Registra_Transfer_Envio"), String)
             End Get
             Set
-                Me("DynamicsNavInterface_WSRegistraTransferEnvio_Registra_Transfer_Envio") = value
+                Me("DynamicsNavInterface_WSRegistraTransferEnvio_Registra_Transfer_Envio") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/Registra_Transfer_"& _ 
-            "Recepcion")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/Registra_Transfer_" &
+            "Recepcion")>
         Public Property DynamicsNavInterface_WSRegistraTransferRecepcion_Registra_Transfer_Recepcion() As String
             Get
-                Return CType(Me("DynamicsNavInterface_WSRegistraTransferRecepcion_Registra_Transfer_Recepcion"),String)
+                Return CType(Me("DynamicsNavInterface_WSRegistraTransferRecepcion_Registra_Transfer_Recepcion"), String)
             End Get
             Set
-                Me("DynamicsNavInterface_WSRegistraTransferRecepcion_Registra_Transfer_Recepcion") = value
+                Me("DynamicsNavInterface_WSRegistraTransferRecepcion_Registra_Transfer_Recepcion") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/Lote_PedidoCompra")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/Lote_PedidoCompra")>
         Public Property DynamicsNavInterface_WSNavLotePedidoCompra_Lote_PedidoCompra() As String
             Get
-                Return CType(Me("DynamicsNavInterface_WSNavLotePedidoCompra_Lote_PedidoCompra"),String)
+                Return CType(Me("DynamicsNavInterface_WSNavLotePedidoCompra_Lote_PedidoCompra"), String)
             End Get
             Set
-                Me("DynamicsNavInterface_WSNavLotePedidoCompra_Lote_PedidoCompra") = value
+                Me("DynamicsNavInterface_WSNavLotePedidoCompra_Lote_PedidoCompra") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/CantidadRecibir_Pe"& _ 
-            "didoCompra")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/CantidadRecibir_Pe" &
+            "didoCompra")>
         Public Property DynamicsNavInterface_WSNavCantidadRecibirPedidoCompra_CantidadRecibir_PedidoCompra() As String
             Get
-                Return CType(Me("DynamicsNavInterface_WSNavCantidadRecibirPedidoCompra_CantidadRecibir_PedidoCompr"& _ 
-                    "a"),String)
+                Return CType(Me("DynamicsNavInterface_WSNavCantidadRecibirPedidoCompra_CantidadRecibir_PedidoCompr" &
+                    "a"), String)
             End Get
             Set
-                Me("DynamicsNavInterface_WSNavCantidadRecibirPedidoCompra_CantidadRecibir_PedidoCompr"& _ 
-                    "a") = value
+                Me("DynamicsNavInterface_WSNavCantidadRecibirPedidoCompra_CantidadRecibir_PedidoCompr" &
+                    "a") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/Lote_PedidoTransfe"& _ 
-            "rencia")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/Lote_PedidoTransfe" &
+            "rencia")>
         Public Property DynamicsNavInterface_WSLotePedidoTransferencia_Lote_PedidoTransferencia() As String
             Get
-                Return CType(Me("DynamicsNavInterface_WSLotePedidoTransferencia_Lote_PedidoTransferencia"),String)
+                Return CType(Me("DynamicsNavInterface_WSLotePedidoTransferencia_Lote_PedidoTransferencia"), String)
             End Get
             Set
-                Me("DynamicsNavInterface_WSLotePedidoTransferencia_Lote_PedidoTransferencia") = value
+                Me("DynamicsNavInterface_WSLotePedidoTransferencia_Lote_PedidoTransferencia") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/CantidadEnviar_Ped"& _ 
-            "idoTransferencia")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Codeunit/CantidadEnviar_Ped" &
+            "idoTransferencia")>
         Public Property DynamicsNavInterface_WSCantidadPedidoTransferencia_CantidadEnviar_PedidoTransferencia() As String
             Get
-                Return CType(Me("DynamicsNavInterface_WSCantidadPedidoTransferencia_CantidadEnviar_PedidoTransfere"& _ 
-                    "ncia"),String)
+                Return CType(Me("DynamicsNavInterface_WSCantidadPedidoTransferencia_CantidadEnviar_PedidoTransfere" &
+                    "ncia"), String)
             End Get
             Set
-                Me("DynamicsNavInterface_WSCantidadPedidoTransferencia_CantidadEnviar_PedidoTransfere"& _ 
-                    "ncia") = value
+                Me("DynamicsNavInterface_WSCantidadPedidoTransferencia_CantidadEnviar_PedidoTransfere" &
+                    "ncia") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Page/Tabla_Conversiones")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://186.151.196.178:7047/DynamicsNAV80/WS/PRALCASA/Page/Tabla_Conversiones")>
         Public Property NavSync_wsTablaConversiones_Tabla_Conversiones_Service() As String
             Get
-                Return CType(Me("NavSync_wsTablaConversiones_Tabla_Conversiones_Service"),String)
+                Return CType(Me("NavSync_wsTablaConversiones_Tabla_Conversiones_Service"), String)
             End Get
             Set
-                Me("NavSync_wsTablaConversiones_Tabla_Conversiones_Service") = value
+                Me("NavSync_wsTablaConversiones_Tabla_Conversiones_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Pagina_lotes")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Pagina_lotes")>
         Public Property NavSync_WSPaginaLotes_Pagina_lotes_Service() As String
             Get
-                Return CType(Me("NavSync_WSPaginaLotes_Pagina_lotes_Service"),String)
+                Return CType(Me("NavSync_WSPaginaLotes_Pagina_lotes_Service"), String)
             End Get
             Set
-                Me("NavSync_WSPaginaLotes_Pagina_lotes_Service") = value
+                Me("NavSync_WSPaginaLotes_Pagina_lotes_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("wmsbodega1")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("wmsbodega1")>
         Public Property usuariows() As String
             Get
-                Return CType(Me("usuariows"),String)
+                Return CType(Me("usuariows"), String)
             End Get
             Set
-                Me("usuariows") = value
+                Me("usuariows") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("31/05+Byb")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("31/05+Byb")>
         Public Property clavews() As String
             Get
-                Return CType(Me("clavews"),String)
+                Return CType(Me("clavews"), String)
             End Get
             Set
-                Me("clavews") = value
+                Me("clavews") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:50601/DynamicsNAV110/WS/PRALCASA/Page/Clientes")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:50601/DynamicsNAV110/WS/PRALCASA/Page/Clientes")>
         Public Property NavSync_WSClientes_Clientes_Service() As String
             Get
-                Return CType(Me("NavSync_WSClientes_Clientes_Service"),String)
+                Return CType(Me("NavSync_WSClientes_Clientes_Service"), String)
             End Get
             Set
-                Me("NavSync_WSClientes_Clientes_Service") = value
+                Me("NavSync_WSClientes_Clientes_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:50601/DynamicsNAV110/WS/PRALCASA/Page/Lista_clientes")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:50601/DynamicsNAV110/WS/PRALCASA/Page/Lista_clientes")>
         Public Property NavSync_WSListaClientes_Lista_clientes_Service() As String
             Get
-                Return CType(Me("NavSync_WSListaClientes_Lista_clientes_Service"),String)
+                Return CType(Me("NavSync_WSListaClientes_Lista_clientes_Service"), String)
             End Get
             Set
-                Me("NavSync_WSListaClientes_Lista_clientes_Service") = value
+                Me("NavSync_WSListaClientes_Lista_clientes_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:50601/DynamicsNAV110/WS/PRALCASA/Page/Pedidos")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:50601/DynamicsNAV110/WS/PRALCASA/Page/Pedidos")>
         Public Property NavSync_WSPedidosVenta_Pedidos_Service() As String
             Get
-                Return CType(Me("NavSync_WSPedidosVenta_Pedidos_Service"),String)
+                Return CType(Me("NavSync_WSPedidosVenta_Pedidos_Service"), String)
             End Get
             Set
-                Me("NavSync_WSPedidosVenta_Pedidos_Service") = value
+                Me("NavSync_WSPedidosVenta_Pedidos_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Codeunit/CUWMS")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Codeunit/CUWMS")>
         Public Property NavSync_CUWMS_CUWMS() As String
             Get
-                Return CType(Me("NavSync_CUWMS_CUWMS"),String)
+                Return CType(Me("NavSync_CUWMS_CUWMS"), String)
             End Get
             Set
-                Me("NavSync_CUWMS_CUWMS") = value
+                Me("NavSync_CUWMS_CUWMS") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Devolucion")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Devolucion")>
         Public Property NavSync_WSDevolucion_Devolucion_Service() As String
             Get
-                Return CType(Me("NavSync_WSDevolucion_Devolucion_Service"),String)
+                Return CType(Me("NavSync_WSDevolucion_Devolucion_Service"), String)
             End Get
             Set
-                Me("NavSync_WSDevolucion_Devolucion_Service") = value
+                Me("NavSync_WSDevolucion_Devolucion_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Diario_Almacen")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Diario_Almacen")>
         Public Property NavSync_WSDiarioAlmacen_Diario_Almacen_Service() As String
             Get
-                Return CType(Me("NavSync_WSDiarioAlmacen_Diario_Almacen_Service"),String)
+                Return CType(Me("NavSync_WSDiarioAlmacen_Diario_Almacen_Service"), String)
             End Get
             Set
-                Me("NavSync_WSDiarioAlmacen_Diario_Almacen_Service") = value
+                Me("NavSync_WSDiarioAlmacen_Diario_Almacen_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Productos")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Productos")>
         Public Property DynamicsNavInterface_wsProductos_Productos_Service() As String
             Get
-                Return CType(Me("DynamicsNavInterface_wsProductos_Productos_Service"),String)
+                Return CType(Me("DynamicsNavInterface_wsProductos_Productos_Service"), String)
             End Get
             Set
-                Me("DynamicsNavInterface_wsProductos_Productos_Service") = value
+                Me("DynamicsNavInterface_wsProductos_Productos_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Ubicar_Almacen")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Ubicar_Almacen")>
         Public Property NavSync_WSUbicarAlmacen_Ubicar_Almacen_Service() As String
             Get
-                Return CType(Me("NavSync_WSUbicarAlmacen_Ubicar_Almacen_Service"),String)
+                Return CType(Me("NavSync_WSUbicarAlmacen_Ubicar_Almacen_Service"), String)
             End Get
             Set
-                Me("NavSync_WSUbicarAlmacen_Ubicar_Almacen_Service") = value
+                Me("NavSync_WSUbicarAlmacen_Ubicar_Almacen_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/U_Internas")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/U_Internas")>
         Public Property NavSync_WSUInternas_U_Internas_Service() As String
             Get
-                Return CType(Me("NavSync_WSUInternas_U_Internas_Service"),String)
+                Return CType(Me("NavSync_WSUInternas_U_Internas_Service"), String)
             End Get
             Set
-                Me("NavSync_WSUInternas_U_Internas_Service") = value
+                Me("NavSync_WSUInternas_U_Internas_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Mov_Productos")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Mov_Productos")>
         Public Property NavSync_WSMovProductos_Mov_Productos_Service() As String
             Get
-                Return CType(Me("NavSync_WSMovProductos_Mov_Productos_Service"),String)
+                Return CType(Me("NavSync_WSMovProductos_Mov_Productos_Service"), String)
             End Get
             Set
-                Me("NavSync_WSMovProductos_Mov_Productos_Service") = value
+                Me("NavSync_WSMovProductos_Mov_Productos_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Codeunit/Ajustes_Inventario"& _ 
-            "")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Codeunit/Ajustes_Inventario" &
+            "")>
         Public Property NavSync_wsAjusteInventario_Ajustes_Inventario() As String
             Get
-                Return CType(Me("NavSync_wsAjusteInventario_Ajustes_Inventario"),String)
+                Return CType(Me("NavSync_wsAjusteInventario_Ajustes_Inventario"), String)
             End Get
             Set
-                Me("NavSync_wsAjusteInventario_Ajustes_Inventario") = value
+                Me("NavSync_wsAjusteInventario_Ajustes_Inventario") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Envio_alm")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Envio_alm")>
         Public Property NavSync_WSEnvioAlm_Envio_alm_Service() As String
             Get
-                Return CType(Me("NavSync_WSEnvioAlm_Envio_alm_Service"),String)
+                Return CType(Me("NavSync_WSEnvioAlm_Envio_alm_Service"), String)
             End Get
             Set
-                Me("NavSync_WSEnvioAlm_Envio_alm_Service") = value
+                Me("NavSync_WSEnvioAlm_Envio_alm_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Crea_picking")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Crea_picking")>
         Public Property NavSync_WSCreaPicking_Crea_picking_Service() As String
             Get
-                Return CType(Me("NavSync_WSCreaPicking_Crea_picking_Service"),String)
+                Return CType(Me("NavSync_WSCreaPicking_Crea_picking_Service"), String)
             End Get
             Set
-                Me("NavSync_WSCreaPicking_Crea_picking_Service") = value
+                Me("NavSync_WSCreaPicking_Crea_picking_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Devolucion_venta")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Devolucion_venta")>
         Public Property NavSync_wsDevolucionVenta_Devolucion_venta_Service() As String
             Get
-                Return CType(Me("NavSync_wsDevolucionVenta_Devolucion_venta_Service"),String)
+                Return CType(Me("NavSync_wsDevolucionVenta_Devolucion_venta_Service"), String)
             End Get
             Set
-                Me("NavSync_wsDevolucionVenta_Devolucion_venta_Service") = value
+                Me("NavSync_wsDevolucionVenta_Devolucion_venta_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Picking")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Picking")>
         Public Property NavSync_WSPicking_Picking_Service() As String
             Get
-                Return CType(Me("NavSync_WSPicking_Picking_Service"),String)
+                Return CType(Me("NavSync_WSPicking_Picking_Service"), String)
             End Get
             Set
-                Me("NavSync_WSPicking_Picking_Service") = value
+                Me("NavSync_WSPicking_Picking_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Dimensiones")>  _
+
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Dimensiones")>
         Public ReadOnly Property NavSync_WSDimensiones_Dimensiones_Service() As String
             Get
-                Return CType(Me("NavSync_WSDimensiones_Dimensiones_Service"),String)
+                Return CType(Me("NavSync_WSDimensiones_Dimensiones_Service"), String)
             End Get
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://122.122.122.21:7047/DynamicsNAV110/WS/PRALCASA/Page/Pedidos")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://122.122.122.21:7047/DynamicsNAV110/WS/PRALCASA/Page/Pedidos")>
         Public Property NavSync_WSPedidosCliente_Pedidos_Service() As String
             Get
-                Return CType(Me("NavSync_WSPedidosCliente_Pedidos_Service"),String)
+                Return CType(Me("NavSync_WSPedidosCliente_Pedidos_Service"), String)
             End Get
             Set
-                Me("NavSync_WSPedidosCliente_Pedidos_Service") = value
+                Me("NavSync_WSPedidosCliente_Pedidos_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Lista_clientes")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Lista_clientes")>
         Public Property NavSync_WSListaCliente_Lista_clientes_Service() As String
             Get
-                Return CType(Me("NavSync_WSListaCliente_Lista_clientes_Service"),String)
+                Return CType(Me("NavSync_WSListaCliente_Lista_clientes_Service"), String)
             End Get
             Set
-                Me("NavSync_WSListaCliente_Lista_clientes_Service") = value
+                Me("NavSync_WSListaCliente_Lista_clientes_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Series")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Series")>
         Public Property NavSync_WSSeries_Series_Service() As String
             Get
-                Return CType(Me("NavSync_WSSeries_Series_Service"),String)
+                Return CType(Me("NavSync_WSSeries_Series_Service"), String)
             End Get
             Set
-                Me("NavSync_WSSeries_Series_Service") = value
+                Me("NavSync_WSSeries_Series_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/OP_Lanzadas")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/OP_Lanzadas")>
         Public Property NavSync_WSOrdenesProduccion_OP_Lanzadas_Service() As String
             Get
-                Return CType(Me("NavSync_WSOrdenesProduccion_OP_Lanzadas_Service"),String)
+                Return CType(Me("NavSync_WSOrdenesProduccion_OP_Lanzadas_Service"), String)
             End Get
             Set
-                Me("NavSync_WSOrdenesProduccion_OP_Lanzadas_Service") = value
+                Me("NavSync_WSOrdenesProduccion_OP_Lanzadas_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=PROGRA12\SQLEXPRESS01;Initial Catalog=IMS4MB_MERHONSA_QA;Persist Secu"& _ 
-            "rity Info=True;User ID=sa;Password=sysadm")>  _
+
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=PROGRA12\SQLEXPRESS01;Initial Catalog=IMS4MB_MERHONSA_QA;Persist Secu" &
+            "rity Info=True;User ID=sa;Password=sysadm")>
         Public ReadOnly Property IMS4MB_QA_EJCConnectionString1() As String
             Get
-                Return CType(Me("IMS4MB_QA_EJCConnectionString1"),String)
+                Return CType(Me("IMS4MB_QA_EJCConnectionString1"), String)
             End Get
         End Property
-        
-        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=DESARROLLO8-PC\SQL2019;Initial Catalog=IMS4MB_CLC_REV;Integrated Secu"& _ 
-            "rity=True")>  _
+
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=DESARROLLO8-PC\SQL2019;Initial Catalog=IMS4MB_CLC_REV;Integrated Secu" &
+            "rity=True")>
         Public ReadOnly Property IMS4MB_PRDConnectionString1() As String
             Get
-                Return CType(Me("IMS4MB_PRDConnectionString1"),String)
+                Return CType(Me("IMS4MB_PRDConnectionString1"), String)
             End Get
         End Property
-        
-        <Global.System.Configuration.UserScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Recep_Almacen")>  _
+
+        <Global.System.Configuration.UserScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://168.194.73.242:7047/DynamicsNAV110/WS/PRALCASA/Page/Recep_Almacen")>
         Public Property NavSync_WSRecepcionesAlm_Recep_Almacen_Service() As String
             Get
-                Return CType(Me("NavSync_WSRecepcionesAlm_Recep_Almacen_Service"),String)
+                Return CType(Me("NavSync_WSRecepcionesAlm_Recep_Almacen_Service"), String)
             End Get
             Set
-                Me("NavSync_WSRecepcionesAlm_Recep_Almacen_Service") = value
+                Me("NavSync_WSRecepcionesAlm_Recep_Almacen_Service") = Value
             End Set
         End Property
-        
-        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://10.10.20.181/WCFTOM4/tomhhws.asmx")>  _
+
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.DefaultSettingValueAttribute("http://10.10.20.181/WCFTOM4/tomhhws.asmx")>
         Public ReadOnly Property NavSync_WebReference_TOMHHWS() As String
             Get
-                Return CType(Me("NavSync_WebReference_TOMHHWS"),String)
+                Return CType(Me("NavSync_WebReference_TOMHHWS"), String)
             End Get
         End Property
-        
-        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=DESARROLLO8-PC\;Initial Catalog=IMS4MB_CEALSA_QAP;Integrated Security"& _ 
-            "=True")>  _
+
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=DESARROLLO8-PC\;Initial Catalog=IMS4MB_CEALSA_QAP;Integrated Security" &
+            "=True")>
         Public ReadOnly Property IMS4MB_CEALSA_QAPConnectionString() As String
             Get
-                Return CType(Me("IMS4MB_CEALSA_QAPConnectionString"),String)
+                Return CType(Me("IMS4MB_CEALSA_QAPConnectionString"), String)
             End Get
         End Property
-        
-        <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
-         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=PROGRA14\SQL2022;Initial Catalog=TOMWMS_LA_CUMBRE_PRD;Persist Securit"& _ 
-            "y Info=True;User ID=sa;Encrypt=False;TrustServerCertificate=True")>  _
+
+        <Global.System.Configuration.ApplicationScopedSettingAttribute(),
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+         Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=PROGRA14\SQL2022;Initial Catalog=TOMWMS_LA_CUMBRE_PRD;Persist Securit" &
+            "y Info=True;User ID=sa;Encrypt=False;TrustServerCertificate=True")>
         Public ReadOnly Property TOMWMS_LA_CUMBRE_PRDConnectionString() As String
             Get
-                Return CType(Me("TOMWMS_LA_CUMBRE_PRDConnectionString"),String)
+                Return CType(Me("TOMWMS_LA_CUMBRE_PRDConnectionString"), String)
             End Get
         End Property
     End Class
 End Namespace
 
 Namespace My
-    
-    <Global.Microsoft.VisualBasic.HideModuleNameAttribute(),  _
-     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute()>  _
+
+    <Global.Microsoft.VisualBasic.HideModuleNameAttribute(),
+     Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),
+     Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute()>
     Friend Module MySettingsProperty
-        
-        <Global.System.ComponentModel.Design.HelpKeywordAttribute("My.Settings")>  _
+
+        <Global.System.ComponentModel.Design.HelpKeywordAttribute("My.Settings")>
         Friend ReadOnly Property Settings() As Global.TOMWMS.My.MySettings
             Get
                 Return Global.TOMWMS.My.MySettings.Default

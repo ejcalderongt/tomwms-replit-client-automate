@@ -1,5 +1,7 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System
+Imports System.Data.SqlClient
 Imports System.Reflection
+Imports DevExpress.XtraEditors
 
 Partial Public Class clsLnTrans_picking_enc
 
@@ -133,6 +135,7 @@ Partial Public Class clsLnTrans_picking_enc
 
         Try
 
+            '#AT20250124 Agregue un inner join para obtener el nombre de la bodega del picking
             Dim vSQL As String = "SELECT b.descripcion AS UbicacionPicking, enc.*, c.nombre as nombre_bodega
                                   FROM trans_picking_enc AS enc 
                                   INNER JOIN bodega_ubicacion AS b ON enc.IdUbicacionPicking = b.IdUbicacion 
@@ -1105,12 +1108,15 @@ Partial Public Class clsLnTrans_picking_enc
                                      lConnection,
                                      lTransaction)
 
-            pBeTareaHH.IdTransaccion = pBeTrans_picking_enc.IdPickingEnc
+            If pBeTareaHH IsNot Nothing Then
+                pBeTareaHH.IdTransaccion = pBeTrans_picking_enc.IdPickingEnc
 
-            'Tarea de picking.
-            clsLnTarea_hh.Guardar_Tarea_Picking_HH(pBeTareaHH,
-                                                   lConnection,
-                                                   lTransaction)
+                'Tarea de picking.
+                clsLnTarea_hh.Guardar_Tarea_Picking_HH(pBeTareaHH,
+                                                       lConnection,
+                                                       lTransaction)
+
+            End If
 
             ' Picking Detalle
             clsLnTrans_picking_det.Guarda_Trans_picking_det(pBeTrans_picking_enc.IdPickingEnc,
@@ -1121,9 +1127,17 @@ Partial Public Class clsLnTrans_picking_enc
                                                             lTransaction)
 
             ' Picking Detalle Parametros
-            clsLnTrans_picking_det_parametros.Guarda_Trans_picking_parametros(pListBePickingDetParametros,
-                                                                              lConnection,
-                                                                              lTransaction)
+            If pListBePickingDetParametros IsNot Nothing Then
+                clsLnTrans_picking_det_parametros.Guarda_Trans_picking_parametros(pListBePickingDetParametros,
+                                                                                  lConnection,
+                                                                                  lTransaction)
+            End If
+
+            ' Picking Detalle Operador
+            clsLnTrans_picking_op.Guarda_Trans_picking_operador(pBeTrans_picking_enc.IdPickingEnc,
+                                                                pListBePickingOpe,
+                                                                lConnection,
+                                                                lTransaction)
 
             ' Picking Detalle Ubicacion
             clsLnTrans_picking_ubic.Guarda_Trans_picking_ubic(pBeTrans_picking_enc.IdPickingEnc,
@@ -1356,7 +1370,7 @@ Partial Public Class clsLnTrans_picking_enc
 
     End Function
 
-    Public Shared Sub Guarda_Trans_picking_enc(ByVal pBeTransPickingEnc As clsBeTrans_picking_enc,
+    Public Shared Sub Guarda_Trans_picking_enc(ByRef pBeTransPickingEnc As clsBeTrans_picking_enc,
                                                ByRef lConnection As SqlConnection,
                                                ByRef lTransaction As SqlTransaction)
         Try
@@ -2101,15 +2115,15 @@ Partial Public Class clsLnTrans_picking_enc
             '#CKFK 20200514 Correccion de este query, le hacían falta los parentesis en el or del Where
             'GT01022022: se agrega lic_plateyo 
             Dim vSQL As String = "SELECT ped.IdPedidoEnc, ped.IdPedidoDet,pubic.IdPickingUbic,pubic.IdPickingDet,p.Codigo as Código,ped.nombre_producto as Producto,
-                                  ped.nom_unid_med as UMBas, pp.Nombre as Presentación,ped.nom_estado as EstadoProducto,pubic.lote as Lote, pubic.fecha_vence as Vence,
-                                  pubic.cantidad_solicitada AS CantidadDañada,pubic.dañado_picking as DañadoPicking,pubic.dañado_verificacion as DañadoVerificación, 
-                                  pubic.no_encontrado as NoEncontrado,pubic.lic_plate
-                                  FROM trans_pe_det ped inner join trans_picking_det pkdet ON  ped.IdPedidoDet = pkdet.IdPedidoDet
-                                  inner JOIN trans_picking_ubic pubic ON pkdet.IdPickingDet = pubic.IdPickingDet
-                                  INNER JOIN producto_bodega pb ON pb.IdProductoBodega = ped.IdProductoBodega
-                                  INNER JOIN producto P ON p.IdProducto = pb.IdProducto
-                                  LEFT OUTER JOIN producto_presentacion pp ON p.IdProducto = pp.IdProducto AND pp.Idpresentacion = pubic.idPresentacion 
-                                  WHERE pkdet.IdPickingEnc = @IdPickingEnc  and (pubic.dañado_verificacion = 1 or pubic.dañado_picking = 1 or no_encontrado = 1)"
+                    ped.nom_unid_med as UMBas, pp.Nombre as Presentación,ped.nom_estado as EstadoProducto,pubic.lote as Lote, pubic.fecha_vence as Vence,
+                    pubic.cantidad_solicitada AS CantidadDañada,pubic.dañado_picking as DañadoPicking,pubic.dañado_verificacion as DañadoVerificación, 
+                    pubic.no_encontrado as NoEncontrado,pubic.lic_plate
+                    FROM trans_pe_det ped inner join trans_picking_det pkdet ON  ped.IdPedidoDet = pkdet.IdPedidoDet
+                    inner JOIN trans_picking_ubic pubic ON pkdet.IdPickingDet = pubic.IdPickingDet
+                    INNER JOIN producto_bodega pb ON pb.IdProductoBodega = ped.IdProductoBodega
+                    INNER JOIN producto P ON p.IdProducto = pb.IdProducto
+                    LEFT OUTER JOIN producto_presentacion pp ON p.IdProducto = pp.IdProducto AND pp.Idpresentacion = pubic.idPresentacion 
+                    WHERE pkdet.IdPickingEnc = @IdPickingEnc  and (pubic.dañado_verificacion = 1 or pubic.dañado_picking = 1 or no_encontrado = 1)"
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -2595,6 +2609,7 @@ Partial Public Class clsLnTrans_picking_enc
                     Else
                         pEstadoPicking = "Procesado"
                     End If
+
                     Actualizar_FecMod_And_HoraFin(pIdPickingEnc, pEstadoPicking, lConnection, lTransaction)
 
                 Else
@@ -2673,7 +2688,7 @@ Partial Public Class clsLnTrans_picking_enc
 
         Catch ex As Exception
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw New Exception(ex.Message)
+            Throw ex
         Finally
             If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
         End Try
@@ -2932,6 +2947,11 @@ Partial Public Class clsLnTrans_picking_enc
 
                     BeTransPickingEnc.IsNew = False
 
+                    '#AT20250102 No se esta utilizando ListaPickingDet en HH
+                    'BeTransPickingEnc.ListaPickingDet = clsLnTrans_picking_det.Get_All_Picking_Det_By_IdPickingEnc(BeTransPickingEnc.IdPickingEnc,
+                    '                                                                                               lConnection,
+                    '                                                                                               lTransaction)
+
                     '#CKFK20250303 Cambie esta funcion Get_All_PickingUbic_By_IdPickingEnc por esta Get_All_PickingUbic_By_IdPickingEnc_And_IdPedidoEnc
                     BeTransPickingEnc.ListaPickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPickingEnc_And_IdPedidoEnc(BeTransPickingEnc.IdPickingEnc,
                                                                                                                                      pIdPedidoEnc,
@@ -3180,6 +3200,160 @@ Partial Public Class clsLnTrans_picking_enc
         End Try
     End Function
 
+    Public Shared Function Guardar(ByVal pBeTrans_picking_enc As clsBeTrans_picking_enc,
+                                   ByVal pBeTareaHH As clsBeTarea_hh,
+                                   ByVal pListBePickingDet As List(Of clsBeTrans_picking_det),
+                                   ByVal pListBePickingDetParametros As List(Of clsBeTrans_picking_det_parametros),
+                                   ByVal pListBePickingOpe As List(Of clsBeTrans_picking_op),
+                                   ByVal pListBePickingUbic As List(Of clsBeTrans_picking_ubic),
+                                   ByVal lConnection As SqlConnection,
+                                   ByVal lTransaction As SqlTransaction) As Boolean
+
+        Guardar = False
+
+        Try
+            Dim sSQL As String = "SELECT Estado FROM trans_picking_enc WHERE IdPickingEnc = @IdPickingEnc"
+
+            '#GT01022023: Obtener el IdPickingEnc
+            Dim vBePickingEncOriginal As New clsBeTrans_picking_enc
+            vBePickingEncOriginal.IdPickingEnc = pBeTrans_picking_enc.IdPickingEnc
+
+            '#EJC202301301011:Determinar si se cambió la bandera de procesado BOF después de que el operador pickeara con HH.
+            If Not pBeTrans_picking_enc.IsNew Then
+                If GetSingle(vBePickingEncOriginal, lConnection, lTransaction) Then
+                    If Not vBePickingEncOriginal Is Nothing Then
+                        If Not vBePickingEncOriginal.procesado_bof Then
+                            If pBeTrans_picking_enc.procesado_bof Then
+
+                                Dim vMensajeLog As String = "Advertencia_202303032146: Se actualizó a procesado_bof el picking_enc: " & pBeTrans_picking_enc.IdPickingEnc
+
+                                clsLnLog_error_wms.Agregar_Error(vMensajeLog)
+                            End If
+                        End If
+                    End If
+                End If
+            End If
+
+            ' Picking Encabezado
+            Guarda_Trans_picking_enc(pBeTrans_picking_enc,
+                                     lConnection,
+                                     lTransaction)
+
+            If pBeTareaHH IsNot Nothing Then
+                pBeTareaHH.IdTransaccion = pBeTrans_picking_enc.IdPickingEnc
+
+                'Tarea de picking.
+                clsLnTarea_hh.Guardar_Tarea_Picking_HH(pBeTareaHH,
+                                                       lConnection,
+                                                       lTransaction)
+
+                If lRow("Estado") IsNot DBNull.Value Then
+                    estado = lRow("Estado").ToString()
+                End If
+
+                ' Picking Detalle
+                clsLnTrans_picking_det.Guarda_Trans_picking_det(pBeTrans_picking_enc.IdPickingEnc,
+                                                            pBeTrans_picking_enc.IdBodegaMuelle,
+                                                            pListBePickingDet,
+                                                            pListBePickingUbic,
+                                                            lConnection,
+                                                            lTransaction)
+
+                ' Picking Detalle Parametros
+                If pListBePickingDetParametros IsNot Nothing Then
+                    clsLnTrans_picking_det_parametros.Guarda_Trans_picking_parametros(pListBePickingDetParametros,
+                                                                                  lConnection,
+                                                                                  lTransaction)
+                End If
+
+                ' Picking Detalle Operador
+                clsLnTrans_picking_op.Guarda_Trans_picking_operador(pBeTrans_picking_enc.IdPickingEnc,
+                                                                pListBePickingOpe,
+                                                                lConnection,
+                                                                lTransaction)
+
+                ' Picking Detalle Ubicacion
+                clsLnTrans_picking_ubic.Guarda_Trans_picking_ubic(pBeTrans_picking_enc.IdPickingEnc,
+                                                              pListBePickingUbic,
+                                                              lConnection,
+                                                              lTransaction)
+
+                Guardar = True
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Guardar_Verificacion_Bof(ByVal plistPickingUbic As List(Of clsBeTrans_picking_ubic),
+                                                    ByVal pIdOperador As Integer,
+                                                    ByVal pListBePedidoEnc As List(Of clsBeTrans_pe_enc)) As Boolean
+
+        Dim clsTrans As New clsTransaccion
+        Guardar_Verificacion_Bof = False
+
+        Try
+            clsTrans.Open_Connection() : clsTrans.Begin_Transaction()
+
+            Dim ListaVerificada As Boolean = False
+            Dim pBePedidoEnc As New clsBeTrans_pe_enc()
+            Dim tmpListaPickingUbic As New List(Of clsBeTrans_picking_ubic)()
+
+            If plistPickingUbic.Count > 0 Then
+
+                For Each BePickingUbic As clsBeTrans_picking_ubic In plistPickingUbic
+
+                    '#GT28112025:la verificación recibe lista de un registro
+                    tmpListaPickingUbic = New List(Of clsBeTrans_picking_ubic)
+                    tmpListaPickingUbic.Add(BePickingUbic)
+
+                    '#GT11122025: la cantidad a verificar se envia por separado, y posteriormente se deja en 0 en picking_ubic
+                    Dim pCantidad_A_Verificar = tmpListaPickingUbic(0).Cantidad_Verificada
+                    tmpListaPickingUbic(0).Cantidad_Verificada = 0
+
+
+                    '#GT11122025: obtener el pedido al buscarlo en la lista, según los datos del picking_ubic
+                    pBePedidoEnc = New clsBeTrans_pe_enc()
+                    pBePedidoEnc = pListBePedidoEnc.Find(Function(x) x.IdPickingEnc = BePickingUbic.IdPickingEnc AndAlso x.IdPedidoEnc = BePickingUbic.IdPedidoEnc)
+
+                    If clsLnTrans_picking_ubic.Actualiza_Cant_Peso_Verificacion(tmpListaPickingUbic,
+                                                                                pIdOperador,
+                                                                                pCantidad_A_Verificar,
+                                                                                BePickingUbic.Peso_recibido,
+                                                                                0,
+                                                                                pBePedidoEnc.IdPedidoEnc,
+                                                                                clsTrans.lConnection,
+                                                                                clsTrans.lTransaction) Then
+
+                        ListaVerificada = True
+                    Else
+                        ListaVerificada = False
+                    End If
+
+                Next
+
+                '#GT28112025: si la lista pickingUbic esta correcta, se actualiza el encabezado del pedido y picking
+                If ListaVerificada Then Actualizar_PickingEnc_Verificado(pBePedidoEnc.Picking,
+                                                                         clsTrans.lConnection,
+                                                                         clsTrans.lTransaction)
+
+            Else
+                clsTrans.RollBack_Transaction()
+                Exit Function
+            End If
+
+            Guardar_Verificacion_Bof = True
+            clsTrans.Commit_Transaction()
+
+        Catch ex As Exception
+            clsTrans.RollBack_Transaction()
+            Throw New Exception(String.Format("{0} {1} {2} ", MethodBase.GetCurrentMethod().Name, ex.Message, ""))
+        Finally
+            clsTrans.Close_Conection()
+        End Try
+
+    End Function
     Public Shared Function Get_Estado_By_IdPickingEnc(ByVal IdPickingEnc As Integer) As String
         Dim estado As String = ""
 

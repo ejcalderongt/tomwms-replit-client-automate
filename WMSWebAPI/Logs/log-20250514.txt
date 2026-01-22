@@ -1,0 +1,17 @@
+2025-05-14 12:35:48.391 -06:00 [INF] User profile is available. Using 'C:\Users\yejc2\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-05-14 12:35:48.799 -06:00 [INF] Now listening on: https://localhost:7194
+2025-05-14 12:35:48.800 -06:00 [INF] Now listening on: http://localhost:5196
+2025-05-14 12:35:48.872 -06:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-05-14 12:35:48.872 -06:00 [INF] Hosting environment: Development
+2025-05-14 12:35:48.872 -06:00 [INF] Content root path: C:\Users\yejc2\source\repos\TOMIMSV4\WMSWebAPI
+2025-05-14 12:35:51.759 -06:00 [INF] Request starting HTTP/2 GET https://localhost:7194/_framework/aspnetcore-browser-refresh.js - null null
+2025-05-14 12:35:51.759 -06:00 [INF] Request starting HTTP/2 GET https://localhost:7194/_vs/browserLink - null null
+2025-05-14 12:35:51.789 -06:00 [INF] Request finished HTTP/2 GET https://localhost:7194/_vs/browserLink - 404 0 null 39.6506ms
+2025-05-14 12:35:51.796 -06:00 [INF] Request finished HTTP/2 GET https://localhost:7194/_framework/aspnetcore-browser-refresh.js - 200 16503 application/javascript; charset=utf-8 48.3668ms
+2025-05-14 12:35:51.889 -06:00 [INF] Request starting HTTP/2 GET https://localhost:7194/_vs/browserLink - null null
+2025-05-14 12:35:51.890 -06:00 [INF] Request finished HTTP/2 GET https://localhost:7194/_vs/browserLink - 404 0 null 0.7557ms
+2025-05-14 12:35:51.976 -06:00 [INF] Request starting HTTP/2 GET https://localhost:7194/swagger/favicon-32x32.png - null null
+2025-05-14 12:35:52.001 -06:00 [INF] Request starting HTTP/2 GET https://localhost:7194/swagger/v1/swagger.json - null null
+2025-05-14 12:35:52.009 -06:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-05-14 12:35:52.010 -06:00 [INF] Request finished HTTP/2 GET https://localhost:7194/swagger/favicon-32x32.png - 499 628 image/png 33.3321ms
+2025-05-14 12:35:52.046 -06:00 [INF] Request finished HTTP/2 GET https://localhost:7194/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 45.087ms

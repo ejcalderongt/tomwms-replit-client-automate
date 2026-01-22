@@ -1,0 +1,5 @@
+﻿Keep this file for be sure the publish process
+will not delete the logs folder
+and the placeholder file
+With love, Erik.
+2025-05-14

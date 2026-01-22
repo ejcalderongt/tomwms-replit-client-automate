@@ -213,6 +213,8 @@ Public Class frmOrdenCompra
             txtReferencia.Text = gBeOrdenCompra.Referencia
             txtProcedencia.Text = gBeOrdenCompra.Procedencia
             txtObservacion.Text = gBeOrdenCompra.Observacion
+            txtComentarios.Text = gBeOrdenCompra.Comentarios
+            txtUsuarioERP.Text = gBeOrdenCompra.Usr_Documento
 
             User_agrTextEdit.Text = gBeOrdenCompra.User_Agr
             Fec_agrDateEdit.Text = gBeOrdenCompra.Fec_Agr
@@ -269,19 +271,25 @@ Public Class frmOrdenCompra
                     Cargar_Talla_Color_Con_Imagen(gBeOrdenCompra.IdCampaña, vRutaCDN)
                 Else
                     Cargar_Talla_Color(gBeOrdenCompra.IdCampaña)
+                    'Dim vRutaCDN As String = clsLnBodega.GetRutaCDN_By_Idbodega(AP.IdBodega)
+
+                    'If Not String.IsNullOrEmpty(vRutaCDN) Then
+                    '    Cargar_Talla_Color_Con_Imagen(gBeOrdenCompra.IdCampaña, vRutaCDN)
+                    'Else
+                    '    Cargar_Talla_Color(gBeOrdenCompra.IdCampaña)
+                    'End If
+
                 End If
 
-            End If
-
-            '#EJC20210707:Activar o desactivar botón para crear tarea en documento de ingreso.
-            If (gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.NUEVA OrElse gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.BACK_ORDER) AndAlso
+                '#EJC20210707:Activar o desactivar botón para crear tarea en documento de ingreso.
+                If (gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.NUEVA OrElse gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.BACK_ORDER) AndAlso
                 Not clsLnTrans_re_enc.OC_Tiene_Recepciones_Activas(gBeOrdenCompra.IdOrdenCompraEnc) Then
-                mnuTareaRecepcion.Enabled = True
-                txtIdRecepcion.Text = "0"
-            Else
-                mnuTareaRecepcion.Enabled = False
-                txtIdRecepcion.Text = clsLnTrans_re_enc.Get_Recepcion_Activa_By_IdOrdenCompraEnc(gBeOrdenCompra.IdOrdenCompraEnc)
-            End If
+                    mnuTareaRecepcion.Enabled = True
+                    txtIdRecepcion.Text = "0"
+                Else
+                    mnuTareaRecepcion.Enabled = False
+                    txtIdRecepcion.Text = clsLnTrans_re_enc.Get_Recepcion_Activa_By_IdOrdenCompraEnc(gBeOrdenCompra.IdOrdenCompraEnc)
+                End If
 
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)
@@ -354,44 +362,74 @@ Public Class frmOrdenCompra
             For Each BeTransOCDet As clsBeTrans_oc_det In lOCDet.OrderBy(Function(x) x.No_Linea)
 
                 Dim vCantidadPendiente As Double = Math.Round(BeTransOCDet.Cantidad_recibida - BeTransOCDet.Cantidad, 6)
+                Dim vTalla As String = ""
+                Dim vColor As String = ""
+                Dim vSKU As String = ""
 
-                DTGridDetalleDocIngresos.Rows.Add(BeTransOCDet.IdPropietarioBodega,
-                                                  BeTransOCDet.Nombre_Propietario,
-                                                  BeTransOCDet.No_Linea,
-                                                  BeTransOCDet.IdProductoBodega,
-                                                  BeTransOCDet.Codigo_Producto,
-                                                  BeTransOCDet.Nombre_producto,
-                                                  BeTransOCDet.Nombre_unidad_medida_basica,
-                                                  BeTransOCDet.IdUnidadMedidaBasica,
-                                                  BeTransOCDet.IdPresentacion,
-                                                  BeTransOCDet.Arancel.IdArancel,
-                                                  BeTransOCDet.IdMotivoDevolucion,
-                                                  BeTransOCDet.Cantidad,
-                                                  BeTransOCDet.Cantidad_recibida,
-                                                  vCantidadPendiente,
-                                                  BeTransOCDet.Peso_Bruto,
-                                                  BeTransOCDet.Peso_Neto,
-                                                  BeTransOCDet.Costo,
-                                                  BeTransOCDet.valor_aduana,
-                                                  BeTransOCDet.valor_fob,
-                                                  BeTransOCDet.valor_iva,
-                                                  BeTransOCDet.valor_dai,
-                                                  BeTransOCDet.valor_seguro,
-                                                  BeTransOCDet.valor_flete,
-                                                  BeTransOCDet.Total_linea,
-                                                  BeTransOCDet.Producto.IdProducto,
-                                                  BeTransOCDet.IsNew,
-                                                  BeTransOCDet.IdOrdenCompraEnc,
-                                                  BeTransOCDet.IdOrdenCompraDet,
-                                                  False,
-                                                  BeTransOCDet.Atributo_variante_1,
-                                                  BeTransOCDet.Producto.Kit,
-                                                  BeTransOCDet.IdPedidoCompraDet,
-                                                  BeTransOCDet.IdOrdenCompraDetPadre,
-                                                  BeTransOCDet.Producto.Control_peso,
-                                                  BeTransOCDet.Producto.Peso_referencia,
-                                                  BeTransOCDet.Nombre_Embarcador,
-                                                  BeTransOCDet.Producto.Clasificacion.Nombre)
+                Dim BeProductoTallaColor As New clsBeProducto_talla_color
+                BeProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeTransOCDet.IdProductoTallaColor)
+
+                If Not BeProductoTallaColor Is Nothing Then
+
+                    '#GT13082025: se deben asignar los Ids, no los códigos en el grid
+                    Dim objTalla = clsLnTalla.GetSingle_By_IdTalla(BeProductoTallaColor.IdTalla)
+                    vTalla = If(objTalla IsNot Nothing, objTalla.IdTalla, "")
+
+                    Dim objColor = clsLnColor.GetSingle_By_IdColor(BeProductoTallaColor.IdColor)
+                    vColor = If(objColor IsNot Nothing, objColor.IdColor, "")
+
+                    vSKU = BeProductoTallaColor.CodigoSKU
+
+                End If
+
+                Dim commonData As Object() = {
+                    BeTransOCDet.IdPropietarioBodega,
+                BeTransOCDet.Nombre_Propietario,
+                BeTransOCDet.No_Linea,
+                BeTransOCDet.IdProductoBodega,
+                BeTransOCDet.Codigo_Producto,
+                BeTransOCDet.Nombre_producto,
+                BeTransOCDet.Nombre_unidad_medida_basica,
+                BeTransOCDet.IdUnidadMedidaBasica,
+                BeTransOCDet.IdPresentacion,
+                BeTransOCDet.Arancel.IdArancel,
+                BeTransOCDet.IdMotivoDevolucion,
+                BeTransOCDet.Cantidad,
+                BeTransOCDet.Cantidad_recibida,
+                vCantidadPendiente,
+                BeTransOCDet.Peso_Bruto,
+                BeTransOCDet.Peso_Neto,
+                BeTransOCDet.Costo,
+                BeTransOCDet.valor_aduana,
+                BeTransOCDet.valor_fob,
+                BeTransOCDet.valor_iva,
+                BeTransOCDet.valor_dai,
+                BeTransOCDet.valor_seguro,
+                BeTransOCDet.valor_flete,
+                BeTransOCDet.Total_linea,
+                BeTransOCDet.Producto.IdProducto,
+                BeTransOCDet.IsNew,
+                BeTransOCDet.IdOrdenCompraEnc,
+                BeTransOCDet.IdOrdenCompraDet,
+                False,
+                BeTransOCDet.Atributo_variante_1,
+                BeTransOCDet.Producto.Kit,
+                BeTransOCDet.IdPedidoCompraDet,
+                BeTransOCDet.IdOrdenCompraDetPadre,
+                BeTransOCDet.Producto.Control_peso,
+                BeTransOCDet.Producto.Peso_referencia,
+                BeTransOCDet.Nombre_Embarcador,
+                    BeTransOCDet.Producto.Clasificacion.Nombre
+                }
+
+                Dim finalData As Object()
+                If BeBodega.Control_Talla_Color Then
+                    finalData = commonData.Concat({vTalla, vColor, vSKU}).ToArray()
+                Else
+                    finalData = commonData
+                End If
+
+                DTGridDetalleDocIngresos.Rows.Add(finalData)
 
                 If BeTransOCDet.lProductosHijosKit.Count > 0 Then
 
@@ -969,6 +1007,8 @@ Public Class frmOrdenCompra
             gBeOrdenCompra.Procedencia = txtProcedencia.Text.Trim
             gBeOrdenCompra.Referencia = txtReferencia.Text.Trim
             gBeOrdenCompra.Observacion = txtObservacion.Text.Trim
+            gBeOrdenCompra.Comentarios = txtComentarios.Text.Trim
+            gBeOrdenCompra.Usr_Documento = txtUsuarioERP.Text.Trim
             gBeOrdenCompra.Control_Poliza = chkControlPoliza.Checked
             gBeOrdenCompra.No_Ticket_TMS = txtNoTicketTMS.EditValue
 
@@ -1276,6 +1316,20 @@ Public Class frmOrdenCompra
 
                         vContador += 1
 
+                        '#GT12082025: agregar talla y color a los valores obtenidos.
+                        If BeBodega.Control_Talla_Color Then
+
+                            BeTransOcDet.Talla = New clsBeTalla()
+                            BeTransOcDet.Talla.IsNew = True
+                            BeTransOcDet.Talla.IdTalla = IIf(IsDBNull(gvDetalleDocIngreso.GetRowCellValue(i, "Talla")), "0", gvDetalleDocIngreso.GetRowCellValue(i, "Talla"))
+                            BeTransOcDet.Color = New clsBeColor()
+                            BeTransOcDet.Color.IsNew = True
+                            BeTransOcDet.Color.IdColor = IIf(IsDBNull(gvDetalleDocIngreso.GetRowCellValue(i, "Color")), "0", gvDetalleDocIngreso.GetRowCellValue(i, "Color"))
+
+                        End If
+
+                        vContador += 1
+
                         lBeTransOcDet.Add(BeTransOcDet)
 
                         If lActualizo Then
@@ -1424,6 +1478,7 @@ Public Class frmOrdenCompra
                 clsLnLog_error_wms_oc.Agregar_Error(msgAdvertencia, AP.UsuarioAp.IdEmpresa, AP.IdBodega, AP.UsuarioAp.IdUsuario, pIdOCEnc:=gBeOrdenCompra.IdOrdenCompraEnc)
             End If
 
+
             Guardar = True
 
         Catch ex As Exception
@@ -1487,6 +1542,8 @@ Public Class frmOrdenCompra
             'gBeOrdenCompra.No_Marchamo = txtNoMarchamo.Text.Trim
             gBeOrdenCompra.Referencia = txtReferencia.Text.Trim
             gBeOrdenCompra.Observacion = txtObservacion.Text.Trim
+            gBeOrdenCompra.Comentarios = txtComentarios.Text.Trim
+            gBeOrdenCompra.Usr_Documento = txtUsuarioERP.Text.Trim
             gBeOrdenCompra.Control_Poliza = chkControlPoliza.Checked
 
             If cmbMotivoDevolucion.Visible AndAlso cmbMotivoDevolucion.Text <> String.Empty Then
@@ -2812,7 +2869,7 @@ Public Class frmOrdenCompra
                     lRow.Item("nombre_unidad_medida") = Objs.Nombre_unidad_medida
                     lRow.Item("nombre_producto_estado") = Objs.Nombre_producto_estado
                     lRow.Item("lote") = Objs.Lote
-                    lRow.Item("fecha_vence") = Objs.Fecha_vence
+                    lRow.Item("fecha_vence") = Objs.Fecha_vence.ToShortDateString()
                     lRow.Item("observacion") = Objs.Observacion
                     lRow.Item("IdRecepcionEnc") = Objs.IdRecepcionEnc
                     lRow.Item("CantidadRecibida") = Objs.cantidad_recibida
@@ -2822,7 +2879,9 @@ Public Class frmOrdenCompra
                     lRow.Item("costo_oc") = Objs.Costo_Oc
                     lRow.Item("costo_estadistico") = Objs.Costo_Estadistico
                     lRow.Item("IdRecepcionDet") = Objs.IdRecepcionDet
-                    lRow.Item("lic_plate") = Objs.Lic_plate
+                    lRow.Item("Licencia") = Objs.Lic_plate
+                    lRow.Item("Talla") = Objs.Talla.Codigo
+                    lRow.Item("Color") = Objs.Color.Codigo
 
                     DsOC.Detalle.AddDetalleRow(lRow)
 
@@ -3105,6 +3164,9 @@ Public Class frmOrdenCompra
         DTGridDetalleDocIngresos.Columns.Add("PesoReferenciaUMBas", GetType(Double))
         DTGridDetalleDocIngresos.Columns.Add("Embarcador", GetType(String))
         DTGridDetalleDocIngresos.Columns.Add("Clasificacion", GetType(String))
+        DTGridDetalleDocIngresos.Columns.Add("Talla", GetType(String))
+        DTGridDetalleDocIngresos.Columns.Add("Color", GetType(String))
+        DTGridDetalleDocIngresos.Columns.Add("SKU", GetType(String))
 
     End Sub
 
@@ -3222,6 +3284,8 @@ Public Class frmOrdenCompra
 
             RemoveHandler ProductoGridLookUpEdit.ProcessNewValue, AddressOf ProductoGridLookUpEdit_ProcessNewValue
             AddHandler ProductoGridLookUpEdit.ProcessNewValue, AddressOf ProductoGridLookUpEdit_ProcessNewValue
+
+
 
             ProductoGridLookUpEdit.View.OptionsView.ShowAutoFilterRow = True
 
@@ -3894,6 +3958,112 @@ Public Class frmOrdenCompra
             gvDetalleDocIngreso.Columns.Add(ColClasificacion)
 
             ColIndexAux += 1
+#End Region
+
+#Region "Talla_Color"
+
+            If BeBodega.Control_Talla_Color Then
+
+                TallaGridLookUpEdit.View.Columns.Clear()
+                TallaGridLookUpEdit.View.Columns.AddRange(New GridColumn() {
+                                                          New GridColumn With {.FieldName = "IdTalla", .Caption = "IdTalla", .Visible = False},
+                                                          New GridColumn With {.FieldName = "Codigo", .Caption = "Codigo", .Visible = True}
+                })
+
+                TallaGridLookUpEdit.ValueMember = "IdTalla"
+                TallaGridLookUpEdit.DisplayMember = "Codigo"
+                TallaGridLookUpEdit.NullText = String.Empty
+                TallaGridLookUpEdit.DataSource = clsLnTalla.Listar()
+
+                TallaGridLookUpEdit.TextEditStyle = TextEditStyles.Standard
+                TallaGridLookUpEdit.SearchMode = SearchMode.AutoSuggest
+                TallaGridLookUpEdit.View.OptionsFind.AlwaysVisible = True
+                TallaGridLookUpEdit.View.OptionsFind.FindMode = FindMode.Always
+                TallaGridLookUpEdit.View.OptionsFind.SearchInPreview = False
+                TallaGridLookUpEdit.View.OptionsFind.FindFilterColumns = "*"
+
+                TallaGridLookUpEdit.View.BestFitColumns()
+
+                TallaGridLookUpEdit.View.OptionsView.ShowAutoFilterRow = True
+
+#Region "Columna - Talla"
+
+                Dim ColTalla As New GridColumn With {
+                .FieldName = "Talla",
+                .Caption = "Talla",
+                .Width = 150,
+                .ColumnEdit = TallaGridLookUpEdit,
+                .VisibleIndex = ColIndexAux + 1
+            }
+
+                ColTalla.OptionsColumn.AllowEdit = True
+                ColTalla.Visible = True
+                gvDetalleDocIngreso.Columns.Add(ColTalla)
+
+                ColIndexAux += 1
+#End Region
+
+#Region "Columna - Color"
+
+                ColorGridLookUpEdit.View.Columns.Clear()
+                ColorGridLookUpEdit.View.Columns.AddRange(New GridColumn() {
+                                                          New GridColumn With {.FieldName = "IdColor", .Caption = "IdColor", .Visible = False},
+                                                          New GridColumn With {.FieldName = "Codigo", .Caption = "Codigo", .Visible = True},
+                                                          New GridColumn With {.FieldName = "Nombre", .Caption = "Nombre", .Visible = True}
+                })
+
+                ColorGridLookUpEdit.ValueMember = "IdColor"
+                ColorGridLookUpEdit.DisplayMember = "Codigo"
+                ColorGridLookUpEdit.NullText = String.Empty
+                ColorGridLookUpEdit.DataSource = clsLnColor.Listar()
+
+                ColorGridLookUpEdit.TextEditStyle = TextEditStyles.Standard
+                ColorGridLookUpEdit.SearchMode = SearchMode.AutoSuggest
+                ColorGridLookUpEdit.View.OptionsFind.AlwaysVisible = True
+                ColorGridLookUpEdit.View.OptionsFind.FindMode = FindMode.Always
+                ColorGridLookUpEdit.View.OptionsFind.SearchInPreview = False
+                ColorGridLookUpEdit.View.OptionsFind.FindFilterColumns = "*"
+
+                ColorGridLookUpEdit.View.BestFitColumns()
+
+                ColorGridLookUpEdit.View.OptionsView.ShowAutoFilterRow = True
+
+
+                Dim ColColor As New GridColumn With {
+                .FieldName = "Color",
+                .Caption = "Color",
+                .Width = 150,
+                .ColumnEdit = ColorGridLookUpEdit,
+                .VisibleIndex = ColIndexAux + 1
+            }
+
+                ColColor.OptionsColumn.AllowEdit = True
+                ColColor.Visible = True
+                gvDetalleDocIngreso.Columns.Add(ColColor)
+
+                ColIndexAux += 1
+#End Region
+
+#Region "Columna - SKU"
+
+                Dim ColSKU As New GridColumn With {
+                .FieldName = "SKU",
+                .Caption = "SKU",
+                .Visible = True,
+                .Width = 150,
+                .ColumnEdit = txtSKUGrid,
+                .VisibleIndex = ColIndexAux + 1
+            }
+
+                ColSKU.OptionsColumn.AllowEdit = False
+                ColSKU.Visible = True
+                gvDetalleDocIngreso.Columns.Add(ColSKU)
+
+                ColIndexAux += 1
+#End Region
+
+            End If
+
 #End Region
 
             gvDetalleDocIngreso.OptionsView.NewItemRowPosition = NewItemRowPosition.Bottom
@@ -5387,107 +5557,112 @@ Public Class frmOrdenCompra
     Private txtValorFleteGrid As New RepositoryItemSpinEdit
     Private txtValorIVAGrid As New RepositoryItemSpinEdit
     Private txtValorADUANAGrid As New RepositoryItemSpinEdit
+    Private txtTallaGrid As New RepositoryItemTextEdit
+    Private txtColorGrid As New RepositoryItemTextEdit
+    Private txtSKUGrid As New RepositoryItemTextEdit
 
-    Private Sub txtNoLineaGrid_Leave(ByVal sender As Object, ByVal e As EventArgs)
+    '#GT12082025: combos talla/color para producto
+    Private TallaGridLookUpEdit As New RepositoryItemGridLookUpEdit
+    Private ColorGridLookUpEdit As New RepositoryItemGridLookUpEdit
 
-        'Try
+    'Try
 
-        '    Dim vtxtNoLinea As TextEdit = TryCast(sender, TextEdit)
-        '    If vtxtNoLinea Is Nothing Then Return
+    '    Dim vtxtNoLinea As TextEdit = TryCast(sender, TextEdit)
+    '    If vtxtNoLinea Is Nothing Then Return
 
-        '    Dim dv As DataRowView = gvDetalleDocIngreso.GetFocusedRow()
-        '    Dim drLineaRequisicion As DataRow = gvDetalleDocIngreso.GetFocusedDataRow()
-        '    Dim indice As Integer = -1
-        '    Dim ObjDet As New clsBeTrans_oc_det
+    '    Dim dv As DataRowView = gvDetalleDocIngreso.GetFocusedRow()
+    '    Dim drLineaRequisicion As DataRow = gvDetalleDocIngreso.GetFocusedDataRow()
+    '    Dim indice As Integer = -1
+    '    Dim ObjDet As New clsBeTrans_oc_det
 
-        '    If drLineaRequisicion Is Nothing Then Exit Sub
+    '    If drLineaRequisicion Is Nothing Then Exit Sub
 
-        '    If drLineaRequisicion Is Nothing Then
+    '    If drLineaRequisicion Is Nothing Then
 
-        '        drLineaRequisicion = gvDetalleDocIngreso.GetFocusedDataRow()
+    '        drLineaRequisicion = gvDetalleDocIngreso.GetFocusedDataRow()
 
-        '        If Not IsDBNull(vtxtNoLinea.EditValue) Then
-        '            If Val(vtxtNoLinea.EditValue) = 0 Then
-        '                drLineaRequisicion("NoLinea") = 1
-        '            End If
-        '        End If
+    '        If Not IsDBNull(vtxtNoLinea.EditValue) Then
+    '            If Val(vtxtNoLinea.EditValue) = 0 Then
+    '                drLineaRequisicion("NoLinea") = 1
+    '            End If
+    '        End If
 
-        '    Else
-        '        If Not IsDBNull(vtxtNoLinea.EditValue) Then
-        '            If Val(vtxtNoLinea.EditValue) = 0 Then
-        '                drLineaRequisicion("NoLinea") = 1
-        '            End If
-        '        End If
-        '    End If
+    '    Else
+    '        If Not IsDBNull(vtxtNoLinea.EditValue) Then
+    '            If Val(vtxtNoLinea.EditValue) = 0 Then
+    '                drLineaRequisicion("NoLinea") = 1
+    '            End If
+    '        End If
+    '    End If
 
-        '    '#EJC20210307: Its a dirty row
-        '    If gvDetalleDocIngreso.FocusedRowHandle = -2147483647 Then
+    '    '#EJC20210307: Its a dirty row
+    '    If gvDetalleDocIngreso.FocusedRowHandle = -2147483647 Then
 
-        '        Dim vNoSigIndex As Integer = 0
-        '        Dim vNoSigLinea As Integer = 0
+    '        Dim vNoSigIndex As Integer = 0
+    '        Dim vNoSigLinea As Integer = 0
 
-        '        'es la primera línea del grid (en teoría)
-        '        If lOCDetLn.Count = 0 Then
-        '            drLineaRequisicion("NoLinea") = 1
-        '            vtxtNoLinea.EditValue = 1
-        '            ObjDet.No_Linea = drLineaRequisicion("NoLinea")
-        '            ObjDet.Codigo_Producto = IIf(IsDBNull(drLineaRequisicion("IdProductoBodega")), 0, drLineaRequisicion("IdProductoBodega"))
-        '            ObjDet.RowIndex = vNoSigIndex
-        '            'lOCDetLn.Add(ObjDet)
-        '        Else
+    '        'es la primera línea del grid (en teoría)
+    '        If lOCDetLn.Count = 0 Then
+    '            drLineaRequisicion("NoLinea") = 1
+    '            vtxtNoLinea.EditValue = 1
+    '            ObjDet.No_Linea = drLineaRequisicion("NoLinea")
+    '            ObjDet.Codigo_Producto = IIf(IsDBNull(drLineaRequisicion("IdProductoBodega")), 0, drLineaRequisicion("IdProductoBodega"))
+    '            ObjDet.RowIndex = vNoSigIndex
+    '            'lOCDetLn.Add(ObjDet)
+    '        Else
 
-        '            If Not IsDBNull(vtxtNoLinea.EditValue) Then
+    '            If Not IsDBNull(vtxtNoLinea.EditValue) Then
 
-        '                indice = lOCDetLn.FindIndex(Function(x) x.No_Linea = drLineaRequisicion("NoLinea"))
+    '                indice = lOCDetLn.FindIndex(Function(x) x.No_Linea = drLineaRequisicion("NoLinea"))
 
-        '                If indice = -1 Then
-        '                    ObjDet.No_Linea = drLineaRequisicion("NoLinea")
-        '                    ObjDet.Codigo_Producto = IIf(IsDBNull(drLineaRequisicion("IdProductoBodega")), 0, drLineaRequisicion("IdProductoBodega"))
-        '                    ObjDet.RowIndex = gvDetalleDocIngreso.FocusedRowHandle
-        '                    'lOCDetLn.Add(ObjDet)
-        '                End If
+    '                If indice = -1 Then
+    '                    ObjDet.No_Linea = drLineaRequisicion("NoLinea")
+    '                    ObjDet.Codigo_Producto = IIf(IsDBNull(drLineaRequisicion("IdProductoBodega")), 0, drLineaRequisicion("IdProductoBodega"))
+    '                    ObjDet.RowIndex = gvDetalleDocIngreso.FocusedRowHandle
+    '                    'lOCDetLn.Add(ObjDet)
+    '                End If
 
-        '            Else
+    '            Else
 
-        '                vNoSigLinea = lOCDetLn.Max(Function(x) x.No_Linea) + 1
-        '                vNoSigIndex = lOCDetLn.Max(Function(x) x.RowIndex) + 1
+    '                vNoSigLinea = lOCDetLn.Max(Function(x) x.No_Linea) + 1
+    '                vNoSigIndex = lOCDetLn.Max(Function(x) x.RowIndex) + 1
 
-        '                drLineaRequisicion("NoLinea") = vNoSigLinea
-        '                vtxtNoLinea.EditValue = vNoSigIndex
+    '                drLineaRequisicion("NoLinea") = vNoSigLinea
+    '                vtxtNoLinea.EditValue = vNoSigIndex
 
-        '                ObjDet.No_Linea = drLineaRequisicion("NoLinea")
-        '                ObjDet.Codigo_Producto = IIf(IsDBNull(drLineaRequisicion("IdProductoBodega")), 0, drLineaRequisicion("IdProductoBodega"))
-        '                ObjDet.RowIndex = gvDetalleDocIngreso.FocusedRowHandle
-        '                'lOCDetLn.Add(ObjDet)
+    '                ObjDet.No_Linea = drLineaRequisicion("NoLinea")
+    '                ObjDet.Codigo_Producto = IIf(IsDBNull(drLineaRequisicion("IdProductoBodega")), 0, drLineaRequisicion("IdProductoBodega"))
+    '                ObjDet.RowIndex = gvDetalleDocIngreso.FocusedRowHandle
+    '                'lOCDetLn.Add(ObjDet)
 
-        '            End If
+    '            End If
 
-        '        End If
+    '        End If
 
-        '    Else
+    '    Else
 
-        '        'is not a dirty row (existing item)
-        '        indice = lOCDetLn.FindIndex(Function(x) x.RowIndex = gvDetalleDocIngreso.FocusedRowHandle)
+    '        'is not a dirty row (existing item)
+    '        indice = lOCDetLn.FindIndex(Function(x) x.RowIndex = gvDetalleDocIngreso.FocusedRowHandle)
 
-        '        If indice = -1 Then
-        '            ObjDet.No_Linea = drLineaRequisicion("NoLinea")
-        '            ObjDet.Codigo_Producto = IIf(IsDBNull(drLineaRequisicion("IdProductoBodega")), 0, drLineaRequisicion("IdProductoBodega"))
-        '            ObjDet.RowIndex = gvDetalleDocIngreso.FocusedRowHandle
-        '            lOCDetLn.Add(ObjDet)
-        '        Else
-        '            lOCDetLn(indice).No_Linea = drLineaRequisicion("NoLinea")
-        '            lOCDetLn(indice).Codigo_Producto = IIf(IsDBNull(drLineaRequisicion("IdProductoBodega")), 0, drLineaRequisicion("IdProductoBodega"))
-        '        End If
+    '        If indice = -1 Then
+    '            ObjDet.No_Linea = drLineaRequisicion("NoLinea")
+    '            ObjDet.Codigo_Producto = IIf(IsDBNull(drLineaRequisicion("IdProductoBodega")), 0, drLineaRequisicion("IdProductoBodega"))
+    '            ObjDet.RowIndex = gvDetalleDocIngreso.FocusedRowHandle
+    '            lOCDetLn.Add(ObjDet)
+    '        Else
+    '            lOCDetLn(indice).No_Linea = drLineaRequisicion("NoLinea")
+    '            lOCDetLn(indice).Codigo_Producto = IIf(IsDBNull(drLineaRequisicion("IdProductoBodega")), 0, drLineaRequisicion("IdProductoBodega"))
+    '        End If
 
-        '    End If
+    '    End If
 
-        '    '-2147483647
-        '    'gvDetalleDocIngreso.FocusedColumn = gvDetalleDocIngreso.Columns("IdProductoBodega")
-        '    'gvDetalleDocIngreso.PostEditor()
+    '    '-2147483647
+    '    'gvDetalleDocIngreso.FocusedColumn = gvDetalleDocIngreso.Columns("IdProductoBodega")
+    '    'gvDetalleDocIngreso.PostEditor()
 
-        'Catch ex As Exception
-        '    Debug.WriteLine("Error: " & ex.Message)
-        'End Try
+    'Catch ex As Exception
+    '    Debug.WriteLine("Error: " & ex.Message)
+    'End Try
 
     End Sub
 
@@ -5501,6 +5676,10 @@ Public Class frmOrdenCompra
             If lista.EditValue Is Nothing Then Return
             Dim drLineaGrid As DataRow = gvDetalleDocIngreso.GetFocusedDataRow()
             If drLineaGrid Is Nothing Then Return
+
+            Dim View As GridView = CType(DgridDetalleOC.DefaultView, GridView)
+            Dim ColTalla As GridColumn = View.Columns("Talla")
+            Dim ColColor As GridColumn = View.Columns("Color")
 
             Dim vObjProducto As Object = lista.Properties.GetRowByKeyValue(lista.EditValue)
 
@@ -5521,6 +5700,9 @@ Public Class frmOrdenCompra
                 'drLineaGrid("IdProducto") = drArticulo("IdProducto")
                 drLineaGrid("ControlPeso") = drArticulo("ControlPeso")
                 'drLineaGrid("PesoReferenciaUMBas") = drArticulo("PesoReferenciaUMBas")
+
+                'Dim vTalla As String = IIf(IsDBNull(drArticulo("Talla")), "", drArticulo("Talla"))
+                'Dim vColor As String = IIf(IsDBNull(drArticulo("Color")), "", drArticulo("Color"))
 
                 Dim vIdProductoBodega As Integer = drArticulo("IdProductoBodega")
 
@@ -5654,6 +5836,7 @@ Public Class frmOrdenCompra
 
     End Sub
 
+
     Private Sub LabelControl1_Click(sender As Object, e As EventArgs) Handles lbScanPoliza.Click
         lbScanPoliza.Enabled = False
         Scan_Poliza()
@@ -5707,6 +5890,8 @@ Public Class frmOrdenCompra
 
                 If Nuevo_Formato_Duca Is Nothing Then
 
+                    '#GT31082023: Es nueva cuando no se hace por importación.
+                    'Si es nueva se pregunta, sino es nueva, ya se preguntó en el proceso de importación.
                     If gBeOrdenCompra.IsNew Then
 
                         encabezado_duca.Numero_Orden = barra_poliza.Substring(0, 10)
@@ -5750,6 +5935,7 @@ Public Class frmOrdenCompra
 
                     encabezado_duca.Clave_aduana_despacho_destino = barra_poliza.Substring(38, 7)
                     encabezado_duca.NIT_Importador = barra_poliza.Substring(45, 25).Trim()
+                    'GT 29042021 se convierte a mayuscula el regimen.
                     encabezado_duca.Regimen = barra_poliza.Substring(70, 5).ToUpper()
                     encabezado_duca.Clase = barra_poliza.Substring(75, 3).Trim()
                     encabezado_duca.Pais_procedencia = barra_poliza.Substring(78, 2).ToUpper()
@@ -5879,141 +6065,141 @@ Public Class frmOrdenCompra
 
                 'GT 22012021 Set de los inputs en el formulario desde la clase encabezado_duca
                 txtNumeroOrden.Text = encabezado_duca.Numero_Orden
-                txtNumeroDUA.Text = encabezado_duca.Numero_DUCA.ToUpper()
-                dtpFechaAceptacion.Text = encabezado_duca.Fecha_Aceptacion
-                '4 Clave de aduana despacho/destino no definido
-                txtClaveAduana.Text = encabezado_duca.Clave_aduana_despacho_destino.Trim
-                '5 NIT de importador/exportador
-                txtNitImpExp.Text = encabezado_duca.NIT_Importador
-                Dim BeRegimen As New clsBeRegimen_fiscal()
-                BeRegimen = clsLnRegimen_fiscal.GetSingle_By_Codigo_Regimen(encabezado_duca.Regimen.Trim)
-                'GT18022022: si el regimen de la cadena no es legible puede afectar el tamaño de los demas valores de la póliza
-                If Not BeRegimen Is Nothing Then
-                    cmbRegimen.EditValue = BeRegimen.Codigo_regimen
-                Else
-                    txtScanPoliza.Text = String.Empty
-                    Throw New Exception("El régimen: " & encabezado_duca.Regimen & " no esta registrado en Régimen Fiscal, o no es legible desde el archivo de importación, re-intente!.")
-                End If
-                '7 Clase
-                txtClase.Text = encabezado_duca.Clase.Trim
-                txtPaisProcedencia.Text = encabezado_duca.Pais_procedencia.Trim
-                '9 Modo de transporte
-                txtMod_transporte.Text = encabezado_duca.Modo_transporte.Trim
-                txtTipoCambio.Value = encabezado_duca.Tipo_cambio
-                txtValorAduana.Value = encabezado_duca.Total_valor_aduana
-                txtTotalPesoBruto.Value = encabezado_duca.Total_bultos_Peso_Bruto
-                txtTotalFOBUSD.Value = encabezado_duca.TotalFOBUSD
-                txtValorFlete.Value = encabezado_duca.Total_Flete_USD
-                txtValorSeguro.Value = encabezado_duca.Total_Seguro_USD
-                txtTotalOtros.Value = encabezado_duca.TotalOtrosgastosUSD
-                '17 Total liquidar
-                txtTotal_liquidar.Text = encabezado_duca.Total_Liquidar
-                '18 Totalgeneral
-                txtTotal_general.Text = encabezado_duca.Total_General
-                dtpFechaLlegada.Text = Now
-                txtCodigoPoliza.Text = encabezado_duca.Codigo_Poliza
-                '#GT27092023: CBM no viene en el código barras, corresponde buscarlo si fue registrado
-                Dim tmpPoliza As New clsBeTrans_oc_pol
-                tmpPoliza = clsLnTrans_oc_pol.GetSingle_By_Numero_Orden(encabezado_duca.Numero_Orden)
-                If Not tmpPoliza Is Nothing Then
-                    cbCBM.Value = tmpPoliza.Cbm
-                End If
-
-                '#GT10102023: Guardar la nueva DUCA por corrección desde boton Scan Póliza
-                If pCorreccionPoliza Then
-
-                    '#GT31082023: Validar que la DUCA leída no exista.
-                    If Not tmpPoliza Is Nothing Then
-                        txtScanPoliza.Text = String.Empty
-                        encabezado_duca = Nothing
-                        Throw New Exception("ERROR_10102023: La póliza leída ya existe, no puede ser utilizada para corrección, reintente!.")
-
+                    txtNumeroDUA.Text = encabezado_duca.Numero_DUCA.ToUpper()
+                    dtpFechaAceptacion.Text = encabezado_duca.Fecha_Aceptacion
+                    '4 Clave de aduana despacho/destino no definido
+                    txtClaveAduana.Text = encabezado_duca.Clave_aduana_despacho_destino.Trim
+                    '5 NIT de importador/exportador
+                    txtNitImpExp.Text = encabezado_duca.NIT_Importador
+                    Dim BeRegimen As New clsBeRegimen_fiscal()
+                    BeRegimen = clsLnRegimen_fiscal.GetSingle_By_Codigo_Regimen(encabezado_duca.Regimen.Trim)
+                    'GT18022022: si el regimen de la cadena no es legible puede afectar el tamaño de los demas valores de la póliza
+                    If Not BeRegimen Is Nothing Then
+                        cmbRegimen.EditValue = BeRegimen.Codigo_regimen
                     Else
+                        txtScanPoliza.Text = String.Empty
+                        Throw New Exception("El régimen: " & encabezado_duca.Regimen & " no esta registrado en Régimen Fiscal, o no es legible desde el archivo de importación, re-intente!.")
+                    End If
+                    '7 Clase
+                    txtClase.Text = encabezado_duca.Clase.Trim
+                    txtPaisProcedencia.Text = encabezado_duca.Pais_procedencia.Trim
+                    '9 Modo de transporte
+                    txtMod_transporte.Text = encabezado_duca.Modo_transporte.Trim
+                    txtTipoCambio.Value = encabezado_duca.Tipo_cambio
+                    txtValorAduana.Value = encabezado_duca.Total_valor_aduana
+                    txtTotalPesoBruto.Value = encabezado_duca.Total_bultos_Peso_Bruto
+                    txtTotalFOBUSD.Value = encabezado_duca.TotalFOBUSD
+                    txtValorFlete.Value = encabezado_duca.Total_Flete_USD
+                    txtValorSeguro.Value = encabezado_duca.Total_Seguro_USD
+                    txtTotalOtros.Value = encabezado_duca.TotalOtrosgastosUSD
+                    '17 Total liquidar
+                    txtTotal_liquidar.Text = encabezado_duca.Total_Liquidar
+                    '18 Totalgeneral
+                    txtTotal_general.Text = encabezado_duca.Total_General
+                    dtpFechaLlegada.Text = Now
+                    txtCodigoPoliza.Text = encabezado_duca.Codigo_Poliza
+                    '#GT27092023: CBM no viene en el código barras, corresponde buscarlo si fue registrado
+                    Dim tmpPoliza As New clsBeTrans_oc_pol
+                    tmpPoliza = clsLnTrans_oc_pol.GetSingle_By_Numero_Orden(encabezado_duca.Numero_Orden)
+                    If Not tmpPoliza Is Nothing Then
+                        cbCBM.Value = tmpPoliza.Cbm
+                    End If
 
-                        '#GT10102023: TRAN para deshabilitar la duca previa, y guardar la nueva
-                        lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                    '#GT10102023: Guardar la nueva DUCA por corrección desde boton Scan Póliza
+                    If pCorreccionPoliza Then
 
-                        '#GT10102023: desactivamos la duca registrada anteriormente
-                        Dim pPolizaOriginal As New clsBeTrans_oc_pol
-                        pPolizaOriginal.numero_orden = pNumero_OrdenOriginal
-                        pPolizaOriginal.IdOrdenCompraEnc = gBeOrdenCompra.IdOrdenCompraEnc
-                        pPolizaOriginal.activo = False
-                        clsLnTrans_oc_pol.Desactivar_Pol_By_Numero_Orden_and_OC(pPolizaOriginal, lConnection, lTransaction)
+                        '#GT31082023: Validar que la DUCA leída no exista.
+                        If Not tmpPoliza Is Nothing Then
+                            txtScanPoliza.Text = String.Empty
+                            encabezado_duca = Nothing
+                            Throw New Exception("ERROR_10102023: La póliza leída ya existe, no puede ser utilizada para corrección, reintente!.")
 
-                        '#GT10102023: iniciamos la nueva DUCA
-                        Dim pPolizaCorreccion As New clsBeTrans_oc_pol
-                        pPolizaCorreccion.IsNew = True
-                        pPolizaCorreccion.User_agr = AP.UsuarioAp.IdUsuario
-                        pPolizaCorreccion.Fec_agr = Now
-                        pPolizaCorreccion.IdOrdenCompraEnc = gBeOrdenCompra.IdOrdenCompraEnc
-                        pPolizaCorreccion.Codigo_Barra = txtScanPoliza.Text
-                        pPolizaCorreccion.Bl_No = BLNo.Text.Trim
-                        pPolizaCorreccion.Pto_Descarga = txtPuertaDescarga.Text.Trim
-                        pPolizaCorreccion.Remitente = txtRemitente.Text.Trim
-                        pPolizaCorreccion.Fecha_abordaje = dtFechaAbordaje.EditValue
-                        pPolizaCorreccion.Descripcion = "BY CORRECCION"
-                        pPolizaCorreccion.Cantidad = CInt(txtCantidad.Value)
-                        pPolizaCorreccion.Total_kgs = txtPesoKgs.Value
-                        pPolizaCorreccion.Viaje_no = txtViaje.Text.Trim
-                        pPolizaCorreccion.Buque_no = txtBuque.Text.Trim
-                        pPolizaCorreccion.Destino = txtDestinatario.Text.Trim
-                        pPolizaCorreccion.Dir_destino = txtDireccion.Text.Trim
-                        pPolizaCorreccion.Po_number = txtPONumber.Text.Trim
-                        pPolizaCorreccion.Piezas = CInt(txtPiezas.Value)
-                        '#GT10102023: al inicio se valida el regimen, aca solo lo asignamos
-                        pPolizaCorreccion.IdRegimen = BeRegimen.IdRegimen
-                        pPolizaCorreccion.NoPoliza = txtNoPoliza.Text.Trim
-                        pPolizaCorreccion.Pais_procede = txtPaisProcedencia.Text.Trim
-                        pPolizaCorreccion.Total_valoraduana = txtValorAduana.Value
-                        pPolizaCorreccion.Total_bultos_Peso_Bruto = txtTotalPesoBruto.Value
-                        pPolizaCorreccion.Total_bultos_Peso_Neto = txtTotalPesoNeto.Value
-                        pPolizaCorreccion.Total_flete = txtValorFlete.Value
-                        pPolizaCorreccion.Total_usd = txtTotalFOBUSD.Value
-                        pPolizaCorreccion.Dua = txtNumeroDUA.Text.Trim
-                        pPolizaCorreccion.Fecha_poliza = dtFechaPoliza.EditValue
-                        pPolizaCorreccion.Tipo_cambio = txtTipoCambio.Value
-                        pPolizaCorreccion.Total_lineas = CInt(txtTotalLineas.Value)
-                        pPolizaCorreccion.Total_bultos = CInt(txtTotalBulto.Value)
-                        pPolizaCorreccion.Total_seguro = txtValorSeguro.Value
-                        pPolizaCorreccion.User_mod = AP.UsuarioAp.IdUsuario
-                        pPolizaCorreccion.Fec_mod = Now
-                        'pPolizaCorreccion.Enviado_A_ERP = False
-                        pPolizaCorreccion.codigo_poliza = txtCodigoPoliza.Text.Trim
-                        pPolizaCorreccion.ticket = Val(txtTicket.Text.Trim)
-                        pPolizaCorreccion.numero_orden = txtNumeroOrden.Text.Trim
-                        pPolizaCorreccion.fecha_aceptacion = dtpFechaAceptacion.EditValue
-                        pPolizaCorreccion.fecha_llegada = dtpFechaLlegada.EditValue
-                        pPolizaCorreccion.total_otros = Val(txtTotalOtros.Value)
-                        pPolizaCorreccion.clave_aduana = txtClaveAduana.Text.Trim
-                        pPolizaCorreccion.nit_imp_exp = txtNitImpExp.Text.Trim
-                        pPolizaCorreccion.clase = txtClase.Text.Trim
-                        pPolizaCorreccion.mod_transporte = txtMod_transporte.Text.Trim
-                        pPolizaCorreccion.total_liquidar = Val(txtTotal_liquidar.EditValue)
-                        pPolizaCorreccion.total_general = Val(txtTotal_general.EditValue)
-                        pPolizaCorreccion.Cbm = cbCBM.Value
-                        pPolizaCorreccion.activo = True
-                        pPolizaCorreccion.IdBodega = AP.Bodega.IdBodega
+                        Else
 
-                        clsLnTrans_oc_enc.Guarda_Trans_oc_pol(gBeOrdenCompra.IdOrdenCompraEnc, pPolizaCorreccion,
-                                                                                               lConnection,
-                                                                                               lTransaction)
+                            '#GT10102023: TRAN para deshabilitar la duca previa, y guardar la nueva
+                            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                        lTransaction.Commit()
+                            '#GT10102023: desactivamos la duca registrada anteriormente
+                            Dim pPolizaOriginal As New clsBeTrans_oc_pol
+                            pPolizaOriginal.numero_orden = pNumero_OrdenOriginal
+                            pPolizaOriginal.IdOrdenCompraEnc = gBeOrdenCompra.IdOrdenCompraEnc
+                            pPolizaOriginal.activo = False
+                            clsLnTrans_oc_pol.Desactivar_Pol_By_Numero_Orden_and_OC(pPolizaOriginal, lConnection, lTransaction)
 
-                        XtraMessageBox.Show("Se actualizó el ingreso: " & gBeOrdenCompra.IdOrdenCompraEnc & " con el nuevo numero de orden: " & pPolizaCorreccion.numero_orden, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                            '#GT10102023: iniciamos la nueva DUCA
+                            Dim pPolizaCorreccion As New clsBeTrans_oc_pol
+                            pPolizaCorreccion.IsNew = True
+                            pPolizaCorreccion.User_agr = AP.UsuarioAp.IdUsuario
+                            pPolizaCorreccion.Fec_agr = Now
+                            pPolizaCorreccion.IdOrdenCompraEnc = gBeOrdenCompra.IdOrdenCompraEnc
+                            pPolizaCorreccion.Codigo_Barra = txtScanPoliza.Text
+                            pPolizaCorreccion.Bl_No = BLNo.Text.Trim
+                            pPolizaCorreccion.Pto_Descarga = txtPuertaDescarga.Text.Trim
+                            pPolizaCorreccion.Remitente = txtRemitente.Text.Trim
+                            pPolizaCorreccion.Fecha_abordaje = dtFechaAbordaje.EditValue
+                            pPolizaCorreccion.Descripcion = "BY CORRECCION"
+                            pPolizaCorreccion.Cantidad = CInt(txtCantidad.Value)
+                            pPolizaCorreccion.Total_kgs = txtPesoKgs.Value
+                            pPolizaCorreccion.Viaje_no = txtViaje.Text.Trim
+                            pPolizaCorreccion.Buque_no = txtBuque.Text.Trim
+                            pPolizaCorreccion.Destino = txtDestinatario.Text.Trim
+                            pPolizaCorreccion.Dir_destino = txtDireccion.Text.Trim
+                            pPolizaCorreccion.Po_number = txtPONumber.Text.Trim
+                            pPolizaCorreccion.Piezas = CInt(txtPiezas.Value)
+                            '#GT10102023: al inicio se valida el regimen, aca solo lo asignamos
+                            pPolizaCorreccion.IdRegimen = BeRegimen.IdRegimen
+                            pPolizaCorreccion.NoPoliza = txtNoPoliza.Text.Trim
+                            pPolizaCorreccion.Pais_procede = txtPaisProcedencia.Text.Trim
+                            pPolizaCorreccion.Total_valoraduana = txtValorAduana.Value
+                            pPolizaCorreccion.Total_bultos_Peso_Bruto = txtTotalPesoBruto.Value
+                            pPolizaCorreccion.Total_bultos_Peso_Neto = txtTotalPesoNeto.Value
+                            pPolizaCorreccion.Total_flete = txtValorFlete.Value
+                            pPolizaCorreccion.Total_usd = txtTotalFOBUSD.Value
+                            pPolizaCorreccion.Dua = txtNumeroDUA.Text.Trim
+                            pPolizaCorreccion.Fecha_poliza = dtFechaPoliza.EditValue
+                            pPolizaCorreccion.Tipo_cambio = txtTipoCambio.Value
+                            pPolizaCorreccion.Total_lineas = CInt(txtTotalLineas.Value)
+                            pPolizaCorreccion.Total_bultos = CInt(txtTotalBulto.Value)
+                            pPolizaCorreccion.Total_seguro = txtValorSeguro.Value
+                            pPolizaCorreccion.User_mod = AP.UsuarioAp.IdUsuario
+                            pPolizaCorreccion.Fec_mod = Now
+                            'pPolizaCorreccion.Enviado_A_ERP = False
+                            pPolizaCorreccion.codigo_poliza = txtCodigoPoliza.Text.Trim
+                            pPolizaCorreccion.ticket = Val(txtTicket.Text.Trim)
+                            pPolizaCorreccion.numero_orden = txtNumeroOrden.Text.Trim
+                            pPolizaCorreccion.fecha_aceptacion = dtpFechaAceptacion.EditValue
+                            pPolizaCorreccion.fecha_llegada = dtpFechaLlegada.EditValue
+                            pPolizaCorreccion.total_otros = Val(txtTotalOtros.Value)
+                            pPolizaCorreccion.clave_aduana = txtClaveAduana.Text.Trim
+                            pPolizaCorreccion.nit_imp_exp = txtNitImpExp.Text.Trim
+                            pPolizaCorreccion.clase = txtClase.Text.Trim
+                            pPolizaCorreccion.mod_transporte = txtMod_transporte.Text.Trim
+                            pPolizaCorreccion.total_liquidar = Val(txtTotal_liquidar.EditValue)
+                            pPolizaCorreccion.total_general = Val(txtTotal_general.EditValue)
+                            pPolizaCorreccion.Cbm = cbCBM.Value
+                            pPolizaCorreccion.activo = True
+                            pPolizaCorreccion.IdBodega = AP.Bodega.IdBodega
 
-                        Polizas_Corregidas(gBeOrdenCompra.IdOrdenCompraEnc)
+                            clsLnTrans_oc_enc.Guarda_Trans_oc_pol(gBeOrdenCompra.IdOrdenCompraEnc, pPolizaCorreccion,
+                                                                                                   lConnection,
+                                                                                                   lTransaction)
+
+                            lTransaction.Commit()
+
+                            XtraMessageBox.Show("Se actualizó el ingreso: " & gBeOrdenCompra.IdOrdenCompraEnc & " con el nuevo numero de orden: " & pPolizaCorreccion.numero_orden, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+
+                            Polizas_Corregidas(gBeOrdenCompra.IdOrdenCompraEnc)
+
+                        End If
 
                     End If
 
+                    '#GT21062024: a futuro, se debe requerir permiso para autorizar el modificar campos de la póliza.
+                    'Bloquear_Inputs_Poliza()
+
                 End If
 
-                '#GT21062024: a futuro, se debe requerir permiso para autorizar el modificar campos de la póliza.
-                'Bloquear_Inputs_Poliza()
-
-            End If
-
-            Set_Tipo_Documento()
+                Set_Tipo_Documento()
 
             If pCorreccionPoliza Then
                 xtraOrdenCompra.SelectedTabPageIndex = 9
@@ -7709,6 +7895,7 @@ MessageBoxButtons.YesNo,
                                                                                   AP.HostName,
                                                                                   vNombreArchivoLayOutGridgvDetalleDocIngreso)
 
+
             If Not BeConfiguracionUsuarioDet Is Nothing Then
                 gvDetalleDocIngreso.RestoreLayoutFromStream(BeConfiguracionUsuarioDet.Stream_Template)
                 mnuEliminarLayoutGrid.Visibility = DevExpress.XtraBars.BarItemVisibility.Always
@@ -8529,10 +8716,22 @@ MessageBoxButtons.YesNo,
 
         Try
 
+            GridView7.Columns.Clear()
+
+            dgridTallaColor.DataSource = Nothing
+            dgridTallaColor.RefreshDataSource()
+
+            SplashScreenManager.CloseForm(False)
+
+            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+            SplashScreenManager.Default.SetWaitFormDescription("Cargando...")
+
             Dim Dt As New DataTable
-            Dt = clsLnProducto_talla_color.Get_All_Dt_By_IdCampaña(IdCampaña)
+            Dt = clsLnProducto_talla_color.Get_All_Dt_By_IdCampaña_And_IdOrdenCompraEnc(IdCampaña, lblC.Text)
 
             dgridTallaColor.DataSource = Dt
+
+            SplashScreenManager.CloseForm(False)
 
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)
@@ -8548,8 +8747,18 @@ MessageBoxButtons.YesNo,
 
         Try
 
+            GridView7.Columns.Clear()
+
+            dgridTallaColor.DataSource = Nothing
+            dgridTallaColor.RefreshDataSource()
+
+            SplashScreenManager.CloseForm(False)
+
+            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+            SplashScreenManager.Default.SetWaitFormDescription("Cargando...")
+
             Dim dt As New DataTable
-            dt = clsLnProducto_talla_color.Get_All_Dt_By_IdCampaña(IdCampaña)
+            dt = clsLnProducto_talla_color.Get_All_Dt_By_IdCampaña_And_IdOrdenCompraEnc(IdCampaña, lblC.Text)
             ' Agregar columna de imagen
             If Not dt.Columns.Contains("Imagen") Then
                 dt.Columns.Add("Imagen", GetType(Image))
@@ -8618,7 +8827,13 @@ MessageBoxButtons.YesNo,
                 End Try
             Next
 
+            dgridTallaColor.RefreshDataSource()
+            SplashScreenManager.CloseForm(False)
+
+            Application.DoEvents()
+
         Catch ex As Exception
+            SplashScreenManager.CloseForm(False)
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
                                 Text,
                                 MessageBoxButtons.OK,
@@ -8689,7 +8904,11 @@ MessageBoxButtons.YesNo,
 
                 End If
 
-            End If
+                If Not String.IsNullOrEmpty(vRutaCDN) Then
+                                If MessageBox.Show(String.Format("¿Mostrar imágenes de los productos?", Me.Text), "Salir", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                                    Cargar_Talla_Color_Con_Imagen(gBeOrdenCompra.IdCampaña, vRutaCDN)
+                                Else
+                                    Cargar_Talla_Color(gBeOrdenCompra.IdCampaña)
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -8700,6 +8919,29 @@ MessageBoxButtons.YesNo,
                     SplashScreenManager.CloseForm(False)
                 End If
             End If
+                        End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Private Sub tabTallaColor_VisibleChanged(sender As Object, e As EventArgs) Handles tabTallaColor.VisibleChanged
+        Try
+
+            If tabTallaColor.Visible Then
+                Dim vRutaCDN As String = clsLnBodega.GetRutaCDN_By_Idbodega(AP.IdBodega)
+
+                If Not String.IsNullOrEmpty(vRutaCDN) Then
+                    If MessageBox.Show(String.Format("¿Mostrar imágenes de los productos?", Me.Text), "Salir", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                        Cargar_Talla_Color_Con_Imagen(gBeOrdenCompra.IdCampaña, vRutaCDN)
+                    Else
+                        Cargar_Talla_Color(gBeOrdenCompra.IdCampaña)
+                    End If
+                Else
+                    Cargar_Talla_Color(gBeOrdenCompra.IdCampaña)
+                End If
+            End If
+        Catch ex As Exception
 
         End Try
     End Sub

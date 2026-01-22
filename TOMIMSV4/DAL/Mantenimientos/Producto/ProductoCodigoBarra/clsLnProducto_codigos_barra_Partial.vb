@@ -274,7 +274,23 @@ Partial Public Class clsLnProducto_codigos_barra
                 Return lCodigos
             Else
 
-                Dim vSQL As String = "SELECT pcb.IdProducto,pcb.IdProveedor,pr.nombre AS Producto,p.nombre AS Proveedor,pcb.codigo_barra AS 'Código de Barra',pcb.activo,pcb.user_agr,pcb.fec_agr,pcb.user_mod,pcb.fec_mod FROM producto_codigos_barra AS pcb INNER JOIN proveedor AS p ON pcb.IdProveedor = p.IdProveedor INNER JOIN producto AS pr ON pcb.IdProducto = pr.IdProducto WHERE pcb.IdProducto=@IdProducto"
+                Dim vSQL As String = "SELECT 
+                                        pcb.IdProducto,
+                                        pcb.IdProveedor,
+                                        pr.nombre AS Producto,
+                                        p.nombre AS Proveedor,
+                                        pcb.codigo_barra AS 'Código de Barra',
+                                        pcb.activo,
+                                        pcb.user_agr,
+                                        pcb.fec_agr,
+                                        pcb.user_mod,
+                                        pcb.fec_mod,
+                                        pcb.IdTalla,
+                                        pcb.IdColor
+                                    FROM producto_codigos_barra AS pcb 
+                                    INNER JOIN proveedor AS p ON pcb.IdProveedor = p.IdProveedor 
+                                    INNER JOIN producto AS pr ON pcb.IdProducto = pr.IdProducto 
+                                    WHERE pcb.IdProducto=@IdProducto"
 
                 If pActivo Then
                     vSQL += " AND pcb.activo=1 "
@@ -325,6 +341,14 @@ Partial Public Class clsLnProducto_codigos_barra
 
                             If lRow("fec_mod") IsNot DBNull.Value AndAlso lRow("fec_mod") IsNot Nothing Then
                                 BeProductoCodigosBarra.Fec_mod = CType(lRow("fec_mod"), DateTime)
+                            End If
+
+                            If lRow("IdTalla") IsNot DBNull.Value AndAlso lRow("IdTalla") IsNot Nothing Then
+                                BeProductoCodigosBarra.IdTalla = CType(lRow("IdTalla"), Int32)
+                            End If
+
+                            If lRow("IdColor") IsNot DBNull.Value AndAlso lRow("IdColor") IsNot Nothing Then
+                                BeProductoCodigosBarra.IdColor = CType(lRow("IdColor"), Int32)
                             End If
 
                             lReturnList.Add(BeProductoCodigosBarra)
