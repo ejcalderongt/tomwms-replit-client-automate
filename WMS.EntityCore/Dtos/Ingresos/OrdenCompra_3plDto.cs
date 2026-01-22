@@ -12,7 +12,7 @@ namespace WMSWebAPI.Dtos.Ingresos
         public TipoIngresoOcDto? TipoIngreso { get; set; }
         public List<Recepcion_3plDto>? Recepciones { get; set; }
         public List<StockRecDto>? stockRec { get; set; }
-        public List<StockDto>? stock { get; set; }
+        public List<Stock_3plDto>? stock { get; set; }
         public List<MovimientosDto>? movimientos { get; set; }
         public List<ProveedorDto>? Proveedores { get; set; }
         public List<ProveedorBodegaDto>? ProveedoresBodega { get; set; }

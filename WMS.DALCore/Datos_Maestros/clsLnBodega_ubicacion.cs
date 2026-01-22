@@ -12,6 +12,58 @@ public class clsLnBodega_ubicacion
     private static clsInsert Ins = new clsInsert();
     private static clsUpdate Upd = new clsUpdate();
 
+    public static void BindingParameteres(SqlCommand cmd, clsBeBodega_ubicacion oBeBodega_ubicacion)
+    {
+        if (cmd == null) throw new ArgumentNullException(nameof(cmd));
+        if (oBeBodega_ubicacion == null) throw new ArgumentNullException(nameof(oBeBodega_ubicacion));
+
+        // Si el SqlCommand se reutiliza, evitar acumulación de parámetros.
+        cmd.Parameters.Clear();
+
+        cmd.Parameters.Add(new SqlParameter("@IdUbicacion", oBeBodega_ubicacion.IdUbicacion));
+        cmd.Parameters.Add(new SqlParameter("@IdTramo", oBeBodega_ubicacion.IdTramo));
+        cmd.Parameters.Add(new SqlParameter("@descripcion", oBeBodega_ubicacion.Descripcion));
+        cmd.Parameters.Add(new SqlParameter("@ancho", oBeBodega_ubicacion.Ancho));
+        cmd.Parameters.Add(new SqlParameter("@largo", oBeBodega_ubicacion.Largo));
+        cmd.Parameters.Add(new SqlParameter("@alto", oBeBodega_ubicacion.Alto));
+        cmd.Parameters.Add(new SqlParameter("@nivel", oBeBodega_ubicacion.Nivel));
+        cmd.Parameters.Add(new SqlParameter("@indice_x", oBeBodega_ubicacion.Indice_x));
+        cmd.Parameters.Add(new SqlParameter("@IdIndiceRotacion", oBeBodega_ubicacion.IdIndiceRotacion));
+        cmd.Parameters.Add(new SqlParameter("@IdTipoRotacion", oBeBodega_ubicacion.IdTipoRotacion));
+        cmd.Parameters.Add(new SqlParameter("@sistema", oBeBodega_ubicacion.Sistema));
+        cmd.Parameters.Add(new SqlParameter("@codigo_barra", oBeBodega_ubicacion.Codigo_barra));
+        cmd.Parameters.Add(new SqlParameter("@codigo_barra2", oBeBodega_ubicacion.Codigo_barra2));
+        cmd.Parameters.Add(new SqlParameter("@user_agr", oBeBodega_ubicacion.User_agr));
+        cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeBodega_ubicacion.Fec_agr));
+        cmd.Parameters.Add(new SqlParameter("@user_mod", oBeBodega_ubicacion.User_mod));
+        cmd.Parameters.Add(new SqlParameter("@fec_mod", oBeBodega_ubicacion.Fec_mod));
+
+        // Importante: el parámetro en BD debe llamarse exactamente "@dañado" si así está definido.
+        // Si en tu SQL Server el nombre real es "@danado" (sin ñ), debes cambiar SOLO el nombre del parámetro.
+        cmd.Parameters.Add(new SqlParameter("@dañado", oBeBodega_ubicacion.Dañado));
+
+        cmd.Parameters.Add(new SqlParameter("@activo", oBeBodega_ubicacion.Activo));
+        cmd.Parameters.Add(new SqlParameter("@bloqueada", oBeBodega_ubicacion.Bloqueada));
+        cmd.Parameters.Add(new SqlParameter("@acepta_pallet", oBeBodega_ubicacion.Acepta_pallet));
+        cmd.Parameters.Add(new SqlParameter("@ubicacion_picking", oBeBodega_ubicacion.Ubicacion_picking));
+        cmd.Parameters.Add(new SqlParameter("@ubicacion_recepcion", oBeBodega_ubicacion.Ubicacion_recepcion));
+        cmd.Parameters.Add(new SqlParameter("@ubicacion_despacho", oBeBodega_ubicacion.Ubicacion_despacho));
+        cmd.Parameters.Add(new SqlParameter("@ubicacion_merma", oBeBodega_ubicacion.Ubicacion_merma));
+        cmd.Parameters.Add(new SqlParameter("@margen_izquierdo", oBeBodega_ubicacion.Margen_izquierdo));
+        cmd.Parameters.Add(new SqlParameter("@margen_derecho", oBeBodega_ubicacion.Margen_derecho));
+        cmd.Parameters.Add(new SqlParameter("@margen_superior", oBeBodega_ubicacion.Margen_superior));
+        cmd.Parameters.Add(new SqlParameter("@margen_inferior", oBeBodega_ubicacion.Margen_inferior));
+        cmd.Parameters.Add(new SqlParameter("@orientacion_pos", oBeBodega_ubicacion.Orientacion_pos));
+        cmd.Parameters.Add(new SqlParameter("@ubicacion_virtual", oBeBodega_ubicacion.Ubicacion_virtual));
+        cmd.Parameters.Add(new SqlParameter("@ubicacion_ne", oBeBodega_ubicacion.Ubicacion_ne));
+        cmd.Parameters.Add(new SqlParameter("@IdBodega", oBeBodega_ubicacion.IdBodega));
+        cmd.Parameters.Add(new SqlParameter("@IdArea", oBeBodega_ubicacion.IdArea));
+        cmd.Parameters.Add(new SqlParameter("@IdSector", oBeBodega_ubicacion.IdSector));
+        cmd.Parameters.Add(new SqlParameter("@posicion_x", oBeBodega_ubicacion.Posicion_x));
+        cmd.Parameters.Add(new SqlParameter("@posicion_y", oBeBodega_ubicacion.Posicion_y));
+        cmd.Parameters.Add(new SqlParameter("@ubicacion_muelle", oBeBodega_ubicacion.Ubicacion_muelle));
+    }
+
     public static void Cargar(ref clsBeBodega_ubicacion oBeBodega_ubicacion, DataRow dr)
     {
         int GetInt(string col) { return dr[col] is DBNull ? 0 : Convert.ToInt32(dr[col]); }
@@ -72,6 +124,109 @@ public class clsLnBodega_ubicacion
         }
     }
 
+    public static bool Existe(int IdBodega, int IdUbicacion, SqlConnection conn, SqlTransaction tx)
+    {
+        using var cmd = new SqlCommand("SELECT COUNT(1) FROM bodega_ubicacion WHERE ( IdBodega=@IdBodega and IdUbicacion=@IdUbicacion) ", conn, tx);
+
+        cmd.Parameters.AddWithValue("@IdBodega", IdBodega);
+        cmd.Parameters.AddWithValue("@IdUbicacion", IdUbicacion);
+
+        var count = Convert.ToInt32(cmd.ExecuteScalar());
+        return count > 0;
+    }
+
+    public static void InsertarOActualizar(List<clsBeBodega_ubicacion> entities, SqlConnection conn, SqlTransaction tx)
+    {
+        foreach (var entity in entities)
+        {
+            if (entity.IdSector != 0)
+            {
+                bool existe = Existe(entity.IdBodega, entity.IdUbicacion, conn, tx);
+
+                if (existe)
+                    Actualizar(entity, conn, tx);
+                else
+                    Insertar(entity, conn, tx);
+            }
+        }
+    }
+
+    public static int Insertar(clsBeBodega_ubicacion oBeBodega_ubicacion, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    {
+        if (oBeBodega_ubicacion == null)
+            throw new ArgumentNullException(nameof(oBeBodega_ubicacion));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
+        int rowsAffected = 0;
+       
+
+        try
+        {
+            Ins.Init("bodega_ubicacion");
+            Ins.Add("idubicacion", "@idubicacion", "F");
+            Ins.Add("idtramo", "@idtramo", "F");
+            Ins.Add("descripcion", "@descripcion", "F");
+            Ins.Add("ancho", "@ancho", "F");
+            Ins.Add("largo", "@largo", "F");
+            Ins.Add("alto", "@alto", "F");
+            Ins.Add("nivel", "@nivel", "F");
+            Ins.Add("indice_x", "@indice_x", "F");
+            Ins.Add("idindicerotacion", "@idindicerotacion", "F");
+            Ins.Add("idtiporotacion", "@idtiporotacion", "F");
+            Ins.Add("sistema", "@sistema", "F");
+            Ins.Add("codigo_barra", "@codigo_barra", "F");
+            Ins.Add("codigo_barra2", "@codigo_barra2", "F");
+            Ins.Add("user_agr", "@user_agr", "F");
+            Ins.Add("fec_agr", "@fec_agr", "F");
+            Ins.Add("user_mod", "@user_mod", "F");
+            Ins.Add("fec_mod", "@fec_mod", "F");
+            Ins.Add("dañado", "@dañado", "F");
+            Ins.Add("activo", "@activo", "F");
+            Ins.Add("bloqueada", "@bloqueada", "F");
+            Ins.Add("acepta_pallet", "@acepta_pallet", "F");
+            Ins.Add("ubicacion_picking", "@ubicacion_picking", "F");
+            Ins.Add("ubicacion_recepcion", "@ubicacion_recepcion", "F");
+            Ins.Add("ubicacion_despacho", "@ubicacion_despacho", "F");
+            Ins.Add("ubicacion_merma", "@ubicacion_merma", "F");
+            Ins.Add("margen_izquierdo", "@margen_izquierdo", "F");
+            Ins.Add("margen_derecho", "@margen_derecho", "F");
+            Ins.Add("margen_superior", "@margen_superior", "F");
+            Ins.Add("margen_inferior", "@margen_inferior", "F");
+            Ins.Add("orientacion_pos", "@orientacion_pos", "F");
+            Ins.Add("ubicacion_virtual", "@ubicacion_virtual", "F");
+            Ins.Add("ubicacion_ne", "@ubicacion_ne", "F");
+            Ins.Add("idbodega", "@idbodega", "F");
+            Ins.Add("idarea", "@idarea", "F");
+            Ins.Add("idsector", "@idsector", "F");
+            Ins.Add("posicion_x", "@posicion_x", "F");
+            Ins.Add("posicion_y", "@posicion_y", "F");
+            Ins.Add("ubicacion_muelle", "@ubicacion_muelle", "F");
+
+            string sp = Ins.SQL();
+
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+
+                BindingParameteres(cmd, oBeBodega_ubicacion);
+
+                rowsAffected = cmd.ExecuteNonQuery();
+            }
+
+            return rowsAffected;
+
+        
+        }
+        catch (SqlException ex)
+        {
+            string errorMessage = $"Error en Insertar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
+        }
+    }
     public static int Insertar(IConfiguration config, clsBeBodega_ubicacion oBeBodega_ubicacion, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
 
@@ -329,6 +484,85 @@ public class clsLnBodega_ubicacion
         return rowsAffected;
     }
 
+    public static int Actualizar(clsBeBodega_ubicacion oBeBodega_ubicacion, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
+    {
+        if (oBeBodega_ubicacion == null)
+            throw new ArgumentNullException(nameof(oBeBodega_ubicacion));
+
+        if (pConection == null)
+            throw new ArgumentNullException(nameof(pConection));
+
+        if (pTransaction == null)
+            throw new ArgumentNullException(nameof(pTransaction));
+        int rowsAffected = 0;
+        
+        try
+        {
+
+            Upd.Init("bodega_ubicacion");
+            Upd.Add("idubicacion", "@idubicacion", "F");
+            Upd.Add("idtramo", "@idtramo", "F");
+            Upd.Add("descripcion", "@descripcion", "F");
+            Upd.Add("ancho", "@ancho", "F");
+            Upd.Add("largo", "@largo", "F");
+            Upd.Add("alto", "@alto", "F");
+            Upd.Add("nivel", "@nivel", "F");
+            Upd.Add("indice_x", "@indice_x", "F");
+            Upd.Add("idindicerotacion", "@idindicerotacion", "F");
+            Upd.Add("idtiporotacion", "@idtiporotacion", "F");
+            Upd.Add("sistema", "@sistema", "F");
+            Upd.Add("codigo_barra", "@codigo_barra", "F");
+            Upd.Add("codigo_barra2", "@codigo_barra2", "F");
+            Upd.Add("user_agr", "@user_agr", "F");
+            Upd.Add("fec_agr", "@fec_agr", "F");
+            Upd.Add("user_mod", "@user_mod", "F");
+            Upd.Add("fec_mod", "@fec_mod", "F");
+            Upd.Add("dañado", "@dañado", "F");
+            Upd.Add("activo", "@activo", "F");
+            Upd.Add("bloqueada", "@bloqueada", "F");
+            Upd.Add("acepta_pallet", "@acepta_pallet", "F");
+            Upd.Add("ubicacion_picking", "@ubicacion_picking", "F");
+            Upd.Add("ubicacion_recepcion", "@ubicacion_recepcion", "F");
+            Upd.Add("ubicacion_despacho", "@ubicacion_despacho", "F");
+            Upd.Add("ubicacion_merma", "@ubicacion_merma", "F");
+            Upd.Add("margen_izquierdo", "@margen_izquierdo", "F");
+            Upd.Add("margen_derecho", "@margen_derecho", "F");
+            Upd.Add("margen_superior", "@margen_superior", "F");
+            Upd.Add("margen_inferior", "@margen_inferior", "F");
+            Upd.Add("orientacion_pos", "@orientacion_pos", "F");
+            Upd.Add("ubicacion_virtual", "@ubicacion_virtual", "F");
+            Upd.Add("ubicacion_ne", "@ubicacion_ne", "F");
+            Upd.Add("idbodega", "@idbodega", "F");
+            Upd.Add("idarea", "@idarea", "F");
+            Upd.Add("idsector", "@idsector", "F");
+            Upd.Add("posicion_x", "@posicion_x", "F");
+            Upd.Add("posicion_y", "@posicion_y", "F");
+            Upd.Add("ubicacion_muelle", "@ubicacion_muelle", "F");
+            Upd.Where("IdUbicacion = @IdUbicacion" +
+                " AND IdBodega = @IdBodega");
+
+            string sp = Upd.SQL();
+
+            using (var cmd = new SqlCommand(sp, pConection, pTransaction))
+            {
+                cmd.CommandType = CommandType.Text;
+
+                BindingParameteres(cmd, oBeBodega_ubicacion);
+
+                rowsAffected = cmd.ExecuteNonQuery();
+            }
+
+            return rowsAffected;
+
+           
+
+        }
+        catch (SqlException ex)
+        {
+            string errorMessage = $"Error en Actualizar - {ex.Message}";
+            throw new Exception(errorMessage, ex);
+        }
+    }
     public static int Actualizar(IConfiguration config, clsBeBodega_ubicacion oBeBodega_ubicacion, SqlConnection? pConection = null, SqlTransaction? pTransaction = null)
     {
 

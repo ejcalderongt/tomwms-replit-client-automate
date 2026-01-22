@@ -3348,6 +3348,61 @@ Partial Public Class clsLnProducto_presentacion
 
     End Function
 
+    '#GT20012025: cargar presentacion para preimpresion mhs
+    Public Shared Function Get_Single_By_IdPresentacion(ByVal pIdPresentacion As Integer) As clsBeProducto_Presentacion
+
+        Get_Single_By_IdPresentacion = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT * FROM producto_presentacion WHERE IdPresentacion=@IdPresentacion"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDataAdapter.SelectCommand.CommandType = CommandType.Text
+                        lDataAdapter.SelectCommand.Transaction = lTransaction
+                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdPresentacion", pIdPresentacion)
+
+                        Dim lDataTable As New DataTable()
+                        lDataAdapter.Fill(lDataTable)
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                            Dim lRow As DataRow = lDataTable.Rows(0)
+                            Dim Obj As New clsBeProducto_Presentacion()
+
+                            Cargar(Obj, lRow)
+
+                            If lRow("factor") IsNot DBNull.Value AndAlso lRow("factor") IsNot Nothing Then
+                                Obj.Factor = CType(lRow("factor"), Double)
+                            End If
+
+                            Get_Single_By_IdPresentacion = Obj
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls
 

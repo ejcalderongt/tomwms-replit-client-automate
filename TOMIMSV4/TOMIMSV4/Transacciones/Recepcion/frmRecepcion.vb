@@ -4,6 +4,7 @@ Imports System.IO
 Imports System.Reflection
 Imports DevExpress.Mvvm.Native
 Imports DevExpress.Utils
+Imports DevExpress.XtraBars.Ribbon.ViewInfo
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.Controls
 Imports DevExpress.XtraEditors.Repository
@@ -987,13 +988,12 @@ Public Class frmRecepcion
                 '#GT13012025: asignar y bloquear controles
                 chkHabilitaStock.Checked = gBeRecepcionEnc.Habilitar_Stock
                 chkMostrarCantidadPI.Checked = gBeRecepcionEnc.Mostrar_Cantidad_Esperada
-                chkHabilitaStock.Enabled = False
-                chkMostrarCantidadPI.Enabled = False
 
-                '#GT13012025: no aplica, ya que previamente se asigna el estado proveniente de la recepción
-                'If Modo = TipoTrans.Editar Then
-                '    chkHabilitaStock.Enabled = False
-                'End If
+                If Modo = TipoTrans.Editar Then
+                    chkHabilitaStock.Enabled = gBeRecepcionEnc.Habilitar_Stock
+                End If
+
+                chkMostrarCantidadPI.Enabled = False
 
                 txtIdOrdenCompra.Enabled = False
 
@@ -1148,6 +1148,8 @@ Public Class frmRecepcion
     End Sub
 
     Private Sub Check_Reglas_Propietario_Ingreso()
+
+        chkHabilitaStock.Checked = True
 
         Try
 
@@ -6716,8 +6718,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
         DTGridDetalleDocIngresos.Columns.Add("ControlPeso", GetType(Boolean))
         DTGridDetalleDocIngresos.Columns.Add("PesoReferenciaUMBas", GetType(Double))
         '#GT13082025: campos talla, color y sku
-        DTGridDetalleDocIngresos.Columns.Add("Talla", GetType(Integer))
-        DTGridDetalleDocIngresos.Columns.Add("Color", GetType(Integer))
+        DTGridDetalleDocIngresos.Columns.Add("Talla", GetType(String))
+        DTGridDetalleDocIngresos.Columns.Add("Color", GetType(String))
         DTGridDetalleDocIngresos.Columns.Add("SKU", GetType(String))
 
 
@@ -7585,43 +7587,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                 DTGridDetalleDocIngresos.Rows.Add(finalData)
 
-
-
-                'DTGridDetalleDocIngresos.Rows.Add(BeTransOCDet.IdPropietarioBodega,
-                '                                  BeTransOCDet.Nombre_Propietario,
-                '                                  BeTransOCDet.No_Linea,
-                '                                  BeTransOCDet.IdProductoBodega,
-                '                                  BeTransOCDet.Codigo_Producto,
-                '                                  BeTransOCDet.Nombre_producto,
-                '                                  BeTransOCDet.Nombre_unidad_medida_basica,
-                '                                  BeTransOCDet.IdUnidadMedidaBasica,
-                '                                  BeTransOCDet.IdPresentacion,
-                '                                  BeTransOCDet.Arancel.IdArancel,
-                '                                  BeTransOCDet.IdMotivoDevolucion,
-                '                                  BeTransOCDet.Cantidad,
-                '                                  BeTransOCDet.Cantidad_recibida,
-                '                                  vCantidadPendiente,
-                '                                  BeTransOCDet.Peso_Bruto,
-                '                                  BeTransOCDet.Peso_Neto,
-                '                                  BeTransOCDet.Costo,
-                '                                  BeTransOCDet.valor_aduana,
-                '                                  BeTransOCDet.valor_fob,
-                '                                  BeTransOCDet.valor_iva,
-                '                                  BeTransOCDet.valor_dai,
-                '                                  BeTransOCDet.valor_seguro,
-                '                                  BeTransOCDet.valor_flete,
-                '                                  BeTransOCDet.Total_linea,
-                '                                  BeTransOCDet.Producto.IdProducto,
-                '                                  BeTransOCDet.IsNew,
-                '                                  BeTransOCDet.IdOrdenCompraEnc,
-                '                                  BeTransOCDet.IdOrdenCompraDet,
-                '                                  False,
-                '                                  BeTransOCDet.Atributo_variante_1,
-                '                                  BeTransOCDet.Producto.Kit,
-                '                                  BeTransOCDet.IdPedidoCompraDet,
-                '                                  BeTransOCDet.IdOrdenCompraDetPadre,
-                '                                  BeTransOCDet.Producto.Control_peso,
-                '                                  BeTransOCDet.Producto.Peso_referencia)
 
                 If BeTransOCDet.lProductosHijosKit.Count > 0 Then
 
@@ -11719,6 +11684,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                         pBeTransReDet.IdPresentacion = vIdPresentacion
                         pBeTransReDet.UnidadMedida.IdUnidadMedida = vIdUnidadMedida
                         pBeTransReDet.Nombre_unidad_medida = vnombre_unidad_medida
+                        pBeTransReDet.IdUnidadMedida = vIdUnidadMedida
                     Else
                         pBeTransReDet.IdUnidadMedida = vIdUnidadMedida
                         pBeTransReDet.UnidadMedida.IdUnidadMedida = vIdUnidadMedida

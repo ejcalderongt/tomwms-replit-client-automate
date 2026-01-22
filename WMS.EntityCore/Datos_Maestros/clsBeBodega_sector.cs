@@ -5,23 +5,27 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WMS.EntityCore.Datos_Maestros
 {
-    public class clsBeBodega_area : ICloneable
+    public class clsBeBodega_sector : ICloneable
     {
-        [Column("IdArea")]
-        [DisplayName("IdArea")]
-        public int IdArea { get; set; } = 0;
-
         [Column("IdBodega")]
         [DisplayName("IdBodega")]
         public int IdBodega { get; set; } = 0;
 
-        [Column("Descripcion")]
-        [DisplayName("Descripcion")]
-        public string Descripcion { get; set; } = "";
+        [Column("IdSector")]
+        [DisplayName("IdSector")]
+        public int IdSector { get; set; } = 0;
+
+        [Column("IdArea")]
+        [DisplayName("IdArea")]
+        public int IdArea { get; set; } = 0;
 
         [Column("sistema")]
         [DisplayName("sistema")]
         public bool Sistema { get; set; } = false;
+
+        [Column("descripcion")]
+        [DisplayName("descripcion")]
+        public string Descripcion { get; set; } = "";
 
         [Column("user_agr")]
         [DisplayName("user_agr")]
@@ -38,10 +42,6 @@ namespace WMS.EntityCore.Datos_Maestros
         [Column("fec_mod")]
         [DisplayName("fec_mod")]
         public DateTime Fec_mod { get; set; } = DateTime.Now;
-
-        [Column("Codigo")]
-        [DisplayName("Codigo")]
-        public string Codigo { get; set; } = "";
 
         [Column("activo")]
         [DisplayName("activo")]
@@ -75,15 +75,31 @@ namespace WMS.EntityCore.Datos_Maestros
         [DisplayName("margen_inferior")]
         public double Margen_inferior { get; set; } = 0;
 
-        [Column("grupo")]
-        [DisplayName("grupo")]
-        public string Grupo { get; set; } = "";
+        [Column("Codigo")]
+        [DisplayName("Codigo")]
+        public string Codigo { get; set; } = "";
 
-        [Column("IdUbicacionRef")]
-        [DisplayName("IdUbicacionRef")]
-        public int IdUbicacionRef { get; set; } = 0;
+        [Column("IdSectorIzquierda")]
+        [DisplayName("IdSectorIzquierda")]
+        public int IdSectorIzquierda { get; set; } = 0;
 
-        public clsBeBodega_area() { }
+        [Column("IdSectorDerecha")]
+        [DisplayName("IdSectorDerecha")]
+        public int IdSectorDerecha { get; set; } = 0;
+
+        [Column("horizontal")]
+        [DisplayName("horizontal")]
+        public bool Horizontal { get; set; } = false;
+
+        [Column("pos_x")]
+        [DisplayName("pos_x")]
+        public double Pos_x { get; set; } = 0;
+
+        [Column("pos_y")]
+        [DisplayName("pos_y")]
+        public double Pos_y { get; set; } = 0;
+
+        public clsBeBodega_sector() { }
 
         public object Clone()
         {

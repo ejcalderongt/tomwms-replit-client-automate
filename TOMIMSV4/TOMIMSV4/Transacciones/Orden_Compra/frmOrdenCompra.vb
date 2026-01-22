@@ -8489,11 +8489,25 @@ MessageBoxButtons.YesNo,
                 End If
             End If
         Catch ex As Exception
-
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
     End Sub
 
     Private Sub dgridTallaColor_Click(sender As Object, e As EventArgs) Handles dgridTallaColor.Click
 
     End Sub
+
+    Private Sub cmdPreImpresionOC_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdPreImpresionOC.ItemClick
+        Try
+            With frmImpresionRecepcion_OC
+                .pTransOC_Enc = gBeOrdenCompra
+                .Show()
+                .Focus()
+            End With
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+
+    End Sub
+
 End Class

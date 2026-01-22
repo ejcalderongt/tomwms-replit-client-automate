@@ -1127,7 +1127,7 @@ Partial Public Class clsLnTrans_oc_det_lote
 
         Try
 
-            Dim vSQL As String = "SELECT lote, fecha_vence 
+            Dim vSQL As String = "SELECT IdOrdenCompraDetLote as IdLote,lote, fecha_vence,cantidad 
                                   FROM trans_oc_det_lote
                                   WHERE IdOrdenCompraEnc=@IdOrdenCompraEnc AND IdOrdenCompraDet = @IdOrdenCompraDet "
 

@@ -198,7 +198,8 @@ Partial Public Class clsLnTrans_inv_stock
                                 [peso], 
                                 [temperatura], 
                                 [fecha_copia],
-                                [IdBodega])
+                                [IdBodega],
+                                [IdProductoTallaColor])
                                 SELECT 
                                     @idinventario,
                                     [IdStock], 
@@ -231,7 +232,8 @@ Partial Public Class clsLnTrans_inv_stock
                                     [peso], 
                                     [temperatura], 
                                     GETDATE(),
-                                    [IdBodega]
+                                    [IdBodega], 
+                                    [IdProductoTallaColor]
                                     FROM stock"
 
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -642,6 +644,7 @@ Partial Public Class clsLnTrans_inv_stock
                             gBeInventarioCiclico.EsPallet = False 'StockCongelado.IdPresentacion Is Pallet ? -> EJC20180807
                             gBeInventarioCiclico.lic_plate = StockCongelado.Lic_plate
                             gBeInventarioCiclico.IdBodega = StockCongelado.IdBodega
+                            gBeInventarioCiclico.IdProductoTallaColor = StockCongelado.IdProductoTallaColor
 
                             clsLnTrans_inv_ciclico.Insertar(gBeInventarioCiclico, lConection, lTransaction)
 
@@ -780,6 +783,7 @@ Partial Public Class clsLnTrans_inv_stock
                                     gBeInventarioCiclico.EsPallet = False 'StockCongelado.IdPresentacion Is Pallet ? -> EJC20180807
                                     gBeInventarioCiclico.lic_plate = StockCongelado.Lic_plate
                                     gBeInventarioCiclico.IdBodega = StockCongelado.IdBodega
+                                    gBeInventarioCiclico.IdProductoTallaColor = StockCongelado.IdProductoTallaColor
 
                                     clsLnTrans_inv_ciclico.Insertar(gBeInventarioCiclico, lConection, lTransaction)
 
@@ -903,16 +907,31 @@ Partial Public Class clsLnTrans_inv_stock
         Try
             '#ejc, agruegué transacción: 241211
             '#CKFK 20180627 modifiqué la forma de obtener el nombre completo de la ubicacion
-            Dim vSQL As String = "SELECT producto.codigo AS Codigo, producto.nombre AS Producto, unidad_medida.Nombre AS UMBas, producto_presentacion.nombre AS Presentacion,
-                                    producto_estado.nombre AS Estado, trans_inv_stock.Lote, trans_inv_stock.Fecha_vence, trans_inv_stock.Cantidad,  trans_inv_stock.Peso,
-                                    dbo.Nombre_Completo_Ubicacion(trans_inv_stock.IdUbicacion,trans_inv_stock.IdBodega) AS Ubicacion, trans_inv_stock.IdStock, pt.NombreTipoProducto AS TipoProducto, trans_inv_stock.IdUbicacion, trans_inv_stock.IdProductoBodega
+            Dim vSQL As String = "SELECT producto.codigo AS Codigo, 
+                                    producto.nombre AS Producto, 
+                                    unidad_medida.Nombre AS UMBas, 
+                                    producto_presentacion.nombre AS Presentacion,
+                                    producto_estado.nombre AS Estado, 
+                                    trans_inv_stock.Lote, 
+                                    trans_inv_stock.Fecha_vence, 
+                                    trans_inv_stock.Cantidad,
+                                    IIF(trans_inv_stock.IdPresentacion <> 0, trans_inv_stock.Cantidad / producto_presentacion.Factor, 0) AS CantidadPresentacion, 
+                                    trans_inv_stock.Peso,
+                                    dbo.Nombre_Completo_Ubicacion(trans_inv_stock.IdUbicacion,trans_inv_stock.IdBodega) AS Ubicacion, trans_inv_stock.IdStock, pt.NombreTipoProducto AS TipoProducto, 
+                                    trans_inv_stock.IdUbicacion, 
+                                    trans_inv_stock.IdProductoBodega,
+                                    color.nombre Color,
+                                    talla.codigo Talla
                                     FROM trans_inv_stock INNER JOIN
                                     producto_bodega ON trans_inv_stock.IdProductoBodega = producto_bodega.IdProductoBodega 
                                     INNER JOIN producto ON producto_bodega.IdProducto = producto.IdProducto 
                                     LEFT OUTER JOIN producto_presentacion ON trans_inv_stock.IdPresentacion = producto_presentacion.IdPresentacion LEFT OUTER JOIN
                                     unidad_medida ON trans_inv_stock.IdUnidadMedida = unidad_medida.IdUnidadMedida 
                                     inner join producto_tipo pt on producto.IdTipoProducto = pt.IdTipoProducto 
-                                    inner join producto_estado on trans_inv_stock.IdProductoEstado = producto_estado.IdEstado "
+                                    inner join producto_estado on trans_inv_stock.IdProductoEstado = producto_estado.IdEstado
+                                    left join producto_talla_color on trans_inv_stock.IdProductoTallaColor = producto_talla_color.IdProductoTallaColor 
+                                    left join color on color.IdColor = producto_talla_color.IdColor 
+                                    left join talla on talla.IdTalla = producto_talla_color.IdTalla "
 
             vSQL += "WHERE trans_inv_stock.IdInventario=@IdInventario AND trans_inv_stock.IdBodega = @IdBodega"
 
