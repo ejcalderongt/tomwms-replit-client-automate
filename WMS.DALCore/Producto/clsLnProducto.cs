@@ -1159,8 +1159,8 @@ public class clsLnProducto
                     IdMarca = marca?.IdMarca ?? 0,
                     IdTipoProducto = tipoProducto?.IdTipoProducto ?? 0,
                     IdUnidadMedidaBasica = umBas?.IdUnidadMedida ?? 0,
-                    codigo = BeProductoMi3.codigo,
-                    codigo_barra = BeProductoMi3.codigo_barra,
+                    codigo = BeProductoMi3.codigo.Trim(),
+                    codigo_barra = BeProductoMi3.codigo_barra.Trim(),
                     activo = true,
                     genera_lp_old = BeProductoMi3.genera_lp_old,
                     control_lote = BeProductoMi3.control_lote,
@@ -1260,9 +1260,9 @@ public class clsLnProducto
                 var pProducto = new clsBeProducto
                 {
                     IdProducto = productoActual.IdProducto,
-                    codigo = productoActual.codigo,                  // no se cambia la PK lógica
-                    nombre = string.IsNullOrWhiteSpace(BeProductoMi3.nombre) ? productoActual.nombre : BeProductoMi3.nombre,
-                    codigo_barra = string.IsNullOrWhiteSpace(BeProductoMi3.codigo_barra) ? productoActual.codigo_barra : BeProductoMi3.codigo_barra,
+                    codigo = productoActual.codigo.Trim(),                  // no se cambia la PK lógica
+                    nombre = string.IsNullOrWhiteSpace(BeProductoMi3.nombre) ? productoActual.nombre.Trim() : BeProductoMi3.nombre.Trim(),
+                    codigo_barra = string.IsNullOrWhiteSpace(BeProductoMi3.codigo_barra) ? productoActual.codigo_barra.Trim() : BeProductoMi3.codigo_barra.Trim(),
                     IdPropietario = BeProductoMi3.IdPropietario != 0 ? BeProductoMi3.IdPropietario : productoActual.IdPropietario,
                     IdClasificacion = idClasificacion,
                     IdFamilia = idFamilia,

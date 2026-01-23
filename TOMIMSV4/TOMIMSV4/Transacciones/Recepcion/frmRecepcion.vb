@@ -11822,8 +11822,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                                 Else
 
-                                    pListBeStockRec(vIndice).IdUbicacion = txtIdUbicacion.Text
-                                    pListBeStockRec(vIndice).IdUbicacion_anterior = txtIdUbicacion.Text
+                                    pListBeStockRec(vIndice).IdUbicacion = Val(txtIdUbicacion.Text)
+                                    pListBeStockRec(vIndice).IdUbicacion_anterior = Val(txtIdUbicacion.Text)
 
                                 End If
 
