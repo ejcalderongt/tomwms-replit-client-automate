@@ -61,6 +61,12 @@ Public Class clsLnTempComparacionInventario
             Ins.Add("EstadoDestino", "@EstadoDestino", DataType.Parametro)
             Ins.Add("UbicacionOrigen", "@UbicacionOrigen", DataType.Parametro)
             Ins.Add("UbicacionDestino", "@UbicacionDestino", DataType.Parametro)
+            Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
+            Ins.Add("IdProductoTallaColor_nuevo", "@IdProductoTallaColor_nuevo", DataType.Parametro)
+            Ins.Add("TallaStock", "@TallaStock", DataType.Parametro)
+            Ins.Add("ColorStock", "@ColorStock", DataType.Parametro)
+            Ins.Add("TallaNueva", "@TallaNueva", DataType.Parametro)
+            Ins.Add("ColorNuevo", "@ColorNuevo", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -96,6 +102,12 @@ Public Class clsLnTempComparacionInventario
             cmd.Parameters.Add(New SqlParameter("@UBICACIONDESTINO", oBeTempComparacionInventario.UbicacionDestino))
             cmd.Parameters.Add(New SqlParameter("@LICENCIA", oBeTempComparacionInventario.Licencia))
             cmd.Parameters.Add(New SqlParameter("@FECHAVENCE", oBeTempComparacionInventario.FechaVence))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTempComparacionInventario.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR_NUEVO", oBeTempComparacionInventario.IdProductoTallaColor_nuevo))
+            cmd.Parameters.Add(New SqlParameter("@TALLASTOCK", oBeTempComparacionInventario.TallaStock))
+            cmd.Parameters.Add(New SqlParameter("@COLORSTOCK", oBeTempComparacionInventario.ColorStock))
+            cmd.Parameters.Add(New SqlParameter("@TALLANUEVA", oBeTempComparacionInventario.TallaNueva))
+            cmd.Parameters.Add(New SqlParameter("@COLORNUEVO", oBeTempComparacionInventario.ColorNuevo))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -464,5 +476,46 @@ Public Class clsLnTempComparacionInventario
         End Try
     End Function
 
+    Public Shared Function Insertar_Comparacion_Inventario(ByVal pIdInventarioEnc As Integer, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
+
+        Dim lConnection As New SqlConnection(System.Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+
+        Try
+
+            Dim sp As String = "DELETE FROM ComparacionInventario WHERE IdInventario = @IdInventarioEnc;
+                                INSERT INTO ComparacionInventario SELECT * FROM TempComparacionInventario WHERE IdInventario = @IdInventarioEnc;"
+
+            Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
+
+            Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
+
+            If Es_Transaccion_Remota Then
+                cmd = New SqlCommand(sp, pConection)
+                cmd.Transaction = pTransaction
+            Else
+                lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
+                cmd = New SqlCommand(sp, lConnection, lTransaction)
+            End If
+
+            cmd.Parameters.AddWithValue("@IdInventarioEnc", pIdInventarioEnc)
+
+            Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
+
+            cmd.Dispose()
+
+            If Not Es_Transaccion_Remota Then lTransaction.Commit()
+
+            Return rowsAffected
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+        End Try
+
+    End Function
 
 End Class

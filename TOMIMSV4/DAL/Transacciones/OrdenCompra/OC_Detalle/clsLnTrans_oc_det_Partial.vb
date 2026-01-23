@@ -2649,4 +2649,105 @@ Partial Public Class clsLnTrans_oc_det
 
     End Function
 
+    '#GT20012025: cargar detalle para preimpresion mhs
+    Public Shared Function Get_Detalle_By_IdOrdenCompraEnc(ByVal pIdOrdenCompraEnc As Integer) As List(Of clsBeTrans_oc_det)
+
+        Get_Detalle_By_IdOrdenCompraEnc = Nothing
+
+        Try
+
+            Dim lReturnList As New List(Of clsBeTrans_oc_det)
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Dim vSQL As String = "SELECT No_Linea, IdProductoBodega,codigo_producto,nombre_producto,Cantidad, IdOrdenCompraDet, IdPresentacion,
+                                                 IdUnidadMedidaBasica,nombre_unidad_medida_basica
+                                                 FROM trans_oc_det 
+                                          WHERE IdOrdenCompraEnc=@IdOrdenCompraEnc "
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdOrdenCompraEnc", pIdOrdenCompraEnc)
+
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+
+                        Dim Obj As clsBeTrans_oc_det
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                            Get_Detalle_By_IdOrdenCompraEnc = New List(Of clsBeTrans_oc_det)
+
+                            For Each lRow As DataRow In lDataTable.Rows
+
+                                Obj = New clsBeTrans_oc_det
+
+                                If lRow("No_Linea") IsNot DBNull.Value AndAlso lRow("No_Linea") IsNot Nothing Then
+                                    Obj.No_Linea = CType(lRow("No_Linea"), Integer)
+                                End If
+
+                                If lRow("IdProductoBodega") IsNot DBNull.Value AndAlso lRow("IdProductoBodega") IsNot Nothing Then
+                                    Obj.IdProductoBodega = CType(lRow("IdProductoBodega"), Integer)
+                                End If
+
+                                If lRow("Cantidad") IsNot DBNull.Value AndAlso lRow("Cantidad") IsNot Nothing Then
+                                    Obj.Cantidad = CType(lRow("Cantidad"), Double)
+                                End If
+
+
+                                If lRow("nombre_producto") IsNot DBNull.Value AndAlso lRow("nombre_producto") IsNot Nothing Then
+                                    Obj.Nombre_producto = lRow("nombre_producto")
+                                End If
+
+                                If lRow("IdOrdenCompraDet") IsNot DBNull.Value AndAlso lRow("IdOrdenCompraDet") IsNot Nothing Then
+                                    Obj.IdOrdenCompraDet = CType(lRow("IdOrdenCompraDet"), Integer)
+                                End If
+
+
+                                If lRow("IdPresentacion") IsNot DBNull.Value AndAlso lRow("IdPresentacion") IsNot Nothing Then
+                                    Obj.IdPresentacion = CType(lRow("IdPresentacion"), Integer)
+                                End If
+
+                                If lRow("codigo_producto") IsNot DBNull.Value AndAlso lRow("codigo_producto") IsNot Nothing Then
+                                    Obj.Codigo_Producto = lRow("codigo_producto")
+                                End If
+
+                                If lRow("nombre_unidad_medida_basica") IsNot DBNull.Value AndAlso lRow("nombre_unidad_medida_basica") IsNot Nothing Then
+                                    Obj.Nombre_unidad_medida_basica = lRow("nombre_unidad_medida_basica")
+                                End If
+
+                                If lRow("IdUnidadMedidaBasica") IsNot DBNull.Value AndAlso lRow("IdUnidadMedidaBasica") IsNot Nothing Then
+                                    Obj.IdUnidadMedidaBasica = CType(lRow("IdUnidadMedidaBasica"), Integer)
+                                End If
+
+                                Obj.IsNew = False
+
+                                Get_Detalle_By_IdOrdenCompraEnc.Add(Obj)
+
+                            Next
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 End Class

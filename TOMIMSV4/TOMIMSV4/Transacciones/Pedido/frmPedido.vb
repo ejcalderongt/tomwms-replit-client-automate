@@ -4878,6 +4878,9 @@ Public Class frmPedido
             pBePedidoDet.Color = vColor
             pBePedidoDet.IdProductoTallaColor = vIdProductoTallaColor_
 
+            '#GT20012025: deshabilitar la bandera stock_liberado.
+            'pBePedidoDet.stock_liberado = False
+
             pBeStockRes.IdStockRes = 0
             pBeStockRes.IdTransaccion = pBePedidoEnc.IdPedidoEnc
             pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet

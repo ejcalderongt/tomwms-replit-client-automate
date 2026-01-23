@@ -41,7 +41,7 @@
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>501</ApplicationRevision>
+    <ApplicationRevision>502</ApplicationRevision>
     <ApplicationVersion>4.7.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -368,6 +368,12 @@
       <DependentUpon>frmcorreorpt.vb</DependentUpon>
     </Compile>
     <Compile Include="Mantenimientos\Email\frmcorreorpt.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mantenimientos\Impresion_OC\frmImpresion_OC.Designer.vb">
+      <DependentUpon>frmImpresion_OC.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Mantenimientos\Impresion_OC\frmImpresion_OC.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mantenimientos\Impresion_Recepcion\frmImpresionRecepcion.Designer.vb">
@@ -3205,6 +3211,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Email\frmcorreorpt.resx">
       <DependentUpon>frmcorreorpt.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mantenimientos\Impresion_OC\frmImpresion_OC.resx">
+      <DependentUpon>frmImpresion_OC.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Impresion_Recepcion\frmImpresionRecepcion.resx">
       <DependentUpon>frmImpresionRecepcion.vb</DependentUpon>

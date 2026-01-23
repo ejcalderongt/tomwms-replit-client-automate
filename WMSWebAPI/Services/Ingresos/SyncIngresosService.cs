@@ -2,7 +2,7 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
 using WMS.DALCore.Transacciones;
-using WMS.EntityCore.Dtos.Ingresos;
+using WMS.EntityCore.Datos_Maestros;
 using WMS.EntityCore.Operador;
 using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Producto;
@@ -288,12 +288,6 @@ namespace WMSWebAPI.Services.Ingresos
                     var oc_enc = _mapper.Map<clsBeTrans_oc_enc>(dto.Encabezado);
                     var oc_det_list = _mapper.Map<List<clsBeTrans_oc_det>>(dto.Detalle);
 
-                    //var re_enc_list = dto.Recepciones == null
-                    //                  ? new List<clsBeTrans_re_enc>()
-                    //                  : dto.Recepciones
-                    //                  .Select(r => _mapper.Map<clsBeTrans_re_enc>(r.Encabezado))
-                    //                  .ToList();
-
                     var re_enc_list = dto.Recepciones == null
                                       ? new List<clsBeTrans_re_enc_3pl>()
                                       : dto.Recepciones
@@ -321,14 +315,6 @@ namespace WMSWebAPI.Services.Ingresos
                                                           .Select(_mapper.Map<clsBeOperador_bodega>)
                                                           .ToList();
 
-                    //var ops_rec_list = dto.Recepciones == null ? new List<clsBeTrans_re_op>()
-                    //                                  : dto.Recepciones
-                    //                                      .Where(r => r.OperadoresRec != null)
-                    //                                      .SelectMany(r => r.OperadoresRec!)
-                    //                                      .Select(_mapper.Map<clsBeTrans_re_op>)
-                    //                                      .ToList();
-
-
                     var ops_rec_list = dto.Recepciones == null ? new List<clsBeTrans_re_op_3pl>()
                                                     : dto.Recepciones
                                                         .Where(r => r.OperadoresRec != null)
@@ -345,8 +331,6 @@ namespace WMSWebAPI.Services.Ingresos
                     //                   .ToList();
 
                     var re_stock_rec_list = _mapper.Map<List<clsBeStock_rec>>(dto.stockRec);
-
-                    //List<clsBeTrans_re_det> re_det_list = new();
                     List<clsBeTrans_re_det_3pl> re_det_list = new();
 
                     if (dto.Recepciones != null)
@@ -366,7 +350,49 @@ namespace WMSWebAPI.Services.Ingresos
                                              .ToList() ?? new List<clsBeProducto_bodega>();
 
 
-                    var stock_list = _mapper.Map<List<clsBeStock>>(dto.stock);
+                    var stock_list = _mapper.Map<List<clsBeStock_3pl>>(dto.stock);
+
+                    var bodega_area_list =
+                                            listaDto?
+                                                .Where(r => r.stock != null)
+                                                .SelectMany(r => r.stock!)
+                                                .Where(d => d.Bodega_Areas != null)
+                                                .SelectMany(d => d.Bodega_Areas!) // aplana la lista
+                                                .Select(a => _mapper.Map<clsBeBodega_area>(a))
+                                                .ToList()
+                                            ?? new List<clsBeBodega_area>();
+
+
+                    var bodega_sector_list =
+                                            listaDto?
+                                                .Where(r => r.stock != null)
+                                                .SelectMany(r => r.stock!)
+                                                .Where(d => d.Bodega_Sectores != null)
+                                                .SelectMany(d => d.Bodega_Sectores!) // aplana la lista
+                                                .Select(s => _mapper.Map<clsBeBodega_sector>(s))
+                                                .ToList()
+                                            ?? new List<clsBeBodega_sector>();
+
+                    var bodega_tramo_list =
+                                          listaDto?
+                                              .Where(r => r.stock != null)
+                                              .SelectMany(r => r.stock!)
+                                              .Where(d => d.Bodega_Tramos != null)
+                                              .SelectMany(d => d.Bodega_Tramos!) // aplana la lista
+                                              .Select(s => _mapper.Map<clsBeBodega_tramo>(s))
+                                              .ToList()
+                                          ?? new List<clsBeBodega_tramo>();
+
+                    var bodega_ubicacion_list =
+                                                   listaDto?
+                                                       .Where(r => r.stock != null)
+                                                       .SelectMany(r => r.stock!)
+                                                       .Where(d => d.Bodega_Ubicaciones != null)
+                                                       .SelectMany(d => d.Bodega_Ubicaciones!) // aplana la lista
+                                                       .Select(u => _mapper.Map<clsBeBodega_ubicacion>(u))
+                                                       .ToList()
+                                                   ?? new List<clsBeBodega_ubicacion>();
+
 
                     var re_movimientos_list = _mapper.Map<List<clsBeTrans_movimientos>>(dto.movimientos);
 
@@ -399,14 +425,12 @@ namespace WMSWebAPI.Services.Ingresos
                     if (re_enc_list != null)
                         clsLnTrans_re_enc.InsertarOActualizar_3pl(re_enc_list, conn, tx);
 
-                    //#GT06012025: se manea metodo 3pl
                     if (re_det_list != null)
                         clsLnTrans_re_det.InsertarOActualizar_3pl(re_det_list, conn, tx);
 
                     if (re_oc_list != null && re_oc_list.Count > 0)
                         clsLnTrans_re_oc.InsertarOActualizar(re_oc_list, conn, tx);
 
-                    //#GT06012025: Se maneja metodo 3pl
                     if (ops_rec_list != null && ops_rec_list.Count > 0)
                         clsLnTrans_re_op.InsertarOActualizar_3pl(ops_rec_list, conn, tx);
 
@@ -414,11 +438,23 @@ namespace WMSWebAPI.Services.Ingresos
                     //if (re_tr_list != null && re_tr_list.Count > 0)
                     //    clsLnTrans_re_tr.InsertarOActualizar(re_tr_list, conn, tx);
 
+                    if (bodega_area_list != null && bodega_area_list.Count > 0)
+                        clsLnBodega_area.InsertarOActualizar(bodega_area_list, conn, tx);
+
+                    if (bodega_sector_list != null && bodega_sector_list.Count > 0)
+                        clsLnBodega_sector.InsertarOActualizar(bodega_sector_list, conn, tx);
+
+                    if (bodega_tramo_list != null && bodega_tramo_list.Count>0)
+                        clsLnBodega_tramo.InsertarOActualizar(bodega_tramo_list,conn, tx);
+
+                    if (bodega_ubicacion_list != null && bodega_ubicacion_list.Count > 0)
+                        clsLnBodega_ubicacion.InsertarOActualizar(bodega_ubicacion_list, conn, tx);
+
                     if (re_stock_rec_list != null && re_stock_rec_list.Count > 0)
                         clsLnStock_rec.InsertarOActualizar(re_stock_rec_list, conn, tx);
 
                     if (stock_list != null && stock_list.Count > 0)
-                        clsLnStock.InsertarOActualizar(stock_list, conn, tx);
+                        clsLnStock.InsertarOActualizar_3pl(stock_list, conn, tx);
 
                     if (re_movimientos_list != null && re_movimientos_list.Count > 0)
                         clsLnTrans_movimientos.InsertarOActualizar(re_movimientos_list, conn, tx);

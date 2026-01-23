@@ -11684,6 +11684,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                         pBeTransReDet.IdPresentacion = vIdPresentacion
                         pBeTransReDet.UnidadMedida.IdUnidadMedida = vIdUnidadMedida
                         pBeTransReDet.Nombre_unidad_medida = vnombre_unidad_medida
+                        pBeTransReDet.IdUnidadMedida = vIdUnidadMedida
                     Else
                         pBeTransReDet.IdUnidadMedida = vIdUnidadMedida
                         pBeTransReDet.UnidadMedida.IdUnidadMedida = vIdUnidadMedida

@@ -1033,6 +1033,8 @@ Public Class frmInventario
 
             Cargar_Conteos_Operador(clsTrans.lConnection, clsTrans.lTransaction)
 
+            Carga_Regularizacion(clsTrans.lConnection, clsTrans.lTransaction)
+
             clsTrans.Commit_Transaction()
 
         Catch ex As Exception
@@ -6802,6 +6804,8 @@ Public Class frmInventario
             If gBeTransInvEnc.Regularizado Then
                 Close()
                 'Desactiva_Menu()
+            Else
+                Listar_Datos_De_Inventario()
             End If
 
         Catch ex As Exception
@@ -6995,6 +6999,8 @@ Public Class frmInventario
                 Exportar_Grid_A_Excel(dgridcomparativoerpwms, "WMS_Inv_Comparativo_ERP.xlsx")
             ElseIf xtraTabInv.SelectedTabPage Is tabDiferenciasInventario Then
                 Exportar_Grid_A_Excel(dgridDiferenciasCiclico, "WMS_Diferencias_Ciclico.xlsx")
+            ElseIf xtraTabInv.SelectedTabPage Is xtpRegularizacion Then
+                Exportar_Grid_A_Excel(grdRegularizar, "WMS_Regularizacion_Ciclico" & gBeTransInvEnc.Idinventarioenc & ".xlsx")
             Else
                 XtraMessageBox.Show("No hay nada que exportar en esta página", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
             End If
@@ -9400,4 +9406,176 @@ Public Class frmInventario
 
         End Try
     End Function
+
+    Private Sub Carga_Regularizacion(ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction)
+        Try
+
+            grdRegularizar.DataSource = clsLnTrans_inv_ciclico.Get_All_By_Regularizacion_Inventario(gBeTransInvEnc.Idinventarioenc,
+                                                                                                    lConnection,
+                                                                                                    lTransaction)
+
+            If GridView1.RowCount > 0 Then
+
+                GridView1.OptionsView.ShowFooter = True
+                GridView1.BestFitColumns(True)
+
+                'GridView1.Columns("Código").Group()
+
+                Dim item As GridGroupSummaryItem = New GridGroupSummaryItem() _
+                With {.FieldName = "CantidadConteo",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("CantidadConteo")}
+                GridView1.GroupSummary.Add(item)
+
+                Dim item1 As GridGroupSummaryItem = New GridGroupSummaryItem() _
+                With {.FieldName = "PesoConteo",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("PesoConteo")}
+                GridView1.GroupSummary.Add(item1)
+
+                Dim item2 As GridGroupSummaryItem = New GridGroupSummaryItem() _
+                With {.FieldName = "CantidadStock",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("CantidadStock")}
+                GridView1.GroupSummary.Add(item2)
+
+                Dim item3 As GridGroupSummaryItem = New GridGroupSummaryItem() _
+                With {.FieldName = "PesoStock",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("PesoStock")}
+                GridView1.GroupSummary.Add(item3)
+
+                Dim item4 As GridGroupSummaryItem = New GridGroupSummaryItem() _
+                With {.FieldName = "Entradas_Salidas",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("Entradas_Salidas")}
+                GridView1.GroupSummary.Add(item4)
+
+                Dim item5 As GridGroupSummaryItem = New GridGroupSummaryItem() _
+                With {.FieldName = "NuevoStock",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("NuevoStock")}
+                GridView1.GroupSummary.Add(item5)
+
+                Dim item6 As GridGroupSummaryItem = New GridGroupSummaryItem() _
+                With {.FieldName = "DiferenciaCantidad",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("DiferenciaCantidad")}
+                GridView1.GroupSummary.Add(item6)
+
+                Dim item7 As GridGroupSummaryItem = New GridGroupSummaryItem() _
+                With {.FieldName = "DiferenciaPeso",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("DiferenciaPeso")}
+                GridView1.GroupSummary.Add(item7)
+
+                Dim item8 As GridGroupSummaryItem = New GridGroupSummaryItem() _
+                With {.FieldName = "Entradas",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("Entradas")}
+                GridView1.GroupSummary.Add(item8)
+
+                Dim item9 As GridGroupSummaryItem = New GridGroupSummaryItem() _
+                With {.FieldName = "Salidas",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("Salidas")}
+                GridView1.GroupSummary.Add(item9)
+
+                Dim item10 As GridGroupSummaryItem = New GridGroupSummaryItem() _
+                With {.FieldName = "Cantidad_Reservada_UmBas",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("Cantidad_Reservada_UmBas")}
+                GridView1.GroupSummary.Add(item10)
+
+                lblRegs.Caption = String.Format("Registros: {0}", GridView1.RowCount)
+
+                GridView1.Columns("CantidadConteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView1.Columns("CantidadConteo").DisplayFormat.FormatString = "{0:n6}"
+
+                GridView1.Columns("CantidadConteo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView1.Columns("CantidadConteo").SummaryItem.DisplayFormat = "{0:n6}"
+
+                GridView1.Columns("PesoConteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView1.Columns("PesoConteo").DisplayFormat.FormatString = "{0:n6}"
+
+                GridView1.Columns("PesoConteo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView1.Columns("PesoConteo").SummaryItem.DisplayFormat = "{0:n6}"
+
+                GridView1.Columns("CantidadStock").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView1.Columns("CantidadStock").DisplayFormat.FormatString = "{0:n6}"
+
+                GridView1.Columns("CantidadStock").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView1.Columns("CantidadStock").SummaryItem.DisplayFormat = "{0:n6}"
+
+                GridView1.Columns("PesoStock").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView1.Columns("PesoStock").DisplayFormat.FormatString = "{0:n6}"
+
+                GridView1.Columns("PesoStock").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView1.Columns("PesoStock").SummaryItem.DisplayFormat = "{0:n6}"
+
+                GridView1.Columns("Entradas_Salidas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView1.Columns("Entradas_Salidas").DisplayFormat.FormatString = "{0:n6}"
+
+                GridView1.Columns("Entradas_Salidas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView1.Columns("Entradas_Salidas").SummaryItem.DisplayFormat = "{0:n6}"
+
+                GridView1.Columns("NuevoStock").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView1.Columns("NuevoStock").DisplayFormat.FormatString = "{0:n6}"
+
+                GridView1.Columns("NuevoStock").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView1.Columns("NuevoStock").SummaryItem.DisplayFormat = "{0:n6}"
+
+                GridView1.Columns("DiferenciaCantidad").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView1.Columns("DiferenciaCantidad").DisplayFormat.FormatString = "{0:n6}"
+
+                GridView1.Columns("DiferenciaCantidad").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView1.Columns("DiferenciaCantidad").SummaryItem.DisplayFormat = "{0:n6}"
+
+                GridView1.Columns("DiferenciaPeso").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView1.Columns("DiferenciaPeso").DisplayFormat.FormatString = "{0:n6}"
+
+                GridView1.Columns("DiferenciaPeso").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView1.Columns("DiferenciaPeso").SummaryItem.DisplayFormat = "{0:n6}"
+
+                GridView1.Columns("Entradas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView1.Columns("Entradas").DisplayFormat.FormatString = "{0:n6}"
+
+                GridView1.Columns("Entradas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView1.Columns("Entradas").SummaryItem.DisplayFormat = "{0:n6}"
+
+                GridView1.Columns("Salidas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView1.Columns("Salidas").DisplayFormat.FormatString = "{0:n6}"
+
+                GridView1.Columns("Salidas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView1.Columns("Salidas").SummaryItem.DisplayFormat = "{0:n6}"
+
+                GridView1.Columns("Cantidad_Reservada_UmBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                GridView1.Columns("Cantidad_Reservada_UmBas").DisplayFormat.FormatString = "{0:n6}"
+
+                GridView1.Columns("Cantidad_Reservada_UmBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                GridView1.Columns("Cantidad_Reservada_UmBas").SummaryItem.DisplayFormat = "{0:n6}"
+
+                GridView1.Columns("PesoConteo").Visible = False
+                GridView1.Columns("PesoStock").Visible = False
+                GridView1.Columns("DiferenciaPeso").Visible = False
+                GridView1.ExpandAllGroups()
+
+            End If
+
+        Catch ex As Exception
+
+        End Try
+
+    End Sub
 End Class
