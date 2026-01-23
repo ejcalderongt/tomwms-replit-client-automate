@@ -18,6 +18,7 @@ using WMSWebAPI.Services.Producto.Umbas;
 using WMSWebAPI.Services.Proveedor;
 using WMSWebAPI.Services.Reset_Password;
 using WMSWebAPI.Services.Salidas;
+using ISyncIngresosService = WMSWebAPI.Services.Ingresos.ISyncIngresosService;
 
 var builder = WebApplication.CreateBuilder(args);
 

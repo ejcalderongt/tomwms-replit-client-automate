@@ -1,7 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System.Data;
-using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Cliente;
 using WMS.EntityCore.Datos_Maestros;
