@@ -108,12 +108,12 @@ namespace WMS.EntityCore.Producto
         //public double Costo { get; set; } = 0;
 
         //[Column("CamasPorTarima")]
-        //[DisplayName("CamasPorTarima")]
-        //public double CamasPorTarima { get; set; } = 0;
+        [DisplayName("CamasPorTarima")]
+        public double CamasPorTarima { get; set; } = 0;
 
         //[Column("CajasPorCama")]
-        //[DisplayName("CajasPorCama")]
-        //public double CajasPorCama { get; set; } = 0;
+        [DisplayName("CajasPorCama")]
+        public double CajasPorCama { get; set; } = 0;
 
         [Column("genera_lp_auto")]
         [DisplayName("genera_lp_auto")]

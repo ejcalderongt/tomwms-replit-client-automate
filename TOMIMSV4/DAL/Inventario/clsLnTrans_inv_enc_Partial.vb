@@ -2725,55 +2725,73 @@ Partial Public Class clsLnTrans_inv_enc
         Try
 
             Dim vSQL As String = "SELECT t.TipoProducto as Tipo, t.codigo as Codigo, t.Producto as Nombre, t.UMBas,
+                                                ISNULL(t.NombrePresentacion, '') AS NombrePresentacion,
                                                 SUM(t.Inventario) AS Stock_WMS , 
                                                 SUM(t.Stock) AS Teorico_ERP, 
                                                 ROUND(SUM(t.Inventario) - SUM(t.Stock),6) AS Dif_ERP,
                                                 SUM(t.Conteo) AS Conteo, 
                                                 ROUND(SUM(t.Conteo) - SUM(t.Stock),6) AS Dif_Conteo,
-                                                t.lote AS Lote, t.fecha_vence AS Fecha_Vence,T.ubicacion
+                                                SUM(IIF(t.Factor <> 0, t.Inventario / t.Factor, 0)) AS Stock_WMS_Pres,
+                                                SUM(IIF(t.Factor <> 0, t.Stock / t.Factor, 0)) AS Teorico_ERP_Pres,
+                                                ROUND(SUM(IIF(t.Factor <> 0, t.Inventario / t.Factor, 0)) - SUM(IIF(t.Factor <> 0, t.Stock / t.Factor, 0)), 6) AS Dif_ERP_Pres,
+                                                SUM(IIF(t.Factor <> 0, t.Conteo / t.Factor, 0)) AS Conteo_Pres,
+                                                ROUND(SUM(IIF(t.Factor <> 0, t.Conteo / t.Factor, 0)) - SUM(IIF(t.Factor <> 0, t.Stock / t.Factor, 0)), 6) AS Dif_Conteo_Pres,
+                                                t.lote AS Lote, t.fecha_vence AS Fecha_Vence,T.ubicacion, t.Color, t.Talla
                                                 FROM (
                                                 SELECT trans_inv_stock.idinventario AS IdInventario, producto.codigo, producto.IdProducto, producto.nombre AS Producto, 
                                                 SUM(trans_inv_stock.cantidad) AS Inventario, 
                                                 0 AS Stock, 0 as Conteo, SUM(trans_inv_stock.peso) AS Peso, trans_inv_stock.lote, CONVERT(date, trans_inv_stock.fecha_vence) AS fecha_vence, 
                                                 producto_tipo.NombreTipoProducto AS TipoProducto, unidad_medida.Nombre AS UMBas,
-						                         dbo.Nombre_Completo_Ubicacion(trans_inv_stock.idubicacion,trans_inv_stock.idbodega)  as ubicacion
+						                        dbo.Nombre_Completo_Ubicacion(trans_inv_stock.idubicacion,trans_inv_stock.idbodega)  as ubicacion, '' Color, '' Talla,
+                                                producto_presentacion.nombre AS NombrePresentacion,
+	                                            ISNULL(producto_presentacion.factor, 0) AS Factor
                                                 FROM trans_inv_stock INNER JOIN
                                                 producto ON trans_inv_stock.IdProductoBodega = producto.IdProducto INNER JOIN
                                                 producto_tipo ON producto.IdTipoProducto = producto_tipo.IdTipoProducto INNER JOIN
                                                 unidad_medida ON trans_inv_stock.IdUnidadMedida = unidad_medida.IdUnidadMedida
+                                                LEFT JOIN producto_presentacion ON trans_inv_stock.IdPresentacion = producto_presentacion.IdPresentacion
                                                 WHERE (trans_inv_stock.idinventario = @IdInventarioEnc )
                                                 GROUP BY trans_inv_stock.idinventario, producto.codigo, producto.nombre, 
                                                 producto.IdProducto, trans_inv_stock.lote, trans_inv_stock.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre,
-						                        trans_inv_stock.idubicacion,trans_inv_stock.idbodega
+						                        trans_inv_stock.idubicacion,trans_inv_stock.idbodega, producto_presentacion.nombre, producto_presentacion.factor
                                         UNION                        
                                                 SELECT     trans_inv_stock_prod.idinventario AS IdInventario, producto.codigo, producto.IdProducto, producto.nombre AS Producto, 
                                                 0 AS Detalle, SUM(trans_inv_stock_prod.cant) 
                                                 AS Stock, 0 as Conteo, 0 AS Peso, trans_inv_stock_prod.lote, trans_inv_stock_prod.fecha_vence, producto_tipo.NombreTipoProducto AS TipoProducto, 
                                                 unidad_medida.Nombre AS UMBas,
-						                         dbo.Nombre_Completo_Ubicacion(trans_inv_stock_prod.idubicacion,trans_inv_stock_prod.idbodega)  as ubicacion
+						                        dbo.Nombre_Completo_Ubicacion(trans_inv_stock_prod.idubicacion,trans_inv_stock_prod.idbodega)  as ubicacion, '' Color, '' Talla,
+                                                producto_presentacion.nombre AS NombrePresentacion,
+		                                        ISNULL(producto_presentacion.factor, 0) AS Factor
                                                 FROM  trans_inv_stock_prod INNER JOIN
                                                 producto ON trans_inv_stock_prod.idProducto = producto.IdProducto INNER JOIN
                                                 producto_tipo ON producto.IdTipoProducto = producto_tipo.IdTipoProducto INNER JOIN
                                                 unidad_medida ON trans_inv_stock_prod.idUnidadMedida = unidad_medida.IdUnidadMedida 
+                                                LEFT JOIN producto_presentacion ON trans_inv_stock_prod.IdPresentacion = producto_presentacion.IdPresentacion
                                                 WHERE     (trans_inv_stock_prod.idinventario = @IdInventarioEnc )
                                                 GROUP BY trans_inv_stock_prod.idinventario, producto.codigo, producto.nombre, 
                                                 producto.IdProducto, trans_inv_stock_prod.lote, trans_inv_stock_prod.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre,
-						                        trans_inv_stock_prod.idubicacion,trans_inv_stock_prod.idbodega
+						                        trans_inv_stock_prod.idubicacion,trans_inv_stock_prod.idbodega, producto_presentacion.nombre, producto_presentacion.factor
                                         UNION                        
                                                 SELECT     trans_inv_ciclico.idinventarioenc AS IdInventario, producto.codigo, producto.IdProducto, producto.nombre AS Producto, 
                                                  0 AS Detalle, 0 as stock,Sum(trans_inv_ciclico.cantidad) as Conteo, 
                                                 0 AS Peso, trans_inv_ciclico.lote, trans_inv_ciclico.fecha_vence, producto_tipo.NombreTipoProducto AS TipoProducto, 
-                                                unidad_medida.Nombre AS UMBas,'' as ubicacion
+                                                unidad_medida.Nombre AS UMBas,'' as ubicacion, color.nombre Color, talla.codigo Talla, 
+                                                producto_presentacion.nombre AS NombrePresentacion,
+	                                            ISNULL(producto_presentacion.factor, 0) AS Factor
                                                 FROM  trans_inv_ciclico INNER JOIN
                                                 producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
 						                        producto ON  producto.IdProducto =  producto_bodega.IdProducto INNER JOIN
                                                 producto_tipo ON producto.IdTipoProducto = producto_tipo.IdTipoProducto INNER JOIN
                                                 unidad_medida ON PRODUCTO.IdUnidadMedidaBasica = unidad_medida.IdUnidadMedida
+                                                LEFT JOIN producto_talla_color ON producto_talla_color.IdProductoTallaColor = trans_inv_ciclico.IdProductoTallaColor
+                                                LEFT JOIN color ON color.IdColor = producto_talla_color.IdColor
+                                                LEFT JOIN talla ON talla.IdTalla = producto_talla_color.IdTalla
+                                                LEFT JOIN producto_presentacion ON trans_inv_ciclico.IdPresentacion = producto_presentacion.IdPresentacion
                                                 WHERE     (trans_inv_ciclico.idinventarioenc =  @IdInventarioEnc)
 						                        GROUP BY trans_inv_ciclico.idinventarioenc, producto.codigo, producto.IdProducto, producto.nombre, 
                                                 trans_inv_ciclico.lote, 
-						                        trans_inv_ciclico.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre) AS T
-                                          GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.TipoProducto, t.UMBas,T.ubicacion
+						                        trans_inv_ciclico.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre, color.nombre, talla.codigo, producto_presentacion.factor, producto_presentacion.nombre) AS T
+                                          GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.TipoProducto, t.UMBas,T.ubicacion, t.Talla, t.Color, t.NombrePresentacion, t.Factor
                                           ORDER BY T.codigo  "
 
 
@@ -2934,55 +2952,73 @@ Partial Public Class clsLnTrans_inv_enc
         Try
 
             Dim vSQL As String = "SELECT t.TipoProducto as Tipo, t.codigo as Codigo, t.Producto as Nombre, t.UMBas,
+                                                ISNULL(t.NombrePresentacion, '') AS NombrePresentacion,
                                                 SUM(t.Inventario) AS Stock_WMS , 
                                                 SUM(t.Stock) AS Teorico_ERP, 
                                                 ROUND(SUM(t.Inventario) - SUM(t.Stock),6) AS Dif_ERP,
                                                 SUM(t.Conteo) AS Conteo, 
                                                 ROUND(SUM(t.Conteo) - SUM(t.Stock),6) AS Dif_Conteo,
-                                                t.lote AS Lote, t.fecha_vence AS Fecha_Vence,T.ubicacion
+                                                SUM(IiF(t.Factor <> 0, t.Inventario / t.Factor, 0)) AS Stock_WMS_Pres,
+                                                SUM(IiF(t.Factor <> 0, t.Stock / t.Factor, 0)) AS Teorico_ERP_Pres,
+                                                ROUND(SUM(IiF(t.Factor <> 0, t.Inventario / t.Factor, 0)) - SUM(IIF(t.Factor <> 0, t.Stock / t.Factor, 0)), 6) AS Dif_ERP_Pres,
+                                                SUM(IIF(t.Factor <> 0, t.Conteo / t.Factor, 0)) AS Conteo_Pres,
+                                                ROUND(SUM(IIF(t.Factor <> 0, t.Conteo / t.Factor, 0)) - SUM(IIF(t.Factor <> 0, t.Stock / t.Factor, 0)), 6) AS Dif_Conteo_Pres,
+                                                t.lote AS Lote, t.fecha_vence AS Fecha_Vence,T.ubicacion, t.Talla, t.Color
                                                 FROM (
                                                 SELECT trans_inv_stock.idinventario AS IdInventario, producto.codigo, producto.IdProducto, producto.nombre AS Producto, 
                                                 SUM(trans_inv_stock.cantidad) AS Inventario, 
                                                 0 AS Stock, 0 as Conteo, SUM(trans_inv_stock.peso) AS Peso, trans_inv_stock.lote, CONVERT(date, trans_inv_stock.fecha_vence) AS fecha_vence, 
                                                 producto_tipo.NombreTipoProducto AS TipoProducto, unidad_medida.Nombre AS UMBas,
-						                         dbo.Nombre_Completo_Ubicacion(trans_inv_stock.idubicacion,trans_inv_stock.idbodega)  as ubicacion
+						                        dbo.Nombre_Completo_Ubicacion(trans_inv_stock.idubicacion,trans_inv_stock.idbodega)  as ubicacion, '' Talla, '' Color,
+                                                producto_presentacion.nombre AS NombrePresentacion,
+                                                ISNULL(producto_presentacion.factor, 0) AS Factor
                                                 FROM trans_inv_stock INNER JOIN
                                                 producto ON trans_inv_stock.IdProductoBodega = producto.IdProducto INNER JOIN
                                                 producto_tipo ON producto.IdTipoProducto = producto_tipo.IdTipoProducto INNER JOIN
                                                 unidad_medida ON trans_inv_stock.IdUnidadMedida = unidad_medida.IdUnidadMedida
+                                                LEFT JOIN producto_presentacion ON trans_inv_stock.IdPresentacion = producto_presentacion.IdPresentacion
                                                 WHERE (trans_inv_stock.idinventario = @IdInventarioEnc)
                                                 GROUP BY trans_inv_stock.idinventario, producto.codigo, producto.nombre, 
                                                 producto.IdProducto, trans_inv_stock.lote, trans_inv_stock.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre,
-						                        trans_inv_stock.idubicacion,trans_inv_stock.idbodega
+						                        trans_inv_stock.idubicacion,trans_inv_stock.idbodega, producto_presentacion.nombre, producto_presentacion.factor
                                         UNION                        
                                                 SELECT     trans_inv_stock_prod.idinventario AS IdInventario, producto.codigo, producto.IdProducto, producto.nombre AS Producto, 
                                                 0 AS Detalle, SUM(trans_inv_stock_prod.cant) 
                                                 AS Stock, 0 as Conteo, 0 AS Peso, trans_inv_stock_prod.lote, trans_inv_stock_prod.fecha_vence, producto_tipo.NombreTipoProducto AS TipoProducto, 
                                                 unidad_medida.Nombre AS UMBas,
-						                         dbo.Nombre_Completo_Ubicacion(trans_inv_stock_prod.idubicacion,trans_inv_stock_prod.idbodega)  as ubicacion
+						                        dbo.Nombre_Completo_Ubicacion(trans_inv_stock_prod.idubicacion,trans_inv_stock_prod.idbodega)  as ubicacion,'' Talla, '' Color,
+                                                producto_presentacion.nombre AS NombrePresentacion,
+	                                            ISNULL(producto_presentacion.factor, 0) AS Factor
                                                 FROM  trans_inv_stock_prod INNER JOIN
                                                 producto ON trans_inv_stock_prod.idProducto = producto.IdProducto INNER JOIN
                                                 producto_tipo ON producto.IdTipoProducto = producto_tipo.IdTipoProducto INNER JOIN
-                                                unidad_medida ON trans_inv_stock_prod.idUnidadMedida = unidad_medida.IdUnidadMedida 
+                                                unidad_medida ON trans_inv_stock_prod.idUnidadMedida = unidad_medida.IdUnidadMedida
+                                                LEFT JOIN producto_presentacion ON trans_inv_stock_prod.IdPresentacion = producto_presentacion.IdPresentacion
                                                 WHERE     (trans_inv_stock_prod.idinventario = @IdInventarioEnc AND TipoTeoricoImportacion = 1)
                                                 GROUP BY trans_inv_stock_prod.idinventario, producto.codigo, producto.nombre, 
                                                 producto.IdProducto, trans_inv_stock_prod.lote, trans_inv_stock_prod.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre,
-						                        trans_inv_stock_prod.idubicacion,trans_inv_stock_prod.idbodega
+						                        trans_inv_stock_prod.idubicacion,trans_inv_stock_prod.idbodega, producto_presentacion.nombre, producto_presentacion.factor
                                         UNION                        
                                                 SELECT     trans_inv_ciclico.idinventarioenc AS IdInventario, producto.codigo, producto.IdProducto, producto.nombre AS Producto, 
                                                  0 AS Detalle, 0 as stock,Sum(trans_inv_ciclico.cantidad) as Conteo, 
                                                 0 AS Peso, trans_inv_ciclico.lote, trans_inv_ciclico.fecha_vence, producto_tipo.NombreTipoProducto AS TipoProducto, 
-                                                unidad_medida.Nombre AS UMBas,'' as ubicacion
+                                                unidad_medida.Nombre AS UMBas,'' as ubicacion, color.nombre Color, talla.codigo Talla,
+                                                producto_presentacion.nombre AS NombrePresentacion,
+                                                ISNULL(producto_presentacion.factor, 0) AS Factor
                                                 FROM  trans_inv_ciclico INNER JOIN
                                                 producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
 						                        producto ON  producto.IdProducto =  producto_bodega.IdProducto INNER JOIN
                                                 producto_tipo ON producto.IdTipoProducto = producto_tipo.IdTipoProducto INNER JOIN
                                                 unidad_medida ON PRODUCTO.IdUnidadMedidaBasica = unidad_medida.IdUnidadMedida
+                                                LEFT JOIN producto_talla_color ON producto_talla_color.IdProductoTallaColor = trans_inv_ciclico.IdProductoTallaColor
+                                                LEFT JOIN color ON color.IdColor = producto_talla_color.IdColor
+                                                LEFT JOIN talla ON talla.IdTalla = producto_talla_color.IdTalla
+                                                LEFT JOIN producto_presentacion ON trans_inv_ciclico.IdPresentacion = producto_presentacion.IdPresentacion
                                                 WHERE     (trans_inv_ciclico.idinventarioenc =  @IdInventarioEnc)
 						                        GROUP BY trans_inv_ciclico.idinventarioenc, producto.codigo, producto.IdProducto, producto.nombre, 
                                                 trans_inv_ciclico.lote, 
-						                        trans_inv_ciclico.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre) AS T
-                                          GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.TipoProducto, t.UMBas,T.ubicacion
+						                        trans_inv_ciclico.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre, color.nombre, talla.codigo, producto_presentacion.factor, producto_presentacion.nombre) AS T
+                                          GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.TipoProducto, t.UMBas,T.ubicacion, t.Color, t.Talla, t.NombrePresentacion, t.Factor
                                           ORDER BY T.codigo  "
 
 
@@ -3016,12 +3052,18 @@ Partial Public Class clsLnTrans_inv_enc
 
         Try
 
-            Dim vSQL As String = "SELECT t.TipoProducto as Tipo, t.codigo as Codigo, t.Producto as Nombre, t.UMBas,
+            Dim vSQL As String = "SELECT t.TipoProducto as Tipo, t.codigo as Codigo, t.Producto as Nombre, t.UMBas, 
+                        ISNULL(t.NombrePresentacion, '') AS NombrePresentacion, t.Color, t.Talla, 
                         SUM(t.Inventario) AS Stock_WMS , 
                         SUM(t.Stock) AS Teorico_ERP, 
                         ROUND(SUM(t.Inventario) - SUM(t.Stock),6) AS Dif_ERP,
                         SUM(t.Conteo) AS Conteo, 
                         ROUND(SUM(t.Conteo) - SUM(t.Stock),6) AS Dif_Conteo,
+                        SUM(IIF(t.Factor <> 0, t.Inventario / t.Factor, 0)) AS Stock_WMS_Pres,
+	                    SUM(IIF(t.Factor <> 0, t.Stock / t.Factor, 0)) AS Teorico_ERP_Pres,
+	                    ROUND(SUM(IIF(t.Factor <> 0, t.Inventario / t.Factor, 0)) - SUM(IIF(t.Factor <> 0, t.Stock / t.Factor, 0)), 6) AS Dif_ERP_Pres,
+	                    SUM(IIF(t.Factor <> 0, t.Conteo / t.Factor, 0)) AS Conteo_Pres,
+	                    ROUND(SUM(IIF(t.Factor <> 0, t.Conteo / t.Factor, 0)) - SUM(IIF(t.Factor <> 0, t.Stock / t.Factor, 0)), 6) AS Dif_Conteo_Pres,
                         t.lote AS Lote, t.fecha_vence AS Fecha_Vence, 
                         ROUND(SUM(t.Stock) * SUM(T.costo),6) AS Costo_Nav,ROUND(SUM(t.Conteo) * SUM(T.costo),6) AS Costo_Conteo,
                         (ROUND(SUM(t.Stock) * SUM(T.costo),6) - ROUND(SUM(t.Conteo) * SUM(T.costo),6)) as Dif_Costo
@@ -3029,7 +3071,9 @@ Partial Public Class clsLnTrans_inv_enc
                         SELECT trans_inv_stock.idinventario AS IdInventario, producto.codigo, producto.IdProducto, producto.nombre AS Producto, 
                         SUM(trans_inv_stock.cantidad) AS Inventario, 
                         0 AS Stock, 0 as Conteo, SUM(trans_inv_stock.peso) AS Peso, trans_inv_stock.lote, CONVERT(date, trans_inv_stock.fecha_vence) AS fecha_vence, 
-                        producto_tipo.NombreTipoProducto AS TipoProducto, unidad_medida.Nombre AS UMBas, producto.costo
+                        producto_tipo.NombreTipoProducto AS TipoProducto, unidad_medida.Nombre AS UMBas, producto.costo, '' Color, '' Talla,
+                        producto_presentacion.nombre AS NombrePresentacion,
+                        ISNULL(producto_presentacion.factor, 0) AS Factor
                         FROM trans_inv_stock INNER JOIN
                         producto ON trans_inv_stock.IdProductoBodega = producto.IdProducto INNER JOIN
                         producto_tipo ON producto.IdTipoProducto = producto_tipo.IdTipoProducto INNER JOIN
@@ -3037,12 +3081,15 @@ Partial Public Class clsLnTrans_inv_enc
                         producto_presentacion ON trans_inv_stock.IdPresentacion = producto_presentacion.IdPresentacion
                         WHERE (trans_inv_stock.idinventario = @IdInventarioEnc)
                         GROUP BY trans_inv_stock.idinventario, producto.codigo, producto.nombre, producto_presentacion.IdPresentacion, 
-                        producto.IdProducto, trans_inv_stock.lote, trans_inv_stock.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre, producto.costo
+                        producto.IdProducto, trans_inv_stock.lote, trans_inv_stock.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre, producto.costo,
+                        producto_presentacion.nombre, producto_presentacion.factor
                 UNION                        
                         SELECT     trans_inv_stock_prod.idinventario AS IdInventario, producto.codigo, producto.IdProducto, producto.nombre AS Producto, 
                         0 AS Detalle, SUM(trans_inv_stock_prod.cant) 
                         AS Stock, 0 as Conteo, 0 AS Peso, trans_inv_stock_prod.lote, trans_inv_stock_prod.fecha_vence, producto_tipo.NombreTipoProducto AS TipoProducto, 
-                        unidad_medida.Nombre AS UMBas, producto.costo
+                        unidad_medida.Nombre AS UMBas, producto.costo, '' Color, '' Talla,
+                        producto_presentacion.nombre AS NombrePresentacion,
+		                ISNULL(producto_presentacion.factor, 0) AS Factor
                         FROM  trans_inv_stock_prod INNER JOIN
                         producto ON trans_inv_stock_prod.idProducto = producto.IdProducto INNER JOIN
                         producto_tipo ON producto.IdTipoProducto = producto_tipo.IdTipoProducto INNER JOIN
@@ -3050,23 +3097,30 @@ Partial Public Class clsLnTrans_inv_enc
                         producto_presentacion ON trans_inv_stock_prod.idPresentacion = producto_presentacion.IdPresentacion
                         WHERE     (trans_inv_stock_prod.idinventario = @IdInventarioEnc)
                         GROUP BY trans_inv_stock_prod.idinventario, producto.codigo, producto.nombre, 
-                        producto.IdProducto, trans_inv_stock_prod.lote, trans_inv_stock_prod.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre, producto.costo
+                        producto.IdProducto, trans_inv_stock_prod.lote, trans_inv_stock_prod.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre, producto.costo,
+                        producto_presentacion.nombre,
+		                producto_presentacion.factor
                 UNION                        
                         SELECT     trans_inv_ciclico.idinventarioenc AS IdInventario, producto.codigo, producto.IdProducto, producto.nombre AS Producto, 
                          0 AS Detalle, 0 as stock,Sum(trans_inv_ciclico.cantidad) as Conteo, 
                         0 AS Peso, trans_inv_ciclico.lote, trans_inv_ciclico.fecha_vence, producto_tipo.NombreTipoProducto AS TipoProducto, 
-                        unidad_medida.Nombre AS UMBas, producto.costo
+                        unidad_medida.Nombre AS UMBas, producto.costo, color.nombre Color, talla.codigo Talla,
+                        producto_presentacion.nombre AS NombrePresentacion,
+		                ISNULL(producto_presentacion.factor, 0) AS Factor
                         FROM  trans_inv_ciclico INNER JOIN
                         producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN
 						producto ON  producto.IdProducto =  producto_bodega.IdProducto INNER JOIN
                         producto_tipo ON producto.IdTipoProducto = producto_tipo.IdTipoProducto INNER JOIN
                         unidad_medida ON PRODUCTO.IdUnidadMedidaBasica = unidad_medida.IdUnidadMedida LEFT OUTER JOIN
                         producto_presentacion ON trans_inv_ciclico.idPresentacion = producto_presentacion.IdPresentacion
+                        LEFT JOIN producto_talla_color ON producto_talla_color.IdProductoTallaColor = trans_inv_ciclico.IdProductoTallaColor
+                        LEFT JOIN color ON color.IdColor = producto_talla_color.IdColor
+                        LEFT JOIN talla ON talla.IdTalla = producto_talla_color.IdTalla
                         WHERE     (trans_inv_ciclico.idinventarioenc = @IdInventarioEnc)
 						GROUP BY trans_inv_ciclico.idinventarioenc, producto.codigo, producto.IdProducto, producto.nombre, 
                         producto_presentacion.nombre,trans_inv_ciclico.lote, 
-						trans_inv_ciclico.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre, producto.costo) AS T
-                  GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.TipoProducto, t.UMBas
+						trans_inv_ciclico.fecha_vence, producto_tipo.NombreTipoProducto, unidad_medida.Nombre, producto.costo, color.nombre, talla.codigo, producto_presentacion.factor) AS T
+                  GROUP BY t.lote, t.codigo, t.Producto, t.fecha_vence,t.TipoProducto, t.UMBas, t.Color, t.Talla, t.NombrePresentacion, t.Factor
                   ORDER BY T.codigo "
 
             Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)

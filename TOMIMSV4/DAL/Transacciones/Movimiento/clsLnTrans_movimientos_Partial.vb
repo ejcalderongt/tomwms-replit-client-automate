@@ -1498,46 +1498,6 @@ Partial Public Class clsLnTrans_movimientos
         Dim lReturnList As New List(Of clsBeVW_Movimientos)
 
         Try
-
-            '      Dim vSQL As String = "SELECT t.codigo, t.Producto, t.EstadoOrigen,  t.EstadoDestino,
-            '                  t.TipoTarea, t.lote,t.Fecha_Vence, t.IdPresentacion, t.IdUnidadMedida, t.IdEstadoOrigen,
-            '                  t.IdProductoBodega,t.Fecha, t.Umbas, t.Presentación,t.IdTipoTarea,
-            '                  sum(t.Ingresos) as Ingresos,
-            '                  sum(t.Salidas) as Salidas,
-            '                  sum(t.Ajustes_Positivos) as Ajustes_Positivos,
-            '                  sum(t.Ajustes_Negativos) as Ajustes_Negativos,
-            'sum(t.EnMovimiento) as EnMovimiento,
-            't.IdUbicacionorigen, t.IdUbicaciondestino, t.Licencia, t.Fecha
-            '              from(SELECT Codigo,Producto, EstadoOrigen,
-            '                  EstadoDestino,
-            '                  TipoTarea, lote,Fecha_Vence, IdTipoTarea,
-            '                  IdPresentacion, IdUnidadMedida, IdEstadoOrigen,
-            '                  IdProductoBodega,Fecha,
-            '                  Umbas, Presentación,IdUbicacionorigen, IdUbicaciondestino, Licencia,
-            '                  case when IdTipoTarea = 1  then SUM(cantidad) else 0 end AS Ingresos,
-            '                  case when IdTipoTarea = 5  then SUM(cantidad) else 0 end AS Salidas,
-            '                  case when IdTipoTarea = 13 then SUM(cantidad) else 0 end AS Ajustes_Positivos,
-            '                  case when IdTipoTarea = 17 then SUM(cantidad) else 0 end AS Ajustes_Negativos,
-            '                  case when IdTipoTarea = 2 OR 
-            '                            IdTipoTarea = 3 OR 
-            '                            IdTipoTarea = 8 then SUM(cantidad) else 0 end AS EnMovimiento                        
-            '                  FROM VW_Movimientos_N
-            '                  WHERE  TIPOTAREA NOT IN ('AJCANTNI','AJCANTPI','VERI') "
-
-            '      vSQL += String.Format("And Fecha BETWEEN {0} And {1}", FormatoFechas.fFechaHora(pFechaDel), FormatoFechas.fFechaHora(pFechaAl))
-
-            '      vSQL += " GROUP BY codigo,producto,EstadoOrigen,
-            '                  EstadoDestino, IdProductoBodega,
-            '                  TipoTarea, lote,fecha_vence,
-            '                  IdTipoTarea,Fecha, IdPresentacion,
-            '                  IdUnidadMedida, IdEstadoOrigen,
-            '                  Umbas, EstadoOrigen, Presentación, IdUbicacionorigen, IdUbicaciondestino,Licencia, Fecha) AS t
-            '              group by t.codigo, t.Producto, t.EstadoOrigen,  t.EstadoDestino,
-            '                          t.TipoTarea, t.lote,t.Fecha_Vence, t.IdPresentacion, t.IdUnidadMedida,
-            '                          t.IdProductoBodega,t.Fecha, t.Umbas, t.Presentación, t.IdEstadoOrigen,t.IdTipoTarea,
-            '                          t.IdUbicacionorigen, t.IdUbicaciondestino, t.Licencia, t.Fecha
-            '              ORDER BY t.Codigo, t.Lote, t.Fecha"
-
             Dim vSQL As String = "SELECT t.codigo, t.Producto, t.EstadoOrigen,  t.EstadoDestino,
                                          t.TipoTarea, t.lote,t.Fecha_Vence, t.IdPresentacion, t.IdUnidadMedida, t.IdEstadoOrigen,
                                          t.IdProductoBodega,t.Fecha, t.Umbas, t.Presentación,t.IdTipoTarea,
@@ -3764,6 +3724,17 @@ Partial Public Class clsLnTrans_movimientos
                 BeTransMovimiento.Usuario_agr = oBeTrans_picking_ubic.User_mod
                 BeTransMovimiento.Hora_fin = Now
                 BeTransMovimiento.IdOperadorBodega = oBeTrans_picking_ubic.IdOperadorBodega_Pickeo
+                BeTransMovimiento.IdProductoTallaColor = oBeTrans_picking_ubic.IdProductoTallaColor
+
+                If oBeTrans_picking_ubic.IdProductoTallaColor <> 0 Then
+                    Dim BEProductoTallaColor As New clsBeProducto_talla_color
+                    BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(oBeTrans_picking_ubic.IdProductoTallaColor)
+                    BeTransMovimiento.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
+                    BeTransMovimiento.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+                Else
+                    BeTransMovimiento.Talla = ""
+                    BeTransMovimiento.Color = ""
+                End If
 
                 Insertar(BeTransMovimiento,
                          lConnection,
@@ -3836,6 +3807,17 @@ Partial Public Class clsLnTrans_movimientos
                 BeTransMovimiento.Usuario_agr = oBeTrans_picking_ubic.User_mod
                 BeTransMovimiento.Hora_fin = Now
                 BeTransMovimiento.IdOperadorBodega = oBeTrans_picking_ubic.IdOperadorBodega_Verifico
+                BeTransMovimiento.IdProductoTallaColor = oBeTrans_picking_ubic.IdProductoTallaColor
+
+                If oBeTrans_picking_ubic.IdProductoTallaColor <> 0 Then
+                    Dim BEProductoTallaColor As New clsBeProducto_talla_color
+                    BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(oBeTrans_picking_ubic.IdProductoTallaColor)
+                    BeTransMovimiento.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
+                    BeTransMovimiento.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+                Else
+                    BeTransMovimiento.Talla = ""
+                    BeTransMovimiento.Color = ""
+                End If
 
                 Insertar_Movimiento_Verificacion = Insertar(BeTransMovimiento,
                                                             lConnection,
@@ -3961,6 +3943,17 @@ Partial Public Class clsLnTrans_movimientos
 
             BeTransMovimiento.Cantidad_hist = BeStockRec.CantidadEnStock
             BeTransMovimiento.Peso_hist = BeStockRec.PesoEnStock
+            BeTransMovimiento.IdProductoTallaColor = BeStockNew.IdProductoTallaColor
+
+            If BeStockNew.IdProductoTallaColor <> 0 Then
+                Dim BEProductoTallaColor As New clsBeProducto_talla_color
+                BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(BeStockNew.IdProductoTallaColor)
+                BeTransMovimiento.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
+                BeTransMovimiento.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+            Else
+                BeTransMovimiento.Talla = ""
+                BeTransMovimiento.Color = ""
+            End If
 
             Insertar(BeTransMovimiento,
                      lConnection,

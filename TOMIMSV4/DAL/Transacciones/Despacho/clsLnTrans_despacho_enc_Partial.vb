@@ -1417,6 +1417,9 @@ Partial Public Class clsLnTrans_despacho_enc
                                     BeMovimiento.IdPedidoEnc = BePedidoDet.IdPedidoEnc
                                     BeMovimiento.IdDespachoEnc = BeDespachoEnc.IdDespachoEnc
                                     BeMovimiento.IdDespachoDet = 0
+                                    BeMovimiento.IdProductoTallaColor = BePedidoDet.IdProductoTallaColor
+                                    BeMovimiento.Talla = BePedidoDet.Talla
+                                    BeMovimiento.Color = BePedidoDet.Color
 
                                     If Not lDespachoDetByPedidoDet Is Nothing Then
 

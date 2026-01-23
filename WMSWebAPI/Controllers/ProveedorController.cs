@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System.Transactions;
 using WMSWebAPI.Dtos.Catalogos;
-using WMSWebAPI.Dtos.Ingresos;
-using WMSWebAPI.Dtos.Productos;
-using WMSWebAPI.Services.Ingresos;
 using WMSWebAPI.Services.Proveedor;
 
 namespace WMSWebAPI.Controllers
@@ -28,7 +24,7 @@ namespace WMSWebAPI.Controllers
         }        
 
         [HttpPost("list/mi3/insert")]
-        public async Task<IActionResult> Sincronizar([FromBody] List<ProveedorDto> proveedorDto, [FromServices] IConfiguration configuration)
+        public async Task<IActionResult> Sincronizar([FromBody] List<mi3ProveedorDto> proveedorDto, [FromServices] IConfiguration configuration)
         {
             if (proveedorDto == null || proveedorDto.Count==0)
             {
@@ -62,7 +58,7 @@ namespace WMSWebAPI.Controllers
                                 if (string.IsNullOrEmpty(dto.Codigo))
                                     return StatusCode(500, new { Exito = false, Mensaje = "El código no puede estar vacio." });
 
-                                _syncProveedorService.ProcesarProveedorDto(dto, connection, transaction);
+                                _syncProveedorService.Procesarmi3ProveedorDto(dto, connection, transaction);
                                 resultados.Add(new { dto.Codigo, Procesado = true, Mensaje = "Procesado correctamente" });
                             }
 

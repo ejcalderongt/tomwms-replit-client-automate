@@ -199,6 +199,7 @@ Partial Public Class clsLnTrans_inv_stock
                                 [temperatura], 
                                 [fecha_copia],
                                 [IdBodega],
+                                [IdProductoTallaColor])                                
 								[cantidad_reservada_umbas])
                                 SELECT 
                                     @idinventario,
@@ -677,6 +678,7 @@ Partial Public Class clsLnTrans_inv_stock
                             gBeInventarioCiclico.EsPallet = False 'StockCongelado.IdPresentacion Is Pallet ? -> EJC20180807
                             gBeInventarioCiclico.lic_plate = StockCongelado.Lic_plate
                             gBeInventarioCiclico.IdBodega = StockCongelado.IdBodega
+                            gBeInventarioCiclico.IdProductoTallaColor = StockCongelado.IdProductoTallaColor
                             gBeInventarioCiclico.Cantidad_Reservada_UMBas = StockCongelado.Cantidad_Reservada_UMBas
 
                             clsLnTrans_inv_ciclico.Insertar(gBeInventarioCiclico, lConection, lTransaction)
@@ -816,6 +818,7 @@ Partial Public Class clsLnTrans_inv_stock
                                     gBeInventarioCiclico.EsPallet = False 'StockCongelado.IdPresentacion Is Pallet ? -> EJC20180807
                                     gBeInventarioCiclico.lic_plate = StockCongelado.Lic_plate
                                     gBeInventarioCiclico.IdBodega = StockCongelado.IdBodega
+                                    gBeInventarioCiclico.IdProductoTallaColor = StockCongelado.IdProductoTallaColor
                                     gBeInventarioCiclico.Cantidad_Reservada_UMBas = StockCongelado.Cantidad_Reservada_UMBas
 
                                     clsLnTrans_inv_ciclico.Insertar(gBeInventarioCiclico, lConection, lTransaction)
@@ -940,20 +943,38 @@ Partial Public Class clsLnTrans_inv_stock
         Try
             '#ejc, agruegué transacción: 241211
             '#CKFK 20180627 modifiqué la forma de obtener el nombre completo de la ubicacion
-            Dim vSQL As String = "SELECT producto.codigo AS Codigo, producto.nombre AS Producto, unidad_medida.Nombre AS UMBas,  
-                                         producto_presentacion.nombre AS Presentacion, producto_estado.nombre AS Estado, trans_inv_stock.Lote, 
-                                         trans_inv_stock.Fecha_vence, trans_inv_stock.Cantidad,  trans_inv_stock.Peso,
-                                         dbo.Nombre_Completo_Ubicacion(trans_inv_stock.IdUbicacion,trans_inv_stock.IdBodega) AS Ubicacion, 
-                                         trans_inv_stock.IdStock, trans_inv_stock.lic_plate Licencia, pt.NombreTipoProducto AS TipoProducto,  
-                                         trans_inv_stock.IdUbicacion, trans_inv_stock.IdProductoBodega,
-                                         ISNULL(trans_inv_stock.cantidad_reservada_umbas,0) AS Cantidad_Reservada_UmBas
-            From trans_inv_stock INNER Join
-                                         producto_bodega ON trans_inv_stock.IdProductoBodega = producto_bodega.IdProductoBodega  INNER JOIN  
-                                         producto ON producto_bodega.IdProducto = producto.IdProducto  LEFT OUTER JOIN  
-                                         producto_presentacion ON trans_inv_stock.IdPresentacion = producto_presentacion.IdPresentacion LEFT OUTER JOIN
-                                         unidad_medida ON trans_inv_stock.IdUnidadMedida = unidad_medida.IdUnidadMedida INNER JOIN  
-                                         producto_tipo pt on producto.IdTipoProducto = pt.IdTipoProducto INNER JOIN  
-                                         producto_estado on trans_inv_stock.IdProductoEstado = producto_estado.IdEstado "
+            Dim vSQL As String =
+            "SELECT " &
+            "    producto.codigo AS Codigo, " &
+            "    producto.nombre AS Producto, " &
+            "    unidad_medida.Nombre AS UMBas, " &
+            "    producto_presentacion.nombre AS Presentacion, " &
+            "    producto_estado.nombre AS Estado, " &
+            "    trans_inv_stock.Lote, " &
+            "    trans_inv_stock.Fecha_vence, " &
+            "    trans_inv_stock.Cantidad, " &
+            "    IIF(trans_inv_stock.IdPresentacion <> 0, trans_inv_stock.Cantidad / NULLIF(producto_presentacion.Factor,0), 0) AS CantidadPresentacion, " &
+            "    trans_inv_stock.Peso, " &
+            "    dbo.Nombre_Completo_Ubicacion(trans_inv_stock.IdUbicacion, trans_inv_stock.IdBodega) AS Ubicacion, " &
+            "    trans_inv_stock.IdStock, " &
+            "    trans_inv_stock.lic_plate AS Licencia, " &
+            "    pt.NombreTipoProducto AS TipoProducto, " &
+            "    trans_inv_stock.IdUbicacion, " &
+            "    trans_inv_stock.IdProductoBodega, " &
+            "    ISNULL(trans_inv_stock.cantidad_reservada_umbas, 0) AS Cantidad_Reservada_UmBas, " &
+            "    color.nombre AS Color, " &
+            "    talla.codigo AS Talla " &
+            "FROM trans_inv_stock " &
+            "INNER JOIN producto_bodega ON trans_inv_stock.IdProductoBodega = producto_bodega.IdProductoBodega " &
+            "INNER JOIN producto ON producto_bodega.IdProducto = producto.IdProducto " &
+            "LEFT OUTER JOIN producto_presentacion ON trans_inv_stock.IdPresentacion = producto_presentacion.IdPresentacion " &
+            "LEFT OUTER JOIN unidad_medida ON trans_inv_stock.IdUnidadMedida = unidad_medida.IdUnidadMedida " &
+            "INNER JOIN producto_tipo pt ON producto.IdTipoProducto = pt.IdTipoProducto " &
+            "INNER JOIN producto_estado ON trans_inv_stock.IdProductoEstado = producto_estado.IdEstado " &
+            "LEFT JOIN producto_talla_color ON trans_inv_stock.IdProductoTallaColor = producto_talla_color.IdProductoTallaColor " &
+            "LEFT JOIN color ON color.IdColor = producto_talla_color.IdColor " &
+            "LEFT JOIN talla ON talla.IdTalla = producto_talla_color.IdTalla "
+
 
             vSQL += "WHERE trans_inv_stock.IdInventario=@IdInventario AND trans_inv_stock.IdBodega = @IdBodega"
 

@@ -2476,8 +2476,8 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
-    'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-    Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
 
             Dim Mensaje As String = ex.Message
@@ -2485,11 +2485,11 @@ Public Class TOMHHWS
 
             If mArch IsNot Nothing Then
 
-    If mArch.Tipo = "WM" Then
-    Throw New Exception(Mensaje)
-    Else
-    Dim currrentContext As HttpContext = HttpContext.Current
-    Dim DT As New DataTable("CustomError")
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
                     DT.Columns.Add("Error", GetType(String))
                     DT.Rows.Add(Mensaje)
                     Dim sw As New StringWriter()
@@ -2502,9 +2502,9 @@ Public Class TOMHHWS
                     HttpContext.Current.Response.End()
                 End If
 
-    End If
+            End If
 
-    End Try
+        End Try
 
     End Function
     <WebMethod(), SoapHeader("mArch")>
@@ -10866,7 +10866,7 @@ Public Class TOMHHWS
     '#MA20251410
     <WebMethod(), SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
     Public Sub Get_Stock_By_Lic_Plate_JSON(ByVal pLicensePlate As String,
-                                      ByVal pIdBodega As Integer)
+                                           ByVal pIdBodega As Integer)
 
         'Get_Stock_By_Lic_Plate = Nothing
         Dim curContext As HttpContext = HttpContext.Current
@@ -10884,7 +10884,7 @@ Public Class TOMHHWS
                 SerializarJson(producto, "Presentacion.MedidasPorTarima")
                 SerializarJson(producto, "Presentacion.RellenadoPorUbicacionDePicking")
                 SerializarJson(producto, "Presentaciones")
-                SerializarJson(producto, "Codigos_barra")
+                SerializarJson(producto, "Codigos_Barra")
                 SerializarJson(producto, "Parametros")
                 SerializarJson(producto, "Stock.BePresentacionProductoEnStock.MedidasPorTarima")
                 SerializarJson(producto, "Stock.BePresentacionProductoEnStock.RellenadoPorUbicacionDePicking")
@@ -10892,12 +10892,16 @@ Public Class TOMHHWS
 
             'Dim responseObj As New With {.items = productos}
             Dim json As String = JsonConvert.SerializeObject(ObjProducto, New JsonSerializerSettings With {
-    .NullValueHandling = NullValueHandling.Include
-    })
+            .NullValueHandling = NullValueHandling.Include,
+            .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            .Formatting = Formatting.None
+            })
+
+            Dim jsonModificado As String = json.Replace("[]", "null")
 
             curContext.Response.Clear()
             curContext.Response.ContentType = "application/json"
-            curContext.Response.Write(json)
+            curContext.Response.Write(jsonModificado)
             curContext.ApplicationInstance.CompleteRequest()
         Catch ex As Exception
 
@@ -16665,6 +16669,8 @@ New JsonSerializerSettings With {
                 Else
                     Dim currrentContext As HttpContext = HttpContext.Current
                     Dim DT As New DataTable("CustomError")
+                    Dim errorObj As New With {.error = ex.Message}
+                    Dim strserialize As String = JsonConvert.SerializeObject(errorObj)
                     DT.Columns.Add("Error", GetType(String))
                     DT.Rows.Add(Mensaje)
                     Dim sw As New StringWriter()
@@ -16673,7 +16679,8 @@ New JsonSerializerSettings With {
                     HttpContext.Current.Response.StatusCode = 299
                     HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
                     HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.ContentType = "application/json"
+                    HttpContext.Current.Response.Write(strserialize)
                     HttpContext.Current.Response.End()
                 End If
 
@@ -18977,6 +18984,37 @@ New JsonSerializerSettings With {
 
         End Try
 
+    End Function
+    '#MA20260116
+    <WebMethod(), SoapHeader("mArch")>
+    Public Function Get_BeProducto_By_Codigo_Or_Barra_For_HH(ByVal pCodigo As String, ByVal IdBodega As Integer) As clsBeProducto
+        Get_BeProducto_By_Codigo_Or_Barra_For_HH = Nothing
+        Try
+            Return clsLnProducto.Get_BeProducto_By_Codigo_Or_Barra(pCodigo, IdBodega)
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Dim Mensaje As String = ex.Message
+            WriteErrorToEventLog(Mensaje)
+            If mArch IsNot Nothing Then
+                If mArch.Tipo = "WM" Then
+                    Throw New Exception(Mensaje)
+                Else
+                    Dim currrentContext As HttpContext = HttpContext.Current
+                    Dim DT As New DataTable("CustomError")
+                    DT.Columns.Add("Error", GetType(String))
+                    DT.Rows.Add(Mensaje)
+                    Dim sw As New StringWriter()
+                    DT.WriteXml(sw)
+                    HttpContext.Current.Response.Clear()
+                    HttpContext.Current.Response.StatusCode = 299
+                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
+                    HttpContext.Current.Response.Output.Write(sw.ToString())
+                    HttpContext.Current.Response.ContentType = "text/xml"
+                    HttpContext.Current.Response.End()
+                End If
+            End If
+        End Try
     End Function
 
 End Class

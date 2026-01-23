@@ -3221,6 +3221,10 @@ Public Class frmAjusteStock
 
                 End If
 
+                BeMov.IdProductoTallaColor = item.IdProductoTallaColor_origen
+                BeMov.Talla = item.Talla_origen
+                BeMov.Color = item.Color_origen
+
                 lBeTransMovimientos.Add(BeMov) : IdMovimiento += 1
 
                 If item.Idtipoajuste = 1 OrElse item.Idtipoajuste = 2 Then 'Ajuste lote
@@ -3282,6 +3286,8 @@ Public Class frmAjusteStock
             BeMov.Usuario_agr = AP.UsuarioAp.IdUsuario
             BeMov.Cantidad = Cantidad
             BeMov.Peso = Peso
+            BeMov.IdProductoTallaColor = BeStock.IdProductoTallaColor
+
             lBeTransMovimientos.Add(BeMov)
 
         Catch ex As Exception

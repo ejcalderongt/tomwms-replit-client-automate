@@ -1,12 +1,15 @@
-﻿using System.Data;
-using System.Diagnostics;
-using System.Reflection;
-using AppGlobal;
+﻿using AppGlobal;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic.CompilerServices;
+using System;
+using System.Data;
+using System.Diagnostics;
+using System.Reflection;
 using WMS.DALCore.I_nav_barras_pallet;
 using WMS.EntityCore;
+using WMS.EntityCore.Datos_Maestros;
 using WMS.EntityCore.I_nav_Ped_Compra;
 using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Picking;
@@ -54,7 +57,7 @@ public class clsLnI_nav_ped_compra_enc
             oBeI_nav_ped_compra_enc.Fec_agr = GetDate("fec_agr");
             oBeI_nav_ped_compra_enc.IsImport = GetBool("IsImport");
             oBeI_nav_ped_compra_enc.Company_Code = GetString("Company_Code");
-            oBeI_nav_ped_compra_enc.No_Document_Wms = GetInt("No_Document_Wms");
+            //oBeI_nav_ped_compra_enc.No_Document_Wms = GetInt("No_Document_Wms");
         }
         catch (Exception ex)
         {
@@ -200,7 +203,7 @@ public class clsLnI_nav_ped_compra_enc
             Upd.Add("fec_agr", "@fec_agr", "F");
             Upd.Add("isimport", "@isimport", "F");
             Upd.Add("company_code", "@company_code", "F");
-            Upd.Add("No_Document_Wms", "@No_Document_Wms", "F");
+            //Upd.Add("No_Document_Wms", "@No_Document_Wms", "F");
 
 
             Upd.Where("No = @No" +
@@ -243,7 +246,7 @@ public class clsLnI_nav_ped_compra_enc
             cmd.Parameters.Add(new SqlParameter("@fec_agr", oBeI_nav_ped_compra_enc.Fec_agr));
             cmd.Parameters.Add(new SqlParameter("@IsImport", oBeI_nav_ped_compra_enc.IsImport));
             cmd.Parameters.Add(new SqlParameter("@Company_Code", oBeI_nav_ped_compra_enc.Company_Code));
-            cmd.Parameters.Add(new SqlParameter("@No_Document_Wms", oBeI_nav_ped_compra_enc.No_Document_Wms));
+            //cmd.Parameters.Add(new SqlParameter("@No_Document_Wms", oBeI_nav_ped_compra_enc.No_Document_Wms));
             
             rowsAffected = cmd.ExecuteNonQuery();
 
@@ -906,6 +909,10 @@ public class clsLnI_nav_ped_compra_enc
                 {
                     if (Det == null) continue;
 
+                    string locationToUse = string.IsNullOrWhiteSpace(Det.Location_Code)
+                                            ? oBeI_nav_ped_compra_enc.Location_Code
+                                            : Det.Location_Code;
+
                     try
                     {
                      
@@ -917,7 +924,7 @@ public class clsLnI_nav_ped_compra_enc
                                 if (!oBeI_nav_ped_compra_enc.Is_Internal_Transfer)
                                 {
                                     Bodega_Es_Valida_Para_Recepcion =
-                                        clsLnCliente.Bodega_Es_Valida_Para_Recepcion(Det.Location_Code, lConnection, lTransaction);
+                                        clsLnCliente.Bodega_Es_Valida_Para_Recepcion(locationToUse, lConnection, lTransaction);                                    
 
                                     if (!Bodega_Es_Valida_Para_Recepcion)
                                     {
@@ -930,7 +937,7 @@ public class clsLnI_nav_ped_compra_enc
                                 else
                                 {
                                     Bodega_Es_Valida_Para_Recepcion =
-                                        clsLnBodega.Exists_By_Codigo(Det.Location_Code, lConnection, lTransaction);
+                                        clsLnBodega.Exists_By_Codigo(locationToUse, lConnection, lTransaction);
 
                                     if (!Bodega_Es_Valida_Para_Recepcion)
                                     {
@@ -943,9 +950,9 @@ public class clsLnI_nav_ped_compra_enc
 
                                 if (Bodega_Es_Valida_Para_Recepcion)
                                 {
-                                    vIdBodega = clsLnBodega.Get_IdBodega_By_Codigo(Det.Location_Code, lConnection, lTransaction);
+                                    vIdBodega = clsLnBodega.Get_IdBodega_By_Codigo(locationToUse, lConnection, lTransaction);
                                     if (vIdBodega == 0)
-                                        throw new Exception("No se pudo obtener el identificador para la bodega: " + Det.Location_Code);
+                                        throw new Exception("No se pudo obtener el identificador para la bodega: " + locationToUse);
 
                                     BeProductoBodega = clsLnProducto_bodega.Existe_Codigo_By_IdBodega(
                                         Det.No ?? string.Empty, vIdBodega, lConnection, lTransaction);
@@ -1085,7 +1092,7 @@ public class clsLnI_nav_ped_compra_enc
         return exist;
     }   
     public static void Generar_Tarea_Recepcion(clsBeTrans_oc_enc gBeOrdenCompraEnc,
-                                               clsBeI_nav_config_enc BeConfigEnc,
+                                               clsBeI_nav_config_enc? BeConfigEnc,
                                                clsBeTrans_oc_ti BeTipoDocumento,
                                                clsBeI_nav_ped_compra_enc navPedidoCompraEnc,
                                                ref string lblprg,
@@ -1098,6 +1105,7 @@ public class clsLnI_nav_ped_compra_enc
             clsBeTrans_re_enc? OutBeRecepcionEnc = new clsBeTrans_re_enc();
 
             if (lConnection != null && lTransInterface != null) {
+                if (BeConfigEnc !=null)
                 if (BeConfigEnc.Crear_Recepcion_De_Compra_NAV || BeTipoDocumento.Genera_tarea_ingreso)
                 {
                     if (BeConfigEnc.Interface_SAP && BePedidoEnc != null)
@@ -1163,6 +1171,31 @@ public class clsLnI_nav_ped_compra_enc
     {
         try
         {
+            // ====== Validaciones mínimas (evita NullReference) ======
+            if (navPedidoCompraEnc == null)
+            {
+                lblprg += "navPedidoCompraEnc viene NULL. No se puede insertar detalle." + Environment.NewLine;
+                return false;
+            }
+            if (navPedidoCompraDet == null)
+            {
+                lblprg += "navPedidoCompraDet viene NULL. No se puede insertar detalle." + Environment.NewLine;
+                return false;
+            }
+
+            if (BeProductoBodega == null)
+            {
+                lblprg += $"BeProductoBodega viene NULL (producto: {navPedidoCompraDet.No}, línea: {navPedidoCompraDet.Line_No})." + Environment.NewLine;
+                return false;
+            }
+
+            if (BeConfigEnc == null)
+            {
+                lblprg += "BeConfigEnc viene NULL. No se puede continuar." + Environment.NewLine;
+                return false;
+            }
+
+            // ====== Crear detalle ======
             clsBeTrans_oc_det BePedidoCompraDet = new clsBeTrans_oc_det()
             {
                 IdOrdenCompraEnc = gBeOrdenCompraEnc.IdOrdenCompraEnc,
@@ -1170,10 +1203,24 @@ public class clsLnI_nav_ped_compra_enc
             };
 
             BePedidoCompraDet.IdProductoBodega = BeProductoBodega.IdProductoBodega;
-            BePedidoCompraDet.Codigo_producto = string.IsNullOrEmpty(navPedidoCompraDet.Barcode) ? BeProductoBodega.Producto.codigo : navPedidoCompraDet.Barcode;
-            BePedidoCompraDet.Nombre_producto = navPedidoCompraDet.Description;
 
-            if (!(BeConfigEnc.Convertir_decimales_a_umbas == 1 || BeConfigEnc.Interface_SAP) && vCantidadEnteraPres > 0 && BePresentacion !=null)
+            // ====== Código producto: Barcode (si viene) si no Producto.codigo ======
+            var barcode = navPedidoCompraDet.Barcode; // navPedidoCompraDet ya validado
+            var codProducto = BeProductoBodega.Producto?.codigo;
+
+            BePedidoCompraDet.Codigo_producto =!string.IsNullOrWhiteSpace(barcode) ? barcode :
+                                               !string.IsNullOrWhiteSpace(codProducto) ? codProducto :
+                                               string.Empty;
+            
+            BePedidoCompraDet.Codigo_producto = BePedidoCompraDet.Codigo_producto.Trim();
+
+            // ====== Nombre producto (safe) ======
+            BePedidoCompraDet.Nombre_producto = navPedidoCompraDet.Description.Trim() ?? string.Empty;
+
+            // ====== Cantidad / Presentación ======
+            bool convertir = (BeConfigEnc.Convertir_decimales_a_umbas == 1 || BeConfigEnc.Interface_SAP);
+
+            if (!convertir && vCantidadEnteraPres > 0 && BePresentacion != null && BePresentacion.Factor != 0)
             {
                 BePedidoCompraDet.Cantidad = Math.Round(vCantidadEnteraPres / BePresentacion.Factor, 6);
                 BePedidoCompraDet.IdPresentacion = BePresentacion.IdPresentacion;
@@ -1181,48 +1228,79 @@ public class clsLnI_nav_ped_compra_enc
             else
             {
                 BePedidoCompraDet.Cantidad = navPedidoCompraDet.Quantity;
+                BePedidoCompraDet.IdPresentacion = BePresentacion?.IdPresentacion ?? 0;
+                BePedidoCompraDet.Nombre_presentacion = BePresentacion?.Nombre ?? "";
             }
 
+            // Evitar NRE si Presentacion es null dentro de clsBeTrans_oc_det
+            if (BePedidoCompraDet.Presentacion != null)
+                BePedidoCompraDet.Presentacion.IdPresentacion = BePedidoCompraDet.IdPresentacion;
+
+            // ====== Resto de campos (safe) ======
             BePedidoCompraDet.Cantidad_recibida = navPedidoCompraDet.Quantity_Received;
             BePedidoCompraDet.Costo = navPedidoCompraDet.Direct_Unit_Cost;
             BePedidoCompraDet.Total_linea = navPedidoCompraDet.Line_Amount;
             BePedidoCompraDet.No_Linea = navPedidoCompraDet.Line_No;
             BePedidoCompraDet.Activo = true;
             BePedidoCompraDet.Porcentaje_arancel = 0;
-            BePedidoCompraDet.User_agr = BeConfigEnc.IdUsuario.ToString();
-            BePedidoCompraDet.User_mod = BeConfigEnc.IdUsuario.ToString();
-            BePedidoCompraDet.Atributo_variante_1 = navPedidoCompraDet.Variant_Code;
-            BePedidoCompraDet.IdPresentacion = (BePresentacion != null) ? BePresentacion.IdPresentacion : 0;
-            BePedidoCompraDet.Presentacion.IdPresentacion = BePedidoCompraDet.IdPresentacion;
 
-            if (!string.IsNullOrEmpty(navPedidoCompraDet.Barcode))
+            var userIdStr = BeConfigEnc.IdUsuario.ToString();
+            BePedidoCompraDet.User_agr = userIdStr;
+            BePedidoCompraDet.User_mod = userIdStr;
+
+            BePedidoCompraDet.Atributo_variante_1 = navPedidoCompraDet.Variant_Code ?? string.Empty;
+
+            // ====== Control talla/color ======
+            clsBeBodega? Bebodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega, lConnection, lTransInterface);
+
+            if (Bebodega?.Control_Talla_Color == true)
             {
-                clsBeProducto_talla_color? BeProductoTallaColor = new clsBeProducto_talla_color();
-                BeProductoTallaColor = clsLnProducto_talla_color.Get_Single_By_Params(BeProductoBodega.IdProducto, navPedidoCompraDet.Size, navPedidoCompraDet.Color, lConnection, lTransInterface);
+                // Tu regla actual: solo si hay barcode
+                if (!string.IsNullOrWhiteSpace(navPedidoCompraDet.Barcode))
+                {
+                    var size = navPedidoCompraDet.Size;
+                    var color = navPedidoCompraDet.Color;
 
-                if (BeProductoTallaColor != null)
-                {
-                    BePedidoCompraDet.IdProductoTallaColor = BeProductoTallaColor.IdProductoTallaColor;
-                }
-                else
-                {
-                    lblprg += "No existe la Talla/Color definidas para el código " + navPedidoCompraDet.No + Environment.NewLine;
-                    return false;
+                    clsBeProducto_talla_color? BeProductoTallaColor = clsLnProducto_talla_color.Get_Single_By_Params(BeProductoBodega.IdProducto, 
+                                                                                                                     size, 
+                                                                                                                     color, 
+                                                                                                                     lConnection, 
+                                                                                                                     lTransInterface);
+
+                    if (BeProductoTallaColor != null)
+                    {
+                        BePedidoCompraDet.IdProductoTallaColor = BeProductoTallaColor.IdProductoTallaColor;
+                    }
+                    else
+                    {
+                        lblprg += "No existe la Talla/Color definidas para el código " +
+                                  (navPedidoCompraDet.No ?? "") + Environment.NewLine;
+                        return false;
+                    }
                 }
             }
 
-            if (BeUnidadMedidaPedCompra != null)
-            if (Asigna_Unidad_De_Medida(BePedidoCompraDet, navPedidoCompraDet, BeUnidadMedidaPedCompra, BeProductoBodega, lConnection, lTransInterface))
+            // ====== Unidad de Medida ======
+            if (BeUnidadMedidaPedCompra != null && Asigna_Unidad_De_Medida(BePedidoCompraDet, 
+                                                                           navPedidoCompraDet, 
+                                                                           BeUnidadMedidaPedCompra, 
+                                                                           BeProductoBodega, 
+                                                                           lConnection, 
+                                                                           lTransInterface))
             {
-                if (!(BeConfigEnc.Convertir_decimales_a_umbas == 1 || BeConfigEnc.Interface_SAP) && vCantidadDecimalUMBas > 0)
+                if (!convertir && vCantidadDecimalUMBas > 0)
                 {
                     clsBeTrans_oc_det BePedidoCompraDetUmBas = new clsBeTrans_oc_det();
                     clsPublic.CopyObject(BePedidoCompraDet, ref BePedidoCompraDetUmBas);
+
                     BePedidoCompraDetUmBas.IdOrdenCompraEnc = gBeOrdenCompraEnc.IdOrdenCompraEnc;
                     BePedidoCompraDetUmBas.IdOrdenCompraDet = clsLnTrans_oc_det.MaxID(gBeOrdenCompraEnc.IdOrdenCompraEnc, lConnection, lTransInterface) + 1;
                     BePedidoCompraDetUmBas.Cantidad = vCantidadDecimalUMBas;
                     BePedidoCompraDetUmBas.IdPresentacion = 0;
-                    BePedidoCompraDetUmBas.Presentacion.IdPresentacion = 0;
+
+                    if (BePedidoCompraDetUmBas.Presentacion != null)
+                        BePedidoCompraDetUmBas.Presentacion.IdPresentacion = 0;
+
                     clsLnTrans_oc_det.Insertar(BePedidoCompraDetUmBas, lConnection, lTransInterface);
                 }
                 else
@@ -1230,52 +1308,98 @@ public class clsLnI_nav_ped_compra_enc
                     clsLnTrans_oc_det.Insertar(BePedidoCompraDet, lConnection, lTransInterface);
                 }
 
-                if (!string.IsNullOrEmpty(navPedidoCompraEnc.Internal_Transfer_Document_No))
+                // ====== Transferencia interna / Picking ubic vs ProcesarLotes (versión simplificada y completa) ======
+                // Regla:
+                // - Si es transferencia interna y hay registros de picking para (codigo, linea) => insertar lotes desde picking
+                // - Si NO es transferencia o NO hay picking => llamar ProcesarLotes(...)
+
+                bool esTransferencia = !string.IsNullOrWhiteSpace(navPedidoCompraEnc?.Internal_Transfer_Document_No);
+                bool hayPickingFuente = pDetallePickingUbic?.Count > 0;
+
+                string? codigoFiltro = navPedidoCompraDet?.No;
+                int lineaFiltro = navPedidoCompraDet?.Line_No ?? 0;
+
+                // Si no hay detalle, no se puede filtrar picking; cae a ProcesarLotes
+                IEnumerable<clsBeTrans_picking_ubic> filtroPicking =
+                    (esTransferencia && hayPickingFuente && !string.IsNullOrWhiteSpace(codigoFiltro) && lineaFiltro > 0)
+                        ? pDetallePickingUbic!
+                            .Where(x => x.CodigoProducto == codigoFiltro && x.No_Linea == lineaFiltro)
+                        : Enumerable.Empty<clsBeTrans_picking_ubic>();
+
+                // Materializa una sola vez (evita enumerar dos veces con Any + foreach)
+                var pickingList = filtroPicking as IList<clsBeTrans_picking_ubic> ?? filtroPicking.ToList();
+
+                if (pickingList.Count > 0)
                 {
-                    if (pDetallePickingUbic != null && pDetallePickingUbic.Count > 0)
+                    int lMaxIdLoteDet = clsLnTrans_oc_det_lote.MaxID(lConnection, lTransInterface) + 1;
+
+                    foreach (var BePickingUbic in pickingList)
                     {
-                        int lMaxIdLoteDet = clsLnTrans_oc_det_lote.MaxID(lConnection, lTransInterface) + 1;
-                        int lMaxIdPallet = clsLnI_nav_barras_pallet.MaxID(lConnection, lTransInterface) + 1;
-                        clsBeTrans_re_det BeTransReDet = new clsBeTrans_re_det();
-                        clsBeI_nav_barras_pallet BeINavBarraPallet = new clsBeI_nav_barras_pallet();
-                        clsBeI_nav_barras_pallet BeINavBarraPalletOriginal = new clsBeI_nav_barras_pallet();
-                        clsBeStock BeStock = new clsBeStock();                        
-
-                        var lFiltroPickingUbic = pDetallePickingUbic.Where(x => x.CodigoProducto == navPedidoCompraDet.No && x.No_Linea == navPedidoCompraDet.Line_No).ToList();
-
-                        foreach (clsBeTrans_picking_ubic BePickingUbic in lFiltroPickingUbic)
+                        BeOcDetLote = new clsBeTrans_oc_det_lote
                         {
-                            BeOcDetLote = new clsBeTrans_oc_det_lote();
-                            BeOcDetLote.IdOrdenCompraDetLote = lMaxIdLoteDet;
-                            BeOcDetLote.IdOrdenCompraEnc = gBeOrdenCompraEnc.IdOrdenCompraEnc;
-                            BeOcDetLote.IdOrdenCompraDet = BePedidoCompraDet.IdOrdenCompraDet;
-                            BeOcDetLote.Cantidad = BePickingUbic.Cantidad_despachada;
-                            BeOcDetLote.No_linea = BePedidoCompraDet.No_Linea;
-                            BeOcDetLote.IdProductoBodega = BePedidoCompraDet.IdProductoBodega;
-                            BeOcDetLote.Lote = BePickingUbic.Lote;
-                            BeOcDetLote.Lic_plate = BePickingUbic.Lic_plate;
-                            BeOcDetLote.Cantidad_recibida = 0;
-                            BeOcDetLote.Codigo_producto = BePedidoCompraDet.Codigo_producto;
-                            BeOcDetLote.Fecha_vence = BePickingUbic.Fecha_vence;
-                            BeOcDetLote.IdPresentacion = BePickingUbic.IdPresentacion;
-                            BeOcDetLote.Presentacion.IdPresentacion = BePickingUbic.IdPresentacion;
-                            BeOcDetLote.IdUnidadMedidaBasica = BePickingUbic.IdUnidadMedida;
-                            BeOcDetLote.UnidadMedida.IdUnidadMedida = BePickingUbic.IdUnidadMedida;
-                            BeOcDetLote.IdProductoTallaColor = BePickingUbic.IdProductoTallaColor;
-                            BeOcDetLote.Talla = BePickingUbic.Codigo_Talla;
-                            BeOcDetLote.Color = BePickingUbic.Codigo_Color;
-                            BeOcDetLote.Activo = true;
-                            BeOcDetLote.User_agr = BePedidoCompraDet.User_agr;
-                            BeOcDetLote.User_mod = BePedidoCompraDet.User_mod;
-                            clsLnTrans_oc_det_lote.Insertar(BeOcDetLote, lConnection, lTransInterface);
+                            IdOrdenCompraDetLote = lMaxIdLoteDet++,
+                            IdOrdenCompraEnc = gBeOrdenCompraEnc.IdOrdenCompraEnc,
+                            IdOrdenCompraDet = BePedidoCompraDet.IdOrdenCompraDet,
 
-                            lMaxIdLoteDet++;
-                        }
+                            Cantidad = BePickingUbic.Cantidad_despachada,
+                            No_linea = BePedidoCompraDet.No_Linea,
+                            IdProductoBodega = BePedidoCompraDet.IdProductoBodega,
+
+                            Lote = BePickingUbic.Lote ?? string.Empty,
+                            Lic_plate = BePickingUbic.Lic_plate ?? string.Empty,
+
+                            Cantidad_recibida = 0,
+                            Codigo_producto = BePedidoCompraDet.Codigo_producto,
+
+                            Fecha_vence = BePickingUbic.Fecha_vence,
+
+                            IdPresentacion = BePickingUbic.IdPresentacion,
+                            IdUnidadMedidaBasica = BePickingUbic.IdUnidadMedida,
+
+                            IdProductoTallaColor = BePickingUbic.IdProductoTallaColor,
+                            Talla = BePickingUbic.Codigo_Talla ?? string.Empty,
+                            Color = BePickingUbic.Codigo_Color ?? string.Empty,
+
+                            Activo = true,
+                            User_agr = BePedidoCompraDet.User_agr,
+                            User_mod = BePedidoCompraDet.User_mod
+                        };
+
+                        // Evitar null-ref si estas propiedades internas no están instanciadas
+                        if (BeOcDetLote.Presentacion != null)
+                            BeOcDetLote.Presentacion.IdPresentacion = BePickingUbic.IdPresentacion;
+
+                        if (BeOcDetLote.UnidadMedida != null)
+                            BeOcDetLote.UnidadMedida.IdUnidadMedida = BePickingUbic.IdUnidadMedida;
+
+                        clsLnTrans_oc_det_lote.Insertar(BeOcDetLote, lConnection, lTransInterface);
                     }
                 }
+                else
+                {
+                    if (navPedidoCompraEnc == null )
+                    {
+                        lblprg += "navPedidoCompraEnc viene NULL. No se puede procesar lotes." + Environment.NewLine;
+                        return false;
+                    }
+                    if (navPedidoCompraDet == null)
+                    {
+                        lblprg += "navPedidoCompraDet viene NULL. No se puede procesar lotes." + Environment.NewLine;
+                        return false;
+                    }
+
+                    // No es transferencia, no hay picking, o no hay match => proceso normal
+                    ProcesarLotes(navPedidoCompraEnc,
+                                  navPedidoCompraDet,
+                                  ref BeOcDetLote,
+                                  BePedidoCompraDet,
+                                  LotesExistentes,
+                                  lConnection,
+                                  lTransInterface);
+                }
+
 
                 vContadorLineasDetInsertadas++;
-
                 return true;
             }
 
@@ -1283,23 +1407,29 @@ public class clsLnI_nav_ped_compra_enc
         }
         catch (Exception ex)
         {
-            string vMsgEx3 = string.Format("Error al insertar desde ws a intermedia: {0}{1}{2}", ex.Message, ex.Source, Environment.NewLine);            
+            string vMsgEx3 = string.Format(
+                "Error al insertar desde ws a intermedia: {0}{1}{2}",
+                ex.Message,
+                ex.Source,
+                Environment.NewLine);
+
             lblprg += vMsgEx3 + Environment.NewLine;
-            throw new Exception(vMsgEx3);
+            throw new Exception(vMsgEx3, ex);
         }
+
     }
 
     public static bool ValidarYCalcularUMBas(clsBeI_nav_ped_compra_det navPedidoCompraDet,
-                                        ref clsBeUnidad_medida? BeUnidadMedidaPedCompra,
-                                        ref clsBeProducto_presentacion? BePresentacion,
-                                        clsBeProducto_bodega BeProductoBodega,
-                                        clsBeI_nav_config_enc BeConfigEnc,
-                                        ref double vCantidadSolicitadaPedido,
-                                        ref double vCantidadEnteraPres,
-                                        ref double vCantidadDecimalUMBas,
-                                        ref string lblprg,
-                                        SqlConnection lConnection,
-                                        SqlTransaction lTransInterface)
+                                            ref clsBeUnidad_medida? BeUnidadMedidaPedCompra,
+                                            ref clsBeProducto_presentacion? BePresentacion,
+                                            clsBeProducto_bodega BeProductoBodega,
+                                            clsBeI_nav_config_enc BeConfigEnc,
+                                            ref double vCantidadSolicitadaPedido,
+                                            ref double vCantidadEnteraPres,
+                                            ref double vCantidadDecimalUMBas,
+                                            ref string lblprg,
+                                            SqlConnection lConnection,
+                                            SqlTransaction lTransInterface)
     {
         try
         {
@@ -1402,30 +1532,36 @@ public class clsLnI_nav_ped_compra_enc
     }
 
     public static bool InicializarEncabezadoNuevaOC(clsBeI_nav_ped_compra_enc navPedidoCompraEnc,
-                                                   clsBeI_nav_config_enc BeConfigEnc,
-                                                   ref clsBeTrans_oc_ti BeTipoDocumento,
-                                                   int IdNavConfigDet,
-                                                   ref string lblprg,
-                                                   ref clsBeTrans_oc_enc gBeOrdenCompraEnc,
-                                                   int IdBodegaDestino,
-                                                   SqlConnection lConnection,
-                                                   SqlTransaction lTransInterface)
+                                                    clsBeI_nav_config_enc? BeConfigEnc,
+                                                    ref clsBeTrans_oc_ti BeTipoDocumento,
+                                                    int IdNavConfigDet,
+                                                    ref string lblprg,
+                                                    ref clsBeTrans_oc_enc gBeOrdenCompraEnc,
+                                                    int IdBodegaDestino,
+                                                    SqlConnection lConnection,
+                                                    SqlTransaction lTransInterface)
     {
         try
         {
-            gBeOrdenCompraEnc = new clsBeTrans_oc_enc();            
+            if (BeConfigEnc == null)
+            {
+                throw new Exception("No se recibió la configuración de interfaz (BeConfigEnc es null).");
+            }
+
+            gBeOrdenCompraEnc = new clsBeTrans_oc_enc();
             gBeOrdenCompraEnc.IdBodega = IdBodegaDestino;
+
             gBeOrdenCompraEnc.PropietarioBodega = new clsBePropietario_bodega
             {
                 IdPropietarioBodega = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(IdBodegaDestino,
-                                                                                                             BeConfigEnc.IdPropietario,
-                                                                                                             lConnection,
-                                                                                                             lTransInterface)
+                                                                                                              BeConfigEnc.IdPropietario,
+                                                                                                              lConnection,
+                                                                                                              lTransInterface)
             };
 
             if (gBeOrdenCompraEnc.PropietarioBodega.IdPropietarioBodega == 0)
             {
-                throw new Exception("No se pudo obtener el IdPropietarioBodega");
+                throw new Exception("No se pudo obtener el IdPropietarioBodega (Verifique asociación de propietario con la bodega del documento)");
             }
 
             gBeOrdenCompraEnc.IdPropietarioBodega = gBeOrdenCompraEnc.PropietarioBodega.IdPropietarioBodega;
@@ -1435,68 +1571,88 @@ public class clsLnI_nav_ped_compra_enc
             gBeOrdenCompraEnc.Fec_Agr = DateTime.Now;
             gBeOrdenCompraEnc.Fecha_Creacion = DateTime.Now;
             gBeOrdenCompraEnc.Activo = true;
-            gBeOrdenCompraEnc.IdCampaña = Convert.ToInt32(navPedidoCompraEnc.Campaign_No);            
+            gBeOrdenCompraEnc.IdCampaña = Convert.ToInt32(navPedidoCompraEnc.Campaign_No);
             gBeOrdenCompraEnc.Usr_Documento = navPedidoCompraEnc.User_Document;
             gBeOrdenCompraEnc.Serie = navPedidoCompraEnc.Series;
             gBeOrdenCompraEnc.Comentarios = navPedidoCompraEnc.Comments;
 
-            clsBeProveedor_bodega? BeProveedorBodega = new clsBeProveedor_bodega();
-            BeProveedorBodega = clsLnProveedor.Get_ProveedorBodega_By_Codigo_Proveedor(navPedidoCompraEnc.Buy_From_Vendor_No,
-                                                                                       IdBodegaDestino,
-                                                                                       BeConfigEnc,
-                                                                                       lConnection,
-                                                                                       lTransInterface);
+            clsBeProveedor_bodega? BeProveedorBodega =clsLnProveedor.Get_ProveedorBodega_By_Codigo_Proveedor(navPedidoCompraEnc.Buy_From_Vendor_No,
+                                                                                                             IdBodegaDestino,
+                                                                                                             BeConfigEnc,
+                                                                                                             lConnection,
+                                                                                                             lTransInterface);
 
             if (BeProveedorBodega == null)
             {
-                if (!InsertaProveedor(navPedidoCompraEnc, gBeOrdenCompraEnc, BeConfigEnc, ref BeProveedorBodega, lConnection, lTransInterface))
-                {   
-                    throw new Exception($"El proveedor: {navPedidoCompraEnc.Buy_From_Vendor_No} no existe, no se puede importar el pedido de compra: {navPedidoCompraEnc.No}");
+                if (!InsertaProveedor(navPedidoCompraEnc, 
+                                      gBeOrdenCompraEnc, 
+                                      BeConfigEnc,
+                                      ref BeProveedorBodega, 
+                                      lConnection, 
+                                      lTransInterface))
+                {
+                    throw new Exception(
+                        $"El proveedor: {navPedidoCompraEnc.Buy_From_Vendor_No} no existe, " +
+                        $"no se puede importar el pedido de compra: {navPedidoCompraEnc.No}");
                 }
             }
 
-            if (BeProveedorBodega !=null)
+            if (BeProveedorBodega != null)
                 gBeOrdenCompraEnc.IdProveedorBodega = BeProveedorBodega.IdAsignacion;
 
             BeTipoDocumento = AsignarTipoDocumentoIngreso(navPedidoCompraEnc,
-                                                         ref gBeOrdenCompraEnc,
-                                                         ref BeTipoDocumento,
-                                                         lConnection,
-                                                         lTransInterface);
-
-            gBeOrdenCompraEnc.No_Documento = navPedidoCompraEnc.Vendor_Invoice_No;
+                                                          ref gBeOrdenCompraEnc,
+                                                          ref BeTipoDocumento,
+                                                          lConnection,
+                                                          lTransInterface); 
+           
+            gBeOrdenCompraEnc.No_Documento =string.IsNullOrWhiteSpace(navPedidoCompraEnc.Vendor_Invoice_No)
+                                            ? navPedidoCompraEnc.No
+                                            : navPedidoCompraEnc.Vendor_Invoice_No;
 
             if (string.IsNullOrWhiteSpace(gBeOrdenCompraEnc.No_Documento))
             {
-                throw new Exception("No se definió el número de documento: Vendor_Invoice_No para la cabecera del documento.");
+                throw new Exception("No se definió el número de documento (Vendor_Invoice_No / No) para la cabecera.");
             }
 
             gBeOrdenCompraEnc.User_Mod = BeConfigEnc.IdUsuario.ToString();
             gBeOrdenCompraEnc.Fec_Mod = DateTime.Now;
-            gBeOrdenCompraEnc.Procedencia = BeConfigEnc.Interface_SAP ?
-                                           navPedidoCompraEnc.Buy_From_Vendor_No + " " + navPedidoCompraEnc.Buy_From_Vendor_Name :
-                                           navPedidoCompraEnc.Ship_To_Contact;
+
+            gBeOrdenCompraEnc.Procedencia = BeConfigEnc.Interface_SAP
+                ? navPedidoCompraEnc.Buy_From_Vendor_No + " " + navPedidoCompraEnc.Buy_From_Vendor_Name
+                : navPedidoCompraEnc.Ship_To_Contact;
+
             gBeOrdenCompraEnc.No_Marchamo = "";
             gBeOrdenCompraEnc.Referencia = navPedidoCompraEnc.No;
-            gBeOrdenCompraEnc.No_Documento_Recepcion_ERP = BeConfigEnc.Interface_SAP ?
-                                                          (!string.IsNullOrWhiteSpace(navPedidoCompraEnc.Internal_Transfer_Document_No) ?
-                                                           navPedidoCompraEnc.Internal_Transfer_Document_No : navPedidoCompraEnc.Ship_To_Contact) :
-                                                          "";
+
+            gBeOrdenCompraEnc.No_Documento_Recepcion_ERP = BeConfigEnc.Interface_SAP
+                ? (!string.IsNullOrWhiteSpace(navPedidoCompraEnc.Internal_Transfer_Document_No)
+                    ? navPedidoCompraEnc.Internal_Transfer_Document_No
+                    : navPedidoCompraEnc.Ship_To_Contact)
+                : "";
+
             gBeOrdenCompraEnc.Observacion = navPedidoCompraEnc.Posting_Description;
             gBeOrdenCompraEnc.Control_Poliza = false;
-            if (gBeOrdenCompraEnc.IsNew) gBeOrdenCompraEnc.ObjPoliza = null;
+
+            if (gBeOrdenCompraEnc.IsNew)
+                gBeOrdenCompraEnc.ObjPoliza = null;
+
             gBeOrdenCompraEnc.Enviado_A_ERP = false;
             gBeOrdenCompraEnc.Codigo_Empresa_ERP = navPedidoCompraEnc.Company_Code;
             gBeOrdenCompraEnc.IdOrdenCompraEnc = clsLnTrans_oc_enc.MaxID(lConnection, lTransInterface) + 1;
+
             clsLnTrans_oc_enc.Insertar(gBeOrdenCompraEnc, lConnection, lTransInterface);
 
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw;
+            // si quieres propagar: throw;  (pero entonces la firma bool pierde sentido)
+            lblprg = $"Error al inicializar encabezado de OC: {ex.Message}";
+            return false;
         }
-    }    
+    }
+
     public static bool CrearYGuardarDetalleOC(clsBeI_nav_ped_compra_enc navPedidoCompraEnc,
                                               clsBeI_nav_ped_compra_det navPedidoCompraDet,
                                               ref clsBeTrans_oc_det? BePedidoCompraDet,
@@ -1556,26 +1712,32 @@ public class clsLnI_nav_ped_compra_enc
             BePedidoCompraDet.User_agr = BeConfigEnc.IdUsuario.ToString();
             BePedidoCompraDet.User_mod = BeConfigEnc.IdUsuario.ToString();
             BePedidoCompraDet.Atributo_variante_1 = navPedidoCompraDet.Variant_Code;
+            BePedidoCompraDet.Codigo_producto = BeProductoBodega?.Producto?.codigo ?? string.Empty;
+            BePedidoCompraDet.Nombre_producto = BeProductoBodega?.Producto?.nombre ?? string.Empty;
 
+            clsBeBodega? BeBodega = clsLnBodega.GetSingle_By_Idbodega(BeConfigEnc.Idbodega,lConnection,lTransInterface);
 
-            if (!string.IsNullOrEmpty(navPedidoCompraDet.Barcode))
-            {
-                clsBeProducto_talla_color? BeProductoTallaColor = new clsBeProducto_talla_color();
-                if (BeProductoBodega != null && BeProductoBodega.IdProducto > 0) {
-                    BeProductoTallaColor = clsLnProducto_talla_color.Get_Single_By_Params(BeProductoBodega.IdProducto, navPedidoCompraDet.Size, navPedidoCompraDet.Color, lConnection, lTransInterface);
-                    if (BeProductoTallaColor != null)
+            if (BeBodega != null) {
+                if (BeBodega.Control_Talla_Color) {
+                    if (!string.IsNullOrEmpty(navPedidoCompraDet.Barcode))
                     {
-                        BePedidoCompraDet.IdProductoTallaColor = BeProductoTallaColor.IdProductoTallaColor;
-                    }
-                    else
-                    {
-                        lblprg += "No existe la Talla/Color definidas para el código " + navPedidoCompraDet.No + Environment.NewLine;
-                        return false;
+                        clsBeProducto_talla_color? BeProductoTallaColor = new clsBeProducto_talla_color();
+                        if (BeProductoBodega != null && BeProductoBodega.IdProducto > 0)
+                        {
+                            BeProductoTallaColor = clsLnProducto_talla_color.Get_Single_By_Params(BeProductoBodega.IdProducto, navPedidoCompraDet.Size, navPedidoCompraDet.Color, lConnection, lTransInterface);
+                            if (BeProductoTallaColor != null)
+                            {
+                                BePedidoCompraDet.IdProductoTallaColor = BeProductoTallaColor.IdProductoTallaColor;
+                            }
+                            else
+                            {
+                                lblprg += "No existe la Talla/Color definidas para el código " + navPedidoCompraDet.No + Environment.NewLine;
+                                return false;
+                            }
+                        }
                     }
                 }
-            }
-
-
+            }            
 
             if (BeProductoBodega !=null)
             if (Asigna_Unidad_De_Medida(BePedidoCompraDet,
@@ -1627,14 +1789,15 @@ public class clsLnI_nav_ped_compra_enc
                                       lTransaction))
             {
                 clsBeProducto_presentacion? BePresentacion = clsLnProducto_presentacion.Existe_Presentacion_By_Codigo(BeProductoBodega.IdProducto,
-                                                                                                                navPedidoCompraDet.Variant_Code,
-                                                                                                                lConnection,
-                                                                                                                lTransaction);
+                                                                                                                      navPedidoCompraDet.Variant_Code,
+                                                                                                                      lConnection,
+                                                                                                                      lTransaction);
 
                 if (BePresentacion != null)
                 {
                     BePedidoCompraDet.IdPresentacion = BePresentacion.IdPresentacion;
                     BePedidoCompraDet.Presentacion.IdPresentacion = BePresentacion.IdPresentacion;
+                    BePedidoCompraDet.Nombre_presentacion = BePresentacion.Nombre;
                     BePedidoCompraDet.IdUnidadMedidaBasica = BeProductoBodega.Producto.IdUnidadMedidaBasica;
                     BePedidoCompraDet.UnidadMedida.IdUnidadMedida = BeProductoBodega.Producto.IdUnidadMedidaBasica;
                     BePedidoCompraDet.Nombre_unidad_medida_basica = BeProductoBodega.Producto.UnidadMedida.Nombre;
@@ -1727,28 +1890,29 @@ public class clsLnI_nav_ped_compra_enc
     }
 
     public static clsBeI_nav_config_enc ObtenerConfiguracionDeBodega(clsBeI_nav_ped_compra_enc navPedidoCompraEnc,
-                                                                     ref clsBeI_nav_config_enc BeConfigEnc,
-                                                                     ref clsBeTrans_oc_enc gBeOrdenCompraEnc,
-                                                                     int IdBodegaDestino,
-                                                                     int vIdEmpresa,
-                                                                     SqlConnection? lConnection,
-                                                                     SqlTransaction? lTransInterface)
+                                                                    ref clsBeI_nav_config_enc? BeConfigEnc,
+                                                                    ref clsBeTrans_oc_enc gBeOrdenCompraEnc,
+                                                                    int IdBodegaDestino,
+                                                                    int vIdEmpresa,
+                                                                    SqlConnection? lConnection,
+                                                                    SqlTransaction? lTransInterface)
     {
         try
         {
-            if (lConnection != null && lTransInterface != null) {
-
+            if (lConnection != null && lTransInterface != null)
+            {
                 BeConfigEnc = clsLnI_nav_config_enc.Get_Single_By_IdBodega_And_IdEmpresa(gBeOrdenCompraEnc.IdBodega,
-                                                                                    vIdEmpresa,
-                                                                                    lConnection,
-                                                                                    lTransInterface);
+                                                                                         vIdEmpresa,
+                                                                                         lConnection,
+                                                                                         lTransInterface);
 
-                if (BeConfigEnc == null)
-                    throw new Exception("La configuración de interface para la bodega no fue definida");
+                if (BeConfigEnc is null)
+                    throw new Exception("20251202: La configuración de interface para la bodega no fue definida");
 
-                BeConfigEnc.IdPropietario = clsLnPropietarios.Get_IdPropietario_By_Codigo(navPedidoCompraEnc.Product_Owner_Code,
-                                                                                      lConnection,
-                                                                                      lTransInterface);
+                BeConfigEnc.IdPropietario = clsLnPropietarios.Get_IdPropietario_By_Codigo(
+                    navPedidoCompraEnc.Product_Owner_Code,
+                    lConnection,
+                    lTransInterface);
 
                 if (BeConfigEnc.IdPropietario == 0)
                     throw new Exception($"No se pudo obtener el Identificador de propietario para: {navPedidoCompraEnc.Product_Owner_Code}");
@@ -1757,18 +1921,19 @@ public class clsLnI_nav_ped_compra_enc
                 {
                     IdPropietario = BeConfigEnc.IdPropietario,
                     IdPropietarioBodega = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(IdBodegaDestino,
-                                                                                                              BeConfigEnc.IdPropietario,
-                                                                                                              lConnection,
-                                                                                                              lTransInterface)
+                                                                                                                  BeConfigEnc.IdPropietario,
+                                                                                                                  lConnection,
+                                                                                                                  lTransInterface)
                 };
 
                 if (gBeOrdenCompraEnc.PropietarioBodega.IdPropietarioBodega == 0)
                     throw new Exception("No se pudo obtener el IdPropietarioBodega");
 
                 gBeOrdenCompraEnc.IdPropietarioBodega = gBeOrdenCompraEnc.PropietarioBodega.IdPropietarioBodega;
-            }                
+            }
 
-            return BeConfigEnc;
+            // En este punto BeConfigEnc ya no es null
+            return BeConfigEnc!;
         }
         catch
         {
@@ -2066,12 +2231,12 @@ public class clsLnI_nav_ped_compra_enc
         }
     }
     public static bool ProcesarLotes(clsBeI_nav_ped_compra_enc navPedidoCompraEnc,
-                                    clsBeI_nav_ped_compra_det navPedidoCompraDet,
-                                    ref clsBeTrans_oc_det_lote BeOcDetLote,
-                                    clsBeTrans_oc_det BePedidoCompraDet,
-                                    List<clsBeTrans_oc_det_lote> LotesExistentes,
-                                    SqlConnection lConnection,
-                                    SqlTransaction lTransInterface)
+                                     clsBeI_nav_ped_compra_det navPedidoCompraDet,
+                                     ref clsBeTrans_oc_det_lote BeOcDetLote,
+                                     clsBeTrans_oc_det BePedidoCompraDet,
+                                     List<clsBeTrans_oc_det_lote> LotesExistentes,
+                                     SqlConnection lConnection,
+                                     SqlTransaction lTransInterface)
     {
         try
         {
@@ -2097,7 +2262,11 @@ public class clsLnI_nav_ped_compra_enc
                     IdProductoBodega = BePedidoCompraDet.IdProductoBodega,
                     Lote = Lote.Lot_No,
                     Cantidad_recibida = 0,
-                    Codigo_producto = Lote.Item_No
+                    Codigo_producto = Lote.Item_No,
+                    IdUnidadMedidaBasica = BePedidoCompraDet.IdUnidadMedidaBasica,
+                    IdPresentacion = BePedidoCompraDet.IdPresentacion,
+                    No_documento = navPedidoCompraEnc.No,
+                    Activo = true
                 };
 
                 if (LoteExistente == null)
@@ -2168,14 +2337,14 @@ public class clsLnI_nav_ped_compra_enc
         return result;
     }
     public static bool Procesar_Pedido_Compra_MI3(IConfiguration config,
-                                                ref clsBeI_nav_ped_compra_enc navPedidoCompraEnc,
-                                                ref clsBeTrans_oc_enc OutBeOrdenCompra,
-                                                ref string lblprg,
-                                                clsBeTrans_pe_enc? BePedidoEnc)
+                                                  ref clsBeI_nav_ped_compra_enc navPedidoCompraEnc,
+                                                  ref clsBeTrans_oc_enc OutBeOrdenCompra,
+                                                  ref string lblprg,
+                                                  clsBeTrans_pe_enc? BePedidoEnc)
     {
         bool result = false;
 
-        clsBeI_nav_config_enc BeConfigEnc = new clsBeI_nav_config_enc();
+        clsBeI_nav_config_enc? BeConfigEnc = new clsBeI_nav_config_enc();
         int IdNavConfigDet = 101;
         int VContadorBitacoraTOMWMS = 0;
         clsBeTrans_oc_enc? gBeOrdenCompraEnc = null;
@@ -2217,8 +2386,9 @@ public class clsLnI_nav_ped_compra_enc
 
                 lblprg += Environment.NewLine + $"Procesando empresa: {vIdEmpresa}" + Environment.NewLine;
 
-                BeConfigEnc = ObtenerConfiguracionDeBodega(navPedidoCompraEnc, ref BeConfigEnc, ref gBeOrdenCompraEnc, IdBodegaDestino, vIdEmpresa, lConnection, lTransInterface);
+                ObtenerConfiguracionDeBodega(navPedidoCompraEnc, ref BeConfigEnc, ref gBeOrdenCompraEnc, IdBodegaDestino, vIdEmpresa, lConnection, lTransInterface);
 
+                if(BeConfigEnc !=null)
                 if (BeConfigEnc.Idnavconfigenc == 0) throw new Exception("Error al cargar i_nav_config_enc en Procesar_Pedido_Compra_MI3");
 
                 if (PedidoCompraExistente != null)
@@ -2232,7 +2402,18 @@ public class clsLnI_nav_ped_compra_enc
                     gBeOrdenCompraEnc.Usr_Documento = navPedidoCompraEnc.User_Document;
                     gBeOrdenCompraEnc.Comentarios = navPedidoCompraEnc.Comments;
 
-                    clsBeProveedor_bodega BeProveedorBodega = clsLnProveedor.Get_ProveedorBodega_By_Codigo_Proveedor(navPedidoCompraEnc.Buy_From_Vendor_No, BeConfigEnc.Idbodega, lConnection, lTransInterface);
+                    if (BeConfigEnc == null)
+                        throw new Exception("No se encontró configuración de bodega (BeConfigEnc es null)");
+
+                    clsBeProveedor_bodega BeProveedorBodega = clsLnProveedor.Get_ProveedorBodega_By_Codigo_Proveedor(navPedidoCompraEnc.Buy_From_Vendor_No,
+                                                                                                                     BeConfigEnc.Idbodega,
+                                                                                                                     lConnection,
+                                                                                                                     lTransInterface
+                    );
+
+                    if (BeProveedorBodega == null)
+                        throw new Exception($"No se encontró proveedor bodega para: {navPedidoCompraEnc.Buy_From_Vendor_No}");
+
                     BeTipoDocumento = AsignarTipoDocumentoIngreso(navPedidoCompraEnc, ref gBeOrdenCompraEnc, ref BeTipoDocumento, lConnection, lTransInterface);
                     ConfigurarEncabezadoOrdenCompra(navPedidoCompraEnc,
                                                     BeConfigEnc,
@@ -2261,20 +2442,20 @@ public class clsLnI_nav_ped_compra_enc
                                 if (BePedidoCompraDet == null)
                                 {
                                     CrearYGuardarDetalleOC(navPedidoCompraEnc,
-                                                         navPedidoCompraDet,
-                                                         ref BePedidoCompraDet,
-                                                         BeProductoBodega,
-                                                         BeUnidadMedidaPedCompra,
-                                                         BePresentacion,
-                                                         PedidoCompraExistente,
-                                                         ref VContadorBitacoraTOMWMS,
-                                                         IdNavConfigDet,
-                                                         BeConfigEnc,
-                                                         ref lblprg,
-                                                         LotesExistentes,
-                                                         ref BeOcDetLote,
-                                                         lConnection,
-                                                         lTransInterface);
+                                                           navPedidoCompraDet,
+                                                           ref BePedidoCompraDet,
+                                                           BeProductoBodega,
+                                                           BeUnidadMedidaPedCompra,
+                                                           BePresentacion,
+                                                           PedidoCompraExistente,
+                                                           ref VContadorBitacoraTOMWMS,
+                                                           IdNavConfigDet,
+                                                           BeConfigEnc,
+                                                           ref lblprg,
+                                                           LotesExistentes,
+                                                           ref BeOcDetLote,
+                                                           lConnection,
+                                                           lTransInterface);
                                 }
                                 else
                                 {
@@ -2336,37 +2517,57 @@ public class clsLnI_nav_ped_compra_enc
 
                         foreach (var navPedidoCompraDet in navPedidoCompraEnc.Lineas_Detalle)
                         {
-                            clsBeProducto_bodega BeProductoBodega = BuscarProductoBodega(navPedidoCompraDet, IdBodegaDestino, BeConfigEnc, lConnection, lTransInterface);
+                            if (BeConfigEnc == null)
+                                throw new Exception("No se encontró configuración de bodega (BeConfigEnc es null)");
+
+                            clsBeProducto_bodega BeProductoBodega = BuscarProductoBodega(navPedidoCompraDet,
+                                                                                         IdBodegaDestino,
+                                                                                         BeConfigEnc,
+                                                                                         lConnection,
+                                                                                         lTransInterface
+                            );
+
+                            if (BeProductoBodega == null)
+                                throw new Exception($"No se encontró producto bodega para: {navPedidoCompraDet.No}");
+
                             if (BeProductoBodega != null)
                             {
                                 ValidarYCalcularUMBas(navPedidoCompraDet,
-                                                    ref BeUnidadMedidaPedCompra,
-                                                    ref BePresentacion,
-                                                    BeProductoBodega,
-                                                    BeConfigEnc,
-                                                    ref vCantidadSolicitadaPedido,
-                                                    ref vCantidadEnteraPres,
-                                                    ref vCantidadDecimalUMBas,
-                                                    ref lblprg,
-                                                    lConnection,
-                                                    lTransInterface);
+                                                      ref BeUnidadMedidaPedCompra,
+                                                      ref BePresentacion,
+                                                      BeProductoBodega,
+                                                      BeConfigEnc,
+                                                      ref vCantidadSolicitadaPedido,
+                                                      ref vCantidadEnteraPres,
+                                                      ref vCantidadDecimalUMBas,
+                                                      ref lblprg,
+                                                      lConnection,
+                                                      lTransInterface);
+
+                                BePresentacion = new clsBeProducto_presentacion();
+
+                                ValidarPresentaciones(navPedidoCompraDet, 
+                                                      BeProductoBodega, 
+                                                      ref BePresentacion, 
+                                                      lConnection, 
+                                                      lTransInterface);
 
                                 InsertarDetalleOrdenCompra(navPedidoCompraEnc,
-                                                         navPedidoCompraDet,
-                                                         BeProductoBodega,
-                                                         BePresentacion,
-                                                         BeConfigEnc,
-                                                         BeUnidadMedidaPedCompra,
-                                                         vCantidadEnteraPres,
-                                                         vCantidadDecimalUMBas,
-                                                         ref vContadorLineasDetInsertadas,
-                                                         ref lblprg,
-                                                         ref BeOcDetLote,
-                                                         ref LotesExistentes,
-                                                         gBeOrdenCompraEnc,
-                                                         DetallePickingUbic,
-                                                         lConnection,
-                                                         lTransInterface);
+                                                           navPedidoCompraDet,
+                                                           BeProductoBodega,
+                                                           BePresentacion,
+                                                           BeConfigEnc,
+                                                           BeUnidadMedidaPedCompra,
+                                                           vCantidadEnteraPres,
+                                                           vCantidadDecimalUMBas,
+                                                           ref vContadorLineasDetInsertadas,
+                                                           ref lblprg,
+                                                           ref BeOcDetLote,
+                                                           ref LotesExistentes,
+                                                           gBeOrdenCompraEnc,
+                                                           DetallePickingUbic,
+                                                           lConnection,
+                                                           lTransInterface);
                             }
                             else
                             {
@@ -2423,8 +2624,8 @@ public class clsLnI_nav_ped_compra_enc
                                     lblprg += $"El código de producto:{navPedidoCompraDet.No} no existe:{navPedidoCompraDet.Location_Code}" + Environment.NewLine;
                                     vProductoNoExiste += 1;
                                 }
-                            }
-                        }
+                            }                            
+                        }                    
                     }
                     catch (Exception ex)
                     {
@@ -2445,13 +2646,13 @@ public class clsLnI_nav_ped_compra_enc
                         if (OutBeOrdenCompra != null)
                         {
                             Generar_Tarea_Recepcion(gBeOrdenCompraEnc,
-                                                  BeConfigEnc,
-                                                  BeTipoDocumento,
-                                                  navPedidoCompraEnc,
-                                                  ref lblprg,
-                                                  BePedidoEnc,
-                                                  lConnection,
-                                                  lTransInterface);
+                                                    BeConfigEnc,
+                                                    BeTipoDocumento,
+                                                    navPedidoCompraEnc,
+                                                    ref lblprg,
+                                                    BePedidoEnc,
+                                                    lConnection,
+                                                    lTransInterface);
                         }
 
                         result = true;

@@ -5712,9 +5712,10 @@ Public Class frmPicking
         cmdVerificarNuevamente.Enabled = estado
         cmdNoVerificado.Enabled = estado
         mnuDespachado.Enabled = estado
-        chkProcesarDesdeBOF.Checked = False
+        '#GT12012025: porque dejarlo en false?
+        'chkProcesarDesdeBOF.Checked = False
         chkProcesarDesdeBOF.Enabled = estado
-        chkverifica_auto.Checked = False
+        'chkverifica_auto.Checked = False
         chkverifica_auto.Enabled = estado
     End Sub
 End Class

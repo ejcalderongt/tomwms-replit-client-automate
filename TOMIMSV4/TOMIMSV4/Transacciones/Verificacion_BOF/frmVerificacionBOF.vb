@@ -91,8 +91,8 @@ Public Class frmVerificacionBOF
             SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
             SplashScreenManager.Default.SetWaitFormCaption("Cargando rutas...")
 
-            Dim archivosPng() As String = Directory.GetFiles(vRutaCDN, "*.png")
-            _listaRutasPng = archivosPng.ToList()
+            'Dim archivosPng() As String = Directory.GetFiles(vRutaCDN, "*.png")
+            '_listaRutasPng = archivosPng.ToList()
 
             SplashScreenManager.Default.SetWaitFormCaption("Cargando datos...")
 

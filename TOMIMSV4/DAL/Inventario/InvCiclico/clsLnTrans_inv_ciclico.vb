@@ -40,6 +40,7 @@ Public Class clsLnTrans_inv_ciclico
                 .Nuevo_Stock = IIf(IsDBNull(dr.Item("Nuevo_Stock")), True, dr.Item("Nuevo_Stock"))
                 .Cantidad_Reservada_UMBas = IIf(IsDBNull(dr.Item("Cantidad_Reservada_UMBas")), True, dr.Item("Cantidad_Reservada_UMBas"))
                 .IdProductoTallaColor = IIf(IsDBNull(dr.Item("IdProductoTallaColor")), 0, dr.Item("IdProductoTallaColor"))
+                .IdProductoTallaColor_nuevo = IIf(IsDBNull(dr.Item("IdProductoTallaColor_nuevo")), 0, dr.Item("IdProductoTallaColor_nuevo"))
 
             End With
 
@@ -94,6 +95,7 @@ Public Class clsLnTrans_inv_ciclico
             Ins.Add("Cantidad_Reservada_UMBas", "@Cantidad_Reservada_UMBas", DataType.Parametro)
             Ins.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
             Ins.Add("gondola", "@Gondola", DataType.Parametro)
+            Ins.Add("IdProductoTallaColor_nuevo", "@IdProductoTallaColor_nuevo", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -149,6 +151,7 @@ Public Class clsLnTrans_inv_ciclico
             cmd.Parameters.Add(New SqlParameter("@CONTADO", oBeTrans_inv_ciclico.Contado))
             cmd.Parameters.Add(New SqlParameter("@CANTIDAD_RESERVADA_UMBAS", oBeTrans_inv_ciclico.Cantidad_Reservada_UMBas))
             cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor", oBeTrans_inv_ciclico.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor_nuevo", oBeTrans_inv_ciclico.IdProductoTallaColor_nuevo))
             cmd.Parameters.Add(New SqlParameter("@GONDOLA", oBeTrans_inv_ciclico.Gondola))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
@@ -211,6 +214,7 @@ Public Class clsLnTrans_inv_ciclico
             Upd.Add("contado", "@contado", DataType.Parametro)
             Upd.Add("Cantidad_Reservada_UMBas", "@Cantidad_Reservada_UMBas", DataType.Parametro)
             Upd.Add("IdProductoTallaColor", "@IdProductoTallaColor", DataType.Parametro)
+            Upd.Add("IdProductoTallaColor_nuevo", "@IdProductoTallaColor_nuevo", DataType.Parametro)
             Upd.Add("gondola", "@gondola", DataType.Parametro)
             Upd.Where("idinvciclico = @idinvciclico")
 
@@ -261,6 +265,7 @@ Public Class clsLnTrans_inv_ciclico
             cmd.Parameters.Add(New SqlParameter("@CONTADO", oBeTrans_inv_ciclico.Contado))
             cmd.Parameters.Add(New SqlParameter("@CANTIDAD_RESERVADA_UMBAS", oBeTrans_inv_ciclico.Cantidad_Reservada_UMBas))
             cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor", oBeTrans_inv_ciclico.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@IdProductoTallaColor_nuevo", oBeTrans_inv_ciclico.IdProductoTallaColor_nuevo))
             cmd.Parameters.Add(New SqlParameter("@GONDOLA", oBeTrans_inv_ciclico.Gondola))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()

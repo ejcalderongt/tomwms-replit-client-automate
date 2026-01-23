@@ -1297,6 +1297,8 @@ Partial Public Class clsLnLicencia_item
                 lLicenciasProgramacion.Add("DESKTOP-DUB9IAH")
                 lLicenciasProgramacion.Add("DESKTOP-9U7ICLN")
                 lLicenciasProgramacion.Add("ColonialWMS")
+                lLicenciasProgramacion.Add("DESKTOP-790O7S2")
+
                 lLicenciasProgramacion.Add("DESKTOP-5BM5P11")
 
                 '#EJC20210517: Cuando lo encuentren, 

@@ -801,7 +801,8 @@ Partial Public Class clsLnTrans_pe_det
                     dbo.Nombre_Completo_Ubicacion(res.IdUbicacion, res.IDBODEGA) AS NomUbic,
                     s.IdRecepcionEnc, s.IdRecepcionDet,
                     col.Codigo AS Color,
-                    tal.Codigo AS Talla
+                    tal.Codigo AS Talla,
+                    ptc.IdProductoTallaColor
                     FROM  stock_res AS res INNER JOIN
                     propietario_bodega AS prb ON res.IdPropietarioBodega = prb.IdPropietarioBodega INNER JOIN
                     producto_bodega AS pb ON pb.IdProductoBodega = res.IdProductoBodega INNER JOIN
@@ -838,7 +839,7 @@ Partial Public Class clsLnTrans_pe_det
                         Res.ubicacion_ant, Res.no_bulto, Res.IdRecepcion, Res.IdPicking, Res.IdPedido, Res.IdDespacho,
                         res.añada, res.fecha_manufactura,
                         ISNULL(trans_picking_ubic.acepto, 0), 
-                        ISNULL(trans_picking_ubic.encontrado, 0),bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion, res.IdBodega, s.IdRecepcionEnc, s.IdRecepcionDet,col.Codigo, tal.Codigo  "
+                        ISNULL(trans_picking_ubic.encontrado, 0),bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion, res.IdBodega, s.IdRecepcionEnc, s.IdRecepcionDet,col.Codigo, tal.Codigo,ptc.IdProductoTallaColor "
 
             vSQL += " ORDER BY bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion"
 
@@ -971,6 +972,7 @@ Partial Public Class clsLnTrans_pe_det
                         SUM(ISNULL(trans_picking_ubic.cantidad_verificada, 0)) As cantidad_verificada,
                         SUM(ISNULL(trans_picking_ubic.cantidad_despachada, 0)) as Cantidad_Despachada, 
                         ISNULL(trans_picking_ubic.encontrado, 0) As Encontrado, trans_picking_ubic.IdProductoTallaColor
+                        ,res.color as Codigo_Color,res.talla as Codigo_Talla
                         FROM trans_picking_det INNER JOIN 
                         trans_picking_ubic ON trans_picking_det.IdPickingDet = trans_picking_ubic.IdPickingDet RIGHT OUTER JOIN 
                         stock_res AS res INNER JOIN 
@@ -1003,7 +1005,8 @@ Partial Public Class clsLnTrans_pe_det
                         ISNULL(trans_picking_ubic.acepto, 0), 
                         ISNULL(trans_picking_ubic.encontrado, 0),
                         bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion, 
-                        s.IdRecepcionEnc, s.IdRecepcionDet,trans_picking_ubic.IdProductoTallaColor "
+                        s.IdRecepcionEnc, s.IdRecepcionDet,trans_picking_ubic.IdProductoTallaColor,
+                        res.color ,res.talla "
 
             vSQL += " ORDER BY bu.IdTramo,bu.Indice_x,bu.Nivel,bu.IdUbicacion "
 

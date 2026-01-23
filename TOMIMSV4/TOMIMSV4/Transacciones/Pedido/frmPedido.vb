@@ -3061,6 +3061,9 @@ Public Class frmPedido
 
                 If dgrid.Focused Then
 
+                    '#GT20012025: deshabilitar la bandera stock_liberado.
+                    'pBePedidoDet.stock_liberado = False
+
                     If XtraMessageBox.Show("¿Abrir configuración de producto?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
 
                         Dim frm As New frmProducto(frmProducto.TipoTrans.Consulta)
@@ -4915,6 +4918,7 @@ Public Class frmPedido
             pBePedidoDet.Talla = vTalla
             pBePedidoDet.Color = vColor
             pBePedidoDet.IdProductoTallaColor = vIdProductoTallaColor_
+
             pBeStockRes.IdStockRes = 0
             pBeStockRes.IdTransaccion = pBePedidoEnc.IdPedidoEnc
             pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet

@@ -37,7 +37,6 @@ Public Class clsBeTrans_inv_ciclico
     Public Property IdProductoTallaColor As Integer = 0
     Public Property Gondola As String = ""
     Public Property IdProductoTallaColor_nuevo As Integer = 0
-
     Sub New()
     End Sub
 

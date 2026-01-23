@@ -5952,141 +5952,141 @@ Public Class frmOrdenCompra
 
                 'GT 22012021 Set de los inputs en el formulario desde la clase encabezado_duca
                 txtNumeroOrden.Text = encabezado_duca.Numero_Orden
-                    txtNumeroDUA.Text = encabezado_duca.Numero_DUCA.ToUpper()
-                    dtpFechaAceptacion.Text = encabezado_duca.Fecha_Aceptacion
-                    '4 Clave de aduana despacho/destino no definido
-                    txtClaveAduana.Text = encabezado_duca.Clave_aduana_despacho_destino.Trim
-                    '5 NIT de importador/exportador
-                    txtNitImpExp.Text = encabezado_duca.NIT_Importador
-                    Dim BeRegimen As New clsBeRegimen_fiscal()
-                    BeRegimen = clsLnRegimen_fiscal.GetSingle_By_Codigo_Regimen(encabezado_duca.Regimen.Trim)
-                    'GT18022022: si el regimen de la cadena no es legible puede afectar el tamaño de los demas valores de la póliza
-                    If Not BeRegimen Is Nothing Then
-                        cmbRegimen.EditValue = BeRegimen.Codigo_regimen
-                    Else
-                        txtScanPoliza.Text = String.Empty
-                        Throw New Exception("El régimen: " & encabezado_duca.Regimen & " no esta registrado en Régimen Fiscal, o no es legible desde el archivo de importación, re-intente!.")
-                    End If
-                    '7 Clase
-                    txtClase.Text = encabezado_duca.Clase.Trim
-                    txtPaisProcedencia.Text = encabezado_duca.Pais_procedencia.Trim
-                    '9 Modo de transporte
-                    txtMod_transporte.Text = encabezado_duca.Modo_transporte.Trim
-                    txtTipoCambio.Value = encabezado_duca.Tipo_cambio
-                    txtValorAduana.Value = encabezado_duca.Total_valor_aduana
-                    txtTotalPesoBruto.Value = encabezado_duca.Total_bultos_Peso_Bruto
-                    txtTotalFOBUSD.Value = encabezado_duca.TotalFOBUSD
-                    txtValorFlete.Value = encabezado_duca.Total_Flete_USD
-                    txtValorSeguro.Value = encabezado_duca.Total_Seguro_USD
-                    txtTotalOtros.Value = encabezado_duca.TotalOtrosgastosUSD
-                    '17 Total liquidar
-                    txtTotal_liquidar.Text = encabezado_duca.Total_Liquidar
-                    '18 Totalgeneral
-                    txtTotal_general.Text = encabezado_duca.Total_General
-                    dtpFechaLlegada.Text = Now
-                    txtCodigoPoliza.Text = encabezado_duca.Codigo_Poliza
-                    '#GT27092023: CBM no viene en el código barras, corresponde buscarlo si fue registrado
-                    Dim tmpPoliza As New clsBeTrans_oc_pol
-                    tmpPoliza = clsLnTrans_oc_pol.GetSingle_By_Numero_Orden(encabezado_duca.Numero_Orden)
+                txtNumeroDUA.Text = encabezado_duca.Numero_DUCA.ToUpper()
+                dtpFechaAceptacion.Text = encabezado_duca.Fecha_Aceptacion
+                '4 Clave de aduana despacho/destino no definido
+                txtClaveAduana.Text = encabezado_duca.Clave_aduana_despacho_destino.Trim
+                '5 NIT de importador/exportador
+                txtNitImpExp.Text = encabezado_duca.NIT_Importador
+                Dim BeRegimen As New clsBeRegimen_fiscal()
+                BeRegimen = clsLnRegimen_fiscal.GetSingle_By_Codigo_Regimen(encabezado_duca.Regimen.Trim)
+                'GT18022022: si el regimen de la cadena no es legible puede afectar el tamaño de los demas valores de la póliza
+                If Not BeRegimen Is Nothing Then
+                    cmbRegimen.EditValue = BeRegimen.Codigo_regimen
+                Else
+                    txtScanPoliza.Text = String.Empty
+                    Throw New Exception("El régimen: " & encabezado_duca.Regimen & " no esta registrado en Régimen Fiscal, o no es legible desde el archivo de importación, re-intente!.")
+                End If
+                '7 Clase
+                txtClase.Text = encabezado_duca.Clase.Trim
+                txtPaisProcedencia.Text = encabezado_duca.Pais_procedencia.Trim
+                '9 Modo de transporte
+                txtMod_transporte.Text = encabezado_duca.Modo_transporte.Trim
+                txtTipoCambio.Value = encabezado_duca.Tipo_cambio
+                txtValorAduana.Value = encabezado_duca.Total_valor_aduana
+                txtTotalPesoBruto.Value = encabezado_duca.Total_bultos_Peso_Bruto
+                txtTotalFOBUSD.Value = encabezado_duca.TotalFOBUSD
+                txtValorFlete.Value = encabezado_duca.Total_Flete_USD
+                txtValorSeguro.Value = encabezado_duca.Total_Seguro_USD
+                txtTotalOtros.Value = encabezado_duca.TotalOtrosgastosUSD
+                '17 Total liquidar
+                txtTotal_liquidar.Text = encabezado_duca.Total_Liquidar
+                '18 Totalgeneral
+                txtTotal_general.Text = encabezado_duca.Total_General
+                dtpFechaLlegada.Text = Now
+                txtCodigoPoliza.Text = encabezado_duca.Codigo_Poliza
+                '#GT27092023: CBM no viene en el código barras, corresponde buscarlo si fue registrado
+                Dim tmpPoliza As New clsBeTrans_oc_pol
+                tmpPoliza = clsLnTrans_oc_pol.GetSingle_By_Numero_Orden(encabezado_duca.Numero_Orden)
+                If Not tmpPoliza Is Nothing Then
+                    cbCBM.Value = tmpPoliza.Cbm
+                End If
+
+                '#GT10102023: Guardar la nueva DUCA por corrección desde boton Scan Póliza
+                If pCorreccionPoliza Then
+
+                    '#GT31082023: Validar que la DUCA leída no exista.
                     If Not tmpPoliza Is Nothing Then
-                        cbCBM.Value = tmpPoliza.Cbm
-                    End If
+                        txtScanPoliza.Text = String.Empty
+                        encabezado_duca = Nothing
+                        Throw New Exception("ERROR_10102023: La póliza leída ya existe, no puede ser utilizada para corrección, reintente!.")
 
-                    '#GT10102023: Guardar la nueva DUCA por corrección desde boton Scan Póliza
-                    If pCorreccionPoliza Then
+                    Else
 
-                        '#GT31082023: Validar que la DUCA leída no exista.
-                        If Not tmpPoliza Is Nothing Then
-                            txtScanPoliza.Text = String.Empty
-                            encabezado_duca = Nothing
-                            Throw New Exception("ERROR_10102023: La póliza leída ya existe, no puede ser utilizada para corrección, reintente!.")
+                        '#GT10102023: TRAN para deshabilitar la duca previa, y guardar la nueva
+                        lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                        Else
+                        '#GT10102023: desactivamos la duca registrada anteriormente
+                        Dim pPolizaOriginal As New clsBeTrans_oc_pol
+                        pPolizaOriginal.numero_orden = pNumero_OrdenOriginal
+                        pPolizaOriginal.IdOrdenCompraEnc = gBeOrdenCompra.IdOrdenCompraEnc
+                        pPolizaOriginal.activo = False
+                        clsLnTrans_oc_pol.Desactivar_Pol_By_Numero_Orden_and_OC(pPolizaOriginal, lConnection, lTransaction)
 
-                            '#GT10102023: TRAN para deshabilitar la duca previa, y guardar la nueva
-                            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+                        '#GT10102023: iniciamos la nueva DUCA
+                        Dim pPolizaCorreccion As New clsBeTrans_oc_pol
+                        pPolizaCorreccion.IsNew = True
+                        pPolizaCorreccion.User_agr = AP.UsuarioAp.IdUsuario
+                        pPolizaCorreccion.Fec_agr = Now
+                        pPolizaCorreccion.IdOrdenCompraEnc = gBeOrdenCompra.IdOrdenCompraEnc
+                        pPolizaCorreccion.Codigo_Barra = txtScanPoliza.Text
+                        pPolizaCorreccion.Bl_No = BLNo.Text.Trim
+                        pPolizaCorreccion.Pto_Descarga = txtPuertaDescarga.Text.Trim
+                        pPolizaCorreccion.Remitente = txtRemitente.Text.Trim
+                        pPolizaCorreccion.Fecha_abordaje = dtFechaAbordaje.EditValue
+                        pPolizaCorreccion.Descripcion = "BY CORRECCION"
+                        pPolizaCorreccion.Cantidad = CInt(txtCantidad.Value)
+                        pPolizaCorreccion.Total_kgs = txtPesoKgs.Value
+                        pPolizaCorreccion.Viaje_no = txtViaje.Text.Trim
+                        pPolizaCorreccion.Buque_no = txtBuque.Text.Trim
+                        pPolizaCorreccion.Destino = txtDestinatario.Text.Trim
+                        pPolizaCorreccion.Dir_destino = txtDireccion.Text.Trim
+                        pPolizaCorreccion.Po_number = txtPONumber.Text.Trim
+                        pPolizaCorreccion.Piezas = CInt(txtPiezas.Value)
+                        '#GT10102023: al inicio se valida el regimen, aca solo lo asignamos
+                        pPolizaCorreccion.IdRegimen = BeRegimen.IdRegimen
+                        pPolizaCorreccion.NoPoliza = txtNoPoliza.Text.Trim
+                        pPolizaCorreccion.Pais_procede = txtPaisProcedencia.Text.Trim
+                        pPolizaCorreccion.Total_valoraduana = txtValorAduana.Value
+                        pPolizaCorreccion.Total_bultos_Peso_Bruto = txtTotalPesoBruto.Value
+                        pPolizaCorreccion.Total_bultos_Peso_Neto = txtTotalPesoNeto.Value
+                        pPolizaCorreccion.Total_flete = txtValorFlete.Value
+                        pPolizaCorreccion.Total_usd = txtTotalFOBUSD.Value
+                        pPolizaCorreccion.Dua = txtNumeroDUA.Text.Trim
+                        pPolizaCorreccion.Fecha_poliza = dtFechaPoliza.EditValue
+                        pPolizaCorreccion.Tipo_cambio = txtTipoCambio.Value
+                        pPolizaCorreccion.Total_lineas = CInt(txtTotalLineas.Value)
+                        pPolizaCorreccion.Total_bultos = CInt(txtTotalBulto.Value)
+                        pPolizaCorreccion.Total_seguro = txtValorSeguro.Value
+                        pPolizaCorreccion.User_mod = AP.UsuarioAp.IdUsuario
+                        pPolizaCorreccion.Fec_mod = Now
+                        'pPolizaCorreccion.Enviado_A_ERP = False
+                        pPolizaCorreccion.codigo_poliza = txtCodigoPoliza.Text.Trim
+                        pPolizaCorreccion.ticket = Val(txtTicket.Text.Trim)
+                        pPolizaCorreccion.numero_orden = txtNumeroOrden.Text.Trim
+                        pPolizaCorreccion.fecha_aceptacion = dtpFechaAceptacion.EditValue
+                        pPolizaCorreccion.fecha_llegada = dtpFechaLlegada.EditValue
+                        pPolizaCorreccion.total_otros = Val(txtTotalOtros.Value)
+                        pPolizaCorreccion.clave_aduana = txtClaveAduana.Text.Trim
+                        pPolizaCorreccion.nit_imp_exp = txtNitImpExp.Text.Trim
+                        pPolizaCorreccion.clase = txtClase.Text.Trim
+                        pPolizaCorreccion.mod_transporte = txtMod_transporte.Text.Trim
+                        pPolizaCorreccion.total_liquidar = Val(txtTotal_liquidar.EditValue)
+                        pPolizaCorreccion.total_general = Val(txtTotal_general.EditValue)
+                        pPolizaCorreccion.Cbm = cbCBM.Value
+                        pPolizaCorreccion.activo = True
+                        pPolizaCorreccion.IdBodega = AP.Bodega.IdBodega
 
-                            '#GT10102023: desactivamos la duca registrada anteriormente
-                            Dim pPolizaOriginal As New clsBeTrans_oc_pol
-                            pPolizaOriginal.numero_orden = pNumero_OrdenOriginal
-                            pPolizaOriginal.IdOrdenCompraEnc = gBeOrdenCompra.IdOrdenCompraEnc
-                            pPolizaOriginal.activo = False
-                            clsLnTrans_oc_pol.Desactivar_Pol_By_Numero_Orden_and_OC(pPolizaOriginal, lConnection, lTransaction)
+                        clsLnTrans_oc_enc.Guarda_Trans_oc_pol(gBeOrdenCompra.IdOrdenCompraEnc, pPolizaCorreccion,
+                                                                                               lConnection,
+                                                                                               lTransaction)
 
-                            '#GT10102023: iniciamos la nueva DUCA
-                            Dim pPolizaCorreccion As New clsBeTrans_oc_pol
-                            pPolizaCorreccion.IsNew = True
-                            pPolizaCorreccion.User_agr = AP.UsuarioAp.IdUsuario
-                            pPolizaCorreccion.Fec_agr = Now
-                            pPolizaCorreccion.IdOrdenCompraEnc = gBeOrdenCompra.IdOrdenCompraEnc
-                            pPolizaCorreccion.Codigo_Barra = txtScanPoliza.Text
-                            pPolizaCorreccion.Bl_No = BLNo.Text.Trim
-                            pPolizaCorreccion.Pto_Descarga = txtPuertaDescarga.Text.Trim
-                            pPolizaCorreccion.Remitente = txtRemitente.Text.Trim
-                            pPolizaCorreccion.Fecha_abordaje = dtFechaAbordaje.EditValue
-                            pPolizaCorreccion.Descripcion = "BY CORRECCION"
-                            pPolizaCorreccion.Cantidad = CInt(txtCantidad.Value)
-                            pPolizaCorreccion.Total_kgs = txtPesoKgs.Value
-                            pPolizaCorreccion.Viaje_no = txtViaje.Text.Trim
-                            pPolizaCorreccion.Buque_no = txtBuque.Text.Trim
-                            pPolizaCorreccion.Destino = txtDestinatario.Text.Trim
-                            pPolizaCorreccion.Dir_destino = txtDireccion.Text.Trim
-                            pPolizaCorreccion.Po_number = txtPONumber.Text.Trim
-                            pPolizaCorreccion.Piezas = CInt(txtPiezas.Value)
-                            '#GT10102023: al inicio se valida el regimen, aca solo lo asignamos
-                            pPolizaCorreccion.IdRegimen = BeRegimen.IdRegimen
-                            pPolizaCorreccion.NoPoliza = txtNoPoliza.Text.Trim
-                            pPolizaCorreccion.Pais_procede = txtPaisProcedencia.Text.Trim
-                            pPolizaCorreccion.Total_valoraduana = txtValorAduana.Value
-                            pPolizaCorreccion.Total_bultos_Peso_Bruto = txtTotalPesoBruto.Value
-                            pPolizaCorreccion.Total_bultos_Peso_Neto = txtTotalPesoNeto.Value
-                            pPolizaCorreccion.Total_flete = txtValorFlete.Value
-                            pPolizaCorreccion.Total_usd = txtTotalFOBUSD.Value
-                            pPolizaCorreccion.Dua = txtNumeroDUA.Text.Trim
-                            pPolizaCorreccion.Fecha_poliza = dtFechaPoliza.EditValue
-                            pPolizaCorreccion.Tipo_cambio = txtTipoCambio.Value
-                            pPolizaCorreccion.Total_lineas = CInt(txtTotalLineas.Value)
-                            pPolizaCorreccion.Total_bultos = CInt(txtTotalBulto.Value)
-                            pPolizaCorreccion.Total_seguro = txtValorSeguro.Value
-                            pPolizaCorreccion.User_mod = AP.UsuarioAp.IdUsuario
-                            pPolizaCorreccion.Fec_mod = Now
-                            'pPolizaCorreccion.Enviado_A_ERP = False
-                            pPolizaCorreccion.codigo_poliza = txtCodigoPoliza.Text.Trim
-                            pPolizaCorreccion.ticket = Val(txtTicket.Text.Trim)
-                            pPolizaCorreccion.numero_orden = txtNumeroOrden.Text.Trim
-                            pPolizaCorreccion.fecha_aceptacion = dtpFechaAceptacion.EditValue
-                            pPolizaCorreccion.fecha_llegada = dtpFechaLlegada.EditValue
-                            pPolizaCorreccion.total_otros = Val(txtTotalOtros.Value)
-                            pPolizaCorreccion.clave_aduana = txtClaveAduana.Text.Trim
-                            pPolizaCorreccion.nit_imp_exp = txtNitImpExp.Text.Trim
-                            pPolizaCorreccion.clase = txtClase.Text.Trim
-                            pPolizaCorreccion.mod_transporte = txtMod_transporte.Text.Trim
-                            pPolizaCorreccion.total_liquidar = Val(txtTotal_liquidar.EditValue)
-                            pPolizaCorreccion.total_general = Val(txtTotal_general.EditValue)
-                            pPolizaCorreccion.Cbm = cbCBM.Value
-                            pPolizaCorreccion.activo = True
-                            pPolizaCorreccion.IdBodega = AP.Bodega.IdBodega
+                        lTransaction.Commit()
 
-                            clsLnTrans_oc_enc.Guarda_Trans_oc_pol(gBeOrdenCompra.IdOrdenCompraEnc, pPolizaCorreccion,
-                                                                                                   lConnection,
-                                                                                                   lTransaction)
+                        XtraMessageBox.Show("Se actualizó el ingreso: " & gBeOrdenCompra.IdOrdenCompraEnc & " con el nuevo numero de orden: " & pPolizaCorreccion.numero_orden, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
 
-                            lTransaction.Commit()
-
-                            XtraMessageBox.Show("Se actualizó el ingreso: " & gBeOrdenCompra.IdOrdenCompraEnc & " con el nuevo numero de orden: " & pPolizaCorreccion.numero_orden, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-
-                            Polizas_Corregidas(gBeOrdenCompra.IdOrdenCompraEnc)
-
-                        End If
+                        Polizas_Corregidas(gBeOrdenCompra.IdOrdenCompraEnc)
 
                     End If
-
-                    '#GT21062024: a futuro, se debe requerir permiso para autorizar el modificar campos de la póliza.
-                    'Bloquear_Inputs_Poliza()
 
                 End If
 
-                Set_Tipo_Documento()
+                '#GT21062024: a futuro, se debe requerir permiso para autorizar el modificar campos de la póliza.
+                'Bloquear_Inputs_Poliza()
+
+            End If
+
+            Set_Tipo_Documento()
 
             If pCorreccionPoliza Then
                 xtraOrdenCompra.SelectedTabPageIndex = 9
@@ -8823,7 +8823,11 @@ MessageBoxButtons.YesNo,
                 End If
             End If
         Catch ex As Exception
-
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
+    End Sub
+
+    Private Sub dgridTallaColor_Click(sender As Object, e As EventArgs) Handles dgridTallaColor.Click
+
     End Sub
 End Class

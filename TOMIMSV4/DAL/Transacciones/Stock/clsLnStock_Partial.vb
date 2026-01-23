@@ -2795,43 +2795,43 @@ Partial Public Class clsLnStock
                 SQL += " and (isnull(stock.lote,'') = @lote COLLATE Latin1_General_CS_AS) "
             End If
 
-                    '#EJC20190311_0948PM: Excluir lo que esté en ubicaciones de tránsito.
-                    SQL += " and stock.idubicacion NOT IN (SELECT IdUbicacion
+            '#EJC20190311_0948PM: Excluir lo que esté en ubicaciones de tránsito.
+            SQL += " and stock.idubicacion NOT IN (SELECT IdUbicacion
 							   FROM  bodega_ubicacion AS bodega_ubicacion 
 								WHERE (ubicacion_despacho = 1 and IdBodega=@IdBodega))"
 
-                    Using lDTA As New SqlDataAdapter(SQL, pConnection)
+            Using lDTA As New SqlDataAdapter(SQL, pConnection)
 
-                        lDTA.SelectCommand.CommandType = CommandType.Text
-                        lDTA.SelectCommand.Transaction = pTransaction
-                        lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pProducto.IdProductoBodega)
-                        lDTA.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", pProducto.IdUnidadMedida)
-                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = pTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoBodega", pProducto.IdProductoBodega)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", pProducto.IdUnidadMedida)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
 
-                        If ConEstado Then
-                            lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoEstado", pProducto.ProductoEstado.IdEstado)
-                        End If
+                If ConEstado Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@IdProductoEstado", pProducto.ProductoEstado.IdEstado)
+                End If
 
-                        If ConLote Then
-                            lDTA.SelectCommand.Parameters.AddWithValue("@Lote", pProducto.Lote)
-                        End If
+                If ConLote Then
+                    lDTA.SelectCommand.Parameters.AddWithValue("@Lote", pProducto.Lote)
+                End If
 
-                        Dim lDataTable As New DataTable
-                        lDTA.Fill(lDataTable)
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
 
-                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
 
-                            For Each lRow As DataRow In lDataTable.Rows
-                                oStock = New clsBeStock
-                                Cargar(oStock, lRow)
-                                ListStock.Add(oStock)
-                            Next
+                    For Each lRow As DataRow In lDataTable.Rows
+                        oStock = New clsBeStock
+                        Cargar(oStock, lRow)
+                        ListStock.Add(oStock)
+                    Next
 
-                        End If
+                End If
 
-                    End Using
+            End Using
 
-                    Return ListStock
+            Return ListStock
 
         Catch ex As Exception
             Throw ex
@@ -10778,6 +10778,18 @@ Partial Public Class clsLnStock
                                                        lConnection,
                                                        lTransaction)
 
+                    BeMovimiento.IdProductoTallaColor = objStockOrigen.IdProductoTallaColor
+
+                    If objStockOrigen.IdProductoTallaColor <> 0 Then
+                        Dim BEProductoTallaColor As New clsBeProducto_talla_color
+                        BEProductoTallaColor = clsLnProducto_talla_color.GetSingle(objStockOrigen.IdProductoTallaColor)
+                        BeMovimiento.Talla = If(clsLnTalla.GetSingle_By_IdTalla(BEProductoTallaColor.IdTalla)?.Codigo, "")
+                        BeMovimiento.Color = If(clsLnColor.GetSingle_By_IdColor(BEProductoTallaColor.IdColor)?.Codigo, "")
+                    Else
+                        BeMovimiento.Talla = ""
+                        BeMovimiento.Color = ""
+                    End If
+
                     '#EJC20220303:Para Erik, si esto ocurre, algo se nos escapó, pero quiero prevenirte problemas así que mejor nos notifican cuando suceda esa
                     'SINGULARIDAD.-
                     If BeMovimiento.Cantidad = 0 Then
@@ -16976,5 +16988,60 @@ Por favor reportar este problema a DevOps."
 
     End Function
 
+    Public Shared Function Get_All_By_IdRecepcionEnc(ByVal pIdRecepcionEnc As Integer) As List(Of clsBeVW_stock_res)
+
+        Dim lReturnList As New List(Of clsBeVW_stock_res)
+
+        Try
+
+            Dim vSQL As String = "Select * from VW_Stock_Res where IdRecepcionEnc = @IdRecepcionEnc"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdRecepcionEnc", pIdRecepcionEnc)
+
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+
+                        Dim Obj As clsBeVW_stock_res
+
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                            For Each lRow As DataRow In lDataTable.Rows
+
+                                Obj = New clsBeVW_stock_res
+
+                                clsLnVW_stock_res.Cargar(Obj, lRow, lConnection, lTransaction)
+                                lReturnList.Add(Obj)
+
+                            Next
+
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+            Return lReturnList
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
 
 End Class
