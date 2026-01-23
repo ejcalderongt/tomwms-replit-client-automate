@@ -2745,9 +2745,11 @@ Partial Public Class clsLnI_nav_transacciones_out
 
                         clsPublic.Actualizar_Progreso(lblprg, "Detalle de ajustes para transacción: " & AjEnc.Idajusteenc)
 
-                        Dim vCodigoBodega As String = clsLnBodega.Get_Codigo_By_IdBodega(AjEnc.IdBodega,
-                                                                                         lConnection,
-                                                                                         lTransaction)
+                        Dim BeBodega As New clsBeBodega
+                        BeBodega.IdBodega = AjEnc.IdBodega
+                        clsLnBodega.GetSingle(BeBodega, lConnection, lTransaction)
+
+                        Dim vCodigoBodega As String = BeBodega.Codigo
                         Dim vCodigoBodegaERP As String = ""
 
                         For Each AjDet In lVistaAjustesPendientesEnvio
@@ -4116,7 +4118,6 @@ Partial Public Class clsLnI_nav_transacciones_out
 
     '#CKFK20241212 Obtener ajustes por inventario cíclico
     Public Shared Function Get_Ajustes_Auditados_Pendientes_Envio_MI3_By_Inventario(ByRef pResult As String,
-                                                                                    ByRef lblprg As RichTextBox,
                                                                                     ByRef lConnection As SqlConnection,
                                                                                     ByRef lTransaction As SqlTransaction) As List(Of clsBeAjustesMI3)
 

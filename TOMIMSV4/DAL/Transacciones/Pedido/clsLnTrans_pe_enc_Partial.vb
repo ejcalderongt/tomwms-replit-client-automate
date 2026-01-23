@@ -825,7 +825,7 @@ Partial Public Class clsLnTrans_pe_enc
                         vPedidoEnc.Picking.IdPickingEnc = vPedidoEnc.IdPickingEnc
 
                         '#CKFK20171026_05204PM_REF: Si parámetro InfoPicking es true ya no se vuelve a cargar la información del picking
-                        If Not InfoPicking Then
+                        If InfoPicking Then
                             vPedidoEnc.Picking = clsLnTrans_picking_enc.GetSingle(vPedidoEnc.IdPickingEnc,
                                                                                   lConnection,
                                                                                   lTransaction)
@@ -842,11 +842,8 @@ Partial Public Class clsLnTrans_pe_enc
                         End If
 
                     End If
-Return vPedidoEnc
-End If
-                Return vPedidoEnc
 
-                Return vPedidoEnc
+                    Return vPedidoEnc
 
                 End If
 
@@ -877,7 +874,7 @@ End If
                 vSQL += " AND Activo=1"
             Else
                 vSQL += " AND Activo=0"
-                End If
+            End If
 
             If pAnulado And pDespachado Then
                 vSQL += " AND (Estado = 'Anulado' Or Estado = 'Despachado') "
@@ -6009,60 +6006,6 @@ End If
 
     End Function
 
-    Public Shared Function Get_Estado_Enviado_A_ERP(ByVal Referencia As String, lConnection As SqlConnection, lTransaction As SqlTransaction) As Boolean
-
-        Get_Estado_Enviado_A_ERP = False
-
-        Try
-
-            Const sp As String = "SELECT Enviado_A_ERP FROM Trans_pe_enc 
-             Where(Referencia = @Referencia)"
-
-            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-            Dim dad As New SqlDataAdapter(cmd)
-
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@Referencia", Referencia))
-
-            Dim dt As New DataTable
-            dad.Fill(dt)
-
-            If dt.Rows.Count > 0 Then
-                Return IIf(IsDBNull(dt.Rows(0).Item("Enviado_A_ERP")), False, dt.Rows(0).Item("Enviado_A_ERP"))
-            End If
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Function Get_Empresa_By_IdPedidoEnc(IdPedidoEnc As Integer, lConnection As SqlConnection, lTransaction As SqlTransaction) As String
-
-        Get_Empresa_By_IdPedidoEnc = ""
-
-        Try
-
-            Const sp As String = "SELECT Codigo_Empresa_ERP FROM Trans_pe_enc 
-             Where(IdPedidoEnc = @IdPedidoEnc)"
-
-            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-            Dim dad As New SqlDataAdapter(cmd)
-
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdPedidoEnc", IdPedidoEnc))
-
-            Dim dt As New DataTable
-            dad.Fill(dt)
-
-            If dt.Rows.Count > 0 Then
-                Return IIf(IsDBNull(dt.Rows(0).Item("Codigo_Empresa_ERP")), "", dt.Rows(0).Item("Codigo_Empresa_ERP"))
-            End If
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
     '#GT20052025: obtener los pedidos cerrados, activos, no anulados y según lista propietario_bodega para enviar a la nube
     Public Shared Function GetAll_By_CDC(ByVal pUltimaFechaSincro As Date, ByVal pListaPropietariosBodega As List(Of clsBePropietario_bodega),
                                                                            ByVal listaPedidosPendientes As List(Of Integer),
@@ -6074,35 +6017,29 @@ End If
         Dim lDTA As New SqlDataAdapter
         GetAll_By_CDC = New List(Of clsBeTrans_pe_enc)
         Dim Es_Transaccion_Remota As Boolean
-        Dim vSQ As String = ""
+        Dim vSQL As String = ""
         Try
 
-            Dim vSQ As String = ""
-
-            vSQ = "SELECT * FROM trans_pe_enc WHERE (activo=1 and anulado=0 and estado='Despachado') and hora_ini >=@PULTIMAFECHASINCRO "
+            vSQL = "SELECT * FROM trans_pe_enc WHERE (activo=1 and anulado=0 and estado='Despachado') and hora_ini >=@PULTIMAFECHASINCRO "
 
             If pListaPropietariosBodega IsNot Nothing AndAlso pListaPropietariosBodega.Count > 0 Then
                 Dim propietarioIds As String = String.Join(",", pListaPropietariosBodega.Select(Function(p) p.IdPropietarioBodega.ToString()))
-                vSQ &= " AND idPropietarioBodega IN (" & propietarioIds & ")"
+                vSQL &= " AND idPropietarioBodega IN (" & propietarioIds & ")"
             End If
-
-            'If pPropietariosBodega > 0 Then
-            '    vSQ &= " AND idPropietarioBodega = @pPropietariosBodega "
-            'End If
 
             If listaPedidosPendientes IsNot Nothing AndAlso listaPedidosPendientes.Count > 0 Then
                 Dim IdPedidoIds As String = String.Join(",", listaPedidosPendientes)
-                vSQ &= " And IdPedidoEnc Not In (" & IdPedidoIds & ")"
+                vSQL &= " And IdPedidoEnc Not In (" & IdPedidoIds & ")"
             End If
 
             Es_Transaccion_Remota = (Not pConection Is Nothing AndAlso Not pTransaction Is Nothing)
 
             If Es_Transaccion_Remota Then
-                lDTA = New SqlDataAdapter(vSQ, pConection)
+                lDTA = New SqlDataAdapter(vSQL, pConection)
                 lDTA.SelectCommand.Transaction = pTransaction
             Else
                 lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-                lDTA = New SqlDataAdapter(vSQ, lConnection)
+                lDTA = New SqlDataAdapter(vSQL, lConnection)
             End If
 
             Dim pConexion = If(Es_Transaccion_Remota, pConection, lConnection)
@@ -6212,8 +6149,6 @@ End If
         Try
 
             Dim vSQ As String = "SELECT * FROM trans_pe_enc WHERE (activo=1 and anulado=0 and estado='Despachado' and IdPedidoEnc = @pIePedidoEnc)  "
-
-        Get_Estado_Enviado_A_ERP = False
 
             'pConexion.Open() : pTransaccion = pConexion.BeginTransaction(IsolationLevel.ReadUncommitted)
             lDTA = New SqlDataAdapter(vSQ, pConexion)
@@ -6590,17 +6525,18 @@ End If
                         End If
                     End While
                 End Using
+            End Using
+
+            Return lReturnList
 
         Catch ex As Exception
-            '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace)
-            Throw
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw New Exception(vMsgError)
         End Try
 
     End Function
-     Public Shared Function Tiene_Productos_Pickeados(ByVal pIdPedidoEnc As Integer,
+    Public Shared Function Tiene_Productos_Pickeados(ByVal pIdPedidoEnc As Integer,
                                                      ByVal pIdPickingEnc As Integer,
                                                      ByVal pConnection As SqlConnection,
                                                      ByVal pTransaction As SqlTransaction) As Boolean
@@ -6670,73 +6606,6 @@ End If
         End Try
 
     End Function
-    Public Shared Function GetIdPropietarioBodega(ByVal pIdPedidoEnc As Integer,
-                                                  ByRef pConnection As SqlConnection,
-                                                  ByRef pTransaction As SqlTransaction) As Integer
-
-        Try
-
-            Dim lCliente As Integer = 0
-
-            Const sp As String = "SELECT IdPropietarioBodega FROM trans_pe_enc WHERE IdPedidoEnc = @pIdPedidoEnc"
-
-            Using lCommand As New SqlCommand(sp, pConnection, pTransaction) With {.CommandType = CommandType.Text}
-
-                lCommand.Parameters.AddWithValue("@pIdPedidoEnc", pIdPedidoEnc)
-
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lCliente = lReturnValue
-                End If
-
-            End Using
-
-            Return lCliente
-
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Function Get_Single_By_Referencia_And_Company(ByRef pBeTrans_pe_enc As clsBeTrans_pe_enc,
-                                                                ByVal pConection As SqlConnection,
-                                                                ByVal pTransaction As SqlTransaction) As clsBeTrans_pe_enc
-
-        Get_Single_By_Referencia_And_Company = Nothing
-
-        Try
-
-            Const sp As String = "SELECT * FROM Trans_pe_enc " &
-            " Where(Referencia = @Referencia AND IdTipoPedido = @IdTipoPedido and Codigo_Empresa_ERP = @Codigo_Empresa_ERP) "
-
-            Dim cmd As New SqlCommand(sp, pConection, pTransaction) With {.CommandType = CommandType.Text}
-            Dim dad As New SqlDataAdapter(cmd)
-
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@Referencia", pBeTrans_pe_enc.Referencia))
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@IdTipoPedido", pBeTrans_pe_enc.IdTipoPedido))
-            dad.SelectCommand.Parameters.Add(New SqlParameter("@Codigo_Empresa_ERP", pBeTrans_pe_enc.Codigo_Empresa_ERP))
-
-            Dim dt As New DataTable
-            dad.Fill(dt)
-
-            If dt.Rows.Count >= 1 Then
-                Dim ObjUM As New clsBeTrans_pe_enc()
-                Cargar(ObjUM, dt.Rows(0))
-                Return ObjUM
-            End If
-
-        Catch ex As Exception
-            '#MECR15102025: Se agrego bitacora de logs para pedidos
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pe.Agregar_Error(vMsgError, pIdPedidoEnc:=pBeTrans_pe_enc.IdPedidoEnc, pStackTrace:=ex.StackTrace)
-            Throw ex
-        End Try
-
-    End Function
-
     Public Shared Function Actualizar_Estado_Picking(ByVal IdPedidoEnc As Integer,
                                                      ByVal Estado As String,
                                                      Optional ByVal pConection As SqlConnection = Nothing,
@@ -7301,7 +7170,7 @@ End If
         End Try
 
     End Function
-    '#GT16102025: cargar el pedido en funcion del despacho por transferencia entre bodegas para cealsa
+    '#GT16102025: cargar el pedido en funcion del despacho por transferencia entre bodegas para cealsa    
     Public Shared Function GetPedido_By_IdDespachoEnc(ByVal pIdDespachoEnc As Integer) As clsBeTrans_pe_enc
 
         GetPedido_By_IdDespachoEnc = Nothing
@@ -7339,11 +7208,7 @@ End If
 
                     GetPedido_By_IdDespachoEnc = vPedidoEnc
 
-            If pActivo = True Then
-                vSQL += " AND Activo = 1 "
-            Else
-                vSQL += " AND Activo = 0 "
-            End If
+                End If
 
             End Using
 
@@ -7582,6 +7447,7 @@ End If
         End Try
 
     End Function
+
     '#GT25112025: cargar lista de pedidos pickeados exclusivo para verificacion_bof
     Public Shared Function GetAll_By_VerificacionBOF(ByVal pActivo As Boolean,
                                                      ByVal pFechaDel As Date,
@@ -7661,53 +7527,16 @@ End If
         End Try
 
     End Function
-    '#GT25112025: cargar lista de pedidos pickeados exclusivo para verificacion_bof
-    Public Shared Function GetAll_By_VerificacionBOF(ByVal pActivo As Boolean,
-                                                     ByVal pFechaDel As Date,
-                                                     ByVal pFechaAl As Date,
-                                                     ByVal pIdUsuario As Integer) As DataTable
+    Public Shared Function GetAll_By_Guia_Transporte(ByVal guia_Transporte As String) As DataTable
 
-
-
-
-        Dim lTable As New DataTable("Result")
+        GetAll_By_Guia_Transporte = Nothing
 
         Try
 
-            '#GT11122025: mostrar los pedidos asociados al usuario para no filtrar por cada idbodega
-            Dim vSQL As String = " SELECT * " &
-                     " FROM VW_PEDIDOS_LIST " &
-                     " WHERE IdBodega IN ( " &
-                     "     SELECT ub.IdBodega " &
-                     "     FROM Usuario_Bodega ub " &
-                     "     WHERE ub.IdUsuario = @pIdUsuario " &
-                     " ) " &
-                     " AND verificar_con_imagen = 1 " &
-                     " AND estado = 'Pickeado' "
-
-            If pActivo = True Then
-                vSQL += " AND Activo = 1 "
-            Else
-                vSQL += " AND Activo = 0 "
-            End If
-
-            vSQL += " AND CAST(Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) & " AND " & FormatoFechas.fFecha(pFechaAl)
-
-            vSQL += " ORDER BY CONVERT(date, Fecha_Pedido) ASC, Correlativo ASC "
-
-
-            'Dim vSQL As String = " SELECT * FROM VW_PEDIDOS_LIST WHERE IDBODEGA = @IDBODEGA and verificar_con_imagen=1 and estado='Pickeado' "
-
-            'If pActivo = True Then
-            '    vSQL += " AND Activo=1 "
-            'Else
-            '    vSQL += " AND Activo=0"
-            'End If
-
-            'vSQL += " AND cast(Fecha_Pedido AS DATE) BETWEEN " & FormatoFechas.fFecha(pFechaDel) &
-            '       " AND " & FormatoFechas.fFecha(pFechaAl)
-
-            'vSQL += " ORDER BY CONVERT(date, Fecha_Pedido) ASC, Correlativo ASC "
+            Const sp As String =
+                "SELECT IdPedidoEnc AS Correlativo " &
+                "FROM Trans_pe_enc " &
+                "WHERE guia_transporte = @guia_transporte"
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
@@ -7715,15 +7544,58 @@ End If
 
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                    Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+                    Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+                    Dim dad As New SqlDataAdapter(cmd)
 
-                        lDataAdapter.SelectCommand.Transaction = lTransaction
-                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@pIdUsuario", pIdUsuario)
+                    dad.SelectCommand.Parameters.Add(New SqlParameter("@guia_transporte", guia_Transporte))
 
-                        lDataAdapter.SelectCommand.CommandType = CommandType.Text
-                        lDataAdapter.Fill(lTable)
+                    Dim dt As New DataTable
+                    dad.Fill(dt)
 
-                    End Using
+                    lTransaction.Commit()
+
+                    GetAll_By_Guia_Transporte = dt
+
+                End Using
+
+                lConnection.Close()
+
+            End Using
+
+        Catch ex As Exception
+            Throw
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Single_By_NoGuia(ByVal NoGuia As String) As clsBeTrans_pe_enc
+
+        Get_Single_By_NoGuia = Nothing
+
+        Try
+
+            Const sp As String = " SELECT * FROM Trans_pe_enc " &
+                                 " Where(guia_transporte = @guia_transporte)"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+                    Dim dad As New SqlDataAdapter(cmd)
+
+                    dad.SelectCommand.Parameters.Add(New SqlParameter("@guia_transporte", NoGuia))
+
+                    Dim dt As New DataTable
+                    dad.Fill(dt)
+
+                    If dt.Rows.Count >= 1 Then
+                        Dim BePedidoEnc As New clsBeTrans_pe_enc()
+                        Cargar(BePedidoEnc, dt.Rows(0))
+                        Get_Single_By_NoGuia = BePedidoEnc
+                    End If
 
                     lTransaction.Commit()
 
@@ -7733,11 +7605,12 @@ End If
 
             End Using
 
-            Return lTable
-
         Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
     End Function
+
 End Class

@@ -125,17 +125,6 @@ Partial Class frmDespacho
         Me.FechaPedido = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.tbDetalleProducto = New DevExpress.XtraTab.XtraTabPage()
         Me.grdProducto = New System.Windows.Forms.DataGridView()
-        Me.PedidoEnc = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.CodigoPedido = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ProductoDetalle = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.PresentacionDetalle = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.UMDetalle = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.EstadoDetalle = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Cantidad = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ClienteDias = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.CantidadRecibida = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Operador = New System.Windows.Forms.DataGridViewComboBoxColumn()
-        Me.PedidoDet = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.tbUbicPicking = New DevExpress.XtraTab.XtraTabPage()
         Me.panelUbic = New DevExpress.XtraEditors.PanelControl()
         Me.grdUbicPicking = New DevExpress.XtraGrid.GridControl()
@@ -187,7 +176,6 @@ Partial Class frmDespacho
         Me.PedidoDet = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colTalla = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colColor = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.xtpDifPickVrsPack = New DevExpress.XtraTab.XtraTabPage()
         Label10 = New System.Windows.Forms.Label()
         Label12 = New System.Windows.Forms.Label()
         Label2 = New System.Windows.Forms.Label()
@@ -611,7 +599,7 @@ Partial Class frmDespacho
         Me.XtraTabControl1.SelectedTabPage = Me.tbPagina1
         Me.XtraTabControl1.Size = New System.Drawing.Size(1291, 537)
         Me.XtraTabControl1.TabIndex = 0
-        Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tbPagina1, Me.tbPedido, Me.tbDetalleProducto, Me.tbUbicPicking, Me.tbPagina2, Me.XtraTabPage1, Me.xtpDifPickVrsPack})
+        Me.XtraTabControl1.TabPages.AddRange(New DevExpress.XtraTab.XtraTabPage() {Me.tbPagina1, Me.tbPedido, Me.tbDetalleProducto, Me.tbUbicPicking, Me.tbPagina2, Me.XtraTabPage1})
         '
         'tbPagina1
         '
@@ -1053,14 +1041,13 @@ Partial Class frmDespacho
         Me.grdPedido.Margin = New System.Windows.Forms.Padding(4)
         Me.grdPedido.MultiSelect = False
         Me.grdPedido.Name = "grdPedido"
-        Me.grdPedido.ReadOnly = True
-        DataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle12.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        DataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.grdPedido.RowHeadersDefaultCellStyle = DataGridViewCellStyle12
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Tahoma", 7.8!)
+        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.grdPedido.RowHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.grdPedido.RowHeadersVisible = False
         Me.grdPedido.RowHeadersWidth = 40
         Me.grdPedido.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
@@ -1080,7 +1067,6 @@ Partial Class frmDespacho
         Me.Referencia.HeaderText = "Referencia"
         Me.Referencia.MinimumWidth = 6
         Me.Referencia.Name = "Referencia"
-        Me.Referencia.ReadOnly = True
         Me.Referencia.Width = 125
         '
         'Bodega
@@ -1159,105 +1145,6 @@ Partial Class frmDespacho
         Me.grdProducto.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.grdProducto.Size = New System.Drawing.Size(1289, 507)
         Me.grdProducto.TabIndex = 1
-        '
-        'PedidoEnc
-        '
-        DataGridViewCellStyle14.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold)
-        DataGridViewCellStyle14.Format = "N0"
-        Me.PedidoEnc.DefaultCellStyle = DataGridViewCellStyle14
-        Me.PedidoEnc.HeaderText = "Pedido"
-        Me.PedidoEnc.MinimumWidth = 6
-        Me.PedidoEnc.Name = "PedidoEnc"
-        Me.PedidoEnc.ReadOnly = True
-        Me.PedidoEnc.Width = 125
-        '
-        'CodigoPedido
-        '
-        Me.CodigoPedido.HeaderText = "Código"
-        Me.CodigoPedido.MinimumWidth = 6
-        Me.CodigoPedido.Name = "CodigoPedido"
-        Me.CodigoPedido.ReadOnly = True
-        Me.CodigoPedido.Width = 125
-        '
-        'ProductoDetalle
-        '
-        Me.ProductoDetalle.HeaderText = "Producto"
-        Me.ProductoDetalle.MinimumWidth = 6
-        Me.ProductoDetalle.Name = "ProductoDetalle"
-        Me.ProductoDetalle.ReadOnly = True
-        Me.ProductoDetalle.Width = 125
-        '
-        'PresentacionDetalle
-        '
-        Me.PresentacionDetalle.HeaderText = "Presentación"
-        Me.PresentacionDetalle.MinimumWidth = 6
-        Me.PresentacionDetalle.Name = "PresentacionDetalle"
-        Me.PresentacionDetalle.ReadOnly = True
-        Me.PresentacionDetalle.Width = 125
-        '
-        'UMDetalle
-        '
-        Me.UMDetalle.HeaderText = "Unidad Medida"
-        Me.UMDetalle.MinimumWidth = 6
-        Me.UMDetalle.Name = "UMDetalle"
-        Me.UMDetalle.ReadOnly = True
-        Me.UMDetalle.Width = 125
-        '
-        'EstadoDetalle
-        '
-        Me.EstadoDetalle.HeaderText = "Estado"
-        Me.EstadoDetalle.MinimumWidth = 6
-        Me.EstadoDetalle.Name = "EstadoDetalle"
-        Me.EstadoDetalle.ReadOnly = True
-        Me.EstadoDetalle.Width = 125
-        '
-        'Cantidad
-        '
-        DataGridViewCellStyle15.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold)
-        DataGridViewCellStyle15.Format = "N2"
-        Me.Cantidad.DefaultCellStyle = DataGridViewCellStyle15
-        Me.Cantidad.HeaderText = "Cantidad"
-        Me.Cantidad.MinimumWidth = 6
-        Me.Cantidad.Name = "Cantidad"
-        Me.Cantidad.ReadOnly = True
-        Me.Cantidad.Width = 125
-        '
-        'ClienteDias
-        '
-        Me.ClienteDias.HeaderText = "Cliente Días"
-        Me.ClienteDias.MinimumWidth = 6
-        Me.ClienteDias.Name = "ClienteDias"
-        Me.ClienteDias.ReadOnly = True
-        Me.ClienteDias.Width = 125
-        '
-        'CantidadRecibida
-        '
-        DataGridViewCellStyle16.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Bold)
-        DataGridViewCellStyle16.Format = "N2"
-        DataGridViewCellStyle16.NullValue = "0.0"
-        Me.CantidadRecibida.DefaultCellStyle = DataGridViewCellStyle16
-        Me.CantidadRecibida.HeaderText = "Cantidad Recibida"
-        Me.CantidadRecibida.MinimumWidth = 6
-        Me.CantidadRecibida.Name = "CantidadRecibida"
-        Me.CantidadRecibida.ReadOnly = True
-        Me.CantidadRecibida.Visible = False
-        Me.CantidadRecibida.Width = 125
-        '
-        'Operador
-        '
-        Me.Operador.HeaderText = "Operador"
-        Me.Operador.MinimumWidth = 6
-        Me.Operador.Name = "Operador"
-        Me.Operador.Visible = False
-        Me.Operador.Width = 125
-        '
-        'PedidoDet
-        '
-        Me.PedidoDet.HeaderText = "Pedido Det"
-        Me.PedidoDet.MinimumWidth = 6
-        Me.PedidoDet.Name = "PedidoDet"
-        Me.PedidoDet.Visible = False
-        Me.PedidoDet.Width = 125
         '
         'tbUbicPicking
         '
@@ -1366,14 +1253,6 @@ Partial Class frmDespacho
         DataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText
         DataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.grdListaDespacho.RowHeadersDefaultCellStyle = DataGridViewCellStyle10
-        DataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle20.BackColor = System.Drawing.Color.Chocolate
-        DataGridViewCellStyle20.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        DataGridViewCellStyle20.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle20.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle20.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle20.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.grdListaDespacho.RowHeadersDefaultCellStyle = DataGridViewCellStyle20
         Me.grdListaDespacho.RowHeadersVisible = False
         Me.grdListaDespacho.RowHeadersWidth = 40
         Me.grdListaDespacho.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
@@ -1382,9 +1261,9 @@ Partial Class frmDespacho
         '
         'IdPickingUbic
         '
-        DataGridViewCellStyle19.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle19.Format = "N0"
-        Me.IdPickingUbic.DefaultCellStyle = DataGridViewCellStyle19
+        DataGridViewCellStyle9.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle9.Format = "N0"
+        Me.IdPickingUbic.DefaultCellStyle = DataGridViewCellStyle9
         Me.IdPickingUbic.HeaderText = "Picking Ubicación"
         Me.IdPickingUbic.MinimumWidth = 6
         Me.IdPickingUbic.Name = "IdPickingUbic"
@@ -1706,9 +1585,6 @@ Partial Class frmDespacho
         Me.PresentacionDetalle.Width = 125
         '
         'UMDetalle
-        Me.xtpDifPickVrsPack.Name = "xtpDifPickVrsPack"
-        Me.xtpDifPickVrsPack.Size = New System.Drawing.Size(1040, 507)
-        Me.xtpDifPickVrsPack.Text = "Diferencia Packing"
         '
         Me.UMDetalle.HeaderText = "Unidad Medida"
         Me.UMDetalle.MinimumWidth = 6
@@ -1952,17 +1828,6 @@ Partial Class frmDespacho
     Friend WithEvents cmbPropietario As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents dtmFechaTarea As DevExpress.XtraEditors.DateEdit
     Friend WithEvents dtmFechaDespacho As DevExpress.XtraEditors.DateEdit
-    Friend WithEvents PedidoEnc As DataGridViewTextBoxColumn
-    Friend WithEvents CodigoPedido As DataGridViewTextBoxColumn
-    Friend WithEvents ProductoDetalle As DataGridViewTextBoxColumn
-    Friend WithEvents PresentacionDetalle As DataGridViewTextBoxColumn
-    Friend WithEvents UMDetalle As DataGridViewTextBoxColumn
-    Friend WithEvents EstadoDetalle As DataGridViewTextBoxColumn
-    Friend WithEvents Cantidad As DataGridViewTextBoxColumn
-    Friend WithEvents ClienteDias As DataGridViewTextBoxColumn
-    Friend WithEvents CantidadRecibida As DataGridViewTextBoxColumn
-    Friend WithEvents Operador As DataGridViewComboBoxColumn
-    Friend WithEvents PedidoDet As DataGridViewTextBoxColumn
     Friend WithEvents lblC As TextBox
     Friend WithEvents Pedido As DataGridViewTextBoxColumn
     Friend WithEvents Referencia As DataGridViewTextBoxColumn

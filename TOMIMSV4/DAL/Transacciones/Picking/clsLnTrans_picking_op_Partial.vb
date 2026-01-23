@@ -1,9 +1,6 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
-Imports System.Data.SqlClient
-
 Partial Public Class clsLnTrans_picking_op
-
 
     Public Shared Function MaxID(ByVal pConnection As SqlConnection, ByVal pTransaction As SqlTransaction) As Integer
 
@@ -32,7 +29,6 @@ Partial Public Class clsLnTrans_picking_op
         End Try
 
     End Function
-
 
     Public Shared Function Get_All_By_IdPickingEnc(ByVal pIdPicking As Integer) As List(Of clsBeTrans_picking_op)
 
@@ -140,8 +136,6 @@ Partial Public Class clsLnTrans_picking_op
         End Try
 
     End Function
-
-
 
     Public Shared Function Delete(ByVal pIdOperadorPicking As Integer) As Integer
 

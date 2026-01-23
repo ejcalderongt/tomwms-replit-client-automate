@@ -14,7 +14,6 @@ Public Class frmAjustePositivo
     Public Property pStockTemporal As clsBeStock
     Public Property pUbicacion As clsBeBodega_ubicacion
 
-    Private pIdProductoBodega As Integer
     Private BeBodega As New clsBeBodega
     Private DT As New DataTable("Producto")
     Private DT_Estado As New DataTable("Producto_Estado")

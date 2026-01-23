@@ -885,4 +885,306 @@ Public Class clsLnTrans_picking_det
         End Try
     End Function
 
+    Public Shared Function Liberar_Producto_No_Pickeado_Multiple(ByVal IdPedidoDet As Integer,
+                                                                 ByVal IdPedidoEnc As Integer,
+                                                                 ByVal IdPickingEnc As Integer,
+                                                                 ByVal IdUsuario As Integer,
+                                                                 ByVal IdBodega As Integer,
+                                                                 ByVal IdStockRes As Integer,
+                                                                 ByVal lConnection As SqlConnection,
+                                                                 ByVal lTransaction As SqlTransaction) As Boolean
+
+        Liberar_Producto_No_Pickeado_Multiple = False
+
+        Try
+
+            Dim IdPickingUbic As Integer = 0
+            Dim vCantidadDespachada As Double = 0
+            Dim vCantidadSolicitada As Double = 0
+            Dim vCantidadRecibida As Double = 0
+            Dim vPesoDespachado As Double = 0
+            Dim vIdStock As Double = 0
+            Dim lBeStockPickeado As New List(Of clsBeStock)
+            Dim lBeStockResByPickingUbic As New List(Of clsBeStock_res)
+            Dim BeStockPickeado As clsBeStock = Nothing
+            Dim vIdUbicacionPickingTomarDe As Integer
+            Dim vIdUbicacionPickingDefectoPorBodega As Integer = 0
+            Dim objStockOrigen As New clsBeStock()
+            Dim vActuarlizarUbicacion As Boolean = False
+            Dim lTransPickingDet As New List(Of clsBeTrans_picking_det)
+            Dim ListaDetalleUbicacion As New List(Of clsBeTrans_picking_ubic)
+            Dim BeTransPickingDet As New clsBeTrans_picking_det()
+            Dim vResultEliminacionStock As Integer = 0
+            Dim vIdLogLiberacion As Integer = 0
+            Dim vResultadoEliminacionPickingUbic As Integer = 0
+            Dim vResultadoEliminacionPickingDet As Integer = 0
+            Dim lPickingUbic As New List(Of clsBeTrans_picking_ubic)
+            Dim BePedidoEnc As New clsBeTrans_pe_enc
+            Dim BePickingEnc As New clsBeTrans_picking_enc
+
+            BePedidoEnc = clsLnTrans_pe_enc.Get_Single_By_IdPedidoEnc_And_IdBodega(IdPedidoEnc,
+                                                                                   IdBodega,
+                                                                                   lConnection,
+                                                                                   lTransaction)
+
+
+
+            If Not BePedidoEnc Is Nothing Then
+
+                vIdLogLiberacion = clsLnTrans_log_pedido_liberacion.MaxID(lConnection, lTransaction) + 1
+
+                vIdUbicacionPickingDefectoPorBodega = clsLnBodega.Get_IdUbicacion_Picking_By_IdBodega(IdBodega,
+                                                                                                      lConnection,
+                                                                                                      lTransaction)
+
+                If vIdUbicacionPickingDefectoPorBodega = 0 Then
+                    Throw New Exception("No está definida la posición de picking por defecto en la bodega, para liberar el producto a esa posición")
+                End If
+
+                BePickingEnc = clsLnTrans_picking_enc.GetSingle(IdPickingEnc, lConnection, lTransaction)
+
+                lTransPickingDet = BePickingEnc.ListaPickingDet
+                ListaDetalleUbicacion = BePickingEnc.ListaPickingUbic
+
+                If Not lTransPickingDet Is Nothing Then
+
+                    If lTransPickingDet.Count > 0 Then
+
+                        For Each PickingDet In lTransPickingDet
+
+                            If Not ListaDetalleUbicacion Is Nothing Then
+
+                                For Each PickingUbic In ListaDetalleUbicacion.Where(Function(x) x.IdStockRes = IdStockRes _
+                                                                                    AndAlso x.IdPickingEnc = IdPickingEnc _
+                                                                                    AndAlso x.IdPedidoDet = IdPedidoDet _
+                                                                                    AndAlso x.IdPedidoEnc = IdPedidoEnc _
+                                                                                    AndAlso x.IdStockRes = IdStockRes)
+
+                                    vResultadoEliminacionPickingUbic = 0
+                                    vResultEliminacionStock = 0
+                                    vResultadoEliminacionPickingDet = 0
+
+                                    If PickingUbic.Cantidad_despachada = 0 Then
+
+                                        lBeStockResByPickingUbic = clsLnStock_res.Get_All_By_Params(PickingUbic.IdPedidoDet,
+                                                                                                    IdPedidoEnc,
+                                                                                                    PickingUbic.IdStock,
+                                                                                                    IdStockRes,
+                                                                                                    PickingUbic.IdProductoBodega,
+                                                                                                    PickingUbic.IdPropietarioBodega,
+                                                                                                    IdPickingEnc,
+                                                                                                    lConnection,
+                                                                                                    lTransaction)
+
+                                        If Not lBeStockResByPickingUbic Is Nothing Then
+
+                                            If lBeStockResByPickingUbic.Count > 0 Then
+
+                                                vResultEliminacionStock = clsLnStock_res.Eliminar_Stock_Reservado_By_IdPedidoDet_And_IdStock(PickingUbic.IdPedidoDet,
+                                                                                                                                             IdPedidoEnc,
+                                                                                                                                             PickingUbic.IdStock,
+                                                                                                                                             IdStockRes,
+                                                                                                                                             PickingUbic.IdBodega,
+                                                                                                                                             lConnection,
+                                                                                                                                             lTransaction)
+
+                                                If vResultEliminacionStock > 0 Then
+
+                                                    lPickingUbic = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPickingDet(PickingUbic.IdPickingDet,
+                                                                                                                               PickingUbic.IdPickingEnc,
+                                                                                                                               lConnection,
+                                                                                                                               lTransaction)
+
+                                                    vResultadoEliminacionPickingUbic = clsLnTrans_picking_ubic.Eliminar_By_Params(PickingUbic.IdPickingUbic,
+                                                                                                                                  PickingUbic.IdPickingEnc,
+                                                                                                                                  PickingUbic.IdPickingDet,
+                                                                                                                                  PickingUbic.IdStock,
+                                                                                                                                  IdStockRes,
+                                                                                                                                  lConnection,
+                                                                                                                                  lTransaction)
+
+                                                    If vResultadoEliminacionPickingUbic > 0 Then
+
+                                                        Try
+
+                                                            If lPickingUbic.Count = 1 Then
+
+                                                                vResultadoEliminacionPickingDet = Eliminar_By_Params(PickingUbic.IdPickingDet,
+                                                                                                                     PickingUbic.IdPickingEnc,
+                                                                                                                     IdPedidoEnc,
+                                                                                                                     IdPedidoDet,
+                                                                                                                     lConnection,
+                                                                                                                     lTransaction)
+
+                                                            End If
+
+                                                        Catch ex As Exception
+                                                            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), "Error_20220108_1148: Al eliminar el PickingDet: " & PickingUbic.IdPickingDet & " Probablemente ya tenga un despacho asociado. ")
+                                                            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+                                                            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                                                                  pIdPedidoDet:=PickingUbic.IdPedidoDet,
+                                                                                                  pIdPedidoEnc:=PickingUbic.IdPedidoEnc,
+                                                                                                  pIdPickingEnc:=PickingUbic.IdPickingEnc,
+                                                                                                  pIdPickingDet:=PickingUbic.IdPickingDet,
+                                                                                                  pIdPickingUbic:=PickingUbic.IdPickingUbic,
+                                                                                                  pCodigoProducto:=PickingUbic.CodigoProducto,
+                                                                                                  pStackTrace:=ex.StackTrace,
+                                                                                                  pIdBodega:=IdBodega,
+                                                                                                  pUserAgr:=IdUsuario,
+                                                                                                  pConection:=lConnection,
+                                                                                                  pTransaction:=lTransaction)
+                                                        End Try
+
+                                                        Dim Betrans_log_pedido_liberacion As New clsBeTrans_log_pedido_liberacion
+                                                        Betrans_log_pedido_liberacion.IdLogLiberacionStock = vIdLogLiberacion
+                                                        Betrans_log_pedido_liberacion.IdUsuario = IdUsuario
+                                                        Betrans_log_pedido_liberacion.Fecha = Now
+                                                        Betrans_log_pedido_liberacion.IdPedidoEnc = IdPedidoEnc
+                                                        Betrans_log_pedido_liberacion.IdPedidoDet = IdPedidoDet
+                                                        Betrans_log_pedido_liberacion.Referencia = BePedidoEnc.Referencia
+                                                        Betrans_log_pedido_liberacion.Codigo_Producto = PickingDet.Codigo
+                                                        Betrans_log_pedido_liberacion.Lote = PickingUbic.Lote
+                                                        Betrans_log_pedido_liberacion.Lic_Plate = PickingUbic.Lic_plate
+                                                        Betrans_log_pedido_liberacion.Fecha_Vence = PickingUbic.Fecha_Vence
+                                                        Betrans_log_pedido_liberacion.Observacion = "Se liberó producto del IdStock: " & PickingUbic.IdStock & " IdStockRes: " & IdStockRes
+                                                        Betrans_log_pedido_liberacion.Cantidad = PickingUbic.Cantidad_Solicitada
+                                                        Betrans_log_pedido_liberacion.IdPickingUbic = PickingUbic.IdPickingUbic
+                                                        Betrans_log_pedido_liberacion.IdPickingDet = PickingDet.IdPickingDet
+                                                        Betrans_log_pedido_liberacion.IdProductoBodega = PickingUbic.IdProductoBodega
+                                                        Betrans_log_pedido_liberacion.IdProductoEstado = PickingUbic.IdPickingDet
+                                                        Betrans_log_pedido_liberacion.IdPropietarioBodega = PickingUbic.IdPropietarioBodega
+                                                        Betrans_log_pedido_liberacion.IdUnidadMedida = PickingUbic.IdUnidadMedida
+                                                        Betrans_log_pedido_liberacion.IdPresentacion = PickingUbic.IdPresentacion
+                                                        Betrans_log_pedido_liberacion.IdUbicacion = PickingUbic.IdUbicacion
+                                                        Betrans_log_pedido_liberacion.IdStock = PickingUbic.IdStock
+                                                        Betrans_log_pedido_liberacion.IdBodega = PickingUbic.IdBodega
+
+                                                        clsLnTrans_log_pedido_liberacion.Insertar(Betrans_log_pedido_liberacion,
+                                                                                                  lConnection,
+                                                                                                  lTransaction)
+                                                        vIdLogLiberacion += 1
+
+                                                    End If
+
+                                                End If
+
+                                            End If
+
+                                        End If
+
+                                    Else
+
+                                        lBeStockResByPickingUbic = clsLnStock_res.Get_All_By_Params(IdPedidoDet,
+                                                                                                    IdPedidoEnc,
+                                                                                                    PickingUbic.IdStock,
+                                                                                                    PickingUbic.IdProductoBodega,
+                                                                                                    PickingUbic.IdPropietarioBodega,
+                                                                                                    IdPickingEnc,
+                                                                                                    lConnection,
+                                                                                                    lTransaction)
+                                        If Not lBeStockResByPickingUbic Is Nothing Then
+
+                                            If lBeStockResByPickingUbic.Count > 0 Then
+
+                                                '#EJC20220108_1053AM: La cantidad despachada es > 0'
+                                                If (PickingUbic.Cantidad_Solicitada = PickingUbic.Cantidad_Recibida) Then
+                                                    '#EJC20220107: El operador bajó todo el producto de la posición, pero hizo un despacho parcial
+                                                    'En este caso, el producto restante debe ser movido a la ubicación de picking
+
+                                                    objStockOrigen.IdUbicacion = vIdUbicacionPickingDefectoPorBodega 'Nueva ubicación
+                                                    vActuarlizarUbicacion = True
+                                                Else
+                                                    '#EJC20220107: El operador NO bajó todo el producto de la posición, pero hizo un despacho parcial
+                                                    'En este caso, el producto restante (No pickeado y no despachado) debe quedarse en la misma posición.
+                                                    objStockOrigen.IdUbicacion = PickingUbic.IdUbicacion
+                                                    vActuarlizarUbicacion = False
+                                                End If
+
+                                                vResultEliminacionStock = clsLnStock_res.Eliminar_Stock_Reservado_By_IdPedidoDet_And_IdStock(IdPedidoDet,
+                                                                                                                                             IdPedidoEnc,
+                                                                                                                                             PickingUbic.IdStock,
+                                                                                                                                             PickingUbic.IdBodega,
+                                                                                                                                             lConnection,
+                                                                                                                                             lTransaction)
+
+                                                If vResultEliminacionStock > 0 Then
+
+                                                    If vActuarlizarUbicacion Then
+
+                                                        '#CKFK20220717 Me parece que hay que agregar esto para que funcione
+                                                        'vIdStock = PickingUbic.IdStock
+                                                        objStockOrigen = New clsBeStock()
+                                                        objStockOrigen = clsLnStock.GetSingle(vIdStock,
+                                                                                              lConnection,
+                                                                                              lTransaction)
+
+                                                        If Not objStockOrigen Is Nothing Then
+
+                                                            objStockOrigen.IdUbicacion = vIdUbicacionPickingDefectoPorBodega
+                                                            objStockOrigen.IdUbicacion_anterior = vIdUbicacionPickingTomarDe
+                                                            objStockOrigen.Fec_mod = Now
+                                                            clsLnStock.Actualiza_Ubicacion_Por_Picking(objStockOrigen,
+                                                                                                       lConnection,
+                                                                                                       lTransaction)
+
+                                                        Else
+                                                            Throw New Exception("Error_20220701: No se pudo obtnener el IdStock asociado a la transacción.")
+                                                        End If
+
+
+                                                    End If
+
+                                                End If
+
+
+                                            Else
+                                                Debug.WriteLine("Error_202201081123: No se obtuvo stock reservado para la línea de pickingubic: " & PickingUbic.IdPickingUbic & " El count de la lista es 0")
+                                            End If
+
+                                        Else
+                                            Debug.WriteLine("Error_202201081123A: No se obtuvo stock reservado para la línea de pickingubic: " & PickingUbic.IdPickingUbic & " la lista es nothig.")
+                                        End If
+
+                                    End If
+
+                                Next
+
+                            Else
+                                Debug.WriteLine("La lista picking ubic está vacía para la línea de pickingdet: " & PickingDet.IdPickingDet)
+                            End If
+
+                        Next
+
+                        Liberar_Producto_No_Pickeado_Multiple = True
+
+                    Else
+                        Throw New Exception("Error_20220108_1027: No se encontraron las líneas de picking asociadas al pedido, la lista está vacía.")
+                    End If
+
+                Else
+
+                    Throw New Exception("Error_20220108_1027: No se encontraron las líneas de picking asociadas al pedido, la lista está vacía.")
+
+                End If
+
+            Else
+                Throw New Exception("ERROR_20221006_1618: No se pudo obtener el objeto del pedido con el identificador: " & IdPedidoEnc)
+            End If
+
+        Catch ex As Exception
+            '#MECR23102025: Se agrego bitacora para logs de picking
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            'clsLnLog_error_wms.Agregar_Error(vMsgError)
+            clsLnLog_error_wms_pick.Agregar_Error(vMsgError,
+                                                  pIdPedidoDet:=IdPedidoDet,
+                                                  pIdPedidoEnc:=IdPedidoEnc,
+                                                  pIdPickingEnc:=IdPickingEnc,
+                                                  pIdBodega:=IdBodega,
+                                                  pUserAgr:=IdUsuario,
+                                                  pStackTrace:=ex.StackTrace)
+            Throw ex
+        End Try
+
+    End Function
+
 End Class

@@ -1,6 +1,5 @@
 Imports System.Data.SqlClient
 Imports System.Reflection
-Imports System
 Imports TOMWMS.WMSTipoDato
 
 Public Class clsLnCliente_lotes
@@ -197,35 +196,6 @@ Public Class clsLnCliente_lotes
 	End Function
 
 	Public Shared Function Get_All_By_IdCliente(ByVal IdCliente As Integer) As List(Of clsBeCliente_lotes)
-
-		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
-		Dim lTransaction As SqlTransaction = Nothing
-
-		Try
-
-			Const sp As String = "SELECT * FROM Cliente_lotes"
-			lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUnCommitted)
-			Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-			Dim dad As New SqlDataAdapter(cmd)
-			Dim dt As New DataTable
-			dad.Fill(dt)
-
-			lTransaction.Commit()
-
-			Return dt
-
-		Catch ex As Exception
-			If Not lTransaction Is Nothing Then lTransaction.Rollback()
-			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-		Finally
-			If lConnection.State = ConnectionState.Open Then lConnection.Close
-			If Not lConnection Is Nothing Then lConnection.Dispose()
-			If Not lTransaction Is Nothing Then lTransaction.Dispose()
-		End Try
-
-	End Function
-
-	Public Shared Function Get_All() As List(Of clsBeCliente_lotes)
 
 		Dim lReturnList As New List(Of clsBeCliente_lotes)
 

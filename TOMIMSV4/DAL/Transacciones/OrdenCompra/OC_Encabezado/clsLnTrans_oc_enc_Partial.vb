@@ -3924,7 +3924,7 @@ Partial Public Class clsLnTrans_oc_enc
             lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             Try
-                lListRecepciones = clsLnTrans_re_oc.Get_IdRecepcionEnc_By_IdOrdenCompraEnc(pOrdenCompraEnc.IdOrdenCompraEnc, lConnection, lTransaction).ToList
+                lListRecepciones = clsLnTrans_re_oc.Get_IdRecepcionEnc_By_IdOrdenCompraEnc(pOrdenCompraEnc.IdOrdenCompraEnc, lConnection, lTransaction).ToList()
                 If Not lListRecepciones Is Nothing Then
                     If lListRecepciones.Count > 0 Then
                         Throw New Exception("No se puede eliminar un documento con recepciones asociadas")

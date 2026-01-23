@@ -126,17 +126,6 @@ Partial Class frmPedido
         Dim Fec_agrLabel As System.Windows.Forms.Label
         Dim User_modLabel As System.Windows.Forms.Label
         Dim Fec_modLabel As System.Windows.Forms.Label
-        Dim lblBodega As System.Windows.Forms.Label
-        Dim lblNoDocumento As System.Windows.Forms.Label
-        Dim lbCodigoPedidoEnc As System.Windows.Forms.Label
-        Dim lblPropietario As System.Windows.Forms.Label
-        Dim lblMuelle As System.Windows.Forms.Label
-        Dim lblSEstado As System.Windows.Forms.Label
-        Dim Label3 As System.Windows.Forms.Label
-        Dim lblDiasVencimiento As System.Windows.Forms.Label
-        Dim Label6 As System.Windows.Forms.Label
-        Dim Label10 As System.Windows.Forms.Label
-        Dim Label11 As System.Windows.Forms.Label
         Dim RoadKilometrajeLabel As System.Windows.Forms.Label
         Dim RoadTotalLabel As System.Windows.Forms.Label
         Dim RoadDesMontoLabel As System.Windows.Forms.Label
@@ -157,7 +146,6 @@ Partial Class frmPedido
         Dim RoadIdDespachoLabel As System.Windows.Forms.Label
         Dim RoadIdFacturacionLabel As System.Windows.Forms.Label
         Dim ObservacionLabel As System.Windows.Forms.Label
-        Dim lblTipoPedido As System.Windows.Forms.Label
         Dim Label5 As System.Windows.Forms.Label
         Dim Label7 As System.Windows.Forms.Label
         Dim Label8 As System.Windows.Forms.Label
@@ -166,8 +154,6 @@ Partial Class frmPedido
         Dim Label13 As System.Windows.Forms.Label
         Dim Label14 As System.Windows.Forms.Label
         Dim Label15 As System.Windows.Forms.Label
-        Dim lblNoPedido As System.Windows.Forms.Label
-        Dim lblControlUltimoLote As System.Windows.Forms.Label
         Dim Label22 As System.Windows.Forms.Label
         Dim Label21 As System.Windows.Forms.Label
         Dim Label20 As System.Windows.Forms.Label
@@ -182,8 +168,6 @@ Partial Class frmPedido
         Dim Label34 As System.Windows.Forms.Label
         Dim Label35 As System.Windows.Forms.Label
         Dim Label37 As System.Windows.Forms.Label
-        Dim Label17 As System.Windows.Forms.Label
-        Dim lblCertificadoCalidad As System.Windows.Forms.Label
         Dim Label1 As System.Windows.Forms.Label
         Dim lblVendedorDespacho As System.Windows.Forms.Label
         Dim lblRutaDespacho As System.Windows.Forms.Label
@@ -200,9 +184,6 @@ Partial Class frmPedido
         Dim Label38 As System.Windows.Forms.Label
         Dim lblRegimen As System.Windows.Forms.Label
         Dim lblPesoNeto As System.Windows.Forms.Label
-        Dim Label16 As System.Windows.Forms.Label
-        Dim lblManufacturaLigera As System.Windows.Forms.Label
-        Dim Label44 As System.Windows.Forms.Label
         Dim Label18 As System.Windows.Forms.Label
         Dim lblFechaAceptacion As System.Windows.Forms.Label
         Dim lblTotalOtros As System.Windows.Forms.Label
@@ -214,10 +195,6 @@ Partial Class frmPedido
         Dim lblNumeroDUA As System.Windows.Forms.Label
         Dim lblTotalLineas As System.Windows.Forms.Label
         Dim lblFechaDocumento As System.Windows.Forms.Label
-        Dim Label36 As System.Windows.Forms.Label
-        Dim lblPesoNeto As System.Windows.Forms.Label
-        Dim lblTotalOtros As System.Windows.Forms.Label
-        Dim lblTotalSeguroUSD As System.Windows.Forms.Label
         Dim Label29 As System.Windows.Forms.Label
         Dim Label31 As System.Windows.Forms.Label
         Dim lblTotalFOBUSD As System.Windows.Forms.Label
@@ -247,17 +224,6 @@ Partial Class frmPedido
         Dim Label45 As System.Windows.Forms.Label
         Dim lblPiloto As System.Windows.Forms.Label
         Dim lblEmpresaTransporte As System.Windows.Forms.Label
-        Dim Label43 As System.Windows.Forms.Label
-        Dim Label42 As System.Windows.Forms.Label
-        Dim Label41 As System.Windows.Forms.Label
-        Dim Label40 As System.Windows.Forms.Label
-        Dim Label39 As System.Windows.Forms.Label
-        Dim Label38 As System.Windows.Forms.Label
-        Dim lblRegimen As System.Windows.Forms.Label
-        Dim Label25 As System.Windows.Forms.Label
-        Dim lblTotalLineas As System.Windows.Forms.Label
-        Dim Label31 As System.Windows.Forms.Label
-        Dim lblTotalFOBUSD As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPedido))
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
@@ -273,9 +239,6 @@ Partial Class frmPedido
         Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim GridLevelNode3 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim PushTransition1 As DevExpress.Utils.Animation.PushTransition = New DevExpress.Utils.Animation.PushTransition()
-        Me.Label45 = New System.Windows.Forms.Label()
-        Me.lblBodegaDestino = New System.Windows.Forms.Label()
-        Me.lblBodegaOrigen = New System.Windows.Forms.Label()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.BarButtonItem4 = New DevExpress.XtraBars.BarButtonItem()
         Me.lblRegs = New DevExpress.XtraBars.BarStaticItem()
@@ -333,15 +296,6 @@ Partial Class frmPedido
         Me.GridView4 = New DevExpress.XtraGrid.Views.Grid.GridView()
         Me.GrpProducto = New DevExpress.XtraEditors.GroupControl()
         Me.XtraScrollableControl2 = New DevExpress.XtraEditors.XtraScrollableControl()
-        Me.GroupControl4 = New DevExpress.XtraEditors.GroupControl()
-        Me.dtpFechaEntrega = New DevExpress.XtraEditors.DateEdit()
-        Me.cmbRoadVendedorDespacho = New DevExpress.XtraEditors.LookUpEdit()
-        Me.cmbRoadVendedorPedido = New DevExpress.XtraEditors.LookUpEdit()
-        Me.cmbRoadRutaDespacho = New DevExpress.XtraEditors.LookUpEdit()
-        Me.cmbRoadRutaPedido = New DevExpress.XtraEditors.LookUpEdit()
-        Me.dtpHoraEntregaHasta = New System.Windows.Forms.DateTimePicker()
-        Me.txtDireccionEntrega = New System.Windows.Forms.TextBox()
-        Me.dtpHoraEntregaDesde = New System.Windows.Forms.DateTimePicker()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.cmbPiloto = New DevExpress.XtraEditors.LookUpEdit()
         Me.cmbEmpresaTransporte = New DevExpress.XtraEditors.LookUpEdit()
@@ -349,7 +303,6 @@ Partial Class frmPedido
         Me.lblVerificacionBOF = New System.Windows.Forms.LinkLabel()
         Me.txtGuiaTransporte = New DevExpress.XtraEditors.TextEdit()
         Me.lblprg = New System.Windows.Forms.RichTextBox()
-        Me.txtEsExportacion = New System.Windows.Forms.TextBox()
         Me.lblSociedadSAP = New System.Windows.Forms.Label()
         Me.txtSociedadSAP = New System.Windows.Forms.TextBox()
         Me.cmbMuelle = New DevExpress.XtraEditors.GridLookUpEdit()
@@ -365,7 +318,6 @@ Partial Class frmPedido
         Me.grpUltTareaManufactura = New DevExpress.XtraEditors.GroupControl()
         Me.txtIdManufactura = New System.Windows.Forms.LinkLabel()
         Me.cmbManufacturaLigera = New DevExpress.XtraEditors.LookUpEdit()
-        Me.lblprg = New System.Windows.Forms.RichTextBox()
         Me.lblUbicacionAbastecimiento = New System.Windows.Forms.Label()
         Me.txtIdUbicacionAbastecimiento = New System.Windows.Forms.TextBox()
         Me.dtpFechaPreparacion = New DevExpress.XtraEditors.DateEdit()
@@ -394,11 +346,9 @@ Partial Class frmPedido
         Me.GroupControl3 = New DevExpress.XtraEditors.GroupControl()
         Me.txtObservacion = New System.Windows.Forms.TextBox()
         Me.grpScanPoliza = New DevExpress.XtraEditors.GroupControl()
-        Me.GroupBox5 = New System.Windows.Forms.GroupBox()
         Me.txtScanPoliza = New DevExpress.XtraEditors.TextEdit()
         Me.LabelControl2 = New DevExpress.XtraEditors.LabelControl()
         Me.LabelControl4 = New DevExpress.XtraEditors.LabelControl()
-        Me.LabelControl2 = New DevExpress.XtraEditors.LabelControl()
         Me.txtIdDespacho = New System.Windows.Forms.LinkLabel()
         Me.lblUltDespacho = New System.Windows.Forms.Label()
         Me.txtIdPicking = New System.Windows.Forms.LinkLabel()
@@ -489,7 +439,6 @@ Partial Class frmPedido
         Me.TableLayoutPanel2 = New System.Windows.Forms.TableLayoutPanel()
         Me.GrpPoliza = New DevExpress.XtraEditors.GroupControl()
         Me.XtraScrollableControl1 = New DevExpress.XtraEditors.XtraScrollableControl()
-        Me.GroupBox4 = New System.Windows.Forms.GroupBox()
         Me.txtTotal_general = New DevExpress.XtraEditors.TextEdit()
         Me.txtTotal_liquidar = New DevExpress.XtraEditors.TextEdit()
         Me.txtMod_transporte = New DevExpress.XtraEditors.TextEdit()
@@ -497,10 +446,6 @@ Partial Class frmPedido
         Me.txtNitImpExp = New DevExpress.XtraEditors.TextEdit()
         Me.txtClaveAduana = New DevExpress.XtraEditors.TextEdit()
         Me.cmbRegimen = New DevExpress.XtraEditors.LookUpEdit()
-        Me.txtTotalBulto = New System.Windows.Forms.NumericUpDown()
-        Me.txtTotalLineas = New System.Windows.Forms.NumericUpDown()
-        Me.txtTotalFOBUSD = New System.Windows.Forms.NumericUpDown()
-        Me.txtPaisProcedencia = New DevExpress.XtraEditors.TextEdit()
         Me.txtTotalPesoNeto = New System.Windows.Forms.NumericUpDown()
         Me.dtpFechaLlegada = New DevExpress.XtraEditors.DateEdit()
         Me.dtpFechaAceptacion = New DevExpress.XtraEditors.DateEdit()
@@ -517,12 +462,6 @@ Partial Class frmPedido
         Me.txtValorFlete = New System.Windows.Forms.NumericUpDown()
         Me.txtTotalPesoBruto = New System.Windows.Forms.NumericUpDown()
         Me.txtValorAduana = New System.Windows.Forms.NumericUpDown()
-        Me.dtpFechaLlegada = New DevExpress.XtraEditors.DateEdit()
-        Me.dtpFechaAceptacion = New DevExpress.XtraEditors.DateEdit()
-        Me.txtNumeroOrden = New DevExpress.XtraEditors.TextEdit()
-        Me.txtTicket = New DevExpress.XtraEditors.TextEdit()
-        Me.txtCodigoPoliza = New DevExpress.XtraEditors.TextEdit()
-        Me.dtFechaPoliza = New DevExpress.XtraEditors.DateEdit()
         Me.txtNumeroDUA = New DevExpress.XtraEditors.TextEdit()
         Me.txtNoPoliza = New DevExpress.XtraEditors.TextEdit()
         Me.txtPaisProcedencia = New DevExpress.XtraEditors.TextEdit()
@@ -622,21 +561,12 @@ Partial Class frmPedido
         Me.DetalleBindingSource1 = New System.Windows.Forms.BindingSource(Me.components)
         Me.AutoHideContainer1 = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.WorkspaceManager1 = New DevExpress.Utils.WorkspaceManager(Me.components)
+        Me.txtEsExportacion = New System.Windows.Forms.TextBox()
+        Me.Label46 = New System.Windows.Forms.Label()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
         Fec_modLabel = New System.Windows.Forms.Label()
-        lblBodega = New System.Windows.Forms.Label()
-        lblNoDocumento = New System.Windows.Forms.Label()
-        lbCodigoPedidoEnc = New System.Windows.Forms.Label()
-        lblPropietario = New System.Windows.Forms.Label()
-        lblMuelle = New System.Windows.Forms.Label()
-        lblSEstado = New System.Windows.Forms.Label()
-        Label3 = New System.Windows.Forms.Label()
-        lblDiasVencimiento = New System.Windows.Forms.Label()
-        Label6 = New System.Windows.Forms.Label()
-        Label10 = New System.Windows.Forms.Label()
-        Label11 = New System.Windows.Forms.Label()
         RoadKilometrajeLabel = New System.Windows.Forms.Label()
         RoadTotalLabel = New System.Windows.Forms.Label()
         RoadDesMontoLabel = New System.Windows.Forms.Label()
@@ -657,7 +587,6 @@ Partial Class frmPedido
         RoadIdDespachoLabel = New System.Windows.Forms.Label()
         RoadIdFacturacionLabel = New System.Windows.Forms.Label()
         ObservacionLabel = New System.Windows.Forms.Label()
-        lblTipoPedido = New System.Windows.Forms.Label()
         Label5 = New System.Windows.Forms.Label()
         Label7 = New System.Windows.Forms.Label()
         Label8 = New System.Windows.Forms.Label()
@@ -666,8 +595,6 @@ Partial Class frmPedido
         Label13 = New System.Windows.Forms.Label()
         Label14 = New System.Windows.Forms.Label()
         Label15 = New System.Windows.Forms.Label()
-        lblNoPedido = New System.Windows.Forms.Label()
-        lblControlUltimoLote = New System.Windows.Forms.Label()
         Label22 = New System.Windows.Forms.Label()
         Label21 = New System.Windows.Forms.Label()
         Label20 = New System.Windows.Forms.Label()
@@ -682,8 +609,6 @@ Partial Class frmPedido
         Label34 = New System.Windows.Forms.Label()
         Label35 = New System.Windows.Forms.Label()
         Label37 = New System.Windows.Forms.Label()
-        Label17 = New System.Windows.Forms.Label()
-        lblCertificadoCalidad = New System.Windows.Forms.Label()
         Label1 = New System.Windows.Forms.Label()
         lblVendedorDespacho = New System.Windows.Forms.Label()
         lblRutaDespacho = New System.Windows.Forms.Label()
@@ -700,9 +625,6 @@ Partial Class frmPedido
         Label38 = New System.Windows.Forms.Label()
         lblRegimen = New System.Windows.Forms.Label()
         lblPesoNeto = New System.Windows.Forms.Label()
-        Label16 = New System.Windows.Forms.Label()
-        lblManufacturaLigera = New System.Windows.Forms.Label()
-        Label44 = New System.Windows.Forms.Label()
         Label18 = New System.Windows.Forms.Label()
         lblFechaAceptacion = New System.Windows.Forms.Label()
         lblTotalOtros = New System.Windows.Forms.Label()
@@ -714,10 +636,6 @@ Partial Class frmPedido
         lblNumeroDUA = New System.Windows.Forms.Label()
         lblTotalLineas = New System.Windows.Forms.Label()
         lblFechaDocumento = New System.Windows.Forms.Label()
-        Label36 = New System.Windows.Forms.Label()
-        lblPesoNeto = New System.Windows.Forms.Label()
-        lblTotalOtros = New System.Windows.Forms.Label()
-        lblTotalSeguroUSD = New System.Windows.Forms.Label()
         Label29 = New System.Windows.Forms.Label()
         Label31 = New System.Windows.Forms.Label()
         lblTotalFOBUSD = New System.Windows.Forms.Label()
@@ -747,17 +665,6 @@ Partial Class frmPedido
         Label45 = New System.Windows.Forms.Label()
         lblPiloto = New System.Windows.Forms.Label()
         lblEmpresaTransporte = New System.Windows.Forms.Label()
-        Label43 = New System.Windows.Forms.Label()
-        Label42 = New System.Windows.Forms.Label()
-        Label41 = New System.Windows.Forms.Label()
-        Label40 = New System.Windows.Forms.Label()
-        Label39 = New System.Windows.Forms.Label()
-        Label38 = New System.Windows.Forms.Label()
-        lblRegimen = New System.Windows.Forms.Label()
-        Label25 = New System.Windows.Forms.Label()
-        lblTotalLineas = New System.Windows.Forms.Label()
-        Label31 = New System.Windows.Forms.Label()
-        lblTotalFOBUSD = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -766,14 +673,6 @@ Partial Class frmPedido
         CType(Me.GrpProducto, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GrpProducto.SuspendLayout()
         Me.XtraScrollableControl2.SuspendLayout()
-        CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupControl4.SuspendLayout()
-        CType(Me.dtpFechaEntrega.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.dtpFechaEntrega.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.cmbRoadVendedorDespacho.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.cmbRoadVendedorPedido.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.cmbRoadRutaDespacho.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.cmbRoadRutaPedido.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox3.SuspendLayout()
         CType(Me.cmbPiloto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbEmpresaTransporte.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -806,7 +705,6 @@ Partial Class frmPedido
         Me.GroupControl3.SuspendLayout()
         CType(Me.grpScanPoliza, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grpScanPoliza.SuspendLayout()
-        Me.GroupBox5.SuspendLayout()
         CType(Me.txtScanPoliza.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupControl4.SuspendLayout()
@@ -858,7 +756,6 @@ Partial Class frmPedido
         CType(Me.GrpPoliza, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GrpPoliza.SuspendLayout()
         Me.XtraScrollableControl1.SuspendLayout()
-        Me.GroupBox4.SuspendLayout()
         CType(Me.txtTotal_general.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtTotal_liquidar.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtMod_transporte.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -866,17 +763,7 @@ Partial Class frmPedido
         CType(Me.txtNitImpExp.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtClaveAduana.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.cmbRegimen.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtTotalBulto, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtTotalLineas, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtTotalFOBUSD, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtPaisProcedencia.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtTotalPesoNeto, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtTotalOtros, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtValorSeguro, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtTipoCambio, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtValorFlete, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtTotalPesoBruto, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.txtValorAduana, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dtpFechaLlegada.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dtpFechaLlegada.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dtpFechaAceptacion.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -1018,118 +905,6 @@ Partial Class frmPedido
         Fec_modLabel.Size = New System.Drawing.Size(82, 13)
         Fec_modLabel.TabIndex = 6
         Fec_modLabel.Text = "Fecha Modificó:"
-        '
-        'lblBodega
-        '
-        lblBodega.AutoSize = True
-        lblBodega.Location = New System.Drawing.Point(10, 97)
-        lblBodega.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        lblBodega.Name = "lblBodega"
-        lblBodega.Size = New System.Drawing.Size(47, 13)
-        lblBodega.TabIndex = 8
-        lblBodega.Text = "Bodega:"
-        '
-        'lblNoDocumento
-        '
-        lblNoDocumento.AutoSize = True
-        lblNoDocumento.Location = New System.Drawing.Point(10, 221)
-        lblNoDocumento.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        lblNoDocumento.Name = "lblNoDocumento"
-        lblNoDocumento.Size = New System.Drawing.Size(85, 13)
-        lblNoDocumento.TabIndex = 28
-        lblNoDocumento.Text = "No. Documento:"
-        '
-        'lbCodigoPedidoEnc
-        '
-        lbCodigoPedidoEnc.AutoSize = True
-        lbCodigoPedidoEnc.Location = New System.Drawing.Point(10, 19)
-        lbCodigoPedidoEnc.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        lbCodigoPedidoEnc.Name = "lbCodigoPedidoEnc"
-        lbCodigoPedidoEnc.Size = New System.Drawing.Size(44, 13)
-        lbCodigoPedidoEnc.TabIndex = 0
-        lbCodigoPedidoEnc.Text = "Código:"
-        '
-        'lblPropietario
-        '
-        lblPropietario.AutoSize = True
-        lblPropietario.Location = New System.Drawing.Point(10, 146)
-        lblPropietario.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        lblPropietario.Name = "lblPropietario"
-        lblPropietario.Size = New System.Drawing.Size(63, 13)
-        lblPropietario.TabIndex = 15
-        lblPropietario.Text = "Propietario:"
-        '
-        'lblMuelle
-        '
-        lblMuelle.AutoSize = True
-        lblMuelle.Location = New System.Drawing.Point(10, 266)
-        lblMuelle.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        lblMuelle.Name = "lblMuelle"
-        lblMuelle.Size = New System.Drawing.Size(41, 13)
-        lblMuelle.TabIndex = 33
-        lblMuelle.Text = "Muelle:"
-        '
-        'lblSEstado
-        '
-        lblSEstado.AutoSize = True
-        lblSEstado.Location = New System.Drawing.Point(10, 46)
-        lblSEstado.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        lblSEstado.Name = "lblSEstado"
-        lblSEstado.Size = New System.Drawing.Size(44, 13)
-        lblSEstado.TabIndex = 5
-        lblSEstado.Text = "Estado:"
-        '
-        'Label3
-        '
-        Label3.AutoSize = True
-        Label3.Location = New System.Drawing.Point(10, 196)
-        Label3.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        Label3.Name = "Label3"
-        Label3.Size = New System.Drawing.Size(75, 13)
-        Label3.TabIndex = 30
-        Label3.Text = "Fecha Pedido:"
-        '
-        'lblDiasVencimiento
-        '
-        lblDiasVencimiento.AutoSize = True
-        lblDiasVencimiento.Location = New System.Drawing.Point(648, 150)
-        lblDiasVencimiento.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        lblDiasVencimiento.Name = "lblDiasVencimiento"
-        lblDiasVencimiento.Size = New System.Drawing.Size(121, 13)
-        lblDiasVencimiento.TabIndex = 25
-        lblDiasVencimiento.Text = "Calcular vencimiento a :"
-        lblDiasVencimiento.Visible = False
-        '
-        'Label6
-        '
-        Label6.AutoSize = True
-        Label6.Location = New System.Drawing.Point(739, 169)
-        Label6.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        Label6.Name = "Label6"
-        Label6.Size = New System.Drawing.Size(27, 13)
-        Label6.TabIndex = 27
-        Label6.Text = "Días"
-        Label6.Visible = False
-        '
-        'Label10
-        '
-        Label10.AutoSize = True
-        Label10.Location = New System.Drawing.Point(575, 195)
-        Label10.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        Label10.Name = "Label10"
-        Label10.Size = New System.Drawing.Size(96, 13)
-        Label10.TabIndex = 31
-        Label10.Text = "Inicio Preparación:"
-        '
-        'Label11
-        '
-        Label11.AutoSize = True
-        Label11.Location = New System.Drawing.Point(677, 194)
-        Label11.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        Label11.Name = "Label11"
-        Label11.Size = New System.Drawing.Size(85, 13)
-        Label11.TabIndex = 32
-        Label11.Text = "Fin Preparación:"
         '
         'RoadKilometrajeLabel
         '
@@ -1331,16 +1106,6 @@ Partial Class frmPedido
         ObservacionLabel.TabIndex = 2
         ObservacionLabel.Text = "Observacion:"
         '
-        'lblTipoPedido
-        '
-        lblTipoPedido.AutoSize = True
-        lblTipoPedido.Location = New System.Drawing.Point(10, 74)
-        lblTipoPedido.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        lblTipoPedido.Name = "lblTipoPedido"
-        lblTipoPedido.Size = New System.Drawing.Size(88, 13)
-        lblTipoPedido.TabIndex = 3
-        lblTipoPedido.Text = "Tipo Documento:"
-        '
         'Label5
         '
         Label5.AutoSize = True
@@ -1416,26 +1181,6 @@ Partial Class frmPedido
         Label15.Size = New System.Drawing.Size(97, 16)
         Label15.TabIndex = 6
         Label15.Text = "Fecha Modificó:"
-        '
-        'lblNoPedido
-        '
-        lblNoPedido.AutoSize = True
-        lblNoPedido.Location = New System.Drawing.Point(10, 245)
-        lblNoPedido.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        lblNoPedido.Name = "lblNoPedido"
-        lblNoPedido.Size = New System.Drawing.Size(63, 13)
-        lblNoPedido.TabIndex = 53
-        lblNoPedido.Text = "No. Pedido:"
-        '
-        'lblControlUltimoLote
-        '
-        lblControlUltimoLote.AutoSize = True
-        lblControlUltimoLote.Location = New System.Drawing.Point(439, 150)
-        lblControlUltimoLote.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        lblControlUltimoLote.Name = "lblControlUltimoLote"
-        lblControlUltimoLote.Size = New System.Drawing.Size(61, 13)
-        lblControlUltimoLote.TabIndex = 58
-        lblControlUltimoLote.Text = "Ultimo lote:"
         '
         'Label22
         '
@@ -1591,26 +1336,6 @@ Partial Class frmPedido
         Label37.TabIndex = 0
         Label37.Text = "BL No:"
         '
-        'Label17
-        '
-        Label17.AutoSize = True
-        Label17.Location = New System.Drawing.Point(440, 265)
-        Label17.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        Label17.Name = "Label17"
-        Label17.Size = New System.Drawing.Size(85, 13)
-        Label17.TabIndex = 72
-        Label17.Text = "No. Picking ERP:"
-        '
-        'lblCertificadoCalidad
-        '
-        lblCertificadoCalidad.AutoSize = True
-        lblCertificadoCalidad.Location = New System.Drawing.Point(537, 150)
-        lblCertificadoCalidad.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        lblCertificadoCalidad.Name = "lblCertificadoCalidad"
-        lblCertificadoCalidad.Size = New System.Drawing.Size(46, 13)
-        lblCertificadoCalidad.TabIndex = 74
-        lblCertificadoCalidad.Text = "Calidad:"
-        '
         'Label1
         '
         Label1.AutoSize = True
@@ -1746,7 +1471,6 @@ Partial Class frmPedido
         Label39.Text = "Nit Imp/Export:"
         '
         'Label38
-        'Label16
         '
         Label38.AutoSize = True
         Label38.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -1756,16 +1480,8 @@ Partial Class frmPedido
         Label38.Size = New System.Drawing.Size(102, 18)
         Label38.TabIndex = 139
         Label38.Text = "Clave Aduana:"
-        Label16.AutoSize = True
-        Label16.Location = New System.Drawing.Point(440, 198)
-        Label16.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        Label16.Name = "Label16"
-        Label16.Size = New System.Drawing.Size(100, 13)
-        Label16.TabIndex = 81
-        Label16.Text = "Fecha Preparación:"
         '
         'lblRegimen
-        'lblManufacturaLigera
         '
         lblRegimen.AutoSize = True
         lblRegimen.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -1775,16 +1491,8 @@ Partial Class frmPedido
         lblRegimen.Size = New System.Drawing.Size(71, 18)
         lblRegimen.TabIndex = 141
         lblRegimen.Text = "Régimen:"
-        lblManufacturaLigera.AutoSize = True
-        lblManufacturaLigera.Location = New System.Drawing.Point(440, 242)
-        lblManufacturaLigera.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        lblManufacturaLigera.Name = "lblManufacturaLigera"
-        lblManufacturaLigera.Size = New System.Drawing.Size(127, 13)
-        lblManufacturaLigera.TabIndex = 86
-        lblManufacturaLigera.Text = "Tipo Manufactura Ligera:"
         '
         'lblPesoNeto
-        'Label44
         '
         lblPesoNeto.AutoSize = True
         lblPesoNeto.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -1794,13 +1502,6 @@ Partial Class frmPedido
         lblPesoNeto.Size = New System.Drawing.Size(146, 18)
         lblPesoNeto.TabIndex = 135
         lblPesoNeto.Text = "Total Peso Neto KG:"
-        Label44.AutoSize = True
-        Label44.Location = New System.Drawing.Point(10, 313)
-        Label44.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        Label44.Name = "Label44"
-        Label44.Size = New System.Drawing.Size(72, 13)
-        Label44.TabIndex = 94
-        Label44.Text = "Referencia 2:"
         '
         'Label18
         '
@@ -1923,50 +1624,6 @@ Partial Class frmPedido
         lblFechaDocumento.TabIndex = 119
         lblFechaDocumento.Text = "Fecha Documento:"
         '
-        'Label36
-        '
-        Label36.AutoSize = True
-        Label36.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label36.Location = New System.Drawing.Point(21, 35)
-        Label36.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Label36.Name = "Label36"
-        Label36.Size = New System.Drawing.Size(45, 15)
-        Label36.TabIndex = 125
-        Label36.Text = "No TO:"
-        '
-        'lblPesoNeto
-        '
-        lblPesoNeto.AutoSize = True
-        lblPesoNeto.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblPesoNeto.Location = New System.Drawing.Point(397, 228)
-        lblPesoNeto.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        lblPesoNeto.Name = "lblPesoNeto"
-        lblPesoNeto.Size = New System.Drawing.Size(117, 15)
-        lblPesoNeto.TabIndex = 151
-        lblPesoNeto.Text = "Total Peso Neto KG:"
-        '
-        'lblTotalOtros
-        '
-        lblTotalOtros.AutoSize = True
-        lblTotalOtros.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblTotalOtros.Location = New System.Drawing.Point(393, 108)
-        lblTotalOtros.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        lblTotalOtros.Name = "lblTotalOtros"
-        lblTotalOtros.Size = New System.Drawing.Size(69, 15)
-        lblTotalOtros.TabIndex = 145
-        lblTotalOtros.Text = "Total Otros:"
-        '
-        'lblTotalSeguroUSD
-        '
-        lblTotalSeguroUSD.AutoSize = True
-        lblTotalSeguroUSD.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblTotalSeguroUSD.Location = New System.Drawing.Point(393, 33)
-        lblTotalSeguroUSD.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        lblTotalSeguroUSD.Name = "lblTotalSeguroUSD"
-        lblTotalSeguroUSD.Size = New System.Drawing.Size(109, 15)
-        lblTotalSeguroUSD.TabIndex = 141
-        lblTotalSeguroUSD.Text = "Total Seguro USD:"
-        '
         'Label29
         '
         Label29.AutoSize = True
@@ -2034,7 +1691,6 @@ Partial Class frmPedido
         lblTotalValorAduana.Text = "Total Valor Aduana:"
         '
         'Label36
-        'Label43
         '
         Label36.AutoSize = True
         Label36.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -2044,17 +1700,8 @@ Partial Class frmPedido
         Label36.Size = New System.Drawing.Size(57, 18)
         Label36.TabIndex = 108
         Label36.Text = "No TO:"
-        Label43.AutoSize = True
-        Label43.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label43.Location = New System.Drawing.Point(1064, 174)
-        Label43.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Label43.Name = "Label43"
-        Label43.Size = New System.Drawing.Size(82, 15)
-        Label43.TabIndex = 180
-        Label43.Text = "Total general:"
         '
         'lblNoPedido
-        'Label42
         '
         lblNoPedido.AutoSize = True
         lblNoPedido.Location = New System.Drawing.Point(12, 300)
@@ -2063,17 +1710,8 @@ Partial Class frmPedido
         lblNoPedido.Size = New System.Drawing.Size(136, 16)
         lblNoPedido.TabIndex = 53
         lblNoPedido.Text = "No. Pedido / DocEntry:"
-        Label42.AutoSize = True
-        Label42.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label42.Location = New System.Drawing.Point(1064, 134)
-        Label42.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Label42.Name = "Label42"
-        Label42.Size = New System.Drawing.Size(91, 15)
-        Label42.TabIndex = 177
-        Label42.Text = "Total a liquidar:"
         '
         'lblTipoPedido
-        'Label41
         '
         lblTipoPedido.AutoSize = True
         lblTipoPedido.Location = New System.Drawing.Point(12, 91)
@@ -2082,17 +1720,8 @@ Partial Class frmPedido
         lblTipoPedido.Size = New System.Drawing.Size(105, 16)
         lblTipoPedido.TabIndex = 3
         lblTipoPedido.Text = "Tipo Documento:"
-        Label41.AutoSize = True
-        Label41.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label41.Location = New System.Drawing.Point(1064, 98)
-        Label41.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Label41.Name = "Label41"
-        Label41.Size = New System.Drawing.Size(104, 15)
-        Label41.TabIndex = 175
-        Label41.Text = "Modo Transporte:"
         '
         'lblControlUltimoLote
-        'Label40
         '
         lblControlUltimoLote.AutoSize = True
         lblControlUltimoLote.Location = New System.Drawing.Point(519, 158)
@@ -2101,17 +1730,8 @@ Partial Class frmPedido
         lblControlUltimoLote.Size = New System.Drawing.Size(73, 16)
         lblControlUltimoLote.TabIndex = 58
         lblControlUltimoLote.Text = "Ultimo lote:"
-        Label40.AutoSize = True
-        Label40.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label40.Location = New System.Drawing.Point(1064, 60)
-        Label40.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Label40.Name = "Label40"
-        Label40.Size = New System.Drawing.Size(41, 15)
-        Label40.TabIndex = 173
-        Label40.Text = "Clase:"
         '
         'Label11
-        'Label39
         '
         Label11.AutoSize = True
         Label11.Location = New System.Drawing.Point(797, 213)
@@ -2120,17 +1740,8 @@ Partial Class frmPedido
         Label11.Size = New System.Drawing.Size(101, 16)
         Label11.TabIndex = 32
         Label11.Text = "Fin Preparación:"
-        Label39.AutoSize = True
-        Label39.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label39.Location = New System.Drawing.Point(1064, 26)
-        Label39.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Label39.Name = "Label39"
-        Label39.Size = New System.Drawing.Size(87, 15)
-        Label39.TabIndex = 172
-        Label39.Text = "Nit Imp/Export:"
         '
         'Label10
-        'Label38
         '
         Label10.AutoSize = True
         Label10.Location = New System.Drawing.Point(678, 214)
@@ -2139,17 +1750,8 @@ Partial Class frmPedido
         Label10.Size = New System.Drawing.Size(114, 16)
         Label10.TabIndex = 31
         Label10.Text = "Inicio Preparación:"
-        Label38.AutoSize = True
-        Label38.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label38.Location = New System.Drawing.Point(740, 221)
-        Label38.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Label38.Name = "Label38"
-        Label38.Size = New System.Drawing.Size(85, 15)
-        Label38.TabIndex = 161
-        Label38.Text = "Clave Aduana:"
         '
         'Label3
-        'lblRegimen
         '
         Label3.AutoSize = True
         Label3.Location = New System.Drawing.Point(12, 241)
@@ -2158,17 +1760,8 @@ Partial Class frmPedido
         Label3.Size = New System.Drawing.Size(88, 16)
         Label3.TabIndex = 30
         Label3.Text = "Fecha Pedido:"
-        lblRegimen.AutoSize = True
-        lblRegimen.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblRegimen.Location = New System.Drawing.Point(740, 67)
-        lblRegimen.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        lblRegimen.Name = "lblRegimen"
-        lblRegimen.Size = New System.Drawing.Size(61, 15)
-        lblRegimen.TabIndex = 163
-        lblRegimen.Text = "Régimen:"
         '
         'lblSEstado
-        'Label25
         '
         lblSEstado.AutoSize = True
         lblSEstado.Location = New System.Drawing.Point(12, 57)
@@ -2177,17 +1770,8 @@ Partial Class frmPedido
         lblSEstado.Size = New System.Drawing.Size(50, 16)
         lblSEstado.TabIndex = 5
         lblSEstado.Text = "Estado:"
-        Label25.AutoSize = True
-        Label25.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label25.Location = New System.Drawing.Point(740, 141)
-        Label25.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Label25.Name = "Label25"
-        Label25.Size = New System.Drawing.Size(74, 15)
-        Label25.TabIndex = 167
-        Label25.Text = "Total Bultos:"
         '
         'Label17
-        'lblTotalLineas
         '
         Label17.AutoSize = True
         Label17.Location = New System.Drawing.Point(519, 299)
@@ -2196,17 +1780,8 @@ Partial Class frmPedido
         Label17.Size = New System.Drawing.Size(100, 16)
         Label17.TabIndex = 72
         Label17.Text = "No. Picking ERP:"
-        lblTotalLineas.AutoSize = True
-        lblTotalLineas.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblTotalLineas.Location = New System.Drawing.Point(740, 105)
-        lblTotalLineas.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        lblTotalLineas.Name = "lblTotalLineas"
-        lblTotalLineas.Size = New System.Drawing.Size(77, 15)
-        lblTotalLineas.TabIndex = 165
-        lblTotalLineas.Text = "Total Líneas:"
         '
         'lblMuelle
-        'Label31
         '
         lblMuelle.AutoSize = True
         lblMuelle.Location = New System.Drawing.Point(12, 327)
@@ -2215,17 +1790,8 @@ Partial Class frmPedido
         lblMuelle.Size = New System.Drawing.Size(49, 16)
         lblMuelle.TabIndex = 33
         lblMuelle.Text = "Muelle:"
-        Label31.AutoSize = True
-        Label31.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Label31.Location = New System.Drawing.Point(740, 31)
-        Label31.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        Label31.Name = "Label31"
-        Label31.Size = New System.Drawing.Size(106, 15)
-        Label31.TabIndex = 162
-        Label31.Text = "País Procedencia:"
         '
         'lblPropietario
-        'lblTotalFOBUSD
         '
         lblPropietario.AutoSize = True
         lblPropietario.Location = New System.Drawing.Point(12, 180)
@@ -2234,14 +1800,6 @@ Partial Class frmPedido
         lblPropietario.Size = New System.Drawing.Size(74, 16)
         lblPropietario.TabIndex = 15
         lblPropietario.Text = "Propietario:"
-        lblTotalFOBUSD.AutoSize = True
-        lblTotalFOBUSD.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        lblTotalFOBUSD.Location = New System.Drawing.Point(740, 181)
-        lblTotalFOBUSD.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
-        lblTotalFOBUSD.Name = "lblTotalFOBUSD"
-        lblTotalFOBUSD.Size = New System.Drawing.Size(93, 15)
-        lblTotalFOBUSD.TabIndex = 169
-        lblTotalFOBUSD.Text = "Total FOB USD:"
         '
         'lblCertificadoCalidad
         '
@@ -2344,16 +1902,8 @@ Partial Class frmPedido
         Label45.Size = New System.Drawing.Size(118, 16)
         Label45.TabIndex = 103
         Label45.Text = "Guía de transporte:"
-        Me.Label45.AutoSize = True
-        Me.Label45.Location = New System.Drawing.Point(777, 153)
-        Me.Label45.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        Me.Label45.Name = "Label45"
-        Me.Label45.Size = New System.Drawing.Size(82, 13)
-        Me.Label45.TabIndex = 101
-        Me.Label45.Text = "Es exportación:"
         '
         'lblPiloto
-        'lblBodegaDestino
         '
         lblPiloto.AutoSize = True
         lblPiloto.Location = New System.Drawing.Point(519, 410)
@@ -2362,16 +1912,8 @@ Partial Class frmPedido
         lblPiloto.Size = New System.Drawing.Size(106, 16)
         lblPiloto.TabIndex = 107
         lblPiloto.Text = "Piloto transporte:"
-        Me.lblBodegaDestino.AutoSize = True
-        Me.lblBodegaDestino.Location = New System.Drawing.Point(537, 109)
-        Me.lblBodegaDestino.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        Me.lblBodegaDestino.Name = "lblBodegaDestino"
-        Me.lblBodegaDestino.Size = New System.Drawing.Size(85, 13)
-        Me.lblBodegaDestino.TabIndex = 91
-        Me.lblBodegaDestino.Text = "Bodega destino:"
         '
         'lblEmpresaTransporte
-        'lblBodegaOrigen
         '
         lblEmpresaTransporte.AutoSize = True
         lblEmpresaTransporte.Location = New System.Drawing.Point(519, 383)
@@ -2380,13 +1922,6 @@ Partial Class frmPedido
         lblEmpresaTransporte.Size = New System.Drawing.Size(125, 16)
         lblEmpresaTransporte.TabIndex = 105
         lblEmpresaTransporte.Text = "Empresa transporte:"
-        Me.lblBodegaOrigen.AutoSize = True
-        Me.lblBodegaOrigen.Location = New System.Drawing.Point(439, 109)
-        Me.lblBodegaOrigen.Margin = New System.Windows.Forms.Padding(5, 0, 5, 0)
-        Me.lblBodegaOrigen.Name = "lblBodegaOrigen"
-        Me.lblBodegaOrigen.Size = New System.Drawing.Size(80, 13)
-        Me.lblBodegaOrigen.TabIndex = 89
-        Me.lblBodegaOrigen.Text = "Bodega origen:"
         '
         'RibbonStatusBar
         '
@@ -2705,7 +2240,7 @@ Partial Class frmPedido
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdActualizar)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdEliminar)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEliminarPedido)
-        Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdImprimir, True)
+        Me.RibbonPageGroup1.ItemLinks.Add(Me.cmdImprimir)
         Me.RibbonPageGroup1.ItemLinks.Add(Me.mnuEstadoEnviadoAERP)
         Me.RibbonPageGroup1.Name = "RibbonPageGroup1"
         '
@@ -2794,10 +2329,8 @@ Partial Class frmPedido
         '
         'XtraScrollableControl2
         '
-        Me.XtraScrollableControl2.Controls.Add(Me.GroupControl4)
         Me.XtraScrollableControl2.Controls.Add(Me.GroupBox3)
         Me.XtraScrollableControl2.Controls.Add(Me.GroupControl4)
-        Me.XtraScrollableControl2.Controls.Add(Me.grpInfoPicking)
         Me.XtraScrollableControl2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.XtraScrollableControl2.Location = New System.Drawing.Point(2, 28)
         Me.XtraScrollableControl2.Margin = New System.Windows.Forms.Padding(4)
@@ -2805,123 +2338,10 @@ Partial Class frmPedido
         Me.XtraScrollableControl2.Size = New System.Drawing.Size(1669, 756)
         Me.XtraScrollableControl2.TabIndex = 80
         '
-        'GroupControl4
-        '
-        Me.GroupControl4.Controls.Add(Me.dtpFechaEntrega)
-        Me.GroupControl4.Controls.Add(Me.cmbRoadVendedorDespacho)
-        Me.GroupControl4.Controls.Add(Me.cmbRoadVendedorPedido)
-        Me.GroupControl4.Controls.Add(Me.cmbRoadRutaDespacho)
-        Me.GroupControl4.Controls.Add(Me.cmbRoadRutaPedido)
-        Me.GroupControl4.Controls.Add(lblVendedorDespacho)
-        Me.GroupControl4.Controls.Add(Label1)
-        Me.GroupControl4.Controls.Add(lblRutaDespacho)
-        Me.GroupControl4.Controls.Add(Me.dtpHoraEntregaHasta)
-        Me.GroupControl4.Controls.Add(lblRoadVendedor)
-        Me.GroupControl4.Controls.Add(lblRoadRuta)
-        Me.GroupControl4.Controls.Add(Label4)
-        Me.GroupControl4.Controls.Add(Me.txtDireccionEntrega)
-        Me.GroupControl4.Controls.Add(lblFechaPedido)
-        Me.GroupControl4.Controls.Add(Me.dtpHoraEntregaDesde)
-        Me.GroupControl4.Controls.Add(Label2)
-        Me.GroupControl4.Dock = System.Windows.Forms.DockStyle.Top
-        Me.GroupControl4.Location = New System.Drawing.Point(0, 342)
-        Me.GroupControl4.Name = "GroupControl4"
-        Me.GroupControl4.Size = New System.Drawing.Size(987, 165)
-        Me.GroupControl4.TabIndex = 80
-        Me.GroupControl4.Text = "Parámetros Road"
-        '
-        'dtpFechaEntrega
-        '
-        Me.dtpFechaEntrega.EditValue = New Date(2017, 11, 20, 9, 3, 33, 744)
-        Me.dtpFechaEntrega.Location = New System.Drawing.Point(494, 119)
-        Me.dtpFechaEntrega.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.dtpFechaEntrega.MenuManager = Me.RibbonControl
-        Me.dtpFechaEntrega.Name = "dtpFechaEntrega"
-        Me.dtpFechaEntrega.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.dtpFechaEntrega.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.dtpFechaEntrega.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.dtpFechaEntrega.Size = New System.Drawing.Size(136, 20)
-        Me.dtpFechaEntrega.TabIndex = 62
-        '
-        'cmbRoadVendedorDespacho
-        '
-        Me.cmbRoadVendedorDespacho.Location = New System.Drawing.Point(168, 101)
-        Me.cmbRoadVendedorDespacho.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.cmbRoadVendedorDespacho.MenuManager = Me.RibbonControl
-        Me.cmbRoadVendedorDespacho.Name = "cmbRoadVendedorDespacho"
-        Me.cmbRoadVendedorDespacho.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.cmbRoadVendedorDespacho.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbRoadVendedorDespacho.Properties.NullText = ""
-        Me.cmbRoadVendedorDespacho.Size = New System.Drawing.Size(308, 20)
-        Me.cmbRoadVendedorDespacho.TabIndex = 70
-        '
-        'cmbRoadVendedorPedido
-        '
-        Me.cmbRoadVendedorPedido.Location = New System.Drawing.Point(168, 53)
-        Me.cmbRoadVendedorPedido.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.cmbRoadVendedorPedido.MenuManager = Me.RibbonControl
-        Me.cmbRoadVendedorPedido.Name = "cmbRoadVendedorPedido"
-        Me.cmbRoadVendedorPedido.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.cmbRoadVendedorPedido.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbRoadVendedorPedido.Properties.NullText = ""
-        Me.cmbRoadVendedorPedido.Size = New System.Drawing.Size(308, 20)
-        Me.cmbRoadVendedorPedido.TabIndex = 65
-        '
-        'cmbRoadRutaDespacho
-        '
-        Me.cmbRoadRutaDespacho.Location = New System.Drawing.Point(168, 77)
-        Me.cmbRoadRutaDespacho.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.cmbRoadRutaDespacho.MenuManager = Me.RibbonControl
-        Me.cmbRoadRutaDespacho.Name = "cmbRoadRutaDespacho"
-        Me.cmbRoadRutaDespacho.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.cmbRoadRutaDespacho.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbRoadRutaDespacho.Properties.NullText = ""
-        Me.cmbRoadRutaDespacho.Size = New System.Drawing.Size(308, 20)
-        Me.cmbRoadRutaDespacho.TabIndex = 68
-        '
-        'cmbRoadRutaPedido
-        '
-        Me.cmbRoadRutaPedido.Location = New System.Drawing.Point(168, 29)
-        Me.cmbRoadRutaPedido.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.cmbRoadRutaPedido.MenuManager = Me.RibbonControl
-        Me.cmbRoadRutaPedido.Name = "cmbRoadRutaPedido"
-        Me.cmbRoadRutaPedido.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple
-        Me.cmbRoadRutaPedido.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
-        Me.cmbRoadRutaPedido.Properties.NullText = ""
-        Me.cmbRoadRutaPedido.Size = New System.Drawing.Size(308, 20)
-        Me.cmbRoadRutaPedido.TabIndex = 57
-        '
-        'dtpHoraEntregaHasta
-        '
-        Me.dtpHoraEntregaHasta.Format = System.Windows.Forms.DateTimePickerFormat.Time
-        Me.dtpHoraEntregaHasta.Location = New System.Drawing.Point(758, 119)
-        Me.dtpHoraEntregaHasta.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.dtpHoraEntregaHasta.Name = "dtpHoraEntregaHasta"
-        Me.dtpHoraEntregaHasta.Size = New System.Drawing.Size(97, 21)
-        Me.dtpHoraEntregaHasta.TabIndex = 64
-        '
-        'txtDireccionEntrega
-        '
-        Me.txtDireccionEntrega.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtDireccionEntrega.Location = New System.Drawing.Point(494, 45)
-        Me.txtDireccionEntrega.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.txtDireccionEntrega.Multiline = True
-        Me.txtDireccionEntrega.Name = "txtDireccionEntrega"
-        Me.txtDireccionEntrega.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.txtDireccionEntrega.Size = New System.Drawing.Size(359, 46)
-        Me.txtDireccionEntrega.TabIndex = 71
-        '
-        'dtpHoraEntregaDesde
-        '
-        Me.dtpHoraEntregaDesde.Format = System.Windows.Forms.DateTimePickerFormat.Time
-        Me.dtpHoraEntregaDesde.Location = New System.Drawing.Point(641, 119)
-        Me.dtpHoraEntregaDesde.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.dtpHoraEntregaDesde.Name = "dtpHoraEntregaDesde"
-        Me.dtpHoraEntregaDesde.Size = New System.Drawing.Size(107, 21)
-        Me.dtpHoraEntregaDesde.TabIndex = 63
-        '
         'GroupBox3
         '
+        Me.GroupBox3.Controls.Add(Me.txtEsExportacion)
+        Me.GroupBox3.Controls.Add(Me.Label46)
         Me.GroupBox3.Controls.Add(Me.cmbPiloto)
         Me.GroupBox3.Controls.Add(Me.cmbEmpresaTransporte)
         Me.GroupBox3.Controls.Add(lblPiloto)
@@ -2930,8 +2350,6 @@ Partial Class frmPedido
         Me.GroupBox3.Controls.Add(Label45)
         Me.GroupBox3.Controls.Add(Me.txtGuiaTransporte)
         Me.GroupBox3.Controls.Add(Me.lblprg)
-        Me.GroupBox3.Controls.Add(Me.txtEsExportacion)
-        Me.GroupBox3.Controls.Add(Me.Label45)
         Me.GroupBox3.Controls.Add(Me.lblSociedadSAP)
         Me.GroupBox3.Controls.Add(Me.txtSociedadSAP)
         Me.GroupBox3.Controls.Add(Me.cmbMuelle)
@@ -2947,7 +2365,6 @@ Partial Class frmPedido
         Me.GroupBox3.Controls.Add(Me.grpUltTareaManufactura)
         Me.GroupBox3.Controls.Add(lblManufacturaLigera)
         Me.GroupBox3.Controls.Add(Me.cmbManufacturaLigera)
-        Me.GroupBox3.Controls.Add(Me.lblprg)
         Me.GroupBox3.Controls.Add(Me.lblUbicacionAbastecimiento)
         Me.GroupBox3.Controls.Add(Me.txtIdUbicacionAbastecimiento)
         Me.GroupBox3.Controls.Add(Me.dtpFechaPreparacion)
@@ -3060,7 +2477,6 @@ Partial Class frmPedido
         Me.txtGuiaTransporte.TabIndex = 102
         '
         'lblprg
-        'txtEsExportacion
         '
         Me.lblprg.BackColor = System.Drawing.Color.AliceBlue
         Me.lblprg.Dock = System.Windows.Forms.DockStyle.Bottom
@@ -3070,16 +2486,6 @@ Partial Class frmPedido
         Me.lblprg.TabIndex = 101
         Me.lblprg.Text = ""
         Me.lblprg.Visible = False
-        Me.txtEsExportacion.BackColor = System.Drawing.Color.LightPink
-        Me.txtEsExportacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtEsExportacion.Location = New System.Drawing.Point(776, 170)
-        Me.txtEsExportacion.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.txtEsExportacion.Name = "txtEsExportacion"
-        Me.txtEsExportacion.ReadOnly = True
-        Me.txtEsExportacion.Size = New System.Drawing.Size(88, 21)
-        Me.txtEsExportacion.TabIndex = 102
-        Me.txtEsExportacion.Text = "No"
-        Me.txtEsExportacion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
         'lblSociedadSAP
         '
@@ -3120,7 +2526,6 @@ Partial Class frmPedido
         Me.GridView12.DetailHeight = 682
         Me.GridView12.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
         Me.GridView12.Name = "GridView12"
-        Me.GridView12.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridView12.OptionsSelection.EnableAppearanceFocusedCell = False
         Me.GridView12.OptionsView.ShowAutoFilterRow = True
         Me.GridView12.OptionsView.ShowGroupPanel = False
@@ -3254,21 +2659,6 @@ Partial Class frmPedido
         Me.cmbManufacturaLigera.Size = New System.Drawing.Size(233, 22)
         Me.cmbManufacturaLigera.TabIndex = 87
         '
-        'lblprg
-        '
-        Me.lblprg.BackColor = System.Drawing.Color.AliceBlue
-        Me.lblprg.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.lblprg.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        Me.lblprg.ForeColor = System.Drawing.Color.Black
-        Me.lblprg.Location = New System.Drawing.Point(3, 338)
-        Me.lblprg.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.lblprg.Name = "lblprg"
-        Me.lblprg.ReadOnly = True
-        Me.lblprg.Size = New System.Drawing.Size(981, 2)
-        Me.lblprg.TabIndex = 85
-        Me.lblprg.Text = ""
-        Me.lblprg.Visible = False
-        '
         'lblUbicacionAbastecimiento
         '
         Me.lblUbicacionAbastecimiento.AutoSize = True
@@ -3321,7 +2711,6 @@ Partial Class frmPedido
         Me.GridLookUpEdit1View.DetailHeight = 682
         Me.GridLookUpEdit1View.FocusRectStyle = DevExpress.XtraGrid.Views.Grid.DrawFocusRectStyle.RowFocus
         Me.GridLookUpEdit1View.Name = "GridLookUpEdit1View"
-        Me.GridLookUpEdit1View.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridLookUpEdit1View.OptionsSelection.EnableAppearanceFocusedCell = False
         Me.GridLookUpEdit1View.OptionsView.ShowAutoFilterRow = True
         Me.GridLookUpEdit1View.OptionsView.ShowGroupPanel = False
@@ -3583,7 +2972,6 @@ Partial Class frmPedido
         '
         Me.grpScanPoliza.CaptionImageOptions.Image = CType(resources.GetObject("grpScanPoliza.CaptionImageOptions.Image"), System.Drawing.Image)
         Me.grpScanPoliza.Controls.Add(Me.txtScanPoliza)
-        Me.grpScanPoliza.Controls.Add(Me.GroupBox5)
         Me.grpScanPoliza.Controls.Add(Me.LabelControl2)
         Me.grpScanPoliza.Controls.Add(Me.LabelControl4)
         Me.grpScanPoliza.Dock = System.Windows.Forms.DockStyle.Top
@@ -3593,17 +2981,6 @@ Partial Class frmPedido
         Me.grpScanPoliza.Size = New System.Drawing.Size(484, 102)
         Me.grpScanPoliza.TabIndex = 25
         Me.grpScanPoliza.Text = "Escanéo de Poliza"
-        '
-        'GroupBox5
-        '
-        Me.GroupBox5.Controls.Add(Me.txtScanPoliza)
-        Me.GroupBox5.Controls.Add(Me.LabelControl4)
-        Me.GroupBox5.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupBox5.Location = New System.Drawing.Point(2, 33)
-        Me.GroupBox5.Name = "GroupBox5"
-        Me.GroupBox5.Size = New System.Drawing.Size(322, 105)
-        Me.GroupBox5.TabIndex = 3
-        Me.GroupBox5.TabStop = False
         '
         'txtScanPoliza
         '
@@ -3617,17 +2994,6 @@ Partial Class frmPedido
         Me.txtScanPoliza.Properties.Appearance.Options.UseFont = True
         Me.txtScanPoliza.Size = New System.Drawing.Size(480, 32)
         Me.txtScanPoliza.TabIndex = 1
-        '
-        'LabelControl4
-        '
-        Me.LabelControl4.Appearance.Options.UseFont = True
-        Me.LabelControl4.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None
-        Me.LabelControl4.Location = New System.Drawing.Point(8, 12)
-        Me.LabelControl4.Margin = New System.Windows.Forms.Padding(5, 6, 5, 6)
-        Me.LabelControl4.Name = "LabelControl4"
-        Me.LabelControl4.Size = New System.Drawing.Size(128, 29)
-        Me.LabelControl4.TabIndex = 0
-        Me.LabelControl4.Text = "Escanee Poliza:"
         '
         'LabelControl2
         '
@@ -3856,15 +3222,7 @@ Partial Class frmPedido
         DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
         Me.dgrid.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.dgrid.ColumnHeadersHeight = 40
-        Me.dgrid.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {
-    Me.colNo_Linea, Me.colIdProducto, Me.colIsNew, Me.ColCodProducto, Me.ColNomProducto,
-    Me.colUnidadMedida, Me.colTalla, Me.colColor, Me.colSKU, Me.colIdProductoTallaColor,
-    Me.colPresentacion, Me.colEstadoProducto, Me.colCantidadExistencia, Me.colPesoExistencia,
-    Me.ColCantidad, Me.ColPeso, Me.ColPrecio, Me.ColTotal, Me.ColIdStockRes, Me.colNoDias,
-    Me.ColFechaEspecifica, Me.colNoSerie, Me.colPesoUnitario, Me.CantidadPickeada,
-    Me.CantidadVerificada, Me.Atributo_Variante_1, Me.IdStockEspecifico,
-    Me.colIdProductoBodega, Me.colIdPedidoDet, Me.IdCliente
-})
+        Me.dgrid.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colNo_Linea, Me.colIdProducto, Me.colIsNew, Me.ColCodProducto, Me.ColNomProducto, Me.colUnidadMedida, Me.colTalla, Me.colColor, Me.colSKU, Me.colIdProductoTallaColor, Me.colPresentacion, Me.colEstadoProducto, Me.colCantidadExistencia, Me.colPesoExistencia, Me.ColCantidad, Me.ColPeso, Me.ColPrecio, Me.ColTotal, Me.ColIdStockRes, Me.colNoDias, Me.ColFechaEspecifica, Me.colNoSerie, Me.colPesoUnitario, Me.CantidadPickeada, Me.CantidadVerificada, Me.Atributo_Variante_1, Me.IdStockEspecifico, Me.colIdProductoBodega, Me.colIdPedidoDet, Me.IdCliente})
         Me.dgrid.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.dgrid.EnableHeadersVisualStyles = False
@@ -4569,8 +3927,11 @@ Partial Class frmPedido
         'User_modTextEdit1
         '
         Me.User_modTextEdit1.Enabled = False
+        Me.User_modTextEdit1.Location = New System.Drawing.Point(783, 12)
+        Me.User_modTextEdit1.Margin = New System.Windows.Forms.Padding(4)
         Me.User_modTextEdit1.Name = "User_modTextEdit1"
         Me.User_modTextEdit1.ReadOnly = True
+        Me.User_modTextEdit1.Size = New System.Drawing.Size(285, 23)
         Me.User_modTextEdit1.TabIndex = 3
         '
         'User_agrTextEdit1
@@ -4714,67 +4075,6 @@ Partial Class frmPedido
         Me.XtraScrollableControl1.Size = New System.Drawing.Size(1645, 569)
         Me.XtraScrollableControl1.TabIndex = 56
         '
-        'GroupBox4
-        '
-        Me.GroupBox4.Controls.Add(Me.txtTotal_general)
-        Me.GroupBox4.Controls.Add(Label43)
-        Me.GroupBox4.Controls.Add(Me.txtTotal_liquidar)
-        Me.GroupBox4.Controls.Add(Label42)
-        Me.GroupBox4.Controls.Add(Me.txtMod_transporte)
-        Me.GroupBox4.Controls.Add(Label41)
-        Me.GroupBox4.Controls.Add(Me.txtClase)
-        Me.GroupBox4.Controls.Add(Label40)
-        Me.GroupBox4.Controls.Add(Me.txtNitImpExp)
-        Me.GroupBox4.Controls.Add(Label39)
-        Me.GroupBox4.Controls.Add(Me.txtClaveAduana)
-        Me.GroupBox4.Controls.Add(Label38)
-        Me.GroupBox4.Controls.Add(Me.cmbRegimen)
-        Me.GroupBox4.Controls.Add(lblRegimen)
-        Me.GroupBox4.Controls.Add(Me.txtTotalBulto)
-        Me.GroupBox4.Controls.Add(Me.txtTotalLineas)
-        Me.GroupBox4.Controls.Add(Me.txtTotalFOBUSD)
-        Me.GroupBox4.Controls.Add(Label25)
-        Me.GroupBox4.Controls.Add(lblTotalLineas)
-        Me.GroupBox4.Controls.Add(Label31)
-        Me.GroupBox4.Controls.Add(lblTotalFOBUSD)
-        Me.GroupBox4.Controls.Add(Me.txtPaisProcedencia)
-        Me.GroupBox4.Controls.Add(Me.txtTotalPesoNeto)
-        Me.GroupBox4.Controls.Add(lblPesoNeto)
-        Me.GroupBox4.Controls.Add(Me.txtTotalOtros)
-        Me.GroupBox4.Controls.Add(lblTotalOtros)
-        Me.GroupBox4.Controls.Add(Me.txtValorSeguro)
-        Me.GroupBox4.Controls.Add(Me.txtTipoCambio)
-        Me.GroupBox4.Controls.Add(Me.txtValorFlete)
-        Me.GroupBox4.Controls.Add(Me.txtTotalPesoBruto)
-        Me.GroupBox4.Controls.Add(Me.txtValorAduana)
-        Me.GroupBox4.Controls.Add(lblTotalSeguroUSD)
-        Me.GroupBox4.Controls.Add(Label29)
-        Me.GroupBox4.Controls.Add(lblTotalFleteUSD)
-        Me.GroupBox4.Controls.Add(lblTotalPesoBruto)
-        Me.GroupBox4.Controls.Add(lblTotalValorAduana)
-        Me.GroupBox4.Controls.Add(Me.dtpFechaLlegada)
-        Me.GroupBox4.Controls.Add(Label18)
-        Me.GroupBox4.Controls.Add(Me.dtpFechaAceptacion)
-        Me.GroupBox4.Controls.Add(lblFechaAceptacion)
-        Me.GroupBox4.Controls.Add(lblNoOrden)
-        Me.GroupBox4.Controls.Add(Me.txtNumeroOrden)
-        Me.GroupBox4.Controls.Add(lblTicket)
-        Me.GroupBox4.Controls.Add(Me.txtTicket)
-        Me.GroupBox4.Controls.Add(lblCodigoPoliza)
-        Me.GroupBox4.Controls.Add(Me.txtCodigoPoliza)
-        Me.GroupBox4.Controls.Add(Me.dtFechaPoliza)
-        Me.GroupBox4.Controls.Add(lblNumeroDUA)
-        Me.GroupBox4.Controls.Add(lblFechaDocumento)
-        Me.GroupBox4.Controls.Add(Me.txtNumeroDUA)
-        Me.GroupBox4.Controls.Add(Me.txtNoPoliza)
-        Me.GroupBox4.Controls.Add(Label36)
-        Me.GroupBox4.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.GroupBox4.Location = New System.Drawing.Point(0, 0)
-        Me.GroupBox4.Name = "GroupBox4"
-        Me.GroupBox4.Size = New System.Drawing.Size(1297, 354)
-        Me.GroupBox4.TabIndex = 0
-        Me.GroupBox4.TabStop = False
-        '
         'txtTotal_general
         '
         Me.txtTotal_general.Location = New System.Drawing.Point(1324, 174)
@@ -4848,51 +4148,6 @@ Partial Class frmPedido
         Me.cmbRegimen.Size = New System.Drawing.Size(169, 22)
         Me.cmbRegimen.TabIndex = 142
         '
-        'txtTotalBulto
-        '
-        Me.txtTotalBulto.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtTotalBulto.Location = New System.Drawing.Point(858, 133)
-        Me.txtTotalBulto.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.txtTotalBulto.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
-        Me.txtTotalBulto.Minimum = New Decimal(New Integer() {1316134911, 2328, 0, -2147483648})
-        Me.txtTotalBulto.Name = "txtTotalBulto"
-        Me.txtTotalBulto.Size = New System.Drawing.Size(169, 21)
-        Me.txtTotalBulto.TabIndex = 168
-        '
-        'txtTotalLineas
-        '
-        Me.txtTotalLineas.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtTotalLineas.Location = New System.Drawing.Point(858, 99)
-        Me.txtTotalLineas.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.txtTotalLineas.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
-        Me.txtTotalLineas.Minimum = New Decimal(New Integer() {1316134911, 2328, 0, -2147483648})
-        Me.txtTotalLineas.Name = "txtTotalLineas"
-        Me.txtTotalLineas.Size = New System.Drawing.Size(169, 21)
-        Me.txtTotalLineas.TabIndex = 166
-        '
-        'txtTotalFOBUSD
-        '
-        Me.txtTotalFOBUSD.BackColor = System.Drawing.Color.PowderBlue
-        Me.txtTotalFOBUSD.DecimalPlaces = 6
-        Me.txtTotalFOBUSD.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtTotalFOBUSD.Location = New System.Drawing.Point(858, 177)
-        Me.txtTotalFOBUSD.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.txtTotalFOBUSD.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
-        Me.txtTotalFOBUSD.Minimum = New Decimal(New Integer() {1316134911, 2328, 0, -2147483648})
-        Me.txtTotalFOBUSD.Name = "txtTotalFOBUSD"
-        Me.txtTotalFOBUSD.Size = New System.Drawing.Size(169, 21)
-        Me.txtTotalFOBUSD.TabIndex = 170
-        '
-        'txtPaisProcedencia
-        '
-        Me.txtPaisProcedencia.Location = New System.Drawing.Point(858, 25)
-        Me.txtPaisProcedencia.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.txtPaisProcedencia.Name = "txtPaisProcedencia"
-        Me.txtPaisProcedencia.Properties.Appearance.BackColor = System.Drawing.Color.PowderBlue
-        Me.txtPaisProcedencia.Properties.Appearance.Options.UseBackColor = True
-        Me.txtPaisProcedencia.Size = New System.Drawing.Size(169, 20)
-        Me.txtPaisProcedencia.TabIndex = 160
-        '
         'txtTotalPesoNeto
         '
         Me.txtTotalPesoNeto.DecimalPlaces = 6
@@ -4902,91 +4157,13 @@ Partial Class frmPedido
         Me.txtTotalPesoNeto.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
         Me.txtTotalPesoNeto.Minimum = New Decimal(New Integer() {1316134911, 2328, 0, -2147483648})
         Me.txtTotalPesoNeto.Name = "txtTotalPesoNeto"
-        Me.txtTotalPesoNeto.Size = New System.Drawing.Size(174, 21)
-        Me.txtTotalPesoNeto.TabIndex = 152
-        '
-        'txtTotalOtros
-        '
-        Me.txtTotalOtros.BackColor = System.Drawing.Color.PowderBlue
-        Me.txtTotalOtros.DecimalPlaces = 6
-        Me.txtTotalOtros.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtTotalOtros.Location = New System.Drawing.Point(529, 99)
-        Me.txtTotalOtros.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.txtTotalOtros.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
-        Me.txtTotalOtros.Minimum = New Decimal(New Integer() {1316134911, 2328, 0, -2147483648})
-        Me.txtTotalOtros.Name = "txtTotalOtros"
-        Me.txtTotalOtros.Size = New System.Drawing.Size(174, 21)
-        Me.txtTotalOtros.TabIndex = 146
-        '
-        'txtValorSeguro
-        '
-        Me.txtValorSeguro.BackColor = System.Drawing.Color.PowderBlue
-        Me.txtValorSeguro.DecimalPlaces = 6
-        Me.txtValorSeguro.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtValorSeguro.Location = New System.Drawing.Point(529, 24)
-        Me.txtValorSeguro.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.txtValorSeguro.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
-        Me.txtValorSeguro.Minimum = New Decimal(New Integer() {1316134911, 2328, 0, -2147483648})
-        Me.txtValorSeguro.Name = "txtValorSeguro"
-        Me.txtValorSeguro.Size = New System.Drawing.Size(174, 21)
-        Me.txtValorSeguro.TabIndex = 142
-        '
-        'txtTipoCambio
-        '
-        Me.txtTipoCambio.BackColor = System.Drawing.Color.PowderBlue
-        Me.txtTipoCambio.DecimalPlaces = 6
-        Me.txtTipoCambio.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtTipoCambio.Location = New System.Drawing.Point(529, 259)
-        Me.txtTipoCambio.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.txtTipoCambio.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
-        Me.txtTipoCambio.Minimum = New Decimal(New Integer() {1316134911, 2328, 0, -2147483648})
-        Me.txtTipoCambio.Name = "txtTipoCambio"
-        Me.txtTipoCambio.Size = New System.Drawing.Size(174, 21)
-        Me.txtTipoCambio.TabIndex = 154
-        '
-        'txtValorFlete
-        '
-        Me.txtValorFlete.BackColor = System.Drawing.Color.PowderBlue
-        Me.txtValorFlete.DecimalPlaces = 6
-        Me.txtValorFlete.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtValorFlete.Location = New System.Drawing.Point(529, 138)
-        Me.txtValorFlete.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.txtValorFlete.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
-        Me.txtValorFlete.Minimum = New Decimal(New Integer() {1316134911, 2328, 0, -2147483648})
-        Me.txtValorFlete.Name = "txtValorFlete"
-        Me.txtValorFlete.Size = New System.Drawing.Size(174, 21)
-        Me.txtValorFlete.TabIndex = 148
-        '
-        'txtTotalPesoBruto
-        '
-        Me.txtTotalPesoBruto.BackColor = System.Drawing.Color.PowderBlue
-        Me.txtTotalPesoBruto.DecimalPlaces = 6
-        Me.txtTotalPesoBruto.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtTotalPesoBruto.Location = New System.Drawing.Point(529, 179)
-        Me.txtTotalPesoBruto.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.txtTotalPesoBruto.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
-        Me.txtTotalPesoBruto.Minimum = New Decimal(New Integer() {1316134911, 2328, 0, -2147483648})
-        Me.txtTotalPesoBruto.Name = "txtTotalPesoBruto"
-        Me.txtTotalPesoBruto.Size = New System.Drawing.Size(174, 21)
-        Me.txtTotalPesoBruto.TabIndex = 150
-        '
-        'txtValorAduana
-        '
-        Me.txtValorAduana.BackColor = System.Drawing.Color.PowderBlue
-        Me.txtValorAduana.DecimalPlaces = 6
-        Me.txtValorAduana.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtValorAduana.Location = New System.Drawing.Point(529, 60)
-        Me.txtValorAduana.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
-        Me.txtValorAduana.Maximum = New Decimal(New Integer() {1215752191, 23, 0, 0})
-        Me.txtValorAduana.Minimum = New Decimal(New Integer() {1316134911, 2328, 0, -2147483648})
-        Me.txtValorAduana.Name = "txtValorAduana"
-        Me.txtValorAduana.Size = New System.Drawing.Size(174, 21)
-        Me.txtValorAduana.TabIndex = 144
+        Me.txtTotalPesoNeto.Size = New System.Drawing.Size(174, 24)
+        Me.txtTotalPesoNeto.TabIndex = 136
         '
         'dtpFechaLlegada
         '
         Me.dtpFechaLlegada.EditValue = New Date(2017, 11, 20, 10, 36, 51, 115)
-        Me.dtpFechaLlegada.Location = New System.Drawing.Point(150, 303)
+        Me.dtpFechaLlegada.Location = New System.Drawing.Point(148, 283)
         Me.dtpFechaLlegada.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
         Me.dtpFechaLlegada.Name = "dtpFechaLlegada"
         Me.dtpFechaLlegada.Properties.Appearance.BackColor = System.Drawing.Color.PowderBlue
@@ -5227,7 +4404,6 @@ Partial Class frmPedido
         Me.gvdetallepoliza.DetailHeight = 682
         Me.gvdetallepoliza.GridControl = Me.dgridDetallePoliza
         Me.gvdetallepoliza.Name = "gvdetallepoliza"
-        Me.gvdetallepoliza.OptionsEditForm.PopupEditFormWidth = 686
         Me.gvdetallepoliza.OptionsView.ColumnAutoWidth = False
         '
         'GrpEmbarque
@@ -5513,7 +4689,6 @@ Partial Class frmPedido
         Me.GridView6.Name = "GridView6"
         Me.GridView6.OptionsBehavior.Editable = False
         Me.GridView6.OptionsBehavior.ReadOnly = True
-        Me.GridView6.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridView6.OptionsView.ColumnAutoWidth = False
         Me.GridView6.OptionsView.ShowAutoFilterRow = True
         '
@@ -5568,7 +4743,6 @@ Partial Class frmPedido
         Me.gvDetallePicking.GridControl = Me.grdPicking
         Me.gvDetallePicking.Name = "gvDetallePicking"
         Me.gvDetallePicking.OptionsBehavior.ReadOnly = True
-        Me.gvDetallePicking.OptionsEditForm.PopupEditFormWidth = 686
         Me.gvDetallePicking.OptionsView.ShowAutoFilterRow = True
         Me.gvDetallePicking.OptionsView.ShowFooter = True
         '
@@ -5713,7 +4887,6 @@ Partial Class frmPedido
         Me.GridView7.GridControl = Me.grdDespacho
         Me.GridView7.Name = "GridView7"
         Me.GridView7.OptionsBehavior.ReadOnly = True
-        Me.GridView7.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridView7.OptionsView.ShowAutoFilterRow = True
         '
         'colIdDespachoEnc
@@ -5807,7 +4980,6 @@ Partial Class frmPedido
         Me.GridView8.DetailHeight = 682
         Me.GridView8.GridControl = Me.grdPedTras
         Me.GridView8.Name = "GridView8"
-        Me.GridView8.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridView8.OptionsView.ShowAutoFilterRow = True
         '
         'tabComposicion
@@ -5846,7 +5018,6 @@ Partial Class frmPedido
         Me.grdVComp.DetailHeight = 682
         Me.grdVComp.GridControl = Me.grdComposicion
         Me.grdVComp.Name = "grdVComp"
-        Me.grdVComp.OptionsEditForm.PopupEditFormWidth = 686
         Me.grdVComp.OptionsView.ShowAutoFilterRow = True
         Me.grdVComp.OptionsView.ShowFooter = True
         '
@@ -5877,7 +5048,6 @@ Partial Class frmPedido
         Me.gvDetalleServicios.DetailHeight = 682
         Me.gvDetalleServicios.GridControl = Me.dgridServiciosAsociados
         Me.gvDetalleServicios.Name = "gvDetalleServicios"
-        Me.gvDetalleServicios.OptionsEditForm.PopupEditFormWidth = 686
         '
         'cmbAcuerdoComercial
         '
@@ -5934,7 +5104,6 @@ Partial Class frmPedido
         Me.gvLogStockLiberado.DetailHeight = 682
         Me.gvLogStockLiberado.GridControl = Me.dgridStockLiberado
         Me.gvLogStockLiberado.Name = "gvLogStockLiberado"
-        Me.gvLogStockLiberado.OptionsEditForm.PopupEditFormWidth = 686
         Me.gvLogStockLiberado.OptionsView.ColumnAutoWidth = False
         Me.gvLogStockLiberado.OptionsView.ShowAutoFilterRow = True
         Me.gvLogStockLiberado.OptionsView.ShowFooter = True
@@ -5967,7 +5136,6 @@ Partial Class frmPedido
         Me.GridView5.Name = "GridView5"
         Me.GridView5.OptionsBehavior.Editable = False
         Me.GridView5.OptionsBehavior.ReadOnly = True
-        Me.GridView5.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridView5.OptionsView.ColumnAutoWidth = False
         Me.GridView5.OptionsView.ShowAutoFilterRow = True
         '
@@ -5999,7 +5167,6 @@ Partial Class frmPedido
         Me.GridView9.Name = "GridView9"
         Me.GridView9.OptionsBehavior.Editable = False
         Me.GridView9.OptionsBehavior.ReadOnly = True
-        Me.GridView9.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridView9.OptionsView.ColumnAutoWidth = False
         Me.GridView9.OptionsView.ShowAutoFilterRow = True
         '
@@ -6052,11 +5219,9 @@ Partial Class frmPedido
         '
         'GridViewImg
         '
-        Me.GridViewImg.DetailHeight = 284
         Me.GridViewImg.GridControl = Me.GrdImagen
         Me.GridViewImg.Name = "GridViewImg"
         Me.GridViewImg.OptionsBehavior.Editable = False
-        Me.GridViewImg.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridViewImg.OptionsFind.AlwaysVisible = True
         Me.GridViewImg.OptionsView.ShowGroupPanel = False
         '
@@ -6148,7 +5313,6 @@ Partial Class frmPedido
         Me.GridView10.DetailHeight = 682
         Me.GridView10.GridControl = Me.dgrdLogReserva
         Me.GridView10.Name = "GridView10"
-        Me.GridView10.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridView10.OptionsView.ColumnAutoWidth = False
         Me.GridView10.OptionsView.ShowAutoFilterRow = True
         Me.GridView10.OptionsView.ShowFooter = True
@@ -6179,7 +5343,6 @@ Partial Class frmPedido
         Me.GridView11.DetailHeight = 682
         Me.GridView11.GridControl = Me.dgridExistencias
         Me.GridView11.Name = "GridView11"
-        Me.GridView11.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridView11.OptionsView.ColumnAutoWidth = False
         Me.GridView11.OptionsView.ShowAutoFilterRow = True
         Me.GridView11.OptionsView.ShowFooter = True
@@ -6201,6 +5364,29 @@ Partial Class frmPedido
         '
         Me.WorkspaceManager1.TargetControl = Me
         Me.WorkspaceManager1.TransitionType = PushTransition1
+        '
+        'txtEsExportacion
+        '
+        Me.txtEsExportacion.BackColor = System.Drawing.Color.LightPink
+        Me.txtEsExportacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtEsExportacion.Location = New System.Drawing.Point(905, 181)
+        Me.txtEsExportacion.Margin = New System.Windows.Forms.Padding(6, 7, 6, 7)
+        Me.txtEsExportacion.Name = "txtEsExportacion"
+        Me.txtEsExportacion.ReadOnly = True
+        Me.txtEsExportacion.Size = New System.Drawing.Size(102, 23)
+        Me.txtEsExportacion.TabIndex = 111
+        Me.txtEsExportacion.Text = "No"
+        Me.txtEsExportacion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'Label46
+        '
+        Me.Label46.AutoSize = True
+        Me.Label46.Location = New System.Drawing.Point(906, 160)
+        Me.Label46.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
+        Me.Label46.Name = "Label46"
+        Me.Label46.Size = New System.Drawing.Size(95, 16)
+        Me.Label46.TabIndex = 110
+        Me.Label46.Text = "Es exportación:"
         '
         'frmPedido
         '
@@ -6226,15 +5412,6 @@ Partial Class frmPedido
         CType(Me.GrpProducto, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GrpProducto.ResumeLayout(False)
         Me.XtraScrollableControl2.ResumeLayout(False)
-        CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.GroupControl4.ResumeLayout(False)
-        Me.GroupControl4.PerformLayout()
-        CType(Me.dtpFechaEntrega.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.dtpFechaEntrega.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.cmbRoadVendedorDespacho.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.cmbRoadVendedorPedido.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.cmbRoadRutaDespacho.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.cmbRoadRutaPedido.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox3.ResumeLayout(False)
         Me.GroupBox3.PerformLayout()
         CType(Me.cmbPiloto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6270,7 +5447,6 @@ Partial Class frmPedido
         CType(Me.grpScanPoliza, System.ComponentModel.ISupportInitialize).EndInit()
         Me.grpScanPoliza.ResumeLayout(False)
         Me.grpScanPoliza.PerformLayout()
-        Me.GroupBox5.ResumeLayout(False)
         CType(Me.txtScanPoliza.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.GroupControl4, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupControl4.ResumeLayout(False)
@@ -6326,8 +5502,6 @@ Partial Class frmPedido
         Me.GrpPoliza.ResumeLayout(False)
         Me.XtraScrollableControl1.ResumeLayout(False)
         Me.XtraScrollableControl1.PerformLayout()
-        Me.GroupBox4.ResumeLayout(False)
-        Me.GroupBox4.PerformLayout()
         CType(Me.txtTotal_general.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtTotal_liquidar.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtMod_transporte.Properties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6335,17 +5509,7 @@ Partial Class frmPedido
         CType(Me.txtNitImpExp.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtClaveAduana.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.cmbRegimen.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtTotalBulto, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtTotalLineas, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtTotalFOBUSD, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtPaisProcedencia.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.txtTotalPesoNeto, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtTotalOtros, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtValorSeguro, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtTipoCambio, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtValorFlete, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtTotalPesoBruto, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.txtValorAduana, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.dtpFechaLlegada.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.dtpFechaLlegada.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.dtpFechaAceptacion.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).EndInit()
@@ -6486,14 +5650,8 @@ Partial Class frmPedido
     Friend WithEvents GridView3 As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents GridView4 As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents GrpProducto As DevExpress.XtraEditors.GroupControl
-    Friend WithEvents txtNoDocumento As System.Windows.Forms.TextBox
     Friend WithEvents grpDetallePed As DevExpress.XtraEditors.GroupControl
     Friend WithEvents lnkAgregarProducto As System.Windows.Forms.LinkLabel
-    Friend WithEvents lnkCliente As System.Windows.Forms.LinkLabel
-    Friend WithEvents dtpHoraFinPreparacion As System.Windows.Forms.DateTimePicker
-    Friend WithEvents dtpHoraInicioPreparacion As System.Windows.Forms.DateTimePicker
-    Friend WithEvents lblEstado As System.Windows.Forms.Label
-    Friend WithEvents txtDiasVencimiento As System.Windows.Forms.NumericUpDown
     Friend WithEvents ObservacionTextEdit As DevExpress.XtraEditors.TextEdit
     Friend WithEvents RoadIdFacturacionSpinEdit As DevExpress.XtraEditors.SpinEdit
     Friend WithEvents RoadIdDespachoSpinEdit As DevExpress.XtraEditors.SpinEdit
@@ -6555,10 +5713,6 @@ Partial Class frmPedido
     Friend WithEvents User_modTextEdit1 As TextBox
     Friend WithEvents Fec_modDateEdit1 As DevExpress.XtraEditors.DateEdit
     Friend WithEvents Fec_agrDateEdit1 As DevExpress.XtraEditors.DateEdit
-    Friend WithEvents cmbBodega As DevExpress.XtraEditors.LookUpEdit
-    Friend WithEvents cmbTipoPedido As DevExpress.XtraEditors.LookUpEdit
-    Friend WithEvents dtpFechaPedido As DevExpress.XtraEditors.DateEdit
-    Friend WithEvents lblIdPedidoEnc As TextBox
     Friend WithEvents mnuEstadoEnviadoAERP As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents tpStock_Reservado As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents PanelControl1 As DevExpress.XtraEditors.PanelControl
@@ -6583,7 +5737,6 @@ Partial Class frmPedido
     Friend WithEvents BarButtonItem5 As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuLiberarNoPickeado As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuReservaStockManual As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents lblNoPicking As Label
     Friend WithEvents tpDespachos As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents PanelControl2 As DevExpress.XtraEditors.PanelControl
     Friend WithEvents grdDespacho As DevExpress.XtraGrid.GridControl
@@ -6597,23 +5750,16 @@ Partial Class frmPedido
     Friend WithEvents GridColumn10 As DevExpress.XtraGrid.Columns.GridColumn
     Friend WithEvents colIdPedidoEnc As DevExpress.XtraGrid.Columns.GridColumn
     Friend WithEvents DetalleBindingSource1 As BindingSource
-    Friend WithEvents txtIdPicking As LinkLabel
     Friend WithEvents mnuPendiente As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents txtIdDespacho As LinkLabel
-    Friend WithEvents lblUltDespacho As Label
     Friend WithEvents AutoHideContainer1 As DevExpress.XtraBars.Docking.AutoHideContainer
-    Friend WithEvents txtUbicacionTransito As TextBox
-    Friend WithEvents txtControlUltimoLote As TextBox
     Friend WithEvents tabPedidoERP As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents PanelControl3 As DevExpress.XtraEditors.PanelControl
     Friend WithEvents grdPedTras As DevExpress.XtraGrid.GridControl
     Friend WithEvents GridView8 As DevExpress.XtraGrid.Views.Grid.GridView
-    Friend WithEvents lblUbicTransito As Label
     Friend WithEvents tabComposicion As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents PanelControl4 As DevExpress.XtraEditors.PanelControl
     Friend WithEvents grdComposicion As DevExpress.XtraGrid.GridControl
     Friend WithEvents grdVComp As DevExpress.XtraGrid.Views.Grid.GridView
-    Friend WithEvents lcmbPropietario As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents tabPoliza As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
@@ -6652,15 +5798,7 @@ Partial Class frmPedido
     Friend WithEvents chkVerificar As DevExpress.XtraBars.BarToggleSwitchItem
     Friend WithEvents RibbonPageGroup6 As DevExpress.XtraBars.Ribbon.RibbonPageGroup
     Friend WithEvents BarDockingMenuItem1 As DevExpress.XtraBars.BarDockingMenuItem
-    Friend WithEvents grpInfoPicking As DevExpress.XtraEditors.GroupControl
     Friend WithEvents WorkspaceManager1 As DevExpress.Utils.WorkspaceManager
-    Friend WithEvents grpScanPoliza As DevExpress.XtraEditors.GroupControl
-    Friend WithEvents LabelControl4 As DevExpress.XtraEditors.LabelControl
-    Friend WithEvents txtScanPoliza As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents LabelControl2 As DevExpress.XtraEditors.LabelControl
-    Friend WithEvents txtReferencia As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents cmbDocumentoRef As DevExpress.XtraEditors.LookUpEdit
-    Friend WithEvents lblDocumentoRef As DevExpress.XtraEditors.LabelControl
     Friend WithEvents XtraScrollableControl1 As DevExpress.XtraEditors.XtraScrollableControl
     Friend WithEvents mnuDespachado As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuLiberarStockTodoElPedido As DevExpress.XtraBars.BarButtonItem
@@ -6670,42 +5808,10 @@ Partial Class frmPedido
     Friend WithEvents dgridStockLiberado As DevExpress.XtraGrid.GridControl
     Friend WithEvents gvLogStockLiberado As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents mnuEliminarPedido As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents txtNoPickingERP As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents txtCertificadoCalidad As TextBox
-    Friend WithEvents GroupControl3 As DevExpress.XtraEditors.GroupControl
-    Friend WithEvents txtObservacion As TextBox
     Friend WithEvents tsmiImprimirStockRes As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents tabLogMI3 As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents dgridLogMI3 As DevExpress.XtraGrid.GridControl
     Friend WithEvents GridView5 As DevExpress.XtraGrid.Views.Grid.GridView
-    Friend WithEvents colNo_Linea As DataGridViewTextBoxColumn
-    Friend WithEvents colIdProducto As DataGridViewTextBoxColumn
-    Friend WithEvents colIsNew As DataGridViewTextBoxColumn
-    Friend WithEvents ColCodProducto As DataGridViewTextBoxColumn
-    Friend WithEvents ColNomProducto As DataGridViewTextBoxColumn
-    Friend WithEvents colUnidadMedida As DataGridViewTextBoxColumn
-    Friend WithEvents colPresentacion As DataGridViewComboBoxColumn
-    Friend WithEvents colEstadoProducto As DataGridViewComboBoxColumn
-    Friend WithEvents colCantidadExistencia As DataGridViewTextBoxColumn
-    Friend WithEvents colPesoExistencia As DataGridViewTextBoxColumn
-    Friend WithEvents ColCantidad As DataGridViewTextBoxColumn
-    Friend WithEvents ColPeso As DataGridViewTextBoxColumn
-    Friend WithEvents ColPrecio As DataGridViewTextBoxColumn
-    Friend WithEvents ColTotal As DataGridViewTextBoxColumn
-    Friend WithEvents ColIdStockRes As DataGridViewTextBoxColumn
-    Friend WithEvents colNoDias As DataGridViewTextBoxColumn
-    Friend WithEvents ColFechaEspecifica As DataGridViewCheckBoxColumn
-    Friend WithEvents colNoSerie As DataGridViewTextBoxColumn
-    Friend WithEvents colPesoUnitario As DataGridViewTextBoxColumn
-    Friend WithEvents CantidadPickeada As DataGridViewTextBoxColumn
-    Friend WithEvents CantidadVerificada As DataGridViewTextBoxColumn
-    Friend WithEvents Atributo_Variante_1 As DataGridViewTextBoxColumn
-    Friend WithEvents IdStockEspecifico As DataGridViewTextBoxColumn
-    Friend WithEvents colIdProductoBodega As DataGridViewTextBoxColumn
-    Friend WithEvents colIdPedidoDet As DataGridViewTextBoxColumn
-    Friend WithEvents IdCliente As DataGridViewComboBoxColumn
-    Friend WithEvents txtIdCliente As DevExpress.XtraEditors.GridLookUpEdit
-    Friend WithEvents GridLookUpEdit1View As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents chkRequiereTarimas As DevExpress.XtraBars.BarToggleSwitchItem
     Friend WithEvents tabHojaVerificacion As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents dgridVerificacion As DevExpress.XtraGrid.GridControl
@@ -6722,11 +5828,7 @@ Partial Class frmPedido
     Friend WithEvents dtpHoraEntregaHasta As DateTimePicker
     Friend WithEvents txtDireccionEntrega As TextBox
     Friend WithEvents dtpHoraEntregaDesde As DateTimePicker
-    Friend WithEvents dtpFechaPreparacion As DevExpress.XtraEditors.DateEdit
     Friend WithEvents AutoHideContainer2 As DevExpress.XtraBars.Docking.AutoHideContainer
-    Friend WithEvents lblUbicacionAbastecimiento As Label
-    Friend WithEvents txtIdUbicacionAbastecimiento As TextBox
-    Friend WithEvents GroupBox3 As GroupBox
     Friend WithEvents chkFotografiaVerificacion As DevExpress.XtraBars.BarToggleSwitchItem
     Friend WithEvents tabImagenes As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents GrpImagen As DevExpress.XtraEditors.GroupControl
@@ -6739,33 +5841,9 @@ Partial Class frmPedido
     Friend WithEvents Panel3 As Panel
     Friend WithEvents PicImg As PictureBox
     Friend WithEvents Label24 As Label
-    Friend WithEvents lblprg As RichTextBox
     Friend WithEvents tabLogReserva As DevExpress.XtraTab.XtraTabPage
     Friend WithEvents dgrdLogReserva As DevExpress.XtraGrid.GridControl
     Friend WithEvents GridView10 As DevExpress.XtraGrid.Views.Grid.GridView
-    Friend WithEvents cmbManufacturaLigera As DevExpress.XtraEditors.LookUpEdit
-    Friend WithEvents grpUltTareaManufactura As DevExpress.XtraEditors.GroupControl
-    Friend WithEvents txtIdManufactura As LinkLabel
-    Friend WithEvents txtBodegaDestino As TextBox
-    Friend WithEvents txtBodegaOrigen As TextBox
-    Friend WithEvents lblBodegaDestino As Label
-    Friend WithEvents lblBodegaOrigen As Label
-    Friend WithEvents txtReferencia2 As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents cmbMotivoDevolucion As DevExpress.XtraEditors.LookUpEdit
-    Friend WithEvents lblMotivoDevolucion As DevExpress.XtraEditors.LabelControl
-    Friend WithEvents tabExistencias As DevExpress.XtraTab.XtraTabPage
-    Friend WithEvents dgridExistencias As DevExpress.XtraGrid.GridControl
-    Friend WithEvents GridView11 As DevExpress.XtraGrid.Views.Grid.GridView
-    Friend WithEvents mnuRevertirDespacho As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents txtIdUbicacionMuelle As TextBox
-    Friend WithEvents cmbMuelle As DevExpress.XtraEditors.GridLookUpEdit
-    Friend WithEvents GridView12 As DevExpress.XtraGrid.Views.Grid.GridView
-    Friend WithEvents mnuImprimirGridDocumentoERP As DevExpress.XtraBars.BarButtonItem
-    Friend WithEvents lblSociedadSAP As Label
-    Friend WithEvents txtSociedadSAP As TextBox
-    Friend WithEvents txtEsExportacion As TextBox
-    Friend WithEvents Label45 As Label
-    Friend WithEvents GroupBox4 As GroupBox
     Friend WithEvents txtTotal_general As DevExpress.XtraEditors.TextEdit
     Friend WithEvents txtTotal_liquidar As DevExpress.XtraEditors.TextEdit
     Friend WithEvents txtMod_transporte As DevExpress.XtraEditors.TextEdit
@@ -6781,10 +5859,6 @@ Partial Class frmPedido
     Friend WithEvents txtTicket As DevExpress.XtraEditors.TextEdit
     Friend WithEvents txtCodigoPoliza As DevExpress.XtraEditors.TextEdit
     Friend WithEvents dtFechaPoliza As DevExpress.XtraEditors.DateEdit
-    Friend WithEvents txtNumeroDUA As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents txtNoPoliza As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents txtTotalPesoNeto As NumericUpDown
-    Friend WithEvents txtTotalOtros As NumericUpDown
     Friend WithEvents txtValorSeguro As NumericUpDown
     Friend WithEvents txtTotalBulto As NumericUpDown
     Friend WithEvents txtTotalLineas As NumericUpDown
@@ -6793,16 +5867,6 @@ Partial Class frmPedido
     Friend WithEvents txtValorFlete As NumericUpDown
     Friend WithEvents txtTotalPesoBruto As NumericUpDown
     Friend WithEvents txtValorAduana As NumericUpDown
-    Friend WithEvents txtTotal_general As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents txtTotal_liquidar As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents txtMod_transporte As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents txtClase As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents txtNitImpExp As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents txtClaveAduana As DevExpress.XtraEditors.TextEdit
-    Friend WithEvents cmbRegimen As DevExpress.XtraEditors.LookUpEdit
-    Friend WithEvents txtTotalBulto As NumericUpDown
-    Friend WithEvents txtTotalLineas As NumericUpDown
-    Friend WithEvents txtTotalFOBUSD As NumericUpDown
     Friend WithEvents txtNumeroDUA As DevExpress.XtraEditors.TextEdit
     Friend WithEvents txtNoPoliza As DevExpress.XtraEditors.TextEdit
     Friend WithEvents txtPaisProcedencia As DevExpress.XtraEditors.TextEdit
@@ -6898,5 +5962,6 @@ Partial Class frmPedido
     Friend WithEvents lblVerificacionBOF As LinkLabel
     Friend WithEvents cmbPiloto As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents cmbEmpresaTransporte As DevExpress.XtraEditors.LookUpEdit
-    Friend WithEvents GroupBox5 As GroupBox
+    Friend WithEvents txtEsExportacion As TextBox
+    Friend WithEvents Label46 As Label
 End Class

@@ -3,7 +3,6 @@ Imports System.Data.SqlClient
 Imports System.Drawing.Printing
 Imports System.IO
 Imports System.Reflection
-Imports System.Security
 Imports System.Threading
 Imports DevExpress.Utils
 Imports DevExpress.XtraEditors
@@ -213,8 +212,6 @@ Public Class frmOrdenCompra
             txtReferencia.Text = gBeOrdenCompra.Referencia
             txtProcedencia.Text = gBeOrdenCompra.Procedencia
             txtObservacion.Text = gBeOrdenCompra.Observacion
-            txtComentarios.Text = gBeOrdenCompra.Comentarios
-            txtUsuarioERP.Text = gBeOrdenCompra.Usr_Documento
 
             User_agrTextEdit.Text = gBeOrdenCompra.User_Agr
             Fec_agrDateEdit.Text = gBeOrdenCompra.Fec_Agr
@@ -271,25 +268,19 @@ Public Class frmOrdenCompra
                     Cargar_Talla_Color_Con_Imagen(gBeOrdenCompra.IdCampaña, vRutaCDN)
                 Else
                     Cargar_Talla_Color(gBeOrdenCompra.IdCampaña)
-                    'Dim vRutaCDN As String = clsLnBodega.GetRutaCDN_By_Idbodega(AP.IdBodega)
-
-                    'If Not String.IsNullOrEmpty(vRutaCDN) Then
-                    '    Cargar_Talla_Color_Con_Imagen(gBeOrdenCompra.IdCampaña, vRutaCDN)
-                    'Else
-                    '    Cargar_Talla_Color(gBeOrdenCompra.IdCampaña)
-                    'End If
-
                 End If
 
-                '#EJC20210707:Activar o desactivar botón para crear tarea en documento de ingreso.
-                If (gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.NUEVA OrElse gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.BACK_ORDER) AndAlso
+            End If
+
+            '#EJC20210707:Activar o desactivar botón para crear tarea en documento de ingreso.
+            If (gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.NUEVA OrElse gBeOrdenCompra.IdEstadoOC = clsDataContractDI.tEstadoOC.BACK_ORDER) AndAlso
                 Not clsLnTrans_re_enc.OC_Tiene_Recepciones_Activas(gBeOrdenCompra.IdOrdenCompraEnc) Then
-                    mnuTareaRecepcion.Enabled = True
-                    txtIdRecepcion.Text = "0"
-                Else
-                    mnuTareaRecepcion.Enabled = False
-                    txtIdRecepcion.Text = clsLnTrans_re_enc.Get_Recepcion_Activa_By_IdOrdenCompraEnc(gBeOrdenCompra.IdOrdenCompraEnc)
-                End If
+                mnuTareaRecepcion.Enabled = True
+                txtIdRecepcion.Text = "0"
+            Else
+                mnuTareaRecepcion.Enabled = False
+                txtIdRecepcion.Text = clsLnTrans_re_enc.Get_Recepcion_Activa_By_IdOrdenCompraEnc(gBeOrdenCompra.IdOrdenCompraEnc)
+            End If
 
         Catch ex As Exception
             SplashScreenManager.CloseForm(False)
@@ -3234,9 +3225,6 @@ Public Class frmOrdenCompra
 
             ColNoLinea.OptionsColumn.AllowEdit = True
 
-            RemoveHandler txtNoLineaGrid.Leave, AddressOf txtNoLineaGrid_Leave
-            AddHandler txtNoLineaGrid.Leave, AddressOf txtNoLineaGrid_Leave
-
             gvDetalleDocIngreso.Columns.Add(ColNoLinea)
 
 
@@ -5564,107 +5552,6 @@ Public Class frmOrdenCompra
     '#GT12082025: combos talla/color para producto
     Private TallaGridLookUpEdit As New RepositoryItemGridLookUpEdit
     Private ColorGridLookUpEdit As New RepositoryItemGridLookUpEdit
-
-    'Try
-
-    '    Dim vtxtNoLinea As TextEdit = TryCast(sender, TextEdit)
-    '    If vtxtNoLinea Is Nothing Then Return
-
-    '    Dim dv As DataRowView = gvDetalleDocIngreso.GetFocusedRow()
-    '    Dim drLineaRequisicion As DataRow = gvDetalleDocIngreso.GetFocusedDataRow()
-    '    Dim indice As Integer = -1
-    '    Dim ObjDet As New clsBeTrans_oc_det
-
-    '    If drLineaRequisicion Is Nothing Then Exit Sub
-
-    '    If drLineaRequisicion Is Nothing Then
-
-    '        drLineaRequisicion = gvDetalleDocIngreso.GetFocusedDataRow()
-
-    '        If Not IsDBNull(vtxtNoLinea.EditValue) Then
-    '            If Val(vtxtNoLinea.EditValue) = 0 Then
-    '                drLineaRequisicion("NoLinea") = 1
-    '            End If
-    '        End If
-
-    '    Else
-    '        If Not IsDBNull(vtxtNoLinea.EditValue) Then
-    '            If Val(vtxtNoLinea.EditValue) = 0 Then
-    '                drLineaRequisicion("NoLinea") = 1
-    '            End If
-    '        End If
-    '    End If
-
-    '    '#EJC20210307: Its a dirty row
-    '    If gvDetalleDocIngreso.FocusedRowHandle = -2147483647 Then
-
-    '        Dim vNoSigIndex As Integer = 0
-    '        Dim vNoSigLinea As Integer = 0
-
-    '        'es la primera línea del grid (en teoría)
-    '        If lOCDetLn.Count = 0 Then
-    '            drLineaRequisicion("NoLinea") = 1
-    '            vtxtNoLinea.EditValue = 1
-    '            ObjDet.No_Linea = drLineaRequisicion("NoLinea")
-    '            ObjDet.Codigo_Producto = IIf(IsDBNull(drLineaRequisicion("IdProductoBodega")), 0, drLineaRequisicion("IdProductoBodega"))
-    '            ObjDet.RowIndex = vNoSigIndex
-    '            'lOCDetLn.Add(ObjDet)
-    '        Else
-
-    '            If Not IsDBNull(vtxtNoLinea.EditValue) Then
-
-    '                indice = lOCDetLn.FindIndex(Function(x) x.No_Linea = drLineaRequisicion("NoLinea"))
-
-    '                If indice = -1 Then
-    '                    ObjDet.No_Linea = drLineaRequisicion("NoLinea")
-    '                    ObjDet.Codigo_Producto = IIf(IsDBNull(drLineaRequisicion("IdProductoBodega")), 0, drLineaRequisicion("IdProductoBodega"))
-    '                    ObjDet.RowIndex = gvDetalleDocIngreso.FocusedRowHandle
-    '                    'lOCDetLn.Add(ObjDet)
-    '                End If
-
-    '            Else
-
-    '                vNoSigLinea = lOCDetLn.Max(Function(x) x.No_Linea) + 1
-    '                vNoSigIndex = lOCDetLn.Max(Function(x) x.RowIndex) + 1
-
-    '                drLineaRequisicion("NoLinea") = vNoSigLinea
-    '                vtxtNoLinea.EditValue = vNoSigIndex
-
-    '                ObjDet.No_Linea = drLineaRequisicion("NoLinea")
-    '                ObjDet.Codigo_Producto = IIf(IsDBNull(drLineaRequisicion("IdProductoBodega")), 0, drLineaRequisicion("IdProductoBodega"))
-    '                ObjDet.RowIndex = gvDetalleDocIngreso.FocusedRowHandle
-    '                'lOCDetLn.Add(ObjDet)
-
-    '            End If
-
-    '        End If
-
-    '    Else
-
-    '        'is not a dirty row (existing item)
-    '        indice = lOCDetLn.FindIndex(Function(x) x.RowIndex = gvDetalleDocIngreso.FocusedRowHandle)
-
-    '        If indice = -1 Then
-    '            ObjDet.No_Linea = drLineaRequisicion("NoLinea")
-    '            ObjDet.Codigo_Producto = IIf(IsDBNull(drLineaRequisicion("IdProductoBodega")), 0, drLineaRequisicion("IdProductoBodega"))
-    '            ObjDet.RowIndex = gvDetalleDocIngreso.FocusedRowHandle
-    '            lOCDetLn.Add(ObjDet)
-    '        Else
-    '            lOCDetLn(indice).No_Linea = drLineaRequisicion("NoLinea")
-    '            lOCDetLn(indice).Codigo_Producto = IIf(IsDBNull(drLineaRequisicion("IdProductoBodega")), 0, drLineaRequisicion("IdProductoBodega"))
-    '        End If
-
-    '    End If
-
-    '    '-2147483647
-    '    'gvDetalleDocIngreso.FocusedColumn = gvDetalleDocIngreso.Columns("IdProductoBodega")
-    '    'gvDetalleDocIngreso.PostEditor()
-
-    'Catch ex As Exception
-    '    Debug.WriteLine("Error: " & ex.Message)
-    'End Try
-
-    End Sub
 
     Private Sub ProductoGridLookUpEdit_Leave(ByVal sender As Object, ByVal e As EventArgs)
 
@@ -8904,11 +8791,7 @@ MessageBoxButtons.YesNo,
 
                 End If
 
-                If Not String.IsNullOrEmpty(vRutaCDN) Then
-                                If MessageBox.Show(String.Format("¿Mostrar imágenes de los productos?", Me.Text), "Salir", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
-                                    Cargar_Talla_Color_Con_Imagen(gBeOrdenCompra.IdCampaña, vRutaCDN)
-                                Else
-                                    Cargar_Talla_Color(gBeOrdenCompra.IdCampaña)
+            End If
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -8919,8 +8802,6 @@ MessageBoxButtons.YesNo,
                     SplashScreenManager.CloseForm(False)
                 End If
             End If
-                        End If
-        Catch ex As Exception
 
         End Try
     End Sub

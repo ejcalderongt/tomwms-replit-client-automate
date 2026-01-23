@@ -3675,64 +3675,70 @@ Public Class frmPicking
     Private Sub mnuDespachado_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles mnuDespachado.ItemClick
 
         Try
+
             '#GT02102025: se añade el etado Pendiente
-            If BePickingEnc.Estado = "Verificado" OrElse BePickingEnc.Estado = "Procesado" OrElse BePickingEnc.Estado = "Pendiente" Then
-
-                If BePickingEnc.Estado = "Verificado" OrElse BePickingEnc.Estado = "Procesado" Then
-
-                    If XtraMessageBox.Show("¿Modificar picking a estado despachado?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+            If BePickingEnc.Estado = "Verificado" OrElse BePickingEnc.Estado = "Procesado" Then
 
 
-
-                        '#GT02102025: validación especial para PENDIENTE,, requiere confirmar que no tenga reserva el pedido y por lo tanto que no sea pedido consolidado
-                        If BePickingEnc.Estado = "Pendiente" Then
-
-                            Dim listaPickingDet = BePickingEnc.ListaPickingDet
-                            'Dim EsPickingConsolidado As Boolean = listaPickingDet _
-                            '                                    .GroupBy(Function(x) x.IdPedidoEnc) _
-                            '                                    .Any(Function(g) g.Count() > 1)
-
-                            Dim EsPickingConsolidado As Boolean = listaPickingDet _
-                                                                   .Select(Function(x) x.IdPedidoEnc) _
-                                                                   .Distinct() _
-                                                                   .Count() > 1
+                If XtraMessageBox.Show("¿Modificar picking a estado despachado?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
 
 
-                            If Not EsPickingConsolidado Then
 
-                                Dim IdPedidoEnc As Integer? = listaPickingDet _
-                                                                .Select(Function(x) x.IdPedidoEnc) _
-                                                                .Distinct() _
-                                                                .SingleOrDefault()
+                    '#GT02102025: validación especial para PENDIENTE,, requiere confirmar que no tenga reserva el pedido y por lo tanto que no sea pedido consolidado
+                    If BePickingEnc.Estado = "Pendiente" Then
 
-                                Dim stockres As Integer = clsLnTrans_pe_enc.Get_StockRes_By_IdPedido(IdPedidoEnc)
+                        Dim listaPickingDet = BePickingEnc.ListaPickingDet
+                        'Dim EsPickingConsolidado As Boolean = listaPickingDet _
+                        '                                    .GroupBy(Function(x) x.IdPedidoEnc) _
+                        '                                    .Any(Function(g) g.Count() > 1)
 
-                                If stockres > 0 Then
-                                    XtraMessageBox.Show("No se puede cambiar a estado despachado, hay reserva asociada.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                                    Exit Sub
-                                End If
+                        Dim EsPickingConsolidado As Boolean = listaPickingDet _
+                                                               .Select(Function(x) x.IdPedidoEnc) _
+                                                               .Distinct() _
+                                                               .Count() > 1
 
-                            Else
-                                XtraMessageBox.Show("No se puede cambiar a estado despachado, el picking pertenece a un pedido consolidado.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+
+                        If Not EsPickingConsolidado Then
+
+                            Dim IdPedidoEnc As Integer? = listaPickingDet _
+                                                            .Select(Function(x) x.IdPedidoEnc) _
+                                                            .Distinct() _
+                                                            .SingleOrDefault()
+
+                            Dim stockres As Integer = clsLnTrans_pe_enc.Get_StockRes_By_IdPedido(IdPedidoEnc)
+
+                            If stockres > 0 Then
+                                XtraMessageBox.Show("No se puede cambiar a estado despachado, hay reserva asociada.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
                                 Exit Sub
                             End If
+
+                        Else
+                            XtraMessageBox.Show("No se puede cambiar a estado despachado, el picking pertenece a un pedido consolidado.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                            Exit Sub
                         End If
-
-                        If clsLnTrans_picking_enc.Actualizar_Estado(BePickingEnc) > 0 Then
-
-                            BePickingEnc.Estado = "Despachado"
+                    End If
 
                     If clsLnTrans_picking_enc.Actualizar_Estado(BePickingEnc) > 0 Then
 
-                        Cargar_Datos()
+                        BePickingEnc.Estado = "Despachado"
 
-                        If Not InvokeListarPicking Is Nothing Then
-                            InvokeListarPicking.Invoke()
+                        If clsLnTrans_picking_enc.Actualizar_Estado(BePickingEnc) > 0 Then
+
+                            Cargar_Datos()
+
+                            If Not InvokeListarPicking Is Nothing Then
+                                InvokeListarPicking.Invoke()
+                            End If
+
+                            Close()
+
                         End If
 
-                        Close()
-
                     End If
+
+                Else
+
+                    XtraMessageBox.Show("No se puede cambiar a estado despachado", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
 
                 End If
 

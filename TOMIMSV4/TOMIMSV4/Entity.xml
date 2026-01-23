@@ -160,6 +160,13 @@ Entity
  </summary>
  <returns></returns>
 </member>
+<member name="T:TOMWMS.clsBeProveedor_tiempos">
+ <summary>
+ Class clsBeProveedor_tiempos.
+ </summary>
+ <seealso cref="T:System.ICloneable" />
+ <seealso cref="T:System.IDisposable" />
+</member>
 <member name="P:TOMWMS.clsBeProveedor_tiempos.IdTiempoProveedor">
  <summary>
  Gets or sets the identifier tiempo proveedor.
@@ -1123,33 +1130,6 @@ Entity
  </summary>
  <seealso cref="T:System.ICloneable" />
 </member>
-<member name="F:TOMWMS.clsBeI_nav_bodega.mBodega_code">
- <summary>
- The m bodega_code
- </summary>
-</member>
-<member name="F:TOMWMS.clsBeI_nav_bodega.mBodega_name">
- <summary>
- The m bodega_name
- </summary>
-</member>
-<member name="P:TOMWMS.clsBeI_nav_bodega.Bodega_code">
- <summary>
- Gets or sets the bodega_code.
- </summary>
- <value>The bodega_code.</value>
-</member>
-<member name="P:TOMWMS.clsBeI_nav_bodega.Bodega_name">
- <summary>
- Gets or sets the bodega_name.
- </summary>
- <value>The bodega_name.</value>
-</member>
-<member name="M:TOMWMS.clsBeI_nav_bodega.#ctor">
- <summary>
- Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_bodega"/> class.
- </summary>
-</member>
 <member name="M:TOMWMS.clsBeI_nav_bodega.#ctor(System.String@,System.String)">
  <summary>
  Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_bodega"/> class.
@@ -1264,19 +1244,19 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Product_Owner_Code">
  <summary>
- código de Propietario.
+ c�digo de Propietario.
  </summary>
  <returns></returns>
 </member>
 <member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Internal_Transfer_Document_No">
  <summary>
- número de referencia del pedido de cliente en la bodega origen (Emisora) de merncancías.
+ n�mero de referencia del pedido de cliente en la bodega origen (Emisora) de merncanc�as.
  </summary>
  <returns></returns>
 </member>
 <member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.IsImport">
  <summary>
- #EJC20231027: Determina si el documento de ingreso es o no una importación para considerar la generación de NC en SAP.
+ #EJC20231027: Determina si el documento de ingreso es o no una importaci�n para considerar la generaci�n de NC en SAP.
  </summary>
  <returns></returns>
 </member>
@@ -1288,14 +1268,9 @@ Entity
 </member>
 <member name="P:TOMWMS.clsBeI_nav_ped_compra_enc.Campaign_No">
  <summary>
- #EJC20250428: Identifica el número de campaña (SAP Mampa)
+ #EJC20250428: Identifica el n�mero de campa�a (SAP Mampa)
  </summary>
  <returns></returns>
-</member>
-<member name="M:TOMWMS.clsBeI_nav_ped_compra_enc.#ctor">
- <summary>
- Initializes a new instance of the <see cref="T:TOMWMS.clsBeI_nav_ped_compra_enc"/> class.
- </summary>
 </member>
 <member name="M:TOMWMS.clsBeI_nav_ped_compra_enc.#ctor(System.String@,System.String,System.String,System.String,System.DateTime,System.DateTime,System.DateTime,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
  <summary>
@@ -1656,11 +1631,6 @@ Entity
  Creates a new object that is a copy of the current instance.
  </summary>
  <returns>A new object that is a copy of this instance.</returns>
-</member>
-<member name="P:TOMWMS.clsBeTrans_ajuste_enc.Auditado">
-#EJC20240719: Auditado, determina si el ajuste ya se validó previo a ser enviado a ERP.<summary>
- </summary>
- <returns></returns>
 </member>
 <member name="P:TOMWMS.clsBeBodega_ubicacion.Disponibilidad_Ubicacion">
  <summary>

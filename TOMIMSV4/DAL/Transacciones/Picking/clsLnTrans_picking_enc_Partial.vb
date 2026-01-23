@@ -1,7 +1,5 @@
-﻿Imports System
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Reflection
-Imports DevExpress.XtraEditors
 
 Partial Public Class clsLnTrans_picking_enc
 
@@ -3212,7 +3210,6 @@ Partial Public Class clsLnTrans_picking_enc
         Guardar = False
 
         Try
-            Dim sSQL As String = "SELECT Estado FROM trans_picking_enc WHERE IdPickingEnc = @IdPickingEnc"
 
             '#GT01022023: Obtener el IdPickingEnc
             Dim vBePickingEncOriginal As New clsBeTrans_picking_enc
@@ -3247,38 +3244,36 @@ Partial Public Class clsLnTrans_picking_enc
                                                        lConnection,
                                                        lTransaction)
 
-                If lRow("Estado") IsNot DBNull.Value Then
-                    estado = lRow("Estado").ToString()
-                End If
+            End If
 
-                ' Picking Detalle
-                clsLnTrans_picking_det.Guarda_Trans_picking_det(pBeTrans_picking_enc.IdPickingEnc,
+            ' Picking Detalle
+            clsLnTrans_picking_det.Guarda_Trans_picking_det(pBeTrans_picking_enc.IdPickingEnc,
                                                             pBeTrans_picking_enc.IdBodegaMuelle,
                                                             pListBePickingDet,
                                                             pListBePickingUbic,
                                                             lConnection,
                                                             lTransaction)
 
-                ' Picking Detalle Parametros
-                If pListBePickingDetParametros IsNot Nothing Then
-                    clsLnTrans_picking_det_parametros.Guarda_Trans_picking_parametros(pListBePickingDetParametros,
+            ' Picking Detalle Parametros
+            If pListBePickingDetParametros IsNot Nothing Then
+                clsLnTrans_picking_det_parametros.Guarda_Trans_picking_parametros(pListBePickingDetParametros,
                                                                                   lConnection,
                                                                                   lTransaction)
-                End If
+            End If
 
-                ' Picking Detalle Operador
-                clsLnTrans_picking_op.Guarda_Trans_picking_operador(pBeTrans_picking_enc.IdPickingEnc,
+            ' Picking Detalle Operador
+            clsLnTrans_picking_op.Guarda_Trans_picking_operador(pBeTrans_picking_enc.IdPickingEnc,
                                                                 pListBePickingOpe,
                                                                 lConnection,
                                                                 lTransaction)
 
-                ' Picking Detalle Ubicacion
-                clsLnTrans_picking_ubic.Guarda_Trans_picking_ubic(pBeTrans_picking_enc.IdPickingEnc,
+            ' Picking Detalle Ubicacion
+            clsLnTrans_picking_ubic.Guarda_Trans_picking_ubic(pBeTrans_picking_enc.IdPickingEnc,
                                                               pListBePickingUbic,
                                                               lConnection,
                                                               lTransaction)
 
-                Guardar = True
+            Guardar = True
 
         Catch ex As Exception
             Throw ex

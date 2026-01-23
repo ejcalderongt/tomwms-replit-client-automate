@@ -9,7 +9,7 @@ Imports System.Runtime.InteropServices
 
 <Assembly: AssemblyTitle("DMS")>
 <Assembly: AssemblyDescription("")>
-<Assembly: AssemblyCompany("DTSolutions")>
+<Assembly: AssemblyCompany("")>
 <Assembly: AssemblyProduct("DMS")>
 <Assembly: AssemblyCopyright("Copyright ©  2025")>
 <Assembly: AssemblyTrademark("")>

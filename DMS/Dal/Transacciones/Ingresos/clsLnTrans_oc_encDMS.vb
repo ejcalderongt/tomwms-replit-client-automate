@@ -1,9 +1,7 @@
-﻿Imports System.Data.SqlClient
-Imports System.Reflection
+﻿Imports System.Reflection
 Imports DevExpress.Compatibility
 Imports DevExpress.Data.Helpers
 Imports DevExpress.Data.Linq
-Imports DevExpress.Utils.Drawing
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraEditors.ColorPick
 Imports DevExpress.XtraEditors.TextEditController
@@ -27,8 +25,6 @@ Public Class clsLnTrans_oc_encDMS
         Dim resultado As String = ""
         Dim pRegistrosFallidos As Integer = 0
         Dim pRegistrosExitosos As Integer = 0
-        Dim vTotalRegistrosEncontrados As Integer = 0
-        Dim listaIngresosPendientes As List(Of Integer) = Nothing
         Try
 
             reloj.Start()
@@ -38,64 +34,52 @@ Public Class clsLnTrans_oc_encDMS
             '#GT18062025: obtener los ingresos no sincronizados
             listOC = GetAll_By_CDC(pTablaSincronizada, listOC)
 
-            If listaIngresosPendientes.Count > 0 Then
-                listOC = New List(Of clsBeTrans_oc_enc)()
-                vTotalRegistrosEncontrados = listaIngresosPendientes.Count
-
-                clsHelper.LogMensaje(lblprg,
-                                   String.Format("Se encontraron {0} ingreso(s) pendientes de sincronizar.", vTotalRegistrosEncontrados),
-                                   clsHelper.TipoMensaje.Info)
-
-                listOC = GetAll_By_CDC_Pendientes(pTablaSincronizada, listOC, listaIngresosPendientes)
-                If listOC IsNot Nothing AndAlso listOC.Count > 0 Then
-                    RegistrosEncontrados = listOC.Count
-                    clsHelper.LogMensaje(lblprg, "Ingresos encontrados " & listOC.Count, clsHelper.TipoMensaje.Exito)
-                Else
-                    clsHelper.LogMensaje(lblprg, "Ingresos no encontrados ", clsHelper.TipoMensaje.Error_)
-                    Exit Sub
-                End If
-
-                '#Iteramos por ingreso y enviamos a la nube para no hacer un proceso único pesado
-                For Each pOC In listOC
-                    Contador += 1
-                    Dim enviado As Boolean = False
-                    Dim intento As Integer = 0
-                    Const maxIntentos As Integer = 3
-
-                    clsHelper.LogMensaje(lblprg, "Iterando Registro: " & Contador & "/" & RegistrosEncontrados, clsHelper.TipoMensaje.Info)
-                    Dim JsonOC = Crear_Json(lblprg, pOC)
-
-                    If String.IsNullOrEmpty(JsonOC) Then
-                        pRegistrosFallidos += 1
-                        resultado = "No se generó el archivo json correspondiente."
-                        Guadar_Envio_Rechazado(pOC.IdOrdenCompraEnc, resultado)
-                        Continue For
-                    Else
-                        While Not enviado And intento <= maxIntentos
-
-                            While Not enviado And intento < maxIntentos
-                                resultado = Await api.EnviarJsonOCAsync(JsonOC, lblprg)
-
-                                If resultado = "Ok" Then
-                                    enviado = True
-                                    pRegistrosExitosos += 1
-                                    '#GT marcar como enviado MI3 en oc_enc
-                                Else
-                                    intento += 1
-                                    clsHelper.LogMensaje(lblprg, "Reintento de envio: " & intento, clsHelper.TipoMensaje.Info)
-                                    Await Task.Delay(2000) ' Esperar 2 segundos entre intentos
-                                End If
-
-                            End While
-
-                            ' Si después de los intentos no se pudo enviar el registro
-                            If Not enviado Then
-                                pRegistrosFallidos += 1
-                                Guadar_Envio_Rechazado(pOC.IdOrdenCompraEnc, resultado)
-                            End If
-    Next
-
+            If listOC IsNot Nothing AndAlso listOC.Count > 0 Then
+                RegistrosEncontrados = listOC.Count
+                clsHelper.LogMensaje(lblprg, "Ingresos encontrados " & listOC.Count, clsHelper.TipoMensaje.Exito)
+            Else
+                clsHelper.LogMensaje(lblprg, "Ingresos no encontrados ", clsHelper.TipoMensaje.Error_)
+                Exit Sub
             End If
+
+            '#Iteramos por ingreso y enviamos a la nube para no hacer un proceso único pesado
+            For Each pOC In listOC
+                Contador += 1
+                Dim enviado As Boolean = False
+                Dim intento As Integer = 0
+                Const maxIntentos As Integer = 3
+
+                clsHelper.LogMensaje(lblprg, "Iterando Registro: " & Contador & "/" & RegistrosEncontrados, clsHelper.TipoMensaje.Info)
+                Dim JsonOC = Crear_Json(lblprg, pOC)
+
+                If String.IsNullOrEmpty(JsonOC) Then
+                    pRegistrosFallidos += 1
+                    resultado = "No se generó el archivo json correspondiente."
+                    Guadar_Envio_Rechazado(pOC.IdOrdenCompraEnc, resultado)
+                    Continue For
+                Else
+                    While Not enviado And intento <= maxIntentos
+
+                        resultado = Await api.EnviarJsonOCAsync(JsonOC, lblprg)
+
+                        If resultado = "Ok" Then
+                            enviado = True
+                            pRegistrosExitosos += 1
+                            '#GT marcar como enviado MI3 en oc_enc
+                        Else
+                            intento += 1
+                            clsHelper.LogMensaje(lblprg, "Reintento de envio: " & intento, clsHelper.TipoMensaje.Info)
+                            Await Task.Delay(2000) ' Esperar 2 segundos entre intentos
+                        End If
+
+                    End While
+
+                    If Not enviado Then
+                        pRegistrosFallidos += 1
+                        Guadar_Envio_Rechazado(pOC.IdOrdenCompraEnc, resultado)
+                    End If
+
+                End If
 
             Next
 
@@ -115,23 +99,6 @@ Public Class clsLnTrans_oc_encDMS
 
             clsHelper.Registrar_Log(pRespuesta, pTablaSincronizada, CInt(reloj.Elapsed.TotalSeconds))
 
-            'End If
-
-            BeLogSyncError = New clsBeDMS_Log_sincronizacion_fallos()
-            BeLogSyncError.IdLogFallo = clsLnDMS_Log_sincronizacion_fallos.MaxID(lConnection, lTransaction) + 1
-            BeLogSyncError.IdOrdenCompraEnc = pOrdenCompra.IdOrdenCompraEnc
-            BeLogSyncError.IdPropietario = pOrdenCompra.PropietarioBodega.IdPropietario
-            BeLogSyncError.IdPedidoEnc = 0
-            BeLogSyncError.Estado = "Error"
-            BeLogSyncError.Mensaje_error = pMensaje
-            BeLogSyncError.Fec_agr = Now
-            BeLogSyncError.IdProducto = 0
-            clsLnDMS_Log_sincronizacion_fallos.Insertar(BeLogSyncError, lConnection, lTransaction)
-
-            If localTransaction Then
-                lTransaction.Commit()
-            End If
-
         Catch ex As Exception
             Dim vMsgError As String = ex.Message
             clsHelper.Registrar_Log("Error " & vMsgError, pTablaSincronizada)
@@ -139,11 +106,6 @@ Public Class clsLnTrans_oc_encDMS
         Finally
             reloj.Stop()
 
-            Finally
-            ' Cierre solo si es local
-            If localConnection AndAlso lConnection IsNot Nothing AndAlso lConnection.State = ConnectionState.Open Then
-                lConnection.Close()
-            End If
         End Try
     End Sub
 
@@ -162,10 +124,7 @@ Public Class clsLnTrans_oc_encDMS
             clsLnLog_sincronizacion_fallos.Insertar(BeLogSyncError)
 
         Catch ex As Exception
-            clsTransaccion.RollBack_Transaction()
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-        Finally
-            clsTransaccion.Close_Conection()
         End Try
     End Sub
 
@@ -186,8 +145,6 @@ Public Class clsLnTrans_oc_encDMS
         Dim ocDet As New Object
         Dim stockList As New List(Of Object)
         Dim trans_movimientosList As New List(Of Object)
-        Dim proveedorList As New List(Of Object)
-        Dim proveedores_bodegaList As New List(Of Object)
 
         Dim pListOC As New List(Of clsBeTrans_oc_enc)()
         Dim pListRecepcionEnc As New List(Of clsBeTrans_re_enc)()
@@ -202,7 +159,6 @@ Public Class clsLnTrans_oc_encDMS
         Dim pStock As New clsBeStock()
         Dim pListOperadorBodega As New List(Of clsBeOperador_bodega)()
         Dim pListOperador As New List(Of clsBeOperador)()
-        Dim resultado As String = ""
 
 
         Try
@@ -211,10 +167,6 @@ Public Class clsLnTrans_oc_encDMS
             listPayload = New List(Of Object)
             clsHelper.LogMensaje(lblprg, "Procesando ingreso: " & pOCEnc.IdOrdenCompraEnc, clsHelper.TipoMensaje.Info)
 
-
-            If pOCEnc.IdOrdenCompraEnc = 1257 Then
-                Debug.Write("aqui")
-            End If
 
             reOcList = New List(Of Object)()
             reOperadorList = New List(Of Object)()
@@ -228,8 +180,6 @@ Public Class clsLnTrans_oc_encDMS
             stockList = New List(Of Object)
             ocDetList = New List(Of Object)
             trans_movimientosList = New List(Of Object)
-            proveedorList = New List(Of Object)
-            proveedores_bodegaList = New List(Of Object)
 
             pOCEnc.DetalleOC = New List(Of clsBeTrans_oc_det)()
             pOCEnc.ObjPoliza = New clsBeTrans_oc_pol()
@@ -237,84 +187,6 @@ Public Class clsLnTrans_oc_encDMS
             pListRecepcionEnc = New List(Of clsBeTrans_re_enc)()
             ListReOC = New List(Of clsBeTrans_re_oc)
             Dim productobodega As New clsBeProducto_bodega()
-
-            '#GT25062025: obtener listas de proveedor y proveedor_bdega.
-            Dim oBePropietarioBodega = clsLnPropietario_bodega.Get_Single_With_Propietario(pOCEnc.IdPropietarioBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-
-            If oBePropietarioBodega IsNot Nothing Then
-                Dim ListBeProveedor = clsLnProveedor.GetListProveedores_By_Activo_and_IdPropietario(oBePropietarioBodega.IdPropietario, True, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                If ListBeProveedor IsNot Nothing AndAlso ListBeProveedor.Count > 0 Then
-                    For Each Proveedor In ListBeProveedor
-
-                        proveedorList.Add(New With {
-                                        .IdEmpresa = Proveedor.IdEmpresa,
-                                        .IdPropietario = Proveedor.IdPropietario,
-                                        .IdProveedor = Proveedor.IdProveedor,
-                                        .codigo = Proveedor.Codigo,
-                                        .nombre = Proveedor.Nombre,
-                                        .telefono = Proveedor.Telefono,
-                                        .nit = Proveedor.Nit,
-                                        .direccion = Proveedor.Direccion,
-                                        .email = Proveedor.Email,
-                                        .contacto = Proveedor.Contacto,
-                                        .activo = Proveedor.Activo,
-                                        .muestra_precio = Proveedor.Muestra_precio,
-                                        .user_agr = Proveedor.User_agr,
-                                        .fec_agr = Proveedor.Fec_agr,
-                                        .user_mod = Proveedor.User_mod,
-                                        .fec_mod = Proveedor.Fec_mod,
-                                        .actualiza_costo_oc = Proveedor.Actualiza_costo_oc,
-                                        .idubicacionvirtual = Proveedor.IdUbicacionVirtual,
-                                        .es_bodega_recepcion = Proveedor.Es_Bodega_Recepcion,
-                                        .es_bodega_traslado = Proveedor.Es_Bodega_Traslado,
-                                        .referencia = Proveedor.Referencia,
-                                        .sistema = Proveedor.Sistema,
-                                        .IdConfiguracionBarraPallet = Proveedor.IdConfiguracionBarraPallet,
-                                        .es_proveedor_servicio = Proveedor.Es_Proveedor_Servicio,
-                                        .IdBodegaAreaSAP = Proveedor.IdBodegaAreaSAP,
-                                        .IdPais = Proveedor.IdPais,
-                                        .Codigo_Empresa_ERP = Proveedor.Codigo_Empresa_ERP
-                                          })
-
-
-                        Dim ListProveedorBodega = clsLnProveedor_bodega.Get_All_By_IdProveedor(Proveedor.IdProveedor, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                        If ListProveedorBodega IsNot Nothing AndAlso ListProveedorBodega.Count > 0 Then
-                            For Each Proveedor_Bodega In ListProveedorBodega
-                                proveedores_bodegaList.Add(New With {
-                                                                    .IdAsignacion = Proveedor_Bodega.IdAsignacion,
-                                                                    .IdProveedor = Proveedor_Bodega.IdProveedor,
-                                                                    .IdBodega = Proveedor_Bodega.IdBodega,
-                                                                    .activo = Proveedor_Bodega.Activo,
-                                                                    .user_agr = Proveedor_Bodega.User_agr,
-                                                                    .fec_agr = Proveedor_Bodega.Fec_agr,
-                                                                    .user_mod = Proveedor_Bodega.User_mod,
-                                                                    .fec_mod = Proveedor_Bodega.Fec_mod,
-                                                                    .IdAreaOrigen = Proveedor_Bodega.IdAreaOrigen
-                                                                    })
-                            Next
-                        Else
-                            resultado = "Por un error desconocido, no se pudo obtener proveedor_bodega del ingreso: " & pOCEnc.IdOrdenCompraEnc
-                            clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
-                            Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                            clsTransaccion.Commit_Transaction()
-                            Return ""
-                        End If
-
-                    Next
-                Else
-                    resultado = "Por un error desconocido, no se pudo obtener proveedor del ingreso: " & pOCEnc.IdOrdenCompraEnc
-                    clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
-                    Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                    clsTransaccion.Commit_Transaction()
-                    Return ""
-                End If
-            Else
-                resultado = "Por un error desconocido, no se pudo obtener propietario del ingreso: " & pOCEnc.IdOrdenCompraEnc
-                clsHelper.LogMensaje(lblprg, resultado, clsHelper.TipoMensaje.Error_)
-                Guadar_Envio_Rechazado(pOCEnc, resultado, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-                clsTransaccion.Commit_Transaction()
-                Return ""
-            End If
 
             '#GT13052025: al obtener el detalle de la OC, agregar la propiedad de producto_bodega por linea
             pOCEnc.DetalleOC = clsLnTrans_oc_det.Get_Detalle_OC_By_IdOrdenCompraEnc(pOCEnc.IdOrdenCompraEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
@@ -391,7 +263,6 @@ Public Class clsLnTrans_oc_encDMS
                     ocDetList.Add(ocDet)
 
                 Next
-
             Else
                 clsHelper.LogMensaje(lblprg, "El ingreso no tiene detalle.", clsHelper.TipoMensaje.Error_)
                 Return ""
@@ -399,7 +270,6 @@ Public Class clsLnTrans_oc_encDMS
 
             pOCEnc.TipoIngreso = clsLnTrans_oc_ti.GetSingle(pOCEnc.IdTipoIngresoOC, clsTransaccion.lConnection, clsTransaccion.lTransaction)
             If pOCEnc.Control_Poliza Then pOCEnc.ObjPoliza = clsLnTrans_oc_pol.GetSingle(pOCEnc.IdOrdenCompraEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-
             ListReOC = clsLnTrans_re_oc.GetListReOC_By_IdOrdenCompraEnc(pOCEnc.IdOrdenCompraEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
             If ListReOC IsNot Nothing AndAlso ListReOC.Count > 0 Then
@@ -710,24 +580,12 @@ Public Class clsLnTrans_oc_encDMS
                         pStock_Rec = New clsBeStock_rec()
                         pStock = New clsBeStock()
 
-                        If re_det.IdRecepcionEnc = 282 AndAlso re_det.IdRecepcionDet = 5 Then
-                            Debug.Write("aqui")
-                        End If
 
                         pTrans_movimientos = clsLnTrans_movimientos.GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet(re_det.IdRecepcionEnc,
                                                                                                                                re_det.IdRecepcionDet,
                                                                                                                                re_det.Lic_plate,
                                                                                                                                clsTransaccion.lConnection,
                                                                                                                                clsTransaccion.lTransaction)
-
-                        '#GT06102025: no hay asociación por recepcion enc/det, validamos solo por lic_plate
-                        If pTrans_movimientos Is Nothing Then
-                            pTrans_movimientos = clsLnTrans_movimientos.GetSingle_By_LicPlate(re_det.IdRecepcionEnc, re_det.Lic_plate,
-                                                                                                                    clsTransaccion.lConnection,
-                                                                                                                    clsTransaccion.lTransaction)
-                        End If
-
-
 
                         pStock_Rec = clsLnStock_rec.GetSingle_Stock_By_IdRecepcionEnc_And_IdRecpecionDet(re_det.IdRecepcionEnc,
                                                                                                                      re_det.IdRecepcionDet,
@@ -1047,7 +905,6 @@ Public Class clsLnTrans_oc_encDMS
     Public Shared Function GetAll_By_CDC(ByVal pTablaSincronizada As String, ByRef pListOC As List(Of clsBeTrans_oc_enc)) As List(Of clsBeTrans_oc_enc)
         Dim BeLogUltimaSincronizacion As New clsBeLog_sincronizacion_nube()
         Dim clsTransaccion As New clsTransaccion()
-
         Try
 
             clsTransaccion.Begin_Transaction()
@@ -1057,16 +914,6 @@ Public Class clsLnTrans_oc_encDMS
             If BeLogUltimaSincronizacion IsNot Nothing Then
                 pListOC = clsLnTrans_oc_enc.GetAll_By_CDC(BeLogUltimaSincronizacion.Fecha_sincronizacion, clsTransaccion.lConnection, clsTransaccion.lTransaction)
             End If
-
-            End If
-            End If
-            Next
-
-            End If
-
-
-            'If listaPropietarioBodega IsNot Nothing AndAlso listaPropietarioBodega.Count > 0 Then
-            'End If
 
             clsTransaccion.Commit_Transaction()
 
@@ -1119,15 +966,6 @@ Public Class clsLnTrans_oc_encDMS
         Try
 
             clsTransaccion.Begin_Transaction()
-            ObtenerRegistrosFallidos = clsLnDMS_Log_sincronizacion_fallos.ObtenerRegistrosFallidos_by_Ingreso(listaPropietarios, Now, clsTransaccion.lConnection, clsTransaccion.lTransaction)
-            clsTransaccion.Commit_Transaction()
-        Catch ex As Exception
-            clsTransaccion.RollBack_Transaction()
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-        Finally
-            clsTransaccion.Close_Conection()
-        End Try
-    End Function
 
             '#GT29052025: obtener ultima sincronizacion
             BeLogUltimaSincronizacion = New clsBeLog_sincronizacion_nube()
@@ -1143,7 +981,7 @@ Public Class clsLnTrans_oc_encDMS
             End If
 
 
-    If pListOC IsNot Nothing AndAlso pListOC.Count > 0 Then
+            If pListOC IsNot Nothing AndAlso pListOC.Count > 0 Then
 
                 listPayload = New List(Of Object)
 
@@ -1151,7 +989,7 @@ Public Class clsLnTrans_oc_encDMS
 
                 For Each OC In pListOC
 
-    If OC IsNot Nothing Then
+                    If OC IsNot Nothing Then
 
                         Contador += 1
 
@@ -1182,7 +1020,7 @@ Public Class clsLnTrans_oc_encDMS
 
                         If OC.DetalleOC IsNot Nothing AndAlso OC.DetalleOC.Count > 0 Then
 
-    For Each oc_det As clsBeTrans_oc_det In OC.DetalleOC
+                            For Each oc_det As clsBeTrans_oc_det In OC.DetalleOC
 
                                 productobodega = New clsBeProducto_bodega()
                                 'productobodega = clsLnProducto_bodega.GetSingle(oc_det.IdProductoBodega, clsTransaccion.lConnection, clsTransaccion.lTransaction)
@@ -1244,13 +1082,13 @@ Public Class clsLnTrans_oc_encDMS
                                                     }
 
                                 Else
-    Throw New Exception("Por un error desconocido, no se pudo obtener el producto_bodega.")
-    End If
+                                    Throw New Exception("Por un error desconocido, no se pudo obtener el producto_bodega.")
+                                End If
 
                                 ocDetList.Add(ocDet)
 
                             Next
-    Else
+                        Else
                             clsHelper.LogMensaje(lblprg, "El ingreso no tiene detalle.", clsHelper.TipoMensaje.Error_)
                         End If
 
@@ -1260,7 +1098,7 @@ Public Class clsLnTrans_oc_encDMS
 
                         If ListReOC IsNot Nothing AndAlso ListReOC.Count > 0 Then
 
-    For Each pTrans_re_oc As clsBeTrans_re_oc In ListReOC
+                            For Each pTrans_re_oc As clsBeTrans_re_oc In ListReOC
 
                                 pTrans_re_enc = New clsBeTrans_re_enc()
                                 pTrans_re_enc = clsLnTrans_re_enc.GetSingle(pTrans_re_oc.IdRecepcionEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
@@ -1291,11 +1129,11 @@ Public Class clsLnTrans_oc_encDMS
                                                            })
                                 End If
 
-    '#GT08052025: iterar la lista de operadores-recepcion para crear el objeto anonimo para Json
-    If pListOperadores IsNot Nothing AndAlso pListOperadores.Count > 0 Then
+                                '#GT08052025: iterar la lista de operadores-recepcion para crear el objeto anonimo para Json
+                                If pListOperadores IsNot Nothing AndAlso pListOperadores.Count > 0 Then
 
-    '#GT19052025: obtener operador-recepcion
-    For Each pOperador In pListOperadores
+                                    '#GT19052025: obtener operador-recepcion
+                                    For Each pOperador In pListOperadores
 
                                         reOperadorList.Add(New With {
                                                                                   .idOperadorRec = pOperador.IdOperadorRec,
@@ -1327,8 +1165,8 @@ Public Class clsLnTrans_oc_encDMS
 
                                         End If
 
-    '#GT19052025: obtener operador
-    Dim pBeOperador As New clsBeOperador()
+                                        '#GT19052025: obtener operador
+                                        Dim pBeOperador As New clsBeOperador()
                                         pBeOperador = clsLnOperador.Get_Single_By_IdOperador(pOperadorBodega.IdOperador,
                                                                                              clsTransaccion.lConnection,
                                                                                              clsTransaccion.lTransaction)
@@ -1362,10 +1200,10 @@ Public Class clsLnTrans_oc_encDMS
                                                                      })
                                         End If
 
-    Next
+                                    Next
 
 
-    Else
+                                Else
                                     '#GT08052025: podrian no existir operadores asociados si fue recepción en bof
 
                                     reOperadorList.Add(New With {
@@ -1422,9 +1260,9 @@ Public Class clsLnTrans_oc_encDMS
 
                                 End If
 
-    '#GT09052025: iterar la lista de facturas para crear el objeto anonimo para Json
-    If pListFacturasRe IsNot Nothing AndAlso pListFacturasRe.Count > 0 Then
-    For Each pFactura In pListFacturasRe
+                                '#GT09052025: iterar la lista de facturas para crear el objeto anonimo para Json
+                                If pListFacturasRe IsNot Nothing AndAlso pListFacturasRe.Count > 0 Then
+                                    For Each pFactura In pListFacturasRe
                                         facturasList.Add(New With {
                                                                                   .idFacturaRecepcion = pFactura.IdFacturaRecepcion,
                                                                                   .idRecepcionEnc = pFactura.IdRecepcionEnc,
@@ -1438,7 +1276,7 @@ Public Class clsLnTrans_oc_encDMS
                                                                                   .completa = pFactura.Completa
                                                     })
                                     Next
-    Else
+                                Else
                                     facturasList.Add(New With {
                                                                                     .idFacturaRecepcion = 0,
                                                                                     .idRecepcionEnc = 0,
@@ -1453,9 +1291,9 @@ Public Class clsLnTrans_oc_encDMS
                                                         })
                                 End If
 
-    '#GT09052025: iterar la lista de imagenes para crear el objeto anonimo para Json
-    If pListaImgRe IsNot Nothing AndAlso pListaImgRe.Count > 0 Then
-    For Each pImagen In pListaImgRe
+                                '#GT09052025: iterar la lista de imagenes para crear el objeto anonimo para Json
+                                If pListaImgRe IsNot Nothing AndAlso pListaImgRe.Count > 0 Then
+                                    For Each pImagen In pListaImgRe
 
                                         imgList.Add(New With {
                                                                                          .idImagen = pImagen.IdImagen,
@@ -1466,7 +1304,7 @@ Public Class clsLnTrans_oc_encDMS
                                                                                          .observacion = pImagen.Observacion
                                                            })
                                     Next
-    Else
+                                Else
                                     imgList.Add(New With {
                                                                                         .idImagen = 0,
                                                                                         .idRecepcionEnc = 0,
@@ -1477,10 +1315,10 @@ Public Class clsLnTrans_oc_encDMS
                                                     })
                                 End If
 
-    '#GT12052025: crear el objeto anonimo del tipo transaccion en la recepción
-    If pTrans_re_tr IsNot Nothing Then
+                                '#GT12052025: crear el objeto anonimo del tipo transaccion en la recepción
+                                If pTrans_re_tr IsNot Nothing Then
 
-    Dim trans_re_tr As New With {
+                                    Dim trans_re_tr As New With {
                                                             .IdTipoTransaccion = pTrans_re_tr.IdTipoTransaccion,
                                                             .Descripcion = pTrans_re_tr.Descripcion,
                                                             .Funcionalidad = pTrans_re_tr.Funcionalidad,
@@ -1490,15 +1328,15 @@ Public Class clsLnTrans_oc_encDMS
                                                             .ConRef = pTrans_re_tr.ConRef,
                                                             .Activo = pTrans_re_tr.Activo
                                         }
-    Else
+                                Else
                                     clsHelper.LogMensaje(lblprg, "La tarea de recepción no tiene asociado un tipo de transacción", clsHelper.TipoMensaje.Error_)
                                     Throw New Exception("La tarea de recepción no tiene asociado un tipo de transacción!")
-    End If
+                                End If
 
-    '*********************************************************************************************
-    '*********************** Recepción con las propiedades previamente calculadas ****************
-    If pListRecepcionEnc IsNot Nothing AndAlso pListRecepcionEnc.Count > 0 Then
-    For Each recepcion In pListRecepcionEnc
+                                '*********************************************************************************************
+                                '*********************** Recepción con las propiedades previamente calculadas ****************
+                                If pListRecepcionEnc IsNot Nothing AndAlso pListRecepcionEnc.Count > 0 Then
+                                    For Each recepcion In pListRecepcionEnc
                                         recepcionesList.Add(New With {
                                                                 .encabezado = New With {
                                                                                     .idRecepcionEnc = recepcion.IdRecepcionEnc,
@@ -1549,19 +1387,19 @@ Public Class clsLnTrans_oc_encDMS
                                                     })
                                     Next
 
-    Else
+                                Else
                                     clsHelper.LogMensaje(lblprg, "El ingreso no recepción asociada.", clsHelper.TipoMensaje.Error_)
                                     Throw New Exception("El ingreso no recepción asociada.")
-    End If
+                                End If
 
 
-    If pTrans_re_enc.Detalle Is Nothing OrElse pTrans_re_enc.Detalle.Count = 0 Then
+                                If pTrans_re_enc.Detalle Is Nothing OrElse pTrans_re_enc.Detalle.Count = 0 Then
                                     clsHelper.LogMensaje(lblprg, "La recepción no tiene detalle.", clsHelper.TipoMensaje.Error_)
                                     Throw New Exception("La recepción no tiene detalle.")
-    End If
+                                End If
 
-    '********************** Stock_Rec, Stock y movimientos con las propiedades ***********************************
-    For Each re_det As clsBeTrans_re_det In pTrans_re_enc.Detalle
+                                '********************** Stock_Rec, Stock y movimientos con las propiedades ***********************************
+                                For Each re_det As clsBeTrans_re_det In pTrans_re_enc.Detalle
 
                                     pTrans_movimientos = New clsBeTrans_movimientos()
                                     pStock_Rec = New clsBeStock_rec()
@@ -1628,9 +1466,9 @@ Public Class clsLnTrans_oc_encDMS
                                     Else
                                         clsHelper.LogMensaje(lblprg, "No se obtuvo el movimiento asociado a la recepción " & re_det.IdRecepcionEnc & " detalle: " & re_det.IdRecepcionDet, clsHelper.TipoMensaje.Error_)
                                         Throw New Exception("No se obtuvo el movimiento asociado a la recepción.")
-    End If
+                                    End If
 
-    If pStock_Rec IsNot Nothing Then
+                                    If pStock_Rec IsNot Nothing Then
                                         stock_recList.Add(New With {
                                                                 .IdStockRec = pStock_Rec.IdStockRec,
                                                                 .IdPropietarioBodega = pStock_Rec.IdPropietarioBodega,
@@ -1673,9 +1511,9 @@ Public Class clsLnTrans_oc_encDMS
                                     Else
                                         clsHelper.LogMensaje(lblprg, "No se obtuvo el stock_rec asociado a la recepción " & re_det.IdRecepcionEnc & " detalle: " & re_det.IdRecepcionDet, clsHelper.TipoMensaje.Error_)
                                         Throw New Exception("No se obtuvo el stock_rec asociado a la recepción.")
-    End If
+                                    End If
 
-    If pStock IsNot Nothing Then
+                                    If pStock IsNot Nothing Then
                                         stockList.Add(New With {
                                                              .IdStock = pStock.IdStock,
                                                              .IdPropietarioBodega = pStock.IdPropietarioBodega,
@@ -1754,14 +1592,14 @@ Public Class clsLnTrans_oc_encDMS
 
                                     End If
 
-    Next
+                                Next
 
-    Next
+                            Next
 
-    Else
+                        Else
                             clsHelper.LogMensaje(lblprg, "No existe el registro entre el ingreso y la recepción ", clsHelper.TipoMensaje.Error_)
                             Throw New Exception("No existe el registro entre el ingreso y la recepción.")
-    End If
+                        End If
 
 
                         '#GT09052025: llenar la OC y añadir los objetos de detalle, poliza, tipo ingreso, recepciones [encabezado, detalle, OcRelacionada, operadores, facturas, imagenes]
@@ -1877,16 +1715,16 @@ Public Class clsLnTrans_oc_encDMS
 
                 Next
 
-    End If
+            End If
 
             clsTransaccion.Commit_Transaction()
 
             Return listPayload
 
-    Catch ex As Exception
+        Catch ex As Exception
             clsTransaccion.RollBack_Transaction()
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
-    Finally
+        Finally
             clsTransaccion.Close_Conection()
         End Try
 

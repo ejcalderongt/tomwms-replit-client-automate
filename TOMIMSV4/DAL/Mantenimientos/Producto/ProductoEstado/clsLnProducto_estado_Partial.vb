@@ -1,6 +1,5 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
-Imports System.Data.SqlClient
 
 Partial Public Class clsLnProducto_estado
     Implements IDisposable

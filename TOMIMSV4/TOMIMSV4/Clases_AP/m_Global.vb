@@ -193,60 +193,6 @@ Module m_Global
         End If
 
     End Sub
-
-    Public Function Ejecutar_Interface(ByVal ParametroEjecucion As String, ByVal frm As RibbonForm, Optional pEjecutable As String = "") As Boolean
-
-        Dim vRutaInterface As String = ""
-        Dim vNombre_Ejecutable As String = ""
-
-        Ejecutar_Interface = False
-
-        Try
-
-            If Not String.IsNullOrEmpty(pEjecutable) Then
-
-                If clsLnI_nav_config_enc.Get_Existe_by_Ejecutable(pEjecutable) Then
-                    vNombre_Ejecutable = pEjecutable
-                End If
-
-            Else
-                vNombre_Ejecutable = clsLnI_nav_config_enc.Get_Nombre_Ejecutable(AP.IdConfiguracionInterface)
-            End If
-
-
-            If Not vNombre_Ejecutable = "" Then
-
-                vRutaInterface = CurDir() & "\" & vNombre_Ejecutable
-
-                If IO.File.Exists(vRutaInterface) Then
-
-                    If ParametroEjecucion <> "" Then
-                        ShellandWait(vRutaInterface, ParametroEjecucion, frm)
-                    Else
-                        Dim startInfo As New ProcessStartInfo() With {.FileName = vRutaInterface,
-                                                                      .Arguments = ParametroEjecucion}
-                        Process.Start(startInfo)
-                    End If
-
-                    Ejecutar_Interface = True
-
-                Else
-                    MessageBox.Show("No existe archivo de interface " & vRutaInterface,
-                                    "Exec_MI3_Sync",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Exclamation)
-                End If
-
-            End If
-
-        Catch ex As Exception
-            MessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-            "Exec_MI3_Sync",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Exclamation)
-        End Try
-
-    End Function
     Public Function Ejecutar_Servicio(ByVal ParametroEjecucion As String, ByVal frm As RibbonForm) As Boolean
 
         Ejecutar_Servicio = False

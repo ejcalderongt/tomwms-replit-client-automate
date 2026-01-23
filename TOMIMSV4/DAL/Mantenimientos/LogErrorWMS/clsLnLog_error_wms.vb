@@ -1,4 +1,3 @@
-Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
 
@@ -165,7 +164,6 @@ Public Class clsLnLog_error_wms
         Catch ex As Exception
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
@@ -210,7 +208,6 @@ Public Class clsLnLog_error_wms
         Catch ex As Exception
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()
@@ -219,131 +216,6 @@ Public Class clsLnLog_error_wms
         End Try
 
     End Function
-
-    Public Shared Function Listar() As DataTable
-
-        Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
-        Dim lTransaction As SqlTransaction = Nothing
-
-        Try
-
-            Const sp As String = "SELECT * FROM Log_error_wms"
-            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-            Dim dad As New SqlDataAdapter(cmd)
-            Dim dt As New DataTable
-            dad.Fill(dt)
-
-            lTransaction.Commit()
-
-            Return dt
-
-        Catch ex As Exception
-            If Not lTransaction Is Nothing Then lTransaction.Rollback()
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-            If Not lConnection Is Nothing Then lConnection.Dispose()
-            If Not lTransaction Is Nothing Then lTransaction.Dispose()
-        End Try
-
-    End Function
-
-    Public Shared Function Get_All() As List(Of clsBeLog_error_wms)
-
-        Dim lReturnList As New List(Of clsBeLog_error_wms)
-
-        Try
-
-            Const sp As String = "SELECT * FROM Log_error_wms"
-
-            Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
-
-                lConnection.Open()
-
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-
-                    Using lDTA As New SqlDataAdapter(sp, lConnection)
-
-                        lDTA.SelectCommand.CommandType = CommandType.Text
-                        lDTA.SelectCommand.Transaction = lTransaction
-                        Dim lDataTable As New DataTable
-                        lDTA.Fill(lDataTable)
-
-                        Dim vBeLog_error_wms As New clsBeLog_error_wms
-
-                        For Each dr As DataRow In lDataTable.Rows
-                            vBeLog_error_wms = New clsBeLog_error_wms()
-                            Cargar(vBeLog_error_wms, dr)
-                            lReturnList.Add(vBeLog_error_wms)
-                        Next
-
-                    End Using
-
-                    lTransaction.Commit()
-
-                End Using
-
-                lConnection.Close()
-
-            End Using
-
-            Return lReturnList
-
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-    End Function
-
-    Public Shared Sub GetSingle(ByRef pBeLog_error_wms As clsBeLog_error_wms)
-
-        Try
-
-            Const sp As String = "SELECT * FROM Log_error_wms" &
-            " Where(IdError = @IdError)"
-
-
-            Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
-
-                lConnection.Open()
-
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadCommitted)
-
-                    Using lDTA As New SqlDataAdapter(sp, lConnection)
-
-                        lDTA.SelectCommand.CommandType = CommandType.Text
-                        lDTA.SelectCommand.Transaction = lTransaction
-                        Dim lDataTable As New DataTable
-                        lDTA.Fill(lDataTable)
-
-                        Dim vBeLog_error_wms As New clsBeLog_error_wms
-
-                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
-                            Cargar(vBeLog_error_wms, lDataTable.Rows(0))
-                        End If
-
-                    End Using
-
-                    lTransaction.Commit()
-
-                End Using
-
-                lConnection.Close()
-
-            End Using
-
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-    End Sub
 
     Public Shared Function MaxID(ByVal pConnection As SqlConnection,
                                  ByVal pTransaction As SqlTransaction) As Integer
@@ -383,7 +255,6 @@ Public Class clsLnLog_error_wms
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -424,7 +295,6 @@ Public Class clsLnLog_error_wms
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -603,7 +473,6 @@ Public Class clsLnLog_error_wms
 
         Catch ex As Exception
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            Agregar_Error(vMsgError)
             Throw ex
         End Try
 
@@ -645,7 +514,6 @@ Public Class clsLnLog_error_wms
         Catch ex As Exception
             If Not lTransaction Is Nothing Then lTransaction.Rollback()
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            Agregar_Error(vMsgError)
             Throw ex
         Finally
             If lConnection.State = ConnectionState.Open Then lConnection.Close()

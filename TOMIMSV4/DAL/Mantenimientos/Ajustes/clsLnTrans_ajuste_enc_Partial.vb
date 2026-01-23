@@ -718,7 +718,6 @@ Partial Public Class clsLnTrans_ajuste_enc
             Dim tran As SqlTransaction = conn.BeginTransaction(IsolationLevel.ReadUncommitted)
 
             Try
-                Inserta_Stock_Y_Movimiento = False
 
                 Using cmd As New SqlCommand(query, conn, tran)
                     cmd.Parameters.AddWithValue("@FechaDesde", fechaDesde)
@@ -742,17 +741,6 @@ Partial Public Class clsLnTrans_ajuste_enc
 
     End Function
 
-
-
-
-
-
-
-
-    Catch ex As Exception
-            End Try
-
-    End Function
     Public Shared Function Inserta_Stock_Y_Movimiento(ByVal pAjusteEnc As clsBeTrans_ajuste_enc,
                                                       ByVal pIdEmpresa As Integer,
                                                       ByVal lConnection As SqlConnection,

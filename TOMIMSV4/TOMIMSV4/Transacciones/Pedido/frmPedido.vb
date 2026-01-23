@@ -4047,7 +4047,6 @@ Public Class frmPedido
     End Sub
 
     Private Sub Llena_Cliente_Grid(ByVal pIndex As Integer,
-                                   lClientes As List(Of clsBeCliente),
                                    ByVal lConnection As SqlConnection,
                                    ByVal lTransaction As SqlTransaction,
                                    Optional ByVal pIdCliente As Integer = 0)
@@ -4062,10 +4061,8 @@ Public Class frmPedido
             lCliente = New List(Of clsBeCliente)
 
             If Modo = TipoTrans.Nuevo Then
-                lCliente = lClientes
+                lCliente = clsLnCliente.Get_All(lConnection, lTransaction)
             Else
-                lCliente = lCliente.FindAll(Function(x) x.IdCliente = pIdCliente)
-                Else
                 lCliente = clsLnCliente.Get_All_By_IdCliente(pIdCliente, lConnection, lTransaction)
             End If
 
@@ -7829,483 +7826,481 @@ Public Class frmPedido
 
     End Sub
 
-<<<<<<< ours
-    Private Sub frmPedido_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
-=======
     Dim Lista_tallas As New List(Of clsBeTalla)
     Dim Lista_colores As New List(Of clsBeColor)
 
     Private Sub frmPedido_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
-    Dim clsTransaccion As New clsTransaccion()
-    IsLoading = True
-    Dim hora_server As DateTime
+        Dim clsTransaccion As New clsTransaccion()
+        IsLoading = True
+        Dim hora_server As DateTime
 
-    Try
+        Try
 
-        clsTransaccion.Begin_Transaction()
+            clsTransaccion.Begin_Transaction()
 
-        SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-        SplashScreenManager.Default.SetWaitFormCaption("Cargando datos...")
+            SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+            SplashScreenManager.Default.SetWaitFormCaption("Cargando datos...")
 
-        pBeProducto = New clsBeProducto
+            pBeProducto = New clsBeProducto
 
-        Set_Columnas_DT_StockRes()
-        Set_Columnas_DT_ProductoComposicion()
+            Set_Columnas_DT_StockRes()
+            Set_Columnas_DT_ProductoComposicion()
 
-        AP.Listar_Bodegas_By_Usuario(cmbBodega,
+            AP.Listar_Bodegas_By_Usuario(cmbBodega,
+                                         clsTransaccion.lConnection,
+                                         clsTransaccion.lTransaction)
+
+            Dim DT1 As New DataTable
+            DT1 = clsLnPropietario_bodega.Get_All_By_IdBodega_For_Combo(cmbBodega.EditValue,
+                                                                        clsTransaccion.lConnection,
+                                                                        clsTransaccion.lTransaction)
+
+            '#EJC20210826: Si no hay propietarios por bodega, no continuar.
+            If Not DT1 Is Nothing Then
+
+                '#CKFK20181001: Colocar bodega por defecto.
+                cmbBodega.EditValue = Integer.Parse(AP.IdBodega)
+                cmbBodega.RefreshEditValue()
+
+                '#GT20082025: si bodega maneja talla color asignar los campos
+                If AP.Bodega IsNot Nothing AndAlso AP.Bodega.Control_Talla_Color Then
+                    Lista_tallas = clsLnTalla.Listar_For_Combo()
+                    Lista_colores = clsLnColor.Listar_For_Combo()
+                    Llenar_Combos_Talla_Color()
+                Else
+                    If dgrid.Columns.Contains(dgrid.Columns("colTalla")) Then dgrid.Columns("colTalla").Visible = False
+                    If dgrid.Columns.Contains(dgrid.Columns("colColor")) Then dgrid.Columns("colColor").Visible = False
+                End If
+
+                IMS.Listar_Propietarios_By_IdBodega(lcmbPropietario,
+                                                    cmbBodega.EditValue,
+                                                    clsTransaccion.lConnection,
+                                                    clsTransaccion.lTransaction)
+
+                IMS.Listar_Muelles(cmbMuelle,
+                                   cmbBodega.EditValue,
+                                   clsTransaccion.lConnection,
+                                   clsTransaccion.lTransaction)
+
+                IMS.Listar_RoadRutas(cmbRoadRutaPedido,
                                      clsTransaccion.lConnection,
                                      clsTransaccion.lTransaction)
 
-        Dim DT1 As New DataTable
-        DT1 = clsLnPropietario_bodega.Get_All_By_IdBodega_For_Combo(cmbBodega.EditValue,
-                                                                    clsTransaccion.lConnection,
-                                                                    clsTransaccion.lTransaction)
+                IMS.Listar_RoadRutas(cmbRoadRutaDespacho,
+                                     clsTransaccion.lConnection,
+                                     clsTransaccion.lTransaction)
 
-        '#EJC20210826: Si no hay propietarios por bodega, no continuar.
-        If Not DT1 Is Nothing Then
+                IMS.Listar_VendedoresByRuta(cmbRoadVendedorPedido,
+                                            cmbRoadRutaPedido.EditValue,
+                                            clsTransaccion.lConnection,
+                                            clsTransaccion.lTransaction)
 
-            '#CKFK20181001: Colocar bodega por defecto.
-            cmbBodega.EditValue = Integer.Parse(AP.IdBodega)
-            cmbBodega.RefreshEditValue()
+                IMS.Listar_VendedoresByRuta(cmbRoadVendedorDespacho,
+                                            cmbRoadRutaDespacho.EditValue,
+                                            clsTransaccion.lConnection,
+                                            clsTransaccion.lTransaction)
 
-            '#GT20082025: si bodega maneja talla color asignar los campos
-            If AP.Bodega IsNot Nothing AndAlso AP.Bodega.Control_Talla_Color Then
-                Lista_tallas = clsLnTalla.Listar_For_Combo()
-                Lista_colores = clsLnColor.Listar_For_Combo()
-                Llenar_Combos_Talla_Color()
-            Else
-                If dgrid.Columns.Contains(dgrid.Columns("colTalla")) Then dgrid.Columns("colTalla").Visible = False
-                If dgrid.Columns.Contains(dgrid.Columns("colColor")) Then dgrid.Columns("colColor").Visible = False
-            End If
+                'Nota: en el original estaba duplicada esta llamada; se elimina para evitar duplicidad.
 
-            IMS.Listar_Propietarios_By_IdBodega(lcmbPropietario,
-                                                cmbBodega.EditValue,
-                                                clsTransaccion.lConnection,
-                                                clsTransaccion.lTransaction)
+                IMS.Listar_Tipos_Manufactura_Ligera(cmbManufacturaLigera,
+                                                    clsTransaccion.lConnection,
+                                                    clsTransaccion.lTransaction)
 
-            IMS.Listar_Muelles(cmbMuelle,
-                               cmbBodega.EditValue,
-                               clsTransaccion.lConnection,
-                               clsTransaccion.lTransaction)
+                IMS.Llena_Empresas_Transporte(cmbEmpresaTransporte,
+                                              cmbBodega.EditValue,
+                                              clsTransaccion.lConnection,
+                                              clsTransaccion.lTransaction)
 
-            IMS.Listar_RoadRutas(cmbRoadRutaPedido,
-                                 clsTransaccion.lConnection,
-                                 clsTransaccion.lTransaction)
+                IMS.Llena_Pilotos(cmbPiloto,
+                                  cmbEmpresaTransporte.EditValue,
+                                  clsTransaccion.lConnection,
+                                  clsTransaccion.lTransaction)
 
-            IMS.Listar_RoadRutas(cmbRoadRutaDespacho,
-                                 clsTransaccion.lConnection,
-                                 clsTransaccion.lTransaction)
+                'GT 090820211654: filtrar el tipo de doc según la bodega (fiscal o general)
+                BeBodega = clsLnBodega.GetSingle_By_Idbodega(cmbBodega.EditValue,
+                                                             clsTransaccion.lConnection,
+                                                             clsTransaccion.lTransaction)
 
-            IMS.Listar_VendedoresByRuta(cmbRoadVendedorPedido,
-                                        cmbRoadRutaPedido.EditValue,
-                                        clsTransaccion.lConnection,
-                                        clsTransaccion.lTransaction)
+                If Not IMS.Listar_TiposPedido(cmbTipoPedido,
+                                              BeBodega.Es_Bodega_Fiscal,
+                                              clsTransaccion.lConnection,
+                                              clsTransaccion.lTransaction) Then
+                    Throw New Exception("No hay documentos definidos para la bodega " & AP.IdBodega & ", no se puede crear el pedido")
+                End If
 
-            IMS.Listar_VendedoresByRuta(cmbRoadVendedorDespacho,
-                                        cmbRoadRutaDespacho.EditValue,
-                                        clsTransaccion.lConnection,
-                                        clsTransaccion.lTransaction)
-
-            'Nota: en el original estaba duplicada esta llamada; se elimina para evitar duplicidad.
-
-            IMS.Listar_Tipos_Manufactura_Ligera(cmbManufacturaLigera,
-                                                clsTransaccion.lConnection,
-                                                clsTransaccion.lTransaction)
-
-            IMS.Llena_Empresas_Transporte(cmbEmpresaTransporte,
-                                          cmbBodega.EditValue,
+                'GT 22012021 no esta incluido para pedido
+                IMS.Listar_Regimen_Fiscal(cmbRegimen,
                                           clsTransaccion.lConnection,
                                           clsTransaccion.lTransaction)
 
-            IMS.Llena_Pilotos(cmbPiloto,
-                              cmbEmpresaTransporte.EditValue,
-                              clsTransaccion.lConnection,
-                              clsTransaccion.lTransaction)
+                IsLoading = False
 
-            'GT 090820211654: filtrar el tipo de doc según la bodega (fiscal o general)
-            BeBodega = clsLnBodega.GetSingle_By_Idbodega(cmbBodega.EditValue,
-                                                         clsTransaccion.lConnection,
-                                                         clsTransaccion.lTransaction)
+                dgrid.Columns("ColCantidad").DefaultCellStyle.BackColor = Color.OldLace
+                dgrid.Columns("ColCantidad").DefaultCellStyle.ForeColor = Color.Black
 
-            If Not IMS.Listar_TiposPedido(cmbTipoPedido,
-                                          BeBodega.Es_Bodega_Fiscal,
-                                          clsTransaccion.lConnection,
-                                          clsTransaccion.lTransaction) Then
-                Throw New Exception("No hay documentos definidos para la bodega " & AP.IdBodega & ", no se puede crear el pedido")
-            End If
+                '#EJC20220327: Cambio por lookupedit. (antex textbox)
+                If BeTipoDoc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Devolucion_Proveedor Then
 
-            'GT 22012021 no esta incluido para pedido
-            IMS.Listar_Regimen_Fiscal(cmbRegimen,
-                                      clsTransaccion.lConnection,
-                                      clsTransaccion.lTransaction)
+                    IMS.Listar_Clientes_By_IdPropietario_By_EsProveedor(txtIdCliente,
+                                                                        lcmbPropietario.GetColumnValue("IdPropietario"),
+                                                                        cmbBodega.EditValue,
+                                                                        BeTipoDoc.Requerir_Cliente_Es_Bodega_WMS,
+                                                                        True)
+                Else
 
-            IsLoading = False
+                    IMS.Listar_Clientes_By_IdPropietario(txtIdCliente,
+                                                         lcmbPropietario.GetColumnValue("IdPropietario"),
+                                                         cmbBodega.EditValue,
+                                                         BeTipoDoc.Requerir_Cliente_Es_Bodega_WMS)
+                End If
 
-            dgrid.Columns("ColCantidad").DefaultCellStyle.BackColor = Color.OldLace
-            dgrid.Columns("ColCantidad").DefaultCellStyle.ForeColor = Color.Black
+                IsLoading = True
 
-            '#EJC20220327: Cambio por lookupedit. (antex textbox)
-            If BeTipoDoc.IdTipoPedido = clsDataContractDI.tTipoDocumentoSalida.Devolucion_Proveedor Then
+                '#EJC20210409: Servicios CEALSA.
+                If AP.Bodega.Control_Tarifa_Servicios Then
+                    Set_Datata_Table_Grid_Detalle_Servicios()
+                    Set_Columnas_Grid_Detalle_Servicios()
+                End If
 
-                IMS.Listar_Clientes_By_IdPropietario_By_EsProveedor(txtIdCliente,
-                                                                    lcmbPropietario.GetColumnValue("IdPropietario"),
-                                                                    cmbBodega.EditValue,
-                                                                    BeTipoDoc.Requerir_Cliente_Es_Bodega_WMS,
-                                                                    True)
-            Else
+                'GT 25012021 Grid Servicios
+                dgridServiciosAsociados.DataSource = DTGridDetalleServicios
+                gvDetalleServicios.OptionsView.NewItemRowPosition = NewItemRowPosition.Bottom
 
-                IMS.Listar_Clientes_By_IdPropietario(txtIdCliente,
-                                                     lcmbPropietario.GetColumnValue("IdPropietario"),
-                                                     cmbBodega.EditValue,
-                                                     BeTipoDoc.Requerir_Cliente_Es_Bodega_WMS)
-            End If
+                pBeStock.ProductoEstado = New clsBeProducto_estado
+                pBeStock.Presentacion = New clsBeProducto_Presentacion
+                pBePedidoDetList = New List(Of clsBeTrans_pe_det)
 
-            IsLoading = True
+                dgrid.Columns("ColCantidad").DefaultCellStyle.Format = "N2"
+                dgrid.Columns("ColPrecio").DefaultCellStyle.Format = "N2"
+                dgrid.Columns("ColTotal").DefaultCellStyle.Format = "N2"
 
-            '#EJC20210409: Servicios CEALSA.
-            If AP.Bodega.Control_Tarifa_Servicios Then
-                Set_Datata_Table_Grid_Detalle_Servicios()
-                Set_Columnas_Grid_Detalle_Servicios()
-            End If
+                WindowState = FormWindowState.Maximized
 
-            'GT 25012021 Grid Servicios
-            dgridServiciosAsociados.DataSource = DTGridDetalleServicios
-            gvDetalleServicios.OptionsView.NewItemRowPosition = NewItemRowPosition.Bottom
+                If AP.IdRol = 1 Then
+                    mnuLiberarNoPickeado.Enabled = True
+                    mnuReservaStockManual.Enabled = True
+                Else
+                    mnuLiberarNoPickeado.Enabled = False
+                    mnuReservaStockManual.Enabled = False
+                End If
 
-            pBeStock.ProductoEstado = New clsBeProducto_estado
-            pBeStock.Presentacion = New clsBeProducto_Presentacion
-            pBePedidoDetList = New List(Of clsBeTrans_pe_det)
+                If clsLnMenu_rol.Permiso_Funcionalidad("3.2.1.2", AP.IdRol) Then
+                    mnuEliminarPedido.Enabled = True
+                Else
+                    mnuEliminarPedido.Enabled = False
+                End If
 
-            dgrid.Columns("ColCantidad").DefaultCellStyle.Format = "N2"
-            dgrid.Columns("ColPrecio").DefaultCellStyle.Format = "N2"
-            dgrid.Columns("ColTotal").DefaultCellStyle.Format = "N2"
+                AP.Bodega = clsLnBodega.GetSingle_By_Idbodega(cmbBodega.EditValue,
+                                                              clsTransaccion.lConnection,
+                                                              clsTransaccion.lTransaction)
 
-            WindowState = FormWindowState.Maximized
+                '#EJC20220223: Set TipoDocumentoSalida defecto, configurado por bodega.
+                If (AP.Bodega.IdTipoTransaccionSalida > 0) Then
+                    cmbTipoPedido.EditValue = AP.Bodega.IdTipoTransaccionSalida
+                End If
 
-            If AP.IdRol = 1 Then
-                mnuLiberarNoPickeado.Enabled = True
-                mnuReservaStockManual.Enabled = True
-            Else
-                mnuLiberarNoPickeado.Enabled = False
-                mnuReservaStockManual.Enabled = False
-            End If
+                Set_Tipo_Documento()
 
-            If clsLnMenu_rol.Permiso_Funcionalidad("3.2.1.2", AP.IdRol) Then
-                mnuEliminarPedido.Enabled = True
-            Else
-                mnuEliminarPedido.Enabled = False
-            End If
+                If cmbTipoPedido.ItemIndex = -1 Then
+                    Preguntar_Al_Salir = False
+                    Close()
+                    Exit Sub
+                End If
 
-            AP.Bodega = clsLnBodega.GetSingle_By_Idbodega(cmbBodega.EditValue,
-                                                          clsTransaccion.lConnection,
-                                                          clsTransaccion.lTransaction)
+                'GT 210720211443: Si Pedido tiene tipo doc transferencia fiscal a general, se habilita el tab de poliza.
+                Dim fila As Object = cmbTipoPedido.GetSelectedDataRow
 
-            '#EJC20220223: Set TipoDocumentoSalida defecto, configurado por bodega.
-            If (AP.Bodega.IdTipoTransaccionSalida > 0) Then
-                cmbTipoPedido.EditValue = AP.Bodega.IdTipoTransaccionSalida
-            End If
+                If Not fila Is Nothing Then
+                    vControlPoliza = fila.Item("control_poliza")
+                End If
 
-            Set_Tipo_Documento()
+                If vControlPoliza Then
+                    chkControlPoliza.Checked = True
+                    chkControlPoliza.Enabled = False
+                    tabPoliza.Visible = True
+                    tabPoliza.PageVisible = True
+                    grpScanPoliza.Visible = True
+                Else
+                    txtScanPoliza.Visible = False
+                    LabelControl2.Visible = False
+                    grpScanPoliza.Visible = False
+                    tabPoliza.Visible = False
+                    tabPoliza.PageVisible = False
+                    grpScanPoliza.Visible = False
+                End If
 
-            If cmbTipoPedido.ItemIndex = -1 Then
-                Preguntar_Al_Salir = False
-                Close()
-                Exit Sub
-            End If
+                Select Case Modo
 
-            'GT 210720211443: Si Pedido tiene tipo doc transferencia fiscal a general, se habilita el tab de poliza.
-            Dim fila As Object = cmbTipoPedido.GetSelectedDataRow
+                    Case TipoTrans.Nuevo
 
-            If Not fila Is Nothing Then
-                vControlPoliza = fila.Item("control_poliza")
-            End If
+                        hora_server = clsServidor.Get_Fecha_Servidor(clsTransaccion.lConnection,
+                                                                     clsTransaccion.lTransaction)
+                        pBePedidoEnc.IsNew = True
 
-            If vControlPoliza Then
-                chkControlPoliza.Checked = True
-                chkControlPoliza.Enabled = False
-                tabPoliza.Visible = True
-                tabPoliza.PageVisible = True
-                grpScanPoliza.Visible = True
-            Else
-                txtScanPoliza.Visible = False
-                LabelControl2.Visible = False
-                grpScanPoliza.Visible = False
-                tabPoliza.Visible = False
-                tabPoliza.PageVisible = False
-                grpScanPoliza.Visible = False
-            End If
-
-            Select Case Modo
-
-                Case TipoTrans.Nuevo
-
-                    hora_server = clsServidor.Get_Fecha_Servidor(clsTransaccion.lConnection,
-                                                                 clsTransaccion.lTransaction)
-                    pBePedidoEnc.IsNew = True
-
-                    lblIdPedidoEnc.Text = "-"
-                    User_agrTextEdit1.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
-                    Fec_agrDateEdit1.Text = hora_server
-                    User_modTextEdit1.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
-                    Fec_modDateEdit1.Text = hora_server
-                    mnuGuardar.Enabled = True
-                    cmdActualizar.Enabled = False
-                    mnuEliminar.Enabled = False
-                    cmdImprimir.Enabled = False
-                    mnuAsignacion.Enabled = False
-                    cmbBodega.Enabled = True
-                    cmdEliminar.Enabled = False
-                    dtpFechaPedido.DateTime = hora_server
-                    dtpFechaEntrega.DateTime = hora_server
-
-                    dtpFechaPreparacion.DateTime = New Date(1900, 1, 1)
-                    dtpHoraInicioPreparacion.Value = New Date(1900, 1, 1, 0, 0, 0)
-                    dtpHoraFinPreparacion.Value = New Date(1900, 1, 1, 0, 0, 0)
-
-                    dtpFechaPreparacion.ReadOnly = True
-                    dtpHoraInicioPreparacion.Enabled = False
-                    dtpHoraFinPreparacion.Enabled = False
-
-                    dtpHoraEntregaDesde.Value = hora_server
-                    dtpHoraEntregaHasta.Value = hora_server
-
-                    mnuDespachado.Visibility = BarItemVisibility.Never
-                    mnuEliminarPedido.Visibility = BarItemVisibility.Never
-                    mnuCrearPicking.Enabled = False
-
-                    If Inserta_Encabezado(clsTransaccion.lConnection, clsTransaccion.lTransaction) Then
-                        pBePedidoEnc.IsNew = False
-
-                        'Conservar bitácora nueva sin duplicar (si existe la bitácora por pedido, usarla; de lo contrario, el log viejo).
-                        Dim msgAdvertencia As String = "ADVERTENCIA_202302271656: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " guardó el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc
-                        Try
-                            clsLnLog_error_wms_pe.Agregar_Error(msgAdvertencia,
-                                                                pIdEmpresa:=AP.IdEmpresa,
-                                                                pIdBodega:=AP.IdBodega,
-                                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
-                                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
-                                                                pConection:=clsTransaccion.lConnection,
-                                                                pTransaction:=clsTransaccion.lTransaction)
-                        Catch
-                            clsLnLog_error_wms.Agregar_Error(msgAdvertencia)
-                        End Try
-                    End If
-
-                    txtNoDocumento.Text = pBePedidoEnc.No_documento
-                    lblIdPedidoEnc.Text = pBePedidoEnc.IdPedidoEnc
-
-                    xtrPedido.TabPages.Item(3).Visible = False
-                    xtrPedido.TabPages.Item(5).Visible = False
-
-                    tabLogMI3.PageVisible = False
-                    tabLogMI3.Visible = False
-
-                    tabExistencias.PageVisible = False
-                    tabExistencias.Visible = False
-
-                    '#EJC20220819111: Requerimiento de Axel para CEALSA.
-                    cmbBodega.EditValue = AP.IdBodega
-                    cmbBodega.ReadOnly = True
-
-                Case TipoTrans.Editar
-
-                    mnuGuardar.Enabled = False
-                    cmdActualizar.Enabled = True
-                    mnuEliminar.Enabled = True
-                    mnuAsignacion.Enabled = True
-                    cmdImprimir.Enabled = True
-
-                    '#EJC20220509id
-                    PedidoGuardadoPorUsuario = True
-
-                    If pBePedidoEnc Is Nothing Then Exit Sub
-
-                    'Mejora UI (ours): mensajes de progreso + DoEvents sin duplicar lógica
-                    SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-                    SplashScreenManager.Default.SetWaitFormDescription("Cargando datos...")
-
-                    Cargar_Datos(clsTransaccion.lConnection, clsTransaccion.lTransaction)
-
-                    SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
-                    SplashScreenManager.Default.SetWaitFormDescription("Cargando despacho. ")
-                    Cargar_Despacho(clsTransaccion.lConnection, clsTransaccion.lTransaction)
-
-                    SplashScreenManager.Default.SetWaitFormDescription("Manufactura...")
-                    Cargar_Manufactura(clsTransaccion.lConnection, clsTransaccion.lTransaction)
-
-                    SplashScreenManager.Default.SetWaitFormDescription("Datos ERP. ")
-
-                    If Carga_Datos_PedidoERP(clsTransaccion.lConnection, clsTransaccion.lTransaction) Then
-                        xtrPedido.TabPages.Item(7).PageVisible = True
-                        mnuEliminarPedidoTablaIntermedia.Enabled = True
-                    Else
-                        mnuEliminarPedidoTablaIntermedia.Enabled = False
-                    End If
-
-                    If pBePedidoEnc Is Nothing Then Exit Sub
-
-                    mnuLiberarNoPickeado.Enabled = (pBePedidoEnc.IdPickingEnc > 0)
-
-                    mnuEliminarPedido.Visibility = IIf(AP.Bodega.Permitir_Eliminar_Documento_Salida, BarItemVisibility.Always, BarItemVisibility.Never)
-
-                    If pBePedidoEnc.Estado.ToUpper() = "DESPACHADO" Then
-
-                        '#GT27052024: bloquear al editar un pedido despachado
-                        lnkAgregarStockEspecifico.Enabled = False
-                        lnkAgregarProducto.Enabled = False
-                        lnkVerConfiguracionProducto.Enabled = False
-                        lnkParametrosProducto.Enabled = False
-                        txtScanPoliza.Enabled = False
-
-                        mnuGuardar.Enabled = False
+                        lblIdPedidoEnc.Text = "-"
+                        User_agrTextEdit1.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
+                        Fec_agrDateEdit1.Text = hora_server
+                        User_modTextEdit1.Text = String.Format("{0} {1}", AP.UsuarioAp.Nombres, AP.UsuarioAp.Apellidos)
+                        Fec_modDateEdit1.Text = hora_server
+                        mnuGuardar.Enabled = True
                         cmdActualizar.Enabled = False
                         mnuEliminar.Enabled = False
-                        cmdEliminar.Enabled = False
+                        cmdImprimir.Enabled = False
                         mnuAsignacion.Enabled = False
-                        dgrid.ReadOnly = True
-                        '#EJC202308111207: Permitir liberar por despachos parciales.
-                        mnuLiberarNoPickeado.Enabled = True
-                        mnuReservaStockManual.Enabled = False
+                        cmbBodega.Enabled = True
+                        cmdEliminar.Enabled = False
+                        dtpFechaPedido.DateTime = hora_server
+                        dtpFechaEntrega.DateTime = hora_server
+
+                        dtpFechaPreparacion.DateTime = New Date(1900, 1, 1)
+                        dtpHoraInicioPreparacion.Value = New Date(1900, 1, 1, 0, 0, 0)
+                        dtpHoraFinPreparacion.Value = New Date(1900, 1, 1, 0, 0, 0)
+
+                        dtpFechaPreparacion.ReadOnly = True
+                        dtpHoraInicioPreparacion.Enabled = False
+                        dtpHoraFinPreparacion.Enabled = False
+
+                        dtpHoraEntregaDesde.Value = hora_server
+                        dtpHoraEntregaHasta.Value = hora_server
+
                         mnuDespachado.Visibility = BarItemVisibility.Never
                         mnuEliminarPedido.Visibility = BarItemVisibility.Never
-                        '#EJC202308111207: Generar picking por despachos parciales.
-                        mnuCrearPicking.Enabled = True
-
-                    ElseIf pBePedidoEnc.Estado.ToUpper() = "ANULADO" Then
-
-                        '#GT27052024: bloquear al abrir un pedido anulado
-                        lnkAgregarStockEspecifico.Enabled = False
-                        lnkAgregarProducto.Enabled = False
-                        lnkVerConfiguracionProducto.Enabled = False
-                        lnkParametrosProducto.Enabled = False
-                        txtScanPoliza.Enabled = False
-
-                        mnuGuardar.Enabled = False
-                        cmdActualizar.Enabled = False
-                        mnuEliminar.Enabled = False
-                        cmdEliminar.Enabled = False
-                        mnuAsignacion.Enabled = False
-                        cmdImprimir.Enabled = False
-                        dgrid.ReadOnly = True
-                        RibbonPageGroup2.Enabled = False
-                        RibbonPageGroup4.Enabled = False
-                        RibbonPageGroup5.Enabled = False
-                        RibbonPageGroup6.Enabled = False
-                        mnuEliminarPedido.Visibility = BarItemVisibility.Always
                         mnuCrearPicking.Enabled = False
 
-                    Else
-                        mnuDespachado.Visibility = BarItemVisibility.Always
-                    End If
+                        If Inserta_Encabezado(clsTransaccion.lConnection, clsTransaccion.lTransaction) Then
+                            pBePedidoEnc.IsNew = False
 
-                    'Mantener paralelización (ours) sin duplicar llamadas
-                    SplashScreenManager.Default.SetWaitFormDescription("Picking. ")
-                    Dim taskPick As Task = Task.Run(Sub() Cargar_Picking())
-
-                    SplashScreenManager.Default.SetWaitFormDescription("Reserva. ")
-                    Dim taskRes As Task = Task.Run(Sub() Carga_Stock_Reservado())
-
-                    SplashScreenManager.Default.SetWaitFormDescription("Stock liberado. ")
-                    Dim taskLib As Task = Task.Run(Sub() Cargar_Stock_Liberado())
-
-                    SplashScreenManager.Default.SetWaitFormDescription("Hoja de verificación. ")
-
-                    If Carga_Hoja_Verificacion(clsTransaccion.lConnection, clsTransaccion.lTransaction) Then
-                        xtrPedido.TabPages.Item(12).PageVisible = True
-                        tabHojaVerificacion.PageVisible = True
-                    Else
-                        xtrPedido.TabPages.Item(12).PageVisible = False
-                        tabHojaVerificacion.PageVisible = False
-                    End If
-
-                    SplashScreenManager.Default.SetWaitFormDescription("Poliza. ")
-
-                    '#EJC20210215: validar antes que no sea nothing
-                    If Not pBePedidoEnc.ObjPoliza Is Nothing Then
-                        If pBePedidoEnc.ObjPoliza.Dua <> "" Then
-                            Dim taskPol As Task = Task.Run(Sub() Cargar_Poliza())
+                            'Conservar bitácora nueva sin duplicar (si existe la bitácora por pedido, usarla; de lo contrario, el log viejo).
+                            Dim msgAdvertencia As String = "ADVERTENCIA_202302271656: El IdUsuario: " & AP.UsuarioAp.IdUsuario & " guardó el IdPedidoEnc: " & pBePedidoEnc.IdPedidoEnc
+                            Try
+                                clsLnLog_error_wms_pe.Agregar_Error(msgAdvertencia,
+                                                                    pIdEmpresa:=AP.IdEmpresa,
+                                                                    pIdBodega:=AP.IdBodega,
+                                                                    pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                                    pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                                    pConection:=clsTransaccion.lConnection,
+                                                                    pTransaction:=clsTransaccion.lTransaction)
+                            Catch
+                                clsLnLog_error_wms.Agregar_Error(msgAdvertencia)
+                            End Try
                         End If
-                    End If
 
-                    'Esperar tareas para no dejar UI inconsistente
-                    Task.WaitAll(taskPick, taskRes, taskLib)
+                        txtNoDocumento.Text = pBePedidoEnc.No_documento
+                        lblIdPedidoEnc.Text = pBePedidoEnc.IdPedidoEnc
 
-                    '#GT11042023: set de la hora inicio y fin 
-                    dtpHoraInicioPreparacion.Value = pBePedidoEnc.Hora_ini
-                    dtpHoraFinPreparacion.Value = pBePedidoEnc.Hora_fin
+                        xtrPedido.TabPages.Item(3).Visible = False
+                        xtrPedido.TabPages.Item(5).Visible = False
 
-                    dtpHoraInicioPreparacion.Enabled = False
-                    dtpHoraFinPreparacion.Enabled = False
+                        tabLogMI3.PageVisible = False
+                        tabLogMI3.Visible = False
 
-                    '#GT25042023: faltaba esta asignación al abrir un pedido para editar
-                    If Not pBePedidoEnc.Picking Is Nothing Then chkVerificar.Checked = pBePedidoEnc.Picking.verifica_auto
-                    '#CKFK20231027 Asignar al pedido el valor del campo requerir_fotografia_verificacion del documento
-                    If Not pBePedidoEnc.Picking Is Nothing Then chkFotografiaVerificacion.Checked = pBePedidoEnc.Picking.Fotografia_Verificacion
+                        tabExistencias.PageVisible = False
+                        tabExistencias.Visible = False
 
-                    '#GT28052024: recargar acuerdos previamente registrados.
-                    If AP.Bodega.Control_Tarifa_Servicios Then
-                        If Llena_Servicios_By_Acuerdo_For_Combo() Then
-                            Cargar_Servicios_Registrados()
+                        '#EJC20220819111: Requerimiento de Axel para CEALSA.
+                        cmbBodega.EditValue = AP.IdBodega
+                        cmbBodega.ReadOnly = True
+
+                    Case TipoTrans.Editar
+
+                        mnuGuardar.Enabled = False
+                        cmdActualizar.Enabled = True
+                        mnuEliminar.Enabled = True
+                        mnuAsignacion.Enabled = True
+                        cmdImprimir.Enabled = True
+
+                        '#EJC20220509id
+                        PedidoGuardadoPorUsuario = True
+
+                        If pBePedidoEnc Is Nothing Then Exit Sub
+
+                        'Mejora UI (ours): mensajes de progreso + DoEvents sin duplicar lógica
+                        SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+                        SplashScreenManager.Default.SetWaitFormDescription("Cargando datos...")
+
+                        Cargar_Datos(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                        SplashScreenManager.ShowForm(Me, GetType(WaitForm), True, True, False)
+                        SplashScreenManager.Default.SetWaitFormDescription("Cargando despacho. ")
+                        Cargar_Despacho(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                        SplashScreenManager.Default.SetWaitFormDescription("Manufactura...")
+                        Cargar_Manufactura(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
+                        SplashScreenManager.Default.SetWaitFormDescription("Datos ERP. ")
+
+                        If Carga_Datos_PedidoERP(clsTransaccion.lConnection, clsTransaccion.lTransaction) Then
+                            xtrPedido.TabPages.Item(7).PageVisible = True
+                            mnuEliminarPedidoTablaIntermedia.Enabled = True
+                        Else
+                            mnuEliminarPedidoTablaIntermedia.Enabled = False
                         End If
-                    End If
 
-                    SplashScreenManager.Default.SetWaitFormDescription("Existencias. ")
-                    Dim taskEx As Task = Task.Run(Sub() Cargar_Existencias_Pedido())
-                    taskEx.Wait()
+                        If pBePedidoEnc Is Nothing Then Exit Sub
 
-            End Select
+                        mnuLiberarNoPickeado.Enabled = (pBePedidoEnc.IdPickingEnc > 0)
 
-            'Mantener llamada (theirs) pero usando el wrapper sin parámetros (ya usada en tu proyecto)
-            Equiparar_Cliente_Con_Propietario(clsTransaccion.lConnection,
-                                              clsTransaccion.lTransaction)
+                        mnuEliminarPedido.Visibility = IIf(AP.Bodega.Permitir_Eliminar_Documento_Salida, BarItemVisibility.Always, BarItemVisibility.Never)
 
-            '#EJC20220113_0302AM: Mostrar tab de servicios según parametro.
-            xtrPedido.TabPages.Item(9).PageVisible = AP.Bodega.Control_Tarifa_Servicios
-            TabServiciosAsociados.Visible = AP.Bodega.Control_Tarifa_Servicios
+                        If pBePedidoEnc.Estado.ToUpper() = "DESPACHADO" Then
 
-            xtrPedido.SelectedTabPageIndex = 0
-            txtTotalLineas.Enabled = False
-            txtTotalBulto.Enabled = False
+                            '#GT27052024: bloquear al editar un pedido despachado
+                            lnkAgregarStockEspecifico.Enabled = False
+                            lnkAgregarProducto.Enabled = False
+                            lnkVerConfiguracionProducto.Enabled = False
+                            lnkParametrosProducto.Enabled = False
+                            txtScanPoliza.Enabled = False
 
-            txtNoDocumento.Focus()
+                            mnuGuardar.Enabled = False
+                            cmdActualizar.Enabled = False
+                            mnuEliminar.Enabled = False
+                            cmdEliminar.Enabled = False
+                            mnuAsignacion.Enabled = False
+                            dgrid.ReadOnly = True
+                            '#EJC202308111207: Permitir liberar por despachos parciales.
+                            mnuLiberarNoPickeado.Enabled = True
+                            mnuReservaStockManual.Enabled = False
+                            mnuDespachado.Visibility = BarItemVisibility.Never
+                            mnuEliminarPedido.Visibility = BarItemVisibility.Never
+                            '#EJC202308111207: Generar picking por despachos parciales.
+                            mnuCrearPicking.Enabled = True
 
-        End If
+                        ElseIf pBePedidoEnc.Estado.ToUpper() = "ANULADO" Then
 
-        clsTransaccion.Commit_Transaction()
+                            '#GT27052024: bloquear al abrir un pedido anulado
+                            lnkAgregarStockEspecifico.Enabled = False
+                            lnkAgregarProducto.Enabled = False
+                            lnkVerConfiguracionProducto.Enabled = False
+                            lnkParametrosProducto.Enabled = False
+                            txtScanPoliza.Enabled = False
 
-    Catch ex As Exception
+                            mnuGuardar.Enabled = False
+                            cmdActualizar.Enabled = False
+                            mnuEliminar.Enabled = False
+                            cmdEliminar.Enabled = False
+                            mnuAsignacion.Enabled = False
+                            cmdImprimir.Enabled = False
+                            dgrid.ReadOnly = True
+                            RibbonPageGroup2.Enabled = False
+                            RibbonPageGroup4.Enabled = False
+                            RibbonPageGroup5.Enabled = False
+                            RibbonPageGroup6.Enabled = False
+                            mnuEliminarPedido.Visibility = BarItemVisibility.Always
+                            mnuCrearPicking.Enabled = False
 
-        clsTransaccion.RollBack_Transaction()
+                        Else
+                            mnuDespachado.Visibility = BarItemVisibility.Always
+                        End If
 
-        SplashScreenManager.CloseForm(False)
+                        'Mantener paralelización (ours) sin duplicar llamadas
+                        SplashScreenManager.Default.SetWaitFormDescription("Picking. ")
+                        Dim taskPick As Task = Task.Run(Sub() Cargar_Picking())
 
-        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                        SplashScreenManager.Default.SetWaitFormDescription("Reserva. ")
+                        Dim taskRes As Task = Task.Run(Sub() Carga_Stock_Reservado())
 
-        'Conservar bitácora nueva (ours) sin duplicar; fallback al log viejo si falla
-        Dim vMsgError As String = ex.Message
-        Try
-            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
-                                                pIdEmpresa:=AP.IdEmpresa,
-                                                pIdBodega:=AP.IdBodega,
-                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
-                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
-                                                pStackTrace:=ex.StackTrace)
-        Catch
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
+                        SplashScreenManager.Default.SetWaitFormDescription("Stock liberado. ")
+                        Dim taskLib As Task = Task.Run(Sub() Cargar_Stock_Liberado())
+
+                        SplashScreenManager.Default.SetWaitFormDescription("Hoja de verificación. ")
+
+                        If Carga_Hoja_Verificacion(clsTransaccion.lConnection, clsTransaccion.lTransaction) Then
+                            xtrPedido.TabPages.Item(12).PageVisible = True
+                            tabHojaVerificacion.PageVisible = True
+                        Else
+                            xtrPedido.TabPages.Item(12).PageVisible = False
+                            tabHojaVerificacion.PageVisible = False
+                        End If
+
+                        SplashScreenManager.Default.SetWaitFormDescription("Poliza. ")
+
+                        '#EJC20210215: validar antes que no sea nothing
+                        If Not pBePedidoEnc.ObjPoliza Is Nothing Then
+                            'GT 15022021 carga datos de poliza si el registro tiene una asignada
+                            If pBePedidoEnc.ObjPoliza.Dua <> "" Then
+                                Cargar_Poliza(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+                            End If
+                        End If
+
+                        'Esperar tareas para no dejar UI inconsistente
+                        Task.WaitAll(taskPick, taskRes, taskLib)
+
+                        '#GT11042023: set de la hora inicio y fin 
+                        dtpHoraInicioPreparacion.Value = pBePedidoEnc.Hora_ini
+                        dtpHoraFinPreparacion.Value = pBePedidoEnc.Hora_fin
+
+                        dtpHoraInicioPreparacion.Enabled = False
+                        dtpHoraFinPreparacion.Enabled = False
+
+                        '#GT25042023: faltaba esta asignación al abrir un pedido para editar
+                        If Not pBePedidoEnc.Picking Is Nothing Then chkVerificar.Checked = pBePedidoEnc.Picking.verifica_auto
+                        '#CKFK20231027 Asignar al pedido el valor del campo requerir_fotografia_verificacion del documento
+                        If Not pBePedidoEnc.Picking Is Nothing Then chkFotografiaVerificacion.Checked = pBePedidoEnc.Picking.Fotografia_Verificacion
+
+                        '#GT28052024: recargar acuerdos previamente registrados.
+                        If AP.Bodega.Control_Tarifa_Servicios Then
+                            If Llena_Servicios_By_Acuerdo_For_Combo() Then
+                                Cargar_Servicios_Registrados()
+                            End If
+                        End If
+
+                        SplashScreenManager.Default.SetWaitFormDescription("Existencias. ")
+                        Dim taskEx As Task = Task.Run(Sub() Cargar_Existencias_Pedido())
+                        taskEx.Wait()
+
+                End Select
+
+                'Mantener llamada (theirs) pero usando el wrapper sin parámetros (ya usada en tu proyecto)
+                Equiparar_Cliente_Con_Propietario(clsTransaccion.lConnection,
+                                                  clsTransaccion.lTransaction)
+
+                '#EJC20220113_0302AM: Mostrar tab de servicios según parametro.
+                xtrPedido.TabPages.Item(9).PageVisible = AP.Bodega.Control_Tarifa_Servicios
+                TabServiciosAsociados.Visible = AP.Bodega.Control_Tarifa_Servicios
+
+                xtrPedido.SelectedTabPageIndex = 0
+                txtTotalLineas.Enabled = False
+                txtTotalBulto.Enabled = False
+
+                txtNoDocumento.Focus()
+
+            End If
+
+            clsTransaccion.Commit_Transaction()
+
+        Catch ex As Exception
+
+            clsTransaccion.RollBack_Transaction()
+
+            SplashScreenManager.CloseForm(False)
+
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+
+            'Conservar bitácora nueva (ours) sin duplicar; fallback al log viejo si falla
+            Dim vMsgError As String = ex.Message
+            Try
+                clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
+                                                    pIdEmpresa:=AP.IdEmpresa,
+                                                    pIdBodega:=AP.IdBodega,
+                                                    pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                    pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                    pStackTrace:=ex.StackTrace)
+            Catch
+                clsLnLog_error_wms.Agregar_Error(vMsgError)
+            End Try
+
+            If ex.Message.Contains("No hay documentos definidos para la bodega " & AP.IdBodega) Then
+                Close()
+            End If
+
+        Finally
+            SplashScreenManager.CloseForm(False)
+            clsTransaccion.Close_Conection()
+            IsLoading = False
         End Try
 
-        If ex.Message.Contains("No hay documentos definidos para la bodega " & AP.IdBodega) Then
-            Close()
-        End If
-
-    Finally
-        SplashScreenManager.CloseForm(False)
-        clsTransaccion.Close_Conection()
-        IsLoading = False
-    End Try
-
-End Sub
+    End Sub
 
     Private Sub Llenar_Combos_Talla_Color()
         Try
@@ -8344,37 +8339,53 @@ End Sub
     Private Function Carga_Hoja_Verificacion(ByVal lConnection As SqlConnection,
                                          ByVal lTransaction As SqlTransaction) As Boolean
 
-    Carga_Hoja_Verificacion = False
+        Carga_Hoja_Verificacion = False
 
-    Try
+        Try
 
-        Dim lHojaVerificacion As New List(Of clsBeHojaVerificacion)
-        Dim BeHojaVerificacion As clsBeHojaVerificacion
+            Dim lHojaVerificacion As New List(Of clsBeHojaVerificacion)
+            Dim BeHojaVerificacion As clsBeHojaVerificacion
 
-        Dim vDeltaFactorPresentacion As Double = 0
-        Dim BePresentacionDefecto As clsBeProducto_Presentacion = Nothing
+            Dim vDeltaFactorPresentacion As Double = 0
+            Dim BePresentacionDefecto As clsBeProducto_Presentacion = Nothing
 
-        Dim vCantidadEnteraPresentacion As Double = 0
-        Dim vCantidadSobranteUnidades As Double = 0
-        Dim pesoUnidad As Double = 0
+            Dim vCantidadEnteraPresentacion As Double = 0
+            Dim vCantidadSobranteUnidades As Double = 0
+            Dim pesoUnidad As Double = 0
 
-        Dim vFactorQuintal As Double = 45.359237
+            Dim vFactorQuintal As Double = 45.359237
 
-        Dim vListaPickingHojaVerif As New List(Of clsBeTrans_picking_ubic)
+            Dim vListaPickingHojaVerif As New List(Of clsBeTrans_picking_ubic)
 
-        '1) Determinar de dónde sale la lista (Picking o Reserva)
-        If pBePedidoEnc Is Nothing Then Return False
+            '1) Determinar de dónde sale la lista (Picking o Reserva)
+            If pBePedidoEnc Is Nothing Then Return False
 
-        If pBePedidoEnc.Picking IsNot Nothing Then
+            If pBePedidoEnc.Picking IsNot Nothing Then
 
-            If pBePedidoEnc.Picking.ListaPickingUbic IsNot Nothing AndAlso pBePedidoEnc.Picking.ListaPickingUbic.Count > 0 Then
-                vListaPickingHojaVerif = pBePedidoEnc.Picking.ListaPickingUbic
+                If pBePedidoEnc.Picking.ListaPickingUbic IsNot Nothing AndAlso pBePedidoEnc.Picking.ListaPickingUbic.Count > 0 Then
+                    vListaPickingHojaVerif = pBePedidoEnc.Picking.ListaPickingUbic
+                Else
+                    'Si no hay picking, cargar desde reservas
+                    Dim vReservaPedidoDT As DataTable = clsLnStock_res.Get_All_Reserva_By_IdPedidoEnc(pBePedidoEnc.IdPedidoEnc)
+
+                    If vReservaPedidoDT IsNot Nothing AndAlso vReservaPedidoDT.Rows.Count > 0 Then
+
+                        For Each lRow As DataRow In vReservaPedidoDT.Rows
+                            Dim BePickingUbic As New clsBeTrans_picking_ubic
+                            clsLnTrans_picking_ubic.Cargar(BePickingUbic, lRow)
+                            BePickingUbic.CodigoProducto = lRow("CodigoProducto")
+                            BePickingUbic.NombreProducto = lRow("NombreProducto")
+                            vListaPickingHojaVerif.Add(BePickingUbic)
+                        Next
+
+                    End If
+                End If
+
             Else
-                'Si no hay picking, cargar desde reservas
+                'No hay Picking (objeto) -> intentar reservas igualmente (para no perder funcionalidad)
                 Dim vReservaPedidoDT As DataTable = clsLnStock_res.Get_All_Reserva_By_IdPedidoEnc(pBePedidoEnc.IdPedidoEnc)
 
                 If vReservaPedidoDT IsNot Nothing AndAlso vReservaPedidoDT.Rows.Count > 0 Then
-
                     For Each lRow As DataRow In vReservaPedidoDT.Rows
                         Dim BePickingUbic As New clsBeTrans_picking_ubic
                         clsLnTrans_picking_ubic.Cargar(BePickingUbic, lRow)
@@ -8382,302 +8393,286 @@ End Sub
                         BePickingUbic.NombreProducto = lRow("NombreProducto")
                         vListaPickingHojaVerif.Add(BePickingUbic)
                     Next
-
                 End If
             End If
 
-        Else
-            'No hay Picking (objeto) -> intentar reservas igualmente (para no perder funcionalidad)
-            Dim vReservaPedidoDT As DataTable = clsLnStock_res.Get_All_Reserva_By_IdPedidoEnc(pBePedidoEnc.IdPedidoEnc)
-
-            If vReservaPedidoDT IsNot Nothing AndAlso vReservaPedidoDT.Rows.Count > 0 Then
-                For Each lRow As DataRow In vReservaPedidoDT.Rows
-                    Dim BePickingUbic As New clsBeTrans_picking_ubic
-                    clsLnTrans_picking_ubic.Cargar(BePickingUbic, lRow)
-                    BePickingUbic.CodigoProducto = lRow("CodigoProducto")
-                    BePickingUbic.NombreProducto = lRow("NombreProducto")
-                    vListaPickingHojaVerif.Add(BePickingUbic)
-                Next
-            End If
-        End If
-
-        If vListaPickingHojaVerif Is Nothing OrElse vListaPickingHojaVerif.Count = 0 Then
-            Return False
-        End If
-
-        '2) Construir lista de hoja de verificación
-        For Each Det In vListaPickingHojaVerif _
-            .Where(Function(x) x.IdPedidoEnc = pBePedidoEnc.IdPedidoEnc) _
-            .OrderBy(Function(x) x.CodigoProducto)
-
-            BeHojaVerificacion = New clsBeHojaVerificacion()
-            BeHojaVerificacion.CodigoProducto = Det.CodigoProducto
-            BeHojaVerificacion.Nombre = Det.NombreProducto
-            BeHojaVerificacion.Observaciones = txtObservacion.Text
-            BeHojaVerificacion.RequiereTarimas = chkRequiereTarimas.Checked
-
-            If Det.IdProducto = 0 Then
-                Det.IdProducto = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(Det.IdProductoBodega,
-                                                                                         lConnection,
-                                                                                         lTransaction)
+            If vListaPickingHojaVerif Is Nothing OrElse vListaPickingHojaVerif.Count = 0 Then
+                Return False
             End If
 
-            BePresentacionDefecto = clsLnProducto_presentacion.Get_Presentacion_Defecto_By_IdProducto(Det.IdProducto,
-                                                                                                      lConnection,
-                                                                                                      lTransaction)
+            '2) Construir lista de hoja de verificación
+            For Each Det In vListaPickingHojaVerif _
+                .Where(Function(x) x.IdPedidoEnc = pBePedidoEnc.IdPedidoEnc) _
+                .OrderBy(Function(x) x.CodigoProducto)
 
-            If Det.IdPresentacion = 0 Then
+                BeHojaVerificacion = New clsBeHojaVerificacion()
+                BeHojaVerificacion.CodigoProducto = Det.CodigoProducto
+                BeHojaVerificacion.Nombre = Det.NombreProducto
+                BeHojaVerificacion.Observaciones = txtObservacion.Text
+                BeHojaVerificacion.RequiereTarimas = chkRequiereTarimas.Checked
 
-                If BePresentacionDefecto IsNot Nothing Then
+                If Det.IdProducto = 0 Then
+                    Det.IdProducto = clsLnProducto_bodega.Get_IdProducto_By_IdProductoBodega(Det.IdProductoBodega,
+                                                                                             lConnection,
+                                                                                             lTransaction)
+                End If
 
-                    If Det.Cantidad_Solicitada > BePresentacionDefecto.Factor Then
+                BePresentacionDefecto = clsLnProducto_presentacion.Get_Presentacion_Defecto_By_IdProducto(Det.IdProducto,
+                                                                                                          lConnection,
+                                                                                                          lTransaction)
 
-                        vDeltaFactorPresentacion = Math.Round(Det.Cantidad_Solicitada / BePresentacionDefecto.Factor, 6)
-                        vCantidadEnteraPresentacion = Math.Truncate(vDeltaFactorPresentacion)
-                        vCantidadSobranteUnidades = Math.Round(Math.Abs((vCantidadEnteraPresentacion - vDeltaFactorPresentacion) * BePresentacionDefecto.Factor))
+                If Det.IdPresentacion = 0 Then
 
-                        If vCantidadSobranteUnidades = 0 Then
-                            BeHojaVerificacion.CantidadPresentacion = vCantidadEnteraPresentacion
-                            BeHojaVerificacion.CantidadUMBas = 0
-                            BeHojaVerificacion.Peso = Math.Round(vCantidadEnteraPresentacion * BePresentacionDefecto.Peso, 6)
+                    If BePresentacionDefecto IsNot Nothing Then
+
+                        If Det.Cantidad_Solicitada > BePresentacionDefecto.Factor Then
+
+                            vDeltaFactorPresentacion = Math.Round(Det.Cantidad_Solicitada / BePresentacionDefecto.Factor, 6)
+                            vCantidadEnteraPresentacion = Math.Truncate(vDeltaFactorPresentacion)
+                            vCantidadSobranteUnidades = Math.Round(Math.Abs((vCantidadEnteraPresentacion - vDeltaFactorPresentacion) * BePresentacionDefecto.Factor))
+
+                            If vCantidadSobranteUnidades = 0 Then
+                                BeHojaVerificacion.CantidadPresentacion = vCantidadEnteraPresentacion
+                                BeHojaVerificacion.CantidadUMBas = 0
+                                BeHojaVerificacion.Peso = Math.Round(vCantidadEnteraPresentacion * BePresentacionDefecto.Peso, 6)
+                            Else
+                                BeHojaVerificacion.CantidadPresentacion = vCantidadEnteraPresentacion
+                                BeHojaVerificacion.CantidadUMBas = vCantidadSobranteUnidades
+                                BeHojaVerificacion.Peso = Math.Round(vCantidadEnteraPresentacion * BePresentacionDefecto.Peso, 6)
+
+                                Dim vPesoReferencia As Double = clsLnProducto.get_Peso_Referencia(Det.IdProducto, lConnection, lTransaction)
+                                BeHojaVerificacion.Peso += Math.Round(vCantidadSobranteUnidades * vPesoReferencia, 6)
+                            End If
+
+                            BeHojaVerificacion.NombrePresentacion = BePresentacionDefecto.Nombre
+                            BeHojaVerificacion.Factor = BePresentacionDefecto.Factor
+
                         Else
-                            BeHojaVerificacion.CantidadPresentacion = vCantidadEnteraPresentacion
-                            BeHojaVerificacion.CantidadUMBas = vCantidadSobranteUnidades
-                            BeHojaVerificacion.Peso = Math.Round(vCantidadEnteraPresentacion * BePresentacionDefecto.Peso, 6)
-
-                            Dim vPesoReferencia As Double = clsLnProducto.get_Peso_Referencia(Det.IdProducto, lConnection, lTransaction)
-                            BeHojaVerificacion.Peso += Math.Round(vCantidadSobranteUnidades * vPesoReferencia, 6)
+                            pesoUnidad = BePresentacionDefecto.Peso / BePresentacionDefecto.Factor
+                            BeHojaVerificacion.CantidadUMBas = Det.Cantidad_Solicitada
+                            BeHojaVerificacion.Factor = BePresentacionDefecto.Factor
+                            BeHojaVerificacion.Peso = Det.Cantidad_Solicitada * pesoUnidad
+                            BeHojaVerificacion.NombrePresentacion = BePresentacionDefecto.Nombre
                         End If
 
-                        BeHojaVerificacion.NombrePresentacion = BePresentacionDefecto.Nombre
-                        BeHojaVerificacion.Factor = BePresentacionDefecto.Factor
-
                     Else
-                        pesoUnidad = BePresentacionDefecto.Peso / BePresentacionDefecto.Factor
+                        '#CKFK20230307: si no hay presentación defecto, usar cantidades/peso del detalle
                         BeHojaVerificacion.CantidadUMBas = Det.Cantidad_Solicitada
-                        BeHojaVerificacion.Factor = BePresentacionDefecto.Factor
-                        BeHojaVerificacion.Peso = Det.Cantidad_Solicitada * pesoUnidad
-                        BeHojaVerificacion.NombrePresentacion = BePresentacionDefecto.Nombre
+                        BeHojaVerificacion.Peso = Det.Peso_solicitado
                     End If
 
                 Else
-                    '#CKFK20230307: si no hay presentación defecto, usar cantidades/peso del detalle
-                    BeHojaVerificacion.CantidadUMBas = Det.Cantidad_Solicitada
-                    BeHojaVerificacion.Peso = Det.Peso_solicitado
+
+                    Dim vPresentacion As clsBeProducto_Presentacion =
+                        clsLnProducto_presentacion.GetSingle(Det.IdPresentacion, lConnection, lTransaction)
+
+                    BeHojaVerificacion.CantidadPresentacion = Det.Cantidad_Solicitada
+                    BeHojaVerificacion.CantidadUMBas = 0
+
+                    If vPresentacion IsNot Nothing Then
+                        BeHojaVerificacion.NombrePresentacion = vPresentacion.Nombre
+                        BeHojaVerificacion.Peso = Math.Round(Det.Cantidad_Solicitada * vPresentacion.Peso, 6)
+                        BeHojaVerificacion.Factor = vPresentacion.Factor
+                    Else
+                        BeHojaVerificacion.NombrePresentacion = ""
+                        BeHojaVerificacion.Peso = 0
+                        BeHojaVerificacion.Factor = 0
+                    End If
+
                 End If
 
-            Else
+                '#EJC20220406: Convertir a quintales
+                BeHojaVerificacion.Peso = Math.Round((BeHojaVerificacion.Peso / 1000) / vFactorQuintal, 6)
+                BeHojaVerificacion.Referencia = pBePedidoEnc.Referencia
+                BeHojaVerificacion.TieneBono = clsLnProducto.get_Tiene_Bono(Det.IdProducto, lConnection, lTransaction)
 
-                Dim vPresentacion As clsBeProducto_Presentacion =
-                    clsLnProducto_presentacion.GetSingle(Det.IdPresentacion, lConnection, lTransaction)
+                lHojaVerificacion.Add(BeHojaVerificacion)
 
-                BeHojaVerificacion.CantidadPresentacion = Det.Cantidad_Solicitada
-                BeHojaVerificacion.CantidadUMBas = 0
+            Next
 
-                If vPresentacion IsNot Nothing Then
-                    BeHojaVerificacion.NombrePresentacion = vPresentacion.Nombre
-                    BeHojaVerificacion.Peso = Math.Round(Det.Cantidad_Solicitada * vPresentacion.Peso, 6)
-                    BeHojaVerificacion.Factor = vPresentacion.Factor
-                Else
-                    BeHojaVerificacion.NombrePresentacion = ""
-                    BeHojaVerificacion.Peso = 0
-                    BeHojaVerificacion.Factor = 0
+            '3) Agrupar para mostrar en grid
+            Dim Lista = From i In lHojaVerificacion
+                        Group i By Keys = New With {
+                            Key i.CodigoProducto,
+                            Key i.Nombre,
+                            Key i.NombrePresentacion,
+                            Key i.Factor,
+                            Key i.Referencia,
+                            Key i.RequiereTarimas,
+                            Key i.Observaciones,
+                            Key i.TieneBono
+                        } Into Group
+                        Select New With {
+                            Keys.CodigoProducto,
+                            Keys.Nombre,
+                            Keys.NombrePresentacion,
+                            Keys.Factor,
+                            .CantidadPresentacion = Group.Sum(Function(x) x.CantidadPresentacion),
+                            .CantidadUMBas = Group.Sum(Function(x) x.CantidadUMBas),
+                            .Peso = Group.Sum(Function(x) x.Peso),
+                            Keys.Referencia,
+                            Keys.RequiereTarimas,
+                            Keys.Observaciones,
+                            Keys.TieneBono
+                        }
+
+            dgridVerificacion.DataSource = Lista
+
+            GridView9.OptionsView.ColumnAutoWidth = False
+            GridView9.OptionsView.ShowFooter = True
+
+            lblRegs.Caption = String.Format("Registros: {0}", GridView9.RowCount)
+
+            If GridView9.Columns.Count > 0 Then
+
+                GridView9.Columns("CodigoProducto").Caption = "Código"
+                GridView9.Columns("NombrePresentacion").Caption = "Presentación"
+                GridView9.Columns("RequiereTarimas").Caption = "Tarimas"
+                GridView9.Columns("RequiereTarimas").Visible = False
+                GridView9.Columns("Observaciones").Visible = False
+                GridView9.Columns("Referencia").Visible = False
+
+                GridView9.Columns("CantidadUMBas").Caption = "Unidades"
+                GridView9.Columns("CantidadUMBas").DisplayFormat.FormatType = FormatType.Numeric
+                GridView9.Columns("CantidadUMBas").SummaryItem.SummaryType = SummaryItemType.Sum
+                GridView9.Columns("CantidadUMBas").DisplayFormat.FormatString = "{0:n2}"
+                GridView9.Columns("CantidadUMBas").AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center
+
+                GridView9.Columns("CantidadPresentacion").Caption = "Pres"
+                GridView9.Columns("CantidadPresentacion").DisplayFormat.FormatType = FormatType.Numeric
+                GridView9.Columns("CantidadPresentacion").SummaryItem.SummaryType = SummaryItemType.Sum
+                GridView9.Columns("CantidadPresentacion").DisplayFormat.FormatString = "{0:n2}"
+
+                GridView9.Columns("Peso").DisplayFormat.FormatType = FormatType.Numeric
+                GridView9.Columns("Peso").DisplayFormat.FormatString = "{0:n2}"
+                GridView9.Columns("Peso").SummaryItem.SummaryType = SummaryItemType.Sum
+                GridView9.Columns("Peso").SummaryItem.DisplayFormat = "{0:n2}"
+
+                GridView9.Columns("Factor").DisplayFormat.FormatType = FormatType.Numeric
+                GridView9.Columns("Factor").SummaryItem.SummaryType = SummaryItemType.Sum
+
+                Dim item As New GridGroupSummaryItem() With {
+                    .FieldName = "CantidadUMBas",
+                    .SummaryType = SummaryItemType.Sum,
+                    .DisplayFormat = "{0:n2}",
+                    .ShowInGroupColumnFooter = GridView9.Columns("CantidadUMBas")
+                }
+                GridView9.GroupSummary.Add(item)
+
+                Dim item1 As New GridGroupSummaryItem() With {
+                    .FieldName = "Peso",
+                    .SummaryType = SummaryItemType.Sum,
+                    .DisplayFormat = "{0:n2}",
+                    .ShowInGroupColumnFooter = GridView9.Columns("Peso")
+                }
+                GridView9.GroupSummary.Add(item1)
+
+                Dim item2 As New GridGroupSummaryItem() With {
+                    .FieldName = "CantidadUMBas",
+                    .SummaryType = SummaryItemType.Sum,
+                    .DisplayFormat = "{0:n2}",
+                    .ShowInGroupColumnFooter = GridView9.Columns("CantidadUMBas")
+                }
+                GridView9.GroupSummary.Add(item2)
+
+                Dim item3 As New GridGroupSummaryItem() With {
+                    .FieldName = "CantidadPresentacion",
+                    .SummaryType = SummaryItemType.Sum,
+                    .DisplayFormat = "{0:n2}",
+                    .ShowInGroupColumnFooter = GridView9.Columns("CantidadPresentacion")
+                }
+                GridView9.GroupSummary.Add(item3)
+
+                GridView9.BestFitColumns()
+
+            End If
+
+            Carga_Hoja_Verificacion = (lHojaVerificacion.Count > 0)
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+
+    End Function
+
+    ' Wrapper (compatibilidad con "ours")
+    Private Sub Equiparar_Cliente_Con_Propietario()
+        Dim clsTrans As New clsTransaccion()
+
+        Try
+            clsTrans.Begin_Transaction()
+            Equiparar_Cliente_Con_Propietario(clsTrans.lConnection, clsTrans.lTransaction)
+            clsTrans.Commit_Transaction()
+        Catch ex As Exception
+            clsTrans.RollBack_Transaction()
+            SplashScreenManager.CloseForm(False)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+        Finally
+            clsTrans.Close_Conection()
+        End Try
+    End Sub
+
+
+    ' Versión principal (theirs)
+    Private Sub Equiparar_Cliente_Con_Propietario(ByVal lConnection As SqlConnection,
+                                                  ByVal lTransaction As SqlTransaction)
+
+        Try
+
+            If cmbBodega.EditValue Is Nothing Then Exit Sub
+
+            'GT16082021: Se obtiene la configuración para validar si el id propietario es seteado a cliente
+            BeConfigBodega = clsLnI_nav_config_enc.Get_Single_By_IdBodega_And_IdEmpresa(cmbBodega.EditValue,
+                                                                                        AP.IdEmpresa,
+                                                                                        lConnection,
+                                                                                        lTransaction)
+
+            If BeConfigBodega Is Nothing Then Exit Sub
+            If Not BeConfigBodega.equiparar_cliente_con_propietario_en_doc_salida Then Exit Sub
+
+            ' Obtiene IdPropietario (con conexión/transacción)
+            lcmbPropietario.Tag = IMS.Get_IdPropietario_By_IdBodega(cmbBodega.EditValue,
+                                                                    lcmbPropietario.EditValue,
+                                                                    lConnection,
+                                                                    lTransaction)
+
+            Dim vNIT As String = ""
+
+            If lcmbPropietario.Tag IsNot Nothing Then
+
+                Dim idProp As Integer
+                If Integer.TryParse(lcmbPropietario.Tag.ToString(), idProp) Then
+
+                    Dim BePropietario As New clsBePropietarios
+
+                    ' Si tienes overload con conexión, úsalo. Si no, deja el actual:
+                    BePropietario = clsLnPropietarios.GetSingle(idProp)
+
+                    If BePropietario IsNot Nothing Then
+                        vNIT = BePropietario.NIT
+                    End If
+
                 End If
 
             End If
 
-            '#EJC20220406: Convertir a quintales
-            BeHojaVerificacion.Peso = Math.Round((BeHojaVerificacion.Peso / 1000) / vFactorQuintal, 6)
-            BeHojaVerificacion.Referencia = pBePedidoEnc.Referencia
-            BeHojaVerificacion.TieneBono = clsLnProducto.get_Tiene_Bono(Det.IdProducto, lConnection, lTransaction)
+            'GT2172022_1700: deje esto aca para que cargue el cliente en la modal o cuando agregue una linea de stock
+            IMS.Listar_Clientes_By_IdPropietario(txtIdCliente,
+                                                 lcmbPropietario.GetColumnValue("IdPropietario"),
+                                                 vNIT,
+                                                 cmbBodega.EditValue,
+                                                 BeTipoDoc.Requerir_Cliente_Es_Bodega_WMS)
 
-            lHojaVerificacion.Add(BeHojaVerificacion)
-
-        Next
-
-        '3) Agrupar para mostrar en grid
-        Dim Lista = From i In lHojaVerificacion
-                    Group i By Keys = New With {
-                        Key i.CodigoProducto,
-                        Key i.Nombre,
-                        Key i.NombrePresentacion,
-                        Key i.Factor,
-                        Key i.Referencia,
-                        Key i.RequiereTarimas,
-                        Key i.Observaciones,
-                        Key i.TieneBono
-                    } Into Group
-                    Select New With {
-                        Keys.CodigoProducto,
-                        Keys.Nombre,
-                        Keys.NombrePresentacion,
-                        Keys.Factor,
-                        .CantidadPresentacion = Group.Sum(Function(x) x.CantidadPresentacion),
-                        .CantidadUMBas = Group.Sum(Function(x) x.CantidadUMBas),
-                        .Peso = Group.Sum(Function(x) x.Peso),
-                        Keys.Referencia,
-                        Keys.RequiereTarimas,
-                        Keys.Observaciones,
-                        Keys.TieneBono
-                    }
-
-        dgridVerificacion.DataSource = Lista
-
-        GridView9.OptionsView.ColumnAutoWidth = False
-        GridView9.OptionsView.ShowFooter = True
-
-        lblRegs.Caption = String.Format("Registros: {0}", GridView9.RowCount)
-
-        If GridView9.Columns.Count > 0 Then
-
-            GridView9.Columns("CodigoProducto").Caption = "Código"
-            GridView9.Columns("NombrePresentacion").Caption = "Presentación"
-            GridView9.Columns("RequiereTarimas").Caption = "Tarimas"
-            GridView9.Columns("RequiereTarimas").Visible = False
-            GridView9.Columns("Observaciones").Visible = False
-            GridView9.Columns("Referencia").Visible = False
-
-            GridView9.Columns("CantidadUMBas").Caption = "Unidades"
-            GridView9.Columns("CantidadUMBas").DisplayFormat.FormatType = FormatType.Numeric
-            GridView9.Columns("CantidadUMBas").SummaryItem.SummaryType = SummaryItemType.Sum
-            GridView9.Columns("CantidadUMBas").DisplayFormat.FormatString = "{0:n2}"
-            GridView9.Columns("CantidadUMBas").AppearanceCell.TextOptions.HAlignment = HorzAlignment.Center
-
-            GridView9.Columns("CantidadPresentacion").Caption = "Pres"
-            GridView9.Columns("CantidadPresentacion").DisplayFormat.FormatType = FormatType.Numeric
-            GridView9.Columns("CantidadPresentacion").SummaryItem.SummaryType = SummaryItemType.Sum
-            GridView9.Columns("CantidadPresentacion").DisplayFormat.FormatString = "{0:n2}"
-
-            GridView9.Columns("Peso").DisplayFormat.FormatType = FormatType.Numeric
-            GridView9.Columns("Peso").DisplayFormat.FormatString = "{0:n2}"
-            GridView9.Columns("Peso").SummaryItem.SummaryType = SummaryItemType.Sum
-            GridView9.Columns("Peso").SummaryItem.DisplayFormat = "{0:n2}"
-
-            GridView9.Columns("Factor").DisplayFormat.FormatType = FormatType.Numeric
-            GridView9.Columns("Factor").SummaryItem.SummaryType = SummaryItemType.Sum
-
-            Dim item As New GridGroupSummaryItem() With {
-                .FieldName = "CantidadUMBas",
-                .SummaryType = SummaryItemType.Sum,
-                .DisplayFormat = "{0:n2}",
-                .ShowInGroupColumnFooter = GridView9.Columns("CantidadUMBas")
-            }
-            GridView9.GroupSummary.Add(item)
-
-            Dim item1 As New GridGroupSummaryItem() With {
-                .FieldName = "Peso",
-                .SummaryType = SummaryItemType.Sum,
-                .DisplayFormat = "{0:n2}",
-                .ShowInGroupColumnFooter = GridView9.Columns("Peso")
-            }
-            GridView9.GroupSummary.Add(item1)
-
-            Dim item2 As New GridGroupSummaryItem() With {
-                .FieldName = "CantidadUMBas",
-                .SummaryType = SummaryItemType.Sum,
-                .DisplayFormat = "{0:n2}",
-                .ShowInGroupColumnFooter = GridView9.Columns("CantidadUMBas")
-            }
-            GridView9.GroupSummary.Add(item2)
-
-            Dim item3 As New GridGroupSummaryItem() With {
-                .FieldName = "CantidadPresentacion",
-                .SummaryType = SummaryItemType.Sum,
-                .DisplayFormat = "{0:n2}",
-                .ShowInGroupColumnFooter = GridView9.Columns("CantidadPresentacion")
-            }
-            GridView9.GroupSummary.Add(item3)
-
-            GridView9.BestFitColumns()
-
-        End If
-
-        Carga_Hoja_Verificacion = (lHojaVerificacion.Count > 0)
-
-    Catch ex As Exception
-        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-    End Try
-
-End Function
-
-' Wrapper (compatibilidad con "ours")
-Private Sub Equiparar_Cliente_Con_Propietario()
-    Dim clsTrans As New clsTransaccion()
-
-    Try
-        clsTrans.Begin_Transaction()
-        Equiparar_Cliente_Con_Propietario(clsTrans.lConnection, clsTrans.lTransaction)
-        clsTrans.Commit_Transaction()
-    Catch ex As Exception
-        clsTrans.RollBack_Transaction()
-        SplashScreenManager.CloseForm(False)
-        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-    Finally
-        clsTrans.Close_Conection()
-    End Try
-End Sub
-
-
-' Versión principal (theirs)
-Private Sub Equiparar_Cliente_Con_Propietario(ByVal lConnection As SqlConnection,
-                                              ByVal lTransaction As SqlTransaction)
-
-    Try
-
-        If cmbBodega.EditValue Is Nothing Then Exit Sub
-
-        'GT16082021: Se obtiene la configuración para validar si el id propietario es seteado a cliente
-        BeConfigBodega = clsLnI_nav_config_enc.Get_Single_By_IdBodega_And_IdEmpresa(cmbBodega.EditValue,
-                                                                                    AP.IdEmpresa,
-                                                                                    lConnection,
-                                                                                    lTransaction)
-
-        If BeConfigBodega Is Nothing Then Exit Sub
-        If Not BeConfigBodega.equiparar_cliente_con_propietario_en_doc_salida Then Exit Sub
-
-        ' Obtiene IdPropietario (con conexión/transacción)
-        lcmbPropietario.Tag = IMS.Get_IdPropietario_By_IdBodega(cmbBodega.EditValue,
-                                                                lcmbPropietario.EditValue,
-                                                                lConnection,
-                                                                lTransaction)
-
-        Dim vNIT As String = ""
-
-        If lcmbPropietario.Tag IsNot Nothing Then
-
-            Dim idProp As Integer
-            If Integer.TryParse(lcmbPropietario.Tag.ToString(), idProp) Then
-
-                Dim BePropietario As New clsBePropietarios
-
-                ' Si tienes overload con conexión, úsalo. Si no, deja el actual:
-                BePropietario = clsLnPropietarios.GetSingle(idProp)
-
-                If BePropietario IsNot Nothing Then
-                    vNIT = BePropietario.NIT
-                End If
-
+            If pBePedidoEnc IsNot Nothing Then
+                txtIdCliente.EditValue = pBePedidoEnc.IdCliente
             End If
 
-        End If
+        Catch ex As Exception
+            SplashScreenManager.CloseForm(False)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End Try
 
-        'GT2172022_1700: deje esto aca para que cargue el cliente en la modal o cuando agregue una linea de stock
-        IMS.Listar_Clientes_By_IdPropietario(txtIdCliente,
-                                             lcmbPropietario.GetColumnValue("IdPropietario"),
-                                             vNIT,
-                                             cmbBodega.EditValue,
-                                             BeTipoDoc.Requerir_Cliente_Es_Bodega_WMS)
-
-        If pBePedidoEnc IsNot Nothing Then
-            txtIdCliente.EditValue = pBePedidoEnc.IdCliente
-        End If
-
-    Catch ex As Exception
-        SplashScreenManager.CloseForm(False)
-        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-    End Try
-
-End Sub
+    End Sub
 
 
     Private Sub Cargar_Stock_Liberado(ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction)
@@ -8709,44 +8704,44 @@ End Sub
 
     Private Async Sub Cargar_Stock_Liberado()
 
-    Try
+        Try
 
-        If pBePedidoEnc Is Nothing Then Exit Sub
+            If pBePedidoEnc Is Nothing Then Exit Sub
 
-        ' Ocultar tab de entrada (UI thread)
-        xtrPedido.TabPages.Item(10).PageVisible = False
+            ' Ocultar tab de entrada (UI thread)
+            xtrPedido.TabPages.Item(10).PageVisible = False
 
-        ' Cargar datos en background
-        Dim lStockLiberado As List(Of clsBeTrans_log_pedido_liberacion) =
-            Await Task.Run(Function()
-                               Return clsLnTrans_log_pedido_liberacion.Get_All_By_IdPedidoEnc_And_IdBodega(
-                                   pBePedidoEnc.IdPedidoEnc,
-                                   pBePedidoEnc.IdBodega
-                               )
-                           End Function)
+            ' Cargar datos en background
+            Dim lStockLiberado As List(Of clsBeTrans_log_pedido_liberacion) =
+                Await Task.Run(Function()
+                                   Return clsLnTrans_log_pedido_liberacion.Get_All_By_IdPedidoEnc_And_IdBodega(
+                                       pBePedidoEnc.IdPedidoEnc,
+                                       pBePedidoEnc.IdBodega
+                                   )
+                               End Function)
 
-        ' Si el form ya no existe, no tocar UI
-        If Me.IsDisposed OrElse Not Me.IsHandleCreated Then Exit Sub
+            ' Si el form ya no existe, no tocar UI
+            If Me.IsDisposed OrElse Not Me.IsHandleCreated Then Exit Sub
 
-        ' Actualizar UI
-        Me.BeginInvoke(Sub()
+            ' Actualizar UI
+            Me.BeginInvoke(Sub()
 
-                           xtrPedido.TabPages.Item(10).PageVisible = False
+                               xtrPedido.TabPages.Item(10).PageVisible = False
 
-                           If lStockLiberado IsNot Nothing AndAlso lStockLiberado.Count > 0 Then
-                               dgridStockLiberado.DataSource = lStockLiberado
-                               xtrPedido.TabPages.Item(10).PageVisible = True
-                               gvLogStockLiberado.BestFitColumns()
-                           End If
+                               If lStockLiberado IsNot Nothing AndAlso lStockLiberado.Count > 0 Then
+                                   dgridStockLiberado.DataSource = lStockLiberado
+                                   xtrPedido.TabPages.Item(10).PageVisible = True
+                                   gvLogStockLiberado.BestFitColumns()
+                               End If
 
-                       End Sub)
+                           End Sub)
 
-    Catch ex As Exception
-        SplashScreenManager.CloseForm(False)
-        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-    End Try
+        Catch ex As Exception
+            SplashScreenManager.CloseForm(False)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End Try
 
-End Sub
+    End Sub
 
 
     Private Sub Equiparar_Cliente_Con_Propietario(ByVal pNIT As String, ByVal Requerir_Cliente_Es_Bodega_WMS As Boolean)
@@ -8829,236 +8824,236 @@ End Sub
 
     End Sub
 
-Private Sub Scan_Poliza()
+    Private Sub Scan_Poliza()
 
-    Try
+        Try
 
-        Dim barra_poliza As String = (txtScanPoliza.Text & "").Trim()
-        If String.IsNullOrWhiteSpace(barra_poliza) Then
-            XtraMessageBox.Show("No hay póliza para leer", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Exit Sub
+            Dim barra_poliza As String = (txtScanPoliza.Text & "").Trim()
+            If String.IsNullOrWhiteSpace(barra_poliza) Then
+                XtraMessageBox.Show("No hay póliza para leer", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Exit Sub
+            End If
+
+            ' Log de barra escaneada (para no perderla)
+            clsLnLog_error_wms_pe.Agregar_Error("SCAN_POL " & barra_poliza,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
+
+            Dim encabezado_duca As clsBeCEALSA_DUCA_ENC = Parsear_DUCA(barra_poliza)
+
+            ' Validar que el número de orden exista
+            If encabezado_duca Is Nothing OrElse String.IsNullOrWhiteSpace(encabezado_duca.Numero_Orden) Then
+                Throw New Exception("La barra no pudo interpretarse como DUCA válida (Numero_Orden vacío).")
+            End If
+
+            ' Validar si esa póliza ya existe en otro documento
+            If Not Confirmar_Asociar_Poliza_Si_Existe(encabezado_duca.Numero_Orden) Then
+                txtScanPoliza.Text = ""
+                Exit Sub
+            End If
+
+            ' Pintar en pantalla los campos del encabezado (UI)
+            Set_UI_Poliza(encabezado_duca)
+
+            ' Persistir póliza en pedido (si aplica)
+            Dim vPolizaValida As Boolean = Guardar_Poliza_En_Pedido()
+
+            ' Evitar perder referencia
+            If vPolizaValida AndAlso String.IsNullOrWhiteSpace(txtReferencia.Text) Then
+                txtReferencia.Text = (txtNumeroOrden.Text & "").Trim()
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+
+            clsLnLog_error_wms_pe.Agregar_Error(ex.Message,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
+                                                pStackTrace:=ex.StackTrace)
+
+        End Try
+
+    End Sub
+    Private Function Parsear_DUCA(ByVal barra As String) As clsBeCEALSA_DUCA_ENC
+
+        Dim nuevo As clsBeCEALSA_DUCA_ENC = Formato_Nuevo_Duca(barra)
+        If nuevo IsNot Nothing Then
+            Return nuevo
         End If
 
-        ' Log de barra escaneada (para no perderla)
-        clsLnLog_error_wms_pe.Agregar_Error("SCAN_POL " & barra_poliza,
-                                            pIdEmpresa:=AP.IdEmpresa,
-                                            pIdBodega:=AP.IdBodega,
-                                            pUsrAgr:=AP.UsuarioAp.IdUsuario,
-                                            pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
-
-        Dim encabezado_duca As clsBeCEALSA_DUCA_ENC = Parsear_DUCA(barra_poliza)
-
-        ' Validar que el número de orden exista
-        If encabezado_duca Is Nothing OrElse String.IsNullOrWhiteSpace(encabezado_duca.Numero_Orden) Then
-            Throw New Exception("La barra no pudo interpretarse como DUCA válida (Numero_Orden vacío).")
+        ' Formato viejo: validar largo mínimo antes de substring
+        ' (tu código usa hasta Substring(210, 9) => requiere al menos 219 chars)
+        If barra.Length < 219 Then
+            Throw New Exception("La barra DUCA es demasiado corta para el formato viejo. Largo=" & barra.Length)
         End If
 
-        ' Validar si esa póliza ya existe en otro documento
-        If Not Confirmar_Asociar_Poliza_Si_Existe(encabezado_duca.Numero_Orden) Then
-            txtScanPoliza.Text = ""
-            Exit Sub
+        Dim enc As New clsBeCEALSA_DUCA_ENC()
+
+        enc.Numero_Orden = barra.Substring(0, 10)
+        enc.Numero_DUCA = barra.Substring(10, 20)
+
+        Dim fecha_string = barra.Substring(30, 8) 'ddMMyyyy
+        enc.Clave_aduana_despacho_destino = barra.Substring(38, 7)
+        enc.NIT_Importador = barra.Substring(45, 25).Trim()
+
+        enc.Regimen = barra.Substring(70, 5).ToUpper()
+        enc.Clase = barra.Substring(75, 3).Trim()
+        enc.Pais_procedencia = barra.Substring(78, 2).Trim()
+        enc.Modo_transporte = barra.Substring(80, 1).Trim()
+
+        enc.Tipo_cambio = Convert.ToDouble(barra.Substring(81, 7))
+        enc.Total_valor_aduana = Convert.ToDouble(barra.Substring(88, 16))
+        enc.Total_bultos_Peso_Bruto = Convert.ToDouble(barra.Substring(104, 15))
+        enc.TotalFOBUSD = Convert.ToDouble(barra.Substring(119, 16))
+        enc.Total_Flete_USD = Convert.ToDouble(barra.Substring(135, 15))
+        enc.Total_Seguro_USD = Convert.ToDouble(barra.Substring(150, 15))
+        enc.TotalOtrosgastosUSD = Convert.ToDouble(barra.Substring(165, 15))
+        enc.Total_Liquidar = Convert.ToDouble(barra.Substring(180, 15))
+        enc.Total_General = Convert.ToDouble(barra.Substring(195, 15))
+        enc.Codigo_Poliza = barra.Substring(210, 9)
+
+        Dim dd As Integer = Integer.Parse(fecha_string.Substring(0, 2))
+        Dim mm As Integer = Integer.Parse(fecha_string.Substring(2, 2))
+        Dim anio As Integer = Integer.Parse(fecha_string.Substring(4, 4))
+        enc.Fecha_Aceptacion = New Date(anio, mm, dd)
+
+        Return enc
+
+    End Function
+    Private Function Confirmar_Asociar_Poliza_Si_Existe(ByVal numeroOrden As String) As Boolean
+
+        Dim pPolizaExiste As clsBeTrans_pe_pol = clsLnTrans_pe_pol.Get_Single_By_No_Orden(numeroOrden)
+
+        If pPolizaExiste Is Nothing Then Return True
+
+        Dim resp = XtraMessageBox.Show(
+            "¿La póliza de salida " & pPolizaExiste.numero_orden & " ya existe en otro documento, desea asociar de todas formas?",
+            Text,
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question
+        )
+
+        If resp = Windows.Forms.DialogResult.Yes Then
+
+            Dim pLog = "ADVERTENCIA_PEDIDO_31082023: El usuario " & AP.UsuarioAp.IdUsuario &
+                       " esta asociando la póliza registrada " & pPolizaExiste.numero_orden &
+                       " al pedido " & pBePedidoEnc.IdPedidoEnc
+
+            clsLnLog_error_wms_pe.Agregar_Error(pLog,
+                                                pIdEmpresa:=AP.IdEmpresa,
+                                                pIdBodega:=AP.IdBodega,
+                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
+                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
+            Return True
         End If
 
-        ' Pintar en pantalla los campos del encabezado (UI)
-        Set_UI_Poliza(encabezado_duca)
+        Return False
 
-        ' Persistir póliza en pedido (si aplica)
-        Dim vPolizaValida As Boolean = Guardar_Poliza_En_Pedido()
+    End Function
+    Private Sub Set_UI_Poliza(ByVal enc As clsBeCEALSA_DUCA_ENC)
 
-        ' Evitar perder referencia
-        If vPolizaValida AndAlso String.IsNullOrWhiteSpace(txtReferencia.Text) Then
-            txtReferencia.Text = (txtNumeroOrden.Text & "").Trim()
+        txtNumeroOrden.Text = enc.Numero_Orden
+        txtNumeroDUA.Text = enc.Numero_DUCA
+        dtpFechaAceptacion.Text = enc.Fecha_Aceptacion
+
+        txtClaveAduana.Text = (enc.Clave_aduana_despacho_destino & "").Trim()
+        txtNitImpExp.Text = (enc.NIT_Importador & "").Trim()
+        txtClase.Text = (enc.Clase & "").Trim()
+        txtPaisProcedencia.Text = (enc.Pais_procedencia & "").Trim()
+        txtMod_transporte.Text = (enc.Modo_transporte & "").Trim()
+
+        txtTipoCambio.Value = enc.Tipo_cambio
+        txtValorAduana.Value = enc.Total_valor_aduana
+        txtTotalPesoBruto.Value = enc.Total_bultos_Peso_Bruto
+        txtTotalFOBUSD.Value = enc.TotalFOBUSD
+        txtValorFlete.Value = enc.Total_Flete_USD
+        txtValorSeguro.Value = enc.Total_Seguro_USD
+        txtTotalOtros.Value = enc.TotalOtrosgastosUSD
+
+        txtTotal_liquidar.Text = enc.Total_Liquidar
+        txtTotal_general.Text = enc.Total_General
+        txtCodigoPoliza.Text = (enc.Codigo_Poliza & "").Trim()
+
+        ' Validar régimen fiscal contra catálogo
+        Dim beReg As clsBeRegimen_fiscal = clsLnRegimen_fiscal.GetSingle_By_Codigo_Regimen((enc.Regimen & "").Trim())
+        If beReg IsNot Nothing Then
+            cmbRegimen.EditValue = beReg.Codigo_regimen
+        Else
+            Throw New Exception("El régimen: " & enc.Regimen & " no esta registrado en Régimen Fiscal, o no es legible desde el archivo de importación")
         End If
 
-    Catch ex As Exception
+        xtrPedido.SelectedTabPageIndex = 1
+        txtNoPoliza.Focus()
 
-        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+    End Sub
+    Private Function Guardar_Poliza_En_Pedido() As Boolean
 
-        clsLnLog_error_wms_pe.Agregar_Error(ex.Message,
-                                            pIdEmpresa:=AP.IdEmpresa,
-                                            pIdBodega:=AP.IdBodega,
-                                            pUsrAgr:=AP.UsuarioAp.IdUsuario,
-                                            pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
-                                            pStackTrace:=ex.StackTrace)
+        If BeTipoDoc Is Nothing OrElse BeBodega Is Nothing Then Return False
+        If Not (BeTipoDoc.Control_Poliza AndAlso BeBodega.Es_Bodega_Fiscal) Then Return False
 
-    End Try
+        Dim existente As clsBeTrans_pe_pol = clsLnTrans_pe_pol.GetSingleId(pBePedidoEnc.IdPedidoEnc)
+        Dim esNueva As Boolean = (existente Is Nothing)
 
-End Sub
-Private Function Parsear_DUCA(ByVal barra As String) As clsBeCEALSA_DUCA_ENC
+        Dim fila As Object = cmbRegimen.GetSelectedDataRow
+        Dim idRegimen As Integer = 0
+        If fila IsNot Nothing Then
+            idRegimen = fila.Item("IdRegimen")
+        Else
+            XtraMessageBox.Show("No se encontró el regimen de la póliza.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End If
 
-    Dim nuevo As clsBeCEALSA_DUCA_ENC = Formato_Nuevo_Duca(barra)
-    If nuevo IsNot Nothing Then
-        Return nuevo
-    End If
+        Dim pol As New clsBeTrans_pe_pol()
 
-    ' Formato viejo: validar largo mínimo antes de substring
-    ' (tu código usa hasta Substring(210, 9) => requiere al menos 219 chars)
-    If barra.Length < 219 Then
-        Throw New Exception("La barra DUCA es demasiado corta para el formato viejo. Largo=" & barra.Length)
-    End If
+        pol.IdOrdenPedidoPol = If(esNueva, clsLnTrans_pe_pol.MaxID(pBePedidoEnc.IdPedidoEnc) + 1, 1)
+        pol.IdOrdenPedidoEnc = pBePedidoEnc.IdPedidoEnc
+        pol.NoPoliza = txtCodigoPoliza.Text.Trim()
+        pol.Pais_procede = txtPaisProcedencia.Text.Trim()
+        pol.Total_valoraduana = txtValorAduana.Value
+        pol.Total_bultos_Peso = txtTotalPesoNeto.Value
+        pol.Total_flete = txtValorFlete.Value
+        pol.Total_usd = txtTotalFOBUSD.Value
+        pol.Dua = txtNumeroDUA.Text.Trim()
+        pol.Fecha_poliza = dtFechaPoliza.EditValue
+        pol.Tipo_cambio = txtTipoCambio.Value
+        pol.Total_lineas = Val(txtTotalLineas.Value)
+        pol.Total_bultos = Val(txtTotalBulto.Value)
+        pol.Total_seguro = txtValorSeguro.Value
+        pol.User_mod = AP.UsuarioAp.IdUsuario
+        pol.Fec_mod = Now
 
-    Dim enc As New clsBeCEALSA_DUCA_ENC()
+        pol.IdRegimen = idRegimen
+        pol.codigo_poliza = txtCodigoPoliza.Text.Trim()
+        pol.ticket = Val(txtTicket.Text.Trim())
+        pol.numero_orden = txtNumeroOrden.Text.Trim()
+        pol.fecha_aceptacion = dtpFechaAceptacion.EditValue
+        pol.fecha_llegada = dtpFechaLlegada.EditValue
+        pol.total_otros = Val(txtTotalOtros.Value)
+        pol.clave_aduana = txtClaveAduana.Text.Trim()
+        pol.nit_imp_exp = txtNitImpExp.Text.Trim()
+        pol.clase = txtClase.Text.Trim()
+        pol.mod_transporte = txtMod_transporte.Text.Trim()
+        pol.total_liquidar = Val(txtTotal_liquidar.EditValue)
+        pol.total_general = Val(txtTotal_general.EditValue)
 
-    enc.Numero_Orden = barra.Substring(0, 10)
-    enc.Numero_DUCA = barra.Substring(10, 20)
+        pBePedidoEnc.ObjPoliza = pol
+        pBePedidoEnc.Enviado_A_ERP = False
 
-    Dim fecha_string = barra.Substring(30, 8) 'ddMMyyyy
-    enc.Clave_aduana_despacho_destino = barra.Substring(38, 7)
-    enc.NIT_Importador = barra.Substring(45, 25).Trim()
+        If esNueva Then
+            clsLnTrans_pe_pol.Insertar(pol)
+            XtraMessageBox.Show("Pedido actualizado con la poliza (A): " & pol.numero_orden, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+        Else
+            clsLnTrans_pe_pol.Actualizar(pol)
+            XtraMessageBox.Show("Pedido actualizado con la poliza (B): " & pol.numero_orden, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End If
 
-    enc.Regimen = barra.Substring(70, 5).ToUpper()
-    enc.Clase = barra.Substring(75, 3).Trim()
-    enc.Pais_procedencia = barra.Substring(78, 2).Trim()
-    enc.Modo_transporte = barra.Substring(80, 1).Trim()
-
-    enc.Tipo_cambio = Convert.ToDouble(barra.Substring(81, 7))
-    enc.Total_valor_aduana = Convert.ToDouble(barra.Substring(88, 16))
-    enc.Total_bultos_Peso_Bruto = Convert.ToDouble(barra.Substring(104, 15))
-    enc.TotalFOBUSD = Convert.ToDouble(barra.Substring(119, 16))
-    enc.Total_Flete_USD = Convert.ToDouble(barra.Substring(135, 15))
-    enc.Total_Seguro_USD = Convert.ToDouble(barra.Substring(150, 15))
-    enc.TotalOtrosgastosUSD = Convert.ToDouble(barra.Substring(165, 15))
-    enc.Total_Liquidar = Convert.ToDouble(barra.Substring(180, 15))
-    enc.Total_General = Convert.ToDouble(barra.Substring(195, 15))
-    enc.Codigo_Poliza = barra.Substring(210, 9)
-
-    Dim dd As Integer = Integer.Parse(fecha_string.Substring(0, 2))
-    Dim mm As Integer = Integer.Parse(fecha_string.Substring(2, 2))
-    Dim anio As Integer = Integer.Parse(fecha_string.Substring(4, 4))
-    enc.Fecha_Aceptacion = New Date(anio, mm, dd)
-
-    Return enc
-
-End Function
-Private Function Confirmar_Asociar_Poliza_Si_Existe(ByVal numeroOrden As String) As Boolean
-
-    Dim pPolizaExiste As clsBeTrans_pe_pol = clsLnTrans_pe_pol.Get_Single_By_No_Orden(numeroOrden)
-
-    If pPolizaExiste Is Nothing Then Return True
-
-    Dim resp = XtraMessageBox.Show(
-        "¿La póliza de salida " & pPolizaExiste.numero_orden & " ya existe en otro documento, desea asociar de todas formas?",
-        Text,
-        MessageBoxButtons.YesNo,
-        MessageBoxIcon.Question
-    )
-
-    If resp = Windows.Forms.DialogResult.Yes Then
-
-        Dim pLog = "ADVERTENCIA_PEDIDO_31082023: El usuario " & AP.UsuarioAp.IdUsuario &
-                   " esta asociando la póliza registrada " & pPolizaExiste.numero_orden &
-                   " al pedido " & pBePedidoEnc.IdPedidoEnc
-
-        clsLnLog_error_wms_pe.Agregar_Error(pLog,
-                                            pIdEmpresa:=AP.IdEmpresa,
-                                            pIdBodega:=AP.IdBodega,
-                                            pUsrAgr:=AP.UsuarioAp.IdUsuario,
-                                            pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
         Return True
-    End If
 
-    Return False
-
-End Function
-Private Sub Set_UI_Poliza(ByVal enc As clsBeCEALSA_DUCA_ENC)
-
-    txtNumeroOrden.Text = enc.Numero_Orden
-    txtNumeroDUA.Text = enc.Numero_DUCA
-    dtpFechaAceptacion.Text = enc.Fecha_Aceptacion
-
-    txtClaveAduana.Text = (enc.Clave_aduana_despacho_destino & "").Trim()
-    txtNitImpExp.Text = (enc.NIT_Importador & "").Trim()
-    txtClase.Text = (enc.Clase & "").Trim()
-    txtPaisProcedencia.Text = (enc.Pais_procedencia & "").Trim()
-    txtMod_transporte.Text = (enc.Modo_transporte & "").Trim()
-
-    txtTipoCambio.Value = enc.Tipo_cambio
-    txtValorAduana.Value = enc.Total_valor_aduana
-    txtTotalPesoBruto.Value = enc.Total_bultos_Peso_Bruto
-    txtTotalFOBUSD.Value = enc.TotalFOBUSD
-    txtValorFlete.Value = enc.Total_Flete_USD
-    txtValorSeguro.Value = enc.Total_Seguro_USD
-    txtTotalOtros.Value = enc.TotalOtrosgastosUSD
-
-    txtTotal_liquidar.Text = enc.Total_Liquidar
-    txtTotal_general.Text = enc.Total_General
-    txtCodigoPoliza.Text = (enc.Codigo_Poliza & "").Trim()
-
-    ' Validar régimen fiscal contra catálogo
-    Dim beReg As clsBeRegimen_fiscal = clsLnRegimen_fiscal.GetSingle_By_Codigo_Regimen((enc.Regimen & "").Trim())
-    If beReg IsNot Nothing Then
-        cmbRegimen.EditValue = beReg.Codigo_regimen
-    Else
-        Throw New Exception("El régimen: " & enc.Regimen & " no esta registrado en Régimen Fiscal, o no es legible desde el archivo de importación")
-    End If
-
-    xtrPedido.SelectedTabPageIndex = 1
-    txtNoPoliza.Focus()
-
-End Sub
-Private Function Guardar_Poliza_En_Pedido() As Boolean
-
-    If BeTipoDoc Is Nothing OrElse BeBodega Is Nothing Then Return False
-    If Not (BeTipoDoc.Control_Poliza AndAlso BeBodega.Es_Bodega_Fiscal) Then Return False
-
-    Dim existente As clsBeTrans_pe_pol = clsLnTrans_pe_pol.GetSingleId(pBePedidoEnc.IdPedidoEnc)
-    Dim esNueva As Boolean = (existente Is Nothing)
-
-    Dim fila As Object = cmbRegimen.GetSelectedDataRow
-    Dim idRegimen As Integer = 0
-    If fila IsNot Nothing Then
-        idRegimen = fila.Item("IdRegimen")
-    Else
-        XtraMessageBox.Show("No se encontró el regimen de la póliza.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-    End If
-
-    Dim pol As New clsBeTrans_pe_pol()
-
-    pol.IdOrdenPedidoPol = If(esNueva, clsLnTrans_pe_pol.MaxID(pBePedidoEnc.IdPedidoEnc) + 1, 1)
-    pol.IdOrdenPedidoEnc = pBePedidoEnc.IdPedidoEnc
-    pol.NoPoliza = txtCodigoPoliza.Text.Trim()
-    pol.Pais_procede = txtPaisProcedencia.Text.Trim()
-    pol.Total_valoraduana = txtValorAduana.Value
-    pol.Total_bultos_Peso = txtTotalPesoNeto.Value
-    pol.Total_flete = txtValorFlete.Value
-    pol.Total_usd = txtTotalFOBUSD.Value
-    pol.Dua = txtNumeroDUA.Text.Trim()
-    pol.Fecha_poliza = dtFechaPoliza.EditValue
-    pol.Tipo_cambio = txtTipoCambio.Value
-    pol.Total_lineas = Val(txtTotalLineas.Value)
-    pol.Total_bultos = Val(txtTotalBulto.Value)
-    pol.Total_seguro = txtValorSeguro.Value
-    pol.User_mod = AP.UsuarioAp.IdUsuario
-    pol.Fec_mod = Now
-
-    pol.IdRegimen = idRegimen
-    pol.codigo_poliza = txtCodigoPoliza.Text.Trim()
-    pol.ticket = Val(txtTicket.Text.Trim())
-    pol.numero_orden = txtNumeroOrden.Text.Trim()
-    pol.fecha_aceptacion = dtpFechaAceptacion.EditValue
-    pol.fecha_llegada = dtpFechaLlegada.EditValue
-    pol.total_otros = Val(txtTotalOtros.Value)
-    pol.clave_aduana = txtClaveAduana.Text.Trim()
-    pol.nit_imp_exp = txtNitImpExp.Text.Trim()
-    pol.clase = txtClase.Text.Trim()
-    pol.mod_transporte = txtMod_transporte.Text.Trim()
-    pol.total_liquidar = Val(txtTotal_liquidar.EditValue)
-    pol.total_general = Val(txtTotal_general.EditValue)
-
-    pBePedidoEnc.ObjPoliza = pol
-    pBePedidoEnc.Enviado_A_ERP = False
-
-    If esNueva Then
-        clsLnTrans_pe_pol.Insertar(pol)
-        XtraMessageBox.Show("Pedido actualizado con la poliza (A): " & pol.numero_orden, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-    Else
-        clsLnTrans_pe_pol.Actualizar(pol)
-        XtraMessageBox.Show("Pedido actualizado con la poliza (B): " & pol.numero_orden, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-    End If
-
-    Return True
-
-End Function
+    End Function
 
 
     Private Sub servicioGridLookUpEditDetalleServicio_Leave(ByVal sender As Object, ByVal e As EventArgs)
@@ -9092,7 +9087,7 @@ End Function
 
         Catch ex As Exception
             '#MECR15102025: Se agrego bitacora de logs para pedidos
-            Dim vMsgError As String = ex.Message            
+            Dim vMsgError As String = ex.Message
             clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
                                                 pIdEmpresa:=AP.IdEmpresa,
                                                 pIdBodega:=AP.IdBodega,
@@ -9139,7 +9134,7 @@ End Function
 
         Catch ex As Exception
             '#MECR15102025: Se agrego bitacora de logs para pedidos
-            Dim vMsgError As String = ex.Message            
+            Dim vMsgError As String = ex.Message
             clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
                                                 pIdEmpresa:=AP.IdEmpresa,
                                                 pIdBodega:=AP.IdBodega,
@@ -9425,87 +9420,6 @@ End Function
 
     End Sub
 
-    Private Sub Set_Tipo_Documento()
-
-        Try
-
-            If cmbBodega.Text <> "" AndAlso cmbTipoPedido.EditValue <> 0 Then
-
-                'GT 210720211443: Si Tipo Doc tiene  transferencia fiscal a general, se habilita el tab de poliza.
-                Dim fila As Object = cmbTipoPedido.GetSelectedDataRow
-
-                If fila IsNot Nothing Then
-
-                    Dim vControl_Poliza As Boolean = fila.Item("control_poliza")
-                    Dim vVerificar As Boolean = fila.Item("Verificar")
-                    Dim vFotografiaVerificacion As Boolean = fila.Item("Fotografia_Verificacion")
-                    Dim vEs_Devolucion As Boolean = fila.Item("es_devolucion")
-
-                    If vControl_Poliza Then
-                        chkControlPoliza.Checked = True
-                        chkControlPoliza.Enabled = False
-                    Else
-                        chkControlPoliza.Checked = False
-                        chkControlPoliza.Enabled = False
-                    End If
-
-                    cmbMotivoDevolucion.Visible = vEs_Devolucion
-                    lblMotivoDevolucion.Visible = vEs_Devolucion
-
-                    If vEs_Devolucion Then
-                        Llena_Motivos_Devolucion()
-                    End If
-
-                    grpScanPoliza.Visible = vControl_Poliza
-                    tabPoliza.Visible = vControl_Poliza
-                    tabPoliza.PageVisible = vControl_Poliza
-                    chkVerificar.Checked = vVerificar
-                    chkFotografiaVerificacion.Checked = vFotografiaVerificacion
-                Else
-                    Throw New Exception("El tipo de documento no es válido, revise la configuración de la bodega, no se puede crear el pedido")
-                End If
-
-            End If
-
-            xtrPedido.SelectedTabPageIndex = 0
-
-            If cmbBodega.Text <> "" AndAlso cmbTipoPedido.EditValue <> 0 Then
-
-                BeTipoDoc.IdTipoPedido = cmbTipoPedido.EditValue
-
-                '#EJC20210716:Obtener parámetro control poliza y verificación auto en frmpedido.
-                'El parametro verificación, se envía al picking, para determinar si hay o no verificación.
-                If clsLnTrans_pe_tipo.GetSingle(BeTipoDoc) Then
-
-                    If BeTipoDoc.Requerir_Documento_Ref Then
-                        txtReferencia.BackColor = Color.LightPink
-                        txtReferencia.ReadOnly = True
-                        Llena_Documentos_Referencia_By_Bodega()
-                    Else
-                        txtReferencia.BackColor = Color.White
-
-                        If (pBePedidoEnc.Referencia <> "" AndAlso AP.Bodega.Interface_SAP) Then
-                            txtReferencia.ReadOnly = True
-                        Else
-                            txtReferencia.ReadOnly = False
-                        End If
-                    End If
-
-                    lblDocumentoRef.Visible = BeTipoDoc.Requerir_Documento_Ref
-                    cmbDocumentoRef.Visible = BeTipoDoc.Requerir_Documento_Ref
-
-                End If
-
-            End If
-
-        Catch ex As Exception
-            SplashScreenManager.CloseForm(False)
-            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-        End Try
-
-    End Sub
-
-
     Private IsLoading As Boolean = False
     '#GT28052024: bandera para obtener propietario del combo
     Dim pIdPropietario As Integer = 0
@@ -9675,7 +9589,7 @@ End Function
             MessageBoxIcon.Error)
 
             '#MECR15102025: Se agrego bitacora de logs para pedidos
-            Dim vMsgError As String = ex.Message            
+            Dim vMsgError As String = ex.Message
             clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
                                                 pIdEmpresa:=AP.IdEmpresa,
                                                 pIdBodega:=AP.IdBodega,
@@ -9714,55 +9628,6 @@ End Function
             End If
         End If
     End Sub
-
-    Private Sub Llena_Documentos_Referencia_By_Bodega()
-
-        Try
-
-            cmbDocumentoRef.Properties.DataSource = Nothing
-
-            Dim l As New DataTable
-            Dim vCodigoBodega As String = BeBodega.Codigo
-
-            If Not pBeCliente Is Nothing Then
-
-                Dim vCodigoCliente As String = pBeCliente.Codigo
-
-                l = clsLnTrans_pe_docu_ref.Get_All_By_Codigo_Bodega_DT(vCodigoBodega, vCodigoCliente)
-
-                If l.Rows.Count > 0 Then
-                    cmbDocumentoRef.Visible = True
-                    cmbDocumentoRef.Properties.ValueMember = "Codigo"
-                    cmbDocumentoRef.Properties.DisplayMember = "Referencia_ERP"
-                    cmbDocumentoRef.Properties.DataSource = l
-                    cmbDocumentoRef.Enabled = True
-                    cmbDocumentoRef.Properties.PopupWidth = 700
-                    cmbDocumentoRef.Properties.PopulateColumns()
-                    cmbDocumentoRef.Properties.BestFit()
-                    cmbDocumentoRef.Properties.NullText = "Seleccione documento Ref."
-                End If
-
-            End If
-
-        Catch ex As Exception
-
-            XtraMessageBox.Show(ex.Message,
-            Text,
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
-
-            '#MECR15102025: Se agrego bitacora de logs para pedidos
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
-                                                pIdEmpresa:=AP.IdEmpresa,
-                                                pIdBodega:=AP.IdBodega,
-                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
-                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
-                                                pStackTrace:=ex.StackTrace)
-        End Try
-
-    End Sub
-
     Private Sub cmbDocumentoRef_EditValueChanged(sender As Object, e As EventArgs) Handles cmbDocumentoRef.EditValueChanged
 
         Try
@@ -9780,103 +9645,6 @@ End Function
     Private Sub lnkUltDespacho_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles txtIdDespacho.LinkClicked
         Despacho_Link()
     End Sub
-
-    Private Sub Despacho_Link()
-
-    txtIdDespacho.Enabled = False
-
-    Dim DT As DataTable = Nothing
-    Dim BePicking As clsBeTrans_picking_enc = Nothing
-
-    Try
-
-        'Pedido para despacho / validación picking-verificación
-        DT = clsLnTrans_pe_enc.Get_Single_Pedido_For_Despacho(pBePedidoEnc.IdPedidoEnc,
-                                                              pBePedidoEnc.IdPickingEnc,
-                                                              pBePedidoEnc.IdBodega)
-
-        If Val(txtIdPicking.Text) <> 0 Then
-            BePicking = clsLnTrans_picking_enc.GetSingle(pBePedidoEnc.IdPickingEnc)
-        End If
-
-        'Si ya hay despacho asignado, abrirlo
-        If txtIdDespacho.Text.Trim <> "0" Then
-
-            If mgr IsNot Nothing AndAlso Not mgr.IsSplashFormVisible Then
-                mgr.ShowWaitForm()
-                mgr.SetWaitFormDescription("Cargando Despacho...")
-            End If
-
-            Cierra_Instancia_Previa(frmDespacho)
-            Abrir_Despacho(Val(txtIdDespacho.Text))
-            Exit Sub
-
-        End If
-
-        'Si no hay despacho asignado, se intenta generar
-        If mgr IsNot Nothing AndAlso Not mgr.IsSplashFormVisible Then
-            mgr.ShowWaitForm()
-            mgr.SetWaitFormDescription("Generando Despacho...")
-        End If
-
-        'Debe tener picking asociado
-        If Val(txtIdPicking.Text) = 0 Then
-            XtraMessageBox.Show("El pedido no tiene picking asociado, no puede despacharse", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Exit Sub
-        End If
-
-        If pBePedidoEnc Is Nothing Then Exit Sub
-
-        'Debe tener registros válidos para despacho (picking/verificación completados)
-        If DT Is Nothing OrElse DT.Rows.Count = 0 Then
-            XtraMessageBox.Show("El picking o verificación no se han completado, no puede generarse el despacho", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            Exit Sub
-        End If
-
-        'Si requiere preparación/packing, validar que exista packing
-        If BePicking IsNot Nothing AndAlso BePicking.Requiere_Preparacion Then
-
-            Dim lPacking As List(Of clsBeTrans_packing_enc) =
-                clsLnTrans_packing_enc.Get_All_By_IdPicking(BePicking.IdPickingEnc, False, pBePedidoEnc.IdPedidoEnc)
-
-            If lPacking Is Nothing OrElse lPacking.Count = 0 Then
-                SplashScreenManager.CloseForm(False)
-                XtraMessageBox.Show("El picking asociado al pedido requiere preparación o packing y no se ha realizado, ingrese a tomwms en la handheld y seleccione Packing.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Exit Sub
-            End If
-
-        End If
-
-        'Merge ours+theirs:
-        ' - theirs: siempre Nuevo_Despacho si DT tiene filas
-        ' - ours: si Estado=Pendiente, preguntar por despacho parcial; si no, crear directo
-        If pBePedidoEnc.Estado = "Pendiente" Then
-
-            If XtraMessageBox.Show("Realizar despacho parcial?",
-                                   Text,
-                                   MessageBoxButtons.YesNo,
-                                   MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
-                Nuevo_Despacho()
-            Else
-                Exit Sub
-            End If
-
-        Else
-            Nuevo_Despacho()
-        End If
-
-    Catch ex As Exception
-        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-
-    Finally
-        If mgr IsNot Nothing AndAlso mgr.IsSplashFormVisible Then
-            mgr.CloseWaitForm()
-        End If
-        txtIdDespacho.Enabled = True
-    End Try
-
-End Sub
- 
 
     Private Sub Abrir_Despacho(ByVal IdDespacho As Integer)
 
@@ -9906,44 +9674,6 @@ End Sub
         End Try
 
     End Sub
-
-   Private Sub Nuevo_Despacho()
-
-    Try
-
-        Cierra_Instancia_Previa(frmDespacho)
-
-        With frmDespacho
-            .Modo = frmDespacho.TipoTrans.Nuevo
-            .WindowState = FormWindowState.Maximized
-            .Activate()
-            .Show()
-
-            'MERGE (sin duplicar):
-            'Si existe método Agregar_Pedido, úsalo; si no, cae a asignar BePedidoEnc.            
-            Try
-                .Agregar_Pedido(pBePedidoEnc)
-            Catch
-                .BePedidoEnc = pBePedidoEnc
-            End Try
-
-            .InvokeGetDespachoEnPedido = AddressOf Cargar_Despacho
-            .InvokeActualizarStockReservadoEnPedido = AddressOf Carga_Stock_Reservado
-            .InvokeCargarObjetoPedido = AddressOf Recargar_Objeto_Pedido
-            .InvokeCargarPedido = AddressOf Cargar_Datos
-            .Focus()
-        End With
-
-    Catch ex As Exception
-        XtraMessageBox.Show(ex.Message,
-                            Text,
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Exclamation)
-    End Try
-
-End Sub
-
-
     Private Function Actualizar_Pedido_Estado_Despachado_Manual() As Boolean
 
         Actualizar_Pedido_Estado_Despachado_Manual = False
@@ -9958,7 +9688,7 @@ End Sub
                 Cargar_Datos()
 
                 '#MECR15102025: Se agrego bitacora de logs para pedidos
-                Dim vMsgError As String = "Se actualizó a despachado manualmente el pedido: " & pBePedidoEnc.IdPedidoEnc & " - " & pBePedidoEnc.Referencia                
+                Dim vMsgError As String = "Se actualizó a despachado manualmente el pedido: " & pBePedidoEnc.IdPedidoEnc & " - " & pBePedidoEnc.Referencia
                 clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
                                                     pIdEmpresa:=AP.IdEmpresa,
                                                     pIdBodega:=AP.IdBodega,
@@ -10222,68 +9952,6 @@ End Sub
 
     End Sub
 
-    Private Sub Llena_Estados_Grid(ByVal pIndex As Integer,
-                              ByVal lConnection As SqlConnection,
-                              ByVal lTransaction As SqlTransaction,
-                              Optional ByVal pIdEstado As Integer = 0,
-                              Optional ByVal lEstados As List(Of clsBeProducto_Estado_Cmb) = Nothing)
-
-    Try
-
-        DgComboEstado = TryCast(dgrid.Rows(pIndex).Cells("colEstadoProducto"), DataGridViewComboBoxCell)
-        DgComboEstado.DropDownWidth = 200
-
-        If pBeProducto Is Nothing Then Exit Sub
-
-        'MERGE:
-        '1) Si me pasaron lEstados (cache precargado), lo uso.
-        '2) Si no, consulto a BD con connection/transaction.
-        Dim lEstado As IList = Nothing
-
-        If lEstados IsNot Nothing Then
-            Dim tmp = lEstados.FindAll(Function(x) x.IdProductoBodega = pBeProducto.IdProductoBodega)
-
-            If pIdEstado <> 0 Then
-                tmp = tmp.FindAll(Function(x) x.IdEstado = pIdEstado)
-            End If
-
-            lEstado = tmp
-        Else
-            Dim tmp = clsLnProducto_estado.Get_All_Stock_Con_Estado_By_IdProductoBodega(pBeProducto.IdProductoBodega,
-                                                                                       lConnection,
-                                                                                       lTransaction).ToList()
-
-            If pIdEstado <> 0 Then
-                tmp = tmp.FindAll(Function(x) x.IdEstado = pIdEstado)
-            End If
-
-            lEstado = tmp
-        End If
-
-        DgComboEstado.DataSource = lEstado
-        DgComboEstado.ValueMember = "IdEstado"
-        DgComboEstado.DisplayMember = "Nombre"
-
-        If DgComboEstado.Items.Count > 0 Then
-            'Default: primero de la lista
-            If pIdEstado <> 0 Then
-                DgComboEstado.Value = pIdEstado
-            Else
-                'lEstado(0) funciona para cualquiera de las dos listas (tienen IdEstado)
-                DgComboEstado.Value = DirectCast(lEstado(0), Object).IdEstado
-            End If
-        Else
-            'Cuando no hay stock/estados
-            DgComboEstado.Value = Nothing
-        End If
-
-    Catch ex As Exception
-        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-    End Try
-
-End Sub
-
-
     Private Sub mnuEliminarPedidoTablaIntermedia_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuEliminarPedidoTablaIntermedia.ItemClick
 
         Try
@@ -10303,7 +9971,7 @@ End Sub
                                                         pIdBodega:=AP.IdBodega,
                                                         pUsrAgr:=AP.UsuarioAp.IdUsuario,
                                                         pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc)
-														
+
 
                     XtraMessageBox.Show("Se eliminó el pedido de la tabla intermedia", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
 
@@ -10327,7 +9995,7 @@ End Sub
                                                 pIdBodega:=AP.IdBodega,
                                                 pUsrAgr:=AP.UsuarioAp.IdUsuario,
                                                 pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
-                                                pStackTrace:=ex.StackTrace)8
+                                                pStackTrace:=ex.StackTrace)
 
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
                         Text,
@@ -10588,7 +10256,7 @@ End Sub
 
     End Sub
 
-   
+
     Private Sub BarButtonItem6_ItemClick(sender As Object, e As ItemClickEventArgs) Handles tsmiImprimirStockRes.ItemClick
         Imprimir_Vista()
     End Sub
@@ -10636,67 +10304,70 @@ End Sub
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-Private Sub Llena_Estados_Grid(ByVal pIndex As Integer,
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
+
+    End Sub
+
+    Private Sub Llena_Estados_Grid(ByVal pIndex As Integer,
                               ByVal lConnection As SqlConnection,
                               ByVal lTransaction As SqlTransaction,
                               Optional ByVal pIdEstado As Integer = 0,
                               Optional ByVal lEstados As List(Of clsBeProducto_Estado_Cmb) = Nothing)
 
-    Try
+        Try
 
-        DgComboEstado = TryCast(dgrid.Rows(pIndex).Cells("colEstadoProducto"), DataGridViewComboBoxCell)
-        DgComboEstado.DropDownWidth = 200
+            DgComboEstado = TryCast(dgrid.Rows(pIndex).Cells("colEstadoProducto"), DataGridViewComboBoxCell)
+            DgComboEstado.DropDownWidth = 200
 
-        If pBeProducto Is Nothing Then Exit Sub
+            If pBeProducto Is Nothing Then Exit Sub
 
-        'MERGE:
-        '1) Si me pasaron lEstados (cache precargado), lo uso.
-        '2) Si no, consulto a BD con connection/transaction.
-        Dim lEstado As IList = Nothing
+            'MERGE:
+            '1) Si me pasaron lEstados (cache precargado), lo uso.
+            '2) Si no, consulto a BD con connection/transaction.
+            Dim lEstado As IList = Nothing
 
-        If lEstados IsNot Nothing Then
-            Dim tmp = lEstados.FindAll(Function(x) x.IdProductoBodega = pBeProducto.IdProductoBodega)
+            If lEstados IsNot Nothing Then
+                Dim tmp = lEstados.FindAll(Function(x) x.IdProductoBodega = pBeProducto.IdProductoBodega)
 
-            If pIdEstado <> 0 Then
-                tmp = tmp.FindAll(Function(x) x.IdEstado = pIdEstado)
-            End If
+                If pIdEstado <> 0 Then
+                    tmp = tmp.FindAll(Function(x) x.IdEstado = pIdEstado)
+                End If
 
-            lEstado = tmp
-        Else
-            Dim tmp = clsLnProducto_estado.Get_All_Stock_Con_Estado_By_IdProductoBodega(pBeProducto.IdProductoBodega,
-                                                                                       lConnection,
-                                                                                       lTransaction).ToList()
-
-            If pIdEstado <> 0 Then
-                tmp = tmp.FindAll(Function(x) x.IdEstado = pIdEstado)
-            End If
-
-            lEstado = tmp
-        End If
-
-        DgComboEstado.DataSource = lEstado
-        DgComboEstado.ValueMember = "IdEstado"
-        DgComboEstado.DisplayMember = "Nombre"
-
-        If DgComboEstado.Items.Count > 0 Then
-            'Default: primero de la lista
-            If pIdEstado <> 0 Then
-                DgComboEstado.Value = pIdEstado
+                lEstado = tmp
             Else
-                'lEstado(0) funciona para cualquiera de las dos listas (tienen IdEstado)
-                DgComboEstado.Value = DirectCast(lEstado(0), Object).IdEstado
+                Dim tmp = clsLnProducto_estado.Get_All_Stock_Con_Estado_By_IdProductoBodega(pBeProducto.IdProductoBodega,
+                                                                                           lConnection,
+                                                                                           lTransaction).ToList()
+
+                If pIdEstado <> 0 Then
+                    tmp = tmp.FindAll(Function(x) x.IdEstado = pIdEstado)
+                End If
+
+                lEstado = tmp
             End If
-        Else
-            'Cuando no hay stock/estados
-            DgComboEstado.Value = Nothing
-        End If
 
-    Catch ex As Exception
-        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-    End Try
+            DgComboEstado.DataSource = lEstado
+            DgComboEstado.ValueMember = "IdEstado"
+            DgComboEstado.DisplayMember = "Nombre"
 
-End Sub
+            If DgComboEstado.Items.Count > 0 Then
+                'Default: primero de la lista
+                If pIdEstado <> 0 Then
+                    DgComboEstado.Value = pIdEstado
+                Else
+                    'lEstado(0) funciona para cualquiera de las dos listas (tienen IdEstado)
+                    DgComboEstado.Value = DirectCast(lEstado(0), Object).IdEstado
+                End If
+            Else
+                'Cuando no hay stock/estados
+                DgComboEstado.Value = Nothing
+            End If
 
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -10706,11 +10377,6 @@ End Sub
                                                 pUsrAgr:=AP.UsuarioAp.IdUsuario,
                                                 pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
                                                 pStackTrace:=ex.StackTrace)
-=======
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
->>>>>>> theirs
-
         End Try
 
     End Sub
@@ -10802,7 +10468,6 @@ End Sub
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-<<<<<<< ours
             '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -10812,10 +10477,7 @@ End Sub
                                                 pUsrAgr:=AP.UsuarioAp.IdUsuario,
                                                 pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
                                                 pStackTrace:=ex.StackTrace)
-=======
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
->>>>>>> theirs
+
         End Try
 
     End Sub
@@ -10826,18 +10488,6 @@ End Sub
 
             Imprimir_Vista_Hoja_Verificacion()
 
-            'If clsLnTrans_pe_enc.Tiene_Picking_Asociado(pBePedidoEnc.IdPedidoEnc) Then
-
-            '    Imprimir_Vista_Hoja_Verificacion()
-
-            'Else
-
-            '    XtraMessageBox.Show("Error_de_Proceso_202303061658: Debe generar el picking del pedido antes de imprimir la hoja de verificación",
-            '                        Text,
-            '                        MessageBoxButtons.OK,
-            '                        MessageBoxIcon.Error)
-
-            'End If
 
         Catch ex As Exception
 
@@ -10846,7 +10496,6 @@ End Sub
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-<<<<<<< ours
             '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -10856,10 +10505,6 @@ End Sub
                                                 pUsrAgr:=AP.UsuarioAp.IdUsuario,
                                                 pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
                                                 pStackTrace:=ex.StackTrace)
-=======
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
->>>>>>> theirs
 
         End Try
 
@@ -10875,17 +10520,7 @@ End Sub
             Dim printingSystem1 As New PrintingSystem()
             Dim printLink As New PrintableComponentLink()
             ' Aumentar el margen superior en 100 píxeles
-<<<<<<< ours
-            'printLink.Margins.Top += 80
-
-            '#MECR12092025: Se agrego formato y margenes al diseño.
-            printLink.PaperKind = System.Drawing.Printing.PaperKind.Letter
-            printLink.Landscape = False
-            printLink.Margins = New System.Drawing.Printing.Margins(30, 30, 80, 40)
-
-=======
             printLink.Margins.Top += 80
->>>>>>> theirs
             AddHandler printLink.CreateMarginalHeaderArea, AddressOf PrintableComponentLinkHojaVeri_CreateReportHeaderArea
 
             Const leftColumnFoot As String = "Páginas: [Page # of Pages #] "
@@ -10911,11 +10546,6 @@ End Sub
             End If
 
             printingSystem1.PageSettings.Landscape = False
-<<<<<<< ours
-            printingSystem1.PageMargins().Right = 10
-            printingSystem1.PageMargins().Left = 10
-=======
->>>>>>> theirs
             printLink.Component = dgridVerificacion
             printLink.Landscape = False
             printLink.CreateDocument(printingSystem1)
@@ -10928,21 +10558,6 @@ End Sub
             Text,
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
-
-<<<<<<< ours
-            '#MECR15102025: Se agrego bitacora de logs para pedidos
-            Dim vMsgError As String = ex.Message
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            clsLnLog_error_wms_pe.Agregar_Error(vMsgError,
-                                                pIdEmpresa:=AP.IdEmpresa,
-                                                pIdBodega:=AP.IdBodega,
-                                                pUsrAgr:=AP.UsuarioAp.IdUsuario,
-                                                pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
-                                                pStackTrace:=ex.StackTrace)
-=======
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
->>>>>>> theirs
 
         End Try
 
@@ -10996,34 +10611,6 @@ End Sub
 
     End Sub
 
-    'Private Sub PrintableComponentLinkHojaVeri_CreateReportHeaderArea(ByVal sender As Object, ByVal e As DevExpress.XtraPrinting.CreateAreaEventArgs)
-
-    '    Dim reportHeader As String = vbNewLine & "TOMWMS - Hoja de verificación."
-    '    Dim RutaDespacho As String = vbNewLine & "Ruta#: " & cmbRoadRutaPedido.Text
-
-    '    If Not pBePedidoEnc.IdPickingEnc = 0 Then
-    '        reportHeader += vbNewLine & " Picking WMS#: " & pBePedidoEnc.IdPickingEnc
-    '    End If
-
-    '    If Not pBePedidoEnc.Referencia = "" Then
-    '        reportHeader += vbNewLine & "Referencia#: " & pBePedidoEnc.Referencia
-    '    End If
-
-    '    If Not pBePedidoEnc.Observacion = "" Or Not pBePedidoEnc.RoadDirEntrega = "" Then
-    '        reportHeader += vbNewLine & "Observación: " & IIf(pBePedidoEnc.Observacion <> "", pBePedidoEnc.Observacion & " ", "") &
-    '                        IIf(pBePedidoEnc.RoadDirEntrega <> "", pBePedidoEnc.RoadDirEntrega, "")
-
-    '    End If
-
-    '    e.Graph.StringFormat = New BrickStringFormat(StringAlignment.Center)
-    '    e.Graph.Font = New Font("Tahoma", 8, FontStyle.Bold)
-
-    '    Dim rec As RectangleF = New RectangleF(0, 0, e.Graph.ClientPageSize.Width, 150)
-    '    e.Graph.DrawString(reportHeader, Color.Black, rec, BorderSide.None)
-
-
-    'End Sub
-
     Private Sub dgrid_MouseClick(sender As Object, e As MouseEventArgs) Handles dgrid.MouseClick
 
         Try
@@ -11038,7 +10625,6 @@ End Sub
            MessageBoxButtons.OK,
            MessageBoxIcon.Error)
 
-<<<<<<< ours
             '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -11048,10 +10634,6 @@ End Sub
                                                 pUsrAgr:=AP.UsuarioAp.IdUsuario,
                                                 pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
                                                 pStackTrace:=ex.StackTrace)
-=======
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
->>>>>>> theirs
         End Try
 
     End Sub
@@ -11301,32 +10883,19 @@ End Sub
 
     End Sub
 
-<<<<<<< ours
-    Private Sub txtIdDespacho_Click(sender As Object, e As EventArgs) Handles txtIdDespacho.LinkClicked
-=======
     Private Sub txtIdDespacho_Click(sender As Object, e As EventArgs) Handles txtIdDespacho.Click
->>>>>>> theirs
 
         Despacho_Link()
 
     End Sub
-
-<<<<<<< ours
-    Private Function Cliente_Control_Calidad(pIdCliente As Integer, lClientes As List(Of clsBeCliente))
-=======
     Private Function Cliente_Control_Calidad(pIdCliente As Integer, ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction)
->>>>>>> theirs
 
         Cliente_Control_Calidad = False
 
         Try
 
-<<<<<<< ours
-            Dim pCliente = lClientes.Find(Function(x) x.IdCliente = pIdCliente)
-=======
             Dim pCliente As New clsBeCliente With {.IdCliente = pIdCliente}
             pCliente = clsLnCliente.GetSingle(pIdCliente, lConnection, lTransaction)
->>>>>>> theirs
 
             If pCliente IsNot Nothing Then
                 Return pCliente.Control_Calidad
@@ -11338,22 +10907,14 @@ End Sub
 
     End Function
 
-<<<<<<< ours
-    Private Function Cliente_Control_Ultimo_Lote(pIdCliente As Integer, lClientes As List(Of clsBeCliente))
-=======
     Private Function Cliente_Control_Ultimo_Lote(pIdCliente As Integer, ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction)
->>>>>>> theirs
 
         Cliente_Control_Ultimo_Lote = False
 
         Try
 
             Dim pCliente As New clsBeCliente With {.IdCliente = pIdCliente}
-<<<<<<< ours
-            pCliente = lClientes.Find(Function(x) x.IdCliente = pIdCliente)
-=======
             pCliente = clsLnCliente.GetSingle(pIdCliente, lConnection, lTransaction)
->>>>>>> theirs
 
             If pCliente IsNot Nothing Then
                 Return pCliente.Control_Ultimo_Lote
@@ -11547,7 +11108,7 @@ End Sub
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-<<<<<<< ours
+
             '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -11557,11 +11118,6 @@ End Sub
                                                 pUsrAgr:=AP.UsuarioAp.IdUsuario,
                                                 pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
                                                 pStackTrace:=ex.StackTrace)
-=======
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
->>>>>>> theirs
-
         End Try
 
     End Sub
@@ -11897,7 +11453,6 @@ End Sub
             MessageBoxButtons.OK,
             MessageBoxIcon.Error)
 
-<<<<<<< ours
             '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -11907,11 +11462,6 @@ End Sub
                                                 pUsrAgr:=AP.UsuarioAp.IdUsuario,
                                                 pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
                                                 pStackTrace:=ex.StackTrace)
-=======
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
->>>>>>> theirs
-
         End Try
 
     End Sub
@@ -11935,15 +11485,12 @@ End Sub
                 GridView11.Columns("Cantidad").SummaryItem.SummaryType = SummaryItemType.Sum
                 GridView11.Columns("Cantidad").SummaryItem.DisplayFormat = "{0:n6}"
                 GridView11.BestFitColumns()
-<<<<<<< ours
-=======
 
                 If Not BeBodega Is Nothing Then
                     GridView11.Columns("Talla").Visible = BeBodega.Control_Talla_Color
                     GridView11.Columns("Color").Visible = BeBodega.Control_Talla_Color
                 End If
 
->>>>>>> theirs
             End If
 
         Catch ex As Exception
@@ -11953,7 +11500,6 @@ End Sub
                                MessageBoxButtons.OK,
                                MessageBoxIcon.Error)
 
-<<<<<<< ours
             '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -11963,10 +11509,6 @@ End Sub
                                                 pUsrAgr:=AP.UsuarioAp.IdUsuario,
                                                 pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
                                                 pStackTrace:=ex.StackTrace)
-=======
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
->>>>>>> theirs
 
         End Try
 
@@ -12024,7 +11566,7 @@ End Sub
                                MessageBoxButtons.OK,
                                MessageBoxIcon.Error)
 
-<<<<<<< ours
+
             '#MECR15102025: Se agrego bitacora de logs para pedidos
             Dim vMsgError As String = ex.Message
             'clsLnLog_error_wms.Agregar_Error(vMsgError)
@@ -12034,11 +11576,6 @@ End Sub
                                                 pUsrAgr:=AP.UsuarioAp.IdUsuario,
                                                 pIdPedidoEnc:=pBePedidoEnc.IdPedidoEnc,
                                                 pStackTrace:=ex.StackTrace)
-=======
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
->>>>>>> theirs
-
         End Try
 
     End Sub
@@ -12069,14 +11606,8 @@ End Sub
         Try
 
             If cmbTipoPedido.EditValue <> 0 Then
-<<<<<<< ours
-                '#AT20250710 Cambie de escanear_muelle_picking a Mover_Producto_Zona_Muelle
-                'Porque escanear_muelle_picking se utiliza para saber si se debe o no escanear el muelle en la HH
-                Return clsLnTrans_pe_tipo.GetSingle(cmbTipoPedido.EditValue)?.Mover_Producto_Zona_Muelle
-=======
 
                 Return clsLnTrans_pe_tipo.GetSingle(cmbTipoPedido.EditValue)?.Escanear_Muelle_Picking
->>>>>>> theirs
 
             End If
 
@@ -12135,51 +11666,6 @@ End Sub
             printLink.CreateDocument(printingSystem1)
             printingSystem1.PreviewFormEx.ShowDialog()
             printingSystem1.Dispose()
-
-        Catch ex As Exception
-            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-        End Try
-
-    End Sub
-
-    Private Sub Llena_Cliente_Grid(ByVal pIndex As Integer,
-                                   Optional ByVal pIdCliente As Integer = 0)
-
-        Try
-
-            DgComboCliente = TryCast(dgrid.Rows(pIndex).Cells("IdCliente"), DataGridViewComboBoxCell)
-            DgComboCliente.DropDownWidth = 200
-
-            Dim lCliente As New List(Of clsBeCliente)
-
-            lCliente = New List(Of clsBeCliente)
-
-            If Modo = TipoTrans.Nuevo Then
-                lCliente = clsLnCliente.Get_All()
-            Else
-                lCliente = clsLnCliente.Get_All_By_IdCliente(pIdCliente)
-            End If
-
-            DgComboCliente.DataSource = lCliente
-            DgComboCliente.ValueMember = "IdCliente"
-            DgComboCliente.DisplayMember = "nombre_comercial"
-
-            If DgComboCliente.Items.Count > 0 AndAlso (Modo = TipoTrans.Nuevo Or Modo = TipoTrans.Editar) Then
-                Dim vIdCliente As Integer = lCliente(0).IdCliente
-                DgComboCliente.Value = vIdCliente
-                If Not DgComboCliente.Value = lCliente(0).IdCliente Then
-                    DgComboCliente.Value = Nothing
-                End If
-                Exit Sub
-            Else
-                DgComboCliente.Value = Nothing
-            End If
-
-            If pIdCliente <> 0 AndAlso DgComboCliente.Items.Count > 0 Then
-                DgComboCliente.Value = pIdCliente
-            Else
-                DgComboCliente.Value = Nothing
-            End If
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -12450,6 +11936,342 @@ End Sub
         If Not String.IsNullOrWhiteSpace(cod) Then Return $"COD:{cod.Trim().ToUpperInvariant()}"
         Return Nothing
     End Function
+
+    Private Sub Despacho_Link()
+
+        txtIdDespacho.Enabled = False
+
+        Dim DT As New DataTable
+        Dim BePicking As New clsBeTrans_picking_enc
+
+        Try
+
+            DT = clsLnTrans_pe_enc.Get_Single_Pedido_For_Despacho(pBePedidoEnc.IdPedidoEnc,
+                                                                  pBePedidoEnc.IdPickingEnc,
+                                                                  pBePedidoEnc.IdBodega)
+
+            If Val(txtIdPicking.Text) <> 0 Then
+                BePicking = clsLnTrans_picking_enc.GetSingle(pBePedidoEnc.IdPickingEnc)
+            End If
+
+
+            'Tiene registros pendientes de despahco.
+            If DT.Rows.Count > 0 Then
+
+                If Val(txtIdPicking.Text) <> 0 Then
+
+                    If Not BePicking Is Nothing Then
+
+                        If BePicking.Requiere_Preparacion Then
+
+                            Dim lPacking As New List(Of clsBeTrans_packing_enc)
+                            lPacking = clsLnTrans_packing_enc.Get_All_By_IdPicking(BePicking.IdPickingEnc, False, pBePedidoEnc.IdPedidoEnc)
+
+                            If lPacking.Count = 0 Then
+                                SplashScreenManager.CloseForm(False)
+                                XtraMessageBox.Show("El picking asociado al pedido requiere preparación o packing y no se ha realizado, ingrese a tomwms en la handheld y seleccione Packing.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                                Exit Sub
+                            End If
+
+                        Else
+
+                            If mgr IsNot Nothing AndAlso mgr.IsSplashFormVisible Then
+                                mgr.CloseWaitForm()
+                            End If
+
+                            Dim vDespachos As Integer = clsLnTrans_despacho_enc.Get_Count_Despacho_By_IdPedidoEnc(pBePedidoEnc.IdPedidoEnc)
+
+                            If vDespachos > 0 Then
+
+                                If pBePedidoEnc.Estado = "Verificado" Then
+
+                                    If XtraMessageBox.Show("El pedido tiene registros pendientes de despacho, ¿generar nuevo despacho?",
+                                                             Text,
+                                                             MessageBoxButtons.YesNo,
+                                                             MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
+
+                                        Nuevo_Despacho()
+                                        Exit Sub
+
+                                    End If
+
+                                End If
+
+                            End If
+
+                        End If
+
+                    End If
+
+                End If
+
+            End If
+
+            If txtIdDespacho.Text.Trim <> "0" Then
+
+                If mgr IsNot Nothing AndAlso Not mgr.IsSplashFormVisible Then
+                    mgr.ShowWaitForm()
+                    mgr.SetWaitFormDescription("Cargando Despacho...")
+                End If
+
+                Cierra_Instancia_Previa(frmDespacho)
+
+                Abrir_Despacho(Val(txtIdDespacho.Text))
+
+            Else
+
+                If mgr IsNot Nothing AndAlso Not mgr.IsSplashFormVisible Then
+                    mgr.ShowWaitForm()
+                    mgr.SetWaitFormDescription("Generando Despacho...")
+                End If
+
+                If Val(txtIdPicking.Text) <> 0 Then
+
+                    If Not pBePedidoEnc Is Nothing Then
+
+                        If Not DT Is Nothing Then
+
+                            If DT.Rows.Count > 0 Then
+
+                                If Not BePicking Is Nothing Then
+
+                                    If BePicking.Requiere_Preparacion Then
+
+                                        Dim lPacking As New List(Of clsBeTrans_packing_enc)
+                                        lPacking = clsLnTrans_packing_enc.Get_All_By_IdPicking(BePicking.IdPickingEnc, False, pBePedidoEnc.IdPedidoEnc)
+
+                                        If lPacking.Count = 0 Then
+                                            SplashScreenManager.CloseForm(False)
+                                            XtraMessageBox.Show("El picking asociado al pedido requiere preparación o packing y no se ha realizado, ingrese a tomwms en la handheld y seleccione Packing.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                                            Return
+                                        End If
+
+                                    End If
+
+                                End If
+
+                                Nuevo_Despacho()
+
+                            Else
+                                XtraMessageBox.Show("El picking o verificación no se han completado, no puede generarse el despacho", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                            End If
+
+                        End If
+
+                    End If
+
+                Else
+                    XtraMessageBox.Show("El pedido no tiene picking asociado, no puede despacharse", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                End If
+
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+        Finally
+            If mgr IsNot Nothing AndAlso mgr.IsSplashFormVisible Then
+                mgr.CloseWaitForm()
+            End If
+            txtIdDespacho.Enabled = True
+        End Try
+
+    End Sub
+
+    Private Sub Set_Tipo_Documento()
+
+        Try
+
+            If cmbBodega.Text <> "" AndAlso cmbTipoPedido.EditValue <> 0 Then
+
+                'GT 210720211443: Si Tipo Doc tiene  transferencia fiscal a general, se habilita el tab de poliza.
+                Dim fila As Object = cmbTipoPedido.GetSelectedDataRow
+
+                If fila IsNot Nothing Then
+
+                    Dim vControl_Poliza As Boolean = fila.Item("control_poliza")
+                    Dim vVerificar As Boolean = fila.Item("Verificar")
+                    Dim vFotografiaVerificacion As Boolean = fila.Item("Fotografia_Verificacion")
+                    Dim vEs_Devolucion As Boolean = fila.Item("es_devolucion")
+
+                    If vControl_Poliza Then
+                        chkControlPoliza.Checked = True
+                        chkControlPoliza.Enabled = False
+                    Else
+                        chkControlPoliza.Checked = False
+                        chkControlPoliza.Enabled = False
+                    End If
+
+                    cmbMotivoDevolucion.Visible = vEs_Devolucion
+                    lblMotivoDevolucion.Visible = vEs_Devolucion
+
+                    If vEs_Devolucion Then
+                        Llena_Motivos_Devolucion()
+                    End If
+
+                    grpScanPoliza.Visible = vControl_Poliza
+                    tabPoliza.Visible = vControl_Poliza
+                    tabPoliza.PageVisible = vControl_Poliza
+                    chkVerificar.Checked = vVerificar
+                    chkFotografiaVerificacion.Checked = vFotografiaVerificacion
+                Else
+                    Throw New Exception("El tipo de documento no es válido, revise la configuración de la bodega, no se puede crear el pedido")
+                End If
+
+            End If
+
+            xtrPedido.SelectedTabPageIndex = 0
+
+            If cmbBodega.Text <> "" AndAlso cmbTipoPedido.EditValue <> 0 Then
+
+                BeTipoDoc.IdTipoPedido = cmbTipoPedido.EditValue
+
+                '#EJC20210716:Obtener parámetro control poliza y verificación auto en frmpedido.
+                'El parametro verificación, se envía al picking, para determinar si hay o no verificación.
+                If clsLnTrans_pe_tipo.GetSingle(BeTipoDoc) Then
+
+                    If BeTipoDoc.Requerir_Documento_Ref Then
+                        txtReferencia.BackColor = Color.LightPink
+                        txtReferencia.ReadOnly = True
+                        Llena_Documentos_Referencia_By_Bodega()
+                    Else
+                        txtReferencia.BackColor = Color.White
+
+                        If (pBePedidoEnc.Referencia <> "" AndAlso AP.Bodega.Interface_SAP) Then
+                            txtReferencia.ReadOnly = True
+                        Else
+                            txtReferencia.ReadOnly = False
+                        End If
+                    End If
+
+                    lblDocumentoRef.Visible = BeTipoDoc.Requerir_Documento_Ref
+                    cmbDocumentoRef.Visible = BeTipoDoc.Requerir_Documento_Ref
+
+                End If
+
+            End If
+
+        Catch ex As Exception
+            SplashScreenManager.CloseForm(False)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End Try
+
+    End Sub
+
+    Private Sub Nuevo_Despacho()
+
+        Try
+
+            Cierra_Instancia_Previa(frmDespacho)
+
+            With frmDespacho
+                .Modo = frmDespacho.TipoTrans.Nuevo
+                .WindowState = FormWindowState.Maximized
+                .Activate()
+                .Show()
+                .Agregar_Pedido(pBePedidoEnc)
+                .InvokeGetDespachoEnPedido = AddressOf Cargar_Despacho
+                .InvokeActualizarStockReservadoEnPedido = AddressOf Carga_Stock_Reservado
+                .InvokeCargarObjetoPedido = AddressOf Recargar_Objeto_Pedido
+                .InvokeCargarPedido = AddressOf Cargar_Datos
+                .Focus()
+            End With
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Exclamation)
+        End Try
+
+    End Sub
+
+    Private Sub Llena_Presentacion_Grid(ByVal pIndex As Integer,
+                                        ByVal lConnection As SqlConnection,
+                                        ByVal lTransaction As SqlTransaction,
+                                        Optional ByVal pIdPresentacion As Integer = 0)
+
+        Try
+
+            DgComboPresentacion = TryCast(dgrid.Rows(pIndex).Cells("colPresentacion"), DataGridViewComboBoxCell)
+            DgComboPresentacion.DropDownWidth = 200
+
+            Dim lPres As New List(Of clsBeProducto_Presentacion)
+
+            lPres = New List(Of clsBeProducto_Presentacion)
+
+            If Modo = TipoTrans.Nuevo Then
+                lPres = clsLnProducto_presentacion.Get_All_Presentacion_By_IdProductoBodega(pBeProducto.IdProductoBodega, lConnection, lTransaction).ToList()
+            Else
+                lPres = clsLnProducto_presentacion.Get_All_Presentaciones_By_IdProductoBodega(pBeProducto.IdProductoBodega, True, lConnection, lTransaction).ToList()
+            End If
+
+            DgComboPresentacion.DataSource = lPres
+            DgComboPresentacion.ValueMember = "IdPresentacion"
+            DgComboPresentacion.DisplayMember = "Nombre"
+
+            If DgComboPresentacion.Items.Count > 0 AndAlso (Modo = TipoTrans.Nuevo Or Modo = TipoTrans.Editar) Then
+                Dim vIdPresentacion As Integer = lPres(0).IdPresentacion
+                DgComboPresentacion.Value = vIdPresentacion
+                If Not DgComboPresentacion.Value = lPres(0).IdPresentacion Then
+                    DgComboPresentacion.Value = Nothing
+                End If
+                Exit Sub
+            Else
+                DgComboPresentacion.Value = Nothing
+            End If
+
+            If pIdPresentacion <> 0 AndAlso DgComboPresentacion.Items.Count > 0 Then
+                DgComboPresentacion.Value = pIdPresentacion
+            Else
+                DgComboPresentacion.Value = Nothing
+            End If
+
+        Catch ex As Exception
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        End Try
+
+    End Sub
+
+    Private Sub Llena_Documentos_Referencia_By_Bodega()
+
+        Try
+
+            cmbDocumentoRef.Properties.DataSource = Nothing
+
+            Dim l As New DataTable
+            Dim vCodigoBodega As String = BeBodega.Codigo
+
+            If Not pBeCliente Is Nothing Then
+
+                Dim vCodigoCliente As String = pBeCliente.Codigo
+
+                l = clsLnTrans_pe_docu_ref.Get_All_By_Codigo_Bodega_DT(vCodigoBodega, vCodigoCliente)
+
+                If l.Rows.Count > 0 Then
+                    cmbDocumentoRef.Visible = True
+                    cmbDocumentoRef.Properties.ValueMember = "Codigo"
+                    cmbDocumentoRef.Properties.DisplayMember = "Referencia_ERP"
+                    cmbDocumentoRef.Properties.DataSource = l
+                    cmbDocumentoRef.Enabled = True
+                    cmbDocumentoRef.Properties.PopupWidth = 700
+                    cmbDocumentoRef.Properties.PopulateColumns()
+                    cmbDocumentoRef.Properties.BestFit()
+                    cmbDocumentoRef.Properties.NullText = "Seleccione documento Ref."
+                End If
+
+            End If
+
+        Catch ex As Exception
+
+            XtraMessageBox.Show(ex.Message,
+            Text,
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Error)
+
+            Dim vMsgError As String = ex.Message
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+
+        End Try
 
     End Sub
 

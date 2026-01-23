@@ -3123,7 +3123,7 @@ Public Class IMS
 
     End Function
 
-    Public Overloads Shared Function Listar_Productos(ByRef Cmb As LookUpEdit, IdBodega As Integer) As Boolean
+    Public Overloads Shared Function Listar_Productos(ByRef Cmb As DevExpress.XtraEditors.GridLookUpEdit, IdBodega As Integer) As Boolean
 
         Listar_Productos = False
 
@@ -3408,8 +3408,6 @@ Public Class IMS
                                                 ByVal pConnection As SqlConnection,
                                                 ByVal pTransaction As SqlTransaction)
 
-        Listar_Clientes_By_IdCliente = False
-
         Try
 
             cmbEmpresaTransporte.Properties.DataSource = Nothing
@@ -3439,9 +3437,9 @@ Public Class IMS
 
     End Sub
     Public Shared Function Listar_Clientes_By_IdCliente(ByRef Cmb As GridLookUpEdit,
-                                                           ByVal pIdPropietario As Integer,
-                                                           ByVal pIdBodega As Integer,
-                                                           ByVal IdCliente As Integer) As Boolean
+                                                         ByVal pIdPropietario As Integer,
+                                                         ByVal pIdBodega As Integer,
+                                                         ByVal IdCliente As Integer) As Boolean
 
         Listar_Clientes_By_IdCliente = False
 
@@ -3470,6 +3468,8 @@ Public Class IMS
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Information)
         End Try
+
+    End Function
 
     Public Shared Sub Llena_Pilotos(ByRef cmbPiloto As LookUpEdit,
                                     ByVal pIdEmpresaTransporte As Integer,

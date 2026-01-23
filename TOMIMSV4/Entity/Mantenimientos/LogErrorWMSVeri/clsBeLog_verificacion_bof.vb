@@ -1,4 +1,4 @@
-﻿Public Class clsBeLog_verificacion_bof
+﻿Public Class clsBeLog_verificacion_bof_error
     Implements ICloneable
     Public Property MensajeError() As String = String.Empty
     Public Property RutaError() As String = String.Empty

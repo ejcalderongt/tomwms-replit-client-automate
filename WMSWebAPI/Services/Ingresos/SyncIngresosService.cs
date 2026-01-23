@@ -2,7 +2,6 @@
 using Microsoft.Data.SqlClient;
 using System.Data;
 using WMS.EntityCore.Operador;
-using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Proveedor;
 using WMS.EntityCore.Stock;

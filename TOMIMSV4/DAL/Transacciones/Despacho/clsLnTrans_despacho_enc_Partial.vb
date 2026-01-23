@@ -1600,7 +1600,6 @@ Partial Public Class clsLnTrans_despacho_enc
 
                                                         clsLnStock.Actualizar_Stock_Por_Despacho(BeDespachoEnc.IdDespachoEnc,
                                                                                                  BePickingUbic,
-                                                                                                 BePedidoDet,
                                                                                                  AllowNegativeExceptionOnStock,
                                                                                                  lConnection,
                                                                                                  lTransaction)
@@ -1868,7 +1867,6 @@ Partial Public Class clsLnTrans_despacho_enc
 
                                     clsLnStock.Actualizar_Stock_Por_Despacho(pIdDespachoEnc,
                                                                              BePickingUbic,
-                                                                             BePedidoDet,
                                                                              AllowNegativeExceptionOnStock,
                                                                              lConnection,
                                                                              lTransaction)
@@ -1930,8 +1928,7 @@ Partial Public Class clsLnTrans_despacho_enc
                     BePedidoEnc.Estado = "Pendiente"
 
                     clsLnTrans_pe_enc.Actualizar_Estado(BePedidoEnc,
-                Throw New Exception("#EJC20200729NOSTCOKAFF D: No se pudo encontrar la información de stock asociado al despacho, esta es una excepción poco usual. Debe realizar un backup de la base de datos y enviarla al departamento de desarrollo.")
-                    lConnection,
+                                                        lConnection,
                                                         lTransaction)
 
                     clsLnTrans_pe_enc.Actualizar_Fecha_Fin_Preparacion(BePedidoEnc.IdPedidoEnc,
@@ -1946,6 +1943,7 @@ Partial Public Class clsLnTrans_despacho_enc
             End If
 
             If vCantidadDespachadaAcum = 0 Then
+                Throw New Exception("#EJC20200729NOSTCOKAFF: No se pudo encontrar la información de stock asociado al despacho, esta es una excepción poco usual. Debe realizar un backup de la base de datos y enviarla al departamento de desarrollo.")
             End If
 
         Catch ex As Exception
@@ -2459,7 +2457,6 @@ Partial Public Class clsLnTrans_despacho_enc
 
                                     clsLnStock.Actualizar_Stock_Por_Despacho(BeDespachoEnc.IdDespachoEnc,
                                                                              BePickingUbic,
-                                                                             BePedidoDet,
                                                                              AllowNegativeExceptionOnStock,
                                                                              lConnection,
                                                                              lTransaction)
@@ -2501,7 +2498,6 @@ Partial Public Class clsLnTrans_despacho_enc
                         End If 'Fin tiene cantidad verificada
 
                     End If 'Fin si, el producto se pickeó, se verificó                        
-                    Throw New Exception("#EJC20200729NOSTCOKAFF E: No se pudo encontrar la información de stock asociado al despacho, esta es una excepción poco usual. Debe realizar un backup de la base de datos y enviarla al departamento de desarrollo.")
 
                 Next BePedidoDet
 
@@ -2517,6 +2513,7 @@ Partial Public Class clsLnTrans_despacho_enc
             End If
 
             If vCantidadDespachadaAcum = 0 Then
+                Throw New Exception("#EJC20200729NOSTCOKAFF: No se pudo encontrar la información de stock asociado al despacho, esta es una excepción poco usual. Debe realizar un backup de la base de datos y enviarla al departamento de desarrollo.")
             End If
 
         Catch ex As Exception
@@ -2640,7 +2637,6 @@ Partial Public Class clsLnTrans_despacho_enc
 
                                         clsLnStock.Actualizar_Stock_Por_Despacho(BeDespachoEnc.IdDespachoEnc,
                                                                                  BePickingUbic,
-                                                                                     BePedidoDet,
                                                                                  AllowNegativeExceptionOnStock,
                                                                                  lConnection,
                                                                                  lTransaction)
@@ -2926,13 +2922,12 @@ Partial Public Class clsLnTrans_despacho_enc
 
                 If clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(BeINavPedCompra,
                                                                         BePedidoCompraEnc,
-                                                                        BePedidoEnc,
-                                                                        vResult) Then
+                                                                        vResult,
+                                                                        BePedidoEnc) Then
                     Revertir_Despacho_By_IdPedidoEnc = True
                 Else
                     Throw New Exception(vResult)
                 End If
-
 
             Else
                 Throw New Exception("No se obtuvo el objeto de pedido para el IdPedidodEnc: " & IdPedidoEnc)
@@ -3173,59 +3168,6 @@ Partial Public Class clsLnTrans_despacho_enc
                                                  ByRef lConnection As SqlConnection,
                                                  ByRef lTransaction As SqlTransaction)
 
-        Dim actualizados As Integer = 0
-        Dim insertados As Integer = 0
-        Dim cantDespachos As Integer = 0
-        Dim BeDespachoDetExistente As New clsBeTrans_despacho_det
-
-        Try
-
-
-
-
-            End If
-
-
-        Catch ex As Exception
-            Dim vMsgError As String = ex.Message
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw ex
-        End Try
-
-
-
-
-
-        Else
-        End If
-
-
-        If BeTransPickingUbic.IdProductoTallaColor > 0 Then
-            BeDespachoDet.Talla = BeTransPickingUbic.Codigo_Talla
-            BeDespachoDet.Color = BeTransPickingUbic.Codigo_Color
-            BeDespachoDet.IdProductoTallaColor = BeTransPickingUbic.IdProductoTallaColor
-        Else
-
-        End If
-
-
-        Catch ex As Exception
-        clsLnLog_error_wms.Agregar_Error(vMsgError)
-        Throw ex
-        End Try
-
-    End Sub
-
-
-    Private Shared Sub Guarda_Trans_Despacho_Det(ByRef ObjEnc As clsBeTrans_despacho_enc,
-                                                 ByRef lConnection As SqlConnection,
-                                                 ByRef lTransaction As SqlTransaction)
-
-        Dim actualizados As Integer = 0
-        Dim insertados As Integer = 0
-        Dim cantDespachos As Integer = 0
-        Dim BeDespachoDetExistente As New clsBeTrans_despacho_det
-
         Try
 
             If ObjEnc IsNot Nothing Then
@@ -3234,64 +3176,54 @@ Partial Public Class clsLnTrans_despacho_enc
 
                 For Each BePedidoEnc As clsBeTrans_pe_enc In ObjEnc.ListaPedidos
 
-                    If clsLnTrans_pe_enc.Despachados_En_Otro(BePedidoEnc.IdPedidoEnc,
-                                                        ObjEnc.IdDespachoEnc,
-                                                        lConnection,
-                                                        lTransaction) Then
-                        Throw New Exception("El pedido de WMS " & BePedidoEnc.IdPedidoEnc &
-                                            " con referencia " & BePedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino &
-                                            " ya tiene un despacho asociado con los mismos productos")
-                    End If
+                    For Each BePedidoDet As clsBeTrans_pe_det In BePedidoEnc.Detalle
 
-                    Dim lPickingUbicVerificadosByPedido = BePedidoEnc.Picking.ListaPickingUbic _
-                                                        .Where(Function(x) _
-                                                            ((x.Cantidad_Verificada > 0 OrElse x.Peso_verificado > 0) AndAlso
-                                                             (x.Cantidad_despachada < x.Cantidad_Verificada) AndAlso
-                                                             (x.IdPedidoEnc = BePedidoEnc.IdPedidoEnc))
-                                                        ).ToList()
+                        If Not BePedidoDet.ListaPickingUbic Is Nothing Then
 
+                            Dim lPickingUbicVerificados = BePedidoDet.ListaPickingUbic.Where(Function(x) (x.Cantidad_Verificada > 0 OrElse x.Peso_verificado > 0) AndAlso (x.Cantidad_despachada < x.Cantidad_Verificada)).ToList()
 
-                    If Not lPickingUbicVerificadosByPedido Is Nothing Then
+                            Try
+                                If BePedidoDet.Cantidad <= lPickingUbicVerificados.Sum(Function(x) x.Cantidad_Recibida) Then
+                                    Debug.WriteLine("Error Solicitado: " & BePedidoDet.Cantidad & " Verificado: " & lPickingUbicVerificados.Sum(Function(x) x.Cantidad_Recibida))
+                                End If
+                            Catch ex As Exception
 
-                        If lPickingUbicVerificadosByPedido.Count > 0 Then
+                            End Try
 
-                            For Each BePickingUbic As clsBeTrans_picking_ubic In lPickingUbicVerificadosByPedido
+                            'Se verificó para despacho en esa línea del pedido
+                            If Not lPickingUbicVerificados Is Nothing Then
 
-                                Dim lDespachoDet = ObjEnc.ListaDetalle.FindAll(Function(x) x.IdPickingUbic = BePickingUbic.IdPickingUbic)
+                                If lPickingUbicVerificados.Count > 0 Then
 
-                                insertados = 0 : actualizados = 0
+                                    For Each BePickingUbic As clsBeTrans_picking_ubic In lPickingUbicVerificados
 
-                                For Each BeDespachoDet As clsBeTrans_despacho_det In lDespachoDet
+                                        For Each BeDespachoDet As clsBeTrans_despacho_det In ObjEnc.ListaDetalle.Where(Function(x) x.IdPickingUbic = BePickingUbic.IdPickingUbic)
 
-                                    '#EJC20200721: Por despachos parciales CLC.
-                                    BeDespachoDet.CantidadDespachada = BePickingUbic.Cantidad_Verificada - BePickingUbic.Cantidad_despachada
+                                            '#EJC20200721: Por despachos parciales CLC.
+                                            BeDespachoDet.CantidadDespachada = BePickingUbic.Cantidad_Verificada - BePickingUbic.Cantidad_despachada
 
-                                    BeDespachoDetExistente = clsLnTrans_despacho_det.Get_Single_By_IdDespachoEnc_And_IdPickingUbic(BeDespachoDet.IdDespachoEnc, BePickingUbic.IdPickingUbic)
+                                            If BeDespachoDet.IsNew Then
+                                                lMaxID += 1
+                                                BeDespachoDet.IdDespachoEnc = ObjEnc.IdDespachoEnc
+                                                BeDespachoDet.IdDespachoDet = lMaxID
+                                                clsLnTrans_despacho_det.Insertar(BeDespachoDet, lConnection, lTransaction)
+                                            Else
+                                                clsLnTrans_despacho_det.Actualizar(BeDespachoDet, lConnection, lTransaction)
+                                            End If
 
-                                    If BeDespachoDet.IsNew OrElse BeDespachoDetExistente Is Nothing Then
-                                        BeDespachoDet.IdDespachoEnc = ObjEnc.IdDespachoEnc
-                                        BeDespachoDet.IdDespachoDet = clsLnTrans_despacho_det.MaxID(lConnection, lTransaction) + 1
-                                        insertados += clsLnTrans_despacho_det.Insertar(BeDespachoDet, lConnection, lTransaction)
-                                    Else
-                                        actualizados += clsLnTrans_despacho_det.Actualizar(BeDespachoDet, lConnection, lTransaction)
-                                    End If
+                                        Next
 
-                                Next
+                                    Next
 
-                                '#CKFK20250705 Validación en el despacho
-                                cantDespachos = insertados + actualizados
-                                If (cantDespachos <> lDespachoDet.Count) Then
-                                    clsLnLog_error_wms.Agregar_Error("Despachados distintos a verificados en el pedido " & BePedidoEnc.IdPedidoEnc & " en el IdPedidoDet " & BePickingUbic.IdPedidoDet)
-                                    Throw New Exception("Despachados distintos a verificados en el pedido " & BePedidoEnc.IdPedidoEnc & " en el IdPedidoDet " & BePickingUbic.IdPedidoDet)
+                                Else
+                                    Debug.Print("No hay detalle de despacho")
                                 End If
 
-                            Next
+                            End If
 
-                        Else
-                            Debug.Print("No hay detalle de despacho")
                         End If
 
-                    End If
+                    Next
 
                 Next
 

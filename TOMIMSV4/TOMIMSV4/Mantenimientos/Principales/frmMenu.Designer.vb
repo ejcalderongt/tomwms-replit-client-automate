@@ -718,10 +718,6 @@ Partial Class frmMenu
         GalleryItem1.Caption = "Item4"
         GalleryItemGroup1.Items.AddRange(New DevExpress.XtraBars.Ribbon.GalleryItem() {GalleryItem1})
         Me.RibbonGalleryBarItem1.Gallery.Groups.AddRange(New DevExpress.XtraBars.Ribbon.GalleryItemGroup() {GalleryItemGroup1})
-        GalleryItemGroup2.Caption = "Group4"
-        GalleryItem2.Caption = "Item4"
-        GalleryItemGroup2.Items.AddRange(New DevExpress.XtraBars.Ribbon.GalleryItem() {GalleryItem2})
-        Me.RibbonGalleryBarItem1.Gallery.Groups.AddRange(New DevExpress.XtraBars.Ribbon.GalleryItemGroup() {GalleryItemGroup2})
         Me.RibbonGalleryBarItem1.Id = 25
         Me.RibbonGalleryBarItem1.Name = "RibbonGalleryBarItem1"
         '
@@ -918,18 +914,6 @@ Partial Class frmMenu
         Me.mnuOrdenesCompra.ImageOptions.Image = CType(resources.GetObject("mnuOrdenesCompra.ImageOptions.Image"), System.Drawing.Image)
         Me.mnuOrdenesCompra.ImageOptions.LargeImage = CType(resources.GetObject("mnuOrdenesCompra.ImageOptions.LargeImage"), System.Drawing.Image)
         Me.mnuOrdenesCompra.Name = "mnuOrdenesCompra"
-        ToolTipTitleItem3.Text = "Ingreso / Orden de compra"
-        ToolTipItem2.LeftIndent = 6
-        ToolTipItem2.Text = "Permite registrar la orden de compra de un proveedor para ser recibida posteriorm" &
-    "ente."
-        ToolTipTitleItem4.LeftIndent = 6
-        ToolTipTitleItem4.Text = "Muestra el listado de ordenes de compra para filtro, creación o modificación de u" &
-    "na O.C. ya existente."
-        SuperToolTip2.Items.Add(ToolTipTitleItem3)
-        SuperToolTip2.Items.Add(ToolTipItem2)
-        SuperToolTip2.Items.Add(ToolTipSeparatorItem2)
-        SuperToolTip2.Items.Add(ToolTipTitleItem4)
-        Me.mnuOrdenesCompra.SuperTip = SuperToolTip2
         '
         'mnuRecepcion
         '

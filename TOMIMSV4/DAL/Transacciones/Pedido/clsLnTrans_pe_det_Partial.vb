@@ -2515,63 +2515,54 @@ Partial Public Class clsLnTrans_pe_det
                                 '#EJC20191218: Corrección a raiz de que el picking ubic si tiene pres, 
                                 'La cantidad va en pres.
                                 If pBePedidoDet.IdPresentacion <> 0 Then
-                                    'Sr.Cantidad = Sr.Cantidad / pBePedidoDet.Presentacion.Factor
-                                    Dim vEsMultiplo = (Sr.Cantidad Mod pBePedidoDet.Presentacion.Factor = 0)
-                                    Dim cantidadMultiplo = (Sr.Cantidad \ pBePedidoDet.Presentacion.Factor) * pBePedidoDet.Presentacion.Factor
                                     Sr.Cantidad = Sr.Cantidad / pBePedidoDet.Presentacion.Factor
-                                    If Not vEsMultiplo Then
-                                        Sr.Cantidad = Sr.Cantidad * pBePedidoDet.Presentacion.Factor
-                                        Sr.IdPresentacion = 0
-                                    End If
-                                End If
                                 End If
 
-                        If clsLnTrans_picking_ubic.Insertar_PickingUbic(Sr,
+                                If clsLnTrans_picking_ubic.Insertar_PickingUbic(Sr,
                                                                                 vIdPickingDet,
                                                                                 lConnection,
                                                                                 lTransaction) Then
 
-                            If clsLnTrans_picking_det_parametros.Insertar_Parametros_Stock_Para_Picking(Sr.IdStock,
+                                    If clsLnTrans_picking_det_parametros.Insertar_Parametros_Stock_Para_Picking(Sr.IdStock,
                                                                                                             vIdPickingDet,
                                                                                                             lConnection,
                                                                                                             lTransaction) Then
-                                vDetalleActualizadoCorrectamente = True
+                                        vDetalleActualizadoCorrectamente = True
 
-                            End If
+                                    End If
+
+                                End If
+
+                            Next
+
 
                         End If
 
-                        Next
+                        If BeTransPickingEnc.Estado = "Despachado" Then
 
+                            BeTransPickingEnc.Estado = "Pendiente"
 
-                    End If
-
-                    If BeTransPickingEnc.Estado = "Despachado" Then
-
-                        BeTransPickingEnc.Estado = "Pendiente"
-
-                        clsLnTrans_picking_enc.Actualizar_Estado(BeTransPickingEnc,
+                            clsLnTrans_picking_enc.Actualizar_Estado(BeTransPickingEnc,
                                                                      lConnection,
                                                                      lTransaction)
+                        End If
 
-                    End If
+                        If Not BeTransPeEnc Is Nothing Then
 
-                    If Not BeTransPeEnc Is Nothing Then
+                            If BeTransPeEnc.Enviado_A_ERP Then
 
-                        If BeTransPeEnc.Enviado_A_ERP Then
-
-                            clsLnTrans_pe_enc.Actualizar_Estado_Enviado_A_ERP_By_IdPedidoEnc_Single(BeTransPeEnc.IdPedidoEnc,
+                                clsLnTrans_pe_enc.Actualizar_Estado_Enviado_A_ERP_By_IdPedidoEnc_Single(BeTransPeEnc.IdPedidoEnc,
                                                                                                         False,
                                                                                                         BeTransPeEnc.User_agr,
                                                                                                         lConnection,
                                                                                                         lTransaction)
+                            End If
+
                         End If
 
                     End If
 
                 End If
-
-            End If
 
             End If
 
@@ -3016,13 +3007,12 @@ Partial Public Class clsLnTrans_pe_det
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing
-        Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
 
         Try
 
             Dim vSQL As String = "update trans_pe_det 
                     set cant_despachada = @cant_despachada,
-                    peso_despachado =  @peso_despachado
+                    peso_despachado += @peso_despachado
                     Where(IdPedidoDet = @IdPedidoDet)"
 
             Dim Es_Transaccion_Remota As Boolean = (pConection IsNot Nothing AndAlso pTransaction IsNot Nothing)
@@ -3030,7 +3020,6 @@ Partial Public Class clsLnTrans_pe_det
 
             If Es_Transaccion_Remota Then
                 cmd = New SqlCommand(vSQL, pConection, pTransaction)
-                cmd.CommandTimeout = 60
             Else
                 lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
                 cmd = New SqlCommand(vSQL, lConnection, lTransaction)
@@ -3055,12 +3044,9 @@ Partial Public Class clsLnTrans_pe_det
             If lTransaction IsNot Nothing Then lTransaction.Rollback()
             Throw ex
         Finally
-            If Not Es_Transaccion_Remota Then
-                If lConnection.State = ConnectionState.Open Then lConnection.Close()
-                If lTransaction IsNot Nothing Then lTransaction.Dispose()
-                If lConnection IsNot Nothing Then lConnection.Dispose()
-            End If
-
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+            If lTransaction IsNot Nothing Then lTransaction.Dispose()
+            If lConnection IsNot Nothing Then lConnection.Dispose()
         End Try
 
     End Function
@@ -4816,7 +4802,6 @@ Partial Public Class clsLnTrans_pe_det
         End Try
 
     End Function
-
     '#GT17092025: método que retonra el detalle del pedido sin filtrar las lineas que tengan stock_liberado
     Public Shared Function Get_Detalle_By_IdPedidoEnc_For_Pedido(ByVal pIdPedidoEnc As Integer,
                                                       ByRef lConnection As SqlConnection,
@@ -4837,9 +4822,6 @@ Partial Public Class clsLnTrans_pe_det
                 lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
                 lDTA.SelectCommand.Transaction = lTransaction
                 lDTA.SelectCommand.CommandType = CommandType.Text
-                lDTA.SelectCommand.Transaction = pTransaction
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoDet", pIdPedidoDet)
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", IdPedidoEnc)
 
                 Dim lDataTable As New DataTable
                 lDTA.Fill(lDataTable)

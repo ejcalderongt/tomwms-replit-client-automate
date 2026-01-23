@@ -368,23 +368,21 @@ Public Class frmStock_Especifico_List
 
             Dim watch As Stopwatch = Stopwatch.StartNew()
 
-            Dim idBodegaFinal As Integer = If(IdBodega = 0, AP.IdBodega, IdBodega)
-
-            Dim noPoliza As String = ""
-            Dim idPropietario As Integer = pIdPropietarioBodega
-
             If chkFiltroPolizaActivo.Checked AndAlso txtNoPoliza.Text.Trim <> "" Then
-                noPoliza = txtNoPoliza.Text.Trim
-                idPropietario = 0
-            End If
 
-            DTStock = clsLnStock.Get_All_Stock_Especifico_DT(idBodegaFinal,
-                                                             IdCliente,
-                                                             TieneTiempos,
-                                                             noPoliza,
-                                                             idPropietario,
-                                                             IdProductoEstadoDefault,
-                                                             IdPresentacion)
+                If IdBodega = 0 Then
+                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(AP.IdBodega, IdCliente, TieneTiempos, txtNoPoliza.Text, 0, IdProductoEstadoDefault, Mostrar_Talla_Color)
+                Else
+                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(IdBodega, IdCliente, TieneTiempos, txtNoPoliza.Text, 0, IdProductoEstadoDefault, Mostrar_Talla_Color)
+                End If
+
+            Else
+
+                If IdBodega = 0 Then
+                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(AP.IdBodega, IdCliente, TieneTiempos, "", pIdPropietarioBodega, IdProductoEstadoDefault, Mostrar_Talla_Color)
+                Else
+                    DTStock = clsLnStock.Get_All_Stock_Especifico_DT(IdBodega, IdCliente, TieneTiempos, "", pIdPropietarioBodega, IdProductoEstadoDefault, Mostrar_Talla_Color)
+                End If
 
             End If
 

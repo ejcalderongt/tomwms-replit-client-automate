@@ -277,35 +277,21 @@ Public Class clsLnProducto_talla_color
 								 " Where(IdProductoTallaColor = @IdProductoTallaColor)"
 
 
-			Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
+			Using lDTA As New SqlDataAdapter(sp, lConnection)
 
-				lConnection.Open()
+				lDTA.SelectCommand.CommandType = CommandType.Text
+				lDTA.SelectCommand.Transaction = lTransaction
+				lDTA.SelectCommand.Parameters.AddWithValue("IdProductoTallaColor", IdProductoTallaColor)
 
-				Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+				Dim lDataTable As New DataTable
+				lDTA.Fill(lDataTable)
 
-					Using lDTA As New SqlDataAdapter(sp, lConnection)
+				Dim vBeProducto_talla_color As New clsBeProducto_talla_color
 
-						lDTA.SelectCommand.CommandType = CommandType.Text
-						lDTA.SelectCommand.Transaction = lTransaction
-						lDTA.SelectCommand.Parameters.AddWithValue("IdProductoTallaColor", IdProductoTallaColor)
-
-						Dim lDataTable As New DataTable
-						lDTA.Fill(lDataTable)
-
-						Dim vBeProducto_talla_color As New clsBeProducto_talla_color
-
-						If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
-							Cargar(vBeProducto_talla_color, lDataTable.Rows(0))
-							GetSingle = vBeProducto_talla_color
-						End If
-
-					End Using
-
-					lTransaction.Commit()
-
-				End Using
-
-				lConnection.Close()
+				If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+					Cargar(vBeProducto_talla_color, lDataTable.Rows(0))
+					GetSingle = vBeProducto_talla_color
+				End If
 
 			End Using
 

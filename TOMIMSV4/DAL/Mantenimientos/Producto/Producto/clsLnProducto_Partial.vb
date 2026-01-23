@@ -10528,7 +10528,6 @@ Partial Public Class clsLnProducto
     Public Shared Function Get_Lista_By_IdOrdenCompraEnc_Talla_Color(ByVal pIdOrdenCompraEnc As Integer,
                                                                     ByVal pIdBodega As Integer) As DataTable
 
-    Public Shared Function Get_All_By_Activo(ByVal pActivo As Boolean) As List(Of clsBeProducto)
 
         Get_Lista_By_IdOrdenCompraEnc_Talla_Color = Nothing
 
@@ -10569,8 +10568,6 @@ Partial Public Class clsLnProducto
                             Get_Lista_By_IdOrdenCompraEnc_Talla_Color = lDataTable
                         End If
 
-                        End If
-
                     End Using
 
                     ltransaction.Commit()
@@ -10587,29 +10584,41 @@ Partial Public Class clsLnProducto
 
     End Function
 
-    Public Shared Function Get_Codigo_By_IdProducto(ByVal pIdProducto As Integer, ByRef lConnection As SqlConnection, ByRef lTransaction As SqlTransaction) As String
+    Public Shared Function Get_All_By_Activo(ByVal pUltimaFechaSincro As Date, ByVal pActivo As Boolean, ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction) As List(Of clsBeProducto)
 
-        Get_Codigo_By_IdProducto = ""
+        Get_All_By_Activo = Nothing
 
         Try
 
-            Dim vSQL As String = "SELECT p.Codigo
-                        FROM producto p                        
-                        WHERE (p.IdProducto=@IdProducto)"
+            Dim vSQL As String = "SELECT * FROM producto WHERE (activo=@pActivo and fec_mod>=@pUltimaFechaSincro) "
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
                 lDTA.SelectCommand.CommandType = CommandType.Text
                 lDTA.SelectCommand.Transaction = lTransaction
-                lDTA.SelectCommand.Parameters.AddWithValue("@IdProducto", pIdProducto)
+                lDTA.SelectCommand.Parameters.AddWithValue("@pActivo", pActivo)
+                lDTA.SelectCommand.Parameters.AddWithValue("@pUltimaFechaSincro", pUltimaFechaSincro)
 
                 Dim lDT As New DataTable
                 lDTA.Fill(lDT)
 
                 If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
 
-                    Dim lRow As DataRow = lDT.Rows(0)
-                    Get_Codigo_By_IdProducto = CType(lRow("Codigo"), String)
+                    Dim oBeProducto As New clsBeProducto()
+                    Dim lBeProducto As New List(Of clsBeProducto)
+
+                    For Each lRow In lDT.Rows
+
+                        oBeProducto = New clsBeProducto
+                        Cargar(oBeProducto, lRow, lConnection, lTransaction)
+                        oBeProducto.IsNew = False
+                        lBeProducto.Add(oBeProducto)
+                    Next
+
+                    If Not lBeProducto Is Nothing Then
+                        lBeProducto = lBeProducto.Distinct.ToList()
+                        Get_All_By_Activo = lBeProducto
+                    End If
 
                 End If
 
@@ -10766,10 +10775,7 @@ Partial Public Class clsLnProducto
                     Dim lRow As DataRow = lDT.Rows(0)
                     Get_Codigo_By_IdProducto = CType(lRow("Codigo"), String)
 
-                    End Sub)
                 End If
-
-                Get_All_By_IdPedidoEnc = lReturnList
 
             End Using
 

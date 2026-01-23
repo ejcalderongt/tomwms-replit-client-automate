@@ -2602,7 +2602,6 @@ Public Class frmDespacho
             Dim BeUsuarioEntrega As New clsBeUsuario
             Dim BeUsuario As New clsBeUsuario
             BeUsuario = clsLnUsuario.GetSingle(BeDespachoEnc.User_agr)
-            Dim IdPedidoEnc As String = ""
 
             '#EJC20200714: Este valor se debe configurar en el ini bajo el nombre FORMATO_DESPACHO
             Dim TipoReporteDespacho As Integer = Val(clsBD.Instancia.Formato_Despacho)
@@ -2613,21 +2612,11 @@ Public Class frmDespacho
 
                     Case 1 '#EJC20200714: Formato para CLC
 
-                        Dim dt As DataTable = clsLnTrans_despacho_enc.Get_Reporte_Despacho(BeDespachoEnc.IdDespachoEnc)
-
-                        If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
-                            If Not IsDBNull(dt.Rows(0)("IdPedidoEnc")) Then
-                                IdPedidoEnc = dt.Rows(0)("IdPedidoEnc")
-                            End If
-                        End If
-
                         Dim Rep As New rptDespacho
                         Rep.DataSource = clsLnTrans_despacho_enc.Get_Reporte_Despacho(BeDespachoEnc.IdDespachoEnc)
                         Rep.DataMember = "Result"
                         Rep.Parameters("Empresa").Value = AP.NomEmpresa
                         Rep.Parameters("Empresa").Visible = False
-                        Rep.Parameters("IdPedidoEnc").Value = IdPedidoEnc
-                        Rep.Parameters("IdPedidoEnc").Visible = False
                         Rep.Parameters("Bodega").Value = AP.NomBodega
                         Rep.Parameters("Bodega").Visible = False
                         Rep.RequestParameters = False
@@ -2683,99 +2672,94 @@ Public Class frmDespacho
 
                                 If pProcesado_Bof Then
 
-                                    If vIdOperadorPicking > 0 Then
-                                        '#GT17072025: operado por BOF significa que el usuario es quien debe mostrarse en el reporte
-                                        If pProcesado_Bof Then
-                                            BeUsuarioEntrega = clsLnUsuario.GetSingle(vIdOperadorPicking)
-                                            If BeUsuarioEntrega IsNot Nothing Then
-                                                vNombreOperadorPickeo = BeUsuarioEntrega.Nombres + " " + BeUsuarioEntrega.Apellidos
-                                            End If
-                                        Else
+                                    BeUsuarioEntrega = clsLnUsuario.GetSingle(vIdOperadorPicking)
+                                    vNombreOperadorPickeo = BeUsuarioEntrega.Nombres + " " + BeUsuarioEntrega.Apellidos
 
-                                            If clsLnOperador_bodega.GetSingle(BeOperadorBodega) Then
+                                Else
 
-                                                    Dim BeOperador As New clsBeOperador
-                                                    BeOperador.IdOperador = BeOperadorBodega.IdOperador
-                                                    If clsLnOperador.GetSingle(BeOperador) Then
-                                                        vNombreOperadorPickeo = BeOperador.Nombres + " " + BeOperador.Apellidos
-                                                    End If
-                                                End If
+                                    If clsLnOperador_bodega.GetSingle(BeOperadorBodega) Then
 
-                                            End If
-
+                                        Dim BeOperador As New clsBeOperador
+                                        BeOperador.IdOperador = BeOperadorBodega.IdOperador
+                                        If clsLnOperador.GetSingle(BeOperador) Then
+                                            vNombreOperadorPickeo = BeOperador.Nombres + " " + BeOperador.Apellidos
                                         End If
-
-
 
                                     End If
 
                                 End If
 
-                                '#EJC20220301 el formato de Cealsa usa parametro UsuarioDespacho.
-                                Dim RepCealsa As New rptDespachofCealsa
-                                RepCealsa.DataSource = DT
-                                RepCealsa.DataMember = "Result"
-                                RepCealsa.Parameters("Empresa").Value = AP.NomEmpresa
-                                RepCealsa.Parameters("Empresa").Visible = False
-                                RepCealsa.Parameters("Bodega").Value = AP.NomBodega
-                                RepCealsa.Parameters("Bodega").Visible = False
-                                RepCealsa.Parameters("Entregado_Por").Value = vNombreOperadorPickeo
-                                RepCealsa.Parameters("Entregado_Por").Visible = False
-                                RepCealsa.Parameters("Autorizado_Por").Value = BeUsuario.Nombres + " " + BeUsuario.Apellidos
-                                RepCealsa.Parameters("Autorizado_Por").Visible = False
-                                RepCealsa.RequestParameters = False
 
-                                If clsLnEmpresa.GetImagen(AP.IdEmpresa) Is Nothing Then
-                                    RepCealsa.XrLogo.Image = Nothing
-                                Else
-                                    RepCealsa.XrLogo.Image = clsPublic.ByteArrayToImage(clsLnEmpresa.GetImagen(AP.IdEmpresa))
-                                End If
 
-                                RepCealsa.ShowPreview()
+                            End If
 
-                                Case 4 '#CKFK20220801: Formato para DyD
+                        End If
 
-                                Dim Rep As New rptDespachofDyD
-                                Rep.DataSource = clsLnTrans_despacho_enc.Get_Reporte_Despacho_DyD(BeDespachoEnc.IdDespachoEnc)
-                                Rep.DataMember = "Result"
-                                Rep.Parameters("Empresa").Value = AP.NomEmpresa
-                                Rep.Parameters("Empresa").Visible = False
-                                Rep.Parameters("Bodega").Value = AP.NomBodega
-                                Rep.Parameters("Bodega").Visible = False
-                                Rep.RequestParameters = False
-                                Rep.ShowPreview()
+                        '#EJC20220301 el formato de Cealsa usa parametro UsuarioDespacho.
+                        Dim RepCealsa As New rptDespachofCealsa
+                        RepCealsa.DataSource = DT
+                        RepCealsa.DataMember = "Result"
+                        RepCealsa.Parameters("Empresa").Value = AP.NomEmpresa
+                        RepCealsa.Parameters("Empresa").Visible = False
+                        RepCealsa.Parameters("Bodega").Value = AP.NomBodega
+                        RepCealsa.Parameters("Bodega").Visible = False
+                        RepCealsa.Parameters("Entregado_Por").Value = vNombreOperadorPickeo
+                        RepCealsa.Parameters("Entregado_Por").Visible = False
+                        RepCealsa.Parameters("Autorizado_Por").Value = BeUsuario.Nombres + " " + BeUsuario.Apellidos
+                        RepCealsa.Parameters("Autorizado_Por").Visible = False
+                        RepCealsa.RequestParameters = False
 
-                                Case 5 '#MECR29082025: Formato para MAMPA
-                                Dim Rep As New rptDespachoMAMPA
-                                Rep.DataSource = clsLnTrans_despacho_enc.Get_Reporte_Despacho(BeDespachoEnc.IdDespachoEnc)
-                                Rep.DataMember = "Result"
-                                Rep.Parameters("Empresa").Value = AP.NomEmpresa
-                                Rep.Parameters("Empresa").Visible = False
-                                Rep.Parameters("Bodega").Value = AP.NomBodega
-                                Rep.Parameters("Bodega").Visible = False
-                                Rep.RequestParameters = False
+                        If clsLnEmpresa.GetImagen(AP.IdEmpresa) Is Nothing Then
+                            RepCealsa.XrLogo.Image = Nothing
+                        Else
+                            RepCealsa.XrLogo.Image = clsPublic.ByteArrayToImage(clsLnEmpresa.GetImagen(AP.IdEmpresa))
+                        End If
 
-                                Rep.MostrarEncabezadoSoloEnPrimeraPagina = (Not mnuRepetirEncabezadoEnCadaPagina.Checked)
+                        RepCealsa.ShowPreview()
 
-                                If clsLnEmpresa.GetImagen(AP.IdEmpresa) Is Nothing Then
-                                    Rep.XrLogo.Image = Nothing
-                                Else
-                                    Rep.XrLogo.Image = clsPublic.ByteArrayToImage(clsLnEmpresa.GetImagen(AP.IdEmpresa))
-                                End If
+                    Case 4 '#CKFK20220801: Formato para DyD
 
-                                Rep.ShowPreview()
+                        Dim Rep As New rptDespachofDyD
+                        Rep.DataSource = clsLnTrans_despacho_enc.Get_Reporte_Despacho_DyD(BeDespachoEnc.IdDespachoEnc)
+                        Rep.DataMember = "Result"
+                        Rep.Parameters("Empresa").Value = AP.NomEmpresa
+                        Rep.Parameters("Empresa").Visible = False
+                        Rep.Parameters("Bodega").Value = AP.NomBodega
+                        Rep.Parameters("Bodega").Visible = False
+                        Rep.RequestParameters = False
+                        Rep.ShowPreview()
 
-                                Case Else
+                    Case 5 '#MECR29082025: Formato para MAMPA
+                        Dim Rep As New rptDespachoMampa
+                        Rep.DataSource = clsLnTrans_despacho_enc.Get_Reporte_Despacho(BeDespachoEnc.IdDespachoEnc)
+                        Rep.DataMember = "Result"
+                        Rep.Parameters("Empresa").Value = AP.NomEmpresa
+                        Rep.Parameters("Empresa").Visible = False
+                        Rep.Parameters("Bodega").Value = AP.NomBodega
+                        Rep.Parameters("Bodega").Visible = False
+                        Rep.RequestParameters = False
 
-                                Dim Rep As New rptDespacho
-                                Rep.DataSource = clsLnTrans_despacho_enc.Get_Reporte_Despacho(BeDespachoEnc.IdDespachoEnc)
-                                Rep.DataMember = "Result"
-                                Rep.Parameters("Empresa").Value = AP.NomEmpresa
-                                Rep.Parameters("Empresa").Visible = False
-                                Rep.Parameters("Bodega").Value = AP.NomBodega
-                                Rep.Parameters("Bodega").Visible = False
-                                Rep.RequestParameters = False
-                                Rep.ShowPreview()
+                        Rep.MostrarEncabezadoSoloEnPrimeraPagina = (Not mnuRepetirEncabezadoEnCadaPagina.Checked)
+
+                        If clsLnEmpresa.GetImagen(AP.IdEmpresa) Is Nothing Then
+                            Rep.XrLogo.Image = Nothing
+                        Else
+                            Rep.XrLogo.Image = clsPublic.ByteArrayToImage(clsLnEmpresa.GetImagen(AP.IdEmpresa))
+                        End If
+
+                        Rep.ShowPreview()
+
+                    Case Else
+
+                        Dim Rep As New rptDespacho
+                        Rep.DataSource = clsLnTrans_despacho_enc.Get_Reporte_Despacho(BeDespachoEnc.IdDespachoEnc)
+                        Rep.DataMember = "Result"
+                        Rep.Parameters("Empresa").Value = AP.NomEmpresa
+                        Rep.Parameters("Empresa").Visible = False
+                        Rep.Parameters("Bodega").Value = AP.NomBodega
+                        Rep.Parameters("Bodega").Visible = False
+                        Rep.RequestParameters = False
+                        Rep.ShowPreview()
 
                 End Select
 
@@ -2791,7 +2775,6 @@ Public Class frmDespacho
         End Try
 
     End Sub
-
 
     Private Sub Generar_Reporte_Packing()
 

@@ -1200,36 +1200,6 @@ Partial Public Class clsLnPropietario_bodega
         End Try
 
     End Function
-    Public Shared Function Get_IdPropietario_By_IdBodega_IdPropietarioBodega(ByVal pIdBodega As Integer,
-                                                                            ByVal pIdPropietarioBodega As Integer,
-                                                                            ByVal lConnection As SqlConnection,
-                                                                            ByVal lTransaction As SqlTransaction) As Integer
-
-        Try
-            Dim vSQL As String = "SELECT pb.IdPropietario
-                              FROM propietario_bodega AS pb 
-                              INNER JOIN propietarios AS p ON pb.IdPropietario = p.IdPropietario 
-                              WHERE p.activo=1 AND pb.IdBodega=@IdBodega AND pb.IdPropietarioBodega=@IdPropietarioBodega"
-
-            Using lCommand As New SqlCommand(vSQL, lConnection, lTransaction) With {.CommandType = CommandType.Text}
-                lCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
-                lCommand.Parameters.AddWithValue("@IdPropietarioBodega", pIdPropietarioBodega)
-
-                Dim lReturnValue As Object = lCommand.ExecuteScalar()
-
-                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    Return CInt(lReturnValue)
-                End If
-            End Using
-
-            Return 0
-
-        Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
-            Throw New Exception(vMsgError)
-        End Try
-    End Function
 
     '#GT19062025: metodo para obtener propietarios bodega con tran para importar a la nube, por el idpropietario.
     Public Shared Function Get_All_By_IdPropietario(ByVal IdPropietario As Integer,

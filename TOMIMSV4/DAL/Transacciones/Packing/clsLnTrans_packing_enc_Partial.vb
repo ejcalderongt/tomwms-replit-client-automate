@@ -297,9 +297,6 @@ Partial Public Class clsLnTrans_packing_enc
                                 left join color d On d.IdColor = b.IdColor " &
                                 " Where (a.idpickingenc = @idpickingenc) AND (a.iddespachoenc=0) AND (a.IdPedidoEnc = @IdPedidoEnc) "
 
-            Const sp As String = "SELECT * FROM Trans_packing_enc " &
-            " Where (idpickingenc = @idpickingenc) AND (iddespachoenc=0) AND (IdPedidoEnc = @IdPedidoEnc) "
-
             Using lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 
                 lConnection.Open()

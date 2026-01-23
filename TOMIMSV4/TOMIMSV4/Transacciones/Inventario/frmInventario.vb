@@ -7621,74 +7621,78 @@ End Function
                         Operador.Idoperador = cmbOperadorProd.EditValue
                         Operador.IdBodega = AP.IdBodega
 
-                        If Not clsLnTrans_inv_operador.Existe_Ubicacion_By_IdOperador(Operador, clsTrans.lConnection, clsTrans.lTransaction) Then
+                        If clsLnTrans_inv_operador.Get_By_Operador(Operador, clsTrans.lConnection, clsTrans.lTransaction) Then
 
-                            clsLnTrans_inv_operador.Insertar(Operador, clsTrans.lConnection, clsTrans.lTransaction)
+                            If Not clsLnTrans_inv_ciclico.Existe_Producto_By_IdOperador(Operador.Idoperador,
+                                                                                        gBeTransInvEnc.Idinventarioenc,
+                                                                                        vIdProductoBodega,
+                                                                                        clsTrans.lConnection,
+                                                                                        clsTrans.lTransaction) Then
 
-                            Dim lBeTransInvCiclico As New List(Of clsBeTrans_inv_ciclico)
-                            lBeTransInvCiclico = clsLnTrans_inv_ciclico.Get_All_By_IdProductoBodega_And_IdUbicacion(gBeTransInvEnc.Idinventarioenc,
-                                                                                                                    vIdProductoBodega,
-                                                                                                                    vUbicacion,
-                                                                                                                    clsTrans.lConnection,
-                                                                                                                    clsTrans.lTransaction)
-
-
-
-                            ' Crear una lista única por IdStock e IdUbicacion
-                            Dim distinctList As List(Of clsBeTrans_inv_ciclico) = lBeTransInvCiclico _
-                                                                                .GroupBy(Function(x) New With {Key x.IdStock, Key x.IdUbicacion}) _
-                                                                                .Select(Function(g) g.First()) _
-                                                                                .ToList()
+                                Dim lBeTransInvCiclico As New List(Of clsBeTrans_inv_ciclico)
+                                lBeTransInvCiclico = clsLnTrans_inv_ciclico.Get_All_By_IdProductoBodega_And_IdUbicacion(gBeTransInvEnc.Idinventarioenc,
+                                                                                                                        vIdProductoBodega,
+                                                                                                                        vUbicacion,
+                                                                                                                        clsTrans.lConnection,
+                                                                                                                        clsTrans.lTransaction)
 
 
-                            Dim InvCiclico As New clsBeTrans_inv_ciclico
 
-                            For Each invcic In distinctList
+                                ' Crear una lista única por IdStock e IdUbicacion
+                                Dim distinctList As List(Of clsBeTrans_inv_ciclico) = lBeTransInvCiclico _
+                                                                                    .GroupBy(Function(x) New With {Key x.IdStock, Key x.IdUbicacion}) _
+                                                                                    .Select(Function(g) g.First()) _
+                                                                                    .ToList()
 
-                                InvCiclico = New clsBeTrans_inv_ciclico
-                                InvCiclico.IdInvCiclico = clsLnTrans_inv_ciclico.MaxID(clsTrans.lConnection, clsTrans.lTransaction)
-                                InvCiclico.Idinventarioenc = gBeTransInvEnc.Idinventarioenc
-                                InvCiclico.IdStock = invcic.IdStock
-                                InvCiclico.IdProductoBodega = invcic.IdProductoBodega
-                                InvCiclico.IdProductoEstado = invcic.IdProductoEstado
-                                InvCiclico.IdProductoEst_nuevo = invcic.IdProductoEstado
-                                InvCiclico.IdUbicacion = invcic.IdUbicacion
-                                InvCiclico.IdPresentacion = invcic.IdPresentacion
-                                InvCiclico.EsNuevo = False
-                                InvCiclico.Lote_stock = invcic.Lote_stock
-                                InvCiclico.Lote = invcic.Lote
-                                InvCiclico.Fecha_vence_stock = invcic.Fecha_vence_stock
-                                InvCiclico.Fecha_vence = invcic.Fecha_vence
-                                InvCiclico.Cant_stock = invcic.Cant_stock
-                                InvCiclico.Cantidad = 0
-                                InvCiclico.Cant_reconteo = 0
-                                InvCiclico.Peso_stock = invcic.Peso_stock
-                                InvCiclico.Peso = invcic.Peso
-                                InvCiclico.Peso_reconteo = invcic.Peso_reconteo
-                                InvCiclico.Idoperador = Operador.Idoperador
-                                InvCiclico.User_agr = AP.UsuarioAp.Nombres
-                                InvCiclico.Fec_agr = Now
-                                InvCiclico.EsPallet = invcic.EsPallet
-                                InvCiclico.lic_plate = invcic.lic_plate
-                                InvCiclico.IdBodega = AP.IdBodega
-                                InvCiclico.IdUnidadMedida = invcic.IdUnidadMedida
 
-                                If Not clsLnTrans_inv_ciclico_ubic.Existe_Ubicacion(invcic.IdUbicacion, invcic.Idinventarioenc, clsTrans.lConnection, clsTrans.lTransaction) Then
+                                Dim InvCiclico As New clsBeTrans_inv_ciclico
 
-                                    BeTransInvCiclicoUbic.Idinventarioenc = IdInventario
-                                    BeTransInvCiclicoUbic.Idubicacion = invcic.IdUbicacion
-                                    BeTransInvCiclicoUbic.IdBodega = AP.IdBodega
-                                    Ubicaciones.Add(BeTransInvCiclicoUbic)
+                                For Each invcic In distinctList
 
-                                End If
+                                    InvCiclico = New clsBeTrans_inv_ciclico
+                                    InvCiclico.IdInvCiclico = clsLnTrans_inv_ciclico.MaxID(clsTrans.lConnection, clsTrans.lTransaction)
+                                    InvCiclico.Idinventarioenc = gBeTransInvEnc.Idinventarioenc
+                                    InvCiclico.IdStock = invcic.IdStock
+                                    InvCiclico.IdProductoBodega = invcic.IdProductoBodega
+                                    InvCiclico.IdProductoEstado = invcic.IdProductoEstado
+                                    InvCiclico.IdProductoEst_nuevo = invcic.IdProductoEstado
+                                    InvCiclico.IdUbicacion = invcic.IdUbicacion
+                                    InvCiclico.IdPresentacion = invcic.IdPresentacion
+                                    InvCiclico.EsNuevo = False
+                                    InvCiclico.Lote_stock = invcic.Lote_stock
+                                    InvCiclico.Lote = invcic.Lote
+                                    InvCiclico.Fecha_vence_stock = invcic.Fecha_vence_stock
+                                    InvCiclico.Fecha_vence = invcic.Fecha_vence
+                                    InvCiclico.Cant_stock = invcic.Cant_stock
+                                    InvCiclico.Cantidad = 0
+                                    InvCiclico.Cant_reconteo = 0
+                                    InvCiclico.Peso_stock = invcic.Peso_stock
+                                    InvCiclico.Peso = invcic.Peso
+                                    InvCiclico.Peso_reconteo = invcic.Peso_reconteo
+                                    InvCiclico.Idoperador = Operador.Idoperador
+                                    InvCiclico.User_agr = AP.UsuarioAp.Nombres
+                                    InvCiclico.Fec_agr = Now
+                                    InvCiclico.EsPallet = invcic.EsPallet
+                                    InvCiclico.lic_plate = invcic.lic_plate
+                                    InvCiclico.IdBodega = AP.IdBodega
+                                    InvCiclico.IdUnidadMedida = invcic.IdUnidadMedida
 
-                                clsLnTrans_inv_ciclico.Insertar(InvCiclico, clsTrans.lConnection, clsTrans.lTransaction)
+                                    If Not clsLnTrans_inv_ciclico_ubic.Existe_Ubicacion(invcic.IdUbicacion, invcic.Idinventarioenc, clsTrans.lConnection, clsTrans.lTransaction) Then
 
-                            Next
+                                        BeTransInvCiclicoUbic.Idinventarioenc = IdInventario
+                                        BeTransInvCiclicoUbic.Idubicacion = invcic.IdUbicacion
+                                        BeTransInvCiclicoUbic.IdBodega = AP.IdBodega
+                                        Ubicaciones.Add(BeTransInvCiclicoUbic)
 
-                        End If
+                                    End If
 
-                    Else
+                                    clsLnTrans_inv_ciclico.Insertar(InvCiclico, clsTrans.lConnection, clsTrans.lTransaction)
+
+                                Next
+
+                            End If
+
+                        Else
 
                             Try
 
@@ -7752,9 +7756,9 @@ End Function
                                         If Not clsLnTrans_inv_ciclico_ubic.Existe_Ubicacion(invcic.IdUbicacion, gBeTransInvEnc.Idinventarioenc, clsTrans.lConnection, clsTrans.lTransaction) Then
 
                                             BeTransInvCiclicoUbic.Idinventarioenc = IdInventario
-                                        BeTransInvCiclicoUbic.Idubicacion = vUbicacion
-                                        BeTransInvCiclicoUbic.IdBodega = AP.IdBodega
-                                        Ubicaciones.Add(BeTransInvCiclicoUbic)
+                                            BeTransInvCiclicoUbic.Idubicacion = invcic.IdUbicacion
+                                            BeTransInvCiclicoUbic.IdBodega = AP.IdBodega
+                                            Ubicaciones.Add(BeTransInvCiclicoUbic)
 
                                         End If
 
@@ -7793,8 +7797,6 @@ End Function
 
                                     For Each invcic In distinctList
 
-                            If Not clsLnTrans_inv_ciclico.Existe_Producto_By_IdOperador_And_IdStock(Operador.Idoperador, invcic.Idinventarioenc, invcic.IdProductoBodega, invcic.IdStock, clsTrans.lConnection, clsTrans.lTransaction) Then
-
                                         InvCiclico = New clsBeTrans_inv_ciclico
                                         InvCiclico.IdInvCiclico = clsLnTrans_inv_ciclico.MaxID(clsTrans.lConnection, clsTrans.lTransaction)
                                         InvCiclico.Idinventarioenc = gBeTransInvEnc.Idinventarioenc
@@ -7822,7 +7824,6 @@ End Function
                                         InvCiclico.lic_plate = invcic.lic_plate
                                         InvCiclico.IdBodega = AP.IdBodega
                                         InvCiclico.IdUnidadMedida = invcic.IdUnidadMedida
-                                InvCiclico.Cantidad_Reservada_UMBas = invcic.Cantidad_Reservada_UMBas
 
                                         If Not clsLnTrans_inv_ciclico_ubic.Existe_Ubicacion(invcic.IdUbicacion, invcic.Idinventarioenc, clsTrans.lConnection, clsTrans.lTransaction) Then
 
@@ -7861,8 +7862,6 @@ End Function
                                 Throw
                             End Try
 
-                Else
-                    XtraMessageBox.Show("Debe seleccionar un registro para asignar al operador.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                         End If
 
                     End If

@@ -6226,156 +6226,6 @@ Partial Public Class clsLnTrans_picking_ubic
 
     End Function
 
-    Public Shared Function Actualiza_Picking_Consolidado(ByVal pBePickingUbic As clsBeTrans_picking_ubic,
-                                                         ByVal pIdOperador As Integer,
-                                                         ByVal ReemplazoLP As Boolean,
-                                                         ByRef pCantidad As Double,
-                                                         ByRef pPeso As Double,
-                                                         ByVal BeStockPallet As clsBeProducto,
-                                                         ByVal pHost As String) As Boolean
-
-        Actualiza_Picking_Consolidado = False
-
-        Dim CantPendiente As Double
-        Dim PesoPendiente As Double
-        Dim BeStockResActual As New clsBeStock_res
-        Dim BePickingDet As New clsBeTrans_picking_det
-        Dim pBePickingUbicList As New List(Of clsBeTrans_picking_ubic)
-        Dim tmpPickingUbicList As New List(Of clsBeTrans_picking_ubic)
-        Dim BePedidoDet As New clsBeTrans_pe_det
-        Dim resultado As String = ""
-        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-        Dim lTransaction As SqlTransaction = Nothing
-        Dim Factor As Integer = 0
-        Dim vIdUbicacionPickingByBodega As Integer = 0
-        Dim BeStockActual As New clsBeStock
-
-        Try
-
-            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-
-            Dim watch As Stopwatch = Stopwatch.StartNew()
-
-            pBePickingUbicList = Get_All_PickingUbic_By_Consolidado(pBePickingUbic, lConnection, lTransaction)
-
-            vIdUbicacionPickingByBodega = clsLnBodega.Get_IdUbicacion_Picking_By_IdBodega(pBePickingUbicList.FirstOrDefault.IdBodega(),
-                                                                                          lConnection,
-                                                                                          lTransaction)
-
-            For Each vBePickingUbic As clsBeTrans_picking_ubic In pBePickingUbicList
-
-                If (vBePickingUbic.Cantidad_Recibida + pCantidad) > vBePickingUbic.Cantidad_Solicitada Then
-                    CantPendiente = Math.Round(vBePickingUbic.Cantidad_Solicitada - vBePickingUbic.Cantidad_Recibida, 6)
-                Else
-                    CantPendiente = pCantidad
-                End If
-
-                If ((vBePickingUbic.Peso_recibido + pPeso) > vBePickingUbic.Peso_solicitado) Then
-                    PesoPendiente = vBePickingUbic.Peso_solicitado - vBePickingUbic.Peso_recibido
-                Else
-                    PesoPendiente = pPeso
-                End If
-
-                vBePickingUbic.Cantidad_Recibida += CantPendiente
-                vBePickingUbic.Cantidad_Recibida = Math.Round(vBePickingUbic.Cantidad_Recibida, 6)
-                vBePickingUbic.Peso_recibido += PesoPendiente
-                vBePickingUbic.IdOperadorBodega_Pickeo = pBePickingUbic.IdOperadorBodega_Pickeo
-                vBePickingUbic.Fec_mod = Now
-                vBePickingUbic.Fecha_picking = Now
-
-                BePickingDet = New clsBeTrans_picking_det
-                BePickingDet.IdPickingDet = vBePickingUbic.IdPickingDet
-                clsLnTrans_picking_det.Obtener(BePickingDet, lConnection, lTransaction)
-
-                BePedidoDet = New clsBeTrans_pe_det
-                BePedidoDet = clsLnTrans_pe_det.Get_Single_By_IdPedidoEnc_And_IdPedidoDet(BePickingDet.IdPedidoEnc,
-                                                                                          BePickingDet.IdPedidoDet,
-                                                                                          lConnection,
-                                                                                          lTransaction)
-
-                If BePedidoDet.IdPresentacion <> vBePickingUbic.IdPresentacion Then
-                    If BePedidoDet.IdPresentacion = 0 AndAlso vBePickingUbic.IdPresentacion <> 0 Then
-                        Factor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(vBePickingUbic.IdProductoBodega,
-                                                                                           vBePickingUbic.IdPresentacion,
-                                                                                           lConnection,
-                                                                                           lTransaction)
-                        If Factor <> 0 Then
-                            Dim CantPedido As Double = CantPendiente * Factor
-                            BePickingDet.Cantidad_recibida += CantPedido
-                            BePickingDet.Cantidad_recibida = Math.Round(BePickingDet.Cantidad_recibida, 6)
-                        End If
-                    ElseIf BePedidoDet.IdPresentacion <> 0 AndAlso vBePickingUbic.IdPresentacion = 0 Then
-                        Factor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(vBePickingUbic.IdProductoBodega,
-                                                                                           BePedidoDet.IdPresentacion,
-                                                                                           lConnection,
-                                                                                           lTransaction)
-                        If Factor <> 0 Then
-                            Dim CantPedido As Double = CantPendiente / Factor
-                            BePickingDet.Cantidad_recibida += CantPedido
-                            BePickingDet.Cantidad_recibida = Math.Round(BePickingDet.Cantidad_recibida, 6)
-                    End If
-                    End If
-                Else
-                    BePickingDet.Cantidad_recibida += CantPendiente
-                    BePickingDet.Cantidad_recibida = Math.Round(BePickingDet.Cantidad_recibida, 6)
-                End If
-
-                BePickingDet.User_mod = pIdOperador
-                BePickingDet.Fec_mod = Now
-
-                BeStockResActual.IdStockRes = vBePickingUbic.IdStockRes
-                BeStockResActual.IdProductoBodega = vBePickingUbic.IdProductoBodega
-                clsLnStock_res.GetSingle(BeStockResActual, lConnection, lTransaction)
-
-                BeStockResActual.Estado = "PICKEADO"
-                BeStockResActual.User_mod = pIdOperador
-                BeStockResActual.Fec_mod = Now
-
-                If Not ReemplazoLP Then
-                    Actualizar_Picking_Desde_Consolidado(vBePickingUbic,
-                                                         BeStockResActual,
-                                                         BePickingDet,
-                                                         vBePickingUbic.IdBodega,
-                                                         pHost,
-                                                         pCantidad,
-                                                         lConnection,
-                                                         lTransaction)
-
-                Else
-                    Actualizar_Picking(vBePickingUbic,
-                                       BeStockResActual,
-                                       BePickingDet,
-                                       vBePickingUbic.IdBodega,
-                                       BeStockPallet,
-                                       lConnection,
-                                       lTransaction)
-                End If
-
-                If (pCantidad - CantPendiente = 0) Then
-                    Exit For
-                Else
-                    pCantidad -= CantPendiente
-                End If
-
-            Next
-
-            lTransaction.Commit()
-
-            watch.Stop()
-
-            Debug.Print("Tiempo transcurrido GetAllStock: " & watch.Elapsed.TotalSeconds)
-
-            Return True
-
-        Catch ex As Exception
-            If Not lTransaction Is Nothing Then lTransaction.Rollback()
-            Throw New Exception(String.Format("{0} {1} {2} ", MethodBase.GetCurrentMethod().Name, ex.Message, ""))
-        Finally
-            If lConnection.State = ConnectionState.Open Then lConnection.Close()
-        End Try
-
-    End Function
-
     '#CKFK 2020508 Creé función para actualizar la cantidad en las verificaciones de la aplicación de Android
     '#AT20220509 Agregué pTipo para validar si se debe buscar por lote y fecha_vencimiento antes
     'de completar el proceso de actualizar la cantidad verificada, pTipo siempre vendré con valor = 0 
@@ -6475,19 +6325,17 @@ Partial Public Class clsLnTrans_picking_ubic
 
                     pEtiqueta = New clsBeTrans_verificacion_etiqueta()
                     pEtiqueta =
-                    clsLnTrans_verificacion_etiqueta.Guardar_Etiqueta_Verificacion(
-                                                                                    vBePickingUbic,
+                    clsLnTrans_verificacion_etiqueta.Guardar_Etiqueta_Verificacion(vBePickingUbic,
                                                                                     pIdOperador,
                                                                                     BeBodega.IdTipoEtiquetaVerificacion,
                                                                                     clsTrans.lConnection,
-                                                                                    clsTrans.lTransaction
-                                                                                )
+                                                                                    clsTrans.lTransaction)
                 End If
 
                 '#MECR11122025: Se agrego bitacora para logs de verificacion
                 resultado += " Codigo " & vBePickingUbic.CodigoProducto & " Pedido parámetro " & pIdPedidoEnc
                 clsLnLog_error_wms.Agregar_Error(resultado)
-                clsLnLog_verificacion_bof.Agregar_Error(resultado,
+                clsLnLog_verificacion_bof_error.Agregar_Error(resultado,
                   pIdPedidoDet:=vBePickingUbic.IdPedidoDet,
                   pIdPedidoEnc:=vBePickingUbic.IdPedidoEnc,
                   pIdPickingEnc:=vBePickingUbic.IdPickingEnc,
@@ -6517,7 +6365,145 @@ Partial Public Class clsLnTrans_picking_ubic
         End Try
 
     End Function
+    Public Shared Function Actualiza_Picking_Consolidado(ByVal pBePickingUbic As clsBeTrans_picking_ubic,
+                                                         ByVal pIdOperador As Integer,
+                                                         ByVal ReemplazoLP As Boolean,
+                                                         ByRef pCantidad As Double,
+                                                         ByRef pPeso As Double,
+                                                         ByVal BeStockPallet As clsBeProducto,
+                                                         ByVal pHost As String) As Boolean
 
+        Actualiza_Picking_Consolidado = False
+
+        Dim CantPendiente As Double
+        Dim PesoPendiente As Double
+        Dim BeStockResActual As New clsBeStock_res
+        Dim BePickingDet As New clsBeTrans_picking_det
+        Dim pBePickingUbicList As New List(Of clsBeTrans_picking_ubic)
+        Dim tmpPickingUbicList As New List(Of clsBeTrans_picking_ubic)
+        Dim BePedidoDet As New clsBeTrans_pe_det
+        Dim resultado As String = ""
+        Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+        Dim lTransaction As SqlTransaction = Nothing
+        Dim Factor As Integer = 0
+        Dim vIdUbicacionPickingByBodega As Integer = 0
+        Dim BeStockActual As New clsBeStock
+
+        Try
+
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            Dim watch As Stopwatch = Stopwatch.StartNew()
+
+            pBePickingUbicList = Get_All_PickingUbic_By_Consolidado(pBePickingUbic, lConnection, lTransaction)
+
+            vIdUbicacionPickingByBodega = clsLnBodega.Get_IdUbicacion_Picking_By_IdBodega(pBePickingUbicList.FirstOrDefault.IdBodega(),
+                                                                                          lConnection,
+                                                                                          lTransaction)
+
+            For Each vBePickingUbic As clsBeTrans_picking_ubic In pBePickingUbicList
+
+                If (vBePickingUbic.Cantidad_Recibida + pCantidad) > vBePickingUbic.Cantidad_Solicitada Then
+                    CantPendiente = Math.Round(vBePickingUbic.Cantidad_Solicitada - vBePickingUbic.Cantidad_Recibida, 6)
+                Else
+                    CantPendiente = pCantidad
+                End If
+
+                If ((vBePickingUbic.Peso_recibido + pPeso) > vBePickingUbic.Peso_solicitado) Then
+                    PesoPendiente = vBePickingUbic.Peso_solicitado - vBePickingUbic.Peso_recibido
+                Else
+                    PesoPendiente = pPeso
+                End If
+
+                vBePickingUbic.Cantidad_Recibida += CantPendiente
+                vBePickingUbic.Cantidad_Recibida = Math.Round(vBePickingUbic.Cantidad_Recibida, 6)
+                vBePickingUbic.Peso_recibido += PesoPendiente
+                vBePickingUbic.IdOperadorBodega_Pickeo = pBePickingUbic.IdOperadorBodega_Pickeo
+                vBePickingUbic.Fec_mod = Now
+                vBePickingUbic.Fecha_picking = Now
+
+                BePickingDet = New clsBeTrans_picking_det
+                BePickingDet.IdPickingDet = vBePickingUbic.IdPickingDet
+                clsLnTrans_picking_det.Obtener(BePickingDet, lConnection, lTransaction)
+
+                BePedidoDet = New clsBeTrans_pe_det
+                BePedidoDet = clsLnTrans_pe_det.Get_Single_By_IdPedidoEnc_And_IdPedidoDet(BePickingDet.IdPedidoEnc,
+                                                                                          BePickingDet.IdPedidoDet,
+                                                                                          lConnection,
+                                                                                          lTransaction)
+
+                If BePedidoDet.IdPresentacion <> vBePickingUbic.IdPresentacion Then
+                    If BePedidoDet.IdPresentacion = 0 AndAlso vBePickingUbic.IdPresentacion <> 0 Then
+                        Factor = clsLnProducto_presentacion.Get_Factor_By_IdProductoBodega(vBePickingUbic.IdProductoBodega,
+                                                                                           vBePickingUbic.IdPresentacion,
+                                                                                           lConnection,
+                                                                                           lTransaction)
+                        If Factor <> 0 Then
+                            Dim CantPedido As Double = CantPendiente * Factor
+                            BePickingDet.Cantidad_recibida += CantPedido
+                            BePickingDet.Cantidad_recibida = Math.Round(BePickingDet.Cantidad_recibida, 6)
+                        End If
+                    End If
+                Else
+                    BePickingDet.Cantidad_recibida += CantPendiente
+                    BePickingDet.Cantidad_recibida = Math.Round(BePickingDet.Cantidad_recibida, 6)
+                End If
+
+                BePickingDet.User_mod = pIdOperador
+                BePickingDet.Fec_mod = Now
+
+                BeStockResActual.IdStockRes = vBePickingUbic.IdStockRes
+                BeStockResActual.IdProductoBodega = vBePickingUbic.IdProductoBodega
+                clsLnStock_res.GetSingle(BeStockResActual, lConnection, lTransaction)
+
+                BeStockResActual.Estado = "PICKEADO"
+                BeStockResActual.User_mod = pIdOperador
+                BeStockResActual.Fec_mod = Now
+
+                If Not ReemplazoLP Then
+                    Actualizar_Picking_Desde_Consolidado(vBePickingUbic,
+                                                         BeStockResActual,
+                                                         BePickingDet,
+                                                         vBePickingUbic.IdBodega,
+                                                         pHost,
+                                                         pCantidad,
+                                                         lConnection,
+                                                         lTransaction)
+
+                Else
+                    Actualizar_Picking(vBePickingUbic,
+                                       BeStockResActual,
+                                       BePickingDet,
+                                       vBePickingUbic.IdBodega,
+                                       BeStockPallet,
+                                       lConnection,
+                                       lTransaction)
+                End If
+
+                If (pCantidad - CantPendiente = 0) Then
+                    Exit For
+                Else
+                    pCantidad -= CantPendiente
+                End If
+
+            Next
+
+            lTransaction.Commit()
+
+            watch.Stop()
+
+            Debug.Print("Tiempo transcurrido GetAllStock: " & watch.Elapsed.TotalSeconds)
+
+            Return True
+
+        Catch ex As Exception
+            If Not lTransaction Is Nothing Then lTransaction.Rollback()
+            Throw New Exception(String.Format("{0} {1} {2} ", MethodBase.GetCurrentMethod().Name, ex.Message, ""))
+        Finally
+            If lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Function
     '#CKFK 20200511 Creé esta función para reemplazo de inventario en las verificaciones
     Public Shared Function Reemplaza_Producto_Dannado_Menor(ByVal plistPickingUbi As List(Of clsBeTrans_picking_ubic),
                                                             ByVal pIdStock As Integer,

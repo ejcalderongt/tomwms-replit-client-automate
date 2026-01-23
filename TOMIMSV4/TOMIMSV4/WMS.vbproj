@@ -41,7 +41,7 @@
     <SuiteName>WMS_QAS</SuiteName>
     <MinimumRequiredVersion>1.0.0.10</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>499</ApplicationRevision>
+    <ApplicationRevision>501</ApplicationRevision>
     <ApplicationVersion>4.7.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -218,20 +218,9 @@
     <Reference Include="DevExpress.XtraScheduler.v24.2.Extensions, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraTreeList.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraVerticalGrid.v24.2, Version=24.2.12.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\log4net.2.0.14\lib\net45\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
-      <HintPath>..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Office.Interop.Excel">
@@ -253,9 +242,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.IO.FileSystem.Primitives" />
-    <Reference Include="System.IO.Packaging">
-      <HintPath>..\..\packages\System.IO.Packaging.6.0.0\lib\net461\System.IO.Packaging.dll</HintPath>
-    </Reference>
     <Reference Include="System.Management" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Remoting" />
@@ -325,14 +311,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Dset_Regla_Vence.xsd</DependentUpon>
     </Compile>
-    <Compile Include="IA\AiClient.vb" />
-    <Compile Include="IA\frmIA_Chat.Designer.vb">
-      <DependentUpon>frmIA_Chat.vb</DependentUpon>
-    </Compile>
-    <Compile Include="IA\frmIA_Chat.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="IA\PromptEngine.vb" />
     <Compile Include="Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.Designer.vb">
       <DependentUpon>frmAcuerdoComercial.vb</DependentUpon>
     </Compile>
@@ -3157,9 +3135,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="IA\frmIA_Chat.resx">
-      <DependentUpon>frmIA_Chat.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Mantenimientos\Acuerdos_Comerciales\frmAcuerdoComercial.resx">
       <DependentUpon>frmAcuerdoComercial.vb</DependentUpon>
     </EmbeddedResource>
@@ -4439,10 +4414,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
-    <Content Include="apiConfig.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Include="app.config" />
     <Content Include="Conn_Becofarma.ini" />
     <None Include="Configuracion_QADataSet.xsc">
       <DependentUpon>Configuracion_QADataSet.xsd</DependentUpon>
@@ -4461,7 +4432,6 @@
     <None Include="Conn_GT.ini" />
     <None Include="Conn_Inelac.ini" />
     <None Include="Conn_Killios.ini" />
-    <None Include="ConnDev.ini" />
     <None Include="Conn_CLC_Fiscal.ini" />
     <None Include="Conn_MAMPA.ini" />
     <None Include="Conn_Mercosal.ini" />
@@ -4487,7 +4457,6 @@
     <None Include="Dset_Regla_Vence.xss">
       <DependentUpon>Dset_Regla_Vence.xsd</DependentUpon>
     </None>
-    <None Include="IA\prompts.json" />
     <None Include="Mantenimientos\Motivo_Correccion\DsMotivoCorreccionPoliza.xsc">
       <DependentUpon>DsMotivoCorreccionPoliza.xsd</DependentUpon>
     </None>
@@ -4516,12 +4485,9 @@
     </Content>
     <None Include="Mantenimientos\Producto_Color\frmProducto_Color.resx.bak" />
     <None Include="Mantenimientos\Producto_Color\frmProducto_ColorList.resx.bak" />
-    <None Include="Mantenimientos\Producto_Estado\frmProducto_Estado.resx.bak" />
-    <None Include="Mantenimientos\Producto_Estado\frmProducto_EstadoList.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_Talla.resx.bak" />
     <None Include="Mantenimientos\Producto_Talla\frmProducto_TallaList.resx.bak" />
     <None Include="SAPBOSyncMampa.exe.config" />
-    <None Include="SAPBOSyncKillios.exe.config" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho11.wsdl" />
     <None Include="Service References\srvRoadDespacho\srvRoadDespacho33.xsd">
       <SubType>Designer</SubType>
@@ -4591,7 +4557,6 @@
       <LastGenOutput>Reference.vb</LastGenOutput>
     </None>
     <None Include="Service References\wsTOMHH\TOMHHWS1.disco" />
-    <Content Include="SAPBOSyncKillios.exe" />
     <Content Include="Tableros_Por_Defecto\Cantidad_De_Pedidos_Por_Cliente.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -5585,16 +5550,4 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <Import Project="..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
-  <Import Project="..\..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
-  <Import Project="..\..\packages\Microsoft.Data.SqlClient.SNI.4.0.0\build\net46\Microsoft.Data.SqlClient.SNI.targets" Condition="Exists('..\..\packages\Microsoft.Data.SqlClient.SNI.4.0.0\build\net46\Microsoft.Data.SqlClient.SNI.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <ItemGroup>
-    <Analyzer Include="C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll" Visible="false" Condition="Exists('C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll')" />
-  </ItemGroup>
 </Project>

@@ -80,8 +80,8 @@ Partial Class frmOrdenCompra
         Dim lblTotalValorAduana As System.Windows.Forms.Label
         Dim Label36 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmOrdenCompra))
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.grpEncRec = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
@@ -116,7 +116,6 @@ Partial Class frmOrdenCompra
         Me.cmdCorreccionPoliza = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdImprimirEtiquetasRecepcion = New DevExpress.XtraBars.BarButtonItem()
         Me.cmdDuplicar = New DevExpress.XtraBars.BarButtonItem()
-        Me.cmdEliminarDocumento = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RepositoryItemTextEdit1 = New DevExpress.XtraEditors.Repository.RepositoryItemTextEdit()
@@ -140,15 +139,9 @@ Partial Class frmOrdenCompra
         Me.txtNomCampaña = New DevExpress.XtraEditors.TextEdit()
         Me.txtIdCampaña = New DevExpress.XtraEditors.TextEdit()
         Me.lnkCampaña = New System.Windows.Forms.LinkLabel()
-        Me.txtCodigoEmpresaERP = New System.Windows.Forms.TextBox()
-        Me.LabelControl1 = New DevExpress.XtraEditors.LabelControl()
-        Me.txtNoDocumentoRecepcion = New System.Windows.Forms.TextBox()
-        Me.lblNoDocumentoRecepcion = New DevExpress.XtraEditors.LabelControl()
         Me.grpUltRec = New DevExpress.XtraEditors.GroupControl()
         Me.txtIdRecepcion = New System.Windows.Forms.LinkLabel()
         Me.cmbBodega = New DevExpress.XtraEditors.LookUpEdit()
-        Me.txtDocumentoUbicacion = New System.Windows.Forms.TextBox()
-        Me.lblDocumentoUbicacion = New DevExpress.XtraEditors.LabelControl()
         Me.cmbOperadorDefecto = New DevExpress.XtraEditors.LookUpEdit()
         Me.LabelControl6 = New DevExpress.XtraEditors.LabelControl()
         Me.lblC = New System.Windows.Forms.TextBox()
@@ -327,6 +320,7 @@ Partial Class frmOrdenCompra
         Me.cmdImportar = New DevExpress.XtraBars.BarButtonItem()
         Me.BarButtonItem6 = New DevExpress.XtraBars.BarButtonItem()
         Me.BarButtonItem7 = New DevExpress.XtraBars.BarButtonItem()
+        Me.cmdEliminarDocumento = New DevExpress.XtraBars.BarButtonItem()
         User_agrLabel = New System.Windows.Forms.Label()
         Fec_agrLabel = New System.Windows.Forms.Label()
         User_modLabel = New System.Windows.Forms.Label()
@@ -1081,19 +1075,17 @@ Partial Class frmOrdenCompra
         '
         'grpEncRec
         '
-        Me.grpEncRec.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(26, 24, 26, 24)
         Me.grpEncRec.ExpandCollapseItem.Id = 0
-        Me.grpEncRec.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.grpEncRec.ExpandCollapseItem, Me.mnuGuardar, Me.mnuAsignacion, Me.BarButtonItem1, Me.BarButtonItem2, Me.BarButtonItem3, Me.cmdCodigoBarra, Me.cmdImprimeCodigoBarra, Me.cmdImprmirCodigoBarra, Me.cmdActualizar, Me.cmdEliminar, Me.cmdUbicacion, Me.cmdImprimir, Me.SubImprimir, Me.cmdPreIngreso, Me.cmdCostoArancel, Me.cmdImprimeBarras, Me.lblRegs, Me.BarButtonItem4, Me.mnuEstadoEnviadoAERP, Me.cmdRecepcionesAsociadas, Me.mnuCerrarPedidoCompra, Me.cmdBackorder, Me.cmdActualizarDetalle, Me.BarButtonItem5, Me.cmdImportarExcel, Me.mnuTareaRecepcion, Me.mnuExportarExcel, Me.mnuEliminarLayoutGrid, Me.mnuRegistrarEnNAV, Me.cmdCorreccionPoliza, Me.cmdImprimirEtiquetasRecepcion, Me.cmdDuplicar})
-        D        Me.grpEncRec.Location = New System.Drawing.Point(0, 0)
+        Me.grpEncRec.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.grpEncRec.ExpandCollapseItem, Me.mnuGuardar, Me.mnuAsignacion, Me.BarButtonItem1, Me.BarButtonItem2, Me.BarButtonItem3, Me.cmdCodigoBarra, Me.cmdImprimeCodigoBarra, Me.cmdImprmirCodigoBarra, Me.cmdActualizar, Me.cmdEliminar, Me.cmdUbicacion, Me.cmdImprimir, Me.SubImprimir, Me.cmdPreIngreso, Me.cmdCostoArancel, Me.cmdImprimeBarras, Me.lblRegs, Me.BarButtonItem4, Me.mnuEstadoEnviadoAERP, Me.cmdRecepcionesAsociadas, Me.mnuCerrarPedidoCompra, Me.cmdBackorder, Me.cmdActualizarDetalle, Me.BarButtonItem5, Me.cmdImportarExcel, Me.mnuTareaRecepcion, Me.mnuExportarExcel, Me.mnuEliminarLayoutGrid, Me.mnuRegistrarEnNAV, Me.cmdCorreccionPoliza, Me.cmdImprimirEtiquetasRecepcion, Me.cmdDuplicar, Me.cmdEliminarDocumento})
+        Me.grpEncRec.Location = New System.Drawing.Point(0, 0)
         Me.grpEncRec.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.grpEncRec.MaxItemId = 39
+        Me.grpEncRec.MaxItemId = 40
         Me.grpEncRec.Name = "grpEncRec"
-        Me.grpEncRec.OptionsMenuMinWidth = 283
         Me.grpEncRec.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.grpEncRec.RepositoryItems.AddRange(New DevExpress.XtraEditors.Repository.RepositoryItem() {Me.RepositoryItemTextEdit1, Me.RepositoryItemTextEdit2})
         Me.grpEncRec.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.grpEncRec.Size = New System.Drawing.Size(1632, 193)
-        Me.grpEncRec.StatusBar = Me.RibbonStatusBar
+        Me.grpEncRec.StatusBar = Me.RibbonStatusBar1
         '
         'mnuGuardar
         '
@@ -1324,13 +1316,6 @@ Partial Class frmOrdenCompra
         Me.cmdDuplicar.ImageOptions.SvgImage = CType(resources.GetObject("cmdDuplicar.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.cmdDuplicar.Name = "cmdDuplicar"
         '
-        'cmdEliminarDocumento
-        '
-        Me.cmdEliminarDocumento.Caption = "Eliminar documento"
-        Me.cmdEliminarDocumento.Id = 39
-        Me.cmdEliminarDocumento.ImageOptions.SvgImage = CType(resources.GetObject("cmdEliminarDocumento.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.cmdEliminarDocumento.Name = "cmdEliminarDocumento"
-        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1})
@@ -1494,14 +1479,8 @@ Partial Class frmOrdenCompra
         Me.SplitContainer2.Panel1.Controls.Add(Me.txtNomCampaña)
         Me.SplitContainer2.Panel1.Controls.Add(Me.txtIdCampaña)
         Me.SplitContainer2.Panel1.Controls.Add(Me.lnkCampaña)
-        Me.SplitContainer2.Panel1.Controls.Add(Me.txtCodigoEmpresaERP)
-        Me.SplitContainer2.Panel1.Controls.Add(Me.LabelControl1)
-        Me.SplitContainer2.Panel1.Controls.Add(Me.txtNoDocumentoRecepcion)
-        Me.SplitContainer2.Panel1.Controls.Add(Me.lblNoDocumentoRecepcion)
         Me.SplitContainer2.Panel1.Controls.Add(Me.grpUltRec)
         Me.SplitContainer2.Panel1.Controls.Add(Me.cmbBodega)
-        Me.SplitContainer2.Panel1.Controls.Add(Me.txtDocumentoUbicacion)
-        Me.SplitContainer2.Panel1.Controls.Add(Me.lblDocumentoUbicacion)
         Me.SplitContainer2.Panel1.Controls.Add(Me.cmbOperadorDefecto)
         Me.SplitContainer2.Panel1.Controls.Add(Me.LabelControl6)
         Me.SplitContainer2.Panel1.Controls.Add(Me.lblC)
@@ -1596,46 +1575,6 @@ Partial Class frmOrdenCompra
         Me.lnkCampaña.TabStop = True
         Me.lnkCampaña.Text = "Campaña:"
         '
-        'txtCodigoEmpresaERP
-        '
-        Me.txtCodigoEmpresaERP.AcceptsReturn = True
-        Me.txtCodigoEmpresaERP.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtCodigoEmpresaERP.Location = New System.Drawing.Point(444, 302)
-        Me.txtCodigoEmpresaERP.Name = "txtCodigoEmpresaERP"
-        Me.txtCodigoEmpresaERP.ReadOnly = True
-        Me.txtCodigoEmpresaERP.Size = New System.Drawing.Size(193, 21)
-        Me.txtCodigoEmpresaERP.TabIndex = 37
-        '
-        'LabelControl1
-        '
-        Me.LabelControl1.Appearance.Options.UseFont = True
-        Me.LabelControl1.Location = New System.Drawing.Point(444, 288)
-        Me.LabelControl1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.LabelControl1.Name = "LabelControl1"
-        Me.LabelControl1.Size = New System.Drawing.Size(69, 13)
-        Me.LabelControl1.TabIndex = 36
-        Me.LabelControl1.Text = "Sociedad SAP:"
-        '
-        'txtNoDocumentoRecepcion
-        '
-        Me.txtNoDocumentoRecepcion.AcceptsReturn = True
-        Me.txtNoDocumentoRecepcion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtNoDocumentoRecepcion.Location = New System.Drawing.Point(444, 263)
-        Me.txtNoDocumentoRecepcion.Name = "txtNoDocumentoRecepcion"
-        Me.txtNoDocumentoRecepcion.ReadOnly = True
-        Me.txtNoDocumentoRecepcion.Size = New System.Drawing.Size(193, 21)
-        Me.txtNoDocumentoRecepcion.TabIndex = 35
-        '
-        'lblNoDocumentoRecepcion
-        '
-        Me.lblNoDocumentoRecepcion.Appearance.Options.UseFont = True
-        Me.lblNoDocumentoRecepcion.Location = New System.Drawing.Point(444, 249)
-        Me.lblNoDocumentoRecepcion.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.lblNoDocumentoRecepcion.Name = "lblNoDocumentoRecepcion"
-        Me.lblNoDocumentoRecepcion.Size = New System.Drawing.Size(147, 13)
-        Me.lblNoDocumentoRecepcion.TabIndex = 34
-        Me.lblNoDocumentoRecepcion.Text = "Documento de Recepción ERP:"
-        '
         'grpUltRec
         '
         Me.grpUltRec.AppearanceCaption.BackColor = System.Drawing.Color.SteelBlue
@@ -1673,27 +1612,6 @@ Partial Class frmOrdenCompra
         Me.cmbBodega.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbBodega.Size = New System.Drawing.Size(374, 22)
         Me.cmbBodega.TabIndex = 30
-        '
-        'txtDocumentoUbicacion
-        '
-        Me.txtDocumentoUbicacion.AcceptsReturn = True
-        Me.txtDocumentoUbicacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtDocumentoUbicacion.Location = New System.Drawing.Point(444, 223)
-        Me.txtDocumentoUbicacion.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.txtDocumentoUbicacion.Name = "txtDocumentoUbicacion"
-        Me.txtDocumentoUbicacion.ReadOnly = True
-        Me.txtDocumentoUbicacion.Size = New System.Drawing.Size(193, 21)
-        Me.txtDocumentoUbicacion.TabIndex = 29
-        '
-        'lblDocumentoUbicacion
-        '
-        Me.lblDocumentoUbicacion.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
-        Me.lblDocumentoUbicacion.Appearance.Options.UseFont = True
-        Me.lblDocumentoUbicacion.Location = New System.Drawing.Point(444, 206)
-        Me.lblDocumentoUbicacion.Name = "lblDocumentoUbicacion"
-        Me.lblDocumentoUbicacion.Size = New System.Drawing.Size(143, 13)
-        Me.lblDocumentoUbicacion.TabIndex = 28
-        Me.lblDocumentoUbicacion.Text = "Documento de Ubicación ERP:"
         '
         'cmbOperadorDefecto
         '
@@ -2030,7 +1948,7 @@ Partial Class frmOrdenCompra
         'lblUsuarioERP
         '
         Me.lblUsuarioERP.Appearance.Options.UseFont = True
-        Me.lblUsuarioERP.Location = New System.Drawing.Point(20, -1159)
+        Me.lblUsuarioERP.Location = New System.Drawing.Point(20, -1578)
         Me.lblUsuarioERP.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblUsuarioERP.Name = "lblUsuarioERP"
         Me.lblUsuarioERP.Size = New System.Drawing.Size(48, 16)
@@ -2052,7 +1970,7 @@ Partial Class frmOrdenCompra
         '
         Me.lblDocumentoUbicacion.Appearance.Font = New System.Drawing.Font("Tahoma", 8.0!)
         Me.lblDocumentoUbicacion.Appearance.Options.UseFont = True
-        Me.lblDocumentoUbicacion.Location = New System.Drawing.Point(253, -1207)
+        Me.lblDocumentoUbicacion.Location = New System.Drawing.Point(253, -1626)
         Me.lblDocumentoUbicacion.Margin = New System.Windows.Forms.Padding(4)
         Me.lblDocumentoUbicacion.Name = "lblDocumentoUbicacion"
         Me.lblDocumentoUbicacion.Size = New System.Drawing.Size(145, 16)
@@ -2073,7 +1991,7 @@ Partial Class frmOrdenCompra
         'lblNoDocumentoRecepcion
         '
         Me.lblNoDocumentoRecepcion.Appearance.Options.UseFont = True
-        Me.lblNoDocumentoRecepcion.Location = New System.Drawing.Point(486, -1207)
+        Me.lblNoDocumentoRecepcion.Location = New System.Drawing.Point(486, -1626)
         Me.lblNoDocumentoRecepcion.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblNoDocumentoRecepcion.Name = "lblNoDocumentoRecepcion"
         Me.lblNoDocumentoRecepcion.Size = New System.Drawing.Size(149, 16)
@@ -2094,7 +2012,7 @@ Partial Class frmOrdenCompra
         'lblSociedadERP
         '
         Me.lblSociedadERP.Appearance.Options.UseFont = True
-        Me.lblSociedadERP.Location = New System.Drawing.Point(20, -1208)
+        Me.lblSociedadERP.Location = New System.Drawing.Point(20, -1627)
         Me.lblSociedadERP.Margin = New System.Windows.Forms.Padding(4, 2, 4, 2)
         Me.lblSociedadERP.Name = "lblSociedadERP"
         Me.lblSociedadERP.Size = New System.Drawing.Size(57, 16)
@@ -2387,7 +2305,6 @@ Partial Class frmOrdenCompra
         Me.gvDetalleDocIngreso.GridControl = Me.DgridDetalleOC
         Me.gvDetalleDocIngreso.Name = "gvDetalleDocIngreso"
         Me.gvDetalleDocIngreso.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.[True]
-        Me.gvDetalleDocIngreso.OptionsEditForm.PopupEditFormWidth = 686
         Me.gvDetalleDocIngreso.OptionsView.ShowAutoFilterRow = True
         Me.gvDetalleDocIngreso.OptionsView.ShowGroupPanel = False
         '
@@ -2480,7 +2397,6 @@ Partial Class frmOrdenCompra
         Me.GridViewImg.GridControl = Me.GrdImagen
         Me.GridViewImg.Name = "GridViewImg"
         Me.GridViewImg.OptionsBehavior.Editable = False
-        Me.GridViewImg.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridViewImg.OptionsFind.AlwaysVisible = True
         Me.GridViewImg.OptionsView.ShowGroupPanel = False
         '
@@ -3045,7 +2961,6 @@ Partial Class frmOrdenCompra
         Me.gvdetallepoliza.DetailHeight = 437
         Me.gvdetallepoliza.GridControl = Me.dgridDetallePoliza
         Me.gvdetallepoliza.Name = "gvdetallepoliza"
-        Me.gvdetallepoliza.OptionsEditForm.PopupEditFormWidth = 686
         Me.gvdetallepoliza.OptionsView.ColumnAutoWidth = False
         '
         'GrpEmbarque
@@ -3291,7 +3206,6 @@ Partial Class frmOrdenCompra
         Me.gvDetalleServicios.DetailHeight = 682
         Me.gvDetalleServicios.GridControl = Me.dgridServiciosAsociados
         Me.gvDetalleServicios.Name = "gvDetalleServicios"
-        Me.gvDetalleServicios.OptionsEditForm.PopupEditFormWidth = 686
         '
         'cmbAcuerdoComercial
         '
@@ -3376,7 +3290,6 @@ Partial Class frmOrdenCompra
         Me.GridView6.GridControl = Me.grdEncRec
         Me.GridView6.Name = "GridView6"
         Me.GridView6.OptionsBehavior.ReadOnly = True
-        Me.GridView6.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridView6.OptionsView.ShowFooter = True
         '
         'colCódigo
@@ -3498,7 +3411,6 @@ Partial Class frmOrdenCompra
         Me.gridviewLotes.DetailHeight = 437
         Me.gridviewLotes.GridControl = Me.DgridLotes
         Me.gridviewLotes.Name = "gridviewLotes"
-        Me.gridviewLotes.OptionsEditForm.PopupEditFormWidth = 686
         '
         'tabDetERP
         '
@@ -3541,7 +3453,6 @@ Partial Class frmOrdenCompra
         Me.GridView5.DetailHeight = 437
         Me.GridView5.GridControl = Me.grdDetERP
         Me.GridView5.Name = "GridView5"
-        Me.GridView5.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridView5.OptionsFind.AlwaysVisible = True
         '
         'tabPedidosDevolucion
@@ -3582,14 +3493,14 @@ Partial Class frmOrdenCompra
         Me.dgridPedidos.AllowUserToResizeRows = False
         Me.dgridPedidos.BackgroundColor = System.Drawing.Color.PaleTurquoise
         Me.dgridPedidos.BorderStyle = System.Windows.Forms.BorderStyle.None
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle1.BackColor = System.Drawing.Color.AliceBlue
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        DataGridViewCellStyle1.ForeColor = System.Drawing.Color.MidnightBlue
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgridPedidos.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle3.BackColor = System.Drawing.Color.AliceBlue
+        DataGridViewCellStyle3.Font = New System.Drawing.Font("Tahoma", 7.8!)
+        DataGridViewCellStyle3.ForeColor = System.Drawing.Color.MidnightBlue
+        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgridPedidos.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
         Me.dgridPedidos.ColumnHeadersHeight = 40
         Me.dgridPedidos.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.IdPedido, Me.Referencia, Me.Bodega, Me.Cliente, Me.Propietario, Me.FechaPedido, Me.EstadoP})
         Me.dgridPedidos.Dock = System.Windows.Forms.DockStyle.Fill
@@ -3600,14 +3511,14 @@ Partial Class frmOrdenCompra
         Me.dgridPedidos.Margin = New System.Windows.Forms.Padding(4)
         Me.dgridPedidos.MultiSelect = False
         Me.dgridPedidos.Name = "dgridPedidos"
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle2.Font = New System.Drawing.Font("Tahoma", 7.8!)
-        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgridPedidos.RowHeadersDefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("Tahoma", 7.8!)
+        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgridPedidos.RowHeadersDefaultCellStyle = DataGridViewCellStyle4
         Me.dgridPedidos.RowHeadersVisible = False
         Me.dgridPedidos.RowHeadersWidth = 40
         Me.dgridPedidos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
@@ -3702,7 +3613,6 @@ Partial Class frmOrdenCompra
         'tabTallaColor
         '
         Me.tabTallaColor.Controls.Add(Me.dgridTallaColor)
-        Me.tabTallaColor.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.tabTallaColor.Name = "tabTallaColor"
         Me.tabTallaColor.Size = New System.Drawing.Size(1630, 715)
         Me.tabTallaColor.Text = "Talla/Color"
@@ -3730,7 +3640,6 @@ Partial Class frmOrdenCompra
         Me.GridView7.Name = "GridView7"
         Me.GridView7.OptionsBehavior.AllowDeleteRows = DevExpress.Utils.DefaultBoolean.[True]
         Me.GridView7.OptionsBehavior.Editable = False
-        Me.GridView7.OptionsEditForm.PopupEditFormWidth = 686
         Me.GridView7.OptionsView.ShowAutoFilterRow = True
         Me.GridView7.OptionsView.ShowGroupPanel = False
         '
@@ -3747,6 +3656,13 @@ Partial Class frmOrdenCompra
         Me.BarButtonItem7.Caption = "Importar Excel"
         Me.BarButtonItem7.Id = 7
         Me.BarButtonItem7.Name = "BarButtonItem7"
+        '
+        'cmdEliminarDocumento
+        '
+        Me.cmdEliminarDocumento.Caption = "Eliminar documento"
+        Me.cmdEliminarDocumento.Id = 39
+        Me.cmdEliminarDocumento.ImageOptions.SvgImage = CType(resources.GetObject("cmdEliminarDocumento.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.cmdEliminarDocumento.Name = "cmdEliminarDocumento"
         '
         'frmOrdenCompra
         '

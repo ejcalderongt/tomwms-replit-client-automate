@@ -3509,12 +3509,12 @@ Public Class frmPrincipal02
                 ' Vista apilada lado a lado (dos pilas: GENERAL y FISCAL)
                 .View = New DevExpress.XtraCharts.SideBySideStackedBarSeriesView()
 
-                ' Etiquetas (center para stacked; desactivadas para menos ruido)
                 Dim lbl As New DevExpress.XtraCharts.StackedBarSeriesLabel()
                 lbl.TextPattern = "{V:n0}"
                 lbl.Position = DevExpress.XtraCharts.BarSeriesLabelPosition.Center
-                lbl.Visible = False
+
                 .Label = lbl
+                .LabelsVisibility = DevExpress.Utils.DefaultBoolean.False
             End With
 
             ' Leyenda y ayudas

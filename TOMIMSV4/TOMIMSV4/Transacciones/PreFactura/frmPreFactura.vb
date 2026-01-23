@@ -10,6 +10,7 @@ Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraReports.UI
 Imports DevExpress.XtraSplashScreen
+Imports Newtonsoft.Json
 
 Public Class frmPreFactura
 
@@ -140,7 +141,6 @@ Public Class frmPreFactura
             dtFechaIngreso.Enabled = False
             dtFechaSalida.Enabled = False
 
-
             '#GT21082024: ocultar, a futuro podria ser utilizada la funcionalidad.
             '#GT04102024: removi los objetos para hacer espacio al log
             'lblProductoPoliza.Visible = False
@@ -198,7 +198,6 @@ Public Class frmPreFactura
                         chkVarianteCobro.Enabled = False
                         'chkAgruparPorProducto.Enabled = False
                         chkEstimacionCobro.Enabled = True
-
                         chkAgruparPorProducto.Enabled = False
 
                     Else
@@ -556,7 +555,7 @@ Public Class frmPreFactura
                     For Each detalle As clsBeTrans_prefactura_det In BePrefacturaEnc.lDetalle_Det
 
                         Dim pAcuerdoDet As New clsBeTrans_acuerdoscomerciales_det
-                        Dim pAcuerdo As New clsBeTrans_acuerdoscomerciales_enc
+                        Dim pAcuerdo As New clsBeTrans_Acuerdoscomerciales_enc
                         pAcuerdo.IdAcuerdoEnc = detalle.IdAcuerdoEnc
                         pAcuerdoDet.IdAcuerdoDet = detalle.IdAcuerdoDet
 
@@ -1009,7 +1008,7 @@ Public Class frmPreFactura
                 'GT 08022021 se obtiene el IdCliente del combo
                 'Llena_Acuerdos_By_IdCliente()
 
-                Dim pListaAcuerdosEnc As New List(Of clsBeTrans_acuerdoscomerciales_enc)
+                Dim pListaAcuerdosEnc As New List(Of clsBeTrans_Acuerdoscomerciales_enc)
 
                 pListaAcuerdosEnc = clsLnTrans_acuerdoscomerciales_enc.Get_AcuerdosEnc_And_Detalle_By_IdCliente(IdPropietario, pBodega.IdBodega)
 
@@ -1463,8 +1462,8 @@ Public Class frmPreFactura
         Try
 
             '#GT17072024: limpiar objetos
-            Dim pListaAcuerdosEnc As New List(Of clsBeTrans_acuerdoscomerciales_enc)
-            Dim pAcuerdoComercial As New clsBeTrans_acuerdoscomerciales_enc
+            Dim pListaAcuerdosEnc As New List(Of clsBeTrans_Acuerdoscomerciales_enc)
+            Dim pAcuerdoComercial As New clsBeTrans_Acuerdoscomerciales_enc
             Dim pMonto As Double = 0.00
             Dim pPorcentaje As Double = 0.00
             Dim pPeso As Double = 0.00
@@ -2085,7 +2084,7 @@ Public Class frmPreFactura
             Dim DTListaIngresos As New DataTable
             Dim pServicioConAcuerdo As New clsBeTrans_oc_servicios
             Dim pListaServiciosOC As New List(Of clsBeTrans_oc_servicios)
-            Dim pAcuerdoComercial As New clsBeTrans_acuerdoscomerciales_enc
+            Dim pAcuerdoComercial As New clsBeTrans_Acuerdoscomerciales_enc
             Dim pListaServiciosPE As New List(Of clsBeTrans_pe_servicios)
 
             '#GT27062024: lista de polizas para validar que no existan duplicadas
@@ -2226,7 +2225,6 @@ Public Class frmPreFactura
             '#GT31072024: inicia proceso de cálculo si usamos poliza con producto o no
             If pBuscarPolizaEspecifica Then
 
-                'SplashScreenManager.Default.SetWaitFormCaption("Validando poliza y registros")
                 SplashScreenManager.Default.SetWaitFormDescription("Validando poliza seleccionada...")
 
                 '#GT20062024: propietario con muchos acuerdos y ninguno asociado a la póliza.
@@ -2445,12 +2443,10 @@ Public Class frmPreFactura
                                                                         Else
                                                                             Mt = pBeProducto.Largo * pBeProducto.Ancho
                                                                         End If
-
                                                                         Dim tmpCobro = Math.Round(vUnidades * Mt, pDecimalesEnCobro)
                                                                         Dim tmpCobro2 = Math.Round(tmpCobro * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
                                                                         Dim tmpMTS = Math.Round(tmpCobro2 / vDias_eventos, pDecimalesEnCobro)
                                                                         tmpCobroAlmacenajeDiario += Math.Round(tmpMTS, pDecimalesEnCobro)
-
                                                                     End If
                                                                 Next
 
@@ -2488,13 +2484,12 @@ Public Class frmPreFactura
 
                                                     vCobro_por_linea += vCobroAlmacenajeDiario
 
-
                                                     DTGridDetallePreCuenta.Rows.Add(vIdOrdenCompraEnc,
                                                                                     vNumero_orden,
                                                                                     vCodigo_Producto,
                                                                                     vNombreProducto,
                                                                                     vFecha,
-                                                                                                        IIf(pPosicionesOcupadas > 0, pPosicionesOcupadas, vUnidades),
+                                                                                    IIf(pPosicionesOcupadas > 0, pPosicionesOcupadas, vUnidades),
                                                                                     vValor_Total,
                                                                                     vCobroAlmacenajeDiario)
 
@@ -2928,1306 +2923,782 @@ Public Class frmPreFactura
                     '#GT20062024: si existe solo un acuerdo, tomarlo por defecto
                     pAcuerdoComercial = clsLnTrans_acuerdoscomerciales_enc.Get_AcuerdoEnc_And_Detalle_By_IdCliente(IdPropietario, pBodega.IdBodega)
 
-                    'If vIdOrdenCompraEnc = 1214 Then
-                    '    Debug.WriteLine("aqui va")
-                    'End If
+                    If pAcuerdoComercial IsNot Nothing Then
+                        Llena_Rubros_By_CodAcuerdo(pAcuerdoComercial.Codigo_acuerdo)
 
-                    If Not String.IsNullOrEmpty(vNumero_orden) Then
-                        Dim pListaPolizas As New List(Of clsBeTrans_oc_pol)
-                        Dim pOcPoliza = clsLnTrans_oc_pol.GetSingle_By_Numero_Orden_And_IdOrdenCompraEnc(vNumero_orden, vIdOrdenCompraEnc)
-                        If pOcPoliza IsNot Nothing Then
-                            Dim existe = lPolizasOC.Any(Function(x) x.numero_orden = vNumero_orden AndAlso x.IdOrdenCompraEnc = vIdOrdenCompraEnc)
-                            If Not existe Then
-                                lPolizasOC.Add(pOcPoliza)
-                            End If
-                        End If
+                        If pAcuerdoComercial.lDetalle IsNot Nothing Then
 
-                        If Not String.IsNullOrEmpty(vNumero_orden) Then
-                            pTransOcEncReferencia = New clsBeTrans_oc_enc
-                            pTransOcEncReferencia = clsLnTrans_oc_enc.Get_Single_By_Referencia(vNumero_orden, vIdOrdenCompraEnc, pBodega.IdBodega)
+                            Dim listAcuerdosPrioritarios As New List(Of clsBeTrans_acuerdoscomerciales_det)
+                            listAcuerdosPrioritarios = pAcuerdoComercial.lDetalle.Where(Function(x) x.Prioridad = 1 AndAlso x.IdBodega = pBodega.IdBodega).ToList()
 
-                            If pTransOcEncReferencia IsNot Nothing Then
-                                ' Verificar si ya existe en la lista
-                                Dim existe = ListaTranOcEncReferencias.Any(Function(x) x.Referencia = vNumero_orden AndAlso x.IdOrdenCompraEnc = vIdOrdenCompraEnc)
-                                ' Solo agregar si no existe
-                                If Not existe Then
-                                    ListaTranOcEncReferencias.Add(pTransOcEncReferencia)
-                                End If
-                            End If
-                        End If
-                    End If
-                    Next
+                            If listAcuerdosPrioritarios IsNot Nothing Then
 
-                    '#GT06082024: iteramos los detalles del acuerdo
-                    For Each pAcuerdoPrimario As clsBeTrans_acuerdoscomerciales_det In listAcuerdosPrioritarios
-                        vIdAcuerdoEnc = pAcuerdoPrimario.IdAcuerdoEnc
-                        vIdAcuerdoDet = pAcuerdoPrimario.IdAcuerdoDet
-                        vCodigoproducto = pAcuerdoPrimario.Codigo_producto
-                        vCodacuerdo = pAcuerdoPrimario.Codigo_acuerdo
-                        vDescripcion = pAcuerdoPrimario.Descripcion
-                        vCorrelativo = pAcuerdoPrimario.Correlativo_detalleacuerdo
-                        vDias_eventos = pAcuerdoPrimario.Dias_eventos
-                        vNumero_unidades = pAcuerdoPrimario.Numero_unidades
-                        vServicio = pAcuerdoPrimario.Servicio
-                        vMonto = pAcuerdoPrimario.Monto
-                        vPorcentaje = pAcuerdoPrimario.Porcentaje
-                        vMoneda = pAcuerdoComercial.Moneda
-                        pListaProductoConVariante = New List(Of clsBeProducto)
+                                If listAcuerdosPrioritarios.Count > 0 Then
+
+                                    lPolizasOC = New List(Of clsBeTrans_oc_pol)
+                                    ListaTranOcEncReferencias = New List(Of clsBeTrans_oc_enc)
+                                    '#GT16102025: cargar la oc y pe y determinar si es transferencia, para no cobrar el primer día obtenido de la lista.
+                                    Dim BeOrdenCompraEnc As New clsBeTrans_oc_enc()
+                                    Dim BePedidoEnc As New clsBeTrans_pe_enc()
 
 
-                        '#GT20112024: validar si requerimos tipo cambio antes de realizar cualquier cálculo.
-                        If clsDataContractDI.tTipoMonedaPrefacturacion.Dolar = pAcuerdoComercial.Cod_moneda Then
-                            If vTipoCambioEnQuetzales = 0 Then
-                                SplashScreenManager.CloseForm(False)
-                                txtTipoCambio.Focus()
-                                Throw New Exception("El acuerdo comercial en dolares requiere, tipo de cambio superior a 0.")
-                            Else
-                                vUsarMonedaDolar = True
-                            End If
-                        Else
-                            vUsarMonedaDolar = False
-                        End If
+                                    For i As Integer = 0 To DTListaIngresos.Rows.Count - 1
 
 
-                        '*************************************************************************************************************
-                        '#GT20062024: validar si es cobro por unidad (tipo 1)
-                        '#GT03092024: validar si tiene variante de cobro (el producto tiene factor de cobro o dimensiones registradas)
-                        If pAcuerdoPrimario.IdTipoCobro = 1 And pAcuerdoPrimario.Monto > 0 Then
 
-                            SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por unidad y posición...")
+                                        Dim vNumero_orden = DTListaIngresos.Rows(i)(0).ToString()
+                                        Debug.WriteLine("numero_orden" & vNumero_orden)
+                                        Dim vIdOrdenCompraEnc = DTListaIngresos.Rows(i)(1).ToString()
+                                        Debug.WriteLine("OrdenCompra" & vIdOrdenCompraEnc)
 
-                            Dim tmpPosicionesOcupadas = clsLnStock_jornada.Get_Posiciones_By_IdOrdenCompra_And_Fecha_And_IdProducto(vIdOrdenCompraEnc, vFecha, pBeProducto.Codigo, pTimeOut)
-                            If tmpPosicionesOcupadas > 0 Then
-                                Dim tmpCobro = Math.Round(tmpPosicionesOcupadas * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
-                                tmpCobroAlmacenajeDiario += Math.Round(tmpCobro, pDecimalesEnCobro)
-                                pPosicionesOcupadas += tmpPosicionesOcupadas
-                            End If
-                            IIf(pPosicionesOcupadas > 0, pPosicionesOcupadas, vUnidades),
+                                        'If vIdOrdenCompraEnc = 1214 Then
+                                        '    Debug.WriteLine("aqui va")
+                                        'End If
+
+                                        If Not String.IsNullOrEmpty(vNumero_orden) Then
+                                            Dim pListaPolizas As New List(Of clsBeTrans_oc_pol)
+                                            Dim pOcPoliza = clsLnTrans_oc_pol.GetSingle_By_Numero_Orden_And_IdOrdenCompraEnc(vNumero_orden, vIdOrdenCompraEnc)
+                                            If pOcPoliza IsNot Nothing Then
+                                                Dim existe = lPolizasOC.Any(Function(x) x.numero_orden = vNumero_orden AndAlso x.IdOrdenCompraEnc = vIdOrdenCompraEnc)
+                                                If Not existe Then
+                                                    lPolizasOC.Add(pOcPoliza)
+                                                End If
+                                            End If
+
+                                            If Not String.IsNullOrEmpty(vNumero_orden) Then
+                                                pTransOcEncReferencia = New clsBeTrans_oc_enc
+                                                pTransOcEncReferencia = clsLnTrans_oc_enc.Get_Single_By_Referencia(vNumero_orden, vIdOrdenCompraEnc, pBodega.IdBodega)
+
+                                                If pTransOcEncReferencia IsNot Nothing Then
+                                                    ' Verificar si ya existe en la lista
+                                                    Dim existe = ListaTranOcEncReferencias.Any(Function(x) x.Referencia = vNumero_orden AndAlso x.IdOrdenCompraEnc = vIdOrdenCompraEnc)
+                                                    ' Solo agregar si no existe
+                                                    If Not existe Then
+                                                        ListaTranOcEncReferencias.Add(pTransOcEncReferencia)
+                                                    End If
+                                                End If
+                                            End If
+                                        End If
+                                    Next
+
+                                    '#GT06082024: iteramos los detalles del acuerdo
+                                    For Each pAcuerdoPrimario As clsBeTrans_acuerdoscomerciales_det In listAcuerdosPrioritarios
+                                        vIdAcuerdoEnc = pAcuerdoPrimario.IdAcuerdoEnc
+                                        vIdAcuerdoDet = pAcuerdoPrimario.IdAcuerdoDet
+                                        vCodigoproducto = pAcuerdoPrimario.Codigo_producto
+                                        vCodacuerdo = pAcuerdoPrimario.Codigo_acuerdo
+                                        vDescripcion = pAcuerdoPrimario.Descripcion
+                                        vCorrelativo = pAcuerdoPrimario.Correlativo_detalleacuerdo
+                                        vDias_eventos = pAcuerdoPrimario.Dias_eventos
+                                        vNumero_unidades = pAcuerdoPrimario.Numero_unidades
+                                        vServicio = pAcuerdoPrimario.Servicio
+                                        vMonto = pAcuerdoPrimario.Monto
+                                        vPorcentaje = pAcuerdoPrimario.Porcentaje
+                                        vMoneda = pAcuerdoComercial.Moneda
+                                        pListaProductoConVariante = New List(Of clsBeProducto)
+
+
+                                        '#GT20112024: validar si requerimos tipo cambio antes de realizar cualquier cálculo.
+                                        If clsDataContractDI.tTipoMonedaPrefacturacion.Dolar = pAcuerdoComercial.Cod_moneda Then
+                                            If vTipoCambioEnQuetzales = 0 Then
+                                                SplashScreenManager.CloseForm(False)
+                                                txtTipoCambio.Focus()
+                                                Throw New Exception("El acuerdo comercial en dolares requiere, tipo de cambio superior a 0.")
+                                            Else
+                                                vUsarMonedaDolar = True
+                                            End If
+                                        Else
+                                            vUsarMonedaDolar = False
+                                        End If
+
+
+                                        '*************************************************************************************************************
+                                        '#GT20062024: validar si es cobro por unidad (tipo 1)
+                                        '#GT03092024: validar si tiene variante de cobro (el producto tiene factor de cobro o dimensiones registradas)
+                                        If pAcuerdoPrimario.IdTipoCobro = 1 And pAcuerdoPrimario.Monto > 0 Then
+
+                                            SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por unidad...")
+
+                                            vCobroAlmacenajeDiario = 0
+                                            BeOrdenCompraEnc = New clsBeTrans_oc_enc()
+                                            BePedidoEnc = New clsBeTrans_pe_enc()
+                                            Dim pPosicionesOcupadas As Integer = 0
+                                            '#GT23102025: Resetar las posiciones contadas si cambiamos de día, para que la cantidad no aumente exponencialmente.
+                                            Dim fechaAnterior As Date? = Nothing
+
+
+                                            If DTListaIngresos IsNot Nothing AndAlso DTListaIngresos.Rows.Count > 0 Then
+                                                pBeProducto = Nothing
+                                                For i As Integer = 0 To DTListaIngresos.Rows.Count - 1
+                                                    Dim vCodigo_Producto As String = ""
+                                                    Dim vNumero_orden = DTListaIngresos.Rows(i)(0).ToString()
+                                                    Dim vIdOrdenCompraEnc = CInt(DTListaIngresos.Rows(i)(1).ToString())
+                                                    Dim vFecha = CDate(DTListaIngresos.Rows(i)(2).ToString())
+                                                    Dim vUnidades = CDbl(DTListaIngresos.Rows(i)(3).ToString())
+                                                    Dim vValor_Total = Math.Round(CDbl(DTListaIngresos.Rows(i)(4).ToString()), 4)
+                                                    If chkAgruparPorProducto.Checked Then
+                                                        vCodigo_Producto = DTListaIngresos.Rows(i)(5).ToString()
+                                                    End If
+
+
+                                                    If fechaAnterior Is Nothing OrElse vFecha <> fechaAnterior.Value Then
+                                                        pPosicionesOcupadas = 0   'Reiniciar al cambiar de día
+                                                        fechaAnterior = vFecha    'Actualizar la referencia
+                                                    End If
+
+
+                                                    '#GT16102025: validar si el ingreso es por transferencia, para que el primer día sea cobro 0
+                                                    If vIdOrdenCompraEnc = 15221 Then
+                                                        Debug.WriteLine("aqui")
+                                                    End If
+
+                                                    If BeOrdenCompraEnc.IdOrdenCompraEnc <> vIdOrdenCompraEnc Then
+                                                        BeOrdenCompraEnc = clsLnTrans_oc_enc.Get_Single_By_IdOrdenCompraEnc(vIdOrdenCompraEnc)
+                                                        If BeOrdenCompraEnc IsNot Nothing Then
+                                                            BePedidoEnc = clsLnTrans_pe_enc.GetPedido_By_IdDespachoEnc(BeOrdenCompraEnc.IdDespachoEnc)
+                                                        End If
+                                                    End If
+
+                                                    '#GT25072024: Validamos si hay variantes de cobro.
+                                                    If chkVarianteCobro.Checked Then
+                                                        SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por unidad y variante...")
+
+                                                        '#GT07082024: validar si se agrupa por producto
+                                                        If chkAgruparPorProducto.Checked Then
+
+                                                            pBeProducto = New clsBeProducto
+                                                            pBeProducto = clsLnProducto.Get_BeProducto_Cobranza_By_Codigo(vCodigo_Producto, AP.Bodega.IdBodega, IdPropietario)
+
+                                                            If pBeProducto IsNot Nothing Then
+                                                                '#GT06082024: Validar cobro variante por factor
+                                                                If pBeProducto.IdUnidadMedidaCobro > 0 Then
+                                                                    Dim UmbasCobro = clsLnUnidad_medida.Get_Unidad_Medida_By_IdUnidadMedida(pBeProducto.IdUnidadMedidaCobro)
+                                                                    If UmbasCobro IsNot Nothing Then
+                                                                        '#GT12092024: calculo por partes con 4 cifras y valor final redondeo a 2. 
+                                                                        'vCobroAlmacenajeDiario = Math.Round((vUnidades * UmbasCobro.factor) / vDias_eventos, 2)
+                                                                        Dim tmpCobro = Math.Round(vUnidades * UmbasCobro.factor, pDecimalesEnCobro)
+                                                                        Dim tmpCobro2 = Math.Round(tmpCobro / vDias_eventos, pDecimalesEnCobro)
+                                                                        vCobroAlmacenajeDiario = Math.Round(tmpCobro2, pDecimalesEnCobro)
+
+                                                                    End If
+                                                                End If
+
+                                                                '#GT06082024: Validar cobro variante por dimensiones
+                                                                If pBeProducto.Largo AndAlso pBeProducto.Ancho Then
+
+                                                                    Dim Mt As Decimal
+
+                                                                    If pBeProducto.Alto > 0 Then
+                                                                        Mt = pBeProducto.Alto * pBeProducto.Ancho * pBeProducto.Largo
+                                                                    Else
+                                                                        Mt = pBeProducto.Largo * pBeProducto.Ancho
+                                                                    End If
+
+                                                                    '#GT12092024: calculo por partes con 4 cifras y valor final redondeo a 2.
+                                                                    Dim tmpCobro = Math.Round(vUnidades * Mt, pDecimalesEnCobro)
+                                                                    Dim tmpCobro2 = Math.Round(tmpCobro * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
+                                                                    Dim tmpMTS = Math.Round(tmpCobro2 / vDias_eventos, pDecimalesEnCobro)
+                                                                    vCobroAlmacenajeDiario = Math.Round(tmpMTS, pDecimalesEnCobro)
+
+                                                                End If
+
+                                                                vNombreProducto = pBeProducto.Nombre
+
+                                                            Else
+                                                                XtraMessageBox.Show("El producto no tiene configuracion para cobro por variante", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                                            End If
+
+                                                        Else
+
+                                                            Dim pIdOrdenCompraEnc As Integer = 0
+                                                            Dim vListaSinVariante As Integer = 0
+                                                            Dim Detalle As New List(Of clsBeTrans_re_det)
+
+                                                            '#GT29082024: buscar productos unicos asociados a la poliza especifica
+                                                            Dim tableProductos As New DataTable
+                                                            tableProductos = clsLnStock_jornada.Get_Productos_By_IdOrdenCompra_And_Rango_Fechas(vIdOrdenCompraEnc,
+                                                                                                                                                vFecha.Date,
+                                                                                                                                                pTimeOut)
+
+                                                            '#GT03092024: validar que los productos tengan configuracion por variante (umbas cobro o medidas)
+                                                            If tableProductos IsNot Nothing AndAlso tableProductos.Rows.Count > 0 Then
+                                                                For j As Integer = 0 To tableProductos.Rows.Count - 1
+                                                                    Dim pdProducto As String = tableProductos.Rows(j)(0)
+                                                                    Dim pProducto = clsLnProducto.Get_BeProducto_Cobranza_By_Codigo(pdProducto, pBodega.IdBodega, IdPropietario)
+                                                                    '#GT29082024: si producto no tiene variante cobro, salir del proceso y alertar
+                                                                    If pProducto Is Nothing Then
+                                                                        SplashScreenManager.CloseForm(False)
+                                                                        Throw New Exception("No hay configuracion de cobro por variante, producto: " & pdProducto)
+                                                                        Exit For
+                                                                    Else
+                                                                        '#GT21102024: si el producto ya existe no agregar a lista, eso duplicará el cobro.
+                                                                        Dim tmpProducto = pListaProductoConVariante.Find(Function(x) x.Codigo = pProducto.Codigo)
+                                                                        If tmpProducto Is Nothing Then
+                                                                            pListaProductoConVariante.Add(pProducto)
+                                                                        End If
+                                                                    End If
+                                                                Next
+                                                            Else
+
+                                                                If Not IngresoSinHistorico.Contains(vIdOrdenCompraEnc) Then
+                                                                    IngresoSinHistorico.Add(vIdOrdenCompraEnc)
+                                                                    lblPrg.AppendText("No se encontró historico con referencia: " & vNumero_orden & " e ingreso" & vIdOrdenCompraEnc)
+                                                                    lblPrg.AppendText(vbNewLine)
+                                                                    lblPrg.Refresh()
+                                                                    lblPrg.SelectionStart = lblPrg.TextLength
+                                                                    lblPrg.ScrollToCaret()
+                                                                End If
+
+                                                            End If
+
+                                                            '#GT03092024: iterar la lista de todos los productos y cálcular el cobro total de la poliza.
+                                                            If pListaProductoConVariante.Count > 0 Then
+
+                                                                Dim tmpCobroAlmacenajeDiario As Double = 0.00
+
+                                                                For Each pBeProducto In pListaProductoConVariante
+
+                                                                    '#GT06082024: aplicar cobro variante por factor
+                                                                    If pBeProducto.IdUnidadMedidaCobro > 0 Then
+
+                                                                        SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por unidad y posición...")
+
+                                                                        Dim tmpPosicionesOcupadas = clsLnStock_jornada.Get_Posiciones_By_IdOrdenCompra_And_Fecha_And_IdProducto(vIdOrdenCompraEnc, vFecha, pBeProducto.Codigo, pTimeOut)
+                                                                        If tmpPosicionesOcupadas > 0 Then
+                                                                            Dim tmpCobro = Math.Round(tmpPosicionesOcupadas * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
+                                                                            tmpCobroAlmacenajeDiario += Math.Round(tmpCobro, pDecimalesEnCobro)
+                                                                            pPosicionesOcupadas += tmpPosicionesOcupadas
+                                                                        End If
+
+                                                                    End If
+
+
+                                                                    '#GT06082024: aplicar cobro variante por factor
+                                                                    'If pBeProducto.IdUnidadMedidaCobro > 0 Then
+                                                                    '    Dim UmbasCobro = clsLnUnidad_medida.Get_Unidad_Medida_By_IdUnidadMedida(pBeProducto.IdUnidadMedidaCobro)
+                                                                    '    If UmbasCobro IsNot Nothing Then
+                                                                    '        '#GT12092024: calculo por partes con 4 cifras y valor final redondeo. 
+                                                                    '        'Dim tmpCobro = Math.Round(vUnidades * UmbasCobro.factor, pDecimalesEnCobro)
+                                                                    '        'Dim tmpCobro2 = Math.Round(tmpCobro / vDias_eventos, pDecimalesEnCobro)
+                                                                    '        'tmpCobroAlmacenajeDiario = Math.Round(tmpCobro2, pDecimalesEnCobro)
+
+                                                                    '        Dim tmppPosicionesOcupadas = clsLnStock_jornada.Get_Posiciones_By_IdOrdenCompra_And_Fecha_And_IdProducto(vIdOrdenCompraEnc, vFecha, pBeProducto.Codigo, pTimeOut)
+
+                                                                    '        If tmppPosicionesOcupadas > 0 Then
+                                                                    '            pPosicionesOcupadas += tmppPosicionesOcupadas
+                                                                    '            Dim tmpCobro = Math.Round(pPosicionesOcupadas * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
+                                                                    '            tmpCobroAlmacenajeDiario += Math.Round(tmpCobro, pDecimalesEnCobro)
+                                                                    '        End If
+                                                                    '    End If
+                                                                    'End If
+
+                                                                    '#GT06082024: aplicar cobro variante por dimensiones
+                                                                    If pBeProducto.Largo AndAlso pBeProducto.Ancho Then
+                                                                        Dim Mt As Decimal = 0.00
+                                                                        If pBeProducto.Alto > 0 Then
+                                                                            Mt = pBeProducto.Alto * pBeProducto.Ancho * pBeProducto.Largo
+                                                                        Else
+                                                                            Mt = pBeProducto.Largo * pBeProducto.Ancho
+                                                                        End If
+
+                                                                        '#GT12092024: calculo por partes con 4 cifras y valor final redondeo a 2.
+                                                                        'Dim tmpMt = (vUnidades * Mt) * pAcuerdoPrimario.Monto
+                                                                        'tmpCobroAlmacenajeDiario = Math.Round(tmpMt / vDias_eventos, 2)
+                                                                        Dim tmpMT = Math.Round(vUnidades * Mt, 4)
+                                                                        Dim tmpMT2 = Math.Round(tmpMT * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
+                                                                        Dim tmpMTS = Math.Round(tmpMT2 / vDias_eventos, pDecimalesEnCobro)
+                                                                        tmpCobroAlmacenajeDiario = Math.Round(tmpMTS, pDecimalesEnCobro)
+                                                                    End If
+                                                                Next
+
+                                                                vCobroAlmacenajeDiario = tmpCobroAlmacenajeDiario
+
+                                                            End If
+
+                                                        End If
+
+                                                    Else
+                                                        SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por unidad sin variante...")
+                                                        pBeProducto = New clsBeProducto
+                                                        pBeProducto = clsLnProducto.Get_BeProducto_By_Codigo(vCodigo_Producto, AP.Bodega.IdBodega, IdPropietario)
+
+                                                        If pBeProducto IsNot Nothing Then
+                                                            vNombreProducto = pBeProducto.Nombre
+                                                        End If
+
+                                                        vCobroAlmacenajeDiario = Math.Round(((vUnidades * pAcuerdoPrimario.Monto) / vDias_eventos), pDecimalesEnCobro)
+
+                                                    End If
+
+                                                    If vUsarMonedaDolar Then
+                                                        If Not chkMantenerDolares.Checked Then
+                                                            vCobroAlmacenajeDiario = Math.Round(vCobroAlmacenajeDiario * vTipoCambioEnQuetzales, pDecimalesEnCobro)
+                                                        End If
+                                                    End If
+
+                                                    '#GT16102025: si es transferencia, y generó ingreso auto por transfer y es el día uno de cobro
+                                                    If BePedidoEnc.IdTipoPedido = 1 AndAlso BePedidoEnc.TipoPedido.Generar_pedido_ingreso_bodega_destino Then
+                                                        Dim firstRow As DataRow
+                                                        Dim result() As DataRow = DTListaIngresos.Select("IdOrdenCompraEnc = '" + vIdOrdenCompraEnc.ToString() + "'")
+                                                        firstRow = result.FirstOrDefault()
+                                                        Dim tmpFecha = CDate(firstRow.Item("fecha"))
+
+                                                        If tmpFecha = DTListaIngresos(i).Item("fecha") Then
+                                                            vCobroAlmacenajeDiario = 0
+                                                        End If
+
+                                                    End If
+
+                                                    vCobro_por_linea += vCobroAlmacenajeDiario
+
+                                                    DTGridDetallePreCuenta.Rows.Add(vIdOrdenCompraEnc,
+                                                                                      vNumero_orden,
+                                                                                      vCodigo_Producto,
+                                                                                      vNombreProducto,
+                                                                                      vFecha,
+                                                                                      IIf(pPosicionesOcupadas > 0, pPosicionesOcupadas, vUnidades),
                                                                                       vValor_Total,
                                                                                       vCobroAlmacenajeDiario,
                                                                                       0)
 
                                                 Next
 
-                    '#GT07082024: creamos el valor ERP a enviar
-                    If pAcuerdoPrimario.Prioridad > 0 Then
-                        vErp = Math.Round(vCobro_por_linea / vMonto, pDecimalesEnCobro)
-                    Else
-                        vErp = 1
-                    End If
+                                                '#GT07082024: creamos el valor ERP a enviar
+                                                If pAcuerdoPrimario.Prioridad > 0 Then
+                                                    vErp = Math.Round(vCobro_por_linea / vMonto, pDecimalesEnCobro)
+                                                Else
+                                                    vErp = 1
+                                                End If
+
+                                                '#GT07082024: llenamos grid con acuerdo a cobrar
+                                                DTGridDetalleServicios.Rows.Add(vIdAcuerdoEnc,
+                                                                                vIdAcuerdoDet,
+                                                                                vCodigoproducto,
+                                                                                vMoneda,
+                                                                                vCodacuerdo,
+                                                                                vDescripcion,
+                                                                                vCorrelativo,
+                                                                                vServicio,
+                                                                                vNumero_unidades,
+                                                                                vMonto,
+                                                                                vPorcentaje,
+                                                                                vCobro_por_linea,
+                                                                                vErp,
+                                                                                vDias_eventos)
 
-                    '#GT07082024: llenamos grid con acuerdo a cobrar
-                    DTGridDetalleServicios.Rows.Add(vIdAcuerdoEnc,
-                                                    vIdAcuerdoDet,
-                                                    vCodigoproducto,
-                                                    vMoneda,
-                                                    vCodacuerdo,
-                                                    vDescripcion,
-                                                    vCorrelativo,
-                                                    vServicio,
-                                                    vNumero_unidades,
-                                                    vMonto,
-                                                    vPorcentaje,
-                                                    vCobro_por_linea,
-                                                    vErp,
-                                                    vDias_eventos)
-
-                End If
-
-            End If
-
-            '****************************************************************************
-            '#GT20062024: validar si es cobro por valor mercaderia (tipo 2)
-            If pAcuerdoPrimario.IdTipoCobro = 2 And pAcuerdoPrimario.Porcentaje > 0 Then
-                SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por valor...")
-                Dim tasa As Double = pAcuerdoPrimario.Porcentaje / 100
-                vCobroAlmacenajeDiario = 0
-
-                If DTListaIngresos IsNot Nothing AndAlso DTListaIngresos.Rows.Count > 0 Then
-                    For i As Integer = 0 To DTListaIngresos.Rows.Count - 1
-                        Dim vNumero_orden = DTListaIngresos.Rows(i)(0).ToString()
-                        Dim vIdOrdenCompraEnc = CInt(DTListaIngresos.Rows(i)(1).ToString())
-                        Dim vFecha = CDate(DTListaIngresos.Rows(i)(2).ToString())
-                        Dim vUnidades = CDbl(DTListaIngresos.Rows(i)(3).ToString())
-                        Dim vValor_Total = Math.Round(CDbl(DTListaIngresos.Rows(i)(4).ToString()), 4)
-                        Dim vCodigo_Producto As String = ""
-                        If chkAgruparPorProducto.Checked Then
-                            vCodigo_Producto = DTListaIngresos.Rows(i)(5).ToString()
-                        End If
-
-
-                        If vUsarMonedaDolar Then
-                            Dim tmpCobro = Math.Round(vValor_Total * tasa, pDecimalesEnCobro)
-                            Dim tmpcobro2 = Math.Round(tmpCobro / vTipoCambioEnQuetzales, pDecimalesEnCobro)
-                            Dim tmpCobro3 = Math.Round(tmpcobro2 / pAcuerdoPrimario.Dias_eventos, pDecimalesEnCobro)
-                            vCobroAlmacenajeDiario = Math.Round(tmpCobro3, pDecimalesEnCobro)
-                            '#GT20112024: calculo en dolares, pero se requiere convertir a quetzales.
-                            If Not chkMantenerDolares.Checked Then
-                                vCobroAlmacenajeDiario = Math.Round(vCobroAlmacenajeDiario * vTipoCambioEnQuetzales, pDecimalesEnCobro)
-                            End If
-                        Else
-                            Dim tmpCobro = Math.Round(vValor_Total * tasa, pDecimalesEnCobro)
-                            vCobroAlmacenajeDiario = Math.Round(tmpCobro / pAcuerdoPrimario.Dias_eventos, pDecimalesEnCobro)
-                        End If
-
-                        If chkAgruparPorProducto.Checked Then
-                            pBeProducto = New clsBeProducto
-                            pBeProducto = clsLnProducto.Get_BeProducto_By_Codigo(vCodigo_Producto, AP.Bodega.IdBodega, IdPropietario)
-                            If pBeProducto IsNot Nothing Then
-                                vNombreProducto = pBeProducto.Nombre
-                            End If
-                        End If
-
-                        vCobro_por_linea += vCobroAlmacenajeDiario
-
-                        DTGridDetallePreCuenta.Rows.Add(vIdOrdenCompraEnc,
-                                                          vNumero_orden,
-                                                          vCodigo_Producto,
-                                                          vNombreProducto,
-                                                          vFecha,
-                                                          vUnidades,
-                                                          vValor_Total,
-                                                          vCobroAlmacenajeDiario, 0)
-
-
-                    Next
-
-
-                    If pAcuerdoPrimario.Prioridad > 0 Then
-                        'vErp = RedondearMultiplo05((vCobro_por_linea / vPorcentaje) * 100)
-                        '#GT18112024: redondear a 4 decimales para que ERP no descuadre en reconversión.
-                        'Dim tmpvCobro_por_linea = Math.Round(vCobro_por_linea, 4)
-                        vErp = Math.Round((vCobro_por_linea / vPorcentaje) * 100, pDecimalesEnCobro)
-
-                    Else
-                        vErp = 1
-                    End If
-
-                    DTGridDetalleServicios.Rows.Add(vIdAcuerdoEnc,
-                                                    vIdAcuerdoDet,
-                                                    vCodigoproducto,
-                                                    vMoneda,
-                                                    vCodacuerdo,
-                                                    vDescripcion,
-                                                    vCorrelativo,
-                                                    vServicio,
-                                                    vNumero_unidades,
-                                                    vMonto,
-                                                    vPorcentaje,
-                                                    vCobro_por_linea, vErp, vDias_eventos)
-
-                End If
-
-            End If
-
-            '****************************************************
-            '#GT05072024: validar cobro manejo si la poliza pertenece al mes de corte.
-            If pAcuerdoPrimario.IdTipoCobro = 0 And pAcuerdoPrimario.Monto > 0 Then
-
-                'SplashScreenManager.Default.SetWaitFormCaption("Validando cobro manejo")
-                SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por manejo...")
-
-                If pBodega.Es_Bodega_Fiscal Then
-
-                    For Each pPoliza In lPolizasOC
-
-                        Dim tmpOC = ListaTranOcEncReferencias.Find(Function(x) x.IdOrdenCompraEnc = pPoliza.IdOrdenCompraEnc)
-
-                        If tmpOC Is Nothing Then
-                            SplashScreenManager.CloseForm(False)
-                            Throw New Exception("Error: No se encontró la relación entre la poliza " & pPoliza.numero_orden & " y el ingreso " & pPoliza.IdOrdenCompraEnc)
-                        End If
-
-                        pTrans_oc_ti = New clsBeTrans_oc_ti()
-                        pTrans_oc_ti = clsLnTrans_oc_ti.GetSingle(tmpOC.IdTipoIngresoOC)
-
-                        If pTrans_oc_ti Is Nothing Then
-                            SplashScreenManager.CloseForm(False)
-                            Throw New Exception("Error Critico: No se encontró el tipo de documento asociado a la poliza " & pPoliza.numero_orden & " e ingreso " & pPoliza.IdOrdenCompraEnc)
-                        End If
-
-
-                        '#GT07102024: no calcular manejo si es ingreso por devolucion
-                        If Not pTrans_oc_ti.Es_devolucion Then
-                            If pPoliza.Fecha_abordaje.Date >= pFechaDesde.Date AndAlso pPoliza.Fecha_abordaje.Date <= pFechaHasta.Date Then
-
-                                Dim lastRow As DataRow
-                                Dim result() As DataRow = DTListaIngresos.Select("numero_orden = '" + pPoliza.numero_orden.ToString() + "'")
-                                lastRow = result.LastOrDefault()
-                                Dim tmpFecha = CDate(lastRow.Item("fecha"))
-
-                                If chkControlPesoBruto.Checked Then
-                                    If pPoliza.Total_bultos_Peso_Bruto < pAcuerdoPrimario.Numero_unidades Then
-                                        pCalculomanejo = pAcuerdoPrimario.Monto
-                                    Else
-                                        Dim tmpPeso = Math.Round(pPoliza.Total_bultos_Peso_Bruto / 1000, pDecimalesEnCobro)
-                                        Dim tmpPeso2 = Math.Round(tmpPeso * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
-                                        pCalculomanejo = Math.Round(tmpPeso2, pDecimalesEnCobro)
-                                    End If
-                                Else
-                                    If pPoliza.Total_bultos_Peso_Neto < pAcuerdoPrimario.Numero_unidades Then
-                                        pCalculomanejo = pAcuerdoPrimario.Monto
-                                    Else
-                                        Dim tmpPeso = Math.Round(pPoliza.Total_bultos_Peso_Neto / 1000, pDecimalesEnCobro)
-                                        Dim tmpPeso2 = Math.Round(tmpPeso * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
-                                        pCalculomanejo = Math.Round(tmpPeso2, pDecimalesEnCobro)
-                                    End If
-                                End If
-
-                                If vUsarMonedaDolar Then
-                                    If Not chkMantenerDolares.Checked Then
-                                        pCalculomanejo = Math.Round(pCalculomanejo * vTipoCambioEnQuetzales, pDecimalesEnCobro)
-                                    End If
-                                Else
-
-                                End If
-
-                                pIntegracionCalculoManejo += pCalculomanejo
-
-                                If pCalculomanejo > 0 Then
-                                    DTGridDetallePreCuenta.Rows.Add(pPoliza.IdOrdenCompraEnc,
-                                                                  pPoliza.numero_orden,
-                                                                  "",
-                                                                  vNombreProducto,
-                                                                  tmpFecha,
-                                                                  0,
-                                                                  0,
-                                                                  0,
-                                                                  pCalculomanejo)
-                                End If
-
-                            End If
-                        End If
-
-                    Next
-
-
-                Else
-
-                    For Each OC In ListaTranOcEncReferencias
-                        pTrans_oc_ti = New clsBeTrans_oc_ti()
-                        pTrans_oc_ti = clsLnTrans_oc_ti.GetSingle(OC.IdTipoIngresoOC)
-                        '#GT07102024: no calcular manejo si es ingreso por devolucion
-                        If Not pTrans_oc_ti.Es_devolucion Then
-                            If OC.Fecha_Creacion.Date >= pFechaDesde.Date AndAlso OC.Fecha_Creacion.Date <= pFechaHasta.Date Then
-
-                                '#GT26082024: aqui filtramos si traemos peso bruto o neto.
-                                Dim pPesoCobro = clsLnTrans_oc_det.Get_Peso_OC_By_IdOrdenCompraEnc_HH(OC.IdOrdenCompraEnc, chkControlPesoBruto.Checked)
-
-                                If pPesoCobro = 0 Then
-                                    SplashScreenManager.CloseForm(False)
-                                    Throw New Exception("Error: No se encontró un peso para cálcular manejo en el ingreso." & OC.IdOrdenCompraEnc)
-                                End If
-
-                                Dim lastRow As DataRow
-                                Dim result() As DataRow = DTListaIngresos.Select("referencia = '" + OC.Referencia.ToString() + "'")
-                                lastRow = result.LastOrDefault()
-                                Dim tmpFecha = CDate(lastRow.Item("fecha"))
-
-                                '#GT26082024: no se requiere validar si es peso bruto o neto, el query ya hizo la operación
-                                If pPesoCobro < pAcuerdoPrimario.Numero_unidades Then
-                                    pCalculomanejo = pAcuerdoPrimario.Monto
-                                Else
-                                    Dim tmpPeso = Math.Round(pPesoCobro / 1000, pDecimalesEnCobro)
-                                    Dim tmPeso2 = Math.Round(tmpPeso * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
-                                    pCalculomanejo = Math.Round(tmPeso2, pDecimalesEnCobro)
-                                End If
-
-                                If vUsarMonedaDolar Then
-                                    If Not chkMantenerDolares.Checked Then
-                                        pCalculomanejo = Math.Round(pCalculomanejo * vTipoCambioEnQuetzales, pDecimalesEnCobro)
-                                    End If
-
-                                End If
-
-                                pIntegracionCalculoManejo += pCalculomanejo
-
-                                If pCalculomanejo > 0 Then
-                                    DTGridDetallePreCuenta.Rows.Add(OC.IdOrdenCompraEnc,
-                                                                  OC.Referencia,
-                                                                  "",
-                                                                  vNombreProducto,
-                                                                  tmpFecha,
-                                                                  0,
-                                                                  0,
-                                                                  0,
-                                                                  pCalculomanejo)
-                                End If
-                            End If
-                        End If
-                    Next
-
-
-
-                End If
-
-
-                If pIntegracionCalculoManejo > 0 Then
-                    'vErp = RedondearMultiplo05((pIntegracionCalculoManejo / vMonto) * 1000)
-                    vErp = Math.Round((pIntegracionCalculoManejo / vMonto) * 1000, pDecimalesEnCobro)
-
-                    DTGridDetalleServicios.Rows.Add(vIdAcuerdoEnc,
-                                                    vIdAcuerdoDet,
-                                                    vCodigoproducto,
-                                                    vMoneda,
-                                                    vCodacuerdo,
-                                                    vDescripcion,
-                                                    vCorrelativo,
-                                                    vServicio,
-                                                    vNumero_unidades,
-                                                    vMonto,
-                                                    vPorcentaje,
-                                                    pIntegracionCalculoManejo,
-                                                    vErp,
-                                                    vDias_eventos)
-                End If
-
-            End If
-
-            Next
-
-
-            '#GT09092024: validar servicios en los ingresos, dependiendo de si es fiscal o general.
-            '#********************************************************************************
-            '#GT03092024: Buscar servicios a cobrar en los documentos de ingreso y de salida
-            SplashScreenManager.Default.SetWaitFormDescription("Validando servicios en OC...")
-
-            If pBodega.Es_Bodega_Fiscal Then
-                For Each ingreso In lPolizasOC
-                    pListaServiciosOC = clsLnTrans_oc_servicios.Get_All_By_IdOrdenCompraEnc(ingreso.IdOrdenCompraEnc, pAcuerdoComercial.IdAcuerdoEnc)
-                    'pListaServiciosOC = clsLnTrans_oc_servicios.Get_All_By_IdOrdenCompraEnc(ingreso.IdOrdenCompraEnc, pAcuerdoComercial.IdAcuerdoEnc)
-                    '#GT17062024: por cada OC iteramos sus servicios y los agregamos al grid.
-                    If pListaServiciosOC IsNot Nothing Then
-                        If pListaServiciosOC.Count > 0 Then
-                            vCobro_por_linea = 0
-                            For Each ServicioOC In pListaServiciosOC
-
-                                Dim pServicio = pAcuerdoComercial.lDetalle.Find(Function(x) x.IdAcuerdoEnc = ServicioOC.IdAcuerdo AndAlso
-                                                                         x.Correlativo_detalleacuerdo = ServicioOC.Corre_detalleacuerdo)
-
-                                If pServicio IsNot Nothing Then
-                                    If ServicioOC.Fecha_Servicio.Date >= pFechaDesde.Date AndAlso ServicioOC.Fecha_Servicio <= pFechaHasta.Date Then
-                                        '#GT06092024: en correo 06092024, Otto indica el valor del acuerdo * la cantidad de servicios que puede ser superior a 1
-                                        vCobro_por_linea = Math.Round((pServicio.Monto * ServicioOC.Cantidad), pDecimalesEnCobro)
-                                        'vErp = 1 '#GT02072024: cuando son servicios, monto es 1, y dias es 1
-                                        vErp = ServicioOC.Cantidad
-                                        DTGridDetalleServicios.Rows.Add(pServicio.IdAcuerdoEnc,
-                                                                       pServicio.IdAcuerdoDet,
-                                                                       pServicio.Codigo_producto,
-                                                                       vMoneda,
-                                                                       pServicio.Codigo_acuerdo,
-                                                                       pServicio.Descripcion,
-                                                                       pServicio.Correlativo_detalleacuerdo,
-                                                                       pServicio.Servicio,
-                                                                       pServicio.Numero_unidades,
-                                                                       pServicio.Monto,
-                                                                       pServicio.Porcentaje,
-                                                                       vCobro_por_linea,
-                                                                       vErp,
-                                                                       pServicio.Dias_eventos)
-                                    End If
-
-                                End If
-
-                            Next
-
-                        End If
-
-                    End If
-                Next
-
-            Else
-
-                For Each ingreso In ListaTranOcEncReferencias
-                    pListaServiciosOC = clsLnTrans_oc_servicios.Get_All_By_IdOrdenCompraEnc(ingreso.IdOrdenCompraEnc, pAcuerdoComercial.IdAcuerdoEnc)
-                    If pListaServiciosOC IsNot Nothing Then
-                        If pListaServiciosOC.Count > 0 Then
-                            vCobro_por_linea = 0
-                            For Each ServicioOC In pListaServiciosOC
-
-                                Dim pServicio = pAcuerdoComercial.lDetalle.Find(Function(x) x.IdAcuerdoEnc = ServicioOC.IdAcuerdo AndAlso
-                                                                         x.Correlativo_detalleacuerdo = ServicioOC.Corre_detalleacuerdo)
-
-                                If pServicio IsNot Nothing Then
-                                    '#GT07102024: los servicios deben pertenecer al mes de corte para cobrarse.
-                                    If ServicioOC.Fecha_Servicio.Date >= pFechaDesde.Date AndAlso ServicioOC.Fecha_Servicio.Date <= pFechaHasta.Date Then
-                                        vCobro_por_linea = Math.Round((pServicio.Monto * ServicioOC.Cantidad), pDecimalesEnCobro)
-                                        vErp = ServicioOC.Cantidad
-
-                                        DTGridDetalleServicios.Rows.Add(pServicio.IdAcuerdoEnc,
-                                                                       pServicio.IdAcuerdoDet,
-                                                                       pServicio.Codigo_producto,
-                                                                       vMoneda,
-                                                                       pServicio.Codigo_acuerdo,
-                                                                       pServicio.Descripcion,
-                                                                       pServicio.Correlativo_detalleacuerdo,
-                                                                       pServicio.Servicio,
-                                                                       pServicio.Numero_unidades,
-                                                                       pServicio.Monto,
-                                                                       pServicio.Porcentaje,
-                                                                       vCobro_por_linea,
-                                                                       vErp,
-                                                                       pServicio.Dias_eventos)
-
-                                    End If
-
-                                End If
-
-                            Next
-
-                        End If
-
-                    End If
-                Next
-
-            End If
-
-            dgriDetallePreCuenta.DataSource = DTGridDetallePreCuenta
-            dgridServiciosAsociados.DataSource = DTGridDetalleServicios
-
-            If gvdetalleprecuenta.RowCount > 0 Then
-
-                gvdetalleprecuenta.Columns("numero_orden").Group()
-                gvdetalleprecuenta.Columns("idordencompraenc").Visible = False
-
-                If chkVarianteCobro.Checked AndAlso chkAgruparPorProducto.Checked Then
-                    gvdetalleprecuenta.Columns("codigo_producto").Group()
-                End If
-
-                Dim item As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                With {.FieldName = "almacenaje",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "Total: {0:N4}",
-                .ShowInGroupColumnFooter = gvdetalleprecuenta.Columns("almacenaje")}
-                gvdetalleprecuenta.GroupSummary.Add(item)
-
-                Dim item_manejo As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                With {.FieldName = "manejo",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "Total: {0:N4}",
-                .ShowInGroupColumnFooter = gvdetalleprecuenta.Columns("manejo")}
-                gvdetalleprecuenta.GroupSummary.Add(item_manejo)
-
-                gvdetalleprecuenta.Columns("manejo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                gvdetalleprecuenta.Columns("manejo").SummaryItem.DisplayFormat = "{0:n4}"
-                gvdetalleprecuenta.Columns("manejo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                gvdetalleprecuenta.Columns("manejo").DisplayFormat.FormatString = "{0:n4}"
-
-                gvdetalleprecuenta.Columns("almacenaje").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                gvdetalleprecuenta.Columns("almacenaje").SummaryItem.DisplayFormat = "{0:n4}"
-                gvdetalleprecuenta.Columns("almacenaje").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                gvdetalleprecuenta.Columns("almacenaje").DisplayFormat.FormatString = "{0:n4}"
-
-                gvdetalleprecuenta.BestFitColumns(True)
-                gvdetalleprecuenta.ExpandAllGroups()
-                gvdetalleprecuenta.OptionsBehavior.Editable = False
-                xtratabPrecuenta.SelectedTabPageIndex = 1
-                gvdetalleprecuenta.OptionsView.GroupFooterShowMode = GroupFooterShowMode.VisibleAlways
-
-            End If
-
-            pCalculoProcesado = True
-            Else
-            SplashScreenManager.CloseForm(False)
-            Throw New Exception("El acuerdo comercial no tiene servicios con prioridad, para aplicar cobro automatico.")
-            End If
-
-            End If
-
-            Else
-            SplashScreenManager.CloseForm(False)
-            Throw New Exception("Error: El acuerdo comercial no tiene servicios para cobranza. Valide la lista de acuerdos comerciales.")
-            End If
-
-            Else
-            SplashScreenManager.CloseForm(False)
-            Throw New Exception("Error: No se encontró un acuerdo comercial.")
-            End If
-
-            End If
-
-            End If
-
-        Catch ex As Exception
-
-            pCalculoProcesado = False
-            If Not SplashScreenManager.Default Is Nothing Then
-                If SplashScreenManager.Default.IsSplashFormVisible Then
-                    SplashScreenManager.CloseForm(False)
-                End If
-            End If
-
-            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-        Finally
-            If Not SplashScreenManager.Default Is Nothing Then
-                Llena_Rubros_By_CodAcuerdo(pAcuerdoComercial.Codigo_acuerdo)
-
-                If pAcuerdoComercial.lDetalle IsNot Nothing Then
-
-                        Dim listAcuerdosPrioritarios As New List(Of clsBeTrans_acuerdoscomerciales_det)
-                        listAcuerdosPrioritarios = pAcuerdoComercial.lDetalle.Where(Function(x) x.Prioridad = 1 AndAlso x.IdBodega = pBodega.IdBodega).ToList()
-
-                        If listAcuerdosPrioritarios IsNot Nothing Then
-
-                            If listAcuerdosPrioritarios.Count > 0 Then
-
-
-
-                                lPolizasOC = New List(Of clsBeTrans_oc_pol)
-                                ListaTranOcEncReferencias = New List(Of clsBeTrans_oc_enc)
-                                '#GT16102025: cargar la oc y pe y determinar si es transferencia, para no cobrar el primer día obtenido de la lista.
-                                Dim BeOrdenCompraEnc As New clsBeTrans_oc_enc()
-                                Dim BePedidoEnc As New clsBeTrans_pe_enc()
-
-
-                                For i As Integer = 0 To DTListaIngresos.Rows.Count - 1
-
-
-
-                                    Dim vNumero_orden = DTListaIngresos.Rows(i)(0).ToString()
-                                    Debug.WriteLine("numero_orden" & vNumero_orden)
-                                    Dim vIdOrdenCompraEnc = DTListaIngresos.Rows(i)(1).ToString()
-                                    Debug.WriteLine("OrdenCompra" & vIdOrdenCompraEnc)
-
-
-                                    If Not String.IsNullOrEmpty(vNumero_orden) Then
-                                        Dim pListaPolizas As New List(Of clsBeTrans_oc_pol)
-                                        Dim pOcPoliza = clsLnTrans_oc_pol.GetSingle_By_Numero_Orden_And_IdOrdenCompraEnc(vNumero_orden, vIdOrdenCompraEnc)
-                                        If pOcPoliza IsNot Nothing Then
-                                            Dim existe = lPolizasOC.Any(Function(x) x.numero_orden = vNumero_orden AndAlso x.IdOrdenCompraEnc = vIdOrdenCompraEnc)
-                                            If Not existe Then
-                                                lPolizasOC.Add(pOcPoliza)
                                             End If
+
                                         End If
 
-                                        If Not String.IsNullOrEmpty(vNumero_orden) Then
-                                            pTransOcEncReferencia = New clsBeTrans_oc_enc
-                                            pTransOcEncReferencia = clsLnTrans_oc_enc.Get_Single_By_Referencia(vNumero_orden, vIdOrdenCompraEnc, pBodega.IdBodega)
+                                        '****************************************************************************
+                                        '#GT20062024: validar si es cobro por valor mercaderia (tipo 2)
+                                        If pAcuerdoPrimario.IdTipoCobro = 2 And pAcuerdoPrimario.Porcentaje > 0 Then
+                                            SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por valor...")
+                                            Dim tasa As Double = pAcuerdoPrimario.Porcentaje / 100
+                                            vCobroAlmacenajeDiario = 0
 
-                                            If pTransOcEncReferencia IsNot Nothing Then
-                                                ' Verificar si ya existe en la lista
-                                                Dim existe = ListaTranOcEncReferencias.Any(Function(x) x.Referencia = vNumero_orden AndAlso x.IdOrdenCompraEnc = vIdOrdenCompraEnc)
-                                                ' Solo agregar si no existe
-                                                If Not existe Then
-                                                    ListaTranOcEncReferencias.Add(pTransOcEncReferencia)
-                                                End If
-                                            End If
-                                        End If
-                                    End If
-                                Next
-
-                                '#GT06082024: iteramos los detalles del acuerdo
-                                For Each pAcuerdoPrimario As clsBeTrans_acuerdoscomerciales_det In listAcuerdosPrioritarios
-                                    vIdAcuerdoEnc = pAcuerdoPrimario.IdAcuerdoEnc
-                                    vIdAcuerdoDet = pAcuerdoPrimario.IdAcuerdoDet
-                                    vCodigoproducto = pAcuerdoPrimario.Codigo_producto
-                                    vCodacuerdo = pAcuerdoPrimario.Codigo_acuerdo
-                                    vDescripcion = pAcuerdoPrimario.Descripcion
-                                    vCorrelativo = pAcuerdoPrimario.Correlativo_detalleacuerdo
-                                    vDias_eventos = pAcuerdoPrimario.Dias_eventos
-                                    vNumero_unidades = pAcuerdoPrimario.Numero_unidades
-                                    vServicio = pAcuerdoPrimario.Servicio
-                                    vMonto = pAcuerdoPrimario.Monto
-                                    vPorcentaje = pAcuerdoPrimario.Porcentaje
-                                    vMoneda = pAcuerdoComercial.Moneda
-                                    pListaProductoConVariante = New List(Of clsBeProducto)
-
-
-                                    '#GT20112024: validar si requerimos tipo cambio antes de realizar cualquier cálculo.
-                                    If clsDataContractDI.tTipoMonedaPrefacturacion.Dolar = pAcuerdoComercial.Cod_moneda Then
-                                        If vTipoCambioEnQuetzales = 0 Then
-                                            SplashScreenManager.CloseForm(False)
-                                            txtTipoCambio.Focus()
-                                            Throw New Exception("El acuerdo comercial en dolares requiere, tipo de cambio superior a 0.")
-                                        Else
-                                            vUsarMonedaDolar = True
-                                        End If
-                                    Else
-                                        vUsarMonedaDolar = False
-                                    End If
-
-
-                                    '*************************************************************************************************************
-                                    '#GT20062024: validar si es cobro por unidad (tipo 1)
-                                    '#GT03092024: validar si tiene variante de cobro (el producto tiene factor de cobro o dimensiones registradas)
-                                    If pAcuerdoPrimario.IdTipoCobro = 1 And pAcuerdoPrimario.Monto > 0 Then
-
-                                        SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por unidad...")
-
-                                        vCobroAlmacenajeDiario = 0
-                                        BeOrdenCompraEnc = New clsBeTrans_oc_enc()
-                                        BePedidoEnc = New clsBeTrans_pe_enc()
-                                        Dim pPosicionesOcupadas As Integer = 0
-                                        '#GT23102025: Resetar las posiciones contadas si cambiamos de día, para que la cantidad no aumente exponencialmente.
-                                        Dim fechaAnterior As Date? = Nothing
-
-
-                                        If DTListaIngresos IsNot Nothing AndAlso DTListaIngresos.Rows.Count > 0 Then
-                                            pBeProducto = Nothing
-                                            For i As Integer = 0 To DTListaIngresos.Rows.Count - 1
-                                                Dim vCodigo_Producto As String = ""
-                                                Dim vNumero_orden = DTListaIngresos.Rows(i)(0).ToString()
-                                                Dim vIdOrdenCompraEnc = CInt(DTListaIngresos.Rows(i)(1).ToString())
-                                                Dim vFecha = CDate(DTListaIngresos.Rows(i)(2).ToString())
-                                                Dim vUnidades = CDbl(DTListaIngresos.Rows(i)(3).ToString())
-                                                Dim vValor_Total = Math.Round(CDbl(DTListaIngresos.Rows(i)(4).ToString()), 4)
-                                                If chkAgruparPorProducto.Checked Then
-                                                    vCodigo_Producto = DTListaIngresos.Rows(i)(5).ToString()
-                                                End If
-
-
-                                                If fechaAnterior Is Nothing OrElse vFecha <> fechaAnterior.Value Then
-                                                    pPosicionesOcupadas = 0   'Reiniciar al cambiar de día
-                                                    fechaAnterior = vFecha    'Actualizar la referencia
-                                                End If
-
-
-                                                '#GT16102025: validar si el ingreso es por transferencia, para que el primer día sea cobro 0
-                                                If vIdOrdenCompraEnc = 15221 Then
-                                                    Debug.WriteLine("aqui")
-                                                End If
-
-                                                If BeOrdenCompraEnc.IdOrdenCompraEnc <> vIdOrdenCompraEnc Then
-                                                    BeOrdenCompraEnc = clsLnTrans_oc_enc.Get_Single_By_IdOrdenCompraEnc(vIdOrdenCompraEnc)
-                                                    If BeOrdenCompraEnc IsNot Nothing Then
-                                                        BePedidoEnc = clsLnTrans_pe_enc.GetPedido_By_IdDespachoEnc(BeOrdenCompraEnc.IdDespachoEnc)
-                                                    End If
-                                                End If
-
-                                                '#GT25072024: Validamos si hay variantes de cobro.
-                                                If chkVarianteCobro.Checked Then
-                                                    SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por unidad y variante...")
-
-                                                    '#GT07082024: validar si se agrupa por producto
+                                            If DTListaIngresos IsNot Nothing AndAlso DTListaIngresos.Rows.Count > 0 Then
+                                                For i As Integer = 0 To DTListaIngresos.Rows.Count - 1
+                                                    Dim vNumero_orden = DTListaIngresos.Rows(i)(0).ToString()
+                                                    Dim vIdOrdenCompraEnc = CInt(DTListaIngresos.Rows(i)(1).ToString())
+                                                    Dim vFecha = CDate(DTListaIngresos.Rows(i)(2).ToString())
+                                                    Dim vUnidades = CDbl(DTListaIngresos.Rows(i)(3).ToString())
+                                                    Dim vValor_Total = Math.Round(CDbl(DTListaIngresos.Rows(i)(4).ToString()), 4)
+                                                    Dim vCodigo_Producto As String = ""
                                                     If chkAgruparPorProducto.Checked Then
-
-                                                        pBeProducto = New clsBeProducto
-                                                        pBeProducto = clsLnProducto.Get_BeProducto_Cobranza_By_Codigo(vCodigo_Producto, AP.Bodega.IdBodega, IdPropietario)
-
-                                                        If pBeProducto IsNot Nothing Then
-                                                            '#GT06082024: Validar cobro variante por factor
-                                                            If pBeProducto.IdUnidadMedidaCobro > 0 Then
-                                                                Dim UmbasCobro = clsLnUnidad_medida.Get_Unidad_Medida_By_IdUnidadMedida(pBeProducto.IdUnidadMedidaCobro)
-                                                                If UmbasCobro IsNot Nothing Then
-                                                                    '#GT12092024: calculo por partes con 4 cifras y valor final redondeo a 2. 
-                                                                    'vCobroAlmacenajeDiario = Math.Round((vUnidades * UmbasCobro.factor) / vDias_eventos, 2)
-                                                                    Dim tmpCobro = Math.Round(vUnidades * UmbasCobro.factor, pDecimalesEnCobro)
-                                                                    Dim tmpCobro2 = Math.Round(tmpCobro / vDias_eventos, pDecimalesEnCobro)
-                                                                    vCobroAlmacenajeDiario = Math.Round(tmpCobro2, pDecimalesEnCobro)
-
-                                                                End If
-                                                            End If
-
-                                                            '#GT06082024: Validar cobro variante por dimensiones
-                                                            If pBeProducto.Largo AndAlso pBeProducto.Ancho Then
-
-                                                                Dim Mt As Decimal
-
-                                                                If pBeProducto.Alto > 0 Then
-                                                                    Mt = pBeProducto.Alto * pBeProducto.Ancho * pBeProducto.Largo
-                                                                Else
-                                                                    Mt = pBeProducto.Largo * pBeProducto.Ancho
-                                                                End If
-
-                                                                '#GT12092024: calculo por partes con 4 cifras y valor final redondeo a 2.
-                                                                Dim tmpCobro = Math.Round(vUnidades * Mt, pDecimalesEnCobro)
-                                                                Dim tmpCobro2 = Math.Round(tmpCobro * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
-                                                                Dim tmpMTS = Math.Round(tmpCobro2 / vDias_eventos, pDecimalesEnCobro)
-                                                                vCobroAlmacenajeDiario = Math.Round(tmpMTS, pDecimalesEnCobro)
-
-                                                            End If
-
-                                                            vNombreProducto = pBeProducto.Nombre
-
-                                                        Else
-                                                            XtraMessageBox.Show("El producto no tiene configuracion para cobro por variante", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
-                                                        End If
-
-                                                    Else
-
-
-                                                        Dim pIdOrdenCompraEnc As Integer = 0
-                                                        Dim vListaSinVariante As Integer = 0
-                                                        Dim Detalle As New List(Of clsBeTrans_re_det)
-
-                                                        '#GT29082024: buscar productos unicos asociados a la poliza especifica
-                                                        Dim tableProductos As New DataTable
-                                                        tableProductos = clsLnStock_jornada.Get_Productos_By_IdOrdenCompra_And_Rango_Fechas(vIdOrdenCompraEnc,
-                                                                                                                                            vFecha.Date,
-                                                                                                                                            pTimeOut)
-
-                                                        '#GT03092024: validar que los productos tengan configuracion por variante (umbas cobro o medidas)
-                                                        If tableProductos IsNot Nothing AndAlso tableProductos.Rows.Count > 0 Then
-                                                            For j As Integer = 0 To tableProductos.Rows.Count - 1
-                                                                Dim pdProducto As String = tableProductos.Rows(j)(0)
-                                                                Dim pProducto = clsLnProducto.Get_BeProducto_Cobranza_By_Codigo(pdProducto, pBodega.IdBodega, IdPropietario)
-                                                                '#GT29082024: si producto no tiene variante cobro, salir del proceso y alertar
-                                                                If pProducto Is Nothing Then
-                                                                    SplashScreenManager.CloseForm(False)
-                                                                    Throw New Exception("No hay configuracion de cobro por variante, producto: " & pdProducto)
-                                                                    Exit For
-                                                                Else
-                                                                    '#GT21102024: si el producto ya existe no agregar a lista, eso duplicará el cobro.
-                                                                    Dim tmpProducto = pListaProductoConVariante.Find(Function(x) x.Codigo = pProducto.Codigo)
-                                                                    If tmpProducto Is Nothing Then
-                                                                        pListaProductoConVariante.Add(pProducto)
-                                                                    End If
-                                                                    'pListaProductoConVariante.Add(pProducto)
-                                                                End If
-                                                            Next
-                                                        Else
-
-
-                                                            If Not IngresoSinHistorico.Contains(vIdOrdenCompraEnc) Then
-                                                                IngresoSinHistorico.Add(vIdOrdenCompraEnc)
-                                                                lblPrg.AppendText("No se encontró historico con referencia: " & vNumero_orden & " e ingreso" & vIdOrdenCompraEnc)
-                                                                lblPrg.AppendText(vbNewLine)
-                                                                lblPrg.Refresh()
-                                                                lblPrg.SelectionStart = lblPrg.TextLength
-                                                                lblPrg.ScrollToCaret()
-                                                            End If
-
-                                                        End If
-
-                                                        '#GT03092024: iterar la lista de todos los productos y cálcular el cobro total de la poliza.
-                                                        If pListaProductoConVariante.Count > 0 Then
-
-                                                            Dim tmpCobroAlmacenajeDiario As Double = 0.00
-
-                                                            For Each pBeProducto In pListaProductoConVariante
-
-                                                                '#GT06082024: aplicar cobro variante por factor
-                                                                If pBeProducto.IdUnidadMedidaCobro > 0 Then
-                                                                End If
-
-                                                                    End If
-
-
-                                                        '#GT06082024: aplicar cobro variante por factor
-                                                        'If pBeProducto.IdUnidadMedidaCobro > 0 Then
-                                                        '    Dim UmbasCobro = clsLnUnidad_medida.Get_Unidad_Medida_By_IdUnidadMedida(pBeProducto.IdUnidadMedidaCobro)
-                                                        '    If UmbasCobro IsNot Nothing Then
-                                                        '        '#GT12092024: calculo por partes con 4 cifras y valor final redondeo. 
-                                                        '        'Dim tmpCobro = Math.Round(vUnidades * UmbasCobro.factor, pDecimalesEnCobro)
-                                                        '        'Dim tmpCobro2 = Math.Round(tmpCobro / vDias_eventos, pDecimalesEnCobro)
-                                                        '        'tmpCobroAlmacenajeDiario = Math.Round(tmpCobro2, pDecimalesEnCobro)
-
-                                                        '        Dim tmppPosicionesOcupadas = clsLnStock_jornada.Get_Posiciones_By_IdOrdenCompra_And_Fecha_And_IdProducto(vIdOrdenCompraEnc, vFecha, pBeProducto.Codigo, pTimeOut)
-
-                                                        '        If tmppPosicionesOcupadas > 0 Then
-                                                        '            pPosicionesOcupadas += tmppPosicionesOcupadas
-                                                        '            Dim tmpCobro = Math.Round(pPosicionesOcupadas * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
-                                                        '            tmpCobroAlmacenajeDiario += Math.Round(tmpCobro, pDecimalesEnCobro)
-                                                        '        End If
-                                                        '    End If
-                                                        'End If
-
-                                                        '#GT06082024: aplicar cobro variante por dimensiones
-                                                        If pBeProducto.Largo AndAlso pBeProducto.Ancho Then
-                                                            Dim Mt As Decimal = 0.00
-                                                            If pBeProducto.Alto > 0 Then
-                                                                Mt = pBeProducto.Alto * pBeProducto.Ancho * pBeProducto.Largo
-                                                            Else
-                                                                Mt = pBeProducto.Largo * pBeProducto.Ancho
-                                                            End If
-
-                                                            '#GT12092024: calculo por partes con 4 cifras y valor final redondeo a 2.
-                                                            'Dim tmpMt = (vUnidades * Mt) * pAcuerdoPrimario.Monto
-                                                            'tmpCobroAlmacenajeDiario = Math.Round(tmpMt / vDias_eventos, 2)
-                                                            Dim tmpMT = Math.Round(vUnidades * Mt, 4)
-                                                            Dim tmpMT2 = Math.Round(tmpMT * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
-                                                            Dim tmpMTS = Math.Round(tmpMT2 / vDias_eventos, pDecimalesEnCobro)
-                                                            tmpCobroAlmacenajeDiario = Math.Round(tmpMTS, pDecimalesEnCobro)
-                                                        End If
-                                                                Next
-
-                                            vCobroAlmacenajeDiario = tmpCobroAlmacenajeDiario
-
-                                        End If
-
-                                    End If
-
-                                    Else
-                                    SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por unidad sin variante...")
-                                    pBeProducto = New clsBeProducto
-                                    pBeProducto = clsLnProducto.Get_BeProducto_By_Codigo(vCodigo_Producto, AP.Bodega.IdBodega, IdPropietario)
-
-                                    If pBeProducto IsNot Nothing Then
-                                        vNombreProducto = pBeProducto.Nombre
-                                    End If
-
-                                    vCobroAlmacenajeDiario = Math.Round(((vUnidades * pAcuerdoPrimario.Monto) / vDias_eventos), pDecimalesEnCobro)
-
+                                                        vCodigo_Producto = DTListaIngresos.Rows(i)(5).ToString()
                                                     End If
 
-                            If vUsarMonedaDolar Then
-                                If Not chkMantenerDolares.Checked Then
-                                    vCobroAlmacenajeDiario = Math.Round(vCobroAlmacenajeDiario * vTipoCambioEnQuetzales, pDecimalesEnCobro)
-                                End If
-                            End If
 
-                            '#GT16102025: si es transferencia, y generó ingreso auto por transfer y es el día uno de cobro
-                            If BePedidoEnc.IdTipoPedido = 1 AndAlso BePedidoEnc.TipoPedido.Generar_pedido_ingreso_bodega_destino Then
-                                Dim firstRow As DataRow
-                                Dim result() As DataRow = DTListaIngresos.Select("IdOrdenCompraEnc = '" + vIdOrdenCompraEnc.ToString() + "'")
-                                firstRow = result.FirstOrDefault()
-                                Dim tmpFecha = CDate(firstRow.Item("fecha"))
+                                                    If vUsarMonedaDolar Then
+                                                        Dim tmpCobro = Math.Round(vValor_Total * tasa, pDecimalesEnCobro)
+                                                        Dim tmpcobro2 = Math.Round(tmpCobro / vTipoCambioEnQuetzales, pDecimalesEnCobro)
+                                                        Dim tmpCobro3 = Math.Round(tmpcobro2 / pAcuerdoPrimario.Dias_eventos, pDecimalesEnCobro)
+                                                        vCobroAlmacenajeDiario = Math.Round(tmpCobro3, pDecimalesEnCobro)
+                                                        '#GT20112024: calculo en dolares, pero se requiere convertir a quetzales.
+                                                        If Not chkMantenerDolares.Checked Then
+                                                            vCobroAlmacenajeDiario = Math.Round(vCobroAlmacenajeDiario * vTipoCambioEnQuetzales, pDecimalesEnCobro)
+                                                        End If
+                                                    Else
+                                                        Dim tmpCobro = Math.Round(vValor_Total * tasa, pDecimalesEnCobro)
+                                                        vCobroAlmacenajeDiario = Math.Round(tmpCobro / pAcuerdoPrimario.Dias_eventos, pDecimalesEnCobro)
+                                                    End If
 
-                                If tmpFecha = DTListaIngresos(i).Item("fecha") Then
-                                    vCobroAlmacenajeDiario = 0
-                                End If
+                                                    If chkAgruparPorProducto.Checked Then
+                                                        pBeProducto = New clsBeProducto
+                                                        pBeProducto = clsLnProducto.Get_BeProducto_By_Codigo(vCodigo_Producto, AP.Bodega.IdBodega, IdPropietario)
+                                                        If pBeProducto IsNot Nothing Then
+                                                            vNombreProducto = pBeProducto.Nombre
+                                                        End If
+                                                    End If
 
-                            End If
+                                                    vCobro_por_linea += vCobroAlmacenajeDiario
 
-                            vCobro_por_linea += vCobroAlmacenajeDiario
-
-                            DTGridDetallePreCuenta.Rows.Add(vIdOrdenCompraEnc,
-                                                              vNumero_orden,
-                                                              vCodigo_Producto,
-                                                              vNombreProducto,
-                                                              vFecha,
-                                                              vValor_Total,
-                                                              vCobroAlmacenajeDiario,
-                                                              0)
-
-                            Next
-
-                            '#GT07082024: creamos el valor ERP a enviar
-                            If pAcuerdoPrimario.Prioridad > 0 Then
-                                vErp = Math.Round(vCobro_por_linea / vMonto, pDecimalesEnCobro)
-                            Else
-                                vErp = 1
-                            End If
-
-                            '#GT07082024: llenamos grid con acuerdo a cobrar
-                            DTGridDetalleServicios.Rows.Add(vIdAcuerdoEnc,
-                                                            vIdAcuerdoDet,
-                                                            vCodigoproducto,
-                                                            vMoneda,
-                                                            vCodacuerdo,
-                                                            vDescripcion,
-                                                            vCorrelativo,
-                                                            vServicio,
-                                                            vNumero_unidades,
-                                                            vMonto,
-                                                            vPorcentaje,
-                                                            vCobro_por_linea,
-                                                            vErp,
-                                                            vDias_eventos)
-
-                        End If
-
-                    End If
-
-                    '****************************************************************************
-                    '#GT20062024: validar si es cobro por valor mercaderia (tipo 2)
-                    If pAcuerdoPrimario.IdTipoCobro = 2 And pAcuerdoPrimario.Porcentaje > 0 Then
-                        SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por valor...")
-                        Dim tasa As Double = pAcuerdoPrimario.Porcentaje / 100
-                        vCobroAlmacenajeDiario = 0
-
-                        If DTListaIngresos IsNot Nothing AndAlso DTListaIngresos.Rows.Count > 0 Then
-                            For i As Integer = 0 To DTListaIngresos.Rows.Count - 1
-                                Dim vNumero_orden = DTListaIngresos.Rows(i)(0).ToString()
-                                Dim vIdOrdenCompraEnc = CInt(DTListaIngresos.Rows(i)(1).ToString())
-                                Dim vFecha = CDate(DTListaIngresos.Rows(i)(2).ToString())
-                                Dim vUnidades = CDbl(DTListaIngresos.Rows(i)(3).ToString())
-                                Dim vValor_Total = Math.Round(CDbl(DTListaIngresos.Rows(i)(4).ToString()), 4)
-                                Dim vCodigo_Producto As String = ""
-                                If chkAgruparPorProducto.Checked Then
-                                    vCodigo_Producto = DTListaIngresos.Rows(i)(5).ToString()
-                                End If
+                                                    DTGridDetallePreCuenta.Rows.Add(vIdOrdenCompraEnc,
+                                                                                      vNumero_orden,
+                                                                                      vCodigo_Producto,
+                                                                                      vNombreProducto,
+                                                                                      vFecha,
+                                                                                      vUnidades,
+                                                                                      vValor_Total,
+                                                                                      vCobroAlmacenajeDiario, 0)
 
 
-                                If vUsarMonedaDolar Then
-                                    Dim tmpCobro = Math.Round(vValor_Total * tasa, pDecimalesEnCobro)
-                                    Dim tmpcobro2 = Math.Round(tmpCobro / vTipoCambioEnQuetzales, pDecimalesEnCobro)
-                                    Dim tmpCobro3 = Math.Round(tmpcobro2 / pAcuerdoPrimario.Dias_eventos, pDecimalesEnCobro)
-                                    vCobroAlmacenajeDiario = Math.Round(tmpCobro3, pDecimalesEnCobro)
-                                    '#GT20112024: calculo en dolares, pero se requiere convertir a quetzales.
-                                    If Not chkMantenerDolares.Checked Then
-                                        vCobroAlmacenajeDiario = Math.Round(vCobroAlmacenajeDiario * vTipoCambioEnQuetzales, pDecimalesEnCobro)
+                                                Next
+
+
+                                                If pAcuerdoPrimario.Prioridad > 0 Then
+                                                    'vErp = RedondearMultiplo05((vCobro_por_linea / vPorcentaje) * 100)
+                                                    '#GT18112024: redondear a 4 decimales para que ERP no descuadre en reconversión.
+                                                    'Dim tmpvCobro_por_linea = Math.Round(vCobro_por_linea, 4)
+                                                    vErp = Math.Round((vCobro_por_linea / vPorcentaje) * 100, pDecimalesEnCobro)
+
+                                                Else
+                                                    vErp = 1
+                                                End If
+
+                                                DTGridDetalleServicios.Rows.Add(vIdAcuerdoEnc,
+                                                                                vIdAcuerdoDet,
+                                                                                vCodigoproducto,
+                                                                                vMoneda,
+                                                                                vCodacuerdo,
+                                                                                vDescripcion,
+                                                                                vCorrelativo,
+                                                                                vServicio,
+                                                                                vNumero_unidades,
+                                                                                vMonto,
+                                                                                vPorcentaje,
+                                                                                vCobro_por_linea, vErp, vDias_eventos)
+
+                                            End If
+
+                                        End If
+
+                                        '****************************************************
+                                        '#GT05072024: validar cobro manejo si la poliza pertenece al mes de corte.
+                                        If pAcuerdoPrimario.IdTipoCobro = 0 And pAcuerdoPrimario.Monto > 0 Then
+
+                                            'SplashScreenManager.Default.SetWaitFormCaption("Validando cobro manejo")
+                                            SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por manejo...")
+
+                                            If pBodega.Es_Bodega_Fiscal Then
+
+                                                For Each pPoliza In lPolizasOC
+
+                                                    Dim tmpOC = ListaTranOcEncReferencias.Find(Function(x) x.IdOrdenCompraEnc = pPoliza.IdOrdenCompraEnc)
+
+                                                    If tmpOC Is Nothing Then
+                                                        SplashScreenManager.CloseForm(False)
+                                                        Throw New Exception("Error: No se encontró la relación entre la poliza " & pPoliza.numero_orden & " y el ingreso " & pPoliza.IdOrdenCompraEnc)
+                                                    End If
+
+                                                    pTrans_oc_ti = New clsBeTrans_oc_ti()
+                                                    pTrans_oc_ti = clsLnTrans_oc_ti.GetSingle(tmpOC.IdTipoIngresoOC)
+
+                                                    If pTrans_oc_ti Is Nothing Then
+                                                        SplashScreenManager.CloseForm(False)
+                                                        Throw New Exception("Error Critico: No se encontró el tipo de documento asociado a la poliza " & pPoliza.numero_orden & " e ingreso " & pPoliza.IdOrdenCompraEnc)
+                                                    End If
+
+
+                                                    '#GT07102024: no calcular manejo si es ingreso por devolucion
+                                                    If Not pTrans_oc_ti.Es_devolucion Then
+                                                        If pPoliza.Fecha_abordaje.Date >= pFechaDesde.Date AndAlso pPoliza.Fecha_abordaje.Date <= pFechaHasta.Date Then
+
+                                                            Dim lastRow As DataRow
+                                                            Dim result() As DataRow = DTListaIngresos.Select("numero_orden = '" + pPoliza.numero_orden.ToString() + "'")
+                                                            lastRow = result.LastOrDefault()
+                                                            Dim tmpFecha = CDate(lastRow.Item("fecha"))
+
+                                                            If chkControlPesoBruto.Checked Then
+                                                                If pPoliza.Total_bultos_Peso_Bruto < pAcuerdoPrimario.Numero_unidades Then
+                                                                    pCalculomanejo = pAcuerdoPrimario.Monto
+                                                                Else
+                                                                    Dim tmpPeso = Math.Round(pPoliza.Total_bultos_Peso_Bruto / 1000, pDecimalesEnCobro)
+                                                                    Dim tmpPeso2 = Math.Round(tmpPeso * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
+                                                                    pCalculomanejo = Math.Round(tmpPeso2, pDecimalesEnCobro)
+                                                                End If
+                                                            Else
+                                                                If pPoliza.Total_bultos_Peso_Neto < pAcuerdoPrimario.Numero_unidades Then
+                                                                    pCalculomanejo = pAcuerdoPrimario.Monto
+                                                                Else
+                                                                    Dim tmpPeso = Math.Round(pPoliza.Total_bultos_Peso_Neto / 1000, pDecimalesEnCobro)
+                                                                    Dim tmpPeso2 = Math.Round(tmpPeso * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
+                                                                    pCalculomanejo = Math.Round(tmpPeso2, pDecimalesEnCobro)
+                                                                End If
+                                                            End If
+
+                                                            If vUsarMonedaDolar Then
+                                                                If Not chkMantenerDolares.Checked Then
+                                                                    pCalculomanejo = Math.Round(pCalculomanejo * vTipoCambioEnQuetzales, pDecimalesEnCobro)
+                                                                End If
+                                                            Else
+
+                                                            End If
+
+                                                            pIntegracionCalculoManejo += pCalculomanejo
+
+                                                            If pCalculomanejo > 0 Then
+                                                                DTGridDetallePreCuenta.Rows.Add(pPoliza.IdOrdenCompraEnc,
+                                                                                              pPoliza.numero_orden,
+                                                                                              "",
+                                                                                              vNombreProducto,
+                                                                                              tmpFecha,
+                                                                                              0,
+                                                                                              0,
+                                                                                              0,
+                                                                                              pCalculomanejo)
+                                                            End If
+
+                                                        End If
+                                                    End If
+
+                                                Next
+
+
+                                            Else
+
+                                                For Each OC In ListaTranOcEncReferencias
+                                                    pTrans_oc_ti = New clsBeTrans_oc_ti()
+                                                    pTrans_oc_ti = clsLnTrans_oc_ti.GetSingle(OC.IdTipoIngresoOC)
+                                                    '#GT07102024: no calcular manejo si es ingreso por devolucion
+                                                    If Not pTrans_oc_ti.Es_devolucion Then
+                                                        If OC.Fecha_Creacion.Date >= pFechaDesde.Date AndAlso OC.Fecha_Creacion.Date <= pFechaHasta.Date Then
+
+                                                            '#GT26082024: aqui filtramos si traemos peso bruto o neto.
+                                                            Dim pPesoCobro = clsLnTrans_oc_det.Get_Peso_OC_By_IdOrdenCompraEnc_HH(OC.IdOrdenCompraEnc, chkControlPesoBruto.Checked)
+
+                                                            If pPesoCobro = 0 Then
+                                                                SplashScreenManager.CloseForm(False)
+                                                                Throw New Exception("Error: No se encontró un peso para cálcular manejo en el ingreso." & OC.IdOrdenCompraEnc)
+                                                            End If
+
+                                                            Dim lastRow As DataRow
+                                                            Dim result() As DataRow = DTListaIngresos.Select("referencia = '" + OC.Referencia.ToString() + "'")
+                                                            lastRow = result.LastOrDefault()
+                                                            Dim tmpFecha = CDate(lastRow.Item("fecha"))
+
+                                                            '#GT26082024: no se requiere validar si es peso bruto o neto, el query ya hizo la operación
+                                                            If pPesoCobro < pAcuerdoPrimario.Numero_unidades Then
+                                                                pCalculomanejo = pAcuerdoPrimario.Monto
+                                                            Else
+                                                                Dim tmpPeso = Math.Round(pPesoCobro / 1000, pDecimalesEnCobro)
+                                                                Dim tmPeso2 = Math.Round(tmpPeso * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
+                                                                pCalculomanejo = Math.Round(tmPeso2, pDecimalesEnCobro)
+                                                            End If
+
+                                                            If vUsarMonedaDolar Then
+                                                                If Not chkMantenerDolares.Checked Then
+                                                                    pCalculomanejo = Math.Round(pCalculomanejo * vTipoCambioEnQuetzales, pDecimalesEnCobro)
+                                                                End If
+
+                                                            End If
+
+                                                            pIntegracionCalculoManejo += pCalculomanejo
+
+                                                            If pCalculomanejo > 0 Then
+                                                                DTGridDetallePreCuenta.Rows.Add(OC.IdOrdenCompraEnc,
+                                                                                              OC.Referencia,
+                                                                                              "",
+                                                                                              vNombreProducto,
+                                                                                              tmpFecha,
+                                                                                              0,
+                                                                                              0,
+                                                                                              0,
+                                                                                              pCalculomanejo)
+                                                            End If
+                                                        End If
+                                                    End If
+                                                Next
+
+
+
+                                            End If
+
+
+                                            If pIntegracionCalculoManejo > 0 Then
+                                                'vErp = RedondearMultiplo05((pIntegracionCalculoManejo / vMonto) * 1000)
+                                                vErp = Math.Round((pIntegracionCalculoManejo / vMonto) * 1000, pDecimalesEnCobro)
+
+                                                DTGridDetalleServicios.Rows.Add(vIdAcuerdoEnc,
+                                                                                vIdAcuerdoDet,
+                                                                                vCodigoproducto,
+                                                                                vMoneda,
+                                                                                vCodacuerdo,
+                                                                                vDescripcion,
+                                                                                vCorrelativo,
+                                                                                vServicio,
+                                                                                vNumero_unidades,
+                                                                                vMonto,
+                                                                                vPorcentaje,
+                                                                                pIntegracionCalculoManejo,
+                                                                                vErp,
+                                                                                vDias_eventos)
+                                            End If
+
+                                        End If
+
+                                    Next
+
+
+                                    '#GT09092024: validar servicios en los ingresos, dependiendo de si es fiscal o general.
+                                    '#********************************************************************************
+                                    '#GT03092024: Buscar servicios a cobrar en los documentos de ingreso y de salida
+                                    SplashScreenManager.Default.SetWaitFormDescription("Validando servicios en OC...")
+
+                                    If pBodega.Es_Bodega_Fiscal Then
+                                        For Each ingreso In lPolizasOC
+                                            pListaServiciosOC = clsLnTrans_oc_servicios.Get_All_By_IdOrdenCompraEnc(ingreso.IdOrdenCompraEnc, pAcuerdoComercial.IdAcuerdoEnc)
+                                            'pListaServiciosOC = clsLnTrans_oc_servicios.Get_All_By_IdOrdenCompraEnc(ingreso.IdOrdenCompraEnc, pAcuerdoComercial.IdAcuerdoEnc)
+                                            '#GT17062024: por cada OC iteramos sus servicios y los agregamos al grid.
+                                            If pListaServiciosOC IsNot Nothing Then
+                                                If pListaServiciosOC.Count > 0 Then
+                                                    vCobro_por_linea = 0
+                                                    For Each ServicioOC In pListaServiciosOC
+
+                                                        Dim pServicio = pAcuerdoComercial.lDetalle.Find(Function(x) x.IdAcuerdoEnc = ServicioOC.IdAcuerdo AndAlso
+                                                                                                 x.Correlativo_detalleacuerdo = ServicioOC.Corre_detalleacuerdo)
+
+                                                        If pServicio IsNot Nothing Then
+                                                            If ServicioOC.Fecha_Servicio.Date >= pFechaDesde.Date AndAlso ServicioOC.Fecha_Servicio <= pFechaHasta.Date Then
+                                                                '#GT06092024: en correo 06092024, Otto indica el valor del acuerdo * la cantidad de servicios que puede ser superior a 1
+                                                                vCobro_por_linea = Math.Round((pServicio.Monto * ServicioOC.Cantidad), pDecimalesEnCobro)
+                                                                'vErp = 1 '#GT02072024: cuando son servicios, monto es 1, y dias es 1
+                                                                vErp = ServicioOC.Cantidad
+                                                                DTGridDetalleServicios.Rows.Add(pServicio.IdAcuerdoEnc,
+                                                                                               pServicio.IdAcuerdoDet,
+                                                                                               pServicio.Codigo_producto,
+                                                                                               vMoneda,
+                                                                                               pServicio.Codigo_acuerdo,
+                                                                                               pServicio.Descripcion,
+                                                                                               pServicio.Correlativo_detalleacuerdo,
+                                                                                               pServicio.Servicio,
+                                                                                               pServicio.Numero_unidades,
+                                                                                               pServicio.Monto,
+                                                                                               pServicio.Porcentaje,
+                                                                                               vCobro_por_linea,
+                                                                                               vErp,
+                                                                                               pServicio.Dias_eventos)
+                                                            End If
+
+                                                        End If
+
+                                                    Next
+
+                                                End If
+
+                                            End If
+                                        Next
+
+                                    Else
+
+                                        For Each ingreso In ListaTranOcEncReferencias
+                                            pListaServiciosOC = clsLnTrans_oc_servicios.Get_All_By_IdOrdenCompraEnc(ingreso.IdOrdenCompraEnc, pAcuerdoComercial.IdAcuerdoEnc)
+                                            If pListaServiciosOC IsNot Nothing Then
+                                                If pListaServiciosOC.Count > 0 Then
+                                                    vCobro_por_linea = 0
+                                                    For Each ServicioOC In pListaServiciosOC
+
+                                                        Dim pServicio = pAcuerdoComercial.lDetalle.Find(Function(x) x.IdAcuerdoEnc = ServicioOC.IdAcuerdo AndAlso
+                                                                                                 x.Correlativo_detalleacuerdo = ServicioOC.Corre_detalleacuerdo)
+
+                                                        If pServicio IsNot Nothing Then
+                                                            '#GT07102024: los servicios deben pertenecer al mes de corte para cobrarse.
+                                                            If ServicioOC.Fecha_Servicio.Date >= pFechaDesde.Date AndAlso ServicioOC.Fecha_Servicio.Date <= pFechaHasta.Date Then
+                                                                vCobro_por_linea = Math.Round((pServicio.Monto * ServicioOC.Cantidad), pDecimalesEnCobro)
+                                                                vErp = ServicioOC.Cantidad
+
+                                                                DTGridDetalleServicios.Rows.Add(pServicio.IdAcuerdoEnc,
+                                                                                               pServicio.IdAcuerdoDet,
+                                                                                               pServicio.Codigo_producto,
+                                                                                               vMoneda,
+                                                                                               pServicio.Codigo_acuerdo,
+                                                                                               pServicio.Descripcion,
+                                                                                               pServicio.Correlativo_detalleacuerdo,
+                                                                                               pServicio.Servicio,
+                                                                                               pServicio.Numero_unidades,
+                                                                                               pServicio.Monto,
+                                                                                               pServicio.Porcentaje,
+                                                                                               vCobro_por_linea,
+                                                                                               vErp,
+                                                                                               pServicio.Dias_eventos)
+
+                                                            End If
+
+                                                        End If
+
+                                                    Next
+
+                                                End If
+
+                                            End If
+                                        Next
+
                                     End If
+
+                                    dgriDetallePreCuenta.DataSource = DTGridDetallePreCuenta
+                                    dgridServiciosAsociados.DataSource = DTGridDetalleServicios
+
+                                    If gvdetalleprecuenta.RowCount > 0 Then
+
+                                        gvdetalleprecuenta.Columns("numero_orden").Group()
+                                        gvdetalleprecuenta.Columns("idordencompraenc").Visible = False
+
+                                        If chkVarianteCobro.Checked AndAlso chkAgruparPorProducto.Checked Then
+                                            gvdetalleprecuenta.Columns("codigo_producto").Group()
+                                        End If
+
+                                        Dim item As GridGroupSummaryItem = New GridGroupSummaryItem() _
+                                        With {.FieldName = "almacenaje",
+                                        .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                                        .DisplayFormat = "Total: {0:N4}",
+                                        .ShowInGroupColumnFooter = gvdetalleprecuenta.Columns("almacenaje")}
+                                        gvdetalleprecuenta.GroupSummary.Add(item)
+
+                                        Dim item_manejo As GridGroupSummaryItem = New GridGroupSummaryItem() _
+                                        With {.FieldName = "manejo",
+                                        .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                                        .DisplayFormat = "Total: {0:N4}",
+                                        .ShowInGroupColumnFooter = gvdetalleprecuenta.Columns("manejo")}
+                                        gvdetalleprecuenta.GroupSummary.Add(item_manejo)
+
+                                        gvdetalleprecuenta.Columns("manejo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                                        gvdetalleprecuenta.Columns("manejo").SummaryItem.DisplayFormat = "{0:n4}"
+                                        gvdetalleprecuenta.Columns("manejo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                                        gvdetalleprecuenta.Columns("manejo").DisplayFormat.FormatString = "{0:n4}"
+
+                                        gvdetalleprecuenta.Columns("almacenaje").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
+                                        gvdetalleprecuenta.Columns("almacenaje").SummaryItem.DisplayFormat = "{0:n4}"
+                                        gvdetalleprecuenta.Columns("almacenaje").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
+                                        gvdetalleprecuenta.Columns("almacenaje").DisplayFormat.FormatString = "{0:n4}"
+
+                                        gvdetalleprecuenta.BestFitColumns(True)
+                                        gvdetalleprecuenta.ExpandAllGroups()
+                                        gvdetalleprecuenta.OptionsBehavior.Editable = False
+                                        xtratabPrecuenta.SelectedTabPageIndex = 1
+                                        gvdetalleprecuenta.OptionsView.GroupFooterShowMode = GroupFooterShowMode.VisibleAlways
+
+                                    End If
+
+                                    pCalculoProcesado = True
                                 Else
-                                    Dim tmpCobro = Math.Round(vValor_Total * tasa, pDecimalesEnCobro)
-                                    vCobroAlmacenajeDiario = Math.Round(tmpCobro / pAcuerdoPrimario.Dias_eventos, pDecimalesEnCobro)
+                                    SplashScreenManager.CloseForm(False)
+                                    Throw New Exception("El acuerdo comercial no tiene servicios con prioridad, para aplicar cobro automatico.")
                                 End If
 
-                                If chkAgruparPorProducto.Checked Then
-                                    pBeProducto = New clsBeProducto
-                                    pBeProducto = clsLnProducto.Get_BeProducto_By_Codigo(vCodigo_Producto, AP.Bodega.IdBodega, IdPropietario)
-                                    If pBeProducto IsNot Nothing Then
-                                        vNombreProducto = pBeProducto.Nombre
-                                    End If
-                                End If
-
-                                vCobro_por_linea += vCobroAlmacenajeDiario
-
-                                DTGridDetallePreCuenta.Rows.Add(vIdOrdenCompraEnc,
-                                                                  vNumero_orden,
-                                                                  vCodigo_Producto,
-                                                                  vNombreProducto,
-                                                                  vFecha,
-                                                                  vUnidades,
-                                                                  vValor_Total,
-                                                                  vCobroAlmacenajeDiario, 0)
-
-
-                            Next
-
-
-                            If pAcuerdoPrimario.Prioridad > 0 Then
-                                'vErp = RedondearMultiplo05((vCobro_por_linea / vPorcentaje) * 100)
-                                '#GT18112024: redondear a 4 decimales para que ERP no descuadre en reconversión.
-                                'Dim tmpvCobro_por_linea = Math.Round(vCobro_por_linea, 4)
-                                vErp = Math.Round((vCobro_por_linea / vPorcentaje) * 100, pDecimalesEnCobro)
-
-                            Else
-                                vErp = 1
                             End If
-
-                            DTGridDetalleServicios.Rows.Add(vIdAcuerdoEnc,
-                                                            vIdAcuerdoDet,
-                                                            vCodigoproducto,
-                                                            vMoneda,
-                                                            vCodacuerdo,
-                                                            vDescripcion,
-                                                            vCorrelativo,
-                                                            vServicio,
-                                                            vNumero_unidades,
-                                                            vMonto,
-                                                            vPorcentaje,
-                                                            vCobro_por_linea, vErp, vDias_eventos)
-
-                        End If
-
-                    End If
-
-                    '****************************************************
-                    '#GT05072024: validar cobro manejo si la poliza pertenece al mes de corte.
-                    If pAcuerdoPrimario.IdTipoCobro = 0 And pAcuerdoPrimario.Monto > 0 Then
-
-                        'SplashScreenManager.Default.SetWaitFormCaption("Validando cobro manejo")
-                        SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por manejo...")
-
-                        If pBodega.Es_Bodega_Fiscal Then
-
-                            For Each pPoliza In lPolizasOC
-
-                                Dim tmpOC = ListaTranOcEncReferencias.Find(Function(x) x.IdOrdenCompraEnc = pPoliza.IdOrdenCompraEnc)
-
-                                If tmpOC Is Nothing Then
-                                    SplashScreenManager.CloseForm(False)
-                                    Throw New Exception("Error: No se encontró la relación entre la poliza " & pPoliza.numero_orden & " y el ingreso " & pPoliza.IdOrdenCompraEnc)
-                                End If
-
-                                pTrans_oc_ti = New clsBeTrans_oc_ti()
-                                pTrans_oc_ti = clsLnTrans_oc_ti.GetSingle(tmpOC.IdTipoIngresoOC)
-
-                                If pTrans_oc_ti Is Nothing Then
-                                    SplashScreenManager.CloseForm(False)
-                                    Throw New Exception("Error Critico: No se encontró el tipo de documento asociado a la poliza " & pPoliza.numero_orden & " e ingreso " & pPoliza.IdOrdenCompraEnc)
-                                End If
-
-
-                                '#GT07102024: no calcular manejo si es ingreso por devolucion
-                                If Not pTrans_oc_ti.Es_devolucion Then
-                                    If pPoliza.Fecha_abordaje.Date >= pFechaDesde.Date AndAlso pPoliza.Fecha_abordaje.Date <= pFechaHasta.Date Then
-
-                                        Dim lastRow As DataRow
-                                        Dim result() As DataRow = DTListaIngresos.Select("numero_orden = '" + pPoliza.numero_orden.ToString() + "'")
-                                        lastRow = result.LastOrDefault()
-                                        Dim tmpFecha = CDate(lastRow.Item("fecha"))
-
-                                        If chkControlPesoBruto.Checked Then
-                                            If pPoliza.Total_bultos_Peso_Bruto < pAcuerdoPrimario.Numero_unidades Then
-                                                pCalculomanejo = pAcuerdoPrimario.Monto
-                                            Else
-                                                Dim tmpPeso = Math.Round(pPoliza.Total_bultos_Peso_Bruto / 1000, pDecimalesEnCobro)
-                                                Dim tmpPeso2 = Math.Round(tmpPeso * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
-                                                pCalculomanejo = Math.Round(tmpPeso2, pDecimalesEnCobro)
-                                            End If
-                                        Else
-                                            If pPoliza.Total_bultos_Peso_Neto < pAcuerdoPrimario.Numero_unidades Then
-                                                pCalculomanejo = pAcuerdoPrimario.Monto
-                                            Else
-                                                Dim tmpPeso = Math.Round(pPoliza.Total_bultos_Peso_Neto / 1000, pDecimalesEnCobro)
-                                                Dim tmpPeso2 = Math.Round(tmpPeso * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
-                                                pCalculomanejo = Math.Round(tmpPeso2, pDecimalesEnCobro)
-                                            End If
-                                        End If
-
-                                        If vUsarMonedaDolar Then
-                                            If Not chkMantenerDolares.Checked Then
-                                                pCalculomanejo = Math.Round(pCalculomanejo * vTipoCambioEnQuetzales, pDecimalesEnCobro)
-                                            End If
-                                        Else
-
-                                        End If
-
-                                        pIntegracionCalculoManejo += pCalculomanejo
-
-                                        If pCalculomanejo > 0 Then
-                                            DTGridDetallePreCuenta.Rows.Add(pPoliza.IdOrdenCompraEnc,
-                                                                          pPoliza.numero_orden,
-                                                                          "",
-                                                                          vNombreProducto,
-                                                                          tmpFecha,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          pCalculomanejo)
-                                        End If
-
-                                    End If
-                                End If
-
-                            Next
-
 
                         Else
-
-                            For Each OC In ListaTranOcEncReferencias
-                                pTrans_oc_ti = New clsBeTrans_oc_ti()
-                                pTrans_oc_ti = clsLnTrans_oc_ti.GetSingle(OC.IdTipoIngresoOC)
-                                '#GT07102024: no calcular manejo si es ingreso por devolucion
-                                If Not pTrans_oc_ti.Es_devolucion Then
-                                    If OC.Fecha_Creacion.Date >= pFechaDesde.Date AndAlso OC.Fecha_Creacion.Date <= pFechaHasta.Date Then
-
-                                        '#GT26082024: aqui filtramos si traemos peso bruto o neto.
-                                        Dim pPesoCobro = clsLnTrans_oc_det.Get_Peso_OC_By_IdOrdenCompraEnc_HH(OC.IdOrdenCompraEnc, chkControlPesoBruto.Checked)
-
-                                        If pPesoCobro = 0 Then
-                                            SplashScreenManager.CloseForm(False)
-                                            Throw New Exception("Error: No se encontró un peso para cálcular manejo en el ingreso." & OC.IdOrdenCompraEnc)
-                                        End If
-
-                                        Dim lastRow As DataRow
-                                        Dim result() As DataRow = DTListaIngresos.Select("referencia = '" + OC.Referencia.ToString() + "'")
-                                        lastRow = result.LastOrDefault()
-                                        Dim tmpFecha = CDate(lastRow.Item("fecha"))
-
-                                        '#GT26082024: no se requiere validar si es peso bruto o neto, el query ya hizo la operación
-                                        If pPesoCobro < pAcuerdoPrimario.Numero_unidades Then
-                                            pCalculomanejo = pAcuerdoPrimario.Monto
-                                        Else
-                                            Dim tmpPeso = Math.Round(pPesoCobro / 1000, pDecimalesEnCobro)
-                                            Dim tmPeso2 = Math.Round(tmpPeso * pAcuerdoPrimario.Monto, pDecimalesEnCobro)
-                                            pCalculomanejo = Math.Round(tmPeso2, pDecimalesEnCobro)
-                                        End If
-
-                                        If vUsarMonedaDolar Then
-                                            If Not chkMantenerDolares.Checked Then
-                                                pCalculomanejo = Math.Round(pCalculomanejo * vTipoCambioEnQuetzales, pDecimalesEnCobro)
-                                            End If
-
-                                        End If
-
-                                        pIntegracionCalculoManejo += pCalculomanejo
-
-                                        If pCalculomanejo > 0 Then
-                                            DTGridDetallePreCuenta.Rows.Add(OC.IdOrdenCompraEnc,
-                                                                          OC.Referencia,
-                                                                          "",
-                                                                          vNombreProducto,
-                                                                          tmpFecha,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          pCalculomanejo)
-                                        End If
-                                    End If
-                                End If
-                            Next
-
-
-
+                            SplashScreenManager.CloseForm(False)
+                            Throw New Exception("Error: El acuerdo comercial no tiene servicios para cobranza. Valide la lista de acuerdos comerciales.")
                         End If
-
-
-                        If pIntegracionCalculoManejo > 0 Then
-                            'vErp = RedondearMultiplo05((pIntegracionCalculoManejo / vMonto) * 1000)
-                            vErp = Math.Round((pIntegracionCalculoManejo / vMonto) * 1000, pDecimalesEnCobro)
-
-                            DTGridDetalleServicios.Rows.Add(vIdAcuerdoEnc,
-                                                            vIdAcuerdoDet,
-                                                            vCodigoproducto,
-                                                            vMoneda,
-                                                            vCodacuerdo,
-                                                            vDescripcion,
-                                                            vCorrelativo,
-                                                            vServicio,
-                                                            vNumero_unidades,
-                                                            vMonto,
-                                                            vPorcentaje,
-                                                            pIntegracionCalculoManejo,
-                                                            vErp,
-                                                            vDias_eventos)
-                        End If
-
-                    End If
-
-                    Next
-
-
-                    '#GT09092024: validar servicios en los ingresos, dependiendo de si es fiscal o general.
-                    '#********************************************************************************
-                    '#GT03092024: Buscar servicios a cobrar en los documentos de ingreso y de salida
-                    SplashScreenManager.Default.SetWaitFormDescription("Validando servicios en OC...")
-
-                    If pBodega.Es_Bodega_Fiscal Then
-                        For Each ingreso In lPolizasOC
-                            pListaServiciosOC = clsLnTrans_oc_servicios.Get_All_By_IdOrdenCompraEnc(ingreso.IdOrdenCompraEnc, pAcuerdoComercial.IdAcuerdoEnc)
-                            'pListaServiciosOC = clsLnTrans_oc_servicios.Get_All_By_IdOrdenCompraEnc(ingreso.IdOrdenCompraEnc, pAcuerdoComercial.IdAcuerdoEnc)
-                            '#GT17062024: por cada OC iteramos sus servicios y los agregamos al grid.
-                            If pListaServiciosOC IsNot Nothing Then
-                                If pListaServiciosOC.Count > 0 Then
-                                    vCobro_por_linea = 0
-                                    For Each ServicioOC In pListaServiciosOC
-
-                                        Dim pServicio = pAcuerdoComercial.lDetalle.Find(Function(x) x.IdAcuerdoEnc = ServicioOC.IdAcuerdo AndAlso
-                                                                                 x.Correlativo_detalleacuerdo = ServicioOC.Corre_detalleacuerdo)
-
-                                        If pServicio IsNot Nothing Then
-                                            If ServicioOC.Fecha_Servicio.Date >= pFechaDesde.Date AndAlso ServicioOC.Fecha_Servicio <= pFechaHasta.Date Then
-                                                '#GT06092024: en correo 06092024, Otto indica el valor del acuerdo * la cantidad de servicios que puede ser superior a 1
-                                                vCobro_por_linea = Math.Round((pServicio.Monto * ServicioOC.Cantidad), pDecimalesEnCobro)
-                                                'vErp = 1 '#GT02072024: cuando son servicios, monto es 1, y dias es 1
-                                                vErp = ServicioOC.Cantidad
-                                                DTGridDetalleServicios.Rows.Add(pServicio.IdAcuerdoEnc,
-                                                                               pServicio.IdAcuerdoDet,
-                                                                               pServicio.Codigo_producto,
-                                                                               vMoneda,
-                                                                               pServicio.Codigo_acuerdo,
-                                                                               pServicio.Descripcion,
-                                                                               pServicio.Correlativo_detalleacuerdo,
-                                                                               pServicio.Servicio,
-                                                                               pServicio.Numero_unidades,
-                                                                               pServicio.Monto,
-                                                                               pServicio.Porcentaje,
-                                                                               vCobro_por_linea,
-                                                                               vErp,
-                                                                               pServicio.Dias_eventos)
-                                            End If
-
-                                        End If
-
-                                    Next
-
-                                End If
-
-                            End If
-                        Next
 
                     Else
-
-                        For Each ingreso In ListaTranOcEncReferencias
-                            pListaServiciosOC = clsLnTrans_oc_servicios.Get_All_By_IdOrdenCompraEnc(ingreso.IdOrdenCompraEnc, pAcuerdoComercial.IdAcuerdoEnc)
-                            If pListaServiciosOC IsNot Nothing Then
-                                If pListaServiciosOC.Count > 0 Then
-                                    vCobro_por_linea = 0
-                                    For Each ServicioOC In pListaServiciosOC
-
-                                        Dim pServicio = pAcuerdoComercial.lDetalle.Find(Function(x) x.IdAcuerdoEnc = ServicioOC.IdAcuerdo AndAlso
-                                                                                 x.Correlativo_detalleacuerdo = ServicioOC.Corre_detalleacuerdo)
-
-                                        If pServicio IsNot Nothing Then
-                                            '#GT07102024: los servicios deben pertenecer al mes de corte para cobrarse.
-                                            If ServicioOC.Fecha_Servicio.Date >= pFechaDesde.Date AndAlso ServicioOC.Fecha_Servicio.Date <= pFechaHasta.Date Then
-                                                vCobro_por_linea = Math.Round((pServicio.Monto * ServicioOC.Cantidad), pDecimalesEnCobro)
-                                                vErp = ServicioOC.Cantidad
-
-                                                DTGridDetalleServicios.Rows.Add(pServicio.IdAcuerdoEnc,
-                                                                               pServicio.IdAcuerdoDet,
-                                                                               pServicio.Codigo_producto,
-                                                                               vMoneda,
-                                                                               pServicio.Codigo_acuerdo,
-                                                                               pServicio.Descripcion,
-                                                                               pServicio.Correlativo_detalleacuerdo,
-                                                                               pServicio.Servicio,
-                                                                               pServicio.Numero_unidades,
-                                                                               pServicio.Monto,
-                                                                               pServicio.Porcentaje,
-                                                                               vCobro_por_linea,
-                                                                               vErp,
-                                                                               pServicio.Dias_eventos)
-
-                                            End If
-
-                                        End If
-
-                                    Next
-
-                                End If
-
-                            End If
-                        Next
-
+                        SplashScreenManager.CloseForm(False)
+                        Throw New Exception("Error: No se encontró un acuerdo comercial.")
                     End If
 
-                    dgriDetallePreCuenta.DataSource = DTGridDetallePreCuenta
-                    dgridServiciosAsociados.DataSource = DTGridDetalleServicios
-
-                    If gvdetalleprecuenta.RowCount > 0 Then
-
-                        gvdetalleprecuenta.Columns("numero_orden").Group()
-                        gvdetalleprecuenta.Columns("idordencompraenc").Visible = False
-
-                        If chkVarianteCobro.Checked AndAlso chkAgruparPorProducto.Checked Then
-                            gvdetalleprecuenta.Columns("codigo_producto").Group()
-                        End If
-
-                        Dim item As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                        With {.FieldName = "almacenaje",
-                        .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                        .DisplayFormat = "Total: {0:N4}",
-                        .ShowInGroupColumnFooter = gvdetalleprecuenta.Columns("almacenaje")}
-                        gvdetalleprecuenta.GroupSummary.Add(item)
-
-                        Dim item_manejo As GridGroupSummaryItem = New GridGroupSummaryItem() _
-                        With {.FieldName = "manejo",
-                        .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                        .DisplayFormat = "Total: {0:N4}",
-                        .ShowInGroupColumnFooter = gvdetalleprecuenta.Columns("manejo")}
-                        gvdetalleprecuenta.GroupSummary.Add(item_manejo)
-
-                        gvdetalleprecuenta.Columns("manejo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                        gvdetalleprecuenta.Columns("manejo").SummaryItem.DisplayFormat = "{0:n4}"
-                        gvdetalleprecuenta.Columns("manejo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                        gvdetalleprecuenta.Columns("manejo").DisplayFormat.FormatString = "{0:n4}"
-
-                        gvdetalleprecuenta.Columns("almacenaje").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                        gvdetalleprecuenta.Columns("almacenaje").SummaryItem.DisplayFormat = "{0:n4}"
-                        gvdetalleprecuenta.Columns("almacenaje").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                        gvdetalleprecuenta.Columns("almacenaje").DisplayFormat.FormatString = "{0:n4}"
-
-                        gvdetalleprecuenta.BestFitColumns(True)
-                        gvdetalleprecuenta.ExpandAllGroups()
-                        gvdetalleprecuenta.OptionsBehavior.Editable = False
-                        xtratabPrecuenta.SelectedTabPageIndex = 1
-                        gvdetalleprecuenta.OptionsView.GroupFooterShowMode = GroupFooterShowMode.VisibleAlways
-
-                    End If
-
-                    pCalculoProcesado = True
-                Else
-                    SplashScreenManager.CloseForm(False)
-                    Throw New Exception("El acuerdo comercial no tiene servicios con prioridad, para aplicar cobro automatico.")
                 End If
-
-            End If
-
-            Else
-            SplashScreenManager.CloseForm(False)
-            Throw New Exception("Error: El acuerdo comercial no tiene servicios para cobranza. Valide la lista de acuerdos comerciales.")
-            End If
-
-            Else
-            SplashScreenManager.CloseForm(False)
-            Throw New Exception("Error: No se encontró un acuerdo comercial.")
-            End If
-
-            End If
 
             End If
 
@@ -4514,7 +3985,7 @@ Public Class frmPreFactura
 
             Next
 
-            'Dim strserialize As String = JsonConvert.SerializeObject(CobroERP)
+            Dim strserialize As String = JsonConvert.SerializeObject(CobroERP)
             'Debug.Write(strserialize)
 
             Dim pTimeOut = clsBD.Instancia.TimeOutConBD
@@ -4847,10 +4318,6 @@ Public Class frmPreFactura
             cmbPolizasOC.Properties.PopulateViewColumns()
 
 
-            'If cmbPolizasOC.Properties.View.Columns.Count > 0 Then
-            '    cmbPolizasOC.Properties.View.Columns(0).Visible = False
-            'End If
-
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
@@ -4989,9 +4456,7 @@ Public Class frmPreFactura
                 Case TipoTrans.Nuevo
 
                     If cmbPolizasPE.EditValue > 0 Then
-
                         Dim fila As Object = cmbPolizasPE.GetSelectedDataRow
-
                         If fila Is Nothing Then
                             Throw New Exception("Error_09042024_1220: No se pudo obtener el numero de orden correctamente.")
                         Else
@@ -5535,7 +5000,6 @@ Public Class frmPreFactura
                 frmIngresos.WindowState = FormWindowState.Normal
                 frmIngresos.pIdPropietario = cmbPropietario.EditValue
                 frmIngresos.pBodega = pBodega
-                'frmIngresos.ShowDialog()
 
                 If frmIngresos.ShowDialog() = DialogResult.OK Then
 

@@ -1569,9 +1569,6 @@ Public Class clsLnBodega
             Const sp As String = "SELECT RUTA_CDN FROM Bodega 
                               Where(IdBodega = @IdBodega)"
 
-            Const sp As String = "SELECT * FROM Bodega " &
-                                 " Where(es_bodega_fiscal =0 )"
-
             Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
             Dim dad As New SqlDataAdapter(cmd)
             dad.SelectCommand.Parameters.Add(New SqlParameter("@IdBodega", pIdBodega))

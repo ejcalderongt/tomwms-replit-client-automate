@@ -42,12 +42,10 @@ Partial Class frmProducto_Estado
         Dim Label12 As System.Windows.Forms.Label
         Dim Label2 As System.Windows.Forms.Label
         Dim Label1 As System.Windows.Forms.Label
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmProducto_Estado))
-        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Dim Label3 As System.Windows.Forms.Label
         Dim Label4 As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmProducto_Estado))
-        Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuActualizar = New DevExpress.XtraBars.BarButtonItem()
@@ -88,8 +86,6 @@ Partial Class frmProducto_Estado
         Me.hideContainerBottom = New DevExpress.XtraBars.Docking.AutoHideContainer()
         Me.DockPanel1 = New DevExpress.XtraBars.Docking.DockPanel()
         Me.DockPanel1_Container = New DevExpress.XtraBars.Docking.ControlContainer()
-        Me.nudDiasVencimientoClasificacion = New System.Windows.Forms.NumericUpDown()
-        Me.nudToleranciaDiasVencimiento = New System.Windows.Forms.NumericUpDown()
         Me.chkReservaRequiereUMBas = New DevExpress.XtraEditors.ToggleSwitch()
         IdPropietarioLabel = New System.Windows.Forms.Label()
         NombreLabel = New System.Windows.Forms.Label()
@@ -130,8 +126,6 @@ Partial Class frmProducto_Estado
         Me.hideContainerBottom.SuspendLayout()
         Me.DockPanel1.SuspendLayout()
         Me.DockPanel1_Container.SuspendLayout()
-        CType(Me.nudDiasVencimientoClasificacion, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.nudToleranciaDiasVencimiento, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.chkReservaRequiereUMBas.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -529,8 +523,8 @@ Partial Class frmProducto_Estado
         Me.Dgrid.Cursor = System.Windows.Forms.Cursors.Default
         Me.Dgrid.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Dgrid.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        GridLevelNode2.RelationName = "Level1"
-        Me.Dgrid.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode2})
+        GridLevelNode1.RelationName = "Level1"
+        Me.Dgrid.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
         Me.Dgrid.Location = New System.Drawing.Point(2, 55)
         Me.Dgrid.MainView = Me.GridView1
         Me.Dgrid.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
@@ -650,45 +644,15 @@ Partial Class frmProducto_Estado
         Me.DockPanel1_Container.Size = New System.Drawing.Size(946, 84)
         Me.DockPanel1_Container.TabIndex = 0
         '
-        'Label3
-        '
-        Label3.AutoSize = True
-        Label3.Location = New System.Drawing.Point(29, 202)
-        Label3.Name = "Label3"
-        Label3.Size = New System.Drawing.Size(108, 16)
-        Label3.TabIndex = 18
-        Label3.Text = "Días vencimiento:"
-        '
-        'Label4
-        '
-        Label4.AutoSize = True
-        Label4.Location = New System.Drawing.Point(28, 234)
-        Label4.Name = "Label4"
-        Label4.Size = New System.Drawing.Size(171, 16)
-        Label4.TabIndex = 19
-        Label4.Text = "Tolerancia días vencimiento:"
-        '
-        'nudDiasVencimientoClasificacion
-        '
-        Me.nudDiasVencimientoClasificacion.Location = New System.Drawing.Point(206, 195)
-        Me.nudDiasVencimientoClasificacion.Name = "nudDiasVencimientoClasificacion"
-        Me.nudDiasVencimientoClasificacion.Size = New System.Drawing.Size(132, 23)
-        Me.nudDiasVencimientoClasificacion.TabIndex = 20
-        '
-        'nudToleranciaDiasVencimiento
         'chkReservaRequiereUMBas
         '
-        Me.chkReservaRequiereUMBas.Location = New System.Drawing.Point(386, 233)
+        Me.chkReservaRequiereUMBas.Location = New System.Drawing.Point(389, 230)
         Me.chkReservaRequiereUMBas.MenuManager = Me.RibbonControl
         Me.chkReservaRequiereUMBas.Name = "chkReservaRequiereUMBas"
         Me.chkReservaRequiereUMBas.Properties.OffText = "Reserva no requiere UM Bas"
         Me.chkReservaRequiereUMBas.Properties.OnText = "Reserva requiere UM Bas"
         Me.chkReservaRequiereUMBas.Size = New System.Drawing.Size(236, 24)
-        Me.chkReservaRequiereUMBas.TabIndex = 22
-        Me.nudToleranciaDiasVencimiento.Location = New System.Drawing.Point(206, 234)
-        Me.nudToleranciaDiasVencimiento.Name = "nudToleranciaDiasVencimiento"
-        Me.nudToleranciaDiasVencimiento.Size = New System.Drawing.Size(132, 23)
-        Me.nudToleranciaDiasVencimiento.TabIndex = 21
+        Me.chkReservaRequiereUMBas.TabIndex = 24
         '
         'frmProducto_Estado
         '
@@ -740,8 +704,6 @@ Partial Class frmProducto_Estado
         Me.DockPanel1.ResumeLayout(False)
         Me.DockPanel1_Container.ResumeLayout(False)
         Me.DockPanel1_Container.PerformLayout()
-        CType(Me.nudDiasVencimientoClasificacion, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.nudToleranciaDiasVencimiento, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.chkReservaRequiereUMBas.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()

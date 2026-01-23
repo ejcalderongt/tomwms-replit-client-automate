@@ -8399,23 +8399,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
     End Sub
 
-    'Private Sub ProductoGridLookUpEditRec_EditValueChanged(ByVal sender As Object, ByVal e As EventArgs)
-
-    '    Try
-
-    '        ' Asigna el control a una variable para un mejor manejo
-    '        Dim lookUpEdit As LookUpEdit = CType(sender, LookUpEdit)
-
-    '        ' Verifica si el valor seleccionado es nulo o DBNull
-    '        If lookUpEdit.EditValue Is Nothing OrElse lookUpEdit.EditValue Is DBNull.Value Then
-    '            gvDetalleRec2.CancelUpdateCurrentRow()
-    '        End If
-
-    '    Catch ex As Exception
-
-    '    End Try
-
-    'End Sub
     Private Sub Set_Columnas_Grid_Detalle_Documento_Recepcion()
 
         Try
@@ -8501,10 +8484,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     ProductoGridLookUpEditRec.DataSource =
             clsLnProducto.Get_Lista_By_IdOrdenCompraEnc_Talla_Color(ocEncId, cmbBodega.EditValue)
                 Else
-                If gBeRecepcionEnc.OrdenCompraRec IsNot Nothing Then
-                    If gBeRecepcionEnc.OrdenCompraRec.OC.IdOrdenCompraEnc > 0 Then
-                        ProductoGridLookUpEditRec.DataSource = clsLnProducto.Get_Lista_By_IdOrdenCompraEnc(gBeRecepcionEnc.OrdenCompraRec.OC.IdOrdenCompraEnc, cmbBodega.EditValue)
-                    End If
+                    ProductoGridLookUpEditRec.DataSource =
+            clsLnProducto.Get_Lista_By_IdOrdenCompraEnc(ocEncId, cmbBodega.EditValue)
                 End If
             End If
 
@@ -9514,184 +9495,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
     End Sub
 
     Private PopupTieneErrores As Boolean = False
-
-    '' Método hipotético que debes implementar para verificar si el valor está duplicado
-
-    'Private Sub ProductoGridLookUpEditRec_KeyDown(sender As Object, e As KeyEventArgs)
-
-    '    Dim lista As GridLookUpEdit = Nothing
-    '    Dim vCodigoBarra As String = ""
-
-    '    Try
-
-    '        If e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
-
-    '            Dim View As GridView = CType(DgridDetalleRec2.DefaultView, GridView)
-    '            lista = TryCast(sender, GridLookUpEdit)
-    '            Dim ColProducto As GridColumn = View.Columns("IdProductoBodega")
-    '            Dim ColNoLinea As GridColumn = View.Columns("No_Linea")
-    '            Dim nolineaSeleccionada As String = ""
-
-    '            If lista Is Nothing Then Return
-
-    '            vCodigoBarra = IIf(IsDBNull(lista.Text), "", lista.Text)
-
-    '            If lista.EditValue Is Nothing AndAlso vCodigoBarra.Trim = "" Then Return
-
-    '            Dim drLineaGrid As DataRow = gvDetalleRec2.GetFocusedDataRow()
-    '            If drLineaGrid Is Nothing AndAlso Not View.IsNewItemRow(View.FocusedRowHandle) Then Return
-
-    '            Dim codigoIngresadoString As String = ""
-    '            Dim nolineaSeleccionada As String = ""
-
-    '            If lista.EditValue Is Nothing Then
-    '                If Not vCodigoBarra.Trim = "" Then
-    '                    codigoIngresadoString = vCodigoBarra.Trim()
-    '                    ' Aquí establecemos el filtro global para aplicar
-    '                    _filtroCodigoBarra = codigoIngresadoString
-    '                    lista.Properties.View.RefreshData()  ' Refresca los datos para aplicar el filtro
-    '                End If
-    '            End If
-
-    '            If lista.EditValue Is Nothing Then
-    '                If Not vCodigoBarra.Trim = "" Then
-    '                    codigoIngresadoString = vCodigoBarra.Trim()
-    '                    _filtroCodigoBarra = codigoIngresadoString
-    '                    lista.Properties.View.RefreshData()  ' Refresca los datos para aplicar el filtro
-    '                End If
-    '            Else
-
-    '                Dim selectedDataRow = lista.GetSelectedDataRow()
-
-    '                If selectedDataRow IsNot Nothing Then
-    '                    ' Acceder a las propiedades del objeto selectedDataRow aquí
-    '                    codigoIngresadoString = IIf(IsDBNull(selectedDataRow("Codigo")), "", selectedDataRow("Codigo"))
-    '                    nolineaSeleccionada = IIf(IsDBNull(selectedDataRow("No_Linea")), "-1", selectedDataRow("No_Linea"))
-    '                Else
-    '                    ' Configuramos el filtro en el GridView basado en el valor duplicado
-    '                    _filtroCodigoBarra = codigoIngresadoString
-    '                    ProductoGridLookUpEditRec.View.ActiveFilterCriteria = New DevExpress.Data.Filtering.BinaryOperator("CodigoBarra", _filtroCodigoBarra, DevExpress.Data.Filtering.BinaryOperatorType.Equal)
-    '                    ProductoGridLookUpEditRec.View.RefreshData()
-    '                    View.SetColumnError(ColNoLinea, "Código de barra duplicado, seleccione uno de la lista.")
-    '                    e.Handled = True
-    '                    Exit Sub
-    '                End If
-
-    '            End If
-
-    '            If ColNoLinea Is Nothing Then
-    '                ColNoLinea = View.Columns(1)
-    '            Else
-    '                If nolineaSeleccionada = "" Then
-
-    '                End If
-    '            End If
-
-    '            View.SetColumnError(ColNoLinea, "") : PopupTieneErrores = False
-
-    '            If String.IsNullOrEmpty(codigoIngresadoString) Then
-    '                ' El código ingresado es nulo o vacío
-    '                If Not View Is Nothing AndAlso Not ColProducto Is Nothing Then
-    '                    'Marca celda de código de producto con error.
-    '                    View.SetColumnError(ColProducto, "Código no válido.")
-    '                End If
-    '            Else
-
-    '                Dim vIdProductoBodega As Integer = clsLnProducto.Get_IdProductoBodega_By_Codigo(codigoIngresadoString, AP.IdBodega)
-
-    '                If Not vIdProductoBodega = 0 Then
-
-    '                    Dim cmbView As GridView = TryCast(lista.Properties.View, GridView)
-    '                    Dim vCantPorProducto As Integer = 0
-
-    '                    If Not cmbView Is Nothing Then
-    '                        vCantPorProducto = cmbView.RowCount
-    '                    End If
-
-    '                    If lista.EditValue Is Nothing Then
-    '                        If Not vCodigoBarra.Trim = "" Then
-    '                            codigoIngresadoString = vCodigoBarra.Trim()
-    '                            _filtroCodigoBarra = codigoIngresadoString
-    '                        End If
-    '                    Else
-
-    '                        Dim selectedDataRow = lista.GetSelectedDataRow()
-
-    '                        If selectedDataRow IsNot Nothing Then
-    '                            codigoIngresadoString = IIf(IsDBNull(selectedDataRow("Codigo")), "", selectedDataRow("Codigo"))
-    '                            nolineaSeleccionada = IIf(IsDBNull(selectedDataRow("No_Linea")), "-1", selectedDataRow("No_Linea"))
-    '                        Else
-    '                            PopupTieneErrores = True
-    '                            View.SetColumnError(ColNoLinea, "Seleccione un registro.")
-    '                        End If
-
-    '                    End If
-
-    '                    If ColNoLinea Is Nothing Then
-    '                        ColNoLinea = View.Columns(1)
-    '                    End If
-
-    '                    If nolineaSeleccionada = "" Then
-
-    '                        If vCantPorProducto > 1 Then
-
-    '                            PopupTieneErrores = True
-    '                            _filtroCodigoBarra = codigoIngresadoString
-    '                            ProductoGridLookUpEditRec.View.ActiveFilter.Clear()
-    '                            ProductoGridLookUpEditRec.View.ActiveFilterCriteria = New DevExpress.Data.Filtering.BinaryOperator("CodigoBarra", _filtroCodigoBarra, DevExpress.Data.Filtering.BinaryOperatorType.Equal)
-    '                            ProductoGridLookUpEditRec.View.RefreshData()
-    '                            View.SetColumnError(ColNoLinea, "Código de barra duplicado, seleccione uno de la lista.")
-    '                            e.Handled = False
-    '                            Exit Sub
-
-    '                        Else
-    '                            'Marca celda de código de producto con error.
-    '                            View.SetColumnError(ColProducto, "Código no válido para el documento.")
-    '                        End If
-
-    '                    Else
-
-    '                        If vCantPorProducto > 1 Then
-
-    '                            vCantPorProducto = clsLnTrans_oc_det.Get_Count_By_Producto_En_OC(txtIdOrdenCompra.Text, vIdProductoBodega)
-
-    '                            If vCantPorProducto > 1 Then
-
-    '                                If XtraMessageBox.Show("¿La línea del documento de ingreso que quiere recepcionar es la " & nolineaSeleccionada & "?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
-    '                                    Eliminar_Fila(Nothing)
-    '                                    Exit Sub
-    '                                End If
-
-    '                            End If
-
-    '                        End If
-
-    '                    End If
-
-    '                    Try
-    '                        lista.EditValue = nolineaSeleccionada 'vIdProductoBodega
-    '                    Catch ex As Exception
-    '                        Debug.WriteLine(ex.Message)
-    '                    End Try
-
-
-    '                Else
-    '                    If Not View Is Nothing AndAlso Not ColProducto Is Nothing Then
-    '                        'Marca celda de código de producto con error.
-    '                        View.SetColumnError(ColProducto, "Código no válido.")
-    '                    End If
-    '                End If
-
-    '            End If
-
-    '        End If
-
-    '    Catch ex As Exception
-    '        XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-    '    End Try
-
-    'End Sub
-
     Private Sub ProductoGridLookUpEditRec_KeyDown(sender As Object, e As KeyEventArgs)
 
         Dim lista As GridLookUpEdit = TryCast(sender, GridLookUpEdit)
@@ -12647,7 +12450,7 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             End If
 
         Catch ex As Exception
-
+            Dim vMsgError As String = ex.Message
             '#MECR19092025: Se agrego nueva bitacora para logs de recepcion.
             clsLnLog_error_wms_rec.Agregar_Error(vMsgError,
                                                  pIdEmpresa:=AP.IdEmpresa,
@@ -12655,8 +12458,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                                                  pIdUsuarioAgr:=AP.UsuarioAp.IdUsuario,
                                                  pIdRecEnc:=gBeRecepcionEnc.IdRecepcionEnc,
                                                  pStackTrace:=ex.StackTrace)
-
-            Dim vMsgError As String = ex.Message
             Throw ex
         End Try
 
@@ -12988,133 +12789,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
         Catch ex As Exception
 
         End Try
-    End Sub
-    Private Sub ProductoGridLookUpEditRec_KeyDown(sender As Object, e As KeyEventArgs)
-
-        Dim lista As GridLookUpEdit = TryCast(sender, GridLookUpEdit)
-        Dim vCodigoProducto As String = ""
-        Dim vSKU As String = ""
-        Dim encontrado As Boolean = False
-
-        If e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
-
-            Try
-
-                Dim View As GridView = CType(DgridDetalleRec2.DefaultView, GridView)
-                If lista Is Nothing Then Return
-
-                If lista IsNot Nothing Then
-                    Dim view2 As GridView = lista.Properties.View
-                    Dim row As DataRowView = TryCast(view2.GetFocusedRow(), DataRowView)
-
-                    If row IsNot Nothing Then
-                        vSKU = row("SKU").ToString()
-                    End If
-                End If
-
-                Dim ColNoLinea As GridColumn = View.Columns("No_Linea")
-                Dim nolineaSeleccionada As String = ""
-
-                vCodigoProducto = If(IsDBNull(lista.Text), "", lista.Text.Trim())
-
-                If String.IsNullOrEmpty(vCodigoProducto) Then Return
-
-                Dim drLineaGrid As DataRow = View.GetFocusedDataRow()
-                If drLineaGrid Is Nothing AndAlso Not View.IsNewItemRow(View.FocusedRowHandle) Then Return
-
-                Dim codigoIngresadoString As String = vCodigoProducto
-
-                View.SetColumnError(ColNoLinea, "") : PopupTieneErrores = False
-
-                'Lógica para búsqueda por SKU solo si está habilitado el control de talla/color
-                If BeBodega.Control_Talla_Color Then
-
-                    Dim vIdProductoBodega As Integer = 0
-                    Dim cmbView As GridView = TryCast(lista.Properties.View, GridView)
-
-                    If cmbView IsNot Nothing Then
-                        For i As Integer = 0 To cmbView.RowCount - 1
-                            Dim skuActual As String = If(IsDBNull(cmbView.GetRowCellValue(i, "SKU")), "", cmbView.GetRowCellValue(i, "SKU").ToString().Trim())
-
-                            If skuActual.Equals(vSKU, StringComparison.OrdinalIgnoreCase) Then
-                                Dim selectedDataRow As DataRowView = TryCast(cmbView.GetRow(i), DataRowView)
-                                If selectedDataRow IsNot Nothing Then
-                                    cmbView.FocusedRowHandle = 0
-                                    codigoIngresadoString = IIf(IsDBNull(selectedDataRow("Codigo")), "", selectedDataRow("Codigo"))
-                                    nolineaSeleccionada = IIf(IsDBNull(selectedDataRow("No_Linea")), "-1", selectedDataRow("No_Linea").ToString())
-                                    vIdProductoBodega = clsLnProducto.Get_IdProductoBodega_By_Codigo(selectedDataRow("Codigo").ToString(), AP.IdBodega)
-                                    lista.BeginInvoke(Sub()
-                                                          Dim primeraFila = TryCast(cmbView.GetRow(0), DataRowView)
-                                                          If primeraFila IsNot Nothing Then
-                                                              lista.EditValue = primeraFila("No_Linea")
-                                                              View.PostEditor()
-                                                              View.CloseEditor()
-                                                              View.FocusedColumn = View.VisibleColumns(View.VisibleColumns.IndexOf(View.FocusedColumn) + 1)
-                                                          End If
-                                                      End Sub)
-                                    encontrado = True
-                                    Exit For
-                                End If
-                            End If
-                        Next
-                    End If
-
-                    If Not encontrado Then
-                        View.SetColumnError(ColNoLinea, "SKU no válido o no encontrado.")
-                        PopupTieneErrores = True
-                        Exit Sub
-                    End If
-
-                    'Continua con la lógica original usando el código obtenido por SKU
-                Else
-                    'Lógica original: obtiene el ID usando el código ingresado directamente
-                    Dim vIdProductoBodega As Integer = clsLnProducto.Get_IdProductoBodega_By_Codigo(codigoIngresadoString, AP.IdBodega)
-                    If vIdProductoBodega = 0 Then
-                        View.SetColumnError(ColNoLinea, "Código no válido.")
-                        PopupTieneErrores = True
-                        Exit Sub
-                    End If
-                End If
-
-                ' 🟡 Resto de tu lógica original para validaciones y preguntas si hay varias líneas
-                If ColNoLinea Is Nothing Then
-                    ColNoLinea = View.Columns(1)
-                End If
-
-                If nolineaSeleccionada = "" Then
-                    Dim vCantPorProducto As Integer = 0
-                    Dim cmbView As GridView = TryCast(lista.Properties.View, GridView)
-                    If cmbView IsNot Nothing Then
-                        vCantPorProducto = cmbView.RowCount
-                    End If
-
-                    If vCantPorProducto > 1 Then
-                        _filtroCodigoBarra = codigoIngresadoString
-                        PopupTieneErrores = True
-                        View.SetColumnError(ColNoLinea, "Código de barra duplicado, seleccione uno de la lista.")
-                    End If
-
-                Else
-
-                    If BeBodega.Control_Talla_Color AndAlso Not encontrado Then
-                        Dim vCantPorProducto As Integer = clsLnTrans_oc_det.Get_Count_By_Producto_En_OC(txtIdOrdenCompra.Text, clsLnProducto.Get_IdProductoBodega_By_Codigo(codigoIngresadoString, AP.IdBodega))
-
-                        If vCantPorProducto > 1 Then
-                            If XtraMessageBox.Show("¿La línea del documento de ingreso que quiere recepcionar es la " & nolineaSeleccionada & "?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
-                                Eliminar_Fila(Nothing)
-                                Exit Sub
-                            End If
-                        End If
-                    End If
-
-                End If
-
-            Catch ex As Exception
-                XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            End Try
-
-        End If
-
     End Sub
 
 End Class

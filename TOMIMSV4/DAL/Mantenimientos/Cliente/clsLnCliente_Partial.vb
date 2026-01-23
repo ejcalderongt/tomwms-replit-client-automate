@@ -1602,53 +1602,6 @@ Partial Public Class clsLnCliente
 
     End Function
 
-    '#CKFK20220325 Función creada para obtener lista de clientes activos con transacción
-    Public Shared Function Get_All(ByRef lConnection As SqlConnection,
-                                   ByRef lTransaction As SqlTransaction) As List(Of clsBeCliente)
-
-        Get_All = Nothing
-
-        Dim lReturnList As New List(Of clsBeCliente)
-
-        Try
-            Const lSQL As String = "SELECT * FROM cliente WHERE activo = 1"
-
-            Const lSQl As String = "SELECT * FROM cliente 
-                                    WHERE activo = 1 "
-
-            Using lDTA As New SqlDataAdapter(lSQl, lConnection)
-
-                lDTA.SelectCommand.CommandType = CommandType.Text
-                lDTA.SelectCommand.Transaction = lTransaction
-
-                Dim lDataTable As New DataTable
-                lDTA.Fill(lDataTable)
-
-                Dim Obj As clsBeCliente
-
-                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
-
-                    For Each lRow As DataRow In lDataTable.Rows
-
-                        Obj = New clsBeCliente
-                        Cargar(Obj, lRow)
-                        lReturnList.Add(Obj)
-
-                    Next
-
-                End If
-
-            End Using
-
-            Return lReturnList
-
-        Catch ex As Exception
-            Throw New Exception("Cliente_GetAll: " & ex.Message)
-        End Try
-    End Function
-
-    End Function
-
     '#CKFK20220325 Función creada para obtener lista de clientes By IdCliente
     Public Shared Function Get_All_By_IdCliente(ByVal pIdCliente As Integer,
                                                 ByRef lConnection As SqlConnection,

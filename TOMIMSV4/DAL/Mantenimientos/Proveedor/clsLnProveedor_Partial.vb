@@ -1396,7 +1396,6 @@ Partial Public Class clsLnProveedor
         GetListProveedores_By_Activo_and_IdPropietario = Nothing
 
         Try
-            Dim vSQL As String = "SELECT TOP 1 * FROM proveedor WHERE Codigo=@Codigo"
 
             Dim vSQL As String = "SELECT * FROM VW_Proveedor WHERE 1 > 0 "
 
@@ -1448,7 +1447,6 @@ Partial Public Class clsLnProveedor
 
                 End If
 
-                Return (lDT IsNot Nothing AndAlso lDT.Rows.Count > 0)
             End Using
 
         Catch ex As Exception

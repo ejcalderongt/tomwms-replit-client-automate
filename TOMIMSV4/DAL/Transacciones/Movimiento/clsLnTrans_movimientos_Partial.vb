@@ -1,6 +1,5 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
-Imports System.Data.SqlClient
 
 Partial Public Class clsLnTrans_movimientos
 
@@ -68,62 +67,48 @@ Partial Public Class clsLnTrans_movimientos
 
     End Function
 
-    Public Shared Function Get_Movimientos(ByVal pIdBodegaOrigen As Integer,
-                                       ByVal pFechaDel As Date,
-                                       ByVal pFechaAl As Date,
-                                       Optional ByVal pLote As String = Nothing) As DataTable
+    Public Shared Function Get_Movimientos(ByVal pIdBodegaOrigen As Integer, ByVal pFechaDel As Date, ByVal pFechaAl As Date, Optional ByVal pLote As String = Nothing) As DataTable
 
-        Dim resultTable As New DataTable("Result")
+        Dim lTable As New DataTable("Result")
 
         Try
-            Dim query As String = "SELECT Propietario,IdBodega,Poliza,Producto,Presentación,
-                        [Estado Origen],[Estado Destino],[Unidad de Medida],cantidad,peso,lote,Origen,Destino,
-                        [Tipo Tarea],IdBodegaOrigen,fecha,IdProducto,codigo,codigo_barra,barra_pallet,
-                        fecha_vence, Cantidad_Presentacion, IdDocIngreso, IdDocSalida, IdTransaccion, Clasificacion,
-                        Area_Origen, Operador, Codigo_Talla As Talla, Codigo_Color as Color 
-                        From VW_Movimientos Where IdBodegaOrigen =@IdBodegaOrigen"
-            Else
-                vSQL = "Select Propietario, IdBodega, Poliza, Producto, Presentación,
-                        [Estado Origen],[Estado Destino],[Unidad de Medida], cantidad, peso, lote, Origen, Destino,
-                        [Tipo Tarea], IdBodegaOrigen, fecha, IdProducto, codigo, codigo_barra, barra_pallet,
-                        fecha_vence, Cantidad_Presentacion, IdDocIngreso, IdDocSalida, IdTransaccion, Clasificacion,
-            Area_Origen, Operador FROM VW_Movimientos WHERE "
+
+            Dim vSQL As String = ""
 
             If pIdBodegaOrigen > 0 Then
-                query += "IdBodegaOrigen = @IdBodegaOrigen"
+                vSQL = "SELECT Propietario,IdBodega,Poliza,Producto,Presentación,
+                        [Estado Origen],[Estado Destino],[Unidad de Medida],cantidad,peso,lote,Origen,Destino,
+                        [Tipo Tarea],IdBodegaOrigen,fecha,IdProducto,codigo,codigo_barra,barra_pallet,
+                        fecha_vence,Cantidad_Presentacion,IdDocIngreso,IdDocSalida, IdTransaccion,Clasificacion,
+                        Area_Origen, Operador, Codigo_Talla as Talla, Codigo_Color as Color 
+                        FROM VW_Movimientos WHERE IdBodegaOrigen=@IdBodegaOrigen"
             Else
-                query += "IdBodegaOrigen = 0"
+                vSQL = "SELECT Propietario,IdBodega,Poliza,Producto,Presentación,
+                        [Estado Origen],[Estado Destino],[Unidad de Medida],cantidad,peso,lote,Origen,Destino,
+                        [Tipo Tarea],IdBodegaOrigen,fecha,IdProducto,codigo,codigo_barra,barra_pallet,
+                        fecha_vence,Cantidad_Presentacion,IdDocIngreso,IdDocSalida,IdTransaccion,Clasificacion,
+                        Area_Origen, Operador, Codigo_Talla as Talla, Codigo_Color as Color  FROM VW_Movimientos WHERE IdBodegaOrigen=0"
             End If
 
-            query += " AND CAST(Fecha AS DATE) BETWEEN @FechaDel AND @FechaAl"
+            vSQL += String.Format(" AND cast(Fecha AS DATE) BETWEEN {0} AND {1}", FormatoFechas.fFecha(pFechaDel), FormatoFechas.fFecha(pFechaAl))
 
-            If Not String.IsNullOrWhiteSpace(pLote) Then
-                query += " AND LOTE LIKE @Lote"
+            If Not pLote Is Nothing Then
+                If Not pLote.Trim = "" Then
+                    vSQL += " AND LOTE LIKE '%" & pLote & "%'"
+                End If
             End If
 
-            query += " ORDER BY fecha"
+            vSQL += "order by fecha"
 
-            Using conn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-                Using adapter As New SqlDataAdapter(query, conn)
-                    adapter.SelectCommand.CommandType = CommandType.Text
-                    adapter.SelectCommand.CommandTimeout = 300
-
-                    If pIdBodegaOrigen > 0 Then
-                        adapter.SelectCommand.Parameters.AddWithValue("@IdBodegaOrigen", pIdBodegaOrigen)
-                    End If
-
-                    adapter.SelectCommand.Parameters.AddWithValue("@FechaDel", pFechaDel.Date)
-                    adapter.SelectCommand.Parameters.AddWithValue("@FechaAl", pFechaAl.Date)
-
-                    If Not String.IsNullOrWhiteSpace(pLote) Then
-                        adapter.SelectCommand.Parameters.AddWithValue("@Lote", "%" & pLote.Trim() & "%")
-                    End If
-
-                    adapter.Fill(resultTable)
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+                    lDataAdapter.SelectCommand.CommandType = CommandType.Text
+                    If pIdBodegaOrigen > 0 Then lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdBodegaOrigen", pIdBodegaOrigen)
+                    lDataAdapter.Fill(lTable)
                 End Using
             End Using
 
-            Return resultTable
+            Return lTable
 
         Catch ex As Exception
             Throw ex

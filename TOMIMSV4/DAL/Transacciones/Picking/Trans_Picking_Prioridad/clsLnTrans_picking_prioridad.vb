@@ -1,8 +1,5 @@
-Imports System
-Imports System.Data.Common
 Imports System.Data.SqlClient
 Imports System.Reflection
-Imports System
 
 Public Class clsLnTrans_picking_prioridad
 
@@ -138,7 +135,6 @@ Public Class clsLnTrans_picking_prioridad
 		End Try
 
 	End Function
-
 
 	Public Shared Function Eliminar(ByRef oBeTrans_picking_prioridad As clsBeTrans_picking_prioridad, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 
@@ -339,20 +335,14 @@ Public Class clsLnTrans_picking_prioridad
 		End Try
 
 	End Function
-
 	Public Shared Function GetSingle_By_IdPickingPrioridad(ByVal pIdPickingPrioridad As Integer, Optional ByVal pConection As SqlConnection = Nothing, Optional ByVal pTransaction As SqlTransaction = Nothing) As clsBeTrans_picking_prioridad
 
 		Dim lConnection As New SqlConnection(connectionString:=Configuration.ConfigurationManager.AppSettings("CST"))
 		Dim lTransaction As SqlTransaction = Nothing
 		Dim lDTA As New SqlDataAdapter
 		GetSingle_By_IdPickingPrioridad = Nothing
-		Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-		Dim lTransaction As SqlTransaction = Nothing
-		Dim cmd As New SqlCommand
 
 		Try
-			' Definir la consulta SQL
-			Const sp As String = "SELECT top 1 * FROM Trans_picking_prioridad WHERE IdPrioridadPicking = @pIdPickingPrioridad"
 
 			Const sp As String = "SELECT * FROM Trans_picking_prioridad Where(IdPrioridadPicking = @pIdPickingPrioridad)"
 
@@ -383,14 +373,13 @@ Public Class clsLnTrans_picking_prioridad
 
 		Catch ex As Exception
 			If lTransaction IsNot Nothing Then lTransaction.Rollback()
-			Throw ex
+			Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
 		Finally
-			If lConnection.State = ConnectionState.Open Then lConnection.Close() : lConnection.Dispose()
+			If lConnection.State = ConnectionState.Open Then lConnection.Close()
 			If lTransaction IsNot Nothing Then lTransaction.Dispose()
 			If lConnection IsNot Nothing Then lConnection.Dispose()
 		End Try
 
 	End Function
-
 
 End Class

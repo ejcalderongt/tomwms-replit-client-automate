@@ -58,17 +58,7 @@ Public Class frmRegistraFechaExpotacion
         End Try
     End Sub
 
-    Private Sub GridView1_RowCellStyle(sender As Object, e As DevExpress.XtraGrid.Views.Grid.RowCellStyleEventArgs) Handles GridView1.RowCellStyle
-        If e.Column.FieldName = "FechaSincronizacion" Then
-            ' Colorear fondo si la celda no tiene fecha (Nothing)
-            Dim fecha = DirectCast(GridView1.GetRowCellValue(e.RowHandle, e.Column), Date?)
-            If Not fecha.HasValue Then
-                e.Appearance.BackColor = Color.LightYellow
-                e.Appearance.ForeColor = Color.DarkBlue
-                e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Bold)
-            End If
-        End If
-    End Sub
+
 
     Private Sub Guardar(listaUI As List(Of DuplaSinFecha))
 

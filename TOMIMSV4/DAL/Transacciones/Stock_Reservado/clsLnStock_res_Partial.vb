@@ -34395,10 +34395,6 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
 
                         lReturnList.Add(BeStockRes)
 
-                        For Each dr As DataRow In dt.Rows
-                        vBeStock_res = New clsBeStock_res
-                        Cargar(vBeStock_res, dr)
-                        lReturnList.Add(vBeStock_res)
                     Next
 
                 End If
@@ -34407,11 +34403,7 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
 
             Return lReturnList
 
-        Catch ex1 As SqlException
-            Throw ex1
         Catch ex As Exception
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms.Agregar_Error(vMsgError)
             Throw ex
         End Try
 

@@ -101,7 +101,7 @@ Partial Class frmCambioUbicacion
         Dim User_agrLabel As System.Windows.Forms.Label
         Dim Fec_modLabel As System.Windows.Forms.Label
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmCambioUbicacion))
-        Dim GridLevelNode2 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
+        Dim GridLevelNode1 As DevExpress.XtraGrid.GridLevelNode = New DevExpress.XtraGrid.GridLevelNode()
         Me.RibbonControl = New DevExpress.XtraBars.Ribbon.RibbonControl()
         Me.mnuGuardar = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuActualizar = New DevExpress.XtraBars.BarButtonItem()
@@ -1834,8 +1834,8 @@ Partial Class frmCambioUbicacion
         Me.grdDetalle.Cursor = System.Windows.Forms.Cursors.Default
         Me.grdDetalle.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grdDetalle.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        GridLevelNode2.RelationName = "Level1"
-        Me.grdDetalle.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode2})
+        GridLevelNode1.RelationName = "Level1"
+        Me.grdDetalle.LevelTree.Nodes.AddRange(New DevExpress.XtraGrid.GridLevelNode() {GridLevelNode1})
         Me.grdDetalle.Location = New System.Drawing.Point(2, 28)
         Me.grdDetalle.MainView = Me.GridViewDet
         Me.grdDetalle.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
@@ -2006,7 +2006,6 @@ Partial Class frmCambioUbicacion
         Me.chkAdvanceMode.Caption = "Advance Mode"
         Me.chkAdvanceMode.Id = 13
         Me.chkAdvanceMode.Name = "chkAdvanceMode"
-        Me.chkAdvanceMode.Visibility = DevExpress.XtraBars.BarItemVisibility.Never
         '
         'frmCambioUbicacion
         '
@@ -2017,7 +2016,6 @@ Partial Class frmCambioUbicacion
         Me.Controls.Add(Me.hideContainerBottom)
         Me.Controls.Add(Me.RibbonStatusBar1)
         Me.Controls.Add(Me.RibbonControl)
-        Me.KeyPreview = True
         Me.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.Name = "frmCambioUbicacion"
         Me.Ribbon = Me.RibbonControl
@@ -2242,5 +2240,9 @@ Partial Class frmCambioUbicacion
     Friend WithEvents Fec_modDateEdit As DevExpress.XtraEditors.DateEdit
     Friend WithEvents User_modTextEdit As DevExpress.XtraEditors.TextEdit
     Friend WithEvents hideContainerBottom As DevExpress.XtraBars.Docking.AutoHideContainer
+    Friend WithEvents txtColor As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents txtTalla As DevExpress.XtraEditors.TextEdit
+    Friend WithEvents lblColor As DevExpress.XtraEditors.LabelControl
+    Friend WithEvents lblTalla As DevExpress.XtraEditors.LabelControl
     Friend WithEvents chkAdvanceMode As DevExpress.XtraBars.BarToggleSwitchItem
 End Class

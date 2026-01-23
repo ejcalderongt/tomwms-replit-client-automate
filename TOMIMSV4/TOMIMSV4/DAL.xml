@@ -222,17 +222,6 @@ DAL
  <param name="pCodigo"></param>
  <returns></returns>
 </member>
-<member name="M:TOMWMS.clsLnI_nav_ped_compra_enc.Procesar_Pedido_Compra_MI3(TOMWMS.clsBeI_nav_ped_compra_enc@,TOMWMS.clsBeTrans_oc_enc@,System.Windows.Forms.RichTextBox@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
- <summary>
- Procesar_Pedido_Compra_MI3 (Con transacción)
- </summary>
- <param name="navPedidoCompraEnc"></param>
- <param name="OutBeOrdenCompra"></param>
- <param name="lblprg"></param>
- <param name="lConnection"></param>
- <param name="lTransInterface"></param>
- <returns></returns>
-</member>
 <member name="M:TOMWMS.clsLnI_nav_ped_traslado_enc.Actualizar_Estado(TOMWMS.clsBeI_nav_ped_traslado_enc@,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction)">
  <summary>
  #EJC202301242213:Actualizar estado a importado.
@@ -1232,13 +1221,6 @@ Row event argument class
  <param name="lConnection"></param>
  <param name="lTransaction"></param>
  <returns></returns>
-</member>
-<member name="M:TOMWMS.clsLnTrans_re_oc.Get_IdRecepcionEnc_By_IdOrdenCompraEnc(System.Int32)">
- <summary>
- Creada por Erik Calderón, se usa para obtener todas las Recepciones para posteriormente buscar su estado y anularlas
- </summary>
- <param name="pIdOrdenCompraEnc"></param>
- <returns>Lista de Recepciones solamente Ids</returns>
 </member>
 <member name="M:TOMWMS.clsLnTrans_re_oc.GetSingle(System.Int32,System.Int32,System.Data.SqlClient.SqlConnection@,System.Data.SqlClient.SqlTransaction@)">
  <summary>

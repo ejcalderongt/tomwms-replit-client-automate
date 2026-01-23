@@ -1,8 +1,8 @@
 ﻿Imports System.Data.SqlClient
 
-Public Class clsLnLog_verificacion_bof
+Public Class clsLnLog_verificacion_bof_error
 
-    Public Shared Function Insertar(ByRef oBe As clsBeLog_verificacion_bof,
+    Public Shared Function Insertar(ByRef oBe As clsBeLog_verificacion_bof_error,
                                     Optional ByVal pConection As SqlConnection = Nothing,
                                     Optional ByVal pTransaction As SqlTransaction = Nothing) As Integer
 

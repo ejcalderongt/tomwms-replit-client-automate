@@ -2,55 +2,30 @@ Public Class clsBeTrans_inv_ciclico
     Implements ICloneable
 
     Public Property IdInvCiclico() As Integer = 0
-
     Public Property Idinventarioenc() As Integer = 0
-
     Public Property IdStock() As Integer = 0
-
     Public Property IdProductoBodega() As Integer = 0
-
     Public Property IdProductoEstado() As Integer = 0
-
     Public Property IdPresentacion() As Integer = 0
-
     Public Property IdUbicacion() As Integer = 0
-
     Public Property EsNuevo() As Boolean = False
-
     Public Property Lote_stock() As String = ""
-
     Public Property Lote() As String = ""
-
     Public Property Fecha_vence_stock() As Date = Nothing
-
     Public Property Fecha_vence() As Date = Nothing
-
     Public Property Cant_stock() As Double = 0.0
-
     Public Property Cantidad() As Double = 0.0
-
     Public Property Cant_reconteo() As Double = 0.0
-
     Public Property Peso_stock() As Double = 0.0
-
     Public Property Peso() As Double = 0.0
-
     Public Property Peso_reconteo() As Double
-
     Public Property Idoperador() As Integer = 0
-
     Public Property User_agr() As String = ""
-
     Public Property Fec_agr() As Date = Date.Now
-
     Public Property IdProductoEst_nuevo() As Integer = 0
-
     Public Property IdPresentacion_nuevo() As Integer = 0
-
     Public Property IdUbicacion_nuevo() As Integer = 0
-
     Public Property EsPallet() As Boolean = False
-
     Public Property lic_plate() As String
     Public Property Fec_Mod As DateTime = Now
     Public Property IdBodega As Integer = 0
@@ -59,9 +34,10 @@ Public Class clsBeTrans_inv_ciclico
     Public Property Nuevo_Stock As Double = 0
     Public Property Contado() As Boolean = False
     Public Property Cantidad_Reservada_UMBas() As Double = 0
-
     Public Property IdProductoTallaColor As Integer = 0
     Public Property Gondola As String = ""
+    Public Property IdProductoTallaColor_nuevo As Integer = 0
+
     Sub New()
     End Sub
 
@@ -127,4 +103,3 @@ Public Class clsBeTrans_inv_ciclico
     End Function
 
 End Class
-
