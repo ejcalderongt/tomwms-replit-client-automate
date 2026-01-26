@@ -260,12 +260,7 @@ Public Class frmEjecucion
     Private Async Sub cmdIngresos_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdIngresos.ItemClick
         Try
 
-            'HabilitarOpciones(False)
-            'clsLnTrans_oc_encDMS.Exportacion_IngresosAsync(lblprg, listaPropietarios, listaPropietariosBodega)
-            'HabilitarOpciones(True)
-
             Await EjecutarIngresosAsync()
-
 
         Catch ex As Exception
             clsHelper.LogMensaje(lblprg, "Error en exportación de ingresos.", clsHelper.TipoMensaje.Error_)

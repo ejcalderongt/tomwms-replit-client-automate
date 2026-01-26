@@ -402,7 +402,7 @@ Public Class frmPreFactura
 
     Private Sub dtpfechaHasta_ValueChanged(sender As Object, e As EventArgs) Handles dtpfechaHasta.ValueChanged
         Try
-            AjustarFechaInferida(dtpfechaHasta.Value)
+            'AjustarFechaInferida(dtpfechaHasta.Value)
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
@@ -3060,7 +3060,7 @@ Public Class frmPreFactura
                                         '*************************************************************************************************************
                                         '#GT20062024: validar si es cobro por unidad (tipo 1)
                                         '#GT03092024: validar si tiene variante de cobro (el producto tiene factor de cobro o dimensiones registradas)
-                                        If pAcuerdoPrimario.IdTipoCobro = 1 And pAcuerdoPrimario.Monto > 0 Then
+                                        If pAcuerdoPrimario.IdTipoCobro = 1 And pAcuerdoPrimario.Monto > 0 And pAcuerdoPrimario.Prioridad > 0 Then
 
                                             SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por unidad...")
 
@@ -3336,7 +3336,7 @@ Public Class frmPreFactura
 
                                         '****************************************************************************
                                         '#GT20062024: validar si es cobro por valor mercaderia (tipo 2)
-                                        If pAcuerdoPrimario.IdTipoCobro = 2 And pAcuerdoPrimario.Porcentaje > 0 Then
+                                        If pAcuerdoPrimario.IdTipoCobro = 2 And pAcuerdoPrimario.Porcentaje > 0 AndAlso pAcuerdoPrimario.Prioridad > 0 Then
                                             SplashScreenManager.Default.SetWaitFormDescription("Validando cobro por valor...")
                                             Dim tasa As Double = pAcuerdoPrimario.Porcentaje / 100
                                             vCobroAlmacenajeDiario = 0

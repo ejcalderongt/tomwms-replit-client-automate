@@ -1707,6 +1707,48 @@ Partial Public Class clsLnBodega_tramo
 
     End Function
 
+    '#GT16012025: listar tramos para el portal web cealsa
+    Public Shared Function Get_All_Tramos_By_IdTramo(ByVal pIdTramo As Integer,
+                                                                    ByRef lConnection As SqlConnection,
+                                                                    ByRef lTransaction As SqlTransaction) As List(Of clsBeBodega_tramo)
+
+        Get_All_Tramos_By_IdTramo = Nothing
+
+        Try
+
+            Dim vSQL As String = "SELECT * FROM bodega_tramo WHERE IdTramo =@pIdTramo"
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Parameters.AddWithValue("@pIdTramo", pIdTramo)
+
+                Dim lDataTable As New DataTable
+
+                lDTA.Fill(lDataTable)
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                    Get_All_Tramos_By_IdTramo = New List(Of clsBeBodega_tramo)()
+                    Dim Obj As clsBeBodega_tramo
+
+                    For Each lRow As DataRow In lDataTable.Rows
+                        Obj = New clsBeBodega_tramo()
+                        Cargar(Obj, lRow)
+                        Get_All_Tramos_By_IdTramo.Add(Obj)
+                    Next
+
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls
 

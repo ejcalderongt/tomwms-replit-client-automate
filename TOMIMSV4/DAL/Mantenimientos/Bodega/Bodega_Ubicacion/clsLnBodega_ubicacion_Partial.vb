@@ -3747,5 +3747,48 @@ Partial Public Class clsLnBodega_ubicacion
 
     End Function
 
+    '#GT14012025: obtener todas las ubicaciones asociadas a un idubiacion (deberian existir 2 para cealsa) y enviar a portal web
+    Public Shared Function Get_All_By_IdUbicacion(ByVal IdUbicacion As Integer,
+                                                  ByVal lConnection As SqlConnection,
+                                                  ByVal lTransaction As SqlTransaction) As List(Of clsBeBodega_ubicacion)
+
+        Get_All_By_IdUbicacion = Nothing
+
+        Dim pBeBodega_ubicacion As New clsBeBodega_ubicacion
+
+        Try
+
+            Const sp As String = "SELECT * FROM Bodega_ubicacion " &
+            " Where(IdUbicacion = @IdUbicacion )"
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@IDUBICACION", IdUbicacion))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            If dt IsNot Nothing AndAlso dt.Rows.Count > 0 Then
+
+                Get_All_By_IdUbicacion = New List(Of clsBeBodega_ubicacion)()
+
+                For Each lRow As DataRow In dt.Rows
+
+                    pBeBodega_ubicacion = New clsBeBodega_ubicacion
+                    Cargar(pBeBodega_ubicacion, lRow, lTransaction, lConnection)
+                    Get_All_By_IdUbicacion.Add(pBeBodega_ubicacion)
+
+                Next
+
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Function
+
 
 End Class

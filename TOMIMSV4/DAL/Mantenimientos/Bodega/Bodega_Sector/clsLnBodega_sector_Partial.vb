@@ -874,6 +874,54 @@ Partial Public Class clsLnBodega_sector
 
     End Function
 
+    '#GT14012025: obtener sectores según la ubicación para portal web cealsa
+    Public Shared Function Get_All_By_IdArea_And_IdSector(ByVal pIdArea As Integer,
+                                                          ByVal pIdSector As Integer,
+                                                          ByVal lConnection As SqlConnection,
+                                                          ByVal lTransaction As SqlTransaction) As List(Of clsBeBodega_sector)
+
+        Get_All_By_IdArea_And_IdSector = Nothing
+
+        Try
+
+
+
+            Dim vSQL As String = "SELECT * FROM bodega_sector WHERE (IdArea=@IdArea and IdSector=@IdSector AND Activo=1 )"
+
+            Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdArea", pIdArea)
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdSector", pIdSector)
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                Dim Obj As clsBeBodega_sector
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                    Get_All_By_IdArea_And_IdSector = New List(Of clsBeBodega_sector)
+
+                    For Each lRow As DataRow In lDataTable.Rows
+                        Obj = New clsBeBodega_sector()
+                        Cargar(Obj, lRow)
+                        Get_All_By_IdArea_And_IdSector.Add(Obj)
+
+                    Next
+
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw New Exception("BodegaSector_GetAllByIdIdAreaIdSector: " & ex.Message)
+        End Try
+
+    End Function
+
+
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls
 

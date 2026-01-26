@@ -127,6 +127,7 @@ Public Class clsLnTrans_oc_encDMS
             Const maxIntentos As Integer = 2 ' Maximo número de intentos
 
             clsHelper.LogMensaje(lblprg, "Iterando Registro: " & Contador & "/" & registros, clsHelper.TipoMensaje.Info)
+
             Dim JsonOC = Crear_Json(lblprg, pOC)
 
             If String.IsNullOrEmpty(JsonOC) Then
@@ -149,7 +150,7 @@ Public Class clsLnTrans_oc_encDMS
                 End If
             End While
 
-            ' Si después de los intentos no se pudo enviar el registro
+            ' Si después de los intentos no se pudo enviar el registro, guardar log
             If Not enviado Then
                 pRegistrosFallidos += 1
                 Guadar_Envio_Rechazado(pOC, resultado)
@@ -162,8 +163,8 @@ Public Class clsLnTrans_oc_encDMS
 
 
     Public Shared Sub Guadar_Envio_Rechazado(ByVal pOrdenCompra As clsBeTrans_oc_enc, ByVal pMensaje As String,
-                                                                                 Optional ByRef lConnection As SqlConnection = Nothing,
-                                                                                 Optional ByRef lTransaction As SqlTransaction = Nothing)
+                                                                             Optional ByRef lConnection As SqlConnection = Nothing,
+                                                                             Optional ByRef lTransaction As SqlTransaction = Nothing)
 
         Dim localConnection As Boolean = False
         Dim localTransaction As Boolean = False
@@ -173,9 +174,13 @@ Public Class clsLnTrans_oc_encDMS
 
             ' Crear conexión si no se recibió
             If lConnection Is Nothing Then
-                lConnection = New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-                lConnection.Open()
-                localConnection = True
+                If lTransaction IsNot Nothing Then
+                    lConnection = lTransaction.Connection
+                Else
+                    lConnection = New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                    lConnection.Open()
+                    localConnection = True
+                End If
             End If
 
             ' Crear transacción si no se recibió
@@ -183,11 +188,6 @@ Public Class clsLnTrans_oc_encDMS
                 lTransaction = lConnection.BeginTransaction()
                 localTransaction = True
             End If
-
-            '#GT08102025: evita duplicar el registro para el mismo ingreso
-            'If Not clsLnDMS_Log_sincronizacion_fallos.Existe_by_Ingreso(pOrdenCompra.IdOrdenCompraEnc, lConnection, lTransaction) Then
-
-            'End If
 
             BeLogSyncError = New clsBeDMS_Log_sincronizacion_fallos()
             BeLogSyncError.IdLogFallo = clsLnDMS_Log_sincronizacion_fallos.MaxID(lConnection, lTransaction) + 1
@@ -207,12 +207,9 @@ Public Class clsLnTrans_oc_encDMS
         Catch ex As Exception
             ' Rollback si la transacción es local
             If localTransaction AndAlso lTransaction IsNot Nothing Then
-                Try
-                    lTransaction.Rollback()
-                Catch
-                    ' Ignorar errores de rollback
-                End Try
+                lTransaction.Rollback()
             End If
+
             Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
 
         Finally
@@ -222,6 +219,62 @@ Public Class clsLnTrans_oc_encDMS
             End If
         End Try
     End Sub
+
+
+    'Public Shared Sub Guadar_Envio_Rechazado(ByVal pOrdenCompra As clsBeTrans_oc_enc, ByVal pMensaje As String,
+    '                                                                             Optional ByRef lConnection As SqlConnection = Nothing,
+    '                                                                             Optional ByRef lTransaction As SqlTransaction = Nothing)
+
+    '    Dim localConnection As Boolean = False
+    '    Dim localTransaction As Boolean = False
+    '    Dim BeLogSyncError As New clsBeDMS_Log_sincronizacion_fallos()
+
+    '    Try
+
+    '        ' Crear conexión si no se recibió
+    '        If lConnection Is Nothing Then
+    '            lConnection = New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+    '            lConnection.Open()
+    '            localConnection = True
+    '        End If
+
+    '        ' Crear transacción si no se recibió
+    '        If lTransaction Is Nothing Then
+    '            lTransaction = lConnection.BeginTransaction()
+    '            localTransaction = True
+    '        End If
+
+
+    '        BeLogSyncError = New clsBeDMS_Log_sincronizacion_fallos()
+    '        BeLogSyncError.IdLogFallo = clsLnDMS_Log_sincronizacion_fallos.MaxID(lConnection, lTransaction) + 1
+    '        BeLogSyncError.IdOrdenCompraEnc = pOrdenCompra.IdOrdenCompraEnc
+    '        BeLogSyncError.IdPropietario = pOrdenCompra.PropietarioBodega.IdPropietario
+    '        BeLogSyncError.IdPedidoEnc = 0
+    '        BeLogSyncError.Estado = "Error"
+    '        BeLogSyncError.Mensaje_error = pMensaje
+    '        BeLogSyncError.Fec_agr = Now
+    '        BeLogSyncError.IdProducto = 0
+    '        clsLnDMS_Log_sincronizacion_fallos.Insertar(BeLogSyncError, lConnection, lTransaction)
+
+    '        If localTransaction Then
+    '            lTransaction.Commit()
+    '        End If
+
+    '    Catch ex As Exception
+    '        ' Rollback si la transacción es local
+    '        If localTransaction AndAlso lTransaction IsNot Nothing Then
+    '            lTransaction.Rollback()
+    '        End If
+
+    '        Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
+
+    '    Finally
+    '        ' Cierre solo si es local
+    '        If localConnection AndAlso lConnection IsNot Nothing AndAlso lConnection.State = ConnectionState.Open Then
+    '            lConnection.Close()
+    '        End If
+    '    End Try
+    'End Sub
 
     Public Shared Sub Actualizar_Envio_Rechazado(ByVal pOrdenCompraEnc As clsBeTrans_oc_enc)
         Dim BeLogSyncError As New clsBeDMS_Log_sincronizacion_fallos()
@@ -280,6 +333,10 @@ Public Class clsLnTrans_oc_encDMS
         Dim pTrans_movimientos As New clsBeTrans_movimientos()
         Dim pStock_Rec As New clsBeStock_rec()
         Dim pStock As New clsBeStock()
+        Dim pListBodega_Area As New List(Of clsBeBodega_area)()
+        Dim pListBodega_Sector As New List(Of clsBeBodega_sector)()
+        Dim pListBodega_Tramo As New List(Of clsBeBodega_tramo)()
+        Dim pListBodega_Ubicacion As New List(Of clsBeBodega_ubicacion)()
         Dim pListOperadorBodega As New List(Of clsBeOperador_bodega)()
         Dim pListOperador As New List(Of clsBeOperador)()
         Dim resultado As String = ""
@@ -354,7 +411,6 @@ Public Class clsLnTrans_oc_encDMS
                                         .IdPais = Proveedor.IdPais,
                                         .Codigo_Empresa_ERP = Proveedor.Codigo_Empresa_ERP
                                           })
-
 
                         Dim ListProveedorBodega = clsLnProveedor_bodega.Get_All_By_IdProveedor(Proveedor.IdProveedor, clsTransaccion.lConnection, clsTransaccion.lTransaction)
                         If ListProveedorBodega IsNot Nothing AndAlso ListProveedorBodega.Count > 0 Then
@@ -801,10 +857,10 @@ Public Class clsLnTrans_oc_encDMS
                         pTrans_movimientos = New clsBeTrans_movimientos()
                         pStock_Rec = New clsBeStock_rec()
                         pStock = New clsBeStock()
-
-                        If re_det.IdRecepcionEnc = 282 AndAlso re_det.IdRecepcionDet = 5 Then
-                            Debug.Write("aqui")
-                        End If
+                        pListBodega_Ubicacion = New List(Of clsBeBodega_ubicacion)()
+                        pListBodega_Area = New List(Of clsBeBodega_area)()
+                        pListBodega_Sector = New List(Of clsBeBodega_sector)()
+                        pListBodega_Tramo = New List(Of clsBeBodega_tramo)()
 
                         pTrans_movimientos = clsLnTrans_movimientos.GetSingle_By_IdRecepcionEnc_And_IdRecepcionDet(re_det.IdRecepcionEnc,
                                                                                                                                re_det.IdRecepcionDet,
@@ -819,8 +875,6 @@ Public Class clsLnTrans_oc_encDMS
                                                                                                                     clsTransaccion.lTransaction)
                         End If
 
-
-
                         pStock_Rec = clsLnStock_rec.GetSingle_Stock_By_IdRecepcionEnc_And_IdRecpecionDet(re_det.IdRecepcionEnc,
                                                                                                                      re_det.IdRecepcionDet,
                                                                                                                      re_det.Lic_plate,
@@ -832,6 +886,66 @@ Public Class clsLnTrans_oc_encDMS
                                                                                                        clsTransaccion.lConnection,
                                                                                                        clsTransaccion.lTransaction)
 
+                        '#GT14012025: añadir bodega_area, bodega_sector y bodega_ubicacion
+                        'esto para insertar stock con ubicaciones añadidas on premise, no existentes en portal.
+                        pListBodega_Ubicacion = clsLnBodega_ubicacion.Get_All_By_IdUbicacion(pStock.IdUbicacion, clsTransaccion.lConnection,
+                                                                                                                clsTransaccion.lTransaction)
+
+                        If pListBodega_Ubicacion IsNot Nothing Then
+
+                            If pListBodega_Sector Is Nothing Then pListBodega_Sector = New List(Of clsBeBodega_sector)()
+                            If pListBodega_Area Is Nothing Then pListBodega_Area = New List(Of clsBeBodega_area)()
+                            If pListBodega_Tramo Is Nothing Then pListBodega_Tramo = New List(Of clsBeBodega_tramo)()
+
+                            ' Evita repetir consulta de sector por (IdArea|IdSector)
+                            Dim SectoresProcesados As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+
+                            ' Evita repetir consulta de área por IdArea
+                            Dim areasProcesadas As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+
+                            ' Evita repetir consulta de tramo
+                            Dim TramosProcesados As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+
+
+                            For Each ubicacion In pListBodega_Ubicacion
+
+                                ' 1) ÁREA (una vez por IdArea)
+                                Dim keyArea As String = ubicacion.IdArea.ToString()
+                                If areasProcesadas.Add(keyArea) Then
+                                    Dim Areas = clsLnBodega_area.Get_All_By_IdArea(ubicacion.IdArea,
+                                                           clsTransaccion.lConnection,
+                                                           clsTransaccion.lTransaction)
+                                    If Areas IsNot Nothing Then
+                                        pListBodega_Area.AddRange(Areas)
+                                    End If
+                                End If
+
+                                ' 2) SECTOR (una vez por IdArea|IdSector)
+                                Dim keyCombo As String = $"{ubicacion.IdArea}|{ubicacion.IdSector}"
+                                If SectoresProcesados.Add(keyCombo) Then
+                                    Dim sectores = clsLnBodega_sector.Get_All_By_IdArea_And_IdSector(ubicacion.IdArea, ubicacion.IdSector,
+                                                                            clsTransaccion.lConnection,
+                                                                            clsTransaccion.lTransaction)
+                                    If sectores IsNot Nothing Then
+                                        pListBodega_Sector.AddRange(sectores)
+                                    End If
+                                End If
+
+                                ' 3) Tramos
+                                Dim keyTramo As String = ubicacion.IdTramo.ToString()
+                                If TramosProcesados.Add(keyTramo) Then
+                                    Dim tramos = clsLnBodega_tramo.Get_All_Tramos_By_IdTramo(ubicacion.IdTramo,
+                                                                                             clsTransaccion.lConnection,
+                                                                                             clsTransaccion.lTransaction)
+
+                                    If tramos IsNot Nothing Then
+                                        pListBodega_Tramo.AddRange(tramos)
+                                    End If
+                                End If
+
+                            Next
+
+                        End If
 
                         If pTrans_movimientos IsNot Nothing Then
                             trans_movimientosList.Add(New With {
@@ -967,7 +1081,13 @@ Public Class clsLnTrans_oc_encDMS
 
                         End If
 
+                        Dim areasOut = If(pListBodega_Area, New List(Of clsBeBodega_area)())
+                        Dim sectoresOut = If(pListBodega_Sector, New List(Of clsBeBodega_sector)())
+                        Dim ubicacionesOut = If(pListBodega_Ubicacion, New List(Of clsBeBodega_ubicacion)())
+                        Dim tramosOut = If(pListBodega_Tramo, New List(Of clsBeBodega_tramo)())
+
                         If pStock IsNot Nothing Then
+
                             stockList.Add(New With {
                                                              .IdStock = pStock.IdStock,
                                                              .IdPropietarioBodega = pStock.IdPropietarioBodega,
@@ -1001,7 +1121,11 @@ Public Class clsLnTrans_oc_encDMS
                                                              .temperatura = pStock.Temperatura,
                                                              .atributo_variante_1 = pStock.Atributo_Variante_1,
                                                              .IdBodega = pStock.IdBodega,
-                                                             .pallet_no_estandar = pStock.Pallet_No_Estandar
+                                                             .pallet_no_estandar = pStock.Pallet_No_Estandar,
+                                                             .Bodega_Areas = areasOut,
+                                                             .Bodega_Sectores = sectoresOut,
+                                                             .Bodega_Ubicaciones = ubicacionesOut,
+                                                             .Bodega_Tramos = tramosOut
                                                          })
                         Else
                             'clsHelper.LogMensaje(lblprg, "Omitiendo el stock asociado a recepción " & re_det.IdRecepcionEnc & " detalle: " & re_det.IdRecepcionDet, clsHelper.TipoMensaje.Info)
@@ -1040,9 +1164,12 @@ Public Class clsLnTrans_oc_encDMS
                                                             .temperatura = 0.0,
                                                             .atributo_variante_1 = "",
                                                             .IdBodega = 0,
-                                                            .pallet_no_estandar = False
+                                                            .pallet_no_estandar = False,
+                                                            .Bodega_Areas = areasOut,
+                                                            .Bodega_Sectores = sectoresOut,
+                                                            .Bodega_Ubicaciones = ubicacionesOut,
+                                                            .Bodega_Tramos = tramosOut
                                                         })
-
 
                         End If
 

@@ -473,7 +473,7 @@ Public Class clsLnProductoDMS
             End If
 
             '#GT08102025: validar que no exista un registro previo para no duplicar el mismo error
-            If Not clsLnDMS_Log_sincronizacion_fallos.Existe_by_Producto(pProducto) Then
+            If Not clsLnDMS_Log_sincronizacion_fallos.Existe_by_Producto(pProducto, lConnection, lTransaction) Then
                 BeLogSyncError.IdLogFallo = clsLnDMS_Log_sincronizacion_fallos.MaxID(lConnection, lTransaction) + 1
                 BeLogSyncError.IdOrdenCompraEnc = 0
                 BeLogSyncError.IdPedidoEnc = 0

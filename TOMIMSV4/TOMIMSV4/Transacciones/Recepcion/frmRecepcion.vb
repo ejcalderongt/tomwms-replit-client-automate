@@ -685,7 +685,7 @@ Public Class frmRecepcion
     Private Sub Guardar_Recepcion(ByVal Preguntar As Boolean)
 
         Try
-            'ubicame donde se llena el lookup de producto. xfa para el nuevo grid.
+
             If Datos_Correctos() Then
 
                 SplashScreenManager.CloseForm(False)
@@ -2025,6 +2025,18 @@ Public Class frmRecepcion
                 End If
 
             End If
+
+            '#GT02122025: no se ha determinado que hace el operador para duplicar tareas para la HH
+            'aqui remover duplicados antes de insertar.
+
+            pListOpe = pListOpe _
+                        .GroupBy(Function(o) New With {
+                            Key .IdRecepcionEnc = o.IdRecepcionEnc,
+                            Key .IdOperadorBodega = o.IdOperadorBodega
+                        }) _
+                        .Select(Function(g) g.First()) _
+                        .ToList()
+
 
             clsLnTrans_re_enc.Guardar(BeTareaHH,
                                       gBeRecepcionEnc,
