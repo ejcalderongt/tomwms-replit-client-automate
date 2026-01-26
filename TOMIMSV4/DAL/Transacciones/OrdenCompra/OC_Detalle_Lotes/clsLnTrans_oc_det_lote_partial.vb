@@ -1162,4 +1162,29 @@ Partial Public Class clsLnTrans_oc_det_lote
 
     End Function
 
+    Public Shared Function Get_Single_By_Licencia(ByVal pLicencia As String, ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction) As Boolean
+
+        Get_Single_By_Licencia = Nothing
+
+
+        Try
+
+            Const sp As String = "SELECT * FROM Trans_oc_det_lote 
+                                  Where(lic_plate = @lic_plate) "
+
+            Dim cmd As New SqlCommand(sp, lConnection, lTransaction) With {.CommandType = CommandType.Text}
+            Dim dad As New SqlDataAdapter(cmd)
+            dad.SelectCommand.Parameters.Add(New SqlParameter("@LIC_PLATE", pLicencia))
+
+            Dim dt As New DataTable
+            dad.Fill(dt)
+
+            Get_Single_By_Licencia = dt.Rows.Count > 0
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 End Class
