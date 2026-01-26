@@ -479,5 +479,98 @@ namespace WMSWebAPI.Services.Ingresos
             List<clsBeI_nav_transacciones_out> detalles = clsLnI_nav_transacciones_out.Get_All_Ingresos_Pendientes_De_Envio(_configuration);
             return detalles;
         }
-    }
+        public IngresoAsociacionResponseDto BuildIngresoAsociacion(int idEnc)
+        {            
+            var enc = clsLnTrans_oc_enc.Get_Single_By_IdOrdenCompraEnc(_configuration, idEnc);
+            if (enc == null)
+                throw new Exception($"No se encontró la Orden de Compra con IdOrdenCompraEnc={idEnc}.");
+            
+            string noDocumentoOrigen =
+                (!string.IsNullOrWhiteSpace(enc.No_Documento) ? enc.No_Documento : null)
+                ?? $"OC-{enc.IdOrdenCompraEnc}";
+
+            // 3) Armar DTO
+            var dto = new IngresoAsociacionResponseDto
+            {
+                NoDocumentoOrigen = noDocumentoOrigen,
+                IdOrdenCompraEnc = enc.IdOrdenCompraEnc,
+                FechaGeneracion = DateTime.UtcNow,
+                Lineas = new List<IngresoAsociacionLineaDto>()
+            };
+
+            // 4) Preparar lotes agrupados por línea (si hay lotes)
+            // Ajusta nombres de propiedades según tus clases reales
+            var lotesPorLinea = (enc.DetalleLotes ?? new List<clsBeTrans_oc_det_lote>())
+                .GroupBy(l => GetLineaNoLote(l))
+                .Where(g => g.Key > 0)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            // 5) Mapear líneas (detalle OC) y asociar lotes
+            foreach (var lin in (enc.DetalleOC ?? new List<clsBeTrans_oc_det>()))
+            {
+                int lineaNo = GetLineaNoDetalle(lin);
+
+                var lineaDto = new IngresoAsociacionLineaDto
+                {
+                    NoLinea = lineaNo,
+                    CodigoArticulo = GetCodigoArticulo(lin),
+                    CantidadArticulo = GetCantidadArticulo(lin),
+                    Lotes = new List<IngresoAsociacionLoteDto>()
+                };
+
+                if (lineaNo > 0 && lotesPorLinea.TryGetValue(lineaNo, out var lotesDeLinea))
+                {
+                    foreach (var lt in lotesDeLinea)
+                    {
+                        lineaDto.Lotes.Add(new IngresoAsociacionLoteDto
+                        {
+                            CodigoLote = GetCodigoLote(lt),
+                            CantidadLote = GetCantidadLoteBase(lt)
+                        });
+                    }
+                }
+
+                dto.Lineas.Add(lineaDto);
+            }
+
+            return dto;
+        }
+        
+        private static int GetLineaNoDetalle(clsBeTrans_oc_det det)
+        {
+            // Si tu clase tiene solo line_No, deja solo eso
+            if (det.No_Linea > 0) return det.No_Linea;            
+            return 0;
+        }
+
+        private static int GetLineaNoLote(clsBeTrans_oc_det_lote lote)
+        {
+            if (lote.No_linea > 0) return lote.No_linea;
+            return 0;
+        }
+
+        private static string GetCodigoArticulo(clsBeTrans_oc_det det)
+        {            
+            if (!string.IsNullOrWhiteSpace(det.Codigo_producto)) return det.Codigo_producto;            
+            return string.Empty;
+        }
+
+        private static double GetCantidadArticulo(clsBeTrans_oc_det det)
+        {            
+            if (det.Cantidad> 0) return det.Cantidad;
+            return 0;
+        }
+
+        private static string GetCodigoLote(clsBeTrans_oc_det_lote lote)
+        {
+            if (!string.IsNullOrWhiteSpace(lote.Lote)) return lote.Lote;
+            return string.Empty;
+        }
+
+        private static double GetCantidadLoteBase(clsBeTrans_oc_det_lote lote)
+        {
+            if (lote.Cantidad > 0) return lote.Cantidad;            
+            return 0;
+        }
+    }    
 }

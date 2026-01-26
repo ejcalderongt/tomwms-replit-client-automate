@@ -130,12 +130,12 @@ namespace WMSWebAPI.Controllers
 
             try
             {
-                int IdOrdenCompraEnc = _service.Insert(beINavPedCompraEnc);
+                int IdOrdenCompraEnc = _service.Insert(beINavPedCompraEnc);                
 
-                return StatusCode(201, new
+                return Ok(new
                 {
                     Exito = true,
-                    Mensaje = "Orden de compra creada correctamente.",
+                    Mensaje = "Documento procesado correctamente.",                    
                     IdOrdenCompraEnc = IdOrdenCompraEnc
                 });
             }
@@ -184,10 +184,11 @@ namespace WMSWebAPI.Controllers
                         Nombre_producto = x.Nombre_producto,
                         UM = umById.TryGetValue(x.Idunidadmedida, out var um) ? um : "",
                         Presentacion = presCodigoById.TryGetValue(x.Idpresentacion, out var codPres) ? codPres : "",
-                        Cantidad = x.Cantidad_Pendiente,
+                        Cantidad = x.Cantidad,
                         Lote = x.Lote,
                         Vence = x.Fecha_vence,
                         Linea = int.TryParse(x.No_linea, out var ln) ? ln : 0,
+                        Licencia = x.Lic_Plate,
                         Fecha = x.Fec_agr
                     }).ToList();
 
