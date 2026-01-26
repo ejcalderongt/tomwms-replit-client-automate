@@ -3745,8 +3745,8 @@ Partial Public Class clsLnTrans_picking_ubic
                 resultado += "Inicia la actualizacion"
 
                 FilasAfectadas = Actualizar(oBeTrans_picking_ubic,
-                                        IIf(Es_Transaccion_Remota, pConection, lConnection),
-                                        IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                                            IIf(Es_Transaccion_Remota, pConection, lConnection),
+                                            IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
 
                 resultado += String.Format(", actualizó {0} filas en trans_picking_ubic, cantidad {1}, operador {2}, pedido {3}, pedidodet {4} IdPickingUbic {5} ",
                                            FilasAfectadas.ToString, oBeTrans_picking_ubic.Cantidad_Verificada,
@@ -3754,20 +3754,22 @@ Partial Public Class clsLnTrans_picking_ubic
                                            oBeTrans_picking_ubic.IdPedidoDet, oBeTrans_picking_ubic.IdPickingUbic)
 
                 FilasAfectadas = clsLnStock_res.Actualizar(BeStockRes,
-                                                       IIf(Es_Transaccion_Remota, pConection, lConnection),
-                                                       IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                                                           IIf(Es_Transaccion_Remota, pConection, lConnection),
+                                                           IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
 
                 resultado += String.Format(", actualizó {0} filas en stock_res ", FilasAfectadas.ToString)
 
                 Dim BeStock As New clsBeStock
-                BeStock = clsLnStock.Get_Single_By_IdStock(BeStockRes.IdStock, IIf(Es_Transaccion_Remota, pConection, lConnection), IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                BeStock = clsLnStock.Get_Single_By_IdStock(BeStockRes.IdStock,
+                                                           IIf(Es_Transaccion_Remota, pConection, lConnection),
+                                                           IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
 
                 FilasAfectadas = clsLnTrans_movimientos.Insertar_Movimiento_Verificacion(oBeTrans_picking_ubic,
-                                                                                     BeStock.IdUbicacion,
-                                                                                     pCantidad,
-                                                                                     pPeso,
-                                                                                     IIf(Es_Transaccion_Remota, pConection, lConnection),
-                                                                                     IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+                                                                                         BeStock.IdUbicacion,
+                                                                                         pCantidad,
+                                                                                         pPeso,
+                                                                                         IIf(Es_Transaccion_Remota, pConection, lConnection),
+                                                                                         IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
 
                 resultado += String.Format(", actualizó {0} filas en trans_movimientos ", FilasAfectadas.ToString)
 
@@ -3999,8 +4001,8 @@ Partial Public Class clsLnTrans_picking_ubic
                             vBePickingUbic.Fec_mod = Now
                             vBePickingUbic.User_mod = Usuario
                             Actualizar_Cantidad_Recibida(vBePickingUbic,
-                                                     If(Es_Transaccion_Remota, pConnection, lConnection),
-                                                     If(Es_Transaccion_Remota, pTransaction, ltransaction))
+                                                         If(Es_Transaccion_Remota, pConnection, lConnection),
+                                                         If(Es_Transaccion_Remota, pTransaction, ltransaction))
                             Dim vIdMovimiento As Integer = clsLnTrans_movimientos.Insertar_Movimiento_Picking(PickingUbic,
                                                                                                           IIf(vMoverProductoAMuelle, vIdUbicacionMuelle, vIdUbicacionPickingByBodega),
                                                                                                           IIf(UsarCantidad = 0, CantidadPendiente, UsarCantidad) * Factor,
@@ -4175,7 +4177,8 @@ Partial Public Class clsLnTrans_picking_ubic
 
                     End If
 
-                    If vBePickingUbic.Cantidad_Recibida > 0 AndAlso vBePickingUbic.Cantidad_Recibida <> vBePickingUbic.Cantidad_Verificada Then
+                    If vBePickingUbic.Cantidad_Recibida > 0 AndAlso vBePickingUbic.Cantidad_Recibida <> vBePickingUbic.Cantidad_Verificada AndAlso
+                        BePickingEnc.verifica_auto Then
 
                         Dim CantidadStockDestino As Double
 
@@ -5031,20 +5034,22 @@ Partial Public Class clsLnTrans_picking_ubic
             '#CKFK 20180202 Genera la tarea de cambio de estado
             '#AT En base a lo analizado creemos que aqui vamos a colocar el metodo Marcar_No_Encontrado cuando el tipo sea 2
             If Tipo = 1 Then
+
                 clsLnTrans_ubic_hh_enc.Generar_Tarea_Cambio_Estado(IdBodega,
-                                                                   IdEmpresa,
-                                                                   IdStockCambioEstado,
-                                                                   IdStockResCambioEstado,
-                                                                   UsuarioHH,
-                                                                   CantSol,
-                                                                   IdUbicDestino,
-                                                                   IdEstDestino,
-                                                                   lBeStockAReservar(0).IdPropietarioBodega,
-                                                                   pListBePickingUbic(0).IdPickingUbic,
-                                                                   lConnection,
-                                                                   lTransaction,
-                                                                   MaquinaQueSolicita,
-                                                                   EsPicking)
+                                                                       IdEmpresa,
+                                                                       IdStockCambioEstado,
+                                                                       IdStockResCambioEstado,
+                                                                       UsuarioHH,
+                                                                       CantSol,
+                                                                       IdUbicDestino,
+                                                                       IdEstDestino,
+                                                                       lBeStockAReservar(0).IdPropietarioBodega,
+                                                                       pListBePickingUbic(0).IdPickingUbic,
+                                                                       lConnection,
+                                                                       lTransaction,
+                                                                       MaquinaQueSolicita,
+                                                                       EsPicking)
+
             Else
                 Dim BePresentacion As New clsBeProducto_Presentacion
 
@@ -6202,7 +6207,8 @@ Partial Public Class clsLnTrans_picking_ubic
                                                             ByRef pCantidad As Double,
                                                             ByRef pPeso As Double,
                                                             ByVal pTipo As Integer,
-                                                            ByVal pIdPedidoEnc As Integer) As Boolean
+                                                            ByVal pIdPedidoEnc As Integer,
+                                                            ByRef pEtiqueta As clsBeTrans_verificacion_etiqueta) As Boolean
 
         Dim CantPendiente As Double
         Dim PesoPendiente As Double
@@ -6211,6 +6217,8 @@ Partial Public Class clsLnTrans_picking_ubic
         Dim tmpBeListPickingUbic As List(Of clsBeTrans_picking_ubic) = Nothing
         Dim BePickingUbic As New clsBeTrans_picking_ubic
         Dim clsTrans As New clsTransaccion
+        Dim BePickingUbicT As New clsBeTrans_picking_ubic
+        Dim pCantT As Double = pCantidad
 
         Actualiza_Cant_Peso_Verificacion = False
 
@@ -6285,18 +6293,19 @@ Partial Public Class clsLnTrans_picking_ubic
                                                                      clsTrans.lConnection,
                                                                      clsTrans.lTransaction)
 
-                '#MECR23102025: Se agrego bitacora para logs de picking
+                '#MECR11122025: Se agrego bitacora para logs de verificacion
                 resultado += " Codigo " & vBePickingUbic.CodigoProducto & " Pedido parámetro " & pIdPedidoEnc
-                'clsLnLog_error_wms.Agregar_Error(resultado)
-                clsLnLog_error_wms_pick.Agregar_Error(resultado,
-                                                      pIdPedidoDet:=vBePickingUbic.IdPedidoDet,
-                                                      pIdPedidoEnc:=vBePickingUbic.IdPedidoEnc,
-                                                      pIdPickingEnc:=vBePickingUbic.IdPickingEnc,
-                                                      pIdPickingDet:=vBePickingUbic.IdPickingDet,
-                                                      pIdPickingUbic:=vBePickingUbic.IdPickingUbic,
-                                                      pCodigoProducto:=vBePickingUbic.CodigoProducto,
-                                                      pConection:=clsTrans.lConnection,
-                                                      pTransaction:=clsTrans.lTransaction)
+                clsLnLog_error_wms.Agregar_Error(resultado)
+                clsLnLog_verificacion_bof.Agregar_Error(resultado,
+                  pIdPedidoDet:=vBePickingUbic.IdPedidoDet,
+                  pIdPedidoEnc:=vBePickingUbic.IdPedidoEnc,
+                  pIdPickingEnc:=vBePickingUbic.IdPickingEnc,
+                  pIdPickingDet:=vBePickingUbic.IdPickingDet,
+                  pIdPickingUbic:=vBePickingUbic.IdPickingUbic,
+                  pConection:=clsTrans.lConnection,
+                  pTransaction:=clsTrans.lTransaction)
+
+                BePickingUbicT = vBePickingUbic
 
                 If (Math.Round(pCantidad - CantPendiente, 6) = 0) Then
                     Exit For
@@ -6307,6 +6316,21 @@ Partial Public Class clsLnTrans_picking_ubic
 
             Next
 
+            BePickingUbicT.Cantidad_Verificada = pCantT
+
+            '#MA20251219
+            If BeBodega.impresion_verificacion Then
+
+                pEtiqueta = New clsBeTrans_verificacion_etiqueta()
+                pEtiqueta =
+                    clsLnTrans_verificacion_etiqueta.Guardar_Etiqueta_Verificacion(
+                                                                                    BePickingUbicT,
+                                                                                    pIdOperador,
+                                                                                    BeBodega.IdTipoEtiquetaVerificacion,
+                                                                                    clsTrans.lConnection,
+                                                                                    clsTrans.lTransaction
+                                                                                )
+            End If
             clsTrans.Commit_Transaction()
 
             Return True

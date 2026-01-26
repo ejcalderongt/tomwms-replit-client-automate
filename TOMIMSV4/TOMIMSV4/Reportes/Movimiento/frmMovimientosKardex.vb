@@ -65,7 +65,8 @@ Public Class frmMovimientosKardex
                                                                                      dtpFechaAl.Value,
                                                                                      IdProductoBodega,
                                                                                      cmbBodega.EditValue,
-                                                                                     cmbPropietario.EditValue)
+                                                                                     cmbPropietario.EditValue,
+                                                                                     txtLote.Text.Trim())
             Else
 
                 If ProductoEspecifico Is Nothing OrElse ProductoEspecifico.IdProducto = 0 Then

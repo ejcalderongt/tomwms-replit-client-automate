@@ -10,6 +10,7 @@ Imports DevExpress.XtraGrid.Views.Base
 Imports DevExpress.XtraGrid.Views.Grid
 Imports DevExpress.XtraReports.UI
 Imports DevExpress.XtraSplashScreen
+Imports Newtonsoft.Json
 
 Public Class frmPreFactura
 
@@ -4057,7 +4058,7 @@ Public Class frmPreFactura
 
             Next
 
-            'Dim strserialize As String = JsonConvert.SerializeObject(CobroERP)
+            Dim strserialize As String = JsonConvert.SerializeObject(CobroERP)
             'Debug.Write(strserialize)
 
             Dim pTimeOut = clsBD.Instancia.TimeOutConBD

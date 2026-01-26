@@ -326,6 +326,10 @@ Partial Public Class clsLnTrans_despacho_enc
 
             'Validar que si tiene Packing esté cerrado
 
+            Validar_Solicitado_Vrs_Despachado(pBeDespachoEnc,
+                                              lConnection,
+                                              lTransaction)
+
             'Despacho Encabezado
             Guarda_Trans_Despacho_Enc(pBeDespachoEnc,
                                       lConnection,
@@ -3249,13 +3253,13 @@ Partial Public Class clsLnTrans_despacho_enc
 
     Public Shared Function Get_No_Pase_By_IdDespachoEnc(ByVal IdDespachoEnc As Integer,
                                                         ByVal pConnection As SqlConnection,
-                                                        ByVal pTransaction As SqlTransaction) As String
+                                                        ByVal pTransaction As SqlTransaction) As Integer
 
         Try
 
-            Dim lNoPase As String = 0
+            Dim lNoPase As Integer = 0
 
-            Dim vSQL As String = "SELECT ISNULL(no_pase,'') no_pase FROM trans_despacho_enc WHERE IdDespachoEnc = @IdDespachoEnc "
+            Dim vSQL As String = "SELECT ISNULL(no_pase,0) no_pase FROM trans_despacho_enc WHERE IdDespachoEnc = @IdDespachoEnc "
 
             Using lCommand As New SqlCommand(vSQL, pConnection)
 
@@ -3266,7 +3270,7 @@ Partial Public Class clsLnTrans_despacho_enc
                 Dim lReturnValue As Object = lCommand.ExecuteScalar()
 
                 If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    lNoPase = CStr(lReturnValue)
+                    lNoPase = (lReturnValue)
                 End If
 
             End Using
@@ -3278,5 +3282,49 @@ Partial Public Class clsLnTrans_despacho_enc
         End Try
 
     End Function
+
+    Private Shared Sub Validar_Solicitado_Vrs_Despachado(ByRef ObjEnc As clsBeTrans_despacho_enc,
+                                                         ByRef lConnection As SqlConnection,
+                                                         ByRef lTransaction As SqlTransaction)
+
+
+        Try
+
+            If ObjEnc IsNot Nothing Then
+
+                For Each BePedidoEnc As clsBeTrans_pe_enc In ObjEnc.ListaPedidos
+
+                    For Each peddet In BePedidoEnc.Detalle
+
+                        If peddet.Cantidad > 0 Then
+
+                            Dim cantidadpickeada As Double = ObjEnc.ListaDetalle?.FindAll(Function(x) x.IdPedidoDet = peddet.IdPedidoDet).Sum(Function(y) y.CantidadDespachada)
+
+                            If peddet.Cantidad <> Math.Truncate(peddet.Cantidad) Then
+                                ' Tiene decimales
+                            Else
+                                If cantidadpickeada > peddet.Cantidad Then
+                                    Throw New Exception("La cantidad pickeada (" & cantidadpickeada & ") del producto " &
+                                                    peddet.Codigo_Producto & " es mayor a la solicitada (" & peddet.Cantidad & ")")
+                                End If
+
+                            End If
+
+
+                        End If
+
+                    Next
+
+                Next
+
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Sub
 
 End Class

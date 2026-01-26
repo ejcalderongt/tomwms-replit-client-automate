@@ -81,7 +81,10 @@ Partial Public Class clsLnTrans_inv_enc
 
     End Function
 
-    Public Shared Function Get_All_By_Rango_Fechas(ByVal pFechaInicio As Date, ByVal pFechaFin As Date, ByVal IdBodega As Integer) As List(Of clsBeTrans_inv_enc)
+    Public Shared Function Get_All_By_Rango_Fechas(ByVal pFechaInicio As Date,
+                                                   ByVal pFechaFin As Date,
+                                                   ByVal IdBodega As Integer,
+                                                   ByVal pActivos As Boolean) As List(Of clsBeTrans_inv_enc)
 
         Try
 
@@ -101,7 +104,14 @@ Partial Public Class clsLnTrans_inv_enc
                          TipoConteo ON trans_inv_enc.tipo_conteo_producto = TipoConteo.IdTipoConteo LEFT OUTER JOIN
                          bodega ON trans_inv_enc.idbodega = bodega.idbodega  LEFT OUTER JOIN
                          propietarios ON trans_inv_enc.idinventarioenc = propietarios.IdPropietario
-                         WHERE trans_inv_enc.idbodega = {0} AND cast(trans_inv_enc.Fecha as Date) >={1} and cast(trans_inv_enc.Fecha as Date) <={2} ", IdBodega, FormatoFechas.fFecha(pFechaInicio), FormatoFechas.fFecha(pFechaFin))
+                         WHERE trans_inv_enc.idbodega = {0} AND cast(trans_inv_enc.Fecha as Date) >={1} and cast(trans_inv_enc.Fecha as Date) <={2} ",
+                                                   IdBodega, FormatoFechas.fFecha(pFechaInicio), FormatoFechas.fFecha(pFechaFin))
+
+                If pActivos Then
+                    vSQL += " AND trans_inv_enc.activo = 1 "
+                Else
+                    vSQL += " AND trans_inv_enc.activo = 0 "
+                End If
 
                 Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 

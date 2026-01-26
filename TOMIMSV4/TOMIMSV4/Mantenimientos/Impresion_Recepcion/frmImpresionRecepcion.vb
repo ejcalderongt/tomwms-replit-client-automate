@@ -175,6 +175,7 @@ Public Class frmImpresionRecepcion
             Dim vFechaVence As String = pReDet.Fecha_vence.ToShortDateString
 
             Dim pTipoEtiqueta As Integer = AP.Bodega.IdTipoEtiquetaLicencia
+            Dim pTipoEtiquetaVerificacion As Integer = AP.Bodega.IdTipoEtiquetaVerificacion
             Dim pTipoSimbologia As Integer = AP.Bodega.IdSimbologiaLicencia
             Dim pClasificacion As Integer = 2
             Dim Tipo_Etiqueta = clsLnTipo_etiqueta.Get_Single_By_IdTipoEtiqueta(pTipoEtiqueta, pTipoSimbologia, pClasificacion)

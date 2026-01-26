@@ -1239,6 +1239,7 @@ Public Class frmBodega
 
             '#CKFK20240403: Indicar los tipos de etiqueta y simbología para la licencia
             cmbEtiqueta.EditValue = pBeBodega.IdTipoEtiquetaLicencia
+            cmbEtiquetaVerificacion.EditValue = pBeBodega.IdTipoEtiquetaVerificacion
             cmbSymbology.EditValue = pBeBodega.IdSimbologiaLicencia
 
             cmbTamañoEtiquetaUbicacionDefecto.EditValue = pBeBodega.IdTamañoEtiquetaUbicacionDefecto
@@ -1266,6 +1267,7 @@ Public Class frmBodega
             nudRangoDiasDocumentos.Value = pBeBodega.Rango_Dias_Documentos
 
             chkAgrupar_sin_lic_veri_no_cons.Checked = pBeBodega.Agrupar_Sin_Lic_Veri_No_Cons
+            chkImprimir_Verificacion.Checked = pBeBodega.impresion_verificacion
 
         Catch ex As Exception
 
@@ -1478,6 +1480,7 @@ Public Class frmBodega
             pBeBodega.Homologar_Lote_Vencimiento = chkHomologarLoteConFechaVence.Checked
             pBeBodega.Escanear_Licencia_Picking = chkEscanearLicenciaPicking.Checked
             pBeBodega.IdTipoEtiquetaLicencia = cmbEtiqueta.EditValue
+            pBeBodega.IdTipoEtiquetaVerificacion = cmbEtiquetaVerificacion.EditValue
             pBeBodega.IdSimbologiaLicencia = cmbSymbology.EditValue
             pBeBodega.Interface_SAP = chkInterface_SAP.Checked
             pBeBodega.Restringir_Areas_SAP = chkRestringirAreasSAP.Checked
@@ -1488,6 +1491,7 @@ Public Class frmBodega
             pBeBodega.Ruta_CDN = txtRutaCDN.Text
             pBeBodega.Rango_Dias_Documentos = nudRangoDiasDocumentos.Value
             pBeBodega.Agrupar_Sin_Lic_Veri_No_Cons = chkAgrupar_sin_lic_veri_no_cons.Checked
+            pBeBodega.impresion_verificacion = chkImprimir_Verificacion.Checked
 
             Guardar = clsLnBodega.Insertar(pBeBodega) > 0
 
@@ -1689,6 +1693,7 @@ Public Class frmBodega
                 pBeBodega.Homologar_Lote_Vencimiento = chkHomologarLoteConFechaVence.Checked
                 pBeBodega.Escanear_Licencia_Picking = chkEscanearLicenciaPicking.Checked
                 pBeBodega.IdTipoEtiquetaLicencia = cmbEtiqueta.EditValue
+                pBeBodega.IdTipoEtiquetaVerificacion = cmbEtiquetaVerificacion.EditValue
                 pBeBodega.IdSimbologiaLicencia = cmbSymbology.EditValue
                 pBeBodega.Interface_SAP = chkInterface_SAP.Checked
                 pBeBodega.Restringir_Areas_SAP = chkRestringirAreasSAP.Checked
@@ -1700,6 +1705,7 @@ Public Class frmBodega
                 pBeBodega.Ruta_CDN = txtRutaCDN.Text
                 pBeBodega.Rango_Dias_Documentos = nudRangoDiasDocumentos.Value
                 pBeBodega.Agrupar_Sin_Lic_Veri_No_Cons = chkAgrupar_sin_lic_veri_no_cons.Checked
+                pBeBodega.impresion_verificacion = chkImprimir_Verificacion.Checked
                 Actualizar = clsLnBodega.Actualizar(pBeBodega) > 0
 
             End If
@@ -3742,7 +3748,7 @@ Public Class frmBodega
                 pListObjBodegaAreas(pIndex).Fec_mod = Now
                 pListObjBodegaAreas(pIndex).Grupo = txtGrupoArea.Text.Trim()
                 pListObjBodegaAreas(pIndex).Activo = chkActivoAreaBodega.Checked
-                pListObjBodegaAreas(pIndex).IdUbicacionRef = txtUbicacionRecepcionArea.Text
+                pListObjBodegaAreas(pIndex).IdUbicacionRef = Val(txtUbicacionRecepcionArea.Text)
 
             Else
 
@@ -5094,6 +5100,12 @@ Public Class frmBodega
             cmbTamañoEtiquetaUbicacionDefecto.Properties.ValueMember = "IdTipoEtiqueta"
             cmbTamañoEtiquetaUbicacionDefecto.Properties.DataSource = clsLnTipo_etiqueta.GetAllForCombo()
             cmbTamañoEtiquetaUbicacionDefecto.ItemIndex = -1
+
+            cmbEtiquetaVerificacion.Properties.DisplayMember = "Nombre"
+            cmbEtiquetaVerificacion.Properties.ValueMember = "IdTipoEtiqueta"
+            cmbEtiquetaVerificacion.Properties.DataSource = clsLnTipo_etiqueta.GetAllForCombo()
+            cmbEtiquetaVerificacion.ItemIndex = -1
+
 
         Catch ex As Exception
 

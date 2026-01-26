@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data.Common
+Imports System.Data.SqlClient
 Imports System.Reflection
 
 Partial Public Class clsLnProducto_presentacion
@@ -3438,6 +3439,90 @@ Partial Public Class clsLnProducto_presentacion
         End Try
 
     End Function
+
+    Public Shared Function Get_IdPresentacion_By_Codigo(ByVal pCodigo As String,
+                                                        ByVal pIdProducto As String,
+                                                        ByVal pConnection As SqlConnection,
+                                                        ByVal pTransaction As SqlTransaction) As Integer
+
+        Get_IdPresentacion_By_Codigo = 0
+
+        Try
+
+            Dim vSQL As String = "SELECT IdPresentacion FROM producto_presentacion WHERE Codigo=@pCodigo AND IdProducto = @pIdProducto "
+
+            Using lDTA As New SqlDataAdapter(vSQL, pConnection)
+
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Transaction = pTransaction
+                lDTA.SelectCommand.Parameters.AddWithValue("@pCodigo", pCodigo)
+                lDTA.SelectCommand.Parameters.AddWithValue("@pIdProducto", pIdProducto)
+
+                Dim lDataTable As New DataTable
+                lDTA.Fill(lDataTable)
+
+                If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+
+                    Get_IdPresentacion_By_Codigo = lDataTable.Rows(0).Item("IdPresentacion")
+
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_Factor_By_IdPresentacion(ByVal pIdPresentacion As Integer,
+                                                        Optional ByVal pConnection As SqlConnection = Nothing,
+                                                        Optional ByVal pTransaction As SqlTransaction = Nothing) As Double
+
+        Get_Factor_By_IdPresentacion = 0
+
+        Try
+
+            Dim Es_Transaccion_Remota As Boolean = (Not pConnection Is Nothing AndAlso Not pTransaction Is Nothing)
+
+            Dim lFactor As Double
+            Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+            Dim lCommand As New SqlCommand
+
+            Dim vSQL As String = "SELECT ISNULL(Factor,0) AS Factor FROM producto_presentacion WHERE IdPresentacion=@IdPresentacion"
+
+            If Es_Transaccion_Remota Then
+                lCommand = New SqlCommand(vSQL, pConnection)
+                lCommand.Transaction = pTransaction
+            Else
+                lCommand = New SqlCommand(vSQL, lConnection)
+                lConnection.Open()
+            End If
+
+            lCommand.CommandType = CommandType.Text
+            lCommand.Parameters.AddWithValue("@IdPresentacion", pIdPresentacion)
+
+            Dim lReturnValue As Object = lCommand.ExecuteScalar()
+
+            If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                lFactor = CDbl(lReturnValue)
+            Else
+                lFactor = 0.0
+            End If
+
+            If Not Es_Transaccion_Remota Then
+                lConnection.Close()
+                lConnection.Dispose()
+            End If
+
+            Return lFactor
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
 
 #Region "IDisposable Support"
     Private disposedValue As Boolean ' To detect redundant calls

@@ -114,15 +114,16 @@ Partial Class frmPicking
         Me.mnuVerificarPickeados = New DevExpress.XtraBars.BarButtonItem()
         Me.chkFotografiaVerificacion = New DevExpress.XtraBars.BarToggleSwitchItem()
         Me.lnkQuitarPedido = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuReemplazo = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup4 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup5 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup3 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup2 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
+        Me.RibbonStatusBar1 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.RibbonStatusBar2 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
-        Me.RibbonStatusBar1 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.PopupMenu1 = New DevExpress.XtraBars.PopupMenu(Me.components)
         Me.xtpDatosPicking = New DevExpress.XtraTab.XtraTabControl()
         Me.XtratabPageDato = New DevExpress.XtraTab.XtraTabPage()
@@ -565,15 +566,15 @@ Partial Class frmPicking
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuGuardar, Me.mnuActualizar, Me.mnuEliminar, Me.cmdImprimir, Me.cmdListaUbicacion, Me.mnuProcesar, Me.lblRegs, Me.lblRegs1, Me.mnuPendientePicking, Me.lblRegistros, Me.chkActivo, Me.chkverifica_auto, Me.chkProcesarDesdeBOF, Me.chkDetalleOperador, Me.chkEmpaquePorTarima, Me.chkEmpaqueAGranel, Me.mnuPendientePacking, Me.mnuActualizarPicking, Me.mnuDespachado, Me.mnuProcesarLinea, Me.cmdUbicRes, Me.cmdNoPickeado, Me.cmdNoVerificado, Me.cmdVerificarNuevamente, Me.BarButtonItem1, Me.mnuRepartirOperadores, Me.mnuZonasPicking, Me.mnuPorAtributo, Me.mnuBalancear, Me.mnuBalanceoPorLineasPicking, Me.mnuBalanceoCantidadLineasPicking, Me.mnuInteligenciaArtificial, Me.lnkAgregarPedido, Me.mnuAsignacionAutomatica, Me.mnuEliminarLayoutGrid, Me.mnuVerificarPickeados, Me.chkFotografiaVerificacion, Me.BarButtonItem2, Me.BarButtonItem3, Me.cmdListaPedidos, Me.lnkQuitarPedido})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuGuardar, Me.mnuActualizar, Me.mnuEliminar, Me.cmdImprimir, Me.cmdListaUbicacion, Me.mnuProcesar, Me.lblRegs, Me.lblRegs1, Me.mnuPendientePicking, Me.lblRegistros, Me.chkActivo, Me.chkverifica_auto, Me.chkProcesarDesdeBOF, Me.chkDetalleOperador, Me.chkEmpaquePorTarima, Me.chkEmpaqueAGranel, Me.mnuPendientePacking, Me.mnuActualizarPicking, Me.mnuDespachado, Me.mnuProcesarLinea, Me.cmdUbicRes, Me.cmdNoPickeado, Me.cmdNoVerificado, Me.cmdVerificarNuevamente, Me.BarButtonItem1, Me.mnuRepartirOperadores, Me.mnuZonasPicking, Me.mnuPorAtributo, Me.mnuBalancear, Me.mnuBalanceoPorLineasPicking, Me.mnuBalanceoCantidadLineasPicking, Me.mnuInteligenciaArtificial, Me.lnkAgregarPedido, Me.mnuAsignacionAutomatica, Me.mnuEliminarLayoutGrid, Me.mnuVerificarPickeados, Me.chkFotografiaVerificacion, Me.BarButtonItem2, Me.BarButtonItem3, Me.cmdListaPedidos, Me.lnkQuitarPedido, Me.mnuReemplazo})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4)
-        Me.RibbonControl.MaxItemId = 58
+        Me.RibbonControl.MaxItemId = 59
         Me.RibbonControl.Name = "RibbonControl"
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.RibbonControl.Size = New System.Drawing.Size(1554, 193)
-        Me.RibbonControl.StatusBar = Me.RibbonStatusBar1
+        Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'mnuGuardar
         '
@@ -855,6 +856,13 @@ Partial Class frmPicking
         Me.lnkQuitarPedido.ImageOptions.SvgImage = CType(resources.GetObject("lnkQuitarPedido.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.lnkQuitarPedido.Name = "lnkQuitarPedido"
         '
+        'mnuReemplazo
+        '
+        Me.mnuReemplazo.Caption = "Reemplazo"
+        Me.mnuReemplazo.Id = 58
+        Me.mnuReemplazo.ImageOptions.SvgImage = CType(resources.GetObject("mnuReemplazo.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuReemplazo.Name = "mnuReemplazo"
+        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1, Me.RibbonPageGroup4, Me.RibbonPageGroup5, Me.RibbonPageGroup3, Me.RibbonPageGroup2})
@@ -884,6 +892,7 @@ Partial Class frmPicking
         Me.RibbonPageGroup4.ItemLinks.Add(Me.mnuVerificarPickeados)
         Me.RibbonPageGroup4.ItemLinks.Add(Me.mnuDespachado)
         Me.RibbonPageGroup4.ItemLinks.Add(Me.mnuEliminarLayoutGrid)
+        Me.RibbonPageGroup4.ItemLinks.Add(Me.mnuReemplazo)
         Me.RibbonPageGroup4.ItemLinks.Add(Me.chkverifica_auto)
         Me.RibbonPageGroup4.ItemLinks.Add(Me.chkProcesarDesdeBOF)
         Me.RibbonPageGroup4.ItemLinks.Add(Me.chkFotografiaVerificacion)
@@ -909,6 +918,15 @@ Partial Class frmPicking
         Me.RibbonPageGroup2.Name = "RibbonPageGroup2"
         Me.RibbonPageGroup2.Text = "Estado del Registro"
         '
+        'RibbonStatusBar1
+        '
+        Me.RibbonStatusBar1.ItemLinks.Add(Me.lblRegs)
+        Me.RibbonStatusBar1.Location = New System.Drawing.Point(2, 672)
+        Me.RibbonStatusBar1.Margin = New System.Windows.Forms.Padding(4)
+        Me.RibbonStatusBar1.Name = "RibbonStatusBar1"
+        Me.RibbonStatusBar1.Ribbon = Me.RibbonControl
+        Me.RibbonStatusBar1.Size = New System.Drawing.Size(1548, 33)
+        '
         'RibbonStatusBar2
         '
         Me.RibbonStatusBar2.ItemLinks.Add(Me.lblRegs1)
@@ -926,15 +944,6 @@ Partial Class frmPicking
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
         Me.RibbonStatusBar.Size = New System.Drawing.Size(1554, 30)
         Me.RibbonStatusBar.Visible = False
-        '
-        'RibbonStatusBar1
-        '
-        Me.RibbonStatusBar1.ItemLinks.Add(Me.lblRegs)
-        Me.RibbonStatusBar1.Location = New System.Drawing.Point(2, 672)
-        Me.RibbonStatusBar1.Margin = New System.Windows.Forms.Padding(4)
-        Me.RibbonStatusBar1.Name = "RibbonStatusBar1"
-        Me.RibbonStatusBar1.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar1.Size = New System.Drawing.Size(1548, 33)
         '
         'PopupMenu1
         '
@@ -2519,4 +2528,5 @@ Partial Class frmPicking
     Friend WithEvents grdImpresionPedidos As DevExpress.XtraGrid.GridControl
     Friend WithEvents grdViewImpresionPedidos As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents lnkQuitarPedido As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents mnuReemplazo As DevExpress.XtraBars.BarButtonItem
 End Class

@@ -71,8 +71,24 @@ Partial Public Class clsLnTrans_Picking_Img
 
             If Es_Transaccion_Remota Then
                 Insertar(BePickingImg, pConnection, pTransaction)
+
+                '#MECR04122025: Se agrego bitacora de log para verificacion
+                Dim msgControl As String = "Se agrego imagen al pedido: " + BePickingImg.IdPedidoEnc.ToString + " por su verficacion"
+                'clsLnLog_verificacion_bof.Agregar_Error(msgControl,
+                'pIdPickingDet:=pIdPedidoDet,
+                'pUser_agr:=BePickingImg.User_agr,
+                'pConection:=pConnection,
+                'pTransaction:=pTransaction)
             Else
                 Insertar(BePickingImg, lConnection, lTransaction)
+
+                '#MECR04122025: Se agrego bitacora de log para verificacion
+                Dim msgControl As String = "Se agrego imagen al pedido: " + BePickingImg.IdPedidoEnc.ToString + " por su verficacion"
+                'clsLnLog_verificacion_bof.Agregar_Error(msgControl,
+                'pIdPickingDet:=pIdPedidoDet,
+                'pUser_agr:=BePickingImg.User_agr,
+                'pConection:=lConnection,
+                'pTransaction:=lTransaction)
                 lTransaction.Commit()
             End If
 

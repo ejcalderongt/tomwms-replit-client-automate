@@ -3260,15 +3260,15 @@ Partial Public Class clsLnStock_res
 
                     '#CKFK20250317 Agregué esta validación
                     Dim listaPicking = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoDet(pu.IdPedidoDet,
-                                                                              pu.IdPedidoEnc,
-                                                                              pu.IdBodega,
-                                                                              lConnection,
-                                                                              lTransaction)
+                                                                                                  pu.IdPedidoEnc,
+                                                                                                  pu.IdBodega,
+                                                                                                  lConnection,
+                                                                                                  lTransaction)
 
                     Dim cantidadPickingIdPedidoDet As Double = If(listaPicking IsNot Nothing AndAlso listaPicking.Any(),
                                               listaPicking.Sum(Function(x) x.Cantidad_Solicitada),
                                               0)
-                    Dim cantidadPedidoDet As Double = clsLnTrans_pe_det.Get_Single_By_IdPedidoDet(pu.IdPedidoDet).Cantidad
+                    Dim cantidadPedidoDet As Double = clsLnTrans_pe_det.Get_Single_By_IdPedidoDet(pu.IdPedidoDet, lConnection, lTransaction).Cantidad
 
                     If cantidadPedidoDet < cantidadPickingIdPedidoDet AndAlso cantidadPickingIdPedidoDet > 0 Then
                         Throw New Exception("Error_Reemplazo_A: No es posible reservar más de lo solicitado")
@@ -6003,7 +6003,8 @@ Partial Public Class clsLnStock_res
                             BeStockRes.IdStock = BeStock.IdStock
                             BeStockRes.IdPropietarioBodega = BeStock.IdPropietarioBodega
                             BeStockRes.IdProductoBodega = BeStock.IdProductoBodega
-                            '#EJC20211221: Se manda inverso desde la selección del stock en cambio de ubicación forma (chapus por emergencia, buscar después causa raíz)
+                            '#EJC20211221: Se manda inverso desde la selección del stock en cambio de ubicación forma
+                            '(chapus por emergencia, buscar después causa raíz)
                             BeStockRes.IdUbicacion = BeStock.IdUbicacion_anterior
                             BeStockRes.Ubicacion_ant = BeStock.IdUbicacion
                             BeStockRes.IdProductoEstado = BeStock.IdProductoEstado
@@ -8893,6 +8894,11 @@ Partial Public Class clsLnStock_res
 
             For Each BeStock In lStock
 
+                If BeStock.IdStock = 753660 Or BeStock.IdStock = 762637 Or
+                                                BeStock.IdStock = 762991 Or BeStock.IdStock = 764875 Or BeStock.IdStock = 767730 Then
+                    Debug.Write("Hola")
+                End If
+
                 If lIdStocksReservados.Contains(BeStock.IdStock) Then
 
                     BePresentacionStock = BeStock.Presentacion
@@ -8913,7 +8919,7 @@ Partial Public Class clsLnStock_res
                                 BeStock.Pallet_Completo = False
 
                                 If BeStock.Cantidad > 0 Then
-                                    If vCantidadReservadaRef > BeStock.Cantidad Then
+                                    If vCantidadReservadaRef >= BeStock.Cantidad Then
                                         BeStock.Cantidad = 0
                                     Else
                                         BeStock.Cantidad -= vCantidadReservadaRef
@@ -8995,6 +9001,11 @@ Partial Public Class clsLnStock_res
                                             '#EJC202211081355: Solo en teoría, luego hay que validar contra la presentación si ya el pallet se desarmó previamente.
                                             BeStock.Pallet_Completo = (vCantidadEnStockEnPresentacionClavaud = vCantidadProductoPorTarima)
 
+                                            If BeStock.IdStock = 753660 Or BeStock.IdStock = 762637 Or
+                                                BeStock.IdStock = 762991 Or BeStock.IdStock = 764875 Or BeStock.IdStock = 767730 Then
+                                                Debug.Write("Hola")
+                                            End If
+
                                             Debug.WriteLine("El pallet está " & IIf(BeStock.Pallet_Completo, "in", "") & "completo para el el IdStock: " & BeStock.IdStock & " - " & BeStock.Pallet_Completo)
 
                                         End If
@@ -9010,7 +9021,7 @@ Partial Public Class clsLnStock_res
                     End If
 
                 Else
-
+                    BeStock.Pallet_Completo = True
                 End If
 
             Next
@@ -9525,7 +9536,6 @@ Partial Public Class clsLnStock_res
                     FechaMinimaVenceALM = lBeStockExistenteZonasALM.Min(Function(x) x.Fecha_vence)
                 End If
             End If
-
 
             ' Zona Picking
             Dim lBeStockExistenteZonaPicking = clsLnStock.lStock(pStockResSolicitud,
@@ -18272,7 +18282,7 @@ Partial Public Class clsLnStock_res
 
 #End Region
 
-            If pStockResSolicitud.IdProductoBodega = 102 Then
+            If pStockResSolicitud.IdProductoBodega = 616 Then
                 Debug.Print("Aqui " & DiasVencimiento)
             End If
 
@@ -20084,7 +20094,7 @@ INICIAR_EN_2:
 
                                         vCantidadDispStock = Math.Round(vStockOrigen.Cantidad, 6)
 
-                                        If (vStockOrigen.Fecha_vence > FechaMinimaVenceStock) AndAlso Not ListaEstadosDeProceso.Contains(101) AndAlso ListaEstadosDeProceso.Contains(100) Then
+                                        If (vStockOrigen.Fecha_vence >= FechaMinimaVenceStock) AndAlso Not ListaEstadosDeProceso.Contains(101) AndAlso ListaEstadosDeProceso.Contains(100) Then
                                             ListaEstadosDeProceso.Add(101)
                                             GoTo ANALIZAR_FECHAS_DE_VENCIMIENTO
                                         ElseIf (vStockOrigen.Fecha_vence > FechaMinimaVenceStock) Then
@@ -25896,12 +25906,15 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                                                         BeProducto.UnidadMedida.Nombre,
                                                                                         pStockResSolicitud.IdPresentacion,
                                                                                         pStockResSolicitud.Cantidad)
-                            '#EJC202401291004: Mejorar el mensaje cuando lleguen a este punto mis amados maestros.
-                            pBeTrasladoDet.Process_Result += vMensajeNoExplosionEnZonasNoPicking
-                            pBeTrasladoDet.Qty_to_Receive = vCantidadPendiente
-                            clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
-                                                                                  lConnection,
-                                                                                  ltransaction)
+
+                            If Not pBeTrasladoDet Is Nothing Then
+                                '#EJC202401291004: Mejorar el mensaje cuando lleguen a este punto mis amados maestros.
+                                pBeTrasladoDet.Process_Result += vMensajeNoExplosionEnZonasNoPicking
+                                pBeTrasladoDet.Qty_to_Receive = vCantidadPendiente
+                                clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
+                                                                                      lConnection,
+                                                                                      ltransaction)
+                            End If
 
                             Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
                         Else
@@ -33896,7 +33909,9 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
                                          0 peso_recibido,   
                                          0 peso_verificado,   
                                          0 peso_despachado,  
-                                         stock_res.cantidad cantidad_solicitada,   
+                                         case when stock_res.IdPresentacion =0 then 
+                                                   stock_res.cantidad 
+										 else stock_res.cantidad/iif(pp.factor = 0,1,pp.factor) end cantidad_solicitada, 
                                          0 cantidad_recibida,   
                                          0 cantidad_verificada,   
                                          0 encontrado,  
@@ -33929,7 +33944,9 @@ EJC_202308081248_RESERVAR_DESDE_ULITIMA_LISTA:
 										 producto.nombre NombreProducto  
                                   FROM stock_res INNER JOIN    
                                        producto_bodega ON stock_res.IdProductoBodega = producto_bodega.IdProductoBodega INNER JOIN    
-                                       producto ON producto_bodega.IdProducto = producto.IdProducto    
+                                       producto ON producto_bodega.IdProducto = producto.IdProducto LEFT JOIN  
+                                       producto_presentacion pp ON stock_res.IdPresentacion =  pp.IdPresentacion AND 
+                                                                   pp.IdProducto = producto.IdProducto    
                                   WHERE IdPedido = @IdPedidoEnc "
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))

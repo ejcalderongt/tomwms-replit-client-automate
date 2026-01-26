@@ -210,14 +210,22 @@
     <Compile Include="Mantenimientos\I_Nav_Tarifa_Tipo_Transaccion\clsLnTarifa_tipo_transaccion_det.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSOC\clsLnLog_error_wms_oc.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSOC\clsLnLog_error_wms_oc_partial.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSPack\clsLnLog_error_wms_pack_partial.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSPed\clsLnLog_error_wms_pe.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSPed\clsLnLog_error_wms_pe_partial.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSPick\clsLnLog_error_wms_pick.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSPick\clsLnLog_error_wms_pick_partial.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSReab\clsLnLog_error_wms_reab.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSReab\clsLn_Log_error_wms_reab_partial.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSRec\clsLnLog_error_wms_rec.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSRec\clsLnLog_error_wms_rec_partial.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSUbic\clsLnLog_error_wms_ubic_partial.vb" />
     <Compile Include="Mantenimientos\LogErrorWMS\clsLnLog_error_wms_partial.vb" />
     <Compile Include="Mantenimientos\LogErrorWMS\clsLnLog_error_wms.vb" />
+    <Compile Include="Mantenimientos\LogVerificacionBOF\clsLnLog_verificacion_bof.vb" />
+    <Compile Include="Mantenimientos\LogVerificacionBOF\clsLnLog_verificacion_bof_partial.vb" />
     <Compile Include="Mantenimientos\Manufactura\Manufactura_Tipo\clsLnTrans_manufactura_tipo.vb" />
     <Compile Include="Mantenimientos\MotivoCorreccion\clsLnTrans_oc_pol_motivo_correccion.vb" />
     <Compile Include="Mantenimientos\MotivoCorreccion\clsLnTrans_oc_pol_motivo_correccion_bodega.vb" />
@@ -287,6 +295,8 @@
     <Compile Include="Transacciones\Doc_Con_Diferencias\clsLnVW_Doc_con_Diferencias.vb" />
     <Compile Include="Transacciones\Doc_Con_Diferencias\clsLnVW_Pe_Con_Diferencias.vb" />
     <Compile Include="Transacciones\EstadoEnviosNav\clsLnVW_EstadoEnviosNav.vb" />
+    <Compile Include="Transacciones\EtiquetaVerificacion\clsLnTrans_verificacion_etiqueta_Partial.vb" />
+    <Compile Include="Transacciones\EtiquetaVerificacion\clsLnTrans_verificacion_etiqueta.vb" />
     <Compile Include="Transacciones\Log\clsLnTrans_log_reubic_stock_res.vb" />
     <Compile Include="Transacciones\Log\clsLnTrans_log_reubic_stock_res_Partial.vb" />
     <Compile Include="Transacciones\Manufactura\clsLnTrans_manufactura_det_partial.vb" />
@@ -816,6 +826,13 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="..\..\packages\EmptyLicensesLicx.3.0.0\build\EmptyLicensesLicx.targets" Condition="Exists('..\..\packages\EmptyLicensesLicx.3.0.0\build\EmptyLicensesLicx.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\EmptyLicensesLicx.3.0.0\build\EmptyLicensesLicx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\EmptyLicensesLicx.3.0.0\build\EmptyLicensesLicx.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -826,11 +843,4 @@
   <ItemGroup>
     <Analyzer Include="C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll" Visible="false" Condition="Exists('C:\Program Files\DevExpress 25.1\Components\Offline Packages\devexpress.data\25.1.5\analyzers\dotnet\DevExpress.Generator.dll')" />
   </ItemGroup>
-  <Import Project="..\..\packages\EmptyLicensesLicx.3.0.0\build\EmptyLicensesLicx.targets" Condition="Exists('..\..\packages\EmptyLicensesLicx.3.0.0\build\EmptyLicensesLicx.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>Este proyecto hace referencia a los paquetes NuGet que faltan en este equipo. Use la restauración de paquetes NuGet para descargarlos. Para obtener más información, consulte http://go.microsoft.com/fwlink/?LinkID=322105. El archivo que falta es {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\EmptyLicensesLicx.3.0.0\build\EmptyLicensesLicx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\EmptyLicensesLicx.3.0.0\build\EmptyLicensesLicx.targets'))" />
-  </Target>
 </Project>

@@ -786,7 +786,7 @@ Partial Public Class clsLnJornada_sistema
                                                                                                             lTransaction)
 
 
-                                    If BeStockJornadaDesfase.LIC_PLATE = "PF00043" Then
+                                    If BeStockJornadaDesfase.LIC_PLATE = "TF000000242" Then
                                         Debug.WriteLine("espera")
                                     End If
 

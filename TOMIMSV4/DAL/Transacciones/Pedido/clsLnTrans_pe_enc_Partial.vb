@@ -5726,6 +5726,8 @@ Partial Public Class clsLnTrans_pe_enc
                     '#GT26032024: campo para identificar si aplica manufactura ligera
                     vPedidoEnc.IdTipoManufactura = IIf(IsDBNull(lRow("idtipomanufactura")), 0, lRow("idtipomanufactura"))
 
+                    vPedidoEnc.Referencia_Documento_Ingreso_Bodega_Destino = IIf(IsDBNull(lRow("Referencia_Documento_Ingreso_Bodega_Destino")), "", lRow("Referencia_Documento_Ingreso_Bodega_Destino"))
+
 
                     '#CKFK20250227: Obtener detalle sin el picking
                     vPedidoEnc.Detalle = clsLnTrans_pe_det.Get_Detalle_By_IdPedidoEnc_Sin_Picking(vPedidoEnc.IdPedidoEnc,
@@ -6890,10 +6892,10 @@ Partial Public Class clsLnTrans_pe_enc
 
     End Function
 
-    Public Shared Function Existe_Transferencia_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer,
-                                                               ByVal pNo_Despacho As String) As String
+    Public Shared Function Get_No_Picking_ERP(ByVal pIdPedidoEnc As Integer,
+                                              ByVal pNo_Despacho As String) As String
 
-        Existe_Transferencia_By_IdPedidoEnc = ""
+        Get_No_Picking_ERP = ""
 
         Dim vPedidoEnc As New clsBeTrans_pe_enc()
 
@@ -6917,7 +6919,7 @@ Partial Public Class clsLnTrans_pe_enc
                         Dim lReturnValue As Object = lCommand.ExecuteScalar()
 
                         If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                            Existe_Transferencia_By_IdPedidoEnc = lReturnValue
+                            Get_No_Picking_ERP = lReturnValue
                         End If
 
                     End Using
@@ -7079,5 +7081,152 @@ Partial Public Class clsLnTrans_pe_enc
         End Try
 
     End Function
+
+    Public Shared Function Get_No_Picking_ERP_By_IdPedidoEnc_And_NoDespacho(ByVal pIdPedidoEnc As Integer,
+                                                                            ByVal pNo_Despacho As String,
+                                                                            ByVal lConnection As SqlConnection,
+                                                                            ByVal lTransaction As SqlTransaction) As String
+
+        Get_No_Picking_ERP_By_IdPedidoEnc_And_NoDespacho = ""
+
+        Dim vPedidoEnc As New clsBeTrans_pe_enc()
+
+        Try
+
+            Dim vSQL As String = "SELECT No_Picking_ERP FROM trans_pe_enc WHERE IdPedidoEnc=@IdPedidoEnc and no_despacho = @no_despacho "
+
+            Using lCommand As New SqlCommand(vSQL, lConnection, lTransaction)
+
+                lCommand.CommandType = CommandType.Text
+
+                lCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
+                lCommand.Parameters.AddWithValue("@no_despacho", pNo_Despacho)
+
+                Dim lReturnValue As Object = lCommand.ExecuteScalar()
+
+                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                    Get_No_Picking_ERP_By_IdPedidoEnc_And_NoDespacho = lReturnValue
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_No_Picking_ERP_By_IdPedidoEnc(ByVal pIdPedidoEnc As Integer,
+                                                             ByVal lConnection As SqlConnection,
+                                                             ByVal lTransaction As SqlTransaction) As String
+
+        Get_No_Picking_ERP_By_IdPedidoEnc = ""
+
+        Dim vPedidoEnc As New clsBeTrans_pe_enc()
+
+        Try
+
+            Dim vSQL As String = "SELECT No_Picking_ERP FROM trans_pe_enc WHERE IdPedidoEnc=@IdPedidoEnc "
+
+            Using lCommand As New SqlCommand(vSQL, lConnection, lTransaction)
+
+                lCommand.CommandType = CommandType.Text
+                lCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
+
+                Dim lReturnValue As Object = lCommand.ExecuteScalar()
+
+                If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
+                    Get_No_Picking_ERP_By_IdPedidoEnc = lReturnValue
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_IdPicking_By_IdPedido(ByVal pIdPedidoEnc As Integer, ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction) As Integer
+
+        Get_IdPicking_By_IdPedido = 0
+
+        Try
+
+            Dim vSQ As String = "SELECT ISNULL(IdPickingEnc,0) AS IdPickingEnc FROM trans_pe_enc WHERE IdPedidoEnc=@IdPedidoEnc "
+
+            Using lDTA As New SqlDataAdapter(vSQ, lConnection)
+
+                lDTA.SelectCommand.Transaction = lTransaction
+                lDTA.SelectCommand.CommandType = CommandType.Text
+                lDTA.SelectCommand.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
+
+                Dim lDT As New DataTable()
+                lDTA.Fill(lDT)
+
+                If lDT IsNot Nothing AndAlso lDT.Rows.Count > 0 Then
+                    Dim lRow As DataRow = lDT.Rows(0)
+                    Get_IdPicking_By_IdPedido = IIf(IsDBNull(lRow("IdPickingEnc")), 0, lRow("IdPickingEnc"))
+                End If
+
+            End Using
+
+        Catch ex As Exception
+            Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_IdCliente_And_IdPedidoEnc_By_IdPickingUbic(ByVal pIdPickingUbic As Integer, ByVal pIdPickingEnc As Integer) As Tuple(Of Integer, Integer)
+
+        Dim vIdCliente As Integer = 0
+        Dim vIdPedidoEnc As Integer = 0
+
+        Try
+
+            Dim vSQL As String = "SELECT penc.IdCliente, penc.IdPedidoEnc
+                              FROM trans_pe_enc penc
+                              JOIN trans_picking_ubic pu ON penc.IdPedidoEnc = pu.IdPedidoEnc
+                              WHERE pu.IdPickingUbic=@IdPickingUbic AND pu.IdPickingEnc=@IdPickingEnc"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lCmd As New SqlCommand(vSQL, lConnection, lTransaction)
+                        lCmd.Parameters.AddWithValue("@IdPickingUbic", pIdPickingUbic)
+                        lCmd.Parameters.AddWithValue("@IdPickingEnc", pIdPickingEnc)
+
+                        Using lReader As SqlDataReader = lCmd.ExecuteReader()
+
+                            If lReader.Read() Then
+
+                                If Not IsDBNull(lReader("IdCliente")) Then
+                                    vIdCliente = CInt(lReader("IdCliente"))
+                                End If
+
+                                If Not IsDBNull(lReader("IdPedidoEnc")) Then
+                                    vIdPedidoEnc = CInt(lReader("IdPedidoEnc"))
+                                End If
+
+                            End If
+
+                        End Using
+
+                    End Using
+
+                    lTransaction.Commit()
+                End Using
+            End Using
+
+        Catch ex As Exception
+            Throw
+        End Try
+
+        Return Tuple.Create(vIdCliente, vIdPedidoEnc)
+
+    End Function
+
 
 End Class

@@ -105,7 +105,7 @@ Partial Public Class clsLnBodega
             For Each T As DataRow In Dt.Rows
                 vBeTramo = New clsBeBodega_tramo
                 clsLnBodega_tramo.Cargar(vBeTramo, T)
-                vBeTramo.pFont = New clsBeFont_Enc
+                vBeTramo.pFont = New clsBeFont_enc
                 vBeTramo.pFont.IdFontEnc = vBeTramo.IdFontEnc
                 vBeTramo.pFont = clsLnFont_enc.GetSingleByIdFontEnc(vBeTramo.IdFontEnc, lConnection, lTransaction)
                 lTramos.Add(vBeTramo)
@@ -1475,8 +1475,8 @@ Partial Public Class clsLnBodega
 
     '#CKFK 20180420 01:57 AM Creé la función para obtener el cambio_ubicacion_auto
     Public Shared Function Get_Parametro_Cambio_Ubicacion_Auto(ByVal pIdBodega As Integer,
-                                                  Optional ByRef pConnection As SqlConnection = Nothing,
-                                                  Optional ByRef pTransaction As SqlTransaction = Nothing) As Boolean
+                                                               Optional ByRef pConnection As SqlConnection = Nothing,
+                                                               Optional ByRef pTransaction As SqlTransaction = Nothing) As Boolean
 
         Dim lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
         Dim lTransaction As SqlTransaction = Nothing

@@ -101,6 +101,7 @@ Public Class clsLnBodega
                 .Homologar_Lote_Vencimiento = IIf(IsDBNull(dr.Item("homologar_lote_vencimiento")), False, dr.Item("homologar_lote_vencimiento"))
                 .Escanear_Licencia_Picking = IIf(IsDBNull(dr.Item("escanear_licencia_picking")), False, dr.Item("escanear_licencia_picking"))
                 .IdTipoEtiquetaLicencia = IIf(IsDBNull(dr.Item("idtipoetiquetalicencia")), 0, dr.Item("idtipoetiquetalicencia"))
+                .IdTipoEtiquetaVerificacion = IIf(IsDBNull(dr.Item("idtipoetiquetaverificacion")), 0, dr.Item("idtipoetiquetaverificacion"))
                 .IdSimbologiaLicencia = IIf(IsDBNull(dr.Item("idsimbologialicencia")), 0, dr.Item("idsimbologialicencia"))
                 .Interface_SAP = IIf(IsDBNull(dr.Item("interface_sap")), 0, dr.Item("interface_sap"))
                 .Restringir_Areas_SAP = IIf(IsDBNull(dr.Item("Restringir_Areas_SAP")), False, dr.Item("Restringir_Areas_SAP"))
@@ -112,6 +113,9 @@ Public Class clsLnBodega
                 .Rango_Dias_Documentos = IIf(IsDBNull(dr.Item("Rango_Dias_Documentos")), 0, dr.Item("Rango_Dias_Documentos"))
                 .Agrupar_Sin_Lic_Veri_No_Cons = IIf(IsDBNull(dr.Item("agrupar_sin_lic_veri_no_cons")), False, dr.Item("agrupar_sin_lic_veri_no_cons"))
                 .Advertir_Mpq_Umbas = IIf(IsDBNull(dr.Item("advertir_mpq_umbas")), False, dr.Item("advertir_mpq_umbas"))
+                .Priorizar_Cantidad_Superior = IIf(IsDBNull(dr.Item("Priorizar_Cantidad_Superior")), False, dr.Item("Priorizar_Cantidad_Superior"))
+                .impresion_verificacion = IIf(IsDBNull(dr.Item("impresion_verificacion")), False, dr.Item("impresion_verificacion"))
+
 
             End With
 
@@ -221,6 +225,7 @@ Public Class clsLnBodega
             Ins.Add("homologar_lote_vencimiento", "@homologar_lote_vencimiento", DataType.Parametro)
             Ins.Add("escanear_licencia_picking", "@escanear_licencia_picking", DataType.Parametro)
             Ins.Add("idtipoetiquetalicencia", "@idtipoetiquetalicencia", DataType.Parametro)
+            Ins.Add("idtipoetiquetaverificacion", "@idtipoetiquetaverificacion", DataType.Parametro)
             Ins.Add("idsimbologialicencia", "@idsimbologialicencia", DataType.Parametro)
             Ins.Add("interface_sap", "@interface_sap", DataType.Parametro)
             Ins.Add("restringir_areas_sap", "@restringir_areas_sap", DataType.Parametro)
@@ -231,6 +236,9 @@ Public Class clsLnBodega
             Ins.Add("ruta_cdn", "@ruta_cdn", DataType.Parametro)
             Ins.Add("rango_dias_documentos", "@rango_dias_documentos", DataType.Parametro)
             Ins.Add("agrupar_sin_lic_veri_no_cons", "@agrupar_sin_lic_veri_no_cons", DataType.Parametro)
+            Ins.Add("advertir_mpq_umbas", "@advertir_mpq_umbas", DataType.Parametro)
+            Ins.Add("priorizar_cantidad_superior", "@priorizar_cantidad_superior", DataType.Parametro)
+            Ins.Add("impresion_verificacion", "@impresion_verificacion", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -334,6 +342,7 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@HOMOLOGAR_LOTE_VENCIMIENTO", oBeBodega.Homologar_Lote_Vencimiento))
             cmd.Parameters.Add(New SqlParameter("@ESCANEAR_LICENCIA_PICKING", oBeBodega.Escanear_Licencia_Picking))
             cmd.Parameters.Add(New SqlParameter("@IDTIPOETIQUETALICENCIA", oBeBodega.IdTipoEtiquetaLicencia))
+            cmd.Parameters.Add(New SqlParameter("@IDTIPOETIQUETAVERIFICACION", oBeBodega.IdTipoEtiquetaVerificacion))
             cmd.Parameters.Add(New SqlParameter("@IDSIMBOLOGIALICENCIA", oBeBodega.IdSimbologiaLicencia))
             cmd.Parameters.Add(New SqlParameter("@INTERFACE_SAP", oBeBodega.Interface_SAP))
             cmd.Parameters.Add(New SqlParameter("@RESTRINGIR_AREAS_SAP", oBeBodega.Restringir_Areas_SAP))
@@ -344,6 +353,9 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@RUTA_CDN", oBeBodega.Ruta_CDN))
             cmd.Parameters.Add(New SqlParameter("@RANGO_DIAS_DOCUMENTOS", oBeBodega.Rango_Dias_Documentos))
             cmd.Parameters.Add(New SqlParameter("@AGRUPAR_SIN_LIC_VERI_NO_CONS", oBeBodega.Agrupar_Sin_Lic_Veri_No_Cons))
+            cmd.Parameters.Add(New SqlParameter("@ADVERTIR_MPQ_UMBAS", oBeBodega.Advertir_Mpq_Umbas))
+            cmd.Parameters.Add(New SqlParameter("@PRIORIZAR_CANTIDAD_SUPERIOR", oBeBodega.Priorizar_Cantidad_Superior))
+            cmd.Parameters.Add(New SqlParameter("@IMPRESION_VERIFICACION", oBeBodega.impresion_verificacion))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -461,6 +473,7 @@ Public Class clsLnBodega
             Upd.Add("homologar_lote_vencimiento", "@homologar_lote_vencimiento", DataType.Parametro)
             Upd.Add("escanear_licencia_picking", "@escanear_licencia_picking", DataType.Parametro)
             Upd.Add("idtipoetiquetalicencia", "@idtipoetiquetalicencia", DataType.Parametro)
+            Upd.Add("idtipoetiquetaverificacion", "@idtipoetiquetaverificacion", DataType.Parametro)
             Upd.Add("idsimbologialicencia", "@idsimbologialicencia", DataType.Parametro)
             Upd.Add("interface_sap", "@interface_sap", DataType.Parametro)
             Upd.Add("restringir_areas_sap", "@restringir_areas_sap", DataType.Parametro)
@@ -471,6 +484,9 @@ Public Class clsLnBodega
             Upd.Add("ruta_cdn", "@ruta_cdn", DataType.Parametro)
             Upd.Add("rango_dias_documentos", "@rango_dias_documentos", DataType.Parametro)
             Upd.Add("agrupar_sin_lic_veri_no_cons", "@agrupar_sin_lic_veri_no_cons", DataType.Parametro)
+            Upd.Add("advertir_mpq_umbas", "@advertir_mpq_umbas", DataType.Parametro)
+            Upd.Add("priorizar_cantidad_superior", "@priorizar_cantidad_superior", DataType.Parametro)
+            Upd.Add("impresion_verificacion", "@impresion_verificacion", DataType.Parametro)
             Upd.Where("IdBodega = @IdBodega")
 
             Dim sp As String = Upd.SQL()
@@ -574,6 +590,7 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@HOMOLOGAR_LOTE_VENCIMIENTO", oBeBodega.Homologar_Lote_Vencimiento))
             cmd.Parameters.Add(New SqlParameter("@ESCANEAR_LICENCIA_PICKING", oBeBodega.Escanear_Licencia_Picking))
             cmd.Parameters.Add(New SqlParameter("@IDTIPOETIQUETALICENCIA", oBeBodega.IdTipoEtiquetaLicencia))
+            cmd.Parameters.Add(New SqlParameter("@IDTIPOETIQUETAVERIFICACION", oBeBodega.IdTipoEtiquetaVerificacion))
             cmd.Parameters.Add(New SqlParameter("@IDSIMBOLOGIALICENCIA", oBeBodega.IdSimbologiaLicencia))
             cmd.Parameters.Add(New SqlParameter("@INTERFACE_SAP", oBeBodega.Interface_SAP))
             cmd.Parameters.Add(New SqlParameter("@RESTRINGIR_AREAS_SAP", oBeBodega.Restringir_Areas_SAP))
@@ -584,6 +601,9 @@ Public Class clsLnBodega
             cmd.Parameters.Add(New SqlParameter("@RUTA_CDN", oBeBodega.Ruta_CDN))
             cmd.Parameters.Add(New SqlParameter("@RANGO_DIAS_DOCUMENTOS", oBeBodega.Rango_Dias_Documentos))
             cmd.Parameters.Add(New SqlParameter("@AGRUPAR_SIN_LIC_VERI_NO_CONS", oBeBodega.Agrupar_Sin_Lic_Veri_No_Cons))
+            cmd.Parameters.Add(New SqlParameter("@ADVERTIR_MPQ_UMBAS", oBeBodega.Advertir_Mpq_Umbas))
+            cmd.Parameters.Add(New SqlParameter("@PRIORIZAR_CANTIDAD_SUPERIOR", oBeBodega.Priorizar_Cantidad_Superior))
+            cmd.Parameters.Add(New SqlParameter("@IMPRESION_VERIFICACION", oBeBodega.impresion_verificacion))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

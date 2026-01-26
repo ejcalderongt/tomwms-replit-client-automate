@@ -196,6 +196,9 @@
     <Compile Include="FixTheBug\clsBeTablas_relacionadas_placas.vb" />
     <Compile Include="FixTheBug\clsBeTmp_trans_pe_pol.vb" />
     <Compile Include="FixTheBug\clsBeVW_Pedidos_Revision.vb" />
+    <Compile Include="IA\ChatMsg.vb" />
+    <Compile Include="IA\PromptTemplate.vb" />
+    <Compile Include="IA\TemplateVar.vb" />
     <Compile Include="Interface\Barras_Pallet\clsBeI_nav_barras_pallet.vb" />
     <Compile Include="Interface\Cealsa\Acuerdo_Det\clsBeCEALSA_detacuerdoscomerciales.vb" />
     <Compile Include="Interface\Cealsa\Acuerdo_Det\clsBeI_nav_acuerdo_det.vb" />
@@ -250,9 +253,13 @@
     <Compile Include="Mantenimientos\I_Nav_Tarifa_Tipo_Transaccion\clsBeTarifa_tipo_transaccion.vb" />
     <Compile Include="Mantenimientos\I_Nav_Tarifa_Tipo_Transaccion\clsBeTarifa_tipo_transaccion_det.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSOC\clsBeLog_error_wms_oc.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSPack\clsBeLog_error_wms_pack.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSPe\clsBeLog_error_wms_pe.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSPick\clsBeLog_error_wms_pick.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSReab\clsBeLog_error_wms_reab.vb" />
     <Compile Include="Mantenimientos\LogErrorWMSRec\clsBeLog_error_wms_rec.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSUbic\clsBeLog_error_wms_ubic.vb" />
+    <Compile Include="Mantenimientos\LogErrorWMSVeri\clsBeLog_verificacion_bof.vb" />
     <Compile Include="Mantenimientos\LogErrorWMS\clsBeLog_error_wms.vb" />
     <Compile Include="Mantenimientos\Manufactura\Manufactura_Tipo\clsBeTrans_manufactura_tipo.vb" />
     <Compile Include="Mantenimientos\Menu_Rol\clsBeOpcionesMenuRol.vb" />
@@ -293,6 +300,8 @@
     <Compile Include="QuickTag\Impresora\Cola_Impresion\clsBeQT_Impresion_cola.vb" />
     <Compile Include="QuickTag\Sucursal\clsBeQT_Sucursal.vb" />
     <Compile Include="QuickTag\Producto_Finca\clsBeQTProducto_Sucursal.vb" />
+    <Compile Include="Transacciones\EtiquetaVerificacion\clsBeTrans_verificacion_etiqueta_Partial.vb" />
+    <Compile Include="Transacciones\EtiquetaVerificacion\clsBeTrans_verificacion_etiqueta.vb" />
     <Compile Include="Transacciones\Inkjet\clsBeMessage.vb" />
     <Compile Include="Transacciones\Inkjet\clsBeObject.vb" />
     <Compile Include="Transacciones\Inkjet\clsBePrintData.vb" />

@@ -5309,7 +5309,8 @@ Partial Public Class clsLnTrans_inv_ciclico
                                   trans_inv_ciclico.fecha_vence, 
                                   trans_inv_ciclico.IdUbicacion_nuevo,
                                   e1.Nombre as Estado_Nuevo,
-                                  MAX(trans_inv_ciclico.Cantidad_Reservada_UMBas) Cantidad_Reservada_UMBas
+                                  MAX(trans_inv_ciclico.Cantidad_Reservada_UMBas) Cantidad_Reservada_UMBas,
+								  SUM(CASE WHEN trans_inv_ciclico.contado = 1 THEN 1 ELSE 0 END) Contado
                                 FROM 
                                   trans_inv_ciclico 
                                   INNER JOIN producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega 
@@ -5527,6 +5528,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                     BeTransInvCiclico.Ubicacion_Nueva = IIf(IsDBNull(lRow("Nombre_Completo_Destino")), "", lRow("Nombre_Completo_Destino"))
                     BeTransInvCiclico.EstadoNuevo = IIf(IsDBNull(lRow("Estado_Nuevo")), "", lRow("Estado_Nuevo"))
                     BeTransInvCiclico.Cantidad_Reservada_UMBas = IIf(IsDBNull(lRow("Cantidad_Reservada_UMBas")), 0, lRow("Cantidad_Reservada_UMBas"))
+                    BeTransInvCiclico.Contado = IIf(IsDBNull(lRow("Contado")), False, lRow("Contado"))
 
                     lReturnList.Add(BeTransInvCiclico)
 

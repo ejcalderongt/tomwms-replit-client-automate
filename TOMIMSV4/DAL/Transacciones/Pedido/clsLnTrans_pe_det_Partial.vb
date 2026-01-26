@@ -216,11 +216,9 @@ Partial Public Class clsLnTrans_pe_det
                         End With
 
                         '#GT16092025:si la linea del pedido no tiene stock liberado, se infiere que esta asociada a una linea de despacho
-                        If Not BeTransPeDet.Stock_Liberado Then
-                            lReturnList.Add(BeTransPeDet)
-                        End If
-
-
+                        'If Not BeTransPeDet.Stock_Liberado Then
+                        lReturnList.Add(BeTransPeDet)
+                        'End If
 
                     Next
 
@@ -4877,6 +4875,51 @@ Partial Public Class clsLnTrans_pe_det
 
         Catch ex As Exception
             Throw ex
+        End Try
+
+    End Function
+
+    Public Shared Function Get_IdPresentacion_By_IdPedidoDet(ByVal pIdPedidoEnc As Integer, ByVal pIdPedidoDet As Integer) As Integer
+
+        Dim idPresentacion As Integer = 0
+
+        Try
+
+            Dim vSQL As String = "SELECT IdPresentacion 
+                              FROM trans_pe_det 
+                              WHERE IdPedidoEnc = @IdPedidoEnc 
+                                AND IdPedidoDet = @IdPedidoDet"
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Using lCmd As New SqlCommand(vSQL, lConnection, lTransaction)
+
+                        lCmd.CommandType = CommandType.Text
+                        lCmd.Parameters.AddWithValue("@IdPedidoEnc", pIdPedidoEnc)
+                        lCmd.Parameters.AddWithValue("@IdPedidoDet", pIdPedidoDet)
+
+                        Dim result As Object = lCmd.ExecuteScalar()
+
+                        If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
+                            idPresentacion = CInt(result)
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+
+            End Using
+
+            Return idPresentacion
+
+        Catch ex As Exception
+            Throw
         End Try
 
     End Function

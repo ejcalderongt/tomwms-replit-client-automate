@@ -63,15 +63,16 @@ Partial Class frmInventarioVerifica
         '
         'RibbonControl
         '
+        Me.RibbonControl.EmptyAreaImageOptions.ImagePadding = New System.Windows.Forms.Padding(26, 24, 26, 24)
         Me.RibbonControl.ExpandCollapseItem.Id = 0
         Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.mnuActualizar, Me.mnuEliminar})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
-        Me.RibbonControl.Margin = New System.Windows.Forms.Padding(4)
         Me.RibbonControl.MaxItemId = 3
         Me.RibbonControl.Name = "RibbonControl"
+        Me.RibbonControl.OptionsMenuMinWidth = 283
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
-        Me.RibbonControl.Size = New System.Drawing.Size(975, 193)
+        Me.RibbonControl.Size = New System.Drawing.Size(836, 158)
         Me.RibbonControl.StatusBar = Me.RibbonStatusBar
         '
         'mnuActualizar
@@ -102,11 +103,10 @@ Partial Class frmInventarioVerifica
         '
         'RibbonStatusBar
         '
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 545)
-        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4)
+        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 443)
         Me.RibbonStatusBar.Name = "RibbonStatusBar"
         Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(975, 30)
+        Me.RibbonStatusBar.Size = New System.Drawing.Size(836, 24)
         '
         'grpVerificaInv
         '
@@ -134,257 +134,232 @@ Partial Class frmInventarioVerifica
         Me.grpVerificaInv.Controls.Add(Me.lblCod)
         Me.grpVerificaInv.Controls.Add(Me.lblCodigo)
         Me.grpVerificaInv.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.grpVerificaInv.Location = New System.Drawing.Point(0, 193)
-        Me.grpVerificaInv.Margin = New System.Windows.Forms.Padding(4)
+        Me.grpVerificaInv.Location = New System.Drawing.Point(0, 158)
         Me.grpVerificaInv.Name = "grpVerificaInv"
-        Me.grpVerificaInv.Size = New System.Drawing.Size(975, 352)
+        Me.grpVerificaInv.Size = New System.Drawing.Size(836, 285)
         Me.grpVerificaInv.TabIndex = 0
         '
         'txtNomUbicacion
         '
         Me.txtNomUbicacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtNomUbicacion.Location = New System.Drawing.Point(588, 162)
-        Me.txtNomUbicacion.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtNomUbicacion.Location = New System.Drawing.Point(504, 132)
         Me.txtNomUbicacion.Name = "txtNomUbicacion"
         Me.txtNomUbicacion.ReadOnly = True
-        Me.txtNomUbicacion.Size = New System.Drawing.Size(342, 23)
+        Me.txtNomUbicacion.Size = New System.Drawing.Size(293, 21)
         Me.txtNomUbicacion.TabIndex = 34
         '
         'txtIdUbicacion
         '
         Me.txtIdUbicacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtIdUbicacion.Location = New System.Drawing.Point(588, 131)
-        Me.txtIdUbicacion.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtIdUbicacion.Location = New System.Drawing.Point(504, 106)
         Me.txtIdUbicacion.Name = "txtIdUbicacion"
-        Me.txtIdUbicacion.Size = New System.Drawing.Size(342, 23)
+        Me.txtIdUbicacion.Size = New System.Drawing.Size(293, 21)
         Me.txtIdUbicacion.TabIndex = 33
         '
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(475, 136)
-        Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label2.Location = New System.Drawing.Point(407, 110)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(105, 16)
+        Me.Label2.Size = New System.Drawing.Size(90, 13)
         Me.Label2.TabIndex = 32
         Me.Label2.Text = "Nueva Ubicación:"
         '
         'txtUbicacion
         '
         Me.txtUbicacion.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtUbicacion.Location = New System.Drawing.Point(588, 99)
-        Me.txtUbicacion.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtUbicacion.Location = New System.Drawing.Point(504, 80)
         Me.txtUbicacion.Name = "txtUbicacion"
         Me.txtUbicacion.ReadOnly = True
-        Me.txtUbicacion.Size = New System.Drawing.Size(342, 23)
+        Me.txtUbicacion.Size = New System.Drawing.Size(293, 21)
         Me.txtUbicacion.TabIndex = 31
         '
         'lblUbicacion
         '
         Me.lblUbicacion.AutoSize = True
-        Me.lblUbicacion.Location = New System.Drawing.Point(475, 101)
-        Me.lblUbicacion.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblUbicacion.Location = New System.Drawing.Point(407, 82)
         Me.lblUbicacion.Name = "lblUbicacion"
-        Me.lblUbicacion.Size = New System.Drawing.Size(105, 16)
+        Me.lblUbicacion.Size = New System.Drawing.Size(89, 13)
         Me.lblUbicacion.TabIndex = 30
         Me.lblUbicacion.Text = "Ubicación Actual:"
         '
         'txtCantidad
         '
         Me.txtCantidad.DecimalPlaces = 2
-        Me.txtCantidad.Location = New System.Drawing.Point(183, 305)
-        Me.txtCantidad.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtCantidad.Location = New System.Drawing.Point(157, 248)
         Me.txtCantidad.Maximum = New Decimal(New Integer() {100000000, 0, 0, 0})
         Me.txtCantidad.Name = "txtCantidad"
-        Me.txtCantidad.Size = New System.Drawing.Size(224, 23)
+        Me.txtCantidad.Size = New System.Drawing.Size(192, 21)
         Me.txtCantidad.TabIndex = 17
         '
         'lblCantidad
         '
         Me.lblCantidad.AutoSize = True
-        Me.lblCantidad.Location = New System.Drawing.Point(26, 308)
-        Me.lblCantidad.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblCantidad.Location = New System.Drawing.Point(22, 250)
         Me.lblCantidad.Name = "lblCantidad"
-        Me.lblCantidad.Size = New System.Drawing.Size(62, 16)
+        Me.lblCantidad.Size = New System.Drawing.Size(54, 13)
         Me.lblCantidad.TabIndex = 16
         Me.lblCantidad.Text = "Cantidad:"
         '
         'cmbPEstado
         '
-        Me.cmbPEstado.Location = New System.Drawing.Point(183, 272)
-        Me.cmbPEstado.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbPEstado.Location = New System.Drawing.Point(157, 221)
         Me.cmbPEstado.MenuManager = Me.RibbonControl
         Me.cmbPEstado.Name = "cmbPEstado"
         Me.cmbPEstado.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbPEstado.Properties.NullText = ""
-        Me.cmbPEstado.Size = New System.Drawing.Size(225, 22)
+        Me.cmbPEstado.Size = New System.Drawing.Size(193, 20)
         Me.cmbPEstado.TabIndex = 15
         '
         'lblPEstado
         '
         Me.lblPEstado.AutoSize = True
-        Me.lblPEstado.Location = New System.Drawing.Point(26, 276)
-        Me.lblPEstado.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblPEstado.Location = New System.Drawing.Point(22, 224)
         Me.lblPEstado.Name = "lblPEstado"
-        Me.lblPEstado.Size = New System.Drawing.Size(104, 16)
+        Me.lblPEstado.Size = New System.Drawing.Size(90, 13)
         Me.lblPEstado.TabIndex = 14
         Me.lblPEstado.Text = "Producto Estado:"
         '
         'lblUM
         '
         Me.lblUM.AutoSize = True
-        Me.lblUM.Location = New System.Drawing.Point(26, 244)
-        Me.lblUM.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblUM.Location = New System.Drawing.Point(22, 198)
         Me.lblUM.Name = "lblUM"
-        Me.lblUM.Size = New System.Drawing.Size(96, 16)
+        Me.lblUM.Size = New System.Drawing.Size(81, 13)
         Me.lblUM.TabIndex = 12
         Me.lblUM.Text = "Unidad Medida:"
         '
         'cmbUM
         '
-        Me.cmbUM.Location = New System.Drawing.Point(183, 240)
-        Me.cmbUM.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbUM.Location = New System.Drawing.Point(157, 195)
         Me.cmbUM.MenuManager = Me.RibbonControl
         Me.cmbUM.Name = "cmbUM"
         Me.cmbUM.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbUM.Properties.NullText = ""
         Me.cmbUM.Properties.ReadOnly = True
-        Me.cmbUM.Size = New System.Drawing.Size(225, 22)
+        Me.cmbUM.Size = New System.Drawing.Size(193, 20)
         Me.cmbUM.TabIndex = 13
         '
         'cmbPresentacion
         '
-        Me.cmbPresentacion.Location = New System.Drawing.Point(183, 208)
-        Me.cmbPresentacion.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbPresentacion.Location = New System.Drawing.Point(157, 169)
         Me.cmbPresentacion.MenuManager = Me.RibbonControl
         Me.cmbPresentacion.Name = "cmbPresentacion"
         Me.cmbPresentacion.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbPresentacion.Properties.NullText = ""
-        Me.cmbPresentacion.Size = New System.Drawing.Size(225, 22)
+        Me.cmbPresentacion.Size = New System.Drawing.Size(193, 20)
         Me.cmbPresentacion.TabIndex = 11
         '
         'lblPresetacion
         '
         Me.lblPresetacion.AutoSize = True
-        Me.lblPresetacion.Location = New System.Drawing.Point(26, 212)
-        Me.lblPresetacion.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblPresetacion.Location = New System.Drawing.Point(22, 172)
         Me.lblPresetacion.Name = "lblPresetacion"
-        Me.lblPresetacion.Size = New System.Drawing.Size(85, 16)
+        Me.lblPresetacion.Size = New System.Drawing.Size(73, 13)
         Me.lblPresetacion.TabIndex = 10
         Me.lblPresetacion.Text = "Presentación:"
         '
         'txtProducto
         '
-        Me.txtProducto.Location = New System.Drawing.Point(183, 175)
-        Me.txtProducto.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtProducto.Location = New System.Drawing.Point(157, 142)
         Me.txtProducto.Name = "txtProducto"
         Me.txtProducto.ReadOnly = True
-        Me.txtProducto.Size = New System.Drawing.Size(224, 23)
+        Me.txtProducto.Size = New System.Drawing.Size(193, 21)
         Me.txtProducto.TabIndex = 9
         '
         'lblProducto
         '
         Me.lblProducto.AutoSize = True
-        Me.lblProducto.Location = New System.Drawing.Point(26, 178)
-        Me.lblProducto.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblProducto.Location = New System.Drawing.Point(22, 145)
         Me.lblProducto.Name = "lblProducto"
-        Me.lblProducto.Size = New System.Drawing.Size(62, 16)
+        Me.lblProducto.Size = New System.Drawing.Size(54, 13)
         Me.lblProducto.TabIndex = 8
         Me.lblProducto.Text = "Producto:"
         '
         'cmbOperador
         '
-        Me.cmbOperador.Location = New System.Drawing.Point(183, 142)
-        Me.cmbOperador.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbOperador.Location = New System.Drawing.Point(157, 115)
         Me.cmbOperador.MenuManager = Me.RibbonControl
         Me.cmbOperador.Name = "cmbOperador"
         Me.cmbOperador.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbOperador.Properties.NullText = ""
         Me.cmbOperador.Properties.ReadOnly = True
-        Me.cmbOperador.Size = New System.Drawing.Size(225, 22)
+        Me.cmbOperador.Size = New System.Drawing.Size(193, 20)
         Me.cmbOperador.TabIndex = 7
         '
         'lblOperador
         '
         Me.lblOperador.AutoSize = True
-        Me.lblOperador.Location = New System.Drawing.Point(26, 145)
-        Me.lblOperador.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblOperador.Location = New System.Drawing.Point(22, 118)
         Me.lblOperador.Name = "lblOperador"
-        Me.lblOperador.Size = New System.Drawing.Size(66, 16)
+        Me.lblOperador.Size = New System.Drawing.Size(57, 13)
         Me.lblOperador.TabIndex = 6
         Me.lblOperador.Text = "Operador:"
         '
         'cmbTramo
         '
-        Me.cmbTramo.Location = New System.Drawing.Point(183, 105)
-        Me.cmbTramo.Margin = New System.Windows.Forms.Padding(4)
+        Me.cmbTramo.Location = New System.Drawing.Point(157, 85)
         Me.cmbTramo.MenuManager = Me.RibbonControl
         Me.cmbTramo.Name = "cmbTramo"
         Me.cmbTramo.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbTramo.Properties.NullText = ""
         Me.cmbTramo.Properties.ReadOnly = True
-        Me.cmbTramo.Size = New System.Drawing.Size(225, 22)
+        Me.cmbTramo.Size = New System.Drawing.Size(193, 20)
         Me.cmbTramo.TabIndex = 5
         '
         'lblTramo
         '
         Me.lblTramo.AutoSize = True
-        Me.lblTramo.Location = New System.Drawing.Point(26, 108)
-        Me.lblTramo.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblTramo.Location = New System.Drawing.Point(22, 88)
         Me.lblTramo.Name = "lblTramo"
-        Me.lblTramo.Size = New System.Drawing.Size(50, 16)
+        Me.lblTramo.Size = New System.Drawing.Size(41, 13)
         Me.lblTramo.TabIndex = 4
         Me.lblTramo.Text = "Tramo:"
         '
         'lblCodInv
         '
         Me.lblCodInv.AutoSize = True
-        Me.lblCodInv.Location = New System.Drawing.Point(180, 76)
-        Me.lblCodInv.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblCodInv.Location = New System.Drawing.Point(154, 62)
         Me.lblCodInv.Name = "lblCodInv"
-        Me.lblCodInv.Size = New System.Drawing.Size(17, 16)
+        Me.lblCodInv.Size = New System.Drawing.Size(15, 13)
         Me.lblCodInv.TabIndex = 3
         Me.lblCodInv.Text = "--"
         '
         'lblCodigoInv
         '
         Me.lblCodigoInv.AutoSize = True
-        Me.lblCodigoInv.Location = New System.Drawing.Point(26, 76)
-        Me.lblCodigoInv.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblCodigoInv.Location = New System.Drawing.Point(22, 62)
         Me.lblCodigoInv.Name = "lblCodigoInv"
-        Me.lblCodigoInv.Size = New System.Drawing.Size(69, 16)
+        Me.lblCodigoInv.Size = New System.Drawing.Size(61, 13)
         Me.lblCodigoInv.TabIndex = 2
         Me.lblCodigoInv.Text = "Inventario:"
         '
         'lblCod
         '
         Me.lblCod.AutoSize = True
-        Me.lblCod.Location = New System.Drawing.Point(180, 46)
-        Me.lblCod.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblCod.Location = New System.Drawing.Point(154, 37)
         Me.lblCod.Name = "lblCod"
-        Me.lblCod.Size = New System.Drawing.Size(17, 16)
+        Me.lblCod.Size = New System.Drawing.Size(15, 13)
         Me.lblCod.TabIndex = 1
         Me.lblCod.Text = "--"
         '
         'lblCodigo
         '
         Me.lblCodigo.AutoSize = True
-        Me.lblCodigo.Location = New System.Drawing.Point(26, 46)
-        Me.lblCodigo.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblCodigo.Location = New System.Drawing.Point(22, 37)
         Me.lblCodigo.Name = "lblCodigo"
-        Me.lblCodigo.Size = New System.Drawing.Size(51, 16)
+        Me.lblCodigo.Size = New System.Drawing.Size(44, 13)
         Me.lblCodigo.TabIndex = 0
         Me.lblCodigo.Text = "Código:"
         '
         'frmInventarioVerifica
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(975, 575)
+        Me.ClientSize = New System.Drawing.Size(836, 467)
         Me.Controls.Add(Me.grpVerificaInv)
         Me.Controls.Add(Me.RibbonStatusBar)
         Me.Controls.Add(Me.RibbonControl)
-        Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "frmInventarioVerifica"
         Me.Ribbon = Me.RibbonControl
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen

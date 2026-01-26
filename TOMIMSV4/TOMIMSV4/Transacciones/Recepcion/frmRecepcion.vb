@@ -685,7 +685,7 @@ Public Class frmRecepcion
     Private Sub Guardar_Recepcion(ByVal Preguntar As Boolean)
 
         Try
-
+            'ubicame donde se llena el lookup de producto. xfa para el nuevo grid.
             If Datos_Correctos() Then
 
                 SplashScreenManager.CloseForm(False)
@@ -2026,17 +2026,15 @@ Public Class frmRecepcion
 
             End If
 
-            '#GT02122025: no se ha determinado que hace el operador para duplicar tareas para la HH
-            'aqui remover duplicados antes de insertar.
-
+            '#GT02122025: no se ha determinado que hace el operador de HH para duplicar la tarea
+            'aqui removemos duplicados y se mantienen las variantes.
             pListOpe = pListOpe _
-                        .GroupBy(Function(o) New With {
-                            Key .IdRecepcionEnc = o.IdRecepcionEnc,
-                            Key .IdOperadorBodega = o.IdOperadorBodega
-                        }) _
-                        .Select(Function(g) g.First()) _
-                        .ToList()
-
+             .GroupBy(Function(o) New With {
+                 Key .IdRecepcionEnc = o.IdRecepcionEnc,
+                 Key .IdOperadorBodega = o.IdOperadorBodega
+             }) _
+             .Select(Function(g) g.First()) _
+             .ToList()
 
             clsLnTrans_re_enc.Guardar(BeTareaHH,
                                       gBeRecepcionEnc,
@@ -6025,11 +6023,11 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
                     If BeTransReTR.UsaHH = 0 Then
                         chkRecepcionManual.Checked = True
                         '#CKFK20251012 Quité esta funcionalidad
-                        'chkHabilitaStock.Checked = False
+                        chkHabilitaStock.Checked = False
                     Else
                         chkRecepcionManual.Checked = False
                         '#CKFK20251012 Quité esta funcionalidad
-                        'chkHabilitaStock.Checked = True
+                        chkHabilitaStock.Checked = True
                     End If
 
                     '#CKFK 20210624 Se llama a la función creada por EJC para habilitar o no el stock basado en las reglas del propietario

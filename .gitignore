@@ -38,3 +38,4 @@ secrets.json
 # Archivos de bases de datos locales
 *.mdf
 *.ldf
+/IAService/IAService.csproj
