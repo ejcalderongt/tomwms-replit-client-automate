@@ -169,6 +169,21 @@ namespace WMS.StockReservation.Compatibility
 
                 oBeStockResRequest.IdBodega = oBeConfigEnc.Idbodega;
 
+                // Validaciones adicionales
+                if (oBeConfigEnc == null)
+                    throw new ArgumentNullException(nameof(oBeConfigEnc), "La configuración no puede ser null.");
+
+                if (trSql == null)
+                    throw new ArgumentNullException(nameof(trSql), "La transacción SQL no puede ser null.");
+
+                // Si tu flujo REQUIERE PedidoDet:
+                if (oBePedidoDet == null)
+                    throw new ArgumentNullException(nameof(oBePedidoDet), "PedidoDet no puede ser null para reservar stock.");
+
+                // Si tu flujo REQUIERE TrasladoDet (por ejemplo pedidos de traslado):
+                if (oBeI_nav_ped_traslado_det == null)
+                    throw new ArgumentNullException(nameof(oBeI_nav_ped_traslado_det), "TrasladoDet no puede ser null para reservar stock.");
+
                 // Construir contexto de reserva
                 var context = new ReservationContext
                 {

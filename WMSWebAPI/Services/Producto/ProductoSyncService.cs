@@ -4,9 +4,6 @@ using WMS.EntityCore.Dtos.Catalogos;
 using WMS.EntityCore.Producto;
 using WMS.EntityCore.Propietario;
 using WMSWebAPI.Dtos.Catalogos;
-using WMSWebAPI.Dtos.Productos;
-using WMSWebAPI.Entity.Producto;
-using WMSWebAPI.Entity.Propietario;
 using WMSWebAPI.Services;
 
 public class ProductoSyncService : IProductoSyncService

@@ -13127,17 +13127,17 @@ Partial Public Class clsLnStock_res
                                                            ltransaction) Then
 
                                     If Not Reserva_Stock_From_Reabasto(BeStockResUMBas,
-                                                                  DiasVencimiento,
-                                                                  MaquinaQueSolicita,
-                                                                  pBeConfigEnc,
-                                                                  vCantDisRef,
-                                                                  pIdPropietarioBodega,
-                                                                  vlBeStockAReservarUMBas,
-                                                                  lConnection,
-                                                                  ltransaction,
-                                                                  No_Linea,
-                                                                  False,
-                                                                  pBeTrasladoDet) Then
+                                                                      DiasVencimiento,
+                                                                      MaquinaQueSolicita,
+                                                                      pBeConfigEnc,
+                                                                      vCantDisRef,
+                                                                      pIdPropietarioBodega,
+                                                                      vlBeStockAReservarUMBas,
+                                                                      lConnection,
+                                                                      ltransaction,
+                                                                      No_Linea,
+                                                                      False,
+                                                                      pBeTrasladoDet) Then
 
                                         If pBeConfigEnc.Rechazar_pedido_incompleto = tRechazarPedidoIncompleto.Si Then
 

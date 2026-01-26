@@ -101,8 +101,18 @@ namespace WMS.StockReservation.Core.Services
                     $"#MI3_TRASLADO_UPDATED - Cantidad: {context.TrasladoDet.Quantity_Reserved_WMS:F6}");
             }
 
-            // PASO 3: Log de resumen
-            var totalReserved = context.Request.Cantidad - context.PendingQuantity;
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
+
+            if (context.Request == null)
+                throw new InvalidOperationException("ReservationContext.Request es null en el resumen.");
+
+            var pending = context.PendingQuantity; // si es decimal no-nullable
+
+            // Si PendingQuantity es decimal?
+            // var pending = context.PendingQuantity ?? 0m;
+
+            var totalReserved = context.Request.Cantidad - pending;
 
             _logger.LogCheckpoint(
                 $"#MI3_SUMMARY - " +

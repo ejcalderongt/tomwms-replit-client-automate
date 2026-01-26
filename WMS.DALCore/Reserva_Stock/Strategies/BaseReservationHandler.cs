@@ -1,9 +1,3 @@
-using System;
-using WMS.StockReservation.Core.Domain;
-using WMS.StockReservation.Core.Interfaces;
-using WMSWebAPI.Be;
-using WMS.EntityCore.Stock;
-
 namespace WMS.StockReservation.Strategies
 {
     /// <summary>
@@ -13,7 +7,7 @@ namespace WMS.StockReservation.Strategies
     /// </summary>
     public abstract class BaseReservationHandler : IReservationHandler
     {
-        protected IReservationHandler _nextHandler;
+        protected IReservationHandler _nextHandler=null!;
         protected IReservationLogger _logger;
 
         protected BaseReservationHandler(IReservationLogger logger)
