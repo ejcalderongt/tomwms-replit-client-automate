@@ -52,6 +52,9 @@ Public Class frmInventario
     Public Property Dañado As Boolean
     Public IdInventario As Integer
     Private DTOri As New DataTable
+    Private gConnection As SqlConnection
+    Private gTransaction As SqlTransaction
+
 
     Private DTOriOperador As New DataTable
 
@@ -1120,7 +1123,20 @@ Public Class frmInventario
                                 Close()
                             Else
                                 SplashScreenManager.CloseForm(False)
-                                XtraMessageBox.Show("El inventario tiene conteos, no se puede anular.", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                                If gBeTransInvEnc.Inicial Then
+                                    XtraMessageBox.Show("El inventario tiene conteos, no se puede anular", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                                Else
+                                    If XtraMessageBox.Show("El inventario tiene conteos.¿Seguro de anularlo", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = DialogResult.Yes Then
+                                        gBeTransInvEnc.Activo = False
+                                        gBeTransInvEnc.Estado = "Anulado"
+                                        clsLnTrans_inv_enc.Actualizar(gBeTransInvEnc)
+                                        SplashScreenManager.CloseForm(False)
+                                        XtraMessageBox.Show("Se anuló el proceso de inventario", Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                        If Not InvokeListarInventario Is Nothing Then InvokeListarInventario.Invoke
+                                        Close()
+                                    End If
+                                End If
+
                             End If
                         End If
                     End If
@@ -9577,5 +9593,19 @@ Public Class frmInventario
 
         End Try
 
+    End Sub
+
+    '#MA20260108 Agregar
+    Private Sub btnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
+        Dim frm As New frmInventarioDet(frmInventarioDet.TipoTrans.Nuevo)
+        frm.IdInventario = gBeTransInvEnc.Idinventarioenc
+        frm.IdBodega = AP.IdBodega
+
+        If frm.ShowDialog(Me) = DialogResult.OK Then
+            Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                cn.Open()
+                Calcular_Inventario_Teorico_WMS(cn, Nothing)
+            End Using
+        End If
     End Sub
 End Class

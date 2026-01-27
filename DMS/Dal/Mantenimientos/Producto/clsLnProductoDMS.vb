@@ -335,19 +335,51 @@ Public Class clsLnProductoDMS
     Public Shared Sub Guadar_Envio_Rechazado(ByVal pIdProducto As Integer, ByVal pMensaje As String)
         Dim BeLogSyncError As New clsBeLog_sincronizacion_fallos()
         Try
-            BeLogSyncError = New clsBeLog_sincronizacion_fallos()
-            BeLogSyncError.IdLogFallo = clsLnLog_sincronizacion_fallos.MaxID() + 1
-            BeLogSyncError.IdOrdenCompraEnc = 0
-            BeLogSyncError.IdPedidoEnc = 0
-            BeLogSyncError.Estado = "Error"
-            BeLogSyncError.Mensaje_error = pMensaje
-            BeLogSyncError.Fec_agr = Now
-            BeLogSyncError.IdProducto = pIdProducto
+            ' Crear conexión si no se recibió
+            If lConnection Is Nothing Then
+                lConnection = New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                lConnection.Open()
+                localConnection = True
+            End If
+
+            ' Crear transacción si no se recibió
+            If lTransaction Is Nothing Then
+                lTransaction = lConnection.BeginTransaction()
+                localTransaction = True
+            End If
+
+            '#GT08102025: validar que no exista un registro previo para no duplicar el mismo error
+            If Not clsLnDMS_Log_sincronizacion_fallos.Existe_by_Producto(pProducto, lConnection, lTransaction) Then
+                BeLogSyncError.IdLogFallo = clsLnDMS_Log_sincronizacion_fallos.MaxID(lConnection, lTransaction) + 1
+                BeLogSyncError.IdOrdenCompraEnc = 0
+                BeLogSyncError.IdPedidoEnc = 0
+                BeLogSyncError.Estado = "Error"
+                BeLogSyncError.Mensaje_error = pMensaje
+                BeLogSyncError.Fec_agr = Now
+                BeLogSyncError.Fec_mod = Now
+                BeLogSyncError.IdProducto = pProducto.IdProducto
+                BeLogSyncError.IdPropietario = pProducto.IdPropietario
+                clsLnDMS_Log_sincronizacion_fallos.Insertar(BeLogSyncError, lConnection, lTransaction)
+            End If
 
             clsLnLog_sincronizacion_fallos.Insertar(BeLogSyncError)
 
         Catch ex As Exception
-            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message))
+            ' Rollback si la transacción es local
+            If localTransaction AndAlso lTransaction IsNot Nothing Then
+                Try
+                    lTransaction.Rollback()
+                Catch
+                    ' Ignorar errores de rollback
+                End Try
+            End If
+            Throw New Exception(String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message))
+
+        Finally
+            ' Cierre solo si es local
+            If localConnection AndAlso lConnection IsNot Nothing AndAlso lConnection.State = ConnectionState.Open Then
+                lConnection.Close()
+            End If
         End Try
     End Sub
 

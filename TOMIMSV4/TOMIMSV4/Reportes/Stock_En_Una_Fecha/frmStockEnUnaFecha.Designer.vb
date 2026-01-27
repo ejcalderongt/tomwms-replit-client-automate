@@ -28,6 +28,7 @@ Partial Class frmMov_Reporte
         Me.lblRegs = New DevExpress.XtraBars.BarStaticItem()
         Me.BarButtonItem1 = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuEliminarLayoutGrid = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuGuardarLayoutGrid = New DevExpress.XtraBars.BarButtonItem()
         Me.OpcionesLista = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RepositoryItemProgressBar1 = New DevExpress.XtraEditors.Repository.RepositoryItemProgressBar()
@@ -52,7 +53,8 @@ Partial Class frmMov_Reporte
         Me.dtpFechaDesde = New System.Windows.Forms.DateTimePicker()
         Me.prg = New DevExpress.XtraEditors.ProgressBarControl()
         Me.sf = New System.Windows.Forms.SaveFileDialog()
-        Me.mnuGuardarLayoutGrid = New DevExpress.XtraBars.BarButtonItem()
+        Me.txtLote = New System.Windows.Forms.TextBox()
+        Me.lblLote = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemProgressBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.RepositoryItemProgressBar2, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -70,7 +72,7 @@ Partial Class frmMov_Reporte
         'RibbonControl
         '
         Me.RibbonControl.ExpandCollapseItem.Id = 0
-        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.RibbonControl.SearchEditItem, Me.cmdImprimir, Me.cmdActualizar, Me.BarButtonItem3, Me.lblRegs, Me.BarButtonItem1, Me.mnuEliminarLayoutGrid, Me.mnuGuardarLayoutGrid})
+        Me.RibbonControl.Items.AddRange(New DevExpress.XtraBars.BarItem() {Me.RibbonControl.ExpandCollapseItem, Me.cmdImprimir, Me.cmdActualizar, Me.BarButtonItem3, Me.lblRegs, Me.BarButtonItem1, Me.mnuEliminarLayoutGrid, Me.mnuGuardarLayoutGrid})
         Me.RibbonControl.Location = New System.Drawing.Point(0, 0)
         Me.RibbonControl.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.RibbonControl.MaxItemId = 12
@@ -121,6 +123,13 @@ Partial Class frmMov_Reporte
         Me.mnuEliminarLayoutGrid.Id = 10
         Me.mnuEliminarLayoutGrid.ImageOptions.SvgImage = CType(resources.GetObject("mnuEliminarLayoutGrid.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.mnuEliminarLayoutGrid.Name = "mnuEliminarLayoutGrid"
+        '
+        'mnuGuardarLayoutGrid
+        '
+        Me.mnuGuardarLayoutGrid.Caption = "Guardar diseño de grid"
+        Me.mnuGuardarLayoutGrid.Id = 11
+        Me.mnuGuardarLayoutGrid.ImageOptions.SvgImage = CType(resources.GetObject("mnuGuardarLayoutGrid.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuGuardarLayoutGrid.Name = "mnuGuardarLayoutGrid"
         '
         'OpcionesLista
         '
@@ -190,6 +199,8 @@ Partial Class frmMov_Reporte
         '
         'grpFechas
         '
+        Me.grpFechas.Controls.Add(Me.lblLote)
+        Me.grpFechas.Controls.Add(Me.txtLote)
         Me.grpFechas.Controls.Add(Me.cmbBodega)
         Me.grpFechas.Controls.Add(Me.Label1)
         Me.grpFechas.Controls.Add(Me.lblPrg)
@@ -224,7 +235,7 @@ Partial Class frmMov_Reporte
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(14, 39)
+        Me.Label1.Location = New System.Drawing.Point(14, 44)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(54, 16)
         Me.Label1.TabIndex = 9
@@ -253,7 +264,7 @@ Partial Class frmMov_Reporte
         'lblPropietario
         '
         Me.lblPropietario.AutoSize = True
-        Me.lblPropietario.Location = New System.Drawing.Point(14, 102)
+        Me.lblPropietario.Location = New System.Drawing.Point(14, 106)
         Me.lblPropietario.Name = "lblPropietario"
         Me.lblPropietario.Size = New System.Drawing.Size(74, 16)
         Me.lblPropietario.TabIndex = 6
@@ -262,7 +273,7 @@ Partial Class frmMov_Reporte
         'txtNombreProducto
         '
         Me.txtNombreProducto.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtNombreProducto.Location = New System.Drawing.Point(105, 223)
+        Me.txtNombreProducto.Location = New System.Drawing.Point(105, 185)
         Me.txtNombreProducto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtNombreProducto.Name = "txtNombreProducto"
         Me.txtNombreProducto.Size = New System.Drawing.Size(192, 23)
@@ -271,7 +282,7 @@ Partial Class frmMov_Reporte
         'txtIdProducto
         '
         Me.txtIdProducto.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.txtIdProducto.Location = New System.Drawing.Point(14, 223)
+        Me.txtIdProducto.Location = New System.Drawing.Point(14, 185)
         Me.txtIdProducto.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.txtIdProducto.Name = "txtIdProducto"
         Me.txtIdProducto.Size = New System.Drawing.Size(84, 23)
@@ -280,7 +291,7 @@ Partial Class frmMov_Reporte
         'lblProducto
         '
         Me.lblProducto.AutoSize = True
-        Me.lblProducto.Location = New System.Drawing.Point(14, 192)
+        Me.lblProducto.Location = New System.Drawing.Point(14, 164)
         Me.lblProducto.Name = "lblProducto"
         Me.lblProducto.Size = New System.Drawing.Size(57, 16)
         Me.lblProducto.TabIndex = 6
@@ -337,12 +348,23 @@ Partial Class frmMov_Reporte
         '
         Me.sf.CheckFileExists = True
         '
-        'mnuGuardarLayoutGrid
+        'txtLote
         '
-        Me.mnuGuardarLayoutGrid.Caption = "Guardar diseño de grid"
-        Me.mnuGuardarLayoutGrid.Id = 11
-        Me.mnuGuardarLayoutGrid.ImageOptions.SvgImage = CType(resources.GetObject("mnuGuardarLayoutGrid.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.mnuGuardarLayoutGrid.Name = "mnuGuardarLayoutGrid"
+        Me.txtLote.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.txtLote.Location = New System.Drawing.Point(14, 234)
+        Me.txtLote.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.txtLote.Name = "txtLote"
+        Me.txtLote.Size = New System.Drawing.Size(283, 23)
+        Me.txtLote.TabIndex = 10
+        '
+        'lblLote
+        '
+        Me.lblLote.AutoSize = True
+        Me.lblLote.Location = New System.Drawing.Point(14, 216)
+        Me.lblLote.Name = "lblLote"
+        Me.lblLote.Size = New System.Drawing.Size(36, 16)
+        Me.lblLote.TabIndex = 11
+        Me.lblLote.Text = "Lote:"
         '
         'frmMov_Reporte
         '
@@ -411,4 +433,6 @@ End Sub
     Friend WithEvents Label1 As Label
     Friend WithEvents mnuEliminarLayoutGrid As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuGuardarLayoutGrid As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents lblLote As Label
+    Friend WithEvents txtLote As TextBox
 End Class

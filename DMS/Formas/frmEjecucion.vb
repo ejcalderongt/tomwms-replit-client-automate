@@ -64,6 +64,111 @@ Public Class frmEjecucion
     End Sub
 
 
+    Private Async Function EjecutarSecuenciaAutomaticaAsync() As Task
+        Await EjecutarProductosAsync()
+        Await EjecutarIngresosAsync()
+        Await EjecutarSalidasAsync()
+    End Function
+
+
+    Private Async Sub cmdProductos_ItemClickAsync(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdProductos.ItemClick
+        Try
+            'ProcesoEjecutandose = True
+            'HabilitarOpciones(False)
+            'Await EjecutarProductosAsync()
+            'HabilitarOpciones(True)
+            'ProcesoEjecutandose = False
+
+            Await EjecutarProductosAsync()
+
+        Catch ex As Exception
+            clsHelper.LogMensaje(lblprg, "Error en exportación de productos.", clsHelper.TipoMensaje.Error_)
+            MessageBox.Show("Error al llamar a la API: " & ex.Message)
+        Finally
+            cmdIngresos.Enabled = True
+        End Try
+    End Sub
+
+    Private Async Function EjecutarProductosAsync() As Task
+        Try
+            ProcesoEjecutandose = True
+            HabilitarOpciones(False)
+            Await clsLnProductoDMS.Exportacion_ProductosAsync(lblprg, listaPropietarios)
+            HabilitarOpciones(True)
+            ProcesoEjecutandose = False
+
+        Catch ex As Exception
+            clsHelper.LogMensaje(lblprg, "Error en exportación de productos.", clsHelper.TipoMensaje.Error_)
+            MessageBox.Show("Error al llamar a la API: " & ex.Message)
+        Finally
+            cmdIngresos.Enabled = True
+        End Try
+    End Function
+
+
+    Private Async Function EjecutarIngresosAsync() As Task
+        Try
+            ProcesoEjecutandose = True
+            HabilitarOpciones(False)
+            Await clsLnTrans_oc_encDMS.Exportacion_IngresosAsync(lblprg, listaPropietarios, listaPropietariosBodega)
+            HabilitarOpciones(True)
+            ProcesoEjecutandose = False
+        Catch ex As Exception
+            clsHelper.LogMensaje(lblprg, "Error en exportación de ingresos.", clsHelper.TipoMensaje.Error_)
+            MessageBox.Show("Error al llamar a la API: " & ex.Message)
+        Finally
+            cmdIngresos.Enabled = True
+        End Try
+    End Function
+
+
+    Private Async Function EjecutarSalidasAsync() As Task
+        Try
+            ProcesoEjecutandose = True
+            HabilitarOpciones(False)
+            Await clsLnTrans_pe_encDMS.Exportacion_PedidosAsync(lblprg, listaPropietarios, listaPropietariosBodega)
+            HabilitarOpciones(True)
+            ProcesoEjecutandose = False
+        Catch ex As Exception
+            clsHelper.LogMensaje(lblprg, "Error en exportación de pedidos.", clsHelper.TipoMensaje.Error_)
+            MessageBox.Show("Error al llamar a la API: " & ex.Message)
+        Finally
+            cmdIngresos.Enabled = True
+        End Try
+    End Function
+
+    Private Async Sub cmdIngresos_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdIngresos.ItemClick
+        Try
+
+            Await EjecutarIngresosAsync()
+
+        Catch ex As Exception
+            clsHelper.LogMensaje(lblprg, "Error en exportación de ingresos.", clsHelper.TipoMensaje.Error_)
+            MessageBox.Show("Error al llamar a la API: " & ex.Message)
+        Finally
+            cmdIngresos.Enabled = True
+        End Try
+    End Sub
+
+    Private Async Sub cmdSalidas_ItemClick(sender As Object, e As DevExpress.XtraBars.ItemClickEventArgs) Handles cmdSalidas.ItemClick
+        Try
+
+            'HabilitarOpciones(False)
+            'clsLnTrans_pe_encDMS.Exportacion_PedidosAsync(lblprg, listaPropietarios, listaPropietariosBodega)
+            'HabilitarOpciones(True)
+
+            Await EjecutarSalidasAsync()
+
+        Catch ex As Exception
+
+            clsHelper.LogMensaje(lblprg, "Error en exportación de pedidos.", clsHelper.TipoMensaje.Error_)
+            MessageBox.Show("Error al llamar a la API: " & ex.Message)
+        Finally
+            cmdIngresos.Enabled = True
+        End Try
+    End Sub
+
+
     Private Sub Set_Parametros_Servidor(ByVal IndiceInstanciaDefecto As Integer, ByVal ListaInstancias As List(Of clsCadenaConexion))
 
         Try

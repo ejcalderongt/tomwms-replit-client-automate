@@ -2529,7 +2529,14 @@ Public Class frmPedido
 
                         nombre = pBeProducto.Nombre
                         umbas_nombre = pBeProducto.UnidadMedida.Nombre
-                        vPrecio = pBeProducto.Precio
+
+                        '#GT05112025: si el producto no esta costeado, validar si lo esta en su ingreso
+                        If pBeProducto.Precio > 0 Then
+                            vPrecio = pBeProducto.Precio
+                        Else
+                            vPrecio = ObjStockEspec.Costo
+                        End If
+
 
                         dgrid.Item("ColPeso", IndiceFila).ReadOnly = Not pBeProducto.Control_peso
                         dgrid.Item("ColIdProducto", IndiceFila).Value = pBeProducto.IdProducto
@@ -4919,6 +4926,9 @@ Public Class frmPedido
             pBePedidoDet.Color = vColor
             pBePedidoDet.IdProductoTallaColor = vIdProductoTallaColor_
 
+            '#GT20012025: liberar_stock en false porque estan volviendo a reservar sobre una linea existente.
+            pBePedidoDet.Stock_Liberado = False
+
             pBeStockRes.IdStockRes = 0
             pBeStockRes.IdTransaccion = pBePedidoEnc.IdPedidoEnc
             pBeStockRes.IdPedidoDet = pBePedidoDet.IdPedidoDet
@@ -6797,6 +6807,9 @@ Public Class frmPedido
                         SplashScreenManager.CloseForm(False)
 
                     End If
+
+                    '#GT31102025: bloquear propietario cuando reserva stock, para evitar que cambie y tomen stock de otro distinto.
+                    lcmbPropietario.Enabled = False
 
                 End If
 
@@ -9456,9 +9469,6 @@ Public Class frmPedido
         End If
 
         Set_Tipo_Pedido()
-
-        '#GT28052024: llenar grid con servicios del acuerdo comercial segun propietario de combo
-        'Llena_Servicios_By_Propietario()
 
     End Sub
 

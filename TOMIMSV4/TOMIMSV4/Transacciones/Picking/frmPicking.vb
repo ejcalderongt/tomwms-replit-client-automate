@@ -74,13 +74,14 @@ Public Class frmPicking
         InitializeComponent()
     End Sub
 
-    Private Sub Lista_Productos_Dañados()
+    Private Sub Lista_Productos_Dañados(ByVal lConnection As SqlConnection,
+                                        ByVal lTransaction As SqlTransaction)
 
         Try
 
             Dim DT As New DataTable
 
-            DT = clsLnTrans_picking_enc.Get_Dañados_Verificacion_Picking_ByPickingEnc(BePickingEnc.IdPickingEnc)
+            DT = clsLnTrans_picking_enc.Get_Dañados_Verificacion_Picking_ByPickingEnc(BePickingEnc.IdPickingEnc, lConnection, lTransaction)
 
             If DT.Rows.Count > 0 Then
 
@@ -1803,6 +1804,8 @@ Public Class frmPicking
 
                 Cargar_Pedidos_Impresion(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
+                Lista_Productos_Dañados(clsTransaccion.lConnection, clsTransaccion.lTransaction)
+
                 If BePickingEnc.ListaPickingDet IsNot Nothing AndAlso BePickingEnc.ListaPickingDet.Count > 0 Then
 
                     dgridPedidos.Rows.Clear()
@@ -3387,8 +3390,6 @@ Public Class frmPicking
                             End If
                         End If
 
-                        Lista_Productos_Dañados()
-
                     End If
 
             End Select
@@ -3772,19 +3773,33 @@ Public Class frmPicking
 
     Private Sub Process_Linea_Picking()
 
-        Dim Dr As DataRowView = grdvPickingUbic.GetFocusedRow
-        Dim lSelectionIndex As Integer = grdvPickingUbic.FocusedRowHandle
-        Dim IdStockRes As Integer = IIf(IsDBNull(Dr.Item("IdStockRes")), 0, Dr.Item("IdStockRes"))
-        Dim vCodigoProducto As String = IIf(IsDBNull(Dr.Item("Código")), 0, Dr.Item("Código"))
-        Dim vNombreProducto As String = IIf(IsDBNull(Dr.Item("Producto")), 0, Dr.Item("Producto"))
-        Dim vCantidadPedidaPres As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_Pres")), 0, Dr.Item("Cant_Ped_Pres"))
-        Dim vCantidadPedidaUMBas As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_UmBas")), 0, Dr.Item("Cant_Ped_UmBas"))
-        Dim vUnidadMedida As String = IIf(IsDBNull(Dr.Item("Unidad_Medida")), "", Dr.Item("Unidad_Medida"))
-        Dim vPedido As Integer = IIf(IsDBNull(Dr.Item("Pedido")), 0, Dr.Item("Pedido"))
-        Dim pListBeStockRes As New List(Of clsBeStock_res)
-        Dim vContinuar As Boolean = True
-
         Try
+
+            ' Verificar que exista una fila enfocada
+            If grdvPickingUbic Is Nothing OrElse grdvPickingUbic.FocusedRowHandle < 0 Then
+                MessageBox.Show("No hay ninguna fila seleccionada.")
+                Exit Sub
+            End If
+
+            ' Obtener la fila
+            Dim Dr As DataRowView = TryCast(grdvPickingUbic.GetFocusedRow(), DataRowView)
+
+            ' Validar que no sea Nothing
+            If Dr Is Nothing Then
+                MessageBox.Show("La fila seleccionada no es válida.")
+                Exit Sub
+            End If
+
+            Dim lSelectionIndex As Integer = grdvPickingUbic.FocusedRowHandle
+            Dim IdStockRes As Integer = IIf(IsDBNull(Dr.Item("IdStockRes")), 0, Dr.Item("IdStockRes"))
+            Dim vCodigoProducto As String = IIf(IsDBNull(Dr.Item("Código")), 0, Dr.Item("Código"))
+            Dim vNombreProducto As String = IIf(IsDBNull(Dr.Item("Producto")), 0, Dr.Item("Producto"))
+            Dim vCantidadPedidaPres As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_Pres")), 0, Dr.Item("Cant_Ped_Pres"))
+            Dim vCantidadPedidaUMBas As Double = IIf(IsDBNull(Dr.Item("Cant_Ped_UmBas")), 0, Dr.Item("Cant_Ped_UmBas"))
+            Dim vUnidadMedida As String = IIf(IsDBNull(Dr.Item("Unidad_Medida")), "", Dr.Item("Unidad_Medida"))
+            Dim vPedido As Integer = IIf(IsDBNull(Dr.Item("Pedido")), 0, Dr.Item("Pedido"))
+            Dim pListBeStockRes As New List(Of clsBeStock_res)
+            Dim vContinuar As Boolean = True
 
             If clsLnTrans_pe_enc.Tiene_Manufactura_Asociada_Sin_Finalizar(vPedido) Then
                 XtraMessageBox.Show("Esta línea pertenece a un pedido con proceso de manufactura sin finalizar, no se puede procesar",
@@ -4411,7 +4426,7 @@ Public Class frmPicking
                     chkFotografiaVerificacion.Checked = bo.pBePedidoEnc.TipoPedido.Fotografia_Verificacion
                     chkEmpaquePorTarima.Checked = bo.pBePedidoEnc.TipoPedido.Empaque_Tarima
 
-                    bo.pBePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(bo.pBePedidoEnc.IdPedidoEnc)
+                    'bo.pBePedidoEnc.Detalle = clsLnTrans_pe_det.Get_All_By_IdPedidoEnc(bo.pBePedidoEnc.IdPedidoEnc)
 
                     If bo.pBePedidoEnc.Detalle IsNot Nothing AndAlso bo.pBePedidoEnc.Detalle.Count > 0 Then
 
@@ -5254,7 +5269,7 @@ Public Class frmPicking
     End Sub
 
     Private Sub Cargar_Pedidos_Impresion(ByVal lConnection As SqlConnection,
-                                          ByVal lTransaction As SqlTransaction)
+                                         ByVal lTransaction As SqlTransaction)
 
         Dim dt As DataTable
 
@@ -5497,6 +5512,8 @@ Public Class frmPicking
             Dim vCantidadPickUmbas As Double = IIf(IsDBNull(Dr.Item("Cant_Pick_Umbas")), 0, Dr.Item("Cant_Pick_Umbas"))
             Dim vCantidadVeriPres As Double = IIf(IsDBNull(Dr.Item("Cant_Veri_Pres")), 0, Dr.Item("Cant_Veri_Pres"))
             Dim vCantidadVeriUmbas As Double = IIf(IsDBNull(Dr.Item("Cant_Veri_Umbas")), 0, Dr.Item("Cant_Veri_Umbas"))
+            Dim vCantidadFaltantePickingPres As Double = vCantidadSolPres - vCantidadPickPres
+            Dim vCantdidadFaltantePickingUmbas As Double = vCantidadSolUmBas - vCantidadPickUmbas
 
             If Dr Is Nothing Then Return
 
@@ -5525,19 +5542,25 @@ Public Class frmPicking
                     frmCant.BeTipoPedido = BeTipoPedido
                     frmCant.IdBodega = BePickingUbic.IdBodega
                     frmCant.Codigo_Producto = vCodigoProducto
-                    frmCant.txtCantidadReemplazo.Maximum = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
-                    frmCant.txtCantidadReemplazo.Value = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
-                    frmCant.Cantidad_Reemplazo = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
+
                     frmCant.Cantidad_Total = frmCant.Cantidad_Reemplazo
                     frmCant.IdPresentacion = BePickingUbic.IdPresentacion
                     frmCant.txtIdProducto.Text = vCodigoProducto
                     frmCant.txtNombreProducto.Text = vNombreProducto
                     frmCant.BePickingUbic = BePickingUbic
+                    frmCant.lblIdStock.Text = "IdStock: " & BePickingUbic.IdStock
+                    frmCant.txtCantidadSolicitada.Value = BePickingUbic.Cantidad_Solicitada
 
                     If (vCantidadVeriPres > 0) OrElse (vCantidadSolUmBas = vCantidadPickUmbas) Then
                         frmCant.Modo_Reemplazo = frmCantidadreemplazo.eModoReemplazo.verificacion
+                        frmCant.txtCantidadReemplazo.Maximum = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
+                        frmCant.txtCantidadReemplazo.Value = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
+                        frmCant.Cantidad_Reemplazo = IIf(vCantidadPickPres = 0, vCantidadPickUmbas, vCantidadPickPres)
                     Else
                         frmCant.Modo_Reemplazo = frmCantidadreemplazo.eModoReemplazo.picking
+                        frmCant.txtCantidadReemplazo.Maximum = IIf(vCantidadFaltantePickingPres = 0, vCantdidadFaltantePickingUmbas, vCantidadFaltantePickingPres)
+                        frmCant.txtCantidadReemplazo.Value = IIf(vCantidadFaltantePickingPres = 0, vCantdidadFaltantePickingUmbas, vCantidadFaltantePickingPres)
+                        frmCant.Cantidad_Reemplazo = IIf(vCantidadFaltantePickingPres = 0, vCantdidadFaltantePickingUmbas, vCantidadFaltantePickingPres)
                     End If
 
                     If frmCant.ShowDialog() = DialogResult.OK Then

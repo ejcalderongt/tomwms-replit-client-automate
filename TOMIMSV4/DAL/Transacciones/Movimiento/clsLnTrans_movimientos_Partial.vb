@@ -1236,7 +1236,8 @@ Partial Public Class clsLnTrans_movimientos
                                                              ByVal pFechaAl As Date,
                                                              ByVal pIdProductoBodega As Integer,
                                                              ByVal pIdBodega As Integer,
-                                                             ByVal pIdPropietarioBodega As Integer) As List(Of clsBeVW_Movimientos)
+                                                             ByVal pIdPropietarioBodega As Integer,
+                                                             ByVal pLote As String) As List(Of clsBeVW_Movimientos)
 
         Dim lReturnList As New List(Of clsBeVW_Movimientos)
 
@@ -1258,10 +1259,16 @@ Partial Public Class clsLnTrans_movimientos
                 vSQL += " AND IdProductoBodega =@IdProductoBodega "
             End If
 
+            If pLote <> "" Then
+                vSQL += " AND lote =@lote "
+            End If
+
             vSQL += " AND IdBodega=@IdBodega and IdPropietarioBodega=@IdPropietarioBodega "
 
 
             vSQL += String.Format(" And cast(Fecha AS DATE) BETWEEN {0} And {1}", FormatoFechas.fFechaHora(pFechaDel), FormatoFechas.fFechaHora(pFechaAl))
+
+            vSQL += " AND TipoTarea NOT IN ('PIK', 'VERI','REEMP_BE_PICK','CEST')"
 
             vSQL += " GROUP BY codigo,producto,EstadoOrigen, 
                     EstadoDestino, IdProductoBodega,
@@ -1289,6 +1296,7 @@ Partial Public Class clsLnTrans_movimientos
 
                         lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
                         lDTA.SelectCommand.Parameters.AddWithValue("@IdPropietarioBodega", pIdPropietarioBodega)
+                        lDTA.SelectCommand.Parameters.AddWithValue("@lote", pLote)
 
                         Dim lTable As New DataTable
                         lDTA.Fill(lTable)

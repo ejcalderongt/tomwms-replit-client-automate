@@ -10143,12 +10143,12 @@ Public Class TOMHHWS
             Set_Estado_Pedido_Verificado = clsLnTrans_pe_enc.Actualizar_Estado_Verificado(oBeTrans_pe_enc)
 
             'MECR04122025: Se agrego bitacora de logs para verificacion.
-            Dim msgControl As String = "Se actualizo estado verificado el pedido: " + oBeTrans_pe_enc.IdPedidoEnc
-            'clsLnLog_verificacion_bof.Agregar_Error(msgControl,
-            'pIdPedidoEnc:=oBeTrans_pe_enc.IdPedidoEnc,
-            'pIdBodega:=oBeTrans_pe_enc.IdBodega,
-            'pIdPickingEnc:=oBeTrans_pe_enc.IdPickingEnc,
-            'pUser_agr:=oBeTrans_pe_enc.User_mod)
+            Dim msgControl As String = "Se actualizo estado verificado el pedido: " & oBeTrans_pe_enc.IdPedidoEnc
+            clsLnLog_verificacion_bof.Agregar_Error(msgControl,
+            pIdPedidoEnc:=oBeTrans_pe_enc.IdPedidoEnc,
+            pIdBodega:=oBeTrans_pe_enc.IdBodega,
+            pIdPickingEnc:=oBeTrans_pe_enc.IdPickingEnc,
+            pUser_agr:=oBeTrans_pe_enc.User_mod)
 
             Return Set_Estado_Pedido_Verificado
 

@@ -1719,14 +1719,14 @@ Partial Public Class clsLnTrans_picking_enc
                               IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
 
             'MECR04122025: Se agrego bitacora de logs para verificacion.
-            Dim msgControl As String = "Se actualizo estado verificado el pedido: " + oBeTrans_picking_enc.IdPedidoEnc
-            'clsLnLog_verificacion_bof.Agregar_Error(msgControl,
-            'pIdPedidoEnc:=oBeTrans_picking_enc.IdPedidoEnc,
-            'pIdBodega:=oBeTrans_picking_enc.IdBodega,
-            '                                        pIdPickingEnc:=oBeTrans_picking_enc.IdPickingEnc,
-            'pUser_agr:=oBeTrans_picking_enc.User_mod,
-            'pConection:=IIf(Es_Transaccion_Remota, pConection, lConnection),
-            'pTransaction:=IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
+            Dim msgControl As String = "Se actualizo estado verificado el pedido: " & oBeTrans_picking_enc.IdPedidoEnc
+            clsLnLog_verificacion_bof.Agregar_Error(msgControl,
+            pIdPedidoEnc:=oBeTrans_picking_enc.IdPedidoEnc,
+            pIdBodega:=oBeTrans_picking_enc.IdBodega,
+            pIdPickingEnc:=oBeTrans_picking_enc.IdPickingEnc,
+            pUser_agr:=oBeTrans_picking_enc.User_mod,
+            pConection:=IIf(Es_Transaccion_Remota, pConection, lConnection),
+            pTransaction:=IIf(Es_Transaccion_Remota, pTransaction, lTransaction))
 
             If Not Es_Transaccion_Remota Then lTransaction.Commit()
 
@@ -2104,7 +2104,9 @@ Partial Public Class clsLnTrans_picking_enc
 
     End Function
 
-    Public Shared Function Get_Dañados_Verificacion_Picking_ByPickingEnc(ByVal IdPickingEnc As Integer) As DataTable
+    Public Shared Function Get_Dañados_Verificacion_Picking_ByPickingEnc(ByVal IdPickingEnc As Integer,
+                                                                         ByVal lConnection As SqlConnection,
+                                                                         ByVal lTransaction As SqlTransaction) As DataTable
 
         Get_Dañados_Verificacion_Picking_ByPickingEnc = Nothing
 
@@ -2123,30 +2125,16 @@ Partial Public Class clsLnTrans_picking_enc
                     LEFT OUTER JOIN producto_presentacion pp ON p.IdProducto = pp.IdProducto AND pp.Idpresentacion = pubic.idPresentacion 
                     WHERE pkdet.IdPickingEnc = @IdPickingEnc  and (pubic.dañado_verificacion = 1 or pubic.dañado_picking = 1 or no_encontrado = 1)"
 
-            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
-                lConnection.Open()
+            Dim lTable As New DataTable("Result")
 
-                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-
-                    Dim lTable As New DataTable("Result")
-
-                    Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
-                        lDataAdapter.SelectCommand.CommandType = CommandType.Text
-                        lDataAdapter.SelectCommand.Transaction = lTransaction
-                        lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdPickingEnc", IdPickingEnc)
-                        lDataAdapter.Fill(lTable)
-                        Get_Dañados_Verificacion_Picking_ByPickingEnc = lTable
-                    End Using
-
-                    lTransaction.Commit()
-
-                End Using
-
-                lConnection.Close()
-
+            Using lDataAdapter As New SqlDataAdapter(vSQL, lConnection)
+                lDataAdapter.SelectCommand.CommandType = CommandType.Text
+                lDataAdapter.SelectCommand.Transaction = lTransaction
+                lDataAdapter.SelectCommand.Parameters.AddWithValue("@IdPickingEnc", IdPickingEnc)
+                lDataAdapter.Fill(lTable)
+                Get_Dañados_Verificacion_Picking_ByPickingEnc = lTable
             End Using
-
 
         Catch ex As Exception
             Throw ex
