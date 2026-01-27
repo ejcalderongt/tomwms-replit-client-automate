@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using WMS.DALCore.Transacciones;
 using WMS.EntityCore.Datos_Maestros;
+using WMS.EntityCore.Dtos.Ingresos;
 using WMS.EntityCore.Operador;
 using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Producto;

@@ -169,6 +169,12 @@ namespace WMS.StockReservation.Compatibility
 
                 oBeStockResRequest.IdBodega = oBeConfigEnc.Idbodega;
 
+                if (oBePedidoDet is null)
+                    throw new Exception("PedidoDet es null: no se puede construir el contexto de reserva.");
+
+                if (oBeI_nav_ped_traslado_det is null)
+                    throw new Exception("TrasladoDet es null: no se puede construir el contexto de reserva.");
+
                 // Construir contexto de reserva
                 var context = new ReservationContext
                 {
