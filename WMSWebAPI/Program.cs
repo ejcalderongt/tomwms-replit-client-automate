@@ -186,7 +186,7 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseHttpsRedirection();
-app.UseRouting();
+app.UseRouting();67
 app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();

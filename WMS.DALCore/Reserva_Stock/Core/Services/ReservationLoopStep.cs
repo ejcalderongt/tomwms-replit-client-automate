@@ -36,18 +36,18 @@ namespace WMS.StockReservation.Core.Services
         {
             _logger.LogCheckpoint("#MI3_LOOP_START");
 
-            // ===== LOTES ESPECÍFICOS (prioridad absoluta para transferencias) =====
-            if (context.HasSpecificLots)
+            // ===== LOTE ESPECÍFICO (prioridad absoluta para transferencias) =====
+            if (context.HasSpecificLot)
             {
-                ProcessSpecificLots(context);
+                ProcessSpecificLot(context);
                 
                 if (context.PendingQuantity <= 0.000001)
                 {
-                    _logger.LogCheckpoint("#MI3_LOOP_END_SPECIFIC_LOTS | Reserva completa con lotes específicos");
+                    _logger.LogCheckpoint("#MI3_LOOP_END_SPECIFIC_LOT | Reserva completa con lote especifico");
                     return;
                 }
                 
-                _logger.LogInfo($"#SPECIFIC_LOTS_PARTIAL | Pendiente: {context.PendingQuantity:F2}u, continuando con FEFO");
+                _logger.LogInfo($"#SPECIFIC_LOT_PARTIAL | Pendiente: {context.PendingQuantity:F2}u, continuando con FEFO");
             }
 
             int iteration = 0;
@@ -628,47 +628,38 @@ namespace WMS.StockReservation.Core.Services
         /// - Si un lote no se encuentra, se registra warning pero continúa
         /// - Si quedan unidades pendientes, el loop FEFO las completa
         /// </summary>
-        private void ProcessSpecificLots(ReservationContext context)
+        private void ProcessSpecificLot(ReservationContext context)
         {
-            context.IsSpecificLotModeEnabled = true;
-            _logger.LogCheckpoint($"#SPECIFIC_LOTS_START | Procesando {context.SpecificLots.Count} lotes específicos");
+            string batchNo = context.SpecificLotNo?.Trim() ?? "";
+            
+            _logger.LogCheckpoint($"#SPECIFIC_LOT_START | Lote: {batchNo}, Cantidad: {context.PendingQuantity:F2}u");
 
-            foreach (var loteDet in context.SpecificLots)
+            if (string.IsNullOrEmpty(batchNo))
             {
-                if (context.PendingQuantity <= 0.000001) break;
-
-                string batchNo = loteDet.Batch_No?.Trim() ?? "";
-                double quantityRequired = loteDet.Quantity_Base;
-
-                if (string.IsNullOrEmpty(batchNo) || quantityRequired <= 0)
-                {
-                    _logger.LogInfo($"#SPECIFIC_LOT_SKIP | Lote vacío o cantidad 0");
-                    continue;
-                }
-
-                _logger.LogInfo($"#SPECIFIC_LOT_SEARCH | Lote: {batchNo}, Cantidad: {quantityRequired:F2}u");
-
-                // Buscar stock con este lote específico
-                var matchingStock = FindStockByBatchNo(context, batchNo);
-
-                if (matchingStock == null || matchingStock.Count == 0)
-                {
-                    _logger.LogWarning($"#SPECIFIC_LOT_NOT_FOUND | Lote {batchNo} no encontrado en stock disponible");
-                    continue;
-                }
-
-                // Reservar del stock encontrado
-                double reservedFromLot = ReserveFromSpecificLot(context, matchingStock, quantityRequired, batchNo);
-
-                if (reservedFromLot < quantityRequired - 0.000001)
-                {
-                    _logger.LogWarning($"#SPECIFIC_LOT_INSUFFICIENT | Lote {batchNo}: " +
-                                      $"Requerido: {quantityRequired:F2}u, Reservado: {reservedFromLot:F2}u");
-                }
+                _logger.LogInfo("#SPECIFIC_LOT_SKIP | Lote vacio");
+                return;
             }
 
-            context.IsSpecificLotModeEnabled = false;
-            _logger.LogCheckpoint($"#SPECIFIC_LOTS_END | Pendiente después de lotes específicos: {context.PendingQuantity:F2}u");
+            // Buscar stock con este lote especifico
+            var matchingStock = FindStockByBatchNo(context, batchNo);
+
+            if (matchingStock == null || matchingStock.Count == 0)
+            {
+                _logger.LogWarning($"#SPECIFIC_LOT_NOT_FOUND | Lote {batchNo} no encontrado en stock disponible");
+                return;
+            }
+
+            // Reservar del stock encontrado (toda la cantidad pendiente)
+            double quantityRequired = context.PendingQuantity;
+            double reservedFromLot = ReserveFromSpecificLot(context, matchingStock, quantityRequired, batchNo);
+
+            if (reservedFromLot < quantityRequired - 0.000001)
+            {
+                _logger.LogWarning($"#SPECIFIC_LOT_INSUFFICIENT | Lote {batchNo}: " +
+                                  $"Requerido: {quantityRequired:F2}u, Reservado: {reservedFromLot:F2}u");
+            }
+
+            _logger.LogCheckpoint($"#SPECIFIC_LOT_END | Pendiente: {context.PendingQuantity:F2}u");
         }
 
         /// <summary>

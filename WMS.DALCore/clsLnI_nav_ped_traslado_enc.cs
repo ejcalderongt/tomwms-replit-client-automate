@@ -845,31 +845,33 @@ namespace WMS.DALCore
                 pBeStockRes.Atributo_Variante_1 = pBePedidoDet.Atributo_variante_1;
                 pBeStockRes.Control_Ultimo_Lote = pBeCliente.Control_ultimo_lote;
 
-                clsBeProducto_presentacion? BePresentacion2 = new clsBeProducto_presentacion();
+                clsBeProducto_presentacion? BePresentacion2 = new clsBeProducto_presentacion();                
 
-                if (pBePedidoDet.IdPresentacion != 0)
+                // FIX: Buscar presentación por Variant_Code aunque IdPresentacion venga en 0
+                if (!string.IsNullOrEmpty(pBePedidoDet.Atributo_variante_1))
                 {
-                    if (pBePedidoDet.Atributo_variante_1 != null)
-                    {
-                        BePresentacion2 = new clsBeProducto_presentacion();
-                        BePresentacion2 = clsLnProducto_presentacion.Existe_Presentacion_By_Codigo(pBePedidoDet.Producto.IdProducto,
-                                                                                                  pBePedidoDet.Atributo_variante_1,
-                                                                                                  lConectionInterface,
-                                                                                                  lTransactionInterface);
+                    BePresentacion2 = clsLnProducto_presentacion.Existe_Presentacion_By_Codigo(
+                        pBePedidoDet.Producto.IdProducto,
+                        pBePedidoDet.Atributo_variante_1,
+                        lConectionInterface,
+                        lTransactionInterface);
 
-                        if (BePresentacion2 != null)
-                        {
-                            pBeStockRes.IdPresentacion = BePresentacion2.IdPresentacion;
-                        }
-                        else
-                        {
-                            pBeStockRes.IdPresentacion = 0;
-                        }
+                    if (BePresentacion2 != null)
+                    {
+                        pBeStockRes.IdPresentacion = BePresentacion2.IdPresentacion;
                     }
                     else
                     {
                         pBeStockRes.IdPresentacion = 0;
                     }
+                }
+                else if (pBePedidoDet.IdPresentacion != 0)
+                {
+                    pBeStockRes.IdPresentacion = pBePedidoDet.IdPresentacion;
+                }
+                else
+                {
+                    pBeStockRes.IdPresentacion = 0;
                 }
 
                 if (vCantidadDecimalUMBas > 0)

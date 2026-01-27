@@ -28,15 +28,13 @@ namespace WMS.StockReservation.Strategies
 
         protected override bool CanProcess(ReservationContext context)
         {
-            if (context == null) return false;
-
-            // Solo procesa si esta habilitado el modo explosion o UMBas
+            // Solo procesa si está habilitado el modo explosión o UMBas
             if (!context.IsExplosionModeEnabled && !context.IsUMBasModeEnabled)
                 return false;
 
             // Verificar que haya stock disponible
             var availableStock = context.WorkingStockList?
-                .Where(s => s != null && s.Cantidad > 0)
+                .Where(s => s.Cantidad > 0)
                 .ToList();
 
             return availableStock != null && availableStock.Count > 0;
@@ -44,9 +42,6 @@ namespace WMS.StockReservation.Strategies
 
         protected override HandlerResult ProcessInternal(ReservationContext context)
         {
-            if (context == null)
-                return new HandlerResult { Success = false, CaseCode = "CASO_EXPLOSION_NULL_CONTEXT" };
-
             var result = new HandlerResult { Success = true, CaseCode = "CASO_EXPLOSION" };
 
             if (!CanProcess(context))
@@ -71,96 +66,51 @@ namespace WMS.StockReservation.Strategies
 
         private void ProcessExplosion(ReservationContext context, HandlerResult result)
         {
-            // EXPLOSIÓN OPTIMIZADA: Minimizar explosión reservando cajas completas primero
+            // Explosión: romper cajas/pallets en unidades
             var presentationFactor = context.DefaultPresentation?.Factor ?? 1;
-            double pendingUnits = context.PendingQuantity;
 
-            _logger.LogInfo($"#EXPLOSION_OPTIMIZADA | Pedido: {pendingUnits:F6} unidades | Factor: {presentationFactor}");
+            // Convertir pending de presentación a UMBas
+            double pendingInUMBas = _converter.ConvertToUMBas(
+                context.PendingQuantity,
+                presentationFactor);
 
-            // PASO 1: Calcular cuántas CAJAS COMPLETAS se necesitan
-            double completeBoxesNeeded = Math.Floor(pendingUnits / presentationFactor);
-            double residualUnits = pendingUnits - (completeBoxesNeeded * presentationFactor);
+            _logger.LogInfo($"Explosión: {context.PendingQuantity:F6} presentación = {pendingInUMBas:F6} UMBas");
 
-            _logger.LogInfo($"#EXPLOSION_CALC | Cajas completas: {completeBoxesNeeded:F0} | Residuo: {residualUnits:F6} unidades");
-
-            // Ordenar stock por FEFO
+            // Ordenar stock por FEFO y lic_plate
             var orderedStock = context.WorkingStockList
                 .Where(s => s.Cantidad > 0)
                 .OrderBy(s => s.Fecha_vence)
                 .ThenBy(s => s.Lic_plate)
                 .ToList();
 
-            double pendingBoxes = completeBoxesNeeded;
-            double pendingResidual = residualUnits;
-
-            // PASO 2: Reservar CAJAS COMPLETAS (sin explosionar)
-            if (completeBoxesNeeded > 0)
+            // Reservar en UMBas
+            foreach (var stock in orderedStock)
             {
-                _logger.LogCheckpoint($"#EXPLOSION_BOXES_START | Reservando {completeBoxesNeeded:F0} cajas completas");
+                if (pendingInUMBas <= 0.000001) break;
 
-                foreach (var stock in orderedStock)
-                {
-                    if (pendingBoxes <= 0.000001) break;
+                double quantityToReserve = Math.Min(stock.Cantidad, pendingInUMBas);
 
-                    // stock.Cantidad está en unidades, convertir a cajas
-                    double stockInBoxes = Math.Floor(stock.Cantidad / presentationFactor);
-                    if (stockInBoxes <= 0) continue;
+                if (quantityToReserve <= 0.000001) continue;
 
-                    double boxesToReserve = Math.Min(stockInBoxes, pendingBoxes);
-                    double unitsFromBoxes = boxesToReserve * presentationFactor;
+                // Crear reserva en UMBas (IdPresentacion = 0)
+                var reservation = CreateReservation(context, stock, quantityToReserve, isUMBas: true);
 
-                    // Crear reserva con Cantidad en UNIDADES (consistente con el resto del sistema)
-                    // IdPresentacion > 0 indica que la reserva proviene de stock con presentación
-                    var reservation = CreateReservation(context, stock, unitsFromBoxes, isUMBas: false);
+                // Actualizar stock
+                stock.Cantidad -= quantityToReserve;
+                pendingInUMBas -= quantityToReserve;
+                result.ReservedQuantity += quantityToReserve;
+                result.Reservations.Add(reservation);
 
-                    // Actualizar stock (descontar unidades)
-                    stock.Cantidad -= unitsFromBoxes;
-                    pendingBoxes -= boxesToReserve;
-                    
-                    // result.ReservedQuantity debe ser en UNIDADES para el flujo principal
-                    result.ReservedQuantity += unitsFromBoxes;
-                    result.Reservations.Add(reservation);
-
-                    _logger.LogReservation(
-                        reservation,
-                        "CASO_EXPLOSION_BOXES",
-                        $"Cajas completas | Stock: {stock.IdStock} | Cajas: {boxesToReserve:F0} = {unitsFromBoxes:F0} unidades");
-                }
-
-                _logger.LogCheckpoint($"#EXPLOSION_BOXES_END | Reservado: {(completeBoxesNeeded - pendingBoxes):F0} cajas");
+                _logger.LogReservation(
+                    reservation,
+                    "CASO_EXPLOSION",
+                    $"Explosión a UMBas | Stock: {stock.IdStock} | Cantidad: {quantityToReserve:F6}");
             }
 
-            // PASO 3: Explosionar SOLO para el RESIDUO
-            if (residualUnits > 0.000001)
-            {
-                _logger.LogCheckpoint($"#EXPLOSION_RESIDUAL_START | Explosionando {residualUnits:F6} unidades");
+            // NO modificar context.PendingQuantity aquí - lo hace ReservationLoopStep
+            // result.ReservedQuantity ya contiene la cantidad en UMBas
 
-                foreach (var stock in orderedStock)
-                {
-                    if (pendingResidual <= 0.000001) break;
-                    if (stock.Cantidad <= 0.000001) continue;
-
-                    double quantityToReserve = Math.Min(stock.Cantidad, pendingResidual);
-
-                    // Crear reserva en UMBas (IdPresentacion = 0)
-                    var reservation = CreateReservation(context, stock, quantityToReserve, isUMBas: true);
-
-                    // Actualizar stock
-                    stock.Cantidad -= quantityToReserve;
-                    pendingResidual -= quantityToReserve;
-                    result.ReservedQuantity += quantityToReserve;
-                    result.Reservations.Add(reservation);
-
-                    _logger.LogReservation(
-                        reservation,
-                        "CASO_EXPLOSION_RESIDUAL",
-                        $"Unidades sueltas | Stock: {stock.IdStock} | Cantidad: {quantityToReserve:F6}");
-                }
-
-                _logger.LogCheckpoint($"#EXPLOSION_RESIDUAL_END | Reservado: {(residualUnits - pendingResidual):F6} unidades");
-            }
-
-            _logger.LogCheckpoint($"#CASO_EXPLOSION_END | Total reservado: {result.ReservedQuantity:F6} unidades");
+            _logger.LogCheckpoint($"#CASO_EXPLOSION_END - Reservado: {result.ReservedQuantity:F6} UMBas");
         }
 
         private void ProcessUMBas(ReservationContext context, HandlerResult result)

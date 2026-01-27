@@ -9,37 +9,31 @@ namespace WMS.StockReservation.Core.Interfaces
     public interface IReservationLogger
     {
         /// <summary>
-        /// Establece el número de pedido actual para generar log específico por pedido.
-        /// Llamar al inicio de cada proceso de reserva para auditoría.
-        /// </summary>
-        void SetOrderNumber(string orderNumber);
-        
-        /// <summary>
         /// Registra un checkpoint del proceso (e.g., #MI3_VALIDATION_OK).
         /// </summary>
         void LogCheckpoint(string checkpoint);
-        
+
         /// <summary>
         /// Registra información general.
         /// </summary>
         void LogInfo(string message);
-        
+
         /// <summary>
         /// Registra una advertencia.
         /// </summary>
         void LogWarning(string message);
-        
+
         /// <summary>
         /// Registra un error.
         /// </summary>
         void LogError(string message);
-        
+
         /// <summary>
         /// Registra una reserva específica con su caso y mensaje detallado.
         /// Mapea a Agregar_Log_Reserva del original.
         /// </summary>
         void LogReservation(clsBeStock_res reservation, string caseCode, string message);
-        
+
         /// <summary>
         /// Obtiene todos los mensajes registrados.
         /// </summary>

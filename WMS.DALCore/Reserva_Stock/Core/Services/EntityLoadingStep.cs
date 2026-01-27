@@ -1,12 +1,12 @@
-using System;
+using WMS.EntityCore.Producto;
 using WMS.StockReservation.Core.Domain;
 using WMS.StockReservation.Core.Interfaces;
 
 namespace WMS.StockReservation.Core.Services
 {
     /// <summary>
-    /// Paso 2: Carga de entidades (Bodega, Producto, Presentación por defecto).
-    /// Target: ~80 líneas
+    /// Paso 2: Carga de entidades (Bodega, Producto, Presentacion por defecto).
+    /// Target: ~80 lineas
     /// </summary>
     public class EntityLoadingStep : IPipelineStep
     {
@@ -19,9 +19,43 @@ namespace WMS.StockReservation.Core.Services
 
         public void Execute(ReservationContext context)
         {
-            _logger.LogCheckpoint("#MI3_ENTITY_LOADING_START");
+            if (context == null)
+                throw new ArgumentNullException(nameof(context));
 
-            // Cargar Bodega
+            _logger?.LogCheckpoint("#MI3_ENTITY_LOADING_START");
+
+            if (context.Request == null)
+            {
+                context.SetError("Request null en ReservationContext");
+                return;
+            }
+
+            if (context.Connection == null)
+            {
+                context.SetError("Connection null en ReservationContext");
+                return;
+            }
+
+            if (context.Connection.State != System.Data.ConnectionState.Open)
+            {
+                context.SetError("Connection debe estar abierta (State=Open) para cargar entidades");
+                return;
+            }
+
+            if (context.Request.IdBodega <= 0)
+            {
+                context.SetError($"IdBodega invalido: {context.Request.IdBodega}");
+                return;
+            }
+
+            if (context.ProductId <= 0)
+            {
+                context.SetError($"ProductId invalido: {context.ProductId}");
+                return;
+            }
+
+            context.CachedPresentations ??= new List<clsBeProducto_presentacion>();
+
             context.Bodega = clsLnBodega.GetSingle_By_Idbodega(
                 context.Request.IdBodega,
                 context.Connection,
@@ -33,7 +67,6 @@ namespace WMS.StockReservation.Core.Services
                 return;
             }
 
-            // Cargar Producto
             context.Product = clsLnProducto.Get_Single_By_IdProducto(
                 context.ProductId,
                 context.Connection,
@@ -45,7 +78,6 @@ namespace WMS.StockReservation.Core.Services
                 return;
             }
 
-            // Cargar Presentación por defecto
             context.DefaultPresentation = clsLnProducto_presentacion
                 .Get_Presentacion_Defecto_By_IdProducto(
                     context.ProductId,
@@ -54,78 +86,56 @@ namespace WMS.StockReservation.Core.Services
 
             if (context.DefaultPresentation != null)
             {
-                // Agregar al caché de presentaciones
                 context.CachedPresentations.Add(context.DefaultPresentation);
             }
 
-            // CONVERSIÓN DE CANTIDAD: Presentación → Unidades
-            // Si el request tiene IdPresentacion > 0, la cantidad viene en presentación
-            // y debe convertirse a unidades multiplicando por el factor
-            ConvertQuantityToUnits(context);
+            try
+            {
+                ConvertQuantityToUnits(context);
+            }
+            catch (Exception ex)
+            {
+                context.SetError($"Error convirtiendo cantidad a unidades: {ex.Message}");
+                return;
+            }
 
-            _logger.LogCheckpoint(
-                $"#MI3_ENTITY_LOADING_OK - Producto: {context.Product.codigo}, " +
-                $"Bodega: {context.Bodega.Codigo}, " +
-                $"Presentación defecto: {(context.DefaultPresentation != null ? "Sí" : "No")}");
+            var productCode = context.Product?.codigo ?? "(sin codigo)";
+            var bodegaCode = context.Bodega?.Codigo ?? "(sin codigo)";
+            var hasDefaultPresentation = context.DefaultPresentation != null ? "Si" : "No";
+
+            _logger?.LogCheckpoint(
+                $"#MI3_ENTITY_LOADING_OK - Producto: {productCode}, " +
+                $"Bodega: {bodegaCode}, " +
+                $"Presentacion defecto: {hasDefaultPresentation}");
         }
 
-        /// <summary>
-        /// Convierte la cantidad solicitada de presentación a unidades si aplica.
-        /// 
-        /// ESCENARIOS:
-        /// 1. Request.IdPresentacion > 0 y Cantidad decimal (ej: 0.5 cajas) → Convertir a unidades
-        /// 2. Request.IdPresentacion > 0 y Cantidad entera (ej: 2 cajas) → Convertir a unidades
-        /// 3. Request.IdPresentacion = 0 (ya en unidades) → No convertir
-        /// 
-        /// EJEMPLO:
-        /// - Cantidad: 0.5, Factor: 24 → PendingQuantity = 12 unidades
-        /// - Cantidad: 1.25, Factor: 24 → PendingQuantity = 30 unidades (1 caja + 6 unidades)
-        /// 
-        /// NOTA: Actualiza tanto PendingQuantity como Request.Cantidad para mantener
-        /// consistencia con invariantes y logging.
-        /// </summary>
         private void ConvertQuantityToUnits(ReservationContext context)
         {
-            // Guardar cantidad original ANTES de cualquier modificación
             context.OriginalRequestedQuantity = context.Request.Cantidad;
             
-            // Si no hay presentación o IdPresentacion = 0, la cantidad ya está en unidades
+            // Si NO hay presentacion (IdPresentacion <= 0), cantidad ya esta en unidades
             if (context.Request.IdPresentacion <= 0 || context.DefaultPresentation == null)
             {
                 context.WasQuantityInPresentation = false;
                 context.ConversionFactor = 1;
-                _logger.LogInfo($"#CONVERSION_SKIP | Cantidad ya en unidades: {context.Request.Cantidad:F6}");
+                _logger?.LogInfo($"#CONVERSION_SKIP | IdPresentacion=0, cantidad ya en unidades: {context.Request.Cantidad:F6}");
                 return;
             }
 
-            // Obtener factor de conversión
+            // Si HAY presentacion (IdPresentacion > 0), SIEMPRE convertir a unidades
+            // Ejemplo: 96 cajas x 24 unidades/caja = 2304 unidades
             double factor = context.DefaultPresentation.Factor;
             if (factor <= 0) factor = 1;
             
             context.ConversionFactor = factor;
             
-            // Heurística: Si la cantidad solicitada es >= factor, probablemente ya está en unidades
-            // (Ej: piden 100 unidades con factor 24 → NO convertir)
-            // Si la cantidad es < factor O es decimal → convertir
-            bool needsConversion = (context.Request.Cantidad < factor) || 
-                                   (context.Request.Cantidad % 1 != 0);
-            
-            if (!needsConversion)
-            {
-                context.WasQuantityInPresentation = false;
-                _logger.LogInfo($"#CONVERSION_SKIP | Cantidad {context.Request.Cantidad:F6} >= Factor {factor}, asumiendo ya en unidades");
-                return;
-            }
-            
-            // Convertir de presentación a unidades
             double quantityInUnits = Math.Round(context.Request.Cantidad * factor, 6);
             
-            // IMPORTANTE: Actualizar AMBOS para mantener consistencia con invariantes
             context.PendingQuantity = quantityInUnits;
-            context.Request.Cantidad = quantityInUnits;  // Sincronizar para invariantes y logging
+            context.Request.Cantidad = quantityInUnits;
             context.WasQuantityInPresentation = true;
             
-            _logger.LogInfo($"#CONVERSION_APPLIED | Original: {context.OriginalRequestedQuantity:F6} presentaciones × Factor: {factor:F0} = {quantityInUnits:F6} unidades");
+            _logger?.LogInfo($"#CONVERSION_APPLIED | {context.OriginalRequestedQuantity:F6} presentaciones x Factor: {factor:F0} = {quantityInUnits:F6} unidades");
         }
     }
 }
