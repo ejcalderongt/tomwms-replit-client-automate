@@ -311,16 +311,18 @@ Partial Public Class clsLnBodega_ubicacion
                     If pIdBodega <> 0 Then
 
                         vSQL = "SELECT DISTINCT u.IdUbicacion, 
-                                       dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) as Descripcion  
+                                       dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) as Descripcion, ba.Descripcion as Area  
                                 FROM bodega_ubicacion AS u 
+                                     LEFT JOIN bodega_area ba on u.IdArea=ba.IdArea
                                 WHERE u.IdBodega=@IdBodega AND u." & nombreCampo & " = 1 "
 
                     Else
 
-                        vSQL = String.Format("SELECT DISTINCT u.IdUbicacion, 
-                                                     dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) as Descripcion  
-                                              FROM bodega_ubicacion AS u  
-                                              WHERE u." & nombreCampo & " = 1 ", pIdBodega)
+                        vSQL = String.Format(
+                            "SELECT DISTINCT u.IdUbicacion, dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) AS Descripcion " &
+                            "FROM bodega_ubicacion AS u  " &
+                            "WHERE u." & nombreCampo & " = 1")
+
 
                     End If
 
@@ -3900,6 +3902,79 @@ Partial Public Class clsLnBodega_ubicacion
         End Try
 
     End Function
+
+    '#GT26012026: listar ubicaciones para picking mostrando el area para cealsa.
+    Public Shared Function Get_Ubicaciones_and_Areas(ByVal pActivo As Boolean, ByVal pIdBodega As Integer, ByVal nombreCampo As String) As DataTable
+        Try
+            Dim dt As New DataTable()
+
+            Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+                lConnection.Open()
+
+                Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+                    Dim vSQL As String = ""
+
+                    If pIdBodega <> 0 Then
+
+                        vSQL = "SELECT DISTINCT u.IdUbicacion, 
+                                   dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) as Descripcion  
+                            FROM bodega_ubicacion AS u 
+                            WHERE u.IdBodega=@IdBodega AND u." & nombreCampo & " = 1 "
+
+                    Else
+
+                        vSQL = String.Format(
+                            "SELECT DISTINCT u.IdUbicacion, dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) AS Descripcion, ba.Descripcion as Area " &
+                            "FROM bodega_ubicacion AS u LEFT JOIN bodega_area ba on u.IdArea=ba.IdArea " &
+                            "WHERE u." & nombreCampo & " = 1")
+
+                    End If
+
+                    If (nombreCampo = "") Then
+
+                        vSQL = "SELECT DISTINCT u.IdUbicacion,  
+                                   dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) as Descripcion    
+                            FROM bodega_ubicacion AS u  
+                            WHERE u.IdBodega=@IdBodega"
+
+                    End If
+
+                    If pActivo Then
+                        vSQL += " AND u.Activo = 1 "
+                    Else
+                        vSQL += " AND u.Activo = 0 "
+                    End If
+
+                    Using lDTA As New SqlDataAdapter(vSQL, lConnection)
+
+                        lDTA.SelectCommand.CommandType = CommandType.Text
+                        lDTA.SelectCommand.Transaction = lTransaction
+                        lDTA.SelectCommand.Parameters.AddWithValue("@IdBodega", pIdBodega)
+
+                        Dim lDataTable As New DataTable
+                        lDTA.Fill(lDataTable)
+
+                        If lDataTable.Rows.Count = 0 Then
+                            dt = Nothing
+                        Else
+                            dt = lDataTable
+                        End If
+
+                    End Using
+
+                    lTransaction.Commit()
+
+                End Using
+            End Using
+
+            Return dt
+
+        Catch ex As Exception
+            Throw
+        End Try
+    End Function
+
 
 
 End Class
