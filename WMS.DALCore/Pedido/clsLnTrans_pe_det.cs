@@ -1167,7 +1167,8 @@ public class clsLnTrans_pe_det
 
                             double Qty_received = 0;
 
-                            if (StockReservationFacade.Reserva_Stock_From_MI3(ref pBeStockRes,
+                            if (StockReservationFacade.Reserva_Stock_From_MI3(
+                                                                              ref pBeStockRes,
                                                                               vDiasVencimientoCliente,
                                                                               MaquinaQueSolicita,
                                                                               pBeConfigEnc,
@@ -1176,10 +1177,12 @@ public class clsLnTrans_pe_det
                                                                               ref pListStockResOUT,
                                                                               lConnection,
                                                                               lTransaction,
-                                                                              pBeTrasladoDet.Line_No,
+                                                                              ref pBePedidoDet,          // <-- aquí
+                                                                              pBeTrasladoDet.Line_No,     // <-- sin ref
                                                                               false,
-                                                                              pBeTrasladoDet,
-                                                                              pBePedidoDet))
+                                                                              pBeTrasladoDet
+                                                                          ))
+
                             {
                                 pBeTrasladoDet.Qty_to_Receive = Qty_received;
                                 var firstPicking = pBePedidoDet.ListaPickingUbic?.FirstOrDefault();
@@ -1210,23 +1213,26 @@ public class clsLnTrans_pe_det
             else
             {
                 double Qty_received2 = 0;
-                if (pBeTrasladoDet != null)      
+                if (pBeTrasladoDet != null)
 
-                if (StockReservationFacade.Reserva_Stock_From_MI3(ref pBeStockRes,
-                                                                     vDiasVencimientoCliente,
-                                                                     MaquinaQueSolicita,
-                                                                     pBeConfigEnc,
-                                                                     ref Qty_received2,
-                                                                     IdPropietarioBodega,
-                                                                     ref pListStockResOUT,
-                                                                     lConnection,
-                                                                     lTransaction,
-                                                                     pBeTrasladoDet.Line_No,
-                                                                     false,
-                                                                     pBeTrasladoDet,
-                                                                     pBePedidoDet))
+                    if (StockReservationFacade.Reserva_Stock_From_MI3(
+                                                                    ref pBeStockRes,
+                                                                    vDiasVencimientoCliente,
+                                                                    MaquinaQueSolicita,
+                                                                    pBeConfigEnc,
+                                                                    ref Qty_received2,
+                                                                    IdPropietarioBodega,
+                                                                    ref pListStockResOUT,
+                                                                    lConnection,
+                                                                    lTransaction,
+                                                                    ref pBePedidoDet,              // <-- va aquí ahora
+                                                                    pBeTrasladoDet.Line_No,         // No_Linea
+                                                                    false,                          // pTarea_Reabasto
+                                                                    pBeTrasladoDet                  // pBeTrasladoDet
+                                                                ))
                     {
                         result = true;
+                        // Ya lo setea el facade cuando pBeTrasladoDet != null, pero si quieres dejarlo explícito:
                         pBeTrasladoDet.Qty_to_Receive = Qty_received2;
                     }
                     else
@@ -1398,7 +1404,7 @@ public class clsLnTrans_pe_det
                                                                              ref pListStockResOUT,
                                                                              lConnection,
                                                                              lTransaction,
-                                                                             pBePedidoDet: pBePedidoDet))
+                                                                             pBePedidoDet: ref pBePedidoDet))
                             {
                                 
                                 pBeTrasladoDet.Qty_to_Receive = Qty_received;
@@ -1441,19 +1447,21 @@ public class clsLnTrans_pe_det
 
                 double Qty_received = 0;
 
-                if (StockReservationFacade.Reserva_Stock_From_MI3(ref pBeStockRes,
-                                                                vDiasVencimientoCliente,
-                                                                MaquinaQueSolicita,
-                                                                pBeConfigEnc,
-                                                                ref Qty_received,
-                                                                IdPropietarioBodega,
-                                                                ref pListStockResOUT,
-                                                                lConnection,
-                                                                lTransaction,
-                                                                0,
-                                                                false,
-                                                                pBeTrasladoDet,
-                                                                pBePedidoDet))
+                if (StockReservationFacade.Reserva_Stock_From_MI3(
+                                                                  ref pBeStockRes,
+                                                                  vDiasVencimientoCliente,
+                                                                  MaquinaQueSolicita,
+                                                                  pBeConfigEnc,
+                                                                  ref Qty_received,
+                                                                  IdPropietarioBodega,
+                                                                  ref pListStockResOUT,
+                                                                  lConnection,
+                                                                  lTransaction,
+                                                                  ref pBePedidoDet,   // <-- va aquí
+                                                                  0,                  // No_Linea
+                                                                  false,              // pTarea_Reabasto
+                                                                  pBeTrasladoDet      // pBeTrasladoDet
+                                                              ))
                 {
                     result = true;
                     Qty_received = pBeTrasladoDet.Qty_to_Receive;

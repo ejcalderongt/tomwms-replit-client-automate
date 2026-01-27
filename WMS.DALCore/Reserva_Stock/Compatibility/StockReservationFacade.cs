@@ -1,4 +1,5 @@
 using Microsoft.Data.SqlClient;
+using WMS.EntityCore.Log;
 using WMS.EntityCore.Pedido;
 using WMSWebAPI.Be;
 
@@ -12,85 +13,101 @@ namespace WMS.StockReservation.Compatibility
     public static class StockReservationFacade
     {
         /// <summary>
-        /// SOBRECARGA LEGACY: Firma exacta del VB.NET original (12 parámetros, retorna bool).
-        /// Internamente usa el pipeline refactorizado moderno.
-        /// Use esta sobrecarga para migrar código VB.NET sin cambios.
+        /// SOBRECARGA LEGACY: Mantiene compatibilidad con el estilo VB (con ref).
+        /// Nota C#: no se permiten parámetros opcionales antes de un parámetro ref.
+        /// Por eso pBePedidoDet va antes de los opcionales.
         /// </summary>
-        /// <param name="pStockResSolicitud">Request de reserva (modificado por el pipeline)</param>
-        /// <param name="DiasVencimiento">Días antes del vencimiento para considerar stock</param>
-        /// <param name="MaquinaQueSolicita">Nombre de la máquina que solicita</param>
-        /// <param name="pBeConfigEnc">Configuración de navegación</param>
-        /// <param name="pCantidadDisponibleStock">Salida: cantidad total reservada</param>
-        /// <param name="pIdPropietarioBodega">ID del propietario de la bodega</param>
-        /// <param name="pListStockResOUT">Salida: lista de reservas creadas</param>
-        /// <param name="lConnection">Conexión SQL activa</param>
-        /// <param name="ltransaction">Transacción SQL activa</param>
-        /// <param name="No_Linea">Número de línea (opcional)</param>
-        /// <param name="pTarea_Reabasto">Indica si es tarea de reabasto (opcional)</param>
-        /// <param name="pBeTrasladoDet">Detalle de traslado (opcional)</param>
-        /// <returns>True si se crearon reservas exitosamente</returns>
-        public static bool Reserva_Stock_From_MI3(ref clsBeStock_res pStockResSolicitud,
-                                                  double DiasVencimiento,
-                                                  string MaquinaQueSolicita,
-                                                  clsBeI_nav_config_enc pBeConfigEnc,
-                                                  ref double pCantidadDisponibleStock,
-                                                  int pIdPropietarioBodega,
-                                                  ref List<clsBeStock_res> pListStockResOUT,
-                                                  SqlConnection lConnection,
-                                                  SqlTransaction ltransaction,
-                                                  int No_Linea = 0,
-                                                  bool pTarea_Reabasto = false,
-                                                  clsBeI_nav_ped_traslado_det? pBeTrasladoDet = null,
-                                                  clsBeTrans_pe_det? pBePedidoDet = null)
+        public static bool Reserva_Stock_From_MI3(
+            ref clsBeStock_res pStockResSolicitud,
+            double DiasVencimiento,
+            string MaquinaQueSolicita,
+            clsBeI_nav_config_enc pBeConfigEnc,
+            ref double pCantidadDisponibleStock,
+            int pIdPropietarioBodega,
+            ref List<clsBeStock_res> pListStockResOUT,
+            SqlConnection lConnection,
+            SqlTransaction ltransaction,
+            ref clsBeTrans_pe_det pBePedidoDet,
+            int No_Linea = 0,
+            bool pTarea_Reabasto = false,
+            clsBeI_nav_ped_traslado_det? pBeTrasladoDet = null
+        )
         {
+            // Inicializar salidas de forma segura (aunque fallen validaciones)
+            pListStockResOUT ??= new List<clsBeStock_res>();
+            pCantidadDisponibleStock = 0;
+
             try
             {
-                // Validaciones básicas
+                // Null safety / validaciones base
                 if (pStockResSolicitud == null)
                     throw new ArgumentNullException(nameof(pStockResSolicitud));
+                if (pBeConfigEnc == null)
+                    throw new ArgumentNullException(nameof(pBeConfigEnc));
                 if (lConnection == null)
                     throw new ArgumentNullException(nameof(lConnection));
 
-                // MAPEO DE PARÁMETROS LEGACY A REQUEST:
-                // Asignar IdPropietarioBodega al request (usado en consulta de stock)
+                // Machine name seguro
+                var machineName = string.IsNullOrWhiteSpace(MaquinaQueSolicita)
+                    ? Environment.MachineName
+                    : MaquinaQueSolicita.Trim();
+
+                // Asegurar lista OUT no null
+                pListStockResOUT ??= new List<clsBeStock_res>();
+
+                // Validar request crítico
+                ValidateLegacyRequest(pStockResSolicitud, pBeConfigEnc);
+
+                // Mapear legacy → request
                 if (pIdPropietarioBodega > 0)
-                {
                     pStockResSolicitud.IdPropietarioBodega = pIdPropietarioBodega;
-                }
 
-                // Usar IdProductoBodega directamente (los pedidos/reservas van en función de bodega)
-                int idProductoBodega = pStockResSolicitud.IdProductoBodega;
+                // Ejecutar pipeline
+                var reservations = Reserva_Stock_Internal(
+                    oBeStockResRequest: pStockResSolicitud,
+                    IdProducto: 0, // ValidationStep resolverá desde request.IdProductoBodega
+                    oBeConfigEnc: pBeConfigEnc,
+                    cnnSql: lConnection,
+                    trSql: ltransaction,
+                    oBePedidoDet: pBePedidoDet,
+                    oBeI_nav_ped_traslado_det: pBeTrasladoDet,
+                    Tarea_Reabasto: pTarea_Reabasto,
+                    EsDevolucion: false,
+                    LineNumber: No_Linea,
+                    MachineName: machineName,
+                    DiasVencimiento: DiasVencimiento
+                );
 
-                // Llamar al pipeline interno refactorizado con DiasVencimiento
-                var reservations = Reserva_Stock_Internal(oBeStockResRequest: pStockResSolicitud,
-                                                          IdProductoBodega: idProductoBodega,
-                                                          oBeConfigEnc: pBeConfigEnc,
-                                                          cnnSql: lConnection,
-                                                          trSql: ltransaction,
-                                                          oBePedidoDet: pBePedidoDet,
-                                                          oBeI_nav_ped_traslado_det: pBeTrasladoDet,
-                                                          Tarea_Reabasto: pTarea_Reabasto,
-                                                          EsDevolucion: false,
-                                                          LineNumber: No_Linea,
-                                                          MachineName: MaquinaQueSolicita,
-                                                          DiasVencimiento: DiasVencimiento);
-
-                // Asignar resultados a parámetros de salida (ref)
                 pListStockResOUT = reservations ?? new List<clsBeStock_res>();
 
-                // Calcular cantidad total reservada (suma de todas las reservas)
-                pCantidadDisponibleStock = 0;
+                // Sumar cantidad reservada de forma null-safe
+                double total = 0;
                 foreach (var reserva in pListStockResOUT)
-                {
-                    pCantidadDisponibleStock += reserva.Cantidad;
-                }
+                    total += reserva?.Cantidad ?? 0;
 
-                // Retornar éxito si hay reservas
+                pCantidadDisponibleStock = total;
+
+                // Actualizar Qty_to_Receive si aplica
+                if (pBeTrasladoDet != null)
+                    pBeTrasladoDet.Qty_to_Receive = pCantidadDisponibleStock;
+
                 return pListStockResOUT.Count > 0;
             }
-            catch
+            catch (Exception ex)
             {
-                // En caso de error, inicializar salidas y retornar false
+                SafeTrace(ex);
+
+                // Logging a BD (best-effort)
+                TryLogErrorToDb(
+                    ex: ex,
+                    cnn: lConnection,
+                    tr: ltransaction,
+                    cfg: pBeConfigEnc,
+                    lineNo: No_Linea,
+                    cantidad: pStockResSolicitud?.Cantidad ?? 0
+                );
+
+                // Reset outputs por contrato legacy
                 pListStockResOUT = new List<clsBeStock_res>();
                 pCantidadDisponibleStock = 0;
                 return false;
@@ -98,154 +115,174 @@ namespace WMS.StockReservation.Compatibility
         }
 
         /// <summary>
-        /// SOBRECARGA MODERNA: API simplificada sin parámetros ref (para código C# moderno).
-        /// Internamente usa el mismo pipeline refactorizado que la sobrecarga legacy.
+        /// SOBRECARGA MODERNA: API simplificada sin parámetros ref.
         /// </summary>
-        /// <param name="oBeStockResRequest">Request de reserva con producto, bodega, cantidad, etc.</param>
-        /// <param name="IdProducto">ID del producto a reservar</param>
-        /// <param name="oBeConfigEnc">Configuración de navegación (bodega, explosión automática, etc.)</param>
-        /// <param name="cnnSql">Conexión SQL activa</param>
-        /// <param name="trSql">Transacción SQL activa (opcional)</param>
-        /// <param name="oBePedidoDet">Detalle de pedido (opcional)</param>
-        /// <param name="oBeI_nav_ped_traslado_det">Detalle de traslado (opcional)</param>
-        /// <param name="Tarea_Reabasto">Indica si es tarea de reabasto (1=true, 0=false)</param>
-        /// <param name="EsDevolucion">Indica si es una devolución</param>
-        /// <param name="LineNumber">Número de línea del pedido/traslado</param>
-        /// <param name="MachineName">Nombre de la máquina que solicita la reserva</param>
-        /// <returns>Lista de reservas creadas</returns>
-        public static List<clsBeStock_res> Reserva_Stock_From_MI3(clsBeStock_res oBeStockResRequest,
-                                                                  int IdProducto,
-                                                                  clsBeI_nav_config_enc oBeConfigEnc,
-                                                                  SqlConnection cnnSql,
-                                                                  SqlTransaction? trSql = null,
-                                                                  clsBeTrans_pe_det? oBePedidoDet = null,
-                                                                  clsBeI_nav_ped_traslado_det? oBeI_nav_ped_traslado_det = null,
-                                                                  bool Tarea_Reabasto = false,
-                                                                  bool EsDevolucion = false,
-                                                                  int LineNumber = 0,
-                                                                  string MachineName = "")
+        public static List<clsBeStock_res> Reserva_Stock_From_MI3(
+            clsBeStock_res oBeStockResRequest,
+            int IdProducto,
+            clsBeI_nav_config_enc oBeConfigEnc,
+            SqlConnection cnnSql,
+            SqlTransaction? trSql = null,
+            clsBeTrans_pe_det? oBePedidoDet = null,
+            clsBeI_nav_ped_traslado_det? oBeI_nav_ped_traslado_det = null,
+            bool Tarea_Reabasto = false,
+            bool EsDevolucion = false,
+            int LineNumber = 0,
+            string MachineName = "",
+            double DiasVencimiento = 0
+        )
         {
-            return Reserva_Stock_Internal(oBeStockResRequest,
-                                          IdProducto,
-                                          oBeConfigEnc,
-                                          cnnSql,
-                                          trSql,
-                                          oBePedidoDet,
-                                          oBeI_nav_ped_traslado_det,
-                                          Tarea_Reabasto,
-                                          EsDevolucion,
-                                          LineNumber,
-                                          MachineName);
+            return Reserva_Stock_Internal(
+                oBeStockResRequest: oBeStockResRequest,
+                IdProducto: IdProducto,
+                oBeConfigEnc: oBeConfigEnc,
+                cnnSql: cnnSql,
+                trSql: trSql,
+                oBePedidoDet: oBePedidoDet,
+                oBeI_nav_ped_traslado_det: oBeI_nav_ped_traslado_det,
+                Tarea_Reabasto: Tarea_Reabasto,
+                EsDevolucion: EsDevolucion,
+                LineNumber: LineNumber,
+                MachineName: MachineName,
+                DiasVencimiento: DiasVencimiento
+            );
         }
 
         /// <summary>
         /// Implementación interna compartida que ejecuta el pipeline de reserva.
         /// </summary>
-        private static List<clsBeStock_res> Reserva_Stock_Internal(clsBeStock_res oBeStockResRequest,
-                                                                   int IdProductoBodega,
-                                                                   clsBeI_nav_config_enc oBeConfigEnc,
-                                                                   SqlConnection cnnSql,
-                                                                   SqlTransaction? trSql,
-                                                                   clsBeTrans_pe_det? oBePedidoDet,
-                                                                   clsBeI_nav_ped_traslado_det? oBeI_nav_ped_traslado_det,
-                                                                   bool Tarea_Reabasto,
-                                                                   bool EsDevolucion,
-                                                                   int LineNumber,
-                                                                   string MachineName,
-                                                                   double DiasVencimiento = 0)
+        private static List<clsBeStock_res> Reserva_Stock_Internal(
+            clsBeStock_res oBeStockResRequest,
+            int IdProducto,
+            clsBeI_nav_config_enc oBeConfigEnc,
+            SqlConnection cnnSql,
+            SqlTransaction? trSql,
+            clsBeTrans_pe_det? oBePedidoDet,
+            clsBeI_nav_ped_traslado_det? oBeI_nav_ped_traslado_det,
+            bool Tarea_Reabasto,
+            bool EsDevolucion,
+            int LineNumber,
+            string MachineName,
+            double DiasVencimiento = 0
+        )
         {
+            // Validaciones fuertes y null-safety
+            if (oBeStockResRequest == null)
+                throw new ArgumentNullException(nameof(oBeStockResRequest), "El request de reserva no puede ser null");
+            if (oBeConfigEnc == null)
+                throw new ArgumentNullException(nameof(oBeConfigEnc), "La configuración no puede ser null");
+            if (cnnSql == null)
+                throw new ArgumentNullException(nameof(cnnSql), "La conexión SQL no puede ser null");
+
+            if (cnnSql.State != System.Data.ConnectionState.Open)
+                throw new InvalidOperationException("La conexión SQL debe estar abierta (State=Open) para reservar stock");
+
+            if (oBeStockResRequest.Cantidad <= 0)
+                throw new ArgumentOutOfRangeException(nameof(oBeStockResRequest.Cantidad), "La cantidad a reservar debe ser > 0");
+
+            // Resolver bodega de forma consistente
+            var resolvedBodegaId = oBeStockResRequest.IdBodega > 0 ? oBeStockResRequest.IdBodega : oBeConfigEnc.Idbodega;
+            if (resolvedBodegaId <= 0)
+                throw new ArgumentException("Debe especificar IdBodega en el request o en la configuración");
+
+            oBeStockResRequest.IdBodega = resolvedBodegaId;
+
+            // Machine name seguro
+            var machineName = string.IsNullOrWhiteSpace(MachineName)
+                ? Environment.MachineName
+                : MachineName.Trim();
+
+            // Días vencimiento: evitar negativos
+            if (DiasVencimiento < 0)
+                DiasVencimiento = 0;
+
+            // Si IdProducto viene en 0, el pipeline puede resolverlo desde IdProductoBodega.
+            // Aun así validamos que haya al menos una forma de identificar producto.
+            if (IdProducto <= 0 && oBeStockResRequest.IdProductoBodega <= 0)
+                throw new ArgumentException("Debe especificar IdProducto o IdProductoBodega en el request");
+
+            // Para auditoría
+            var orderNumber = ResolveOrderNumber(oBePedidoDet, oBeI_nav_ped_traslado_det);
+
             try
             {
-                // Validaciones básicas
-                if (oBeStockResRequest == null)
-                    throw new ArgumentNullException(nameof(oBeStockResRequest), "El request de reserva no puede ser null");
+                // orderNumber/machineName seguros
+                orderNumber ??= string.Empty;
+                machineName = string.IsNullOrWhiteSpace(machineName)
+                    ? Environment.MachineName
+                    : machineName.Trim();
 
-                if (cnnSql == null)
-                    throw new ArgumentNullException(nameof(cnnSql), "La conexión SQL no puede ser null");
+                var factory = new ServiceFactory(); // si esto lanza, cae al catch
 
-                // Crear factory y pipeline
-                var factory = new ServiceFactory();
-                var pipeline = factory.CreateReservationPipeline();
+                // Null-safety: si por diseño pudiera retornar null
+                var pipeline = factory.CreateReservationPipeline(orderNumber)
+                    ?? throw new InvalidOperationException(
+                        $"CreateReservationPipeline devolvió null (orderNumber='{orderNumber}').");
 
-                oBeStockResRequest.IdBodega = oBeConfigEnc.Idbodega;
+                // Contexto nunca es null, pero sí validamos entradas críticas si quieres fail-fast aquí también
+                if (oBeStockResRequest == null) throw new ArgumentNullException(nameof(oBeStockResRequest));
+                if (oBeConfigEnc == null) throw new ArgumentNullException(nameof(oBeConfigEnc));
+                if (cnnSql == null) throw new ArgumentNullException(nameof(cnnSql));
 
-                // Validaciones adicionales
-                if (oBeConfigEnc == null)
-                    throw new ArgumentNullException(nameof(oBeConfigEnc), "La configuración no puede ser null.");
-
-                if (trSql == null)
-                    throw new ArgumentNullException(nameof(trSql), "La transacción SQL no puede ser null.");
-
-                // Si tu flujo REQUIERE PedidoDet:
-                if (oBePedidoDet == null)
-                    throw new ArgumentNullException(nameof(oBePedidoDet), "PedidoDet no puede ser null para reservar stock.");
-
-                // Si tu flujo REQUIERE TrasladoDet (por ejemplo pedidos de traslado):
-                if (oBeI_nav_ped_traslado_det == null)
-                    throw new ArgumentNullException(nameof(oBeI_nav_ped_traslado_det), "TrasladoDet no puede ser null para reservar stock.");
-
-                // Construir contexto de reserva
                 var context = new ReservationContext
                 {
                     Request = oBeStockResRequest,
-                    ProductId = IdProductoBodega,
+                    ProductId = IdProducto,
                     Configuration = oBeConfigEnc,
                     Connection = cnnSql,
                     Transaction = trSql,
-                    PedidoDet = oBePedidoDet,
-                    TrasladoDet = oBeI_nav_ped_traslado_det,
-                    TareaReabasto = Tarea_Reabasto ? true : false,
+                    PedidoDet = oBePedidoDet,                       // puede ser null OK
+                    TrasladoDet = oBeI_nav_ped_traslado_det,        // puede ser null OK
+                    TareaReabasto = Tarea_Reabasto,
                     EsDevolucion = EsDevolucion,
                     LineNumber = LineNumber,
-                    MachineName = MachineName ?? Environment.MachineName,
-                    DiasVencimiento = DiasVencimiento,
+                    MachineName = machineName,
+                    DiasVencimiento = DiasVencimiento < 0 ? 0 : DiasVencimiento
                 };
 
-                // Ejecutar pipeline de reserva
-                var result = pipeline.Execute(context);
+                // Null-safety del resultado
+                var result = pipeline.Execute(context)
+                    ?? throw new InvalidOperationException(
+                        $"Pipeline.Execute devolvió null (orderNumber='{orderNumber}', line={LineNumber}).");
 
-                // Verificar resultado
-                if (!result.Success)
-                {
-                    var errorMsg = context.HasError
-                        ? context.ErrorMessage
-                        : "Error desconocido en la reserva de stock";
-                    throw new Exception($"Error en reserva de stock: {errorMsg}");
-                }
+                // Si el pipeline marca error, lanzar con el mensaje (null-safe)
+                if (context.HasError)
+                    throw new Exception($"Error en reserva de stock: {context.ErrorMessage ?? "Sin detalle"}");
 
-                // Retornar reservas creadas (nunca null)
+                // Retorno null-safe
                 return result.Reservations ?? new List<clsBeStock_res>();
             }
             catch (Exception ex)
             {
-                // Re-lanzar con contexto adicional
                 throw new Exception(
-                    $"Error ejecutando Reserva_Stock_From_MI3 para producto {IdProductoBodega}: {ex.Message}",
+                    $"Error ejecutando Reserva_Stock_From_MI3 (Producto={IdProducto}, Line={LineNumber}): {ex.Message}",
                     ex);
             }
+
         }
 
         /// <summary>
         /// Versión simplificada para casos básicos (sin pedidos/traslados).
-        /// Ideal para reservas directas desde código C#.
         /// </summary>
-        /// <param name="bodegaId">ID de la bodega</param>
-        /// <param name="productoId">ID del producto</param>
-        /// <param name="cantidad">Cantidad a reservar</param>
-        /// <param name="presentacionId">ID de la presentación (UMBas)</param>
-        /// <param name="configuracion">Configuración de navegación</param>
-        /// <param name="connection">Conexión SQL</param>
-        /// <param name="transaction">Transacción SQL (opcional)</param>
-        /// <returns>Lista de reservas creadas</returns>
-        public static List<clsBeStock_res> ReservarStock(int bodegaId,
-                                                        int productoId,
-                                                        double cantidad,
-                                                        int presentacionId,
-                                                        clsBeI_nav_config_enc configuracion,
-                                                        SqlConnection connection,
-                                                        SqlTransaction? transaction = null)
+        public static List<clsBeStock_res> ReservarStock(
+            int bodegaId,
+            int productoId,
+            double cantidad,
+            int presentacionId,
+            clsBeI_nav_config_enc configuracion,
+            SqlConnection connection,
+            SqlTransaction? transaction = null,
+            string machineName = "",
+            double diasVencimiento = 0
+        )
         {
-            // Construir request básico
+            if (configuracion == null) throw new ArgumentNullException(nameof(configuracion));
+            if (connection == null) throw new ArgumentNullException(nameof(connection));
+            if (bodegaId <= 0) throw new ArgumentOutOfRangeException(nameof(bodegaId));
+            if (productoId <= 0) throw new ArgumentOutOfRangeException(nameof(productoId));
+            if (cantidad <= 0) throw new ArgumentOutOfRangeException(nameof(cantidad));
+            if (presentacionId <= 0) throw new ArgumentOutOfRangeException(nameof(presentacionId));
+
             var request = new clsBeStock_res
             {
                 IdBodega = bodegaId,
@@ -254,12 +291,102 @@ namespace WMS.StockReservation.Compatibility
                 Cantidad = cantidad
             };
 
-            // Llamar método principal
-            return Reserva_Stock_From_MI3(oBeStockResRequest: request,
-                                          IdProducto: productoId,
-                                          oBeConfigEnc: configuracion,
-                                          cnnSql: connection,
-                                          trSql: transaction);
+            return Reserva_Stock_From_MI3(
+                oBeStockResRequest: request,
+                IdProducto: productoId,
+                oBeConfigEnc: configuracion,
+                cnnSql: connection,
+                trSql: transaction,
+                MachineName: machineName,
+                DiasVencimiento: diasVencimiento
+            );
+        }
+
+        // =========================
+        // Helpers / Null safety
+        // =========================
+
+        private static void ValidateLegacyRequest(clsBeStock_res req, clsBeI_nav_config_enc cfg)
+        {
+            // req ya viene null-check arriba
+            if (req.Cantidad <= 0)
+                throw new ArgumentOutOfRangeException(nameof(req.Cantidad), "La cantidad a reservar debe ser > 0");
+
+            // Permitir que el pipeline resuelva IdProducto si viene IdProductoBodega,
+            // pero al menos debe venir uno.
+            if (req.IdProductoBodega <= 0)
+            {
+                // Si tu request legacy trae otro campo para producto, valida aquí.
+                // De momento, exigimos IdProductoBodega.
+                throw new ArgumentException("El request legacy debe incluir IdProductoBodega (>0)", nameof(req.IdProductoBodega));
+            }
+
+            // Bodega: puede venir en req o en config
+            var bodega = req.IdBodega > 0 ? req.IdBodega : cfg.Idbodega;
+            if (bodega <= 0)
+                throw new ArgumentException("Debe especificar IdBodega en el request o en la configuración");
+        }
+
+        private static string? ResolveOrderNumber(clsBeTrans_pe_det? pedidoDet, clsBeI_nav_ped_traslado_det? trasladoDet)
+        {
+            if (trasladoDet != null && !string.IsNullOrWhiteSpace(trasladoDet.NoEnc))
+                return trasladoDet.NoEnc;
+
+            if (pedidoDet != null && pedidoDet.IdPedidoEnc > 0)
+                return $"PED_{pedidoDet.IdPedidoEnc}";
+
+            return null;
+        }
+
+        private static void SafeTrace(Exception ex)
+        {
+            Debug.WriteLine($"[StockReservationFacade] ERROR: {ex.Message}");
+            Debug.WriteLine($"[StockReservationFacade] StackTrace: {ex.StackTrace}");
+            if (ex.InnerException != null)
+            {
+                Debug.WriteLine($"[StockReservationFacade] Inner: {ex.InnerException.Message}");
+                Debug.WriteLine($"[StockReservationFacade] InnerStack: {ex.InnerException.StackTrace}");
+            }
+        }
+
+        private static void TryLogErrorToDb(
+            Exception ex,
+            SqlConnection? cnn,
+            SqlTransaction? tr,
+            clsBeI_nav_config_enc? cfg,
+            int lineNo,
+            double cantidad
+        )
+        {
+            try
+            {
+                if (cnn == null || cnn.State != ConnectionState.Open)
+                    return;
+
+                var idEmpresa = cfg?.Idempresa ?? 1;
+                var idBodega = cfg?.Idbodega ?? 0;
+
+                var nextId = clsLnLog_error_wms.MaxID(cnn, tr) + 1;
+
+                var errorLog = new clsBeLog_error_wms
+                {
+                    IdError = nextId,
+                    IdEmpresa = idEmpresa,
+                    IdBodega = idBodega,
+                    Fecha = DateTime.Now,
+                    MensajeError = $"RESERVA_ERROR: {ex.Message}",
+                    Line_No = lineNo,
+                    Item_No = "",
+                    Cantidad = cantidad,
+                    Referencia_Documento = "StockReservationFacade"
+                };
+
+                clsLnLog_error_wms.Insertar(errorLog, cnn, tr);
+            }
+            catch
+            {
+                // Best-effort: no romper el flujo por logging
+            }
         }
     }
 }

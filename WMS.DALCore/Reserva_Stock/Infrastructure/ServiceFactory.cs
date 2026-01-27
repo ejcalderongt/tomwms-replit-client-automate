@@ -1,3 +1,11 @@
+using System;
+using System.Collections.Generic;
+using WMS.StockReservation.Core.Domain;
+using WMS.StockReservation.Core.Interfaces;
+using WMS.StockReservation.Core.Services;
+using WMS.StockReservation.Infrastructure.Logging;
+using WMS.StockReservation.Strategies;
+
 namespace WMS.StockReservation.Infrastructure
 {
     /// <summary>
@@ -9,7 +17,22 @@ namespace WMS.StockReservation.Infrastructure
     {
         public IReservationPipeline CreateReservationPipeline()
         {
+            return CreateReservationPipeline(null);
+        }
+
+        /// <summary>
+        /// Crea el pipeline de reserva con un número de pedido opcional para auditoría.
+        /// </summary>
+        /// <param name="orderNumber">Número de pedido para generar log específico (ej: REPPLIT-003)</param>
+        public IReservationPipeline CreateReservationPipeline(string orderNumber)
+        {
             var logger = new ReservationLogger();
+            
+            // Configurar número de pedido para log por pedido (auditoría)
+            if (!string.IsNullOrEmpty(orderNumber))
+            {
+                logger.SetOrderNumber(orderNumber);
+            }
 
             var steps = new IPipelineStep[]
             {
@@ -17,7 +40,7 @@ namespace WMS.StockReservation.Infrastructure
                 new EntityLoadingStep(logger),
                 new StockQueryStep(logger),
                 new DateCalculationStep(logger),
-                new ReservationLoopStep(this, logger),  // ✅ Pasa factory para re-construcción
+                new ReservationLoopStep(this, logger),
                 new PostProcessingStep(logger)
             };
 

@@ -6880,6 +6880,24 @@ Partial Public Class clsLnProducto
 
         Try
 
+            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
+
+            'Obtiene lista de producto clasificación
+            pListClasificacion = clsLnProducto_clasificacion.Get_All_By_IdPropietario(True, pIdPropietario, lConnection, lTransaction)
+
+            lTransaction.Commit()
+
+            Return pListClasificacion
+
+        Catch ex As Exception
+            If lTransaction IsNot Nothing Then lTransaction.Rollback()
+            Throw ex
+        Finally
+            If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
+        End Try
+
+    End Function
+
     Public Shared Function Get_BeProducto_By_Codigo_Or_Barra(ByVal pCodigo As String, ByVal IdBodega As Integer) As clsBeProducto
         Get_BeProducto_By_Codigo_Or_Barra = Nothing
         Try
@@ -6917,24 +6935,6 @@ Partial Public Class clsLnProducto
             Throw ex
         End Try
     End Function
-            lConnection.Open() : lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
-
-            'Obtiene lista de producto clasificación
-            pListClasificacion = clsLnProducto_clasificacion.Get_All_By_IdPropietario(True, pIdPropietario, lConnection, lTransaction)
-
-            lTransaction.Commit()
-
-            Return pListClasificacion
-
-        Catch ex As Exception
-            If lTransaction IsNot Nothing Then lTransaction.Rollback()
-            Throw ex
-        Finally
-            If Not lConnection Is Nothing AndAlso lConnection.State = ConnectionState.Open Then lConnection.Close()
-        End Try
-
-    End Function
-
     Public Shared Function Get_Marca_Inv(ByVal pIdPropietario As Integer) As DataTable
 
         Get_Marca_Inv = Nothing

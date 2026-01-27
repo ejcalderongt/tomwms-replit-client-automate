@@ -19,8 +19,8 @@ namespace WMS.StockReservation.Core.Domain
         public clsBeI_nav_config_enc Configuration { get; set; } = new clsBeI_nav_config_enc();
         public SqlConnection Connection { get; set; } = new SqlConnection();
         public SqlTransaction? Transaction { get; set; } = null;
-        public clsBeTrans_pe_det PedidoDet { get; set; } = new clsBeTrans_pe_det();
-        public clsBeI_nav_ped_traslado_det TrasladoDet { get; set; } = new clsBeI_nav_ped_traslado_det();
+        public clsBeTrans_pe_det? PedidoDet { get; set; } = new clsBeTrans_pe_det();
+        public clsBeI_nav_ped_traslado_det? TrasladoDet { get; set; } = new clsBeI_nav_ped_traslado_det();
 
         /// <summary>
         /// IdPedidoEnc del Trans_pe_enc creado. Se usa para asignar IdTransaccion en stock_res.
@@ -35,7 +35,7 @@ namespace WMS.StockReservation.Core.Domain
         // ===== ENTITIES (cargadas en EntityLoadingStep) =====
         public clsBeBodega Bodega { get; set; } = new clsBeBodega();
         public clsBeProducto Product { get; set; } = new clsBeProducto();
-        public clsBeProducto_presentacion? DefaultPresentation { get; set; } = null;
+        public clsBeProducto_presentacion DefaultPresentation { get; set; } = new clsBeProducto_presentacion();
 
         // ===== STOCK LISTS (modificadas por handlers y steps) =====
         public List<clsBeStock> StockListPickingZone { get; set; } = new List<clsBeStock>();
@@ -56,6 +56,42 @@ namespace WMS.StockReservation.Core.Domain
         public int StartingPoint { get; set; } = new int();
         public bool IsExplosionModeEnabled { get; set; } = new bool();
         public bool IsUMBasModeEnabled { get; set; } = new bool();
+        
+        /// <summary>
+        /// Cantidad original solicitada (antes de conversión a unidades).
+        /// Ejemplo: 0.5 cajas, 1.25 presentaciones
+        /// </summary>
+        public double OriginalRequestedQuantity { get; set; } = 0;
+        
+        /// <summary>
+        /// Indica si la cantidad original estaba en presentación (necesitó conversión a unidades).
+        /// true = Request.Cantidad era en presentación y fue convertida
+        /// false = Request.Cantidad ya estaba en unidades
+        /// </summary>
+        public bool WasQuantityInPresentation { get; set; } = false;
+        
+        /// <summary>
+        /// Factor de presentación usado para la conversión.
+        /// </summary>
+        public double ConversionFactor { get; set; } = 1;
+        
+        // ===== LOTES ESPECÍFICOS (para transferencias) =====
+        /// <summary>
+        /// Indica si hay lotes específicos definidos en TrasladoDet.Lotes_Detalle.
+        /// Si es true, el sistema reservará SOLO esos lotes por Batch_No.
+        /// </summary>
+        public bool HasSpecificLots => TrasladoDet?.Lotes_Detalle?.Count > 0;
+        
+        /// <summary>
+        /// Acceso directo a la lista de lotes específicos.
+        /// </summary>
+        public List<clsBeI_nav_ped_traslado_det_lote> SpecificLots => 
+            TrasladoDet?.Lotes_Detalle ?? new List<clsBeI_nav_ped_traslado_det_lote>();
+        
+        /// <summary>
+        /// Indica si el modo de lotes específicos está activo (se está procesando lotes predefinidos).
+        /// </summary>
+        public bool IsSpecificLotModeEnabled { get; set; } = false;
 
         // ===== CACHES (evitar consultas repetidas) =====
         public List<clsBeBodega_ubicacion> CachedLocations { get; set; } = new List<clsBeBodega_ubicacion>();
