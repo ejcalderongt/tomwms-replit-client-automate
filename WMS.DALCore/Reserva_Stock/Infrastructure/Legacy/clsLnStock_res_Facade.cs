@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.Data.SqlClient;
 using WMSWebAPI.Be;
-using WMS.EntityCore.Stock;
 using WMS.StockReservation.Compatibility;
+using WMS.EntityCore.Pedido;
 
 namespace WMS.StockReservation.Infrastructure.Legacy
 {
@@ -35,7 +33,7 @@ namespace WMS.StockReservation.Infrastructure.Legacy
             ref SqlTransaction ltransaction,
             int No_Linea = 0,
             bool pTarea_Reabasto = false,
-            clsBeI_nav_ped_traslado_det pBeTrasladoDet = null)
+            clsBeI_nav_ped_traslado_det? pBeTrasladoDet = null)
         {
             try
             {
