@@ -11644,12 +11644,13 @@ Partial Public Class clsLnStock
     End Sub
 
     Public Shared Sub Actualizar_Stock_Por_Despacho(ByVal IdDespachoEnc As Integer,
-                                                ByRef pPickingUbic As clsBeTrans_picking_ubic,
-                                                ByVal AllowNegativeExceptionOnStock As Boolean,
-                                                ByRef lConnection As SqlConnection,
-                                                ByRef lTransaction As SqlTransaction)
+                                                    ByRef pPickingUbic As clsBeTrans_picking_ubic,
+                                                    ByVal AllowNegativeExceptionOnStock As Boolean,
+                                                    ByRef lConnection As SqlConnection,
+                                                    ByRef lTransaction As SqlTransaction)
 
         Dim vMensaje As String = ""
+        Dim vCantidadDisponible As Double = 0
 
         Try
 

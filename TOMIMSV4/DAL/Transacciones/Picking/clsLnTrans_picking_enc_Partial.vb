@@ -1720,7 +1720,7 @@ Partial Public Class clsLnTrans_picking_enc
 
             'MECR04122025: Se agrego bitacora de logs para verificacion.
             Dim msgControl As String = "Se actualizo estado verificado el pedido: " & oBeTrans_picking_enc.IdPedidoEnc
-            clsLnLog_verificacion_bof.Agregar_Error(msgControl,
+            clsLnLog_verificacion_bof_error.Agregar_Error(msgControl,
             pIdPedidoEnc:=oBeTrans_picking_enc.IdPedidoEnc,
             pIdBodega:=oBeTrans_picking_enc.IdBodega,
             pIdPickingEnc:=oBeTrans_picking_enc.IdPickingEnc,
