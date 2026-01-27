@@ -439,12 +439,20 @@ Partial Public Class clsLnTrans_ajuste_det
 	                                     SUM(peso_stock) peso_original, SUM(peso_stock) peso_nuevo, 
 	                                     SUM(cant_stock) cantidad_original, SUM(cantidad) cantidad_nueva, p.codigo codigo_producto, 
 	                                     p.nombre nombre_producto, 0 idtipoajuste, 0 idmotivoajuste, '' observacion, '' codigo_ajuste,0 enviado,
-	                                     0 IdBodegaERP, MAX(lic_plate)  lic_plate, '' referencia_ajuste_erp, 0 estado_ajuste_erp
+	                                     0 IdBodegaERP, MAX(lic_plate)  lic_plate, '' referencia_ajuste_erp, 0 estado_ajuste_erp, trans_inv_ciclico.IdProductoTallaColor IdProductoTallaColor_origen,
+                                         c.Codigo Color_origen, t.codigo Talla_origen, IdProductoTallaColor_nuevo IdProductoTallaColor_destino, cn.Codigo Color_destino, tn.codigo Talla_destino
                                   FROM trans_inv_ciclico INNER JOIN 
                                        producto_bodega pb ON trans_inv_ciclico.IdProductoBodega = pb.IdProductoBodega INNER JOIN
-	                                   producto p ON p.IdProducto = pb.IdProducto
+	                                   producto p ON p.IdProducto = pb.IdProducto LEFT JOIN
+                                       producto_talla_color ptc ON ptc.IdProductoTallaColor = trans_inv_ciclico.IdProductoTallaColor LEFT JOIN
+                                       color c ON c.IdColor = ptc.IdColor LEFT JOIN
+                                       talla t ON t.IdTalla= ptc.IdTalla LEFT JOIN
+                                       producto_talla_color ptcn ON ptcn.IdProductoTallaColor = trans_inv_ciclico.IdProductoTallaColor_nuevo LEFT JOIN
+                                       color cn ON cn.IdColor = ptcn.IdColor LEFT JOIN
+                                       talla tn ON tn.IdTalla= ptcn.IdTalla
                                   WHERE idinventarioenc = @idinventario AND regularizar = 1 
-                                  GROUP BY trans_inv_ciclico.IdProductoBodega, idPresentacion, IdUnidadMedida, p.codigo, p.nombre
+                                  GROUP BY trans_inv_ciclico.IdProductoBodega, idPresentacion, IdUnidadMedida, p.codigo, p.nombre, trans_inv_ciclico.IdProductoTallaColor, trans_inv_ciclico.IdProductoTallaColor_nuevo,
+                                  c.codigo, t.codigo, cn.codigo, tn.codigo                        
                                   HAVING SUM(cant_stock-cantidad) <>0 "
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
