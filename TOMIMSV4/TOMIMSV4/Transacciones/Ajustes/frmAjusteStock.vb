@@ -173,9 +173,9 @@ Public Class frmAjusteStock
             cmbProductoFamilia.EditValue = pBeTransAjustEnc.IdProductoFamilia
             lcmbCentroCosto.EditValue = pBeTransAjustEnc.IdCentroCosto
 
-            txtCentroCostoERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(pBeTransAjustEnc.Centro_Costo_Erp)
-            txtCentroCostoDirERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(pBeTransAjustEnc.Centro_Costo_Dir_Erp)
-            txtCentroCostoDepERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(pBeTransAjustEnc.Centro_Costo_Dep_Erp)
+            txtCentroCostoERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(Val(pBeTransAjustEnc.Centro_Costo_Erp))
+            txtCentroCostoDirERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(Val(pBeTransAjustEnc.Centro_Costo_Dir_Erp))
+            txtCentroCostoDepERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(Val(pBeTransAjustEnc.Centro_Costo_Dep_Erp))
 
             '#CKFK20220704 Cambié el clsLnTrans_ajuste_det.Get_All porque primero cargaba todos los ajustes para devolver el seleccionado
             lBeTransAjusteDet = clsLnTrans_ajuste_det.Get_By_IdAjusteEnc(pBeTransAjustEnc.Idajusteenc)

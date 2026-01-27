@@ -981,4 +981,52 @@ public class clsLnProveedor
 
         return result;
     }
+
+    public static clsBeProveedor? Get_By_Codigo(
+           string codigoProveedor,
+           SqlConnection connection,
+           SqlTransaction transaction)
+    {
+        try
+        {
+            const string sql = @"
+                SELECT TOP 1 *
+                FROM Proveedor WITH (NOLOCK)
+                WHERE Codigo = @CodigoProveedor;
+            ";
+
+            using (var cmd = new SqlCommand(sql, connection, transaction))
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.Add(new SqlParameter("@CodigoProveedor", SqlDbType.VarChar, 50)
+                {
+                    Value = codigoProveedor.Trim()
+                });
+
+                using (var dad = new SqlDataAdapter(cmd))
+                {
+                    var dt = new DataTable();
+                    dad.Fill(dt);
+
+                    if (dt.Rows.Count == 1)
+                    {
+                        var be = new clsBeProveedor();
+                        Cargar(ref be, dt.Rows[0]);
+                        return be;
+                    }
+                }
+            }
+
+            return null;
+        }
+        catch (SqlException ex1)
+        {
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            MethodBase? currentMethodName = sf?.GetMethod();
+            string vMsgError = string.Format("{0} {1}", currentMethodName, ex1.Message);
+            throw new Exception(vMsgError);
+        }
+    }
+
 }
