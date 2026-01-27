@@ -9625,6 +9625,8 @@ Public Class frmInventario
                     Return lDataTable
                 End If
 
+
+    End Function
     Private Sub Carga_Regularizacion(ByVal lConnection As SqlConnection, ByVal lTransaction As SqlTransaction)
         Try
 
