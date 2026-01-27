@@ -28,8 +28,11 @@ Public Class frmTipoDocumentoIngresoList
             DT = clsLnTrans_oc_ti.Get_All_DT(chkActivos.Checked)
             Dgrid.DataSource = DT
 
-
             lblRegs.Caption = String.Format("Registros: {0}", DT.Rows.Count)
+
+            If GridView1.Columns.Count > 0 Then
+                GridView1.BestFitColumns()
+            End If
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)

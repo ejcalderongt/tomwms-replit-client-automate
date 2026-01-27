@@ -3334,15 +3334,15 @@ Partial Public Class clsLnStock_res
 
                     '#CKFK20250317 Agregué esta validación
                     Dim listaPicking = clsLnTrans_picking_ubic.Get_All_PickingUbic_By_IdPedidoDet(pu.IdPedidoDet,
-                                                                              pu.IdPedidoEnc,
-                                                                              pu.IdBodega,
-                                                                              lConnection,
-                                                                              lTransaction)
+                                                                                                  pu.IdPedidoEnc,
+                                                                                                  pu.IdBodega,
+                                                                                                  lConnection,
+                                                                                                  lTransaction)
 
                     Dim cantidadPickingIdPedidoDet As Double = If(listaPicking IsNot Nothing AndAlso listaPicking.Any(),
                                               listaPicking.Sum(Function(x) x.Cantidad_Solicitada),
                                               0)
-                    Dim cantidadPedidoDet As Double = clsLnTrans_pe_det.Get_Single_By_IdPedidoDet(pu.IdPedidoDet).Cantidad
+                    Dim cantidadPedidoDet As Double = clsLnTrans_pe_det.Get_Single_By_IdPedidoDet(pu.IdPedidoDet, lConnection, lTransaction).Cantidad
 
                     If cantidadPedidoDet < cantidadPickingIdPedidoDet AndAlso cantidadPickingIdPedidoDet > 0 Then
                         Throw New Exception("Error_Reemplazo_A: No es posible reservar más de lo solicitado")
@@ -26113,12 +26113,15 @@ EJC_202308081248_RESERVAR_DESDE_ULTIMA_LISTA:
                                                                                         BeProducto.UnidadMedida.Nombre,
                                                                                         pStockResSolicitud.IdPresentacion,
                                                                                         pStockResSolicitud.Cantidad)
-                            '#EJC202401291004: Mejorar el mensaje cuando lleguen a este punto mis amados maestros.
-                            pBeTrasladoDet.Process_Result += vMensajeNoExplosionEnZonasNoPicking
-                            pBeTrasladoDet.Qty_to_Receive = vCantidadPendiente
-                            clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
-                                                                                  lConnection,
-                                                                                  ltransaction)
+
+                            If Not pBeTrasladoDet Is Nothing Then
+                                '#EJC202401291004: Mejorar el mensaje cuando lleguen a este punto mis amados maestros.
+                                pBeTrasladoDet.Process_Result += vMensajeNoExplosionEnZonasNoPicking
+                                pBeTrasladoDet.Qty_to_Receive = vCantidadPendiente
+                                clsLnI_nav_ped_traslado_det.Actualizar_Process_Result(pBeTrasladoDet,
+                                                                                      lConnection,
+                                                                                      ltransaction)
+                            End If
 
                             Throw New Exception(vMensajeNoExplosionEnZonasNoPicking)
                         Else

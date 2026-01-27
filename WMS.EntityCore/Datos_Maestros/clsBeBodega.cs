@@ -385,7 +385,7 @@ namespace WMS.EntityCore.Datos_Maestros
         [DisplayName("despacho_automatico_hh")]
         public bool Despacho_automatico_hh { get; set; } = false;
         public bool Control_Talla_Color { get; set; } = false;
-
+        public bool Reservar_primero_almacenaje { get; set; } = false;
         public clsBeBodega() { }
 
         public object Clone()

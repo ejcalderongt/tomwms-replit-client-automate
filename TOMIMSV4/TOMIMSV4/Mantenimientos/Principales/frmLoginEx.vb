@@ -689,6 +689,7 @@ Public Class frmLoginEx
             lLicenciasProgramacion.Add("ColonialWMS")
             lLicenciasProgramacion.Add("DESKTOP-790O7S2")
             lLicenciasProgramacion.Add("DESKTOP-5BM5P11")
+            lLicenciasProgramacion.Add("DESKTOP-790O7S2")
 
             '#EJC20210517: Cuando lo encuentren, 
             'agreguen sus Identificadores en la lista para que en caso de que no tenga licencia, no les pida.

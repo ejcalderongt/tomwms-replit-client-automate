@@ -19,8 +19,8 @@ namespace WMS.StockReservation.Core.Domain
         public clsBeI_nav_config_enc Configuration { get; set; } = new clsBeI_nav_config_enc();
         public SqlConnection Connection { get; set; } = new SqlConnection();
         public SqlTransaction? Transaction { get; set; } = null;
-        public clsBeTrans_pe_det PedidoDet { get; set; } = new clsBeTrans_pe_det();
-        public clsBeI_nav_ped_traslado_det TrasladoDet { get; set; } = new clsBeI_nav_ped_traslado_det();
+        public clsBeTrans_pe_det? PedidoDet { get; set; } = new clsBeTrans_pe_det();
+        public clsBeI_nav_ped_traslado_det? TrasladoDet { get; set; } = new clsBeI_nav_ped_traslado_det();
 
         /// <summary>
         /// IdPedidoEnc del Trans_pe_enc creado. Se usa para asignar IdTransaccion en stock_res.
@@ -33,13 +33,13 @@ namespace WMS.StockReservation.Core.Domain
         public double DiasVencimiento { get; set; } = 0;  // Días antes del vencimiento para filtrar stock
 
         // ===== ENTITIES (cargadas en EntityLoadingStep) =====
-        public clsBeBodega Bodega { get; set; } = new clsBeBodega();
-        public clsBeProducto Product { get; set; } = new clsBeProducto();
-        public clsBeProducto_presentacion? DefaultPresentation { get; set; } = null;
+        public clsBeBodega? Bodega { get; set; } = new clsBeBodega();
+        public clsBeProducto? Product { get; set; } = new clsBeProducto();
+        public clsBeProducto_presentacion? DefaultPresentation { get; set; } = new clsBeProducto_presentacion();
 
         // ===== STOCK LISTS (modificadas por handlers y steps) =====
-        public List<clsBeStock> StockListPickingZone { get; set; } = new List<clsBeStock>();
-        public List<clsBeStock> StockListNonPickingZones { get; set; } = new List<clsBeStock>();
+        public List<clsBeStock>? StockListPickingZone { get; set; } = new List<clsBeStock>();
+        public List<clsBeStock>? StockListNonPickingZones { get; set; } = new List<clsBeStock>();
         public List<clsBeStock> WorkingStockList { get; set; } = new List<clsBeStock>();
 
         // ===== DATES (calculadas en DateCalculationStep) =====
@@ -56,6 +56,36 @@ namespace WMS.StockReservation.Core.Domain
         public int StartingPoint { get; set; } = new int();
         public bool IsExplosionModeEnabled { get; set; } = new bool();
         public bool IsUMBasModeEnabled { get; set; } = new bool();
+        
+        /// <summary>
+        /// Cantidad original solicitada (antes de conversión a unidades).
+        /// Ejemplo: 0.5 cajas, 1.25 presentaciones
+        /// </summary>
+        public double OriginalRequestedQuantity { get; set; } = 0;
+        
+        /// <summary>
+        /// Indica si la cantidad original estaba en presentación (necesitó conversión a unidades).
+        /// true = Request.Cantidad era en presentación y fue convertida
+        /// false = Request.Cantidad ya estaba en unidades
+        /// </summary>
+        public bool WasQuantityInPresentation { get; set; } = false;
+        
+        /// <summary>
+        /// Factor de presentación usado para la conversión.
+        /// </summary>
+        public double ConversionFactor { get; set; } = 1;
+        
+        // ===== LOTE ESPECÍFICO (para transferencias/reservas específicas) =====
+        /// <summary>
+        /// Número de lote específico desde lineas_Detalle.lote_No.
+        /// Si tiene valor, el sistema reservará SOLO ese lote por Batch_No.
+        /// </summary>
+        public string? SpecificLotNo { get; set; }
+        
+        /// <summary>
+        /// Indica si hay un lote específico definido.
+        /// </summary>
+        public bool HasSpecificLot => !string.IsNullOrWhiteSpace(SpecificLotNo);
 
         // ===== CACHES (evitar consultas repetidas) =====
         public List<clsBeBodega_ubicacion> CachedLocations { get; set; } = new List<clsBeBodega_ubicacion>();
@@ -64,6 +94,12 @@ namespace WMS.StockReservation.Core.Domain
         // ===== ERROR HANDLING =====
         public bool HasError { get; set; }=false;
         public string ErrorMessage { get; set; } = "";
+        
+        // ===== FAILURE REASONS (para respuestas detalladas) =====
+        public List<ReservationFailureReason> FailureReasons { get; set; } = new();
+        public bool UsedPickingZone { get; set; } = false;
+        public bool UsedNonPickingZone { get; set; } = false;
+        public bool ExplosionModeEnabled { get; set; } = false;
 
         // ===== CONSTRUCTOR =====
         public ReservationContext()
@@ -72,6 +108,7 @@ namespace WMS.StockReservation.Core.Domain
             ProcessStateFlags = new List<int>();
             CachedLocations = new List<clsBeBodega_ubicacion>();
             CachedPresentations = new List<clsBeProducto_presentacion>();
+            FailureReasons = new List<ReservationFailureReason>();
             GlobalMinimumExpirationDate = new DateTime(1900, 1, 1);
             MinExpirationDatePickingZone = new DateTime(1900, 1, 1);
             MinExpirationDateNonPickingZones = new DateTime(1900, 1, 1);
@@ -96,6 +133,52 @@ namespace WMS.StockReservation.Core.Domain
         {
             HasError = true;
             ErrorMessage = message;
+        }
+
+        /// <summary>
+        /// Agrega una razón de fallo al contexto.
+        /// </summary>
+        public void AddFailure(ReservationFailureCode code, string message, double? qtyAffected = null)
+        {
+            FailureReasons ??= new List<ReservationFailureReason>();
+            FailureReasons.Add(new ReservationFailureReason
+            {
+                Code = code,
+                Message = message,
+                QuantityAffected = qtyAffected
+            });
+        }
+
+        /// <summary>
+        /// Agrega una razón de fallo con detalle de lote.
+        /// </summary>
+        public void AddLotFailure(string loteNo, double qty)
+        {
+            AddFailure(
+                ReservationFailureCode.LOT_NOT_FOUND,
+                $"Lote '{loteNo}' no encontrado o sin stock disponible.",
+                qty);
+            FailureReasons.Last().LoteNo = loteNo;
+        }
+
+        /// <summary>
+        /// Agrega una razón de fallo por zona.
+        /// </summary>
+        public void AddZoneFailure(bool pickingRequired, double qty)
+        {
+            var code = pickingRequired
+                ? ReservationFailureCode.PICKING_ZONE_REQUIRED_NO_STOCK
+                : ReservationFailureCode.NON_PICKING_ZONE_REQUIRED_NO_STOCK;
+            var zone = pickingRequired ? "picking" : "almacenaje";
+            AddFailure(code, $"No hay stock disponible en zona de {zone}.", qty);
+        }
+
+        /// <summary>
+        /// Verifica si ya existe una razón de fallo específica.
+        /// </summary>
+        public bool HasFailure(ReservationFailureCode code)
+        {
+            return FailureReasons?.Any(r => r.Code == code) ?? false;
         }
 
         /// <summary>

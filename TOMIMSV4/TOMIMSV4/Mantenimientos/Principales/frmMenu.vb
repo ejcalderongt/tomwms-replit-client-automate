@@ -3175,6 +3175,7 @@ Public Class frmMenu
 
     Private Sub mnuTarifas_ItemClick(sender As Object, e As ItemClickEventArgs) Handles mnuTarifas.ItemClick
 
+
         Try
 
             With frmTarifaTipoTransaccion_List

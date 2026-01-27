@@ -45,15 +45,16 @@ namespace WMS.StockReservation.Strategies
 
             _logger.LogCheckpoint("#CASO_2_START");
 
-            // Filtrar stock de pallets incompletos
-            var incompleteStock = context.StockListNonPickingZones
-                .Where(s => !s.Pallet_Completo &&
-                           !s.UbicacionPicking &&
-                           s.UbicacionNivel > 0 &&
-                           s.Cantidad > 0 &&
-                           s.Fecha_vence == context.MinExpirationIncompletePalletsClavaud)
+            // Filtrar stock de pallets incompletos (null-safe)
+            var incompleteStock = (context?.StockListNonPickingZones ?? Enumerable.Empty<clsBeStock>())
+                .Where(s => s != null &&
+                            !s.Pallet_Completo &&
+                            !s.UbicacionPicking &&
+                            s.UbicacionNivel > 0 &&
+                            s.Cantidad > 0 &&
+                            s.Fecha_vence == context?.MinExpirationIncompletePalletsClavaud)
                 .OrderBy(s => s.Fecha_vence)
-                .ThenBy(s => s.Lic_plate)
+                .ThenBy(s => s.Lic_plate ?? string.Empty)
                 .ToList();
 
             if (incompleteStock.Count == 0)
@@ -65,7 +66,8 @@ namespace WMS.StockReservation.Strategies
             // Reservar de pallets incompletos
             foreach (var stock in incompleteStock)
             {
-                if (context.PendingQuantity <= 0.000001) break;
+                const double EPS = 1e-6;
+                if (context == null || context.PendingQuantity <= EPS) break;                
 
                 double quantityToReserve = Math.Min(stock.Cantidad, context.PendingQuantity);
 

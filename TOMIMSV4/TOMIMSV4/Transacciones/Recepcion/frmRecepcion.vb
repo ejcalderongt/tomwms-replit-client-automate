@@ -9476,110 +9476,6 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
     End Sub
 
     Private PopupTieneErrores As Boolean = False
-    Private Sub ProductoGridLookUpEditRec_KeyDown(sender As Object, e As KeyEventArgs)
-
-        Dim lista As GridLookUpEdit = TryCast(sender, GridLookUpEdit)
-        Dim vCodigoBarra As String = ""
-
-        If e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
-
-            Try
-
-                Dim View As GridView = CType(DgridDetalleRec2.DefaultView, GridView)
-                If lista Is Nothing Then Return
-                Dim ColNoLinea As GridColumn = View.Columns("No_Linea")
-                Dim nolineaSeleccionada As String = ""
-
-                vCodigoBarra = If(IsDBNull(lista.Text), "", lista.Text.Trim())
-
-                If String.IsNullOrEmpty(vCodigoBarra) Then Return
-
-                Dim drLineaGrid As DataRow = View.GetFocusedDataRow()
-                If drLineaGrid Is Nothing AndAlso Not View.IsNewItemRow(View.FocusedRowHandle) Then Return
-
-                Dim codigoIngresadoString As String = vCodigoBarra
-
-                View.SetColumnError(ColNoLinea, "") : PopupTieneErrores = False
-
-                If String.IsNullOrEmpty(codigoIngresadoString) Then
-                    If Not View Is Nothing AndAlso Not ColNoLinea Is Nothing Then
-                        View.SetColumnError(ColNoLinea, "Código no válido.")
-                    End If
-                Else
-
-                    Dim vIdProductoBodega As Integer = clsLnProducto.Get_IdProductoBodega_By_Codigo(codigoIngresadoString, AP.IdBodega)
-
-                    If Not vIdProductoBodega = 0 Then
-
-                        Dim cmbView As GridView = lista.Properties.View
-                        Dim vCantPorProducto As Integer = 0
-
-                        If Not cmbView Is Nothing Then
-                            vCantPorProducto = cmbView.RowCount
-                        End If
-
-                        If lista.EditValue Is Nothing Then
-                            If Not vCodigoBarra.Trim = "" Then
-                                codigoIngresadoString = vCodigoBarra.Trim()
-                                _filtroCodigoBarra = codigoIngresadoString
-                            End If
-                        Else
-
-                            Dim selectedDataRow = lista.GetSelectedDataRow()
-
-                            If selectedDataRow IsNot Nothing Then
-                                codigoIngresadoString = IIf(IsDBNull(selectedDataRow("Codigo")), "", selectedDataRow("Codigo"))
-                                nolineaSeleccionada = IIf(IsDBNull(selectedDataRow("No_Linea")), "-1", selectedDataRow("No_Linea"))
-                            Else
-                                PopupTieneErrores = True
-                                View.SetColumnError(ColNoLinea, "Seleccione un registro.")
-                            End If
-
-                        End If
-
-                        If ColNoLinea Is Nothing Then
-                            ColNoLinea = View.Columns(1)
-                        End If
-
-                        If nolineaSeleccionada = "" Then
-
-                            If vCantPorProducto > 1 Then
-                                _filtroCodigoBarra = codigoIngresadoString
-                                PopupTieneErrores = True
-                                View.SetColumnError(ColNoLinea, "Código de barra duplicado, seleccione uno de la lista.")
-                            End If
-
-                        Else
-
-                            If vCantPorProducto > 1 Then
-
-                                vCantPorProducto = clsLnTrans_oc_det.Get_Count_By_Producto_En_OC(txtIdOrdenCompra.Text, vIdProductoBodega)
-
-                                If vCantPorProducto > 1 Then
-
-                                    If XtraMessageBox.Show("¿La línea del documento de ingreso que quiere recepcionar es la " & nolineaSeleccionada & "?", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
-                                        'Eliminar_Fila(Nothing)
-                                        Eliminar_Fila_Recepcion2(Nothing)
-                                        Exit Sub
-                                    End If
-
-                                End If
-
-                            End If
-
-                        End If
-
-                    End If
-
-                End If
-
-            Catch ex As Exception
-                XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            End Try
-
-        End If
-
-    End Sub
     Private Function EsCodigoBarraDuplicado(codigoBarra As String, gridView As GridView) As Boolean
         Try
             ' Necesitas castear el DataSource a DataView o DataTable para acceder a los DataRowViews
@@ -12191,8 +12087,8 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
 
                                 Else
 
-                                    pListBeStockRec(vIndice).IdUbicacion = txtIdUbicacion.Text
-                                    pListBeStockRec(vIndice).IdUbicacion_anterior = txtIdUbicacion.Text
+                                    pListBeStockRec(vIndice).IdUbicacion = Val(txtIdUbicacion.Text)
+                                    pListBeStockRec(vIndice).IdUbicacion_anterior = Val(txtIdUbicacion.Text)
 
                                 End If
 
@@ -12916,6 +12812,76 @@ No puede generar recepción con éste  documento.", gBeOrdenCompra.IdOrdenCompra
             End Try
 
         End If
+
+    End Sub
+
+    Private Sub Eliminar_Fila_Nuev_Recepcion(e As KeyEventArgs)
+
+        Try
+
+            If gBeRecepcionEnc.Estado <> "Cerrado" Then
+
+                Dim currentView As GridView = DgridDetalleRec2.FocusedView
+
+                '#GT11102022_1500: validar que es una fila con datos.
+                If currentView IsNot Nothing AndAlso currentView.SelectedRowsCount = 1 Then
+
+                    Dim vCodigoProducto As String = IIf(IsDBNull(currentView.GetRowCellDisplayText(currentView.FocusedRowHandle, "No_Linea")), 0, currentView.GetRowCellDisplayText(currentView.FocusedRowHandle, "No_Linea"))
+                    Dim vIdRecepcionDet As String = IIf(IsDBNull(currentView.GetRowCellDisplayText(currentView.FocusedRowHandle, "IdRecepcionDet")), 0, currentView.GetRowCellDisplayText(currentView.FocusedRowHandle, "IdRecepcionDet"))
+                    Dim vCantidad_recibida As String = IIf(IsDBNull(currentView.GetRowCellDisplayText(currentView.FocusedRowHandle, "cantidad_recibida")), 0, currentView.GetRowCellDisplayText(currentView.FocusedRowHandle, "cantidad_recibida"))
+                    Dim vLic_plate As String = IIf(IsDBNull(currentView.GetRowCellDisplayText(currentView.FocusedRowHandle, "lic_plate")), "", currentView.GetRowCellDisplayText(currentView.FocusedRowHandle, "lic_plate"))
+
+                    If XtraMessageBox.Show(String.Format("¿Eliminar la linea: " & vIdRecepcionDet & " del producto " & vCodigoProducto & " con licencia " & vLic_plate & " y cantidad recibida " & vCantidad_recibida) _
+                                              , Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
+
+                        Dim gridControl As GridControl = DgridDetalleRec2
+                        Eliminar_Fila_Recepcion(gridControl)
+                    End If
+
+                End If
+            Else
+                XtraMessageBox.Show("Recepción cerrada, no se puede modificar el detalle.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End If
+
+        Catch ex As Exception
+            SplashScreenManager.CloseForm(False)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End Try
+
+    End Sub
+    Private Sub Eliminar_Fila_Recepcion2(e As KeyEventArgs)
+
+        Try
+
+            If gBeRecepcionEnc.Estado <> "Cerrado" Then
+
+                Dim currentView As GridView = DgridDetalleRec2.FocusedView
+
+                '#GT11102022_1500: validar que es una fila con datos.
+                If currentView IsNot Nothing AndAlso currentView.SelectedRowsCount = 1 Then
+
+                    Dim vCodigoProducto As String = IIf(IsDBNull(currentView.GetRowCellDisplayText(currentView.FocusedRowHandle, "No_Linea")), 0, currentView.GetRowCellDisplayText(currentView.FocusedRowHandle, "No_Linea"))
+                    Dim vIdRecepcionDet As String = IIf(IsDBNull(currentView.GetRowCellDisplayText(currentView.FocusedRowHandle, "IdRecepcionDet")), 0, currentView.GetRowCellDisplayText(currentView.FocusedRowHandle, "IdRecepcionDet"))
+                    Dim vCantidad_recibida As String = IIf(IsDBNull(currentView.GetRowCellDisplayText(currentView.FocusedRowHandle, "cantidad_recibida")), 0, currentView.GetRowCellDisplayText(currentView.FocusedRowHandle, "cantidad_recibida"))
+                    Dim vLic_plate As String = IIf(IsDBNull(currentView.GetRowCellDisplayText(currentView.FocusedRowHandle, "lic_plate")), "", currentView.GetRowCellDisplayText(currentView.FocusedRowHandle, "lic_plate"))
+
+                    If XtraMessageBox.Show(String.Format("¿Eliminar la linea: " & vIdRecepcionDet & " del producto " & vCodigoProducto & " con licencia " & vLic_plate & " y cantidad recibida " & vCantidad_recibida) _
+                                              , Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) = Windows.Forms.DialogResult.Yes Then
+
+                        Dim gridControl As GridControl = DgridDetalleRec2
+                        Eliminar_Fila_Recepcion(gridControl)
+
+                    End If
+
+                End If
+            Else
+                XtraMessageBox.Show("Recepción cerrada, no se puede modificar el detalle.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End If
+
+        Catch ex As Exception
+            SplashScreenManager.CloseForm(False)
+            XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Information)
+        End Try
 
     End Sub
 

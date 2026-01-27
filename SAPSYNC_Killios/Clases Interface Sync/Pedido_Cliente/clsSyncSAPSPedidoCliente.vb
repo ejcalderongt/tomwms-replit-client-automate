@@ -69,7 +69,7 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
             Return lPedidosCliente
 
         Catch ex As Exception
-            'Throw
+            'Throw            
             Get_Pedidos_Cliente_SAP = Nothing
         Finally
             If conn IsNot Nothing Then
@@ -1002,7 +1002,7 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
         Return productos
 
     End Function
-    Private Shared Function Ajustar_Cantidad_Presentacion(trans As clsBeI_nav_transacciones_out,
+    Private Shared Function Ajustar_Cantidad_Presentacion(ByRef trans As clsBeI_nav_transacciones_out,
                                                           clsTrans As clsTransaccion) As Decimal
         Dim factor As Decimal = 1D
         Dim presentacionDesp As clsBeProducto_Presentacion = clsLnTrans_despacho_det.Get_BePresentacion_By_IdDespachoDet(trans.IdDespachoDet, trans.Idpedidoenc, clsTrans.lConnection, clsTrans.lTransaction)
@@ -1015,6 +1015,8 @@ Public Class clsSyncSAPSPedidoCliente : Inherits clsInterfaceBase
 
         If presentacionDesp Is Nothing AndAlso presentacionPed IsNot Nothing Then
             factor = presentacionPed.Factor
+            '#EJC20251217: Con esto facilito que se agrupen bien cajas y unidades en el siguiente procedimiento.
+            trans.Codigo_variante = presentacionPed.Codigo
             Return Math.Round(trans.Cantidad / factor, 6)
         End If
 

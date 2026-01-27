@@ -41,12 +41,14 @@ namespace WMS.StockReservation.Strategies
             _logger.LogCheckpoint("#CASO_4_START");
 
             // Filtrar stock de zonas no-picking con fecha mínima
-            var nonPickingStock = context.StockListNonPickingZones
-                .Where(s => s.Cantidad > 0 &&
-                           s.Fecha_vence == context.MinExpirationDateNonPickingZones)
-                .OrderBy(s => s.Fecha_vence)
-                .ThenBy(s => s.Lic_plate)
-                .ToList();
+            var nonPickingStock = context.StockListNonPickingZones != null
+                ? context.StockListNonPickingZones
+                    .Where(s => s.Cantidad > 0 &&
+                                s.Fecha_vence == context.MinExpirationDateNonPickingZones)
+                    .OrderBy(s => s.Fecha_vence)
+                    .ThenBy(s => s.Lic_plate)
+                    .ToList()
+                : new List<clsBeStock>();
 
             if (nonPickingStock.Count == 0)
             {

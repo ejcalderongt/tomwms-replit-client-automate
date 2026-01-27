@@ -1,5 +1,3 @@
-using System.Data;
-using System.Diagnostics;
 using System.Reflection;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -116,6 +114,7 @@ public class clsLnBodega
             oBeBodega.Control_pallet_mixto = GetBool("control_pallet_mixto");
             oBeBodega.Despacho_automatico_hh = GetBool("despacho_automatico_hh");
             oBeBodega.Control_Talla_Color= GetBool("Control_Talla_Color");
+            oBeBodega.Reservar_primero_almacenaje= GetBool("Reservar_primero_almacenaje");
         }
         catch (Exception ex)
         {            
@@ -228,6 +227,7 @@ public class clsLnBodega
             Ins.Add("restringir_areas_sap", "@restringir_areas_sap", "F");
             Ins.Add("control_pallet_mixto", "@control_pallet_mixto", "F");
             Ins.Add("despacho_automatico_hh", "@despacho_automatico_hh", "F");
+            Ins.Add("Reservar_primero_almacenaje", "@Reservar_primero_almacenaje", "F");
 
             string sp = Ins.SQL();
 
@@ -980,7 +980,7 @@ public class clsLnBodega
         cmd.Parameters.Add(new SqlParameter("@restringir_areas_sap", oBeBodega.Restringir_areas_sap? (object)oBeBodega.Restringir_areas_sap: DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@control_pallet_mixto", oBeBodega.Control_pallet_mixto? (object)oBeBodega.Control_pallet_mixto: DBNull.Value));
         cmd.Parameters.Add(new SqlParameter("@despacho_automatico_hh", oBeBodega.Despacho_automatico_hh? (object)oBeBodega.Despacho_automatico_hh: DBNull.Value));
-        
+        cmd.Parameters.Add(new SqlParameter("@Reservar_primero_almacenaje", oBeBodega.Reservar_primero_almacenaje ? (object)oBeBodega.Reservar_primero_almacenaje : DBNull.Value));        
     }
     public static int InsertOrUpdate(IConfiguration config, clsBeBodega oBeBodega, SqlConnection? conn = null, SqlTransaction? tran = null)
     {
