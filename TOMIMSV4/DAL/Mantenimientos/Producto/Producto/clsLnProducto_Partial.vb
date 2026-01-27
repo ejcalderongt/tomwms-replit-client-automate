@@ -10954,4 +10954,6 @@ Partial Public Class clsLnProducto
             Throw ex
         End Try
 
+    End Function
+
 End Class

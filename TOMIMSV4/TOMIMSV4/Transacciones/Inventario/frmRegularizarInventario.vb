@@ -71,8 +71,8 @@ Public Class frmRegularizarInventario
             lblPrg.Refresh()
 
             grdRegularizar.DataSource = clsLnTrans_inv_ciclico.Get_All_By_Comparacion_Inventario_A_Regularizar(gBeInventario.Idinventarioenc,
-            clsTransaccion.lConnection,
-            clsTransaccion.lTransaction)
+                                                                                                               clsTransaccion.lConnection,
+                                                                                                               clsTransaccion.lTransaction)
 
             If GridView1.RowCount > 0 Then
 
@@ -89,66 +89,66 @@ Public Class frmRegularizarInventario
                 GridView1.GroupSummary.Add(item)
 
                 Dim item1 As New GridGroupSummaryItem() _
-                    With {.FieldName = "PesoConteo",
-                    .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                    .DisplayFormat = "{0:n6}",
-                    .ShowInGroupColumnFooter = GridView1.Columns("PesoConteo")}
+                With {.FieldName = "PesoConteo",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("PesoConteo")}
                 GridView1.GroupSummary.Add(item1)
 
                 Dim item2 As New GridGroupSummaryItem() _
-                        With {.FieldName = "CantidadStock",
-                        .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                        .DisplayFormat = "{0:n6}",
-                        .ShowInGroupColumnFooter = GridView1.Columns("CantidadStock")}
+                With {.FieldName = "CantidadStock",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("CantidadStock")}
                 GridView1.GroupSummary.Add(item2)
 
                 Dim item3 As New GridGroupSummaryItem() _
-                            With {.FieldName = "PesoStock",
-                            .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                            .DisplayFormat = "{0:n6}",
-                            .ShowInGroupColumnFooter = GridView1.Columns("PesoStock")}
+                With {.FieldName = "PesoStock",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("PesoStock")}
                 GridView1.GroupSummary.Add(item3)
 
                 Dim item4 As New GridGroupSummaryItem() _
-                                With {.FieldName = "Entradas_Salidas",
-                                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                                .DisplayFormat = "{0:n6}",
-                                .ShowInGroupColumnFooter = GridView1.Columns("Entradas_Salidas")}
+                With {.FieldName = "Entradas_Salidas",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("Entradas_Salidas")}
                 GridView1.GroupSummary.Add(item4)
 
                 Dim item5 As New GridGroupSummaryItem() _
-                                    With {.FieldName = "NuevoStock",
-                                    .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                                    .DisplayFormat = "{0:n6}",
-                                    .ShowInGroupColumnFooter = GridView1.Columns("NuevoStock")}
+                With {.FieldName = "NuevoStock",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("NuevoStock")}
                 GridView1.GroupSummary.Add(item5)
 
                 Dim item6 As New GridGroupSummaryItem() _
-                                        With {.FieldName = "DiferenciaCantidad",
-                                        .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                                        .DisplayFormat = "{0:n6}",
-                                        .ShowInGroupColumnFooter = GridView1.Columns("DiferenciaCantidad")}
+                With {.FieldName = "DiferenciaCantidad",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("DiferenciaCantidad")}
                 GridView1.GroupSummary.Add(item6)
 
                 Dim item7 As New GridGroupSummaryItem() _
-                                            With {.FieldName = "DiferenciaPeso",
-                                            .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                                            .DisplayFormat = "{0:n6}",
-                                            .ShowInGroupColumnFooter = GridView1.Columns("DiferenciaPeso")}
+                With {.FieldName = "DiferenciaPeso",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("DiferenciaPeso")}
                 GridView1.GroupSummary.Add(item7)
 
                 Dim item8 As New GridGroupSummaryItem() _
-                                                With {.FieldName = "Entradas",
-                                                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                                                .DisplayFormat = "{0:n6}",
-                                                .ShowInGroupColumnFooter = GridView1.Columns("Entradas")}
+                With {.FieldName = "Entradas",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("Entradas")}
                 GridView1.GroupSummary.Add(item8)
 
                 Dim item9 As New GridGroupSummaryItem() _
-                                                    With {.FieldName = "Salidas",
-                                                    .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                                                    .DisplayFormat = "{0:n6}",
-                                                    .ShowInGroupColumnFooter = GridView1.Columns("Salidas")}
+                With {.FieldName = "Salidas",
+                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
+                .DisplayFormat = "{0:n6}",
+                .ShowInGroupColumnFooter = GridView1.Columns("Salidas")}
                 GridView1.GroupSummary.Add(item9)
 
                 Dim item10 As New GridGroupSummaryItem() _
@@ -230,205 +230,6 @@ Public Class frmRegularizarInventario
                 GridView1.Columns("PesoStock").Visible = False
                 GridView1.Columns("DiferenciaPeso").Visible = False
                 GridView1.ExpandAllGroups()
-
-            End If
-
-            Dim DTMov As DataTable = clsLnTrans_movimientos.Get_All_Movimientos_Reporte_By_Rango_Fechas_For_Inv(gBeInventario.Fec_agr,
-                                                                                                                Now,
-                                                                                                                gBeInventario.IdBodega,
-                                                                                                                gBeInventario.Idinventarioenc,
-                                                                                                                clsTransaccion.lConnection,
-                                                                                                                clsTransaccion.lTransaction)
-
-            dgridMovimientos.DataSource = DTMov
-
-            If GridView2.RowCount > 0 Then
-
-                GridView2.OptionsView.ShowFooter = True
-                GridView2.BestFitColumns(True)
-
-                GridView2.Columns("Codigo").Group()
-
-                Dim item As New GridGroupSummaryItem() _
-                With {.FieldName = "Cantidad",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = GridView2.Columns("Cantidad")}
-                GridView2.GroupSummary.Add(item)
-
-                GridView2.Columns("Cantidad").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                GridView2.Columns("Cantidad").DisplayFormat.FormatString = "{0:n6}"
-                GridView2.Columns("Cantidad").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                GridView2.Columns("Cantidad").SummaryItem.DisplayFormat = "{0:n6}"
-
-                GridView2.Columns("Fecha").DisplayFormat.FormatString = "G"
-
-                GridView2.ExpandAllGroups()
-
-            End If
-
-            Dim DTNoRegularizar As DataTable = clsLnTrans_inv_ciclico.Get_All_By_Comparacion_Inventario_No_Regularizar(gBeInventario.Idinventarioenc,
-                                                                                                                       clsTransaccion.lConnection,
-                                                                                                                       clsTransaccion.lTransaction)
-
-            grdInventarioConReserva.DataSource = DTNoRegularizar
-
-            If (grdvInventarioConReserva.RowCount > 0) Then
-
-                grdvInventarioConReserva.OptionsView.ShowFooter = True
-                grdvInventarioConReserva.BestFitColumns(True)
-
-                'grdvInventarioConReserva.Columns("Código").Group()
-
-                Dim item As New GridGroupSummaryItem() _
-                With {.FieldName = "CantidadConteo",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = grdvInventarioConReserva.Columns("CantidadConteo")}
-                grdvInventarioConReserva.GroupSummary.Add(item)
-
-                Dim item1 As New GridGroupSummaryItem() _
-                With {.FieldName = "PesoConteo",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = grdvInventarioConReserva.Columns("PesoConteo")}
-                grdvInventarioConReserva.GroupSummary.Add(item1)
-
-                Dim item2 As New GridGroupSummaryItem() _
-                With {.FieldName = "CantidadStock",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = grdvInventarioConReserva.Columns("CantidadStock")}
-                grdvInventarioConReserva.GroupSummary.Add(item2)
-
-                Dim item3 As New GridGroupSummaryItem() _
-                With {.FieldName = "PesoStock",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = grdvInventarioConReserva.Columns("PesoStock")}
-                grdvInventarioConReserva.GroupSummary.Add(item3)
-
-                Dim item4 As New GridGroupSummaryItem() _
-                With {.FieldName = "Entradas_Salidas",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = grdvInventarioConReserva.Columns("Entradas_Salidas")}
-                grdvInventarioConReserva.GroupSummary.Add(item4)
-
-                Dim item5 As New GridGroupSummaryItem() _
-                With {.FieldName = "NuevoStock",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = grdvInventarioConReserva.Columns("NuevoStock")}
-                grdvInventarioConReserva.GroupSummary.Add(item5)
-
-                Dim item6 As New GridGroupSummaryItem() _
-                With {.FieldName = "DiferenciaCantidad",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = grdvInventarioConReserva.Columns("DiferenciaCantidad")}
-                grdvInventarioConReserva.GroupSummary.Add(item6)
-
-                Dim item7 As New GridGroupSummaryItem() _
-                With {.FieldName = "DiferenciaPeso",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = grdvInventarioConReserva.Columns("DiferenciaPeso")}
-                grdvInventarioConReserva.GroupSummary.Add(item7)
-
-                Dim item8 As New GridGroupSummaryItem() _
-                With {.FieldName = "Entradas",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = grdvInventarioConReserva.Columns("Entradas")}
-                grdvInventarioConReserva.GroupSummary.Add(item8)
-
-                Dim item9 As New GridGroupSummaryItem() _
-                With {.FieldName = "Salidas",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = grdvInventarioConReserva.Columns("Salidas")}
-                grdvInventarioConReserva.GroupSummary.Add(item9)
-
-                Dim item10 As New GridGroupSummaryItem() _
-                With {.FieldName = "Cantidad_Reservada_UmBas",
-                .SummaryType = DevExpress.Data.SummaryItemType.Sum,
-                .DisplayFormat = "{0:n6}",
-                .ShowInGroupColumnFooter = grdvInventarioConReserva.Columns("Cantidad_Reservada_UmBas")}
-                grdvInventarioConReserva.GroupSummary.Add(item10)
-
-                lblRegs.Caption = String.Format("Registros: {0}", grdvInventarioConReserva.RowCount)
-
-                grdvInventarioConReserva.Columns("CantidadConteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                grdvInventarioConReserva.Columns("CantidadConteo").DisplayFormat.FormatString = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("CantidadConteo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                grdvInventarioConReserva.Columns("CantidadConteo").SummaryItem.DisplayFormat = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("PesoConteo").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                grdvInventarioConReserva.Columns("PesoConteo").DisplayFormat.FormatString = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("PesoConteo").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                grdvInventarioConReserva.Columns("PesoConteo").SummaryItem.DisplayFormat = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("CantidadStock").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                grdvInventarioConReserva.Columns("CantidadStock").DisplayFormat.FormatString = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("CantidadStock").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                grdvInventarioConReserva.Columns("CantidadStock").SummaryItem.DisplayFormat = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("PesoStock").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                grdvInventarioConReserva.Columns("PesoStock").DisplayFormat.FormatString = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("PesoStock").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                grdvInventarioConReserva.Columns("PesoStock").SummaryItem.DisplayFormat = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("Entradas_Salidas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                grdvInventarioConReserva.Columns("Entradas_Salidas").DisplayFormat.FormatString = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("Entradas_Salidas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                grdvInventarioConReserva.Columns("Entradas_Salidas").SummaryItem.DisplayFormat = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("NuevoStock").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                grdvInventarioConReserva.Columns("NuevoStock").DisplayFormat.FormatString = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("NuevoStock").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                grdvInventarioConReserva.Columns("NuevoStock").SummaryItem.DisplayFormat = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("DiferenciaCantidad").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                grdvInventarioConReserva.Columns("DiferenciaCantidad").DisplayFormat.FormatString = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("DiferenciaCantidad").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                grdvInventarioConReserva.Columns("DiferenciaCantidad").SummaryItem.DisplayFormat = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("DiferenciaPeso").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                grdvInventarioConReserva.Columns("DiferenciaPeso").DisplayFormat.FormatString = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("DiferenciaPeso").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                grdvInventarioConReserva.Columns("DiferenciaPeso").SummaryItem.DisplayFormat = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("Entradas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                grdvInventarioConReserva.Columns("Entradas").DisplayFormat.FormatString = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("Entradas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                grdvInventarioConReserva.Columns("Entradas").SummaryItem.DisplayFormat = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("Salidas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                grdvInventarioConReserva.Columns("Salidas").DisplayFormat.FormatString = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("Salidas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                grdvInventarioConReserva.Columns("Salidas").SummaryItem.DisplayFormat = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("Cantidad_Reservada_UmBas").DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric
-                grdvInventarioConReserva.Columns("Cantidad_Reservada_UmBas").DisplayFormat.FormatString = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("Cantidad_Reservada_UmBas").SummaryItem.SummaryType = DevExpress.Data.SummaryItemType.Sum
-                grdvInventarioConReserva.Columns("Cantidad_Reservada_UmBas").SummaryItem.DisplayFormat = "{0:n6}"
-
-                grdvInventarioConReserva.Columns("PesoConteo").Visible = False
-                grdvInventarioConReserva.Columns("PesoStock").Visible = False
-                grdvInventarioConReserva.Columns("DiferenciaPeso").Visible = False
-                grdvInventarioConReserva.ExpandAllGroups()
 
             End If
 
@@ -982,12 +783,12 @@ Public Class frmRegularizarInventario
 
             If e.Column.FieldName = "DiferenciaCantidad" Then
 
-                If Val(CantDif) <> 0 Then
+                If CantDif <> 0 Then
                     e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Bold)
                     e.Appearance.ForeColor = Color.Black
                     e.Appearance.BackColor = Color.Salmon
                     e.Appearance.BackColor2 = Color.SeaShell
-                ElseIf val(CantDif) = 0 Then
+                ElseIf CantDif = 0 Then
                     e.Appearance.Font = New Font(e.Appearance.Font, FontStyle.Regular)
                     e.Appearance.ForeColor = Color.Black
                     e.Appearance.BackColor = Color.Green
@@ -1055,7 +856,6 @@ Public Class frmRegularizarInventario
                 Case TipoTrans.Nuevo
 
                     clsLnTrans_inv_ciclico.Actualizar_Regularizar_By_IdInventarioEnc(gBeInventario.Idinventarioenc, True)
-                    clsLnTrans_inv_ciclico.Actualizar_NuevoStock_By_IdInventarioEnc(gBeInventario.Idinventarioenc, 0)
 
                     Cargar_Datos()
 
@@ -1098,9 +898,9 @@ Public Class frmRegularizarInventario
             lOperaciones.Clear()
 
             ' Carga datos del inventario cíclico
-            ListCiclico = clsLnTrans_inv_ciclico.Get_All_By_IdInventarioEncAgrupado(gBeInventario.Idinventarioenc,
-            clsTrans.lConnection,
-            clsTrans.lTransaction)
+            ListCiclico = clsLnTrans_inv_ciclico.Get_All_By_IdInventarioEnc(gBeInventario.Idinventarioenc,
+                                                                            clsTrans.lConnection,
+                                                                            clsTrans.lTransaction)
 
             Dim vIdPropietarioBodega As Integer = clsLnPropietarios.Get_IdPropietarioBodega_By_IdBodega_And_IdPropietario(gBeInventario.IdBodega,
                                                                                                                           gBeInventario.Idpropietario,
@@ -1108,26 +908,22 @@ Public Class frmRegularizarInventario
                                                                                                                           clsTrans.lTransaction)
             Dim vIdProducto As Integer = 0
 
-            Dim ajustesCantidad = ListCiclico.Where(Function(x) (((x.Cant_stock <> x.Cantidad) And
-            x.Fecha_vence = x.Fecha_vence_stock AndAlso
-            (x.Lote = x.Lote_stock) AndAlso
-            (x.IdProductoEstado = x.IdProductoEst_nuevo OrElse
-                                                                x.IdProductoEst_nuevo = 0) AndAlso x.Regularizar = True AndAlso
-                                                                 x.Cantidad >= x.Cantidad_Reservada_UMBas)) OrElse
-                                                                (x.Cant_stock = x.Cantidad AndAlso
-                                                                 x.Nuevo_Stock = -1 AndAlso
-                                                                 x.Regularizar = True)).ToList()
+            Dim ajustesCantidad = ListCiclico.Where(Function(x) x.Cant_stock <> x.Cantidad And
+                                                                x.Fecha_vence = x.Fecha_vence_stock AndAlso
+                                                                (x.Lote = x.Lote_stock) AndAlso
+                                                                (x.IdProductoEstado = x.IdProductoEst_nuevo OrElse
+                                                                x.IdProductoEst_nuevo = 0) AndAlso x.Regularizar = True).ToList()
 
             Dim ListaExcluyente = ListCiclico.ToList
 
-            Dim ajustesVencimiento = ListaExcluyente.Where(Function(x) x.Fecha_vence <> x.Fecha_vence_stock AndAlso x.Regularizar = True).ToList()
+            Dim ajustesVencimiento = ListaExcluyente.Where(Function(x) x.Fecha_vence <> x.Fecha_vence_stock).ToList()
             ListaExcluyente = ListaExcluyente.Except(ajustesVencimiento).ToList
 
-            Dim ajustesLote = ListaExcluyente.Where(Function(x) x.Lote <> x.Lote_stock AndAlso x.Regularizar = True).ToList()
+            Dim ajustesLote = ListaExcluyente.Where(Function(x) x.Lote <> x.Lote_stock).ToList()
             ListaExcluyente = ListaExcluyente.Except(ajustesLote).ToList
 
             Dim ajustesEstado = ListaExcluyente.Where(Function(x) x.IdProductoEstado <> x.IdProductoEst_nuevo AndAlso
-                                                                  x.IdProductoEst_nuevo <> 0 AndAlso x.Regularizar = True).ToList()
+                                                                  x.IdProductoEst_nuevo <> 0).ToList()
 
             ' Procesar ajustes por tipo
             If ajustesVencimiento.Any() Then
@@ -1145,7 +941,7 @@ Public Class frmRegularizarInventario
             If ajustesCantidad.Any() Then
 
                 ' Dividir ajustes positivos y negativos
-                Dim ajustesPositivos = ajustesCantidad.Where(Function(x) (x.Cantidad > x.Cant_stock OrElse x.IdUbicacion_nuevo <> 0) AndAlso x.Regularizar = True).ToList()
+                Dim ajustesPositivos = ajustesCantidad.Where(Function(x) x.Cantidad > x.Cant_stock OrElse x.IdUbicacion_nuevo <> 0 AndAlso x.Regularizar = True).ToList()
                 Dim ajustesNegativos = ajustesCantidad.Where(Function(x) x.Cantidad < x.Cant_stock AndAlso x.Regularizar = True).ToList().Except(ajustesPositivos).ToList()
 
                 If ajustesPositivos.Any() Then
@@ -1310,6 +1106,33 @@ Public Class frmRegularizarInventario
             pBeAjusteDet.Codigo_producto = vProducto.Codigo
             pBeAjusteDet.Nombre_producto = vProducto.Nombre
 
+            '#AT20260121 Primera vez viendo regularizacion de inventario ciclico, procedo a llenar talla y color
+            If BeTransInvCiclico.IdProductoTallaColor <> 0 Then
+                Dim BeTallaColor = clsLnProducto_talla_color.GetSingle(BeTransInvCiclico.IdProductoTallaColor, lConnection, lTransaction)
+
+                If BeTallaColor IsNot Nothing Then
+                    Dim Color = clsLnColor.GetSingle(BeTallaColor.IdColor, lConnection, lTransaction)
+                    Dim Talla = clsLnTalla.GetSingle(BeTallaColor.IdTalla, lConnection, lTransaction)
+
+                    pBeAjusteDet.IdProductoTallaColor_origen = BeTransInvCiclico.IdProductoTallaColor
+                    pBeAjusteDet.Talla_origen = Talla.Codigo
+                    pBeAjusteDet.Color_origen = Color.Codigo
+                End If
+            End If
+
+            If BeTransInvCiclico.IdProductoTallaColor_nuevo <> 0 Then
+                Dim BeTallaColor = clsLnProducto_talla_color.GetSingle(BeTransInvCiclico.IdProductoTallaColor_nuevo, lConnection, lTransaction)
+
+                If BeTallaColor IsNot Nothing Then
+                    Dim Color = clsLnColor.GetSingle(BeTallaColor.IdColor, lConnection, lTransaction)
+                    Dim Talla = clsLnTalla.GetSingle(BeTallaColor.IdTalla, lConnection, lTransaction)
+
+                    pBeAjusteDet.IdProductoTallaColor_destino = BeTransInvCiclico.IdProductoTallaColor
+                    pBeAjusteDet.Talla_destino = Talla.Codigo
+                    pBeAjusteDet.Color_destino = Color.Codigo
+                End If
+            End If
+
             '#CKFK20250130 Cambié que esnuevolink solo sea pora los ajustes que no sean por cantidad
             If TipoAjuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Positivo OrElse TipoAjuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Negativo Then
                 pBeAjusteDet.esnuevolink = 0
@@ -1400,6 +1223,9 @@ Public Class frmRegularizarInventario
             pBeTransAjustEnc.Referencia = $"Ajuste {pReferencia} generado por inventario No. {gBeInventario.Idinventarioenc}"
             pBeTransAjustEnc.Ajuste_Por_Inventario = gBeInventario.Idinventarioenc
             pBeTransAjustEnc.Enviado_A_ERP = True
+            pBeTransAjustEnc.Centro_Costo_Erp = AP.Bodega.Centro_Costo_Erp
+            pBeTransAjustEnc.Centro_Costo_Dir_Erp = AP.Bodega.Centro_Costo_Dir_Erp
+            pBeTransAjustEnc.Centro_Costo_Dep_Erp = AP.Bodega.Centro_Costo_Dep_Erp
 
             DT = clsLnAjuste_motivo.Listar()
 
@@ -1426,7 +1252,7 @@ Public Class frmRegularizarInventario
                 pBeAjusteDet.IdPresentacion = BeTransInvCiclico.IdPresentacion
                 pBeAjusteDet.IdUnidadMedida = BeTransInvCiclico.IdUnidadMedida
                 pBeAjusteDet.IdUbicacion = BeTransInvCiclico.IdUbicacion
-                pBeAjusteDet.Cantidad_original = IIf(BeTransInvCiclico.Cant_stock = -1, 0, BeTransInvCiclico.Cant_stock)
+                pBeAjusteDet.Cantidad_original = BeTransInvCiclico.Cant_stock
                 pBeAjusteDet.Cantidad_nueva = BeTransInvCiclico.Cantidad
                 pBeAjusteDet.Lote_original = BeTransInvCiclico.Lote_stock
                 pBeAjusteDet.Lote_nuevo = BeTransInvCiclico.Lote
@@ -1462,6 +1288,33 @@ Public Class frmRegularizarInventario
                 Dim BodegaERP As Integer = clsLnCliente.Get_IdBodega_By_Codigo(Val(AP.Bodega.codigo_bodega_erp),
                                                                                    clsTrans.lConnection,
                                                                                    clsTrans.lTransaction)
+
+                '#AT20260121 Primera vez viendo regularizacion de inventario ciclico, procedo a llenar talla y color
+                If BeTransInvCiclico.IdProductoTallaColor <> 0 Then
+                    Dim BeTallaColor = clsLnProducto_talla_color.GetSingle(BeTransInvCiclico.IdProductoTallaColor, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    If BeTallaColor IsNot Nothing Then
+                        Dim Color = clsLnColor.GetSingle(BeTallaColor.IdColor, clsTrans.lConnection, clsTrans.lTransaction)
+                        Dim Talla = clsLnTalla.GetSingle(BeTallaColor.IdTalla, clsTrans.lConnection, clsTrans.lTransaction)
+
+                        pBeAjusteDet.IdProductoTallaColor_origen = BeTransInvCiclico.IdProductoTallaColor
+                        pBeAjusteDet.Talla_origen = Talla.Codigo
+                        pBeAjusteDet.Color_origen = Color.Codigo
+                    End If
+                End If
+
+                If BeTransInvCiclico.IdProductoTallaColor_nuevo <> 0 Then
+                    Dim BeTallaColor = clsLnProducto_talla_color.GetSingle(BeTransInvCiclico.IdProductoTallaColor_nuevo, clsTrans.lConnection, clsTrans.lTransaction)
+
+                    If BeTallaColor IsNot Nothing Then
+                        Dim Color = clsLnColor.GetSingle(BeTallaColor.IdColor, clsTrans.lConnection, clsTrans.lTransaction)
+                        Dim Talla = clsLnTalla.GetSingle(BeTallaColor.IdTalla, clsTrans.lConnection, clsTrans.lTransaction)
+
+                        pBeAjusteDet.IdProductoTallaColor_destino = BeTransInvCiclico.IdProductoTallaColor
+                        pBeAjusteDet.Talla_destino = Talla.Codigo
+                        pBeAjusteDet.Color_destino = Color.Codigo
+                    End If
+                End If
 
                 pBeAjusteDet.IdBodegaERP = Val(BodegaERP)
 
@@ -1532,13 +1385,8 @@ Public Class frmRegularizarInventario
                 pBeMovs.IdTransaccion = gBeInventario.Idinventarioenc
                 pBeMovs.IdPropietarioBodega = vIdPropietarioBodega
                 pBeMovs.IdProductoBodega = BeTransInvCiclico.IdProductoBodega
-                If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Estado Then
-                    pBeMovs.IdEstadoOrigen = BeTransInvCiclico.IdProductoEst_nuevo
-                    pBeMovs.IdEstadoDestino = BeTransInvCiclico.IdProductoEst_nuevo
-                Else
-                    pBeMovs.IdEstadoOrigen = BeTransInvCiclico.IdProductoEstado
-                    pBeMovs.IdEstadoDestino = BeTransInvCiclico.IdProductoEstado
-                End If
+                pBeMovs.IdUbicacionOrigen = BeTransInvCiclico.IdUbicacion
+                pBeMovs.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion
                 pBeMovs.IdPresentacion = BeTransInvCiclico.IdPresentacion
                 pBeMovs.IdEstadoOrigen = BeTransInvCiclico.IdProductoEstado
                 pBeMovs.IdEstadoDestino = BeTransInvCiclico.IdProductoEst_nuevo
@@ -1548,16 +1396,8 @@ Public Class frmRegularizarInventario
                 pBeMovs.IdRecepcion = 0
                 pBeMovs.IdRecepcionDet = 0
                 pBeMovs.Serie = ""
-                If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Lote Then
-                    pBeMovs.Lote = BeTransInvCiclico.Lote
-                Else
-                    pBeMovs.Lote = BeTransInvCiclico.Lote_stock
-                End If
-                If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Vencimiento Then
-                    pBeMovs.Fecha_vence = BeTransInvCiclico.Fecha_vence
-                Else
-                    pBeMovs.Fecha_vence = BeTransInvCiclico.Fecha_vence_stock
-                End If
+                pBeMovs.Lote = BeTransInvCiclico.Lote_stock
+                pBeMovs.Fecha_vence = BeTransInvCiclico.Fecha_vence_stock
                 pBeMovs.Fecha = Now
                 pBeMovs.Barra_pallet = BeTransInvCiclico.lic_plate
                 pBeMovs.Hora_ini = Now
@@ -1570,7 +1410,7 @@ Public Class frmRegularizarInventario
                     If BeTransInvCiclico.Cantidad < BeTransInvCiclico.Cant_stock Then
                         pBeMovs.Cantidad = BeTransInvCiclico.Cantidad
                     Else
-                        pBeMovs.Cantidad = Math.Round((BeTransInvCiclico.Cantidad - IIf(BeTransInvCiclico.Cant_stock = -1, 0, BeTransInvCiclico.Cant_stock)), 6)
+                        pBeMovs.Cantidad = Math.Round((BeTransInvCiclico.Cantidad - BeTransInvCiclico.Cant_stock), 6)
                     End If
                 ElseIf pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Negativo Then
                     pBeMovs.Cantidad = Math.Round((BeTransInvCiclico.Cant_stock - BeTransInvCiclico.Cantidad), 6)
@@ -1589,7 +1429,7 @@ Public Class frmRegularizarInventario
 
                 End If
 
-                pBeMovs.Cantidad_hist = IIf(BeTransInvCiclico.Cant_stock = -1, 0, BeTransInvCiclico.Cant_stock)
+                pBeMovs.Cantidad_hist = BeTransInvCiclico.Cant_stock
                 pBeMovs.Peso = vPeso
                 pBeMovs.Peso_hist = BeTransInvCiclico.Peso_stock
                 pBeMovs.IdUnidadMedida = BeTransInvCiclico.IdUnidadMedida
@@ -1617,29 +1457,16 @@ Public Class frmRegularizarInventario
                     pBeMovsInverso.IdUbicacionOrigen = BeTransInvCiclico.IdUbicacion
                     pBeMovsInverso.IdUbicacionDestino = BeTransInvCiclico.IdUbicacion
                     pBeMovsInverso.IdPresentacion = BeTransInvCiclico.IdPresentacion
-                    If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Estado Then
-                        pBeMovsInverso.IdEstadoOrigen = BeTransInvCiclico.IdProductoEst_nuevo
-                        pBeMovsInverso.IdEstadoDestino = BeTransInvCiclico.IdProductoEst_nuevo
-                    Else
-                        pBeMovsInverso.IdEstadoOrigen = BeTransInvCiclico.IdProductoEstado
-                        pBeMovsInverso.IdEstadoDestino = BeTransInvCiclico.IdProductoEstado
-                    End If
+                    pBeMovsInverso.IdEstadoOrigen = BeTransInvCiclico.IdProductoEstado
+                    pBeMovsInverso.IdEstadoDestino = BeTransInvCiclico.IdProductoEst_nuevo
                     pBeMovsInverso.IdUnidadMedida = Producto.IdUnidadMedidaBasica
                     pBeMovsInverso.IdTipoTarea = IdTipoTarea
                     pBeMovsInverso.IdBodegaDestino = AP.IdBodega
                     pBeMovsInverso.IdRecepcion = 0
                     pBeMovsInverso.IdRecepcionDet = 0
                     pBeMovsInverso.Serie = ""
-                    If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Lote Then
-                        pBeMovsInverso.Lote = BeTransInvCiclico.Lote
-                    Else
-                        pBeMovsInverso.Lote = BeTransInvCiclico.Lote_stock
-                    End If
-                    If pBeAjusteDet.Idtipoajuste = clsDataContractDI.tTipoAjusteWMS.Ajuste_Vencimiento Then
-                        pBeMovsInverso.Fecha_vence = BeTransInvCiclico.Fecha_vence
-                    Else
-                        pBeMovsInverso.Fecha_vence = BeTransInvCiclico.Fecha_vence_stock
-                    End If
+                    pBeMovsInverso.Lote = BeTransInvCiclico.Lote_stock
+                    pBeMovsInverso.Fecha_vence = BeTransInvCiclico.Fecha_vence_stock
                     pBeMovsInverso.Fecha = Now
                     pBeMovsInverso.Barra_pallet = BeTransInvCiclico.lic_plate
                     pBeMovsInverso.Hora_ini = Now
@@ -1762,11 +1589,7 @@ Public Class frmRegularizarInventario
                         pBeStock.IdUbicacion = BeTransInvCiclico.IdUbicacion
                     End If
 
-                    If BeTransInvCiclico.Fecha_vence_stock <> BeTransInvCiclico.Fecha_vence Then
-                        pBeStock.Fecha_vence = BeTransInvCiclico.Fecha_vence
-                    Else
-                        pBeStock.Fecha_vence = BeTransInvCiclico.Fecha_vence_stock
-                    End If
+                    pBeStock.Fecha_vence = BeTransInvCiclico.Fecha_vence
 
                     If BeTransInvCiclico.Lote <> BeTransInvCiclico.Lote_stock AndAlso BeTransInvCiclico.Lote <> "" Then
                         pBeStock.Lote = BeTransInvCiclico.Lote
