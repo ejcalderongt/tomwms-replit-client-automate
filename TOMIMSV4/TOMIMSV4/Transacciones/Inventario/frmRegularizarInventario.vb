@@ -778,8 +778,8 @@ Public Class frmRegularizarInventario
         Try
 
             Dim View As GridView = sender
-            Dim CantidadCont As Object = View.GetRowCellDisplayText(e.RowHandle, View.Columns("CantidadConteo"))
-            Dim CantDif As Object = View.GetRowCellDisplayText(e.RowHandle, View.Columns("DiferenciaCantidad"))
+            Dim CantidadCont As Object = View.GetRowCellValue(e.RowHandle, View.Columns("CantidadConteo"))
+            Dim CantDif As Object = View.GetRowCellValue(e.RowHandle, View.Columns("DiferenciaCantidad"))
 
             If e.Column.FieldName = "DiferenciaCantidad" Then
 

@@ -10144,7 +10144,7 @@ Public Class TOMHHWS
 
             'MECR04122025: Se agrego bitacora de logs para verificacion.
             Dim msgControl As String = "Se actualizo estado verificado el pedido: " & oBeTrans_pe_enc.IdPedidoEnc
-            clsLnLog_verificacion_bof.Agregar_Error(msgControl,
+            clsLnLog_verificacion_bof_error.Agregar_Error(msgControl,
             pIdPedidoEnc:=oBeTrans_pe_enc.IdPedidoEnc,
             pIdBodega:=oBeTrans_pe_enc.IdBodega,
             pIdPickingEnc:=oBeTrans_pe_enc.IdPickingEnc,
