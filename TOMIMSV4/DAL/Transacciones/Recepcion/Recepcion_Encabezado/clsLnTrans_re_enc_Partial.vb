@@ -7993,15 +7993,16 @@ Partial Public Class clsLnTrans_re_enc
 
             lCommand.Parameters.Add(New SqlParameter("@IdPiloto", pIdPiloto))
             lCommand.Parameters.Add(New SqlParameter("@IdRecepcionEnc", pIdRecepcionEnc))
-
-            If Not lTransaction Is Nothing Then lTransaction.Rollback()
             lCommand.ExecuteNonQuery()
 
             If Not Es_Transaccion_Remota Then
                 lTransaction.Commit()
             End If
+
         Catch ex As Exception
-            Throw ex
+            If Not Es_Transaccion_Remota AndAlso Not lTransaction Is Nothing Then
+                lTransaction.Rollback()
+            End If
         Finally
             lCommand.Dispose()
             If lConnection.State = ConnectionState.Open Then lConnection.Close()

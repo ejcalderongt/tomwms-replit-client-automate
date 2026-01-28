@@ -44,49 +44,49 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AppGlobal.dll" size="83968">
-      <assemblyIdentity name="AppGlobal" version="1.3.0.0" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="AppGlobal" version="1.3.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>LPr+EFcc9GsarEMjjng0a28btWLI5lx8YBtfq172mGM=</dsig:DigestValue>
+        <dsig:DigestValue>X/x24L7dWuuZjDUqCF2r7FSotZNly33FByytTUJ6rzo=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DAL.dll" size="8160768">
-      <assemblyIdentity name="DAL" version="1.3.0.0" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DAL.dll" size="8151552">
+      <assemblyIdentity name="DAL" version="1.3.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>ahZQp928+Mf/jbQwSAwBPVzf27/Dp2KTLDeanSqK0oE=</dsig:DigestValue>
+        <dsig:DigestValue>KCWel2wWbRZeYYDy76dnk6m1/5Ktlw8lZps/3cBtLVA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Entity.dll" size="1282560">
-      <assemblyIdentity name="Entity" version="1.3.0.1" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="Entity" version="1.3.0.1" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>qS0UNgKFjpfxIKqlf42Kt2+cJSqr0bg/pVWhLAQOGVw=</dsig:DigestValue>
+        <dsig:DigestValue>+FN4avUPj2c6LzdwcItaiAOlBgsLVK4EhmLiuF9zf00=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="NavSync.exe" size="2566144">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="NavSync.exe" size="2565632">
       <assemblyIdentity name="NavSync" version="1.0.0.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>hTWOwLZ9oaZ8HCkYzMWt6oPBOunNZ78KjK72NzY3Z04=</dsig:DigestValue>
+        <dsig:DigestValue>FToYypgJk+akjyWGmPaV41/hOK9zNkf4M8TChgtLNjA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -110,7 +110,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>kn8zp+mrTSNfZ0EVInwLRGtB2tWkldWK9ZGooQMxv0o=</dsig:DigestValue>
+        <dsig:DigestValue>LjNwOpk1YhDJyODb1i0jZEDVthgdNKgVAoGz0NqmAgI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
