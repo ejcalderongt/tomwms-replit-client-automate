@@ -38,8 +38,8 @@ Public Class clsArchHeader : Inherits SoapHeader
 
 End Class
 
-<System.Web.Services.WebService(Namespace:="http://tempuri.org/")>
-<System.Web.Services.WebServiceBinding(ConformsTo:=WsiProfiles.BasicProfile1_1)>
+<WebService(Namespace:="http://tempuri.org/")>
+<WebServiceBinding(ConformsTo:=WsiProfiles.BasicProfile1_1)>
 <ToolboxItem(False)>
 Public Class TOMHHWS
     Inherits System.Web.Services.WebService
@@ -2772,78 +2772,7 @@ Public Class TOMHHWS
         End Try
 
     End Function
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Guardar_Recepcion(ByVal pRecEnc As clsBeTrans_re_enc,
-                                      ByVal pRecOrdenCompra As clsBeTrans_re_oc,
-                                      ByVal pListStockRecSer As List(Of clsBeStock_se_rec),
-                                      ByVal pListStockRec As List(Of clsBeStock_rec),
-                                      ByVal pListProductoPallet As List(Of clsBeProducto_pallet),
-                                      ByVal pLotesRec As clsBeTrans_oc_det_lote,
-                                      ByVal pIdEmpresa As Integer,
-                                      ByVal pIdBodega As Integer,
-                                      ByVal pIdUsuario As Integer,
-                                      ByVal pIdResolucionLp As Integer,
-                                      ByVal pIdOperadorBodega As Integer) As String
 
-        Guardar_Recepcion = ""
-
-        Try
-
-            '#GT05102022_1600: deje el Operador bodega como opcional, porque se instancia GuardarHH en varios lados,
-            'no dimensiono si siempre sera necesario enviarlo o no.
-
-            Dim vResult As String = ""
-            vResult = clsLnTrans_re_enc.GuardarHH(pRecEnc,
-                                                  pRecOrdenCompra,
-                                                  pRecEnc.Detalle,
-                                                  pRecEnc.DetalleParametros,
-                                                  pListStockRecSer,
-                                                  pListStockRec,
-                                                  pListProductoPallet,
-                                                  pLotesRec,
-                                                  pIdEmpresa,
-                                                  pIdBodega,
-                                                  pIdUsuario,
-                                                  pIdResolucionLp,
-                                                  pIdOperadorBodega)
-
-
-            Return String.Format("Res:{0}", vResult)
-
-        Catch ex As Exception
-
-            '#MECR01102025: Se agrego bitacora de logs para recepciones.
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, ex.StackTrace, pRecEnc.IdRecepcionEnc)
-
-            Dim Mensaje As String = ex.Message
-            WriteErrorToEventLog(Mensaje)
-
-            If mArch IsNot Nothing Then
-
-                If mArch.Tipo = "WM" Then
-                    Throw New Exception(Mensaje)
-                Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
-                End If
-
-            End If
-
-        End Try
-
-    End Function
     <WebMethod(), SoapHeader("mArch")>
     Public Function GuardarRecepcionModif(ByVal pRecEnc As clsBeTrans_re_enc,
                                                ByVal pRecOrdenCompra As clsBeTrans_re_oc,
@@ -15528,7 +15457,6 @@ New JsonSerializerSettings With {
 
     End Function
 
-
     'AT20241009 Actualizar ubicaciones reservadas pallet mixto
     <WebMethod(), SoapHeader("mArch")>
     Public Function Actualizar_Ubicaciones_Reservadas_Pallet_Mixto(ByVal pLista As List(Of clsBeVW_stock_res),
@@ -16002,7 +15930,6 @@ New JsonSerializerSettings With {
 
     End Function
 
-
     <WebMethod(), SoapHeader("mArch")>
     Public Function Exist_Codigo_By_CodigoBarra(ByVal pCodigoBarra As String,
                                                 ByVal pIdProductoBodega As Integer) As Boolean
@@ -16221,80 +16148,7 @@ New JsonSerializerSettings With {
         End Try
 
     End Function
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Guardar_Recepcion_S(ByVal pIdRecpecionEnc As Integer,
-                                        ByVal pIdOrdenCompraEnc As Integer,
-                                        ByVal BeRecDet As clsBeTrans_re_det,
-                                        ByVal pListRecDetParam As List(Of clsBeTrans_re_det_parametros),
-                                        ByVal pListStockRecSer As List(Of clsBeStock_se_rec),
-                                        ByVal pListStockRec As List(Of clsBeStock_rec),
-                                        ByVal pListProductoPallet As List(Of clsBeProducto_pallet),
-                                        ByVal pLotesRec As clsBeTrans_oc_det_lote,
-                                        ByVal pIdEmpresa As Integer,
-                                        ByVal pIdBodega As Integer,
-                                        ByVal pIdUsuario As Integer,
-                                        ByVal pIdResolucionLp As Integer,
-                                        ByVal pIdOperadorBodega As Integer) As String
 
-        Guardar_Recepcion_S = ""
-
-        Try
-
-            '#GT05102022_1600: deje el Operador bodega como opcional, porque se instancia GuardarHH en varios lados,
-            'no dimensiono si siempre sera necesario enviarlo o no.
-
-            Dim vResult As String = ""
-            vResult = clsLnTrans_re_enc.GuardarHH_S(pIdRecpecionEnc,
-                                                    pIdOrdenCompraEnc,
-                                                    BeRecDet,
-                                                    pListRecDetParam,
-                                                    pListStockRecSer,
-                                                    pListStockRec,
-                                                    pListProductoPallet,
-                                                    pLotesRec,
-                                                    pIdEmpresa,
-                                                    pIdBodega,
-                                                    pIdUsuario,
-                                                    pIdResolucionLp,
-                                                    pIdOperadorBodega)
-
-
-            Return String.Format("Res:{0}", vResult)
-
-        Catch ex As Exception
-
-            '#MECR01102025: Se agrego bitacora de logs para recepciones.
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, ex.StackTrace, pIdRecpecionEnc)
-
-            Dim Mensaje As String = ex.Message
-            WriteErrorToEventLog(Mensaje)
-
-            If mArch IsNot Nothing Then
-
-                If mArch.Tipo = "WM" Then
-                    Throw New Exception(Mensaje)
-                Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
-                End If
-
-            End If
-
-        End Try
-
-    End Function
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_Detalle_OC_By_IdOrdenCompraEnc_HH2(ByVal pIdOrdenCompraEnc As Integer, ByVal pIdBodega As Integer) As List(Of clsBeTrans_oc_det)
 
@@ -16339,7 +16193,6 @@ New JsonSerializerSettings With {
         End Try
 
     End Function
-
 
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_Detalle_Lotes_OC_By_IdOrdenCompraEnc_HH(ByVal pIdOrdenCompraEnc As Integer) As List(Of clsBeTrans_oc_det_lote)
@@ -17135,7 +16988,6 @@ New JsonSerializerSettings With {
 
     'End Sub
 
-
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_Vencimiento_By_IdBodega_And_Lote(ByVal pIdBodega As Integer, ByVal pNoLote As String) As String
 
@@ -17693,7 +17545,6 @@ New JsonSerializerSettings With {
         End Try
 
     End Function
-
     Private Sub Adicionar_Producto_A_Detalle_Despacho(ByRef BeDespachoEnc As clsBeTrans_despacho_enc,
                                                       ByVal BeTransPickingUbic As clsBeTrans_picking_ubic,
                                                       ByVal FechaPedido As Date,
@@ -18023,7 +17874,6 @@ New JsonSerializerSettings With {
 
     End Sub
 
-
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_Lista_Codigos_By_CodigoBarra_By_Picking_And_Pedido(ByVal pCodigoBarra As String,
                                                                            ByVal pIdBodega As Integer,
@@ -18077,7 +17927,6 @@ New JsonSerializerSettings With {
         End Try
 
     End Function
-
 
     '#GT21042025: retorna el tipo documento del pedido, para identificar si apica lectura muelle en picking
     <WebMethod, SoapHeader("mArch"), ScriptMethod(ResponseFormat:=ResponseFormat.Json, UseHttpGet:=True, XmlSerializeString:=False)>
@@ -18564,7 +18413,6 @@ New JsonSerializerSettings With {
 
     End Sub
 
-
     <WebMethod(), SoapHeader("mArch")>
     Public Function Guardar_Recepcion_Caja_Master(ByVal pIdRecpecionEnc As Integer,
                                                   ByVal pIdOrdenCompra As Integer,
@@ -18684,7 +18532,6 @@ New JsonSerializerSettings With {
         End Try
 
     End Sub
-
 
     '<WebMethod(), SoapHeader("mArch")>
     'Public Function Get_Ubicacion_By_Codigo_Barra_And_IdBodega(ByVal pBarra As String, ByVal pIdBodega As Integer) As clsBeBodega_ubicacion
