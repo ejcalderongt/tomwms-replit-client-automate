@@ -88,8 +88,11 @@ namespace WMS.StockReservation.Core.Services
                     context.Connection,
                     context.Transaction);
 
+                // IMPORTANTE: Filtrar SOLO ubicaciones de picking
+                // La consulta con pExcluirUbicacionPicking=false trae TODO el stock,
+                // debemos filtrar aquí para separar correctamente las zonas
                 context.StockListPickingZone = context.StockListPickingZone
-                    .Where(s => s != null && s.Cantidad > 0)
+                    .Where(s => s != null && s.Cantidad > 0 && s.UbicacionPicking)
                     .ToList();
             }
 
@@ -123,8 +126,10 @@ namespace WMS.StockReservation.Core.Services
                     context.Connection,
                     context.Transaction);
 
+                // Filtrar SOLO ubicaciones NO picking (redundante pero seguro)
+                // La consulta ya excluye picking con pExcluirUbicacionPicking=true
                 context.StockListNonPickingZones = context.StockListNonPickingZones
-                    .Where(s => s != null && s.Cantidad > 0)
+                    .Where(s => s != null && s.Cantidad > 0 && !s.UbicacionPicking)
                     .ToList();
             }
 

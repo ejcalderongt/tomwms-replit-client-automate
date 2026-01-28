@@ -1402,7 +1402,6 @@ Partial Public Class clsLnTrans_ubic_hh_enc
             Dim beUbicHHEnc As New clsBeTrans_ubic_hh_enc
             Dim beTareaHH As New clsBeTarea_hh()
 
-
             If Not UbicaAuto Then
 
                 'Encabezado de ubicación con HH por cambio de estado

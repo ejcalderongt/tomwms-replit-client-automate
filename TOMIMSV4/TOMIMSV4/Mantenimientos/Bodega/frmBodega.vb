@@ -512,7 +512,10 @@ Public Class frmBodega
                     bodega_area.Largo = txtLargo.Value
                     bodega_area.Ancho = txtAncho.Value
                     bodega_area.Grupo = txtGrupoArea.Text.Trim
-                    bodega_area.IdUbicacionRef = txtUbicacionRecepcionArea.EditValue
+                    If Not String.IsNullOrEmpty(txtUbicacionRecepcionArea.EditValue) Then
+                        bodega_area.IdUbicacionRef = txtUbicacionRecepcionArea.EditValue
+                    End If
+
                     'GT19012022: con el objeto actualizado, lo asigno a la lista, en el index que corresponde a ser enviado
                     pListObjBodegaAreas(lIndex) = bodega_area
 

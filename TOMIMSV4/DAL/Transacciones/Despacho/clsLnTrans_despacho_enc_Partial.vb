@@ -329,6 +329,10 @@ Partial Public Class clsLnTrans_despacho_enc
 
             'Validar que si tiene Packing esté cerrado
 
+            Validar_Solicitado_Vrs_Despachado(pBeDespachoEnc,
+                                              lConnection,
+                                              lTransaction)
+
             'Despacho Encabezado
             Guarda_Trans_Despacho_Enc(pBeDespachoEnc,
                                       lConnection,
@@ -749,8 +753,20 @@ Partial Public Class clsLnTrans_despacho_enc
                                         BePedidoCompraDet.Cantidad_recibida = 0
                                     End If
 
-                                    BePedidoCompraDet.Costo = 0
-                                    BePedidoCompraDet.Total_linea = 0
+                                    '#GT05112025: si el costo esta vacio, revisar precio
+                                    If BePedidoDet.Costo > 0 Then
+                                        BePedidoCompraDet.Costo = BePedidoDet.Costo
+                                    Else
+                                        BePedidoCompraDet.Costo = BePedidoDet.Precio
+                                    End If
+
+                                    '#GT05112025: si hay costo, mostrar el total de la linea, si es 0, no afecta
+                                    If BePedidoCompraDet.Total_linea = 0 Then
+                                        BePedidoCompraDet.Total_linea = BePedidoCompraDet.Costo * BePedidoCompraDet.Cantidad
+                                    End If
+
+                                    'BePedidoCompraDet.Total_linea = BePedidoDet.Total_linea
+
                                     BePedidoCompraDet.No_Linea = BePedidoDet.No_linea
                                     BePedidoCompraDet.Activo = True
                                     BePedidoCompraDet.Porcentaje_arancel = 0
@@ -3450,4 +3466,47 @@ Partial Public Class clsLnTrans_despacho_enc
         End Try
 
     End Function
+    Private Shared Sub Validar_Solicitado_Vrs_Despachado(ByRef ObjEnc As clsBeTrans_despacho_enc,
+                                                         ByRef lConnection As SqlConnection,
+                                                         ByRef lTransaction As SqlTransaction)
+
+
+        Try
+
+            If ObjEnc IsNot Nothing Then
+
+                For Each BePedidoEnc As clsBeTrans_pe_enc In ObjEnc.ListaPedidos
+
+                    For Each peddet In BePedidoEnc.Detalle
+
+                        If peddet.Cantidad > 0 Then
+
+                            Dim cantidadpickeada As Double = ObjEnc.ListaDetalle?.FindAll(Function(x) x.IdPedidoDet = peddet.IdPedidoDet).Sum(Function(y) y.CantidadDespachada)
+
+                            If peddet.Cantidad <> Math.Truncate(peddet.Cantidad) Then
+                                ' Tiene decimales
+                            Else
+                                If cantidadpickeada > peddet.Cantidad Then
+                                    Throw New Exception("La cantidad pickeada (" & cantidadpickeada & ") del producto " &
+                                                    peddet.Codigo_Producto & " es mayor a la solicitada (" & peddet.Cantidad & ")")
+                                End If
+
+                            End If
+
+
+                        End If
+
+                    Next
+
+                Next
+
+            End If
+
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+            clsLnLog_error_wms.Agregar_Error(vMsgError)
+            Throw ex
+        End Try
+
+    End Sub
 End Class

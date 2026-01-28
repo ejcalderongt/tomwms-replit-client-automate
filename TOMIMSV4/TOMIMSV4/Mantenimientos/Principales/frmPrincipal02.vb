@@ -850,8 +850,6 @@ Public Class frmPrincipal02
                          Get_Tiempos_Tareas()
                      End Sub)
 
-
-
             If AP.Bodega.Mostrar_Area_En_HH Then
                 Task.Run(Sub()
                              If IsHandleCreated Then

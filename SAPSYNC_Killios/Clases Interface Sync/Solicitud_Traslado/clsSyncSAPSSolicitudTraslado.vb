@@ -2,6 +2,7 @@
 Imports System.Reflection
 Imports System.ServiceModel
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar
+Imports DevExpress.Data.Filtering.Helpers.SubExprHelper.ThreadHoppingFiltering
 Imports DevExpress.Office.Services
 Imports SAPbobsCOM
 Imports TOMWMS.clsDataContractDI
@@ -234,18 +235,22 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                             If Not BePresentacion Is Nothing Then
                                 CodigoPresentacion = BePresentacion.Codigo
                                 vFactor = BePresentacion.Factor
-                                vUnidadesEncontradas = False
+                                vUnidadesEncontradas = False 
                             End If
 
+                            '#CKFK20251226 Agregué al linq el número de línea 
                             Dim existente = ProductosParaSAP.FirstOrDefault(Function(p) p.IdPedidoEnc = producto.Idordencompra AndAlso
-                                                                                    p.CodigoProductoSAP = vCodigoProductoSAP AndAlso
-                                                                                    p.CodigoPresentacion = CodigoPresentacion)
+                                                                                     p.CodigoProductoSAP = vCodigoProductoSAP AndAlso
+                                                                                     p.CodigoPresentacion = CodigoPresentacion AndAlso
+                                                                                     p.No_Linea = producto.No_Linea)
 
                             If vIdPresentacion = 0 Then
 
+                                '#CKFK20251226 Agregué al linq el número de línea 
                                 Dim existente1 = ProductosParaSAP.FirstOrDefault(Function(p) p.IdPedidoEnc = producto.Idordencompra AndAlso
-                                                                                    p.CodigoProductoSAP = vCodigoProductoSAP AndAlso
-                                                                                    p.CodigoPresentacion <> CodigoPresentacion)
+                                                                                             p.CodigoProductoSAP = vCodigoProductoSAP AndAlso
+                                                                                             p.CodigoPresentacion <> CodigoPresentacion AndAlso
+                                                                                             p.No_Linea = producto.No_Linea)
 
                                 If existente1 IsNot Nothing Then
                                     existente1.Cantidad_Total += Math.Round(producto.Cantidad_Total / existente1.Factor, 4)
@@ -696,39 +701,34 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
 
                     For Each prod In productosLinea
 
-                        If Not solicitudTransfer.Lines.LineStatus = BoStatus.bost_Close Then
+                        '#EJC20251226 Erik quitóla validación de línea cerrada
+                        If prod.Cantidad <= solicitudTransfer.Lines.Quantity Then
 
-                            If prod.Cantidad <= solicitudTransfer.Lines.Quantity Then
+                            ' Solo agregamos línea si es un nuevo producto
+                            If vCodigoAnterior <> prod.CodigoProductoSAP Then
 
-                                ' Solo agregamos línea si es un nuevo producto
-                                If vCodigoAnterior <> prod.CodigoProductoSAP Then
+                                oTransfer.Lines.ItemCode = prod.CodigoProductoSAP
+                                oTransfer.Lines.Quantity = prod.Cantidad
+                                oTransfer.Lines.FromWarehouseCode = FromWhs
+                                oTransfer.Lines.WarehouseCode = ToWhs
 
-                                    oTransfer.Lines.ItemCode = prod.CodigoProductoSAP
-                                    oTransfer.Lines.Quantity = prod.Cantidad
-                                    oTransfer.Lines.FromWarehouseCode = FromWhs
-                                    oTransfer.Lines.WarehouseCode = ToWhs
-
-                                    Dim resultado = SapHelper.Obtener_UoMEntry_De_InventoryUOM(prod.CodigoProductoSAP, oCompany)
-                                    Dim umEntryOrdenVenta As Integer = Buscar_UoMEntry_SolTraslado(solicitudTransfer, prod.CodigoProductoSAP, prod.No_Linea)
-                                    If resultado.UoMEntry > 0 Then
-                                        If resultado.UoMEntry <> umEntryOrdenVenta Then
-                                            oTransfer.Lines.Quantity = Math.Round(prod.Cantidad / resultado.Factor, 6)
-                                        End If
-                                        oTransfer.Lines.UoMEntry = resultado.UoMEntry
+                                Dim resultado = SapHelper.Obtener_UoMEntry_De_InventoryUOM(prod.CodigoProductoSAP, oCompany)
+                                Dim umEntryOrdenVenta As Integer = Buscar_UoMEntry_SolTraslado(solicitudTransfer, prod.CodigoProductoSAP, prod.No_Linea)
+                                If resultado.UoMEntry > 0 Then
+                                    If resultado.UoMEntry <> umEntryOrdenVenta Then
+                                        oTransfer.Lines.Quantity = Math.Round(prod.Cantidad / resultado.Factor, 6)
                                     End If
-
-                                    vCodigoAnterior = prod.CodigoProductoSAP
-                                    vNoLineaAnterior = prod.No_Linea
-                                    oTransfer.Lines.Add() : vLineasAgregadas += 1
-
+                                    oTransfer.Lines.UoMEntry = resultado.UoMEntry
                                 End If
 
-                            Else
-                                Throw New Exception($"Cantidad WMS ({prod.Cantidad}) excede cantidad SAP ({solicitudTransfer.Lines.Quantity}) para producto: {codigoProductoSAP}")
+                                vCodigoAnterior = prod.CodigoProductoSAP
+                                vNoLineaAnterior = prod.No_Linea
+                                oTransfer.Lines.Add() : vLineasAgregadas += 1
+
                             End If
 
                         Else
-                            clsPublic.Actualizar_Progreso(lblprg, $"La línea {codigoProductoSAP} ya fue completada en SAP.")
+                            Throw New Exception($"Cantidad WMS ({prod.Cantidad}) excede cantidad SAP ({solicitudTransfer.Lines.Quantity}) para producto: {codigoProductoSAP}")
                         End If
 
                     Next
@@ -1408,17 +1408,32 @@ Public Class clsSyncSAPSSolicitudTraslado : Inherits clsInterfaceBase
                     CodigoSAP = BeProducto.Noserie
             End Select
 
-            ' Obtener presentación
-            Dim BePresentacion As clsBeProducto_Presentacion = clsLnTrans_despacho_det.Get_BePresentacion_By_IdDespachoDet(item.IdDespachoDet,
+            '#CKFK20251226 Cambié la función, porque hay que obtener presentación de la línea del pedido no del despacho
+            Dim presentacionDesp As clsBeProducto_Presentacion = clsLnTrans_despacho_det.Get_BePresentacion_By_IdDespachoDet(item.IdDespachoDet,
                                                                                                                          item.Idpedidoenc,
                                                                                                                          clsTrans.lConnection,
                                                                                                                          clsTrans.lTransaction)
-            Dim CodigoPresentacion As String = If(BePresentacion IsNot Nothing, BePresentacion.Codigo, "")
-            Dim CantidadBase As Decimal = item.Cantidad
 
-            If BePresentacion IsNot Nothing AndAlso item.Idpresentacion = 0 Then
-                CantidadBase = Math.Round(CantidadBase / BePresentacion.Factor, 6)
+            Dim presentacionPed As clsBeProducto_Presentacion = clsLnTrans_pe_det.Get_BePresentacion_By_NoLinea(item.No_linea,
+                                                                                                               item.Idpedidoenc,
+                                                                                                               clsTrans.lConnection,
+                                                                                                               clsTrans.lTransaction)
+            Dim CodigoPresentacion As String = "" ' = If(BePresentacion IsNot Nothing, BePresentacion.Codigo, "")
+            Dim CantidadBase As Decimal = item.Cantidad
+            Dim factor As Double = 0
+
+            If presentacionDesp IsNot Nothing AndAlso presentacionPed Is Nothing Then
+                CodigoPresentacion = presentacionDesp.Codigo
+            ElseIf presentacionDesp Is Nothing AndAlso presentacionPed IsNot Nothing Then
+                factor = presentacionPed.Factor
+                '#EJC20251217: Con esto facilito que se agrupen bien cajas y unidades en el siguiente procedimiento.
+                CodigoPresentacion = presentacionPed.Codigo
+                CantidadBase = Math.Round(CantidadBase / factor, 4)
             End If
+
+            'If BePresentacion IsNot Nothing AndAlso item.Idpresentacion = 0 Then
+            '    CantidadBase = Math.Round(CantidadBase / BePresentacion.Factor, 4)
+            'End If
 
             ' Buscar si ya existe un agrupado con misma clave
             Dim existente = ProductosParaSAP.FirstOrDefault(Function(x) x.CodigoProductoSAP = CodigoSAP AndAlso

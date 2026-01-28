@@ -284,6 +284,13 @@ namespace WMS.StockReservation.Compatibility
                 if (oBeConfigEnc == null) throw new ArgumentNullException(nameof(oBeConfigEnc));
                 if (cnnSql == null) throw new ArgumentNullException(nameof(cnnSql));
 
+                if (oBePedidoDet is null)
+                    throw new Exception("PedidoDet es null: no se puede construir el contexto de reserva.");
+
+                if (oBeI_nav_ped_traslado_det is null)
+                    throw new Exception("TrasladoDet es null: no se puede construir el contexto de reserva.");
+
+                // Construir contexto de reserva
                 var context = new ReservationContext
                 {
                     Request = oBeStockResRequest,

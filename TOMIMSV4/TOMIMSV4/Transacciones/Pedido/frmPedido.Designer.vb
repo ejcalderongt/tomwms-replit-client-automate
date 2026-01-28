@@ -2945,7 +2945,6 @@ Partial Class frmPedido
         '
         'GroupControl3
         '
-        Me.GroupControl3.CaptionImageOptions.SvgImage = CType(resources.GetObject("GroupControl3.CaptionImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.GroupControl3.Controls.Add(Me.txtObservacion)
         Me.GroupControl3.Dock = System.Windows.Forms.DockStyle.Top
         Me.GroupControl3.Location = New System.Drawing.Point(2, 324)
@@ -2998,14 +2997,13 @@ Partial Class frmPedido
         'LabelControl2
         '
         Me.LabelControl2.Appearance.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LabelControl2.Appearance.Image = CType(resources.GetObject("LabelControl2.Appearance.Image"), System.Drawing.Image)
         Me.LabelControl2.Appearance.Options.UseFont = True
         Me.LabelControl2.Appearance.Options.UseImage = True
         Me.LabelControl2.ImageOptions.Image = CType(resources.GetObject("LabelControl2.ImageOptions.Image"), System.Drawing.Image)
         Me.LabelControl2.Location = New System.Drawing.Point(550, 96)
         Me.LabelControl2.Margin = New System.Windows.Forms.Padding(6, 10, 6, 10)
         Me.LabelControl2.Name = "LabelControl2"
-        Me.LabelControl2.Size = New System.Drawing.Size(32, 32)
+        Me.LabelControl2.Size = New System.Drawing.Size(0, 15)
         Me.LabelControl2.TabIndex = 2
         '
         'LabelControl4

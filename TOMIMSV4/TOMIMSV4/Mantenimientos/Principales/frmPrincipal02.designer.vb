@@ -1128,9 +1128,9 @@ Partial Class frmPrincipal02
         Me.TabDashPicking.Name = "TabDashPicking"
         Me.TabDashPicking.PageVisible = False
         Me.TabDashPicking.Size = New System.Drawing.Size(1113, 483)
-        '
+
         'dvPicking
-        '
+
         Me.DefaultToolTipController1.SetAllowHtmlText(Me.dvPicking, DevExpress.Utils.DefaultBoolean.[Default])
         Me.dvPicking.Appearance.BackColor = System.Drawing.Color.FromArgb(CType(CType(210, Byte), Integer), CType(CType(210, Byte), Integer), CType(CType(210, Byte), Integer))
         Me.dvPicking.Appearance.Options.UseBackColor = True

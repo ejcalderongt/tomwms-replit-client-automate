@@ -27,7 +27,7 @@ namespace WMSWebAPI.Be
 
         [Column("Expiration_Date")]
         [DisplayName("Expiration_Date")]
-        public DateTime Expiration_Date { get; set; } = DateTime.Now;
+        public DateTime Expiration_Date { get; set; } = new DateTime(1900,1,1);
 
         [Column("Entry_No")]
         [DisplayName("Entry_No")]

@@ -568,7 +568,7 @@ Partial Public Class clsLnStock
                                     VW_Stock_Res.parametro_b, 
                                     VW_Stock_Res.precio_producto, 
                                     VW_Stock_Res.costo_producto, 
-                                    VW_Stock_Res.costo_ingreso                                   
+                                    VW_Stock_Res.costo_ingreso 
                                 FROM 
                                     VW_Stock_Res 
                                   WHERE 1 > 0   "
@@ -11644,12 +11644,13 @@ Partial Public Class clsLnStock
     End Sub
 
     Public Shared Sub Actualizar_Stock_Por_Despacho(ByVal IdDespachoEnc As Integer,
-                                                ByRef pPickingUbic As clsBeTrans_picking_ubic,
-                                                ByVal AllowNegativeExceptionOnStock As Boolean,
-                                                ByRef lConnection As SqlConnection,
-                                                ByRef lTransaction As SqlTransaction)
+                                                    ByRef pPickingUbic As clsBeTrans_picking_ubic,
+                                                    ByVal AllowNegativeExceptionOnStock As Boolean,
+                                                    ByRef lConnection As SqlConnection,
+                                                    ByRef lTransaction As SqlTransaction)
 
         Dim vMensaje As String = ""
+        Dim vCantidadDisponible As Double = 0
 
         Try
 
@@ -11672,18 +11673,26 @@ Partial Public Class clsLnStock
             Dim BeTransPeDet As New clsBeTrans_pe_det With {.IdPedidoDet = pPickingUbic.IdPedidoDet}
             clsLnTrans_pe_det.GetSingle(BeTransPeDet, lConnection, lTransaction)
 
-            Dim vCantidadDisponible As Double
             If (objStockOrigen.Presentacion.IdPresentacion = 0) OrElse (BeTransPeDet.IdPresentacion = 0) Then
                 vCantidadDisponible = Math.Round(objStockOrigen.Cantidad, 6)
             Else
+
                 If objStockOrigen.Presentacion.EsPallet Then
-                    vCantidadDisponible = Math.Round(objStockOrigen.Cantidad *
-                                                 objStockOrigen.Presentacion.Factor *
-                                                 objStockOrigen.Presentacion.CamasPorTarima *
-                                                 objStockOrigen.Presentacion.CajasPorCama, 6)
+                    vCantidadDisponible = Math.Round((objStockOrigen.Cantidad * objStockOrigen.Presentacion.Factor * objStockOrigen.Presentacion.CamasPorTarima * objStockOrigen.Presentacion.CajasPorCama), 6)
                 Else
-                    vCantidadDisponible = Math.Round(objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor, 6)
+
+                    '#EJC20251209 Originalmente estaba asi
+                    'vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
+
+                    '#EJC20251209 Agregó validación por error reportado en el despacho
+                    If objStockOrigen.Cantidad >= objStockOrigen.Presentacion.Factor Then
+                        vCantidadDisponible = Math.Round((objStockOrigen.Cantidad / objStockOrigen.Presentacion.Factor), 6)
+                    Else
+                        vCantidadDisponible = objStockOrigen.Cantidad
+                    End If
+
                 End If
+
             End If
 
             Dim vCantidadSolicitadaPedido As Double = BeTransPeDet.Cantidad
