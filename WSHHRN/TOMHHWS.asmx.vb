@@ -6211,6 +6211,7 @@ Public Class TOMHHWS
         End Try
 
     End Sub
+
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_IdUbicacion_Recepcion_By_IdBodega(ByVal pIdBodega As Integer) As Integer
 
