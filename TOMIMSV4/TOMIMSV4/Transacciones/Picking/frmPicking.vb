@@ -337,6 +337,14 @@ Public Class frmPicking
             If Ubicacion.pObj IsNot Nothing AndAlso Ubicacion.pObj.IdUbicacion <> 0 Then
                 txtIdUbicacion.Text = Ubicacion.pObj.IdUbicacion
                 txtNombreUbicacion.Text = Ubicacion.pObj.Descripcion
+
+                If Ubicacion.pObj.IdArea > 0 Then
+                    Dim BeBodegaArea = clsLnBodega_area.GetSingle_By_IdArea_and_IdBodega(Ubicacion.pObj.IdArea, Ubicacion.pObj.IdBodega)
+                    If BeBodegaArea IsNot Nothing Then
+                        txtArea.Text = BeBodegaArea.Descripcion
+                    End If
+                End If
+
             End If
 
             Ubicacion.Close()
@@ -1356,9 +1364,15 @@ Public Class frmPicking
 
                 txtIdUbicacion.Text = BePickingEnc.IdUbicacionPicking
                 txtNombreUbicacion.Text = BePickingEnc.NombreUbicacionPicking
+                Dim BeBodegaUbicacion = clsLnBodega_ubicacion.Get_Single_By_IdUbicacion_And_IdBodega(BePickingEnc.IdUbicacionPicking, BePickingEnc.IdBodega)
+                If BeBodegaUbicacion IsNot Nothing Then
+                    Dim BeBodegaArea = clsLnBodega_area.GetSingle_By_IdArea_and_IdBodega(BeBodegaUbicacion.IdArea, BeBodegaUbicacion.IdBodega)
+                    If BeBodegaArea IsNot Nothing Then
+                        txtArea.Text = BeBodegaArea.Descripcion
+                    End If
+                End If
 
                 dtmFechaPicking.EditValue = BePickingEnc.Fecha_picking
-
                 dtmHoraIhh.Value = BePickingEnc.Hora_ini
                 dtmHoraFhh.Value = BePickingEnc.Hora_fin
                 lblEstado.Text = BePickingEnc.Estado
@@ -1961,15 +1975,6 @@ Public Class frmPicking
                     End If
                 End If
 
-                clsTransaccion.Commit_Transaction()
-
-                Dim BeConfiguracionUsuarioDet As New clsBeConfiguracion_usuario_det
-
-                BeConfiguracionUsuarioDet = clsLnConfiguracion_usuario_enc.Get_Layout(AP.IdEmpresa,
-                                                                                      AP.UsuarioAp.IdUsuario,
-                                                                                      AP.HostName,
-                                                                                      vNombreArchivoLayOutGrid)
-
                 '#GT01122025: Estoy infiriendo que mampa no trabaja picking consolidados.
                 Dim tmpPedido = lPedidosPicking(0)
                 Dim BePedido = clsLnTrans_pe_enc.Get_Single_Without_Picking(tmpPedido.IdPedidoEnc, clsTransaccion.lConnection, clsTransaccion.lTransaction)
@@ -1981,6 +1986,15 @@ Public Class frmPicking
                         BloquearControles_Por_VerificacionBOF(True)
                     End If
                 End If
+
+                clsTransaccion.Commit_Transaction()
+
+                Dim BeConfiguracionUsuarioDet As New clsBeConfiguracion_usuario_det
+
+                BeConfiguracionUsuarioDet = clsLnConfiguracion_usuario_enc.Get_Layout(AP.IdEmpresa,
+                                                                                      AP.UsuarioAp.IdUsuario,
+                                                                                      AP.HostName,
+                                                                                      vNombreArchivoLayOutGrid)
 
                 If Not BeConfiguracionUsuarioDet Is Nothing Then
                     grdvPickingUbic.RestoreLayoutFromStream(BeConfiguracionUsuarioDet.Stream_Template)
@@ -2294,6 +2308,10 @@ Public Class frmPicking
 
                 If BeBodegaUbicacion IsNot Nothing AndAlso BeBodegaUbicacion.IdUbicacion > 0 Then
                     txtNombreUbicacion.Text = BeBodegaUbicacion.Descripcion
+                    Dim BeBodegaArea = clsLnBodega_area.GetSingle_By_IdArea_and_IdBodega(BeBodegaUbicacion.IdArea, BeBodega.IdBodega)
+                    If BeBodegaArea IsNot Nothing Then
+                        txtArea.Text = BeBodegaArea.Descripcion
+                    End If
                 Else
                     XtraMessageBox.Show(String.Format("No existe Ubicación de Picking con código {0}", txtIdUbicacion.Text.Trim(), Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation))
                     txtIdUbicacion.Focus()
