@@ -9,6 +9,7 @@ using WMSWebAPI.Mapping_Profile;
 using WMSWebAPI.Services;
 using WMSWebAPI.Services.Cliente;
 using WMSWebAPI.Services.Ingresos;
+using WMSWebAPI.Services.KPI;
 using WMSWebAPI.Services.Producto.Clasificacion;
 using WMSWebAPI.Services.Producto.Familia;
 using WMSWebAPI.Services.Producto.Marca;
@@ -58,6 +59,7 @@ builder.Services.AddScoped<IProductoTipoMi3SyncService,ProductoTipoMi3SyncServic
 builder.Services.AddScoped<IUmbasMi3SyncService, UmbasMi3SyncService>();
 builder.Services.AddScoped<IPresentacionMi3SyncService, PresentacionMi3SyncService>();
 builder.Services.AddScoped<ISyncProveedorService, SyncProveedorService>();
+builder.Services.AddScoped<IKpiReportService, KpiReportService>();
 
 // JWT
 var key = "OPaVvHGoW1WqtwoFdS0er9cC1RMrSCxd5ovsEYw22uzKlsyaO-7uOQB16jL3YnKsLB4U_BX5gWNUk0ELXMsEtg";

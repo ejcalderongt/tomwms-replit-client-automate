@@ -468,37 +468,50 @@ Public Class frmImprimir_Etiqueta
             If String.IsNullOrEmpty(cmbFinca.EditValue) Then
                 cmbFinca.Focus()
                 XtraMessageBox.Show("Debe seleccionar una finca ", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            ElseIf ImpresionIndividual AndAlso String.IsNullOrEmpty(txtLote.EditValue) OrElse txtLote.EditValue = 0 Then
+
+            ElseIf ImpresionIndividual AndAlso (String.IsNullOrEmpty(txtLote.EditValue) OrElse Val(txtLote.EditValue) = 0) Then
                 txtLote.Focus()
                 XtraMessageBox.Show("Debe ingresar el # de lote ", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            ElseIf ImpresionIndividual AndAlso (String.IsNullOrEmpty(txtPalletDesde.EditValue) OrElse txtPalletDesde.EditValue = 0) Then
+
+                ' En impresión individual, permitir 0 en pallet/caja: solo validar si vienen vacíos (si querés permitir vacío también, quitá estas líneas)
+            ElseIf ImpresionIndividual AndAlso String.IsNullOrEmpty(txtPalletDesde.EditValue) Then
                 txtPalletDesde.Focus()
                 XtraMessageBox.Show("Debe ingresar el # de Pallet inicial ", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            ElseIf ImpresionIndividual AndAlso (String.IsNullOrEmpty(txtPalletHasta.EditValue) OrElse txtPalletHasta.EditValue = 0) Then
+
+            ElseIf ImpresionIndividual AndAlso String.IsNullOrEmpty(txtPalletHasta.EditValue) Then
                 txtPalletHasta.Focus()
                 XtraMessageBox.Show("Debe ingresar el # de Pallet final ", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            ElseIf ImpresionIndividual AndAlso (String.IsNullOrEmpty(txtCajaDesde.EditValue) OrElse txtCajaDesde.EditValue = 0) Then
+
+            ElseIf ImpresionIndividual AndAlso String.IsNullOrEmpty(txtCajaDesde.EditValue) Then
                 txtCajaDesde.Focus()
                 XtraMessageBox.Show("Debe ingresar el # de caja inicial ", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            ElseIf ImpresionIndividual AndAlso (String.IsNullOrEmpty(txtCajaHasta.EditValue) OrElse txtCajaHasta.EditValue = 0) Then
+
+            ElseIf ImpresionIndividual AndAlso String.IsNullOrEmpty(txtCajaHasta.EditValue) Then
                 txtCajaHasta.Focus()
                 XtraMessageBox.Show("Debe ingresar el # de caja final", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            ElseIf ImpresionIndividual AndAlso txtPalletDesde.EditValue > txtPalletHasta.EditValue Then
+
+                ' Validar orden SOLO si ambos son > 0 (si alguno es 0, no se compara)
+            ElseIf ImpresionIndividual AndAlso Val(txtPalletDesde.EditValue) > 0 AndAlso Val(txtPalletHasta.EditValue) > 0 _
+               AndAlso Val(txtPalletDesde.EditValue) > Val(txtPalletHasta.EditValue) Then
                 txtPalletDesde.Focus()
                 XtraMessageBox.Show("La Pallet inicial debe ser menor que la Pallet final", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            ElseIf ImpresionIndividual AndAlso txtCajaDesde.EditValue > txtCajaHasta.EditValue Then
+
+            ElseIf ImpresionIndividual AndAlso Val(txtCajaDesde.EditValue) > 0 AndAlso Val(txtCajaHasta.EditValue) > 0 _
+               AndAlso Val(txtCajaDesde.EditValue) > Val(txtCajaHasta.EditValue) Then
                 txtCajaDesde.Focus()
                 XtraMessageBox.Show("La caja inicial debe ser menor que la caja final", Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+
             Else
                 Validar_Datos = True
             End If
 
         Catch ex As Exception
             XtraMessageBox.Show(String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message),
-           Text,
-           MessageBoxButtons.OK,
-           MessageBoxIcon.Error)
+                            Text,
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error)
         End Try
+
     End Function
 
     Private Sub txtLote_EditValueChanged(sender As Object, e As EventArgs) Handles txtLote.EditValueChanged
@@ -550,7 +563,7 @@ Public Class frmImprimir_Etiqueta
                 .ShowFooter = False
                 .PopulateColumns()
                 .DisplayMember = "codigo"
-                .ValueMember = "descripcion"
+                .ValueMember = "IdFinca"
                 .Columns("IdFinca").Visible = False
                 .Columns("predeterminada").Visible = False
             End With
