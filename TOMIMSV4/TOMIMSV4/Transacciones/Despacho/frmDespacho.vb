@@ -1714,6 +1714,7 @@ Public Class frmDespacho
 
     End Sub
 
+    Dim Pedido_Cargado_Desde_Picking As Boolean
     Public Sub Agregar_Pedido(ByVal pBePedidoEnc As clsBeTrans_pe_enc)
 
         Dim clsTransaccion As New clsTransaccion
@@ -2372,42 +2373,55 @@ Public Class frmDespacho
                         vCantPendiente = Obj.Cantidad_Pickeada - Obj.Cantidad_Verificada
                     End If
 
-                    DTStockRes.Rows.Add(
-                                    Obj.IdPedido,
-                                    Obj.IdPicking,
-                                    Obj.Codigo_Producto,
-                                    Obj.Nombre_Producto,
-                                    Obj.Nombre_Presentacion,
-                                    Obj.NomEstado,
-                                    Obj.UMBas,
-                                    Obj.Propietario,
-                                    Obj.UbicacionActual.NombreCompleto,
-                                    Obj.Lote,
-                                    Obj.Lic_plate,
-                                    Obj.Fecha_Vence,
-                                    Obj.Factor,
-                                    vCantidadReservadaPres,
-                                    vCantidadReservadaUMBas,
-                                    vCantidadRecPres,
-                                    Obj.Cantidad_Pickeada,
-                                    vCantidadVerPres,
-                                    Obj.Cantidad_Verificada,
-                                    vCantidadDespPres,
-                                    Obj.Cantidad_Despachada,
-                                    vCantPendiente,
-                                    Obj.peso_pickeado,
-                                    Obj.peso_verificado,
-                                    Obj.encontrado,
-                                    Obj.acepto,
-                                    Obj.Fecha_ingreso,
-                                    Obj.IdStockRes,
-                                    Obj.IdProductoTallaColor,
-                                    Obj.Codigo_Talla,
-                                    Obj.Codigo_Color)
 
-                    Application.DoEvents()
+                    '#GT29012026: el metodo se invoca 2 veces, una en el load de componentes y otra por la invocación desde picking
+                    'evitamos agregar 2 veces el mismo registro en la datatable.
+
+                    If DTStockRes.Select("Pedido = " & Obj.IdPedido &
+                     " AND Picking = " & Obj.IdPicking &
+                     " AND IdStockRes = " & Obj.IdStockRes).Length = 0 Then
+
+                        DTStockRes.Rows.Add(
+                                        Obj.IdPedido,
+                                        Obj.IdPicking,
+                                        Obj.Codigo_Producto,
+                                        Obj.Nombre_Producto,
+                                        Obj.Nombre_Presentacion,
+                                        Obj.NomEstado,
+                                        Obj.UMBas,
+                                        Obj.Propietario,
+                                        Obj.UbicacionActual.NombreCompleto,
+                                        Obj.Lote,
+                                        Obj.Lic_plate,
+                                        Obj.Fecha_Vence,
+                                        Obj.Factor,
+                                        vCantidadReservadaPres,
+                                        vCantidadReservadaUMBas,
+                                        vCantidadRecPres,
+                                        Obj.Cantidad_Pickeada,
+                                        vCantidadVerPres,
+                                        Obj.Cantidad_Verificada,
+                                        vCantidadDespPres,
+                                        Obj.Cantidad_Despachada,
+                                        vCantPendiente,
+                                        Obj.peso_pickeado,
+                                        Obj.peso_verificado,
+                                        Obj.encontrado,
+                                        Obj.acepto,
+                                        Obj.Fecha_ingreso,
+                                        Obj.IdStockRes,
+                                        Obj.IdProductoTallaColor,
+                                        Obj.Codigo_Talla,
+                                        Obj.Codigo_Color)
+
+                    End If
 
                 Next
+
+                '#GT29012026: esta bandera evita que en la siguiente carga no vuelva a insertar los mismos valores.
+                Pedido_Cargado_Desde_Picking = True
+
+                Application.DoEvents()
 
             End If
 
@@ -2936,7 +2950,10 @@ Public Class frmDespacho
                     txtDocumentoExterno.Text = ""
 
                     If BePedidoEnc.IdPedidoEnc > 0 Then
-                        Agregar_Pedido(BePedidoEnc)
+                        If Not Pedido_Cargado_Desde_Picking Then
+                            Agregar_Pedido(BePedidoEnc)
+                        End If
+
                     End If
 
                 Case TipoTrans.Editar
