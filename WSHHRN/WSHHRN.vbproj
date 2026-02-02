@@ -100,7 +100,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Web.Services.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Web.Services.dll</HintPath>
     </Reference>
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
@@ -504,6 +504,10 @@
     </WebReferenceUrl>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AppGlobal\AppGlobal.vbproj">
+      <Project>{8a6418ce-0668-4ec6-a29c-9d9490701369}</Project>
+      <Name>AppGlobal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TOMIMSV4\DAL\DAL.vbproj">
       <Project>{b7df5657-9a16-45a4-bf2f-ffda6138e06b}</Project>
       <Name>DAL</Name>

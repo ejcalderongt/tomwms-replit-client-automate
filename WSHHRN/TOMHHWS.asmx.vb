@@ -1,16 +1,18 @@
 ﻿Imports System.ComponentModel
-Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Net
 Imports System.Reflection
 Imports System.Threading
 Imports System.Threading.Tasks
-Imports System.Web.Script.Serialization
 Imports System.Web.Script.Services
 Imports System.Web.Services
 Imports System.Web.Services.Protocols
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
+
+
+Imports System.Data.SqlClient
+Imports System.Web.Script.Serialization
 Imports TOMWMS.wsBYBNavCUWMS
 Imports TOMWMS.wsBYBNavMovProd
 Imports TOMWMS.wsBYBNavUbicarAlmacen
@@ -2772,78 +2774,7 @@ Public Class TOMHHWS
         End Try
 
     End Function
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Guardar_Recepcion(ByVal pRecEnc As clsBeTrans_re_enc,
-                                      ByVal pRecOrdenCompra As clsBeTrans_re_oc,
-                                      ByVal pListStockRecSer As List(Of clsBeStock_se_rec),
-                                      ByVal pListStockRec As List(Of clsBeStock_rec),
-                                      ByVal pListProductoPallet As List(Of clsBeProducto_pallet),
-                                      ByVal pLotesRec As clsBeTrans_oc_det_lote,
-                                      ByVal pIdEmpresa As Integer,
-                                      ByVal pIdBodega As Integer,
-                                      ByVal pIdUsuario As Integer,
-                                      ByVal pIdResolucionLp As Integer,
-                                      ByVal pIdOperadorBodega As Integer) As String
 
-        Guardar_Recepcion = ""
-
-        Try
-
-            '#GT05102022_1600: deje el Operador bodega como opcional, porque se instancia GuardarHH en varios lados,
-            'no dimensiono si siempre sera necesario enviarlo o no.
-
-            Dim vResult As String = ""
-            vResult = clsLnTrans_re_enc.GuardarHH(pRecEnc,
-                                                  pRecOrdenCompra,
-                                                  pRecEnc.Detalle,
-                                                  pRecEnc.DetalleParametros,
-                                                  pListStockRecSer,
-                                                  pListStockRec,
-                                                  pListProductoPallet,
-                                                  pLotesRec,
-                                                  pIdEmpresa,
-                                                  pIdBodega,
-                                                  pIdUsuario,
-                                                  pIdResolucionLp,
-                                                  pIdOperadorBodega)
-
-
-            Return String.Format("Res:{0}", vResult)
-
-        Catch ex As Exception
-
-            '#MECR01102025: Se agrego bitacora de logs para recepciones.
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, ex.StackTrace, pRecEnc.IdRecepcionEnc)
-
-            Dim Mensaje As String = ex.Message
-            WriteErrorToEventLog(Mensaje)
-
-            If mArch IsNot Nothing Then
-
-                If mArch.Tipo = "WM" Then
-                    Throw New Exception(Mensaje)
-                Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
-                End If
-
-            End If
-
-        End Try
-
-    End Function
     <WebMethod(), SoapHeader("mArch")>
     Public Function GuardarRecepcionModif(ByVal pRecEnc As clsBeTrans_re_enc,
                                                ByVal pRecOrdenCompra As clsBeTrans_re_oc,
@@ -5203,7 +5134,7 @@ Public Class TOMHHWS
         Try
 
             '#CKFK20231029:Guarda fotos de verificacion
-            clsLnTrans_picking_img.Guardar_Imagen_Verificacion(pIdPedidoDet, Foto)
+            clsLnTrans_Picking_Img.Guardar_Imagen_Verificacion(pIdPedidoDet, Foto)
 
         Catch ex As Exception
 
@@ -5332,7 +5263,7 @@ Public Class TOMHHWS
 
         Try
 
-            Return clsLnTrans_picking_img.Get_All_Imagen_By_IdPedidoDet(pIdPedidoDet)
+            Return clsLnTrans_Picking_Img.Get_All_Imagen_By_IdPedidoDet(pIdPedidoDet)
 
         Catch ex As Exception
             '#MECR04122025: Se agrego bitacora de logs para verificacion
@@ -10144,11 +10075,11 @@ Public Class TOMHHWS
 
             'MECR04122025: Se agrego bitacora de logs para verificacion.
             Dim msgControl As String = "Se actualizo estado verificado el pedido: " & oBeTrans_pe_enc.IdPedidoEnc
-            clsLnLog_verificacion_bof.Agregar_Error(msgControl,
-            pIdPedidoEnc:=oBeTrans_pe_enc.IdPedidoEnc,
-            pIdBodega:=oBeTrans_pe_enc.IdBodega,
-            pIdPickingEnc:=oBeTrans_pe_enc.IdPickingEnc,
-            pUser_agr:=oBeTrans_pe_enc.User_mod)
+            'clsLnLog_verificacion_bof.Agregar_Error(msgControl,
+            'pIdPedidoEnc:=oBeTrans_pe_enc.IdPedidoEnc,
+            'pIdBodega:=oBeTrans_pe_enc.IdBodega,
+            'pIdPickingEnc:=oBeTrans_pe_enc.IdPickingEnc,
+            'pUser_agr:=oBeTrans_pe_enc.User_mod)
 
             Return Set_Estado_Pedido_Verificado
 
@@ -16221,80 +16152,7 @@ New JsonSerializerSettings With {
         End Try
 
     End Function
-    <WebMethod(), SoapHeader("mArch")>
-    Public Function Guardar_Recepcion_S(ByVal pIdRecpecionEnc As Integer,
-                                        ByVal pIdOrdenCompraEnc As Integer,
-                                        ByVal BeRecDet As clsBeTrans_re_det,
-                                        ByVal pListRecDetParam As List(Of clsBeTrans_re_det_parametros),
-                                        ByVal pListStockRecSer As List(Of clsBeStock_se_rec),
-                                        ByVal pListStockRec As List(Of clsBeStock_rec),
-                                        ByVal pListProductoPallet As List(Of clsBeProducto_pallet),
-                                        ByVal pLotesRec As clsBeTrans_oc_det_lote,
-                                        ByVal pIdEmpresa As Integer,
-                                        ByVal pIdBodega As Integer,
-                                        ByVal pIdUsuario As Integer,
-                                        ByVal pIdResolucionLp As Integer,
-                                        ByVal pIdOperadorBodega As Integer) As String
 
-        Guardar_Recepcion_S = ""
-
-        Try
-
-            '#GT05102022_1600: deje el Operador bodega como opcional, porque se instancia GuardarHH en varios lados,
-            'no dimensiono si siempre sera necesario enviarlo o no.
-
-            Dim vResult As String = ""
-            vResult = clsLnTrans_re_enc.GuardarHH_S(pIdRecpecionEnc,
-                                                    pIdOrdenCompraEnc,
-                                                    BeRecDet,
-                                                    pListRecDetParam,
-                                                    pListStockRecSer,
-                                                    pListStockRec,
-                                                    pListProductoPallet,
-                                                    pLotesRec,
-                                                    pIdEmpresa,
-                                                    pIdBodega,
-                                                    pIdUsuario,
-                                                    pIdResolucionLp,
-                                                    pIdOperadorBodega)
-
-
-            Return String.Format("Res:{0}", vResult)
-
-        Catch ex As Exception
-
-            '#MECR01102025: Se agrego bitacora de logs para recepciones.
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
-            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            clsLnLog_error_wms_rec.Agregar_Error(vMsgError, pIdEmpresa, pIdBodega, pIdUsuario, ex.StackTrace, pIdRecpecionEnc)
-
-            Dim Mensaje As String = ex.Message
-            WriteErrorToEventLog(Mensaje)
-
-            If mArch IsNot Nothing Then
-
-                If mArch.Tipo = "WM" Then
-                    Throw New Exception(Mensaje)
-                Else
-                    Dim currrentContext As HttpContext = HttpContext.Current
-                    Dim DT As New DataTable("CustomError")
-                    DT.Columns.Add("Error", GetType(String))
-                    DT.Rows.Add(Mensaje)
-                    Dim sw As New StringWriter()
-                    DT.WriteXml(sw)
-                    HttpContext.Current.Response.Clear()
-                    HttpContext.Current.Response.StatusCode = 299
-                    HttpContext.Current.Response.SubStatusCode = HttpStatusCode.InternalServerError
-                    HttpContext.Current.Response.Output.Write(sw.ToString())
-                    HttpContext.Current.Response.ContentType = "text/xml"
-                    HttpContext.Current.Response.End()
-                End If
-
-            End If
-
-        End Try
-
-    End Function
     <WebMethod(), SoapHeader("mArch")>
     Public Function Get_Detalle_OC_By_IdOrdenCompraEnc_HH2(ByVal pIdOrdenCompraEnc As Integer, ByVal pIdBodega As Integer) As List(Of clsBeTrans_oc_det)
 
