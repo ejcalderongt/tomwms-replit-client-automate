@@ -5,6 +5,7 @@ using WMSWebAPI.Dtos.Pedido;
 using WMSWebAPI.Dtos.Salidas;
 using WMSWebAPI.Services.Salidas;
 using WMS.EntityCore.Dtos.Pedido;
+using WMS.EntityCore.Dtos;
 
 namespace WMSWebAPI.Controllers
 {
@@ -122,12 +123,7 @@ namespace WMSWebAPI.Controllers
                 return StatusCode(500, new { Exito = false, Mensaje = ex.Message });
             }
         }
-
-        /// <summary>
-        /// Inserta un documento de traslado/pedido desde MI3.
-        /// ACTUALIZADO: Ahora usa NavPedTrasladoRequestDto para mapear el JSON correctamente
-        /// ANTES de llamar a Datos_Validos(), replicando el patrón de integración SAP HANA.
-        /// </summary>
+        
         [HttpPost("mi3/insertar")]
         public IActionResult PostMi3Documento([FromBody] NavPedTrasladoRequestDto request,
                                               [FromServices] IConfiguration configuration,
@@ -201,6 +197,62 @@ namespace WMSWebAPI.Controllers
                     Mensaje = ex.Message,
                     Detalles = showStackTrace ? ex.ToString() : null
                 });
+            }
+        }
+        [HttpGet("mi3/pendientes-procesar")]
+        public IActionResult GetSalidasPendientesDeProcesar([FromServices] IConfiguration _configuration,
+        [FromQuery] string? noPedido = null,
+        [FromQuery] string fields = "full")
+        {
+            try
+            {
+
+                // 1) Traer pendientes
+                var data = _salidaService.Get_Salidas_Pendientes_De_Procesar(); // <-- ajusta al método real
+
+                // 2) Filtro opcional por No_pedido (igual que ingresos)
+                if (!string.IsNullOrWhiteSpace(noPedido))
+                    data = data.Where(x => x.No_pedido != null &&
+                                           x.No_pedido.Equals(noPedido, StringComparison.OrdinalIgnoreCase))
+                               .ToList();
+
+                // 3) Minimal
+                if (fields.Equals("minimal", StringComparison.OrdinalIgnoreCase))
+                {
+                    var umIds = data.Select(x => x.Idunidadmedida).Where(id => id > 0).Distinct().ToList();
+                    var presIds = data.Select(x => x.Idpresentacion).Where(id => id > 0).Distinct().ToList();
+
+                    var ums = clsLnUnidad_medida.GetByIds(_configuration, umIds);
+                    var presList = clsLnProducto_presentacion.GetByIds(_configuration, presIds);
+
+                    var umById = ums.ToDictionary(u => u.IdUnidadMedida, u => u.Codigo);
+                    var presCodigoById = presList.ToDictionary(p => p.IdPresentacion, p => p.Codigo ?? "");
+
+                    var result = data.Select(x => new SalidaSimpleReturnDto
+                    {
+                        Idtransaccion = x.Idtransaccion,
+                        No_pedido = x.No_pedido,
+                        Codigo_producto = x.Codigo_producto,
+                        Nombre_producto = x.Nombre_producto,
+                        UM = umById.TryGetValue(x.Idunidadmedida, out var um) ? um : "",
+                        Presentacion = presCodigoById.TryGetValue(x.Idpresentacion, out var codPres) ? codPres : "",
+                        Cantidad = x.Cantidad,
+                        Lote = x.Lote,
+                        Vence = x.Fecha_vence,
+                        Linea = int.TryParse(x.No_linea, out var ln) ? ln : 0,                        
+                        Licencia = x.Lic_Plate,
+                        Fecha = x.Fec_agr
+                    }).ToList();
+
+                    return Ok(result);
+                }
+
+                // 4) Full
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ok = false, message = ex.Message });
             }
         }
     }

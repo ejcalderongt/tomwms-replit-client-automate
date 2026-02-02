@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using WMS.DALCore;
+using WMS.DALCore.Transacciones;
 using WMS.EntityCore.Cliente;
 using WMS.EntityCore.Datos_Maestros;
 using WMS.EntityCore.Despacho;
 using WMS.EntityCore.Operador;
 using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Picking;
+using WMS.EntityCore.Transacciones;
 using WMSWebAPI.Dtos.Pedido;
 using WMSWebAPI.Dtos.Salidas;
 
@@ -354,7 +357,6 @@ namespace WMSWebAPI.Services.Salidas
 
             return Datos_Validos;
         }
-
         public void ProcesarSalidaDesde_3plDto(SalidaTrans_3plDto dto, SqlConnection conn, SqlTransaction tx)
         {
 
@@ -461,8 +463,7 @@ namespace WMSWebAPI.Services.Salidas
             try
             {
                 if (dto.Detalle != null && dto.Detalle.Any())
-                {
-                    //var detalle = _mapper.Map<List<clsBeTrans_pe_det>>(dto.Detalle);
+                {                    
                     var detalle = _mapper.Map<List<clsBeTrans_pe_det_3pl>>(dto.Detalle);
                     clsLnTrans_pe_det.InsertOrUpdate_3pl(detalle, conn, tx);
                 }
@@ -504,8 +505,7 @@ namespace WMSWebAPI.Services.Salidas
                 {
                     if (dto.Picking.Detalle != null && dto.Picking.Detalle.Any())
                     {
-                        var pickingDet = _mapper.Map<List<clsBeTrans_picking_det_3pl>>(dto.Picking.Detalle);
-                        //clsLnTrans_picking_det.InsertOrUpdate(pickingDet, conn, tx);
+                        var pickingDet = _mapper.Map<List<clsBeTrans_picking_det_3pl>>(dto.Picking.Detalle);                        
                         clsLnTrans_picking_det.InsertOrUpdate_3pl(pickingDet, conn, tx);
                     }
                 }
@@ -582,6 +582,12 @@ namespace WMSWebAPI.Services.Salidas
                 }
             }
 
+        }
+
+        public IEnumerable<clsBeI_nav_transacciones_out> Get_Salidas_Pendientes_De_Procesar()
+        {
+            var data = clsLnI_nav_transacciones_out.Get_Pendientes_De_Procesar(_configuration);
+            return data ?? new List<SalidaPendienteEntity>();
         }
     }
 }

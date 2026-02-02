@@ -1151,7 +1151,11 @@ Public Class frmCliente
 
             If pIdTiempoCliente = String.Empty Then pIdTiempoCliente = "0"
 
-            lIndex = pClienteTiemposList.FindIndex(Function(b) b.IdTiempoCliente = CInt(pIdTiempoCliente))
+            If Not pClienteTiemposList Is Nothing Then
+                lIndex = pClienteTiemposList.FindIndex(Function(b) b.IdTiempoCliente = CInt(pIdTiempoCliente))
+            Else
+                pClienteTiemposList = New List(Of clsBeCliente_tiempos)
+            End If
 
             If lIndex > -1 Then
 
