@@ -568,7 +568,7 @@ Partial Public Class clsLnStock
                                     VW_Stock_Res.parametro_b, 
                                     VW_Stock_Res.precio_producto, 
                                     VW_Stock_Res.costo_producto, 
-                                    VW_Stock_Res.costo_ingreso                                   
+                                    VW_Stock_Res.costo_ingreso 
                                 FROM 
                                     VW_Stock_Res 
                                   WHERE 1 > 0   "

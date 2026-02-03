@@ -1931,6 +1931,11 @@ Partial Public Class clsLnTrans_inv_ciclico
                         BeStock.Fecha_vence = pBeStock.Fecha_vence
                         BeStock.IdUbicacion = pBeStock.IdUbicacion
 
+                        '#AT20250128 Asignar talla color
+                        If pBeStock.IdProductoTallaColor <> 0 AndAlso pBeStock.IdProductoTallaColor <> BeStock.IdProductoTallaColor Then
+                            BeStock.IdProductoTallaColor = pBeStock.IdProductoTallaColor
+                        End If
+
                         clsPublic.CopyObject(BeStock, pBeStock)
 
                         '#EJC20180830: Después del copy se restablece la cantidad con ajuste
@@ -7274,6 +7279,10 @@ Partial Public Class clsLnTrans_inv_ciclico
                                     EstadoDestino,
                                     UbicacionOrigen,
                                     UbicacionDestino,
+                                    TallaStock TallaOrigen,
+                                    ISNULL(TallaNueva, '') AS TallaDestino,
+                                    ColorStock ColorOrigen,
+                                    ISNULL(ColorNuevo, '') AS ColorDestino,
                                     Cantidad_Stock AS CantidadStock,
                                     Peso_Stock AS PesoStock,
                                     Cantidad AS CantidadConteo,
@@ -7414,6 +7423,10 @@ Partial Public Class clsLnTrans_inv_ciclico
                     EstadoDestino,
                     UbicacionOrigen,
                     UbicacionDestino,
+                    TallaStock TallaOrigen,
+                    ISNULL(TallaNueva, '') AS TallaDestino,
+                    ColorStock ColorOrigen,
+                    ISNULL(ColorNuevo, '') AS ColorDestino,
                     Cantidad_Stock AS CantidadStock,
                     Peso_Stock AS PesoStock,
                     Cantidad AS CantidadConteo,

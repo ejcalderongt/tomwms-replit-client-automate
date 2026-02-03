@@ -1192,7 +1192,11 @@ Partial Public Class clsLnTrans_oc_enc
 
             Guarda_Trans_OC_Enc(BeTransOcEnc, lConnection, lTransaction)
             Guarda_Trans_oc_pol(BeTransOcEnc.IdOrdenCompraEnc, pObjP, lConnection, lTransaction)
-            Valida_Talla_Color(pListObjTD, lConnection, lTransaction)
+            '#GT27012025: validar control talla/color
+            Dim Bebodega = clsLnBodega.GetSingle_By_Idbodega(BeTransOcEnc.IdBodega, lConnection, lTransaction)
+            If Bebodega.Control_Talla_Color Then
+                Valida_Talla_Color(pListObjTD, lConnection, lTransaction)
+            End If
             Guarda_Trans_oc_det(BeTransOcEnc.IdOrdenCompraEnc, pListObjTD, lConnection, lTransaction)
             Guarda_Trans_oc_imagen(BeTransOcEnc.IdOrdenCompraEnc, pListObjI, lConnection, lTransaction)
             Guarda_Trans_oc_servicio(BeTransOcEnc.IdOrdenCompraEnc, pListObjServ, lConnection, lTransaction)

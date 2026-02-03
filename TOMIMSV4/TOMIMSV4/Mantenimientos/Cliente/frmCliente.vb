@@ -1,4 +1,5 @@
 ﻿Imports System.Reflection
+Imports System.Runtime.Remoting.Channels.Ipc
 Imports System.Threading.Tasks
 Imports CrystalDecisions.CrystalReports.ViewerObjectModel
 Imports DevExpress.XtraEditors
@@ -413,6 +414,7 @@ Public Class frmCliente
             DT.Columns.Add("Clasificación", GetType(String))
             DT.Columns.Add("Días Locales", GetType(Integer))
             DT.Columns.Add("Días Exteriores", GetType(Integer))
+            DT.Columns.Add("Es Manufactura", GetType(Boolean))
 
             Dim Correlativo As Integer = 1
 
@@ -444,6 +446,7 @@ Public Class frmCliente
 
                                                                                                  lRow(5) = Obj.Dias_Local
                                                                                                  lRow(6) = Obj.Dias_Exterior
+                                                                                                 lRow(7) = Obj.Es_Manufactura
 
                                                                                                  DT.Rows.Add(lRow)
 
@@ -1151,7 +1154,12 @@ Public Class frmCliente
 
             If pIdTiempoCliente = String.Empty Then pIdTiempoCliente = "0"
 
-            lIndex = pClienteTiemposList.FindIndex(Function(b) b.IdTiempoCliente = CInt(pIdTiempoCliente))
+
+            If pClienteTiemposList IsNot Nothing Then
+                lIndex = pClienteTiemposList.FindIndex(Function(b) b.IdTiempoCliente = CInt(pIdTiempoCliente))
+            Else
+                pClienteTiemposList = New List(Of clsBeCliente_tiempos)()
+            End If
 
             If lIndex > -1 Then
 
@@ -1261,6 +1269,7 @@ Public Class frmCliente
                 BeClienteTiempos.User_mod = AP.UsuarioAp.IdUsuario
                 BeClienteTiempos.Fec_mod = Now
                 BeClienteTiempos.Activo = True
+                BeClienteTiempos.Es_Manufactura = chkManufactura.Checked
 
                 pClienteTiemposList.Add(BeClienteTiempos)
 

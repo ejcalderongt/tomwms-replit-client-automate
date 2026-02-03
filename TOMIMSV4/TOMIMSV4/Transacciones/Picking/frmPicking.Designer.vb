@@ -121,10 +121,9 @@ Partial Class frmPicking
         Me.RibbonPageGroup5 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup3 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup2 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
-        Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
-        Me.RibbonStatusBar1 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.RibbonStatusBar2 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.RibbonStatusBar = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
+        Me.RibbonStatusBar1 = New DevExpress.XtraBars.Ribbon.RibbonStatusBar()
         Me.PopupMenu1 = New DevExpress.XtraBars.PopupMenu(Me.components)
         Me.xtpDatosPicking = New DevExpress.XtraTab.XtraTabControl()
         Me.XtratabPageDato = New DevExpress.XtraTab.XtraTabPage()
@@ -237,6 +236,7 @@ Partial Class frmPicking
         Me.OperadorDragDropEvent = New DevExpress.Utils.DragDrop.DragDropEvents(Me.components)
         Me.pickingUbicDragDropEvent = New DevExpress.Utils.DragDrop.DragDropEvents(Me.components)
         Me.ToastNotificationsManager1 = New DevExpress.XtraBars.ToastNotifications.ToastNotificationsManager(Me.components)
+        Me.txtArea = New DevExpress.XtraEditors.TextEdit()
         Label10 = New System.Windows.Forms.Label()
         Label12 = New System.Windows.Forms.Label()
         Label2 = New System.Windows.Forms.Label()
@@ -352,6 +352,7 @@ Partial Class frmPicking
         Me.hideContainerBottom.SuspendLayout()
         CType(Me.behaviorManager1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ToastNotificationsManager1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.txtArea.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label10
@@ -537,7 +538,7 @@ Partial Class frmPicking
         'Label5
         '
         Label5.AutoSize = True
-        Label5.Location = New System.Drawing.Point(531, 46)
+        Label5.Location = New System.Drawing.Point(617, 43)
         Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label5.Name = "Label5"
         Label5.Size = New System.Drawing.Size(73, 16)
@@ -547,7 +548,7 @@ Partial Class frmPicking
         'Label6
         '
         Label6.AutoSize = True
-        Label6.Location = New System.Drawing.Point(22, 78)
+        Label6.Location = New System.Drawing.Point(17, 78)
         Label6.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Label6.Name = "Label6"
         Label6.Size = New System.Drawing.Size(49, 16)
@@ -575,7 +576,7 @@ Partial Class frmPicking
         Me.RibbonControl.Pages.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPage() {Me.RibbonPage1})
         Me.RibbonControl.ShowApplicationButton = DevExpress.Utils.DefaultBoolean.[False]
         Me.RibbonControl.Size = New System.Drawing.Size(1554, 193)
-        Me.RibbonControl.StatusBar = Me.RibbonStatusBar2
+        Me.RibbonControl.StatusBar = Me.RibbonStatusBar1
         '
         'mnuGuardar
         '
@@ -919,8 +920,17 @@ Partial Class frmPicking
         Me.RibbonPageGroup2.Name = "RibbonPageGroup2"
         Me.RibbonPageGroup2.Text = "Estado del Registro"
         '
+        'RibbonStatusBar2
+        '
+        Me.RibbonStatusBar2.ItemLinks.Add(Me.lblRegs1)
+        Me.RibbonStatusBar2.Location = New System.Drawing.Point(2, 450)
+        Me.RibbonStatusBar2.Name = "RibbonStatusBar2"
+        Me.RibbonStatusBar2.Ribbon = Me.RibbonControl
+        Me.RibbonStatusBar2.Size = New System.Drawing.Size(1153, 33)
+        '
         'RibbonStatusBar
         '
+        Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegistros)
         Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegistros)
         Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 930)
         Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4)
@@ -937,24 +947,6 @@ Partial Class frmPicking
         Me.RibbonStatusBar1.Name = "RibbonStatusBar1"
         Me.RibbonStatusBar1.Ribbon = Me.RibbonControl
         Me.RibbonStatusBar1.Size = New System.Drawing.Size(1548, 33)
-        '
-        'RibbonStatusBar2
-        '
-        Me.RibbonStatusBar2.ItemLinks.Add(Me.lblRegs1)
-        Me.RibbonStatusBar2.Location = New System.Drawing.Point(2, 450)
-        Me.RibbonStatusBar2.Name = "RibbonStatusBar2"
-        Me.RibbonStatusBar2.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar2.Size = New System.Drawing.Size(1153, 33)
-        '
-        'RibbonStatusBar
-        '
-        Me.RibbonStatusBar.ItemLinks.Add(Me.lblRegistros)
-        Me.RibbonStatusBar.Location = New System.Drawing.Point(0, 930)
-        Me.RibbonStatusBar.Margin = New System.Windows.Forms.Padding(4)
-        Me.RibbonStatusBar.Name = "RibbonStatusBar"
-        Me.RibbonStatusBar.Ribbon = Me.RibbonControl
-        Me.RibbonStatusBar.Size = New System.Drawing.Size(1762, 30)
-        Me.RibbonStatusBar.Visible = False
         '
         'PopupMenu1
         '
@@ -1244,6 +1236,7 @@ Partial Class frmPicking
         '
         'GrpAsignacionTransaccion
         '
+        Me.GrpAsignacionTransaccion.Controls.Add(Me.txtArea)
         Me.GrpAsignacionTransaccion.Controls.Add(Me.cmbMuelle)
         Me.GrpAsignacionTransaccion.Controls.Add(Me.txtIdUbicacionMuelle)
         Me.GrpAsignacionTransaccion.Controls.Add(Label6)
@@ -1262,7 +1255,7 @@ Partial Class frmPicking
         '
         'cmbMuelle
         '
-        Me.cmbMuelle.Location = New System.Drawing.Point(145, 75)
+        Me.cmbMuelle.Location = New System.Drawing.Point(140, 75)
         Me.cmbMuelle.Margin = New System.Windows.Forms.Padding(6)
         Me.cmbMuelle.MenuManager = Me.RibbonControl
         Me.cmbMuelle.Name = "cmbMuelle"
@@ -1283,17 +1276,17 @@ Partial Class frmPicking
         '
         'txtIdUbicacionMuelle
         '
-        Me.txtIdUbicacionMuelle.Location = New System.Drawing.Point(409, 75)
+        Me.txtIdUbicacionMuelle.Location = New System.Drawing.Point(404, 75)
         Me.txtIdUbicacionMuelle.Margin = New System.Windows.Forms.Padding(4)
         Me.txtIdUbicacionMuelle.MenuManager = Me.RibbonControl
         Me.txtIdUbicacionMuelle.Name = "txtIdUbicacionMuelle"
         Me.txtIdUbicacionMuelle.Properties.ReadOnly = True
-        Me.txtIdUbicacionMuelle.Size = New System.Drawing.Size(82, 22)
+        Me.txtIdUbicacionMuelle.Size = New System.Drawing.Size(141, 22)
         Me.txtIdUbicacionMuelle.TabIndex = 20
         '
         'txtReferencia
         '
-        Me.txtReferencia.Location = New System.Drawing.Point(611, 42)
+        Me.txtReferencia.Location = New System.Drawing.Point(698, 40)
         Me.txtReferencia.Margin = New System.Windows.Forms.Padding(4)
         Me.txtReferencia.MenuManager = Me.RibbonControl
         Me.txtReferencia.Name = "txtReferencia"
@@ -1303,19 +1296,19 @@ Partial Class frmPicking
         '
         'txtNombreUbicacion
         '
-        Me.txtNombreUbicacion.Location = New System.Drawing.Point(234, 46)
+        Me.txtNombreUbicacion.Location = New System.Drawing.Point(229, 46)
         Me.txtNombreUbicacion.Margin = New System.Windows.Forms.Padding(4)
         Me.txtNombreUbicacion.MenuManager = Me.RibbonControl
         Me.txtNombreUbicacion.Name = "txtNombreUbicacion"
-        Me.txtNombreUbicacion.Properties.Mask.EditMask = "n0"
+        Me.txtNombreUbicacion.Properties.MaskSettings.Set("mask", "n0")
         Me.txtNombreUbicacion.Properties.ReadOnly = True
-        Me.txtNombreUbicacion.Size = New System.Drawing.Size(257, 22)
+        Me.txtNombreUbicacion.Size = New System.Drawing.Size(167, 22)
         Me.txtNombreUbicacion.TabIndex = 2
         '
         'lnkUbicacion
         '
         Me.lnkUbicacion.AutoSize = True
-        Me.lnkUbicacion.Location = New System.Drawing.Point(22, 48)
+        Me.lnkUbicacion.Location = New System.Drawing.Point(17, 48)
         Me.lnkUbicacion.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lnkUbicacion.Name = "lnkUbicacion"
         Me.lnkUbicacion.Size = New System.Drawing.Size(104, 16)
@@ -1325,7 +1318,7 @@ Partial Class frmPicking
         '
         'txtIdUbicacion
         '
-        Me.txtIdUbicacion.Location = New System.Drawing.Point(145, 46)
+        Me.txtIdUbicacion.Location = New System.Drawing.Point(140, 46)
         Me.txtIdUbicacion.Margin = New System.Windows.Forms.Padding(4)
         Me.txtIdUbicacion.MenuManager = Me.RibbonControl
         Me.txtIdUbicacion.Name = "txtIdUbicacion"
@@ -2251,6 +2244,17 @@ Partial Class frmPicking
         Me.ToastNotificationsManager1.ApplicationId = "cf3fbf03-d92f-4866-8ad6-96e1f04a2f1d"
         Me.ToastNotificationsManager1.Notifications.AddRange(New DevExpress.XtraBars.ToastNotifications.IToastNotificationProperties() {New DevExpress.XtraBars.ToastNotifications.ToastNotification("658711a9-bc62-4725-9f8a-71f0dbe14299", Nothing, "Nuevo Picking", "Realice la asignación de picking a operador", "", DevExpress.XtraBars.ToastNotifications.ToastNotificationSound.Looping_Alarm, DevExpress.XtraBars.ToastNotifications.ToastNotificationDuration.[Default], DevExpress.XtraBars.ToastNotifications.ToastNotificationTemplate.Text01)})
         '
+        'txtArea
+        '
+        Me.txtArea.Location = New System.Drawing.Point(404, 46)
+        Me.txtArea.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtArea.MenuManager = Me.RibbonControl
+        Me.txtArea.Name = "txtArea"
+        Me.txtArea.Properties.MaskSettings.Set("mask", "n0")
+        Me.txtArea.Properties.ReadOnly = True
+        Me.txtArea.Size = New System.Drawing.Size(141, 22)
+        Me.txtArea.TabIndex = 100
+        '
         'frmPicking
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 16.0!)
@@ -2371,6 +2375,7 @@ Partial Class frmPicking
         Me.hideContainerBottom.ResumeLayout(False)
         CType(Me.behaviorManager1, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.ToastNotificationsManager1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.txtArea.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -2540,4 +2545,5 @@ Partial Class frmPicking
     Friend WithEvents grdViewImpresionPedidos As DevExpress.XtraGrid.Views.Grid.GridView
     Friend WithEvents lnkQuitarPedido As DevExpress.XtraBars.BarButtonItem
     Friend WithEvents mnuReemplazo As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents txtArea As DevExpress.XtraEditors.TextEdit
 End Class
