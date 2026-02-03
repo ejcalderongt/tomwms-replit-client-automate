@@ -9596,16 +9596,16 @@ Public Class frmInventario
     End Sub
 
     '#MA20260108 Agregar
-    Private Sub btnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
-        Dim frm As New frmInventarioDet(frmInventarioDet.TipoTrans.Nuevo)
-        frm.IdInventario = gBeTransInvEnc.Idinventarioenc
-        frm.IdBodega = AP.IdBodega
+    'Private Sub btnAgregar_Click(sender As Object, e As EventArgs) Handles btnAgregar.Click
+    '    Dim frm As New frmInventarioDet(frmInventarioDet.TipoTrans.Nuevo)
+    '    frm.IdInventario = gBeTransInvEnc.Idinventarioenc
+    '    frm.IdBodega = AP.IdBodega
 
-        If frm.ShowDialog(Me) = DialogResult.OK Then
-            Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-                cn.Open()
-                Calcular_Inventario_Teorico_WMS(cn, Nothing)
-            End Using
-        End If
-    End Sub
+    '    If frm.ShowDialog(Me) = DialogResult.OK Then
+    '        Using cn As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+    '            cn.Open()
+    '            Calcular_Inventario_Teorico_WMS(cn, Nothing)
+    '        End Using
+    '    End If
+    'End Sub
 End Class

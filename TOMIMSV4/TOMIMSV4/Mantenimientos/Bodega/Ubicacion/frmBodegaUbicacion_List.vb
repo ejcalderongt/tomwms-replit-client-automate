@@ -102,13 +102,10 @@ Public Class frmBodegaUbicacion_List
                     lista = clsLnBodega_ubicacion.Get_All_By_IdBodega(chkActivos.Checked, pIdBodega, "")
                 Else
                     If pUbicacionPicking Then
-                        lista = clsLnBodega_ubicacion.Get_Ubicaciones_Picking_By_IdBodega(pIdBodega)
+                        'lista = clsLnBodega_ubicacion.Get_Ubicaciones_Picking_By_IdBodega(pIdBodega)
+                        Lista_con_area = clsLnBodega_ubicacion.GetUbicaciones_Con_Area_Picking_By_IdBodega(pIdBodega)
                     Else
-                        '#GT26012026: tipo lista de ubicaciones y areas para cealsa
-                        Lista_con_area = clsLnBodega_ubicacion.Get_Ubicaciones_and_Areas(chkActivos.Checked, pIdBodega, "ubicacion_recepcion")
-                        'lista = clsLnBodega_ubicacion.Get_All_By_IdBodega(chkActivos.Checked, pIdBodega, "ubicacion_recepcion")
-
-
+                        lista = clsLnBodega_ubicacion.Get_All_By_IdBodega(chkActivos.Checked, pIdBodega, "ubicacion_recepcion")
                     End If
                 End If
 

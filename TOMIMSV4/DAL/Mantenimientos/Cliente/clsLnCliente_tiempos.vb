@@ -17,6 +17,7 @@ Public Class clsLnCliente_tiempos
                 .User_mod = IIf(IsDBNull(dr.Item("user_mod")), "", dr.Item("user_mod"))
                 .Fec_mod = IIf(IsDBNull(dr.Item("fec_mod")), Date.Now, dr.Item("fec_mod"))
                 .Activo = IIf(IsDBNull(dr.Item("activo")), False, dr.Item("activo"))
+                .Es_Manufactura = IIf(IsDBNull(dr.Item("es_manufactura")), False, dr.Item("es_manufactura"))
             End With
 
         Catch ex1 As SqlException
@@ -51,6 +52,7 @@ Public Class clsLnCliente_tiempos
             Ins.Add("user_mod", "@user_mod", DataType.Parametro)
             Ins.Add("fec_mod", "@fec_mod", DataType.Parametro)
             Ins.Add("activo", "@activo", DataType.Parametro)
+            Ins.Add("es_manufactura", "@es_manufactura", DataType.Parametro)
 
             Dim sp As String = Ins.SQL()
             Dim cmd As New SqlCommand(sp, lConnection) With {.CommandType = CommandType.Text}
@@ -78,6 +80,7 @@ Public Class clsLnCliente_tiempos
             cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeCliente_tiempos.User_mod))
             cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeCliente_tiempos.Fec_mod))
             cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeCliente_tiempos.Activo))
+            cmd.Parameters.Add(New SqlParameter("@ES_MANUFACTURA", oBeCliente_tiempos.Es_Manufactura))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -120,6 +123,7 @@ Public Class clsLnCliente_tiempos
             Upd.Add("user_mod", "@user_mod", DataType.Parametro)
             Upd.Add("fec_mod", "@fec_mod", DataType.Parametro)
             Upd.Add("activo", "@activo", DataType.Parametro)
+            Upd.Add("es_manufactura", "@es_manufactura", DataType.Parametro)
             Upd.Where("IdTiempoCliente = @IdTiempoCliente")
 
             Dim sp As String = Upd.SQL()
@@ -146,6 +150,7 @@ Public Class clsLnCliente_tiempos
             cmd.Parameters.Add(New SqlParameter("@USER_MOD", oBeCliente_tiempos.User_mod))
             cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeCliente_tiempos.Fec_mod))
             cmd.Parameters.Add(New SqlParameter("@ACTIVO", oBeCliente_tiempos.Activo))
+            cmd.Parameters.Add(New SqlParameter("@ES_MANUFACTURA", oBeCliente_tiempos.Es_Manufactura))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 

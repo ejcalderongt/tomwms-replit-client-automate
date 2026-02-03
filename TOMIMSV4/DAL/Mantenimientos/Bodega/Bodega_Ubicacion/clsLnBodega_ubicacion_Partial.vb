@@ -3903,48 +3903,22 @@ Partial Public Class clsLnBodega_ubicacion
 
     End Function
 
-    '#GT26012026: listar ubicaciones para picking mostrando el area para cealsa.
-    Public Shared Function Get_Ubicaciones_and_Areas(ByVal pActivo As Boolean, ByVal pIdBodega As Integer, ByVal nombreCampo As String) As DataTable
+    '#GT28012026: listar ubicacines con area para cealsa en form
+    Public Shared Function GetUbicaciones_Con_Area_Picking_By_IdBodega(ByVal pIdBodega As Integer) As DataTable
+
+        GetUbicaciones_Con_Area_Picking_By_IdBodega = Nothing
+
         Try
-            Dim dt As New DataTable()
+
+            Dim lReturnList As New List(Of clsBeBodega_ubicacion)
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
+
                 lConnection.Open()
 
                 Using lTransaction As SqlTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted)
 
-                    Dim vSQL As String = ""
-
-                    If pIdBodega <> 0 Then
-
-                        vSQL = "SELECT DISTINCT u.IdUbicacion, 
-                                   dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) as Descripcion  
-                            FROM bodega_ubicacion AS u 
-                            WHERE u.IdBodega=@IdBodega AND u." & nombreCampo & " = 1 "
-
-                    Else
-
-                        vSQL = String.Format(
-                            "SELECT DISTINCT u.IdUbicacion, dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) AS Descripcion, ba.Descripcion as Area " &
-                            "FROM bodega_ubicacion AS u LEFT JOIN bodega_area ba on u.IdArea=ba.IdArea " &
-                            "WHERE u." & nombreCampo & " = 1")
-
-                    End If
-
-                    If (nombreCampo = "") Then
-
-                        vSQL = "SELECT DISTINCT u.IdUbicacion,  
-                                   dbo.Nombre_Completo_Ubicacion(u.IdUbicacion, u.IdBodega) as Descripcion    
-                            FROM bodega_ubicacion AS u  
-                            WHERE u.IdBodega=@IdBodega"
-
-                    End If
-
-                    If pActivo Then
-                        vSQL += " AND u.Activo = 1 "
-                    Else
-                        vSQL += " AND u.Activo = 0 "
-                    End If
+                    Dim vSQL As String = "SELECT IdUbicacion, Descripcion, Area FROM VW_Ubicaciones_Picking WHERE IdBodega = @IdBodega"
 
                     Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -3955,10 +3929,8 @@ Partial Public Class clsLnBodega_ubicacion
                         Dim lDataTable As New DataTable
                         lDTA.Fill(lDataTable)
 
-                        If lDataTable.Rows.Count = 0 Then
-                            dt = Nothing
-                        Else
-                            dt = lDataTable
+                        If lDataTable IsNot Nothing AndAlso lDataTable.Rows.Count > 0 Then
+                            GetUbicaciones_Con_Area_Picking_By_IdBodega = lDataTable
                         End If
 
                     End Using
@@ -3966,15 +3938,16 @@ Partial Public Class clsLnBodega_ubicacion
                     lTransaction.Commit()
 
                 End Using
+
+                lConnection.Close()
+
             End Using
 
-            Return dt
 
         Catch ex As Exception
-            Throw
+            Throw ex
         End Try
+
     End Function
-
-
 
 End Class

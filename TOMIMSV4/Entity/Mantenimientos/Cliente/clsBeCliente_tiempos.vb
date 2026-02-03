@@ -15,6 +15,9 @@ Public Class clsBeCliente_tiempos
     Public Property User_mod() As String = ""
     Public Property Fec_mod() As Date = Date.Now
     Public Property Activo() As Boolean = False
+
+    Public Property Es_Manufactura As Boolean = False
+
     Sub New()
     End Sub
 
