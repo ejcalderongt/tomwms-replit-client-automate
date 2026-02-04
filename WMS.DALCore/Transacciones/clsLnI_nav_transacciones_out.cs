@@ -780,8 +780,7 @@
                                     UPDATE I_nav_transacciones_out
                                     SET Enviado = 1,
                                         fec_mod = GETDATE()
-                                    WHERE Idtransaccion IN ({string.Join(",", pnames)})
-                                      AND tipo_transaccion = 'INGRESO'
+                                    WHERE Idtransaccion IN ({string.Join(",", pnames)})                                      
                                       AND Enviado = 0;";
 
                 int updated;

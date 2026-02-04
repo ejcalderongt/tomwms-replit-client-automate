@@ -1804,24 +1804,9 @@ public class clsLnI_nav_ped_compra_enc
                 }
                 else
                 {
-                    double vFactorConv = clsLnUnidad_medida_conversion.Get_Factor(BeUnidadMedidaPedCompra.IdUnidadMedida,
-                                                                                  BeProductoBodega.Producto.UnidadMedida.IdUnidadMedida,
-                                                                                  lConnection,
-                                                                                  lTransaction);
-
-                    if (vFactorConv > 0)
-                    {
-                        // Se desactiva la creación automática de presentaciones. 
-                        throw new Exception("ERROR_20220727_1228C: No se encontró la presentación asociada al código: " +
-                                        navPedidoCompraDet.No + " Con código variante: " + navPedidoCompraDet.Variant_Code);
-                    }
-                    else
-                    {
-                        throw new Exception(string.Format("Error: No existe factor en unidad_medida_conversion para Producto: {0} UnidMedBas {1} <> UnidMed Ped. Compra {2} ",
-                                                      navPedidoCompraDet.No,
-                                                      BeProductoBodega.Producto.UnidadMedida.Nombre,
-                                                      navPedidoCompraDet.Unit_Of_Measure_Code));
-                    }
+                    BePedidoCompraDet.IdUnidadMedidaBasica = BeUnidadMedidaPedCompra.IdUnidadMedida;
+                    BePedidoCompraDet.UnidadMedida.IdUnidadMedida = BeUnidadMedidaPedCompra.IdUnidadMedida;
+                    BePedidoCompraDet.Nombre_unidad_medida_basica = navPedidoCompraDet.Unit_Of_Measure_Code;
                 }
             }
             else
