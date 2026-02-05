@@ -5847,8 +5847,7 @@ Public Class TOMHHWS
     End Function
 
     <WebMethod(), SoapHeader("mArch")>
-    Public Function Aplica_Cambio_Estado_Ubic_HH_LicCompleta(ByVal pMovimientoList As List(Of clsBeTrans_movimientos),
-                                                             ByVal pStockResList As List(Of clsBeVW_stock_res)) As Boolean
+    Public Function Aplica_Cambio_Estado_Ubic_HH_LicCompleta(ByVal pStockResList As List(Of clsBeVW_stock_res)) As Boolean
 
         Aplica_Cambio_Estado_Ubic_HH_LicCompleta = False
 
@@ -16078,6 +16077,7 @@ New JsonSerializerSettings With {
 
     <WebMethod(), SoapHeader("mArch")>
     Public Function Guardar_Recepcion_S(ByVal pIdRecpecionEnc As Integer,
+                                        ByVal pIdTipoDocumentoDI As Integer,
                                         ByVal pIdOrdenCompraEnc As Integer,
                                         ByVal BeRecDet As clsBeTrans_re_det,
                                         ByVal pListRecDetParam As List(Of clsBeTrans_re_det_parametros),

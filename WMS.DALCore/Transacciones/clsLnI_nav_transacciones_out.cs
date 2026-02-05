@@ -780,8 +780,7 @@
                                     UPDATE I_nav_transacciones_out
                                     SET Enviado = 1,
                                         fec_mod = GETDATE()
-                                    WHERE Idtransaccion IN ({string.Join(",", pnames)})
-                                      AND tipo_transaccion = 'INGRESO'
+                                    WHERE Idtransaccion IN ({string.Join(",", pnames)})                                      
                                       AND Enviado = 0;";
 
                 int updated;
@@ -806,5 +805,45 @@
                 tx?.Dispose();
             }
         }
+
+        public static List<clsBeI_nav_transacciones_out>? Get_Pendientes_De_Procesar(IConfiguration configuration, string? noPedido)
+        {
+            var list = new List<clsBeI_nav_transacciones_out>();
+
+            var cs = configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrWhiteSpace(cs))
+                throw new InvalidOperationException("No se encontró la cadena de conexión 'DefaultConnection'.");
+
+            using var cn = new SqlConnection(cs);
+            using var cmd = new SqlCommand("sp_MI3_Salidas_Pendientes_Procesar", cn)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            // Parámetro opcional: el SP debe aceptar @no_pedido (o cambia el nombre aquí)
+            cmd.Parameters.Add("@no_pedido", SqlDbType.VarChar, 50).Value =
+                string.IsNullOrWhiteSpace(noPedido) ? DBNull.Value : noPedido.Trim();
+
+            cn.Open();
+
+            // 1) Ejecutar y cargar a DataTable (porque tu Cargar usa DataRow)
+            using var dr = cmd.ExecuteReader();
+            var dt = new DataTable();
+            dt.Load(dr);
+
+            // 2) Mapear usando tu método Cargar(ref obj, DataRow)
+            foreach (DataRow row in dt.Rows)
+            {
+                var item = new clsBeI_nav_transacciones_out();
+                Cargar(ref item, row);
+                list.Add(item);
+            }
+
+            return list;
+        }
+
+        // -------------------------
+        // Helpers de lectura segura
+        // -------------------------
     }
 }

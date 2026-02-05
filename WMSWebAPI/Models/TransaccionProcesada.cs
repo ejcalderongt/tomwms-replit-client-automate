@@ -6,7 +6,6 @@ namespace WMSWebAPI.Models
     {
         [Key]
         public Guid IdTransaccion { get; set; }
-
         public DateTime FechaProcesado { get; set; } = DateTime.Now;
 
         [MaxLength(20)]
