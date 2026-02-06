@@ -13317,7 +13317,9 @@ Por favor reportar este problema a DevOps."
 
                 Dim lReturnValue As Object = lCommand.ExecuteScalar()
                 If lReturnValue IsNot DBNull.Value AndAlso lReturnValue IsNot Nothing Then
-                    vResult = lReturnValue
+                    vResult = Convert.ToBoolean(lReturnValue)
+                Else
+                    vResult = False ' caso 1: Nothing (sin filas) / caso 2: DBNull (NULL)
                 End If
             End Using
 

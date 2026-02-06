@@ -2421,7 +2421,7 @@ Public Class frmDespacho
                 '#GT29012026: esta bandera evita que en la siguiente carga no vuelva a insertar los mismos valores.
                 Pedido_Cargado_Desde_Picking = True
 
-                Application.DoEvents()
+                'Application.DoEvents()
 
             End If
 
