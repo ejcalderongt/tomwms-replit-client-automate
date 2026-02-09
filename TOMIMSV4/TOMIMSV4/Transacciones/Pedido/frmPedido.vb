@@ -8230,6 +8230,10 @@ Public Class frmPedido
                             tabHojaVerificacion.PageVisible = False
                         End If
 
+
+                        'Esperar tareas para no dejar UI inconsistente
+                        Task.WaitAll(taskPick, taskRes, taskLib)
+
                         SplashScreenManager.Default.SetWaitFormDescription("Poliza. ")
 
                         '#EJC20210215: validar antes que no sea nothing
@@ -8240,8 +8244,6 @@ Public Class frmPedido
                             End If
                         End If
 
-                        'Esperar tareas para no dejar UI inconsistente
-                        Task.WaitAll(taskPick, taskRes, taskLib)
 
                         '#GT11042023: set de la hora inicio y fin 
                         dtpHoraInicioPreparacion.Value = pBePedidoEnc.Hora_ini
