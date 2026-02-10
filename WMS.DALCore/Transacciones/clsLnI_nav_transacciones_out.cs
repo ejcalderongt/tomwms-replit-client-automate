@@ -806,44 +806,61 @@
             }
         }
 
-        public static List<clsBeI_nav_transacciones_out>? Get_Pendientes_De_Procesar(IConfiguration configuration, string? noPedido)
+        public static List<clsBeI_nav_transacciones_out> Get_All_Salidas_Pendientes_De_Procesar(IConfiguration configuration,string? noPedido = null)
         {
-            var list = new List<clsBeI_nav_transacciones_out>();
+            SqlConnection lConnection = new SqlConnection(configuration.GetConnectionString("CST"));
+            SqlTransaction? lTransaction = null;
 
-            var cs = configuration.GetConnectionString("DefaultConnection");
-            if (string.IsNullOrWhiteSpace(cs))
-                throw new InvalidOperationException("No se encontró la cadena de conexión 'DefaultConnection'.");
-
-            using var cn = new SqlConnection(cs);
-            using var cmd = new SqlCommand("sp_MI3_Salidas_Pendientes_Procesar", cn)
+            try
             {
-                CommandType = CommandType.StoredProcedure
-            };
+                lConnection.Open();
+                lTransaction = lConnection.BeginTransaction(IsolationLevel.ReadUncommitted);
 
-            // Parámetro opcional: el SP debe aceptar @no_pedido (o cambia el nombre aquí)
-            cmd.Parameters.Add("@no_pedido", SqlDbType.VarChar, 50).Value =
-                string.IsNullOrWhiteSpace(noPedido) ? DBNull.Value : noPedido.Trim();
+                var lReturnList = new List<clsBeI_nav_transacciones_out>();
+                
+                string vSQL ="SELECT * FROM I_nav_transacciones_out " +
+                             "WHERE tipo_transaccion = 'SALIDA' AND Enviado = 0 " +
+                             (string.IsNullOrWhiteSpace(noPedido) ? "" : "AND no_pedido = @no_pedido ") +
+                             "ORDER BY fec_agr";
 
-            cn.Open();
+                using var cmd = new SqlCommand(vSQL, lConnection, lTransaction)
+                {
+                    CommandType = CommandType.Text
+                };                
 
-            // 1) Ejecutar y cargar a DataTable (porque tu Cargar usa DataRow)
-            using var dr = cmd.ExecuteReader();
-            var dt = new DataTable();
-            dt.Load(dr);
+                if (!string.IsNullOrWhiteSpace(noPedido))
+                    cmd.Parameters.Add("@no_pedido", SqlDbType.VarChar, 50).Value = noPedido.Trim();
 
-            // 2) Mapear usando tu método Cargar(ref obj, DataRow)
-            foreach (DataRow row in dt.Rows)
-            {
-                var item = new clsBeI_nav_transacciones_out();
-                Cargar(ref item, row);
-                list.Add(item);
+                using var dad = new SqlDataAdapter(cmd);
+                var dt = new DataTable();
+                dad.Fill(dt);
+
+                foreach (DataRow dr in dt.Rows)
+                {
+                    var item = new clsBeI_nav_transacciones_out();
+                    Cargar(ref item, dr);
+                    lReturnList.Add(item);
+                }
+
+                lTransaction.Commit();
+                return lReturnList;
             }
+            catch
+            {
+                if (lTransaction != null)
+                    lTransaction.Rollback();
 
-            return list;
+                throw;
+            }
+            finally
+            {
+                if (lConnection.State == ConnectionState.Open)
+                    lConnection.Close();
+
+                lTransaction?.Dispose();
+                lConnection.Dispose();
+            }
         }
 
-        // -------------------------
-        // Helpers de lectura segura
-        // -------------------------
     }
 }

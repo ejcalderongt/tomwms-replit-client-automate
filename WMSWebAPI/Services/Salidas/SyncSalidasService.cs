@@ -581,18 +581,13 @@ namespace WMSWebAPI.Services.Salidas
                     throw new Exception("Error al procesar Prioridad de Picking → " + ex.Message, ex);
                 }
             }
-
         }
 
-        public IEnumerable<clsBeI_nav_transacciones_out> Get_Salidas_Pendientes_De_Procesar()
-        {
-            throw new NotImplementedException();
+        public IEnumerable<clsBeI_nav_transacciones_out> Get_Salidas_Pendientes_De_Procesar(string? noPedido = null)
+        {            
+            var data = clsLnI_nav_transacciones_out.Get_All_Salidas_Pendientes_De_Procesar(_configuration, noPedido);
+            return data ?? Enumerable.Empty<clsBeI_nav_transacciones_out>();
         }
-
-        //public IEnumerable<clsBeI_nav_transacciones_out> Get_Salidas_Pendientes_De_Procesar()
-        //{
-        //    var data = clsLnI_nav_transacciones_out.Get_Pendientes_De_Procesar(_configuration);
-        //    return data ?? new List<SalidaPendienteEntity>();
-        //}
+        
     }
 }

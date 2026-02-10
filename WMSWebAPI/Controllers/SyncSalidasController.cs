@@ -208,7 +208,7 @@ namespace WMSWebAPI.Controllers
             {
 
                 // 1) Traer pendientes
-                var data = _salidaService.Get_Salidas_Pendientes_De_Procesar(); // <-- ajusta al método real
+                var data = _salidaService.Get_Salidas_Pendientes_De_Procesar(noPedido);
 
                 // 2) Filtro opcional por No_pedido (igual que ingresos)
                 if (!string.IsNullOrWhiteSpace(noPedido))
