@@ -3958,104 +3958,104 @@ Partial Public Class clsLnTrans_inv_ciclico
             Dim lBeStockEnFechaFilter As New List(Of clsBeStockEnUnaFecha)
 
             Dim vSQL As String =
-"SELECT " &
-"   T.idinventarioenc, " &
-"   T.IdProductoBodega, " &
-"   MIN(T.idinvciclico) AS idinvciclico, " &
-"   SUM(T.cantidad_stock) AS cantidad_stock, " &
-"   SUM(T.cantidad_conteo) AS cantidad_conteo, " &
-"   SUM(T.cantidad_reconteo) AS cantidad_reconteo, " &
-"   SUM(T.peso_stock) AS peso_stock, " &
-"   SUM(T.peso_conteo) AS peso_conteo, " &
-"   SUM(T.peso_reconteo) AS peso_reconteo, " &
-"   T.Codigo, " &
-"   T.Producto, " &
-"   T.LoteOrigen, " &
-"   T.LoteDestino, " &
-"   T.fecha_vence, " &
-"   T.Licencia, " &
-"   T.Estado, " &
-"   T.EstadoDestino, " &
-"   T.UbicacionOrigen, " &
-"   T.UbicacionDestino, " &
-"   T.IdUbicacion, " &
-"   T.IdUnidadMedida, " &
-"   MAX(T.Fec_Mod) AS Fec_Mod, " &
-"   T.IdPresentacion, " &
-"   T.IdProductoEstado, " &
-"   T.IdProductoEst_nuevo, " &
-"   T.fecha_vence_stock, " &
-"   SUM(T.Cantidad_Reservada) AS Cantidad_Reservada, " &
-"   T.IdProductoTallaColor, " &
-"   T.IdProductoTallaColor_nuevo, " &
-"   T.Talla, " &
-"   T.Color, " &
-"   T.TallaNueva, " &
-"   T.ColorNuevo " &
-"FROM ( " &
-"   SELECT " &
-"       ciclico.idinventarioenc, " &
-"       ciclico.IdProductoBodega, " &
-"       ciclico.idinvciclico, " &
-"       MAX(ciclico.cant_stock) AS cantidad_stock, " &
-"       SUM(ciclico.cantidad) AS cantidad_conteo, " &
-"       SUM(ciclico.cant_reconteo) AS cantidad_reconteo, " &
-"       MAX(ciclico.peso_stock) AS peso_stock, " &
-"       SUM(ciclico.peso) AS peso_conteo, " &
-"       SUM(ciclico.peso_reconteo) AS peso_reconteo, " &
-"       p.codigo AS Codigo, " &
-"       p.nombre AS Producto, " &
-"       ciclico.lote_stock AS LoteOrigen, " &
-"       ciclico.lote AS LoteDestino, " &
-"       ciclico.fecha_vence, " &
-"       ciclico.lic_plate AS Licencia, " &
-"       est1.nombre AS Estado, " &
-"       est2.nombre AS EstadoDestino, " &
-"       dbo.Nombre_Completo_Ubicacion(ciclico.IdUbicacion, ciclico.IdBodega) AS UbicacionOrigen, " &
-"       ISNULL(dbo.Nombre_Completo_Ubicacion(ciclico.IdUbicacion_nuevo, ciclico.IdBodega), dbo.Nombre_Completo_Ubicacion(ciclico.IdUbicacion, ciclico.IdBodega)) AS UbicacionDestino, " &
-"       ciclico.IdUbicacion, " &
-"       MAX(ciclico.fec_mod) AS Fec_Mod, " &
-"       ciclico.IdPresentacion, " &
-"       ciclico.IdProductoEstado, " &
-"       ciclico.IdProductoEst_nuevo, " &
-"       ciclico.fecha_vence_stock, " &
-"       ciclico.IdUnidadMedida, " &
-"       MAX(ISNULL(ciclico.cantidad_reservada_umbas,0)) AS Cantidad_Reservada, " &
-"       ciclico.IdProductoTallaColor, " &
-"       ciclico.IdProductoTallaColor_nuevo, " &
-"       ISNULL(talla.codigo,'') AS Talla, " &
-"       ISNULL(color.nombre,'') AS Color, " &
-"       ISNULL(tn.codigo,'') AS TallaNueva, " &
-"       ISNULL(cn.nombre,'') AS ColorNuevo " &
-"   FROM trans_inv_ciclico ciclico " &
-"       INNER JOIN trans_inv_enc enc ON ciclico.idinventarioenc = enc.idinventarioenc " &
-"       INNER JOIN producto_bodega pb ON ciclico.IdProductoBodega = pb.IdProductoBodega " &
-"       INNER JOIN producto p ON pb.IdProducto = p.IdProducto " &
-"       INNER JOIN producto_estado est1 ON ciclico.IdProductoEstado = est1.IdEstado " &
-"       INNER JOIN producto_estado est2 ON ciclico.IdProductoEst_nuevo = est2.IdEstado " &
-"       LEFT JOIN producto_talla_color ptc ON ciclico.IdProductoTallaColor = ptc.IdProductoTallaColor " &
-"       LEFT JOIN talla ON talla.IdTalla = ptc.IdTalla " &
-"       LEFT JOIN color ON color.IdColor = ptc.IdColor " &
-"       LEFT JOIN producto_talla_color ptcn ON ciclico.IdProductoTallaColor_nuevo = ptcn.IdProductoTallaColor " &
-"       LEFT JOIN talla tn ON tn.IdTalla = ptcn.IdTalla " &
-"       LEFT JOIN color cn ON cn.IdColor = ptcn.IdColor " &
-"   WHERE ciclico.idinventarioenc = @IdInventario " &
-"   GROUP BY " &
-"       ciclico.idinventarioenc, ciclico.IdProductoBodega, ciclico.idinvciclico, " &
-"       p.codigo, p.nombre, ciclico.lote, ciclico.fecha_vence, ciclico.lic_plate, " &
-"       ciclico.IdProductoEstado, ciclico.IdProductoEst_nuevo, ciclico.IdUbicacion, ciclico.IdUbicacion_nuevo, " &
-"       est1.nombre, est2.nombre, ciclico.lote_stock, ciclico.IdStock, ciclico.IdBodega, " &
-"       ciclico.IdUnidadMedida, ciclico.IdPresentacion, ciclico.fecha_vence_stock, " &
-"       ciclico.IdProductoTallaColor, ciclico.IdProductoTallaColor_nuevo, " &
-"       talla.codigo, color.nombre, tn.codigo, cn.nombre " &
-") T " &
-"GROUP BY " &
-"   T.idinventarioenc, T.IdProductoBodega, " &
-"   T.Codigo, T.Producto, T.LoteOrigen, T.LoteDestino, T.fecha_vence, T.Licencia, " &
-"   T.Estado, T.EstadoDestino, T.UbicacionOrigen, T.UbicacionDestino, T.IdUbicacion, " &
-"   T.IdUnidadMedida, T.IdPresentacion, T.IdProductoEstado, T.IdProductoEst_nuevo, T.fecha_vence_stock, " &
-"   T.IdProductoTallaColor, T.IdProductoTallaColor_nuevo, T.Talla, T.Color, T.TallaNueva, T.ColorNuevo " &
-"ORDER BY T.Codigo"
+                                "SELECT " &
+                                "   T.idinventarioenc, " &
+                                "   T.IdProductoBodega, " &
+                                "   MIN(T.idinvciclico) AS idinvciclico, " &
+                                "   SUM(T.cantidad_stock) AS cantidad_stock, " &
+                                "   SUM(T.cantidad_conteo) AS cantidad_conteo, " &
+                                "   SUM(T.cantidad_reconteo) AS cantidad_reconteo, " &
+                                "   SUM(T.peso_stock) AS peso_stock, " &
+                                "   SUM(T.peso_conteo) AS peso_conteo, " &
+                                "   SUM(T.peso_reconteo) AS peso_reconteo, " &
+                                "   T.Codigo, " &
+                                "   T.Producto, " &
+                                "   T.LoteOrigen, " &
+                                "   T.LoteDestino, " &
+                                "   T.fecha_vence, " &
+                                "   T.Licencia, " &
+                                "   T.Estado, " &
+                                "   T.EstadoDestino, " &
+                                "   T.UbicacionOrigen, " &
+                                "   T.UbicacionDestino, " &
+                                "   T.IdUbicacion, " &
+                                "   T.IdUnidadMedida, " &
+                                "   MAX(T.Fec_Mod) AS Fec_Mod, " &
+                                "   T.IdPresentacion, " &
+                                "   T.IdProductoEstado, " &
+                                "   T.IdProductoEst_nuevo, " &
+                                "   T.fecha_vence_stock, " &
+                                "   SUM(T.Cantidad_Reservada) AS Cantidad_Reservada, " &
+                                "   T.IdProductoTallaColor, " &
+                                "   T.IdProductoTallaColor_nuevo, " &
+                                "   T.Talla, " &
+                                "   T.Color, " &
+                                "   T.TallaNueva, " &
+                                "   T.ColorNuevo " &
+                                "FROM ( " &
+                                "   SELECT " &
+                                "       ciclico.idinventarioenc, " &
+                                "       ciclico.IdProductoBodega, " &
+                                "       ciclico.idinvciclico, " &
+                                "       MAX(ciclico.cant_stock) AS cantidad_stock, " &
+                                "       SUM(ciclico.cantidad) AS cantidad_conteo, " &
+                                "       SUM(ciclico.cant_reconteo) AS cantidad_reconteo, " &
+                                "       MAX(ciclico.peso_stock) AS peso_stock, " &
+                                "       SUM(ciclico.peso) AS peso_conteo, " &
+                                "       SUM(ciclico.peso_reconteo) AS peso_reconteo, " &
+                                "       p.codigo AS Codigo, " &
+                                "       p.nombre AS Producto, " &
+                                "       ciclico.lote_stock AS LoteOrigen, " &
+                                "       ciclico.lote AS LoteDestino, " &
+                                "       ciclico.fecha_vence, " &
+                                "       ciclico.lic_plate AS Licencia, " &
+                                "       est1.nombre AS Estado, " &
+                                "       est2.nombre AS EstadoDestino, " &
+                                "       dbo.Nombre_Completo_Ubicacion(ciclico.IdUbicacion, ciclico.IdBodega) AS UbicacionOrigen, " &
+                                "       ISNULL(dbo.Nombre_Completo_Ubicacion(ciclico.IdUbicacion_nuevo, ciclico.IdBodega), dbo.Nombre_Completo_Ubicacion(ciclico.IdUbicacion, ciclico.IdBodega)) AS UbicacionDestino, " &
+                                "       ciclico.IdUbicacion, " &
+                                "       MAX(ciclico.fec_mod) AS Fec_Mod, " &
+                                "       ciclico.IdPresentacion, " &
+                                "       ciclico.IdProductoEstado, " &
+                                "       ciclico.IdProductoEst_nuevo, " &
+                                "       ciclico.fecha_vence_stock, " &
+                                "       ciclico.IdUnidadMedida, " &
+                                "       MAX(ISNULL(ciclico.cantidad_reservada_umbas,0)) AS Cantidad_Reservada, " &
+                                "       ciclico.IdProductoTallaColor, " &
+                                "       ciclico.IdProductoTallaColor_nuevo, " &
+                                "       ISNULL(talla.codigo,'') AS Talla, " &
+                                "       ISNULL(color.nombre,'') AS Color, " &
+                                "       ISNULL(tn.codigo,'') AS TallaNueva, " &
+                                "       ISNULL(cn.nombre,'') AS ColorNuevo " &
+                                "   FROM trans_inv_ciclico ciclico " &
+                                "       INNER JOIN trans_inv_enc enc ON ciclico.idinventarioenc = enc.idinventarioenc " &
+                                "       INNER JOIN producto_bodega pb ON ciclico.IdProductoBodega = pb.IdProductoBodega " &
+                                "       INNER JOIN producto p ON pb.IdProducto = p.IdProducto " &
+                                "       INNER JOIN producto_estado est1 ON ciclico.IdProductoEstado = est1.IdEstado " &
+                                "       INNER JOIN producto_estado est2 ON ciclico.IdProductoEst_nuevo = est2.IdEstado " &
+                                "       LEFT JOIN producto_talla_color ptc ON ciclico.IdProductoTallaColor = ptc.IdProductoTallaColor " &
+                                "       LEFT JOIN talla ON talla.IdTalla = ptc.IdTalla " &
+                                "       LEFT JOIN color ON color.IdColor = ptc.IdColor " &
+                                "       LEFT JOIN producto_talla_color ptcn ON ciclico.IdProductoTallaColor_nuevo = ptcn.IdProductoTallaColor " &
+                                "       LEFT JOIN talla tn ON tn.IdTalla = ptcn.IdTalla " &
+                                "       LEFT JOIN color cn ON cn.IdColor = ptcn.IdColor " &
+                                "   WHERE ciclico.idinventarioenc = @IdInventario " &
+                                "   GROUP BY " &
+                                "       ciclico.idinventarioenc, ciclico.IdProductoBodega, ciclico.idinvciclico, " &
+                                "       p.codigo, p.nombre, ciclico.lote, ciclico.fecha_vence, ciclico.lic_plate, " &
+                                "       ciclico.IdProductoEstado, ciclico.IdProductoEst_nuevo, ciclico.IdUbicacion, ciclico.IdUbicacion_nuevo, " &
+                                "       est1.nombre, est2.nombre, ciclico.lote_stock, ciclico.IdStock, ciclico.IdBodega, " &
+                                "       ciclico.IdUnidadMedida, ciclico.IdPresentacion, ciclico.fecha_vence_stock, " &
+                                "       ciclico.IdProductoTallaColor, ciclico.IdProductoTallaColor_nuevo, " &
+                                "       talla.codigo, color.nombre, tn.codigo, cn.nombre " &
+                                ") T " &
+                                "GROUP BY " &
+                                "   T.idinventarioenc, T.IdProductoBodega, " &
+                                "   T.Codigo, T.Producto, T.LoteOrigen, T.LoteDestino, T.fecha_vence, T.Licencia, " &
+                                "   T.Estado, T.EstadoDestino, T.UbicacionOrigen, T.UbicacionDestino, T.IdUbicacion, " &
+                                "   T.IdUnidadMedida, T.IdPresentacion, T.IdProductoEstado, T.IdProductoEst_nuevo, T.fecha_vence_stock, " &
+                                "   T.IdProductoTallaColor, T.IdProductoTallaColor_nuevo, T.Talla, T.Color, T.TallaNueva, T.ColorNuevo " &
+                                "ORDER BY T.Codigo"
 
 
 
@@ -4490,6 +4490,8 @@ Partial Public Class clsLnTrans_inv_ciclico
 
             cmd.Parameters.Add(New SqlParameter("@FEC_MOD", oBeTrans_inv_ciclico.Fec_Mod))
             cmd.Parameters.Add(New SqlParameter("@CONTADO", oBeTrans_inv_ciclico.Contado))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR", oBeTrans_inv_ciclico.IdProductoTallaColor))
+            cmd.Parameters.Add(New SqlParameter("@IDPRODUCTOTALLACOLOR_NUEVO", oBeTrans_inv_ciclico.IdProductoTallaColor_nuevo))
 
             Dim rowsAffected As Integer = cmd.ExecuteNonQuery()
 
@@ -4746,90 +4748,90 @@ Partial Public Class clsLnTrans_inv_ciclico
             Dim lReturnList As New List(Of clsBeTrans_inv_ciclico)
 
             Dim vSQL As String = "SELECT " &
-"  MAX(trans_inv_ciclico.Idinvciclico) as Idinvciclico, " &
-"  bodega_ubicacion.IdUbicacion, " &
-"  bodega_ubicacion.descripcion AS Ubicacion, " &
-"  bodega_tramo.descripcion AS Tramo, " &
-"  dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.IdUbicacion, bodega_ubicacion.IdBodega) AS Nombre_Completo, " &
-"  trans_inv_ciclico.IdStock, " &
-"  producto.codigo AS Codigo, " &
-"  producto.nombre AS Producto, " &
-"  ISNULL(producto_presentacion.nombre, '') AS Presentacion, " &
-"  trans_inv_ciclico.lote, " &
-"  trans_inv_ciclico.lote_stock, " &
-"  producto_estado.nombre AS Estado, " &
-"  SUM(trans_inv_ciclico.cantidad) AS Cantidad_Ciclico, " &
-"  SUM(trans_inv_ciclico.peso) AS Peso_Ciclico, " &
-"  producto.IdPropietario, " &
-"  producto.IdClasificacion, " &
-"  producto.IdFamilia, " &
-"  producto_estado.IdEstado, " &
-"  trans_inv_ciclico.EsNuevo, " &
-"  bodega_tramo.IdTramo, " &
-"  trans_inv_ciclico.fecha_vence, " &
-"  trans_inv_ciclico.idinventarioenc, " &
-"  trans_inv_ciclico.IdProductoBodega, " &
-"  trans_inv_ciclico.EsPallet, " &
-"  trans_inv_ciclico.lic_plate, " &
-"  trans_inv_ciclico.IdPresentacion, " &
-"  trans_inv_ciclico.fecha_vence_stock, " &
-"  trans_inv_ciclico.peso_stock AS Peso_Stock, " &
-"  trans_inv_ciclico.cant_stock AS Cantidad_Stock, " &
-"  trans_inv_ciclico.peso_reconteo, " &
-"  producto_tipo.NombreTipoProducto, " &
-"  producto.IdProducto, " &
-"  ISNULL(producto_presentacion.factor, 1) AS Factor, " &
-"  dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.IdUbicacion, bodega_ubicacion.IdBodega) AS Nombre_Completo, " &
-"  dbo.Nombre_Completo_Ubicacion(trans_inv_ciclico.idubicacion_nuevo, bodega_ubicacion.IdBodega) AS Nombre_Completo_Destino, " &
-"  trans_inv_ciclico.IdProductoEst_nuevo, " &
-"  trans_inv_ciclico.lote, " &
-"  trans_inv_ciclico.fecha_vence, " &
-"  trans_inv_ciclico.IdUbicacion_nuevo, " &
-"  e1.Nombre as Estado_Nuevo, " &
-"  MAX(ISNULL(trans_inv_ciclico.Cantidad_Reservada_UMBas,0)) AS Cantidad_Reservada_UMBas, " &
-"  SUM(CASE WHEN trans_inv_ciclico.contado = 1 THEN 1 ELSE 0 END) AS Contado, " &
-"  ISNULL(um.Nombre,'') AS UmBas, " &
-"  ISNULL(color.nombre, '') AS Color, " &
-"  ISNULL(talla.codigo, '') AS Talla, " &
-"  ISNULL(cn.nombre, '') AS Color_Nuevo, " &
-"  ISNULL(tn.codigo, '') AS Talla_Nueva " &
-"FROM trans_inv_ciclico " &
-"  INNER JOIN producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega " &
-"  INNER JOIN producto ON producto_bodega.IdProducto = producto.IdProducto " &
-"  INNER JOIN bodega ON producto_bodega.IdBodega = bodega.IdBodega " &
-"  LEFT OUTER JOIN bodega_tramo " &
-"     INNER JOIN bodega_ubicacion ON bodega_tramo.IdTramo = bodega_ubicacion.IdTramo " &
-"        AND bodega_tramo.IdBodega = bodega_ubicacion.IdBodega " &
-"        AND bodega_tramo.IdArea = bodega_ubicacion.IdArea " &
-"        AND bodega_tramo.IdSector = bodega_ubicacion.IdSector " &
-"     ON bodega.IdBodega = bodega_tramo.IdBodega " &
-"     AND trans_inv_ciclico.IdUbicacion = bodega_ubicacion.IdUbicacion " &
-"  LEFT OUTER JOIN producto_tipo ON producto.IdTipoProducto = producto_tipo.IdTipoProducto " &
-"  LEFT OUTER JOIN operador ON trans_inv_ciclico.idoperador = operador.IdOperador " &
-"  LEFT OUTER JOIN producto_estado ON trans_inv_ciclico.IdProductoEstado = producto_estado.IdEstado " &
-"  LEFT OUTER JOIN producto_estado e1 ON trans_inv_ciclico.IdProductoEst_Nuevo = e1.IdEstado " &
-"  LEFT OUTER JOIN producto_presentacion ON trans_inv_ciclico.IdPresentacion = producto_presentacion.IdPresentacion " &
-"  LEFT JOIN unidad_medida um ON trans_inv_ciclico.IdUnidadMedida = um.IdUnidadMedida " &
-"  LEFT JOIN producto_talla_color ptc_act ON trans_inv_ciclico.IdProductoTallaColor = ptc_act.IdProductoTallaColor " &
-"  LEFT JOIN color ON color.IdColor = ptc_act.IdColor " &
-"  LEFT JOIN talla ON talla.IdTalla = ptc_act.IdTalla " &
-"  LEFT JOIN producto_talla_color ptc_new ON trans_inv_ciclico.IdProductoTallaColor_nuevo = ptc_new.IdProductoTallaColor " &
-"  LEFT JOIN color cn ON cn.IdColor = ptc_new.IdColor " &
-"  LEFT JOIN talla tn ON tn.IdTalla = ptc_new.IdTalla " &
-"WHERE (trans_inv_ciclico.idinventarioenc = @idinventario) " &
-"  AND (trans_inv_ciclico.IdBodega = @IdBodega) " &
-"GROUP BY " &
-"  bodega_ubicacion.IdUbicacion, bodega_ubicacion.descripcion, bodega_tramo.descripcion, trans_inv_ciclico.IdStock, " &
-"  producto.codigo, producto.nombre, producto_presentacion.nombre, trans_inv_ciclico.lote, producto_estado.nombre, e1.nombre, " &
-"  producto.IdPropietario, producto.IdClasificacion, producto.IdFamilia, producto_estado.IdEstado, trans_inv_ciclico.EsNuevo, " &
-"  bodega_tramo.IdTramo, trans_inv_ciclico.fecha_vence, trans_inv_ciclico.idinventarioenc, trans_inv_ciclico.IdProductoBodega, " &
-"  trans_inv_ciclico.EsPallet, trans_inv_ciclico.lic_plate, trans_inv_ciclico.lote_stock, trans_inv_ciclico.IdPresentacion, " &
-"  trans_inv_ciclico.fecha_vence_stock, trans_inv_ciclico.peso_stock, trans_inv_ciclico.cant_stock, trans_inv_ciclico.peso_reconteo, " &
-"  bodega_tramo.es_rack, bodega_ubicacion.indice_x, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos, " &
-"  producto_tipo.NombreTipoProducto, producto.IdProducto, producto_presentacion.factor, bodega_ubicacion.IdBodega, " &
-"  trans_inv_ciclico.IdProductoEst_nuevo, trans_inv_ciclico.lote, trans_inv_ciclico.fecha_vence, trans_inv_ciclico.IdUbicacion_nuevo, " &
-"  color.nombre, talla.codigo, cn.nombre, tn.codigo, um.Nombre " &
-"ORDER BY Tramo, bodega_ubicacion.indice_x, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos"
+                                    "  MAX(trans_inv_ciclico.Idinvciclico) as Idinvciclico, " &
+                                    "  bodega_ubicacion.IdUbicacion, " &
+                                    "  bodega_ubicacion.descripcion AS Ubicacion, " &
+                                    "  bodega_tramo.descripcion AS Tramo, " &
+                                    "  dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.IdUbicacion, bodega_ubicacion.IdBodega) AS Nombre_Completo, " &
+                                    "  trans_inv_ciclico.IdStock, " &
+                                    "  producto.codigo AS Codigo, " &
+                                    "  producto.nombre AS Producto, " &
+                                    "  ISNULL(producto_presentacion.nombre, '') AS Presentacion, " &
+                                    "  trans_inv_ciclico.lote, " &
+                                    "  trans_inv_ciclico.lote_stock, " &
+                                    "  producto_estado.nombre AS Estado, " &
+                                    "  SUM(trans_inv_ciclico.cantidad) AS Cantidad_Ciclico, " &
+                                    "  SUM(trans_inv_ciclico.peso) AS Peso_Ciclico, " &
+                                    "  producto.IdPropietario, " &
+                                    "  producto.IdClasificacion, " &
+                                    "  producto.IdFamilia, " &
+                                    "  producto_estado.IdEstado, " &
+                                    "  trans_inv_ciclico.EsNuevo, " &
+                                    "  bodega_tramo.IdTramo, " &
+                                    "  trans_inv_ciclico.fecha_vence, " &
+                                    "  trans_inv_ciclico.idinventarioenc, " &
+                                    "  trans_inv_ciclico.IdProductoBodega, " &
+                                    "  trans_inv_ciclico.EsPallet, " &
+                                    "  trans_inv_ciclico.lic_plate, " &
+                                    "  trans_inv_ciclico.IdPresentacion, " &
+                                    "  trans_inv_ciclico.fecha_vence_stock, " &
+                                    "  trans_inv_ciclico.peso_stock AS Peso_Stock, " &
+                                    "  trans_inv_ciclico.cant_stock AS Cantidad_Stock, " &
+                                    "  trans_inv_ciclico.peso_reconteo, " &
+                                    "  producto_tipo.NombreTipoProducto, " &
+                                    "  producto.IdProducto, " &
+                                    "  ISNULL(producto_presentacion.factor, 1) AS Factor, " &
+                                    "  dbo.Nombre_Completo_Ubicacion(bodega_ubicacion.IdUbicacion, bodega_ubicacion.IdBodega) AS Nombre_Completo, " &
+                                    "  dbo.Nombre_Completo_Ubicacion(trans_inv_ciclico.idubicacion_nuevo, bodega_ubicacion.IdBodega) AS Nombre_Completo_Destino, " &
+                                    "  trans_inv_ciclico.IdProductoEst_nuevo, " &
+                                    "  trans_inv_ciclico.lote, " &
+                                    "  trans_inv_ciclico.fecha_vence, " &
+                                    "  trans_inv_ciclico.IdUbicacion_nuevo, " &
+                                    "  e1.Nombre as Estado_Nuevo, " &
+                                    "  MAX(ISNULL(trans_inv_ciclico.Cantidad_Reservada_UMBas,0)) AS Cantidad_Reservada_UMBas, " &
+                                    "  SUM(CASE WHEN trans_inv_ciclico.contado = 1 THEN 1 ELSE 0 END) AS Contado, " &
+                                    "  ISNULL(um.Nombre,'') AS UmBas, " &
+                                    "  ISNULL(color.nombre, '') AS Color, " &
+                                    "  ISNULL(talla.codigo, '') AS Talla, " &
+                                    "  ISNULL(cn.nombre, '') AS Color_Nuevo, " &
+                                    "  ISNULL(tn.codigo, '') AS Talla_Nueva " &
+                                    "FROM trans_inv_ciclico " &
+                                    "  INNER JOIN producto_bodega ON trans_inv_ciclico.IdProductoBodega = producto_bodega.IdProductoBodega " &
+                                    "  INNER JOIN producto ON producto_bodega.IdProducto = producto.IdProducto " &
+                                    "  INNER JOIN bodega ON producto_bodega.IdBodega = bodega.IdBodega " &
+                                    "  LEFT OUTER JOIN bodega_tramo " &
+                                    "     INNER JOIN bodega_ubicacion ON bodega_tramo.IdTramo = bodega_ubicacion.IdTramo " &
+                                    "        AND bodega_tramo.IdBodega = bodega_ubicacion.IdBodega " &
+                                    "        AND bodega_tramo.IdArea = bodega_ubicacion.IdArea " &
+                                    "        AND bodega_tramo.IdSector = bodega_ubicacion.IdSector " &
+                                    "     ON bodega.IdBodega = bodega_tramo.IdBodega " &
+                                    "     AND trans_inv_ciclico.IdUbicacion = bodega_ubicacion.IdUbicacion " &
+                                    "  LEFT OUTER JOIN producto_tipo ON producto.IdTipoProducto = producto_tipo.IdTipoProducto " &
+                                    "  LEFT OUTER JOIN operador ON trans_inv_ciclico.idoperador = operador.IdOperador " &
+                                    "  LEFT OUTER JOIN producto_estado ON trans_inv_ciclico.IdProductoEstado = producto_estado.IdEstado " &
+                                    "  LEFT OUTER JOIN producto_estado e1 ON trans_inv_ciclico.IdProductoEst_Nuevo = e1.IdEstado " &
+                                    "  LEFT OUTER JOIN producto_presentacion ON trans_inv_ciclico.IdPresentacion = producto_presentacion.IdPresentacion " &
+                                    "  LEFT JOIN unidad_medida um ON trans_inv_ciclico.IdUnidadMedida = um.IdUnidadMedida " &
+                                    "  LEFT JOIN producto_talla_color ptc_act ON trans_inv_ciclico.IdProductoTallaColor = ptc_act.IdProductoTallaColor " &
+                                    "  LEFT JOIN color ON color.IdColor = ptc_act.IdColor " &
+                                    "  LEFT JOIN talla ON talla.IdTalla = ptc_act.IdTalla " &
+                                    "  LEFT JOIN producto_talla_color ptc_new ON trans_inv_ciclico.IdProductoTallaColor_nuevo = ptc_new.IdProductoTallaColor " &
+                                    "  LEFT JOIN color cn ON cn.IdColor = ptc_new.IdColor " &
+                                    "  LEFT JOIN talla tn ON tn.IdTalla = ptc_new.IdTalla " &
+                                    "WHERE (trans_inv_ciclico.idinventarioenc = @idinventario) " &
+                                    "  AND (trans_inv_ciclico.IdBodega = @IdBodega) " &
+                                    "GROUP BY " &
+                                    "  bodega_ubicacion.IdUbicacion, bodega_ubicacion.descripcion, bodega_tramo.descripcion, trans_inv_ciclico.IdStock, " &
+                                    "  producto.codigo, producto.nombre, producto_presentacion.nombre, trans_inv_ciclico.lote, producto_estado.nombre, e1.nombre, " &
+                                    "  producto.IdPropietario, producto.IdClasificacion, producto.IdFamilia, producto_estado.IdEstado, trans_inv_ciclico.EsNuevo, " &
+                                    "  bodega_tramo.IdTramo, trans_inv_ciclico.fecha_vence, trans_inv_ciclico.idinventarioenc, trans_inv_ciclico.IdProductoBodega, " &
+                                    "  trans_inv_ciclico.EsPallet, trans_inv_ciclico.lic_plate, trans_inv_ciclico.lote_stock, trans_inv_ciclico.IdPresentacion, " &
+                                    "  trans_inv_ciclico.fecha_vence_stock, trans_inv_ciclico.peso_stock, trans_inv_ciclico.cant_stock, trans_inv_ciclico.peso_reconteo, " &
+                                    "  bodega_tramo.es_rack, bodega_ubicacion.indice_x, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos, " &
+                                    "  producto_tipo.NombreTipoProducto, producto.IdProducto, producto_presentacion.factor, bodega_ubicacion.IdBodega, " &
+                                    "  trans_inv_ciclico.IdProductoEst_nuevo, trans_inv_ciclico.lote, trans_inv_ciclico.fecha_vence, trans_inv_ciclico.IdUbicacion_nuevo, " &
+                                    "  color.nombre, talla.codigo, cn.nombre, tn.codigo, um.Nombre " &
+                                    "ORDER BY Tramo, bodega_ubicacion.indice_x, bodega_ubicacion.nivel, bodega_ubicacion.orientacion_pos"
 
 
             Using lDTA As New SqlDataAdapter(vSQL, lConnection)
