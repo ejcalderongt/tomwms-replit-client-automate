@@ -586,8 +586,13 @@ namespace WMSWebAPI.Services.Salidas
 
         public IEnumerable<clsBeI_nav_transacciones_out> Get_Salidas_Pendientes_De_Procesar()
         {
-            var data = clsLnI_nav_transacciones_out.Get_Pendientes_De_Procesar(_configuration);
-            return data ?? new List<SalidaPendienteEntity>();
+            throw new NotImplementedException();
         }
+
+        //public IEnumerable<clsBeI_nav_transacciones_out> Get_Salidas_Pendientes_De_Procesar()
+        //{
+        //    var data = clsLnI_nav_transacciones_out.Get_Pendientes_De_Procesar(_configuration);
+        //    return data ?? new List<SalidaPendienteEntity>();
+        //}
     }
 }
