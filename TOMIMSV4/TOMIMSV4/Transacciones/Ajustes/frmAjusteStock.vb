@@ -4412,7 +4412,7 @@ Public Class frmAjusteStock
 
                 gcCentroCosto.Visible = False
                 lcmbCentroCosto.Visible = True
-                Label6.Visible = True
+                'Label6.Visible = True
 
                 IMS.Listar_Centro_Costo_By_IdEmpresa(lcmbCentroCosto, AP.IdEmpresa)
                 txtCentroCostoERP.Text = ""
@@ -4423,7 +4423,7 @@ Public Class frmAjusteStock
 
                 gcCentroCosto.Visible = True
                 lcmbCentroCosto.Visible = False
-                Label6.Visible = False
+                'Label6.Visible = False
 
                 txtCentroCostoERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(BeBodega.Centro_Costo_Erp)
                 txtCentroCostoDirERP.Text = clsLnCentro_costo.Get_Codigo_By_IdCentroCosto(BeBodega.Centro_Costo_Dir_Erp)
