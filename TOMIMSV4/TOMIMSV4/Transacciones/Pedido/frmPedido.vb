@@ -8210,15 +8210,11 @@ Public Class frmPedido
                             mnuDespachado.Visibility = BarItemVisibility.Always
                         End If
 
-                        'Mantener paralelización (ours) sin duplicar llamadas
-                        SplashScreenManager.Default.SetWaitFormDescription("Picking. ")
-                        Dim taskPick As Task = Task.Run(Sub() Cargar_Picking())
+                        Cargar_Picking(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
-                        SplashScreenManager.Default.SetWaitFormDescription("Reserva. ")
-                        Dim taskRes As Task = Task.Run(Sub() Carga_Stock_Reservado())
+                        Carga_Stock_Reservado(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
-                        SplashScreenManager.Default.SetWaitFormDescription("Stock liberado. ")
-                        Dim taskLib As Task = Task.Run(Sub() Cargar_Stock_Liberado())
+                        Cargar_Stock_Liberado(clsTransaccion.lConnection, clsTransaccion.lTransaction)
 
                         SplashScreenManager.Default.SetWaitFormDescription("Hoja de verificación. ")
 
@@ -8230,9 +8226,6 @@ Public Class frmPedido
                             tabHojaVerificacion.PageVisible = False
                         End If
 
-
-                        'Esperar tareas para no dejar UI inconsistente
-                        Task.WaitAll(taskPick, taskRes, taskLib)
 
                         SplashScreenManager.Default.SetWaitFormDescription("Poliza. ")
 

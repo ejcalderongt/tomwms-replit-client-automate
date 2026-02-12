@@ -27,7 +27,8 @@ namespace WMS.StockReservation.Core.Interfaces
         ZONE_PRIORITY_CONFLICT = 9,
         PRODUCT_NOT_FOUND = 10,
         INVALID_QUANTITY = 11,
-        STORAGE_CONDITION_MISMATCH = 12
+        STORAGE_CONDITION_MISMATCH = 12,
+        MANUFACTURING_DATE_INVALID = 13
     }
 
     public class ReservationFailureReason

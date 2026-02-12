@@ -32,6 +32,7 @@ Partial Class frmListaStockControlCalidad
         Me.mnuTomarSeleccionados = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuEliminarLayoutGrid = New DevExpress.XtraBars.BarButtonItem()
         Me.mnuCambiarEstado = New DevExpress.XtraBars.BarButtonItem()
+        Me.mnuImprimirDocumento = New DevExpress.XtraBars.BarButtonItem()
         Me.RibbonPage1 = New DevExpress.XtraBars.Ribbon.RibbonPage()
         Me.RibbonPageGroup1 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
         Me.RibbonPageGroup2 = New DevExpress.XtraBars.Ribbon.RibbonPageGroup()
@@ -55,7 +56,8 @@ Partial Class frmListaStockControlCalidad
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.dtpFechaInicio = New System.Windows.Forms.DateTimePicker()
         Me.dtpFechaFin = New System.Windows.Forms.DateTimePicker()
-        Me.mnuImprimirDocumento = New DevExpress.XtraBars.BarButtonItem()
+        Me.lblContacto = New System.Windows.Forms.Label()
+        Me.cmbContacto = New DevExpress.XtraEditors.CheckedComboBoxEdit()
         Label3 = New System.Windows.Forms.Label()
         Label4 = New System.Windows.Forms.Label()
         CType(Me.RibbonControl, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -75,6 +77,7 @@ Partial Class frmListaStockControlCalidad
         CType(Me.Dgrid, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.GridView2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
+        CType(Me.cmbContacto.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Label3
@@ -170,6 +173,13 @@ Partial Class frmListaStockControlCalidad
         Me.mnuCambiarEstado.ImageOptions.SvgImage = CType(resources.GetObject("mnuCambiarEstado.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
         Me.mnuCambiarEstado.Name = "mnuCambiarEstado"
         '
+        'mnuImprimirDocumento
+        '
+        Me.mnuImprimirDocumento.Caption = "Imprimir Documento"
+        Me.mnuImprimirDocumento.Id = 11
+        Me.mnuImprimirDocumento.ImageOptions.SvgImage = CType(resources.GetObject("mnuImprimirDocumento.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
+        Me.mnuImprimirDocumento.Name = "mnuImprimirDocumento"
+        '
         'RibbonPage1
         '
         Me.RibbonPage1.Groups.AddRange(New DevExpress.XtraBars.Ribbon.RibbonPageGroup() {Me.RibbonPageGroup1, Me.RibbonPageGroup2})
@@ -234,12 +244,12 @@ Partial Class frmListaStockControlCalidad
         '
         Me.grdStockRes.Dock = System.Windows.Forms.DockStyle.Fill
         Me.grdStockRes.EmbeddedNavigator.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.grdStockRes.Location = New System.Drawing.Point(231, 0)
+        Me.grdStockRes.Location = New System.Drawing.Point(291, 0)
         Me.grdStockRes.MainView = Me.GridView1
         Me.grdStockRes.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.grdStockRes.MenuManager = Me.RibbonControl
         Me.grdStockRes.Name = "grdStockRes"
-        Me.grdStockRes.Size = New System.Drawing.Size(1362, 539)
+        Me.grdStockRes.Size = New System.Drawing.Size(1302, 539)
         Me.grdStockRes.TabIndex = 18
         Me.grdStockRes.ViewCollection.AddRange(New DevExpress.XtraGrid.Views.Base.BaseView() {Me.GridView1})
         '
@@ -256,6 +266,8 @@ Partial Class frmListaStockControlCalidad
         '
         'grpFechas
         '
+        Me.grpFechas.Controls.Add(Me.cmbContacto)
+        Me.grpFechas.Controls.Add(Me.lblContacto)
         Me.grpFechas.Controls.Add(Me.cmbOperador)
         Me.grpFechas.Controls.Add(Me.Label2)
         Me.grpFechas.Controls.Add(Me.cmbBodega)
@@ -267,25 +279,25 @@ Partial Class frmListaStockControlCalidad
         Me.grpFechas.Location = New System.Drawing.Point(0, 0)
         Me.grpFechas.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.grpFechas.Name = "grpFechas"
-        Me.grpFechas.Size = New System.Drawing.Size(231, 539)
+        Me.grpFechas.Size = New System.Drawing.Size(291, 539)
         Me.grpFechas.TabIndex = 9
         Me.grpFechas.Text = "Filtros"
         '
         'cmbOperador
         '
-        Me.cmbOperador.Location = New System.Drawing.Point(8, 184)
+        Me.cmbOperador.Location = New System.Drawing.Point(5, 239)
         Me.cmbOperador.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.cmbOperador.MenuManager = Me.RibbonControl
         Me.cmbOperador.Name = "cmbOperador"
         Me.cmbOperador.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbOperador.Properties.NullText = ""
-        Me.cmbOperador.Size = New System.Drawing.Size(205, 22)
+        Me.cmbOperador.Size = New System.Drawing.Size(256, 22)
         Me.cmbOperador.TabIndex = 10
         '
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(5, 164)
+        Me.Label2.Location = New System.Drawing.Point(2, 219)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(66, 16)
         Me.Label2.TabIndex = 11
@@ -299,7 +311,7 @@ Partial Class frmListaStockControlCalidad
         Me.cmbBodega.Name = "cmbBodega"
         Me.cmbBodega.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbBodega.Properties.NullText = ""
-        Me.cmbBodega.Size = New System.Drawing.Size(205, 22)
+        Me.cmbBodega.Size = New System.Drawing.Size(256, 22)
         Me.cmbBodega.TabIndex = 9
         '
         'Label1
@@ -317,7 +329,7 @@ Partial Class frmListaStockControlCalidad
         Me.lblPrg.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.lblPrg.Location = New System.Drawing.Point(2, 425)
         Me.lblPrg.Name = "lblPrg"
-        Me.lblPrg.Size = New System.Drawing.Size(227, 112)
+        Me.lblPrg.Size = New System.Drawing.Size(287, 112)
         Me.lblPrg.TabIndex = 7
         '
         'cmbPropietarioBodega
@@ -328,7 +340,7 @@ Partial Class frmListaStockControlCalidad
         Me.cmbPropietarioBodega.Name = "cmbPropietarioBodega"
         Me.cmbPropietarioBodega.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
         Me.cmbPropietarioBodega.Properties.NullText = ""
-        Me.cmbPropietarioBodega.Size = New System.Drawing.Size(205, 22)
+        Me.cmbPropietarioBodega.Size = New System.Drawing.Size(256, 22)
         Me.cmbPropietarioBodega.TabIndex = 6
         '
         'lblPropietario
@@ -406,12 +418,23 @@ Partial Class frmListaStockControlCalidad
         Me.dtpFechaFin.Size = New System.Drawing.Size(103, 23)
         Me.dtpFechaFin.TabIndex = 3
         '
-        'mnuImprimirDocumento
+        'lblContacto
         '
-        Me.mnuImprimirDocumento.Caption = "Imprimir Documento"
-        Me.mnuImprimirDocumento.Id = 11
-        Me.mnuImprimirDocumento.ImageOptions.SvgImage = CType(resources.GetObject("BarButtonItem1.ImageOptions.SvgImage"), DevExpress.Utils.Svg.SvgImage)
-        Me.mnuImprimirDocumento.Name = "mnuImprimirDocumento"
+        Me.lblContacto.AutoSize = True
+        Me.lblContacto.Location = New System.Drawing.Point(5, 155)
+        Me.lblContacto.Name = "lblContacto"
+        Me.lblContacto.Size = New System.Drawing.Size(62, 16)
+        Me.lblContacto.TabIndex = 13
+        Me.lblContacto.Text = "Contacto:"
+        '
+        'cmbContacto
+        '
+        Me.cmbContacto.Location = New System.Drawing.Point(5, 174)
+        Me.cmbContacto.MenuManager = Me.RibbonControl
+        Me.cmbContacto.Name = "cmbContacto"
+        Me.cmbContacto.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)})
+        Me.cmbContacto.Size = New System.Drawing.Size(256, 22)
+        Me.cmbContacto.TabIndex = 3
         '
         'frmListaStockControlCalidad
         '
@@ -446,6 +469,7 @@ Partial Class frmListaStockControlCalidad
         CType(Me.GridView2, System.ComponentModel.ISupportInitialize).EndInit()
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
+        CType(Me.cmbContacto.Properties, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -485,4 +509,6 @@ Partial Class frmListaStockControlCalidad
     Friend WithEvents cmbPropietarioBodega As DevExpress.XtraEditors.LookUpEdit
     Friend WithEvents lblPropietario As Label
     Friend WithEvents mnuImprimirDocumento As DevExpress.XtraBars.BarButtonItem
+    Friend WithEvents lblContacto As Label
+    Friend WithEvents cmbContacto As DevExpress.XtraEditors.CheckedComboBoxEdit
 End Class

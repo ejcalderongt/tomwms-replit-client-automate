@@ -1350,4 +1350,146 @@ public class clsLnBodega
 
         return result;
     }
+    public static clsBeBodega? GetSingle_By_Idbodega(IConfiguration configuration, int pIdBodega)
+    {
+        try
+        {
+            using var lConnection = new SqlConnection(configuration.GetConnectionString("CST") ?? configuration["CST"]);
+
+            const string sp = @"SELECT * FROM Bodega 
+                       WHERE IdBodega = @IdBodega";
+
+            using var cmd = new SqlCommand(sp, lConnection) { CommandType = CommandType.Text };
+            cmd.Parameters.Add(new SqlParameter("@IdBodega", pIdBodega));
+
+            using var dad = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            dad.Fill(dt);
+
+            if (dt.Rows.Count == 1)
+            {
+                var pBeBodega = new clsBeBodega();
+                Cargar(ref pBeBodega, dt.Rows[0]);
+                return pBeBodega;
+            }
+
+            return null;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
+
+    public static async Task<Dictionary<int, clsBeBodega>> GetByIdsAsync(IConfiguration configuration, List<int> idsBodega)
+    {
+        var result = new Dictionary<int, clsBeBodega>();
+
+        if (idsBodega == null || idsBodega.Count == 0)
+            return result;
+
+        idsBodega = idsBodega.Where(id => id > 0).Distinct().ToList();
+        if (idsBodega.Count == 0)
+            return result;
+
+        const string sql = "SELECT * FROM Bodega WHERE IdBodega IN ({0})";
+
+        using var conn = new SqlConnection(configuration.GetConnectionString("CST") ?? configuration["CST"]);
+        await conn.OpenAsync();
+
+        using var tran = (SqlTransaction) await conn.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
+
+        try
+        {
+            var paramNames = idsBodega.Select((_, i) => $"@p{i}").ToList();
+            var finalSql = string.Format(sql, string.Join(",", paramNames));
+
+            using var cmd = new SqlCommand(finalSql, conn, tran)
+            {
+                CommandType = CommandType.Text
+            };
+
+            for (int i = 0; i < idsBodega.Count; i++)
+            {
+                cmd.Parameters.Add(new SqlParameter(paramNames[i], SqlDbType.Int)
+                {
+                    Value = idsBodega[i]
+                });
+            }
+
+            using var dad = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            dad.Fill(dt);
+
+            await tran.CommitAsync();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeBodega();
+                Cargar(ref be, dr);
+                result[be.IdBodega] = be;
+            }
+
+            return result;
+        }
+        catch
+        {
+            await tran.RollbackAsync();
+            throw;
+        }
+    }
+
+    public static Task<Dictionary<int, clsBeBodega>> GetByIdsAsync(
+    SqlConnection connection,
+    SqlTransaction transaction,
+    List<int> idsBodega)
+    {
+        var result = new Dictionary<int, clsBeBodega>();
+
+        if (idsBodega == null || idsBodega.Count == 0)
+            return Task.FromResult(result);
+
+        idsBodega = idsBodega.Where(id => id > 0).Distinct().ToList();
+        if (idsBodega.Count == 0)
+            return Task.FromResult(result);
+
+        const string sql = "SELECT * FROM Bodega WHERE IdBodega IN ({0})";
+
+        try
+        {
+            var paramNames = idsBodega.Select((_, i) => $"@p{i}").ToList();
+            var finalSql = string.Format(sql, string.Join(",", paramNames));
+
+            using var cmd = new SqlCommand(finalSql, connection, transaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            for (int i = 0; i < idsBodega.Count; i++)
+            {
+                cmd.Parameters.Add(new SqlParameter(paramNames[i], SqlDbType.Int)
+                {
+                    Value = idsBodega[i]
+                });
+            }
+
+            using var dad = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            dad.Fill(dt);
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeBodega();
+                Cargar(ref be, dr);
+                result[be.IdBodega] = be;
+            }
+
+            return Task.FromResult(result);
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
 }

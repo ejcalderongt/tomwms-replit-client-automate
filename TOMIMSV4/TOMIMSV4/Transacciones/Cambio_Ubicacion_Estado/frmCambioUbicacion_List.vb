@@ -257,7 +257,7 @@ Public Class frmCambioUbicacion_List
         Try
             If (GridView1.RowCount > 0) Then
                 Dim Dr As DataRowView = GridView1.GetFocusedRow
-                'Dim Obj As New clsBeTrans_ubic_hh_enc
+
                 gBeTransubicacionHHEnc = clsLnTrans_ubic_hh_enc.GetSingle(Dr.Item("Código"))
 
                 If Modo = frmCambioUbicacion_List.pModo.Lista Then
@@ -283,10 +283,6 @@ Public Class frmCambioUbicacion_List
                         .Focus()
                     End With
 
-                    'Dim A As New frmCambioUbicacion(frmCambioUbicacion.TipoTrans.Editar, tipoOperacion) With {.gBeTransubicacionHHEnc = gBeTransubicacionHHEnc}
-                    'A.ShowDialog()
-                    'A.Dispose()
-                    'ListarTransaccionUbicHhEnc()
                 ElseIf Modo = pModo.Seleccion Then
                     pObjTranUbicHhEnc = gBeTransubicacionHHEnc
                     Hide()
@@ -437,6 +433,10 @@ Public Class frmCambioUbicacion_List
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End Try
+
+    End Sub
+
+    Private Sub Dgrid_Click(sender As Object, e As EventArgs) Handles Dgrid.Click
 
     End Sub
 End Class

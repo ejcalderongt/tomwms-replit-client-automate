@@ -1186,7 +1186,8 @@ public class clsLnStock
                                            bool pExcluirUbicacionPicking = false,
                                            bool Conmutar_Umbas_A_Presentacion = false,
                                            bool pTarea_Reabasto = false,
-                                           bool pEs_Devolucion = false)
+                                           bool pEs_Devolucion = false,
+                                           bool pEsManufactura = false)
     {
         try
         {
@@ -1289,7 +1290,14 @@ public class clsLnStock
 
             if (DiasVencimiento != 0)
             {
-                vSQL += " And DATEDIFF (DAY, GETDATE(), stock.fecha_vence) >= @DiasVencimientoCliente ";
+                if (pEsManufactura)
+                {
+                    vSQL += " And stock.fecha_manufactura > '1900-01-01' And DATEDIFF (DAY, GETDATE(), stock.fecha_manufactura) >= @DiasVencimientoCliente ";
+                }
+                else
+                {
+                    vSQL += " And DATEDIFF (DAY, GETDATE(), stock.fecha_vence) >= @DiasVencimientoCliente ";
+                }
             }
 
             // Validación de vencimiento

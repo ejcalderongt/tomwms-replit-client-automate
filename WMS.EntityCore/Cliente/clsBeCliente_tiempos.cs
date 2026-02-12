@@ -12,6 +12,7 @@ namespace WMS.EntityCore.Cliente
         public clsBeProducto_clasificacion Clasificacion { get; set; } = new clsBeProducto_clasificacion();
         public int Dias_Local { get; set; } = 0;
         public int Dias_Exterior { get; set; } = 0;
+        public bool Es_Manufactura { get; set; } = false;
         public string User_agr { get; set; } = "";
         public DateTime Fec_agr { get; set; } = DateTime.Now;
         public string User_mod { get; set; } = "";
