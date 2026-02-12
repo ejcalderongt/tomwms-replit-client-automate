@@ -1,11 +1,9 @@
-using System.Data;
-using System.Diagnostics;
 using System.Reflection;
 using Microsoft.Data.SqlClient;
 using Microsoft.VisualBasic.CompilerServices;
 using WMS.EntityCore.Operador;
 using Microsoft.Extensions.Configuration;
-using WMS.EntityCore.Trans_re;
+
 public class clsLnOperador_bodega
 {
 
@@ -597,6 +595,139 @@ public class clsLnOperador_bodega
         catch (Exception ex)
         {
             throw new Exception(ex.Message);
+        }
+    }
+
+    public static async Task<Dictionary<int, clsBeOperador_bodega>> GetByIdsAsync(IConfiguration config, List<int> ids)
+    {
+        var result = new Dictionary<int, clsBeOperador_bodega>();
+
+        if (ids == null || ids.Count == 0)
+            return result;
+
+        ids = ids.Where(id => id > 0).Distinct().ToList();
+        if (ids.Count == 0)
+            return result;
+
+        SqlConnection? lConnection = null;
+        SqlTransaction? lTransaction = null;
+
+        try
+        {
+            lConnection = new SqlConnection(config.GetConnectionString("CST") ?? config["CST"]);
+            await lConnection.OpenAsync();
+            lTransaction = (SqlTransaction?)await lConnection.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
+
+            var paramNames = ids.Select((_, i) => $"@p{i}").ToList();
+            string sql = $@"
+            SELECT * 
+            FROM Operador_bodega 
+            WHERE IdOperadorBodega IN ({string.Join(",", paramNames)})";
+
+            using var cmd = new SqlCommand(sql, lConnection, lTransaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            for (int i = 0; i < ids.Count; i++)
+            {
+                cmd.Parameters.Add(new SqlParameter(paramNames[i], SqlDbType.Int)
+                {
+                    Value = ids[i]
+                });
+            }
+
+            using var dad = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            dad.Fill(dt);
+
+            if (lTransaction != null)
+                await lTransaction.CommitAsync();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeOperador_bodega();
+                Cargar(ref be, dr);
+                result[be.IdOperadorBodega] = be;
+            }
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            if (lTransaction != null)
+                await lTransaction.RollbackAsync();
+
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            var currentMethodName = sf?.GetMethod()?.Name ?? MethodBase.GetCurrentMethod()?.Name;
+            string vMsgError = $"{currentMethodName} {ex.Message}";
+
+            throw new Exception(vMsgError);
+        }
+        finally
+        {
+            if (lConnection?.State == ConnectionState.Open)
+                await lConnection.CloseAsync();
+            lConnection?.Dispose();
+            lTransaction?.Dispose();
+        }
+    }
+    public static Task<Dictionary<int, clsBeOperador_bodega>> GetByIdsAsync(
+    SqlConnection connection,
+    SqlTransaction transaction,
+    List<int> ids)
+    {
+        var result = new Dictionary<int, clsBeOperador_bodega>();
+
+        if (ids == null || ids.Count == 0)
+            return Task.FromResult(result);
+
+        ids = ids.Where(id => id > 0).Distinct().ToList();
+        if (ids.Count == 0)
+            return Task.FromResult(result);
+
+        try
+        {
+            var paramNames = ids.Select((_, i) => $"@p{i}").ToList();
+            string sql = $@"
+            SELECT * 
+            FROM Operador_bodega 
+            WHERE IdOperadorBodega IN ({string.Join(",", paramNames)})";
+
+            using var cmd = new SqlCommand(sql, connection, transaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            for (int i = 0; i < ids.Count; i++)
+            {
+                cmd.Parameters.Add(new SqlParameter(paramNames[i], SqlDbType.Int)
+                {
+                    Value = ids[i]
+                });
+            }
+
+            using var dad = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            dad.Fill(dt);
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeOperador_bodega();
+                Cargar(ref be, dr);
+                result[be.IdOperadorBodega] = be;
+            }
+
+            return Task.FromResult(result);
+        }
+        catch (Exception ex)
+        {
+            var st = new StackTrace();
+            var sf = st.GetFrame(0);
+            var currentMethodName = sf?.GetMethod()?.Name ?? MethodBase.GetCurrentMethod()?.Name;
+            string vMsgError = $"{currentMethodName} {ex.Message}";
+            throw new Exception(vMsgError);
         }
     }
 }

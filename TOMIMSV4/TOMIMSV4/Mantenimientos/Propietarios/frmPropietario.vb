@@ -979,9 +979,6 @@ Public Class frmPropietario
     Private Sub Cargar_Destinatarios()
 
         Try
-            'If pGuardo = False Then
-
-            'End If
 
             Limpiar()
 

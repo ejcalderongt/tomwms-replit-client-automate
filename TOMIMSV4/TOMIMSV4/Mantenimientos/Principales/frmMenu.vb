@@ -11,7 +11,6 @@ Imports DevExpress.XtraBars
 Imports DevExpress.XtraBars.Ribbon
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraSplashScreen
-Imports SixLabors.Fonts.Tables
 
 '#EJC20220407: PickingReference.
 '#CKFK20220425 Si funciona la aplicacion
@@ -5377,9 +5376,9 @@ Public Class frmMenu
 
         Try
 
-    Dim pEjecutable As String = "DMS.exe"
+            Dim pEjecutable As String = "DMS.exe"
 
-    If AP.IdConfiguracionInterface <> 0 Then
+            If AP.IdConfiguracionInterface <> 0 Then
 
                 Ejecutar_Interface(" -" & AP.IdConfiguracionInterface & "-" & gIndiceInstancia & "-" & AP.UsuarioAp.IdUsuario & "-0-0" & "-" & clsBD.Instancia.NombreInstancia, Me, pEjecutable)
 
@@ -5392,8 +5391,8 @@ Public Class frmMenu
 
             End If
 
-    Catch ex As Exception
-    Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
+        Catch ex As Exception
+            Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
             clsLnLog_error_wms.Agregar_Error(vMsgError)
         End Try
 

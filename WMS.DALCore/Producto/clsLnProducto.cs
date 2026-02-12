@@ -1,10 +1,9 @@
 ﻿using Microsoft.Data.SqlClient;
-using System.Data;
-using System.Diagnostics;
 using System.Reflection;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;
 using WMS.EntityCore.Datos_Maestros;
+
 public class clsLnProducto
 {
 
@@ -473,7 +472,6 @@ public class clsLnProducto
 
         return rowsAffected;
     }
-
     public static int Actualizar3pl(clsBeProducto_3PL oBeProducto, SqlConnection pConection, SqlTransaction pTransaction)
     {
         int rowsAffected = 0;
@@ -667,65 +665,7 @@ public class clsLnProducto
             SqlDataAdapter dad = new SqlDataAdapter(cmd);
 
             dad.SelectCommand.Parameters.Add(new SqlParameter("@IdProducto", pBeProducto.IdProducto));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdPropietario", pBeProducto.IdPropietario));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdClasificacion", pBeProducto.IdClasificacion));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdFamilia", pBeProducto.IdFamilia));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdMarca", pBeProducto.IdMarca));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdTipoProducto", pBeProducto.IdTipoProducto));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdUnidadMedidaBasica", pBeProducto.IdUnidadMedidaBasica));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdCamara", pBeProducto.IdCamara));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdTipoRotacion", pBeProducto.IdTipoRotacion));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdPerfilSerializado", pBeProducto.IdPerfilSerializado));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdIndiceRotacion", pBeProducto.IdIndiceRotacion));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdSimbologia", pBeProducto.IdSimbologia));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdArancel", pBeProducto.IdArancel));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@codigo", pBeProducto.codigo));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@nombre", pBeProducto.nombre));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@codigo_barra", pBeProducto.codigo_barra));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@precio", pBeProducto.precio));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@existencia_min", pBeProducto.existencia_min));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@existencia_max", pBeProducto.existencia_max));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@costo", pBeProducto.costo));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@peso_referencia", pBeProducto.peso_referencia));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@peso_tolerancia", pBeProducto.peso_tolerancia));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@temperatura_referencia", pBeProducto.temperatura_referencia));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@temperatura_tolerancia", pBeProducto.temperatura_tolerancia));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@activo", pBeProducto.activo));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@serializado", pBeProducto.serializado));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@genera_lote", pBeProducto.genera_lote));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@genera_lp_old", pBeProducto.genera_lp_old));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@control_vencimiento", pBeProducto.control_vencimiento));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@control_lote", pBeProducto.control_lote));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@peso_recepcion", pBeProducto.peso_recepcion));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@peso_despacho", pBeProducto.peso_despacho));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@temperatura_recepcion", pBeProducto.temperatura_recepcion));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@temperatura_despacho", pBeProducto.temperatura_despacho));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@materia_prima", pBeProducto.materia_prima));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@kit", pBeProducto.kit));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@tolerancia", pBeProducto.tolerancia));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@ciclo_vida", pBeProducto.ciclo_vida));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@user_agr", pBeProducto.user_agr));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@fec_agr", pBeProducto.fec_agr));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@user_mod", pBeProducto.user_mod));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@fec_mod", pBeProducto.fec_mod));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@imagen", pBeProducto.imagen));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@noserie", pBeProducto.noserie));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@noparte", pBeProducto.noparte));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@fechamanufactura", pBeProducto.fechamanufactura));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@capturar_aniada", pBeProducto.capturar_aniada));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@control_peso", pBeProducto.control_peso));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@captura_arancel", pBeProducto.captura_arancel));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@es_hardware", pBeProducto.es_hardware));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@largo", pBeProducto.largo));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@alto", pBeProducto.alto));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@ancho", pBeProducto.ancho));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdUnidadMedidaCobro", pBeProducto.IdUnidadMedidaCobro));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdTipoEtiqueta", pBeProducto.IdTipoEtiqueta));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@dias_inventario_promedio", pBeProducto.dias_inventario_promedio));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IDPRODUCTOPARAMETROA", pBeProducto.IDPRODUCTOPARAMETROA));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IDPRODUCTOPARAMETROB", pBeProducto.IDPRODUCTOPARAMETROB));
-            dad.SelectCommand.Parameters.Add(new SqlParameter("@IdTipoManufactura", pBeProducto.IdTipoManufactura));
-
+            
             DataTable dt = new DataTable();
             dad.Fill(dt);
 
@@ -1588,8 +1528,7 @@ public class clsLnProducto
             CommandType = CommandType.Text,
             Transaction = transaction
         };
-
-        // Por qué: evitar AddWithValue mejora inferencia de tipos y planes.
+        
         var pCodigo = cmd.Parameters.Add("@Codigo", SqlDbType.VarChar, 50);
         pCodigo.Value = codigo;
 
@@ -1610,9 +1549,9 @@ public class clsLnProducto
     }
 
     public static clsBeProducto? Get_BeProducto_By_Only_Codigo(string pCodigo,
-                                                         int IdBodega,
-                                                         SqlConnection lConnection,
-                                                         SqlTransaction lTransaction)
+                                                               int IdBodega,
+                                                               SqlConnection lConnection,
+                                                               SqlTransaction lTransaction)
     {
         clsBeProducto? result = null;
         clsBeProducto oBeProducto = new clsBeProducto();
@@ -1834,5 +1773,128 @@ public class clsLnProducto
         }
 
         return result;
+    }
+
+    public static async Task<Dictionary<int, clsBeProducto>> GetByIdsAsync(IConfiguration configuration, List<int> idsProducto)
+    {
+        var result = new Dictionary<int, clsBeProducto>();
+
+        if (idsProducto == null || idsProducto.Count == 0)
+            return result;
+
+        idsProducto = idsProducto.Where(id => id > 0).Distinct().ToList();
+        if (idsProducto.Count == 0)
+            return result;
+
+        SqlConnection? lConnection = null;
+        SqlTransaction? lTransaction = null;
+
+        try
+        {
+            lConnection = new SqlConnection(configuration.GetConnectionString("CST") ?? configuration["CST"]);
+            await lConnection.OpenAsync();
+            lTransaction = (SqlTransaction?)await lConnection.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
+
+            var paramNames = idsProducto.Select((_, i) => $"@p{i}").ToList();
+            string sql = $@"
+            SELECT * 
+            FROM Producto 
+            WHERE IdProducto IN ({string.Join(",", paramNames)})";
+
+            using var cmd = new SqlCommand(sql, lConnection, lTransaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            for (int i = 0; i < idsProducto.Count; i++)
+            {
+                cmd.Parameters.Add(new SqlParameter(paramNames[i], SqlDbType.Int)
+                {
+                    Value = idsProducto[i]
+                });
+            }
+
+            using var dad = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            dad.Fill(dt);
+
+            if(lTransaction != null)
+                await lTransaction.CommitAsync();
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeProducto();
+                Cargar(ref be, dr);
+                result[be.IdProducto] = be;
+            }
+
+            return result;
+        }
+        catch (SqlException)
+        {
+            lTransaction?.Rollback();
+            throw;
+        }
+        finally
+        {
+            if (lConnection?.State == ConnectionState.Open)
+                await lConnection.CloseAsync();
+            lConnection?.Dispose();
+            lTransaction?.Dispose();
+        }
+    }
+
+    public static Task<Dictionary<int, clsBeProducto>> GetByIdsAsync(
+    SqlConnection connection,
+    SqlTransaction transaction,
+    List<int> idsProducto)
+    {
+        var result = new Dictionary<int, clsBeProducto>();
+
+        if (idsProducto == null || idsProducto.Count == 0)
+            return Task.FromResult(result);
+
+        idsProducto = idsProducto.Where(id => id > 0).Distinct().ToList();
+        if (idsProducto.Count == 0)
+            return Task.FromResult(result);
+
+        try
+        {
+            var paramNames = idsProducto.Select((_, i) => $"@p{i}").ToList();
+            string sql = $@"
+            SELECT * 
+            FROM Producto 
+            WHERE IdProducto IN ({string.Join(",", paramNames)})";
+
+            using var cmd = new SqlCommand(sql, connection, transaction)
+            {
+                CommandType = CommandType.Text
+            };
+
+            for (int i = 0; i < idsProducto.Count; i++)
+            {
+                cmd.Parameters.Add(new SqlParameter(paramNames[i], SqlDbType.Int)
+                {
+                    Value = idsProducto[i]
+                });
+            }
+
+            using var dad = new SqlDataAdapter(cmd);
+            var dt = new DataTable();
+            dad.Fill(dt);
+
+            foreach (DataRow dr in dt.Rows)
+            {
+                var be = new clsBeProducto();
+                Cargar(ref be, dr);
+                result[be.IdProducto] = be;
+            }
+
+            return Task.FromResult(result);
+        }
+        catch (SqlException)
+        {
+            throw;
+        }
     }
 }

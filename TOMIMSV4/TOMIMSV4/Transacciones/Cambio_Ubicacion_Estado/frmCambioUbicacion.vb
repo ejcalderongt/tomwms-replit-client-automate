@@ -2508,22 +2508,6 @@ Public Class frmCambioUbicacion
                         RibbonPage1.Text = "Cambio de estado"
                     End If
 
-                    '
-                    '#EJC20220211: Al agregar un operador desde el inicio, genera tareas para el operador que no es.
-                    'If chkOperadorPorlinea.Checked Then
-
-                    '    pBetrans_ubic_hh_op = New clsBeTrans_ubic_hh_op()
-                    '    pBetrans_ubic_hh_op.IdTransUbicHhOp = 0
-                    '    pBetrans_ubic_hh_op.IdTareaUbicacionEnc = 0
-                    '    pBetrans_ubic_hh_op.IdOperadorBodega = cmbOperadores.EditValue
-                    '    pBetrans_ubic_hh_op.User_agr = AP.UsuarioAp.IdUsuario
-                    '    pBetrans_ubic_hh_op.Fec_agr = Now
-                    '    pBetrans_ubic_hh_op.User_mod = AP.UsuarioAp.IdUsuario
-                    '    pBetrans_ubic_hh_op.Fec_mod = Now
-                    '    pListObjOp.Add(pBetrans_ubic_hh_op)
-
-                    'End If
-
                 Case TipoTrans.Editar
 
                     'GT20122021: al editar inhabilita el link
