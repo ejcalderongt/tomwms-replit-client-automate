@@ -3534,4 +3534,70 @@ Public Class IMS
         End Try
 
     End Function
+
+    Public Overloads Shared Function Listar_Color(ByRef Cmb As LookUpEdit) As Boolean
+
+        Listar_Color = False
+
+        Dim DT As New DataTable
+
+        Try
+
+            DT = clsLnColor.Listar()
+
+            If DT.Rows.Count > 0 Then
+                Dim dtFiltrado As New DataTable()
+                dtFiltrado.Columns.Add("IdColor", GetType(Integer))
+                dtFiltrado.Columns.Add("Nombre", GetType(String))
+
+                For Each row As DataRow In DT.Rows
+                    dtFiltrado.Rows.Add(row("IdColor"), row("Nombre"))
+                Next
+
+                Cmb.Properties.DisplayMember = "Nombre"
+                Cmb.Properties.ValueMember = "IdColor"
+                Cmb.Properties.DataSource = dtFiltrado
+                Cmb.ItemIndex = 0
+            End If
+
+            Listar_Color = DT.Rows.Count > 0
+
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+
+    End Function
+
+    Public Overloads Shared Function Listar_Tallas(ByRef Cmb As LookUpEdit) As Boolean
+
+        Listar_Tallas = False
+
+        Dim DT As New DataTable
+
+        Try
+
+            DT = clsLnTalla.Listar()
+
+            If DT.Rows.Count > 0 Then
+                Dim dtFiltrado As New DataTable()
+                dtFiltrado.Columns.Add("IdTalla", GetType(Integer))
+                dtFiltrado.Columns.Add("Codigo", GetType(String))
+
+                For Each row As DataRow In DT.Rows
+                    dtFiltrado.Rows.Add(row("IdTalla"), row("Codigo"))
+                Next
+
+                Cmb.Properties.DisplayMember = "Codigo"
+                Cmb.Properties.ValueMember = "IdTalla"
+                Cmb.Properties.DataSource = dtFiltrado
+                Cmb.ItemIndex = 0
+            End If
+
+            Listar_Tallas = DT.Rows.Count > 0
+
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+
+    End Function
 End Class

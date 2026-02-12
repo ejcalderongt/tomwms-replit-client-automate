@@ -680,6 +680,7 @@ Partial Public Class clsLnTrans_inv_stock
                             gBeInventarioCiclico.lic_plate = StockCongelado.Lic_plate
                             gBeInventarioCiclico.IdBodega = StockCongelado.IdBodega
                             gBeInventarioCiclico.IdProductoTallaColor = StockCongelado.IdProductoTallaColor
+                            gBeInventarioCiclico.IdProductoTallaColor_nuevo = StockCongelado.IdProductoTallaColor
                             gBeInventarioCiclico.Cantidad_Reservada_UMBas = StockCongelado.Cantidad_Reservada_UMBas
 
                             clsLnTrans_inv_ciclico.Insertar(gBeInventarioCiclico, lConection, lTransaction)
@@ -820,6 +821,7 @@ Partial Public Class clsLnTrans_inv_stock
                                     gBeInventarioCiclico.lic_plate = StockCongelado.Lic_plate
                                     gBeInventarioCiclico.IdBodega = StockCongelado.IdBodega
                                     gBeInventarioCiclico.IdProductoTallaColor = StockCongelado.IdProductoTallaColor
+                                    gBeInventarioCiclico.IdProductoTallaColor_nuevo = StockCongelado.IdProductoTallaColor
                                     gBeInventarioCiclico.Cantidad_Reservada_UMBas = StockCongelado.Cantidad_Reservada_UMBas
 
                                     clsLnTrans_inv_ciclico.Insertar(gBeInventarioCiclico, lConection, lTransaction)
