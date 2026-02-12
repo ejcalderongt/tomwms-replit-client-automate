@@ -8,6 +8,13 @@ Public Class frmConteo
     Public ListCiclico As New List(Of clsBeTrans_inv_ciclico)
     Private gBeReconteoEnc As New clsBeTrans_inv_enc_reconteo
 
+    Private FechaVenceOriginal As DateTime
+    Private IdProductoEstadoOriginal As Integer
+    Private IdProductoTallaColorOriginal As Integer
+    Private LoteOriginal As String = ""
+    Private IdUbicacionOriginal As Integer = 0
+    Private EsInvOriginal As Boolean = False
+
     '#EJC20180801_1118PM:Puntero hacia la fila del del DT asociado al datasource del grid.
     Public DrDetalleInv As DataRow
     Public Enum TipoTrans
@@ -137,6 +144,25 @@ Public Class frmConteo
                 Else
                     dtpFechaVence.EditValue = gBeCiclico.Fecha_vence_stock
                 End If
+            Else
+                dtpFechaVence.EditValue = New Date(1900, 1, 1)
+            End If
+
+            If AP.Bodega.Control_Talla_Color Then
+                IMS.Listar_Color(cmbColor)
+                IMS.Listar_Tallas(cmbTalla)
+
+                If gBeCiclico.IdProductoTallaColor <> 0 Then
+                    Dim BeTallaColor = clsLnProducto_talla_color.GetSingle(gBeCiclico.IdProductoTallaColor)
+
+                    If BeTallaColor IsNot Nothing Then
+                        Dim Color = clsLnColor.GetSingle_By_IdColor(BeTallaColor.IdColor)
+                        Dim Talla = clsLnTalla.GetSingle_By_IdTalla(BeTallaColor.IdTalla)
+
+                        cmbColor.EditValue = Color.IdColor
+                        cmbTalla.EditValue = Talla.IdTalla
+                    End If
+                End If
             End If
 
             txtCantidadAnterior.Value = vCantidad
@@ -175,6 +201,7 @@ Public Class frmConteo
         Actualizar = False
 
         Dim Presentacion As New clsBeProducto_Presentacion
+        Dim IdProductoTallaColorDestino As Integer
         Dim vCantidadUmBas As Double = 0.0
         Dim vCantidadPres As Double = 0.0
         Dim vPeso As Double = 0.0
@@ -188,6 +215,18 @@ Public Class frmConteo
             If txtCantidadAnterior.Value = 0 Then
                 If XtraMessageBox.Show("La cantidad debe ser mayor que 0, está seguro de continuar", Text, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) = DialogResult.No Then
                     Exit Function
+                End If
+            End If
+
+            If AP.Bodega.Control_Talla_Color Then
+                Dim IdProducto = clsLnProducto.Get_IdProducto_By_IdProductoBodega(gBeCiclico.IdProductoBodega)
+                IdProductoTallaColorDestino = clsLnProducto_talla_color.Get_IdProductoTallaColor_By_IdTalla_and_IdColor(cmbTalla.EditValue,
+                                                                                                                        cmbColor.EditValue,
+                                                                                                                        IdProducto)
+                If IdProductoTallaColorDestino <> 0 Then
+                    If gBeCiclico.IdProductoTallaColor <> IdProductoTallaColorDestino Then
+                        gBeCiclico.IdProductoTallaColor_nuevo = IdProductoTallaColorDestino
+                    End If
                 End If
             End If
 
@@ -229,7 +268,8 @@ Public Class frmConteo
                 If FechaVenceOriginal <> dtpFechaVence.EditValue OrElse
                    (IdProductoEstadoOriginal <> cmbEstadoProducto.EditValue) OrElse
                    LoteOriginal <> txtLote.Text.Trim() OrElse
-                   (IdUbicacionOriginal <> txtUbicacion.Text.Trim()) Then
+                   (IdUbicacionOriginal <> txtUbicacion.Text.Trim() OrElse
+                   IdProductoTallaColorOriginal <> IdProductoTallaColorDestino) Then
 
                     gBeCiclico.Cant_stock = 0
                     gBeCiclico.IdInvCiclico = clsLnTrans_inv_ciclico.MaxID(cTrans.lConnection, cTrans.lTransaction) + 1
@@ -339,11 +379,6 @@ Public Class frmConteo
         End Try
     End Sub
 
-    Private FechaVenceOriginal As DateTime
-    Private IdProductoEstadoOriginal As Integer
-    Private LoteOriginal As String = ""
-    Private IdUbicacionOriginal As Integer = 0
-    Private EsInvOriginal As Boolean = False
     Private Sub frmConteo_Shown(sender As Object, e As EventArgs) Handles Me.Shown
 
         If gBeCiclico.IdProductoEstado = gBeCiclico.IdProductoEst_nuevo AndAlso
@@ -357,6 +392,7 @@ Public Class frmConteo
         IdProductoEstadoOriginal = gBeCiclico.IdProductoEstado
         LoteOriginal = gBeCiclico.Lote
         IdUbicacionOriginal = gBeCiclico.IdUbicacion
+        IdProductoTallaColorOriginal = gBeCiclico.IdProductoTallaColor
 
     End Sub
 
