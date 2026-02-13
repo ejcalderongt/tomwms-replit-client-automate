@@ -63,6 +63,7 @@ public class clsLnTrans_re_oc
             var cmd = new SqlCommand(sp, pConection, pTransaction) { CommandType = CommandType.Text };
 
             Bind(cmd, oBeTrans_re_oc);
+
             rowsAffected = cmd.ExecuteNonQuery();
             cmd.Dispose();
 
@@ -513,10 +514,8 @@ public class clsLnTrans_re_oc
             {
                 bool existe = Existe(entity.IdRecepcionOc, entity.IdOrdenCompraEnc, conn, tx);
 
-                if (existe)
-                    Actualizar(entity, conn, tx);
-                else
-                    Insertar(entity, conn, tx);
+                if (!existe)
+                    Insertar(entity, conn, tx);    
             }
         }
         catch (Exception ex)
@@ -525,7 +524,7 @@ public class clsLnTrans_re_oc
         }
     }
 
-    public static bool Existe(int idRecepcionOc,int IdOrdenCompraEnc, SqlConnection conn, SqlTransaction tx)
+    public static bool Existe(int idRecepcionOc, int IdOrdenCompraEnc, SqlConnection conn, SqlTransaction tx)
     {
         try
         {

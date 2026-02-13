@@ -8,7 +8,9 @@ using WMS.EntityCore.Despacho;
 using WMS.EntityCore.Operador;
 using WMS.EntityCore.Pedido;
 using WMS.EntityCore.Picking;
+using WMS.EntityCore.Trans_re;
 using WMS.EntityCore.Transacciones;
+using WMSWebAPI.Be;
 using WMSWebAPI.Dtos.Pedido;
 using WMSWebAPI.Dtos.Salidas;
 
@@ -378,12 +380,39 @@ namespace WMSWebAPI.Services.Salidas
                 throw;
             }
 
+
+            
+            var Tipo_Cliente_list = dto.Clientes == null
+                                    ? new List<clsBeCliente_tipo>()
+                                    : dto.Clientes
+                                    .Select(r => _mapper.Map<clsBeCliente_tipo>(r.TipoCliente))
+                                    .ToList();
+
+
+            try 
+            {
+
+                if (Tipo_Cliente_list != null && Tipo_Cliente_list.Count > 0)
+                {
+                    var Tipo_clientes = _mapper.Map<List<clsBeCliente_tipo>>(Tipo_Cliente_list);
+                    clsLnCliente_tipo.InsertarOActualizar(Tipo_clientes, conn, tx);
+                }
+
+            }
+            catch (Exception ex) 
+            {
+                throw new Exception("Error al procesar Tipo Cliente → " + ex.Message, ex);
+            }
+
+            
+
+
             try
             {
-                if (dto.Cliente != null && dto.Cliente.Any())
+                if (dto.Clientes != null && dto.Clientes.Any())
                 {
-                    var clientes = _mapper.Map<List<clsBeCliente>>(dto.Cliente);
-                    clsLnCliente.InsertarOActualizar(clientes, conn, tx);
+                    var clientes = _mapper.Map<List<clsBeCliente_3pl>>(dto.Clientes);
+                    clsLnCliente.InsertarOActualizar_3pl(clientes, conn, tx);
                 }
 
             }
@@ -518,7 +547,6 @@ namespace WMSWebAPI.Services.Salidas
                     if (dto.Picking.PickingUbic != null && dto.Picking.PickingUbic.Any())
                     {
                         var pickingUbic = _mapper.Map<List<clsBeTrans_picking_ubic_3pl>>(dto.Picking.PickingUbic);
-                        //clsLnTrans_picking_ubic.InsertOrUpdate(pickingUbic, conn, tx);
                         clsLnTrans_picking_ubic.InsertOrUpdate_3pl(pickingUbic, conn, tx);
                     }
                     { }

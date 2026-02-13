@@ -7,6 +7,7 @@ using Serilog;
 using System.Text;
 using WMSWebAPI.Mapping_Profile;
 using WMSWebAPI.Services;
+using WMSWebAPI.Services.Cambio_Estado;
 using WMSWebAPI.Services.Centro_Costo;
 using WMSWebAPI.Services.Cliente;
 using WMSWebAPI.Services.Ingresos;
@@ -63,6 +64,8 @@ builder.Services.AddScoped<IPresentacionMi3SyncService, PresentacionMi3SyncServi
 builder.Services.AddScoped<ISyncProveedorService, SyncProveedorService>();
 builder.Services.AddScoped<IKpiReportService, KpiReportService>();
 builder.Services.AddScoped<ICentroCostoService, CentroCostoService>();
+builder.Services.AddScoped<ICambioEstadoService, CambioEstadoService>();
+builder.Services.AddScoped<IAjustesEnvioService, AjustesEnvioService>();
 
 // JWT
 var key = "OPaVvHGoW1WqtwoFdS0er9cC1RMrSCxd5ovsEYw22uzKlsyaO-7uOQB16jL3YnKsLB4U_BX5gWNUk0ELXMsEtg";

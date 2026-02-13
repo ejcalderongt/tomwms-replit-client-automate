@@ -21,7 +21,7 @@
         public string user_mod { get; set; } = string.Empty;
         public DateTime fec_mod { get; set; } = DateTime.Now;
         public bool despachar_lotes_completos { get; set; } = false;
-        public string sistema { get; set; } = string.Empty;
+        public bool sistema { get; set; } = false;
         public bool es_bodega_recepcion { get; set; } = false;
         public bool es_bodega_traslado { get; set; } = false;
         public int idubicacionvirtual { get; set; } = 0;
@@ -32,5 +32,7 @@
         public int IdBodegaAreaSAP { get; set; } = 0;
         public bool es_proveedor { get; set; } = false;
         public string Codigo_Empresa_ERP { get; set; } = string.Empty;
+        
+        
     }
 }

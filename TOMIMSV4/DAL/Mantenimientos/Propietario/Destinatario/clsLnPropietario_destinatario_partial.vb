@@ -44,12 +44,9 @@ Partial Public Class clsLnPropietario_destinatario
 
             Dim lReturnList As New List(Of clsBePropietario_destinatario)
 
+            Dim vSQL As String = "SELECT * FROM propietario_destinatario WHERE IdPropietario=@IdPropietario"
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
-
-                '#HS20171023_1630pm: Quité String.Format.
-                Dim vSQL As String = "SELECT * FROM propietario_destinatario WHERE IdPropietario=@IdPropietario"
-
 
                 Using lDTA As New SqlDataAdapter(vSQL, lConnection)
 
@@ -106,7 +103,6 @@ Partial Public Class clsLnPropietario_destinatario
 
             Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
-
                 Using lDTA As New SqlDataAdapter(String.Format("SELECT DISTINCT d.correo_electronico FROM Propietario_reglas_det AS det INNER JOIN propietario_destinatario AS d ON det.IdDestinatarioPropietario = d.IdDestinatarioPropietario WHERE det.activo=1 AND det.IdReglaPropietarioEnc IN ({0})", lWhere), lConnection)
 
                     lDTA.SelectCommand.CommandType = CommandType.Text
@@ -150,7 +146,6 @@ Partial Public Class clsLnPropietario_destinatario
 
         Using lConnection As New SqlConnection(Configuration.ConfigurationManager.AppSettings("CST"))
 
-            '#HS 07112017 Quité query dentro de SqlCommand.
             Using lCommand As New SqlCommand(vSQL, lConnection)
 
                 lCommand.CommandType = CommandType.Text

@@ -11956,11 +11956,7 @@ Public Class TOMHHWS
 
         Catch ex As Exception
 
-            '#MECR11122025: Se agrego bitacora de logs para verificacion
-            'Dim Mensaje As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod().Name, ex.Message)
             Dim vMsgError As String = String.Format("{0} {1}", MethodBase.GetCurrentMethod.Name(), ex.Message)
-            'clsLnLog_error_wms.Agregar_Error(vMsgError)
-            'clsLnLog_verificacion_bof.Agregar_Error(vMsgError, pStackTrace:=ex.StackTrace, pCantidad:=pCantidad, pIdPedidoEnc:=pIdPedidoEnc)
 
             Dim Mensaje As String = ex.Message
             WriteErrorToEventLog(Mensaje)
