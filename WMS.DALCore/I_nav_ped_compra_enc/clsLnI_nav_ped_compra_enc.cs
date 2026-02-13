@@ -908,10 +908,12 @@ public class clsLnI_nav_ped_compra_enc
                 foreach (var Det in oBeI_nav_ped_compra_enc.Lineas_Detalle)
                 {
                     if (Det == null) continue;
-
-                    string locationToUse = string.IsNullOrWhiteSpace(Det.Location_Code)
-                                            ? oBeI_nav_ped_compra_enc.Location_Code
-                                            : Det.Location_Code;
+                    
+                    string locationToUse = Det.Location_Code;
+                    if (string.IsNullOrWhiteSpace(locationToUse?.Trim()))
+                    {
+                        locationToUse = oBeI_nav_ped_compra_enc.Location_Code.Trim();
+                    }
 
                     try
                     {
@@ -923,8 +925,7 @@ public class clsLnI_nav_ped_compra_enc
                             {
                                 if (!oBeI_nav_ped_compra_enc.Is_Internal_Transfer)
                                 {
-                                    Bodega_Es_Valida_Para_Recepcion =
-                                        clsLnCliente.Bodega_Es_Valida_Para_Recepcion(locationToUse, lConnection, lTransaction);                                    
+                                    Bodega_Es_Valida_Para_Recepcion = clsLnCliente.Bodega_Es_Valida_Para_Recepcion(locationToUse, lConnection, lTransaction);                                    
 
                                     if (!Bodega_Es_Valida_Para_Recepcion)
                                     {

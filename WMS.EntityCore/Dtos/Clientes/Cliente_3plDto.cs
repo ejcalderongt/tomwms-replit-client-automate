@@ -1,6 +1,8 @@
-﻿namespace WMSWebAPI.Dtos.Datos_Maestros
+﻿using WMSWebAPI.Be;
+
+namespace WMSWebAPI.Dtos.Datos_Maestros
 {
-    public class ClienteDto
+    public class Cliente_3plDto
     {
         public int IdCliente { get; set; } = 0;
         public int IdEmpresa { get; set; } = 0;
@@ -33,6 +35,8 @@
         public bool es_proveedor { get; set; } = false;
         public string Codigo_Empresa_ERP { get; set; } = string.Empty;
         
-        
+        public clsBeCliente_tipo? TipoCliente { get; set; } 
+
+
     }
 }

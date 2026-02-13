@@ -34,9 +34,6 @@ Public Class frmImpresionRecepcion_OC
             Cargar_Impresoras_Windows(cmbPrinterBarra)
             Cargar_Impresoras_Windows(cmbPrinterLicencia)
 
-            cmbPrinterLicencia.EditValue = frmRecepcion.pImpresoraLicSeleccionada
-            cmbPrinterBarra.EditValue = frmRecepcion.pImpresoraProdSeleccionada
-
             BeBodega_Origen = clsLnBodega.GetSingle_By_Idbodega(pTransOC_Enc.IdBodega)
 
             EsPrimeraImpresion = True
@@ -44,6 +41,18 @@ Public Class frmImpresionRecepcion_OC
             txtLicencia.Enabled = False
             txtPresentacion.Enabled = False
             txtFactor.Enabled = False
+
+
+            pCajasPorCama = Convert.ToInt16(txtCajaPorCama.Value)
+            pCamasPorTarima = Convert.ToInt16(txtCamaPorTarima.Value)
+            Dim pCantidad = pCamasPorTarima * pCajasPorCama
+
+            If pCantidad > 0 Then
+                txtCantidadLicencias.Value = 1
+            End If
+
+            cmbPrinterLicencia.EditValue = frmRecepcion.pImpresoraLicSeleccionada
+            cmbPrinterBarra.EditValue = frmRecepcion.pImpresoraProdSeleccionada
 
         Catch ex As Exception
             XtraMessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -79,6 +88,13 @@ Public Class frmImpresionRecepcion_OC
                     .SearchMode = DevExpress.XtraEditors.Controls.SearchMode.AutoComplete
                     .TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard
                 End With
+
+
+                If pListaProductos.Count = 1 Then
+                    cmbProducto.EditValue = pListaProductos(0).IdProductoBodega
+                    ' opcional si querés forzar el refresco visual:
+                    cmbProducto.Properties.ForceInitialize()
+                End If
 
             Else
                 cmbProducto.Properties.DataSource = Nothing
@@ -337,6 +353,12 @@ Public Class frmImpresionRecepcion_OC
                     .SearchMode = DevExpress.XtraEditors.Controls.SearchMode.AutoComplete
                     .TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.Standard
                 End With
+
+                If pListaLotes IsNot Nothing AndAlso pListaLotes.Rows.Count = 1 Then
+                    cmbLote.EditValue = pListaLotes.Rows(0)("IdLote")
+                    cmbLote.Properties.ForceInitialize()
+                End If
+
 
             Else
                 cmbLote.Properties.DataSource = Nothing
