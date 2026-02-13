@@ -1,16 +1,10 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Drawing.Printing
-Imports System.Linq.Expressions
 Imports System.Reflection
-Imports DevExpress.Xpf.Editors.Internal
 Imports DevExpress.XtraEditors
 Imports DevExpress.XtraPrinting
 Imports DevExpress.XtraReports.UI
-Imports DevExpress.XtraRichEdit.Fields
-Imports DevExpress.XtraRichEdit.Ruler
 Imports DevExpress.XtraSplashScreen
-Imports DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing
-Imports TOMWMS.clsDataContractDI
 
 Public Class frmAjusteStock
 

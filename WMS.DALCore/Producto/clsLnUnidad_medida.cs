@@ -1,6 +1,4 @@
-﻿using System.Data;
-using System.Diagnostics;
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.Data.SqlClient;
 using WMS.EntityCore.Producto;
 using Microsoft.Extensions.Configuration;

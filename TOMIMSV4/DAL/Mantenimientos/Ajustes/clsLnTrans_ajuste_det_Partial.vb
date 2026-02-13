@@ -1,6 +1,5 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Reflection
-Imports DevExpress.CodeParser
 
 Partial Public Class clsLnTrans_ajuste_det
 
@@ -337,7 +336,6 @@ Partial Public Class clsLnTrans_ajuste_det
 
     End Function
 
-
     Public Shared Function Get_IdStock_By_IdAjusteDet(ByVal pIdAjusteDet As Integer,
                                                       ByVal pConnection As SqlConnection,
                                                       ByVal pTransaction As SqlTransaction) As Integer
@@ -420,7 +418,6 @@ Partial Public Class clsLnTrans_ajuste_det
         End Try
 
     End Function
-
 
     Public Shared Function Get_All_Ajustes_By_IdInventarioEnc_For_SAP(ByVal pIdInventarioEnc As Integer,
                                                                       ByVal lConnection As SqlConnection,
