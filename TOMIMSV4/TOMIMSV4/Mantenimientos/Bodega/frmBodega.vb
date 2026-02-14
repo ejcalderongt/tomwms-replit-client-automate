@@ -1532,9 +1532,9 @@ Public Class frmBodega
             pBeBodega.Advertir_Mpq_Umbas = chkAdvertirMpqUmbas.Checked
             pBeBodega.impresion_verificacion = chkImprimir_Verificacion.Checked
 
-            pBeBodega.Centro_Costo_Erp = cmbCentroCostoERP.EditValue
-            pBeBodega.Centro_Costo_Dir_Erp = cmbCentroCostoDirERP.EditValue
-            pBeBodega.Centro_Costo_Dep_Erp = cmbCentroCostoDepERP.EditValue
+            pBeBodega.Centro_Costo_Erp = If(cmbCentroCostoERP.EditValue = Nothing, "", cmbCentroCostoERP.EditValue)
+            pBeBodega.Centro_Costo_Dir_Erp = If(cmbCentroCostoDirERP.EditValue = Nothing, "", cmbCentroCostoDirERP.EditValue)
+            pBeBodega.Centro_Costo_Dep_Erp = If(cmbCentroCostoDepERP.EditValue = Nothing, "", cmbCentroCostoDepERP.EditValue)
 
             pBeBodega.Control_Talla_Color = chkControlTallaColor.Checked
             pBeBodega.Control_Gondola = chkControlGondola.Checked
