@@ -1879,6 +1879,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                                              ByVal ListBeAjusteDet As List(Of clsBeTrans_ajuste_det),
                                              ByRef lOperaciones As List(Of KeyValuePair(Of Integer, Integer)),
                                              ByVal pCodigoBodegaERP As String,
+                                             ByVal pTallaColor As Boolean,
                                              ByVal lConnection As SqlConnection,
                                              ByVal lTransaction As SqlTransaction)
 
@@ -1930,11 +1931,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                         BeStock.Lote = pBeStock.Lote
                         BeStock.Fecha_vence = pBeStock.Fecha_vence
                         BeStock.IdUbicacion = pBeStock.IdUbicacion
-
-                        '#AT20250128 Asignar talla color
-                        If pBeStock.IdProductoTallaColor <> 0 AndAlso pBeStock.IdProductoTallaColor <> BeStock.IdProductoTallaColor Then
-                            BeStock.IdProductoTallaColor = pBeStock.IdProductoTallaColor
-                        End If
+                        BeStock.IdProductoTallaColor = pBeStock.IdProductoTallaColor
 
                         clsPublic.CopyObject(BeStock, pBeStock)
 
@@ -2080,7 +2077,8 @@ Partial Public Class clsLnTrans_inv_ciclico
                                  lTransaction,
                                  vIdPropietarioBodega,
                                  Usuario,
-                                 pCodigoBodegaERP)
+                                 pCodigoBodegaERP,
+                                 pTallaColor)
 
         Catch ex As Exception
             Throw New Exception(ex.Message)
@@ -3212,7 +3210,7 @@ Partial Public Class clsLnTrans_inv_ciclico
                 If esOriginal And (BeTransInvCiclico.Fecha_vence <> BeTransInvCiclico.Fecha_vence_stock OrElse
                        (BeTransInvCiclico.IdProductoEstado <> BeTransInvCiclico.IdProductoEst_nuevo AndAlso BeTransInvCiclico.IdProductoEst_nuevo <> 0) OrElse
                        BeTransInvCiclico.Lote <> BeTransInvCiclico.Lote_stock OrElse
-                       BeTransInvCiclico.IdUbicacion_nuevo <> 0 OrElse CrearTallaColor OrElse BeTransInvCiclico.IdProductoTallaColor_nuevo <> 0) Then
+                       BeTransInvCiclico.IdUbicacion_nuevo <> 0 OrElse CrearTallaColor OrElse BeTransInvCiclico.IdProductoTallaColor_nuevo <> BeTransInvCiclico.IdProductoTallaColor) Then
 
                     BeTransInvCiclico.IdInvCiclico = MaxID(lConnection, lTransaction) + 1
                     BeTransInvCiclico.IdStock = InvCiclico.IdStock
@@ -6957,7 +6955,8 @@ Partial Public Class clsLnTrans_inv_ciclico
                                             pConnection As SqlConnection,
                                             pTransaction As SqlTransaction, vIdPropietarioBodega As Integer,
                                             pUsuario As clsBeUsuario,
-                                            pCodigoBodegaERP As String)
+                                            pCodigoBodegaERP As String,
+                                            pTallaColor As Boolean)
 
         Dim vIdMotivoAjuste As Integer = 0
         Dim DT As New DataTable
@@ -6967,6 +6966,7 @@ Partial Public Class clsLnTrans_inv_ciclico
         Try
 
             ajustes = clsLnTrans_ajuste_det.Get_All_Ajustes_By_IdInventarioEnc_For_SAP(gBeInventario.Idinventarioenc,
+                                                                                       pTallaColor,
                                                                                        pConnection,
                                                                                        pTransaction)
 
