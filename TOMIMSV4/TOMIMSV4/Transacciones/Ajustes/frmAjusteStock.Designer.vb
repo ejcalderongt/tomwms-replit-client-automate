@@ -349,16 +349,6 @@ Partial Class frmAjusteStock
         lblSerie.TabIndex = 40
         lblSerie.Text = "Serie:"
         '
-        'lblCentroCosto
-        '
-        Me.lblCentroCosto.AutoSize = True
-        Me.lblCentroCosto.Location = New System.Drawing.Point(930, 77)
-        Me.lblCentroCosto.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lblCentroCosto.Name = "lblCentroCosto"
-        Me.lblCentroCosto.Size = New System.Drawing.Size(86, 16)
-        Me.lblCentroCosto.TabIndex = 44
-        Me.lblCentroCosto.Text = "Centro Costo:"
-        '
         'Label9
         '
         Label9.AutoSize = True
@@ -398,6 +388,16 @@ Partial Class frmAjusteStock
         Label12.Size = New System.Drawing.Size(64, 16)
         Label12.TabIndex = 47
         Label12.Text = "Dirección:"
+        '
+        'lblCentroCosto
+        '
+        Me.lblCentroCosto.AutoSize = True
+        Me.lblCentroCosto.Location = New System.Drawing.Point(930, 77)
+        Me.lblCentroCosto.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblCentroCosto.Name = "lblCentroCosto"
+        Me.lblCentroCosto.Size = New System.Drawing.Size(86, 16)
+        Me.lblCentroCosto.TabIndex = 44
+        Me.lblCentroCosto.Text = "Centro Costo:"
         '
         'GridView2
         '
@@ -559,7 +559,7 @@ Partial Class frmAjusteStock
         Me.ToolStripP.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmdAdd, Me.mnuAjustePositivo, Me.mnuDel, Me.mnuDividir})
         Me.ToolStripP.Location = New System.Drawing.Point(2, 28)
         Me.ToolStripP.Name = "ToolStripP"
-        Me.ToolStripP.Size = New System.Drawing.Size(1478, 27)
+        Me.ToolStripP.Size = New System.Drawing.Size(1478, 31)
         Me.ToolStripP.TabIndex = 2
         Me.ToolStripP.Text = "ToolStrip1"
         '
@@ -568,7 +568,7 @@ Partial Class frmAjusteStock
         Me.cmdAdd.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(155, 24)
+        Me.cmdAdd.Size = New System.Drawing.Size(155, 28)
         Me.cmdAdd.Text = "Ajuste sobre Stock"
         Me.cmdAdd.ToolTipText = "Se modificara stock existente"
         '
@@ -577,7 +577,7 @@ Partial Class frmAjusteStock
         Me.mnuAjustePositivo.Image = Global.TOMWMS.My.Resources.Resources.add
         Me.mnuAjustePositivo.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuAjustePositivo.Name = "mnuAjustePositivo"
-        Me.mnuAjustePositivo.Size = New System.Drawing.Size(138, 24)
+        Me.mnuAjustePositivo.Size = New System.Drawing.Size(138, 28)
         Me.mnuAjustePositivo.Text = "Ajuste Sin Stock"
         Me.mnuAjustePositivo.ToolTipText = "Se agrega existencia sin stock previa"
         '
@@ -586,7 +586,7 @@ Partial Class frmAjusteStock
         Me.mnuDel.Image = Global.TOMWMS.My.Resources.Resources.desactivar
         Me.mnuDel.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuDel.Name = "mnuDel"
-        Me.mnuDel.Size = New System.Drawing.Size(87, 24)
+        Me.mnuDel.Size = New System.Drawing.Size(87, 28)
         Me.mnuDel.Text = "Eliminar"
         Me.mnuDel.ToolTipText = "Eliminar Linea Seleccionada"
         '
@@ -595,7 +595,7 @@ Partial Class frmAjusteStock
         Me.mnuDividir.Image = Global.TOMWMS.My.Resources.Resources.ubic03
         Me.mnuDividir.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.mnuDividir.Name = "mnuDividir"
-        Me.mnuDividir.Size = New System.Drawing.Size(77, 24)
+        Me.mnuDividir.Size = New System.Drawing.Size(77, 28)
         Me.mnuDividir.Text = "Dividir"
         '
         'dtpFecha
@@ -857,7 +857,7 @@ Partial Class frmAjusteStock
         Me.dgrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
         Me.dgrid.EnableHeadersVisualStyles = False
         Me.dgrid.GridColor = System.Drawing.Color.Navy
-        Me.dgrid.Location = New System.Drawing.Point(2, 55)
+        Me.dgrid.Location = New System.Drawing.Point(2, 59)
         Me.dgrid.Margin = New System.Windows.Forms.Padding(4)
         Me.dgrid.MultiSelect = False
         Me.dgrid.Name = "dgrid"
