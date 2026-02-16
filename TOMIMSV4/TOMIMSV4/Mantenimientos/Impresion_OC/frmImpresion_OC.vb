@@ -406,7 +406,7 @@ Public Class frmImpresionRecepcion_OC
             Dim vCodigoProducto As String = pReDet.Codigo_Producto
             Dim vNombreProducto As String = pReDet.Nombre_producto.Substring(0, IIf(pReDet.Nombre_producto.Length < 45, pReDet.Nombre_producto.Length, 44))
             Dim vLote As String = cmbLote.EditValue
-            Dim vFechaVence As String = txtVencimiento.EditValue
+            Dim vFechaVence As String = IIf(txtVencimiento.EditValue = Nothing, New Date(1900, 1, 1), txtVencimiento.EditValue)
             pCajasPorCama = txtCajaPorCama.Value
             pCamasPorTarima = txtCamaPorTarima.Value
             pPresentacion = txtPresentacion.EditValue
@@ -455,24 +455,24 @@ Public Class frmImpresionRecepcion_OC
                 End If
 
                 Dim obj As New clsBeI_nav_barras_pallet With {
-                        .IdPallet = 0,                           'se calcula al insertar
+                        .IdPallet = 0,
                         .Codigo = pReDet.Codigo_Producto,
                         .Nombre = pReDet.Nombre_producto,
                         .Camas_Por_Tarima = pCamasPorTarima,
                         .Cajas_Por_Cama = pCajasPorCama,
-                        .Cantidad_Presentacion = pCantidad,        ' float NULL
+                        .Cantidad_Presentacion = pCantidad,
                         .UM_Producto = pReDet.Nombre_unidad_medida_basica,
-                        .Lote = cmbLote.Text,                ' nvarchar(100) NOT NULL
-                        .Fecha_Agregado = Now,               ' datetime NULL
-                        .Fecha_Ingreso = New Date(1990, 1, 1),                ' date NULL
-                        .Fecha_Vence = vFechaVence,                  ' date NULL
-                        .Fecha_Produccion = New Date(1990, 1, 1),             ' date NULL
-                        .Activo = 1,                       ' bit NULL
-                        .Recibido = 1,                     ' int NULL
-                        .IdRecepcion = Nothing,                  ' int NULL
+                        .Lote = cmbLote.Text,
+                        .Fecha_Agregado = Now,
+                        .Fecha_Ingreso = New Date(1900, 1, 1),
+                        .Fecha_Vence = vFechaVence,
+                        .Fecha_Produccion = New Date(1900, 1, 1),
+                        .Activo = 1,
+                        .Recibido = 1,
+                        .IdRecepcion = Nothing,
                         .Bodega_Origen = BeBodega_Origen.Codigo,
                         .Bodega_Destino = BeBodega_Origen.Codigo,
-                        .Codigo_barra = vCodigoBarra,    'lic_plate      
+                        .Codigo_barra = vCodigoBarra,
                         .Cantidad_UMP = Nothing,
                         .Lote_Numerico = Nothing
                     }
